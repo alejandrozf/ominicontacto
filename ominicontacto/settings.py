@@ -76,8 +76,14 @@ WSGI_APPLICATION = 'ominicontacto.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': '127.0.0.1',
+        'PORT': 5432,
+        'NAME': 'ominicontacto',
+        'USER': 'freetech',
+        'PASSWORD': 'admin',
+        'CONN_MAX_AGE': 300,
+        'ATOMIC_REQUESTS': True,
     }
 }
 
