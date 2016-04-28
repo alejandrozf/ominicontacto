@@ -1,6 +1,9 @@
 
-from django.conf.urls import url
+from django.conf.urls import url, patterns
+# from ominicontacto_app import views
 
-urlpatterns = [
-    #url(r'^admin/', admin.site.urls),
-]
+urlpatterns = patterns('',
+    url(r'^ajax/mensaje_recibidos/',
+        'ominicontacto_app.views.mensajes_recibidos_view',
+        name='ajax_mensaje_recibidos')
+)
