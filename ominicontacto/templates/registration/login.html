@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Logueo Usuario {% endblock %}
+
+{% block logueo %}
+
+    {% if not user.is_authenticated %}
+        <form class="form-signin" role="form" method="post" action="">
+            {% csrf_token %}
+            <h2 class="form-signin-heading">Logueo</h2>
+
+            <div class="form-group">
+                <label class="control-label">Usuario</label>
+                <div>
+                    {{ form.username }}
+                    <span class="help-inline text-danger">
+                        {{ form.username.errors }}
+                    </span>
+                </div>
+             </div>
+
+            <div class="form-group">
+                <label class="control-label">Contraseña</label>
+                <div>
+                    {{ form.password }}
+                    <span class="help-inline text-danger">
+                        {{ form.password.errors }}
+                    </span>
+                </div>
+             </div>
+
+            <br>
+
+            <button type="submit" >Ingresar</button>
+
+        </form>
+ 
+
+    {% endif %}
+{% endblock %}
