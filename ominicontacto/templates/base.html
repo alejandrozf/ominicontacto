@@ -1,0 +1,21 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Omnileads {% endblock %}</title>
+
+    {% block head_js %}
+    {% endblock %}
+
+</head>
+<body>
+    {% if user.is_authenticated %}
+    {% else %}
+        {% block logueo %}
+        {% endblock %} 
+    {% endif %}
+
+</body>
+</html>
