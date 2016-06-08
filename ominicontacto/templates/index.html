@@ -4,5 +4,7 @@
     <br>
     <br>
     <br>
-    <p>hola {{ user.first_name }} {{ user.last_name }}</p>
+    <p>hola {{ user.first_name }} {{ user.last_name }} {{ user.username }}</p>
+    <p>{{ user.get_agente_profile.sip_extension }}</p>
+    <p>{{ user.get_agente_profile.sip_password }}</p>
 {% endblock %}
