@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ominicontacto_app',
+    'crispy_forms',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -111,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-ar'
 
 TIME_ZONE = 'UTC'
 
@@ -130,5 +131,7 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'ominicontacto_app.User'
 
 LOGIN_REDIRECT_URL = 'index'
+
+
 
 
