@@ -6,6 +6,10 @@ from services.sms_services import SmsManager
 from django.http import JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
+from django.views.generic import ListView, CreateView, UpdateView
+from ominicontacto_app.models import User
+from ominicontacto_app.forms import CustomUserCreationForm
 
 
 def mensajes_recibidos_view(request):
@@ -19,3 +23,12 @@ def mensajes_recibidos_view(request):
 def index_view(request):
     return render_to_response('index.html',
                               context_instance=RequestContext(request))
+
+
+class CustomerUserCreateView(CreateView):
+    model = User
+    form_class = CustomUserCreationForm
+    template_name = 'user_creation_form.html'
+
+    def get_success_url(self):
+        return reverse('index')
