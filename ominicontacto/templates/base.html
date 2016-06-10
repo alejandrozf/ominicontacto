@@ -12,8 +12,8 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
     <!-- jquery UI -->
-    <link rel="stylesheet" href="https://code.jquery.com/jquery-2.2.4.min.js">
-
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
     {% block head_js %}
     {% endblock %}
@@ -42,9 +42,23 @@
                     </ul>
 
                     <ul class="nav navbar-nav">
-                        <li>
-                            <a href="#">Agentes</a>
-                        </li>
+                        <li role="presentation" class="dropdown">
+						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+						      Usuario <span class="caret"></span>
+						    </a>
+						    <ul class="dropdown-menu" role="menu">
+						    	<li>
+                            		<a href="{% url 'user_list' %}">Usuarios</a>
+                        		</li>
+                        		<li>
+                            		<a href="{% url 'user_nuevo' %}">Crear Usuario</a>
+                        		</li>
+                        		<li class="divider"></li>
+                        		<li>
+                            		<a href="#">Agentes</a>
+                        		</li>
+						    </ul>
+						</li>
 
 
                     </ul>

@@ -19,4 +19,8 @@ urlpatterns = patterns('',
         login_required(views.CustomerUserUpdateView.as_view()),
         name='user_update',
         ),
+    url(r'^user/agenteprofile/nuevo/(?P<pk_user>\d+)/$',
+        login_required(views.AgenteProfileCreateView.as_view()),
+        name='agenteprofile_nuevo',
+        ),
 )

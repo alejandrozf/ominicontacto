@@ -5,7 +5,7 @@ from django.contrib.auth.forms import (
     UserCreationForm
 )
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from ominicontacto_app.models import User
+from ominicontacto_app.models import (User, AgenteProfile)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -36,4 +36,15 @@ class UserChangeForm(forms.ModelForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'is_agente',
                   'is_customer', 'is_supervisor')
+
+
+class AgenteProfileForm(forms.ModelForm):
+    """A form for updating users. Includes all the fields on
+    the user, but replaces the password field with admin's
+    password hash display field.
+    """
+
+    class Meta:
+        model = AgenteProfile
+        fields = ('user', 'sip_extension', 'sip_password', 'modulos')
 

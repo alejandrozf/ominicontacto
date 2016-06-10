@@ -9,9 +9,10 @@ from django.template import RequestContext
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
-from ominicontacto_app.models import User
+from ominicontacto_app.models import (User, AgenteProfile)
 from ominicontacto_app.forms import (CustomUserCreationForm,
-                                     CustomUserChangeForm, UserChangeForm)
+                                     CustomUserChangeForm, UserChangeForm,
+                                     AgenteProfileForm)
 
 
 
@@ -49,4 +50,18 @@ class CustomerUserUpdateView(UpdateView):
 class UserListView(ListView):
     model = User
     template_name = 'user/user_list.html'
+
+
+class AgenteProfileCreateView(CreateView):
+    model = AgenteProfile
+    form_class = AgenteProfileForm
+    template_name = 'user/user_creation_form.html'
+
+    def get_initial(self):
+        initial = super(AgenteProfileCreateView, self).get_initial()
+        initial.update({'user': self.kwargs['pk_user']})
+        return initial
+
+    def get_success_url(self):
+        return reverse('user_list')
 
