@@ -57,10 +57,19 @@ class AgenteProfileCreateView(CreateView):
     form_class = AgenteProfileForm
     template_name = 'user/user_creation_form.html'
 
-    def get_initial(self):
-        initial = super(AgenteProfileCreateView, self).get_initial()
-        initial.update({'user': self.kwargs['pk_user']})
-        return initial
+    # def get_initial(self):
+    #     initial = super(AgenteProfileCreateView, self).get_initial()
+    #     initial.update({'user': self.kwargs['pk_user']})
+    #     return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        usuario = User.objects.get(pk=self.kwargs['pk_user'])
+        self.object.user = usuario
+
+        self.object.save()
+
+        return super(AgenteProfileCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('user_list')

@@ -43,8 +43,18 @@ class AgenteProfileForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
+    # def __init__(self, *args, **kwargs):
+    #     super(AgenteProfileForm, self).__init__(*args, **kwargs)
+    #
+    #     self.fields['user'].widget.attrs['disabled'] = True
+    #
+    # def clean_user(self):
+    #     if self.instance.is_disabled:
+    #         return self.instance.user
+    #     else:
+    #         return self.cleaned_data.get('user')
 
     class Meta:
         model = AgenteProfile
-        fields = ('user', 'sip_extension', 'sip_password', 'modulos')
+        fields = ('sip_extension', 'sip_password', 'modulos')
 
