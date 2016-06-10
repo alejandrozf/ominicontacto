@@ -42,8 +42,6 @@ class Modulo(models.Model):
 
 class AgenteProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    active = models.BooleanField(default=True)
-    name = models.CharField(max_length=64)
     sip_extension = models.CharField(max_length=128, blank=True, null=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     modulos = models.ManyToManyField(Modulo)

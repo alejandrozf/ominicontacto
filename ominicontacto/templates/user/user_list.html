@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-3">
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>username</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for usuario in object_list %}
+            <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.first_name }}</td>
+                <td>{{ usuario.last_name }}</td>
+                <td><a href="{% url 'user_update' usuario.id %}">Actualizar</a></td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="3">No existen usuarios</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}
