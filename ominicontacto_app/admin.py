@@ -50,8 +50,6 @@ class UserAdmin(CustomUserAdmin):
 class AgenteAdmin(admin.ModelAdmin):
     list_display = (
         'id',
-        'name',
-        'active',
         'user_id'
     )
 

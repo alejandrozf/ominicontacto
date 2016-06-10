@@ -55,11 +55,24 @@
                         		</li>
                         		<li class="divider"></li>
                         		<li>
-                            		<a href="#">Agentes</a>
+                            		<a href="{% url 'agente_list' %}">Agentes</a>
                         		</li>
 						    </ul>
 						</li>
+                        <li role="presentation" class="dropdown">
+						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+						      Modulos <span class="caret"></span>
+						    </a>
+						    <ul class="dropdown-menu" role="menu">
+						    	<li>
+                            		<a href="{% url 'modulo_list' %}">Modulos</a>
+                        		</li>
+                        		<li>
+                            		<a href="{% url 'modulo_nuevo' %}">Crear Modulo</a>
+                        		</li>
 
+						    </ul>
+						</li>
 
                     </ul>
                 </div>

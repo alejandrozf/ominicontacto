@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-3">
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Nombre</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for modulo in object_list %}
+            <tr>
+                <td>{{ modulo.id }}</td>
+                <td>{{ modulo.nombre }}</td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="3">No existen modulos</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}

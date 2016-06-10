@@ -9,7 +9,7 @@ from django.template import RequestContext
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
-from ominicontacto_app.models import (User, AgenteProfile)
+from ominicontacto_app.models import (User, AgenteProfile, Modulo)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
@@ -73,4 +73,25 @@ class AgenteProfileCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('user_list')
+
+
+class ModuloCreateView(CreateView):
+    model = Modulo
+    template_name = 'user/user_creation_form.html'
+    fields = ('nombre',)
+
+    def get_success_url(self):
+        return reverse('modulo_list')
+
+
+class ModuloListView(ListView):
+    model = Modulo
+    template_name = 'modulo_list.html'
+
+
+class AgenteListView(ListView):
+    model = AgenteProfile
+    template_name = 'agente_profile_list.html'
+
+
 
