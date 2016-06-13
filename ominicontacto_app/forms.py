@@ -21,9 +21,13 @@ class CustomUserChangeForm(UserChangeForm):
         # field does not have access to the initial value
         return self.initial["password"]
 
+
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
+        fields = (
+        'username', 'first_name', 'last_name', 'email', 'is_agente',
+        'is_customer', 'is_supervisor')
 
 
 class UserChangeForm(forms.ModelForm):
