@@ -28,6 +28,8 @@
                         <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
                         {%  if not usuario.get_agente_profile %}
                             <a href={% url 'agenteprofile_nuevo' usuario.id %}>Crear perfil</a>
+                        {% else %}
+                            <a href={% url 'agenteprofile_update' usuario.get_agente_profile.id %}>Modificar perfil</a>
                         {% endif %}
                         {% else %}
                            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>

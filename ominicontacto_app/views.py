@@ -75,6 +75,18 @@ class AgenteProfileCreateView(CreateView):
         return reverse('user_list')
 
 
+class AgenteProfileUpdateView(UpdateView):
+    model = AgenteProfile
+    form_class = AgenteProfileForm
+    template_name = 'user/user_creation_form.html'
+
+    def get_object(self, queryset=None):
+        return AgenteProfile.objects.get(pk=self.kwargs['pk_agenteprofile'])
+
+    def get_success_url(self):
+        return reverse('user_list')
+
+
 class ModuloCreateView(CreateView):
     model = Modulo
     template_name = 'user/user_creation_form.html'

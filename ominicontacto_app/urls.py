@@ -32,4 +32,8 @@ urlpatterns = patterns('',
     url(r'^agente/list/$',
         login_required(views.AgenteListView.as_view()), name='agente_list',
         ),
+    url(r'^user/agenteprofile/update/(?P<pk_agenteprofile>\d+)/$',
+        login_required(views.AgenteProfileUpdateView.as_view()),
+        name='agenteprofile_update',
+        ),
 )
