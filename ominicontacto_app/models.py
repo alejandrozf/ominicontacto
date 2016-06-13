@@ -46,6 +46,9 @@ class AgenteProfile(models.Model):
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     modulos = models.ManyToManyField(Modulo)
 
+    def get_modulos(self):
+        return "\n".join([modulo.nombre for modulo in self.modulos.all()])
+
 #
 # class PatientProfile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
