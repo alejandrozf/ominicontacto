@@ -82,7 +82,7 @@ DATABASES = {
         'PORT': 5432,
         'NAME': 'ominicontacto',
         'USER': 'freetech',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'Freetech123',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
     }
