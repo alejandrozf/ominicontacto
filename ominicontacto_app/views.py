@@ -32,7 +32,7 @@ def index_view(request):
 class CustomerUserCreateView(CreateView):
     model = User
     form_class = CustomUserCreationForm
-    template_name = 'user/user_creation_form.html'
+    template_name = 'user/user_create_update_form.html'
 
     def get_success_url(self):
         return reverse('user_list')
@@ -41,7 +41,7 @@ class CustomerUserCreateView(CreateView):
 class CustomerUserUpdateView(UpdateView):
     model = User
     form_class = UserChangeForm
-    template_name = 'user/user_creation_form.html'
+    template_name = 'user/user_create_update_form.html'
 
     def get_success_url(self):
         return reverse('user_list')
@@ -55,7 +55,7 @@ class UserListView(ListView):
 class AgenteProfileCreateView(CreateView):
     model = AgenteProfile
     form_class = AgenteProfileForm
-    template_name = 'user/user_creation_form.html'
+    template_name = 'base_create_update_form.html'
 
     # def get_initial(self):
     #     initial = super(AgenteProfileCreateView, self).get_initial()
@@ -78,7 +78,7 @@ class AgenteProfileCreateView(CreateView):
 class AgenteProfileUpdateView(UpdateView):
     model = AgenteProfile
     form_class = AgenteProfileForm
-    template_name = 'user/user_creation_form.html'
+    template_name = 'base_create_update_form.html'
 
     def get_object(self, queryset=None):
         return AgenteProfile.objects.get(pk=self.kwargs['pk_agenteprofile'])
@@ -89,7 +89,7 @@ class AgenteProfileUpdateView(UpdateView):
 
 class ModuloCreateView(CreateView):
     model = Modulo
-    template_name = 'user/user_creation_form.html'
+    template_name = 'base_create_update_form.html'
     fields = ('nombre',)
 
     def get_success_url(self):
