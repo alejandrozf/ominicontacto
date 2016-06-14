@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="col-md-3">
+<div class="col-md-4">
 
     <table class="table table-bordered">
         <thead>
@@ -12,8 +12,8 @@
                 <th>username</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
-                <td>Es agente</td>
-                <td></td>
+                <td>&nbsp;agente</td>
+                <td>acciones</td>
             </tr>
         </thead>
         <tbody>
@@ -36,7 +36,7 @@
 
                     {% endif %}
                 </td>
-                <td><a href="{% url 'user_update' usuario.id %}">Actualizar</a></td>
+                <td><a href="{% url 'user_update' usuario.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
             </tr>
        {% empty %}
         <tr>
