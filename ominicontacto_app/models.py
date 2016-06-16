@@ -61,3 +61,10 @@ class AgenteProfile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
 #     active = models.BooleanField(default=True)
 #     name = models.CharField(max_length=64)
+
+
+class Grupo(models.Model):
+    nombre = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return self.nombre
