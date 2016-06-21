@@ -27,16 +27,18 @@ class KamailioService():
                   callerid, kamailiopass, deny, permit,accountcode) values
                   (%(name)s, '', 'no', 'from-internal', %(callerid)s,
                   %(kamailiopass)s, '0.0.0.0/0.0.0.0', '172.16.20.219/255.255.255.255',
-                  %(accountcode)s"""
+                  %(accountcode)s)"""
             params = {
                 'name': agente.sip_extension,
                 'callerid': agente.user.get_full_name(),
                 'kamailiopass': agente.sip_password,
-                'accountcode': agente.grupo
+                'accountcode': agente.grupo.nombre
             }
+            print sql
             cursor.execute(sql, params)
             connection.commit()
             connection.close()
         except psycopg2.DatabaseError, e:
             print "error base de datos"
+            print e
             connection.close()
