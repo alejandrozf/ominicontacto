@@ -60,5 +60,5 @@ class AgenteProfileForm(forms.ModelForm):
 
     class Meta:
         model = AgenteProfile
-        fields = ('sip_extension', 'sip_password', 'modulos')
+        fields = ('sip_extension', 'sip_password', 'modulos', 'grupo')
 

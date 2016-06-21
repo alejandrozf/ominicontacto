@@ -40,12 +40,20 @@ class Modulo(models.Model):
         return self.nombre
 
 
+class Grupo(models.Model):
+    nombre = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return self.nombre
+
+
 class AgenteProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.CharField(max_length=128, blank=True, null=True,
                                      unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     modulos = models.ManyToManyField(Modulo)
+    grupo = models.ForeignKey(Grupo)
 
     def get_modulos(self):
         return "\n".join([modulo.nombre for modulo in self.modulos.all()])
@@ -61,10 +69,3 @@ class AgenteProfile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
 #     active = models.BooleanField(default=True)
 #     name = models.CharField(max_length=64)
-
-
-class Grupo(models.Model):
-    nombre = models.CharField(max_length=20)
-
-    def __unicode__(self):
-        return self.nombre
