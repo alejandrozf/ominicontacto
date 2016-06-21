@@ -13,7 +13,7 @@ from ominicontacto_app.models import (User, AgenteProfile, Modulo, Grupo)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
-
+from services.kamailio_service import KamailioService
 
 
 def mensajes_recibidos_view(request):
@@ -68,6 +68,8 @@ class AgenteProfileCreateView(CreateView):
         self.object.user = usuario
 
         self.object.save()
+        kamailio_service = KamailioService()
+        kamailio_service.crear_agente_kamailio(self.object)
 
         return super(AgenteProfileCreateView, self).form_valid(form)
 
