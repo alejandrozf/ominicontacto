@@ -85,6 +85,12 @@ class AgenteProfileUpdateView(UpdateView):
     def get_object(self, queryset=None):
         return AgenteProfile.objects.get(pk=self.kwargs['pk_agenteprofile'])
 
+    def form_valid(self, form):
+        kamailio_service = KamailioService()
+        kamailio_service.update_agente_kamailio(self.object)
+
+        return super(AgenteProfileUpdateView, self).form_valid(form)
+
     def get_success_url(self):
         return reverse('user_list')
 

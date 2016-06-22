@@ -20,21 +20,44 @@ class KamailioService():
         """
         connection, cursor = self._conectar_base_datos()
 
-
         try:
-
-            sql = """INSERT INTO sip (name, secret, directmedia, context,
+            sql = """INSERT INTO sip (id, name, secret, directmedia, context,
                   callerid, kamailiopass, deny, permit,accountcode) values
-                  (%(name)s, '', 'no', 'from-internal', %(callerid)s,
+                  (%(id)s, %(name)s, '', 'no', 'from-internal', %(callerid)s,
                   %(kamailiopass)s, '0.0.0.0/0.0.0.0', '172.16.20.219/255.255.255.255',
                   %(accountcode)s)"""
             params = {
+                'id': agente.id,
                 'name': agente.sip_extension,
                 'callerid': agente.user.get_full_name(),
                 'kamailiopass': agente.sip_password,
                 'accountcode': agente.grupo.nombre
             }
-            print sql
+            cursor.execute(sql, params)
+            connection.commit()
+            connection.close()
+        except psycopg2.DatabaseError, e:
+            print "error base de datos"
+            print e
+            connection.close()
+
+    def update_agente_kamailio(self, agente):
+        """
+        crear usuario
+        """
+        connection, cursor = self._conectar_base_datos()
+
+        try:
+            sql = """UPDATE sip SET name=%(name)s, callerid=%(callerid)s,
+                  kamailiopass=%(kamailiopass)s, accountcode=%(accountcode)s
+                  WHERE id=%(id)s"""
+            params = {
+                'id': agente.id,
+                'name': agente.sip_extension,
+                'callerid': agente.user.get_full_name(),
+                'kamailiopass': agente.sip_password,
+                'accountcode': agente.grupo.nombre
+            }
             cursor.execute(sql, params)
             connection.commit()
             connection.close()
