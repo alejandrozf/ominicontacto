@@ -68,3 +68,53 @@ class AgenteProfile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
 #     active = models.BooleanField(default=True)
 #     name = models.CharField(max_length=64)
+
+
+class Queue(models.Model):
+    """
+    Clase cola para el servidor de kamailio
+    """
+
+    RINGALL = 'ringall'
+    """ring all available channels until one answers (default)"""
+
+    ROUNDROBIN = 'roundrobin'
+    """take turns ringing each available interface (deprecated in 1.4,
+    use rrmemory)"""
+
+    LEASTRECENT = 'leastrecent'
+    """ring interface which was least recently called by this queue"""
+
+    FEWESTCALLS = 'fewestcalls'
+    """ring the one with fewest completed calls from this queue"""
+
+    RANDOM = 'random'
+    """ring random interface"""
+
+    RRMEMORY = 'rrmemory'
+    """round robin with memory, remember where we left off last ring pass"""
+
+    STRATEGY_CHOICES = (
+        (RINGALL, 'Ringall'),
+        (ROUNDROBIN, 'Roundrobin'),
+        (LEASTRECENT, 'Leastrecent'),
+        (FEWESTCALLS, 'Fewestcalls'),
+        (RANDOM, 'Random'),
+        (RRMEMORY, 'Rremory'),
+    )
+
+    name = models.CharField(max_length=128, primary_key=True)
+    timeout = models.IntegerField()
+    retry = models.IntegerField()
+    maxlen = models.IntegerField()
+    wrapuptime = models.IntegerField()
+    servicelevel = models.IntegerField()
+    strategy = models.CharField(max_length=128, choices=STRATEGY_CHOICES)
+    eventmemberstatus = models.BooleanField()
+    eventwhencalled = models.BooleanField()
+    weight = models.IntegerField()
+    ringinuse = models.BooleanField()
+    setinterfacevar = models.BooleanField()
+
+    def __unicode__(self):
+        return self.name
