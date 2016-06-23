@@ -118,3 +118,17 @@ class Queue(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class QueueMember(models.Model):
+    """
+    Clase cola por miembro, agente en cada cola
+    """
+    member = models.ForeignKey(AgenteProfile)
+    queue_name = models.ForeignKey(Queue)
+    interface = models.CharField(max_length=128)
+    penalty = models.IntegerField()
+    paused = models.IntegerField()
+
+    def __unicode__(self):
+        return self.member.user.full_name, self.queue_name
