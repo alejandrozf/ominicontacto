@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+ <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="disabled"><a>Datos Básicos</a></li>
+                <li class="active"><a>Agregar agentes a la cola</a></li>
+            </ul>
+            <br>
+            <form role="form" method="post">
+                <div class="col-lg-4">
+                    {% csrf_token %}
+                    <h4>Agrega agente</h4>
+                    <table class="table table-striped">
+		                 {{form.as_table}}
+                    </table>
+
+                </div>
+                <div class="col-lg-6">
+                    {% if queue %}
+                        <h4>Agentes</h4>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Agente</th>
+                                    <th>interface</th>
+                                    <th>Penalty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for agente in queue.queue_member.all %}
+                                    <tr>
+                                        <td>{{ agente.member}}</td>
+                                        <td>{{ agente.interface }}</td>
+                                        <td>{{ agente.penalty }}</td>
+
+
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3">
+                                            <p class="text-center text-danger">
+                                                <em>No hay agentes agreados en está cola</em>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+                <div class="col-lg-12">
+                    <br>
+                    <button type="submit" id="id_guardar" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Agregar agente
+                    </button>
+
+
+                         <a href="" class="btn btn-default pull-right" role="button">
+                            Finalizar <span class="glyphicon glyphicon-chevron-right"></span>
+                        </a>
+
+                </div>
+            </form>
+        </div>
+{% endblock %}

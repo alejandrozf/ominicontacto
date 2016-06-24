@@ -54,6 +54,9 @@ class AgenteProfile(models.Model):
     modulos = models.ManyToManyField(Modulo)
     grupo = models.ForeignKey(Grupo)
 
+    def __unicode__(self):
+        return self.user.get_full_name()
+
     def get_modulos(self):
         return "\n".join([modulo.nombre for modulo in self.modulos.all()])
 
@@ -124,10 +127,27 @@ class QueueMember(models.Model):
     """
     Clase cola por miembro, agente en cada cola
     """
-    member = models.ForeignKey(AgenteProfile)
-    queue_name = models.ForeignKey(Queue)
+
+    """Considero opciones solo del 0 a 9"""
+    (CERO, UNO, DOS, TRES, CUATRO,
+    CINCO, SEIS, SIETE, OCHO, NUEVE) = range(0, 10)
+    DIGITO_CHOICES = (
+        (CERO, '0'),
+        (UNO, '1'),
+        (DOS, '2'),
+        (TRES, '3'),
+        (CUATRO, '4'),
+        (CINCO, '5'),
+        (SEIS, '6'),
+        (SIETE, '7'),
+        (OCHO, '8'),
+        (NUEVE, '9'),
+    )
+
+    member = models.ForeignKey(AgenteProfile, related_name='members')
+    queue = models.ForeignKey(Queue, related_name='queue_member')
     interface = models.CharField(max_length=128)
-    penalty = models.IntegerField()
+    penalty = models.IntegerField(choices=DIGITO_CHOICES,)
     paused = models.IntegerField()
 
     def __unicode__(self):

@@ -46,4 +46,8 @@ urlpatterns = patterns('',
         login_required(views_queue.QueueCreateView.as_view()),
         name='queue_nuevo',
         ),
+    url(r'^queue_member/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_queue.QueueMemberCreateView.as_view()),
+        name='queue_member',
+        ),
 )
