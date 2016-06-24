@@ -8,7 +8,7 @@ from django.contrib.auth.forms import (
     UserCreationForm
 )
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from ominicontacto_app.models import (User, AgenteProfile)
+from ominicontacto_app.models import (User, AgenteProfile, Queue)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -74,3 +74,18 @@ class AgenteProfileForm(forms.ModelForm):
     class Meta:
         model = AgenteProfile
         fields = ('sip_extension', 'sip_password', 'modulos', 'grupo')
+
+
+class QueueForm(forms.ModelForm):
+    """
+    El form de cola para las llamadas
+    """
+
+    class Meta:
+        model = Queue
+        fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
+                  'servicelevel', 'strategy', 'weight')
+
+        help_texts = {
+            'timeout': """En segundos """,
+        }

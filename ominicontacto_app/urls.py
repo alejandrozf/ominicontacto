@@ -1,6 +1,6 @@
 
 from django.conf.urls import url, patterns
-from ominicontacto_app import views
+from ominicontacto_app import views, views_queue
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('',
@@ -41,5 +41,9 @@ urlpatterns = patterns('',
         ),
     url(r'^grupo/list/$',
         login_required(views.GrupoListView.as_view()), name='grupo_list',
+        ),
+    url(r'^queue/nuevo/$',
+        login_required(views_queue.QueueCreateView.as_view()),
+        name='queue_nuevo',
         ),
 )
