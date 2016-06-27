@@ -34,7 +34,7 @@ class QueueCreateView(CreateView):
     def get_success_url(self):
         return reverse(
             'queue_member',
-            kwargs={"queue_member": self.kwargs['pk_queue']}
+            kwargs={"pk_queue": self.object.pk}
         )
 
 
