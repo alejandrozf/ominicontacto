@@ -120,9 +120,13 @@ class Queue(models.Model):
     weight = models.IntegerField()
     ringinuse = models.BooleanField()
     setinterfacevar = models.BooleanField()
+    members = models.ManyToManyField(AgenteProfile, through='QueueMember')
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        db_table = 'queue_table'
 
 
 class QueueMember(models.Model):
@@ -145,12 +149,15 @@ class QueueMember(models.Model):
         (OCHO, '8'),
         (NUEVE, '9'),
     )
-
-    member = models.ForeignKey(AgenteProfile, related_name='members')
-    queue = models.ForeignKey(Queue, related_name='queue_member')
+    member = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
+    queue = models.ForeignKey(Queue, on_delete=models.CASCADE)
+    membername = models.CharField(max_length=128)
     interface = models.CharField(max_length=128)
     penalty = models.IntegerField(choices=DIGITO_CHOICES,)
     paused = models.IntegerField()
 
     def __unicode__(self):
         return self.member.user.full_name, self.queue_name
+
+    class Meta:
+        db_table = 'queue_member_table'
