@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
 from ominicontacto_app.models import (User, AgenteProfile, Queue, QueueMember)
 from ominicontacto_app.forms import QueueForm, QueueMemberForm
+from services.kamailio_service import KamailioService
 
 
 class QueueCreateView(CreateView):
@@ -26,8 +27,8 @@ class QueueCreateView(CreateView):
 
 
         self.object.save()
-        #kamailio_service = KamailioService()
-        #kamailio_serevice.crear_agente_kamailio(self.object)
+        kamailio_service = KamailioService()
+        kamailio_service.crear_queue_kamailio(self.object)
 
         return super(QueueCreateView, self).form_valid(form)
 
@@ -59,8 +60,8 @@ class QueueMemberCreateView(CreateView):
 
 
         self.object.save()
-        #kamailio_service = KamailioService()
-        #kamailio_serevice.crear_agente_kamailio(self.object)
+        kamailio_service = KamailioService()
+        kamailio_service.crear_queue_member_kamailio(self.object)
 
         return super(QueueMemberCreateView, self).form_valid(form)
 
