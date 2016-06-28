@@ -72,3 +72,8 @@ class QueueMemberCreateView(CreateView):
             'queue_member',
             kwargs={"pk_queue": self.kwargs['pk_queue']}
         )
+
+
+class QueueListView(ListView):
+    model = Queue
+    template_name = 'queue/queue_list.html'

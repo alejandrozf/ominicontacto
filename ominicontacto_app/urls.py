@@ -50,4 +50,8 @@ urlpatterns = patterns('',
         login_required(views_queue.QueueMemberCreateView.as_view()),
         name='queue_member',
         ),
+    url(r'queue/list/$',
+        login_required(views_queue.QueueListView.as_view()),
+        name='queue_list',
+        ),
 )
