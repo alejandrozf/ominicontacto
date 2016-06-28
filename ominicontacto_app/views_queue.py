@@ -103,4 +103,7 @@ class QueueUpdateView(UpdateView):
         return Queue.objects.get(name=self.kwargs['pk_queue'])
 
     def get_success_url(self):
-        return reverse('queue_list')
+        return reverse(
+            'queue_member',
+            kwargs={"pk_queue": self.kwargs['pk_queue']}
+        )
