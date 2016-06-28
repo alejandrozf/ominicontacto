@@ -16,7 +16,7 @@
         <tbody>
         {% for cola in object_list %}
             <tr>
-                <td>{{ cola.name }}</td>
+                <td><a href="{% url 'queue_update' cola.name %}">{{ cola.name }}</a></td>
                 <td><a href="{% url 'queue_elimina' cola.name %}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
                 <td><a href="{% url 'queue_member' cola.name %}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></td>
 

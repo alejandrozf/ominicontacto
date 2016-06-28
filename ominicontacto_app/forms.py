@@ -100,3 +100,17 @@ class QueueMemberForm(forms.ModelForm):
         model = QueueMember
         fields = ('member', 'penalty')
 
+
+class QueueUpdateForm(forms.ModelForm):
+    """
+    El form para actualizar la cola para las llamadas
+    """
+
+    class Meta:
+        model = Queue
+        fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
+                  'servicelevel', 'strategy', 'weight')
+
+        help_texts = {
+            'timeout': """En segundos """,
+        }
