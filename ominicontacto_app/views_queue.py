@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from ominicontacto_app.models import (Queue, QueueMember)
 from ominicontacto_app.forms import QueueForm, QueueMemberForm, QueueUpdateForm
@@ -107,3 +108,27 @@ class QueueUpdateView(UpdateView):
             'queue_member',
             kwargs={"pk_queue": self.kwargs['pk_queue']}
         )
+
+
+# usa template de confirmacion por eso se usa la view queue_member_delete_view
+class QueueMemberDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto queue.
+    """
+    model = QueueMember
+
+    def get_object(self, queryset=None):
+        return QueueMember.objects.get(pk=self.kwargs['pk_queuemember'])
+
+    def get_success_url(self):
+        return reverse(
+            'queue_member',
+            kwargs={"pk_queue": self.kwargs['pk_queue']}
+        )
+
+
+def queue_member_delete_view(request, pk_queuemember, pk_queue):
+    queue = QueueMember.objects.get(pk=pk_queuemember)
+    queue.delete()
+    return HttpResponseRedirect('/queue_member/' + str(pk_queue) + "/")

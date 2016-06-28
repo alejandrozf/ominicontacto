@@ -62,4 +62,8 @@ urlpatterns = patterns('',
         login_required(views_queue.QueueUpdateView.as_view()),
         name='queue_update',
         ),
+    url(r'^queue_member/(?P<pk_queuemember>\d+)/elimina/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_queue.queue_member_delete_view),
+        name='queuemember_elimina',
+        ),
 )

@@ -26,6 +26,7 @@
                                     <th>Agente</th>
                                     <th>interface</th>
                                     <th>Penalty</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -34,6 +35,7 @@
                                         <td>{{ agente.member}}</td>
                                         <td>{{ agente.interface }}</td>
                                         <td>{{ agente.penalty }}</td>
+                                        <td><a href="{% url 'queuemember_elimina' agente.pk agente.queue_name.name %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
 
 
                                     </tr>
