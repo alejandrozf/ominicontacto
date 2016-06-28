@@ -153,10 +153,29 @@ class Queue(models.Model):
         db_table = 'queue_table'
 
 
+class QueueMemberManager(models.Manager):
+
+    def obtener_member_por_queue(self, queue):
+        """Devuelve el quemeber filtrando por queue
+        """
+        return self.filter(queue_name=queue)
+
+    def existe_member_queue(self, member, queue):
+        return self.obtener_member_por_queue(queue).filter(
+            member=member).exists()
+
+
 class QueueMember(models.Model):
     """
     Clase cola por miembro, agente en cada cola
     """
+
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = QueueMemberManager()
 
     """Considero opciones solo del 0 a 9"""
     (CERO, UNO, DOS, TRES, CUATRO,
@@ -186,4 +205,4 @@ class QueueMember(models.Model):
 
     class Meta:
         db_table = 'queue_member_table'
-        unique_together = ('queue_name', 'membername',)
+        unique_together = ('queue_name', 'member',)

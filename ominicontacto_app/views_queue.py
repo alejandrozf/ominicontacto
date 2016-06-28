@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
-from ominicontacto_app.models import (User, AgenteProfile, Queue, QueueMember)
+from ominicontacto_app.models import (Queue, QueueMember)
 from ominicontacto_app.forms import QueueForm, QueueMemberForm
-from services.kamailio_service import KamailioService
 
 
 class QueueCreateView(CreateView):
@@ -13,22 +13,13 @@ class QueueCreateView(CreateView):
     form_class = QueueForm
     template_name = 'queue/create_update_queue.html'
 
-    # def get_initial(self):
-    #     initial = super(AgenteProfileCreateView, self).get_initial()
-    #     initial.update({'user': self.kwargs['pk_user']})
-    #     return initial
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.eventmemberstatus = True
         self.object.eventwhencalled = True
         self.object.ringinuse = True
         self.object.setinterfacevar = True
-
-
         self.object.save()
-        # kamailio_service = KamailioService()
-        # kamailio_service.crear_queue_kamailio(self.object)
 
         return super(QueueCreateView, self).form_valid(form)
 
@@ -53,15 +44,26 @@ class QueueMemberCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.queue_name = Queue.objects.get(name=self.kwargs['pk_queue'])
-        self.object.membername = self.object.member.user.get_full_name()
-        self.object.interface = """Local/{0}@from-queue/n""".format(
-            self.object.member.sip_extension)
-        self.object.paused = 0  # por ahora no lo definimos
+        queue = Queue.objects.get(name=self.kwargs['pk_queue'])
+        existe_member = QueueMember.objects.\
+            existe_member_queue(self.object.member, queue)
 
-        self.object.save()
-        # kamailio_service = KamailioService()
-        # kamailio_service.crear_queue_member_kamailio(self.object)
+        if existe_member:
+            message = 'Operación Errónea! \
+                Este miembro ya se encuentra en esta cola'
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.form_invalid(form)
+        else:
+            self.object.queue_name = queue
+            self.object.membername = self.object.member.user.get_full_name()
+            self.object.interface = """Local/{0}@from-queue/n""".format(
+            self.object.member.sip_extension)
+            self.object.paused = 0  # por ahora no lo definimos
+            self.object.save()
 
         return super(QueueMemberCreateView, self).form_valid(form)
 
