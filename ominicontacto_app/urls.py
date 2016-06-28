@@ -54,4 +54,8 @@ urlpatterns = patterns('',
         login_required(views_queue.QueueListView.as_view()),
         name='queue_list',
         ),
+    url(r'^queue/elimina/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_queue.QueueDeleteView.as_view()),
+        name='queue_elimina',
+        ),
 )

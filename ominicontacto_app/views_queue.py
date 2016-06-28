@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from ominicontacto_app.models import (Queue, QueueMember)
 from ominicontacto_app.forms import QueueForm, QueueMemberForm
 
@@ -77,3 +77,18 @@ class QueueMemberCreateView(CreateView):
 class QueueListView(ListView):
     model = Queue
     template_name = 'queue/queue_list.html'
+
+
+class QueueDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto queue.
+    """
+    model = Queue
+    template_name = 'queue/delete_queue.html'
+
+    def get_object(self, queryset=None):
+        return Queue.objects.get(name=self.kwargs['pk_queue'])
+
+    def get_success_url(self):
+        return reverse('queue_list')
