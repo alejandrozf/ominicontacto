@@ -185,3 +185,4 @@ class QueueMember(models.Model):
 
     class Meta:
         db_table = 'queue_member_table'
+        unique_together = ('queue', 'membername',)
