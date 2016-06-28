@@ -174,7 +174,8 @@ class QueueMember(models.Model):
         (NUEVE, '9'),
     )
     member = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
-    queue = models.ForeignKey(Queue, on_delete=models.CASCADE)
+    queue_name = models.ForeignKey(Queue, on_delete=models.CASCADE,
+                                   db_column='queue_name')
     membername = models.CharField(max_length=128)
     interface = models.CharField(max_length=128)
     penalty = models.IntegerField(choices=DIGITO_CHOICES,)
@@ -185,4 +186,4 @@ class QueueMember(models.Model):
 
     class Meta:
         db_table = 'queue_member_table'
-        unique_together = ('queue', 'membername',)
+        unique_together = ('queue_name', 'membername',)
