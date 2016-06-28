@@ -109,20 +109,48 @@ class Queue(models.Model):
     )
 
     name = models.CharField(max_length=128, primary_key=True)
-    timeout = models.IntegerField()
-    retry = models.IntegerField()
-    maxlen = models.IntegerField()
-    wrapuptime = models.IntegerField()
-    servicelevel = models.IntegerField()
+    timeout = models.BigIntegerField()
+    retry = models.BigIntegerField()
+    maxlen = models.BigIntegerField()
+    wrapuptime = models.BigIntegerField()
+    servicelevel = models.BigIntegerField()
     strategy = models.CharField(max_length=128, choices=STRATEGY_CHOICES)
     eventmemberstatus = models.BooleanField()
     eventwhencalled = models.BooleanField()
-    weight = models.IntegerField()
+    weight = models.BigIntegerField()
     ringinuse = models.BooleanField()
     setinterfacevar = models.BooleanField()
+    members = models.ManyToManyField(AgenteProfile, through='QueueMember')
+
+    # campos que no usamos
+    musiconhold = models.CharField(max_length=128, blank=True, null=True)
+    announce = models.CharField(max_length=128, blank=True, null=True)
+    context = models.CharField(max_length=128, blank=True, null=True)
+    monitor_join = models.NullBooleanField(blank=True, null=True)
+    monitor_format = models.CharField(max_length=128, blank=True, null=True)
+    queue_youarenext = models.CharField(max_length=128, blank=True, null=True)
+    queue_thereare = models.CharField(max_length=128, blank=True, null=True)
+    queue_callswaiting = models.CharField(max_length=128, blank=True, null=True)
+    queue_holdtime = models.CharField(max_length=128, blank=True, null=True)
+    queue_minutes = models.CharField(max_length=128, blank=True, null=True)
+    queue_seconds = models.CharField(max_length=128, blank=True, null=True)
+    queue_lessthan = models.CharField(max_length=128, blank=True, null=True)
+    queue_thankyou = models.CharField(max_length=128, blank=True, null=True)
+    queue_reporthold = models.CharField(max_length=128, blank=True, null=True)
+    announce_frequency = models.BigIntegerField(blank=True, null=True)
+    announce_round_seconds = models.BigIntegerField(blank=True, null=True)
+    announce_holdtime = models.CharField(max_length=128, blank=True, null=True)
+    joinempty = models.CharField(max_length=128, blank=True, null=True)
+    leavewhenempty = models.CharField(max_length=128, blank=True, null=True)
+    reportholdtime = models.NullBooleanField(blank=True, null=True)
+    memberdelay = models.BigIntegerField(blank=True, null=True)
+    timeoutrestart = models.NullBooleanField(blank=True, null=True)
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        db_table = 'queue_table'
 
 
 class QueueMember(models.Model):
@@ -145,12 +173,17 @@ class QueueMember(models.Model):
         (OCHO, '8'),
         (NUEVE, '9'),
     )
-
-    member = models.ForeignKey(AgenteProfile, related_name='members')
-    queue = models.ForeignKey(Queue, related_name='queue_member')
+    member = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
+    queue_name = models.ForeignKey(Queue, on_delete=models.CASCADE,
+                                   db_column='queue_name')
+    membername = models.CharField(max_length=128)
     interface = models.CharField(max_length=128)
     penalty = models.IntegerField(choices=DIGITO_CHOICES,)
     paused = models.IntegerField()
 
     def __unicode__(self):
         return self.member.user.full_name, self.queue_name
+
+    class Meta:
+        db_table = 'queue_member_table'
+        unique_together = ('queue_name', 'membername',)

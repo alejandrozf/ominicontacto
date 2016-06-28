@@ -27,8 +27,8 @@ class QueueCreateView(CreateView):
 
 
         self.object.save()
-        kamailio_service = KamailioService()
-        kamailio_service.crear_queue_kamailio(self.object)
+        # kamailio_service = KamailioService()
+        # kamailio_service.crear_queue_kamailio(self.object)
 
         return super(QueueCreateView, self).form_valid(form)
 
@@ -47,21 +47,21 @@ class QueueMemberCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super(
             QueueMemberCreateView, self).get_context_data(**kwargs)
-        context['queue'] = Queue.objects.get(name=self.kwargs['pk_queue'])
+        queue = Queue.objects.get(name=self.kwargs['pk_queue'])
+        context['queuemember'] = QueueMember.objects.filter(queue_name=queue)
         return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.queue = Queue.objects.get(name=self.kwargs['pk_queue'])
+        self.object.queue_name = Queue.objects.get(name=self.kwargs['pk_queue'])
+        self.object.membername = self.object.member.user.get_full_name()
         self.object.interface = """Local/{0}@from-queue/n""".format(
             self.object.member.sip_extension)
         self.object.paused = 0  # por ahora no lo definimos
 
-
-
         self.object.save()
-        kamailio_service = KamailioService()
-        kamailio_service.crear_queue_member_kamailio(self.object)
+        # kamailio_service = KamailioService()
+        # kamailio_service.crear_queue_member_kamailio(self.object)
 
         return super(QueueMemberCreateView, self).form_valid(form)
 

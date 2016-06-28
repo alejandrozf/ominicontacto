@@ -18,7 +18,7 @@
 
                 </div>
                 <div class="col-lg-6">
-                    {% if queue %}
+                    {% if queuemember %}
                         <h4>Agentes</h4>
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -29,7 +29,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for agente in queue.queue_member.all %}
+                                {% for agente in queuemember %}
                                     <tr>
                                         <td>{{ agente.member}}</td>
                                         <td>{{ agente.interface }}</td>

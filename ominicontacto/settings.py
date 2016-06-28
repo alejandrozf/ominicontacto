@@ -80,9 +80,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': '127.0.0.1',
         'PORT': 5432,
-        'NAME': 'ominicontacto',
-        'USER': 'freetech',
-        'PASSWORD': 'Freetech123',
+        'NAME': 'kamailio',
+        'USER': 'kamailio',
+        'PASSWORD': 'kamailiorw',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
     }
