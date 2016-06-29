@@ -17,7 +17,7 @@
 
     {% block head_js %}
     {% endblock %}
-
+<script src="{% static 'js/default.js' %}"></script>
 </head>
 <body>
     {% if user.is_authenticated %}
@@ -80,10 +80,6 @@
         </div>
 
 <div class="container">
-        <br>
-        <br>
-        <br>
-        <br>
         {% block content %}
         {% endblock %}
 
