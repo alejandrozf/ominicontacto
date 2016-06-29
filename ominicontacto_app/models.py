@@ -206,3 +206,10 @@ class QueueMember(models.Model):
     class Meta:
         db_table = 'queue_member_table'
         unique_together = ('queue_name', 'member',)
+
+
+class Pausa(models.Model):
+    nombre = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return self.nombre

@@ -9,7 +9,7 @@ from django.template import RequestContext
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
-from ominicontacto_app.models import (User, AgenteProfile, Modulo, Grupo)
+from ominicontacto_app.models import (User, AgenteProfile, Modulo, Grupo, Pausa)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
@@ -128,4 +128,16 @@ class GrupoListView(ListView):
     template_name = 'grupo_list.html'
 
 
+class PausaCreateView(CreateView):
+    model = Pausa
+    template_name = 'base_create_update_form.html'
+    fields = ('nombre',)
+
+    def get_success_url(self):
+        return reverse('pausa_list')
+
+
+class PausaListView(ListView):
+    model = Pausa
+    template_name = 'pausa_list.html'
 
