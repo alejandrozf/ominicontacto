@@ -9,11 +9,11 @@ from django.template import RequestContext
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
-from ominicontacto_app.models import (User, AgenteProfile, Modulo)
+from ominicontacto_app.models import (User, AgenteProfile, Modulo, Grupo)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
-
+from services.kamailio_service import KamailioService
 
 
 def mensajes_recibidos_view(request):
@@ -68,6 +68,8 @@ class AgenteProfileCreateView(CreateView):
         self.object.user = usuario
 
         self.object.save()
+        kamailio_service = KamailioService()
+        kamailio_service.crear_agente_kamailio(self.object)
 
         return super(AgenteProfileCreateView, self).form_valid(form)
 
@@ -82,6 +84,12 @@ class AgenteProfileUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         return AgenteProfile.objects.get(pk=self.kwargs['pk_agenteprofile'])
+
+    def form_valid(self, form):
+        kamailio_service = KamailioService()
+        kamailio_service.update_agente_kamailio(self.object)
+
+        return super(AgenteProfileUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('user_list')
@@ -104,6 +112,20 @@ class ModuloListView(ListView):
 class AgenteListView(ListView):
     model = AgenteProfile
     template_name = 'agente_profile_list.html'
+
+
+class GrupoCreateView(CreateView):
+    model = Grupo
+    template_name = 'base_create_update_form.html'
+    fields = ('nombre',)
+
+    def get_success_url(self):
+        return reverse('grupo_list')
+
+
+class GrupoListView(ListView):
+    model = Grupo
+    template_name = 'grupo_list.html'
 
 
 

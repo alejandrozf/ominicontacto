@@ -1,6 +1,6 @@
 
 from django.conf.urls import url, patterns
-from ominicontacto_app import views
+from ominicontacto_app import views, views_queue
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('',
@@ -35,5 +35,35 @@ urlpatterns = patterns('',
     url(r'^user/agenteprofile/update/(?P<pk_agenteprofile>\d+)/$',
         login_required(views.AgenteProfileUpdateView.as_view()),
         name='agenteprofile_update',
+        ),
+    url(r'^grupo/nuevo/$',
+        login_required(views.GrupoCreateView.as_view()), name='grupo_nuevo',
+        ),
+    url(r'^grupo/list/$',
+        login_required(views.GrupoListView.as_view()), name='grupo_list',
+        ),
+    url(r'^queue/nuevo/$',
+        login_required(views_queue.QueueCreateView.as_view()),
+        name='queue_nuevo',
+        ),
+    url(r'^queue_member/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_queue.QueueMemberCreateView.as_view()),
+        name='queue_member',
+        ),
+    url(r'queue/list/$',
+        login_required(views_queue.QueueListView.as_view()),
+        name='queue_list',
+        ),
+    url(r'^queue/elimina/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_queue.QueueDeleteView.as_view()),
+        name='queue_elimina',
+        ),
+    url(r'^queue/update/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_queue.QueueUpdateView.as_view()),
+        name='queue_update',
+        ),
+    url(r'^queue_member/(?P<pk_queuemember>\d+)/elimina/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_queue.queue_member_delete_view),
+        name='queuemember_elimina',
         ),
 )

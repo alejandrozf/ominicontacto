@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+
+
+from django.conf import settings
 from django import forms
 from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from ominicontacto_app.models import (User, AgenteProfile)
+from ominicontacto_app.models import (User, AgenteProfile, Queue, QueueMember)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -58,7 +61,56 @@ class AgenteProfileForm(forms.ModelForm):
     #     else:
     #         return self.cleaned_data.get('user')
 
+    def clean_sip_extension(self):
+        sip_extension = self.cleaned_data['sip_extension']
+        if settings.OL_SIP_LIMITE_INFERIOR > sip_extension or\
+                sip_extension > settings.OL_SIP_LIMITE_SUPERIOR:
+            raise forms.ValidationError("El sip_extension es incorrecto debe "
+                                        "ingresar un numero entre {0} y {1}".
+                                        format(settings.OL_SIP_LIMITE_INFERIOR,
+                                               settings.OL_SIP_LIMITE_SUPERIOR))
+        return sip_extension
+
     class Meta:
         model = AgenteProfile
-        fields = ('sip_extension', 'sip_password', 'modulos')
+        fields = ('sip_extension', 'sip_password', 'modulos', 'grupo')
 
+
+class QueueForm(forms.ModelForm):
+    """
+    El form de cola para las llamadas
+    """
+
+    class Meta:
+        model = Queue
+        fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
+                  'servicelevel', 'strategy', 'weight')
+
+        help_texts = {
+            'timeout': """En segundos """,
+        }
+
+
+class QueueMemberForm(forms.ModelForm):
+    """
+    El form de miembro de una cola
+    """
+
+    class Meta:
+        model = QueueMember
+        fields = ('member', 'penalty')
+
+
+class QueueUpdateForm(forms.ModelForm):
+    """
+    El form para actualizar la cola para las llamadas
+    """
+
+    class Meta:
+        model = Queue
+        fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
+                  'servicelevel', 'strategy', 'weight')
+
+        help_texts = {
+            'timeout': """En segundos """,
+        }

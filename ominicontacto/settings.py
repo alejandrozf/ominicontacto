@@ -80,9 +80,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': '127.0.0.1',
         'PORT': 5432,
-        'NAME': 'ominicontacto',
-        'USER': 'freetech',
-        'PASSWORD': 'Freetech123',
+        'NAME': 'kamailio',
+        'USER': 'kamailio',
+        'PASSWORD': 'kamailiorw',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
     }
@@ -131,6 +131,7 @@ AUTH_USER_MODEL = 'ominicontacto_app.User'
 
 LOGIN_REDIRECT_URL = 'index'
 
-
+OL_SIP_LIMITE_INFERIOR = 1000
+OL_SIP_LIMITE_SUPERIOR = 3000
 
 

@@ -12,6 +12,7 @@
                 <th>nombre del agente</th>
                 <th>sip_extension</th>
                 <th>modulos</th>
+                <th>grupo</th>
 
 
             </tr>
@@ -23,6 +24,7 @@
                 <td>{{ agente.user.get_full_name}}</td>
                 <td>{{ agente.sip_extension }}</td>
                 <td>{{ agente.get_modulos}}</td>
+                <td>{{ agente.grupo}}</td>
             </tr>
        {% empty %}
         <tr>
