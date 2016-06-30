@@ -12,7 +12,9 @@ from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
     OmlParserMaxRowError, OmlDepuraBaseDatoContactoError,
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
-from ominicontacto_app.forms import BaseDatosContactoForm
+from ominicontacto_app.forms import (
+    BaseDatosContactoForm, DefineNombreColumnaForm, DefineColumnaTelefonoForm,
+    DefineDatosExtrasForm, PrimerLineaEncabezadoForm)
 from ominicontacto_app.models import BaseDatosContacto
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
@@ -100,6 +102,7 @@ class DefineBaseDatosContactoView(UpdateView):
     template_name = 'base_datos_contacto/define_base_datos_contacto.html'
     model = BaseDatosContacto
     context_object_name = 'base_datos_contacto'
+    fields = '__all__'
 
     # @@@@@@@@@@@@@@@@@@@@
 
