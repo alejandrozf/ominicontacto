@@ -1,6 +1,6 @@
 
 from django.conf.urls import url, patterns
-from ominicontacto_app import views, views_queue
+from ominicontacto_app import views, views_queue, views_base_de_datos_contacto
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('',
@@ -65,5 +65,14 @@ urlpatterns = patterns('',
     url(r'^queue_member/(?P<pk_queuemember>\d+)/elimina/(?P<pk_queue>[\w\-]+)/$',
         login_required(views_queue.queue_member_delete_view),
         name='queuemember_elimina',
+        ),
+
+    # ==========================================================================
+    # Base Datos Contacto
+    # ==========================================================================
+    url(r'^base_datos_contacto/nueva/$',
+        login_required(views_base_de_datos_contacto.\
+                       BaseDatosContactoCreateView.as_view()),
+        name='nueva_base_datos_contacto',
         ),
 )

@@ -86,7 +86,7 @@ class ParserCsv(object):
             # Lanza excepcion, pasa por parametro la fila problemática
             # OJO! La fila será pasada así como fue leida por Python del CSV,
             #  y por lo tanto serán strigs/bytes, NO unicodes.
-            raise FtsParserCsvImportacionError(
+            raise OmlParserCsvImportacionError(
                 numero_fila=numero_fila,
                 numero_columna='',
                 fila=row,
