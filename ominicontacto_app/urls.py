@@ -3,11 +3,11 @@ from django.conf.urls import url, patterns
 from ominicontacto_app import views, views_queue, views_base_de_datos_contacto
 from django.contrib.auth.decorators import login_required
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^ajax/mensaje_recibidos/',
-        'ominicontacto_app.views.mensajes_recibidos_view',
+        views.mensajes_recibidos_view,
         name='ajax_mensaje_recibidos'),
-    url(r'^$', 'ominicontacto_app.views.index_view', name='index'),
+    url(r'^$', views.index_view, name='index'),
     url(r'^user/nuevo/$',
         login_required(views.CustomerUserCreateView.as_view()),
         name='user_nuevo',
@@ -79,8 +79,8 @@ urlpatterns = patterns('',
     # Base Datos Contacto
     # ==========================================================================
     url(r'^base_datos_contacto/nueva/$',
-        login_required(views_base_de_datos_contacto.\
+        login_required(views_base_de_datos_contacto.
                        BaseDatosContactoCreateView.as_view()),
-        name='nueva_base_datos_contacto',
+        name='nueva_base_datos_contacto'
         ),
-)
+]
