@@ -83,4 +83,9 @@ urlpatterns = [
                        BaseDatosContactoCreateView.as_view()),
         name='nueva_base_datos_contacto'
         ),
+    url(r'^base_datos_contacto/(?P<pk>\d+)/validacion/$',
+        login_required(views_base_de_datos_contacto.
+                       DefineBaseDatosContactoView.as_view()),
+        name='define_base_datos_contacto',
+        ),
 ]

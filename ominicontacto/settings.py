@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ominicontacto_app',
+    'crispy_forms',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -141,3 +142,8 @@ OL_SIP_LIMITE_INFERIOR = 1000
 OL_SIP_LIMITE_SUPERIOR = 3000
 
 
+FTS_NRO_TELEFONO_LARGO_MIN = 10
+"""Largo minimo permitido de nros telefonicos"""
+
+FTS_NRO_TELEFONO_LARGO_MAX = 13
+"""Largo maximo permitido de nros telefonicos"""

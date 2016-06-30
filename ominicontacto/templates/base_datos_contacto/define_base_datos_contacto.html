@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+                {% if estructura_archivo %}
+                    <form role="form" method="post" enctype="multipart/form-data" >
+                        {% csrf_token %}
+                        
+                        <div class="bs-callout bs-callout-info">
+                            <h4>Columna Teléfono.</h4>
+                            <p>Debe seleccionar la columna en la que se encuntran los número de teléfono que se deben importar.</p>
+                        </div>
+
+                        {% if error_predictor %}
+                            <div class="bs-callout bs-callout-danger">
+                                <h4>Falló predictor de CSV.</h4>
+                                <p>No se pudo predecir el formato del archivo csv subido.</p>
+                            </div>
+                        {% endif %}
+                       
+                       <div class="col-lg-12 over-x-scroll border-osc mg-bt-10 pd-tp-15">
+                            <table class="table table-bordered tb-x-scroll">
+                                <thead>
+                                    <tr> 
+                                        {% for field in form_columna_telefono.telefono %}
+                                            <th>
+                                                <div class="radio {% if form_columna_telefono.errors %}has-error{% endif %}">
+                                                   <label class="control-label">
+                                                    {{ field }}
+                                                   </label>
+                                                </div>
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr> 
+                                        {% for field in form_datos_extras %}
+                                            <th>{{ field|as_crispy_field }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr> 
+                                        {% for field in form_nombre_columnas %}
+                                            <th>{{ field|as_crispy_field }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                    <th colspan="{{ form_columna_telefono.telefono|length }}">
+                                        {{ form_primer_linea_encabezado.es_encabezado|as_crispy_field }}
+                                    </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for cols in estructura_archivo %}
+                                    <tr>
+                                        {% for col in cols %}
+                                            <td>{{ col }}</td>       
+                                        {% endfor %}            
+                                    </tr>
+                                {% endfor %}
+                                </tbody> 
+                            </table>
+                            {% if error %}
+                                <p class="text-danger">Es requerido que seleccione la columna que contengan los números de Teléfono.</p>
+                            {% endif %}
+
+                        </div>
+                        
+                        <br>
+                        <button type="submit" id="id_guardar" class="btn btn-success btn-lg modal_proceso_grande">
+                            Guardar Base Datos
+                        </button>
+                    </form>
+                {% else %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <th>
+                                <p class="text-center text-danger">
+                                    <em>No se pudo procesar el archivo.</em>
+                                </p>
+                            </th>
+                        </thead>
+                    </table>
+                {% endif %}
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".telefono").each(function (){
+                if($(this).is(':checked')) {
+                    deshabilitar_datos_extras($(this));
+                }
+            });
+            $(".telefono").change(function (){
+                deshabilitar_datos_extras($(this));
+            });
+
+            function deshabilitar_datos_extras(objeto) {
+                $(".datos-extras").removeAttr('disabled');
+                $("#id_datos-extras-" + objeto.val()).attr('disabled', true);
+            }
+        });
+    </script>
+{% endblock %}
