@@ -34,6 +34,15 @@ class CustomerUserCreateView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'user/user_create_update_form.html'
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # FIXME: no hacer esto de guardar el pass sin encriptar
+        self.object.node_password = form.cleaned_data.get('password1')
+
+        self.object.save()
+
+        return super(CustomerUserCreateView, self).form_valid(form)
+
     def get_success_url(self):
         return reverse('user_list')
 
