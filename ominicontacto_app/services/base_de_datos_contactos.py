@@ -222,9 +222,23 @@ class PredictorMetadataService(object):
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
-        #======================================================================
+        if primer_linea[0] == 'id_cliente':
+            print "hay id_cliente"
+
+        if primer_linea[1] == 'nombre':
+            print "hay nombre"
+
+        if primer_linea[2] == 'apellido':
+            print "hay apellido"
+
+        if primer_linea[3] == 'telefono':
+            print "hay telefono"
+
+        if primer_linea[4] == 'email':
+            print "hay email"
+        # ======================================================================
         # Primero detectamos columnas de datos
-        #======================================================================
+        # ======================================================================
 
         columnas_con_telefonos = self._inferir_columnas(
             otras_lineas, validate_telefono)
