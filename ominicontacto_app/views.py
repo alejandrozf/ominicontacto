@@ -5,14 +5,19 @@ from __future__ import unicode_literals
 from services.sms_services import SmsManager
 from django.http import JsonResponse
 from django.shortcuts import render_to_response
+from django.template.response import TemplateResponse
 from django.template import RequestContext
+from django.contrib import messages
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, CreateView, UpdateView
 from ominicontacto_app.models import (User, AgenteProfile, Modulo, Grupo, Pausa)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
+from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
 
 
@@ -28,6 +33,39 @@ def index_view(request):
     return render_to_response('index.html',
                               context_instance=RequestContext(request))
 
+
+def my_view(request):
+    username = password = ''
+
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            if user.is_agente:
+                login(request, user)
+                # Redirect to a success page.
+                return HttpResponseRedirect('/localhost:3000/')
+            else:
+                message = 'Operación Errónea! \
+                           El usuario con el cuál usted intenta loguearse' \
+                          'no es un agente.'
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    message,
+                )
+
+    else:
+        form = AuthenticationForm(request)
+
+    context = {
+        'form': form,
+        'messages': message,
+    }
+    template_name = 'registration/login.html'
+    return TemplateResponse(request, template_name, context)
 
 class CustomerUserCreateView(CreateView):
     model = User
