@@ -9,7 +9,7 @@ from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.contrib import messages
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, CreateView, UpdateView
@@ -34,7 +34,7 @@ def index_view(request):
                               context_instance=RequestContext(request))
 
 
-def my_view(request):
+def login_agente_view(request):
     username = password = ''
 
     if request.method == "POST":
@@ -46,11 +46,13 @@ def my_view(request):
             if user.is_agente:
                 login(request, user)
                 # Redirect to a success page.
-                return HttpResponseRedirect('http://localhost:3000/')
+                response = HttpResponseRedirect('http://192.168.99.39:3000/')
+                response.set_cookie(key='user_id', value=user.id)
+                return response
             else:
                 message = 'Operación Errónea! \
                            El usuario con el cuál usted intenta loguearse' \
-                          'no es un agente.'
+                          ' no es un agente.'
                 messages.add_message(
                     request,
                     messages.ERROR,
@@ -66,6 +68,7 @@ def my_view(request):
     }
     template_name = 'registration/login.html'
     return TemplateResponse(request, template_name, context)
+
 
 class CustomerUserCreateView(CreateView):
     model = User
