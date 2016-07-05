@@ -62,7 +62,7 @@ def my_view(request):
 
     context = {
         'form': form,
-        'messages': message,
+        #'messages': message,
     }
     template_name = 'registration/login.html'
     return TemplateResponse(request, template_name, context)
