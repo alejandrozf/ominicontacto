@@ -46,7 +46,7 @@ def my_view(request):
             if user.is_agente:
                 login(request, user)
                 # Redirect to a success page.
-                return HttpResponseRedirect('/localhost:3000/')
+                return HttpResponseRedirect('http://localhost:3000/')
             else:
                 message = 'Operación Errónea! \
                            El usuario con el cuál usted intenta loguearse' \
