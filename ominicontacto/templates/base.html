@@ -110,12 +110,8 @@
                 </div>
             </div>
         </div>
-
+    {% endif %}
 <div class="container">
-        <br>
-        <br>
-        <br>
-        <br>
    {% for message in messages %}
 
         {% if "error" in message.tags %}
@@ -167,6 +163,7 @@
         {% endif %}
 
     {% endfor %}
+    {% if user.is_authenticated %}
         {% block content %}
         {% endblock %}
 
