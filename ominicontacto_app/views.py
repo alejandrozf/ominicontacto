@@ -9,7 +9,7 @@ from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.contrib import messages
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, CreateView, UpdateView
@@ -35,8 +35,6 @@ def index_view(request):
 
 
 def login_agente_view(request):
-    username = password = ''
-
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
@@ -45,7 +43,6 @@ def login_agente_view(request):
         if form.is_valid():
             if user.is_agente:
                 login(request, user)
-                # Redirect to a success page.
                 response = HttpResponseRedirect('http://192.168.99.39:3000/')
                 response.set_cookie(key='user_id', value=user.id)
                 return response
@@ -64,7 +61,6 @@ def login_agente_view(request):
 
     context = {
         'form': form,
-        #'messages': message,
     }
     template_name = 'registration/login.html'
     return TemplateResponse(request, template_name, context)
