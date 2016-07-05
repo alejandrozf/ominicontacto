@@ -43,8 +43,8 @@ def login_agente_view(request):
         if form.is_valid():
             if user.is_agente:
                 login(request, user)
-                response = HttpResponseRedirect('http://192.168.99.39:3000/')
-                response.set_cookie(key='user_id', value=user.id)
+                response = HttpResponseRedirect('http://localhost:3000/')
+                response.set_cookie(key='user_id', value=user.id, domain='http://localhost/')
                 return response
             else:
                 message = 'Operación Errónea! \
