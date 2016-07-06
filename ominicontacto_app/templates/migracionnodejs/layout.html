@@ -310,10 +310,10 @@
         <button type="button" id="Pause" class="btn btn-warning">Pause</button>
       </div>
       <div class="col-md-3">
-        <input type="hidden" value="{ {arrUserInfo.sip_extension}}" id="sipExt"/>
-        <input value="{ {arrUserInfo.sip_password}}" id="sipSec" type="hidden"/>
+        <input type="hidden" value="{{ user.get_agente_profile.sip_extension }}" id="sipExt"/>
+        <input value="{{ user.get_agente_profile.sip_password}}" id="sipSec" type="hidden"/>
         <label class="barInfo">Bienvenido</label>&nbsp;
-        <em><b class="username">{ {arrUserInfo.first_name}}</b></em>&nbsp;
+        <em><b class="username">{{ user.get_full_name }}</b></em>&nbsp;
         <a id="logout" href="/logout" class="btn btn-primary">Salir</a>
       </div>
       </div>
@@ -343,7 +343,7 @@
             <img src="/static/Img/fbchatTransp.png" class="iconApp" alt="Facebook" title="Facebook Chat"></img>
           </a></td>
           <td><a href="/emails">
-            <img src="/static/Img/emailTransp.png" class="iconApp" alt="E-mail" title="E-mails"></img>
+            <img src="{% static 'Img/emailTransp.png' %}" class="iconApp" alt="E-mail" title="E-mails"></img>
             </a></td>
         </tr>
       </table>

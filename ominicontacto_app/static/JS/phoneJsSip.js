@@ -5,20 +5,20 @@ var sipStatus = document.getElementById('SipStatus');var callStatus = document.g
 
 $(function() {
   var estado = JSON.stringify({'status' : 'online'});
-  $.ajax({
-    url: '/status/setStat',
-    type: 'POST',
-    contentType: 'application/json',
-    data: estado,
-    succes: function (msg) {
-        debugger;
-        console.log(JSON.parse(msg));
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-            debugger;
-            console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-    }
-  });
+  // $.ajax({
+  //   url: '/status/setStat',
+  //   type: 'POST',
+  //   contentType: 'application/json',
+  //   data: estado,
+  //   succes: function (msg) {
+  //       debugger;
+  //       console.log(JSON.parse(msg));
+  //   },
+  //   error: function (jqXHR, textStatus, errorThrown) {
+  //           debugger;
+  //           console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+  //   }
+  // });
  
   $("#Pause").click(function () {
     if (flagPausa === true) {
