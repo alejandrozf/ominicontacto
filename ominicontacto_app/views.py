@@ -189,5 +189,5 @@ class PausaListView(ListView):
 
 
 def node_view(request):
-    return render_to_response('migracionnodejs/layout.hbs',
+    return render_to_response('migracionnodejs/layout.html',
                               context_instance=RequestContext(request))
