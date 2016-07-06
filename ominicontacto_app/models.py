@@ -214,3 +214,34 @@ class Pausa(models.Model):
 
     def __unicode__(self):
         return self.nombre
+
+
+class ModeloRecibido(models.Model):
+    remitente = models.CharField(max_length=20, db_column="number")
+    destinatario = models.CharField(max_length=20, db_column="port")
+    timestamp = models.CharField(max_length=255)
+    timezone = models.IntegerField()
+    encoding = models.IntegerField()
+    content = models.TextField()
+    es_leido = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return "mensaje recibido del numero {0}".format(self.remitente)
+
+    class Meta:
+        db_table = 'mensaje_recibido'
+
+
+class ModeloEnviado(models.Model):
+    remitente = models.CharField(max_length=20, db_column="port")
+    destinatario = models.CharField(max_length=20, db_column="number")
+    timestamp = models.CharField(max_length=255)
+    agente = models.ForeignKey(AgenteProfile)
+    content = models.TextField()
+    result = models.IntegerField(blank=True, null=True)
+
+    def __unicode__(self):
+        return "mensaje enviado al número {0}".format(self.destinatario)
+
+    class Meta:
+        db_table = 'mensaje_enviado'
