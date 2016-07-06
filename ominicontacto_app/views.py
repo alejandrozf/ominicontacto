@@ -13,7 +13,8 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, CreateView, UpdateView
-from ominicontacto_app.models import (User, AgenteProfile, Modulo, Grupo, Pausa)
+from ominicontacto_app.models import (
+    User, AgenteProfile, Modulo, Grupo, Pausa, ModeloRecibido)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
@@ -193,8 +194,8 @@ def node_view(request):
     service_sms = SmsManager()
     context = {
         'pausas': Pausa.objects.all,
-        'mensajes_recibidos': service_sms.obtener_ultimo_mensaje_por_numero(),
+        'mensajes_recibidos':
+            service_sms.obtener_mensajes_recibidos_por_remitente(),
     }
     return render_to_response('migracionnodejs/layout.html', context,
                               context_instance=RequestContext(request))
-

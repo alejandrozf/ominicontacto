@@ -3,7 +3,9 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import SuspiciousOperation
 from django.db import models
+from django.db.models import Max
 
 
 class User(AbstractUser):
@@ -216,7 +218,26 @@ class Pausa(models.Model):
         return self.nombre
 
 
+class MensajeRecibidoManager(models.Manager):
+
+    def mensaje_recibido_por_remitente(self):
+        return self.values('remitente').annotate(Max('timestamp'))
+
+    def mensaje_remitente_fecha(self, remitente, timestamp):
+        try:
+            return self.get(remitente=remitente, timestamp=timestamp)
+        except ModeloRecibido.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro mensaje recibido con esa"
+                                       " fecha y remitente"))
+
+
 class ModeloRecibido(models.Model):
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = MensajeRecibidoManager()
     remitente = models.CharField(max_length=20, db_column="number")
     destinatario = models.CharField(max_length=20, db_column="port")
     timestamp = models.CharField(max_length=255)

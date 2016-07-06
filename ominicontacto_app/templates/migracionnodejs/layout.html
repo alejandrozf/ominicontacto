@@ -247,10 +247,10 @@
                     <tbody id="cuerpoTabla">
                     {% for mensaje in mensajes_recibidos %}
                         <tr>
-                          <td id="{{mensaje.0}}">{{ mensaje.2}}</td>
-                          <td>{{ mensaje.3 }}</td>
+                          <td id="{{mensaje.id}}">{{ mensaje.remitente}}</td>
+                          <td>{{ mensaje.content }}</td>
                           <td>
-                            <button type="button"  class="btn btn-primary btn-xs ampliarConvers" title="Ver Conversacion" value="{{ mensaje.2 }}">
+                            <button type="button"  class="btn btn-primary btn-xs ampliarConvers" title="Ver Conversacion" value="{{ mensaje.remitente }}">
                               <span class="glyphicon glyphicon-align-left"></span>
                             </button>
                           </td>
