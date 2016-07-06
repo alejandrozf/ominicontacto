@@ -187,3 +187,7 @@ class PausaListView(ListView):
     model = Pausa
     template_name = 'pausa_list.html'
 
+
+def node_view(request):
+    return render_to_response('migracionnodejs/layout.hbs',
+                              context_instance=RequestContext(request))

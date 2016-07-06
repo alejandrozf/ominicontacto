@@ -1,0 +1,372 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang='es'>
+  <head>
+    <meta charset="utf-8">
+    <title>OmniLeads</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="{% static 'CSS/main.css' %}" ></link>
+<link rel="stylesheet" href="{% static 'CSS/phone.css' %}"></link>
+<link rel="stylesheet" href="{% static 'CSS/webchat.css' %}"></link>
+<!-- Pausa -->
+<div class="modal fade" id="modalPause" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4>Tomar Pausa</h4>
+    </div>
+    <div class="modal-body">
+      <select class="form-control" id="pauseType">
+ { {#each pausas}}
+        <option id="" value="{ {nombre}}">{ {nombre}}</option>
+ { {/each}}
+<!--<option value="Break">Break</option>
+        <option value="Coaching">Coaching</option>
+        <option value="Food">Food</option>-->
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button type="button" id="setPause" class="btn btn-success btn-sm">Iniciar</button>
+    </div>
+  </div>
+ </div>
+</div>
+<!-- FIN Pausa -->
+<!-- WEBPHONE -->
+<div class="modal fade" id="modalWebCall" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4>WebPhone</h4>
+    </div>
+    <div class="modal-body">
+      <div class="container-fluid">
+        <div id="modalReceiveCalls" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-sm">
+           <div class="modal-content">
+             <div class="modal-header">
+               <em><b class="tituloLlamEntrante">Llamada Entrante</b></em>
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+             </div>
+             <div class="modal-body">
+               <h4 class="cuerpoLlamEntrante">
+                 <span class="label label-info">De:</span>
+                 <label name="callerid" id="callerid"></label><br>
+              <!--   <span class="label label-info">Line:</span>
+                 <label name="line" id="line">1</label><br>-->
+                 <span class="label label-info">Info extra:</span>
+                 <label name="extraInfo" id="extraInfo">.....</label>
+               </h4>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="answer" class="btn btn-success btn-sm">Responder</button>
+              <button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">Rechazar</button>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+    <div class="row">
+        <div class="backgroundWebPhone col-md-4 col-md-offset-1">
+            <div class="row">
+                <div id="CallStatus" class="botonera1">
+                </div>
+            </div>
+            <div class="row">
+                <div id="SipStatus" class="botonera1">
+                </div>
+            </div>
+            <div class="row filaBotonesDiscar">
+                <button type="button" id="call" class="btn btn-success">
+                    <span class="glyphicon glyphicon-earphone"></span>
+                </button>
+                <button type="button" id="endCall" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-phone-alt"></span>
+                </button>
+                <button id="*" class="btn btn-warning key">*</button>
+                <button id="#" class="btn btn-warning key">#</button>
+                <!--<button type="button" id="CallList" class="btn btn-success" title="Lista de llamadas">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                </button>-->
+            </div>
+            <div class="row">
+                <div class="filaCampoNroDiscar">
+                    <input type="text" class="form-control" id="numberToCall" name="numberToCall">
+                </div>
+            </div>
+            <div class="row">
+               <div class="filaBotonesDiscar2">
+                   <button id="aTransfer" value="*199" class="btn btn-warning" disabled="disabled">A Transfer</button>
+                   <button id="bTransfer" value="*198" class="btn btn-warning" disabled="disabled">B Transfer</button>
+               </div>
+            </div>
+        </div>
+        <div class="col-md-5 table-responsive col-md-offset-1 libreta">
+            <table class="table table-condensed table-hover table-striped">
+                <thead>
+                    <th>tipo</th><th>numero</th><th>fecha</th><th>Llamar</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img height='15' width='15' src="/static/Img/incomingCall.png" /></td><td>3517941214</td><td>07-11</td><td>
+                        <button type="button" class="btn btn-success btn-xs call">
+                            <span class="glyphicon glyphicon-earphone"></span>
+                        </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img height='15' width='15' src="/static/Img/incomingCall.png" /></td><td>3517753156</td><td>16-11</td><td>
+                            <button type="button" class="btn btn-success btn-xs call">
+                                <span class="glyphicon glyphicon-earphone"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<audio id="remoteAudio" autoplay="autoplay"></audio>
+<audio id="localAudio" muted="muted"></audio>
+<audio id="RingIn">
+  <source id="fuenteIn" src="/static/ring/Kuma.mp3" type="audio/mpeg">
+</audio>
+<audio id="RingOut">
+  <source id="fuenteOut" src="/static/ring/tonoallamar.mp3" type="audio/mpeg">
+</audio>
+</div>
+</div>
+</div>
+<!-- FIN WEBPHONE -->
+<!-- WEBCHAT -->
+<div class="modal fade" id="modalwebChat" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4>WebChat</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <input type="hidden" value="{ {user}}" id="user">
+            <div class="col-md-4 col-md-offset-1">
+              <textarea class="form-control" rows="2" id="chatMessage" autocomplete="off" disabled="disabled"/></textarea>
+            </div>
+            <input type="hidden" value="">
+            <button class="btn btn-md btn-success" disabled="disabled" id="sendMessage">Enviar</button>
+            <!--<button type="button" id="conf" class="btn btn-info btn-sm">
+              <span class="glyphicon glyphicon-cog"></span>
+            </button>-->
+          </div><br>
+            <div class="row">
+            <div class="col-md-4 col-md-offset-1 chatWindow">
+              <ul id="messages"></ul>
+            </div>
+            <div class="col-md-4 col-md-offset-1 table-responsive">
+              <table class="table table-compressed table-stripped table-hover">
+                <thead>
+                  <th>Estado</th><th>Usuario</th><th style="text-align: right">Chatear</th>
+                </thead>
+                <tbody id="tbodyContacts">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN WEBCHAT -->
+<!-- SMS -->
+
+<div class="modal fade" id="modalSMS" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4>Mensajeria de Texto</h4>
+      </div>
+      <div class="modal-body">
+
+<div class="container-fluid">
+    <!-- Modal -->
+    <div class="modal fade" id="modalConvers" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Conversacion</h4>
+          </div>
+          <div class="modal-body">
+            <!--<h4></h4>-->
+            <table class="table table-compressed" id="threadMsgsTable">
+              <thead>
+                <th style="text-align: left">From</th><th style="text-align: left">To</th><th style="text-align: left">Mensaje</th><th style="text-align: left">Fecha</th>
+              </thead>
+              <tbody id="bodyThreadMsgTable">
+              </tbody>
+            </table>
+            <input type="hidden" id="phoneSendThread" value="">
+          </div>
+          <div class="modal-footer">
+            <textarea cols="12" rows="1" name='textSend' id="textSendThread" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea><br>
+            <button type="button" class="btn btn-success" id="sendMessageFromThread" data-dismiss="modal">Enviar</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+      <form role="form">
+            <div class="row">
+              <div class="col-md-7">
+                <div class="form-group">
+                  <table class="table table-compressed" id="messagesTable">
+                      <thead>
+                      <th>Tel</th><th style="text-align: left">Mensaje</th><th style="text-align: center">Acciones</th>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                      <!--{ {#each msgs}}
+                        <tr>
+                          <td id="{ {id}}">{ {remitente}}</td>
+                          <td>{ {content}}</td>
+                          <td>
+                            <button type="button"  class="btn btn-primary btn-xs ampliarConvers" title="Ver Conversacion" value="{ {remitente}}">
+                              <span class="glyphicon glyphicon-align-left"></span>
+                            </button>
+                          </td>
+                        </tr>
+                      { {/each}}-->
+                    </tbody>
+                    <tr>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+                <div class="col-md-4 col-md-offset-1">
+                    <div class="form-group col-md-11">
+                        <label for="phoneSend">Tel</label>
+                        <input type="text" name="phoneSend" id="phoneSend" placeholder="ej: 351 6543422" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="textSend">Mensaje</label>
+                        <textarea cols="19" rows="2" name='textSend' id="textSend" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button id="sendMessage" type="button" name="Enviar" class="btn btn-success">Enviar</button>
+                        &nbsp;&nbsp;&nbsp;<label for="newSMS">Nuevos:&nbsp;</label><label id="newSMS">0</label>
+                    </div>
+                </div>
+          </div>
+      </form>
+  </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FIN SMS -->
+<div class="container">
+  <div class="row">
+    <div class="toolbar">
+      <div class="form-horizontal">
+      <div class="col-md-7">
+        <h5 id="timers">
+          <span id="operationTime" class="label label-default">
+            Operacion
+            <label id="horaO"></label><label id="minsO"></label><label id="segsO"></label>
+          </span>&nbsp;<span id="pauseTime" class="label label-default">
+            Pausa
+            <label id="horaP"></label><label id="minsP"></label><label id="segsP"></label>
+          </span>&nbsp;<span id="sumTime" class="label label-default">
+            Total
+            <label id="horaT"></label><label id="minsT"></label><label id="segsT"></label>
+          </span>
+        </h5>
+      </div>
+      <div class="col-md-2">
+        <label class="barInfo">&nbsp;Estado</label>
+        <span class="label label-success" id="UserStatus"></span>
+        <button type="button" id="Pause" class="btn btn-warning">Pause</button>
+      </div>
+      <div class="col-md-3">
+        <input type="hidden" value="{ {arrUserInfo.sip_extension}}" id="sipExt"/>
+        <input value="{ {arrUserInfo.sip_password}}" id="sipSec" type="hidden"/>
+        <label class="barInfo">Bienvenido</label>&nbsp;
+        <em><b class="username">{ {arrUserInfo.first_name}}</b></em>&nbsp;
+        <a id="logout" href="/logout" class="btn btn-primary">Salir</a>
+      </div>
+      </div>
+    </div>
+  </div><br>
+  <div class="row">
+    <div class="col-md-12">&nbsp;
+      <div id="crm" class="crm">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!---->
+    <div class="col-md-6 col-md-offset-3">
+      <table class="tablas">
+        <tr>
+          <td>
+            <img src="/static/Img/smsTransp.png" class="iconApp" alt="SMS" title="Mensajes de texto" id="txtSms"></img>
+          </td>
+          <td>
+            <img src="/static/Img/webCallTransp.png" class="iconApp" alt="Calls" title="Llamadas" id="webCall"></img>
+          </td>
+          <td>
+            <img src="/static/Img/webChatTransp.png" class="iconApp" id="webChat" alt="Chat" title="Chat"></img>
+          </td>
+          <td><a href="/fbchat">
+            <img src="/static/Img/fbchatTransp.png" class="iconApp" alt="Facebook" title="Facebook Chat"></img>
+          </a></td>
+          <td><a href="/emails">
+            <img src="/static/Img/emailTransp.png" class="iconApp" alt="E-mail" title="E-mails"></img>
+            </a></td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-md-8 col-md-offset-2 dockBar">
+    </div>
+  </div>
+</div>
+<!-- Main Index -->
+<script type="text/javascript" src="{% static 'JS/Timers.js' %}" ></script>
+<script type="text/javascript" src="{% static 'JS/main.js' %}"></script>
+<!-- autobahn -->
+<script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+<!-- JsSIP -->
+<script type="text/javascript" src="{% static 'JS/jssip.js' %}"></script>
+<!-- mi propio js para phone en jssip -->
+<script type="text/javascript" src="{% static 'JS/phoneJsSip.js' %}"></script>
+<!--<script>JsSIP.debug.enable('JsSIP:*');</script>-->
+<!-- smschat -->
+<script type="text/javascript" src="{% static 'JS/textMessages.js' %}"></script>
+<script type="text/javascript" src="{% static 'JS/JQuerySMS.js' %}"></script>
+<!-- webChat -->
+<!--<script type="text/javascript" src="{% static 'JS/JQueryWebChat.js' %}"></script>-->
+
+  </body>
+</html>

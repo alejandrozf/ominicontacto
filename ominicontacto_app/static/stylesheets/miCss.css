@@ -1,0 +1,30 @@
+.dockbar{
+  width: 60%;
+  height: 10%;
+  position: absolute;
+  background-color: grey;
+
+}
+.dockicon{
+  position: relative;
+  -webkit-animation-name: jump; /* Chrome, Safari, Opera */
+  -webkit-animation-direction: reverse; /* Chrome, Safari, Opera */
+}
+
+@keyframes jump{
+  0%   {background-color:red; left:0px; top:0px;}
+  25%  {background-color:yellow; left:200px; top:0px;}
+}
+.Login{
+  margin-top: 10%;
+  background-color: #D8D8D8;
+  border: 1px solid;
+  box-shadow: 10px 10px 5px #888888;
+  /*border-radius: 5px;*/
+}
+.LoginLabel{
+  padding-top: 1%;
+  font-style: bold;
+  font-size: 16px;
+  color: #DF7401;
+}

@@ -1,0 +1,8 @@
+.chatWindow {
+  height: 410px;
+  width: 394px;
+  overflow-y: scroll;
+  background-color: yellowgreen;
+  opacity: 0.75;
+  border-radius: 5px;
+}

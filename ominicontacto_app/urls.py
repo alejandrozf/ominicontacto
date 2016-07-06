@@ -75,4 +75,5 @@ urlpatterns = patterns('',
         login_required(views.PausaListView.as_view()),
         name='pausa_list',
         ),
+    url(r'^node/$', views.node_view, name='view_node'),
 )

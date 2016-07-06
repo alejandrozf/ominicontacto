@@ -1,0 +1,35 @@
+.backgroundWebPhone {
+  height: 100%;
+  background-color: #2E2E2E;
+  box-shadow: 10px 10px 5px grey;
+}
+.filaBotonesDiscar {
+  padding-top: 3%;
+  margin-left: 20%;
+  width: 80%;
+  margin-bottom: 1%;
+}
+.filaBotonesDiscar2 {
+  padding-top: 3%;
+  margin-left: 18%;
+  width: 80%;
+  margin-bottom: 1%;
+}
+.botonera1 {
+  margin-top: 2%;
+  margin-left: 10%;
+  height: 14px;
+}
+.filaCampoNroDiscar {
+  margin-top: 2%;
+  width: 80%;
+  margin-left: 10%;
+}
+.tituloLlamEntrante {
+  color: darkcyan;
+  font-size: 18px;
+  padding-left: 10%
+}
+.cuerpoLlamEntrante {
+  padding-left: 5%
+}
