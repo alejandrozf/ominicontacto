@@ -245,17 +245,17 @@
                       <th>Tel</th><th style="text-align: left">Mensaje</th><th style="text-align: center">Acciones</th>
                     </thead>
                     <tbody id="cuerpoTabla">
-                      <!--{ {#each msgs}}
+                    {% for mensaje in mensajes_recibidos %}
                         <tr>
-                          <td id="{ {id}}">{ {remitente}}</td>
-                          <td>{ {content}}</td>
+                          <td id="{{mensaje.0}}">{{ mensaje.1}}</td>
+                          <td>{{ mensaje.3 }}</td>
                           <td>
-                            <button type="button"  class="btn btn-primary btn-xs ampliarConvers" title="Ver Conversacion" value="{ {remitente}}">
+                            <button type="button"  class="btn btn-primary btn-xs ampliarConvers" title="Ver Conversacion" value="{{ mensaje.1 }}">
                               <span class="glyphicon glyphicon-align-left"></span>
                             </button>
                           </td>
                         </tr>
-                      { {/each}}-->
+                    {% endfor %}
                     </tbody>
                     <tr>
                     </tr>

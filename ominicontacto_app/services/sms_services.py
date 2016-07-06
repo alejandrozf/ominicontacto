@@ -10,7 +10,7 @@ class SmsManager():
     def obtener_ultimo_mensaje_por_numero(self):
 
         cursor = connection.cursor()
-        sql = """select timestamp, number, content
+        sql = """select id, timestamp, number, content
                  from mensaje_recibido
                  where timestamp = (select max(timestamp)
                  from mensaje_recibido as m

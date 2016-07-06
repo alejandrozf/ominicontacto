@@ -19,6 +19,7 @@ from ominicontacto_app.forms import (CustomUserCreationForm,
                                      AgenteProfileForm)
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
+from services.sms_services import SmsManager
 
 
 def mensajes_recibidos_view(request):
@@ -189,8 +190,10 @@ class PausaListView(ListView):
 
 
 def node_view(request):
+    service_sms = SmsManager()
     context = {
         'pausas': Pausa.objects.all,
+        'mensajes_recibidos': service_sms.obtener_ultimo_mensaje_por_numero(),
     }
     return render_to_response('migracionnodejs/layout.html', context,
                               context_instance=RequestContext(request))
