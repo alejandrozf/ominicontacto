@@ -123,14 +123,14 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><img height='15' width='15' src="/static/Img/incomingCall.png" /></td><td>3517941214</td><td>07-11</td><td>
+                        <td><img height='15' width='15' src="{% static 'Img/incomingCall.png' %}" /></td><td>3517941214</td><td>07-11</td><td>
                         <button type="button" class="btn btn-success btn-xs call">
                             <span class="glyphicon glyphicon-earphone"></span>
                         </button>
                         </td>
                     </tr>
                     <tr>
-                        <td><img height='15' width='15' src="/static/Img/incomingCall.png" /></td><td>3517753156</td><td>16-11</td><td>
+                        <td><img height='15' width='15' src="{% static 'Img/incomingCall.png' %}" /></td><td>3517753156</td><td>16-11</td><td>
                             <button type="button" class="btn btn-success btn-xs call">
                                 <span class="glyphicon glyphicon-earphone"></span>
                             </button>
@@ -146,10 +146,10 @@
 <audio id="remoteAudio" autoplay="autoplay"></audio>
 <audio id="localAudio" muted="muted"></audio>
 <audio id="RingIn">
-  <source id="fuenteIn" src="/static/ring/Kuma.mp3" type="audio/mpeg">
+  <source id="fuenteIn" src="{% static 'ring/Kuma.mp3' %}" type="audio/mpeg">
 </audio>
 <audio id="RingOut">
-  <source id="fuenteOut" src="/static/ring/tonoallamar.mp3" type="audio/mpeg">
+  <source id="fuenteOut" src="{% static 'ring/tonoallamar.mp3' %}" type="audio/mpeg">
 </audio>
 </div>
 </div>
@@ -331,16 +331,16 @@
       <table class="tablas">
         <tr>
           <td>
-            <img src="/static/Img/smsTransp.png" class="iconApp" alt="SMS" title="Mensajes de texto" id="txtSms"></img>
+            <img src="{% static 'Img/smsTransp.png' %}" class="iconApp" alt="SMS" title="Mensajes de texto" id="txtSms"></img>
           </td>
           <td>
-            <img src="/static/Img/webCallTransp.png" class="iconApp" alt="Calls" title="Llamadas" id="webCall"></img>
+            <img src="{% static 'Img/webCallTransp.png' %}" class="iconApp" alt="Calls" title="Llamadas" id="webCall"></img>
           </td>
           <td>
-            <img src="/static/Img/webChatTransp.png" class="iconApp" id="webChat" alt="Chat" title="Chat"></img>
+            <img src="{% static 'Img/webChatTransp.png' %}" class="iconApp" id="webChat" alt="Chat" title="Chat"></img>
           </td>
           <td><a href="/fbchat">
-            <img src="/static/Img/fbchatTransp.png" class="iconApp" alt="Facebook" title="Facebook Chat"></img>
+            <img src="{% static 'Img/fbchatTransp.png' %}" class="iconApp" alt="Facebook" title="Facebook Chat"></img>
           </a></td>
           <td><a href="/emails">
             <img src="{% static 'Img/emailTransp.png' %}" class="iconApp" alt="E-mail" title="E-mails"></img>
