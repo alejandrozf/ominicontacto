@@ -189,5 +189,9 @@ class PausaListView(ListView):
 
 
 def node_view(request):
-    return render_to_response('migracionnodejs/layout.html',
+    context = {
+        'pausas': Pausa.objects.all,
+    }
+    return render_to_response('migracionnodejs/layout.html', context,
                               context_instance=RequestContext(request))
+

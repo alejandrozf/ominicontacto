@@ -31,9 +31,9 @@
     </div>
     <div class="modal-body">
       <select class="form-control" id="pauseType">
- { {#each pausas}}
-        <option id="" value="{ {nombre}}">{ {nombre}}</option>
- { {/each}}
+        {% for pausa in pausas %}
+        <option id="" value="{{ pausa.nombre }}">{{ pausa.nombre }}</option>
+        {% endfor %}
 <!--<option value="Break">Break</option>
         <option value="Coaching">Coaching</option>
         <option value="Food">Food</option>-->
