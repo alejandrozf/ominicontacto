@@ -231,7 +231,7 @@ class MensajeRecibidoManager(models.Manager):
                                        " fecha y remitente"))
 
 
-class ModeloRecibido(models.Model):
+class MensajeRecibido(models.Model):
     objects_default = models.Manager()
     # Por defecto django utiliza el primer manager instanciado. Se aplica al
     # admin de django, y no aplica las customizaciones del resto de los
@@ -253,7 +253,7 @@ class ModeloRecibido(models.Model):
         db_table = 'mensaje_recibido'
 
 
-class ModeloEnviado(models.Model):
+class MensajeEnviado(models.Model):
     remitente = models.CharField(max_length=20, db_column="port")
     destinatario = models.CharField(max_length=20, db_column="number")
     timestamp = models.CharField(max_length=255)

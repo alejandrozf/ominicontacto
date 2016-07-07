@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import connection
-from ominicontacto_app.models import ModeloRecibido
+from ominicontacto_app.models import MensajeRecibido
 
 
 class SmsManager():
@@ -40,8 +40,8 @@ class SmsManager():
 
     def obtener_mensajes_recibidos_por_remitente(self):
         mensajes_recibidos = []
-        for mensaje in ModeloRecibido.objects.mensaje_recibido_por_remitente():
-            mensajes_recibidos.append(ModeloRecibido.objects.
+        for mensaje in MensajeRecibido.objects.mensaje_recibido_por_remitente():
+            mensajes_recibidos.append(MensajeRecibido.objects.
                 mensaje_remitente_fecha(mensaje['remitente'],
                                         mensaje['timestamp__max']))
         return mensajes_recibidos
