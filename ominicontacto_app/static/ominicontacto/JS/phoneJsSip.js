@@ -341,7 +341,7 @@ $(function() {
     iconStatus.id = "imgStatus";
     textSipStatus.id = "textSipStatus";
     elem.style.color="white";
-    iconStatus.src = "Img/"+img;
+    iconStatus.src = "/static/ominicontacto/Img/"+img;
     elem.appendChild(iconStatus);
     elem.appendChild(textSipStatus);
   }
