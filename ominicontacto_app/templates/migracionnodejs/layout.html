@@ -245,17 +245,7 @@
                       <th>Tel</th><th style="text-align: left">Mensaje</th><th style="text-align: center">Acciones</th>
                     </thead>
                     <tbody id="cuerpoTabla">
-                    {% for mensaje in mensajes_recibidos %}
-                        <tr>
-                          <td id="{{mensaje.id}}">{{ mensaje.remitente}}</td>
-                          <td>{{ mensaje.content }}</td>
-                          <td>
-                            <button type="button"  class="btn btn-primary btn-xs ampliarConvers" title="Ver Conversacion" value="{{ mensaje.remitente }}">
-                              <span class="glyphicon glyphicon-align-left"></span>
-                            </button>
-                          </td>
-                        </tr>
-                    {% endfor %}
+
                     </tbody>
                     <tr>
                     </tr>

@@ -14,21 +14,22 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, CreateView, UpdateView
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa, ModeloRecibido)
+    User, AgenteProfile, Modulo, Grupo, Pausa)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
 from services.sms_services import SmsManager
+from django.views.decorators.csrf import csrf_protect
 
 
-def mensajes_recibidos_view(request):
-
-    service_sms = SmsManager()
-    mensajes = service_sms.obtener_ultimo_mensaje_por_numero()
-    response = JsonResponse(service_sms.armar_json_mensajes_recibidos(mensajes))
-    return response
+# def mensajes_recibidos_view(request):
+#
+#     service_sms = SmsManager()
+#     mensajes = service_sms.obtener_ultimo_mensaje_por_numero()
+#     response = JsonResponse(service_sms.armar_json_mensajes_recibidos(mensajes))
+#     return response
 
 
 def index_view(request):
@@ -191,11 +192,27 @@ class PausaListView(ListView):
 
 
 def node_view(request):
-    service_sms = SmsManager()
     context = {
         'pausas': Pausa.objects.all,
-        'mensajes_recibidos':
-            service_sms.obtener_mensajes_recibidos_por_remitente(),
     }
     return render_to_response('migracionnodejs/layout.html', context,
                               context_instance=RequestContext(request))
+
+
+def mensajes_recibidos_enviado_remitente_view(request):
+    remitente = request.GET['phoneNumber']
+    service_sms = SmsManager()
+    mensajes = service_sms.obtener_mensaje_enviado_recibido(remitente)
+    response = JsonResponse(service_sms.
+                            armar_json_mensajes_recibidos_enviados(mensajes),
+                            safe=False)
+    return response
+
+
+def mensajes_recibidos_view(request):
+    service_sms = SmsManager()
+    mensajes = service_sms.obtener_mensajes_recibidos_por_remitente()
+    response = JsonResponse(service_sms.
+                            armar_json_mensajes_recibidos_por_remitente(mensajes),
+                            safe=False)
+    return response
