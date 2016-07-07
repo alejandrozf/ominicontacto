@@ -226,7 +226,7 @@ class MensajeRecibidoManager(models.Manager):
     def mensaje_remitente_fecha(self, remitente, timestamp):
         try:
             return self.get(remitente=remitente, timestamp=timestamp)
-        except ModeloRecibido.DoesNotExist:
+        except MensajeRecibido.DoesNotExist:
             raise (SuspiciousOperation("No se encontro mensaje recibido con esa"
                                        " fecha y remitente"))
 
