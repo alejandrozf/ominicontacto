@@ -238,8 +238,8 @@ class MensajeRecibido(models.Model):
     # managers que se creen.
 
     objects = MensajeRecibidoManager()
-    remitente = models.CharField(max_length=20, db_column="number")
-    destinatario = models.CharField(max_length=20, db_column="port")
+    remitente = models.CharField(max_length=20)
+    destinatario = models.CharField(max_length=20)
     timestamp = models.CharField(max_length=255)
     timezone = models.IntegerField()
     encoding = models.IntegerField()
@@ -254,8 +254,8 @@ class MensajeRecibido(models.Model):
 
 
 class MensajeEnviado(models.Model):
-    remitente = models.CharField(max_length=20, db_column="port")
-    destinatario = models.CharField(max_length=20, db_column="number")
+    remitente = models.CharField(max_length=20)
+    destinatario = models.CharField(max_length=20)
     timestamp = models.CharField(max_length=255)
     agente = models.ForeignKey(AgenteProfile)
     content = models.TextField()
