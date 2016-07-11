@@ -226,6 +226,7 @@ class Pausa(models.Model):
     def __unicode__(self):
         return self.nombre
 
+
 #==============================================================================
 # Base Datos Contactos
 #==============================================================================
@@ -756,4 +757,3 @@ class BaseDatosContacto(models.Model):
             metadata=self.metadata,
         )
         return copia
-
