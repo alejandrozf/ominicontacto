@@ -226,13 +226,14 @@ class DefineBaseDatosContactoView(UpdateView):
                 initial=initial_predecido_encabezado)
 
             return self.render_to_response(self.get_context_data(
-                error_predictor_encabezado= error_predictor_encabezado,
+                error_predictor_encabezado=error_predictor_encabezado,
                 error_predictor=error_predictor,
                 estructura_archivo=estructura_archivo,
-                form_columna_telefono=form_columna_telefono,
-                form_datos_extras=form_datos_extras,
-                form_nombre_columnas=form_nombre_columnas,
-                form_primer_linea_encabezado=form_primer_linea_encabezado))
+                #form_columna_telefono=form_columna_telefono,
+                #form_datos_extras=form_datos_extras,
+                #form_nombre_columnas=form_nombre_columnas,
+            #    form_primer_linea_encabezado=form_primer_linea_encabezado
+            ))
 
         return redirect(reverse('nueva_base_datos_contacto'))
 

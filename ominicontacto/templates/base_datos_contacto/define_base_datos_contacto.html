@@ -10,9 +10,9 @@
                         {% csrf_token %}
                         
                         <div class="bs-callout bs-callout-info">
-                            <h4>Columna Teléfono.</h4>
+                           <!-- <h4>Columna Teléfono.</h4>
                             <p>Debe seleccionar la columna en la que se encuntran los número de teléfono que se deben importar.</p>
-                        </div>
+                        </div>-->
 
                         {% if error_predictor %}
                             <div class="bs-callout bs-callout-danger">
@@ -52,9 +52,9 @@
                                         {% endfor %}
                                     </tr>
                                     <tr>
-                                    <th colspan="{{ form_columna_telefono.telefono|length }}">
-                                        {{ form_primer_linea_encabezado.es_encabezado|as_crispy_field }}
-                                    </th>
+                                    <!--<th colspan="{{ form_columna_telefono.telefono|length }}">
+                                        {{ form_primer_linea_encabezado.es_encabezado}}
+                                    </th>-->
                                     </tr>
                                 </thead>
                                 <tbody>
