@@ -3,7 +3,9 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import SuspiciousOperation
 from django.db import models
+from django.db.models import Max
 
 
 class User(AbstractUser):
@@ -214,3 +216,53 @@ class Pausa(models.Model):
 
     def __unicode__(self):
         return self.nombre
+
+
+class MensajeRecibidoManager(models.Manager):
+
+    def mensaje_recibido_por_remitente(self):
+        return self.values('remitente').annotate(Max('timestamp'))
+
+    def mensaje_remitente_fecha(self, remitente, timestamp):
+        try:
+            return self.get(remitente=remitente, timestamp=timestamp)
+        except MensajeRecibido.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro mensaje recibido con esa"
+                                       " fecha y remitente"))
+
+
+class MensajeRecibido(models.Model):
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = MensajeRecibidoManager()
+    remitente = models.CharField(max_length=20)
+    destinatario = models.CharField(max_length=20)
+    timestamp = models.CharField(max_length=255)
+    timezone = models.IntegerField()
+    encoding = models.IntegerField()
+    content = models.TextField()
+    es_leido = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return "mensaje recibido del numero {0}".format(self.remitente)
+
+    class Meta:
+        db_table = 'mensaje_recibido'
+
+
+class MensajeEnviado(models.Model):
+    remitente = models.CharField(max_length=20)
+    destinatario = models.CharField(max_length=20)
+    timestamp = models.CharField(max_length=255)
+    agente = models.ForeignKey(AgenteProfile)
+    content = models.TextField()
+    result = models.IntegerField(blank=True, null=True)
+
+    def __unicode__(self):
+        return "mensaje enviado al número {0}".format(self.destinatario)
+
+    class Meta:
+        db_table = 'mensaje_enviado'
