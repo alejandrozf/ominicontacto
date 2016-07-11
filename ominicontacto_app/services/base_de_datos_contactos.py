@@ -132,6 +132,11 @@ class NoSePuedeInferirMetadataError(OmlError):
     pass
 
 
+class NoSePuedeInferirMetadataErrorEncabezado(OmlError):
+    """Indica que no se puede inferir los metadatos"""
+    pass
+
+
 DOUBLE_SPACES = re.compile(r' +')
 
 
@@ -222,20 +227,26 @@ class PredictorMetadataService(object):
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
-        if primer_linea[0] == 'id_cliente':
-            print "hay id_cliente"
+        if primer_linea[0] !='id_cliente':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
+                                                 "columna debe ser id_cliente"))
 
-        if primer_linea[1] == 'nombre':
-            print "hay nombre"
+        if primer_linea[1] != 'nombre':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la segunda "
+                                                 "columna debe ser nombre"))
 
-        if primer_linea[2] == 'apellido':
-            print "hay apellido"
+        if primer_linea[2] != 'apellido':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la tercera "
+                                                 "columna debe ser apellido"))
 
-        if primer_linea[3] == 'telefono':
-            print "hay telefono"
+        if primer_linea[3] != 'telefono':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la cuarta "
+                                                 "columna debe ser telefono"))
 
-        if primer_linea[4] == 'email':
-            print "hay email"
+        if primer_linea[4] != 'email':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la quinta "
+                                                 "columna debe ser email"))
+
         # ======================================================================
         # Primero detectamos columnas de datos
         # ======================================================================

@@ -19,7 +19,7 @@ from ominicontacto_app.models import BaseDatosContacto
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
-    NoSePuedeInferirMetadataError)
+    NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado)
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 import logging as logging_
 
@@ -168,6 +168,7 @@ class DefineBaseDatosContactoView(UpdateView):
 
             try:
                 error_predictor = False
+                error_predictor_encabezado = False
 
                 predictor_metadata = PredictorMetadataService()
                 metadata = predictor_metadata.inferir_metadata_desde_lineas(
@@ -179,6 +180,13 @@ class DefineBaseDatosContactoView(UpdateView):
                 initial_predecido_encabezado = {}
 
                 error_predictor = True
+            except NoSePuedeInferirMetadataErrorEncabezado:
+                initial_predecido_columna_telefono = {}
+                initial_predecido_datos_extras = {}
+                initial_predecido_nombre_columnas = {}
+                initial_predecido_encabezado = {}
+
+                error_predictor_encabezado = True
             else:
 
                 initial_predecido_columna_telefono = \
@@ -218,6 +226,7 @@ class DefineBaseDatosContactoView(UpdateView):
                 initial=initial_predecido_encabezado)
 
             return self.render_to_response(self.get_context_data(
+                error_predictor_encabezado= error_predictor_encabezado,
                 error_predictor=error_predictor,
                 estructura_archivo=estructura_archivo,
                 form_columna_telefono=form_columna_telefono,

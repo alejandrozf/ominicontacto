@@ -20,6 +20,12 @@
                                 <p>No se pudo predecir el formato del archivo csv subido.</p>
                             </div>
                         {% endif %}
+                        {% if error_predictor_encabezado %}
+                            <div class="bs-callout bs-callout-danger">
+                                <h4>Falló predictor de CSV.</h4>
+                                <p>No se pudo predecir el formato del archivo csv subido. El nombre de las comunas deben llamarse y tener este orden [id_cliente, nombre, apellido, telefono, email, y demas columnas]</p>
+                            </div>
+                        {% endif %}
                        
                        <div class="col-lg-12 over-x-scroll border-osc mg-bt-10 pd-tp-15">
                             <table class="table table-bordered tb-x-scroll">
