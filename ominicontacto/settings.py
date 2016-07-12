@@ -142,8 +142,11 @@ OL_SIP_LIMITE_INFERIOR = 1000
 OL_SIP_LIMITE_SUPERIOR = 3000
 
 
-FTS_NRO_TELEFONO_LARGO_MIN = 10
+OL_NRO_TELEFONO_LARGO_MIN = 10
 """Largo minimo permitido de nros telefonicos"""
 
-FTS_NRO_TELEFONO_LARGO_MAX = 13
+OL_NRO_TELEFONO_LARGO_MAX = 13
 """Largo maximo permitido de nros telefonicos"""
+
+OL_MAX_CANTIDAD_CONTACTOS = 60000
+"""Límite de contactos que pueden ser importados a la base de datos."""

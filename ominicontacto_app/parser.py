@@ -105,7 +105,7 @@ class ParserCsv(object):
                 self.vacias += 1
                 continue
 
-            if i >= settings.FTS_MAX_CANTIDAD_CONTACTOS:
+            if i >= settings.OL_MAX_CANTIDAD_CONTACTOS:
                 raise OmlParserMaxRowError("El archivo CSV "
                                            "posee mas registros de los "
                                            "permitidos.")
@@ -298,8 +298,8 @@ def validate_telefono(number):
     Esta función valida el numero telefónico tenga  entre 10 y 13 dígitos.
     """
     number = REGEX_NON_DIGITS.sub("", smart_text(number))
-    if settings.FTS_NRO_TELEFONO_LARGO_MIN <= len(number) <= \
-            settings.FTS_NRO_TELEFONO_LARGO_MAX:
+    if settings.OL_NRO_TELEFONO_LARGO_MIN <= len(number) <= \
+            settings.OL_NRO_TELEFONO_LARGO_MAX:
         return True
 
     return False
