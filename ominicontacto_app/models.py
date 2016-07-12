@@ -575,7 +575,8 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
     def save(self):
         """Guardar los metadatos en la instancia de BaseDatosContacto"""
         # Primero validamos
-        self.validar_metadatos()
+        # FIXME Fede ahora vamos a comentar validación
+        # self.validar_metadatos()
 
         # Ahora guardamos
         try:
@@ -757,3 +758,31 @@ class BaseDatosContacto(models.Model):
             metadata=self.metadata,
         )
         return copia
+
+
+class Contacto(models.Model):
+
+    id_cliente = models.IntegerField()
+    nombre = models.CharField(max_length=128)
+    apellido = models.CharField(max_length=128)
+    telefono = models.CharField(max_length=128)
+    email = models.CharField(max_length=128)
+    datos = models.TextField()
+    bd_contacto = models.ForeignKey(
+        'BaseDatosContacto',
+        related_name='contactos'
+    )
+
+    def obtener_telefono_y_datos_extras(self, metadata):
+        """Devuelve lista con (telefono, datos_extras) utilizando
+        la informacion de metadata pasada por parametro.
+
+        Recibimos `metadata` por parametro por una cuestion de
+        performance.
+        """
+        telefono, extras = metadata.obtener_telefono_y_datos_extras(self.datos)
+        return (telefono, extras)
+
+    def __unicode__(self):
+        return '{0} >> {1}'.format(
+            self.bd_contacto, self.datos)
