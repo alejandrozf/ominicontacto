@@ -87,4 +87,9 @@ urlpatterns = [
                        DefineBaseDatosContactoView.as_view()),
         name='define_base_datos_contacto',
         ),
+    url(r'^base_datos_contacto/$',
+        login_required(views_base_de_datos_contacto.
+                       BaseDatosContactoListView.as_view()),
+        name='lista_base_datos_contacto',
+        ),
 ]

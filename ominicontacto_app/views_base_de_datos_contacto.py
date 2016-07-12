@@ -232,13 +232,12 @@ class DefineBaseDatosContactoView(UpdateView):
                 #form_columna_telefono=form_columna_telefono,
                 #form_datos_extras=form_datos_extras,
                 #form_nombre_columnas=form_nombre_columnas,
-            #    form_primer_linea_encabezado=form_primer_linea_encabezado
+                form_primer_linea_encabezado=form_primer_linea_encabezado
             ))
 
         return redirect(reverse('nueva_base_datos_contacto'))
 
-    def form_invalid(self, estructura_archivo, form_columna_telefono,
-                     form_datos_extras, form_nombre_columnas,
+    def form_invalid(self, estructura_archivo,
                      form_primer_linea_encabezado, error=None):
 
         message = '<strong>Operación Errónea!</strong> \
@@ -252,54 +251,55 @@ class DefineBaseDatosContactoView(UpdateView):
 
         return self.render_to_response(self.get_context_data(
             estructura_archivo=estructura_archivo,
-            form_columna_telefono=form_columna_telefono,
-            form_datos_extras=form_datos_extras,
-            form_nombre_columnas=form_nombre_columnas,
+            #form_columna_telefono=form_columna_telefono,
+            #form_datos_extras=form_datos_extras,
+            #form_nombre_columnas=form_nombre_columnas,
             form_primer_linea_encabezado=form_primer_linea_encabezado))
 
-    def form_valid(self, estructura_archivo, form_columna_telefono,
-                   form_datos_extras, form_nombre_columnas,
+    def form_valid(self, estructura_archivo,
                    form_primer_linea_encabezado):
-        columna_con_telefono = int(form_columna_telefono.cleaned_data.get(
-                                   'telefono', None))
+        print "lleg a form valid"
+        # columna_con_telefono = int(form_columna_telefono.cleaned_data.get(
+        #                            'telefono', None))
         lista_columnas_fechas = []
         lista_columnas_horas = []
         lista_nombre_columnas = []
 
-        cantidad_columnas = len(form_nombre_columnas.fields)
+        #cantidad_columnas = len(form_nombre_columnas.fields)
+        cantidad_columnas = len(estructura_archivo[0])
 
-        for numero_columna in range(cantidad_columnas):
-            dato_extra = form_datos_extras.cleaned_data.get(
-                'datos-extras-{0}'.format(numero_columna), None)
-            if dato_extra == BaseDatosContacto.DATO_EXTRA_FECHA:
-                lista_columnas_fechas.append(numero_columna)
-            elif dato_extra == BaseDatosContacto.DATO_EXTRA_HORA:
-                lista_columnas_horas.append(numero_columna)
-
-            nombre_columna = form_nombre_columnas.cleaned_data.get(
-                'nombre-columna-{0}'.format(numero_columna), None)
-
-            validador_nombre = ValidadorDeNombreDeCampoExtra()
-            if not validador_nombre.validar_nombre_de_columna(nombre_columna):
-                error = 'El nombre de la Columna{0} no es válido. Debe estar \
-                         en mayúscula y sin espacios. Por ejemplo: \
-                         TELEFONO_FIJO'.format(numero_columna)
-
-                return self.form_invalid(estructura_archivo,
-                                         form_columna_telefono,
-                                         form_datos_extras,
-                                         form_nombre_columnas,
-                                         form_primer_linea_encabezado,
-                                         error=error)
-
-            lista_nombre_columnas.append(nombre_columna)
+        # for numero_columna in range(cantidad_columnas):
+        #     dato_extra = form_datos_extras.cleaned_data.get(
+        #         'datos-extras-{0}'.format(numero_columna), None)
+        #     if dato_extra == BaseDatosContacto.DATO_EXTRA_FECHA:
+        #         lista_columnas_fechas.append(numero_columna)
+        #     elif dato_extra == BaseDatosContacto.DATO_EXTRA_HORA:
+        #         lista_columnas_horas.append(numero_columna)
+        #
+        #     nombre_columna = form_nombre_columnas.cleaned_data.get(
+        #         'nombre-columna-{0}'.format(numero_columna), None)
+        #
+        #     validador_nombre = ValidadorDeNombreDeCampoExtra()
+        #     if not validador_nombre.validar_nombre_de_columna(nombre_columna):
+        #         error = 'El nombre de la Columna{0} no es válido. Debe estar \
+        #                  en mayúscula y sin espacios. Por ejemplo: \
+        #                  TELEFONO_FIJO'.format(numero_columna)
+        #
+        #         return self.form_invalid(estructura_archivo,
+        #                                  #form_columna_telefono,
+        #                                  #form_datos_extras,
+        #                                  #form_nombre_columnas,
+        #                                  form_primer_linea_encabezado,
+        #                                  error=error)
+        #
+        #     lista_nombre_columnas.append(nombre_columna)
 
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
-        metadata.columna_con_telefono = columna_con_telefono
-        metadata.columnas_con_fecha = lista_columnas_fechas
-        metadata.columnas_con_hora = lista_columnas_horas
-        metadata.nombres_de_columnas = lista_nombre_columnas
+        #metadata.columna_con_telefono = columna_con_telefono
+        #metadata.columnas_con_fecha = lista_columnas_fechas
+        #metadata.columnas_con_hora = lista_columnas_horas
+        #metadata.nombres_de_columnas = lista_nombre_columnas
 
         es_encabezado = False
         if self.request.POST.get('es_encabezado', False):
@@ -328,9 +328,9 @@ class DefineBaseDatosContactoView(UpdateView):
 
             return self.render_to_response(self.get_context_data(
                 estructura_archivo=estructura_archivo,
-                form_columna_telefono=form_columna_telefono,
-                form_datos_extras=form_datos_extras,
-                form_nombre_columnas=form_nombre_columnas,
+                #form_columna_telefono=form_columna_telefono,
+                #form_datos_extras=form_datos_extras,
+                #form_nombre_columnas=form_nombre_columnas,
                 form_primer_linea_encabezado=form_primer_linea_encabezado))
 
         except OmlParserMaxRowError:
@@ -366,30 +366,27 @@ class DefineBaseDatosContactoView(UpdateView):
         if estructura_archivo:
             cantidad_columnas = len(estructura_archivo[0])
 
-            form_columna_telefono = DefineColumnaTelefonoForm(
-                cantidad_columnas, request.POST)
-            form_datos_extras = DefineDatosExtrasForm(
-                cantidad_columnas, request.POST)
-            form_nombre_columnas = DefineNombreColumnaForm(
-                cantidad_columnas, request.POST)
+            #form_columna_telefono = DefineColumnaTelefonoForm(
+            #    cantidad_columnas, request.POST)
+            #form_datos_extras = DefineDatosExtrasForm(
+            #    cantidad_columnas, request.POST)
+            #form_nombre_columnas = DefineNombreColumnaForm(
+            #    cantidad_columnas, request.POST)
             form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
                 request.POST)
 
-            if (form_columna_telefono.is_valid()
-                    and form_datos_extras.is_valid()
-                    and form_nombre_columnas.is_valid()
-                    and form_primer_linea_encabezado.is_valid()):
+            if form_primer_linea_encabezado.is_valid():
 
                 return self.form_valid(estructura_archivo,
-                                       form_columna_telefono,
-                                       form_datos_extras,
-                                       form_nombre_columnas,
+                                       #form_columna_telefono,
+                                       #form_datos_extras,
+                                       #form_nombre_columnas,
                                        form_primer_linea_encabezado)
             else:
                 return self.form_invalid(estructura_archivo,
-                                         form_columna_telefono,
-                                         form_datos_extras,
-                                         form_nombre_columnas,
+                                         #form_columna_telefono,
+                                         #form_datos_extras,
+                                         #form_nombre_columnas,
                                          form_primer_linea_encabezado)
         return redirect(reverse('nueva_base_datos_contacto'))
 
@@ -456,3 +453,18 @@ class DepuraBaseDatosContactoView(DeleteView):
         return reverse(
             'lista_base_datos_contacto',
         )
+
+
+class BaseDatosContactoListView(ListView):
+    """
+    Esta vista es para generar el listado de
+    Lista de Contactos.
+    """
+
+    template_name = 'base_datos_contacto/lista_base_datos_contacto.html'
+    context_object_name = 'bases_datos_contacto'
+    model = BaseDatosContacto
+
+    def get_queryset(self):
+        queryset = BaseDatosContacto.objects.obtener_definidas()
+        return queryset

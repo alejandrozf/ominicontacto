@@ -17,7 +17,7 @@ from django.utils.encoding import smart_text
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
 from ominicontacto_app.models import BaseDatosContacto, \
-    MetadataBaseDatosContactoDTO
+    MetadataBaseDatosContactoDTO, Contacto
 from ominicontacto_app.parser import ParserCsv, validate_telefono, validate_fechas, \
     validate_horas
 from ominicontacto_app.utiles import elimina_tildes
@@ -55,50 +55,54 @@ class CreacionBaseDatosService(object):
 
         base_datos_contacto.save()
 
-    # def importa_contactos(self, base_datos_contacto):
-    #     """
-    #     Tercer paso de la creación de una BaseDatosContacto.
-    #
-    #     Este método se encarga de generar los objectos Contacto por cada linea
-    #     del archivo de importación especificado para la base de datos de
-    #     contactos.
-    #     """
-    #     assert (base_datos_contacto.estado ==
-    #             BaseDatosContacto.ESTADO_EN_DEFINICION)
-    #
-    #     metadata = base_datos_contacto.get_metadata()
-    #
-    #     # FIXME: este metodo valida la consistencia de los metadatos, y
-    #     #  lanza una excepcion ante cualquier problema. OJO! Esto no implica
-    #     #  que los metadatos sean correctos y consistentes con los datos,
-    #     #  pero al menos validan la consistencia "interna" de los metadatos
+    def importa_contactos(self, base_datos_contacto):
+        """
+        Tercer paso de la creación de una BaseDatosContacto.
+        Este método se encarga de generar los objectos Contacto por cada linea
+        del archivo de importación especificado para la base de datos de
+        contactos.
+        """
+        assert (base_datos_contacto.estado ==
+                BaseDatosContacto.ESTADO_EN_DEFINICION)
+
+        metadata = base_datos_contacto.get_metadata()
+
+        # FIXME: este metodo valida la consistencia de los metadatos, y
+        #  lanza una excepcion ante cualquier problema. OJO! Esto no implica
+        #  que los metadatos sean correctos y consistentes con los datos,
+        #  pero al menos validan la consistencia "interna" de los metadatos
     #     metadata.validar_metadatos()
-    #
-    #     # Antes que nada, borramos los contactos preexistentes
-    #     base_datos_contacto.elimina_contactos()
-    #
-    #     parser = ParserCsv()
-    #
-    #     try:
-    #         generador_contactos = parser.read_file(base_datos_contacto)
-    #
-    #         cantidad_contactos = 0
-    #         for lista_dato in generador_contactos:
-    #             cantidad_contactos += 1
-    #             Contacto.objects.create(
-    #                 datos=json.dumps(lista_dato),
-    #                 bd_contacto=base_datos_contacto,
-    #             )
-    #     except FtsParserMaxRowError:
-    #         base_datos_contacto.elimina_contactos()
-    #         raise
-    #
-    #     except FtsParserCsvImportacionError:
-    #         base_datos_contacto.elimina_contactos()
-    #         raise
-    #
-    #     base_datos_contacto.cantidad_contactos = cantidad_contactos
-    #     base_datos_contacto.save()
+
+        # Antes que nada, borramos los contactos preexistentes
+        base_datos_contacto.elimina_contactos()
+
+        parser = ParserCsv()
+
+        try:
+            estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
+
+            cantidad_contactos = 0
+            for lista_dato in estructura_archivo[1:]:
+                cantidad_contactos += 1
+                Contacto.objects.create(
+                    id_cliente=int(lista_dato[0]),
+                    nombre=lista_dato[1],
+                    apellido=lista_dato[2],
+                    telefono=lista_dato[3],
+                    email=lista_dato[4],
+                    datos=json.dumps(lista_dato),
+                    bd_contacto=base_datos_contacto,
+                )
+        except OmlParserMaxRowError:
+            base_datos_contacto.elimina_contactos()
+            raise
+
+        except OmlParserCsvImportacionError:
+            base_datos_contacto.elimina_contactos()
+            raise
+
+        base_datos_contacto.cantidad_contactos = cantidad_contactos
+        base_datos_contacto.save()
 
     def define_base_dato_contacto(self, base_datos_contacto):
         """

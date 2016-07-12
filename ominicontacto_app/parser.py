@@ -116,20 +116,20 @@ class ParserCsv(object):
             # en unicode
             curr_row = self._transformar_en_unicode(curr_row, i)
 
-            telefono = sanitize_number(
-                curr_row[metadata.columna_con_telefono].strip())
-
-            if not validate_telefono(telefono):
-                if i == 0 and metadata.primer_fila_es_encabezado:
-                    continue
-                logger.warn("Error en la imporación de contactos: No "
-                            "valida el teléfono en la linea %s",
-                            curr_row)
-                raise OmlParserCsvImportacionError(
-                    numero_fila=i,
-                    numero_columna=metadata.columna_con_telefono,
-                    fila=curr_row,
-                    valor_celda=telefono)
+            # telefono = sanitize_number(
+            #     curr_row[metadata.columna_con_telefono].strip())
+            #
+            # if not validate_telefono(telefono):
+            #     if i == 0 and metadata.primer_fila_es_encabezado:
+            #         continue
+            #     logger.warn("Error en la imporación de contactos: No "
+            #                 "valida el teléfono en la linea %s",
+            #                 curr_row)
+            #     raise OmlParserCsvImportacionError(
+            #         numero_fila=i,
+            #         numero_columna=metadata.columna_con_telefono,
+            #         fila=curr_row,
+            #         valor_celda=telefono)
 
             if metadata.columnas_con_fecha:
                 fechas = [curr_row[columna]
@@ -245,6 +245,26 @@ class ParserCsv(object):
                                              "delimitador del archivo CSV")
         finally:
             file_obj.seek(0, 0)
+
+    def get_estructura_archivo(self, base_datos_contactos):
+        """
+        Lee un archivo CSV y devuelve contenidos.
+        """
+
+        file_obj = base_datos_contactos.archivo_importacion.file
+        workbook = csv.reader(file_obj, self._get_dialect(file_obj))
+
+        structure_dic = []
+        for i, row in enumerate(workbook):
+            if row:
+                structure_dic.append(row)
+
+        if i < 3:
+            logger.warn("El archivo CSV seleccionado posee menos de 3 "
+                        "filas.")
+            raise OmlParserMinRowError("El archivo CSV posee menos de "
+                                           "3 filas")
+        return structure_dic
 
 
 # =============================================================================
