@@ -106,6 +106,19 @@
                         		</li>
 						    </ul>
 						</li>
+                        <li role="presentation" class="dropdown">
+						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+						      Contactos <span class="caret"></span>
+						    </a>
+						    <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="{% url 'nueva_base_datos_contacto' %}">Cargar nueva base de datos de contactos</a>
+                                </li>
+						    	<li>
+                            		<a href="{% url 'lista_base_datos_contacto' %}">Base de datos de contactos cargadas</a>
+                        		</li>
+						    </ul>
+						</li>
                     </ul>
                 </div>
             </div>
