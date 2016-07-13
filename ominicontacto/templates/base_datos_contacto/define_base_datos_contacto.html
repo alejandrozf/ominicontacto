@@ -74,9 +74,16 @@
                         </div>
                         
                         <br>
+                        <a href="{% url 'nueva_base_datos_contacto' %}">
+                                            <button type="button" class="btn btn-danger btn-sm">
+                                               Volver a nueva base de datos
+                                            </button>
+                        </a>
                         <button type="submit" id="id_guardar" class="btn btn-success btn-lg modal_proceso_grande">
                             Guardar Base Datos
                         </button>
+
+
                     </form>
                 {% else %}
                     <table class="table table-bordered">

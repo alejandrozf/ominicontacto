@@ -241,7 +241,7 @@ class DefineBaseDatosContactoView(UpdateView):
                      form_primer_linea_encabezado, error=None):
 
         message = '<strong>Operación Errónea!</strong> \
-                  Verifique los datos seleccionados. {0}'.format(error)
+                  Verifique el archivo cargado. {0}'.format(error)
 
         messages.add_message(
             self.request,
