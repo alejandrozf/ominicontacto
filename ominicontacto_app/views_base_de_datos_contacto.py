@@ -258,7 +258,6 @@ class DefineBaseDatosContactoView(UpdateView):
 
     def form_valid(self, estructura_archivo,
                    form_primer_linea_encabezado):
-        print "lleg a form valid"
         # columna_con_telefono = int(form_columna_telefono.cleaned_data.get(
         #                            'telefono', None))
         lista_columnas_fechas = []
@@ -293,6 +292,29 @@ class DefineBaseDatosContactoView(UpdateView):
         #                                  error=error)
         #
         #     lista_nombre_columnas.append(nombre_columna)
+
+        lista_columnas_encabezado = estructura_archivo[0]
+
+        error = None
+
+        if lista_columnas_encabezado[0] !='id_cliente':
+            error = "El nombre de la primera columna debe ser id_cliente"
+
+        if lista_columnas_encabezado[1] != 'nombre':
+            error = "El nombre de la segunda columna debe ser nombre"
+
+        if lista_columnas_encabezado[2] != 'apellido':
+            error ="El nombre de la tercera columna debe ser apellido"
+
+        if lista_columnas_encabezado[3] != 'telefono':
+            error ="El nombre de la cuarta columna debe ser telefono"
+
+        if lista_columnas_encabezado[4] != 'email':
+            error = "El nombre de la quinta columna debe ser email"
+
+        if error:
+            return self.form_invalid(estructura_archivo,
+                                     form_primer_linea_encabezado, error=error)
 
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
