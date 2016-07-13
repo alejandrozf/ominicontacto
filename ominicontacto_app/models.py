@@ -770,7 +770,7 @@ class Contacto(models.Model):
     datos = models.TextField()
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
-        related_name='contactos'
+        related_name='contactos', blank=True, null=True
     )
 
     def obtener_telefono_y_datos_extras(self, metadata):

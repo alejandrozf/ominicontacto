@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-3">
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>id_cliente</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Telefono</th>
+                <th>Email</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for contacto in object_list %}
+            <tr>
+                <td>{{ contacto.id }}</td>
+                <td>{{ contacto.id_cliente }}</td>
+                <td>{{ contacto.nombre }}</td>
+                <td>{{ contacto.apellido }}</td>
+                <td>{{ contacto.telefono }}</td>
+                <td>{{ contacto.email }}</td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="3">No existen contactos</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}

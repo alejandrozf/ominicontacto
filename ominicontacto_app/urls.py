@@ -92,4 +92,12 @@ urlpatterns = [
                        BaseDatosContactoListView.as_view()),
         name='lista_base_datos_contacto',
         ),
+    url(r'^contacto/nuevo/$',
+        login_required(views.ContactoCreateView.as_view()),
+        name='contacto_nuevo',
+        ),
+    url(r'^contacto/list/$',
+        login_required(views.ContactoListView.as_view()),
+        name='contacto_list',
+        ),
 ]
