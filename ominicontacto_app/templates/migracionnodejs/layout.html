@@ -304,7 +304,7 @@
         <input value="{{ user.get_agente_profile.sip_password}}" id="sipSec" type="hidden"/>
         <label class="barInfo">Bienvenido</label>&nbsp;
         <em><b class="username">{{ user.get_full_name }}</b></em>&nbsp;
-        <a id="logout" href="/logout" class="btn btn-primary">Salir</a>
+        <a id="logout" href="{% url 'logout' %}" class="btn btn-primary">Salir</a>
       </div>
       </div>
     </div>
