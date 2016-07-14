@@ -12,7 +12,6 @@ class User(AbstractUser):
     is_agente = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
-    node_password = models.CharField(max_length=128)
 
     def get_agente_profile(self):
         agente_profile = None
