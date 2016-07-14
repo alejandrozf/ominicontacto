@@ -5,29 +5,68 @@ from __future__ import unicode_literals
 from services.sms_services import SmsManager
 from django.http import JsonResponse
 from django.shortcuts import render_to_response
+from django.template.response import TemplateResponse
 from django.template import RequestContext
+from django.contrib import messages
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, CreateView, UpdateView
-from ominicontacto_app.models import (User, AgenteProfile, Modulo, Grupo, Pausa,
-                                      Contacto)
+from ominicontacto_app.models import (
+    User, AgenteProfile, Modulo, Grupo, Pausa, Contacto)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
+from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
+from services.sms_services import SmsManager
+from django.views.decorators.csrf import csrf_protect
 
 
-def mensajes_recibidos_view(request):
-
-    service_sms = SmsManager()
-    mensajes = service_sms.obtener_ultimo_mensaje_por_numero()
-    response = JsonResponse(service_sms.armar_json_mensajes_recibidos(mensajes))
-    return response
+# def mensajes_recibidos_view(request):
+#
+#     service_sms = SmsManager()
+#     mensajes = service_sms.obtener_ultimo_mensaje_por_numero()
+#     response = JsonResponse(service_sms.armar_json_mensajes_recibidos(mensajes))
+#     return response
 
 
 def index_view(request):
     return render_to_response('index.html',
                               context_instance=RequestContext(request))
+
+
+def login_agente_view(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            if user.is_agente:
+                login(request, user)
+                response = HttpResponseRedirect('http://localhost:3000/')
+                response.set_cookie(key='user_id', value=user.id, domain='http://localhost/')
+                return response
+            else:
+                message = 'Operación Errónea! \
+                           El usuario con el cuál usted intenta loguearse' \
+                          ' no es un agente.'
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    message,
+                )
+
+    else:
+        form = AuthenticationForm(request)
+
+    context = {
+        'form': form,
+    }
+    template_name = 'registration/login.html'
+    return TemplateResponse(request, template_name, context)
 
 
 class CustomerUserCreateView(CreateView):
@@ -155,4 +194,31 @@ class ContactoCreateView(CreateView):
 class ContactoListView(ListView):
     model = Contacto
     template_name = 'contacto_list.html'
+
+
+def node_view(request):
+    context = {
+        'pausas': Pausa.objects.all,
+    }
+    return render_to_response('migracionnodejs/layout.html', context,
+                              context_instance=RequestContext(request))
+
+
+def mensajes_recibidos_enviado_remitente_view(request):
+    remitente = request.GET['phoneNumber']
+    service_sms = SmsManager()
+    mensajes = service_sms.obtener_mensaje_enviado_recibido(remitente)
+    response = JsonResponse(service_sms.
+                            armar_json_mensajes_recibidos_enviados(mensajes),
+                            safe=False)
+    return response
+
+
+def mensajes_recibidos_view(request):
+    service_sms = SmsManager()
+    mensajes = service_sms.obtener_mensajes_recibidos_por_remitente()
+    response = JsonResponse(service_sms.
+                            armar_json_mensajes_recibidos_por_remitente(mensajes),
+                            safe=False)
+    return response
 

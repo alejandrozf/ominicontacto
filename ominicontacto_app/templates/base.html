@@ -11,6 +11,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+
     <!-- jquery UI -->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
@@ -130,12 +137,8 @@
                 </div>
             </div>
         </div>
-
+    {% endif %}
 <div class="container">
-        <br>
-        <br>
-        <br>
-        <br>
    {% for message in messages %}
 
         {% if "error" in message.tags %}
@@ -187,6 +190,7 @@
         {% endif %}
 
     {% endfor %}
+    {% if user.is_authenticated %}
         {% block content %}
         {% endblock %}
 

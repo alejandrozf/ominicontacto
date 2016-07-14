@@ -8,6 +8,8 @@ urlpatterns = [
         views.mensajes_recibidos_view,
         name='ajax_mensaje_recibidos'),
     url(r'^$', views.index_view, name='index'),
+    url(r'^$', 'ominicontacto_app.views.index_view', name='index'),
+    url(r'^login_agente/$', views.login_agente_view, name='login_agente'),
     url(r'^user/nuevo/$',
         login_required(views.CustomerUserCreateView.as_view()),
         name='user_nuevo',
@@ -74,6 +76,13 @@ urlpatterns = [
         login_required(views.PausaListView.as_view()),
         name='pausa_list',
         ),
+    url(r'^node/$', login_required(views.node_view), name='view_node'),
+    url(r'^smsThread/$',
+        login_required(views.mensajes_recibidos_enviado_remitente_view),
+        name='view_sms_thread'),
+    url(r'^sms/getAll/$',
+        login_required(views.mensajes_recibidos_view),
+        name='view_sms_get_all'),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
@@ -101,3 +110,7 @@ urlpatterns = [
         name='contacto_list',
         ),
 ]
+
+
+
+

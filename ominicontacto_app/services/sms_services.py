@@ -3,36 +3,60 @@
 from __future__ import unicode_literals
 
 from django.db import connection
+from ominicontacto_app.models import MensajeRecibido
 
 
 class SmsManager():
 
-    def obtener_ultimo_mensaje_por_numero(self):
+    def obtener_mensajes_recibidos_por_remitente(self):
+        mensajes_recibidos = []
+        for mensaje in MensajeRecibido.objects.mensaje_recibido_por_remitente():
+            mensajes_recibidos.append(MensajeRecibido.objects.
+                mensaje_remitente_fecha(mensaje['remitente'],
+                                        mensaje['timestamp__max']))
+        return mensajes_recibidos
+
+    def obtener_mensaje_enviado_recibido(self, remitente):
 
         cursor = connection.cursor()
-        sql = """select timestamp, number, content
-                 from mensaje_recibido
-                 where timestamp = (select max(timestamp)
-                 from mensaje_recibido as m
-                 where m.number = mensaje_recibido.number)
+        sql = """select timestamp, remitente, destinatario, content
+                 from mensaje_enviado where destinatario like %(remitente)s
+                 union select timestamp, remitente, destinatario, content
+                 from mensaje_recibido where remitente like concat('%%',
+                 substring(%(remitente)s from 7 for 50)) order by timestamp
         """
-        cursor.execute(sql)
+        params = {
+            'remitente': remitente,
+        }
+        cursor.execute(sql, params)
         values = cursor.fetchall()
         return values
 
-    def armar_json_mensajes_recibidos(self, mensajes):
+    def armar_json_mensajes_recibidos_enviados(self, mensajes):
 
         lista_mensajes = []
 
         for mensaje in mensajes:
             mensaje_dict = {
                 'timestamp': mensaje[0],
-                'number':  mensaje[1],
-                'content': mensaje[2]
+                'remitente':  mensaje[1],
+                'destinatario': mensaje[2],
+                'content': mensaje[3]
             }
             lista_mensajes.append(mensaje_dict)
 
-        json = {
-            'mensajes': lista_mensajes
-        }
-        return json
+        return lista_mensajes
+
+    def armar_json_mensajes_recibidos_por_remitente(self, mensajes):
+
+        lista_mensajes = []
+
+        for mensaje in mensajes:
+            mensaje_dict = {
+                'id': mensaje.id,
+                'remitente':  mensaje.remitente,
+                'content': mensaje.content
+            }
+            lista_mensajes.append(mensaje_dict)
+
+        return lista_mensajes
