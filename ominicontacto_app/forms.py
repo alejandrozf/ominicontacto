@@ -7,8 +7,11 @@ from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from ominicontacto_app.models import (User, AgenteProfile, Queue, QueueMember)
+from ominicontacto_app.models import (User, AgenteProfile, Queue, QueueMember,
+                                      BaseDatosContacto)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -114,3 +117,76 @@ class QueueUpdateForm(forms.ModelForm):
         help_texts = {
             'timeout': """En segundos """,
         }
+
+
+class BaseDatosContactoForm(forms.ModelForm):
+
+    class Meta:
+        model = BaseDatosContacto
+        fields = ('nombre', 'archivo_importacion')
+
+
+class DefineColumnaTelefonoForm(forms.Form):
+
+    def __init__(self, cantidad_columnas=0, *args, **kwargs):
+        super(DefineColumnaTelefonoForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        COLUMNAS_TELEFONO = []
+        for columna in range(int(cantidad_columnas)):
+            COLUMNAS_TELEFONO.append((columna, 'Columna{0}'.format(columna)))
+
+        self.fields['telefono'] = forms.ChoiceField(choices=COLUMNAS_TELEFONO,
+                                                    widget=forms.RadioSelect(
+                                                        attrs={'class':
+                                                               'telefono'}))
+        self.helper.layout = Layout(MultiField('telefono'))
+
+
+class DefineDatosExtrasForm(forms.Form):
+
+    def __init__(self, cantidad_columnas=0, *args, **kwargs):
+        super(DefineDatosExtrasForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        crispy_fields = []
+        for columna in range(int(cantidad_columnas)):
+            value = forms.ChoiceField(choices=BaseDatosContacto.DATOS_EXTRAS,
+                                      required=False, label="",
+                                      widget=forms.Select(
+                                          attrs={'class': 'datos-extras'}))
+            self.fields['datos-extras-{0}'.format(columna)] = value
+
+            crispy_fields.append(Field('datos-extras-{0}'.format(columna)))
+        self.helper.layout = Layout(crispy_fields)
+
+
+class DefineNombreColumnaForm(forms.Form):
+
+    def __init__(self, cantidad_columnas=0, *args, **kwargs):
+        super(DefineNombreColumnaForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        crispy_fields = []
+        for columna in range(int(cantidad_columnas)):
+            self.fields['nombre-columna-{0}'.format(columna)] = \
+                forms.CharField(label="", initial='Columna{0}'.format(columna),
+                                error_messages={'required': ''},
+                                widget=forms.TextInput(attrs={'class':
+                                                       'nombre-columna'}))
+            crispy_fields.append(Field('nombre-columna-{0}'.format(columna)))
+        self.helper.layout = Layout(crispy_fields)
+
+
+class PrimerLineaEncabezadoForm(forms.Form):
+    es_encabezado = forms.BooleanField(label="Primer fila es encabezado.",
+                                       required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(PrimerLineaEncabezadoForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(Field('es_encabezado'))

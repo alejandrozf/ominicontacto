@@ -14,7 +14,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, CreateView, UpdateView
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa)
+    User, AgenteProfile, Modulo, Grupo, Pausa, Contacto)
 from ominicontacto_app.forms import (CustomUserCreationForm,
                                      CustomUserChangeForm, UserChangeForm,
                                      AgenteProfileForm)
@@ -182,6 +182,20 @@ class PausaListView(ListView):
     template_name = 'pausa_list.html'
 
 
+class ContactoCreateView(CreateView):
+    model = Contacto
+    template_name = 'base_create_update_form.html'
+    fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono', 'datos')
+
+    def get_success_url(self):
+        return reverse('contacto_list')
+
+
+class ContactoListView(ListView):
+    model = Contacto
+    template_name = 'contacto_list.html'
+
+
 def node_view(request):
     context = {
         'pausas': Pausa.objects.all,
@@ -207,3 +221,4 @@ def mensajes_recibidos_view(request):
                             armar_json_mensajes_recibidos_por_remitente(mensajes),
                             safe=False)
     return response
+

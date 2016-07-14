@@ -1,12 +1,13 @@
 
 from django.conf.urls import url, patterns
-from ominicontacto_app import views, views_queue
+from ominicontacto_app import views, views_queue, views_base_de_datos_contacto
 from django.contrib.auth.decorators import login_required
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^ajax/mensaje_recibidos/',
-        'ominicontacto_app.views.mensajes_recibidos_view',
+        views.mensajes_recibidos_view,
         name='ajax_mensaje_recibidos'),
+    url(r'^$', views.index_view, name='index'),
     url(r'^$', 'ominicontacto_app.views.index_view', name='index'),
     url(r'^login_agente/$', views.login_agente_view, name='login_agente'),
     url(r'^user/nuevo/$',
@@ -82,4 +83,34 @@ urlpatterns = patterns('',
     url(r'^sms/getAll/$',
         login_required(views.mensajes_recibidos_view),
         name='view_sms_get_all'),
-)
+    # ==========================================================================
+    # Base Datos Contacto
+    # ==========================================================================
+    url(r'^base_datos_contacto/nueva/$',
+        login_required(views_base_de_datos_contacto.
+                       BaseDatosContactoCreateView.as_view()),
+        name='nueva_base_datos_contacto'
+        ),
+    url(r'^base_datos_contacto/(?P<pk>\d+)/validacion/$',
+        login_required(views_base_de_datos_contacto.
+                       DefineBaseDatosContactoView.as_view()),
+        name='define_base_datos_contacto',
+        ),
+    url(r'^base_datos_contacto/$',
+        login_required(views_base_de_datos_contacto.
+                       BaseDatosContactoListView.as_view()),
+        name='lista_base_datos_contacto',
+        ),
+    url(r'^contacto/nuevo/$',
+        login_required(views.ContactoCreateView.as_view()),
+        name='contacto_nuevo',
+        ),
+    url(r'^contacto/list/$',
+        login_required(views.ContactoListView.as_view()),
+        name='contacto_list',
+        ),
+]
+
+
+
+

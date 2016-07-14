@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-4">
+
+<table class="table table-bordered">
+                    <thead>
+                      <tr class="fts-table-bg">
+                        <th>Base Datos Contactos</th>
+                        <th>Creada</th>
+                        <th>Cantidad Contactos</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for base_datos_contacto in bases_datos_contacto %}
+                            <tr>
+                                <td>
+                                    {{ base_datos_contacto.nombre }}
+                                </td>
+                                <td>
+                                    {{ base_datos_contacto.fecha_alta|date:"d/m/Y" }}
+                                </td>
+                                <td>
+                                    {{ base_datos_contacto.get_cantidad_contactos }}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6">
+                                    <p class="text-center text-danger">
+                                        <em>No se encontraron Bases de Datos de Contactos creadas.</em>
+                                    </p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+</div>
+{% endblock %}

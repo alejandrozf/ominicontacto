@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Django settings for ominicontacto project.
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ominicontacto_app',
+    'crispy_forms',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -131,6 +134,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, '/home/fedep/FreeTech/media_root')
+
 AUTH_USER_MODEL = 'ominicontacto_app.User'
 
 LOGIN_REDIRECT_URL = 'index'
@@ -139,3 +144,11 @@ OL_SIP_LIMITE_INFERIOR = 1000
 OL_SIP_LIMITE_SUPERIOR = 3000
 
 
+OL_NRO_TELEFONO_LARGO_MIN = 10
+"""Largo minimo permitido de nros telefonicos"""
+
+OL_NRO_TELEFONO_LARGO_MAX = 13
+"""Largo maximo permitido de nros telefonicos"""
+
+OL_MAX_CANTIDAD_CONTACTOS = 60000
+"""Límite de contactos que pueden ser importados a la base de datos."""
