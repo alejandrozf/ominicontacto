@@ -184,7 +184,7 @@ class PausaListView(ListView):
 
 class ContactoCreateView(CreateView):
     model = Contacto
-    template_name = 'base_create_update_form.html'
+    template_name = 'contacto_create_update_form.html'
     fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono', 'datos')
 
     def get_success_url(self):

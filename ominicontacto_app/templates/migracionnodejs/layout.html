@@ -297,7 +297,9 @@
       <div class="col-md-2">
         <label class="barInfo">&nbsp;Estado</label>
         <span class="label label-success" id="UserStatus"></span>
+          <a href="{% url 'contacto_nuevo' %}">Nuevo contacto</a>
         <button type="button" id="Pause" class="btn btn-warning">Pause</button>
+
       </div>
       <div class="col-md-3">
         <input type="hidden" value="{{ user.get_agente_profile.sip_extension }}" id="sipExt"/>
@@ -312,6 +314,8 @@
   <div class="row">
     <div class="col-md-12">&nbsp;
       <div id="crm" class="crm">
+          {% block content %}
+          {% endblock %}
       </div>
     </div>
   </div>
