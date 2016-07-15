@@ -297,7 +297,7 @@
       <div class="col-md-2">
         <label class="barInfo">&nbsp;Estado</label>
         <span class="label label-success" id="UserStatus"></span>
-          <a href="{% url 'contacto_nuevo' %}">Nuevo contacto</a>
+          <a href="{% url 'contacto_nuevo' %}"  target="crm">Nuevo contacto</a>
         <button type="button" id="Pause" class="btn btn-warning">Pause</button>
 
       </div>
@@ -313,10 +313,13 @@
   </div><br>
   <div class="row">
     <div class="col-md-12">&nbsp;
-      <div id="crm" class="crm">
+      <!--<div id="crm" class="crm">
           {% block content %}
           {% endblock %}
-      </div>
+      </div>-->
+    <iframe class="crm" name="crm">
+
+    </iframe>
     </div>
   </div>
   <div class="row">

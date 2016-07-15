@@ -46,9 +46,8 @@ def login_agente_view(request):
         if form.is_valid():
             if user.is_agente:
                 login(request, user)
-                response = HttpResponseRedirect('http://localhost:3000/')
-                response.set_cookie(key='user_id', value=user.id, domain='http://localhost/')
-                return response
+                return HttpResponseRedirect('/node/')
+
             else:
                 message = 'Operación Errónea! \
                            El usuario con el cuál usted intenta loguearse' \
