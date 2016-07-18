@@ -8,24 +8,30 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>id</th>
                 <th>id_cliente</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Telefono</th>
                 <th>Email</th>
+                <th>Acciones</th>
 
             </tr>
         </thead>
         <tbody>
         {% for contacto in object_list %}
             <tr>
-                <td><a href="{% url 'contacto_update' contacto.id %}" target="crm">{{ contacto.id }}</a></td>
                 <td>{{ contacto.id_cliente }}</td>
                 <td>{{ contacto.nombre }}</td>
                 <td>{{ contacto.apellido }}</td>
                 <td>{{ contacto.telefono }}</td>
                 <td>{{ contacto.email }}</td>
+                <td><a href="{% url 'contacto_update' contacto.id %}" >
+                    <span class=" glyphicon glyphicon-tasks" aria-hidden="true"></span></a>
+                    <a href="" >
+                    <span class=" glyphicon glyphicon-earphone" aria-hidden="true"></span></a>
+                    <a href="" >
+                    <span class=" glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
+                </td>
             </tr>
        {% empty %}
         <tr>
