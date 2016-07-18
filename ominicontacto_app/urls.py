@@ -9,7 +9,7 @@ urlpatterns = [
         name='ajax_mensaje_recibidos'),
     url(r'^$', views.index_view, name='index'),
     url(r'^$', 'ominicontacto_app.views.index_view', name='index'),
-    url(r'^login/$', views.login_view, name='login'),
+    url(r'^accounts/login/$', views.login_view, name='login'),
     url(r'^user/nuevo/$',
         login_required(views.CustomerUserCreateView.as_view()),
         name='user_nuevo',
