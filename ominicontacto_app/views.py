@@ -199,7 +199,7 @@ def node_view(request):
     context = {
         'pausas': Pausa.objects.all,
     }
-    return render_to_response('migracionnodejs/layout.html', context,
+    return render_to_response('agente/base_agente.html', context,
                               context_instance=RequestContext(request))
 
 
