@@ -11,7 +11,7 @@ var minutosT = 0;
 var flagPausa = false;
 var control = control2 = control3 = '';
 $(function () {
-	 $("#id_registrar").click(function () {
+	 /*$("#id_registrar").click(function () {
 	 	 $.ajax({
 	 	 	 type: "post",
 	 	 	 url: "/contacto/nuevo",
@@ -26,7 +26,7 @@ $(function () {
 	       console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	     }
 	 	 });
-	 });
+	 });*/
 	 $("#newLead").click(function () {
 	   $.ajax({
 	   	 type: "get",

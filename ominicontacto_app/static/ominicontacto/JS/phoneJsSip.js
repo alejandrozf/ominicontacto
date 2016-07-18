@@ -5,28 +5,28 @@ var sipStatus = document.getElementById('SipStatus');var callStatus = document.g
 
 $(function() {
   var estado = JSON.stringify({'status' : 'online'});
-  // $.ajax({
-  //   url: '/status/setStat',
-  //   type: 'POST',
-  //   contentType: 'application/json',
-  //   data: estado,
-  //   succes: function (msg) {
-  //       debugger;
-  //       console.log(JSON.parse(msg));
-  //   },
-  //   error: function (jqXHR, textStatus, errorThrown) {
-  //           debugger;
-  //           console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-  //   }
-  // });
+  $.ajax({
+    url: '/status/setStat',
+    type: 'POST',
+    contentType: 'application/json',
+    data: estado,
+    succes: function (msg) {
+        debugger;
+        console.log(JSON.parse(msg));
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+    }
+  });
  
   $("#Pause").click(function () {
     if (flagPausa === true) {
         debugger;
-    //num = "0077UNPAUSE";
-    //makeCall(num);
+    num = "0077UNPAUSE";
+    makeCall(num);
     }
   });
+  debugger;
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
@@ -39,8 +39,8 @@ $(function() {
   }
   $("#UserStatus").html("Online");
   $("#logout").click(function() {
-    //num = "0077LOGOUT";
-    //makeCall(num);
+    num = "0077LOGOUT";
+    makeCall(num);
   });
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
@@ -58,8 +58,8 @@ $(function() {
     });
     debugger;
     console.log($("#pauseType").val());
-    //num = "0077"+$("#pauseType").value;
-    //makeCall(num);
+    num = "0077"+$("#pauseType").value;
+    makeCall(num);
   });
 
   $(".key").click(function(e) {
@@ -72,22 +72,21 @@ $(function() {
     }
     displayNumber.value = numPress;
   });
-  //$("#unregister").click(function() {
-    //userAgent.unregister();
+  $("#unregister").click(function() {
+    userAgent.unregister();
     /*userAgent.on('',function() {
 
     });*/
-
-    userAgent.on('unregistered', function(e) {
-
+   userAgent.on('unregistered', function(e) {
       setSipStatus("reddot.png", "  Unregistered", sipStatus);
     });
-  //});
+  });
     $("#unregister").prop('disabled', false);
     //Connects to the WebSocket server
     userAgent.on('registered', function(e) {
-      //num = "0077LOGIN";
-      //makeCall(num);
+    	debugger;
+      num = "0077LOGIN";
+      makeCall(num);
       $("#sendMessage").prop('disabled', false);
       $("#chatMessage").prop('disabled', false);
       iconStatus.parentNode.removeChild(iconStatus);
