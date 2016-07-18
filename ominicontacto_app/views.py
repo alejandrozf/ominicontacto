@@ -37,26 +37,18 @@ def index_view(request):
                               context_instance=RequestContext(request))
 
 
-def login_agente_view(request):
+def login_view(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
+            login(request, user)
             if user.is_agente:
-                login(request, user)
-                return HttpResponseRedirect('/node/')
-
+                return HttpResponseRedirect(reverse('view_node'))
             else:
-                message = 'Operación Errónea! \
-                           El usuario con el cuál usted intenta loguearse' \
-                          ' no es un agente.'
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    message,
-                )
+                return HttpResponseRedirect(reverse('index'))
 
     else:
         form = AuthenticationForm(request)

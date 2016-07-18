@@ -6,6 +6,11 @@
 {% block logueo %}
 
     {% if not user.is_authenticated %}
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <p> Username/password incorrecto ingrese nuevamente los datos </p>
+            </div>
+        {% endif %}
         <form class="form-signin" role="form" method="post" action="">
             {% csrf_token %}
             <h2 class="form-signin-heading">Logueo</h2>
