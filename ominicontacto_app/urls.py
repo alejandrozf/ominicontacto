@@ -1,6 +1,7 @@
 
 from django.conf.urls import url, patterns
-from ominicontacto_app import views, views_queue, views_base_de_datos_contacto
+from ominicontacto_app import (
+    views, views_queue, views_base_de_datos_contacto, views_contacto)
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -9,7 +10,7 @@ urlpatterns = [
         name='ajax_mensaje_recibidos'),
     url(r'^$', views.index_view, name='index'),
     url(r'^$', 'ominicontacto_app.views.index_view', name='index'),
-    url(r'^login_agente/$', views.login_agente_view, name='login_agente'),
+    url(r'^accounts/login/$', views.login_view, name='login'),
     url(r'^user/nuevo/$',
         login_required(views.CustomerUserCreateView.as_view()),
         name='user_nuevo',
@@ -105,12 +106,16 @@ urlpatterns = [
         name='lista_base_datos_contacto',
         ),
     url(r'^contacto/nuevo/$',
-        login_required(views.ContactoCreateView.as_view()),
+        login_required(views_contacto.ContactoCreateView.as_view()),
         name='contacto_nuevo',
         ),
     url(r'^contacto/list/$',
-        login_required(views.ContactoListView.as_view()),
+        login_required(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
+        ),
+    url(r'^contacto/(?P<pk>\d+)update/$',
+        login_required(views_contacto.ContactoUpdateView.as_view()),
+        name='contacto_update',
         ),
 ]
 
