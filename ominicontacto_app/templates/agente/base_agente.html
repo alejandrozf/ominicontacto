@@ -286,7 +286,7 @@
                             <em><b class="username">{{ user.get_full_name }}</b></em>
                         </li>
 		                <li>
-		                    <a href="{% url 'logout' %}" title="Deslogueo">
+		                    <a id="logout" href="{% url 'logout' %}" title="Deslogueo">
 		                        <span class="glyphicon glyphicon-off"></span>
 		                    </a>
 		                </li>
@@ -331,7 +331,6 @@
         <label class="barInfo">&nbsp;Estado</label>
         <span class="label label-success" id="UserStatus"></span>
         <button type="button" id="Pause" class="btn btn-warning">Pause</button>
-
       </div>
       <div class="col-md-3">
         <input type="hidden" value="{{ user.get_agente_profile.sip_extension }}" id="sipExt"/>
