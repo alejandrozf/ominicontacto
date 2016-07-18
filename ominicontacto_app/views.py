@@ -175,7 +175,16 @@ class PausaListView(ListView):
 
 class ContactoCreateView(CreateView):
     model = Contacto
-    template_name = 'contacto_create_update_form.html'
+    template_name = 'agente/contacto_create_update_form.html'
+    fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono', 'datos')
+
+    def get_success_url(self):
+        return reverse('view_blanco')
+
+
+class ContactoUpdateView(UpdateView):
+    model = Contacto
+    template_name = 'agente/contacto_create_update_form.html'
     fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono', 'datos')
 
     def get_success_url(self):
@@ -184,7 +193,7 @@ class ContactoCreateView(CreateView):
 
 class ContactoListView(ListView):
     model = Contacto
-    template_name = 'contacto_list.html'
+    template_name = 'agente/contacto_list.html'
 
 
 def node_view(request):

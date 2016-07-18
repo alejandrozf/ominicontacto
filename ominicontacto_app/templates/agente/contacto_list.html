@@ -1,10 +1,10 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block content %}
-
-<div class="col-md-3">
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -20,7 +20,7 @@
         <tbody>
         {% for contacto in object_list %}
             <tr>
-                <td>{{ contacto.id }}</td>
+                <td><a href="{% url 'contacto_update' contacto.id %}" target="crm">{{ contacto.id }}</a></td>
                 <td>{{ contacto.id_cliente }}</td>
                 <td>{{ contacto.nombre }}</td>
                 <td>{{ contacto.apellido }}</td>
@@ -34,7 +34,5 @@
         {% endfor %}
         </tbody>
     </table>
-
-
-</div>
-{% endblock %}
+</body>
+</html>
