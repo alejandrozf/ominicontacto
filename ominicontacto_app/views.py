@@ -187,7 +187,7 @@ class ContactoCreateView(CreateView):
     fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono', 'datos')
 
     def get_success_url(self):
-        return reverse('contacto_list')
+        return reverse('view_blanco')
 
 
 class ContactoListView(ListView):
@@ -221,3 +221,7 @@ def mensajes_recibidos_view(request):
                             safe=False)
     return response
 
+
+def blanco_view(request):
+    return render_to_response('blanco.html',
+                              context_instance=RequestContext(request))

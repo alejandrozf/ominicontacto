@@ -83,6 +83,9 @@ urlpatterns = [
     url(r'^sms/getAll/$',
         login_required(views.mensajes_recibidos_view),
         name='view_sms_get_all'),
+    url(r'^blanco/$',
+        login_required(views.blanco_view),
+        name='view_blanco'),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
