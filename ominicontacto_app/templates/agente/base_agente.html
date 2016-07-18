@@ -277,34 +277,36 @@
 
 <!-- FIN SMS -->
 <div class="container">
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid col-lg-12">
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="{% url 'logout' %}" title="Deslogueo">
-                        <span class="glyphicon glyphicon-off"></span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav">
-                <li role="presentation" class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                        Contactos <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="{% url 'contacto_nuevo' %}" target="crm">Nuevo contacto</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'contacto_list' %}">Lista de contactos</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+	<div class="row">
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		    <div class="container-fluid col-lg-12">
+		        <div class="navbar-collapse collapse">
+		            <ul class="nav navbar-nav navbar-right">
+		                <li>
+		                    <a href="{% url 'logout' %}" title="Deslogueo">
+		                        <span class="glyphicon glyphicon-off"></span>
+		                    </a>
+		                </li>
+		            </ul>
+		            <ul class="nav navbar-nav">
+		                <li role="presentation" class="dropdown">
+		                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+		                        Contactos <span class="caret"></span>
+		                    </a>
+		                    <ul class="dropdown-menu" role="menu">
+		                        <li>
+		                            <a href="{% url 'contacto_nuevo' %}" target="crm">Nuevo contacto</a>
+		                        </li>
+		                        <li>
+		                            <a href="{% url 'contacto_list' %}">Lista de contactos</a>
+		                        </li>
+		                    </ul>
+		                </li>
+		            </ul>
+		        </div>
+		    </div>
+		</div>
+	</div>
   <div class="row">
     <div class="toolbar">
       <div class="form-horizontal">
@@ -336,7 +338,7 @@
       </div>
       </div>
     </div>
-  </div><br>
+  </div><br><br><br><br>
   <div class="row">
     <div class="col-md-12">&nbsp;
       <!--<div id="crm" class="crm">
