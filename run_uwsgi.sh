@@ -15,7 +15,9 @@ uwsgi \
     --processes=${UWSGI_PROCESSES:-5} --enable-threads \
     --home=${VIRTUAL_ENV} \
     --http=${UWSGI_HTTP:-0.0.0.0:8000} \
-    --uwsgi-socket=0.0.0.0:8097 \
+    --uwsgi-socket=0.0.0.0:8099 \
     --python-path=${BASEDIR} \
     --master-fifo=/tmp/.ominicontacto-uwsgi-fifo \
+    $STATIC_MAP \
+    --static-map /static=${BASEDIR}/ominicontacto_app/static \
     $*
