@@ -5,7 +5,7 @@ var sipStatus = document.getElementById('SipStatus');var callStatus = document.g
 
 $(function() {
   var estado = JSON.stringify({'status' : 'online'});
-  $.ajax({
+  /*$.ajax({
     url: '/status/setStat',
     type: 'POST',
     contentType: 'application/json',
@@ -17,7 +17,7 @@ $(function() {
     error: function (jqXHR, textStatus, errorThrown) {
             console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
     }
-  });
+  });*/
  
   $("#Pause").click(function () {
     if (flagPausa === true) {
@@ -26,7 +26,7 @@ $(function() {
     makeCall(num);
     }
   });
-  debugger;
+  //debugger;
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
