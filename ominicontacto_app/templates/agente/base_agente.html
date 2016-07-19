@@ -282,6 +282,9 @@
 		    <div class="container-fluid col-lg-12">
 		        <div class="navbar-collapse collapse">
 		            <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <em><b class="username">{{ user.get_full_name }}</b></em>
+                        </li>
 		                <li>
 		                    <a id="logout" href="{% url 'logout' %}" title="Deslogueo">
 		                        <span class="glyphicon glyphicon-off"></span>
@@ -332,10 +335,8 @@
       <!--<div class="col-md-4">
         <input type="hidden" value="{{ user.get_agente_profile.sip_extension }}" id="sipExt"/>
         <input value="{{ user.get_agente_profile.sip_password}}" id="sipSec" type="hidden"/>
-        <em style="align: right"><label class="barInfo">Bienvenido</label>&nbsp;
-        <b class="username">{{ user.get_full_name }}</b>
-        </em>
       </div>-->
+      </div>
       </div>
     </div>
   </div><br><br><br><br>
