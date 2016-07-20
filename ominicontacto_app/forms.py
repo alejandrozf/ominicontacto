@@ -42,10 +42,32 @@ class UserChangeForm(forms.ModelForm):
     password hash display field.
     """
 
+    password1 = forms.CharField(max_length=20,
+                                required=False,
+                                # will be overwritten by __init__()
+                                help_text='Ingrese la nueva contraseña (sólo si desea cambiarla)',
+                                # will be overwritten by __init__()
+                                widget=forms.PasswordInput(),
+                                label='Contrasena')
+
+    password2 = forms.CharField(max_length=20,
+                            required=False,  # will be overwritten by __init__()
+                            help_text='Ingrese la nueva contraseña (sólo si desea cambiarla)',  # will be overwritten by __init__()
+                            widget=forms.PasswordInput(),
+                            label='Contrasena (otra vez)')
+
+    def clean(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 != password2:
+            raise forms.ValidationError('Los passwords no concuerdan')
+
+        return self.cleaned_data
+
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'is_agente',
-                  'is_customer', 'is_supervisor')
+                  'is_customer', 'is_supervisor', 'password1', 'password2')
 
 
 class AgenteProfileForm(forms.ModelForm):

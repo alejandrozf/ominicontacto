@@ -74,6 +74,20 @@ class CustomerUserUpdateView(UpdateView):
     form_class = UserChangeForm
     template_name = 'user/user_create_update_form.html'
 
+    def form_valid(self, form):
+        ret = super(CustomerUserUpdateView, self).form_valid(form)
+
+        # Set the password
+        if form['password1'].value():
+            updated_user = User.objects.get(pk=form.instance.id)
+            updated_user.set_password(form['password1'].value())
+            updated_user.save()
+
+        messages.success(self.request,
+                         'El usuario fue actualizado correctamente')
+
+        return ret
+
     def get_success_url(self):
         return reverse('user_list')
 
