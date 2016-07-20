@@ -152,3 +152,7 @@ OL_NRO_TELEFONO_LARGO_MAX = 13
 
 OL_MAX_CANTIDAD_CONTACTOS = 60000
 """Límite de contactos que pueden ser importados a la base de datos."""
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
