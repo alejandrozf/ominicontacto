@@ -17,7 +17,10 @@ uwsgi \
     --http=${UWSGI_HTTP:-0.0.0.0:8000} \
     --uwsgi-socket=0.0.0.0:8099 \
     --python-path=${BASEDIR} \
+    --die-on-term \
     --master-fifo=/tmp/.ominicontacto-uwsgi-fifo \
+    --pidfile=/tmp/oml-uwsgi.pid \
+    --daemonize=/home/freetech/ominicontacto/uwsgi.log \
     $STATIC_MAP \
     --static-map /static=${BASEDIR}/ominicontacto_app/static \
     $*
