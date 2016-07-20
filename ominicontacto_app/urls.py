@@ -113,7 +113,7 @@ urlpatterns = [
         login_required(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
         ),
-    url(r'^contacto/(?P<pk>\d+)update/$',
+    url(r'^contacto/(?P<pk>\d+)/update/$',
         login_required(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
         ),
