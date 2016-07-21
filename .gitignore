@@ -1,3 +1,4 @@
+/oml_settings_local.py
 .idea/
 virtualenv/
 *.pyc
