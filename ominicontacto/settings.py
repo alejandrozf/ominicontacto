@@ -22,13 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
+# SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -73,24 +72,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ominicontacto.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': '127.0.0.1',
-        'PORT': 5432,
-        'NAME': 'kamailio',
-        'USER': 'kamailio',
-        'PASSWORD': 'kamailiorw',
-        'CONN_MAX_AGE': 300,
-        'ATOMIC_REQUESTS': True,
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -155,4 +136,18 @@ OL_MAX_CANTIDAD_CONTACTOS = 60000
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+
+#==============================================================================
+# Import de `fts_web_settings_local`
+#==============================================================================
+
+try:
+    from oml_settings_local import *
+except ImportError as e:
+    print "# "
+    print "# ERROR"
+    print "# "
+    print "#   No se pudo importar el modulo"
+    print "#       `oml_settings_local`"
+    print "# "
+    raise Exception("No se pudo importar oml_settings_local")
