@@ -30,7 +30,7 @@ $(function() {
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
-      ws_servers : "ws://172.16.20.219",
+      ws_servers : "wss://172.16.20.219",
       password : $("#sipSec").val()//"123456"
     };
     userAgent = new JsSIP.UA(config);
@@ -58,7 +58,7 @@ $(function() {
     });
     debugger;
     console.log($("#pauseType").val());
-    num = "0077"+$("#pauseType").value;
+    num = "0077"+$("#pauseType").value.toUpperCase();
     makeCall(num);
   });
 
@@ -106,7 +106,7 @@ $(function() {
       var textoDeMensaje = "";
       var msg = e.message.content;
       if(e.originator == "remote") {
-        fromUser = e.request.headers.From[0].raw;
+        fromUser = e.request.headers.From[0].raw;        
         endPos = fromUser.indexOf("@");
         startPos = fromUser.indexOf(":");
         fromUser = fromUser.substring(startPos+1,endPos);
@@ -179,7 +179,12 @@ $(function() {
         Sounds("","stop");
       });
       if(e.originator=="remote") {
+      	var originHeader = e.request.headers.Origin;
+      	var leadIdHeader = e.request.headers.LeadId; 
         var fromUser = e.request.headers.From[0].raw;
+        processCallid(fromUser);
+        processOrigin(originHeader);
+        processLeadid(leadIdHeader);
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
         fromUser = fromUser.substring(startPos+1,endPos);
@@ -360,5 +365,14 @@ $(function() {
         ring = document.getElementById('RingOut');
         ring.pause();
     }
+  }
+  function processCallid() {
+  	
+  }
+  function processLeadid() {
+  	
+  }
+  function processOrigin() {
+  	
   }
 });

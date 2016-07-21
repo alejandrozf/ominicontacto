@@ -1,5 +1,5 @@
    var wsuri;
-	 wsuri = "ws://172.16.20.241:8080/ws";
+	 wsuri = "wss://172.16.20.241:8080/ws";
    //WAMP connection to the Router
    var connection = new autobahn.Connection({
      url: wsuri,
