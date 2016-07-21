@@ -73,3 +73,9 @@ DATABASES = {
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 
 ```
+
+### Configuracion ssl para desarrollo ###
+Generar certificado usando el siguiente el comando
+```
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
+```
