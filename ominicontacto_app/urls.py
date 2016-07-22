@@ -121,4 +121,8 @@ urlpatterns = [
         login_required(views_contacto.ContactoTelefonoListView.as_view()),
         name='contacto_list_telefono',
         ),
+    url(r'^contacto/buscar/$',
+        login_required(views_contacto.BusquedaContactoFormView.as_view()),
+        name='contacto_buscar',
+        ),
 ]

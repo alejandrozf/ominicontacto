@@ -212,3 +212,7 @@ class PrimerLineaEncabezadoForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(Field('es_encabezado'))
+
+
+class BusquedaContactoForm(forms.Form):
+    buscar = forms.CharField()

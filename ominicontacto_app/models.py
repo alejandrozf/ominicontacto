@@ -10,7 +10,7 @@ import re
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import SuspiciousOperation
 from django.db import models
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from ominicontacto_app.utiles import log_timing,\
     ValidadorDeNombreDeCampoExtra
@@ -755,6 +755,14 @@ class ContactoManager(models.Manager):
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "número télefonico"))
+
+    def contactos_by_filtro(self, filtro):
+        try:
+            return self.filter(Q(nombre=filtro) | Q(apellido=filtro) |
+                               Q(telefono=filtro) | Q(email=filtro))
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "filtro"))
 
 
 class Contacto(models.Model):
