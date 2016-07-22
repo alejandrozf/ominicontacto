@@ -30,7 +30,7 @@ $(function() {
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
-      ws_servers : "wss://172.16.20.219",
+      ws_servers : "wss://172.16.20.219:443",
       password : $("#sipSec").val()//"123456"
     };
     userAgent = new JsSIP.UA(config);
@@ -179,15 +179,26 @@ $(function() {
         Sounds("","stop");
       });
       if(e.originator=="remote") {
-      	var originHeader = e.request.headers.Origin;
-      	var leadIdHeader = e.request.headers.LeadId; 
+      	debugger;
+      	console.log(e.request);
+      	var originHeader = e.request.headers.Origin[0].raw;
+      	var leadIdHeader = e.request.headers.Id-Cliente[0].raw; 
         var fromUser = e.request.headers.From[0].raw;
-        processCallid(fromUser);
-        processOrigin(originHeader);
-        processLeadid(leadIdHeader);
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
         fromUser = fromUser.substring(startPos+1,endPos);
+
+        if(leadIdHeader) {
+          processLeadid(leadIdHeader);	
+        } else {
+        	if(fromUser !== "Unknown") {
+        	  processCallid(fromUser);
+        	} else {
+        		getBlankForm();
+        	}
+        } 
+        processOrigin(originHeader);
+        
         $("#callerid").text(fromUser);
         if($("#modalWebCall").is(':visible')) {
           $("#modalReceiveCalls").modal('show');
@@ -307,7 +318,7 @@ $(function() {
     //Mando el invite/llamada
      if(flagInit === true) {
        flagInit = false;
-       sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
+       sesion = userAgent.call("sip:"+num+"	@172.16.20.219", opciones);
      } else {
        sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
        setCallState("Calling.... "+num, "yellowgreen");
@@ -366,13 +377,61 @@ $(function() {
         ring.pause();
     }
   }
-  function processCallid() {
-  	
+  function getBlankForm() {
+  	$.ajax({
+  	 	 url: '/contacto/nuevo/',
+       type: 'GET',
+       success: function (json) {
+       	 $("#dataView").html(json);
+       	 console.log(json);
+       },
+       error: function (jqXHR, textStatus, errorThrown) {
+         debugger;
+         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+       }
+  	 });
   }
-  function processLeadid() {
-  	
+  function processCallid(callerid) {
+  	$.ajax({
+  	 	 url: '/contacto/'+callerid+'/update/',
+       type: 'GET',
+       success: function (json) {
+       	 $("#dataView").html(json);
+       	 console.log(json);
+       },
+       error: function (jqXHR, textStatus, errorThrown) {
+         debugger;
+         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+       }
+  	 });
   }
-  function processOrigin() {
-  	
+  function processLeadid(leadid) {
+  	 $.ajax({
+  	 	 url: '/contacto/'+leadid+'/update/',
+       type: 'GET',
+       contentType: 'text/plain',
+       content: 'leadId='+leadid+'&callId='+callid,
+       success: function (json) {
+       	 $("#dataView").html(json);
+       	 console.log(json);
+       },
+       error: function (jqXHR, textStatus, errorThrown) {
+         debugger;
+         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+       }
+  	 });
+  }
+  function processOrigin(origin) {
+  	switch(origin) {
+  		case "Dialer":
+  		
+  		  break;
+  		case "Inbound":
+  		
+  		  break;
+  		case "ICS":
+  			
+  		  break;  
+  	}
   }
 });
