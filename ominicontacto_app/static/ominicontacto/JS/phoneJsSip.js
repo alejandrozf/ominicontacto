@@ -181,8 +181,8 @@ $(function() {
       if(e.originator=="remote") {
       	debugger;
       	console.log(e.request);
-      	var originHeader = e.request.headers.Origin;
-      	var leadIdHeader = e.request.headers.LeadId; 
+      	var originHeader = e.request.headers.Origin[0].raw;
+      	var leadIdHeader = e.request.headers.Id-Cliente[0].raw; 
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
@@ -318,7 +318,7 @@ $(function() {
     //Mando el invite/llamada
      if(flagInit === true) {
        flagInit = false;
-       sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
+       sesion = userAgent.call("sip:"+num+"	@172.16.20.219", opciones);
      } else {
        sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
        setCallState("Calling.... "+num, "yellowgreen");
