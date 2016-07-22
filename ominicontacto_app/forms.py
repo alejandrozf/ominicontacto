@@ -215,4 +215,4 @@ class PrimerLineaEncabezadoForm(forms.Form):
 
 
 class BusquedaContactoForm(forms.Form):
-    buscar = forms.CharField()
+    buscar = forms.CharField(required=False)
