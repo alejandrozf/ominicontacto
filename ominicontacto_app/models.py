@@ -758,8 +758,10 @@ class ContactoManager(models.Manager):
 
     def contactos_by_filtro(self, filtro):
         try:
-            return self.filter(Q(nombre=filtro) | Q(apellido=filtro) |
-                               Q(telefono=filtro) | Q(email=filtro))
+            return self.filter(Q(nombre__contains=filtro) |
+                               Q(apellido__contains=filtro) |
+                               Q(telefono__contains=filtro) |
+                               Q(email__contains=filtro))
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "filtro"))
