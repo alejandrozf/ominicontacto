@@ -28,3 +28,11 @@ class ContactoUpdateView(UpdateView):
 class ContactoListView(ListView):
     model = Contacto
     template_name = 'agente/contacto_list.html'
+
+
+class ContactoTelefonoListView(ListView):
+    model = Contacto
+    template_name = 'agente/contacto_list.html'
+
+    def get_queryset(self):
+        return Contacto.objects.contactos_by_telefono(self.kwargs['telefono'])

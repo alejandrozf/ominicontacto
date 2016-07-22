@@ -747,7 +747,23 @@ class BaseDatosContacto(models.Model):
         return copia
 
 
+class ContactoManager(models.Manager):
+
+    def contactos_by_telefono(self, telefono):
+        try:
+            return self.filter(telefono=telefono)
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "número télefonico"))
+
+
 class Contacto(models.Model):
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = ContactoManager()
 
     id_cliente = models.IntegerField()
     nombre = models.CharField(max_length=128)

@@ -117,8 +117,8 @@ urlpatterns = [
         login_required(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
         ),
+    url(r'^contacto/(?P<telefono>[\w\-]+)/list/$',
+        login_required(views_contacto.ContactoTelefonoListView.as_view()),
+        name='contacto_list_telefono',
+        ),
 ]
-
-
-
-
