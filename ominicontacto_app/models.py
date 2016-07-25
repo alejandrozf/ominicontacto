@@ -58,6 +58,9 @@ class Modulo(models.Model):
 
 class Grupo(models.Model):
     nombre = models.CharField(max_length=20)
+    auto_attend_ics = models.BooleanField(default=False)
+    auto_attend_inbound = models.BooleanField(default=False)
+    auto_attend_dialer = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.nombre
