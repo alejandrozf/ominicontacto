@@ -23,6 +23,9 @@ class ContactoUpdateView(UpdateView):
     template_name = 'agente/contacto_create_update_form.html'
     fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono', 'datos')
 
+    def get_object(self, queryset=None):
+        return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'])
+
     def get_success_url(self):
         return reverse('view_blanco')
 
