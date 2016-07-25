@@ -172,7 +172,6 @@ $(function() {
         Sounds("","stop");
       });
       if(e.originator=="remote") {
-      	debugger;
       	console.log(e.request);
       	var originHeader = e.request.headers.Origin[0].raw;
       	var leadIdHeader = e.request.headers.Idcliente[0].raw;
@@ -183,7 +182,7 @@ $(function() {
         fromUser = fromUser.substring(startPos+1,endPos);
 
         if(leadIdHeader) {
-          processLeadid(leadIdHeader+"11111");	
+          processLeadid(leadIdHeader);	
         } else {
         	if(fromUser !== "Unknown") {
         	  processCallid(fromUser);
