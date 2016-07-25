@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, Contacto)
 from ominicontacto_app.forms import (CustomUserCreationForm,
@@ -87,6 +87,21 @@ class CustomerUserUpdateView(UpdateView):
                          'El usuario fue actualizado correctamente')
 
         return ret
+
+    def get_success_url(self):
+        return reverse('user_list')
+
+
+class UserDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto user
+    """
+    model = AgenteProfile
+    template_name = 'user/delete_user.html'
+
+    def get_object(self, queryset=None):
+     return User.objects.get(pk=self.kwargs['pk'])
 
     def get_success_url(self):
         return reverse('user_list')
