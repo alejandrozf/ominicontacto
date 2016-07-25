@@ -109,7 +109,7 @@ urlpatterns = [
         login_required(views_contacto.ContactoCreateView.as_view()),
         name='contacto_nuevo',
         ),
-    url(r'^contacto/list/$',
+    url(r'^contacto/list/(?P<pagina>\d+)/$',
         login_required(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
         ),
@@ -117,8 +117,12 @@ urlpatterns = [
         login_required(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
         ),
+    url(r'^contacto/(?P<telefono>[\w\-]+)/list/$',
+        login_required(views_contacto.ContactoTelefonoListView.as_view()),
+        name='contacto_list_telefono',
+        ),
+    url(r'^contacto/buscar/$',
+        login_required(views_contacto.BusquedaContactoFormView.as_view()),
+        name='contacto_buscar',
+        ),
 ]
-
-
-
-

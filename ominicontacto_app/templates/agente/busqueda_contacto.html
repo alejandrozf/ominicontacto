@@ -5,6 +5,20 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 </head>
 <body>
+<form role="form" method="post" enctype="multipart/form-data" >
+{% csrf_token %}
+<table>
+    <tr>
+        <td>{{ form.as_p }}</td>
+        <td>
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Buscar
+            </button>
+        </td>
+    </tr>
+</table>
+
+
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -18,7 +32,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for contacto in contactos %}
+        {% for contacto in listado_de_contacto %}
             <tr>
                 <td>{{ contacto.id_cliente }}</td>
                 <td>{{ contacto.nombre }}</td>
@@ -40,41 +54,6 @@
         {% endfor %}
         </tbody>
     </table>
-<!-- pagination -->
-    <nav>
-        <ul class="pagination pagination-lg">
-
-            <li class="{% if not contactos.has_previous %} disabled {% endif %}">
-                {% if contactos.has_previous %}
-                    <a  href="{% url url_paginator pagina=contactos.previous_page_number%}">
-                        &laquo;
-                    </a>
-                {% else %}
-                    <a href="javascript:void(0);">
-                        &laquo;
-                    </a>
-                {% endif %}
-            </li>
-
-            <li>
-                <a href="javascript:void(0);">
-                    Página {{ contactos.number }} de {{ contactos.paginator.num_pages }}
-                </a>
-            </li>
-
-            <li class="{% if not contactos.has_next %} disabled {% endif %}">
-                {% if contactos.has_next %}
-                    <a href="{% url url_paginator pagina=contactos.next_page_number %}">
-                        &raquo;
-                    </a>
-                {% else %}
-                    <a href="javascript:void(0);">
-                        &raquo;
-                    </a>
-                {% endif %}
-            </li>
-
-        </ul>
-    </nav>
+</form>
 </body>
 </html>

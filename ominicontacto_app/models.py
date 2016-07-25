@@ -10,7 +10,7 @@ import re
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import SuspiciousOperation
 from django.db import models
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from ominicontacto_app.utiles import log_timing,\
     ValidadorDeNombreDeCampoExtra
@@ -747,7 +747,33 @@ class BaseDatosContacto(models.Model):
         return copia
 
 
+class ContactoManager(models.Manager):
+
+    def contactos_by_telefono(self, telefono):
+        try:
+            return self.filter(telefono=telefono)
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "número télefonico"))
+
+    def contactos_by_filtro(self, filtro):
+        try:
+            return self.filter(Q(nombre__contains=filtro) |
+                               Q(apellido__contains=filtro) |
+                               Q(telefono__contains=filtro) |
+                               Q(email__contains=filtro))
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "filtro"))
+
+
 class Contacto(models.Model):
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = ContactoManager()
 
     id_cliente = models.IntegerField()
     nombre = models.CharField(max_length=128)

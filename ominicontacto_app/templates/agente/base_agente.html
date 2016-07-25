@@ -301,7 +301,10 @@
 		                            <a href="{% url 'contacto_nuevo' %}" target="crm">Nuevo contacto</a>
 		                        </li>
 		                        <li>
-		                            <a href="{% url 'contacto_list' %}" target="crm">Lista de contactos</a>
+		                            <a href="{% url 'contacto_list' 1 %}" target="crm">Lista de contactos</a>
+		                        </li>
+                                <li>
+		                            <a href="{% url 'contacto_buscar' %}" target="crm">Buscar contactos</a>
 		                        </li>
 		                    </ul>
 		                </li>
