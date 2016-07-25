@@ -11,7 +11,6 @@ $(function() {
     contentType: 'application/json',
     data: estado,
     succes: function (msg) {
-        debugger;
         console.log(JSON.parse(msg));
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -21,12 +20,10 @@ $(function() {
  
   $("#Pause").click(function () {
     if (flagPausa === true) {
-        debugger;
     num = "0077UNPAUSE";
     makeCall(num);
     }
   });
-  //debugger;
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
@@ -52,11 +49,9 @@ $(function() {
       contentType: 'text/plain',
       content: 'pause='+$("#pauseType").value,
       error: function (jqXHR, textStatus, errorThrown) {
-              debugger;
               console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
       }
     });
-    debugger;
     console.log($("#pauseType").val());
     num = "0077"+$("#pauseType").value.toUpperCase();
     makeCall(num);
@@ -84,7 +79,6 @@ $(function() {
     $("#unregister").prop('disabled', false);
     //Connects to the WebSocket server
     userAgent.on('registered', function(e) {
-    	debugger;
       num = "0077LOGIN";
       makeCall(num);
       $("#sendMessage").prop('disabled', false);
@@ -169,7 +163,6 @@ $(function() {
     userAgent.on('newRTCSession', function(e) {
 
       e.session.on('ended',function() {
-        //debugger;
         defaultCallState();
       });
       e.session.on('failed',function(e) {
@@ -179,10 +172,10 @@ $(function() {
         Sounds("","stop");
       });
       if(e.originator=="remote") {
-      	debugger;
       	console.log(e.request);
       	var originHeader = e.request.headers.Origin[0].raw;
-      	var leadIdHeader = e.request.headers.Idcliente[0].raw; 
+      	var leadIdHeader = e.request.headers.Idcliente[0].raw;
+      	//var cmpIdHeader =  e.request.headers.Idcamp[0].raw;
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
@@ -406,11 +399,13 @@ $(function() {
   	 });
   }
   function processLeadid(leadid) {
+  	debugger;
   	 $.ajax({
   	 	 url: '/contacto/'+leadid+'/update/',
        type: 'GET',
        contentType: 'text/plain',
        success: function (json) {
+       	debugger;
        	 $("#dataView").html(json);
        	 console.log(json);
        },
@@ -423,7 +418,7 @@ $(function() {
   function processOrigin(origin) {
   	switch(origin) {
   		case "Dialer":
-  		
+  			
   		  break;
   		case "Inbound":
   		
