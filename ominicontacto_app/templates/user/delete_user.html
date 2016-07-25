@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="col-md-3">
+    <form method="post">{% csrf_token %}
+        <h4>Usuario <strong>{{ object.get_full_name}}</strong></h4>
+        <h4>¿Esta seguro que desea eliminar este usuario? </h4>
+        <button type="submit" class="btn btn-danger btn-sm">
+            <span class="glyphicon glyphicon-remove"></span> Eliminar
+        </button>
+        <a href="{% url 'user_list' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
