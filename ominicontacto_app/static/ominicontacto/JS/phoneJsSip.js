@@ -401,11 +401,9 @@ $(function() {
   }
   function processLeadid(leadid) {
   	debugger;
-  	var a = document.createElement("a");
-  	a.href = "/contacto/"+leadid+"/update/";
-  	a.target = "crm";
-  	a.id = "searcheditLead";
-  	$("#searcheditLead").trigger('click');
+  	$.get({"/contacto/"+leadid+"/update/", function (data) {
+  		$("#dataView").html(data);
+  	});
   }
   function processOrigin(origin) {
   	switch(origin) {
