@@ -401,9 +401,8 @@ $(function() {
   }
   function processLeadid(leadid) {
   	debugger;
-  	$.get({"/contacto/"+leadid+"/update/", function (data) {
-  		$("#dataView").html(data);
-  	});
+  	var url = "/contacto/"+leadid+"/update/"; 
+  	$("#dataView").attr('src', url);
   }
   function processOrigin(origin) {
   	switch(origin) {
