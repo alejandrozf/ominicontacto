@@ -172,7 +172,6 @@ $(function() {
         Sounds("","stop");
       });
       if(e.originator=="remote") {
-      	debugger;
       	console.log(e.request);
       	var originHeader = e.request.headers.Origin[0].raw;
       	var leadIdHeader = e.request.headers.Idcliente[0].raw;
@@ -183,7 +182,7 @@ $(function() {
         fromUser = fromUser.substring(startPos+1,endPos);
 
         if(leadIdHeader) {
-          processLeadid(leadIdHeader+"11111");	
+          processLeadid(leadIdHeader);	
         } else {
         	if(fromUser !== "Unknown") {
         	  processCallid(fromUser);
@@ -401,11 +400,20 @@ $(function() {
   }
   function processLeadid(leadid) {
   	debugger;
-  	var a = document.createElement("a");
-  	a.href = "/contacto/"+leadid+"/update/";
-  	a.target = "crm";
-  	a.id = "searcheditLead";
-  	$("#searcheditLead").trigger('click');
+  	 $.ajax({
+  	 	 url: '/contacto/'+leadid+'/update/',
+       type: 'GET',
+       contentType: 'text/plain',
+       success: function (json) {
+       	debugger;
+       	 $("#dataView").html(json);
+       	 console.log(json);
+       },
+       error: function (jqXHR, textStatus, errorThrown) {
+         debugger;
+         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+       }
+  	 });
   }
   function processOrigin(origin) {
   	switch(origin) {
