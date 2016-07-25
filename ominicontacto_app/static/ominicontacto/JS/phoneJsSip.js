@@ -84,7 +84,6 @@ $(function() {
     $("#unregister").prop('disabled', false);
     //Connects to the WebSocket server
     userAgent.on('registered', function(e) {
-    	debugger;
       num = "0077LOGIN";
       makeCall(num);
       $("#sendMessage").prop('disabled', false);
@@ -182,7 +181,8 @@ $(function() {
       	debugger;
       	console.log(e.request);
       	var originHeader = e.request.headers.Origin[0].raw;
-      	var leadIdHeader = e.request.headers.Idcliente[0].raw; 
+      	var leadIdHeader = e.request.headers.Idcliente[0].raw;
+      	//var cmpIdHeader =  e.request.headers.Idcamp[0].raw;
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
@@ -406,6 +406,7 @@ $(function() {
   	 });
   }
   function processLeadid(leadid) {
+  	debugger;
   	 $.ajax({
   	 	 url: '/contacto/'+leadid+'/update/',
        type: 'GET',
@@ -423,7 +424,7 @@ $(function() {
   function processOrigin(origin) {
   	switch(origin) {
   		case "Dialer":
-  		
+  			
   		  break;
   		case "Inbound":
   		
