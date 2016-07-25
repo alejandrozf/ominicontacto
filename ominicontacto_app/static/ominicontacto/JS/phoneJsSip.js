@@ -400,20 +400,9 @@ $(function() {
   }
   function processLeadid(leadid) {
   	debugger;
-  	 $.ajax({
-  	 	 url: '/contacto/'+leadid+'/update/',
-       type: 'GET',
-       contentType: 'text/plain',
-       success: function (json) {
-       	debugger;
-       	 $("#dataView").html(json);
-       	 console.log(json);
-       },
-       error: function (jqXHR, textStatus, errorThrown) {
-         debugger;
-         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-       }
-  	 });
+  	$.get({"/contacto/"+leadid+"/update/", function (data) {
+  		$("#dataView").html(data);
+  	});
   }
   function processOrigin(origin) {
   	switch(origin) {
