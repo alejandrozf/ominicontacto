@@ -182,7 +182,7 @@ $(function() {
       	debugger;
       	console.log(e.request);
       	var originHeader = e.request.headers.Origin[0].raw;
-      	var leadIdHeader = e.request.headers.Id-Cliente[0].raw; 
+      	var leadIdHeader = e.request.Id-Cliente[0].raw; 
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
