@@ -10,6 +10,10 @@
             <tr>
                 <th>id</th>
                 <th>Nombre</th>
+                <th>Auto attend ics</th>
+                <th>Auto attend inbound</th>
+                <th>Auto attend dialer</th>
+                <th>acciones</th>
 
             </tr>
         </thead>
@@ -18,6 +22,28 @@
             <tr>
                 <td>{{ grupo.id }}</td>
                 <td>{{ grupo.nombre }}</td>
+                <td>
+                    {% if grupo.auto_attend_ics %}
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if grupo.auto_attend_inbound %}
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if grupo.auto_attend_dialer %}
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'grupo_update' grupo.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a></td>
             </tr>
        {% empty %}
         <tr>
