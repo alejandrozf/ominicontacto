@@ -13,6 +13,7 @@
                 <th>Auto attend ics</th>
                 <th>Auto attend inbound</th>
                 <th>Auto attend dialer</th>
+                <th>Auto pause</th>
                 <th>acciones</th>
 
             </tr>
@@ -43,11 +44,18 @@
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     {% endif %}
                 </td>
+                <td>
+                    {% if grupo.auto_pause %}
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
                 <td><a href="{% url 'grupo_update' grupo.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a></td>
             </tr>
        {% empty %}
         <tr>
-            <td colspan="3">No existen grupos</td>
+            <td colspan="7">No existen grupos</td>
         </tr>
         {% endfor %}
         </tbody>

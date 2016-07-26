@@ -61,6 +61,7 @@ class Grupo(models.Model):
     auto_attend_ics = models.BooleanField(default=False)
     auto_attend_inbound = models.BooleanField(default=False)
     auto_attend_dialer = models.BooleanField(default=False)
+    auto_pause = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.nombre
