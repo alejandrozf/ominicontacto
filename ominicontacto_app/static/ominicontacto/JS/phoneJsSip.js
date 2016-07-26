@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var config = null;var textSipStatus = null;var callSipStatus = null;var iconStatus = null;var userAgent = null;var sesion = null;var opciones = null;var eventHandlers = null; var flagTransf = false; var flagInit = true; var num = null;
+var config = null;var textSipStatus = null;var callSipStatus = null;var iconStatus = null;var userAgent = null;var sesion = null;var opciones = null;var eventHandlers = null; var flagTransf = false; var flagInit = true; var num = null; var entrante=false;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
 $(function() {
@@ -163,10 +163,11 @@ $(function() {
     userAgent.on('newRTCSession', function(e) {
 		  var originHeader = "";
       e.session.on('ended',function() {
-      	if($("#auto_pause").val() === "True" && $("#auto_attend_"+originHeader).val() === "True") {
+      	if($("#auto_pause").val() === "True" && $("#auto_attend_"+originHeader).val() === "True" &&  entrante === true) {
           num = "0077ACW";
     			makeCall(num);
         }
+        entrante = false;
         defaultCallState();
       });
       e.session.on('failed',function(e) {
@@ -176,6 +177,7 @@ $(function() {
         Sounds("","stop");
       });
       if(e.originator=="remote") {
+      	entrante = true;
       	if(e.request.headers.Origin) {
       	  originHeader = e.request.headers.Origin[0].raw;
       	}
@@ -232,7 +234,7 @@ $(function() {
 			  	var options = opt;
   				switch(origin) {
   					case "Dialer":
-  						var dialerTag = document.getElementById("auto_attend_Dialer");
+  						var dialerTag = document.getElementById("auto_attend_DIALER");
   						if(dialerTag.value === "True") {
   							$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
@@ -241,7 +243,7 @@ $(function() {
   						}
   		  			break;
   					case "Inbound":
-  		  			var inboundTag = document.getElementById("auto_attend_Inbound");
+  		  			var inboundTag = document.getElementById("auto_attend_INBOUND");
   		  			if(inboundTag.value === "True") {
   		  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
@@ -250,7 +252,7 @@ $(function() {
   						}
   		  			break;
 			  		case "ICS":
-  						var icsTag = document.getElementById("auto_attend_Ics");
+  						var icsTag = document.getElementById("auto_attend_ICS");
   						if(icsTag.value === "True") {
 			  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
@@ -300,6 +302,7 @@ $(function() {
     defaultCallState();
   });
   $("#call").click(function(e) {
+  	entrante = false;
     // esto es para enviar un Invite/llamada
     num = displayNumber.value;
     makeCall(num);
