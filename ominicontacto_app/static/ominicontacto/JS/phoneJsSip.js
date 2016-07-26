@@ -161,9 +161,9 @@ $(function() {
     });*/
 
     userAgent.on('newRTCSession', function(e) {
-
+		  var originHeader = "";
       e.session.on('ended',function() {
-      	if($("#auto_pause").val() === "True") {
+      	if($("#auto_pause").val() === "True" && $("#auto_attend_"+originHeader).val() === "True") {
           num = "0077ACW";
     			makeCall(num);
         }
@@ -177,7 +177,7 @@ $(function() {
       });
       if(e.originator=="remote") {
       	if(e.request.headers.Origin) {
-      	  var originHeader = e.request.headers.Origin[0].raw;
+      	  originHeader = e.request.headers.Origin[0].raw;
       	}
       	if (e.request.headers.Idcliente) {
       		var leadIdHeader = e.request.headers.Idcliente[0].raw;
@@ -232,7 +232,7 @@ $(function() {
 			  	var options = opt;
   				switch(origin) {
   					case "Dialer":
-  						var dialerTag = document.getElementById("auto_attend_dialer");
+  						var dialerTag = document.getElementById("auto_attend_Dialer");
   						if(dialerTag.value === "True") {
   							$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
@@ -241,7 +241,7 @@ $(function() {
   						}
   		  			break;
   					case "Inbound":
-  		  			var inboundTag = document.getElementById("auto_attend_inbound");
+  		  			var inboundTag = document.getElementById("auto_attend_Inbound");
   		  			if(inboundTag.value === "True") {
   		  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
@@ -250,7 +250,7 @@ $(function() {
   						}
   		  			break;
 			  		case "ICS":
-  						var icsTag = document.getElementById("auto_attend_ics");
+  						var icsTag = document.getElementById("auto_attend_Ics");
   						if(icsTag.value === "True") {
 			  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
