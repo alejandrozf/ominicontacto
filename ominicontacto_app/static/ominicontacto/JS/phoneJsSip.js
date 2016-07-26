@@ -217,12 +217,17 @@ $(function() {
         };
         atiendoNo.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
-          if($("#autopause").val() === "True") {
-          	
+          if($("#auto_pause").val() === "True") {
+          	num = "0077ACW";
+    				makeCall(num);
           }
-          userAgent.terminateSessions();
-          defaultCallState();
+          setTimeout(terminar(userAgent), 4000);
+          
         };
+        function terminar(ua) {
+          ua.terminateSessions();
+          defaultCallState();
+        }
         processOrigin(originHeader, options);
         function processOrigin(origin, opt) {
 			  	var options = opt;
