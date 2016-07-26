@@ -371,48 +371,49 @@ $(function() {
     }
   }
   function getBlankForm() {
-  	$.ajax({
-  	 	 url: '/contacto/nuevo/',
-       type: 'GET',
-       success: function (json) {
-       	 $("#dataView").html(json);
-       	 console.log(json);
-       },
-       error: function (jqXHR, textStatus, errorThrown) {
-         debugger;
-         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-       }
-  	 });
+    var url = '/contacto/list/';
+    $("#dataView").attr('src', url); 
   }
   function processCallid(callerid) {
-  	$.ajax({
-  	 	 url: '/contacto/'+callerid+'/update/',
-       type: 'GET',
-       success: function (json) {
-       	 $("#dataView").html(json);
-       	 console.log(json);
-       },
-       error: function (jqXHR, textStatus, errorThrown) {
-         debugger;
-         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-       }
-  	 });
+  	var url = "/contacto/list/"; //aca hay que cambiar la url por una que permita buscar por tel
+  	$("#dataView").attr('src', url);
   }
   function processLeadid(leadid) {
-  	debugger;
   	var url = "/contacto/"+leadid+"/update/"; 
   	$("#dataView").attr('src', url);
   }
   function processOrigin(origin) {
+  	var options = {'mediaConstraints': {'audio': true,'video': false}};
   	switch(origin) {
   		case "Dialer":
-  			
+  			var dialerTag = document.getElementById("auto_attend_dialer");
+  			if(dialerTag.value === true) {
+  			  session_incoming.answer(options);
+          setCallState("Connected", "orange");
+          Sounds("","stop");
+  			} else {
+  				
+  			}
   		  break;
   		case "Inbound":
-  		
+  		  var inboundTag = document.getElementById("auto_attend_inbound");
+  		  if(inboundTag.value === true) {
+  			  session_incoming.answer(options);
+          setCallState("Connected", "orange");
+          Sounds("","stop");
+  			} else {
+  				
+  			}
   		  break;
   		case "ICS":
-  			
+  			var icsTag = document.getElementById("auto_attend_ics");
+  			if(icsTag.value === true) {
+  			  session_incoming.answer(options);
+          setCallState("Connected", "orange");
+          Sounds("","stop");
+  			} else {
+  				
+  			}
   		  break;  
   	}
   }
