@@ -74,7 +74,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 
 # 'OML_QUEUE_FILENAME': donde se genera la config de queues. Asterisk debe estar configurado
 #  para hacer un include de este archivo
-# en el servidor del elastix debe estar en /etc/asterisk/extensions_fts_queues.conf
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
 
