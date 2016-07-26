@@ -375,7 +375,7 @@ $(function() {
     $("#dataView").attr('src', url); 
   }
   function processCallid(callerid) {
-  	var url = "/contacto/list/"; //aca hay que cambiar la url por una que permita buscar por tel
+  	var url = "/contacto/"+callerid+"/list/"; //aca hay que cambiar la url por una que permita buscar por tel
   	$("#dataView").attr('src', url);
   }
   function processLeadid(leadid) {
@@ -388,31 +388,28 @@ $(function() {
   		case "Dialer":
   			var dialerTag = document.getElementById("auto_attend_dialer");
   			if(dialerTag.value === true) {
+  				$("#modalReceiveCalls").modal('hide');
   			  session_incoming.answer(options);
           setCallState("Connected", "orange");
           Sounds("","stop");
-  			} else {
-  				
   			}
   		  break;
   		case "Inbound":
   		  var inboundTag = document.getElementById("auto_attend_inbound");
   		  if(inboundTag.value === true) {
+  		  	$("#modalReceiveCalls").modal('hide');
   			  session_incoming.answer(options);
           setCallState("Connected", "orange");
           Sounds("","stop");
-  			} else {
-  				
   			}
   		  break;
   		case "ICS":
   			var icsTag = document.getElementById("auto_attend_ics");
   			if(icsTag.value === true) {
+  				$("#modalReceiveCalls").modal('hide');
   			  session_incoming.answer(options);
           setCallState("Connected", "orange");
           Sounds("","stop");
-  			} else {
-  				
   			}
   		  break;  
   	}
