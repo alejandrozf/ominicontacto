@@ -217,6 +217,9 @@ $(function() {
         };
         atiendoNo.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
+          if($("#autopause").val() === "True") {
+          	
+          }
           userAgent.terminateSessions();
           defaultCallState();
         };
@@ -345,7 +348,7 @@ $(function() {
     //Mando el invite/llamada
      if(flagInit === true) {
        flagInit = false;
-       sesion = userAgent.call("sip:"+num+"	@172.16.20.219", opciones);
+       sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
      } else {
        sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
        setCallState("Calling.... "+num, "yellowgreen");
