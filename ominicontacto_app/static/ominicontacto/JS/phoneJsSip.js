@@ -35,7 +35,7 @@ $(function() {
     setSipStatus("greydot.png", "  No account", sipStatus);
   }
   $("#UserStatus").html("Online");
-  $("#logout").click(function() {
+  $("#sipLogout").click(function() {
     num = "0077LOGOUT";
     makeCall(num);
   });
@@ -166,8 +166,8 @@ $(function() {
       	if($("#auto_pause").val() === "True" && $("#auto_attend_"+originHeader).val() === "True" &&  entrante === true) {
           num = "0077ACW";
     			makeCall(num);
+    			entrante = false;
         }
-        entrante = false;
         defaultCallState();
       });
       e.session.on('failed',function(e) {
