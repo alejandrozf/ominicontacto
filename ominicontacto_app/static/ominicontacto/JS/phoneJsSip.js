@@ -172,10 +172,12 @@ $(function() {
         Sounds("","stop");
       });
       if(e.originator=="remote") {
-      	console.log(e.request);
-      	var originHeader = e.request.headers.Origin[0].raw;
-      	var leadIdHeader = e.request.headers.Idcliente[0].raw;
-      	//var cmpIdHeader =  e.request.headers.Idcamp[0].raw;
+      	if(e.request.headers.Origin) {
+      	  var originHeader = e.request.headers.Origin[0].raw;
+      	}
+      	if (e.request.headers.Idcliente) {
+      		var leadIdHeader = e.request.headers.Idcliente[0].raw;
+      	}
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
@@ -407,7 +409,7 @@ $(function() {
     $("#dataView").attr('src', url); 
   }
   function processCallid(callerid) {
-  	var url = "/contacto/"+callerid+"/list/"; //aca hay que cambiar la url por una que permita buscar por tel
+  	var url = "/contacto/"+callerid+"/list/";
   	$("#dataView").attr('src', url);
   }
   function processLeadid(leadid) {
