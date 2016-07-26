@@ -109,7 +109,7 @@ class QueueForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight')
+                  'servicelevel', 'strategy', 'weight', 'type', 'wait')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -134,7 +134,7 @@ class QueueUpdateForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight')
+                  'servicelevel', 'strategy', 'weight', 'type', 'wait')
 
         help_texts = {
             'timeout': """En segundos """,
