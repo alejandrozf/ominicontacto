@@ -754,7 +754,7 @@ class ContactoManager(models.Manager):
 
     def contactos_by_telefono(self, telefono):
         try:
-            return self.filter(telefono=telefono)
+            return self.filter(telefono__contains=telefono)
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "número télefonico"))

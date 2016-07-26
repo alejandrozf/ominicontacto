@@ -57,7 +57,7 @@ class ContactoListView(ListView):
 
 class ContactoTelefonoListView(ListView):
     model = Contacto
-    template_name = 'agente/contacto_list.html'
+    template_name = 'agente/contacto_list_telefono.html'
 
     def get_queryset(self):
         return Contacto.objects.contactos_by_telefono(self.kwargs['telefono'])
