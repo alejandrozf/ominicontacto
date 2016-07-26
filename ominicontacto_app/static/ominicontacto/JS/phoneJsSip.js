@@ -163,6 +163,10 @@ $(function() {
     userAgent.on('newRTCSession', function(e) {
 
       e.session.on('ended',function() {
+      	if($("#auto_pause").val() === "True") {
+          num = "0077ACW";
+    			makeCall(num);
+        }
         defaultCallState();
       });
       e.session.on('failed',function(e) {
@@ -217,17 +221,12 @@ $(function() {
         };
         atiendoNo.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
-          if($("#auto_pause").val() === "True") {
-          	num = "0077ACW";
-    				makeCall(num);
+          if($("#autopause").val() === "True") {
+          	
           }
-          setTimeout(terminar(userAgent), 4000);
-          
-        };
-        function terminar(ua) {
-          ua.terminateSessions();
+          userAgent.terminateSessions();
           defaultCallState();
-        }
+        };
         processOrigin(originHeader, options);
         function processOrigin(origin, opt) {
 			  	var options = opt;
