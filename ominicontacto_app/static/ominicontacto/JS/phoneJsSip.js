@@ -172,10 +172,12 @@ $(function() {
         Sounds("","stop");
       });
       if(e.originator=="remote") {
-      	console.log(e.request);
-      	var originHeader = e.request.headers.Origin[0].raw;
-      	var leadIdHeader = e.request.headers.Idcliente[0].raw;
-      	//var cmpIdHeader =  e.request.headers.Idcamp[0].raw;
+      	if(e.request.headers.Origin) {
+      	  var originHeader = e.request.headers.Origin[0].raw;
+      	}
+      	if (e.request.headers.Idcliente) {
+      		var leadIdHeader = e.request.headers.Idcliente[0].raw;
+      	}
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
@@ -190,7 +192,6 @@ $(function() {
         		getBlankForm();
         	}
         } 
-        processOrigin(originHeader);
         
         $("#callerid").text(fromUser);
         if($("#modalWebCall").is(':visible')) {
@@ -216,9 +217,45 @@ $(function() {
         };
         atiendoNo.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
+          if($("#autopause").val() === "True") {
+          	
+          }
           userAgent.terminateSessions();
           defaultCallState();
         };
+        processOrigin(originHeader, options);
+        function processOrigin(origin, opt) {
+			  	var options = opt;
+  				switch(origin) {
+  					case "Dialer":
+  						var dialerTag = document.getElementById("auto_attend_dialer");
+  						if(dialerTag.value === "True") {
+  							$("#modalReceiveCalls").modal('hide');
+  			  			session_incoming.answer(options);
+          			setCallState("Connected", "orange");
+          			Sounds("","stop");
+  						}
+  		  			break;
+  					case "Inbound":
+  		  			var inboundTag = document.getElementById("auto_attend_inbound");
+  		  			if(inboundTag.value === "True") {
+  		  				$("#modalReceiveCalls").modal('hide');
+  			  			session_incoming.answer(options);
+          			setCallState("Connected", "orange");
+          			Sounds("","stop");
+  						}
+  		  			break;
+			  		case "ICS":
+  						var icsTag = document.getElementById("auto_attend_ics");
+  						if(icsTag.value === "True") {
+			  				$("#modalReceiveCalls").modal('hide');
+  			  			session_incoming.answer(options);
+          			setCallState("Connected", "orange");
+          			Sounds("","stop");
+  						}	
+  		  			break;  
+  				}
+  			}
       } else {
         Sounds("Out", "play");
         var session_outgoing = e.session;
@@ -311,7 +348,7 @@ $(function() {
     //Mando el invite/llamada
      if(flagInit === true) {
        flagInit = false;
-       sesion = userAgent.call("sip:"+num+"	@172.16.20.219", opciones);
+       sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
      } else {
        sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
        setCallState("Calling.... "+num, "yellowgreen");
@@ -375,46 +412,11 @@ $(function() {
     $("#dataView").attr('src', url); 
   }
   function processCallid(callerid) {
-  	var url = "/contacto/list/"; //aca hay que cambiar la url por una que permita buscar por tel
+  	var url = "/contacto/"+callerid+"/list/";
   	$("#dataView").attr('src', url);
   }
   function processLeadid(leadid) {
   	var url = "/contacto/"+leadid+"/update/"; 
   	$("#dataView").attr('src', url);
-  }
-  function processOrigin(origin) {
-  	var options = {'mediaConstraints': {'audio': true,'video': false}};
-  	switch(origin) {
-  		case "Dialer":
-  			var dialerTag = document.getElementById("auto_attend_dialer");
-  			if(dialerTag.value === true) {
-  			  session_incoming.answer(options);
-          setCallState("Connected", "orange");
-          Sounds("","stop");
-  			} else {
-  				
-  			}
-  		  break;
-  		case "Inbound":
-  		  var inboundTag = document.getElementById("auto_attend_inbound");
-  		  if(inboundTag.value === true) {
-  			  session_incoming.answer(options);
-          setCallState("Connected", "orange");
-          Sounds("","stop");
-  			} else {
-  				
-  			}
-  		  break;
-  		case "ICS":
-  			var icsTag = document.getElementById("auto_attend_ics");
-  			if(icsTag.value === true) {
-  			  session_incoming.answer(options);
-          setCallState("Connected", "orange");
-          Sounds("","stop");
-  			} else {
-  				
-  			}
-  		  break;  
-  	}
   }
 });
