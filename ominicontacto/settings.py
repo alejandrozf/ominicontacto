@@ -136,6 +136,28 @@ OL_MAX_CANTIDAD_CONTACTOS = 60000
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+#==============================================================================
+# Settings de DEPLOY (para ser customizados en distintos deploys)
+#     Nota: Los settings que siguen, pueden (y algunos DEBEN) ser modificados
+#        en los distintos ambientes / deploys
+#==============================================================================
+
+#==============================================================================
+# DEPLOY -> Asterisk
+#==============================================================================
+
+
+
+OML_QUEUE_FILENAME = None
+"""Path completo (absoluto) al archivo donde se debe generar queues
+
+Ejemplos:
+
+.. code-block:: python
+
+    OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
+"""
+
 
 #==============================================================================
 # Import de `fts_web_settings_local`
@@ -151,3 +173,8 @@ except ImportError as e:
     print "#       `oml_settings_local`"
     print "# "
     raise Exception("No se pudo importar oml_settings_local")
+
+# ~~~~~ Check OML_QUEUE_FILENAME
+
+assert OML_QUEUE_FILENAME is not None, \
+    "Falta definir setting para OML_QUEUE_FILENAME"
