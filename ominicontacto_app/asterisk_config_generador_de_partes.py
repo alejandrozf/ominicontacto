@@ -125,10 +125,10 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
-        same => n,Set(__MONITOR_FILENAME=/var/spool/asterisk/monitor/q${EXTEN}-${STRFTIME(${EPOCH},,%Y%m%d-%H%M%S)}-${UNIQUEID})
-        same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{UNIQUEID} ^{MIXMONITOR_FILENAME})
+        same => n,Set(__MONITOR_FILENAME=/var/spool/asterisk/monitor/q${{EXTEN}}-${{STRFTIME(${{EPOCH}},,%Y%m%d-%H%M%S)}}-${{UNIQUEID}})
+        same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{{}}UNIQUEID}} ^{{}}MIXMONITOR_FILENAME}})
         same => n,SIPAddHeader(Origin:IN)
-        same => n,SIPAddHeader(IDCliente:${IDCliente})
+        same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,Queue({oml_queue_name},{oml_queue_wait},tT)
         """
 
