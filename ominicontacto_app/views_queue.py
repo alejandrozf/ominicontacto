@@ -22,7 +22,7 @@ class QueueCreateView(CreateView):
         self.object.eventwhencalled = True
         self.object.ringinuse = True
         self.object.setinterfacevar = True
-        #self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
+        self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
         self.object.save()
         return super(QueueCreateView, self).form_valid(form)
 
