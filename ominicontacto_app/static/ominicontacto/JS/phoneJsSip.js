@@ -174,6 +174,9 @@ $(function() {
 	        modifyUserStat = document.getElementById("UserStatus");
 	        modifyUserStat.className = "label label-warning";
 	        modifyUserStat.innerHTML = "ACW";
+	        flagPausa = true;
+	        parar1();
+	        inicio2();
         }
         defaultCallState();
       });
