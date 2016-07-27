@@ -101,7 +101,6 @@ class QueueManager(models.Manager):
         if number is None:
             return 1
         else:
-            print number
             return number['queue_asterisk__max'] + 1
 
 
