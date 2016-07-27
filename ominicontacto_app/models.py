@@ -93,10 +93,27 @@ class AgenteProfile(models.Model):
 #     name = models.CharField(max_length=64)
 
 
+class QueueManager(models.Manager):
+
+    def ultimo_queue_asterisk(self):
+        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
+
+        if number is None:
+            return 1
+        else:
+            return number['queue_asterisk__max'] + 1
+
+
 class Queue(models.Model):
     """
     Clase cola para el servidor de kamailio
     """
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = QueueManager()
 
     RINGALL = 'ringall'
     """ring all available channels until one answers (default)"""
@@ -126,6 +143,21 @@ class Queue(models.Model):
         (RRMEMORY, 'Rremory'),
     )
 
+    TYPE_ICS = 1
+    """Tipo de cola ICS"""
+
+    TYPE_DIALER = 2
+    """Tipo de cola DIALER"""
+
+    TYPE_INBOUND = 3
+    """Tipo de cola inbound"""
+
+    TYPE_CHOICES = (
+        (TYPE_ICS, 'ICS'),
+        (TYPE_DIALER, 'DIALER'),
+        (TYPE_INBOUND, 'INBOUND'),
+    )
+
     name = models.CharField(max_length=128, primary_key=True)
     timeout = models.BigIntegerField()
     retry = models.BigIntegerField()
@@ -139,6 +171,9 @@ class Queue(models.Model):
     ringinuse = models.BooleanField()
     setinterfacevar = models.BooleanField()
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
+    type = models.PositiveIntegerField(choices=TYPE_CHOICES)
+    wait = models.PositiveIntegerField()
+    queue_asterisk = models.PositiveIntegerField(unique=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
