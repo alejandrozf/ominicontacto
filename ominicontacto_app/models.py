@@ -93,10 +93,28 @@ class AgenteProfile(models.Model):
 #     name = models.CharField(max_length=64)
 
 
+class QueueManager(models.Manager):
+
+    def ultimo_queue_asterisk(self):
+        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
+
+        if number is None:
+            return 1
+        else:
+            print number
+            return number['queue_asterisk__max'] + 1
+
+
 class Queue(models.Model):
     """
     Clase cola para el servidor de kamailio
     """
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = QueueManager()
 
     RINGALL = 'ringall'
     """ring all available channels until one answers (default)"""
@@ -156,6 +174,7 @@ class Queue(models.Model):
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
     type = models.PositiveIntegerField(choices=TYPE_CHOICES)
     wait = models.PositiveIntegerField()
+    queue_asterisk = models.PositiveIntegerField(unique=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
