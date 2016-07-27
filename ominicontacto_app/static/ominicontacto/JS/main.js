@@ -53,6 +53,7 @@ $(function () {
 	     $("#modalWebCall").modal('show');
 	 });
 	 $("#Pause").click(function () {
+	 	debugger;
 	     if (flagPausa === false) {
 	         /*$.ajax({
 	             url: '/pauses/get',
@@ -83,7 +84,6 @@ $(function () {
 	         modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-success";
 	         var lastPause = modifyUserStat.innerHTML;
-	         modifyUserStat.innerHTML = "Online";
 	         flagPausa = false;
 	         var containerTag = document.getElementById("timers");
 	         var pausas = document.getElementsByClassName("pausa");
@@ -175,6 +175,7 @@ $(function () {
 	             containerTag.innerHTML += "&nbsp;";
 	             containerTag.appendChild(statusTag);
 	         }
+	         modifyUserStat.innerHTML = "Online";
 	         reinicio($("#horaP"), $("#minsP"), $("#segsP"));
 	     }
 	 });

@@ -43,7 +43,7 @@ $(function() {
     $("#modalCallList").modal('show');
   });
   $("#setPause").click(function() {
-    $.ajax({
+    /*$.ajax({
       url: '/status/setStat',
       type: 'POST',
       contentType: 'text/plain',
@@ -51,11 +51,11 @@ $(function() {
       error: function (jqXHR, textStatus, errorThrown) {
               console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
       }
-    });
+    });*/
     //console.log($("#pauseType").val());
     //num = "0077"+$("#pauseType").value.toUpperCase();
     console.log($("#pauseType").val());
-    num = "0077"+$("#pauseType").value.toUpperCase();
+    num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall(num);
   });
 
