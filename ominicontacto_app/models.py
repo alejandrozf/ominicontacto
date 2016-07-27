@@ -900,10 +900,14 @@ class Grabacion(models.Model):
     TYPE_INBOUND = 3
     """Tipo de llamada inbound"""
 
+    TYPE_MANUAL = 4
+    """Tipo de llamada manual"""
+
     TYPE_LLAMADA_CHOICES = (
         (TYPE_ICS, 'ICS'),
         (TYPE_DIALER, 'DIALER'),
         (TYPE_INBOUND, 'INBOUND'),
+        (TYPE_MANUAL, 'MANUAL'),
     )
     fecha = models.DateTimeField()
     tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
