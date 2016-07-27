@@ -172,7 +172,7 @@ class Queue(models.Model):
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
     type = models.PositiveIntegerField(choices=TYPE_CHOICES)
     wait = models.PositiveIntegerField()
-    #queue_asterisk = models.PositiveIntegerField(unique=True)
+    queue_asterisk = models.PositiveIntegerField(unique=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
