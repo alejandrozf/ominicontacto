@@ -54,7 +54,7 @@ $(function () {
 	 });
 	 $("#Pause").click(function () {
 	     if (flagPausa === false) {
-	         $.ajax({
+	         /*$.ajax({
 	             url: '/pauses/get',
 	             type: 'POST',
 	             contentType: 'application/json',
@@ -72,7 +72,7 @@ $(function () {
 	                 debugger;
 	                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	             }
-	         });
+	         });*/
 	         $("#modalPause").modal('show');
 	         $("#pauseTime").html();
 	     } else {
@@ -135,13 +135,13 @@ $(function () {
 	                 var labelMins = document.createElement("label");
 	                 var labelHora = document.createElement("label");
 	                 var statusTag = document.createElement("span");
-	                 labelSegs.id = "segs" + $("#pauseType").val();
-	                 labelMins.id = "mins" + $("#pauseType").val();
-	                 labelHora.id = "hora" + $("#pauseType").val();
+	                 labelSegs.id = "segs" + $("#UserStatus").html();
+	                 labelMins.id = "mins" + $("#UserStatus").html();
+	                 labelHora.id = "hora" + $("#UserStatus").html();
 	                 labelSegs.appendChild(ContainerSegs);
 	                 labelMins.appendChild(ContainerMins);
 	                 labelHora.appendChild(ContainerHora);
-	                 statusTag.id = $("#pauseType").val();
+	                 statusTag.id = $("#UserStatus").html();
 	                 statusTag.className = "label label-default pausa";
 	                 statusTag.appendChild(descTxtContainerTag);
 	                 statusTag.appendChild(labelHora);
@@ -160,13 +160,13 @@ $(function () {
 	             var labelMins = document.createElement("label");
 	             var labelHora = document.createElement("label");
 	             var statusTag = document.createElement("span");
-	             labelSegs.id = "segs" + $("#pauseType").val();
-	             labelMins.id = "mins" + $("#pauseType").val();
-	             labelHora.id = "hora" + $("#pauseType").val();
+	             labelSegs.id = "segs" + $("#UserStatus").html();
+	             labelMins.id = "mins" + $("#UserStatus").html();
+	             labelHora.id = "hora" + $("#UserStatus").html();
 	             labelSegs.appendChild(ContainerSegs);
 	             labelMins.appendChild(ContainerMins);
 	             labelHora.appendChild(ContainerHora);
-	             statusTag.id = $("#pauseType").val();
+	             statusTag.id = $("#UserStatus").html();
 	             statusTag.className = "label label-default pausa";
 	             statusTag.appendChild(descTxtContainerTag);
 	             statusTag.appendChild(labelHora);

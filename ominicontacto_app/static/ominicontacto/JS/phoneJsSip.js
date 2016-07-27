@@ -52,6 +52,8 @@ $(function() {
               console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
       }
     });
+    //console.log($("#pauseType").val());
+    //num = "0077"+$("#pauseType").value.toUpperCase();
     console.log($("#pauseType").val());
     num = "0077"+$("#pauseType").value.toUpperCase();
     makeCall(num);
@@ -143,22 +145,6 @@ $(function() {
       fila.appendChild(celda3);
       document.getElementById("tbodyContacts").appendChild(fila);
     });
-
-//CHAT, Todavia en desarrollo
-    /*$("#sendMessage").click(function() {
-      debugger;
-      var mensaje = $("#chatMessage").val();
-      user = $("#user").val();
-      if(mensaje !== "") {
-        $("#uri").val("2001");
-        if ($("#uri").val() === "2002") {
-          userAgent.sendMessage("sip:2001@172.16.20.219", mensaje);
-        }
-        if ($("#uri").val() === "2001") {
-          userAgent.sendMessage("sip:2002@172.16.20.219", mensaje);
-        }
-      }
-    });*/
 
     userAgent.on('newRTCSession', function(e) {
 		  var originHeader = "";
