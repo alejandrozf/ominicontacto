@@ -172,7 +172,7 @@ class Queue(models.Model):
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
     type = models.PositiveIntegerField(choices=TYPE_CHOICES)
     wait = models.PositiveIntegerField()
-    queue_asterisk = models.PositiveIntegerField(unique=True)
+    #queue_asterisk = models.PositiveIntegerField(unique=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
@@ -887,3 +887,36 @@ class MensajeEnviado(models.Model):
 
     class Meta:
         db_table = 'mensaje_enviado'
+
+
+class Grabacion(models.Model):
+
+    TYPE_ICS = 1
+    """Tipo de llamada ICS"""
+
+    TYPE_DIALER = 2
+    """Tipo de llamada DIALER"""
+
+    TYPE_INBOUND = 3
+    """Tipo de llamada inbound"""
+
+    TYPE_MANUAL = 4
+    """Tipo de llamada manual"""
+
+    TYPE_LLAMADA_CHOICES = (
+        (TYPE_ICS, 'ICS'),
+        (TYPE_DIALER, 'DIALER'),
+        (TYPE_INBOUND, 'INBOUND'),
+        (TYPE_MANUAL, 'MANUAL'),
+    )
+    fecha = models.DateTimeField()
+    tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
+    id_cliente = models.CharField(max_length=255)
+    tel_cliente = models.CharField(max_length=255)
+    grabacion = models.CharField(max_length=255)
+    sip_agente = models.IntegerField()
+    campana = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return "grabacion del agente con el sip {0} con el cliente {1}".format(
+            self.sip_agente, self.id_cliente)
