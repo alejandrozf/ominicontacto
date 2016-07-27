@@ -126,7 +126,8 @@ $(function () {
 	                 document.getElementById("segs" + lastPause).innerHTML = segsp;
 	                 lastPause = "";
 	             } else {
-	                 var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	                 //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	                 var descTxtContainerTag = document.createTextNode($("#UserStatus").val() + " ");
 	                 var ContainerSegs = document.createTextNode($("#segsP").html());
 	                 var ContainerMins = document.createTextNode($("#minsP").html());
 	                 var ContainerHora = document.createTextNode($("#horaP").html());
@@ -150,7 +151,8 @@ $(function () {
 	                 containerTag.appendChild(statusTag);
 	             }
 	         } else {
-	             var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	             //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	             var descTxtContainerTag = document.createTextNode($("#UserStatus").val() + " ");
 	             var ContainerSegs = document.createTextNode($("#segsP").html());
 	             var ContainerMins = document.createTextNode($("#minsP").html());
 	             var ContainerHora = document.createTextNode($("#horaP").html());
