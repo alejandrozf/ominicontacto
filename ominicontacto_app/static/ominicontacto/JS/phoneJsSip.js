@@ -47,15 +47,15 @@ $(function() {
       url: '/status/setStat',
       type: 'POST',
       contentType: 'text/plain',
-      content: 'pause='+$("#UserStatus").value,
+      content: 'pause='+$("#pauseType").value,
       error: function (jqXHR, textStatus, errorThrown) {
               console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
       }
     });
     //console.log($("#pauseType").val());
     //num = "0077"+$("#pauseType").value.toUpperCase();
-    console.log($("#UserStatus").val());
-    num = "0077"+$("#UserStatus").value.toUpperCase();
+    console.log($("#pauseType").val());
+    num = "0077"+$("#pauseType").value.toUpperCase();
     makeCall(num);
   });
 
