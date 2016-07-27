@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var config = null;var textSipStatus = null;var callSipStatus = null;var iconStatus = null;var userAgent = null;var sesion = null;var opciones = null;var eventHandlers = null; var flagTransf = false; var flagInit = true; var num = null; var entrante=false;
+var config = null;var textSipStatus = null;var callSipStatus = null;var iconStatus = null;var userAgent = null;var sesion = null;var opciones = null;var eventHandlers = null; var flagTransf = false; var flagInit = true; var num = null;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
 $(function() {
@@ -163,10 +163,17 @@ $(function() {
     userAgent.on('newRTCSession', function(e) {
 		  var originHeader = "";
       e.session.on('ended',function() {
-      	if($("#auto_pause").val() === "True" && $("#auto_attend_"+originHeader).val() === "True" &&  entrante === true) {
+      	if($("#auto_pause").val() === "True" && originHeader !== "") {
           num = "0077ACW";
     			makeCall(num);
     			entrante = false;
+    			debugger;
+    			// cod que se repite en main.js.. se deberia mejorar esto
+    			pauseButton.className = "btn btn-danger";
+	        pauseButton.innerHTML = "Resume";
+	        modifyUserStat = document.getElementById("UserStatus");
+	        modifyUserStat.className = "label label-warning";
+	        modifyUserStat.innerHTML = "ACW";
         }
         defaultCallState();
       });
