@@ -146,22 +146,6 @@ $(function() {
       document.getElementById("tbodyContacts").appendChild(fila);
     });
 
-//CHAT, Todavia en desarrollo
-    /*$("#sendMessage").click(function() {
-      debugger;
-      var mensaje = $("#chatMessage").val();
-      user = $("#user").val();
-      if(mensaje !== "") {
-        $("#uri").val("2001");
-        if ($("#uri").val() === "2002") {
-          userAgent.sendMessage("sip:2001@172.16.20.219", mensaje);
-        }
-        if ($("#uri").val() === "2001") {
-          userAgent.sendMessage("sip:2002@172.16.20.219", mensaje);
-        }
-      }
-    });*/
-
     userAgent.on('newRTCSession', function(e) {
 		  var originHeader = "";
       e.session.on('ended',function() {

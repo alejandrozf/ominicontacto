@@ -54,7 +54,7 @@ $(function () {
 	 });
 	 $("#Pause").click(function () {
 	     if (flagPausa === false) {
-	         $.ajax({
+	         /*$.ajax({
 	             url: '/pauses/get',
 	             type: 'POST',
 	             contentType: 'application/json',
@@ -72,7 +72,7 @@ $(function () {
 	                 debugger;
 	                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	             }
-	         });
+	         });*/
 	         $("#modalPause").modal('show');
 	         $("#pauseTime").html();
 	     } else {
