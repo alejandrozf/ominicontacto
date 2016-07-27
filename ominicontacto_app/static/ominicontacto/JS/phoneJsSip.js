@@ -180,6 +180,14 @@ $(function() {
         }
         defaultCallState();
       });
+      //dar solucion a la repeticion de codigo, esto ya existe en main.js
+      function parar1() {
+	     clearInterval(control1);
+	 		}
+	 		function inicio2() {
+	     control2 = setInterval(cronometro2, 1000);
+	 		}
+	 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       e.session.on('failed',function(e) {
         $("#aTransfer").prop('disabled', true);
         $("#bTransfer").prop('disabled', true);
