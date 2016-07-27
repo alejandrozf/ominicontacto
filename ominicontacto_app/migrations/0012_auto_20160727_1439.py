@@ -9,7 +9,7 @@ import django.db.models.manager
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0011_auto_20160726_2002'),
+        ('ominicontacto_app', '0012_auto_20160727_1020'),
     ]
 
     operations = [

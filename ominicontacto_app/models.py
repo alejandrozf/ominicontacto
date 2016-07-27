@@ -97,8 +97,7 @@ class QueueManager(models.Manager):
 
     def ultimo_queue_asterisk(self):
         number = Queue.objects.all().aggregate(Max('queue_asterisk'))
-
-        if number is None:
+        if number['queue_asterisk__max'] is None:
             return 1
         else:
             return number['queue_asterisk__max'] + 1
