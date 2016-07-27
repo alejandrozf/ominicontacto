@@ -55,7 +55,7 @@ $(function() {
     //console.log($("#pauseType").val());
     //num = "0077"+$("#pauseType").value.toUpperCase();
     console.log($("#pauseType").val());
-    num = "0077"+$("#pauseType").value.toUpperCase();
+    num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall(num);
   });
 
