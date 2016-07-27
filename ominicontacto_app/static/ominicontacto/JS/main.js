@@ -53,6 +53,7 @@ $(function () {
 	     $("#modalWebCall").modal('show');
 	 });
 	 $("#Pause").click(function () {
+	 	debugger;
 	     if (flagPausa === false) {
 	         /*$.ajax({
 	             url: '/pauses/get',
