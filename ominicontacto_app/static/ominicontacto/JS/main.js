@@ -127,7 +127,7 @@ $(function () {
 	                 lastPause = "";
 	             } else {
 	                 //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
-	                 var descTxtContainerTag = document.createTextNode($("#UserStatus").val() + " ");
+	                 var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	                 var ContainerSegs = document.createTextNode($("#segsP").html());
 	                 var ContainerMins = document.createTextNode($("#minsP").html());
 	                 var ContainerHora = document.createTextNode($("#horaP").html());
@@ -152,7 +152,7 @@ $(function () {
 	             }
 	         } else {
 	             //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
-	             var descTxtContainerTag = document.createTextNode($("#UserStatus").val() + " ");
+	             var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	             var ContainerSegs = document.createTextNode($("#segsP").html());
 	             var ContainerMins = document.createTextNode($("#minsP").html());
 	             var ContainerHora = document.createTextNode($("#horaP").html());
