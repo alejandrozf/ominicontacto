@@ -23,29 +23,6 @@ from ominicontacto_app.asterisk_config_generador_de_partes import (
 
 logger = _logging.getLogger(__name__)
 
-# def _safe(value):
-#    """Limpia texto usado para generar archivo de configuracion"""
-#    # FIXME: IMPLEMENTAR y usarlo!
-#    # TODO: ver si django no tiene algo armado
-#    return value
-
-
-# TODO: Las siguientes funciones deberán ser removidas en la medida que se
-# implemente el uso de los objetos que las reemplazan.
-
-
-def generar_dialplan(queue):
-    dialplan_config_creator = QueueDialplanConfigCreator()
-    return dialplan_config_creator._generar_dialplan(queue)
-
-
-def create_dialplan_config_file(queue=None, queues=None):
-    dialplan_config_creator = QueueDialplanConfigCreator()
-    dialplan_config_creator.create_dialplan(queue, queues)
-
-
-##############################################################################
-
 
 class QueueDialplanConfigCreator(object):
 

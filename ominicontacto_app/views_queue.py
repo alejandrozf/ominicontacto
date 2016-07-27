@@ -7,6 +7,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from ominicontacto_app.models import (Queue, QueueMember)
 from ominicontacto_app.forms import QueueForm, QueueMemberForm, QueueUpdateForm
+from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
+                                                       RestablecerDialplanError)
 
 
 class QueueCreateView(CreateView):
@@ -22,7 +24,6 @@ class QueueCreateView(CreateView):
         self.object.setinterfacevar = True
         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
         self.object.save()
-
         return super(QueueCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -36,6 +37,25 @@ class QueueMemberCreateView(CreateView):
     model = QueueMember
     form_class = QueueMemberForm
     template_name = 'queue/queue_member.html'
+
+    def get_object(self, queryset=None):
+        return Queue.objects.get(name=self.kwargs['pk_queue'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):
         context = super(
