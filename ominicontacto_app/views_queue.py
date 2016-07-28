@@ -113,11 +113,24 @@ class QueueDeleteView(DeleteView):
     model = Queue
     template_name = 'queue/delete_queue.html'
 
-    def post(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        # Eliminamos el registro de la tabla de asterisk en mysql
         servicio_asterisk = AsteriskService()
         servicio_asterisk.delete_cola_asterisk(self.object)
         return redirect(self.get_success_url())
+
+        message = '<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la queue.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
         return Queue.objects.get(name=self.kwargs['pk_queue'])
