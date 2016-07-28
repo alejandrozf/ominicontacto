@@ -8,8 +8,8 @@ import MySQLdb
 class AsteriskService():
 
     def _conectar_base_datos(self):
-        connection = MySQLdb.connect(database='asterisk', user='omnileads',
-                                     password='admin123', host='172.16.20.222'
+        connection = MySQLdb.connect(db='asterisk', user='omnileads',
+                                     passwd='admin123', host='172.16.20.222'
                                      )
         cursor = connection.cursor()
         return connection, cursor

@@ -9,6 +9,7 @@ from ominicontacto_app.models import (Queue, QueueMember)
 from ominicontacto_app.forms import QueueForm, QueueMemberForm, QueueUpdateForm
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
+from ominicontacto_app.services.asterisk_service import AsteriskService
 
 
 class QueueCreateView(CreateView):
@@ -24,6 +25,8 @@ class QueueCreateView(CreateView):
         self.object.setinterfacevar = True
         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
         self.object.save()
+        servicio_asterisk = AsteriskService()
+        servicio_asterisk.crear_agente_kamailio(self.object)
         return super(QueueCreateView, self).form_valid(form)
 
     def get_success_url(self):
