@@ -119,6 +119,8 @@ class QueueDeleteView(DeleteView):
         # Eliminamos el registro de la tabla de asterisk en mysql
         servicio_asterisk = AsteriskService()
         servicio_asterisk.delete_cola_asterisk(self.object)
+        # realizamos la eliminacion de la queue
+        self.object.delete()
         # actualizamos el archivo de dialplan
         activacion_queue_service = ActivacionQueueService()
         try:
@@ -132,7 +134,7 @@ class QueueDeleteView(DeleteView):
                 messages.ERROR,
                 message,
             )
-        self.object.delete()
+
 
         message = '<strong>Operación Exitosa!</strong>\
         Se llevó a cabo con éxito la eliminación de la queue.'
