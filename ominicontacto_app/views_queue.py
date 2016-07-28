@@ -26,7 +26,7 @@ class QueueCreateView(CreateView):
         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
         self.object.save()
         servicio_asterisk = AsteriskService()
-        servicio_asterisk.crear_agente_kamailio(self.object)
+        servicio_asterisk.insertar_cola_asterisk(self.object)
         return super(QueueCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -111,6 +111,12 @@ class QueueDeleteView(DeleteView):
     """
     model = Queue
     template_name = 'queue/delete_queue.html'
+
+    def form_valid(self, form):
+        self.object = self.get_object()
+        servicio_asterisk = AsteriskService()
+        servicio_asterisk.delete_cola_asterisk(self.object)
+        return super(QueueDeleteView, self).form_valid(form)
 
     def get_object(self, queryset=None):
         return Queue.objects.get(name=self.kwargs['pk_queue'])

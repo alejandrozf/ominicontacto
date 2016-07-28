@@ -19,9 +19,9 @@ class AsteriskService():
         cursor = connection.cursor()
         return connection, cursor
 
-    def crear_agente_kamailio(self, queue):
+    def insertar_cola_asterisk(self, queue):
         """
-        crear usuario
+        insert cola en asterisk
         """
         connection, cursor = self._conectar_base_datos()
 
@@ -31,6 +31,24 @@ class AsteriskService():
             params = {
                 'description': queue.name,
                 'destdial': '0077' + str(queue.queue_asterisk)
+            }
+            cursor.execute(sql, params)
+            connection.commit()
+            connection.close()
+        except MySQLdb.DatabaseError, e:
+            print "error base de datos"
+            connection.close()
+
+    def delete_cola_asterisk(self, queue):
+        """
+        delete cola en asterisk
+        """
+        connection, cursor = self._conectar_base_datos()
+
+        try:
+            sql = """DELETE FROM miscdests WHERE description=%(description)s"""
+            params = {
+                'description': queue.name
             }
             cursor.execute(sql, params)
             connection.commit()
