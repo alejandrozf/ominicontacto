@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from ominicontacto_app.models import (Queue, QueueMember)
 from ominicontacto_app.forms import QueueForm, QueueMemberForm, QueueUpdateForm
@@ -120,7 +119,7 @@ class QueueDeleteView(DeleteView):
         # Eliminamos el registro de la tabla de asterisk en mysql
         servicio_asterisk = AsteriskService()
         servicio_asterisk.delete_cola_asterisk(self.object)
-        return redirect(self.get_success_url())
+        self.object.delete()
 
         message = '<strong>Operación Exitosa!</strong>\
         Se llevó a cabo con éxito la eliminación de la queue.'
