@@ -155,6 +155,8 @@ DATABASE_MYSQL_ASTERISK = {
 }
 
 OML_QUEUE_FILENAME = None
+OML_QUEUE_HOSTNAME = "freetech@172.16.20.222"
+OML_QUEUE_REMOTEPATH = "/etc/asterisk/"
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
@@ -162,6 +164,9 @@ Ejemplos:
 .. code-block:: python
 
     OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
+    OML_QUEUE_HOSTNAME = "root@192.168.1.23"
+    OML_QUEUE_HOSTNAME = "/etc/asterisk/"
+
 """
 
 
@@ -185,6 +190,16 @@ except ImportError as e:
 
 assert OML_QUEUE_FILENAME is not None, \
     "Falta definir setting para OML_QUEUE_FILENAME"
+
+# ~~~~~ Check OML_QUEUE_FILENAME
+
+assert OML_QUEUE_HOSTNAME is not None, \
+    "Falta definir setting para OML_QUEUE_HOSTNAME"
+
+# ~~~~~ Check OML_QUEUE_FILENAME
+
+assert OML_QUEUE_REMOTEPATH is not None, \
+    "Falta definir setting para OML_QUEUE_REMOTEPATH"
 
 # ~~~~~ Check ASTERISK
 
