@@ -119,6 +119,19 @@ class QueueDeleteView(DeleteView):
         # Eliminamos el registro de la tabla de asterisk en mysql
         servicio_asterisk = AsteriskService()
         servicio_asterisk.delete_cola_asterisk(self.object)
+        # actualizamos el archivo de dialplan
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
         self.object.delete()
 
         message = '<strong>Operación Exitosa!</strong>\
