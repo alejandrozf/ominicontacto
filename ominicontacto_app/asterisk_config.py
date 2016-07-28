@@ -77,6 +77,8 @@ class QueueDialplanConfigCreator(object):
         else:
             queues = self._obtener_todas_para_generar_dialplan()
         dialplan = []
+        # agrego linea inicial que lleva [from-queue-fts] el archivo de asterisk
+        dialplan.append("[from-queue-fts]")
         for queue in queues:
             logger.info("Creando dialplan para queue %s", queue.name)
             try:
