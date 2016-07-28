@@ -60,7 +60,6 @@ $(function() {
     console.log($("#pauseType").val());
     num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall(num);
-    flagPausa = true;
   });
 
   $(".key").click(function(e) {
