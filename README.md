@@ -77,6 +77,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
 
+# parametros de conexion con base de datos mysql de asterisk
+# modificar esto parametros con la conexion de base de datos correcta para que no tire error la ejecucion
+DATABASE_MYSQL_ASTERISK = {
+    'BASE': None,
+    'HOST': None,
+    'USER': None,
+    'PASSWORD': None,
+}
+
 ```
 
 ### Configuracion ssl para desarrollo ###
