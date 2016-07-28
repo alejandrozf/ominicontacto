@@ -116,7 +116,7 @@ class QueueDeleteView(DeleteView):
         self.object = self.get_object()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.delete_cola_asterisk(self.object)
-        return self.form_valid()
+        return redirect(self.get_success_url())
 
     def get_object(self, queryset=None):
         return Queue.objects.get(name=self.kwargs['pk_queue'])
