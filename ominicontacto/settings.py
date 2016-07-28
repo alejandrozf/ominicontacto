@@ -146,7 +146,13 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # DEPLOY -> Asterisk
 #==============================================================================
 
-
+# parametros de conexion con base de datos mysql de asterisk
+DATABASE_MYSQL_ASTERISK = {
+    'BASE': None,
+    'HOST': None,
+    'USER': None,
+    'PASSWORD': None,
+}
 
 OML_QUEUE_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
@@ -157,6 +163,7 @@ Ejemplos:
 
     OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
 """
+
 
 
 #==============================================================================
@@ -178,3 +185,13 @@ except ImportError as e:
 
 assert OML_QUEUE_FILENAME is not None, \
     "Falta definir setting para OML_QUEUE_FILENAME"
+
+# ~~~~~ Check ASTERISK
+
+for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
+    assert key in DATABASE_MYSQL_ASTERISK, \
+        "Falta key '{0}' en configuracion de la base de datos de ASTERISK".\
+            format(key)
+    assert DATABASE_MYSQL_ASTERISK[key] is not None, \
+        "Falta key '{0}' en configuracion de la base de datos ASTERISK".\
+            format(key)
