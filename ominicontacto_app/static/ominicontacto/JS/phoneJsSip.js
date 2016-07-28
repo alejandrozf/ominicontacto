@@ -22,6 +22,9 @@ $(function() {
     if (flagPausa === true) {
     num = "0077UNPAUSE";
     makeCall(num);
+    flagPausa === false;
+    } else {
+    	flagPausa === true;
     }
   });
   if($("#sipExt").val() && $("#sipSec").val()) {
@@ -151,10 +154,10 @@ $(function() {
 		  var originHeader = "";
       e.session.on('ended',function() {
       	if($("#auto_pause").val() === "True" && originHeader !== "") {
+      		debugger;
           num = "0077ACW";
     			makeCall(num);
-    			entrante = false;
-    			debugger;
+    			entrante = false;    			
     			// cod que se repite en main.js.. se deberia mejorar esto
     			pauseButton.className = "btn btn-danger";
 	        pauseButton.innerHTML = "Resume";
