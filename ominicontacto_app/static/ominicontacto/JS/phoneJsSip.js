@@ -57,6 +57,7 @@ $(function() {
     console.log($("#pauseType").val());
     num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall(num);
+    flagPausa = true;
   });
 
   $(".key").click(function(e) {
@@ -173,6 +174,35 @@ $(function() {
 	 		function inicio2() {
 	     control2 = setInterval(cronometro2, 1000);
 	 		}
+      function cronometro2() {
+	     if (centesimasP < 59) {
+	         centesimasP++;
+	         if (centesimasP < 10) {
+	             centesimasP = "0" + centesimasP;
+	         }
+	         $("#segsP").html(":" + centesimasP);
+	     }
+	     if (centesimasP == 59) {
+	         centesimasP = -1;
+	     }
+	     if (centesimasP == 0) {
+	         segundosP++;
+	         if (segundosP < 10) {
+	             segundosP = "0" + segundosP;
+	         }
+	         $("#minsP").html(":" + segundosP);
+	     }
+	     if (segundosP == 59) {
+	         segundosP = -1;
+	     }
+	     if ((centesimasP == 0) && (segundosP == 0)) {
+	         minutosP++;
+	         if (minutosP < 10) {
+	             minutosP = "0" + minutosP;
+	         }
+	         $("#horaP").html("" + minutosP);
+	     }
+	 }
 	 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       e.session.on('failed',function(e) {
         $("#aTransfer").prop('disabled', true);
