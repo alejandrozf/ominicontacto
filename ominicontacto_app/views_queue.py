@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from ominicontacto_app.models import (Queue, QueueMember)
 from ominicontacto_app.forms import QueueForm, QueueMemberForm, QueueUpdateForm
