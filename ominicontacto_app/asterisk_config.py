@@ -112,8 +112,10 @@ class QueueDialplanConfigCreator(object):
 
 
 class ConfigFile(object):
-    def __init__(self, filename):
+    def __init__(self, filename, hostname, remote_path):
         self._filename = filename
+        self._hostname = hostname
+        self._remote_path = remote_path
 
     def write(self, contenidos):
         tmp_fd, tmp_filename = tempfile.mkstemp()
@@ -137,8 +139,14 @@ class ConfigFile(object):
                 logger.exception("Error al intentar borrar temporal %s",
                                  tmp_filename)
 
+    def copy_asterisk(self):
+        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
+                                                          self._remote_path])])
+
 
 class QueueConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_QUEUE_FILENAME.strip()
-        super(QueueConfigFile, self).__init__(filename)
+        hostname = settings.OML_QUEUE_HOSTNAME
+        remote_path = settings.OML_QUEUE_REMOTEPATH
+        super(QueueConfigFile, self).__init__(filename, hostname, remote_path)

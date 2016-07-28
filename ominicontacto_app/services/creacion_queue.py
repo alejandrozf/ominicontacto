@@ -9,7 +9,8 @@ from __future__ import unicode_literals
 import logging
 
 from ominicontacto_app.errors import OmlError
-from ominicontacto_app.asterisk_config import QueueDialplanConfigCreator
+from ominicontacto_app.asterisk_config import QueueDialplanConfigCreator,\
+    QueueConfigFile
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,7 @@ class ActivacionQueueService(object):
 
     def __init__(self):
         self.dialplan_config_creator = QueueDialplanConfigCreator()
+        self.config_file = QueueConfigFile()
 
     def _generar_y_recargar_configuracion_asterisk(self):
         proceso_ok = True
@@ -40,6 +42,8 @@ class ActivacionQueueService(object):
 
         if not proceso_ok:
             raise(RestablecerDialplanError(mensaje_error))
+        else:
+            self.config_file.copy_asterisk()
 
     def activar(self):
         self._generar_y_recargar_configuracion_asterisk()
