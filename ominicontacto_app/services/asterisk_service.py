@@ -4,13 +4,18 @@ from __future__ import unicode_literals
 
 import MySQLdb
 
+from django.conf import settings
+
 
 class AsteriskService():
 
     def _conectar_base_datos(self):
-        connection = MySQLdb.connect(db='asterisk', user='omnileads',
-                                     passwd='admin123', host='172.16.20.222'
-                                     )
+        connection = MySQLdb.connect(
+            db=settings.DATABASE_MYSQL_ASTERISK['BASE'],
+            user=settings.DATABASE_MYSQL_ASTERISK['USER'],
+            passwd=settings.DATABASE_MYSQL_ASTERISK['PASSWORD'],
+            host=settings.DATABASE_MYSQL_ASTERISK['HOST']
+        )
         cursor = connection.cursor()
         return connection, cursor
 
