@@ -112,11 +112,11 @@ class QueueDeleteView(DeleteView):
     model = Queue
     template_name = 'queue/delete_queue.html'
 
-    def form_valid(self, form):
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.delete_cola_asterisk(self.object)
-        return super(QueueDeleteView, self).form_valid(form)
+        return self.form_valid()
 
     def get_object(self, queryset=None):
         return Queue.objects.get(name=self.kwargs['pk_queue'])
