@@ -269,7 +269,7 @@ $(function() {
         function processOrigin(origin, opt) {
 			  	var options = opt;
   				switch(origin) {
-  					case "Dialer":
+  					case "DIALER":
   						var dialerTag = document.getElementById("auto_attend_DIALER");
   						if(dialerTag.value === "True") {
   							$("#modalReceiveCalls").modal('hide');
@@ -278,7 +278,7 @@ $(function() {
           			Sounds("","stop");
   						}
   		  			break;
-  					case "Inbound":
+  					case "INBOUND":
   		  			var inboundTag = document.getElementById("auto_attend_INBOUND");
   		  			if(inboundTag.value === "True") {
   		  				$("#modalReceiveCalls").modal('hide');
