@@ -34,7 +34,7 @@ class ActivacionQueueService(object):
         try:
             self.dialplan_config_creator.create_dialplan()
         except:
-            logger.exception("ActivacionCampanaTemplateService: error al "
+            logger.exception("ActivacionQueueService: error al "
                              "intentar dialplan_config_creator()")
 
             proceso_ok = False
@@ -44,15 +44,15 @@ class ActivacionQueueService(object):
         try:
             ret = self.reload_asterisk_config.reload_config()
             if ret != 0:
-                proceso_ok = False
+                #proceso_ok = False
                 mensaje_error += ("Hubo un inconveniente al intenar recargar "
                                   "la configuracion de Asterisk. ")
         except:
             logger.exception("ActivacionQueueService: error al "
                              " intentar reload_config()")
             proceso_ok = False
-            mensaje_error += ("Hubo un inconveniente al crear el archivo de "
-                              "configuracion de colas de Asterisk. ")
+            mensaje_error += ("Hubo un inconveniente al realizar el reload "
+                              " de Asterisk. ")
 
         if not proceso_ok:
             raise(RestablecerDialplanError(mensaje_error))
