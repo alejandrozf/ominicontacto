@@ -169,6 +169,15 @@ Ejemplos:
 
 """
 
+OML_RELOAD_CMD = None
+"""Comando a ejecutar para hacer reload de Asterisk
+
+Ejemplo:
+
+.. code-block:: python
+
+    FTS_RELOAD_CMD = ["/usr/bin/asterisk", "-x", "reload"]
+"""
 
 
 #==============================================================================
@@ -210,3 +219,8 @@ for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
     assert DATABASE_MYSQL_ASTERISK[key] is not None, \
         "Falta key '{0}' en configuracion de la base de datos ASTERISK".\
             format(key)
+
+# ~~~~~ Check OML_RELOAD_CMD
+
+assert OML_RELOAD_CMD is not None, \
+    "Falta definir setting para OML_RELOAD_CMD"
