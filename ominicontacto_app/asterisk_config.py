@@ -153,9 +153,6 @@ class AsteriskConfigReloader(object):
             stdout_file.close()
             stderr_file.close()
 
-    def reload_asterisk(self):
-        subprocess.call(settings.OML_RELOAD_CMD)
-
 
 class ConfigFile(object):
     def __init__(self, filename, hostname, remote_path):
