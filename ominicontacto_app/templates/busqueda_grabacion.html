@@ -5,6 +5,21 @@
 
 <div class="col-md-3">
 
+    <form role="form" method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>{{ form.as_table }}</td>
+                <td>
+                    <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                        Buscar
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="col-md-6">
     <table class="table table-bordered">
         <thead>
             <tr>

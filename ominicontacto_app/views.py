@@ -20,7 +20,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
-    AgenteProfileForm, BusquedaContactoForm
+    AgenteProfileForm, GrabacionBusquedaForm
 )
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
@@ -250,7 +250,7 @@ def blanco_view(request):
 
 
 class BusquedaGrabacionFormView(FormView):
-    form_class = BusquedaContactoForm
+    form_class = GrabacionBusquedaForm
     template_name = 'busqueda_grabacion.html'
 
     def get(self, request, *args, **kwargs):
