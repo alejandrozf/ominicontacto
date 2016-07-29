@@ -50,7 +50,7 @@ class ActivacionQueueService(object):
         except:
             logger.exception("ActivacionQueueService: error al "
                              " intentar reload_config()")
-            proceso_ok = False
+            #proceso_ok = False
             mensaje_error += ("Hubo un inconveniente al realizar el reload "
                               " de Asterisk. ")
 
