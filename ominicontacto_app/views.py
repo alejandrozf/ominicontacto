@@ -12,12 +12,16 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView, CreateView, UpdateView, DeleteView, FormView
+)
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa, Contacto)
-from ominicontacto_app.forms import (CustomUserCreationForm,
-                                     CustomUserChangeForm, UserChangeForm,
-                                     AgenteProfileForm)
+    User, AgenteProfile, Modulo, Grupo, Pausa, Contacto, Grabacion
+)
+from ominicontacto_app.forms import (
+    CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
+    AgenteProfileForm, BusquedaContactoForm
+)
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
 from services.sms_services import SmsManager
@@ -243,3 +247,14 @@ def mensajes_recibidos_view(request):
 def blanco_view(request):
     return render_to_response('blanco.html',
                               context_instance=RequestContext(request))
+
+
+class BusquedaGrabacionFormView(FormView):
+    form_class = BusquedaContactoForm
+    template_name = 'busqueda_grabacion.html'
+
+    def get(self, request, *args, **kwargs):
+        listado_de_grabaciones = Grabacion.objects.all()
+        return self.render_to_response(self.get_context_data(
+            listado_de_grabaciones=listado_de_grabaciones))
+
