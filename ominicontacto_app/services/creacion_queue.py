@@ -44,6 +44,7 @@ class ActivacionQueueService(object):
         try:
             ret = self.reload_asterisk_config.reload_config()
             if ret != 0:
+                print "error en reload asterisk"
                 #proceso_ok = False
                 mensaje_error += ("Hubo un inconveniente al intenar recargar "
                                   "la configuracion de Asterisk. ")
@@ -51,6 +52,7 @@ class ActivacionQueueService(object):
             logger.exception("ActivacionQueueService: error al "
                              " intentar reload_config()")
             #proceso_ok = False
+            print "except reload "
             mensaje_error += ("Hubo un inconveniente al realizar el reload "
                               " de Asterisk. ")
 
