@@ -155,6 +155,8 @@ DATABASE_MYSQL_ASTERISK = {
 }
 
 OML_QUEUE_FILENAME = None
+OML_QUEUE_HOSTNAME = "freetech@172.16.20.222"
+OML_QUEUE_REMOTEPATH = "/etc/asterisk/"
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
@@ -162,8 +164,20 @@ Ejemplos:
 .. code-block:: python
 
     OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
+    OML_QUEUE_HOSTNAME = "root@192.168.1.23"
+    OML_QUEUE_HOSTNAME = "/etc/asterisk/"
+
 """
 
+OML_RELOAD_CMD = None
+"""Comando a ejecutar para hacer reload de Asterisk
+
+Ejemplo:
+
+.. code-block:: python
+
+    FTS_RELOAD_CMD = ["/usr/bin/asterisk", "-x", "reload"]
+"""
 
 
 #==============================================================================
@@ -186,6 +200,16 @@ except ImportError as e:
 assert OML_QUEUE_FILENAME is not None, \
     "Falta definir setting para OML_QUEUE_FILENAME"
 
+# ~~~~~ Check OML_QUEUE_FILENAME
+
+assert OML_QUEUE_HOSTNAME is not None, \
+    "Falta definir setting para OML_QUEUE_HOSTNAME"
+
+# ~~~~~ Check OML_QUEUE_FILENAME
+
+assert OML_QUEUE_REMOTEPATH is not None, \
+    "Falta definir setting para OML_QUEUE_REMOTEPATH"
+
 # ~~~~~ Check ASTERISK
 
 for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
@@ -195,3 +219,8 @@ for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
     assert DATABASE_MYSQL_ASTERISK[key] is not None, \
         "Falta key '{0}' en configuracion de la base de datos ASTERISK".\
             format(key)
+
+# ~~~~~ Check OML_RELOAD_CMD
+
+assert OML_RELOAD_CMD is not None, \
+    "Falta definir setting para OML_RELOAD_CMD"

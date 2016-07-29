@@ -112,11 +112,39 @@ class QueueDeleteView(DeleteView):
     model = Queue
     template_name = 'queue/delete_queue.html'
 
-    def form_valid(self, form):
+    def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        # Eliminamos el registro de la tabla de asterisk en mysql
         servicio_asterisk = AsteriskService()
         servicio_asterisk.delete_cola_asterisk(self.object)
-        return super(QueueDeleteView, self).form_valid(form)
+        # realizamos la eliminacion de la queue
+        self.object.delete()
+        # actualizamos el archivo de dialplan
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+
+
+        message = '<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la queue.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
         return Queue.objects.get(name=self.kwargs['pk_queue'])

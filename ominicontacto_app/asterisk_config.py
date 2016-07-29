@@ -77,6 +77,8 @@ class QueueDialplanConfigCreator(object):
         else:
             queues = self._obtener_todas_para_generar_dialplan()
         dialplan = []
+        # agrego linea inicial que lleva [from-queue-fts] el archivo de asterisk
+        dialplan.append("[from-queue-fts]")
         for queue in queues:
             logger.info("Creando dialplan para queue %s", queue.name)
             try:
@@ -111,9 +113,52 @@ class QueueDialplanConfigCreator(object):
         self._dialplan_config_file.write(dialplan)
 
 
+class AsteriskConfigReloader(object):
+
+    def reload_config(self):
+        """Realiza reload de configuracion de Asterisk
+
+        :returns: int -- exit status de proceso ejecutado.
+                  0 (cero) si fue exitoso, otro valor si se produjo
+                  un error
+        """
+        stdout_file = tempfile.TemporaryFile()
+        stderr_file = tempfile.TemporaryFile()
+
+        try:
+            subprocess.check_call(settings.OML_RELOAD_CMD,
+                                  stdout=stdout_file, stderr=stderr_file)
+            logger.info("Reload de configuracion de Asterisk fue OK")
+            return 0
+        except subprocess.CalledProcessError, e:
+            logger.warn("Exit status erroneo: %s", e.returncode)
+            logger.warn(" - Comando ejecutado: %s", e.cmd)
+            try:
+                stdout_file.seek(0)
+                stderr_file.seek(0)
+                stdout = stdout_file.read().splitlines()
+                for line in stdout:
+                    if line:
+                        logger.warn(" STDOUT> %s", line)
+                stderr = stderr_file.read().splitlines()
+                for line in stderr:
+                    if line:
+                        logger.warn(" STDERR> %s", line)
+            except:
+                logger.exception("Error al intentar reporter STDERR y STDOUT")
+
+            return e.returncode
+
+        finally:
+            stdout_file.close()
+            stderr_file.close()
+
+
 class ConfigFile(object):
-    def __init__(self, filename):
+    def __init__(self, filename, hostname, remote_path):
         self._filename = filename
+        self._hostname = hostname
+        self._remote_path = remote_path
 
     def write(self, contenidos):
         tmp_fd, tmp_filename = tempfile.mkstemp()
@@ -137,8 +182,14 @@ class ConfigFile(object):
                 logger.exception("Error al intentar borrar temporal %s",
                                  tmp_filename)
 
+    def copy_asterisk(self):
+        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
+                                                          self._remote_path])])
+
 
 class QueueConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_QUEUE_FILENAME.strip()
-        super(QueueConfigFile, self).__init__(filename)
+        hostname = settings.OML_QUEUE_HOSTNAME
+        remote_path = settings.OML_QUEUE_REMOTEPATH
+        super(QueueConfigFile, self).__init__(filename, hostname, remote_path)
