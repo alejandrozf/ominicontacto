@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/phone.css' %}"></link>
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/webchat.css' %}"></link>
-
+		<link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -151,6 +151,9 @@
 </audio>
 <audio id="RingOut">
   <source id="fuenteOut" src="{% static 'ominicontacto/ring/tonoallamar.mp3' %}" type="audio/mpeg">
+</audio>
+<audio id="RingBusy">
+  <source id="fuenteOut" src="{% static 'ominicontacto/ring/busy.mp3' %}" type="audio/mpeg">
 </audio>
 </div>
 </div>
@@ -334,32 +337,55 @@
       <div class="col-md-3">
         <label class="barInfo">&nbsp;Estado</label>
         <span class="label label-success" id="UserStatus"></span>
-        <button type="button" id="Pause" class="btn btn-warning">Pause</button>
-        <button type="button" id="sipLogout" class="btn btn-info">End Session</button>
+        <button type="button" id="Pause" class="btn btn-warning btn-sm">Pause</button>
+        <button type="button" id="sipLogout" class="btn btn-info btn-sm">End Session</button>
       </div>
-      <div class="col-md-4">
         <input type="hidden" value="{{ user.get_agente_profile.sip_extension }}" id="sipExt"/>
         <input value="{{ user.get_agente_profile.sip_password}}" id="sipSec" type="hidden"/>
       </div>
-      </div>
     </div>
-  </div><br><br><br><br>
-  <div class="row">
-    <div class="col-md-12">&nbsp;
-      <!--<div id="crm" class="crm">
-          {% block content %}
-          {% endblock %}
-      </div>-->
+  </div><br><br><br><br><br>
+  <div class="container">
+
+<div class="row">
+    <div class="col-md-10">&nbsp;
     <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
     <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
     <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_ics }}" id="auto_attend_ICS"/>
     <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_pause }}" id="auto_pause"/>
-
     <iframe id="dataView" class="crm" name="crm">
-
     </iframe>
     </div>
-  </div>
+    <div class="col-md-2">
+    <fieldset>
+    <legend>Agenda</legend>
+      <div class="container-fluid">
+				<div class="row">
+				  <div class='input-group date' id='fechaAgenda' data-date-format="DD/MM/YYYY">
+              <input type='text' class="form-control" id="ctlfechaAgenda" name="txtFechaAgenda" required="required"/>
+              <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+              </span>
+          </div><br>
+          <div class='input-group date'>
+            <input type='text' id='horaAgenda' class="form-control" name="HoraAgenda" />
+            <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+            </span>
+          </div>
+				</div>
+				<div class="row">
+				<br>
+				  <textarea cols="14" rows="3" name='' id="calendarSubject" placeholder="Descripcion aqui" class="form-control" required></textarea>
+				</div>
+				<div class="row">
+				<br>
+				  <button id="register" type="button" name="Guardar" class="btn btn-success">Agendar</button>
+				</div>
+			</div>
+			</fieldset>
+    </div>    
+</div>
+  
+  </div><!-- container que une la agenda con el crm-->  
   <div class="row">
     <!---->
     <div class="col-md-6 col-md-offset-3">
@@ -380,10 +406,13 @@
           <td><a href="/emails">
             <img src="{% static 'ominicontacto/Img/emailTransp.png' %}" class="iconApp" alt="E-mail" title="E-mails"></img>
             </a></td>
+			<!--<td>
+              <img src="{% static 'ominicontacto/Img/calendar3-4.png' %}" class="iconApp" id="Calendar" alt="Calendar" title="Agenda/Calendario"></img>
+            </td>-->
         </tr>
       </table>
     </div>
-    <div class="col-md-8 col-md-offset-2 dockBar">
+    <div class="col-md-6 col-md-offset-3 dockBar">
     </div>
   </div>
 </div>
@@ -396,11 +425,15 @@
 <script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
 <!-- mi propio js para phone en jssip -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/phoneJsSip.js' %}"></script>
+<!-- JsSip Debug -->
 <!--<script>JsSIP.debug.enable('JsSIP:*');</script>-->
 <!-- smschat -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/textMessages.js' %}"></script>
 <!-- webChat -->
 <!--<script type="text/javascript" src="{% static 'ominicontacto/JS/JQueryWebChat.js' %}"></script>-->
-
+<!-- Calendar -->
+<script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/Calendar.js' %}"></script>
   </body>
 </html>

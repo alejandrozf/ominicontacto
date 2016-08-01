@@ -356,7 +356,43 @@ $(function() {
                     remoto.src = window.URL.createObjectURL(stream);
                     },
       'failed': function(data) {
-                  if (data.cause === JsSIP.C.causes.BUSY) {
+      						switch(data.cause) {
+      							case "JsSIP.C.causes.BUSY":
+      								Sounds("", "stop");
+      								Sounds("", "play");
+                    	setCallState("Ocupado, intenta mas tarde", "orange");
+                    	setTimeout(defaultCallState, 5000);
+      								break;
+      							case "JsSIP.C.causes.REJECTED":
+      							  setCallState("Rechazo, intenta mas tarde", "orange");
+                      setTimeout(defaultCallState, 5000);
+      								break;
+      							case "JsSIP.C.causes.UNAVAILABLE":
+      							  setCallState("Unavailable", "red");
+                      setTimeout(defaultCallState, 5000);
+      								break;
+      							case "JsSIP.C.causes.NOT_FOUND":
+      							  setCallState("Error, revisa el numero discado", "red");
+                      setTimeout(defaultCallState, 5000);
+      								break;
+      							case "JsSIP.C.causes.AUTHENTICATION_ERROR":
+      								setCallState("Auth error", "red");
+                      setTimeout(defaultCallState, 5000);
+      								break;
+      							case "JsSIP.C.causes.MISSING_SDP":
+      								setCallState("Missing sdp", "red");
+                      setTimeout(defaultCallState, 5000);
+      								break;
+      							case "JsSIP.C.causes.ADDRESS_INCOMPLETE":
+      								setCallState("Address incomplete", "red");
+                    	setTimeout(defaultCallState, 5000);
+      								break;
+      							case "SIP failure code":
+      							  setCallState("JsSIP SIP failure code (500)", "red");
+                    	setTimeout(defaultCallState, 5000);
+      								break;
+      						}
+                /*  if (data.cause === JsSIP.C.causes.BUSY) {
                     Sounds("", "stop");
                     setCallState("Ocupado, intenta mas tarde", "orange");
                     setTimeout(defaultCallState, 5000);
@@ -378,7 +414,7 @@ $(function() {
                   } else if (data.cause === JsSIP.C.causes.ADDRESS_INCOMPLETE) {
                     setCallState("Address incomplete", "red");
                     setTimeout(defaultCallState, 5000);
-                  }
+                  }*/
                 }
     };
     opciones = {
@@ -439,14 +475,19 @@ $(function() {
       if(callType === "In") {
         ring = document.getElementById('RingIn');
         ring.play();
-      } else {
+      } else if(action === "Out") {
         ring = document.getElementById('RingOut');
+        ring.play();
+      } else {
+      	ring = document.getElementById('RingBusy');
         ring.play();
       }
     } else {
         ring = document.getElementById('RingIn');
         ring.pause();
         ring = document.getElementById('RingOut');
+        ring.pause();
+        ring = document.getElementById('RingBusy');
         ring.pause();
     }
   }
