@@ -258,3 +258,13 @@ class BusquedaGrabacionFormView(FormView):
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones))
 
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        tipo_llamada = form.cleaned_data.get('tipo_llamada')
+        id_cliente = form.cleaned_data.get('id_cliente')
+        tel_cliente = form.cleaned_data.get('tel_cliente')
+        sip_agente = form.cleaned_data.get('sip_agente')
+        listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(fecha,
+            tipo_llamada, id_cliente, tel_cliente, sip_agente)
+        return self.render_to_response(self.get_context_data(
+            listado_de_grabaciones=listado_de_grabaciones))

@@ -224,7 +224,10 @@ class GrabacionBusquedaForm(forms.ModelForm):
     El form para la busqueda de grabaciones
     """
     fecha = forms.DateTimeField(required=False)
-    tipo_llamada = forms.ChoiceField(required=False, choices=Grabacion.TYPE_LLAMADA_CHOICES)
+    tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
+    tipo_llamada_choice.insert(0, ('', '---------'))
+    tipo_llamada = forms.ChoiceField(required=False,
+                                     choices=tipo_llamada_choice)
     id_cliente = forms.CharField(required=False)
     tel_cliente = forms.CharField(required=False)
     sip_agente = forms.IntegerField(required=False)
