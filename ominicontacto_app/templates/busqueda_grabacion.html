@@ -7,16 +7,12 @@
 
     <form role="form" method="post" enctype="multipart/form-data" >
         {% csrf_token %}
-        <table>
-            <tr>
-                <td>{{ form.as_table }}</td>
-                <td>
-                    <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                        Buscar
-                    </button>
-                </td>
-            </tr>
+        <table class="table">
+            {{ form.as_table }}
         </table>
+        <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+            Buscar
+        </button>
     </form>
 </div>
 <div class="col-md-6">
@@ -41,7 +37,15 @@
                 <td>{{ grabacion.tel_cliente}}</td>
                 <td>{{ grabacion.sip_agente}}</td>
                 <td>{{ grabacion.campana}}</td>
-                <td>{{ grabacion.grabacion}}</td>
+                <td>
+                    <audio controls>
+                        <source src="{{grabacion.grabacion}}" type='audio/mpeg'>
+                            Escuchar
+                    </audio>
+                    <a href="{{ grabacion.grabacion}}" target="_blank">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="Descargar"></span>
+                    </a>
+                </td>
             </tr>
        {% empty %}
         <tr>
