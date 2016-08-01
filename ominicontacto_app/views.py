@@ -16,7 +16,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView
 )
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa, Contacto, Grabacion
+    User, AgenteProfile, Modulo, Grupo, Pausa, Grabacion, Agenda
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
@@ -268,3 +268,30 @@ class BusquedaGrabacionFormView(FormView):
             tipo_llamada, id_cliente, tel_cliente, sip_agente)
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones))
+
+
+def nuevo_evento_agenda_view(request):
+    agente = request.GET['agente']
+    es_personal = request.GET['es_personal']
+    fecha = request.GET['fecha']
+    hora = request.GET['hora']
+    es_smart = request.GET['es_smart']
+    medio_comunicacion = request.GET['medio_comunicacion']
+    medio = request.GET['medio']
+    descripcion = request.GET['descripcion']
+    agenda = Agenda(fecha=fecha, hora=hora, es_smart=es_smart,
+                    medio_comunicacion=medio_comunicacion,
+                    descripcion=descripcion)
+    if es_personal:
+        agenda.es_personal = es_personal
+        agenda.agente = agente
+    if medio_comunicacion is Agenda.MEDIO_LLAMADA:
+        agenda.telefono = medio
+    elif medio_comunicacion is Agenda.MEDIO_SMS:
+        agenda.telefono = medio
+    elif medio_comunicacion is Agenda.MEDIO_EMAIL:
+        agenda.email = medio
+    agenda.save()
+    response = JsonResponse({'status': 'OK'})
+    return response
+

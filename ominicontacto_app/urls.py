@@ -99,6 +99,10 @@ urlpatterns = [
         login_required(views.BusquedaGrabacionFormView.as_view()),
         name='grabacion_buscar',
         ),
+    url(r'^agenda/nuevo/$',
+        login_required(views.nuevo_evento_agenda_view),
+        name='agenda_nuevo',
+        ),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
