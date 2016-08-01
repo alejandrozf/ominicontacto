@@ -153,6 +153,9 @@ class AsteriskConfigReloader(object):
             stdout_file.close()
             stderr_file.close()
 
+    def reload_asterisk(self):
+        subprocess.call(['ssh', 'root@172.16.20.222', '/usr/sbin/asterisk', '-rx', '\'reload\''])
+
 
 class ConfigFile(object):
     def __init__(self, filename, hostname, remote_path):
@@ -181,6 +184,10 @@ class ConfigFile(object):
             except:
                 logger.exception("Error al intentar borrar temporal %s",
                                  tmp_filename)
+
+    def copy_asterisk(self):
+        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
+                                                          self._remote_path])])
 
     def copy_asterisk(self):
         subprocess.call(['scp', self._filename, ':'.join([self._hostname,
