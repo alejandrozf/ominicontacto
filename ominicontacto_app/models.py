@@ -987,13 +987,13 @@ class Grabacion(models.Model):
 
 class Agenda(models.Model):
     MEDIO_SMS = 1
-    """Medio de comunicacion"""
+    """Medio de comunicacion sms"""
 
     MEDIO_LLAMADA = 2
-    """Medio de comunicacion"""
+    """Medio de comunicacion llamada"""
 
     MEDIO_EMAIL = 3
-    """Medio de comunicacion"""
+    """Medio de comunicacion email"""
 
     MEDIO_COMUNICACION_CHOICES = (
         (MEDIO_SMS, 'SMS'),
@@ -1007,8 +1007,8 @@ class Agenda(models.Model):
     es_smart = models.BooleanField()
     medio_comunicacion = models.PositiveIntegerField(
         choices=MEDIO_COMUNICACION_CHOICES)
-    telefono = models.CharField(max_length=128)
-    email = models.CharField(max_length=128)
+    telefono = models.CharField(max_length=128, blank=True, null=True)
+    email = models.CharField(max_length=128, blank=True, null=True)
     descripcion = models.TextField()
 
     def __unicode__(self):
