@@ -1,10 +1,10 @@
 $(function () {
 	$("#register").click(function () {
-		debugger;
 		var chan;
 		var smart = false; 
 		var pers = false;
 		var flagAjax = false;
+		var mensaje = '';
 		var ag = $("#idagt").val();
 		var phoneOrEmail = $("#phoneOrEmail").val();
 		if($(".personal").prop("checked")) {
@@ -16,13 +16,20 @@ $(function () {
 		$(".notif").prop("checked", function () {
 			chan = $("input[name=notf]:checked").val();
 		});
-		if(chan === 3) {
-			if(phoneOrEmail.indexOf("@")) {
+		debugger;
+		if(chan === "3") {
+			var a = phoneOrEmail.indexOf("@");
+			console.log(a);
+			if(a !== -1 && a !== 0) {
 				flagAjax = true;
+			} else {
+			  mensaje = "Verificar direccion de e-mail";
 			}
 		} else {
-			if(phoneOrEmail.length > 6 && phoneOrEmail.length < 13) {
+			if(!(isNaN(phoneOrEmail)) && phoneOrEmail.length > 6 && phoneOrEmail.length < 13) {
 				flagAjax = true;
+			} else {
+				mensaje = "Verificar numero de telefono";
 			}
 		}
 		if(flagAjax === true) {
@@ -30,7 +37,7 @@ $(function () {
 			type: "get",
 	   	 url: "/agenda/nuevo/",
 	   	 contentType: "text/plain",
-	   	 data: "horaEvento="+$("#horaAgenda").val()+"&fechaEvento="+$("#ctlfechaAgenda").val()+"&descripcion="+$("#calendarSubject").val()+"&agt="+ag+"&smart="+smart+"&channel="+chan+"dirchan="+phoneOrEmail+"&personal="+pers,
+	   	 data: "horaEvento="+$("#horaAgenda").val()+"&fechaEvento="+$("#ctlfechaAgenda").val()+"&descripcion="+$("#calendarSubject").val()+"&agente="+ag+"&smart="+smart+"&channel="+chan+"dirchan="+phoneOrEmail+"&personal="+pers,
 	   	 success: function (msg) {
 	   	 	debugger;
 	   	 	$("#horaAgenda").html("");
@@ -47,8 +54,15 @@ $(function () {
 	     }
 		}); 
 		
+		} else {
+			$("#infoAjax").html(mensaje);
+			$("#modalMensaje").modal("show");
+			ocultarModal("#modalMensaje");
 		}
 	});
+	function ocultarModal(modal) {
+	  setTimeout(function(){$(modal).modal("hide");}, 2000);
+	}
 	$('#fechaAgenda').datetimepicker({
   	pickTime: false
 	});
