@@ -291,7 +291,7 @@ def nuevo_evento_agenda_view(request):
     try:
         agente_logueado = AgenteProfile.objects.get(pk=agente)
     except AgenteProfile.DoesNotExist:
-        agente_logueado = request.user.get_agente_profile
+        agente_logueado = request.user.get_agente_profile()
 
     if es_personal:
         agenda.agente = agente_logueado
