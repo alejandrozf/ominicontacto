@@ -285,12 +285,13 @@ def nuevo_evento_agenda_view(request):
     if es_personal:
         agenda.es_personal = es_personal
         agenda.agente = AgenteProfile.objects.get(pk=agente)
-    if medio_comunicacion is Agenda.MEDIO_LLAMADA:
+    if int(medio_comunicacion) is Agenda.MEDIO_LLAMADA:
         agenda.telefono = medio
-    elif medio_comunicacion is Agenda.MEDIO_SMS:
+    elif int(medio_comunicacion) is Agenda.MEDIO_SMS:
         agenda.telefono = medio
-    elif medio_comunicacion is Agenda.MEDIO_EMAIL:
+    elif int(medio_comunicacion) is Agenda.MEDIO_EMAIL:
         agenda.email = medio
+
     agenda.save()
     response = JsonResponse({'status': 'OK'})
     return response
