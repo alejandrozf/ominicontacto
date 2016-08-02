@@ -175,3 +175,13 @@ class ValidadorDeNombreDeCampoExtra(object):
     def validar_nombre_de_columna(self, nombre):
         """Devuelve True si el nombre de columna es valido"""
         return REGEX_NOMBRE_DE_COLUMNA_VALIDO.match(nombre)
+
+
+def convert_string_in_boolean(cadena):
+    if cadena == 'true':
+        return True
+    elif cadena == 'false':
+        return False
+    else:
+        # por defecto lo casteamos como false
+        return False

@@ -26,6 +26,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
 from services.sms_services import SmsManager
 from django.views.decorators.csrf import csrf_protect
+from ominicontacto_app.utiles import convert_string_in_boolean
 
 
 # def mensajes_recibidos_view(request):
@@ -279,12 +280,22 @@ def nuevo_evento_agenda_view(request):
     medio_comunicacion = request.GET['channel']
     medio = request.GET['dirchan']
     descripcion = request.GET['descripcion']
+    es_smart = convert_string_in_boolean(es_smart)
+    es_personal = convert_string_in_boolean(es_personal)
+
     agenda = Agenda(fecha=fecha, hora=hora, es_smart=es_smart,
                     medio_comunicacion=medio_comunicacion,
-                    descripcion=descripcion)
+                    descripcion=descripcion, es_personal=es_personal)
+
+    # verifico el agente logueado
+    try:
+        agente_logueado = AgenteProfile.objects.get(pk=agente)
+    except AgenteProfile.DoesNotExist:
+        agente_logueado = request.user.get_agente_profile
+
     if es_personal:
-        agenda.es_personal = es_personal
-        agenda.agente = AgenteProfile.objects.get(pk=agente)
+        agenda.agente = agente_logueado
+
     if int(medio_comunicacion) is Agenda.MEDIO_LLAMADA:
         agenda.telefono = medio
     elif int(medio_comunicacion) is Agenda.MEDIO_SMS:
