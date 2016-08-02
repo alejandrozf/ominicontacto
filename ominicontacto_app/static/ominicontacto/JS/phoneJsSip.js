@@ -379,8 +379,8 @@ $(function() {
                   } else if (data.cause === JsSIP.C.causes.ADDRESS_INCOMPLETE) {
                     setCallState("Address incomplete", "red");
                     setTimeout(defaultCallState, 5000);
-                  } else if (data.cause === "SIP failure code") {
-      							  setCallState("JsSIP SIP failure code (500)", "red");
+                  } else if (data.cause === "SIP Failure Code") {
+      							  setCallState("JsSIP SIP Failure code (500)", "red");
                     	setTimeout(defaultCallState, 5000);
                   }
                 }
@@ -443,7 +443,7 @@ $(function() {
       if(callType === "In") {
         ring = document.getElementById('RingIn');
         ring.play();
-      } else if(action === "Out") {
+      } else if(callType === "Out") {
         ring = document.getElementById('RingOut');
         ring.play();
       } else {
