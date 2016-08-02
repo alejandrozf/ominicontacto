@@ -272,12 +272,12 @@ class BusquedaGrabacionFormView(FormView):
 
 def nuevo_evento_agenda_view(request):
     agente = request.GET['agente']
-    es_personal = request.GET['es_personal']
-    fecha = request.GET['fecha']
-    hora = request.GET['hora']
-    es_smart = request.GET['es_smart']
-    medio_comunicacion = request.GET['medio_comunicacion']
-    medio = request.GET['medio']
+    es_personal = request.GET['personal']
+    fecha = request.GET['fechaEvento']
+    hora = request.GET['horaEvento']
+    es_smart = request.GET['smart']
+    medio_comunicacion = request.GET['channel']
+    medio = request.GET['dirchan']
     descripcion = request.GET['descripcion']
     agenda = Agenda(fecha=fecha, hora=hora, es_smart=es_smart,
                     medio_comunicacion=medio_comunicacion,
