@@ -170,7 +170,7 @@
       <div class="modal-body">
         <div class="container-fluid">
           <div class="row">
-            <input type="hidden" value="{ {user}}" id="user">
+            <input type="hidden" value="{{user}}" id="user">
             <div class="col-md-4 col-md-offset-1">
               <textarea class="form-control" rows="2" id="chatMessage" autocomplete="off" disabled="disabled"/></textarea>
             </div>
@@ -340,6 +340,7 @@
         <button type="button" id="Pause" class="btn btn-warning btn-sm">Pause</button>
         <button type="button" id="sipLogout" class="btn btn-info btn-sm">End Session</button>
       </div>
+        <input type="hidden" value="{{ user.get_agente_profile.id }}" id="idagt"/>
         <input type="hidden" value="{{ user.get_agente_profile.sip_extension }}" id="sipExt"/>
         <input value="{{ user.get_agente_profile.sip_password}}" id="sipSec" type="hidden"/>
       </div>
@@ -378,7 +379,20 @@
 				</div>
 				<div class="row">
 				<br>
-				  <button id="register" type="button" name="Guardar" class="btn btn-success">Agendar</button>
+					<input type="checkbox" class="personal" id="personal"/>Personal
+					<br>
+					<input type="checkbox" class="smart" id="automatico"/>Smart
+				</div>
+				<div class="row">
+				<br>
+					<input type="radio" class="notif" value="1" name="notf" />sms
+					<input type="radio" class="notif" value="3" name="notf" />e-mail
+					<input type="radio" class="notif" value="2" name="notf" />llamada
+				</div>
+				<div class="row">
+				<input type="text" class="form-control" id="phoneOrEmail" placeholder="tel o e-mail">
+				<br>
+				<button id="register" type="button" name="Guardar" class="btn btn-success">Agendar</button>
 				</div>
 			</div>
 			</fieldset>
