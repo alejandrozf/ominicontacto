@@ -983,3 +983,34 @@ class Grabacion(models.Model):
     def __unicode__(self):
         return "grabacion del agente con el sip {0} con el cliente {1}".format(
             self.sip_agente, self.id_cliente)
+
+
+class Agenda(models.Model):
+    MEDIO_SMS = 1
+    """Medio de comunicacion sms"""
+
+    MEDIO_LLAMADA = 2
+    """Medio de comunicacion llamada"""
+
+    MEDIO_EMAIL = 3
+    """Medio de comunicacion email"""
+
+    MEDIO_COMUNICACION_CHOICES = (
+        (MEDIO_SMS, 'SMS'),
+        (MEDIO_LLAMADA, 'LLAMADA'),
+        (MEDIO_EMAIL, 'EMAIL'),
+    )
+    agente = models.ForeignKey(AgenteProfile, blank=True, null=True)
+    es_personal = models.BooleanField()
+    fecha = models.DateField()
+    hora = models.TimeField()
+    es_smart = models.BooleanField()
+    medio_comunicacion = models.PositiveIntegerField(
+        choices=MEDIO_COMUNICACION_CHOICES)
+    telefono = models.CharField(max_length=128, blank=True, null=True)
+    email = models.CharField(max_length=128, blank=True, null=True)
+    descripcion = models.TextField()
+
+    def __unicode__(self):
+        return "Evento programado para la fecha {0} a las {1} hs".format(
+            self.fecha, self.hora)
