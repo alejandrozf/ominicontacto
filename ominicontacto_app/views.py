@@ -284,7 +284,7 @@ def nuevo_evento_agenda_view(request):
                     descripcion=descripcion)
     if es_personal:
         agenda.es_personal = es_personal
-        agenda.agente = agente
+        agenda.agente = AgenteProfile.objects.get(pk=agente)
     if medio_comunicacion is Agenda.MEDIO_LLAMADA:
         agenda.telefono = medio
     elif medio_comunicacion is Agenda.MEDIO_SMS:
