@@ -889,8 +889,71 @@ class MensajeEnviado(models.Model):
         db_table = 'mensaje_enviado'
 
 
-class Grabacion(models.Model):
+class GrabacionManager(models.Manager):
 
+    def grabacion_by_fecha(self, fecha):
+        try:
+            return self.filter(fecha=fecha)
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con esa "
+                                       "fecha"))
+
+    def grabacion_by_tipo_llamada(self, tipo_llamada):
+        try:
+            return self.filter(tipo_llamada=tipo_llamada)
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con esa "
+                                       "tipo llamada"))
+
+    def grabacion_by_id_cliente(self, id_cliente):
+        try:
+            return self.filter(id_cliente__contains=id_cliente)
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con esa "
+                                       "id cliente"))
+
+    def grabacion_by_tel_cliente(self, tel_cliente):
+        try:
+            return self.filter(tel_cliente__contains=tel_cliente)
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con esa "
+                                       "tel de cliente"))
+
+    def grabacion_by_sip_agente(self, sip_agente):
+        try:
+            return self.filter(sip_agente__contains=sip_agente)
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con esa "
+                                       "sip agente"))
+
+    def grabacion_by_filtro(self, fecha, tipo_llamada, id_cliente,
+                              tel_cliente, sip_agente):
+        grabaciones = self.filter()
+        if fecha:
+            grabaciones = grabaciones.filter(fecha=fecha)
+
+        if tipo_llamada:
+            grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
+
+        if id_cliente:
+            grabaciones = grabaciones.filter(id_cliente=id_cliente)
+
+        if tel_cliente:
+            grabaciones = grabaciones.filter(tel_cliente=tel_cliente)
+
+        if sip_agente:
+            grabaciones = grabaciones.filter(sip_agente=sip_agente)
+
+        return grabaciones
+
+
+class Grabacion(models.Model):
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = GrabacionManager()
     TYPE_ICS = 1
     """Tipo de llamada ICS"""
 

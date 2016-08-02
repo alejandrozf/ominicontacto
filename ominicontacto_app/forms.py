@@ -10,8 +10,9 @@ from django.contrib.auth.forms import (
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from ominicontacto_app.models import (User, AgenteProfile, Queue, QueueMember,
-                                      BaseDatosContacto)
+from ominicontacto_app.models import (
+    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion
+)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -216,3 +217,22 @@ class PrimerLineaEncabezadoForm(forms.Form):
 
 class BusquedaContactoForm(forms.Form):
     buscar = forms.CharField(required=False)
+
+
+class GrabacionBusquedaForm(forms.ModelForm):
+    """
+    El form para la busqueda de grabaciones
+    """
+    fecha = forms.DateTimeField(required=False)
+    tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
+    tipo_llamada_choice.insert(0, ('', '---------'))
+    tipo_llamada = forms.ChoiceField(required=False,
+                                     choices=tipo_llamada_choice)
+    id_cliente = forms.CharField(required=False)
+    tel_cliente = forms.CharField(required=False)
+    sip_agente = forms.IntegerField(required=False)
+
+    class Meta:
+        model = Grabacion
+        fields = ('fecha', 'tipo_llamada', 'id_cliente', 'tel_cliente',
+                  'sip_agente')

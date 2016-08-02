@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-3">
+
+    <form role="form" method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <table class="table">
+            {{ form.as_table }}
+        </table>
+        <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+            Buscar
+        </button>
+    </form>
+</div>
+<div class="col-md-6">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo de llamada</th>
+                <th>id_cliente</th>
+                <th>tel_cliente</th>
+                <th>Agente</th>
+                <th>Campaña</th>
+                <th>Grabación</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for grabacion in listado_de_grabaciones %}
+            <tr>
+                <td>{{ grabacion.fecha }}</td>
+                <td>{{ grabacion.get_tipo_llamada_display}}</td>
+                <td>{{ grabacion.id_cliente }}</td>
+                <td>{{ grabacion.tel_cliente}}</td>
+                <td>{{ grabacion.sip_agente}}</td>
+                <td>{{ grabacion.campana}}</td>
+                <td>
+                    <audio controls>
+                        <source src="{{grabacion.grabacion}}" type='audio/mpeg'>
+                            Escuchar
+                    </audio>
+                    <a href="{{ grabacion.grabacion}}" target="_blank">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="Descargar"></span>
+                    </a>
+                </td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="7">No existen grabaciones</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}

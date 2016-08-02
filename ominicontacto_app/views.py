@@ -12,12 +12,16 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView, CreateView, UpdateView, DeleteView, FormView
+)
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa, Contacto)
-from ominicontacto_app.forms import (CustomUserCreationForm,
-                                     CustomUserChangeForm, UserChangeForm,
-                                     AgenteProfileForm)
+    User, AgenteProfile, Modulo, Grupo, Pausa, Contacto, Grabacion
+)
+from ominicontacto_app.forms import (
+    CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
+    AgenteProfileForm, GrabacionBusquedaForm
+)
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
 from services.sms_services import SmsManager
@@ -243,3 +247,24 @@ def mensajes_recibidos_view(request):
 def blanco_view(request):
     return render_to_response('blanco.html',
                               context_instance=RequestContext(request))
+
+
+class BusquedaGrabacionFormView(FormView):
+    form_class = GrabacionBusquedaForm
+    template_name = 'busqueda_grabacion.html'
+
+    def get(self, request, *args, **kwargs):
+        listado_de_grabaciones = Grabacion.objects.all()
+        return self.render_to_response(self.get_context_data(
+            listado_de_grabaciones=listado_de_grabaciones))
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        tipo_llamada = form.cleaned_data.get('tipo_llamada')
+        id_cliente = form.cleaned_data.get('id_cliente')
+        tel_cliente = form.cleaned_data.get('tel_cliente')
+        sip_agente = form.cleaned_data.get('sip_agente')
+        listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(fecha,
+            tipo_llamada, id_cliente, tel_cliente, sip_agente)
+        return self.render_to_response(self.get_context_data(
+            listado_de_grabaciones=listado_de_grabaciones))
