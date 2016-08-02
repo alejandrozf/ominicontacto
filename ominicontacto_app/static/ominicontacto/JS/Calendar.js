@@ -16,20 +16,19 @@ $(function () {
 		$(".notif").prop("checked", function () {
 			chan = $("input[name=notf]:checked").val();
 		});
-		debugger;
 		if(chan === "3") {
 			var a = phoneOrEmail.indexOf("@");
 			console.log(a);
 			if(a !== -1 && a !== 0) {
 				flagAjax = true;
 			} else {
-			  mensaje = "Verificar direccion de e-mail";
+			  mensaje = " Verificar direccion de e-mail";
 			}
 		} else {
 			if(!(isNaN(phoneOrEmail)) && phoneOrEmail.length > 6 && phoneOrEmail.length < 13) {
 				flagAjax = true;
 			} else {
-				mensaje = "Verificar numero de telefono";
+				mensaje = " Verificar numero de telefono";
 			}
 		}
 		if(flagAjax === true) {
@@ -37,23 +36,25 @@ $(function () {
 			type: "get",
 	   	 url: "/agenda/nuevo/",
 	   	 contentType: "text/plain",
-	   	 data: "horaEvento="+$("#horaAgenda").val()+"&fechaEvento="+$("#ctlfechaAgenda").val()+"&descripcion="+$("#calendarSubject").val()+"&agente="+ag+"&smart="+smart+"&channel="+chan+"dirchan="+phoneOrEmail+"&personal="+pers,
+	   	 data: "horaEvento="+$("#horaAgenda").val()+"&fechaEvento="+$("#ctlfechaAgenda").val()+"&descripcion="+$("#calendarSubject").val()+"&agente="+ag+"&smart="+smart+"&channel="+chan+"&dirchan="+phoneOrEmail+"&personal="+pers,
 	   	 success: function (msg) {
-	   	 	debugger;
-	   	 	$("#horaAgenda").html("");
-	   	 	$("#ctlfechaAgenda").html("");
-	   	 	$("#calendarSubject").html("");
+	   	 	$("#horaAgenda").val("");
+	   	 	$("#ctlfechaAgenda").val("");
+	   	 	$("#calendarSubject").val("");
 	   	 	$(".personal").prop("checked", false);
 	   	 	$(".smart").prop("checked", false);
 	   	 	$(".notif").prop("checked", false);
-	   	 	$("#phoneOrEmail").val();
+	   	 	$("#phoneOrEmail").val("");
+	   	 	mensaje = " Agenda guardada correctamente";
+	   	 	$("#infoAjax").html(mensaje);
+				$("#modalMensaje").modal("show");
+				ocultarModal("#modalMensaje");		
 	   	 },
 	   	 error: function (jqXHR, textStatus, errorThrown) {
 	                 debugger;
 	                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	     }
 		}); 
-		
 		} else {
 			$("#infoAjax").html(mensaje);
 			$("#modalMensaje").modal("show");
