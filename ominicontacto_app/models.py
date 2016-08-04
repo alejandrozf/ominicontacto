@@ -804,6 +804,18 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "filtro"))
 
+    def obtener_contacto_editar(self, id_cliente):
+        """Devuelve el contacto pasado por ID, siempre que dicha
+        pedido pueda ser editar
+        FIXME: chequear que sea unico el id_cliente no está definido asi en el
+        modelo
+        En caso de no encontarse, lanza SuspiciousOperation
+        """
+        try:
+            return self.get(id_cliente=id_cliente)
+        except Contacto.DoesNotExist:
+            return None
+
 
 class Contacto(models.Model):
     objects_default = models.Manager()
