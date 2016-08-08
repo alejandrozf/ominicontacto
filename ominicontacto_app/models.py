@@ -173,6 +173,7 @@ class Queue(models.Model):
     type = models.PositiveIntegerField(choices=TYPE_CHOICES)
     wait = models.PositiveIntegerField()
     queue_asterisk = models.PositiveIntegerField(unique=True)
+    auto_grabacion = models.BooleanField(default=False)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
