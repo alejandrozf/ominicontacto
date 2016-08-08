@@ -96,6 +96,9 @@ class GeneradorDePedazoDeQueueFactory(object):
     def crear_generador_para_queue(self, parametros):
         return GeneradorParaQueue(parametros)
 
+    def crear_generador_para_queue_grabacion(self, parametros):
+        return GeneradorParaQueueGrabacion(parametros)
+
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
 
@@ -125,8 +128,30 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Gosub(hangup-fts,llamante_handler,1)
+        same => n,SIPAddHeader(Origin:IN)
+        same => n,SIPAddHeader(IDCliente:${{IDCliente}})
+        same => n,Queue({oml_queue_name},{oml_queue_wait},tT)
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
+
+    def get_template(self):
+        return """
+
+        ;----------------------------------------------------------------------
+        ; TEMPLATE_DIALPLAN_START_QUEUE_GRABACION-{oml_queue_name}
+        ;   Autogenerado {date}
+        ;----------------------------------------------------------------------
+
+        exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Gosub(hangup-fts,llamante_handler,1)
         same => n,Set(__MONITOR_FILENAME=/var/spool/asterisk/monitor/q${{EXTEN}}-${{STRFTIME(${{EPOCH}},,%Y%m%d-%H%M%S)}}-${{UNIQUEID}})
-        same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{{}}UNIQUEID}} ^{{}}MIXMONITOR_FILENAME}})
+        same => n,MixMonitor(${{MONITOR_FILENAME}}.wav)
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,Queue({oml_queue_name},{oml_queue_wait},tT)

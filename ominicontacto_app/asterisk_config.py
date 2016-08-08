@@ -50,9 +50,14 @@ class QueueDialplanConfigCreator(object):
         }
 
         # QUEUE: Creamos la porción inicial del Queue.
-        generador_queue = self._generador_factory.crear_generador_para_queue(
-            param_generales)
-        partes.append(generador_queue.generar_pedazo())
+        if queue.auto_grabacion:
+            generador_queue = self._generador_factory.\
+                crear_generador_para_queue_grabacion(param_generales)
+            partes.append(generador_queue.generar_pedazo())
+        else:
+            generador_queue = self._generador_factory.\
+                crear_generador_para_queue(param_generales)
+            partes.append(generador_queue.generar_pedazo())
 
         return ''.join(partes)
 
