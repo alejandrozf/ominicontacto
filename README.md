@@ -97,9 +97,9 @@ DATABASE_MYSQL_ASTERISK = {
 OML_RELOAD_CMD = '["ssh root@172.16.20.222",  "/usr/sbin/asterisk", "-rx", "dialplan reload"]'
 
 # 'OML_GRABACIONES_URL': url donde se encuentra las grabaciones en elastix
-# ejemplo "http://172.16.20.222/grabaciones/"
+# ejemplo "http://172.16.20.222/grabaciones"
 
-OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones/"
+OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
 
 ```
 
