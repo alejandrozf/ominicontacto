@@ -176,9 +176,19 @@ Ejemplo:
 
 .. code-block:: python
 
-    FTS_RELOAD_CMD = ["/usr/bin/asterisk", "-x", "reload"]
+    OML_RELOAD_CMD = ["/usr/bin/asterisk", "-x", "reload"]
 """
 
+#==============================================================================
+# URL DE GRABACIONES DE ELASTIX
+#==============================================================================
+
+OML_GRABACIONES_URL = None
+"""Url de donde buscar las grabaciones de las llamadas
+
+Ejemplo:
+    OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
+"""
 
 #==============================================================================
 # Import de `fts_web_settings_local`
@@ -224,3 +234,9 @@ for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
 
 assert OML_RELOAD_CMD is not None, \
     "Falta definir setting para OML_RELOAD_CMD"
+
+
+# ~~~~~ Check OML_GRABACIONES_URL
+
+assert OML_GRABACIONES_URL is not None, \
+    "Falta definir setting para OML_GRABACIONES_URL"

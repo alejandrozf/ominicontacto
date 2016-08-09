@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from services.sms_services import SmsManager
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render_to_response
 from django.template.response import TemplateResponse
@@ -254,10 +255,12 @@ class BusquedaGrabacionFormView(FormView):
     form_class = GrabacionBusquedaForm
     template_name = 'busqueda_grabacion.html'
 
-    def get(self, request, *args, **kwargs):
-        listado_de_grabaciones = Grabacion.objects.all()
-        return self.render_to_response(self.get_context_data(
-            listado_de_grabaciones=listado_de_grabaciones))
+    def get_context_data(self, **kwargs):
+        context = super(BusquedaGrabacionFormView, self).get_context_data(
+            **kwargs)
+        context['listado_de_grabaciones'] = Grabacion.objects.all()
+        context['grabacion_url'] = settings.OML_GRABACIONES_URL
+        return context
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
