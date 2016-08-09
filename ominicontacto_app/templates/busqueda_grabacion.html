@@ -31,7 +31,7 @@
         <tbody>
         {% for grabacion in listado_de_grabaciones %}
             <tr>
-                <td>{{ grabacion.fecha }}</td>
+                <td>{{ grabacion.fecha|date:"Y-m-d"}}</td>
                 <td>{{ grabacion.get_tipo_llamada_display}}</td>
                 <td>{{ grabacion.id_cliente }}</td>
                 <td>{{ grabacion.tel_cliente}}</td>
@@ -39,10 +39,10 @@
                 <td>{{ grabacion.campana}}</td>
                 <td>
                     <audio controls>
-                        <source src="{{grabacion.grabacion}}" type='audio/mpeg'>
+                        <source src="http://172.16.20.222/grabaciones/{{ grabacion.fecha|date:"Y-m-d"}}/{{grabacion.grabacion}}" type='audio/mpeg'>
                             Escuchar
                     </audio>
-                    <a href="{{ grabacion.grabacion}}" target="_blank">
+                    <a href="http://172.16.20.222/grabaciones/{{ grabacion.fecha|date:"Y-m-d"}}/{{grabacion.grabacion}}" target="_blank">
                         <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="Descargar"></span>
                     </a>
                 </td>
