@@ -1,5 +1,7 @@
 En el servidor 172.16.20.241
 
+reiniciar el uwsgi: echo r > /tmp/.ominicontacto-uwsgi-fifo 
+
 El proyecto se encuentra: /home/freetech/ominicontacto
 
 Ejecucion del sistema desde uWSGI
