@@ -18,7 +18,7 @@ from django.conf import settings
 from ominicontacto_app.models import Queue, AgenteProfile
 import logging as _logging
 from ominicontacto_app.asterisk_config_generador_de_partes import (
-    GeneradorDePedazoDeQueueFactory)
+    GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory)
 
 
 logger = _logging.getLogger(__name__)
@@ -122,7 +122,7 @@ class SipConfigCreator(object):
 
     def __init__(self):
         self._sip_config_file = SipConfigFile()
-        self._generador_factory = GeneradorDePedazoDeQueueFactory()
+        self._generador_factory = GeneradorDePedazoDeAgenteFactory()
 
     def _generar_config_sip(self, agente):
         """Genera el dialplan para una queue.
@@ -142,10 +142,10 @@ class SipConfigCreator(object):
             'oml_agente_name': agente.user.get_full_name(),
             'oml_agente_sip': agente.sip_extension,
             'oml_kamailio_ip': settings.OML_KAMAILIO_IP,
-            'date': str(datetime.datetime.now())
         }
 
-        generador_agente= self._generador_factory.crear_generador_para_queue(param_generales)
+        generador_agente= self._generador_factory.crear_generador_para_agente(
+            param_generales)
         partes.append(generador_agente.generar_pedazo())
 
         return ''.join(partes)
@@ -190,7 +190,7 @@ class SipConfigCreator(object):
                     logger.exception("Error al intentar generar traceback")
 
                 # FAILED: Creamos la porción para el fallo del config sip.
-                param_failed = {'oml_agente_name': agente.user.get_full_name(),
+                param_failed = {'oml_queue_name': agente.user.get_full_name(),
                                 'date': str(datetime.datetime.now()),
                                 'traceback_lines': traceback_lines}
                 generador_failed = \
@@ -293,4 +293,4 @@ class SipConfigFile(ConfigFile):
         filename = settings.OML_SIP_FILENAME.strip()
         hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(QueueConfigFile, self).__init__(filename, hostname, remote_path)
+        super(SipConfigFile, self).__init__(filename, hostname, remote_path)
