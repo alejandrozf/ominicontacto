@@ -182,6 +182,17 @@ Ejemplo:
 """
 
 #==============================================================================
+# DEPLOY -> KAMAILIO
+#==============================================================================
+
+OML_KAMAILIO_IP = None
+"""IP donde se encuentra kamailio
+
+Ejemplo:
+    OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
+"""
+
+#==============================================================================
 # URL DE GRABACIONES DE ELASTIX
 #==============================================================================
 
@@ -247,3 +258,8 @@ assert OML_RELOAD_CMD is not None, \
 
 assert OML_GRABACIONES_URL is not None, \
     "Falta definir setting para OML_GRABACIONES_URL"
+
+# ~~~~~ Check OML_KAMAILIO_IP
+
+assert OML_KAMAILIO_IP is not None, \
+    "Falta definir setting para OML_KAMAILIO_IP"

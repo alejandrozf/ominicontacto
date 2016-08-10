@@ -103,6 +103,10 @@ OML_RELOAD_CMD = '["ssh root@172.16.20.222",  "/usr/sbin/asterisk", "-rx", "dial
 
 OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
 
+# 'OML_KAMAILIO_IP': ip donde se encuentra kamailio
+# ejemplo "172.16.20.219/255.255.255.255"
+OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
+
 ```
 
 ### Configuracion ssl para desarrollo ###
