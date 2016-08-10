@@ -118,6 +118,13 @@ class QueueDialplanConfigCreator(object):
         self._dialplan_config_file.write(dialplan)
 
 
+class SipConfigCreator(object):
+
+    def __init__(self):
+        self._sip_config_file = SipConfigFile()
+        self._generador_factory = GeneradorDePedazoDeQueueFactory()
+
+
 class AsteriskConfigReloader(object):
 
     def reload_config(self):
@@ -198,6 +205,14 @@ class ConfigFile(object):
 class QueueConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_QUEUE_FILENAME.strip()
-        hostname = settings.OML_QUEUE_HOSTNAME
-        remote_path = settings.OML_QUEUE_REMOTEPATH
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(QueueConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class SipConfigFile(ConfigFile):
+    def __init__(self):
+        filename = settings.OML_SIP_FILENAME.strip()
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
         super(QueueConfigFile, self).__init__(filename, hostname, remote_path)
