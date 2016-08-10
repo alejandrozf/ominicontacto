@@ -75,13 +75,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '/home/FreeTech/media_root')
 
 
 # 'OML_QUEUE_FILENAME': donde se genera la config de queues. Asterisk debe estar configurado
-# 'OML_QUEUE_HOSTNAME': servidor donde se copiara la config de queues. Asterisk debe estar configurado
-# 'OML_QUEUE_REMOTEPATH': path del server donde se guardara. Asterisk debe estar configurado
+# 'OML_ASTERISK_HOSTNAME': servidor donde se copiara la config de queues. Asterisk debe estar configurado
+# 'OML_ASTERISK_REMOTEPATH': path del server donde se guardara. Asterisk debe estar configurado
 #  para hacer un include de este archivo
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 OML_QUEUE_FILENAME = "/home/freetech/extensions_fts_queues.conf"
-OML_QUEUE_HOSTNAME = "freetech@172.16.20.222"
-OML_QUEUE_REMOTEPATH = "/etc/asterisk/"
+OML_ASTERISK_HOSTNAME = "freetech@172.16.20.222"
+OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
 
 # parametros de conexion con base de datos mysql de asterisk
 # modificar esto parametros con la conexion de base de datos correcta para que no tire error la ejecucion
