@@ -7,7 +7,8 @@ import logging
 import MySQLdb
 
 from django.conf import settings
-from  ominicontacto_app.asterisk_config import SipConfigCreator, SipConfigFile
+from ominicontacto_app.asterisk_config import (
+    SipConfigCreator, SipConfigFile, AsteriskConfigReloader)
 from ominicontacto_app.errors import OmlError
 
 logger = logging.getLogger(__name__)
@@ -74,6 +75,7 @@ class ActivacionAgenteService(object):
     def __init__(self):
         self.sip_config_creator = SipConfigCreator()
         self.config_file = SipConfigFile()
+        self.reload_asterisk_config = AsteriskConfigReloader()
 
     def _generar_y_recargar_configuracion_asterisk(self):
         proceso_ok = True
@@ -93,6 +95,7 @@ class ActivacionAgenteService(object):
             raise(RestablecerConfigSipError(mensaje_error))
         else:
             self.config_file.copy_asterisk()
+            self.reload_asterisk_config.reload_asterisk()
 
     def activar(self):
         self._generar_y_recargar_configuracion_asterisk()
