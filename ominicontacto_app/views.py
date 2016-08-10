@@ -26,7 +26,8 @@ from ominicontacto_app.forms import (
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
 from services.sms_services import SmsManager
-from asterisk_config import SipConfigCreator
+from services.asterisk_service import ActivacionAgenteService,\
+    RestablecerConfigSipError
 from django.views.decorators.csrf import csrf_protect
 from ominicontacto_app.utiles import convert_string_in_boolean
 
@@ -137,9 +138,17 @@ class AgenteProfileCreateView(CreateView):
         self.object.save()
         kamailio_service = KamailioService()
         kamailio_service.crear_agente_kamailio(self.object)
-        asterisk_sip_service = SipConfigCreator()
-        asterisk_sip_service.create_config_sip()
-
+        asterisk_sip_service = ActivacionAgenteService()
+        try:
+            asterisk_sip_service.activar()
+        except RestablecerConfigSipError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error{0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
         return super(AgenteProfileCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -157,9 +166,17 @@ class AgenteProfileUpdateView(UpdateView):
     def form_valid(self, form):
         kamailio_service = KamailioService()
         kamailio_service.update_agente_kamailio(self.object)
-        asterisk_sip_service = SipConfigCreator()
-        asterisk_sip_service.create_config_sip()
-
+        asterisk_sip_service = ActivacionAgenteService()
+        try:
+            asterisk_sip_service.activar()
+        except RestablecerConfigSipError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error{0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
         return super(AgenteProfileUpdateView, self).form_valid(form)
 
     def get_success_url(self):
