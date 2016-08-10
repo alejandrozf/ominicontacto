@@ -194,10 +194,6 @@ class ConfigFile(object):
         subprocess.call(['scp', self._filename, ':'.join([self._hostname,
                                                           self._remote_path])])
 
-    def copy_asterisk(self):
-        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
-                                                          self._remote_path])])
-
 
 class QueueConfigFile(ConfigFile):
     def __init__(self):
