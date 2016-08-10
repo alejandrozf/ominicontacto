@@ -77,13 +77,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '/home/FreeTech/media_root')
 
 
 # 'OML_QUEUE_FILENAME': donde se genera la config de queues. Asterisk debe estar configurado
-# 'OML_QUEUE_HOSTNAME': servidor donde se copiara la config de queues. Asterisk debe estar configurado
-# 'OML_QUEUE_REMOTEPATH': path del server donde se guardara. Asterisk debe estar configurado
+# 'OML_ASTERISK_HOSTNAME': servidor donde se copiara la config de queues. Asterisk debe estar configurado
+# 'OML_ASTERISK_REMOTEPATH': path del server donde se guardara. Asterisk debe estar configurado
+# 'OML_SIP_FILENAME': donde se genera la config de los sip de los agentes. Asterisk debe estar configurado
 #  para hacer un include de este archivo
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 OML_QUEUE_FILENAME = "/home/freetech/extensions_fts_queues.conf"
-OML_QUEUE_HOSTNAME = "freetech@172.16.20.222"
-OML_QUEUE_REMOTEPATH = "/etc/asterisk/"
+OML_ASTERISK_HOSTNAME = "freetech@172.16.20.222"
+OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
+OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
 
 # parametros de conexion con base de datos mysql de asterisk
 # modificar esto parametros con la conexion de base de datos correcta para que no tire error la ejecucion
@@ -102,6 +104,10 @@ OML_RELOAD_CMD = '["ssh root@172.16.20.222",  "/usr/sbin/asterisk", "-rx", "dial
 # ejemplo "http://172.16.20.222/grabaciones"
 
 OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
+
+# 'OML_KAMAILIO_IP': ip donde se encuentra kamailio
+# ejemplo "172.16.20.219/255.255.255.255"
+OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
 
 ```
 

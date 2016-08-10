@@ -15,10 +15,10 @@ import traceback
 
 from django.conf import settings
 
-from ominicontacto_app.models import Queue
+from ominicontacto_app.models import Queue, AgenteProfile
 import logging as _logging
 from ominicontacto_app.asterisk_config_generador_de_partes import (
-    GeneradorDePedazoDeQueueFactory)
+    GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory)
 
 
 logger = _logging.getLogger(__name__)
@@ -118,6 +118,91 @@ class QueueDialplanConfigCreator(object):
         self._dialplan_config_file.write(dialplan)
 
 
+class SipConfigCreator(object):
+
+    def __init__(self):
+        self._sip_config_file = SipConfigFile()
+        self._generador_factory = GeneradorDePedazoDeAgenteFactory()
+
+    def _generar_config_sip(self, agente):
+        """Genera el dialplan para una queue.
+
+        :param agente: Agente para la cual hay crear config sip
+        :type agente: ominicontacto_app.models.AgenteProfile
+        :returns: str -- config sip para los agentes
+        """
+
+        assert agente is not None, "AgenteProfile == None"
+        assert agente.user.get_full_name() is not None,\
+            "agente.user.get_full_name() == None"
+        assert agente.sip_extension is not None, "agente.sip_extension  == None"
+
+        partes = []
+        param_generales = {
+            'oml_agente_name': agente.user.get_full_name(),
+            'oml_agente_sip': agente.sip_extension,
+            'oml_kamailio_ip': settings.OML_KAMAILIO_IP,
+        }
+
+        generador_agente= self._generador_factory.crear_generador_para_agente(
+            param_generales)
+        partes.append(generador_agente.generar_pedazo())
+
+        return ''.join(partes)
+
+    def _obtener_todas_para_generar_config_sip(self):
+        """Devuelve los agente para crear config de sip.
+        """
+        return AgenteProfile.objects.all()
+
+    def create_config_sip(self, agente=None, agentes=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `queue` es pasada por parametro,
+        se genera solo para dicha queue.
+        """
+
+        if agentes:
+            pass
+        elif agente:
+            agentes = [agente]
+        else:
+            agentes = self._obtener_todas_para_generar_config_sip()
+        sip = []
+        for agente in agentes:
+            logger.info("Creando config sip para agente %s", agente.user.
+                        get_full_name())
+            try:
+                config_chunk = self._generar_config_sip(agente)
+                logger.info("Config sip generado OK para agente %s",
+                            agente.user.get_full_name())
+            except:
+                logger.exception(
+                    "No se pudo generar configuracion de "
+                    "Asterisk para la quene {0}".format(agente.user.get_full_name()))
+
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except:
+                    traceback_lines = "Error al intentar generar traceback"
+                    logger.exception("Error al intentar generar traceback")
+
+                # FAILED: Creamos la porción para el fallo del config sip.
+                param_failed = {'oml_queue_name': agente.user.get_full_name(),
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+
+            sip.append(config_chunk)
+
+        self._sip_config_file.write(sip)
+
+
 class AsteriskConfigReloader(object):
 
     def reload_config(self):
@@ -198,6 +283,14 @@ class ConfigFile(object):
 class QueueConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_QUEUE_FILENAME.strip()
-        hostname = settings.OML_QUEUE_HOSTNAME
-        remote_path = settings.OML_QUEUE_REMOTEPATH
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
         super(QueueConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class SipConfigFile(ConfigFile):
+    def __init__(self):
+        filename = settings.OML_SIP_FILENAME.strip()
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(SipConfigFile, self).__init__(filename, hostname, remote_path)

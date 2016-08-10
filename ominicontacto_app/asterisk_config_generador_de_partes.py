@@ -103,6 +103,17 @@ class GeneradorDePedazoDeQueueFactory(object):
         return GeneradorParaFailed(parametros)
 
 
+# Factory para los Agentes.
+
+class GeneradorDePedazoDeAgenteFactory(object):
+
+    def crear_generador_para_agente(self, parametros):
+        return GeneradorParaAgente(parametros)
+
+    def crear_generador_para_failed(self, parametros):
+        return GeneradorParaFailed(parametros)
+
+
 #==============================================================================
 # Queue
 #==============================================================================
@@ -110,7 +121,7 @@ class GeneradorDePedazoDeQueueFactory(object):
 
 class GeneradorDePedazoDeQueue(GeneradorDePedazo):
     """Interfaz / Clase abstracta para generar el pedazo de queue para una
-    campana.
+    cola.
     """
 
     def __init__(self, parametros):
@@ -155,6 +166,40 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,Queue({oml_queue_name},{oml_queue_wait},tT)
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+#==============================================================================
+# Agente SIP
+#==============================================================================
+
+
+class GeneradorDePedazoDeAgenteSip(GeneradorDePedazo):
+    """Interfaz / Clase abstracta para generar el pedazo de queue para un
+    agente.
+    """
+
+    def __init__(self, parametros):
+        self._parametros = parametros
+
+
+class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
+
+    def get_template(self):
+        return """
+        [{oml_agente_sip}]
+        type=friend
+        insecure=invite
+        context=from-internal
+        host=dynamic
+        qualify=yes
+        callerid='{oml_agente_name}' <{oml_agente_sip}>
+        secret=
+        deny=0.0.0.0/0.0.0.0
+        permit={oml_kamailio_ip}
         """
 
     def get_parametros(self):

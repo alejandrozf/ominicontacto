@@ -155,8 +155,9 @@ DATABASE_MYSQL_ASTERISK = {
 }
 
 OML_QUEUE_FILENAME = None
-OML_QUEUE_HOSTNAME = "freetech@172.16.20.222"
-OML_QUEUE_REMOTEPATH = "/etc/asterisk/"
+OML_ASTERISK_HOSTNAME = None
+OML_ASTERISK_REMOTEPATH = None
+OML_SIP_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
@@ -164,8 +165,9 @@ Ejemplos:
 .. code-block:: python
 
     OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
-    OML_QUEUE_HOSTNAME = "root@192.168.1.23"
-    OML_QUEUE_HOSTNAME = "/etc/asterisk/"
+    OML_ASTERISK_HOSTNAME = "root@192.168.1.23"
+    OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
+    OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
 
 """
 
@@ -180,6 +182,17 @@ Ejemplo:
 """
 
 #==============================================================================
+# DEPLOY -> KAMAILIO
+#==============================================================================
+
+OML_KAMAILIO_IP = None
+"""IP donde se encuentra kamailio
+
+Ejemplo:
+    OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
+"""
+
+#==============================================================================
 # URL DE GRABACIONES DE ELASTIX
 #==============================================================================
 
@@ -191,7 +204,7 @@ Ejemplo:
 """
 
 #==============================================================================
-# Import de `fts_web_settings_local`
+# Import de `oml_settings_local`
 #==============================================================================
 
 try:
@@ -210,15 +223,20 @@ except ImportError as e:
 assert OML_QUEUE_FILENAME is not None, \
     "Falta definir setting para OML_QUEUE_FILENAME"
 
-# ~~~~~ Check OML_QUEUE_FILENAME
+# ~~~~~ Check OML_ASTERISK_HOSTNAME
 
-assert OML_QUEUE_HOSTNAME is not None, \
-    "Falta definir setting para OML_QUEUE_HOSTNAME"
+assert OML_ASTERISK_HOSTNAME is not None, \
+    "Falta definir setting para OML_ASTERISK_HOSTNAME"
 
-# ~~~~~ Check OML_QUEUE_FILENAME
+# ~~~~~ Check OML_ASTERISK_REMOTEPATH
 
-assert OML_QUEUE_REMOTEPATH is not None, \
-    "Falta definir setting para OML_QUEUE_REMOTEPATH"
+assert OML_ASTERISK_REMOTEPATH is not None, \
+    "Falta definir setting para OML_ASTERISK_REMOTEPATH"
+
+# ~~~~~ Check OML_SIP_FILENAME
+
+assert OML_SIP_FILENAME is not None, \
+    "Falta definir setting para OML_SIP_FILENAME"
 
 # ~~~~~ Check ASTERISK
 
@@ -240,3 +258,8 @@ assert OML_RELOAD_CMD is not None, \
 
 assert OML_GRABACIONES_URL is not None, \
     "Falta definir setting para OML_GRABACIONES_URL"
+
+# ~~~~~ Check OML_KAMAILIO_IP
+
+assert OML_KAMAILIO_IP is not None, \
+    "Falta definir setting para OML_KAMAILIO_IP"
