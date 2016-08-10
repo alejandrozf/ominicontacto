@@ -157,6 +157,7 @@ DATABASE_MYSQL_ASTERISK = {
 OML_QUEUE_FILENAME = None
 OML_ASTERISK_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
+OML_SIP_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
@@ -166,6 +167,7 @@ Ejemplos:
     OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
     OML_ASTERISK_HOSTNAME = "root@192.168.1.23"
     OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
+    OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
 
 """
 
@@ -210,15 +212,20 @@ except ImportError as e:
 assert OML_QUEUE_FILENAME is not None, \
     "Falta definir setting para OML_QUEUE_FILENAME"
 
-# ~~~~~ Check OML_QUEUE_FILENAME
+# ~~~~~ Check OML_ASTERISK_HOSTNAME
 
 assert OML_ASTERISK_HOSTNAME is not None, \
     "Falta definir setting para OML_ASTERISK_HOSTNAME"
 
-# ~~~~~ Check OML_QUEUE_FILENAME
+# ~~~~~ Check OML_ASTERISK_REMOTEPATH
 
 assert OML_ASTERISK_REMOTEPATH is not None, \
     "Falta definir setting para OML_ASTERISK_REMOTEPATH"
+
+# ~~~~~ Check OML_SIP_FILENAME
+
+assert OML_SIP_FILENAME is not None, \
+    "Falta definir setting para OML_SIP_FILENAME"
 
 # ~~~~~ Check ASTERISK
 
