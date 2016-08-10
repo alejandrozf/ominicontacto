@@ -164,6 +164,7 @@ class AgenteProfileUpdateView(UpdateView):
         return AgenteProfile.objects.get(pk=self.kwargs['pk_agenteprofile'])
 
     def form_valid(self, form):
+        self.object = form.save()
         kamailio_service = KamailioService()
         kamailio_service.update_agente_kamailio(self.object)
         asterisk_sip_service = ActivacionAgenteService()
