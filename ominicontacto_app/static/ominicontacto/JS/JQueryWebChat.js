@@ -7,13 +7,14 @@ $(function() {
   $("#conf").click(function() {
     $("#modalAccountConfig").modal('show');
   });
+  ua = new JsSIP.UA(configuration);
+    sesion = ua.start();
+
   $("#register").click(function() {
     $("#sendMessage").prop('disabled', false);
     $("#chatMessage").prop('disabled', false);
     $("#modalAccountConfig").modal('hide');
     //Connects to the WebSocket server
-    ua = new JsSIP.UA(configuration);
-    sesion = ua.start();
 
     ua.on('registered', function(e) {
       console.log("peer registered");
@@ -82,12 +83,12 @@ $(function() {
       $("#chatMessage").val("");
     }
   });
-  $("#saveConf").click(function() {
+  //$("#saveConf").click(function() {
     // esto seria un sip para recibir y realizar llamadas
     configuration = {
-      uri : "sip:"+$("#uri").val()+"@172.16.20.219",
-      ws_servers : "ws://172.16.20.219:80",
-      password : "123456"
+      uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
+      ws_servers : "wss://172.16.20.219:443",
+      password : $("#sipSec").val()
     };
-  });
+  //});
 });
