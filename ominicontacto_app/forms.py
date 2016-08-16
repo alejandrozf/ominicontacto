@@ -218,7 +218,7 @@ class PrimerLineaEncabezadoForm(forms.Form):
 
 
 class BusquedaContactoForm(forms.Form):
-    buscar = forms.CharField(required=False)
+    buscar = forms.CharField(required=False,  widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'search pattern'}))
 
 
 class GrabacionBusquedaForm(forms.ModelForm):

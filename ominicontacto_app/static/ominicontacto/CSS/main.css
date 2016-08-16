@@ -6,14 +6,6 @@
   font-family: inherit;
   font-size: 18px;
 }
-.toolbar {
-  position: fixed;
-  top: 8%;
-  left: 0px;
-  height: 30px;
-  width: 100%;
-  background-color: #2E2E2E;
-}
 .barInfo {
   color: white;
   font-family: monospace
@@ -22,6 +14,15 @@
   width: 90%;
   height: 500px;
   background-color: white;
+
+}
+.toolbar {
+  position: fixed;
+  top: 8%;
+  left: 0px;
+  height: 30px;
+  width: 100%;
+  background-color: #2E2E2E;
 }
 .dockBar {
   position: fixed;

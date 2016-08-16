@@ -7,17 +7,16 @@
 <body>
 <form role="form" method="post" enctype="multipart/form-data" >
 {% csrf_token %}
-<table>
-    <tr>
-        <td>{{ form.as_p }}</td>
-        <td>
+		<table>
+				<td>
+						{{ form.as_p }}&nbsp;
+				</td>
+        <td>&nbsp;
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
                 Buscar
             </button>
-        </td>
-    </tr>
-</table>
-
+				</td>
+	  </table>        
 
     <table class="table table-bordered">
         <thead>
