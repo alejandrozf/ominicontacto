@@ -22,13 +22,13 @@ $(function () {
 			if(a !== -1 && a !== 0) {
 				flagAjax = true;
 			} else {
-			  mensaje = " Verificar direccion de e-mail";
+			  mensaje = "Verificar direccion de e-mail";
 			}
 		} else {
 			if(!(isNaN(phoneOrEmail)) && phoneOrEmail.length > 6 && phoneOrEmail.length < 13) {
 				flagAjax = true;
 			} else {
-				mensaje = " Verificar numero de telefono";
+				mensaje = "Verificar numero de telefono";
 			}
 		}
 		if(flagAjax === true) {
@@ -45,18 +45,20 @@ $(function () {
 	   	 	$(".smart").prop("checked", false);
 	   	 	$(".notif").prop("checked", false);
 	   	 	$("#phoneOrEmail").val("");
-	   	 	mensaje = " Agenda guardada correctamente";
+	   	 	mensaje = "Agenda guardada correctamente";
 	   	 	$("#infoAjax").html(mensaje);
+	   	 	$("#infoAjax").css("color","darkcyan");
 				$("#modalMensaje").modal("show");
 				ocultarModal("#modalMensaje");		
 	   	 },
 	   	 error: function (jqXHR, textStatus, errorThrown) {
-	                 debugger;
-	                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+	       debugger;
+	       console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	     }
 		}); 
 		} else {
 			$("#infoAjax").html(mensaje);
+			$("#infoAjax").css("color","red");
 			$("#modalMensaje").modal("show");
 			ocultarModal("#modalMensaje");
 		}
