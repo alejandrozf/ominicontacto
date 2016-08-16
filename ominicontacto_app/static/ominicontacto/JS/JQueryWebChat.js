@@ -73,8 +73,8 @@ $(function() {
     var mensaje = $("#chatMessage").val();
     user = $("#user").val();
     if(mensaje !== "") {
-      if ($("#uri").val() === "2002") {
-        ua.sendMessage("sip:2001@172.16.20.219", mensaje);
+      if ($("#uri").val() === "2008") {
+        ua.sendMessage("sip:2003@172.16.20.219", mensaje);
       } if ($("#uri").val() === "2001") {
         ua.sendMessage("sip:2002@172.16.20.219", mensaje);
       }
