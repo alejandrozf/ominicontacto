@@ -33,14 +33,14 @@ $(function() {
         liMensaje.appendChild(textoDeMensaje);
         chatWindow.appendChild(liMensaje);
       } else {
-        fromUser = e.request.headers.From[0];
-        endPos = fromUser.indexOf("@");
+        fromUser = document.getElementById("user");
+        /*endPos = fromUser.indexOf("@");
         startPos = fromUser.indexOf(":");
-        fromUser = fromUser.substring(startPos+1,endPos);
+        fromUser = fromUser.substring(startPos+1,endPos);*/
         liMensaje = document.createElement("li");
         var msgToSend = document.getElementById("chatMessage").value;
         liMensaje = document.createElement("li");
-        textoDeMensaje = document.createTextNode(fromUser+": "+msgToSend);
+        textoDeMensaje = document.createTextNode(fromUser.value+": "+msgToSend);
         liMensaje.appendChild(textoDeMensaje);
         chatWindow.appendChild(liMensaje);
       }
@@ -56,7 +56,8 @@ $(function() {
       var txtCelda2 = document.createTextNode(user);
       var radioCelda3 = document.createElement("input");
       //imgCelda1.src="Img/greendot.png";
-      imgCelda1.src="{% static 'ominicontacto/Img/greendot.png' %}";
+      debugger;
+      //imgCelda1.src="/static/ominicontacto/Img/greendot.png";
       radioCelda3.type="checkbox";
       radioCelda3.id=user;
       celda3.style.textAlign='right';
@@ -73,11 +74,11 @@ $(function() {
     var mensaje = $("#chatMessage").val();
     user = $("#user").val();
     if(mensaje !== "") {
-      if ($("#uri").val() === "2008") {
+   //   if ($("#uri").val() === "2008") {
         ua.sendMessage("sip:2003@172.16.20.219", mensaje);
-      } if ($("#uri").val() === "2001") {
+     /* } if ($("#uri").val() === "2001") {
         ua.sendMessage("sip:2002@172.16.20.219", mensaje);
-      }
+      }*/
       $("#chatMessage").val("");
     }
   });
