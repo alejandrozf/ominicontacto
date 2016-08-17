@@ -93,6 +93,75 @@ class AgenteProfile(models.Model):
 #     name = models.CharField(max_length=64)
 
 
+class CampanaManager(models.Manager):
+
+    def obtener_en_definicion_para_editar(self, campana_id):
+        """Devuelve la campaña pasada por ID, siempre que dicha
+        campaña pueda ser editar (editada en el proceso de
+        definirla, o sea, en el proceso de "creacion" de la
+        campaña).
+
+        En caso de no encontarse, lanza SuspiciousOperation
+        """
+        try:
+            return self.filter(
+                estado=self.model.ESTADO_EN_DEFINICION).get(
+                pk=campana_id)
+        except self.model.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro campana %s en "
+                                      "estado ESTADO_EN_DEFINICION"))
+
+
+class Campana(models.Model):
+    """Una campaña del call center"""
+
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = CampanaManager()
+
+    ESTADO_EN_DEFINICION = 1
+    """La campaña esta siendo definida en el wizard"""
+
+    ESTADO_ACTIVA = 2
+    """La campaña esta activa, o sea, EN_CURSO o PROGRAMADA
+    A nivel de modelos, solo queremos registrar si está ACTIVA, y no nos
+    importa si esta EN_CURSO (o sea, si en este momento el daemon está
+    generando llamadas asociadas a la campaña) o PROGRAMADA (si todavia no
+    estamos en el rango de dias y horas en los que se deben generar
+    las llamadas)
+    """
+
+    ESTADO_FINALIZADA = 3
+    """La campaña fue finalizada, automatica o manualmente.
+    Para mas inforacion, ver `finalizar()`"""
+
+    ESTADO_BORRADA = 4
+    """La campaña ya fue borrada"""
+
+    ESTADOS = (
+        (ESTADO_EN_DEFINICION, '(en definicion)'),
+        (ESTADO_ACTIVA, 'Activa'),
+        (ESTADO_FINALIZADA, 'Finalizada'),
+        (ESTADO_BORRADA, 'Borrada'),
+    )
+
+    estado = models.PositiveIntegerField(
+        choices=ESTADOS,
+        default=ESTADO_EN_DEFINICION,
+    )
+    nombre = models.CharField(max_length=128)
+    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_fin = models.DateField(null=True, blank=True)
+    bd_contacto = models.ForeignKey(
+        'BaseDatosContacto',
+        null=True, blank=True,
+        related_name="%(class)ss"
+    )
+
+
 class QueueManager(models.Manager):
 
     def ultimo_queue_asterisk(self):
@@ -155,6 +224,11 @@ class Queue(models.Model):
         (TYPE_ICS, 'ICS'),
         (TYPE_DIALER, 'DIALER'),
         (TYPE_INBOUND, 'INBOUND'),
+    )
+
+    campana = models.OneToOneField(
+        Campana,
+        related_name='queue_campana', blank=True, null=True
     )
 
     name = models.CharField(max_length=128, primary_key=True)
@@ -1029,70 +1103,3 @@ class Agenda(models.Model):
             self.fecha, self.hora)
 
 
-class CampanaManager(models.Manager):
-
-    def obtener_en_definicion_para_editar(self, campana_id):
-        """Devuelve la campaña pasada por ID, siempre que dicha
-        campaña pueda ser editar (editada en el proceso de
-        definirla, o sea, en el proceso de "creacion" de la
-        campaña).
-
-        En caso de no encontarse, lanza SuspiciousOperation
-        """
-        try:
-            return self.filter(
-                estado=self.model.ESTADO_EN_DEFINICION).get(
-                pk=campana_id)
-        except self.model.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro campana %s en "
-                                      "estado ESTADO_EN_DEFINICION"))
-
-
-class Campana(models.Model):
-    """Una campaña del call center"""
-
-    objects_default = models.Manager()
-    # Por defecto django utiliza el primer manager instanciado. Se aplica al
-    # admin de django, y no aplica las customizaciones del resto de los
-    # managers que se creen.
-
-    objects = CampanaManager()
-
-    ESTADO_EN_DEFINICION = 1
-    """La campaña esta siendo definida en el wizard"""
-
-    ESTADO_ACTIVA = 2
-    """La campaña esta activa, o sea, EN_CURSO o PROGRAMADA
-    A nivel de modelos, solo queremos registrar si está ACTIVA, y no nos
-    importa si esta EN_CURSO (o sea, si en este momento el daemon está
-    generando llamadas asociadas a la campaña) o PROGRAMADA (si todavia no
-    estamos en el rango de dias y horas en los que se deben generar
-    las llamadas)
-    """
-
-    ESTADO_FINALIZADA = 3
-    """La campaña fue finalizada, automatica o manualmente.
-    Para mas inforacion, ver `finalizar()`"""
-
-    ESTADO_BORRADA = 4
-    """La campaña ya fue borrada"""
-
-    ESTADOS = (
-        (ESTADO_EN_DEFINICION, '(en definicion)'),
-        (ESTADO_ACTIVA, 'Activa'),
-        (ESTADO_FINALIZADA, 'Finalizada'),
-        (ESTADO_BORRADA, 'Borrada'),
-    )
-
-    estado = models.PositiveIntegerField(
-        choices=ESTADOS,
-        default=ESTADO_EN_DEFINICION,
-    )
-    nombre = models.CharField(max_length=128)
-    fecha_inicio = models.DateField(null=True, blank=True)
-    fecha_fin = models.DateField(null=True, blank=True)
-    bd_contacto = models.ForeignKey(
-        'BaseDatosContacto',
-        null=True, blank=True,
-        related_name="%(class)ss"
-    )
