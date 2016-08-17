@@ -140,7 +140,7 @@ urlpatterns = [
         login_required(views_campana_creacion.QueueDeleteView.as_view()),
         name='queue_elimina',
         ),
-    url(r'^queue/update/(?P<pk_queue>[\w\-]+)/$',
+    url(r'^campana/update/(?P<pk_campana>\d+)/cola/$',
         login_required(views_campana_creacion.QueueUpdateView.as_view()),
         name='queue_update',
         ),

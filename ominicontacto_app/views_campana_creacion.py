@@ -85,8 +85,6 @@ class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
             kwargs={"pk_campana": self.object.pk})
 
 
-
-
 class QueueCreateView(CheckEstadoCampanaMixin, CreateView):
     model = Queue
     form_class = QueueForm
@@ -233,18 +231,19 @@ class QueueDeleteView(DeleteView):
         return reverse('queue_list')
 
 
-class QueueUpdateView(UpdateView):
+class QueueUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
+                      UpdateView):
     model = Queue
     form_class = QueueUpdateForm
     template_name = 'queue/create_update_queue.html'
 
     def get_object(self, queryset=None):
-        return Queue.objects.get(name=self.kwargs['pk_queue'])
+        return self.campana.queue_campana
 
     def get_success_url(self):
         return reverse(
             'queue_member',
-            kwargs={"pk_queue": self.kwargs['pk_queue']}
+            kwargs={"pk_queue": self.object.pk}
         )
 
 
