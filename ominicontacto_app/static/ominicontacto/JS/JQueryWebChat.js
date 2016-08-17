@@ -52,7 +52,7 @@ $(function() {
       var imgCelda1 = document.createElement("img");
       var txtCelda2 = document.createTextNode(user);
       var radioCelda3 = document.createElement("input");
-      imgCelda1.src="static/ominicontacto/Img/greendot.png";
+      imgCelda1.src="../static/ominicontacto/Img/greendot.png";
       radioCelda3.type="checkbox";
       radioCelda3.id=user;
       celda3.style.textAlign='right';

@@ -125,7 +125,7 @@ $(function() {
         liMensaje.appendChild(textoDeMensaje);
         chatWindow.appendChild(liMensaje);
       }
-    });*/
+    });
 
     userAgent.on('connected', function () {
       user = $("#user").val();
@@ -147,7 +147,7 @@ $(function() {
       fila.appendChild(celda2);
       fila.appendChild(celda3);
       document.getElementById("tbodyContacts").appendChild(fila);
-    });
+    });*/
 
     userAgent.on('newRTCSession', function(e) {
 		  var originHeader = "";
