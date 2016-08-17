@@ -1,8 +1,7 @@
 
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 from ominicontacto_app import (
-    views, views_queue, views_base_de_datos_contacto, views_contacto,
-    views_campana_creacion)
+    views, views_base_de_datos_contacto, views_contacto, views_campana_creacion)
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -53,30 +52,6 @@ urlpatterns = [
         ),
     url(r'^grupo/list/$',
         login_required(views.GrupoListView.as_view()), name='grupo_list',
-        ),
-    url(r'^queue/nuevo/(?P<pk_campana>\d+)/$',
-        login_required(views_queue.QueueCreateView.as_view()),
-        name='queue_nuevo',
-        ),
-    url(r'^queue_member/(?P<pk_queue>[\w\-]+)/$',
-        login_required(views_queue.QueueMemberCreateView.as_view()),
-        name='queue_member',
-        ),
-    url(r'queue/list/$',
-        login_required(views_queue.QueueListView.as_view()),
-        name='queue_list',
-        ),
-    url(r'^queue/elimina/(?P<pk_queue>[\w\-]+)/$',
-        login_required(views_queue.QueueDeleteView.as_view()),
-        name='queue_elimina',
-        ),
-    url(r'^queue/update/(?P<pk_queue>[\w\-]+)/$',
-        login_required(views_queue.QueueUpdateView.as_view()),
-        name='queue_update',
-        ),
-    url(r'^queue_member/(?P<pk_queuemember>\d+)/elimina/(?P<pk_queue>[\w\-]+)/$',
-        login_required(views_queue.queue_member_delete_view),
-        name='queuemember_elimina',
         ),
     url(r'^pausa/nuevo/$',
         login_required(views.PausaCreateView.as_view()),
@@ -148,5 +123,30 @@ urlpatterns = [
     url(r'^campana/nuevo/$',
         login_required(views_campana_creacion.CampanaCreateView.as_view()),
         name='campana_nuevo',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/cola/$',
+        login_required(views_campana_creacion.QueueCreateView.as_view()),
+        name='queue_nuevo',
+        ),
+    url(r'^queue_member/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_campana_creacion.QueueMemberCreateView.as_view()),
+        name='queue_member',
+        ),
+    url(r'queue/list/$',
+        login_required(views_campana_creacion.QueueListView.as_view()),
+        name='queue_list',
+        ),
+    url(r'^queue/elimina/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_campana_creacion.QueueDeleteView.as_view()),
+        name='queue_elimina',
+        ),
+    url(r'^queue/update/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_campana_creacion.QueueUpdateView.as_view()),
+        name='queue_update',
+        ),
+    url(
+        r'^queue_member/(?P<pk_queuemember>\d+)/elimina/(?P<pk_queue>[\w\-]+)/$',
+        login_required(views_campana_creacion.queue_member_delete_view),
+        name='queuemember_elimina',
         ),
 ]
