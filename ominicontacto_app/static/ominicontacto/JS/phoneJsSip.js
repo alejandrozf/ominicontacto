@@ -99,7 +99,7 @@ $(function() {
       setSipStatus("redcross.png", "  Registration failed", sipStatus);
     });
 
-    userAgent.on('newMessage', function(e) {
+    /*userAgent.on('newMessage', function(e) {
       var chatWindow = document.getElementById("messages");
       var liMensaje = "";
       var textoDeMensaje = "";
@@ -125,7 +125,7 @@ $(function() {
         liMensaje.appendChild(textoDeMensaje);
         chatWindow.appendChild(liMensaje);
       }
-    });
+    });*/
 
     userAgent.on('connected', function () {
       user = $("#user").val();
