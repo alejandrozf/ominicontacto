@@ -1,7 +1,8 @@
 
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
-    views, views_queue, views_base_de_datos_contacto, views_contacto)
+    views, views_queue, views_base_de_datos_contacto, views_contacto,
+    views_campana_creacion)
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -140,5 +141,12 @@ urlpatterns = [
     url(r'^contacto/buscar/$',
         login_required(views_contacto.BusquedaContactoFormView.as_view()),
         name='contacto_buscar',
+        ),
+    # ==========================================================================
+    # Campana
+    # ==========================================================================
+    url(r'^campana/nuevo/$',
+        login_required(views_campana_creacion.CampanaCreateView.as_view()),
+        name='campana_nuevo',
         ),
 ]
