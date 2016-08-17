@@ -112,10 +112,13 @@ class QueueForm(forms.ModelForm):
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
                   'servicelevel', 'strategy', 'weight', 'type', 'wait',
-                  'auto_grabacion')
+                  'auto_grabacion', 'campana')
 
         help_texts = {
             'timeout': """En segundos """,
+        }
+        widgets = {
+            'campana': forms.HiddenInput()
         }
 
 

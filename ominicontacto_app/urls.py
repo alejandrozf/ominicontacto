@@ -54,7 +54,7 @@ urlpatterns = [
     url(r'^grupo/list/$',
         login_required(views.GrupoListView.as_view()), name='grupo_list',
         ),
-    url(r'^queue/nuevo/$',
+    url(r'^queue/nuevo/(?P<pk_campana>\d+)/$',
         login_required(views_queue.QueueCreateView.as_view()),
         name='queue_nuevo',
         ),

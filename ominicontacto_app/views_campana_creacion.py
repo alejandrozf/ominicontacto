@@ -60,8 +60,8 @@ class CampanaCreateView(CreateView):
 
     def get_success_url(self):
         return reverse(
-            'queue_nuevo')
-            #kwargs={"pk_campana": self.object.pk})
+            'queue_nuevo',
+            kwargs={"pk_campana": self.object.pk})
 
 
 class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
@@ -77,5 +77,5 @@ class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
     def get_success_url(self):
         return reverse(
-            'queue_nuevo')
-            #kwargs={"pk_campana": self.object.pk})
+            'queue_nuevo',
+            kwargs={"pk_campana": self.object.pk})

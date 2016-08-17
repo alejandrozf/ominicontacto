@@ -10,12 +10,19 @@ from ominicontacto_app.forms import QueueForm, QueueMemberForm, QueueUpdateForm
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
+from ominicontacto_app.views_campana_creacion import CheckEstadoCampanaMixin,\
+    CampanaEnDefinicionMixin
 
 
-class QueueCreateView(CreateView):
+class QueueCreateView(CheckEstadoCampanaMixin, CreateView):
     model = Queue
     form_class = QueueForm
     template_name = 'queue/create_update_queue.html'
+
+    def get_initial(self):
+        initial = super(QueueCreateView, self).get_initial()
+        initial.update({'campana': self.campana.id})
+        return initial
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
