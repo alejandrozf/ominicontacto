@@ -1,20 +1,13 @@
-var sesion = null;
-var ua = null;
 var user = '';
-var configuration = null;
 
 $(function() {
-	debugger;
-	configuration = {
+	var configuration = {
       uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
       ws_servers : "wss://172.16.20.219:443",
       password : $("#sipSec").val()
     };
-  $("#conf").click(function() {
-    $("#modalAccountConfig").modal('show');
-  });
-  ua = new JsSIP.UA(configuration);
-  sesion = ua.start();
+  var ua = new JsSIP.UA(configuration);
+  var sesion = ua.start();
 
   	debugger;
     $("#sendMessage").prop('disabled', false);
@@ -59,7 +52,6 @@ $(function() {
       var imgCelda1 = document.createElement("img");
       var txtCelda2 = document.createTextNode(user);
       var radioCelda3 = document.createElement("input");
-      debugger;
       imgCelda1.src="static/ominicontacto/Img/greendot.png";
       radioCelda3.type="checkbox";
       radioCelda3.id=user;
@@ -73,7 +65,6 @@ $(function() {
       document.getElementById("tbodyContacts").appendChild(fila);
     });
   $("#sendMessage").click(function() {
-  	debugger;
     var mensaje = $("#chatMessage").val();
     user = $("#user").val();
     if(mensaje !== "") {
