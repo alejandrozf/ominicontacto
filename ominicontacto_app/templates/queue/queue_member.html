@@ -4,8 +4,8 @@
 {% block content %}
  <div class="panel-body">
             <ul class="nav nav-tabs">
-                <li class="active"><a>Campaña</a></li>
-                <li class="disabled"><a>Datos Básicos de la cola</a></li>
+                <li><a href="{%  url 'campana_update' campana.pk %}">Campaña</a></li>
+                <li><a href="{% url 'queue_update' campana.pk %}">Datos Básicos de la cola</a></li>
                 <li class="disabled"><a>Agregar agentes a la cola de la campaña</a></li>
             </ul>
             <br>
@@ -19,7 +19,7 @@
 
                 </div>
                 <div class="col-lg-6">
-                    {% if queuemember %}
+                    {% if campana %}
                         <h4>Agentes</h4>
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -31,18 +31,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for agente in queuemember %}
+                                {% for agente in campana.queue_campana.queuemember.all %}
                                     <tr>
                                         <td>{{ agente.member}}</td>
                                         <td>{{ agente.interface }}</td>
                                         <td>{{ agente.penalty }}</td>
-                                        <td><a href="{% url 'queuemember_elimina' agente.pk agente.queue_name.name %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
+                                        <td><a href="{% url 'queuemember_elimina' agente.pk campana.pk %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
 
 
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="3">
+                                        <td colspan="4">
                                             <p class="text-center text-danger">
                                                 <em>No hay agentes agreados en está cola</em>
                                             </p>

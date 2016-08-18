@@ -80,12 +80,18 @@ class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     form_class = CampanaForm
 
     def get_success_url(self):
-        return reverse(
-            'queue_nuevo',
-            kwargs={"pk_campana": self.object.pk})
+        if self.campana.queue_campana:
+            return reverse(
+                'queue_update',
+                kwargs={"pk_campana": self.object.pk})
+        else:
+            return reverse(
+                'queue_nuevo',
+                kwargs={"pk_campana": self.object.pk})
 
 
-class QueueCreateView(CheckEstadoCampanaMixin, CreateView):
+class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
+                      CreateView):
     model = Queue
     form_class = QueueForm
     template_name = 'queue/create_update_queue.html'
@@ -107,20 +113,25 @@ class QueueCreateView(CheckEstadoCampanaMixin, CreateView):
         servicio_asterisk.insertar_cola_asterisk(self.object)
         return super(QueueCreateView, self).form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(QueueCreateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
     def get_success_url(self):
         return reverse(
             'queue_member',
-            kwargs={"pk_queue": self.object.pk}
-        )
+            kwargs={"pk_campana": self.campana.pk})
 
 
-class QueueMemberCreateView(CreateView):
+class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
+                            CreateView):
     model = QueueMember
     form_class = QueueMemberForm
     template_name = 'queue/queue_member.html'
 
     def get_object(self, queryset=None):
-        return Queue.objects.get(name=self.kwargs['pk_queue'])
+        return self.campana.queue_campana
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -141,15 +152,13 @@ class QueueMemberCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super(
             QueueMemberCreateView, self).get_context_data(**kwargs)
-        queue = Queue.objects.get(name=self.kwargs['pk_queue'])
-        context['queuemember'] = QueueMember.objects.filter(queue_name=queue)
+        context['campana'] = self.campana
         return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        queue = Queue.objects.get(name=self.kwargs['pk_queue'])
         existe_member = QueueMember.objects.\
-            existe_member_queue(self.object.member, queue)
+            existe_member_queue(self.object.member, self.campana.queue_campana)
 
         if existe_member:
             message = 'Operación Errónea! \
@@ -161,7 +170,7 @@ class QueueMemberCreateView(CreateView):
             )
             return self.form_invalid(form)
         else:
-            self.object.queue_name = queue
+            self.object.queue_name = self.campana.queue_campana
             self.object.membername = self.object.member.user.get_full_name()
             self.object.interface = """Local/{0}@from-queue/n""".format(
             self.object.member.sip_extension)
@@ -173,8 +182,7 @@ class QueueMemberCreateView(CreateView):
     def get_success_url(self):
         return reverse(
             'queue_member',
-            kwargs={"pk_queue": self.kwargs['pk_queue']}
-        )
+            kwargs={"pk_campana": self.campana.pk})
 
 
 class QueueListView(ListView):
@@ -213,7 +221,6 @@ class QueueDeleteView(DeleteView):
                 message,
             )
 
-
         message = '<strong>Operación Exitosa!</strong>\
         Se llevó a cabo con éxito la eliminación de la queue.'
 
@@ -240,11 +247,15 @@ class QueueUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     def get_object(self, queryset=None):
         return self.campana.queue_campana
 
+    def get_context_data(self, **kwargs):
+        context = super(QueueUpdateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
     def get_success_url(self):
         return reverse(
             'queue_member',
-            kwargs={"pk_queue": self.object.pk}
-        )
+            kwargs={"pk_campana": self.campana.pk})
 
 
 # usa template de confirmacion por eso se usa la view queue_member_delete_view
@@ -261,11 +272,12 @@ class QueueMemberDeleteView(DeleteView):
     def get_success_url(self):
         return reverse(
             'queue_member',
-            kwargs={"pk_queue": self.kwargs['pk_queue']}
-        )
+            kwargs={"pk_campana": self.campana.pk})
 
 
-def queue_member_delete_view(request, pk_queuemember, pk_queue):
-    queue = QueueMember.objects.get(pk=pk_queuemember)
-    queue.delete()
-    return HttpResponseRedirect('/queue_member/' + str(pk_queue) + "/")
+def queue_member_delete_view(request, pk_queuemember, pk_campana):
+
+    queue_member = QueueMember.objects.get(pk=pk_queuemember)
+    queue_member.delete()
+    return HttpResponseRedirect("/campana/" + str(pk_campana) +
+                                "/queue_member/")
