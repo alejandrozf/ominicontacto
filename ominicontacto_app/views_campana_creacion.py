@@ -281,3 +281,14 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     queue_member.delete()
     return HttpResponseRedirect("/campana/" + str(pk_campana) +
                                 "/queue_member/")
+
+
+class CampanaListView(ListView):
+    """
+    Esta vista lista los objetos Campana
+    """
+
+    template_name = 'campana/campana_list.html'
+    context_object_name = 'campanas'
+    model = Campana
+

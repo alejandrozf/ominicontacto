@@ -153,4 +153,8 @@ urlpatterns = [
         login_required(views_campana_creacion.queue_member_delete_view),
         name='queuemember_elimina',
         ),
+    url(r'campana/list/$',
+        login_required(views_campana_creacion.CampanaListView.as_view()),
+        name='campana_list',
+        ),
 ]
