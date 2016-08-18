@@ -321,7 +321,8 @@ class QueueMember(models.Model):
     )
     member = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
     queue_name = models.ForeignKey(Queue, on_delete=models.CASCADE,
-                                   db_column='queue_name')
+                                   db_column='queue_name',
+                                   related_name='queuemember')
     membername = models.CharField(max_length=128)
     interface = models.CharField(max_length=128)
     penalty = models.IntegerField(choices=DIGITO_CHOICES,)
