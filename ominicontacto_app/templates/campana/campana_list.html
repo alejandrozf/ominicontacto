@@ -19,7 +19,7 @@
         {% for campana in object_list %}
             <tr>
                 <td width="45%">
-                    <a href="{% url 'queue_update' campana.pk %}">{{ campana.nombre }}</a>
+                    <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
