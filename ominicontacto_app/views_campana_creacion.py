@@ -292,3 +292,50 @@ class CampanaListView(ListView):
     context_object_name = 'campanas'
     model = Campana
 
+
+class CampanaDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación de una campana
+    """
+    model = Queue
+    template_name = 'campana/delete_campana.html'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        # Eliminamos el registro de la tabla de asterisk en mysql
+        servicio_asterisk = AsteriskService()
+        servicio_asterisk.delete_cola_asterisk(self.object.queue_campana)
+        # realizamos la eliminacion de la queue
+        self.object.delete()
+        # actualizamos el archivo de dialplan
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+
+        message = '<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la campana.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(success_url)
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_success_url(self):
+        return reverse('campana_list')
+

@@ -157,4 +157,8 @@ urlpatterns = [
         login_required(views_campana_creacion.CampanaListView.as_view()),
         name='campana_list',
         ),
+    url(r'^campana/elimina/(?P<pk_campana>\d+)/$',
+        login_required(views_campana_creacion.CampanaDeleteView.as_view()),
+        name='campana_elimina',
+        ),
 ]
