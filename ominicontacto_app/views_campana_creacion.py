@@ -80,14 +80,9 @@ class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     form_class = CampanaForm
 
     def get_success_url(self):
-        if self.campana.queue_campana:
-            return reverse(
-                'queue_update',
-                kwargs={"pk_campana": self.object.pk})
-        else:
-            return reverse(
-                'queue_nuevo',
-                kwargs={"pk_campana": self.object.pk})
+        return reverse(
+            'queue_update',
+            kwargs={"pk_campana": self.object.pk})
 
 
 class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
@@ -98,7 +93,8 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
     def get_initial(self):
         initial = super(QueueCreateView, self).get_initial()
-        initial.update({'campana': self.campana.id})
+        initial.update({'campana': self.campana.id,
+                        'name': self.campana.nombre})
         return initial
 
     def form_valid(self, form):
@@ -245,7 +241,18 @@ class QueueUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     template_name = 'queue/create_update_queue.html'
 
     def get_object(self, queryset=None):
-        return self.campana.queue_campana
+         return self.campana.queue_campana
+
+    def dispatch(self, *args, **kwargs):
+        campana = Campana.objects.obtener_en_definicion_para_editar(
+            self.kwargs['pk_campana'])
+        try:
+            Queue.objects.get(campana=campana)
+        except Queue.DoesNotExist:
+            return HttpResponseRedirect("/campana/" + self.kwargs['pk_campana']
+                                        + "/cola/")
+        else:
+            return super(QueueUpdateView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(QueueUpdateView, self).get_context_data(**kwargs)

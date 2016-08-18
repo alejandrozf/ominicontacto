@@ -118,7 +118,8 @@ class QueueForm(forms.ModelForm):
             'timeout': """En segundos """,
         }
         widgets = {
-            'campana': forms.HiddenInput()
+            'campana': forms.HiddenInput(),
+            'name': forms.HiddenInput(),
         }
 
 
