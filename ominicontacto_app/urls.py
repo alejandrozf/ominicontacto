@@ -161,4 +161,9 @@ urlpatterns = [
         login_required(views_campana_creacion.CampanaDeleteView.as_view()),
         name='campana_elimina',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/formulario/(?P<pk_contacto>\d+)/$',
+        login_required(
+            views_campana_creacion.FormularioDemoFormUpdateView.as_view()),
+        name='formulario_update',
+        ),
 ]

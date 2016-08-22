@@ -8,9 +8,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from ominicontacto_app.forms import (
-    CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm
-)
-from ominicontacto_app.models import Campana, Queue, QueueMember
+    CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
+    FormularioDemoForm)
+from ominicontacto_app.models import (
+    Campana, Queue, QueueMember, FormularioDemo, Contacto)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
@@ -354,3 +355,24 @@ class CampanaDeleteView(DeleteView):
     def get_success_url(self):
         return reverse('campana_list')
 
+
+class FormularioDemoFormUpdateView(UpdateView):
+    """
+    Esta vista actualiza un objeto formulario.
+    """
+
+    template_name = 'base_create_update_form.html'
+    model = FormularioDemo
+    context_object_name = 'formulario_demo'
+    form_class = FormularioDemoForm
+
+    def get_object(self, queryset=None):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        print campana
+        print contacto
+        return FormularioDemo.objects.get(campana=campana, contacto=contacto)
+
+    def get_success_url(self):
+        return reverse(
+            'campana_list')

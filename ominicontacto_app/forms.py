@@ -12,8 +12,8 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana
-)
+    Campana,
+    FormularioDemo)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -263,4 +263,18 @@ class CampanaForm(forms.ModelForm):
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'bd_contacto')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
+        }
+
+
+class FormularioDemoForm(forms.ModelForm):
+
+    class Meta:
+        model = FormularioDemo
+        fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono',
+                  'datos', 'extra_1', 'extra_2', 'extra_3', 'extra_4',
+                  'extra_5', 'extra_6', 'extra_7', 'extra_8', 'extra_9',
+                  'extra_10')
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'contacto': forms.HiddenInput(),
         }
