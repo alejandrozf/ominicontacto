@@ -14,6 +14,7 @@ from ominicontacto_app.models import Campana, Queue, QueueMember
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
+from ominicontacto_app.services.campana_service import CampanaService
 
 import logging as logging_
 
@@ -61,6 +62,13 @@ class CampanaCreateView(CreateView):
     model = Campana
     context_object_name = 'campana'
     form_class = CampanaForm
+    
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        campana_service = CampanaService()
+        self.object.save()
+        campana_service.crear_formulario(self.object)
+        return super(CampanaCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(
