@@ -166,4 +166,9 @@ urlpatterns = [
             views_campana_creacion.FormularioDemoFormUpdateView.as_view()),
         name='formulario_update',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/formulario_nuevo/$',
+        login_required(
+            views_campana_creacion.FormularioDemoFormCreateView.as_view()),
+        name='formulario_nuevo',
+        ),
 ]

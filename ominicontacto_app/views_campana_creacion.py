@@ -361,7 +361,7 @@ class FormularioDemoFormUpdateView(UpdateView):
     Esta vista actualiza un objeto formulario.
     """
 
-    template_name = 'base_create_update_form.html'
+    template_name = 'agente/contacto_create_update_form.html'
     model = FormularioDemo
     context_object_name = 'formulario_demo'
     form_class = FormularioDemoForm
@@ -373,4 +373,39 @@ class FormularioDemoFormUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse(
-            'campana_list')
+            'view_blanco')
+
+
+class FormularioDemoFormCreateView(CreateView):
+    """
+    Esta vista actualiza un objeto formulario.
+    """
+
+    template_name = 'agente/contacto_create_update_form.html'
+    model = FormularioDemo
+    context_object_name = 'formulario_demo'
+    form_class = FormularioDemoForm
+
+    def get_initial(self):
+        initial = super(FormularioDemoFormCreateView, self).get_initial()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        initial.update({'campana': campana.id})
+        return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        contacto = Contacto.objects.create(id_cliente=self.object.id_cliente,
+                                           nombre=self.object.nombre,
+                                           apellido=self.object.apellido,
+                                           telefono=self.object.telefono,
+                                           email=self.object.email,
+                                           datos=self.object.datos,
+                                           bd_contacto=self.object.campana.
+                                           bd_contacto)
+        self.object.contacto = contacto
+        self.object.save()
+        return super(FormularioDemoFormCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'view_blanco')

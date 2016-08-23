@@ -273,8 +273,8 @@ class FormularioDemoForm(forms.ModelForm):
         fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono',
                   'datos', 'extra_1', 'extra_2', 'extra_3', 'extra_4',
                   'extra_5', 'extra_6', 'extra_7', 'extra_8', 'extra_9',
-                  'extra_10')
+                  'extra_10', 'campana')
         widgets = {
             'campana': forms.HiddenInput(),
-            'contacto': forms.HiddenInput(),
+            # 'contacto': forms.HiddenInput(),
         }
