@@ -369,8 +369,6 @@ class FormularioDemoFormUpdateView(UpdateView):
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-        print campana
-        print contacto
         return FormularioDemo.objects.get(campana=campana, contacto=contacto)
 
     def get_success_url(self):
