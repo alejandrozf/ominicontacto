@@ -46,6 +46,7 @@ class QueueDialplanConfigCreator(object):
             'oml_queue_name': queue.name,
             'oml_queue_id_asterisk': '0077' + str(queue.queue_asterisk),
             'oml_queue_wait': queue.wait,
+            'oml_campana_id': queue.campana.id,
             'date': str(datetime.datetime.now())
         }
 

@@ -11,8 +11,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
-    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion
-)
+    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
+    Campana,
+    FormularioDemo)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -111,10 +112,14 @@ class QueueForm(forms.ModelForm):
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
                   'servicelevel', 'strategy', 'weight', 'type', 'wait',
-                  'auto_grabacion')
+                  'auto_grabacion', 'campana')
 
         help_texts = {
             'timeout': """En segundos """,
+        }
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'name': forms.HiddenInput(),
         }
 
 
@@ -238,3 +243,38 @@ class GrabacionBusquedaForm(forms.ModelForm):
         model = Grabacion
         fields = ('fecha', 'tipo_llamada', 'id_cliente', 'tel_cliente',
                   'sip_agente')
+
+
+class CampanaForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CampanaForm, self).__init__(*args, **kwargs)
+
+        self.fields['bd_contacto'].queryset =\
+            BaseDatosContacto.objects.obtener_definidas()
+
+        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
+        self.fields['fecha_inicio'].required = True
+
+        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
+        self.fields['fecha_fin'].required = True
+
+    class Meta:
+        model = Campana
+        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'bd_contacto')
+        labels = {
+            'bd_contacto': 'Base de Datos de Contactos',
+        }
+
+
+class FormularioDemoForm(forms.ModelForm):
+
+    class Meta:
+        model = FormularioDemo
+        fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono',
+                  'datos', 'extra_1', 'extra_2', 'extra_3', 'extra_4',
+                  'extra_5', 'extra_6', 'extra_7', 'extra_8', 'extra_9',
+                  'extra_10', 'campana')
+        widgets = {
+            'campana': forms.HiddenInput(),
+            # 'contacto': forms.HiddenInput(),
+        }
