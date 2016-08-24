@@ -74,10 +74,7 @@ $(function() {
   });
   $("#unregister").click(function() {
     userAgent.unregister();
-    /*userAgent.on('',function() {
-
-    });*/
-   userAgent.on('unregistered', function(e) {
+    userAgent.on('unregistered', function(e) {
       setSipStatus("reddot.png", "  Unregistered", sipStatus);
     });
   });
@@ -95,59 +92,8 @@ $(function() {
     });
 
     userAgent.on('registrationFailed', function(e) {
-
       setSipStatus("redcross.png", "  Registration failed", sipStatus);
     });
-
-    /*userAgent.on('newMessage', function(e) {
-      var chatWindow = document.getElementById("messages");
-      var liMensaje = "";
-      var textoDeMensaje = "";
-      var msg = e.message.content;
-      if(e.originator == "remote") {
-        fromUser = e.request.headers.From[0].raw;        
-        endPos = fromUser.indexOf("@");
-        startPos = fromUser.indexOf(":");
-        fromUser = fromUser.substring(startPos+1,endPos);
-        liMensaje = document.createElement("li");
-        textoDeMensaje = document.createTextNode(fromUser+": "+msg);
-        liMensaje.appendChild(textoDeMensaje);
-        chatWindow.appendChild(liMensaje);
-      } else {
-        fromUser = e.request.headers.From[0];
-        endPos = fromUser.indexOf("@");
-        startPos = fromUser.indexOf(":");
-        fromUser = fromUser.substring(startPos+1,endPos);
-        liMensaje = document.createElement("li");
-        var msgToSend = document.getElementById("chatMessage").value;
-        liMensaje = document.createElement("li");
-        textoDeMensaje = document.createTextNode(fromUser+": "+msg);
-        liMensaje.appendChild(textoDeMensaje);
-        chatWindow.appendChild(liMensaje);
-      }
-    });
-
-    userAgent.on('connected', function () {
-      user = $("#user").val();
-      var fila = document.createElement('tr');
-      var celda1 = document.createElement('td');
-      var celda2 = document.createElement('td');
-      var celda3 = document.createElement('td');
-      var imgCelda1 = document.createElement("img");
-      var txtCelda2 = document.createTextNode(user);
-      var radioCelda3 = document.createElement("input");
-      imgCelda1.src="Img/greendot.png";
-      radioCelda3.type="checkbox";
-      radioCelda3.id=user;
-      celda3.style.textAlign='right';
-      celda1.appendChild(imgCelda1);
-      celda2.appendChild(txtCelda2);
-      celda3.appendChild(radioCelda3);
-      fila.appendChild(celda1);
-      fila.appendChild(celda2);
-      fila.appendChild(celda3);
-      document.getElementById("tbodyContacts").appendChild(fila);
-    });*/
 
     userAgent.on('newRTCSession', function(e) {
 		  var originHeader = "";
@@ -220,18 +166,22 @@ $(function() {
       	if (e.request.headers.Idcliente) {
       		var leadIdHeader = e.request.headers.Idcliente[0].raw;
       	}
+      	if (e.request.headers.IDCamp) {
+      		var CampIdHeader = e.request.headers.IDCamp[0].raw;
+      	}
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
         fromUser = fromUser.substring(startPos+1,endPos);
 
-        if(leadIdHeader) {
-          processLeadid(leadIdHeader);	
+        if(leadIdHeader && CampIdHeader) {
+          getData(CampIdHeader, leadIdHeader);	
         } else {
-        	if(fromUser !== "Unknown") {
+        	if(CampIdHeader) {
+        		getBlankFormCamp(CampIdHeader);
+        	}
+        	else if(fromUser !== "Unknown") {
         	  processCallid(fromUser);
-        	} else {
-        		getBlankForm();
         	}
         } 
         
@@ -459,16 +409,24 @@ $(function() {
         ring.pause();
     }
   }
-  function getBlankForm() {
+  /*function getBlankForm() {
     var url = '/contacto/list/';
+    $("#dataView").attr('src', url); 
+  }*/
+  function getBlankFormCamp(campid) {
+    var url = '/campana/'+campid+'/formulario_nuevo/';
     $("#dataView").attr('src', url); 
   }
   function processCallid(callerid) {
   	var url = "/contacto/"+callerid+"/list/";
   	$("#dataView").attr('src', url);
   }
-  function processLeadid(leadid) {
-  	var url = "/contacto/"+leadid+"/update/"; 
+  function getData(campid, leadid) {
+  	var url = "/campana/"+campid+"/formulario/"+leadid;
   	$("#dataView").attr('src', url);
   }
+/*  function processLeadid(leadid) {
+  	var url = "/contacto/"+leadid+"/update/"; 
+  	$("#dataView").attr('src', url);
+  }*/
 });
