@@ -142,6 +142,7 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         same => n,Gosub(hangup-fts,llamante_handler,1)
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
+        same => n,SIPAddHeader(IDCamp:{oml_campana_id})
         same => n,Queue({oml_queue_name},{oml_queue_wait},tT)
         """
 
@@ -165,6 +166,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,MixMonitor(${{MONITOR_FILENAME}}.wav)
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
+        same => n,SIPAddHeader(IDCamp:{oml_campana_id})
         same => n,Queue({oml_queue_name},{oml_queue_wait},tT)
         """
 

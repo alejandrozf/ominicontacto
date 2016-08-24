@@ -3,25 +3,29 @@
 
 {% block content %}
 
-    <div class="col-md-4 col-md-offset-4">
+
             <ul class="nav nav-tabs">
-                <li class="active"><a>Datos Básicos</a></li>
-                <li class="disabled"><a>Agregar agentes a la cola</a></li>
+                <li><a href="{%  url 'campana_update' campana.pk %}">Campaña</a></li>
+                <li class="active"><a>Datos Básicos de la cola</a></li>
+                <li class="disabled"><a>Agregar agentes a la cola de la campaña</a></li>
             </ul>
             <br>
                 {% if object.name %}
                     <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
                 {% endif %}
-        <form action = "" method = "post"> {% csrf_token %}
+        <form action = "" method = "post">
+            <div class="col-lg-4">
+            {% csrf_token %}
             <table class="table table-striped">
 		        {{form.as_table}}
             </table>
             <button type="submit" id="id_registrar" class="btn btn-success btn-lg">
                 Siguiente
             </button>
-            <a href="{% url 'queue_list' %}">Cancelar</a>
+            <a href="{% url 'campana_list' %}">Cancelar</a>
+                    </div>
 	    </form>
 
-    </div>
+
 
 {% endblock %}

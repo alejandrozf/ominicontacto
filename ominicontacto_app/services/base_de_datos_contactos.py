@@ -83,6 +83,10 @@ class CreacionBaseDatosService(object):
 
             cantidad_contactos = 0
             for lista_dato in estructura_archivo[1:]:
+                if len(lista_dato) > 5:
+                    datos = json.dumps(lista_dato[5:])
+                else:
+                    datos = ""
                 cantidad_contactos += 1
                 Contacto.objects.create(
                     id_cliente=int(lista_dato[0]),
@@ -90,7 +94,7 @@ class CreacionBaseDatosService(object):
                     apellido=lista_dato[2],
                     telefono=lista_dato[3],
                     email=lista_dato[4],
-                    datos=json.dumps(lista_dato),
+                    datos=datos,
                     bd_contacto=base_datos_contacto,
                 )
         except OmlParserMaxRowError:
