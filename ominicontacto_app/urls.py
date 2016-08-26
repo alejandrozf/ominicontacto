@@ -117,6 +117,10 @@ urlpatterns = [
         login_required(views_contacto.BusquedaContactoFormView.as_view()),
         name='contacto_buscar',
         ),
+    url(r'^contacto/(?P<id_cliente>\d+)/id_cliente/$',
+        login_required(views_contacto.ContactoIdClienteListView.as_view()),
+        name='contacto_list_id_cliente',
+        ),
     # ==========================================================================
     # Campana
     # ==========================================================================
@@ -161,7 +165,7 @@ urlpatterns = [
         login_required(views_campana_creacion.CampanaDeleteView.as_view()),
         name='campana_elimina',
         ),
-    url(r'^campana/(?P<pk_campana>\d+)/formulario/(?P<pk_contacto>\d+)/$',
+    url(r'^campana/(?P<pk_campana>\d+)/formulario/(?P<id_cliente>\d+)/$',
         login_required(
             views_campana_creacion.FormularioDemoFormUpdateView.as_view()),
         name='formulario_update',

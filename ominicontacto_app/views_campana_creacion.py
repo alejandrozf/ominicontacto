@@ -368,8 +368,22 @@ class FormularioDemoFormUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'])
         return FormularioDemo.objects.get(campana=campana, contacto=contacto)
+
+    def dispatch(self, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        try:
+            Contacto.objects.get(id_cliente=self.kwargs['id_cliente'])
+        except Contacto.DoesNotExist:
+            return HttpResponseRedirect(reverse('formulario_nuevo',
+                                                kwargs={"pk_campana":
+                                                self.kwargs['pk_campana']}))
+        except Contacto.MultipleObjectsReturned:
+            return HttpResponseRedirect(reverse('contacto_list_id_cliente',
+                                                kwargs={"id_cliente":
+                                                self.kwargs['id_cliente']}))
+        return super(FormularioDemoFormUpdateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse(
