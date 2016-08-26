@@ -870,6 +870,13 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "número télefonico"))
 
+    def contactos_by_id_cliente(self, id_cliente):
+        try:
+            return self.filter(id_cliente=id_cliente)
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "id_cliente"))
+
     def contactos_by_filtro(self, filtro):
         try:
             return self.filter(Q(nombre__contains=filtro) |
