@@ -68,7 +68,7 @@ class CampanaCreateView(CreateView):
         self.object = form.save(commit=False)
         campana_service = CampanaService()
         self.object.save()
-        campana_service.crear_formulario(self.object)
+        #campana_service.crear_formulario(self.object)
         return super(CampanaCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -361,26 +361,36 @@ class FormularioDemoFormUpdateView(UpdateView):
     Esta vista actualiza un objeto formulario.
     """
 
-    template_name = 'agente/contacto_create_update_form.html'
+    template_name = 'agente/formulario_create_update_form.html'
     model = FormularioDemo
     context_object_name = 'formulario_demo'
     form_class = FormularioDemoForm
 
+    def get_context_data(self, **kwargs):
+        context = super(FormularioDemoFormUpdateView, self).get_context_data(
+            **kwargs)
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
+                                        id_cliente=self.kwargs['id_cliente'])
+        context['contacto'] = contacto
+        return context
+
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        return FormularioDemo.objects.get(campana=campana,
-                                          id_cliente=self.kwargs['id_cliente'])
+        contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
+                                       id_cliente=self.kwargs['id_cliente'])
+        return FormularioDemo.objects.get(campana=campana, contacto=contacto)
 
     def dispatch(self, *args, **kwargs):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         try:
-            FormularioDemo.objects.get(campana=campana,
-                                       id_cliente=self.kwargs['id_cliente'])
-        except FormularioDemo.DoesNotExist:
+            Contacto.objects.get(bd_contacto=campana.bd_contacto,
+                                 id_cliente=self.kwargs['id_cliente'])
+        except Contacto.DoesNotExist:
             return HttpResponseRedirect(reverse('formulario_nuevo',
                                                 kwargs={"pk_campana":
                                                 self.kwargs['pk_campana']}))
-        except FormularioDemo.MultipleObjectsReturned:
+        except Contacto.MultipleObjectsReturned:
             return HttpResponseRedirect(reverse('contacto_list_id_cliente',
                                                 kwargs={"id_cliente":
                                                 self.kwargs['id_cliente']}))
@@ -397,7 +407,7 @@ class FormularioDemoFormCreateView(CreateView):
     Esta vista actualiza un objeto formulario.
     """
 
-    template_name = 'agente/contacto_create_update_form.html'
+    template_name = 'agente/formulario_create_update_form.html'
     model = FormularioDemo
     context_object_name = 'formulario_demo'
     form_class = FormularioDemoForm
