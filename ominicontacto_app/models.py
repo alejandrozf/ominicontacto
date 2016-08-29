@@ -1115,12 +1115,6 @@ class FormularioDemo(models.Model):
 
     campana = models.ForeignKey(Campana, related_name="formularios")
     contacto = models.ForeignKey(Contacto, related_name="formulario_contacto")
-    id_cliente = models.IntegerField(blank=True, null=True)
-    nombre = models.CharField(max_length=128, blank=True, null=True)
-    apellido = models.CharField(max_length=128, blank=True, null=True)
-    telefono = models.CharField(max_length=128, blank=True, null=True)
-    email = models.CharField(max_length=128, blank=True, null=True)
-    datos = models.TextField(blank=True, null=True)
     extra_1 = models.TextField(blank=True, null=True)
     extra_2 = models.CharField(max_length=128, blank=True, null=True)
     extra_3 = models.CharField(max_length=128, blank=True, null=True)
