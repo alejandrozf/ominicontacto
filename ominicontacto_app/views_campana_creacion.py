@@ -476,7 +476,6 @@ class BusquedaFormularioFormView(FormView):
             campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
             listado_de_contacto = Contacto.objects.contactos_by_filtro(
                 campana.bd_contacto, filtro)
-            print listado_de_contacto
         except Contacto.DoesNotExist:
             listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
                 campana.bd_contacto)
