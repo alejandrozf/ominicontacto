@@ -11,6 +11,7 @@
                         <th>Base Datos Contactos</th>
                         <th>Creada</th>
                         <th>Cantidad Contactos</th>
+                          <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -24,6 +25,11 @@
                                 </td>
                                 <td>
                                     {{ base_datos_contacto.get_cantidad_contactos }}
+                                </td>
+                                <td>
+                                    <a href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar contacto"></span>
+                    </a>
                                 </td>
                             </tr>
                         {% empty %}

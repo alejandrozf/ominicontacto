@@ -13,7 +13,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana,
-    FormularioDemo)
+    FormularioDemo, Contacto)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -276,4 +276,15 @@ class FormularioDemoForm(forms.ModelForm):
         widgets = {
             'campana': forms.HiddenInput(),
             # 'contacto': forms.HiddenInput(),
+        }
+
+
+class ContactoForm(forms.ModelForm):
+
+    class Meta:
+        model = Contacto
+        fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono',
+                  'datos', 'bd_contacto')
+        widgets = {
+            'bd_contacto': forms.HiddenInput(),
         }

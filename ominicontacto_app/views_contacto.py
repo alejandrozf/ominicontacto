@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, FormView
-from ominicontacto_app.models import Contacto
+from ominicontacto_app.models import Contacto, BaseDatosContacto
 from django.core import paginator as django_paginator
 from django.core.urlresolvers import reverse
-from ominicontacto_app.forms import BusquedaContactoForm
+from ominicontacto_app.forms import BusquedaContactoForm, ContactoForm
 
 
 class ContactoCreateView(CreateView):
@@ -107,3 +107,23 @@ class BusquedaContactoFormView(FormView):
             listado_de_contacto = Contacto.objects.all()
             return self.render_to_response(self.get_context_data(
                 form=form, listado_de_contacto=listado_de_contacto))
+
+
+class ContactoBDContactoCreateView(CreateView):
+    model = Contacto
+    template_name = 'base_create_update_form.html'
+    form_class = ContactoForm
+
+    def get_initial(self):
+        initial = super(ContactoBDContactoCreateView, self).get_initial()
+        initial.update({'bd_contacto': self.kwargs['bd_contacto']})
+
+    def form_valid(self, form):
+        base_datos_contactos = BaseDatosContacto.objects.get(
+            pk=self.kwargs['bd_contacto'])
+        base_datos_contactos.cantidad_contactos += 1
+        base_datos_contactos.save()
+        return super(ContactoBDContactoCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('lista_base_datos_contacto')
