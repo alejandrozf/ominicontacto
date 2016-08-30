@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="col-md-3">
+    <form method="post">{% csrf_token %}
+        <h4>Contacto  <strong>Id Cliente {{object.id_cliente}}, {{object.nombre}} {{object.apellido }}</strong></h4>
+        <h4>¿Esta seguro que desea eliminar este contacto? </h4>
+        <button type="submit" class="btn btn-danger btn-sm">
+            <span class="glyphicon glyphicon-remove"></span> Eliminar
+        </button>
+        <a href="{% url 'contacto_list_bd_contacto' object.bd_contacto.pk %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

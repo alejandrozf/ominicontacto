@@ -29,7 +29,10 @@
                                 <td>
                                     <a href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
                                     <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar contacto"></span>
-                    </a>
+                                    </a>
+                                    <a href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
+                                    <span class="glyphicon glyphicon-th-list" aria-hidden="true" title="agregar contacto"></span>
+                                    </a>
                                 </td>
                             </tr>
                         {% empty %}

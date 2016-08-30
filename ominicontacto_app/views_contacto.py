@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.http import HttpResponseRedirect
+from django.views.generic import DeleteView
 from django.views.generic import ListView, CreateView, UpdateView, FormView
 from ominicontacto_app.models import Contacto, BaseDatosContacto
 from django.core import paginator as django_paginator
@@ -127,3 +128,40 @@ class ContactoBDContactoCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('lista_base_datos_contacto')
+
+
+class ContactoBDContactoListView(ListView):
+    model = Contacto
+    template_name = 'base_datos_contacto/contacto_list_bd_contacto.html'
+
+    def get_queryset(self):
+        return Contacto.objects.contactos_by_bd_contacto(
+            self.kwargs['bd_contacto'])
+
+
+class ContactoBDContactoUpdateView(UpdateView):
+    model = Contacto
+    template_name = 'base_create_update_form.html'
+    form_class = ContactoForm
+
+    def get_object(self, queryset=None):
+        return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+
+    def get_success_url(self):
+        return reverse('contacto_list_bd_contacto',
+                       kwargs={'bd_contacto': self.object.bd_contacto.pk})
+
+
+class ContactoBDContactoDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación de un contacto
+    """
+    model = Contacto
+    template_name = 'base_datos_contacto/delete_contacto.html'
+
+    def get_object(self, queryset=None):
+        return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+
+    def get_success_url(self):
+        return reverse('contacto_list_bd_contacto',
+                       kwargs={'bd_contacto': self.object.bd_contacto.pk})

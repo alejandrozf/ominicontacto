@@ -125,6 +125,18 @@ urlpatterns = [
         login_required(views_contacto.ContactoIdClienteListView.as_view()),
         name='contacto_list_id_cliente',
         ),
+    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/list_contacto/$',
+        login_required(views_contacto.ContactoBDContactoListView.as_view()),
+        name='contacto_list_bd_contacto',
+        ),
+    url(r'^base_datos_contacto/(?P<pk_contacto>\d+)/update/$',
+        login_required(views_contacto.ContactoBDContactoUpdateView.as_view()),
+        name='actualizar_contacto',
+        ),
+    url(r'^base_datos_contacto/(?P<pk_contacto>\d+)/eliminar/$',
+        login_required(views_contacto.ContactoBDContactoDeleteView.as_view()),
+        name='eliminar_contacto',
+        ),
     # ==========================================================================
     # Campana
     # ==========================================================================
