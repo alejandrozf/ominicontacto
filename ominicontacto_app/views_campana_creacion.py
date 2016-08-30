@@ -435,3 +435,17 @@ class FormularioDemoFormCreateView(CreateView):
     def get_success_url(self):
         return reverse(
             'view_blanco')
+
+
+class ContactoFormularioUpdateView(UpdateView):
+    model = Contacto
+    template_name = 'agente/contacto_create_update_form.html'
+    fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono', 'datos')
+
+    def get_object(self, queryset=None):
+        return Contacto.objects.get(pk=self.kwargs['id_cliente'])
+
+    def get_success_url(self):
+        return reverse('formulario_update',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "id_cliente": self.object.id_cliente})

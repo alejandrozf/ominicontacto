@@ -32,6 +32,13 @@
             <td><strong>Datos:</strong></td>
             <td>{{ contacto.datos }}</td>
         </tr>
+            <tr>
+            <td colspan="2">
+                <a href="{% url 'formulario_update_contacto' formulario_demo.campana.pk contacto.pk %}" class="btn btn-primary">
+                    Modificar datos del contacto
+                </a>
+            </td>
+        </tr>
         {% endif %}
         {{form.as_table}}
     </table>
