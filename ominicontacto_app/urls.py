@@ -82,6 +82,11 @@ urlpatterns = [
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
+    url(r'^base_datos_contacto/(?P<pk_bd_contacto>\d+)/actualizar/$',
+        login_required(views_base_de_datos_contacto.
+                       BaseDatosContactoUpdateView.as_view()),
+        name='update_base_datos_contacto'
+        ),
     url(r'^base_datos_contacto/nueva/$',
         login_required(views_base_de_datos_contacto.
                        BaseDatosContactoCreateView.as_view()),

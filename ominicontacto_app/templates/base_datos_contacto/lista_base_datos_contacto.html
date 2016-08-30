@@ -33,6 +33,9 @@
                                     <a href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
                                     <span class="glyphicon glyphicon-th-list" aria-hidden="true" title="agregar contacto"></span>
                                     </a>
+                                    <a href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
+                                    <span class="glyphicon glyphicon-th-list" aria-hidden="true" title="agregar muchos contactos"></span>
+                                    </a>
                                 </td>
                             </tr>
                         {% empty %}

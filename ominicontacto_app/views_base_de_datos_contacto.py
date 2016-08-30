@@ -88,6 +88,52 @@ class BaseDatosContactoCreateView(CreateView):
             kwargs={"pk": self.object.pk})
 
 
+class BaseDatosContactoUpdateView(UpdateView):
+    """
+    Esta vista crea una instancia de BaseDatosContacto
+    sin definir, lo que implica que no esta disponible
+    hasta que se procese su definición.
+    """
+
+    template_name = 'base_datos_contacto/nueva_edita_base_datos_contacto.html'
+    model = BaseDatosContacto
+    context_object_name = 'base_datos_contacto'
+    form_class = BaseDatosContactoForm
+
+    def get_object(self, queryset=None):
+        return BaseDatosContacto.objects.get(pk=self.kwargs['pk_bd_contacto'])
+
+    def form_valid(self, form):
+        nombre_archivo_importacion = \
+            self.request.FILES['archivo_importacion'].name
+
+        self.object = form.save(commit=False)
+        self.object.estado = BaseDatosContacto.ESTADO_EN_DEFINICION
+        self.object.nombre_archivo_importacion = nombre_archivo_importacion
+
+        try:
+            creacion_base_datos = CreacionBaseDatosService()
+            creacion_base_datos.genera_base_dato_contacto(self.object)
+        except OmlArchivoImportacionInvalidoError:
+            message = '<strong>Operación Errónea!</strong> \
+            El archivo especificado para realizar la importación de contactos \
+            no es válido.'
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.form_invalid(form)
+
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse(
+            'define_base_datos_contacto',
+            kwargs={"pk": self.object.pk})
+
+
 class DefineBaseDatosContactoView(UpdateView):
     """
     Esta vista se obtiene un resumen de la estructura
