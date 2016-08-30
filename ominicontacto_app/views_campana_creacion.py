@@ -69,7 +69,7 @@ class CampanaCreateView(CreateView):
         self.object = form.save(commit=False)
         campana_service = CampanaService()
         self.object.save()
-        #campana_service.crear_formulario(self.object)
+        campana_service.crear_formulario(self.object)
         return super(CampanaCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -473,9 +473,13 @@ class BusquedaFormularioFormView(FormView):
     def form_valid(self, form):
         filtro = form.cleaned_data.get('buscar')
         try:
-            listado_de_contacto = Contacto.objects.contactos_by_filtro(filtro)
+            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+            listado_de_contacto = Contacto.objects.contactos_by_filtro(
+                campana.bd_contacto, filtro)
+            print listado_de_contacto
         except Contacto.DoesNotExist:
-            listado_de_contacto = Contacto.objects.all()
+            listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
+                campana.bd_contacto)
             return self.render_to_response(self.get_context_data(
                 form=form, listado_de_contacto=listado_de_contacto))
 
@@ -483,6 +487,7 @@ class BusquedaFormularioFormView(FormView):
             return self.render_to_response(self.get_context_data(
                 form=form, listado_de_contacto=listado_de_contacto))
         else:
-            listado_de_contacto = Contacto.objects.all()
+            listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
+                campana.bd_contacto)
             return self.render_to_response(self.get_context_data(
                 form=form, listado_de_contacto=listado_de_contacto))

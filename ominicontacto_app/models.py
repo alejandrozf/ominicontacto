@@ -877,12 +877,14 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "id_cliente"))
 
-    def contactos_by_filtro(self, filtro):
+    def contactos_by_filtro(self, bd_contacto, filtro):
         try:
-            return self.filter(Q(nombre__contains=filtro) |
-                               Q(apellido__contains=filtro) |
-                               Q(telefono__contains=filtro) |
-                               Q(email__contains=filtro))
+            contactos = self.filter(Q(nombre__contains=filtro) |
+                                    Q(id_cliente__contains=filtro) |
+                                    Q(apellido__contains=filtro) |
+                                    Q(telefono__contains=filtro) |
+                                    Q(email__contains=filtro))
+            return contactos.filter(bd_contacto=bd_contacto)
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "filtro"))
