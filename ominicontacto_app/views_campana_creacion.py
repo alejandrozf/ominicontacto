@@ -6,10 +6,11 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView, CreateView, UpdateView, DeleteView, FormView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
-    FormularioDemoForm)
+    FormularioDemoForm, BusquedaContactoForm)
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, FormularioDemo, Contacto)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
@@ -387,7 +388,7 @@ class FormularioDemoFormUpdateView(UpdateView):
             Contacto.objects.get(bd_contacto=campana.bd_contacto,
                                  id_cliente=self.kwargs['id_cliente'])
         except Contacto.DoesNotExist:
-            return HttpResponseRedirect(reverse('formulario_nuevo',
+            return HttpResponseRedirect(reverse('formulario_buscar',
                                                 kwargs={"pk_campana":
                                                 self.kwargs['pk_campana']}))
         except Contacto.MultipleObjectsReturned:
@@ -449,3 +450,39 @@ class ContactoFormularioUpdateView(UpdateView):
         return reverse('formulario_update',
                        kwargs={"pk_campana": self.kwargs['pk_campana'],
                                "id_cliente": self.object.id_cliente})
+
+
+class BusquedaFormularioFormView(FormView):
+    form_class = BusquedaContactoForm
+    template_name = 'agente/formulario_busqueda_contacto.html'
+
+    def get(self, request, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
+            campana.bd_contacto)
+        return self.render_to_response(self.get_context_data(
+            listado_de_contacto=listado_de_contacto))
+
+    def get_context_data(self, **kwargs):
+        context = super(BusquedaFormularioFormView, self).get_context_data(
+            **kwargs)
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
+        return context
+
+    def form_valid(self, form):
+        filtro = form.cleaned_data.get('buscar')
+        try:
+            listado_de_contacto = Contacto.objects.contactos_by_filtro(filtro)
+        except Contacto.DoesNotExist:
+            listado_de_contacto = Contacto.objects.all()
+            return self.render_to_response(self.get_context_data(
+                form=form, listado_de_contacto=listado_de_contacto))
+
+        if listado_de_contacto:
+            return self.render_to_response(self.get_context_data(
+                form=form, listado_de_contacto=listado_de_contacto))
+        else:
+            listado_de_contacto = Contacto.objects.all()
+            return self.render_to_response(self.get_context_data(
+                form=form, listado_de_contacto=listado_de_contacto))

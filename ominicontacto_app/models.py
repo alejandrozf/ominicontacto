@@ -899,6 +899,13 @@ class ContactoManager(models.Manager):
         except Contacto.DoesNotExist:
             return None
 
+    def contactos_by_bd_contacto(self, bd_contacto):
+        try:
+            return self.filter(bd_contacto=bd_contacto)
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "base de datos de contactos"))
+
 
 class Contacto(models.Model):
     objects_default = models.Manager()

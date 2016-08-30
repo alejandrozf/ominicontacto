@@ -180,4 +180,9 @@ urlpatterns = [
             views_campana_creacion.ContactoFormularioUpdateView.as_view()),
         name='formulario_update_contacto',
         ),
+    url(r'^formulario/(?P<pk_campana>\d+)/buscar/$',
+        login_required(
+            views_campana_creacion.BusquedaFormularioFormView.as_view()),
+        name='formulario_buscar',
+        ),
 ]
