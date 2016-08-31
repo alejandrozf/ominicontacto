@@ -160,7 +160,7 @@ class CreacionBaseDatosService(object):
                     raise (ContactoExistenteError("ya existe el contacto con el"
                                             "  de id de cliente: {0}"
                                                   " la base de datos ".format(
-                        contacto[0].id_cliente))
+                        int(lista_dato[0])))
                            )
 
         except OmlParserMaxRowError:
