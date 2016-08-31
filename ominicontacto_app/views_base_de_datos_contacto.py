@@ -109,7 +109,7 @@ class BaseDatosContactoUpdateView(UpdateView):
             self.request.FILES['archivo_importacion'].name
 
         self.object = form.save(commit=False)
-        self.object.estado = BaseDatosContacto.ESTADO_EN_DEFINICION
+        self.object.estado = BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA
         self.object.nombre_archivo_importacion = nombre_archivo_importacion
 
         try:
@@ -155,7 +155,7 @@ class DefineBaseDatosContactoView(UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.base_datos_contacto = \
-            BaseDatosContacto.objects.obtener_en_definicion_para_editar(
+            BaseDatosContacto.objects.obtener_en_actualizada_para_editar(
                 self.kwargs['pk'])
         return super(DefineBaseDatosContactoView, self).dispatch(request,
                                                                  *args,

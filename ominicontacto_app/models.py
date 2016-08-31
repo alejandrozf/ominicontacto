@@ -354,7 +354,9 @@ class BaseDatosContactoManager(models.Manager):
         Este método filtra lo objetos BaseDatosContacto que
         esté definidos.
         """
-        return self.filter(estado=BaseDatosContacto.ESTADO_DEFINIDA)
+        definidas = [BaseDatosContacto.ESTADO_DEFINIDA,
+                     BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA]
+        return self.filter(estado__in=definidas)
 
     def obtener_en_definicion_para_editar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser editada.
@@ -367,6 +369,20 @@ class BaseDatosContactoManager(models.Manager):
         except BaseDatosContacto.DoesNotExist:
             raise(SuspiciousOperation("No se encontro base datos en "
                                       "estado ESTADO_EN_DEFINICION"))
+
+    def obtener_en_actualizada_para_editar(self, base_datos_contacto_id):
+        """Devuelve la base datos pasada por ID, siempre que pueda ser editada.
+        En caso de no encontarse, lanza SuspiciousOperation
+        """
+        definicion = [BaseDatosContacto.ESTADO_EN_DEFINICION,
+                     BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA]
+        try:
+            return self.filter(
+                estado__in=definicion).get(pk=base_datos_contacto_id)
+        except BaseDatosContacto.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro base datos en "
+                                      "estado ESTADO_EN_DEFINICION o ACTULIZADA"
+                                      ))
 
     def obtener_definida_para_depurar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser
@@ -720,11 +736,13 @@ class BaseDatosContacto(models.Model):
     ESTADO_DEFINIDA = 1
     ESTADO_EN_DEPURACION = 2
     ESTADO_DEPURADA = 3
+    ESTADO_DEFINIDA_ACTUALIZADA = 4
     ESTADOS = (
         (ESTADO_EN_DEFINICION, 'En Definición'),
         (ESTADO_DEFINIDA, 'Definida'),
         (ESTADO_EN_DEPURACION, 'En Depuracion'),
-        (ESTADO_DEPURADA, 'Depurada')
+        (ESTADO_DEPURADA, 'Depurada'),
+        (ESTADO_DEFINIDA_ACTUALIZADA, 'Definida en actualizacion')
     )
 
     nombre = models.CharField(

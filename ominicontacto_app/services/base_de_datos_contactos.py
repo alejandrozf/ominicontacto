@@ -41,8 +41,9 @@ class CreacionBaseDatosService(object):
             Si el archivo es válido, hace el save del objeto y si no los es
             lanza la excepción correspondiente.
         """
-        assert (base_datos_contacto.estado ==
-                BaseDatosContacto.ESTADO_EN_DEFINICION)
+        assert (base_datos_contacto.estado in
+                (BaseDatosContacto.ESTADO_EN_DEFINICION,
+                 BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA))
 
         csv_extensions = ['.csv']
 
@@ -62,8 +63,9 @@ class CreacionBaseDatosService(object):
         del archivo de importación especificado para la base de datos de
         contactos.
         """
-        assert (base_datos_contacto.estado ==
-                BaseDatosContacto.ESTADO_EN_DEFINICION)
+        assert (base_datos_contacto.estado in
+                (BaseDatosContacto.ESTADO_EN_DEFINICION,
+                 BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA))
 
         metadata = base_datos_contacto.get_metadata()
 
@@ -139,8 +141,9 @@ class CreacionBaseDatosService(object):
         """
         Validacion para ver si existe en la base de datos el contacto
         """
-        assert (base_datos_contacto.estado ==
-                BaseDatosContacto.ESTADO_EN_DEFINICION)
+        assert (base_datos_contacto.estado in
+                (BaseDatosContacto.ESTADO_EN_DEFINICION,
+                 BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA))
 
         parser = ParserCsv()
 
