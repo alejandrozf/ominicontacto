@@ -81,6 +81,8 @@ class CreacionBaseDatosService(object):
         try:
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
             cantidad_contactos = 0
+            if base_datos_contacto.cantidad_contactos:
+                cantidad_contactos = base_datos_contacto.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
                 if len(lista_dato) > 5:
                     datos = json.dumps(lista_dato[5:])
