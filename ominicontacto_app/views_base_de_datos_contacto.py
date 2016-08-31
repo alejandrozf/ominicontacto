@@ -19,7 +19,8 @@ from ominicontacto_app.models import BaseDatosContacto
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
-    NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado)
+    NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
+    ContactoExistenteError)
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 import logging as logging_
 
@@ -378,6 +379,7 @@ class DefineBaseDatosContactoView(UpdateView):
         creacion_base_datos = CreacionBaseDatosService()
 
         try:
+            creacion_base_datos.valida_contactos(self.object)
             creacion_base_datos.importa_contactos(self.object)
         except OmlParserCsvImportacionError as e:
 
@@ -393,6 +395,20 @@ class DefineBaseDatosContactoView(UpdateView):
                 message,
             )
             # FIXME: Ver bien que hacer acá.
+
+        except ContactoExistenteError as e:
+
+            message = '<strong>Operación Errónea!</strong>\
+                          El archivo que seleccionó posee registros inválidos.<br>\
+                           ERROR: {0}. Vuelva cargar nuevamente la base de datos ' \
+                      ' sin el contacto existente '.format(e)
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+
 
             return self.render_to_response(self.get_context_data(
                 estructura_archivo=estructura_archivo,

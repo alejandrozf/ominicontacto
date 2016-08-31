@@ -74,13 +74,12 @@ class CreacionBaseDatosService(object):
     #     metadata.validar_metadatos()
 
         # Antes que nada, borramos los contactos preexistentes
-        base_datos_contacto.elimina_contactos()
+        #base_datos_contacto.elimina_contactos()
 
         parser = ParserCsv()
 
         try:
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
-
             cantidad_contactos = 0
             for lista_dato in estructura_archivo[1:]:
                 if len(lista_dato) > 5:
@@ -134,6 +133,44 @@ class CreacionBaseDatosService(object):
     #     service = PredictorMetadataService()
     #     return service.inferir_metadata_desde_lineas(lineas)
 
+    def valida_contactos(self, base_datos_contacto):
+        """
+        Validacion para ver si existe en la base de datos el contacto
+        """
+        assert (base_datos_contacto.estado ==
+                BaseDatosContacto.ESTADO_EN_DEFINICION)
+
+        parser = ParserCsv()
+
+        try:
+            estructura_archivo = parser.get_estructura_archivo(
+                base_datos_contacto)
+            cantidad_contactos = 0
+            for lista_dato in estructura_archivo[1:]:
+                if len(lista_dato) > 5:
+                    datos = json.dumps(lista_dato[5:])
+                else:
+                    datos = ""
+                cantidad_contactos += 1
+                contacto = Contacto.objects.filter(
+                    id_cliente=int(lista_dato[0]),
+                    bd_contacto=base_datos_contacto
+                )
+                if len(contacto) > 0:
+                    raise (ContactoExistenteError("ya existe el contacto con el"
+                                            "  de id de cliente: {0}"
+                                                  " la base de datos ".format(
+                        contacto[0].id_cliente))
+                           )
+
+        except OmlParserMaxRowError:
+            base_datos_contacto.elimina_contactos()
+            raise
+
+        except OmlParserCsvImportacionError:
+            base_datos_contacto.elimina_contactos()
+            raise
+
 
 class NoSePuedeInferirMetadataError(OmlError):
     """Indica que no se puede inferir los metadatos"""
@@ -142,6 +179,11 @@ class NoSePuedeInferirMetadataError(OmlError):
 
 class NoSePuedeInferirMetadataErrorEncabezado(OmlError):
     """Indica que no se puede inferir los metadatos"""
+    pass
+
+
+class ContactoExistenteError(OmlError):
+    """este contacto con este id de cliente ya existe"""
     pass
 
 
