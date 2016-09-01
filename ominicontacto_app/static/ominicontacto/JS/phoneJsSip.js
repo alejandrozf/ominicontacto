@@ -174,17 +174,19 @@ $(function() {
         var startPos = fromUser.indexOf(":");
         fromUser = fromUser.substring(startPos+1,endPos);
 
-        if(leadIdHeader && CampIdHeader) {
-          getData(CampIdHeader, leadIdHeader);	
+        if(CampIdHeader) {
+        	if(leadIdHeader) {
+        		getData(CampIdHeader, leadIdHeader);
+        	} else {
+        		if(fromUser !== "Unknown") {
+        	    processCallid(fromUser);
+        		} else {
+        			getBlankFormCamp(CampIdHeader);
+        		}
+        	}
         } else {
-        	if(CampIdHeader) {
-        		getBlankFormCamp(CampIdHeader);
-        	}
-        	else if(fromUser !== "Unknown") {
-        	  processCallid(fromUser);
-        	}
-        } 
-        
+          alert("Problemas con Identificador de Campaña");
+        }
         $("#callerid").text(fromUser);
         if($("#modalWebCall").is(':visible')) {
           $("#modalReceiveCalls").modal('show');
@@ -422,7 +424,7 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
   function getData(campid, leadid) {
-  	var url = "/campana/"+campid+"/formulario/"+leadid;
+  	var url = "/campana/"+campid+"/formulario/"+leadid+"/";
   	$("#dataView").attr('src', url);
   }
 /*  function processLeadid(leadid) {
