@@ -120,10 +120,13 @@ class ContactoBDContactoCreateView(CreateView):
         initial.update({'bd_contacto': self.kwargs['bd_contacto']})
 
     def form_valid(self, form):
+        self.object = form.save(commit=False)
         base_datos_contactos = BaseDatosContacto.objects.get(
             pk=self.kwargs['bd_contacto'])
         base_datos_contactos.cantidad_contactos += 1
         base_datos_contactos.save()
+        self.object.bd_contacto = base_datos_contactos
+        self.object.save()
         return super(ContactoBDContactoCreateView, self).form_valid(form)
 
     def get_success_url(self):
