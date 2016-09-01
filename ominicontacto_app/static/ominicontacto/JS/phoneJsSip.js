@@ -166,8 +166,8 @@ $(function() {
       	if (e.request.headers.Idcliente) {
       		var leadIdHeader = e.request.headers.Idcliente[0].raw;
       	}
-      	if (e.request.headers.IDCamp) {
-      		var CampIdHeader = e.request.headers.IDCamp[0].raw;
+      	if (e.request.headers.Idcamp) {
+      		var CampIdHeader = e.request.headers.Idcamp[0].raw;
       	}
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
