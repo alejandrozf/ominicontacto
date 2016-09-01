@@ -17,6 +17,7 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.reporte_campana import ReporteCampanaService
 
 import logging as logging_
 
@@ -490,3 +491,44 @@ class BusquedaFormularioFormView(FormView):
                 campana.bd_contacto)
             return self.render_to_response(self.get_context_data(
                 form=form, listado_de_contacto=listado_de_contacto))
+
+
+class ExportaReporteCampanaView(UpdateView):
+    """
+    Esta vista invoca a generar un csv de reporte de la campana.
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        service = ReporteCampanaService()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        url = service.obtener_url_reporte_csv_descargar(self.object)
+
+        return redirect(url)
+
+
+class CampanaReporteListView(ListView):
+    """
+    Muestra un listado de contactos a los cuales se le enviaron o se estan
+    por enviar mensajes de texto
+    """
+    template_name = 'reporte/reporte_campana_formulario.html'
+    context_object_name = 'campana'
+    model = Campana
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaReporteListView, self).get_context_data(
+            **kwargs)
+
+        service = ReporteCampanaService()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        service.crea_reporte_csv(campana)
+        context['campana'] = campana
+        return context
