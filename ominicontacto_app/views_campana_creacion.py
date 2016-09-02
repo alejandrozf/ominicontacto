@@ -400,8 +400,9 @@ class FormularioDemoFormUpdateView(UpdateView):
                                                                   **kwargs)
 
     def get_success_url(self):
-        return reverse(
-            'view_blanco')
+        return reverse('formulario_update',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "id_cliente": self.object.contacto.id_cliente})
 
 
 class FormularioDemoFormCreateView(CreateView):
@@ -435,8 +436,9 @@ class FormularioDemoFormCreateView(CreateView):
         return super(FormularioDemoFormCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse(
-            'view_blanco')
+        return reverse('formulario_update',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "id_cliente": self.object.contacto.id_cliente})
 
 
 class ContactoFormularioUpdateView(UpdateView):
