@@ -230,8 +230,8 @@ $(function() {
           			Sounds("","stop");
   						}
   		  			break;
-  					case "INBOUND":
-  		  			var inboundTag = document.getElementById("auto_attend_IN");
+  					case "IN":
+  		  			var inboundTag = document.getElementById("auto_attend_INBOUND");
   		  			if(inboundTag.value === "True") {
   		  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
