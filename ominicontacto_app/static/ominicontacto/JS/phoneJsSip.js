@@ -231,7 +231,7 @@ $(function() {
   						}
   		  			break;
   					case "INBOUND":
-  		  			var inboundTag = document.getElementById("auto_attend_INBOUND");
+  		  			var inboundTag = document.getElementById("auto_attend_IN");
   		  			if(inboundTag.value === "True") {
   		  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
