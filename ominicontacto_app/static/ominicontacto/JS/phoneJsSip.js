@@ -203,6 +203,7 @@ $(function() {
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
         });
         var options = {'mediaConstraints': {'audio': true,'video': false}};
+        processOrigin(originHeader, options);
         atiendoSi.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           session_incoming.answer(options);
@@ -217,7 +218,6 @@ $(function() {
           userAgent.terminateSessions();
           defaultCallState();
         };
-        processOrigin(originHeader, options);
         function processOrigin(origin, opt) {
 			  	var options = opt;
   				switch(origin) {
