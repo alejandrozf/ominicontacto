@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 
-from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion)
 from django.contrib.auth.decorators import login_required
@@ -205,4 +207,20 @@ urlpatterns = [
             views_campana_creacion.BusquedaFormularioFormView.as_view()),
         name='formulario_buscar',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/exporta/$',
+        login_required(
+            views_campana_creacion.ExportaReporteCampanaView.as_view()),
+        name='exporta_campana_reporte',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/reporte/$',
+        login_required(
+            views_campana_creacion.CampanaReporteListView.as_view()),
+        name='reporte_campana',
+        ),
 ]
+
+if settings.DEBUG:
+    # static files (images, css, javascript, etc.)
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.MEDIA_ROOT}))

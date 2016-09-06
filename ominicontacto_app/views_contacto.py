@@ -165,6 +165,16 @@ class ContactoBDContactoDeleteView(DeleteView):
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        base_datos_contactos = self.object.bd_contacto
+        base_datos_contactos.cantidad_contactos -= 1
+        base_datos_contactos.save()
+        self.object.delete()
+
+        return HttpResponseRedirect(success_url)
+
     def get_success_url(self):
         return reverse('contacto_list_bd_contacto',
                        kwargs={'bd_contacto': self.object.bd_contacto.pk})
