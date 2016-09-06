@@ -99,7 +99,7 @@ $(function() {
 		  var originHeader = "";
       e.session.on('ended',function() {
       	if($("#auto_pause").val() === "True" && originHeader !== "") {
-      		debugger;
+      		//debugger;
           num = "0077ACW";
     			makeCall(num);
     			entrante = false;    			
@@ -231,7 +231,7 @@ $(function() {
   						}
   		  			break;
   					case "IN":
-  		  			var inboundTag = document.getElementById("auto_attend_INBOUND");
+  		  			var inboundTag = document.getElementById("auto_attend_IN");
   		  			if(inboundTag.value === "True") {
   		  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
