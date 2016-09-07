@@ -99,7 +99,7 @@ $(function() {
 		  var originHeader = "";
       e.session.on('ended',function() {
       	if($("#auto_pause").val() === "True" && originHeader !== "") {
-      		debugger;
+      		//debugger;
           num = "0077ACW";
     			makeCall(num);
     			entrante = false;    			
@@ -203,6 +203,7 @@ $(function() {
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
         });
         var options = {'mediaConstraints': {'audio': true,'video': false}};
+        processOrigin(originHeader, options);
         atiendoSi.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           session_incoming.answer(options);
@@ -217,7 +218,6 @@ $(function() {
           userAgent.terminateSessions();
           defaultCallState();
         };
-        processOrigin(originHeader, options);
         function processOrigin(origin, opt) {
 			  	var options = opt;
   				switch(origin) {
@@ -230,8 +230,8 @@ $(function() {
           			Sounds("","stop");
   						}
   		  			break;
-  					case "INBOUND":
-  		  			var inboundTag = document.getElementById("auto_attend_INBOUND");
+  					case "IN":
+  		  			var inboundTag = document.getElementById("auto_attend_IN");
   		  			if(inboundTag.value === "True") {
   		  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
