@@ -10,6 +10,9 @@
             </ul>
             <br>
             <form role="form" method="post">
+                {% if campana%}
+                    <p>Campaña <strong>{{ campana.nombre }}</strong></p>
+                {% endif %}
                 <div class="col-lg-4">
                     {% csrf_token %}
                     <h4>Agrega agente</h4>
