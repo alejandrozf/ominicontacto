@@ -6,6 +6,7 @@ import json
 import logging
 import uuid
 import re
+import datetime
 
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import SuspiciousOperation
@@ -1107,7 +1108,19 @@ class Grabacion(models.Model):
             self.sip_agente, self.id_cliente)
 
 
+class AgendaManager(models.Manager):
+
+    def eventos_fecha_hoy(self):
+        try:
+            return self.filter(fecha=datetime.datetime.today())
+        except Agenda.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
+                                       "fecha"))
+
+
 class Agenda(models.Model):
+    objects = AgendaManager()
+
     MEDIO_SMS = 1
     """Medio de comunicacion sms"""
 
@@ -1122,7 +1135,8 @@ class Agenda(models.Model):
         (MEDIO_LLAMADA, 'LLAMADA'),
         (MEDIO_EMAIL, 'EMAIL'),
     )
-    agente = models.ForeignKey(AgenteProfile, blank=True, null=True)
+    agente = models.ForeignKey(AgenteProfile, blank=True, null=True,
+                               related_name='eventos')
     es_personal = models.BooleanField()
     fecha = models.DateField()
     hora = models.TimeField()
