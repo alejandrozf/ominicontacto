@@ -281,9 +281,12 @@ class BusquedaGrabacionFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super(BusquedaGrabacionFormView, self).get_context_data(
             **kwargs)
-        context['listado_de_grabaciones'] = Grabacion.objects.all()
         context['grabacion_url'] = settings.OML_GRABACIONES_URL
         return context
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data(
+            listado_de_grabaciones=Grabacion.objects.all()))
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
