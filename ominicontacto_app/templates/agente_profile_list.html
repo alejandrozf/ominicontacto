@@ -13,6 +13,7 @@
                 <th>sip_extension</th>
                 <th>modulos</th>
                 <th>grupo</th>
+                <th>campañas</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +24,11 @@
                 <td>{{ agente.sip_extension }}</td>
                 <td>{{ agente.get_modulos}}</td>
                 <td>{{ agente.grupo}}</td>
+                <td>
+                    {% for queue in agente.campana_member.all %}
+                        {{ queue.queue_name.campana.nombre }}
+                    {% endfor %}
+                </td>
             </tr>
        {% empty %}
         <tr>

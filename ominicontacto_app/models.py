@@ -320,7 +320,8 @@ class QueueMember(models.Model):
         (OCHO, '8'),
         (NUEVE, '9'),
     )
-    member = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
+    member = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE,
+                               related_name='campana_member')
     queue_name = models.ForeignKey(Queue, on_delete=models.CASCADE,
                                    db_column='queue_name',
                                    related_name='queuemember')
@@ -330,7 +331,8 @@ class QueueMember(models.Model):
     paused = models.IntegerField()
 
     def __unicode__(self):
-        return self.member.user.full_name, self.queue_name
+        return "agente: {0} para la campana {1} ".format(
+            self.member.user.get_full_name(), self.queue_name)
 
     class Meta:
         db_table = 'queue_member_table'
