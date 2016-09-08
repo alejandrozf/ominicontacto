@@ -80,6 +80,10 @@ urlpatterns = [
         login_required(views.nuevo_evento_agenda_view),
         name='agenda_nuevo',
         ),
+    url(r'^agenda/agente_list/$',
+        login_required(views.AgenteEventosListView.as_view()),
+        name='agenda_agente_list',
+        ),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================

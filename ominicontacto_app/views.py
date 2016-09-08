@@ -333,3 +333,14 @@ def nuevo_evento_agenda_view(request):
     response = JsonResponse({'status': 'OK'})
     return response
 
+
+class AgenteEventosListView(ListView):
+    model = AgenteProfile
+    template_name = 'agente/agenda_agente.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AgenteEventosListView, self).get_context_data(
+            **kwargs)
+        agente = self.request.user.get_agente_profile()
+        context['listado_de_eventos'] = agente.eventos.eventos_fecha_hoy()
+        return context
