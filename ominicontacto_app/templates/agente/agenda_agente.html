@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Es personal</th>
+                <th>Es smart</th>
+                <th>Medio comunicación</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for evento in listado_de_eventos %}
+            <tr>
+                <td>{{ evento.fecha|date:"d/m/Y" }}</td>
+                <td>{{ evento.hora|date:"H:i" }}</td>
+                <td>
+                    {% if evento.es_personal %}
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if evento.es_smart %}
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <td>
+                    {{evento.get_medio_comunicacion_display}}
+                    {% if evento.medio_comunicacion == 1 %}
+                        : {{ evento.sms }}
+                    {% elif evento.medio_comunicacion == 2 %}
+                        : {{ evento.telefono }}
+                    {% elif evento.medio_comunicacion == 3 %}
+                        : {{ evento.email }}
+                    {% else %}
+                        Hay otro medio de comunicacion no disponible
+                    {% endif %}
+                </td>
+                <td>{{ evento.descripcion}}</td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="6">No existen eventos para el día de hoy</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
