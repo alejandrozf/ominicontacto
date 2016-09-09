@@ -1103,7 +1103,7 @@ class Grabacion(models.Model):
     tel_cliente = models.CharField(max_length=255)
     grabacion = models.CharField(max_length=255)
     sip_agente = models.IntegerField()
-    campana = models.CharField(max_length=128)
+    campana = models.ForeignKey(Campana, related_name='grabaciones')
 
     def __unicode__(self):
         return "grabacion del agente con el sip {0} con el cliente {1}".format(
