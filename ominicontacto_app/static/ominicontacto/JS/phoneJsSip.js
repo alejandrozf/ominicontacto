@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var config = null;var textSipStatus = null;var callSipStatus = null;var iconStatus = null;var userAgent = null;var sesion = null;var opciones = null;var eventHandlers = null; var flagTransf = false; var flagInit = true; var num = null;
+var config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagTransf = false,flagInit = true, num = null, header = null; 
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
 $(function() {
@@ -22,7 +22,7 @@ $(function() {
   $("#Pause").click(function () {
     if (flagPausa === true) {
     num = "0077UNPAUSE";
-    makeCall(num);
+    makeCall();
     flagPausa === false;
     } else {
     	flagPausa === true;
@@ -41,7 +41,7 @@ $(function() {
   $("#UserStatus").html("Online");
   $("#sipLogout").click(function() {
     num = "0077LOGOUT";
-    makeCall(num);
+    makeCall();
   });
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
@@ -60,7 +60,7 @@ $(function() {
     //num = "0077"+$("#pauseType").value.toUpperCase();
     console.log($("#pauseType").val());
     num = "0077"+$("#pauseType").val().toUpperCase();
-    makeCall(num);
+    makeCall();
   });
 
   $(".key").click(function(e) {
@@ -83,7 +83,7 @@ $(function() {
     //Connects to the WebSocket server
     userAgent.on('registered', function(e) {
       num = "0077LOGIN";
-      makeCall(num);
+      makeCall();
       $("#sendMessage").prop('disabled', false);
       $("#chatMessage").prop('disabled', false);
       iconStatus.parentNode.removeChild(iconStatus);
@@ -101,7 +101,7 @@ $(function() {
       e.session.on('ended',function() {
       	if($("#auto_pause").val() === "True" && originHeader !== "") {
           num = "0077ACW";
-    			makeCall(num);
+    			makeCall();
     			entrante = false;    			
     			// cod que se repite en main.js.. se deberia mejorar esto
     			pauseButton.className = "btn btn-danger";
@@ -299,7 +299,8 @@ $(function() {
     	$("#modalSelectCmp").modal("hide");
     	debugger;
     	var idcamp = document.getElementById("cmpList");
-      makeCall(num, idcamp.value);
+      header = idcamp;
+      makeCall();
     });
   });
   function makeCall() {
@@ -349,9 +350,11 @@ $(function() {
       'mediaConstraints': {
                 'audio': true,
                 'video': false
-              },
-      'extraHeaders': 
+              } 
     };
+    if(header) {
+      opciones.extraHeaders = header;
+    }
     //Mando el invite/llamada
      if(flagInit === true) {
        flagInit = false;
