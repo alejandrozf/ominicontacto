@@ -260,11 +260,7 @@ $(function() {
         $("#aTransfer").prop('disabled', false);
         $("#bTransfer").prop('disabled', false);
       });
-      /*e.session.on("", function() {
-        Souds("Out", "stop");
-        $("#aTransfer").prop('disabled', true);
-        $("#bTransfer").prop('disabled', true);
-      });*/
+  
         var aTransf = document.getElementById("aTransfer");
         aTransf.onclick = function() {
           flagTransf = true;
@@ -291,7 +287,6 @@ $(function() {
   });
   $("#call").click(function(e) {
   	entrante = false;
-  	var header = new JsSIP.NameAddrHeader();
   	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
     num = displayNumber.value;
