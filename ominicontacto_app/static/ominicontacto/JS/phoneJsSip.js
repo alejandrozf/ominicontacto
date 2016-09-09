@@ -348,7 +348,14 @@ $(function() {
               } 
     };
     if(header) {
-      opciones.extraHeaders = header;
+       opciones = {
+        'eventHandlers': eventHandlers,
+        'mediaConstraints': {
+          'audio': true,
+          'video': false
+        },
+        'IdCamp': header
+      };
     }
     //Mando el invite/llamada
      if(flagInit === true) {
