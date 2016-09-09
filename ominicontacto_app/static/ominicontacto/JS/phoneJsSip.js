@@ -291,12 +291,15 @@ $(function() {
   });
   $("#call").click(function(e) {
   	entrante = false;
+  	var header = new JsSIP.NameAddrHeader();
   	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
     num = displayNumber.value;
     $("#SelectCamp").click(function () {
     	$("#modalSelectCmp").modal("hide");
-      makeCall(num);
+    	debugger;
+    	var idcamp = document.getElementById("cmpList");
+      makeCall(num, idcamp.value);
     });
   });
   function makeCall() {
@@ -346,7 +349,8 @@ $(function() {
       'mediaConstraints': {
                 'audio': true,
                 'video': false
-              }
+              },
+      'extraHeaders': 
     };
     //Mando el invite/llamada
      if(flagInit === true) {
