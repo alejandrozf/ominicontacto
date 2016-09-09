@@ -22,7 +22,7 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-<!-- Pausa -->
+<!-- modal que se despliega al clicar Pausa -->
 <div class="modal fade" id="modalPause" role="dialog">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
@@ -35,9 +35,6 @@
         {% for pausa in pausas %}
         <option id="" value="{{ pausa.nombre }}">{{ pausa.nombre }}</option>
         {% endfor %}
-<!--<option value="Break">Break</option>
-        <option value="Coaching">Coaching</option>
-        <option value="Food">Food</option>-->
       </select>
     </div>
     <div class="modal-footer">
@@ -57,6 +54,7 @@
     </div>
     <div class="modal-body">
       <div class="container-fluid">
+      <!-- modal que se muestra cuando entra una llamada -->
         <div id="modalReceiveCalls" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-sm">
            <div class="modal-content">
@@ -78,10 +76,32 @@
               <button type="button" id="answer" class="btn btn-success btn-sm">Responder</button>
               <button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">Rechazar</button>
             </div>
+          </div>
         </div>
+      </div>
+      <!-- modal que se muestra cuando quiere realizarse una llamada manual -->
+ 			 <div id="modalSelectCmp" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-sm">
+           <div class="modal-content">
+             <div class="modal-header">
+               <em><b class="tituloLlamEntrante">Llam. Manual a Campaña</b></em>
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+             </div>
+             <div class="modal-body">
+               <div class="col-md-10">
+                 <select class="form-control" id="cmpList">
+                 {% for queue_member in user.get_agente_profile.campana_member.all %}
+        					<option value = "{{ queue_member.queue_name.campana.pk }}"> {{ queue_member.queue_name.campana.nombre }} </option>
+        				 {% endfor %}
+                 </select>
+               </div>
+               <button type="button" id="SelectCamp" class="btn btn-success btn-sm">Ok</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------- -->
     </div>
-  </div>
-</div>
     <div class="row">
         <div class="backgroundWebPhone col-md-4 col-md-offset-1">
             <div class="row">
@@ -366,10 +386,7 @@
     <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
     <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_ics }}" id="auto_attend_ICS"/>
     <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_pause }}" id="au1to_pause"/>
-
-        {% for queue_member in user.get_agente_profile.campana_member.all %}
-        <p> {{ queue_member.queue_name.campana.pk }} - {{ queue_member.queue_name.campana.nombre }}</p>
-        {% endfor %}
+    
     <iframe src="{% url 'agenda_agente_list' %}" id="dataView" class="crm" name="crm">
     </iframe>
     </div>

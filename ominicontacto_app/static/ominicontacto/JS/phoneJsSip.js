@@ -4,6 +4,7 @@ var config = null;var textSipStatus = null;var callSipStatus = null;var iconStat
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
 $(function() {
+	$('#modalSelectCmp').modal('hide');  
   var estado = JSON.stringify({'status' : 'online'});
   /*$.ajax({
     url: '/status/setStat',
@@ -99,7 +100,6 @@ $(function() {
 		  var originHeader = "";
       e.session.on('ended',function() {
       	if($("#auto_pause").val() === "True" && originHeader !== "") {
-      		//debugger;
           num = "0077ACW";
     			makeCall(num);
     			entrante = false;    			
@@ -291,9 +291,13 @@ $(function() {
   });
   $("#call").click(function(e) {
   	entrante = false;
+  	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
     num = displayNumber.value;
-    makeCall(num);
+    $("#SelectCamp").click(function () {
+    	$("#modalSelectCmp").modal("hide");
+      makeCall(num);
+    });
   });
   function makeCall() {
     eventHandlers = {
@@ -411,10 +415,6 @@ $(function() {
         ring.pause();
     }
   }
-  /*function getBlankForm() {
-    var url = '/contacto/list/';
-    $("#dataView").attr('src', url); 
-  }*/
   function getBlankFormCamp(campid) {
     var url = '/campana/'+campid+'/formulario_nuevo/';
     $("#dataView").attr('src', url); 
@@ -427,8 +427,4 @@ $(function() {
   	var url = "/campana/"+campid+"/formulario/"+leadid+"/";
   	$("#dataView").attr('src', url);
   }
-/*  function processLeadid(leadid) {
-  	var url = "/contacto/"+leadid+"/update/"; 
-  	$("#dataView").attr('src', url);
-  }*/
 });
