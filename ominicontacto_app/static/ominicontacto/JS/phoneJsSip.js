@@ -294,7 +294,7 @@ $(function() {
     	$("#modalSelectCmp").modal("hide");
     	debugger;
     	var idcamp = document.getElementById("cmpList");
-      header = idcamp;
+      header = new JsSIP.NameAddrHeader("sip:"+$("#sipExt").val()+"@172.16.20.219",$("#sipExt").val(), {"IdCamp":idcamp.value});
       makeCall();
     });
   });
@@ -347,16 +347,6 @@ $(function() {
                 'video': false
               } 
     };
-    if(header) {
-       opciones = {
-        'eventHandlers': eventHandlers,
-        'mediaConstraints': {
-          'audio': true,
-          'video': false
-        },
-        'IdCamp': header
-      };
-    }
     //Mando el invite/llamada
      if(flagInit === true) {
        flagInit = false;
