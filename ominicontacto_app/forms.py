@@ -239,10 +239,14 @@ class GrabacionBusquedaForm(forms.ModelForm):
     tel_cliente = forms.CharField(required=False)
     sip_agente = forms.IntegerField(required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
+        self.fields['campana'].required = False
+
     class Meta:
         model = Grabacion
         fields = ('fecha', 'tipo_llamada', 'id_cliente', 'tel_cliente',
-                  'sip_agente')
+                  'sip_agente', 'campana')
 
 
 class CampanaForm(forms.ModelForm):
