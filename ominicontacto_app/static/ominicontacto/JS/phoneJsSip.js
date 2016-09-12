@@ -294,9 +294,7 @@ $(function() {
     	$("#modalSelectCmp").modal("hide");
     	debugger;
     	var idcamp = document.getElementById("cmpList");
-    	var Uri = new JsSIP.URI('sip',num, 'https://172.16.20.219');
-      header = new JsSIP.NameAddrHeader(Uri);
-      header.setParam('IdCamp', idcamp.value);
+    	header = idcamp.value;
       makeCall();
     });
   });
@@ -347,7 +345,8 @@ $(function() {
       'mediaConstraints': {
                 'audio': true,
                 'video': false
-              } 
+              },
+      'extraHeaders':['IdCamp': header] 
     };
     //Mando el invite/llamada
      if(flagInit === true) {
