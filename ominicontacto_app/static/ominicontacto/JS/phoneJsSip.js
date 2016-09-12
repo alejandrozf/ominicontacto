@@ -346,7 +346,7 @@ $(function() {
                 'audio': true,
                 'video': false
               },
-      'extraHeaders':['IdCamp': header] 
+      'extraHeaders':['IdCamp: '+header] 
     };
     //Mando el invite/llamada
      if(flagInit === true) {
