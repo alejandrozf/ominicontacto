@@ -1026,6 +1026,13 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con esa "
                                        "fecha"))
 
+    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
+        try:
+            return self.filter(fecha__range=(fecha_inicio, fecha_fin))
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con ese rango "
+                                       "de fechas"))
+
     def grabacion_by_tipo_llamada(self, tipo_llamada):
         try:
             return self.filter(tipo_llamada=tipo_llamada)
