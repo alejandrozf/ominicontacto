@@ -293,9 +293,9 @@ $(function() {
     $("#SelectCamp").click(function () {
     	$("#modalSelectCmp").modal("hide");
     	debugger;
-    	var idcamp = document.getElementById("cmpList");
-    	var nomcamp = idcamp.innerHTML;
-    	header = idcamp.value+'-'+nomcamp;
+    	/*var idcamp = document.getElementById("cmpList");
+    	header = idcamp.value;*/
+    	header = $("#cmpList").val()+'-'+$("#cmpList option:selected").html();
       makeCall();
     });
   });
