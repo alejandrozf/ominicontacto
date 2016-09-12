@@ -242,7 +242,7 @@ class GrabacionBusquedaForm(forms.ModelForm):
     class Meta:
         model = Grabacion
         fields = ('fecha', 'tipo_llamada', 'id_cliente', 'tel_cliente',
-                  'sip_agente')
+                  'sip_agente', 'campana')
 
 
 class CampanaForm(forms.ModelForm):

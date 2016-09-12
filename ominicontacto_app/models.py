@@ -162,6 +162,9 @@ class Campana(models.Model):
         related_name="%(class)ss"
     )
 
+    def __unicode__(self):
+            return self.nombre
+
 
 class QueueManager(models.Manager):
 
@@ -1052,7 +1055,7 @@ class GrabacionManager(models.Manager):
                                        "sip agente"))
 
     def grabacion_by_filtro(self, fecha, tipo_llamada, id_cliente,
-                              tel_cliente, sip_agente):
+                              tel_cliente, sip_agente, campana):
         grabaciones = self.filter()
         if fecha:
             grabaciones = grabaciones.filter(fecha=fecha)
@@ -1068,6 +1071,8 @@ class GrabacionManager(models.Manager):
 
         if sip_agente:
             grabaciones = grabaciones.filter(sip_agente=sip_agente)
+        if campana:
+            grabaciones = grabaciones.filter(campana=campana)
 
         return grabaciones
 
