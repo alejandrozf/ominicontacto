@@ -294,7 +294,8 @@ $(function() {
     	$("#modalSelectCmp").modal("hide");
     	debugger;
     	var idcamp = document.getElementById("cmpList");
-    	header = idcamp.value;
+    	var nomcamp = idcamp.innerHTML;
+    	header = idcamp.value+'-'+nomcamp;
       makeCall();
     });
   });
