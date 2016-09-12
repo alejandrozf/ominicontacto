@@ -294,7 +294,9 @@ $(function() {
     	$("#modalSelectCmp").modal("hide");
     	debugger;
     	var idcamp = document.getElementById("cmpList");
-      header = new JsSIP.NameAddrHeader("sip:"+num+"@172.16.20.219",$("#sipExt").val(), {"IdCamp":idcamp.value});
+    	var Uri = new JsSIP.URI('sip',num, 'https://172.16.20.219');
+      header = new JsSIP.NameAddrHeader(Uri);
+      header.setParam('IdCamp', idcamp.value);
       makeCall();
     });
   });
