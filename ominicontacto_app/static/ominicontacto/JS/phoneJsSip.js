@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagTransf = false,flagInit = true, num = null, header = null; 
+var config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp; 
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
 $(function() {
@@ -295,7 +295,8 @@ $(function() {
     	debugger;
     	/*var idcamp = document.getElementById("cmpList");
     	header = idcamp.value;*/
-    	header = $("#cmpList").val()+'_'+$("#cmpList option:selected").html();
+    	headerIdCamp = $("#cmpList").val();
+    	headerNomCamp = $("#cmpList option:selected").html();
       makeCall();
     });
   });
@@ -347,7 +348,7 @@ $(function() {
                 'audio': true,
                 'video': false
               },
-      'extraHeaders':['IdCamp: '+header] 
+      'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp] 
     };
     //Mando el invite/llamada
      if(flagInit === true) {
