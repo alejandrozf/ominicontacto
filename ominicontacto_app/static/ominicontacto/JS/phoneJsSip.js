@@ -295,7 +295,7 @@ $(function() {
     	debugger;
     	/*var idcamp = document.getElementById("cmpList");
     	header = idcamp.value;*/
-    	header = $("#cmpList").val()+'-'+$("#cmpList option:selected").html();
+    	header = $("#cmpList").val()+'_'+$("#cmpList option:selected").html();
       makeCall();
     });
   });
