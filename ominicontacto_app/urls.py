@@ -3,7 +3,8 @@
 from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
-    views, views_base_de_datos_contacto, views_contacto, views_campana_creacion)
+    views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
+    views_grabacion)
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -220,6 +221,10 @@ urlpatterns = [
         login_required(
             views_campana_creacion.CampanaReporteListView.as_view()),
         name='reporte_campana',
+        ),
+    url(r'^reporte/llamadas/$',
+        login_required(views_grabacion.GrabacionReporteListView.as_view()),
+        name='reporte_llamadas',
         ),
 ]
 
