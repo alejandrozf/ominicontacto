@@ -63,3 +63,8 @@
     75%  {left:0px; top:5px;}
     100% {left:0px; top:0px;}
 }
+
+.graficos-avances svg {
+    min-height: 100px;
+    max-height: 450px;
+}
