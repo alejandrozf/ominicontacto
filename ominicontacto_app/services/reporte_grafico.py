@@ -39,8 +39,7 @@ class GraficoService():
 
         return counter_por_tipo
 
-    def general_llamadas_hoy(self):
-        grabaciones = Grabacion.objects.all()
+    def general_llamadas_hoy(self, grabaciones):
         counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
 
         total_grabaciones = len(grabaciones)

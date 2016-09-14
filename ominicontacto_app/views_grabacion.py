@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 
 from django.conf import settings
 from django.views.generic.detail import DetailView
@@ -59,5 +60,68 @@ class GrabacionReporteListView(ListView):
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
         #campana.hack__graficos_estadisticas = service.general_llamadas_hoy()
-        context['graficos_estadisticas'] = service.general_llamadas_hoy()
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(hoy,
+                                                                     hoy_ahora)
+        context['graficos_estadisticas'] = service.general_llamadas_hoy(
+            grabaciones)
+        return context
+
+
+class GrabacionReporteSemanaListView(ListView):
+    """
+    Esta vista lista los objetos Capanas
+    diferenciadas por sus estados actuales.
+    Pasa un diccionario al template
+    con las claves como estados.
+    """
+
+    template_name = 'grabaciones/total_llamadas.html'
+    context_object_name = 'grabacion'
+    model = Grabacion
+
+    def get_context_data(self, **kwargs):
+        context = super(GrabacionReporteSemanaListView, self).get_context_data(
+           **kwargs)
+
+        # obtener_estadisticas_render_graficos_supervision()
+        service = GraficoService()
+        #campana.hack__graficos_estadisticas = service.general_llamadas_hoy()
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        ultima_semana = hoy - datetime.timedelta(days=7)
+        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(
+            ultima_semana, hoy_ahora)
+        context['graficos_estadisticas'] = service.general_llamadas_hoy(
+            grabaciones)
+        return context
+
+
+class GrabacionReporteMesListView(ListView):
+    """
+    Esta vista lista los objetos Capanas
+    diferenciadas por sus estados actuales.
+    Pasa un diccionario al template
+    con las claves como estados.
+    """
+
+    template_name = 'grabaciones/total_llamadas.html'
+    context_object_name = 'grabacion'
+    model = Grabacion
+
+    def get_context_data(self, **kwargs):
+        context = super(GrabacionReporteMesListView, self).get_context_data(
+           **kwargs)
+
+        # obtener_estadisticas_render_graficos_supervision()
+        service = GraficoService()
+        #campana.hack__graficos_estadisticas = service.general_llamadas_hoy()
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        ultima_semana = hoy - datetime.timedelta(days=30)
+        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(
+            ultima_semana, hoy_ahora)
+        context['graficos_estadisticas'] = service.general_llamadas_hoy(
+            grabaciones)
         return context

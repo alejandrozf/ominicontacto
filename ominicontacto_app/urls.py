@@ -222,9 +222,18 @@ urlpatterns = [
             views_campana_creacion.CampanaReporteListView.as_view()),
         name='reporte_campana',
         ),
-    url(r'^reporte/llamadas/$',
+    url(r'^reporte/llamadas/hoy/$',
         login_required(views_grabacion.GrabacionReporteListView.as_view()),
-        name='reporte_llamadas',
+        name='reporte_llamadas_hoy',
+        ),
+    url(r'^reporte/llamadas/semana/$',
+        login_required(views_grabacion.GrabacionReporteSemanaListView.as_view()),
+        name='reporte_llamadas_semana',
+        ),
+    url(r'^reporte/llamadas/mes/$',
+        login_required(
+            views_grabacion.GrabacionReporteMesListView.as_view()),
+        name='reporte_llamadas_mes',
         ),
 ]
 
