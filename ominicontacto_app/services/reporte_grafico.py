@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pygal
-from pygal.style import Style
+from pygal.style import Style, RedBlueStyle
 
 from ominicontacto_app.models import Grabacion
 
@@ -49,9 +49,9 @@ class GraficoService():
         porcentaje_ics = 0.0
         porcentaje_inbound = 0.0
         porcentaje_manual = 0.0
-        if len(grabaciones) > 0:
+        if total_grabaciones > 0:
             porcentaje_dialer = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_DIALER]) /
-                                   float(total_grabaciones))
+                float(total_grabaciones))
             porcentaje_ics = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_ICS]) /
                 float(total_grabaciones))
             porcentaje_inbound = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_INBOUND]) /
@@ -64,10 +64,17 @@ class GraficoService():
         total_inbound = counter_tipo_llamada[Grabacion.TYPE_INBOUND]
         total_manual = counter_tipo_llamada[Grabacion.TYPE_MANUAL]
 
-        torta_grabaciones = pygal.Pie(  # @UndefinedVariable
-            style=ESTILO_AZUL_ROJO_AMARILLO)
+        no_data_text = "No hay llamadas para ese periodo"
+        torta_grabaciones = pygal.Pie(# @UndefinedVariable
+                style=ESTILO_AZUL_ROJO_AMARILLO,
+                no_data_text=no_data_text,
+                no_data_font_size=32,
+                legend_font_size=25,
+                truncate_legend=10,
+                tooltip_font_size=50,
+            )
 
-        torta_grabaciones.title = "Resultado de las llamadas"
+        #torta_grabaciones.title = "Resultado de las llamadas"
         torta_grabaciones.add('Dialer', porcentaje_dialer)
         torta_grabaciones.add('Inbound', porcentaje_ics)
         torta_grabaciones.add('Ics', porcentaje_inbound)

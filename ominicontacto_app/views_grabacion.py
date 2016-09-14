@@ -2,6 +2,7 @@
 
 
 from django.conf import settings
+from django.views.generic.detail import DetailView
 from django.views.generic import FormView, ListView
 from ominicontacto_app.forms import (
     GrabacionBusquedaForm
@@ -48,7 +49,7 @@ class GrabacionReporteListView(ListView):
     """
 
     template_name = 'grabaciones/total_llamadas.html'
-    context_object_name = 'grabaciones'
+    context_object_name = 'grabacion'
     model = Grabacion
 
     def get_context_data(self, **kwargs):
@@ -57,6 +58,6 @@ class GrabacionReporteListView(ListView):
 
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
+        #campana.hack__graficos_estadisticas = service.general_llamadas_hoy()
         context['graficos_estadisticas'] = service.general_llamadas_hoy()
         return context
-
