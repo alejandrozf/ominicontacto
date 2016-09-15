@@ -11,7 +11,7 @@ import datetime
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import SuspiciousOperation
 from django.db import models
-from django.db.models import Max, Q
+from django.db.models import Max, Q, Count
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from ominicontacto_app.utiles import log_timing,\
     ValidadorDeNombreDeCampoExtra
@@ -1082,6 +1082,12 @@ class GrabacionManager(models.Manager):
             grabaciones = grabaciones.filter(campana=campana)
 
         return grabaciones
+
+    def obtener_count_campana(self):
+        try:
+            return self.values('campana').annotate(cantidad=Count('campana'))
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro grabaciones "))
 
 
 class Grabacion(models.Model):
