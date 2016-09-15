@@ -4,6 +4,9 @@ import pygal
 from pygal.style import Style, RedBlueStyle
 
 from ominicontacto_app.models import Grabacion
+import logging as _logging
+
+logger = _logging.getLogger(__name__)
 
 
 ESTILO_AZUL_ROJO_AMARILLO = Style(
@@ -39,7 +42,7 @@ class GraficoService():
 
         return counter_por_tipo
 
-    def general_llamadas_hoy(self, grabaciones):
+    def _calcular_estadisticas(self, grabaciones):
         counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
 
         total_grabaciones = len(grabaciones)
@@ -62,6 +65,25 @@ class GraficoService():
         total_ics = counter_tipo_llamada[Grabacion.TYPE_ICS]
         total_inbound = counter_tipo_llamada[Grabacion.TYPE_INBOUND]
         total_manual = counter_tipo_llamada[Grabacion.TYPE_MANUAL]
+        dic_estadisticas = {
+            'porcentaje_dialer': porcentaje_dialer,
+            'porcentaje_ics': porcentaje_ics,
+            'porcentaje_inbound': porcentaje_inbound,
+            'porcentaje_manual': porcentaje_manual,
+            'total_grabaciones': total_grabaciones,
+            'total_dialer': total_dialer,
+            'total_ics': total_ics,
+            'total_inbound': total_inbound,
+            'total_manual': total_manual,
+        }
+        return dic_estadisticas
+
+    def general_llamadas_hoy(self, grabaciones):
+
+        estadisticas = self._calcular_estadisticas(grabaciones)
+
+        if estadisticas:
+            logger.info("Generando grafico para grabaciones de llamadas ")
 
         no_data_text = "No hay llamadas para ese periodo"
         torta_grabaciones = pygal.Pie(# @UndefinedVariable
@@ -74,15 +96,11 @@ class GraficoService():
             )
 
         #torta_grabaciones.title = "Resultado de las llamadas"
-        torta_grabaciones.add('Dialer', porcentaje_dialer)
-        torta_grabaciones.add('Inbound', porcentaje_ics)
-        torta_grabaciones.add('Ics', porcentaje_inbound)
-        torta_grabaciones.add('Manual', porcentaje_manual)
+        torta_grabaciones.add('Dialer', estadisticas['porcentaje_dialer'])
+        torta_grabaciones.add('Inbound', estadisticas['porcentaje_ics'])
+        torta_grabaciones.add('Ics', estadisticas['porcentaje_inbound'])
+        torta_grabaciones.add('Manual', estadisticas['porcentaje_manual'])
         return {
-            'total_grabaciones': total_grabaciones,
-            'total_dialer': total_dialer,
-            'total_ics': total_ics,
-            'total_inbound': total_inbound,
-            'total_manual': total_manual,
+            'estadisticas': estadisticas,
             'torta_grabaciones': torta_grabaciones,
         }

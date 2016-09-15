@@ -222,6 +222,9 @@ urlpatterns = [
             views_campana_creacion.CampanaReporteListView.as_view()),
         name='reporte_campana',
         ),
+    # ==========================================================================
+    # Reportes
+    # ==========================================================================
     url(r'^reporte/llamadas/hoy/$',
         login_required(views_grabacion.GrabacionReporteListView.as_view()),
         name='reporte_llamadas_hoy',
