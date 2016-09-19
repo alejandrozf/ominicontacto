@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import pygal
 from pygal.style import Style, RedBlueStyle
 
@@ -42,9 +43,27 @@ class GraficoService():
 
         return counter_por_tipo
 
-    def _calcular_estadisticas(self, grabaciones):
-        counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
+    def _obtener_total_llamadas_campana_inbound(self, fecha_inferior,
+                                                fecha_superior):
+        # lista de dict con la cantidad de cada campana
+        dict_campana = Grabacion.objects.obtener_count_campana().filter(
+            fecha__range=(fecha_inferior, fecha_superior)).filter(
+            tipo_llamada=3)
+        list_campana = []
+        list_cantidad = []
+        for campana_counter in dict_campana:
+             list_campana.append(campana_counter['campana__nombre'])
+             list_cantidad.append(campana_counter['cantidad'])
+        return list_campana, list_cantidad
 
+    def _calcular_estadisticas(self, grabaciones):
+
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(hoy,
+                                                                     hoy_ahora)
+        counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
+        total_campana_inbound, total_campana_cantidad = self._obtener_total_llamadas_campana_inbound(hoy, hoy_ahora)
         total_grabaciones = len(grabaciones)
 
         porcentaje_dialer = 0.0
@@ -75,10 +94,15 @@ class GraficoService():
             'total_ics': total_ics,
             'total_inbound': total_inbound,
             'total_manual': total_manual,
+            'total_campana_inbound': total_campana_inbound,
+            'total_campana_cantidad': total_campana_cantidad,
         }
         return dic_estadisticas
 
     def general_llamadas_hoy(self, grabaciones):
+
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
 
         estadisticas = self._calcular_estadisticas(grabaciones)
 
@@ -100,7 +124,23 @@ class GraficoService():
         torta_grabaciones.add('Inbound', estadisticas['porcentaje_ics'])
         torta_grabaciones.add('Ics', estadisticas['porcentaje_inbound'])
         torta_grabaciones.add('Manual', estadisticas['porcentaje_manual'])
+
+        # Barra: Total de llamados atendidos en cada intento.
+        total_campana_inbound = estadisticas['total_campana_inbound']
+        barra_campana_inbound = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        barra_campana_inbound.title = 'Cantidad de llamadas por campana inbound'
+
+        barra_campana_inbound.x_labels = total_campana_inbound
+        barra_campana_inbound.add('Cantidad',
+                                  estadisticas['total_campana_cantidad'])
+
         return {
             'estadisticas': estadisticas,
             'torta_grabaciones': torta_grabaciones,
+            'barra_campana_inbound': barra_campana_inbound,
+            'zip_total_campana_inbound': zip(
+                estadisticas['total_campana_inbound'],
+                estadisticas['total_campana_cantidad']),
         }

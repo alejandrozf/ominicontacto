@@ -50,5 +50,37 @@
                             </tr>
                         </tbody>
                     </table>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <td colspan="2">
+                                    <h4>Cantidad de llamadas de campaña por inbound</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            {% for campana, cantidad in graficos_estadisticas.zip_total_campana_inbound %}
+                                                <tr>
+                                                    <td><h5>{{ campana }} </h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ cantidad }}</span></h5></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.barra_campana_inbound.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 {% endwith %}
 {% endblock %}
