@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import datetime
 import pygal
 from pygal.style import Style, RedBlueStyle
 
@@ -56,14 +55,11 @@ class GraficoService():
              list_cantidad.append(campana_counter['cantidad'])
         return list_campana, list_cantidad
 
-    def _calcular_estadisticas(self, grabaciones):
-
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
-        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(hoy,
-                                                                     hoy_ahora)
+    def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
+        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(fecha_inferior,
+                                                                     fecha_superior)
         counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
-        total_campana_inbound, total_campana_cantidad = self._obtener_total_llamadas_campana_inbound(hoy, hoy_ahora)
+        total_campana_inbound, total_campana_cantidad = self._obtener_total_llamadas_campana_inbound(fecha_inferior, fecha_superior)
         total_grabaciones = len(grabaciones)
 
         porcentaje_dialer = 0.0
@@ -99,12 +95,9 @@ class GraficoService():
         }
         return dic_estadisticas
 
-    def general_llamadas_hoy(self, grabaciones):
-
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
-
-        estadisticas = self._calcular_estadisticas(grabaciones)
+    def general_llamadas_hoy(self, fecha_inferior, fecha_superior):
+        estadisticas = self._calcular_estadisticas(fecha_inferior,
+                                                   fecha_superior)
 
         if estadisticas:
             logger.info("Generando grafico para grabaciones de llamadas ")

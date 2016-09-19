@@ -59,13 +59,10 @@ class GrabacionReporteListView(ListView):
 
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
-        #campana.hack__graficos_estadisticas = service.general_llamadas_hoy()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(hoy,
-                                                                     hoy_ahora)
-        context['graficos_estadisticas'] = service.general_llamadas_hoy(
-            grabaciones)
+        context['graficos_estadisticas'] = service.general_llamadas_hoy(hoy,
+            hoy_ahora)
         return context
 
 
@@ -87,14 +84,11 @@ class GrabacionReporteSemanaListView(ListView):
 
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
-        #campana.hack__graficos_estadisticas = service.general_llamadas_hoy()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
         ultima_semana = hoy - datetime.timedelta(days=7)
-        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(
-            ultima_semana, hoy_ahora)
         context['graficos_estadisticas'] = service.general_llamadas_hoy(
-            grabaciones)
+            ultima_semana, hoy_ahora)
         return context
 
 
@@ -116,12 +110,9 @@ class GrabacionReporteMesListView(ListView):
 
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
-        #campana.hack__graficos_estadisticas = service.general_llamadas_hoy()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        ultima_semana = hoy - datetime.timedelta(days=30)
-        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(
-            ultima_semana, hoy_ahora)
+        ultima_mes = hoy - datetime.timedelta(days=30)
         context['graficos_estadisticas'] = service.general_llamadas_hoy(
-            grabaciones)
+            ultima_mes, hoy_ahora)
         return context
