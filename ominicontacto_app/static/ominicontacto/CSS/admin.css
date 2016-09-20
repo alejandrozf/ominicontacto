@@ -1,0 +1,13 @@
+/*
+css para la parte administrativa de omnileads
+*/
+
+.graficos-avances svg {
+    min-height: 100px;
+    max-height: 450px;
+}
+
+.oml-table-bg {
+    background: #c3c3c3 !important;
+    color: #222;
+}
