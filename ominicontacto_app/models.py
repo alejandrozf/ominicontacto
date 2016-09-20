@@ -11,7 +11,7 @@ import datetime
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import SuspiciousOperation
 from django.db import models
-from django.db.models import Max, Q
+from django.db.models import Max, Q, Count
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from ominicontacto_app.utiles import log_timing,\
     ValidadorDeNombreDeCampoExtra
@@ -1026,6 +1026,13 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con esa "
                                        "fecha"))
 
+    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
+        try:
+            return self.filter(fecha__range=(fecha_inicio, fecha_fin))
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con ese rango "
+                                       "de fechas"))
+
     def grabacion_by_tipo_llamada(self, tipo_llamada):
         try:
             return self.filter(tipo_llamada=tipo_llamada)
@@ -1075,6 +1082,12 @@ class GrabacionManager(models.Manager):
             grabaciones = grabaciones.filter(campana=campana)
 
         return grabaciones
+
+    def obtener_count_campana(self):
+        try:
+            return self.values('campana__nombre').annotate(cantidad=Count('campana'))
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro grabaciones "))
 
 
 class Grabacion(models.Model):

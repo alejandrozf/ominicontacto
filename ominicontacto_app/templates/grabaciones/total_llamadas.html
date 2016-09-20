@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+ <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
+{% with graficos_estadisticas=graficos_estadisticas %}
+<table class="table table-bordered">
+                        <thead>
+                            <tr >
+                                <td colspan="2">
+                                    <h4>Totales llamadas.</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td  width="50%">
+                                    <a href="{% url 'reporte_llamadas_hoy' %}">Hoy</a> <a href="{% url 'reporte_llamadas_semana' %}">Ultima semana</a> <a href="{% url 'reporte_llamadas_mes' %}">Ultima mes</a>
+
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td><h5>Cantidad Total Dialer</h5></td>
+                                                <td align="right"><h5><span class="label label-primary">{{ graficos_estadisticas.estadisticas.total_dialer }}</span></h5></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><h5>Cantidad Total Ics</h5></td>
+                                                <td align="right"><h5><span class="label label-primary">{{ graficos_estadisticas.estadisticas.total_ics }}</span></h5></td>
+                                            </tr>
+                                            <tr>
+                                                <td><h5>Cantidad Total Inbound </h5></td>
+                                                <td align="right"><h5><span class="label label-primary">{{ graficos_estadisticas.estadisticas.total_inbound }}</span></h5></td>
+                                            </tr>
+                                            <tr>
+                                                <td><h5>Cantidad Total Manual</h5></td>
+                                                <td align="right"><h5><span class="label label-primary">{{ graficos_estadisticas.estadisticas.total_manual }}</span></h5></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.torta_grabaciones.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <td colspan="2">
+                                    <h4>Cantidad de llamadas de campaña por inbound</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            {% for campana, cantidad in graficos_estadisticas.zip_total_campana_inbound %}
+                                                <tr>
+                                                    <td><h5>{{ campana }} </h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ cantidad }}</span></h5></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.barra_campana_inbound.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+{% endwith %}
+{% endblock %}

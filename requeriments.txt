@@ -2,5 +2,8 @@ Django==1.9.7
 argparse==1.2.1
 MySQL-python==1.2.5
 psycopg2==2.6.1
+## pygal
+lxml==3.6.4
+pygal==2.3.0
 wsgiref==0.1.2
 uWSGI==2.0.13.1
