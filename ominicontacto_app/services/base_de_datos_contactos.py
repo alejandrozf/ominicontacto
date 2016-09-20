@@ -282,25 +282,25 @@ class PredictorMetadataService(object):
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
-        if primer_linea[0] !='id_cliente':
+        if primer_linea[0] != 'nombre':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
-                                                 "columna debe ser id_cliente"))
-
-        if primer_linea[1] != 'nombre':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la segunda "
                                                  "columna debe ser nombre"))
 
-        if primer_linea[2] != 'apellido':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la tercera "
+        if primer_linea[1] != 'apellido':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la segunda "
                                                  "columna debe ser apellido"))
 
-        if primer_linea[3] != 'telefono':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la cuarta "
-                                                 "columna debe ser telefono"))
+        if primer_linea[2] != 'dni':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la tercera "
+                                                 "columna debe ser dni"))
 
-        if primer_linea[4] != 'email':
+        if primer_linea[3] != 'fecha_nacimiento':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la cuarta "
+                                                 "columna debe ser fecha_nacimiento"))
+
+        if primer_linea[4] != 'cuil':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la quinta "
-                                                 "columna debe ser email"))
+                                                 "columna debe ser cuil"))
 
         # ======================================================================
         # Primero detectamos columnas de datos
