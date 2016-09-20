@@ -82,7 +82,6 @@ class ContactoIdClienteListView(ListView):
             self.kwargs['id_cliente'])
 
 
-
 class BusquedaContactoFormView(FormView):
     form_class = BusquedaContactoForm
     template_name = 'agente/busqueda_contacto.html'
@@ -136,6 +135,13 @@ class ContactoBDContactoCreateView(CreateView):
 class ContactoBDContactoListView(ListView):
     model = Contacto
     template_name = 'base_datos_contacto/contacto_list_bd_contacto.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactoBDContactoListView, self).get_context_data(
+            **kwargs)
+        context['basedatoscontacto'] = BaseDatosContacto.objects.get(
+            pk=self.kwargs['bd_contacto'])
+        return context
 
     def get_queryset(self):
         return Contacto.objects.contactos_by_bd_contacto(
