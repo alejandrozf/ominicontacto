@@ -92,11 +92,11 @@ class CreacionBaseDatosService(object):
                     datos = ""
                 cantidad_contactos += 1
                 Contacto.objects.create(
-                    id_cliente=int(lista_dato[0]),
-                    nombre=lista_dato[1],
-                    apellido=lista_dato[2],
-                    telefono=lista_dato[3],
-                    email=lista_dato[4],
+                    nombre=lista_dato[0],
+                    apellido=lista_dato[1],
+                    dni=lista_dato[2],
+                    fecha_nacimiento=lista_dato[3],
+                    cuil=lista_dato[4],
                     datos=datos,
                     bd_contacto=base_datos_contacto,
                 )
@@ -158,12 +158,12 @@ class CreacionBaseDatosService(object):
                     datos = ""
                 cantidad_contactos += 1
                 contacto = Contacto.objects.filter(
-                    id_cliente=int(lista_dato[0]),
+                    dni=int(lista_dato[2]),
                     bd_contacto=base_datos_contacto
                 )
                 if len(contacto) > 0:
-                    raise (ContactoExistenteError("ya existe el contacto con el"
-                                            "  de id de cliente: {0}"
+                    raise (ContactoExistenteError("ya existe el contacto con"
+                                            " el nro de dni: {0}"
                                                   " la base de datos ".format(
                         int(lista_dato[0])))
                            )

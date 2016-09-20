@@ -352,11 +352,11 @@ class DefineBaseDatosContactoView(UpdateView):
         if lista_columnas_encabezado[1] != 'apellido':
             error ="El nombre de la segunda columna debe ser apellido"
 
-        if lista_columnas_encabezado[2] !='fecha_nacimiento':
-            error = "El nombre de la tercera columna debe ser fecha_nacimiento"
+        if lista_columnas_encabezado[2] !='dni':
+            error = "El nombre de la tercera columna debe ser dni"
 
-        if lista_columnas_encabezado[3] != 'dni':
-            error ="El nombre de la cuarta columna debe ser dni"
+        if lista_columnas_encabezado[3] != 'fecha_nacimiento':
+            error ="El nombre de la cuarta columna debe ser fecha_nacimiento"
 
         if lista_columnas_encabezado[4] != 'cuil':
             error = "El nombre de la quinta columna debe ser cuil"
