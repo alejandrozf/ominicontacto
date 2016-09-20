@@ -21,6 +21,8 @@ from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
     NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
     ContactoExistenteError)
+from ominicontacto_app.services.exportar_base_datos import \
+    ExportarBaseDatosContactosService
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 import logging as logging_
 
@@ -552,3 +554,23 @@ class BaseDatosContactoListView(ListView):
     def get_queryset(self):
         queryset = BaseDatosContacto.objects.obtener_definidas()
         return queryset
+
+
+class ExportaBDContactosView(UpdateView):
+    """
+    Esta vista invoca a generar un csv para la exportacion de la base de datos.
+    """
+
+    model = BaseDatosContacto
+    context_object_name = 'BaseDatosContacto'
+
+    def get_object(self, queryset=None):
+        return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        service = ExportarBaseDatosContactosService()
+        service.crea_reporte_csv(self.object)
+        url = service.obtener_url_reporte_csv_descargar(self.object)
+
+        return redirect(url)

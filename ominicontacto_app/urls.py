@@ -148,6 +148,11 @@ urlpatterns = [
         login_required(views_contacto.ContactoBDContactoDeleteView.as_view()),
         name='eliminar_contacto',
         ),
+    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/exporta/$',
+        login_required(
+            views_base_de_datos_contacto.ExportaBDContactosView.as_view()),
+        name='exporta_base_datos_contactos',
+        ),
     # ==========================================================================
     # Campana
     # ==========================================================================
