@@ -444,7 +444,8 @@ class FormularioDemoFormCreateView(CreateView):
 class ContactoFormularioUpdateView(UpdateView):
     model = Contacto
     template_name = 'agente/contacto_create_update_form.html'
-    fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono', 'datos')
+    fields = ('id_cliente', 'nombre', 'apellido', 'dni', 'fecha_nacimiento',
+              'cuil', 'datos')
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['id_cliente'])
