@@ -92,11 +92,12 @@ class CreacionBaseDatosService(object):
                     datos = ""
                 cantidad_contactos += 1
                 Contacto.objects.create(
-                    nombre=lista_dato[0],
-                    apellido=lista_dato[1],
-                    dni=lista_dato[2],
-                    fecha_nacimiento=lista_dato[3],
-                    cuil=lista_dato[4],
+                    id_cliente=int(lista_dato[0]),
+                    nombre=lista_dato[1],
+                    apellido=lista_dato[2],
+                    dni=lista_dato[3],
+                    fecha_nacimiento=lista_dato[4],
+                    cuil=lista_dato[5],
                     datos=datos,
                     bd_contacto=base_datos_contacto,
                 )
@@ -158,12 +159,12 @@ class CreacionBaseDatosService(object):
                     datos = ""
                 cantidad_contactos += 1
                 contacto = Contacto.objects.filter(
-                    dni=int(lista_dato[2]),
+                    id_cliente=int(lista_dato[0]),
                     bd_contacto=base_datos_contacto
                 )
                 if len(contacto) > 0:
-                    raise (ContactoExistenteError("ya existe el contacto con"
-                                            " el nro de dni: {0}"
+                    raise (ContactoExistenteError("ya existe el contacto con el"
+                                                  "  de id de cliente: {0}"
                                                   " la base de datos ".format(
                         int(lista_dato[0])))
                            )
@@ -282,24 +283,28 @@ class PredictorMetadataService(object):
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
-        if primer_linea[0] != 'nombre':
+        if primer_linea[0] != 'id_cliente':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
+                                                 "columna debe ser id_cliente"))
+
+        if primer_linea[1] != 'nombre':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la segunda "
                                                  "columna debe ser nombre"))
 
-        if primer_linea[1] != 'apellido':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la segunda "
+        if primer_linea[2] != 'apellido':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la tercera "
                                                  "columna debe ser apellido"))
 
-        if primer_linea[2] != 'dni':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la tercera "
+        if primer_linea[3] != 'dni':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la cuarta "
                                                  "columna debe ser dni"))
 
-        if primer_linea[3] != 'fecha_nacimiento':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la cuarta "
+        if primer_linea[4] != 'fecha_nacimiento':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la quinta "
                                                  "columna debe ser fecha_nacimiento"))
 
-        if primer_linea[4] != 'cuil':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la quinta "
+        if primer_linea[5] != 'cuil':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la sexta "
                                                  "columna debe ser cuil"))
 
         # ======================================================================
