@@ -941,6 +941,7 @@ class Contacto(models.Model):
 
     objects = ContactoManager()
 
+    id_cliente = models.IntegerField()
     nombre = models.CharField(max_length=128)
     apellido = models.CharField(max_length=128)
     dni = models.CharField(max_length=128)
