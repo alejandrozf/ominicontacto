@@ -40,7 +40,7 @@
                 <td>{{ contacto.dni }}</td>
                 <td>{{ contacto.fecha_nacimiento }}</td>
                 <td>{{ contacto.cuil }}</td>
-                <td><a href="{% url 'formulario_update' campana.pk contacto.dni %}" >
+                <td><a href="{% url 'formulario_update' campana.pk contacto.id_cliente %}" >
                     <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Formulario actualizar"></span></a>
                     <a href="" >
                     <span class=" glyphicon glyphicon-trash" aria-hidden="true" title="Llamar"></span></a>
