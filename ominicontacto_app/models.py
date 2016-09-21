@@ -906,8 +906,9 @@ class ContactoManager(models.Manager):
             contactos = self.filter(Q(nombre__contains=filtro) |
                                     Q(id_cliente__contains=filtro) |
                                     Q(apellido__contains=filtro) |
-                                    Q(telefono__contains=filtro) |
-                                    Q(email__contains=filtro))
+                                    Q(dni__contains=filtro) |
+                                    Q(fecha_nacimiento__contains=filtro) |
+                                    Q(cuil__contains=filtro))
             return contactos.filter(bd_contacto=bd_contacto)
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "

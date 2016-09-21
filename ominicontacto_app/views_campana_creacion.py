@@ -380,7 +380,7 @@ class FormularioDemoFormUpdateView(UpdateView):
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
-                                       id_cliente=self.kwargs['id_cliente'])
+                                        id_cliente=self.kwargs['id_cliente'])
         return FormularioDemo.objects.get(campana=campana, contacto=contacto)
 
     def dispatch(self, *args, **kwargs):
