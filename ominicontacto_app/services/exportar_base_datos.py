@@ -58,8 +58,9 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Id Cliente")
             encabezado.append("Nombre")
             encabezado.append("Apellido")
-            encabezado.append("Telefono")
-            encabezado.append("email")
+            encabezado.append("DNI")
+            encabezado.append("Fecha Nacimiento")
+            encabezado.append("Cuil")
             encabezado.append("datos")
 
             # Creamos csvwriter
@@ -78,8 +79,9 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(contacto.id_cliente)
                 lista_opciones.append(contacto.nombre)
                 lista_opciones.append(contacto.apellido)
-                lista_opciones.append(contacto.telefono)
-                lista_opciones.append(contacto.email)
+                lista_opciones.append(contacto.dni)
+                lista_opciones.append(contacto.fecha_nacimiento)
+                lista_opciones.append(contacto.cuil)
                 lista_opciones.append(contacto.datos)
 
                 # --- Finalmente, escribimos la linea
