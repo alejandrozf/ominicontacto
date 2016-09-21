@@ -10,7 +10,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
-    FormularioDemoForm, BusquedaContactoForm)
+    FormularioDemoForm, BusquedaContactoForm, ContactoForm)
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, FormularioDemo, Contacto)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
@@ -444,8 +444,7 @@ class FormularioDemoFormCreateView(CreateView):
 class ContactoFormularioUpdateView(UpdateView):
     model = Contacto
     template_name = 'agente/contacto_create_update_form.html'
-    fields = ('id_cliente', 'nombre', 'apellido', 'dni', 'fecha_nacimiento',
-              'cuil', 'datos')
+    form_class = ContactoForm
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['id_cliente'])

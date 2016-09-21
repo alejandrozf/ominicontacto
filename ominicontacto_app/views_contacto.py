@@ -14,8 +14,7 @@ from ominicontacto_app.forms import BusquedaContactoForm, ContactoForm
 class ContactoCreateView(CreateView):
     model = Contacto
     template_name = 'agente/contacto_create_update_form.html'
-    fields = ('id_cliente', 'nombre', 'apellido', 'dni', 'fecha_nacimiento',
-              'cuil', 'datos')
+    form_class = ContactoForm
 
     def get_success_url(self):
         return reverse('view_blanco')
@@ -24,8 +23,7 @@ class ContactoCreateView(CreateView):
 class ContactoUpdateView(UpdateView):
     model = Contacto
     template_name = 'agente/contacto_create_update_form.html'
-    fields = ('id_cliente', 'nombre', 'apellido', 'dni', 'fecha_nacimiento',
-              'cuil', 'datos')
+    form_class = ContactoForm
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'])
