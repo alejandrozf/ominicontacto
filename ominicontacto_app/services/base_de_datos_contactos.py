@@ -95,8 +95,9 @@ class CreacionBaseDatosService(object):
                     id_cliente=int(lista_dato[0]),
                     nombre=lista_dato[1],
                     apellido=lista_dato[2],
-                    telefono=lista_dato[3],
-                    email=lista_dato[4],
+                    dni=lista_dato[3],
+                    fecha_nacimiento=lista_dato[4],
+                    cuil=lista_dato[5],
                     datos=datos,
                     bd_contacto=base_datos_contacto,
                 )
@@ -163,7 +164,7 @@ class CreacionBaseDatosService(object):
                 )
                 if len(contacto) > 0:
                     raise (ContactoExistenteError("ya existe el contacto con el"
-                                            "  de id de cliente: {0}"
+                                                  "  de id de cliente: {0}"
                                                   " la base de datos ".format(
                         int(lista_dato[0])))
                            )
@@ -282,7 +283,7 @@ class PredictorMetadataService(object):
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
-        if primer_linea[0] !='id_cliente':
+        if primer_linea[0] != 'id_cliente':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
                                                  "columna debe ser id_cliente"))
 
@@ -294,13 +295,17 @@ class PredictorMetadataService(object):
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la tercera "
                                                  "columna debe ser apellido"))
 
-        if primer_linea[3] != 'telefono':
+        if primer_linea[3] != 'dni':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la cuarta "
-                                                 "columna debe ser telefono"))
+                                                 "columna debe ser dni"))
 
-        if primer_linea[4] != 'email':
+        if primer_linea[4] != 'fecha_nacimiento':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la quinta "
-                                                 "columna debe ser email"))
+                                                 "columna debe ser fecha_nacimiento"))
+
+        if primer_linea[5] != 'cuil':
+            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la sexta "
+                                                 "columna debe ser cuil"))
 
         # ======================================================================
         # Primero detectamos columnas de datos

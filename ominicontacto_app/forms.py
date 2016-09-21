@@ -287,8 +287,8 @@ class ContactoForm(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('id_cliente', 'nombre', 'apellido', 'email', 'telefono',
-                  'datos', 'bd_contacto')
+        fields = ('id_cliente', 'nombre', 'apellido', 'dni', 'fecha_nacimiento',
+                  'cuil', 'datos', 'bd_contacto')
         widgets = {
             'bd_contacto': forms.HiddenInput(),
         }

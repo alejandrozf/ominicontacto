@@ -24,8 +24,9 @@
                 <th>id_cliente</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
-                <th>Telefono</th>
-                <th>Email</th>
+                <th>Dni</th>
+                <th>Fecha Nacimiento</th>
+                <th>Cuil</th>
                 <th>Acciones</th>
 
             </tr>
@@ -36,8 +37,9 @@
                 <td>{{ contacto.id_cliente }}</td>
                 <td>{{ contacto.nombre }}</td>
                 <td>{{ contacto.apellido }}</td>
-                <td>{{ contacto.telefono }}</td>
-                <td>{{ contacto.email }}</td>
+                <td>{{ contacto.dni }}</td>
+                <td>{{ contacto.fecha_nacimiento }}</td>
+                <td>{{ contacto.cuil }}</td>
                 <td><a href="{% url 'formulario_update' campana.pk contacto.id_cliente %}" >
                     <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Formulario actualizar"></span></a>
                     <a href="" >

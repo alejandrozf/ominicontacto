@@ -944,8 +944,9 @@ class Contacto(models.Model):
     id_cliente = models.IntegerField()
     nombre = models.CharField(max_length=128)
     apellido = models.CharField(max_length=128)
-    telefono = models.CharField(max_length=128)
-    email = models.CharField(max_length=128)
+    dni = models.CharField(max_length=128)
+    fecha_nacimiento = models.CharField(max_length=128)
+    cuil = models.CharField(max_length=128)
     datos = models.TextField()
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',

@@ -346,7 +346,7 @@ class DefineBaseDatosContactoView(UpdateView):
 
         error = None
 
-        if lista_columnas_encabezado[0] !='id_cliente':
+        if lista_columnas_encabezado[0] != 'id_cliente':
             error = "El nombre de la primera columna debe ser id_cliente"
 
         if lista_columnas_encabezado[1] != 'nombre':
@@ -355,11 +355,14 @@ class DefineBaseDatosContactoView(UpdateView):
         if lista_columnas_encabezado[2] != 'apellido':
             error ="El nombre de la tercera columna debe ser apellido"
 
-        if lista_columnas_encabezado[3] != 'telefono':
-            error ="El nombre de la cuarta columna debe ser telefono"
+        if lista_columnas_encabezado[3] != 'dni':
+            error = "El nombre de la cuarta columna debe ser dni"
 
-        if lista_columnas_encabezado[4] != 'email':
-            error = "El nombre de la quinta columna debe ser email"
+        if lista_columnas_encabezado[4] != 'fecha_nacimiento':
+            error = "El nombre de la quitn columna debe ser fecha_nacimiento"
+
+        if lista_columnas_encabezado[5] != 'cuil':
+            error = "El nombre de la sexta columna debe ser cuil"
 
         if error:
             return self.form_invalid(estructura_archivo,
