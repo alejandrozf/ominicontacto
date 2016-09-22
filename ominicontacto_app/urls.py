@@ -6,6 +6,16 @@ from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion)
 from django.contrib.auth.decorators import login_required
+from ominicontacto_app.views_utils import (
+    handler400, handler403, handler404, handler500
+)
+
+
+handler400 = handler400
+handler403 = handler403
+handler404 = handler404
+handler500 = handler500
+
 
 urlpatterns = [
     url(r'^ajax/mensaje_recibidos/',
