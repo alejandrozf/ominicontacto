@@ -51,7 +51,11 @@
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     {% endif %}
                 </td>
-                <td><a href="{% url 'grupo_update' grupo.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a></td>
+                <td>
+                    <a href="{% url 'grupo_update' grupo.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
+                    <a href="{% url 'grupo_delete' grupo.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Grupo"></span></a>
+
+                </td>
             </tr>
        {% empty %}
         <tr>

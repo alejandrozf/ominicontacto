@@ -228,6 +228,18 @@ class GrupoListView(ListView):
     template_name = 'grupo_list.html'
 
 
+class GrupoDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto grupo
+    """
+    model = Grupo
+    template_name = 'delete_grupo.html'
+
+    def get_success_url(self):
+        return reverse('grupo_list')
+
+
 class PausaCreateView(CreateView):
     model = Pausa
     template_name = 'base_create_update_form.html'
