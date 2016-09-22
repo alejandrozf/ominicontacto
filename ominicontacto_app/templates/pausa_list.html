@@ -10,6 +10,7 @@
             <tr>
                 <th>id</th>
                 <th>Nombre</th>
+                <th>Acciones</th>
 
             </tr>
         </thead>
@@ -18,6 +19,11 @@
             <tr>
                 <td>{{ pausa.id }}</td>
                 <td>{{ pausa.nombre }}</td>
+                <td>
+                    <a href="{% url 'pausa_update' pausa.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
+                    <a href="{% url 'pausa_delete' pausa.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Grupo"></span></a>
+
+                </td>
             </tr>
        {% empty %}
         <tr>

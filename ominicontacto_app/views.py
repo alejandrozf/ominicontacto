@@ -270,9 +270,30 @@ class PausaCreateView(CreateView):
         return reverse('pausa_list')
 
 
+class PausaUpdateView(UpdateView):
+    model = Pausa
+    template_name = 'base_create_update_form.html'
+    fields = ('nombre',)
+
+    def get_success_url(self):
+        return reverse('pausa_list')
+
+
 class PausaListView(ListView):
     model = Pausa
     template_name = 'pausa_list.html'
+
+
+class PausaDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto pausa
+    """
+    model = Pausa
+    template_name = 'delete_pausa.html'
+
+    def get_success_url(self):
+        return reverse('pausa_list')
 
 
 def node_view(request):
