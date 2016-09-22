@@ -193,6 +193,27 @@ class ModuloCreateView(CreateView):
         return reverse('modulo_list')
 
 
+class ModuloUpdateView(UpdateView):
+    model = Modulo
+    template_name = 'base_create_update_form.html'
+    fields = ('nombre',)
+
+    def get_success_url(self):
+        return reverse('modulo_list')
+
+
+class ModuloDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto grupo
+    """
+    model = Modulo
+    template_name = 'delete_modulo.html'
+
+    def get_success_url(self):
+        return reverse('modulo_list')
+
+
 class ModuloListView(ListView):
     model = Modulo
     template_name = 'modulo_list.html'
