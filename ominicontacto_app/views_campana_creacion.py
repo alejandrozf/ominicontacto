@@ -73,9 +73,7 @@ class CampanaCreateView(CreateView):
             message = ("Debe cargar una base de datos antes de comenzar a "
                        "configurar una campana")
             messages.warning(self.request, message)
-
-        return super(CampanaCreateView, self).dispatch(request, *args,
-                                                             **kwargs)
+        return super(CampanaCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
