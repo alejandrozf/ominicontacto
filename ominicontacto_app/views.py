@@ -346,5 +346,9 @@ class AgenteEventosListView(ListView):
         context = super(AgenteEventosListView, self).get_context_data(
             **kwargs)
         agente = self.request.user.get_agente_profile()
-        context['listado_de_eventos'] = agente.eventos.eventos_fecha_hoy()
+        listado_de_eventos = agente.eventos.eventos_fecha_hoy()
+        if listado_de_eventos:
+            context['listado_de_eventos'] = listado_de_eventos
+        else:
+            context['listado_de_eventos'] = []
         return context
