@@ -345,9 +345,11 @@ class AgenteEventosListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(AgenteEventosListView, self).get_context_data(
             **kwargs)
-        try:
-            agente = self.request.user.get_agente_profile()
-        except AgenteProfile.DoesNotExist:
+        agente = self.request.user.get_agente_profile()
+        if agente is not None:
+            listado_de_eventos = agente.eventos.eventos_fecha_hoy()
+            context['listado_de_eventos'] = listado_de_eventos
+        else:
             message = ("Operación Errónea!"
                        "No se pueden mostrar los eventos por el agente no tiene"
                        " creado su perfil de agente")
@@ -356,7 +358,4 @@ class AgenteEventosListView(ListView):
                 messages.ERROR,
                 message,
             )
-        listado_de_eventos = agente.eventos.eventos_fecha_hoy()
-        context['listado_de_eventos'] = listado_de_eventos
-
         return context
