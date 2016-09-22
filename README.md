@@ -56,6 +56,10 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+ALLOWED_HOSTS = [
+    "*",
+]
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 
