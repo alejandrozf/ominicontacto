@@ -347,8 +347,16 @@ class AgenteEventosListView(ListView):
             **kwargs)
         agente = self.request.user.get_agente_profile()
         listado_de_eventos = agente.eventos.eventos_fecha_hoy()
-        if listado_de_eventos:
+        if agente:
             context['listado_de_eventos'] = listado_de_eventos
         else:
+            message = ("Operación Errónea!"
+                       "No se pueden mostrar los eventos por el agente no tiene"
+                       " creado su perfil de agente")
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
             context['listado_de_eventos'] = []
         return context
