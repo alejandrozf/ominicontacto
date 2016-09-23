@@ -904,6 +904,7 @@ class ContactoManager(models.Manager):
     def contactos_by_filtro(self, bd_contacto, filtro):
         try:
             contactos = self.filter(Q(nombre__contains=filtro) |
+                                    Q(telefono__contains=filtro) |
                                     Q(id_cliente__contains=filtro) |
                                     Q(apellido__contains=filtro) |
                                     Q(dni__contains=filtro) |
