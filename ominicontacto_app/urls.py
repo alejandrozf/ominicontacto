@@ -142,6 +142,11 @@ urlpatterns = [
         login_required(views_contacto.ContactoBDContactoCreateView.as_view()),
         name='agregar_contacto',
         ),
+    url(r'^base_datos_contacto/(?P<pk>\d+)/validacion_actualizacion/$',
+        login_required(views_base_de_datos_contacto.
+                       ActualizaBaseDatosContactoView.as_view()),
+        name='actualiza_base_datos_contacto',
+        ),
     url(r'^contacto/nuevo/$',
         login_required(views_contacto.ContactoCreateView.as_view()),
         name='contacto_nuevo',
