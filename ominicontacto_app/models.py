@@ -942,6 +942,7 @@ class Contacto(models.Model):
 
     objects = ContactoManager()
 
+    telefono = models.CharField(max_length=128)
     id_cliente = models.IntegerField()
     nombre = models.CharField(max_length=128)
     apellido = models.CharField(max_length=128)
