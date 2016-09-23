@@ -789,7 +789,8 @@ class BaseDatosContacto(models.Model):
         objeto BaseDatosContacto. Establece el atributo sin_definir
         en False haciedo que quede disponible el objeto.
         """
-        assert self.estado == BaseDatosContacto.ESTADO_EN_DEFINICION
+        assert self.estado in (BaseDatosContacto.ESTADO_EN_DEFINICION,
+                               BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA)
         logger.info("Seteando base datos contacto %s como definida", self.id)
         self.sin_definir = False
 
