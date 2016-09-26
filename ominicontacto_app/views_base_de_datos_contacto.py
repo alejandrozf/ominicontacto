@@ -6,7 +6,9 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import (
+    CreateView, UpdateView, DeleteView, FormView
+)
 from django.views.generic.list import ListView
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
@@ -14,7 +16,7 @@ from ominicontacto_app.errors import (
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
 from ominicontacto_app.forms import (
     BaseDatosContactoForm, DefineNombreColumnaForm, DefineColumnaTelefonoForm,
-    DefineDatosExtrasForm, PrimerLineaEncabezadoForm)
+    DefineDatosExtrasForm, PrimerLineaEncabezadoForm, ExportaDialerForm)
 from ominicontacto_app.models import BaseDatosContacto
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
@@ -372,7 +374,10 @@ class DefineBaseDatosContactoView(UpdateView):
 
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
-        #metadata.columna_con_telefono = columna_con_telefono
+        predictor_metadata = PredictorMetadataService()
+        columnas_con_telefonos = predictor_metadata.inferir_columnas_telefono(
+            estructura_archivo[1:])
+        metadata.columnas_con_telefono = columnas_con_telefonos
         #metadata.columnas_con_fecha = lista_columnas_fechas
         #metadata.columnas_con_hora = lista_columnas_horas
         metadata.nombres_de_columnas = estructura_archivo[0]
@@ -825,3 +830,35 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
     def get_success_url(self):
         return reverse('lista_base_datos_contacto')
+
+
+class ExportaDialerView(FormView):
+    """
+    Esta vista invoca a generar un csv para la exportacion de la base de datos.
+    """
+
+    model = BaseDatosContacto
+    context_object_name = 'BaseDatosContacto'
+    form_class = ExportaDialerForm
+    template_name = 'base_create_update_form.html'
+
+    def get_object(self, queryset=None):
+        return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
+
+    def get_form(self, form_class):
+        self.object = self.get_object()
+        metadata = self.object.get_metadata()
+        columnas_telefono = metadata.columnas_con_telefono
+        nombres_de_columnas = metadata.nombres_de_columnas
+        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in columnas_telefono]
+        campana_choice = [(campana.id, campana.nombre) for campana in
+                          self.object.campanas.all()]
+        return form_class(campana_choice=campana_choice, tts_choices=tts_choices,  **self.get_form_kwargs())
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.campanas.all():
+            message = ("Esta base de datos no tiene ninguna campaña ")
+            messages.warning(self.request, message)
+        return super(ExportaDialerView, self).dispatch(request, *args,
+                                                             **kwargs)

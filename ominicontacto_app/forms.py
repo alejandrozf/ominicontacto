@@ -292,3 +292,18 @@ class ContactoForm(forms.ModelForm):
         widgets = {
             'bd_contacto': forms.HiddenInput(),
         }
+
+
+class ExportaDialerForm(forms.Form):
+    campana = forms.ChoiceField(choices=())
+    usa_contestador = forms.BooleanField()
+    telefonos = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=(),
+    )
+
+    def __init__(self, campana_choice, tts_choices, *args, **kwargs):
+        super(ExportaDialerForm, self).__init__(*args, **kwargs)
+        self.fields['campana'].choices = campana_choice
+        self.fields['telefonos'].choices = tts_choices
