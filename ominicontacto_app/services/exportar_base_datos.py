@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 import csv
 import logging
 import os
+import json
 
 
 from django.conf import settings
@@ -50,9 +51,11 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, contactos):
+    def escribir_archivo_csv(self, contactos, metadata, campana, telefonos):
 
         with open(self.ruta, 'wb') as csvfile:
+            nombres_de_columnas = metadata.nombres_de_columnas
+
             # Creamos encabezado
             encabezado = []
             encabezado.append("Id Cliente")
@@ -61,7 +64,8 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("DNI")
             encabezado.append("Fecha Nacimiento")
             encabezado.append("Cuil")
-            encabezado.append("datos")
+            for columna in telefonos:
+                encabezado.append(nombres_de_columnas[int(columna)])
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -82,7 +86,10 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(contacto.dni)
                 lista_opciones.append(contacto.fecha_nacimiento)
                 lista_opciones.append(contacto.cuil)
-                lista_opciones.append(contacto.datos)
+                datos = json.loads(contacto.datos)
+                for col_telefono in telefonos:
+                    indice_columna_dato = int(col_telefono) - 7
+                    lista_opciones.append(datos[indice_columna_dato])
 
                 # --- Finalmente, escribimos la linea
 
@@ -96,11 +103,13 @@ class ArchivoDeReporteCsv(object):
 
 class ExportarBaseDatosContactosService(object):
 
-    def crea_reporte_csv(self, base_datos):
+    def crea_reporte_csv(self, base_datos, campana, telefonos):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
         archivo_de_reporte.crear_archivo_en_directorio()
         contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
-        archivo_de_reporte.escribir_archivo_csv(contactos)
+        metadata = base_datos.get_metadata()
+        archivo_de_reporte.escribir_archivo_csv(contactos, metadata,
+                                                campana, telefonos)
 
     def obtener_url_reporte_csv_descargar(self, base_datos):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)

@@ -850,7 +850,8 @@ class ExportaDialerView(FormView):
         metadata = self.object.get_metadata()
         columnas_telefono = metadata.columnas_con_telefono
         nombres_de_columnas = metadata.nombres_de_columnas
-        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in columnas_telefono]
+        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
+                       columnas_telefono]
         campana_choice = [(campana.id, campana.nombre) for campana in
                           self.object.campanas.all()]
         return form_class(campana_choice=campana_choice, tts_choices=tts_choices,  **self.get_form_kwargs())
@@ -860,5 +861,16 @@ class ExportaDialerView(FormView):
         if not self.object.campanas.all():
             message = ("Esta base de datos no tiene ninguna campaña ")
             messages.warning(self.request, message)
-        return super(ExportaDialerView, self).dispatch(request, *args,
-                                                             **kwargs)
+        return super(ExportaDialerView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        campana = form.cleaned_data.get('campana')
+        usa_contestador = form.cleaned_data.get('usa_contestador')
+        telefonos = form.cleaned_data.get('telefonos')
+        self.object = self.get_object()
+        service = ExportarBaseDatosContactosService()
+        service.crea_reporte_csv(self.object, campana, telefonos)
+        url = service.obtener_url_reporte_csv_descargar(self.object)
+
+        return redirect(url)
