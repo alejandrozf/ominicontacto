@@ -459,6 +459,34 @@ class MetadataBaseDatosContactoDTO(object):
     # -----
 
     @property
+    def columnas_con_telefono(self):
+        try:
+            return self._metadata['cols_telefono']
+        except KeyError:
+            return []
+
+    @columnas_con_telefono.setter
+    def columnas_con_telefono(self, columnas):
+        """
+        Parametros:
+        - columnas: Lista de enteros que indican las columnas con telefonos.
+        """
+        assert isinstance(columnas, (list, tuple)), ("'columnas_con_telefono' "
+            "recibe listas o tuplas. Se recibio: {0}".format(type(columnas)))
+        for col in columnas:
+            assert isinstance(col, int), ("Los elementos de "
+            "'columnas_con_telefono' deben ser int. Se encontro: {0}".format(
+                type(col)))
+            assert col < self.cantidad_de_columnas, ("No se puede setear "
+                "'columnas_con_telefono' = {0} porque  la BD solo "
+                "posee {1} columnas"
+                "".format(col, self.cantidad_de_columnas))
+
+        self._metadata['cols_telefono'] = columnas
+
+    # ----
+
+    @property
     def columnas_con_fecha(self):
         try:
             return self._metadata['cols_fecha']
