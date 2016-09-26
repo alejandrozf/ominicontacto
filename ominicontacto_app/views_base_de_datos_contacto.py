@@ -870,7 +870,7 @@ class ExportaDialerView(FormView):
         telefonos = form.cleaned_data.get('telefonos')
         self.object = self.get_object()
         service = ExportarBaseDatosContactosService()
-        service.crea_reporte_csv(self.object, campana, telefonos)
+        service.crea_reporte_csv(self.object, campana, telefonos, usa_contestador)
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
