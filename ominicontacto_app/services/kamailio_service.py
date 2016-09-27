@@ -23,8 +23,8 @@ class KamailioService():
         try:
             sql = """INSERT INTO subscriber (id, username, password, ha1, ha1b)
             VALUES (%(id)s, %(name)s, %(kamailiopass)s,
-            MD5('%(name)s::%(kamailiopass)s'),
-            MD5('%(name)s::%(kamailiopass)s')
+            MD5(%(name)s::%(kamailiopass)s),
+            MD5(%(name)s::%(kamailiopass)s)
             """
             params = {
                 'id': agente.id,
@@ -48,8 +48,8 @@ class KamailioService():
         try:
             sql = """UPDATE subscriber SET username=%(name)s,
                   password=%(kamailiopass)s,
-                  ha1=MD5('%(name)s::%(kamailiopass)s'),
-                  ha1b=MD5('%(name)s::%(kamailiopass)s')
+                  ha1=MD5(%(name)s::%(kamailiopass)s),
+                  ha1b=MD5(%(name)s::%(kamailiopass)s)
                   WHERE id=%(id)s"""
             params = {
                 'id': agente.id,
