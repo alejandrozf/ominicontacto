@@ -22,16 +22,17 @@ class KamailioService():
 
         try:
             sql = """INSERT INTO subscriber (id, username, password, ha1, ha1b)
-            VALUES (%(id)s, %(name)s, %(kamailiopass)s,
-            MD5(%(name)s::%(kamailiopass)s),
-            MD5(%(name)s::%(kamailiopass)s)
+            VALUES (%(id)s, %(name)s, %(kamailiopass)s, %(ha1)s, %(ha1)s
             """
             params = {
                 'id': agente.id,
                 'name': agente.sip_extension,
                 'kamailiopass': agente.sip_password,
+                'ha1': "MD5('{0}::{1}')".format(agente.sip_extension,
+                                                agente.sip_password)
             }
             cursor.execute(sql, params)
+            print cursor.query
             connection.commit()
             connection.close()
         except psycopg2.DatabaseError, e:
@@ -47,14 +48,14 @@ class KamailioService():
 
         try:
             sql = """UPDATE subscriber SET username=%(name)s,
-                  password=%(kamailiopass)s,
-                  ha1=MD5(%(name)s::%(kamailiopass)s),
-                  ha1b=MD5(%(name)s::%(kamailiopass)s)
+                  password=%(kamailiopass)s, ha1=%(ha1)s, ha1b=%(ha1)s
                   WHERE id=%(id)s"""
             params = {
                 'id': agente.id,
                 'name': agente.sip_extension,
                 'kamailiopass': agente.sip_password,
+                'ha1': "MD5('{0}::{1}')".format(agente.sip_extension,
+                                                agente.sip_password)
             }
             cursor.execute(sql, params)
             connection.commit()
