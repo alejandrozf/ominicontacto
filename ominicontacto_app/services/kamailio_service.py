@@ -22,7 +22,7 @@ class KamailioService():
 
         try:
             sql = """INSERT INTO subscriber (id, username, password, ha1, ha1b)
-            VALUES (%(id)s, %(name)s, %(kamailiopass)s, %(ha1)s, %(ha1)s
+            VALUES (%(id)s, %(name)s, %(kamailiopass)s, %(ha1)s, %(ha1)s)
             """
             params = {
                 'id': agente.id,
