@@ -287,8 +287,23 @@ class ContactoForm(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('id_cliente', 'nombre', 'apellido', 'dni', 'fecha_nacimiento',
-                  'cuil', 'datos', 'bd_contacto')
+        fields = ('telefono', 'id_cliente', 'nombre', 'apellido', 'dni',
+                  'fecha_nacimiento', 'cuil', 'datos', 'bd_contacto')
         widgets = {
             'bd_contacto': forms.HiddenInput(),
         }
+
+
+class ExportaDialerForm(forms.Form):
+    campana = forms.ChoiceField(choices=())
+    usa_contestador = forms.BooleanField(required=False)
+    telefonos = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=(),
+    )
+
+    def __init__(self, campana_choice, tts_choices, *args, **kwargs):
+        super(ExportaDialerForm, self).__init__(*args, **kwargs)
+        self.fields['campana'].choices = campana_choice
+        self.fields['telefonos'].choices = tts_choices

@@ -142,6 +142,21 @@ urlpatterns = [
         login_required(views_contacto.ContactoBDContactoCreateView.as_view()),
         name='agregar_contacto',
         ),
+    url(r'^base_datos_contacto/(?P<pk>\d+)/validacion_actualizacion/$',
+        login_required(views_base_de_datos_contacto.
+                       ActualizaBaseDatosContactoView.as_view()),
+        name='actualiza_base_datos_contacto',
+        ),
+    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/exporta_dialer/$',
+        login_required(views_base_de_datos_contacto.
+                       ExportaDialerView.as_view()),
+        name='exporta_dialer',
+        ),
+    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/genera_dialer/$',
+        login_required(views_base_de_datos_contacto.
+                       GeneraExportacionDialerView.as_view()),
+        name='exporta_csv_dialer',
+        ),
     url(r'^contacto/nuevo/$',
         login_required(views_contacto.ContactoCreateView.as_view()),
         name='contacto_nuevo',
@@ -177,11 +192,6 @@ urlpatterns = [
     url(r'^base_datos_contacto/(?P<pk_contacto>\d+)/eliminar/$',
         login_required(views_contacto.ContactoBDContactoDeleteView.as_view()),
         name='eliminar_contacto',
-        ),
-    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/exporta/$',
-        login_required(
-            views_base_de_datos_contacto.ExportaBDContactosView.as_view()),
-        name='exporta_base_datos_contactos',
         ),
     # ==========================================================================
     # Campana

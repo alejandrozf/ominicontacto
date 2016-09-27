@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<h3>Descargue reporte csv de dialer</h3>
+<a class="btn btn-default " href="{{url_descarga}}">
+    <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="descargue"></span>
+</a>
+
+<br>
+<br>
+<a class="btn btn-default pull-right " href="{% url 'lista_base_datos_contacto' %} ">
+    volver a listado de base de datos de contactos
+</a>
+
+
+{% endblock %}

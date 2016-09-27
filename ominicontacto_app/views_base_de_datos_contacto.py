@@ -6,7 +6,9 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import (
+    CreateView, UpdateView, DeleteView, FormView
+)
 from django.views.generic.list import ListView
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
@@ -14,7 +16,7 @@ from ominicontacto_app.errors import (
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
 from ominicontacto_app.forms import (
     BaseDatosContactoForm, DefineNombreColumnaForm, DefineColumnaTelefonoForm,
-    DefineDatosExtrasForm, PrimerLineaEncabezadoForm)
+    DefineDatosExtrasForm, PrimerLineaEncabezadoForm, ExportaDialerForm)
 from ominicontacto_app.models import BaseDatosContacto
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
@@ -103,16 +105,15 @@ class BaseDatosContactoUpdateView(UpdateView):
     context_object_name = 'base_datos_contacto'
     form_class = BaseDatosContactoForm
 
+
     def get_object(self, queryset=None):
         return BaseDatosContacto.objects.get(pk=self.kwargs['pk_bd_contacto'])
 
     def form_valid(self, form):
-        nombre_archivo_importacion = \
-            self.request.FILES['archivo_importacion'].name
 
         self.object = form.save(commit=False)
         self.object.estado = BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA
-        self.object.nombre_archivo_importacion = nombre_archivo_importacion
+        #self.object.nombre_archivo_importacion = nombre_archivo_importacion
 
         try:
             creacion_base_datos = CreacionBaseDatosService()
@@ -133,7 +134,7 @@ class BaseDatosContactoUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse(
-            'define_base_datos_contacto',
+            'actualiza_base_datos_contacto',
             kwargs={"pk": self.object.pk})
 
 
@@ -346,23 +347,26 @@ class DefineBaseDatosContactoView(UpdateView):
 
         error = None
 
-        if lista_columnas_encabezado[0] != 'id_cliente':
-            error = "El nombre de la primera columna debe ser id_cliente"
+        if lista_columnas_encabezado[0] != 'telefono':
+            error = "El nombre de la primera columna debe ser telefono"
 
-        if lista_columnas_encabezado[1] != 'nombre':
-            error = "El nombre de la segunda columna debe ser nombre"
+        if lista_columnas_encabezado[1] != 'id_cliente':
+            error = "El nombre de la segunda columna debe ser id_cliente"
 
-        if lista_columnas_encabezado[2] != 'apellido':
-            error ="El nombre de la tercera columna debe ser apellido"
+        if lista_columnas_encabezado[2] != 'nombre':
+            error = "El nombre de la tercera columna debe ser nombre"
 
-        if lista_columnas_encabezado[3] != 'dni':
-            error = "El nombre de la cuarta columna debe ser dni"
+        if lista_columnas_encabezado[3] != 'apellido':
+            error ="El nombre de la cuarta columna debe ser apellido"
 
-        if lista_columnas_encabezado[4] != 'fecha_nacimiento':
-            error = "El nombre de la quitn columna debe ser fecha_nacimiento"
+        if lista_columnas_encabezado[4] != 'dni':
+            error = "El nombre de la quinta columna debe ser dni"
 
-        if lista_columnas_encabezado[5] != 'cuil':
-            error = "El nombre de la sexta columna debe ser cuil"
+        if lista_columnas_encabezado[5] != 'fecha_nacimiento':
+            error = "El nombre de la sexta columna debe ser fecha_nacimiento"
+
+        if lista_columnas_encabezado[6] != 'cuil':
+            error = "El nombre de la septima columna debe ser cuil"
 
         if error:
             return self.form_invalid(estructura_archivo,
@@ -370,10 +374,13 @@ class DefineBaseDatosContactoView(UpdateView):
 
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
-        #metadata.columna_con_telefono = columna_con_telefono
+        predictor_metadata = PredictorMetadataService()
+        columnas_con_telefonos = predictor_metadata.inferir_columnas_telefono(
+            estructura_archivo[1:])
+        metadata.columnas_con_telefono = columnas_con_telefonos
         #metadata.columnas_con_fecha = lista_columnas_fechas
         #metadata.columnas_con_hora = lista_columnas_horas
-        #metadata.nombres_de_columnas = lista_nombre_columnas
+        metadata.nombres_de_columnas = estructura_archivo[0]
 
         es_encabezado = False
         if self.request.POST.get('es_encabezado', False):
@@ -559,21 +566,328 @@ class BaseDatosContactoListView(ListView):
         return queryset
 
 
-class ExportaBDContactosView(UpdateView):
+class ActualizaBaseDatosContactoView(UpdateView):
+    """
+    Esta vista se obtiene un resumen de la estructura
+    del archivo a importar y la presenta al usuario para
+    que seleccione en que columna se encuentra el teléfono.
+    Guarda la posición de la columna como entero y llama a
+    importar los teléfono del archivo que se guardo.
+    Si la importación resulta bien, llama a definir el objeto
+    BaseDatosContacto para que esté disponible.
+    """
+
+    template_name = 'base_datos_contacto/define_base_datos_contacto.html'
+    model = BaseDatosContacto
+    context_object_name = 'base_datos_contacto'
+    fields = '__all__'
+
+    # @@@@@@@@@@@@@@@@@@@@
+
+    def dispatch(self, request, *args, **kwargs):
+        self.base_datos_contacto = \
+            BaseDatosContacto.objects.obtener_en_actualizada_para_editar(
+                self.kwargs['pk'])
+        return super(ActualizaBaseDatosContactoView, self).dispatch(request,
+                                                                 *args,
+                                                                 **kwargs)
+
+    def obtiene_previsualizacion_archivo(self, base_datos_contacto):
+        """
+        Instancia el servicio ParserCsv e intenta obtener un resumen de las
+        primeras 3 lineas del csv.
+        """
+
+        try:
+            parser = ParserCsv()
+            estructura_archivo = parser.previsualiza_archivo(
+                base_datos_contacto)
+
+        except OmlParserCsvDelimiterError:
+            message = '<strong>Operación Errónea!</strong> \
+            No se pudo determinar el delimitador a ser utilizado \
+            en el archivo csv. No se pudo llevar a cabo el procesamiento \
+            de sus datos.'
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        except OmlParserMinRowError:
+            message = '<strong>Operación Errónea!</strong> \
+            El archivo que seleccionó posee menos de 3 filas.\
+            No se pudo llevar a cabo el procesamiento de sus datos.'
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        except OmlParserOpenFileError:
+            message = '<strong>Operación Errónea!</strong> \
+            El archivo que seleccionó no pudo ser abierto para su \
+            para su procesamiento.'
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        else:
+            return estructura_archivo
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
+        if estructura_archivo:
+            cantidad_de_columnas = len(estructura_archivo[0])
+
+            try:
+                error_predictor = False
+                error_predictor_encabezado = False
+
+                predictor_metadata = PredictorMetadataService()
+                metadata = predictor_metadata.\
+                    inferir_metadata_desde_lineas_base_existente(self.object,
+                    estructura_archivo)
+            except NoSePuedeInferirMetadataError:
+                initial_predecido_encabezado = {}
+
+                error_predictor = True
+            except NoSePuedeInferirMetadataErrorEncabezado:
+                initial_predecido_encabezado = {}
+
+                error_predictor_encabezado = True
+            else:
+                initial_predecido_datos_extras = dict(
+                    [('datos-extras-{0}'.format(col),
+                        BaseDatosContacto.DATO_EXTRA_FECHA)
+                        for col in metadata.columnas_con_fecha])
+
+                initial_predecido_datos_extras.update(dict(
+                    [('datos-extras-{0}'.format(col),
+                        BaseDatosContacto.DATO_EXTRA_HORA)
+                        for col in metadata.columnas_con_hora]))
+
+                initial_predecido_encabezado = {
+                    'es_encabezado': metadata.primer_fila_es_encabezado}
+
+            form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
+                initial=initial_predecido_encabezado)
+
+            return self.render_to_response(self.get_context_data(
+                error_predictor_encabezado=error_predictor_encabezado,
+                error_predictor=error_predictor,
+                estructura_archivo=estructura_archivo,
+                form_primer_linea_encabezado=form_primer_linea_encabezado
+            ))
+
+        return redirect(reverse('nueva_base_datos_contacto'))
+
+    def form_invalid(self, estructura_archivo,
+                     form_primer_linea_encabezado, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                  Verifique el archivo cargado. {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            message,
+        )
+
+        return self.render_to_response(self.get_context_data(
+            estructura_archivo=estructura_archivo,
+            form_primer_linea_encabezado=form_primer_linea_encabezado))
+
+    def form_valid(self, estructura_archivo,
+                   form_primer_linea_encabezado):
+
+        cantidad_columnas = len(estructura_archivo[0])
+
+        lista_columnas_encabezado = estructura_archivo[0]
+
+        error = None
+
+        metadata = self.object.get_metadata()
+        metadata.cantidad_de_columnas = cantidad_columnas
+
+        for columna_base, columna_csv in zip(metadata.nombres_de_columnas, lista_columnas_encabezado):
+            if columna_base != columna_csv:
+                error = "El nombre de la columna debe ser {0} en vez de {1}".\
+                    format(columna_base, columna_csv)
+
+        if error:
+            return self.form_invalid(estructura_archivo,
+                                     form_primer_linea_encabezado, error=error)
+
+        es_encabezado = False
+        if self.request.POST.get('es_encabezado', False):
+            es_encabezado = True
+        metadata.primer_fila_es_encabezado = es_encabezado
+        metadata.save()
+
+        creacion_base_datos = CreacionBaseDatosService()
+
+        try:
+            creacion_base_datos.valida_contactos(self.object)
+            creacion_base_datos.importa_contactos(self.object)
+        except OmlParserCsvImportacionError as e:
+
+            message = '<strong>Operación Errónea!</strong>\
+                      El archivo que seleccionó posee registros inválidos.<br>\
+                      <u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>\
+                      {1}<br><u>Contenido Inválido:</u> {2}'.format(
+                      e.numero_fila, e.fila, e.valor_celda)
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            # FIXME: Ver bien que hacer acá.
+
+        except ContactoExistenteError as e:
+
+            message = '<strong>Operación Errónea!</strong>\
+                          El archivo que seleccionó posee registros inválidos.<br>\
+                           ERROR: {0}. Vuelva cargar nuevamente la base de datos ' \
+                      ' sin el contacto existente '.format(e)
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+
+            return self.render_to_response(self.get_context_data(
+                estructura_archivo=estructura_archivo,
+                form_primer_linea_encabezado=form_primer_linea_encabezado))
+
+        except OmlParserMaxRowError:
+            message = '<strong>Operación Errónea!</strong> \
+                      El archivo que seleccionó posee mas registros de los\
+                      permitidos para ser importados.'
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return redirect(reverse('lista_base_datos_contacto'))
+        else:
+            creacion_base_datos.define_base_dato_contacto(self.object)
+
+            message = '<strong>Operación Exitosa!</strong>\
+                      Se llevó a cabo con éxito la creación de\
+                      la Base de Datos de Contactos.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+            return redirect(self.get_success_url())
+
+    def post(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+
+        estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
+        if estructura_archivo:
+            form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
+                request.POST)
+            if form_primer_linea_encabezado.is_valid():
+
+                return self.form_valid(estructura_archivo,
+                                       form_primer_linea_encabezado)
+            else:
+                return self.form_invalid(estructura_archivo,
+                                         form_primer_linea_encabezado)
+        return redirect(reverse('nueva_base_datos_contacto'))
+
+    def get_success_url(self):
+        return reverse('lista_base_datos_contacto')
+
+
+class ExportaDialerView(FormView):
     """
     Esta vista invoca a generar un csv para la exportacion de la base de datos.
     """
 
     model = BaseDatosContacto
     context_object_name = 'BaseDatosContacto'
+    form_class = ExportaDialerForm
+    template_name = 'base_create_update_form.html'
 
     def get_object(self, queryset=None):
         return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
 
-    def get(self, request, *args, **kwargs):
+    def get_form(self, form_class):
+        self.object = self.get_object()
+        metadata = self.object.get_metadata()
+        columnas_telefono = metadata.columnas_con_telefono
+        nombres_de_columnas = metadata.nombres_de_columnas
+        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
+                       columnas_telefono if columna > 6]
+        campana_choice = [(campana.id, campana.nombre) for campana in
+                          self.object.campanas.all()]
+        return form_class(campana_choice=campana_choice, tts_choices=tts_choices
+                          , **self.get_form_kwargs())
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.campanas.all():
+            message = ("Esta base de datos no tiene ninguna campaña ")
+            messages.warning(self.request, message)
+        return super(ExportaDialerView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        campana = form.cleaned_data.get('campana')
+        usa_contestador = form.cleaned_data.get('usa_contestador')
+        telefonos = form.cleaned_data.get('telefonos')
         self.object = self.get_object()
         service = ExportarBaseDatosContactosService()
-        service.crea_reporte_csv(self.object)
-        url = service.obtener_url_reporte_csv_descargar(self.object)
+        service.crea_reporte_csv(self.object, campana, telefonos,
+                                 usa_contestador)
+        message = 'Operación Exitosa!\
+                Se llevó a cabo con éxito la exportación del reporte.'
 
-        return redirect(url)
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse(
+            'exporta_csv_dialer',
+            kwargs={"bd_contacto": self.object.pk})
+
+
+class GeneraExportacionDialerView(UpdateView):
+    """
+    Esta vista invoca a generar un csv de reporte de la base de datos.
+    """
+
+    model = BaseDatosContacto
+    context_object_name = 'base_datos_contacto'
+    template_name = 'base_datos_contacto/exportacion_dialer.html'
+    fields = '__all__'
+
+    def get_object(self, queryset=None):
+        return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
+
+    def get_context_data(self, **kwargs):
+        context = super(GeneraExportacionDialerView, self).get_context_data(
+            **kwargs)
+        self.object = self.get_object()
+        service = ExportarBaseDatosContactosService()
+        url = service.obtener_url_reporte_csv_descargar(self.object)
+        context['url_descarga'] = url
+        context['base_datos_contacto'] = self.object
+        return context

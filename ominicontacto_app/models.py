@@ -362,7 +362,7 @@ class BaseDatosContactoManager(models.Manager):
         """
         definidas = [BaseDatosContacto.ESTADO_DEFINIDA,
                      BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA]
-        return self.filter(estado__in=definidas)
+        return self.filter(estado__in=definidas).order_by('fecha_alta')
 
     def obtener_en_definicion_para_editar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser editada.
@@ -457,6 +457,34 @@ class MetadataBaseDatosContactoDTO(object):
         self._metadata['col_telefono'] = columna
 
     # -----
+
+    @property
+    def columnas_con_telefono(self):
+        try:
+            return self._metadata['cols_telefono']
+        except KeyError:
+            return []
+
+    @columnas_con_telefono.setter
+    def columnas_con_telefono(self, columnas):
+        """
+        Parametros:
+        - columnas: Lista de enteros que indican las columnas con telefonos.
+        """
+        assert isinstance(columnas, (list, tuple)), ("'columnas_con_telefono' "
+            "recibe listas o tuplas. Se recibio: {0}".format(type(columnas)))
+        for col in columnas:
+            assert isinstance(col, int), ("Los elementos de "
+            "'columnas_con_telefono' deben ser int. Se encontro: {0}".format(
+                type(col)))
+            assert col < self.cantidad_de_columnas, ("No se puede setear "
+                "'columnas_con_telefono' = {0} porque  la BD solo "
+                "posee {1} columnas"
+                "".format(col, self.cantidad_de_columnas))
+
+        self._metadata['cols_telefono'] = columnas
+
+    # ----
 
     @property
     def columnas_con_fecha(self):
@@ -789,7 +817,8 @@ class BaseDatosContacto(models.Model):
         objeto BaseDatosContacto. Establece el atributo sin_definir
         en False haciedo que quede disponible el objeto.
         """
-        assert self.estado == BaseDatosContacto.ESTADO_EN_DEFINICION
+        assert self.estado in (BaseDatosContacto.ESTADO_EN_DEFINICION,
+                               BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA)
         logger.info("Seteando base datos contacto %s como definida", self.id)
         self.sin_definir = False
 
@@ -904,6 +933,7 @@ class ContactoManager(models.Manager):
     def contactos_by_filtro(self, bd_contacto, filtro):
         try:
             contactos = self.filter(Q(nombre__contains=filtro) |
+                                    Q(telefono__contains=filtro) |
                                     Q(id_cliente__contains=filtro) |
                                     Q(apellido__contains=filtro) |
                                     Q(dni__contains=filtro) |
@@ -942,6 +972,7 @@ class Contacto(models.Model):
 
     objects = ContactoManager()
 
+    telefono = models.CharField(max_length=128)
     id_cliente = models.IntegerField()
     nombre = models.CharField(max_length=128)
     apellido = models.CharField(max_length=128)

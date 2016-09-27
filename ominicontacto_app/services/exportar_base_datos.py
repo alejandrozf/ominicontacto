@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Servicio de exportacion de base de datos de contactos
+Servicio de exportacion de base de datos de contactos para discador
 """
 
 from __future__ import unicode_literals
@@ -9,13 +9,13 @@ from __future__ import unicode_literals
 import csv
 import logging
 import os
+import json
 
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
-from ominicontacto_app.models import Contacto
-
+from ominicontacto_app.models import Contacto, Campana
 
 logger = logging.getLogger(__name__)
 
@@ -50,18 +50,23 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, contactos):
+    def escribir_archivo_csv(self, contactos, metadata, campana, telefonos,
+                             usa_contestador):
 
         with open(self.ruta, 'wb') as csvfile:
+            nombres_de_columnas = metadata.nombres_de_columnas
+
             # Creamos encabezado
             encabezado = []
-            encabezado.append("Id Cliente")
-            encabezado.append("Nombre")
-            encabezado.append("Apellido")
-            encabezado.append("DNI")
-            encabezado.append("Fecha Nacimiento")
-            encabezado.append("Cuil")
-            encabezado.append("datos")
+            encabezado.append("telefono")
+            encabezado.append("id_cliente")
+            encabezado.append("nombre")
+            encabezado.append("campana")
+            encabezado.append("timeout")
+            encabezado.append("id_campana")
+            encabezado.append("usa_contestador")
+            for columna in telefonos:
+                encabezado.append(nombres_de_columnas[int(columna)])
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -76,13 +81,17 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones = []
 
                 # --- Buscamos datos
+                lista_opciones.append(contacto.telefono)
                 lista_opciones.append(contacto.id_cliente)
-                lista_opciones.append(contacto.nombre)
-                lista_opciones.append(contacto.apellido)
-                lista_opciones.append(contacto.dni)
-                lista_opciones.append(contacto.fecha_nacimiento)
-                lista_opciones.append(contacto.cuil)
-                lista_opciones.append(contacto.datos)
+                lista_opciones.append(contacto.nombre + "" + contacto.apellido)
+                lista_opciones.append(campana.nombre)
+                lista_opciones.append(campana.queue_campana.timeout)
+                lista_opciones.append(campana.id)
+                lista_opciones.append(usa_contestador)
+                datos = json.loads(contacto.datos)
+                for col_telefono in telefonos:
+                    indice_columna_dato = int(col_telefono) - 7
+                    lista_opciones.append(datos[indice_columna_dato])
 
                 # --- Finalmente, escribimos la linea
 
@@ -96,11 +105,14 @@ class ArchivoDeReporteCsv(object):
 
 class ExportarBaseDatosContactosService(object):
 
-    def crea_reporte_csv(self, base_datos):
+    def crea_reporte_csv(self, base_datos, campana, telefonos, usa_contestador):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
         archivo_de_reporte.crear_archivo_en_directorio()
         contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
-        archivo_de_reporte.escribir_archivo_csv(contactos)
+        metadata = base_datos.get_metadata()
+        campana = Campana.objects.get(pk=campana)
+        archivo_de_reporte.escribir_archivo_csv(contactos, metadata,campana,
+                                                telefonos, usa_contestador)
 
     def obtener_url_reporte_csv_descargar(self, base_datos):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
