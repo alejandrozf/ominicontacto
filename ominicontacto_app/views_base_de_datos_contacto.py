@@ -566,26 +566,6 @@ class BaseDatosContactoListView(ListView):
         return queryset
 
 
-class ExportaBDContactosView(UpdateView):
-    """
-    Esta vista invoca a generar un csv para la exportacion de la base de datos.
-    """
-
-    model = BaseDatosContacto
-    context_object_name = 'BaseDatosContacto'
-
-    def get_object(self, queryset=None):
-        return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        service = ExportarBaseDatosContactosService()
-        service.crea_reporte_csv(self.object)
-        url = service.obtener_url_reporte_csv_descargar(self.object)
-
-        return redirect(url)
-
-
 class ActualizaBaseDatosContactoView(UpdateView):
     """
     Esta vista se obtiene un resumen de la estructura
@@ -851,10 +831,11 @@ class ExportaDialerView(FormView):
         columnas_telefono = metadata.columnas_con_telefono
         nombres_de_columnas = metadata.nombres_de_columnas
         tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
-                       columnas_telefono]
+                       columnas_telefono if columna > 6]
         campana_choice = [(campana.id, campana.nombre) for campana in
                           self.object.campanas.all()]
-        return form_class(campana_choice=campana_choice, tts_choices=tts_choices,  **self.get_form_kwargs())
+        return form_class(campana_choice=campana_choice, tts_choices=tts_choices
+                          , **self.get_form_kwargs())
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -870,7 +851,43 @@ class ExportaDialerView(FormView):
         telefonos = form.cleaned_data.get('telefonos')
         self.object = self.get_object()
         service = ExportarBaseDatosContactosService()
-        service.crea_reporte_csv(self.object, campana, telefonos, usa_contestador)
-        url = service.obtener_url_reporte_csv_descargar(self.object)
+        service.crea_reporte_csv(self.object, campana, telefonos,
+                                 usa_contestador)
+        message = 'Operación Exitosa!\
+                Se llevó a cabo con éxito la exportación del reporte.'
 
-        return redirect(url)
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse(
+            'exporta_csv_dialer',
+            kwargs={"bd_contacto": self.object.pk})
+
+
+class GeneraExportacionDialerView(UpdateView):
+    """
+    Esta vista invoca a generar un csv de reporte de la base de datos.
+    """
+
+    model = BaseDatosContacto
+    context_object_name = 'base_datos_contacto'
+    template_name = 'base_datos_contacto/exportacion_dialer.html'
+    fields = '__all__'
+
+    def get_object(self, queryset=None):
+        return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
+
+    def get_context_data(self, **kwargs):
+        context = super(GeneraExportacionDialerView, self).get_context_data(
+            **kwargs)
+        self.object = self.get_object()
+        service = ExportarBaseDatosContactosService()
+        url = service.obtener_url_reporte_csv_descargar(self.object)
+        context['url_descarga'] = url
+        context['base_datos_contacto'] = self.object
+        return context

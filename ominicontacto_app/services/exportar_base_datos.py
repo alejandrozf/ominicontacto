@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Servicio de exportacion de base de datos de contactos
+Servicio de exportacion de base de datos de contactos para discador
 """
 
 from __future__ import unicode_literals
@@ -58,13 +58,13 @@ class ArchivoDeReporteCsv(object):
 
             # Creamos encabezado
             encabezado = []
-            encabezado.append("Telefono")
-            encabezado.append("Id_Cliente")
-            encabezado.append("Nombre")
+            encabezado.append("telefono")
+            encabezado.append("id_cliente")
+            encabezado.append("nombre")
             encabezado.append("campana")
-            encabezado.append("Timeout")
-            encabezado.append("ID_CAMPANA")
-            encabezado.append("Usa_contestador")
+            encabezado.append("timeout")
+            encabezado.append("id_campana")
+            encabezado.append("usa_contestador")
             for columna in telefonos:
                 encabezado.append(nombres_de_columnas[int(columna)])
 
@@ -111,9 +111,8 @@ class ExportarBaseDatosContactosService(object):
         contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
         metadata = base_datos.get_metadata()
         campana = Campana.objects.get(pk=campana)
-        archivo_de_reporte.escribir_archivo_csv(contactos, metadata,
-                                                campana, telefonos,
-                                                usa_contestador)
+        archivo_de_reporte.escribir_archivo_csv(contactos, metadata,campana,
+                                                telefonos, usa_contestador)
 
     def obtener_url_reporte_csv_descargar(self, base_datos):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)

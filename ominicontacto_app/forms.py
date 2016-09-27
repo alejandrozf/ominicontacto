@@ -296,7 +296,7 @@ class ContactoForm(forms.ModelForm):
 
 class ExportaDialerForm(forms.Form):
     campana = forms.ChoiceField(choices=())
-    usa_contestador = forms.BooleanField()
+    usa_contestador = forms.BooleanField(required=False)
     telefonos = forms.MultipleChoiceField(
         required=False,
         widget=forms.CheckboxSelectMultiple,

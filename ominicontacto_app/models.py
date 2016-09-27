@@ -362,7 +362,7 @@ class BaseDatosContactoManager(models.Manager):
         """
         definidas = [BaseDatosContacto.ESTADO_DEFINIDA,
                      BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA]
-        return self.filter(estado__in=definidas)
+        return self.filter(estado__in=definidas).order_by('fecha_alta')
 
     def obtener_en_definicion_para_editar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser editada.
