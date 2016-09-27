@@ -21,17 +21,15 @@ class KamailioService():
         connection, cursor = self._conectar_base_datos()
 
         try:
-            sql = """INSERT INTO sip (id, name, secret, directmedia, context,
-                  callerid, kamailiopass, deny, permit,accountcode) values
-                  (%(id)s, %(name)s, '', 'no', 'from-internal', %(callerid)s,
-                  %(kamailiopass)s, '0.0.0.0/0.0.0.0', '172.16.20.219/255.255.255.255',
-                  %(accountcode)s)"""
+            sql = """INSERT INTO subscriber (id, username, password, ha1, ha1b)
+            VALUES (%(id)s, %(name)s, %(kamailiopass)s,
+            MD5('%(name)s::%(kamailiopass)s'),
+            MD5('%(name)s::%(kamailiopass)s')
+            """
             params = {
                 'id': agente.id,
                 'name': agente.sip_extension,
-                'callerid': agente.user.get_full_name(),
                 'kamailiopass': agente.sip_password,
-                'accountcode': agente.grupo.nombre
             }
             cursor.execute(sql, params)
             connection.commit()
@@ -48,15 +46,15 @@ class KamailioService():
         connection, cursor = self._conectar_base_datos()
 
         try:
-            sql = """UPDATE sip SET name=%(name)s, callerid=%(callerid)s,
-                  kamailiopass=%(kamailiopass)s, accountcode=%(accountcode)s
+            sql = """UPDATE subscriber SET username=%(name)s,
+                  password=%(kamailiopass)s,
+                  ha1=MD5('%(name)s::%(kamailiopass)s'),
+                  ha1b=MD5('%(name)s::%(kamailiopass)s')
                   WHERE id=%(id)s"""
             params = {
                 'id': agente.id,
                 'name': agente.sip_extension,
-                'callerid': agente.user.get_full_name(),
                 'kamailiopass': agente.sip_password,
-                'accountcode': agente.grupo.nombre
             }
             cursor.execute(sql, params)
             connection.commit()
