@@ -125,10 +125,19 @@ class AgenteProfileCreateView(CreateView):
     form_class = AgenteProfileForm
     template_name = 'base_create_update_form.html'
 
-    # def get_initial(self):
-    #     initial = super(AgenteProfileCreateView, self).get_initial()
-    #     initial.update({'user': self.kwargs['pk_user']})
-    #     return initial
+    def dispatch(self, request, *args, **kwargs):
+        modulo = Modulo.objects.all()
+        grupo = Grupo.objects.all()
+        if not modulo:
+            message = ("Debe cargar un modulo antes de crear un perfil de "
+                       "agente")
+            messages.warning(self.request, message)
+        if not grupo:
+            message = ("Debe cargar un grupo antes de crear un perfil de agente"
+                       )
+            messages.warning(self.request, message)
+        return super(AgenteProfileCreateView, self).dispatch(request, *args,
+                                                             **kwargs)
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

@@ -12,7 +12,8 @@ from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
     FormularioDemoForm, BusquedaContactoForm, ContactoForm)
 from ominicontacto_app.models import (
-    Campana, Queue, QueueMember, FormularioDemo, Contacto)
+    Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto
+)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
@@ -65,7 +66,15 @@ class CampanaCreateView(CreateView):
     model = Campana
     context_object_name = 'campana'
     form_class = CampanaForm
-    
+
+    def dispatch(self, request, *args, **kwargs):
+        base_datos = BaseDatosContacto.objects.obtener_definidas()
+        if not base_datos:
+            message = ("Debe cargar una base de datos antes de comenzar a "
+                       "configurar una campana")
+            messages.warning(self.request, message)
+        return super(CampanaCreateView, self).dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         campana_service = CampanaService()
