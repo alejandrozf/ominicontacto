@@ -3,6 +3,7 @@
 
 from django.conf import settings
 from django import forms
+from django.forms.models import inlineformset_factory
 from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
@@ -12,8 +13,9 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana,
-    FormularioDemo, Contacto)
+    Campana, FormularioDemo, Contacto, FormularioDatoVenta,
+    FormularioDatoLogistica
+)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -292,3 +294,31 @@ class ContactoForm(forms.ModelForm):
         widgets = {
             'bd_contacto': forms.HiddenInput(),
         }
+
+
+class FormularioDatoVentaForm(forms.ModelForm):
+
+    class Meta:
+        model = FormularioDatoVenta
+        fields = ('__all__')
+        widgets = {
+            'campana': forms.HiddenInput(),
+        }
+
+
+class FormularioDatoLogisticaForm(forms.ModelForm):
+
+    class Meta:
+        model = FormularioDatoLogistica
+        fields = ('__all__')
+
+
+FormularioDatoVentaFormSet = inlineformset_factory(
+    Contacto, FormularioDatoVenta, form=FormularioDatoVentaForm,
+    can_delete=False)
+
+
+FormularioDatoLogisticaFormSet = inlineformset_factory(
+    FormularioDatoVenta, FormularioDatoLogistica,
+    form=FormularioDatoLogisticaForm, can_delete=False)
+

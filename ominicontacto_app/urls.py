@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
-    views_grabacion)
+    views_grabacion, views_weelo)
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -247,6 +247,14 @@ urlpatterns = [
             views_campana_creacion.CampanaReporteListView.as_view()),
         name='reporte_campana',
         ),
+    # ==========================================================================
+    # Formulario Weelo
+    # ==========================================================================
+    url(r'^formulario/tarjeta/(?P<id_cliente>\d+)/$',
+        login_required(views_weelo.ContactoFormularioCreateView.as_view()),
+        name='formulario_tarjeta',
+        ),
+
     # ==========================================================================
     # Reportes
     # ==========================================================================
