@@ -13,8 +13,8 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana,
-    FormularioDemo, Contacto, FormularioDatoVenta, FormularioDatoLogistica
+    Campana, FormularioDemo, Contacto, FormularioDatoVenta,
+    FormularioDatoLogistica
 )
 
 
