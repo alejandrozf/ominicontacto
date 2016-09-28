@@ -1339,8 +1339,8 @@ class FormularioDatoLogistica(models.Model):
     fecha = models.DateTimeField(auto_now=True)
     vendedor = models.ForeignKey(AgenteProfile,
                                  related_name="formulariosagente")
-    campana = models.ForeignKey(Campana, related_name="formularioslogistica")
-    contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
+    formulario_venta = models.OneToOneField(FormularioDatoVenta,
+                                            related_name="formularioslogistica")
     domicilio = models.CharField(max_length=128)
     numero = models.PositiveIntegerField()
     barrio = models.CharField(max_length=128)
