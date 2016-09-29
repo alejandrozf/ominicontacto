@@ -13,8 +13,7 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana, FormularioDemo, Contacto, FormularioDatoVenta,
-    FormularioDatoLogistica
+    Campana, FormularioDemo, Contacto, FormularioDatoVenta
 )
 
 
@@ -303,24 +302,13 @@ class FormularioDatoVentaForm(forms.ModelForm):
         fields = ('__all__')
         widgets = {
             'campana': forms.HiddenInput(),
+            'vendedor': forms.HiddenInput(),
         }
-
-
-class FormularioDatoLogisticaForm(forms.ModelForm):
-
-    class Meta:
-        model = FormularioDatoLogistica
-        fields = ('__all__')
 
 
 FormularioDatoVentaFormSet = inlineformset_factory(
     Contacto, FormularioDatoVenta, form=FormularioDatoVentaForm,
     can_delete=False)
-
-
-FormularioDatoLogisticaFormSet = inlineformset_factory(
-    FormularioDatoVenta, FormularioDatoLogistica,
-    form=FormularioDatoLogisticaForm, can_delete=False)
 
 
 class ExportaDialerForm(forms.Form):
