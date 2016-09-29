@@ -285,6 +285,9 @@ class FormularioDemoForm(forms.ModelForm):
 
 
 class ContactoForm(forms.ModelForm):
+    datos = forms.CharField(
+        widget=forms.Textarea(attrs={'readonly': 'readonly'})
+    )
 
     class Meta:
         model = Contacto
@@ -299,7 +302,15 @@ class FormularioDatoVentaForm(forms.ModelForm):
 
     class Meta:
         model = FormularioDatoVenta
-        fields = ('__all__')
+        fields = ('campana', 'calle', 'numero', 'depto', 'localidad',
+                  'codigo_postal', 'empresa_celular', 'telefono_celular',
+                  'telefono_fijo', 'email', 'nivel_estudio', 'vivienda',
+                  'gastos_mensuales', 'nombre_padre', 'nombre_madre',
+                  'situacion_laboral', 'nombre_empresa', 'tipo_empresa',
+                  'domicilio_laboral', 'cargo', 'domicilio', 'numero_domicilio',
+                  'barrio', 'referencia', 'localidad_entrega', 'horario',
+                  'dia_preferencia', 'usuario', 'limite', 'adicional',
+                  'vendedor')
         widgets = {
             'campana': forms.HiddenInput(),
             'vendedor': forms.HiddenInput(),

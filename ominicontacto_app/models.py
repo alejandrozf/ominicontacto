@@ -1357,18 +1357,19 @@ class FormularioDatoVenta(models.Model):
     nombre_empresa = models.CharField(max_length=128,
                                       verbose_name="Nombre de la empresa")
     tipo_empresa = models.PositiveIntegerField(choices=TIPO_EMPRESA_CHOICES)
-    domicilio_labral = models.CharField(max_length=128)
+    domicilio_laboral = models.CharField(max_length=128)
     cargo = models.CharField(max_length=128, verbose_name="Cargo o Funcion")
 
     fecha = models.DateTimeField(auto_now=True)
     vendedor = models.ForeignKey(AgenteProfile,
                                  related_name="formulariosagente")
 
-    domicilio = models.CharField(max_length=128)
-    numero = models.PositiveIntegerField()
+    domicilio = models.CharField(max_length=128,
+                                 verbose_name="Domicilio de entrega")
+    numero_domicilio = models.PositiveIntegerField()
     barrio = models.CharField(max_length=128)
     referencia = models.CharField(max_length=128)
-    localidad = models.CharField(max_length=128)
+    localidad_entrega = models.CharField(max_length=128)
     horario = models.CharField(max_length=128)
     dia_preferencia = models.PositiveIntegerField(choices=DIA_SEMANAL_CHOICES)
     usuario = models.CharField(max_length=128)
