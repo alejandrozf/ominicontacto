@@ -201,6 +201,12 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         ringinuse=no
         timeoutpriority=app
         timeoutrestart=no
+        setinterfacevar=yes
+        setqueueentryvar=yes
+        setqueuevar=yes
+        updatecdr=yes
+        shared_lastcall=yes
+        memberdelay=1
         strategy={oml_strategy}
         timeout={oml_timeout}
         servicelevel={oml_servicelevel}
