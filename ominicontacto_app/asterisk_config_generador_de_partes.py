@@ -207,9 +207,6 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         updatecdr=yes
         shared_lastcall=yes
         memberdelay=1
-        notifyringing=yes
-        callevents=yes
-        callcounter=yes
         strategy={oml_strategy}
         timeout={oml_timeout}
         servicelevel={oml_servicelevel}
@@ -247,6 +244,9 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         context=from-internal
         host=dynamic
         qualify=yes
+        notifyringing=yes
+        callevents=yes
+        callcounter=yes
         callerid='{oml_agente_name}' <{oml_agente_sip}>
         secret=
         deny=0.0.0.0/0.0.0.0
