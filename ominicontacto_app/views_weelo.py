@@ -99,8 +99,15 @@ class ContactoFormularioUpdateView(UpdateView):
 
     def dispatch(self, *args, **kwargs):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
-                             id_cliente=self.kwargs['id_cliente'])
+
+        try:
+            contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
+                                            id_cliente=self.kwargs[
+                                                'id_cliente'])
+        except Contacto.DoesNotExist:
+            return HttpResponseRedirect(reverse('formulario_buscar',
+                                                kwargs={"pk_campana":
+                                                self.kwargs['pk_campana']}))
         try:
             FormularioDatoVenta.objects.get(contacto=contacto)
         except FormularioDatoVenta.DoesNotExist:
