@@ -56,8 +56,8 @@ class QueueDialplanConfigCreator(object):
                 crear_generador_para_queue_grabacion(param_generales)
             partes.append(generador_queue.generar_pedazo())
         else:
-            generador_queue = self._generador_factory.\
-                crear_generador_para_queue(param_generales)
+            generador_queue = self._generador_factory. \
+                crear_generador_para_queue_sin_grabacion(param_generales)
             partes.append(generador_queue.generar_pedazo())
 
         return ''.join(partes)
@@ -204,6 +204,98 @@ class SipConfigCreator(object):
         self._sip_config_file.write(sip)
 
 
+class QueuesCreator(object):
+
+    def __init__(self):
+        self._queues_config_file = QueuesConfigFile()
+        self._generador_factory = GeneradorDePedazoDeQueueFactory()
+
+    def _generar_dialplan(self, queue):
+        """Genera el dialplan para una queue.
+
+        :param queue: Queue para la cual hay crear el dialplan
+        :type queue: ominicontacto_app.models.Queue
+        :returns: str -- dialplan para la queue
+        """
+
+        assert queue is not None, "Queue == None"
+        assert queue.name is not None, "queue.name == None"
+
+        partes = []
+        param_generales = {
+            'oml_queue_name': queue.name,
+            'oml_strategy': queue.strategy,
+            'oml_timeout': queue.timeout,
+            'oml_servicelevel': queue.servicelevel,
+            'oml_weight': queue.weight,
+            'oml_wrapuptime': queue.wrapuptime,
+            'oml_maxlen': queue.maxlen,
+            'oml_retry': queue.retry
+        }
+
+        # QUEUE: Creamos la porción inicial del Queue.
+        generador_queue = self._generador_factory.\
+            crear_generador_para_queue(param_generales)
+        partes.append(generador_queue.generar_pedazo())
+
+        return ''.join(partes)
+
+    def _obtener_todas_para_generar_dialplan(self):
+        """Devuelve las queues para crear el dialplan.
+        """
+        # Ver de obtener activa ya que en este momemento no estamos manejando
+        # estados
+        # Queue.objects.obtener_todas_para_generar_dialplan()
+        return Queue.objects.all()
+
+    def create_dialplan(self, queue=None, queues=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `queue` es pasada por parametro,
+        se genera solo para dicha queue.
+        """
+
+        if queues:
+            pass
+        elif queue:
+            queues = [queue]
+        else:
+            queues = self._obtener_todas_para_generar_dialplan()
+        dialplan = []
+
+        for queue in queues:
+            logger.info("Creando dialplan para queue %s", queue.name)
+            try:
+                config_chunk = self._generar_dialplan(queue)
+                logger.info("Dialplan generado OK para queue %s",
+                            queue.name)
+            except:
+                logger.exception(
+                    "No se pudo generar configuracion de "
+                    "Asterisk para la quene {0}".format(queue.name))
+
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except:
+                    traceback_lines = "Error al intentar generar traceback"
+                    logger.exception("Error al intentar generar traceback")
+
+                # FAILED: Creamos la porción para el fallo del Dialplan.
+                param_failed = {'oml_queue_name': queue.name,
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+
+            dialplan.append(config_chunk)
+
+        self._queues_config_file.write(dialplan)
+
+
 class AsteriskConfigReloader(object):
 
     def reload_config(self):
@@ -295,3 +387,11 @@ class SipConfigFile(ConfigFile):
         hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
         super(SipConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class QueuesConfigFile(ConfigFile):
+    def __init__(self):
+        filename = settings.OML_QUEUES_FILENAME.strip()
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(QueuesConfigFile, self).__init__(filename, hostname, remote_path)

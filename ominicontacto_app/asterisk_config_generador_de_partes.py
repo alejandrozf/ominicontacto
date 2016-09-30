@@ -93,14 +93,17 @@ class GeneradorParaFailed(GeneradorDePedazoDeDialplanParaFailed):
 
 class GeneradorDePedazoDeQueueFactory(object):
 
-    def crear_generador_para_queue(self, parametros):
-        return GeneradorParaQueue(parametros)
+    def crear_generador_para_queue_sin_grabacion(self, parametros):
+        return GeneradorParaQueueSinGrabacion(parametros)
 
     def crear_generador_para_queue_grabacion(self, parametros):
         return GeneradorParaQueueGrabacion(parametros)
 
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
+
+    def crear_generador_para_queue(self, parametros):
+        return GeneradorParaQueue(parametros)
 
 
 # Factory para los Agentes.
@@ -128,7 +131,7 @@ class GeneradorDePedazoDeQueue(GeneradorDePedazo):
         self._parametros = parametros
 
 
-class GeneradorParaQueue(GeneradorDePedazoDeQueue):
+class GeneradorParaQueueSinGrabacion(GeneradorDePedazoDeQueue):
 
     def get_template(self):
         return """
@@ -168,6 +171,43 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
         same => n,Queue({oml_queue_name},{oml_queue_wait},tT)
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaQueue(GeneradorDePedazoDeQueue):
+
+    def get_template(self):
+        return """
+
+        [{oml_queue_name}]
+        announce-frequency=0
+        announce-holdtime=no
+        announce-position=no
+        autofill=yes
+        eventmemberstatus=yes
+        eventwhencalled=yes
+        joinempty=yes
+        leavewhenempty=no
+        memberdelay=0
+        penaltymemberslimit=0
+        periodic-announce-frequency=0
+        queue-callswaiting=silence/1
+        queue-thereare=silence/1
+        queue-youarenext=silence/1
+        reportholdtime=no
+        ringinuse=no
+        timeoutpriority=app
+        timeoutrestart=no
+        strategy={oml_strategy}
+        timeout={oml_timeout}
+        servicelevel={oml_servicelevel}
+        weight={oml_weight}
+        wrapuptime={oml_wrapuptime}
+        maxlen={oml_maxlen}
+        retry={oml_retry}
         """
 
     def get_parametros(self):
