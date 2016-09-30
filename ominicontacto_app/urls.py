@@ -270,11 +270,14 @@ urlpatterns = [
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
-    url(r'^formulario/(?P<pk_campana>\d+)/tarjeta/(?P<id_cliente>\d+)/$',
+    url(r'^formulario_nuevo/(?P<pk_campana>\d+)/tarjeta/(?P<id_cliente>\d+)/$',
         login_required(views_weelo.ContactoFormularioCreateView.as_view()),
         name='formulario_tarjeta',
         ),
-
+    url(r'^formulario/(?P<pk_campana>\d+)/tarjeta/(?P<id_cliente>\d+)/$',
+        login_required(views_weelo.ContactoFormularioUpdateView.as_view()),
+        name='formulario_tarjeta_update',
+        ),
     # ==========================================================================
     # Reportes
     # ==========================================================================
