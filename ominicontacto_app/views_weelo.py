@@ -76,4 +76,4 @@ class ContactoFormularioCreateView(CreateView):
             self.get_context_data(form=form, venta_form=venta_form))
 
     def get_success_url(self):
-        return reverse('user_list')
+        return reverse('view_blanco')
