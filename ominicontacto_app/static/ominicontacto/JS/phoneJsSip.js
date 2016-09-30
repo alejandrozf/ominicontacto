@@ -2,7 +2,7 @@
 //2001, 2002 (123456)
 var config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp; 
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
-
+var KamailioIp = "190.210.15.161";
 $(function() {
 	$('#modalSelectCmp').modal('hide');  
   var estado = JSON.stringify({'status' : 'online'});
@@ -30,8 +30,8 @@ $(function() {
   });
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
-      uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
-      ws_servers : "wss://172.16.20.219:443",
+      uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
+      ws_servers : "wss://"+KamailioIp+":443",
       password : $("#sipSec").val()//"123456"
     };
     userAgent = new JsSIP.UA(config);
@@ -286,18 +286,18 @@ $(function() {
     defaultCallState();
   });
   $("#call").click(function(e) {
+  	debugger;
   	entrante = false;
   	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
     num = displayNumber.value;
     $("#SelectCamp").click(function () {
     	$("#modalSelectCmp").modal("hide");
-    	debugger;
     	/*var idcamp = document.getElementById("cmpList");
     	header = idcamp.value;*/
     	headerIdCamp = $("#cmpList").val();
     	headerNomCamp = $("#cmpList option:selected").html();
-      makeCall();
+    	makeCall();
     });
   });
   function makeCall() {
@@ -353,9 +353,9 @@ $(function() {
     //Mando el invite/llamada
      if(flagInit === true) {
        flagInit = false;
-       sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
+       sesion = userAgent.call("sip:"+num+"@"+KamailioIp, opciones);
      } else {
-       sesion = userAgent.call("sip:"+num+"@172.16.20.219", opciones);
+       sesion = userAgent.call("sip:"+num+"@"+KamailioIp, opciones);
        setCallState("Calling.... "+num, "yellowgreen");
        displayNumber.value = "";
      }
@@ -426,7 +426,8 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
   function getData(campid, leadid) {
-  	var url = "/campana/"+campid+"/formulario/"+leadid+"/";
+  	//var url = "/campana/"+campid+"/formulario/"+leadid+"/";
+  	var url = "/formulario/"+campid+"/tarjeta/"+leadid+"/";
   	$("#dataView").attr('src', url);
   }
 });

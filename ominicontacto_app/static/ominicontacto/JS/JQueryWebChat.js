@@ -1,9 +1,9 @@
 var user = '';
-
+var KamailioIp = "190.210.15.161";
 $(function() {
 	var configuration = {
-      uri : "sip:"+$("#sipExt").val()+"@172.16.20.219",
-      ws_servers : "wss://172.16.20.219:443",
+      uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
+      ws_servers : "wss://"+KamailioIp+":443",
       password : $("#sipSec").val()
     };
   var ua = new JsSIP.UA(configuration);
@@ -68,7 +68,7 @@ $(function() {
     var mensaje = $("#chatMessage").val();
     user = $("#user").val();
     if(mensaje !== "") {
-        ua.sendMessage("sip:2003@172.16.20.219", mensaje);
+        ua.sendMessage("sip:2003@"+KamailioIp, mensaje);
       $("#chatMessage").val("");
     }
   });

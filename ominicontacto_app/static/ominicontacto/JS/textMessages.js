@@ -1,5 +1,6 @@
    var wsuri;
-	 wsuri = "wss://172.16.20.241:8080/ws";
+   var KamailioIp = "190.210.15.161";
+	 wsuri = "wss://"+KamailioIp+":8080/ws";
    //WAMP connection to the Router
    var connection = new autobahn.Connection({
      url: wsuri,

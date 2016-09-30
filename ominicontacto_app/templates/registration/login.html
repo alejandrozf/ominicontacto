@@ -13,7 +13,7 @@
         {% endif %}
         <form class="form-signin" role="form" method="post" action="">
             {% csrf_token %}
-            <h2 class="form-signin-heading">Logueo</h2>
+            <h2 class="form-signin-heading">Login</h2>
 
             <div class="form-group">
                 <label class="control-label">Usuario</label>
@@ -26,7 +26,7 @@
              </div>
 
             <div class="form-group">
-                <label class="control-label">Contraseña</label>
+                <label class="control-label">Clave</label>
                 <div>
                     {{ form.password }}
                     <span class="help-inline text-danger">
@@ -37,7 +37,7 @@
 
             <br>
 
-            <button type="submit" >Ingresar</button>
+            <button class="btn btn-sm btn-succcess" type="submit" >Ingresar</button>
 
         </form>
  
