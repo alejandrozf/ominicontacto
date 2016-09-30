@@ -67,6 +67,14 @@ class ContactoFormularioCreateView(CreateView):
         self.object = form.save()
         venta_form.instance = self.object
         venta_form.save()
+        message = 'Operación Exitosa!\
+                Se llevó a cabo con éxito la carga de datos'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form, venta_form):
@@ -101,7 +109,6 @@ class ContactoFormularioUpdateView(UpdateView):
 
         return super(ContactoFormularioUpdateView, self).dispatch(*args,
                                                                   **kwargs)
-
 
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -144,6 +151,10 @@ class ContactoFormularioUpdateView(UpdateView):
         """
         self.object = form.save()
         venta_form.save()
+        message = 'Operación Exitosa!\
+                Se llevó a cabo con éxito la actualizacio de la carga de datos'
+
+        messages.success(self.request, message)
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form, venta_form):
