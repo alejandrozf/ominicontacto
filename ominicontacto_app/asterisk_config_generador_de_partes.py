@@ -207,6 +207,9 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         updatecdr=yes
         shared_lastcall=yes
         memberdelay=1
+        notifyringing=yes
+        callevents=yes
+        callcounter=yes
         strategy={oml_strategy}
         timeout={oml_timeout}
         servicelevel={oml_servicelevel}
