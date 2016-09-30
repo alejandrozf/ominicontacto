@@ -1312,6 +1312,25 @@ class FormularioDatoVenta(models.Model):
 
     )
 
+    """Dias de la semana, compatibles con datetime.date.weekday()"""
+    LUNES = 0
+    MARTES = 1
+    MIERCOLES = 2
+    JUEVES = 3
+    VIERNES = 4
+    SABADO = 5
+    DOMINGO = 6
+
+    DIA_SEMANAL_CHOICES = (
+        (LUNES, 'LUNES'),
+        (MARTES, 'MARTES'),
+        (MIERCOLES, 'MIERCOLES'),
+        (JUEVES, 'JUEVES'),
+        (VIERNES, 'VIERNES'),
+        (SABADO, 'SABADO'),
+        (DOMINGO, 'DOMINGO'),
+    )
+
     campana = models.ForeignKey(Campana, related_name="formulariosventa")
     contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
     calle = models.CharField(max_length=128)
@@ -1338,45 +1357,19 @@ class FormularioDatoVenta(models.Model):
     nombre_empresa = models.CharField(max_length=128,
                                       verbose_name="Nombre de la empresa")
     tipo_empresa = models.PositiveIntegerField(choices=TIPO_EMPRESA_CHOICES)
-    domicilio_labral = models.CharField(max_length=128)
+    domicilio_laboral = models.CharField(max_length=128)
     cargo = models.CharField(max_length=128, verbose_name="Cargo o Funcion")
-
-    def __unicode__(self):
-        return "Formulario dato venta para campana{0} para el contacto " \
-               "{1} ".format(self.campana, self.contacto)
-
-
-class FormularioDatoLogistica(models.Model):
-
-    """Dias de la semana, compatibles con datetime.date.weekday()"""
-    LUNES = 0
-    MARTES = 1
-    MIERCOLES = 2
-    JUEVES = 3
-    VIERNES = 4
-    SABADO = 5
-    DOMINGO = 6
-
-    DIA_SEMANAL_CHOICES = (
-        (LUNES, 'LUNES'),
-        (MARTES, 'MARTES'),
-        (MIERCOLES, 'MIERCOLES'),
-        (JUEVES, 'JUEVES'),
-        (VIERNES, 'VIERNES'),
-        (SABADO, 'SABADO'),
-        (DOMINGO, 'DOMINGO'),
-    )
 
     fecha = models.DateTimeField(auto_now=True)
     vendedor = models.ForeignKey(AgenteProfile,
                                  related_name="formulariosagente")
-    formulario_venta = models.OneToOneField(FormularioDatoVenta,
-                                            related_name="formularioslogistica")
-    domicilio = models.CharField(max_length=128)
-    numero = models.PositiveIntegerField()
+
+    domicilio = models.CharField(max_length=128,
+                                 verbose_name="Domicilio de entrega")
+    numero_domicilio = models.PositiveIntegerField()
     barrio = models.CharField(max_length=128)
     referencia = models.CharField(max_length=128)
-    localidad = models.CharField(max_length=128)
+    localidad_entrega = models.CharField(max_length=128)
     horario = models.CharField(max_length=128)
     dia_preferencia = models.PositiveIntegerField(choices=DIA_SEMANAL_CHOICES)
     usuario = models.CharField(max_length=128)
@@ -1384,5 +1377,5 @@ class FormularioDatoLogistica(models.Model):
     adicional = models.CharField(max_length=128)
 
     def __unicode__(self):
-        return "Formulario datos de logistica de entrega para campana{0} " \
-               "para el contacto  {1} ".format(self.campana, self.contacto)
+        return "Formulario dato venta para campana{0} para el contacto " \
+               "{1} ".format(self.campana, self.contacto)
