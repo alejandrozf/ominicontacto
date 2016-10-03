@@ -82,5 +82,38 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <td colspan="2">
+                                    <h4>Cantidad de llamadas inbound por agente</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            {% for agente, cantidad in graficos_estadisticas.zip_total_agente_inbound %}
+                                                <tr>
+                                                    <td><h5>{{ agente }} </h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ cantidad }}</span></h5></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.barra_agente_inbound.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 {% endwith %}
 {% endblock %}

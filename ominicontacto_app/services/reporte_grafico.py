@@ -55,11 +55,26 @@ class GraficoService():
              list_cantidad.append(campana_counter['cantidad'])
         return list_campana, list_cantidad
 
+    def _obtener_total_llamadas_agente_inbound(self, fecha_inferior,
+                                                fecha_superior):
+        # lista de dict con la cantidad de cada agente
+        dict_agentes = Grabacion.objects.obtener_count_agente().filter(
+            fecha__range=(fecha_inferior, fecha_superior)).filter(
+            tipo_llamada=3)
+        list_agente = []
+        list_cantidad = []
+        for agente_counter in dict_agentes:
+            list_agente.append(agente_counter['sip_agente'])
+            list_cantidad.append(agente_counter['cantidad'])
+        return list_agente, list_cantidad
+
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
         grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(fecha_inferior,
                                                                      fecha_superior)
         counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
         total_campana_inbound, total_campana_cantidad = self._obtener_total_llamadas_campana_inbound(fecha_inferior, fecha_superior)
+        total_agente_inbound, total_agente_cantidad = self._obtener_total_llamadas_agente_inbound(fecha_inferior, fecha_superior)
+
         total_grabaciones = len(grabaciones)
 
         porcentaje_dialer = 0.0
@@ -92,6 +107,8 @@ class GraficoService():
             'total_manual': total_manual,
             'total_campana_inbound': total_campana_inbound,
             'total_campana_cantidad': total_campana_cantidad,
+            'total_agente_inbound': total_agente_inbound,
+            'total_agente_cantidad': total_agente_cantidad,
         }
         return dic_estadisticas
 
@@ -129,6 +146,17 @@ class GraficoService():
         barra_campana_inbound.add('Cantidad',
                                   estadisticas['total_campana_cantidad'])
 
+        # Barra: Total de llamados atendidos en cada intento por agente.
+        total_agente_inbound = estadisticas['total_agente_inbound']
+        barra_agente_inbound = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        barra_agente_inbound.title = 'Cantidad de llamadas inbound por agente'
+
+        barra_agente_inbound.x_labels = total_agente_inbound
+        barra_agente_inbound.add('Cantidad',
+                                  estadisticas['total_agente_cantidad'])
+
         return {
             'estadisticas': estadisticas,
             'torta_grabaciones': torta_grabaciones,
@@ -136,4 +164,8 @@ class GraficoService():
             'zip_total_campana_inbound': zip(
                 estadisticas['total_campana_inbound'],
                 estadisticas['total_campana_cantidad']),
+            'barra_agente_inbound': barra_agente_inbound,
+            'zip_total_agente_inbound': zip(
+                estadisticas['total_agente_inbound'],
+                estadisticas['total_agente_cantidad']),
         }
