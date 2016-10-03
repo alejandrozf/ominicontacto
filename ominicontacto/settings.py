@@ -158,6 +158,7 @@ OML_QUEUE_FILENAME = None
 OML_ASTERISK_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
+OML_QUEUES_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
@@ -168,6 +169,7 @@ Ejemplos:
     OML_ASTERISK_HOSTNAME = "root@192.168.1.23"
     OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
     OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
+    OML_QUEUES_FILENAME = "/etc/asterisk/queues_fts.conf"
 
 """
 
@@ -237,6 +239,11 @@ assert OML_ASTERISK_REMOTEPATH is not None, \
 
 assert OML_SIP_FILENAME is not None, \
     "Falta definir setting para OML_SIP_FILENAME"
+
+# ~~~~~ Check OML_QUEUES_FILENAME
+
+assert OML_QUEUES_FILENAME is not None, \
+    "Falta definir setting para OML_QUEUES_FILENAME"
 
 # ~~~~~ Check ASTERISK
 
