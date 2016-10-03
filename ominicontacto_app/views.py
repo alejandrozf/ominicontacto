@@ -28,6 +28,8 @@ from services.kamailio_service import KamailioService
 from services.sms_services import SmsManager
 from services.asterisk_service import ActivacionAgenteService,\
     RestablecerConfigSipError
+from services.regeneracion_asterisk import RegeneracionAsteriskService,\
+    RestablecerDialplanError
 from django.views.decorators.csrf import csrf_protect
 from ominicontacto_app.utiles import convert_string_in_boolean
 
@@ -422,3 +424,23 @@ class AgenteEventosListView(ListView):
                 message,
             )
         return context
+
+
+def regenerar_asterisk_view(request):
+    activacion_queue_service = RegeneracionAsteriskService()
+    try:
+        activacion_queue_service.regenerar()
+    except RestablecerDialplanError, e:
+        message = ("Operación Errónea! "
+                   "No se realizo de manera correcta la regeneracion de los "
+                   "archivos de asterisk al siguiente error: {0}".format(e))
+        messages.add_message(
+            request,
+            messages.ERROR,
+            message,
+        )
+    messages.success(request,
+                     'La regeneracion de los archivos de configuracion de'
+                     ' asterisk y el reload se hizo de manera correcta')
+    return render_to_response('regenerar_asterisk.html',
+                              context_instance=RequestContext(request))
