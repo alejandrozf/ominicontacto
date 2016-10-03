@@ -31,7 +31,7 @@
         <tbody>
         {% for grabacion in listado_de_grabaciones %}
             <tr>
-                <td>{{ grabacion.fecha|date:"Y-m-d"}}</td>
+                <td>{{ grabacion.fecha|date:"Y-m-d H:i"}}</td>
                 <td>{{ grabacion.get_tipo_llamada_display}}</td>
                 <td>{{ grabacion.id_cliente }}</td>
                 <td>{{ grabacion.tel_cliente}}</td>
