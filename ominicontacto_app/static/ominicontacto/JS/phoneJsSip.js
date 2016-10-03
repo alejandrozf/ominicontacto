@@ -286,19 +286,16 @@ $(function() {
     defaultCallState();
   });
   $("#call").click(function(e) {
-  	debugger;
   	entrante = false;
   	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
     num = displayNumber.value;
+    });
     $("#SelectCamp").click(function () {
     	$("#modalSelectCmp").modal("hide");
-    	/*var idcamp = document.getElementById("cmpList");
-    	header = idcamp.value;*/
     	headerIdCamp = $("#cmpList").val();
     	headerNomCamp = $("#cmpList option:selected").html();
     	makeCall();
-    });
   });
   function makeCall() {
     eventHandlers = {
