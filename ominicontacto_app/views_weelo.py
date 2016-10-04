@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.detail import DetailView
 from ominicontacto_app.models import Contacto, Campana, FormularioDatoVenta
 from ominicontacto_app.forms import (
     ContactoForm, FormularioDatoVentaFormSet
@@ -176,3 +177,22 @@ class ContactoFormularioUpdateView(UpdateView):
         return reverse('formulario_tarjeta_update',
                        kwargs={"pk_campana": self.kwargs['pk_campana'],
                                "id_cliente": self.kwargs['id_cliente']})
+
+
+class ContactoDetailView(DetailView):
+    """
+    Muestra el detalle de contacto
+    """
+    template_name = 'agente/contacto_detalle.html'
+    context_object_name = 'contacto'
+    model = Contacto
+
+    def get_object(self, queryset=None):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+                                    bd_contacto=campana.bd_contacto)
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactoDetailView, self).get_context_data(**kwargs)
+        context['campana_pk'] = self.kwargs['pk_campana']
+        return context
