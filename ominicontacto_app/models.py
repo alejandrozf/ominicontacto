@@ -94,6 +94,23 @@ class AgenteProfile(models.Model):
 #     name = models.CharField(max_length=64)
 
 
+class Calificacion(models.Model):
+    nombre = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.nombre
+
+
+class CalificacionCampana(models.Model):
+    """Clase Version
+    Atributos: Calificacion, nombre. """
+    nombre = models.CharField(max_length=50)
+    calificacion = models.ManyToManyField(Calificacion)
+
+    def __unicode__(self):
+        return self.nombre
+
+
 class CampanaManager(models.Manager):
 
     def obtener_en_definicion_para_editar(self, campana_id):
@@ -1130,6 +1147,7 @@ class GrabacionManager(models.Manager):
         except Grabacion.DoesNotExist:
             raise (SuspiciousOperation("No se encontro grabaciones "))
 
+
 class Grabacion(models.Model):
     objects_default = models.Manager()
     # Por defecto django utiliza el primer manager instanciado. Se aplica al
@@ -1386,3 +1404,4 @@ class FormularioDatoVenta(models.Model):
     def __unicode__(self):
         return "Formulario dato venta para campana{0} para el contacto " \
                "{1} ".format(self.campana, self.contacto)
+
