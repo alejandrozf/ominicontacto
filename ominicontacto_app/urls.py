@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
-    views_grabacion, views_weelo)
+    views_grabacion, views_weelo, views_calificacion)
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
     handler400, handler403, handler404, handler500
@@ -299,6 +299,46 @@ urlpatterns = [
         login_required(
             views_grabacion.GrabacionReporteMesListView.as_view()),
         name='reporte_llamadas_mes',
+        ),
+    # ==========================================================================
+    # Calificacion
+    # ==========================================================================
+    url(r'^calificacion/nuevo/$',
+        login_required(
+            views_calificacion.CalificacionCreateView.as_view()),
+        name='calificacion_nuevo',
+        ),
+    url(r'^calificacion/update/(?P<pk>\d+)/$',
+        login_required(views_calificacion.CalificacionUpdateView.as_view()),
+        name='calificacion_update',
+        ),
+    url(r'^calificacion/list/$',
+        login_required(views_calificacion.CalificacionListView.as_view()),
+        name='calificacion_list',
+        ),
+    url(r'^calificacion/delete/(?P<pk>\d+)/$',
+        login_required(views_calificacion.CalificacionDeleteView.as_view()),
+        name='calificacion_delete',
+        ),
+    url(r'^calificacion_campana/nuevo/$',
+        login_required(
+            views_calificacion.CalificacionCampanaCreateView.as_view()),
+        name='calificacion_campana_nuevo',
+        ),
+    url(r'^calificacion_campana/update/(?P<pk>\d+)/$',
+        login_required(
+            views_calificacion.CalificacionCampanaUpdateView.as_view()),
+        name='calificacion_campana_update',
+        ),
+    url(r'^calificacion_campana/lista/$',
+        login_required(
+            views_calificacion.CalificacionCampanaListView.as_view()),
+        name='calificacion_campana_list',
+        ),
+    url(r'^calificacion_campana/delete/(?P<pk>\d+)/$',
+        login_required(
+            views_calificacion.CalificacionCampanaDeleteView.as_view()),
+        name='calificacion_campana_delete',
         ),
 ]
 

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="col-md-3">
+    <form method="post">{% csrf_token %}
+        <h4>Calificacion de Campaña<strong>{{ object.nombre}}</strong></h4>
+        <h4>¿Esta seguro que desea eliminar este calificacion de campana? </h4>
+        <button type="submit" class="btn btn-danger btn-sm">
+            <span class="glyphicon glyphicon-remove"></span> Eliminar
+        </button>
+        <a href="{% url 'calificacion_campana_list' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
