@@ -173,6 +173,9 @@ class Campana(models.Model):
     nombre = models.CharField(max_length=128)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
+    calificacion_campana = models.ForeignKey(CalificacionCampana,
+                                             related_name="calificacioncampana"
+                                             )
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
         null=True, blank=True,

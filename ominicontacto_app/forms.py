@@ -265,7 +265,8 @@ class CampanaForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'bd_contacto')
+        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
+                  'bd_contacto')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
