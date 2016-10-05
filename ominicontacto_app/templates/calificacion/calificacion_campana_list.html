@@ -18,7 +18,11 @@
         {% for calificacion in object_list %}
             <tr>
                 <td>{{ calificacion.nombre }}</td>
-                <td>{{ calificacion.calificacion }}</td>
+                <td>
+                    {% for calificacion_nombre in calificacion.calificacion.all %}
+                        - {{calificacion_nombre.nombre}}<br/>
+                    {% endfor %}
+                </td>
                 <td>
                     <a href="{% url 'calificacion_campana_update' calificacion.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
                     <a href="{% url 'calificacion_campana_delete' calificacion.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Calificacion"></span></a>
