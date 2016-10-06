@@ -1408,3 +1408,14 @@ class FormularioDatoVenta(models.Model):
         return "Formulario dato venta para campana{0} para el contacto " \
                "{1} ".format(self.campana, self.contacto)
 
+
+class CalificacionCliente(models.Model):
+
+    campana = models.ForeignKey(Campana, related_name="calificaconcliente")
+    contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
+    es_venta = models.BooleanField(default=False)
+    calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
+
+    def __unicode__(self):
+        return "Califiacion para la campana{0} para el contacto " \
+               "{1} ".format(self.campana, self.contacto)
