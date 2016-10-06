@@ -280,9 +280,13 @@ urlpatterns = [
         login_required(views_weelo.ContactoFormularioUpdateView.as_view()),
         name='formulario_tarjeta_update',
         ),
-    url(r'^contacto/(?P<pk_campana>\d+)/detalle/(?P<id_cliente>\d+)/$',
-        login_required(views_weelo.ContactoDetailView.as_view()),
-        name='contacto_detalle',
+    url(r'^calificacion/(?P<pk_campana>\d+)/cliente/(?P<id_cliente>\d+)/$',
+        login_required(views_weelo.CalificacionClienteCreateView.as_view()),
+        name='calificacion_cliente',
+        ),
+    url(r'^calificacion/(?P<pk_campana>\d+)/update/(?P<id_cliente>\d+)/$',
+        login_required(views_weelo.CalificacionClienteUpdateView.as_view()),
+        name='calificacion_cliente_update',
         ),
     # ==========================================================================
     # Reportes

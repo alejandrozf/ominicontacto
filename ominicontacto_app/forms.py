@@ -13,7 +13,7 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana, FormularioDemo, Contacto, FormularioDatoVenta
+    Campana, FormularioDemo, Contacto, FormularioDatoVenta, CalificacionCliente
 )
 
 
@@ -244,6 +244,7 @@ class GrabacionBusquedaForm(forms.ModelForm):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         self.fields['campana'].required = False
 
+
     class Meta:
         model = Grabacion
         fields = ('fecha', 'tipo_llamada', 'id_cliente', 'tel_cliente',
@@ -336,3 +337,20 @@ class ExportaDialerForm(forms.Form):
         super(ExportaDialerForm, self).__init__(*args, **kwargs)
         self.fields['campana'].choices = campana_choice
         self.fields['telefonos'].choices = tts_choices
+
+
+class CalificacionClienteForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CalificacionClienteForm, self).__init__(*args, **kwargs)
+        self.fields['calificacion'].empty_label = None
+        self.fields['calificacion'].empty_label = 'seleccione'
+
+    class Meta:
+        model = CalificacionCliente
+        fields = ('campana', 'contacto', 'es_venta', 'calificacion')
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'contacto': forms.HiddenInput(),
+            'es_venta': forms.HiddenInput(),
+        }

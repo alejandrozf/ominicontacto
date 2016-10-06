@@ -5,11 +5,14 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
-from ominicontacto_app.models import Contacto, Campana, FormularioDatoVenta
+from ominicontacto_app.models import (
+    Contacto, Campana, FormularioDatoVenta, CalificacionCliente
+)
 from ominicontacto_app.forms import (
-    ContactoForm, FormularioDatoVentaFormSet
+    ContactoForm, FormularioDatoVentaFormSet, CalificacionClienteForm
 )
 
 import logging as logging_
@@ -179,20 +182,116 @@ class ContactoFormularioUpdateView(UpdateView):
                                "id_cliente": self.kwargs['id_cliente']})
 
 
-class ContactoDetailView(DetailView):
+class CalificacionClienteCreateView(CreateView):
     """
     Muestra el detalle de contacto
     """
     template_name = 'agente/contacto_detalle.html'
-    context_object_name = 'contacto'
-    model = Contacto
+    context_object_name = 'calificacion_cliente'
+    model = CalificacionCliente
+    form_class = CalificacionClienteForm
+
+    def get_initial(self):
+        initial = super(CalificacionClienteCreateView, self).get_initial()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+                                        bd_contacto=campana.bd_contacto)
+        initial.update({'campana': campana.id,
+                        'contacto': contacto.id})
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+                                        bd_contacto=campana.bd_contacto)
+        context['contacto'] = contacto
+        context['campana_pk'] = self.kwargs['pk_campana']
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        calificacion = form.cleaned_data.get('calificacion')
+        if calificacion is None:
+            self.object.es_venta = True
+            self.object.save()
+            return redirect(self.get_success_url())
+        else:
+            self.object.es_venta = False
+            self.object.save()
+            return HttpResponseRedirect(reverse('calificacion_cliente_update',
+                                                kwargs={
+                                                    "pk_campana": self.kwargs[
+                                                        'pk_campana'],
+                                                    "id_cliente": self.kwargs[
+                                                        'id_cliente']}))
+
+    def get_success_url(self):
+        return reverse('formulario_tarjeta_update',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "id_cliente": self.kwargs['id_cliente']})
+
+
+class CalificacionClienteUpdateView(UpdateView):
+    """
+    Muestra el detalle de contacto
+    """
+    template_name = 'agente/contacto_detalle.html'
+    context_object_name = 'calificacion_cliente'
+    model = CalificacionCliente
+    form_class = CalificacionClienteForm
+
+    def dispatch(self, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+        try:
+            contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
+                                            id_cliente=self.kwargs[
+                                                'id_cliente'])
+        except Contacto.DoesNotExist:
+            return HttpResponseRedirect(reverse('formulario_buscar',
+                                                kwargs={"pk_campana":
+                                                self.kwargs['pk_campana']}))
+        try:
+            CalificacionCliente.objects.get(contacto=contacto)
+        except CalificacionCliente.DoesNotExist:
+            return HttpResponseRedirect(reverse('calificacion_cliente',
+                kwargs={"pk_campana": self.kwargs['pk_campana'],
+                        "id_cliente": self.kwargs['id_cliente']}))
+
+        return super(CalificacionClienteUpdateView, self).dispatch(*args,
+                                                                  **kwargs)
 
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
                                     bd_contacto=campana.bd_contacto)
+        return CalificacionCliente.objects.get(contacto=contacto)
 
     def get_context_data(self, **kwargs):
-        context = super(ContactoDetailView, self).get_context_data(**kwargs)
+        context = super(CalificacionClienteUpdateView, self).get_context_data(**kwargs)
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+                                        bd_contacto=campana.bd_contacto)
+        context['contacto'] = contacto
         context['campana_pk'] = self.kwargs['pk_campana']
         return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        calificacion = form.cleaned_data.get('calificacion')
+        if calificacion is None:
+            self.object.es_venta = True
+            self.object.save()
+            return redirect(self.get_success_url())
+        else:
+            self.object.es_venta = False
+            self.object.save()
+            return HttpResponseRedirect(reverse('calificacion_cliente_update',
+                           kwargs={"pk_campana": self.kwargs['pk_campana'],
+                                   "id_cliente": self.kwargs['id_cliente']}))
+
+    def get_success_url(self):
+        return reverse('formulario_tarjeta_update',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "id_cliente": self.kwargs['id_cliente']})
