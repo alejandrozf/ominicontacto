@@ -344,7 +344,7 @@ class CalificacionClienteForm(forms.ModelForm):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
         self.fields['calificacion'].choice = calificacion_choice
         self.fields['calificacion'].empty_label = None
-        self.fields['calificacion'].empty_label = 'seleccione'
+        self.fields['calificacion'].empty_label = 'venta'
 
     class Meta:
         model = CalificacionCliente

@@ -227,6 +227,9 @@ class CalificacionClienteCreateView(CreateView):
         else:
             self.object.es_venta = False
             self.object.save()
+            message = 'Operación Exitosa!\
+                        Se llevó a cabo con éxito la calificacion del cliente'
+            messages.success(self.request, message)
             return HttpResponseRedirect(reverse('calificacion_cliente_update',
                                                 kwargs={
                                                     "pk_campana": self.kwargs[
@@ -304,6 +307,9 @@ class CalificacionClienteUpdateView(UpdateView):
         else:
             self.object.es_venta = False
             self.object.save()
+            message = 'Operación Exitosa!\
+            Se llevó a cabo con éxito la calificacion del cliente'
+            messages.success(self.request, message)
             return HttpResponseRedirect(reverse('calificacion_cliente_update',
                            kwargs={"pk_campana": self.kwargs['pk_campana'],
                                    "id_cliente": self.kwargs['id_cliente']}))

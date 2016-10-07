@@ -5,7 +5,56 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 </head>
 <body>
+   {% for message in messages %}
 
+        {% if "error" in message.tags %}
+
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Error!</h4>
+            {{ message }}
+        </div>
+
+        {% elif "warning" in message.tags %}
+
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Atencion!</h4>
+            {{ message }}
+        </div>
+
+        {% elif "success" in message.tags %}
+
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Finalizado:</h4>
+            {{ message }}
+        </div>
+
+        {% elif "info" in message.tags %}
+
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Informacion:</h4>
+            {{ message }}
+        </div>
+
+        {% elif "debug" in message.tags %} {# the same as "INFO" #}
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Informacion:</h4>
+            {{ message }}
+        </div>
+
+        {% else %} {# the same as "INFO" #}
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Informacion:</h4>
+            {{ message }}
+        </div>
+
+        {% endif %}
+       {% endfor %}
     <table class="table table-striped">
         {% if contacto %}
         <tr>
