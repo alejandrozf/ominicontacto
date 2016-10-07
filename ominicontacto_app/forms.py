@@ -244,7 +244,6 @@ class GrabacionBusquedaForm(forms.ModelForm):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         self.fields['campana'].required = False
 
-
     class Meta:
         model = Grabacion
         fields = ('fecha', 'tipo_llamada', 'id_cliente', 'tel_cliente',
@@ -341,8 +340,9 @@ class ExportaDialerForm(forms.Form):
 
 class CalificacionClienteForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, calificacion_choice, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
+        self.fields['calificacion'].choice = calificacion_choice
         self.fields['calificacion'].empty_label = None
         self.fields['calificacion'].empty_label = 'seleccione'
 
