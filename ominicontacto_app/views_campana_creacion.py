@@ -18,7 +18,7 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.services.reporte_campana import ReporteCampanaService
+from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 
 import logging as logging_
 

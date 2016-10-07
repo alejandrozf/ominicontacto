@@ -35,29 +35,26 @@
                 <table class="table table-bordered">
                     <thead>
                       <tr class="fts-table-bg">
+                        <th>Telefono</th>
                         <th>Id Cliente</th>
                         <th>Nombre</th>
                         <th>Apellido</th>
-                        <th>Telefono</th>
-                        <th>Email</th>
+                        <th>Dni</th>
+                        <th>Fecha Nacimient</th>
+                        <th>Cuil</th>
                         <th>Datos</th>
-                        <th>Extra 1</th>
-                        <th>Extra 2</th>
-                        <th>Extra 3</th>
-                        <th>Extra 4</th>
-                        <th>Extra 5</th>
-                        <th>Extra 6</th>
-                        <th>Extra 7</th>
-                        <th>Extra 8</th>
-                        <th>Extra 9</th>
-                        <th>Extra 10</th>
+                        <th>Es venta</th>
+                        <th>Calificacion no venta</th>
                       </tr>
                     </thead>
                     <tbody>
-                        {% for contacto in campana.formularios.all %}
+                        {% for contacto in campana.calificaconcliente.all %}
                             <tr>
 
-                                <td width="45%">
+                                <td>
+                                    {{ contacto.contacto.telefono }}
+                                </td>
+                                <td>
                                     {{contacto.contacto.id_cliente}}
                                 </td>
                                 <td>
@@ -65,44 +62,31 @@
                                 </td>
                                 <td>{{ contacto.contacto.apellido}}</td>
                                 <td>
-                                    {{ contacto.contacto.telefono }}
+                                    {{ contacto.contacto.dni }}
                                 </td>
                                 <td>
-                                    {{ contacto.contacto.email }}
+                                    {{ contacto.contacto.fecha_nacimiento }}
+                                </td>
+                                <td>
+                                    {{ contacto.contacto.cuil }}
                                 </td>
                                 <td>
                                     {{ contacto.contacto.datos}}
                                 </td>
                                 <td>
-                                    {{ contacto.extra_1 }}
+                                    {% if contacto.es_venta %}
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                    {% else %}
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    {% endif %}
                                 </td>
+                                {% if contacto.calificacion %}
                                 <td>
-                                    {{ contacto.extra_2 }}
+                                    {{ contacto.calificacion.nombre }}
                                 </td>
-                                <td>
-                                    {{ contacto.extra_3 }}
-                                </td>
-                                <td>
-                                    {{ contacto.extra_4 }}
-                                </td>
-                                <td>
-                                    {{ contacto.extra_5 }}
-                                </td>
-                                <td>
-                                    {{ contacto.extra_6 }}
-                                </td>
-                                <td>
-                                    {{ contacto.extra_7 }}
-                                </td>
-                                <td>
-                                    {{ contacto.extra_8 }}
-                                </td>
-                                <td>
-                                    {{ contacto.extra_9 }}
-                                </td>
-                                <td>
-                                    {{ contacto.extra_10 }}
-                                </td>
+                                {% else %}
+                                <td></td>
+                                {% endif %}
                             </tr>
                         {% empty %}
                             <tr>
