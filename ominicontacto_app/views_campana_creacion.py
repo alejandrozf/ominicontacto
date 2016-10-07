@@ -18,7 +18,10 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
+from ominicontacto_app.services.reporte_campana_calificacion import \
+    ReporteCampanaService
+from ominicontacto_app.services.reporte_campana_venta import \
+    ReporteFormularioVentaService
 
 import logging as logging_
 
@@ -539,7 +542,30 @@ class CampanaReporteListView(ListView):
             **kwargs)
 
         service = ReporteCampanaService()
+        service_formulario = ReporteFormularioVentaService()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         service.crea_reporte_csv(campana)
+        service_formulario.crea_reporte_csv(campana)
         context['campana'] = campana
         return context
+
+
+class ExportaReporteFormularioVentaView(UpdateView):
+    """
+    Esta vista invoca a generar un csv de reporte de la la venta.
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        service = ReporteFormularioVentaService()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        url = service.obtener_url_reporte_csv_descargar(self.object)
+
+        return redirect(url)

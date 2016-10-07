@@ -288,6 +288,11 @@ urlpatterns = [
         login_required(views_weelo.CalificacionClienteUpdateView.as_view()),
         name='calificacion_cliente_update',
         ),
+    url(r'^formulario/(?P<pk_campana>\d+)/exporta/$',
+        login_required(
+            views_campana_creacion.ExportaReporteFormularioVentaView.as_view()),
+        name='exporta_formulario_reporte',
+        ),
     # ==========================================================================
     # Reportes
     # ==========================================================================

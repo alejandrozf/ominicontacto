@@ -27,7 +27,8 @@
                                         {{ campana.bd_contacto }}
                                     </h5>
                                 </td>
-                                <td><h5><a href="{% url 'exporta_campana_reporte' campana.pk %}">Exportar (CSV)</a></h5></td>
+                                <td><h5><a href="{% url 'exporta_campana_reporte' campana.pk %}">Exportar Calificacion(CSV)</a></h5></td>
+                                <td><h5><a href="{% url 'exporta_formulario_reporte' campana.pk %}">Exportar Venta(CSV)</a></h5></td>
                             </tr>
                         </tbody>
                     </table>
