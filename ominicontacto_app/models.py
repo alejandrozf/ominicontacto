@@ -1138,8 +1138,8 @@ class GrabacionManager(models.Manager):
 
     def obtener_count_campana(self):
         try:
-            return self.values('campana__nombre').annotate(
-                cantidad=Count('campana'))
+            return self.values('campana', 'campana__nombre').annotate(
+                cantidad=Count('campana')).order_by('campana')
         except Grabacion.DoesNotExist:
             raise (SuspiciousOperation("No se encontro grabaciones "))
 

@@ -115,5 +115,42 @@
                             </tr>
                         </tbody>
                     </table>
+
+                <table class="table table-bordered">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <td colspan="2">
+                                    <h4>Cantidad de llamadas por campana</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            {% for campana_nombre, total_campana, total_ics, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_campana_counter %}
+                                                <tr>
+                                                    <td><h5>{{ campana_nombre }} </h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_ics }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_dialer }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_inbound }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manual }}</span></h5></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 {% endwith %}
 {% endblock %}
