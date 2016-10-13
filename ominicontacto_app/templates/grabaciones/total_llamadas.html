@@ -128,6 +128,17 @@
                             <tr>
                                 <td width="50%">
                                     <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Campana</th>
+                                            <th>Total </th>
+                                            <th>ICS</th>
+                                            <th>DIALER</th>
+                                            <th>INBOUND</th>
+                                            <th>MANUAL</th>
+
+                                        </tr>
+                                        </thead>
                                         <tbody>
                                             {% for campana_nombre, total_campana, total_ics, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_campana_counter %}
                                                 <tr>
