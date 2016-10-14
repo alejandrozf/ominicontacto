@@ -163,5 +163,52 @@
                             </tr>
                         </tbody>
                     </table>
+                <table class="table table-bordered">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <td colspan="2">
+                                    <h4>Cantidad de llamadas por agente</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Agente</th>
+                                            <th>Total </th>
+                                            <th>ICS</th>
+                                            <th>DIALER</th>
+                                            <th>INBOUND</th>
+                                            <th>MANUAL</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for agente, total_campana, total_ics, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
+                                                <tr>
+                                                    <td><h5>{{ agente }} </h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_ics }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_dialer }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_inbound }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manual }}</span></h5></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.barra_agente_total.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 {% endwith %}
 {% endblock %}

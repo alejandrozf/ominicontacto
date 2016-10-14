@@ -1146,7 +1146,7 @@ class GrabacionManager(models.Manager):
     def obtener_count_agente(self):
         try:
             return self.values('sip_agente').annotate(
-                cantidad=Count('sip_agente'))
+                cantidad=Count('sip_agente')).order_by('sip_agente')
         except Grabacion.DoesNotExist:
             raise (SuspiciousOperation("No se encontro grabaciones "))
 
