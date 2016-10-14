@@ -50,11 +50,12 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-bordered">
+
+                <table class="table table-bordered">
                         <thead>
                             <tr class="fts-table-bg">
                                 <td colspan="2">
-                                    <h4>Cantidad de llamadas de campaña por inbound</h4>
+                                    <h4>Cantidad de llamadas por campana</h4>
                                 </td>
                             </tr>
                         </thead>
@@ -62,11 +63,26 @@
                             <tr>
                                 <td width="50%">
                                     <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Campana</th>
+                                            <th>Total </th>
+                                            <th>ICS</th>
+                                            <th>DIALER</th>
+                                            <th>INBOUND</th>
+                                            <th>MANUAL</th>
+
+                                        </tr>
+                                        </thead>
                                         <tbody>
-                                            {% for campana, cantidad in graficos_estadisticas.zip_total_campana_inbound %}
+                                            {% for campana_nombre, total_campana, total_ics, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_campana_counter %}
                                                 <tr>
-                                                    <td><h5>{{ campana }} </h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ cantidad }}</span></h5></td>
+                                                    <td><h5>{{ campana_nombre }} </h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_ics }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_dialer }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_inbound }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manual }}</span></h5></td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -75,7 +91,7 @@
                                 <td width="50%" align="center">
                                     <div class="graficos-avances">
                                         <figure>
-                                            {{ graficos_estadisticas.barra_campana_inbound.render|safe }}
+                                            {{ graficos_estadisticas.barra_campana_total.render|safe }}
                                         </figure>
                                     </div>
                                 </td>
@@ -83,11 +99,11 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-bordered">
+                <table class="table table-bordered">
                         <thead>
                             <tr class="fts-table-bg">
                                 <td colspan="2">
-                                    <h4>Cantidad de llamadas inbound por agente</h4>
+                                    <h4>Cantidad de llamadas por agente</h4>
                                 </td>
                             </tr>
                         </thead>
@@ -95,11 +111,26 @@
                             <tr>
                                 <td width="50%">
                                     <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Agente</th>
+                                            <th>Total </th>
+                                            <th>ICS</th>
+                                            <th>DIALER</th>
+                                            <th>INBOUND</th>
+                                            <th>MANUAL</th>
+
+                                        </tr>
+                                        </thead>
                                         <tbody>
-                                            {% for agente, cantidad in graficos_estadisticas.zip_total_agente_inbound %}
+                                            {% for agente, total_campana, total_ics, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
                                                 <tr>
                                                     <td><h5>{{ agente }} </h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ cantidad }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_ics }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_dialer }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_inbound }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manual }}</span></h5></td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -108,7 +139,7 @@
                                 <td width="50%" align="center">
                                     <div class="graficos-avances">
                                         <figure>
-                                            {{ graficos_estadisticas.barra_agente_inbound.render|safe }}
+                                            {{ graficos_estadisticas.barra_agente_total.render|safe }}
                                         </figure>
                                     </div>
                                 </td>

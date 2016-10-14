@@ -42,6 +42,169 @@ class GraficoService():
 
         return counter_por_tipo
 
+    def _obtener_campana_grabacion(self, fecha_inferior, fecha_superior):
+        # lista de dict con la cantidad de cada campana
+        dict_campana = Grabacion.objects.obtener_count_campana().filter(
+            fecha__range=(fecha_inferior, fecha_superior))
+        campana = []
+        campana_nombre = []
+
+        for campana_id in dict_campana:
+            campana.append(campana_id['campana'])
+            campana_nombre.append(campana_id['campana__nombre'])
+        return dict_campana, campana, campana_nombre
+
+    def _obtener_total_campana_grabacion(self, dict_campana, campana):
+
+        total_campana = []
+
+        for campana_unit, campana in zip(dict_campana, campana):
+            if campana_unit['campana'] == campana:
+                total_campana.append(campana_unit['cantidad'])
+            else:
+                total_campana.append(0)
+
+        return total_campana
+
+    def _obtener_total_ics_grabacion(self, dict_campana, campana):
+
+        total_ics = []
+
+        for campana_id in campana:
+            cantidad = 0
+            result = dict_campana.filter(tipo_llamada=Grabacion.TYPE_ICS).\
+                filter(campana=campana_id)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_ics.append(cantidad)
+
+        return total_ics
+
+    def _obtener_total_dialer_grabacion(self, dict_campana, campana):
+
+        total_dialer = []
+
+        for campana_id in campana:
+            cantidad = 0
+            result = dict_campana.filter(tipo_llamada=Grabacion.TYPE_DIALER).\
+                filter(campana=campana_id)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_dialer.append(cantidad)
+
+        return total_dialer
+
+    def _obtener_total_inbound_grabacion(self, dict_campana, campana):
+
+        total_inbound = []
+        for campana_id in campana:
+            cantidad = 0
+            result = dict_campana.filter(tipo_llamada=Grabacion.TYPE_INBOUND).\
+                filter(campana=campana_id)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_inbound.append(cantidad)
+        return total_inbound
+
+    def _obtener_total_manual_grabacion(self, dict_campana, campana):
+
+        total_manual = []
+
+        for campana_id in campana:
+            cantidad = 0
+            result = dict_campana.filter(tipo_llamada=Grabacion.TYPE_MANUAL).\
+                filter(campana=campana_id)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_manual.append(cantidad)
+
+        return total_manual
+
+    def _obtener_agente_grabacion(self, fecha_inferior, fecha_superior):
+        # lista de dict con la cantidad de cada campana
+        dict_agentes = Grabacion.objects.obtener_count_agente().filter(
+            fecha__range=(fecha_inferior, fecha_superior))
+        agentes = []
+
+        for agente in dict_agentes:
+            agentes.append(agente['sip_agente'])
+
+        return dict_agentes, agentes
+
+    def _obtener_total_agente_grabacion(self, dict_agentes, agentes):
+
+        total_agentes = []
+
+        for agente_unit, agente in zip(dict_agentes, agentes):
+            if agente_unit['sip_agente'] == agente:
+                total_agentes.append(agente_unit['cantidad'])
+            else:
+                total_agentes.append(0)
+
+        return total_agentes
+
+    def _obtener_total_ics_agente(self, dict_agentes, agentes):
+
+        total_ics = []
+
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_ICS).\
+                filter(sip_agente=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_ics.append(cantidad)
+
+        return total_ics
+
+    def _obtener_total_dialer_agente(self, dict_agentes, agentes):
+
+        total_dialer = []
+
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_DIALER). \
+                filter(sip_agente=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_dialer.append(cantidad)
+
+        return total_dialer
+
+    def _obtener_total_inbound_agente(self, dict_agentes, agentes):
+
+        total_inbound = []
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_INBOUND). \
+                filter(sip_agente=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_inbound.append(cantidad)
+        return total_inbound
+
+    def _obtener_total_manual_agente(self, dict_agentes, agentes):
+
+        total_manual = []
+
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_MANUAL). \
+                filter(sip_agente=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_manual.append(cantidad)
+
+        return total_manual
+
     def _obtener_total_llamadas_campana_inbound(self, fecha_inferior,
                                                 fecha_superior):
         # lista de dict con la cantidad de cada campana
@@ -72,8 +235,6 @@ class GraficoService():
         grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(fecha_inferior,
                                                                      fecha_superior)
         counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
-        total_campana_inbound, total_campana_cantidad = self._obtener_total_llamadas_campana_inbound(fecha_inferior, fecha_superior)
-        total_agente_inbound, total_agente_cantidad = self._obtener_total_llamadas_agente_inbound(fecha_inferior, fecha_superior)
 
         total_grabaciones = len(grabaciones)
 
@@ -95,6 +256,25 @@ class GraficoService():
         total_ics = counter_tipo_llamada[Grabacion.TYPE_ICS]
         total_inbound = counter_tipo_llamada[Grabacion.TYPE_INBOUND]
         total_manual = counter_tipo_llamada[Grabacion.TYPE_MANUAL]
+
+        dict_campana, campana, campana_nombre = self._obtener_campana_grabacion(fecha_inferior, fecha_superior)
+        total_campana = self._obtener_total_campana_grabacion(dict_campana, campana)
+        total_grabacion_ics = self._obtener_total_ics_grabacion(dict_campana,
+                                                              campana)
+        total_grabacion_dialer = self._obtener_total_dialer_grabacion(dict_campana,
+                                                              campana)
+        total_grabacion_inbound = self._obtener_total_inbound_grabacion(dict_campana,
+                                                              campana)
+        total_grabacion_manual = self._obtener_total_manual_grabacion(dict_campana,
+                                                              campana)
+        dict_agentes, agentes = self._obtener_agente_grabacion(fecha_inferior, fecha_superior)
+
+        total_agentes = self._obtener_total_agente_grabacion(dict_agentes, agentes)
+        total_agente_ics = self._obtener_total_ics_agente(dict_agentes, agentes)
+        total_agente_dialer = self._obtener_total_dialer_agente(dict_agentes, agentes)
+        total_agente_inbound = self._obtener_total_inbound_agente(dict_agentes, agentes)
+        total_agente_manual = self._obtener_total_manual_agente(dict_agentes, agentes)
+
         dic_estadisticas = {
             'porcentaje_dialer': porcentaje_dialer,
             'porcentaje_ics': porcentaje_ics,
@@ -105,10 +285,19 @@ class GraficoService():
             'total_ics': total_ics,
             'total_inbound': total_inbound,
             'total_manual': total_manual,
-            'total_campana_inbound': total_campana_inbound,
-            'total_campana_cantidad': total_campana_cantidad,
+            'campana_nombre': campana_nombre,
+            'campana': campana,
+            'total_campana': total_campana,
+            'total_grabacion_ics': total_grabacion_ics,
+            'total_grabacion_dialer': total_grabacion_dialer,
+            'total_grabacion_inbound': total_grabacion_inbound,
+            'total_grabacion_manual': total_grabacion_manual,
+            'agentes': agentes,
+            'total_agentes': total_agentes,
+            'total_agente_ics': total_agente_ics,
+            'total_agente_dialer': total_agente_dialer,
             'total_agente_inbound': total_agente_inbound,
-            'total_agente_cantidad': total_agente_cantidad,
+            'total_agente_manual': total_agente_manual,
         }
         return dic_estadisticas
 
@@ -135,37 +324,53 @@ class GraficoService():
         torta_grabaciones.add('Ics', estadisticas['porcentaje_inbound'])
         torta_grabaciones.add('Manual', estadisticas['porcentaje_manual'])
 
-        # Barra: Total de llamados atendidos en cada intento.
-        total_campana_inbound = estadisticas['total_campana_inbound']
-        barra_campana_inbound = pygal.Bar(  # @UndefinedVariable
+        # Barra: Total de llamados atendidos en cada intento por campana.
+        barra_campana_total = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
-        barra_campana_inbound.title = 'Cantidad de llamadas por campana inbound'
+        barra_campana_total.title = 'Cantidad de llamadas de las campana por tipo de llamadas'
 
-        barra_campana_inbound.x_labels = total_campana_inbound
-        barra_campana_inbound.add('Cantidad',
-                                  estadisticas['total_campana_cantidad'])
+        barra_campana_total.x_labels = estadisticas['campana_nombre']
+        barra_campana_total.add('ICS',
+                                estadisticas['total_grabacion_ics'])
+        barra_campana_total.add('DIALER',
+                                estadisticas['total_grabacion_dialer'])
+        barra_campana_total.add('INBOUND',
+                                estadisticas['total_grabacion_inbound'])
+        barra_campana_total.add('MANUAL',
+                                estadisticas['total_grabacion_manual'])
 
         # Barra: Total de llamados atendidos en cada intento por agente.
-        total_agente_inbound = estadisticas['total_agente_inbound']
-        barra_agente_inbound = pygal.Bar(  # @UndefinedVariable
+        barra_agente_total = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
-        barra_agente_inbound.title = 'Cantidad de llamadas inbound por agente'
+        barra_agente_total.title = 'Cantidad de llamadas de los agentes por tipo de llamadas'
 
-        barra_agente_inbound.x_labels = total_agente_inbound
-        barra_agente_inbound.add('Cantidad',
-                                  estadisticas['total_agente_cantidad'])
+        barra_agente_total.x_labels = estadisticas['agentes']
+        barra_agente_total.add('ICS',
+                                estadisticas['total_agente_ics'])
+        barra_agente_total.add('DIALER',
+                                estadisticas['total_agente_dialer'])
+        barra_agente_total.add('INBOUND',
+                                estadisticas['total_agente_inbound'])
+        barra_agente_total.add('MANUAL',
+                                estadisticas['total_agente_manual'])
 
         return {
             'estadisticas': estadisticas,
             'torta_grabaciones': torta_grabaciones,
-            'barra_campana_inbound': barra_campana_inbound,
-            'zip_total_campana_inbound': zip(
-                estadisticas['total_campana_inbound'],
-                estadisticas['total_campana_cantidad']),
-            'barra_agente_inbound': barra_agente_inbound,
-            'zip_total_agente_inbound': zip(
-                estadisticas['total_agente_inbound'],
-                estadisticas['total_agente_cantidad']),
+            'dict_campana_counter': zip(estadisticas['campana_nombre'],
+                                        estadisticas['total_campana'],
+                                        estadisticas['total_grabacion_ics'],
+                                        estadisticas['total_grabacion_dialer'],
+                                        estadisticas['total_grabacion_inbound'],
+                                        estadisticas['total_grabacion_manual']),
+            'barra_campana_total': barra_campana_total,
+            'dict_agente_counter': zip(estadisticas['agentes'],
+                                        estadisticas['total_agentes'],
+                                        estadisticas['total_agente_ics'],
+                                        estadisticas['total_agente_dialer'],
+                                        estadisticas['total_agente_inbound'],
+                                        estadisticas['total_agente_manual']),
+            'barra_agente_total': barra_agente_total,
         }
