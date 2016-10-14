@@ -292,36 +292,3 @@ class GraficoService():
                                         estadisticas['total_grabacion_manual']),
             'barra_campana_total': barra_campana_total,
         }
-
-
-class DatosTotalesCampana(object):
-    """Encapsula los datos de las grabaciones.
-    """
-
-    def __init__(self, ics, dialer, inbound, manual, campana):
-
-        self._ics = ics
-        self._dialer = dialer
-        self._inbound = inbound
-        self._manual = manual
-        self._campana = campana
-
-    @property
-    def ics(self):
-        return self._ics
-
-    @property
-    def dialer(self):
-        return self._dialer
-
-    @property
-    def inbound(self):
-        return self._inbound
-
-    @property
-    def manual(self):
-        return self._manual
-
-    @property
-    def campana(self):
-        return self._campana
