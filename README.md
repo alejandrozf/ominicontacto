@@ -115,6 +115,46 @@ OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
 # ejemplo "172.16.20.219/255.255.255.255"
 OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
 
+_logging_output_file = os.environ.get("OML_LOGFILE", "django.log")
+assert os.path.split(_logging_output_file)[0] == "",\
+    "La variable de entorno OML_LOGFILE solo debe contener " +\
+    "el nombre del archivo, SIN directorios."
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(asctime)-15s [%(levelname)7s] '
+                '%(name)20s - %(message)s')
+        },
+    },
+    'filters': {
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/home/freetech/ominicontacto/{0}'.format(_logging_output_file),
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+    }
+}
+
 ```
 
 ### Configuracion ssl para desarrollo ###
