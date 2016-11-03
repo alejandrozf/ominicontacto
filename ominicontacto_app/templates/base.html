@@ -50,7 +50,7 @@
                     <ul class="nav navbar-nav">
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-						      Usuario <span class="caret"></span>
+						      Usuarios <span class="caret"></span>
 						    </a>
 						    <ul class="dropdown-menu" role="menu">
 						    	<li>
@@ -63,6 +63,13 @@
                         		<li>
                             		<a href="{% url 'agente_list' %}">Agentes</a>
                         		</li>
+                                <li class="divider"></li>
+                                <li>
+                            		<a href="{% url 'grupo_list' %}">Grupos</a>
+                        		</li>
+                        		<li>
+                            		<a href="{% url 'grupo_nuevo' %}">Crear Grupo</a>
+                        		</li>
 						    </ul>
 						</li>
                         <li role="presentation" class="dropdown">
@@ -74,15 +81,9 @@
                             		<a href="{% url 'modulo_list' %}">Modulos</a>
                         		</li>
                         		<li>
-                            		<a href="{% url 'modulo_nuevo' %}">Crear Modulo</a>
+                            		<a href="{% url 'modulo_nuevo' %}">Habilitar Modulo</a>
                         		</li>
-                                <li class="divider"></li>
-                                <li>
-                            		<a href="{% url 'grupo_list' %}">Grupos</a>
-                        		</li>
-                        		<li>
-                            		<a href="{% url 'grupo_nuevo' %}">Crear Grupo</a>
-                        		</li>
+
 
 						    </ul>
 						</li>
@@ -102,22 +103,22 @@
                         		</li>
                                 <li class="divider"></li>
                                 <li>
-                            		<a href="{% url 'calificacion_list' %}">Calificacion</a>
+                            		<a href="{% url 'calificacion_list' %}">Listado de Calificaciones</a>
                         		</li>
                         		<li>
-                            		<a href="{% url 'calificacion_nuevo' %}">Crear Calificacion</a>
+                            		<a href="{% url 'calificacion_nuevo' %}">Nueva Calificacion</a>
                         		</li>
                                 <li>
-                            		<a href="{% url 'calificacion_campana_list' %}">Calificaciones de campaña</a>
+                            		<a href="{% url 'calificacion_campana_list' %}">Grupo de calificaciones</a>
                         		</li>
                         		<li>
-                            		<a href="{% url 'calificacion_campana_nuevo' %}">Crear Calificacion de campaña</a>
+                            		<a href="{% url 'calificacion_campana_nuevo' %}">Nuevo grupo de calificaciones</a>
                         		</li>
 						    </ul>
 						</li>
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-						      Pausa <span class="caret"></span>
+						      Pausas <span class="caret"></span>
 						    </a>
 						    <ul class="dropdown-menu" role="menu">
                                 <li>
