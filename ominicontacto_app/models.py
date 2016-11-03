@@ -256,22 +256,26 @@ class Queue(models.Model):
     )
 
     name = models.CharField(max_length=128, primary_key=True)
-    timeout = models.BigIntegerField()
-    retry = models.BigIntegerField()
-    maxlen = models.BigIntegerField()
-    wrapuptime = models.BigIntegerField()
-    servicelevel = models.BigIntegerField()
-    strategy = models.CharField(max_length=128, choices=STRATEGY_CHOICES)
+    timeout = models.BigIntegerField(verbose_name='Tiempo de Ring')
+    retry = models.BigIntegerField(verbose_name='Tiempo de Reintento')
+    maxlen = models.BigIntegerField(verbose_name='Cantidad Max de llamadas')
+    wrapuptime = models.BigIntegerField(
+        verbose_name='Tiempo de descanso entre llamadas')
+    servicelevel = models.BigIntegerField(verbose_name='Nivel de Servicio')
+    strategy = models.CharField(max_length=128, choices=STRATEGY_CHOICES,
+                                verbose_name='Estrategia de distribucion')
     eventmemberstatus = models.BooleanField()
     eventwhencalled = models.BooleanField()
-    weight = models.BigIntegerField()
+    weight = models.BigIntegerField(verbose_name='Importancia de campaña')
     ringinuse = models.BooleanField()
     setinterfacevar = models.BooleanField()
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
-    type = models.PositiveIntegerField(choices=TYPE_CHOICES)
-    wait = models.PositiveIntegerField()
+    type = models.PositiveIntegerField(choices=TYPE_CHOICES,
+                                       verbose_name='Tipo de campaña')
+    wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
     queue_asterisk = models.PositiveIntegerField(unique=True)
-    auto_grabacion = models.BooleanField(default=False)
+    auto_grabacion = models.BooleanField(default=False,
+                                         verbose_name='Grabar llamados')
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
