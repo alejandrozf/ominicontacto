@@ -10,7 +10,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
-    FormularioDemoForm, BusquedaContactoForm, ContactoForm)
+    FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm)
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto
 )
@@ -201,8 +201,10 @@ class QueueMemberCampanaView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         #         message,
         #     )
         queue_member_form = QueueMemberForm(self.request.GET or None)
+        grupo_agente_form = GrupoAgenteForm(self.request.GET or None)
         context = self.get_context_data(**kwargs)
         context['queue_member_form'] = queue_member_form
+        context['grupo_agente_form'] = grupo_agente_form
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):

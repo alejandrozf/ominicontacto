@@ -13,7 +13,8 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana, FormularioDemo, Contacto, FormularioDatoVenta, CalificacionCliente
+    Campana, FormularioDemo, Contacto, FormularioDatoVenta, CalificacionCliente,
+    Grupo
 )
 
 
@@ -354,3 +355,13 @@ class CalificacionClienteForm(forms.ModelForm):
             'contacto': forms.HiddenInput(),
             'es_venta': forms.HiddenInput(),
         }
+
+
+class GrupoAgenteForm(forms.Form):
+    grupo = forms.ChoiceField(choices=())
+
+    def __init__(self, *args, **kwargs):
+        super(GrupoAgenteForm, self).__init__(*args, **kwargs)
+        grupo_choice = [(grupo.id, grupo.nombre)
+                        for grupo in Grupo.objects.all()]
+        self.fields['grupo'].choices = grupo_choice
