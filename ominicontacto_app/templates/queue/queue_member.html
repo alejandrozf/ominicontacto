@@ -9,7 +9,7 @@
                 <li class="disabled"><a>Agregar agentes a la cola de la campaña</a></li>
             </ul>
             <br>
-            <form role="form" method="post">
+            <form action="{%  url 'queue_member' campana.pk %}" role="form" method="post">
                 {% if campana%}
                     <p>Campaña <strong>{{ campana.nombre }}</strong></p>
                 {% endif %}
@@ -17,7 +17,7 @@
                     {% csrf_token %}
                     <h4>Agrega agente</h4>
                     <table class="table table-striped">
-		                 {{form.as_table}}
+		                 {{queue_member_form.as_table}}
                     </table>
 
                 </div>

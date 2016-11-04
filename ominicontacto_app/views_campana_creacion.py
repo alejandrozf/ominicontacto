@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView)
+    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
     FormularioDemoForm, BusquedaContactoForm, ContactoForm)
@@ -144,35 +144,10 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
 
 class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                            CreateView):
+                            FormView):
     model = QueueMember
     form_class = QueueMemberForm
     template_name = 'queue/queue_member.html'
-
-    def get_object(self, queryset=None):
-        return self.campana.queue_campana
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        activacion_queue_service = ActivacionQueueService()
-        try:
-            activacion_queue_service.activar()
-        except RestablecerDialplanError, e:
-            message = ("<strong>Operación Errónea!</strong> "
-                       "No se pudo confirmar la creación del dialplan  "
-                       "al siguiente error: {0}".format(e))
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-        return self.render_to_response(self.get_context_data())
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            QueueMemberCreateView, self).get_context_data(**kwargs)
-        context['campana'] = self.campana
-        return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -200,8 +175,41 @@ class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
     def get_success_url(self):
         return reverse(
-            'queue_member',
+            'queue_member_campana',
             kwargs={"pk_campana": self.campana.pk})
+
+
+class QueueMemberCampanaView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
+                             TemplateView):
+    template_name = 'queue/queue_member.html'
+
+    def get_object(self, queryset=None):
+        return self.campana.queue_campana
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # activacion_queue_service = ActivacionQueueService()
+        # try:
+        #     activacion_queue_service.activar()
+        # except RestablecerDialplanError, e:
+        #     message = ("<strong>Operación Errónea!</strong> "
+        #                "No se pudo confirmar la creación del dialplan  "
+        #                "al siguiente error: {0}".format(e))
+        #     messages.add_message(
+        #         self.request,
+        #         messages.ERROR,
+        #         message,
+        #     )
+        queue_member_form = QueueMemberForm(self.request.GET or None)
+        context = self.get_context_data(**kwargs)
+        context['queue_member_form'] = queue_member_form
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            QueueMemberCampanaView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
 
 
 class QueueListView(ListView):
