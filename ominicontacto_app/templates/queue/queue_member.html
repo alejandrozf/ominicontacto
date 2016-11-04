@@ -25,7 +25,7 @@
                         Agregar agente
                     </button>
             </form>
-              <form action="{%  url 'queue_member' campana.pk %}" role="form" method="post">
+              <form action="{%  url 'grupo_agente' campana.pk %}" role="form" method="post">
                     {% csrf_token %}
                     <h4>Agrega grupos de agentes</h4>
                     <table class="table table-striped">
