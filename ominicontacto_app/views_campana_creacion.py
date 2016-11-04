@@ -7,12 +7,13 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView)
+    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
-    FormularioDemoForm, BusquedaContactoForm, ContactoForm)
+    FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm)
 from ominicontacto_app.models import (
-    Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto
+    Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto,
+    Grupo
 )
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -139,40 +140,15 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
     def get_success_url(self):
         return reverse(
-            'queue_member',
+            'queue_member_campana',
             kwargs={"pk_campana": self.campana.pk})
 
 
 class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                            CreateView):
+                            FormView):
     model = QueueMember
     form_class = QueueMemberForm
     template_name = 'queue/queue_member.html'
-
-    def get_object(self, queryset=None):
-        return self.campana.queue_campana
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        activacion_queue_service = ActivacionQueueService()
-        try:
-            activacion_queue_service.activar()
-        except RestablecerDialplanError, e:
-            message = ("<strong>Operación Errónea!</strong> "
-                       "No se pudo confirmar la creación del dialplan  "
-                       "al siguiente error: {0}".format(e))
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-        return self.render_to_response(self.get_context_data())
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            QueueMemberCreateView, self).get_context_data(**kwargs)
-        context['campana'] = self.campana
-        return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -198,10 +174,84 @@ class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
         return super(QueueMemberCreateView, self).form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(
+            QueueMemberCreateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
     def get_success_url(self):
         return reverse(
-            'queue_member',
+            'queue_member_campana',
             kwargs={"pk_campana": self.campana.pk})
+
+
+class GrupoAgenteCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
+                            FormView):
+    model = QueueMember
+    form_class = GrupoAgenteForm
+    template_name = 'queue/queue_member.html'
+
+    def form_valid(self, form):
+        grupo_id = form.cleaned_data.get('grupo')
+        grupo = Grupo.objects.get(pk=grupo_id)
+        for agente in grupo.agentes.all():
+            QueueMember.objects.get_or_create(
+                member=agente,
+                queue_name=self.campana.queue_campana,
+                defaults={'membername': agente.user.get_full_name(),
+                          'interface': """Local/{0}@from-queue/n""".format(
+                              agente.sip_extension),
+                          'penalty': 0,
+                          'paused': 0},
+            )
+        return super(GrupoAgenteCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            GrupoAgenteCreateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'queue_member_campana',
+            kwargs={"pk_campana": self.campana.pk})
+
+
+class QueueMemberCampanaView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
+                             TemplateView):
+    template_name = 'queue/queue_member.html'
+
+    def get_object(self, queryset=None):
+        return self.campana.queue_campana
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        queue_member_form = QueueMemberForm(self.request.GET or None)
+        grupo_agente_form = GrupoAgenteForm(self.request.GET or None)
+        context = self.get_context_data(**kwargs)
+        context['queue_member_form'] = queue_member_form
+        context['grupo_agente_form'] = grupo_agente_form
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            QueueMemberCampanaView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
 
 
 class QueueListView(ListView):
@@ -301,7 +351,7 @@ class QueueMemberDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse(
-            'queue_member',
+            'queue_member_campana',
             kwargs={"pk_campana": self.campana.pk})
 
 
@@ -310,7 +360,7 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     queue_member = QueueMember.objects.get(pk=pk_queuemember)
     queue_member.delete()
     return HttpResponseRedirect("/campana/" + str(pk_campana) +
-                                "/queue_member/")
+                                "/queue_member_campana/")
 
 
 class CampanaListView(ListView):
