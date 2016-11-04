@@ -73,7 +73,7 @@ class AgenteProfile(models.Model):
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     modulos = models.ManyToManyField(Modulo)
-    grupo = models.ForeignKey(Grupo)
+    grupo = models.ForeignKey(Grupo, related_name='agentes')
 
     def __unicode__(self):
         return self.user.get_full_name()
