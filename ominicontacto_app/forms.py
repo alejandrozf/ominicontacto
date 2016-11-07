@@ -228,11 +228,12 @@ class BusquedaContactoForm(forms.Form):
     buscar = forms.CharField(required=False,  widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'search pattern'}))
 
 
-class GrabacionBusquedaForm(forms.ModelForm):
+class GrabacionBusquedaForm(forms.Form):
     """
     El form para la busqueda de grabaciones
     """
-    fecha = forms.DateTimeField(required=False)
+    fecha_desde = forms.DateTimeField(required=False)
+    fecha_hasta = forms.DateTimeField(required=False)
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, ('', '---------'))
     tipo_llamada = forms.ChoiceField(required=False,
@@ -241,14 +242,6 @@ class GrabacionBusquedaForm(forms.ModelForm):
     tel_cliente = forms.CharField(required=False)
     sip_agente = forms.IntegerField(required=False)
 
-    def __init__(self, *args, **kwargs):
-        super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
-        self.fields['campana'].required = False
-
-    class Meta:
-        model = Grabacion
-        fields = ('fecha', 'tipo_llamada', 'id_cliente', 'tel_cliente',
-                  'sip_agente', 'campana')
 
 
 class CampanaForm(forms.ModelForm):
