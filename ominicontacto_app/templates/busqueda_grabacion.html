@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
+{% block head_js %}
+<script>
+    $(document).ready(function() {
+            $('#id_fecha_desde').datetimepicker({format: 'YYYY-MM-DD'});
+        $('#id_fecha_hasta').datetimepicker({format: 'YYYY-MM-DD'});
 
+        });
+    </script>
+{% endblock %}
 {% block content %}
 
 <div class="col-md-4">

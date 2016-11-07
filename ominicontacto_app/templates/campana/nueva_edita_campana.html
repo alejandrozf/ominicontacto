@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
+{% block head_js %}
+<script>
+    $(document).ready(function() {
+            $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
+        $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
 
+        });
+    </script>
+{% endblock %}
 {% block content %}
 
 
@@ -24,7 +32,4 @@
                     </button>
                  </div>
             </form>
-
-
-
 {% endblock %}
