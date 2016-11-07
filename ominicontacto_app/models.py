@@ -1118,11 +1118,14 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con esa "
                                        "sip agente"))
 
-    def grabacion_by_filtro(self, fecha, tipo_llamada, id_cliente,
-                              tel_cliente, sip_agente, campana):
+    def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
+                            id_cliente, tel_cliente, sip_agente, campana):
         grabaciones = self.filter()
-        if fecha:
-            grabaciones = grabaciones.filter(fecha=fecha)
+        if fecha_desde:
+            grabaciones = grabaciones.filter(fecha__gte=fecha_desde)
+
+        if fecha_hasta:
+            grabaciones = grabaciones.filter(fecha__lte=fecha_hasta)
 
         if tipo_llamada:
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
