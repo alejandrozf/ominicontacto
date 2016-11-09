@@ -3,7 +3,7 @@
 import pygal
 from pygal.style import Style, RedBlueStyle
 
-from ominicontacto_app.models import Grabacion
+from ominicontacto_app.models import Grabacion, AgenteProfile
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -129,11 +129,17 @@ class GraficoService():
         dict_agentes = Grabacion.objects.obtener_count_agente().filter(
             fecha__range=(fecha_inferior, fecha_superior))
         agentes = []
+        sip_agentes = []
 
-        for agente in dict_agentes:
-            agentes.append(agente['sip_agente'])
+        for sip_agente in dict_agentes:
+            sip_agentes.append(sip_agente['sip_agente'])
+            try:
+                agente = AgenteProfile.objects.get(sip_extension=sip_agente['sip_agente'])
+                agentes.append(agente.user.get_full_name())
+            except AgenteProfile.DoesNotExist:
+                agentes.append(sip_agente['sip_agente'])
 
-        return dict_agentes, agentes
+        return dict_agentes, agentes, sip_agentes
 
     def _obtener_total_agente_grabacion(self, dict_agentes, agentes):
 
@@ -267,7 +273,7 @@ class GraficoService():
                                                               campana)
         total_grabacion_manual = self._obtener_total_manual_grabacion(dict_campana,
                                                               campana)
-        dict_agentes, agentes = self._obtener_agente_grabacion(fecha_inferior, fecha_superior)
+        dict_agentes, agentes_nombre, agentes = self._obtener_agente_grabacion(fecha_inferior, fecha_superior)
 
         total_agentes = self._obtener_total_agente_grabacion(dict_agentes, agentes)
         total_agente_ics = self._obtener_total_ics_agente(dict_agentes, agentes)
@@ -293,6 +299,7 @@ class GraficoService():
             'total_grabacion_inbound': total_grabacion_inbound,
             'total_grabacion_manual': total_grabacion_manual,
             'agentes': agentes,
+            'agentes_nombre': agentes_nombre,
             'total_agentes': total_agentes,
             'total_agente_ics': total_agente_ics,
             'total_agente_dialer': total_agente_dialer,
@@ -346,7 +353,7 @@ class GraficoService():
             style=ESTILO_AZUL_ROJO_AMARILLO)
         barra_agente_total.title = 'Cantidad de llamadas de los agentes por tipo de llamadas'
 
-        barra_agente_total.x_labels = estadisticas['agentes']
+        barra_agente_total.x_labels = estadisticas['agentes_nombre']
         barra_agente_total.add('ICS',
                                 estadisticas['total_agente_ics'])
         barra_agente_total.add('DIALER',
@@ -366,7 +373,7 @@ class GraficoService():
                                         estadisticas['total_grabacion_inbound'],
                                         estadisticas['total_grabacion_manual']),
             'barra_campana_total': barra_campana_total,
-            'dict_agente_counter': zip(estadisticas['agentes'],
+            'dict_agente_counter': zip(estadisticas['agentes_nombre'],
                                         estadisticas['total_agentes'],
                                         estadisticas['total_agente_ics'],
                                         estadisticas['total_agente_dialer'],
