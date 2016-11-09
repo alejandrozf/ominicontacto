@@ -240,7 +240,7 @@ class GrabacionBusquedaForm(forms.Form):
                                      choices=tipo_llamada_choice)
     id_cliente = forms.CharField(required=False)
     tel_cliente = forms.CharField(required=False)
-    sip_agente = forms.IntegerField(required=False)
+    sip_agente = forms.IntegerField(required=False, label='Agente')
 
 
 class CampanaForm(forms.ModelForm):

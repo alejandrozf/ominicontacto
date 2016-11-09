@@ -68,7 +68,19 @@ class Grupo(models.Model):
         return self.nombre
 
 
+class AgenteProfileManager(models.Manager):
+
+    def obtener_agente_por_sip(self, sip_agente):
+
+        try:
+            return self.get(sip_extension=sip_agente)
+        except self.AgenteProfile.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con este sip %s ".
+                                      format(sip_agente)))
+
+
 class AgenteProfile(models.Model):
+    objects = AgenteProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
@@ -1197,6 +1209,10 @@ class Grabacion(models.Model):
     def __unicode__(self):
         return "grabacion del agente con el sip {0} con el cliente {1}".format(
             self.sip_agente, self.id_cliente)
+
+    def obtener_nombre_agente(self):
+        agente = AgenteProfile.objects.obtener_agente_por_sip(self.sip_agente)
+        return agente.user.get_full_name()
 
 
 class AgendaManager(models.Manager):
