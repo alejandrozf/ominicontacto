@@ -240,7 +240,13 @@ class GrabacionBusquedaForm(forms.Form):
                                      choices=tipo_llamada_choice)
     id_cliente = forms.CharField(required=False)
     tel_cliente = forms.CharField(required=False)
-    sip_agente = forms.IntegerField(required=False, label='Agente')
+    sip_agente = forms.ChoiceField(required=False, label='Agente', choices=())
+
+    def __init__(self, *args, **kwargs):
+        super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
+        agente_choice = [(agente.sip_extension, agente.user.get_full_name())
+                        for agente in AgenteProfile.objects.all()]
+        self.fields['sip_agente'].choices = agente_choice
 
 
 class CampanaForm(forms.ModelForm):
