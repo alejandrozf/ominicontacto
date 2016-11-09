@@ -2,7 +2,7 @@
 //2001, 2002 (123456)
 var config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp; 
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
-var KamailioIp = "190.210.15.161";
+var KamailioIp = "192.168.1.82";
 $(function() {
 	$('#modalSelectCmp').modal('hide');  
   var estado = JSON.stringify({'status' : 'online'});
@@ -423,8 +423,7 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
   function getData(campid, leadid) {
-  	//var url = "/campana/"+campid+"/formulario/"+leadid+"/";
-  	var url = "/formulario/"+campid+"/tarjeta/"+leadid+"/";
+  	var url = "/calificacion/"+campid+"/update/"+leadid+"/";
   	$("#dataView").attr('src', url);
   }
 });
