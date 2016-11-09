@@ -1121,11 +1121,14 @@ class GrabacionManager(models.Manager):
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
                             id_cliente, tel_cliente, sip_agente, campana):
         grabaciones = self.filter()
-        if fecha_desde:
-            grabaciones = grabaciones.filter(fecha__gte=fecha_desde)
 
-        if fecha_hasta:
-            grabaciones = grabaciones.filter(fecha__lte=fecha_hasta)
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+            grabaciones = grabaciones.filter(fecha__range=(fecha_desde,
+                                                           fecha_hasta))
 
         if tipo_llamada:
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)

@@ -1,12 +1,42 @@
 {% extends "base.html" %}
 {% load static %}
 {% block head_js %}
-<script>
-    $(document).ready(function() {
-            $('#id_fecha_desde').datetimepicker({format: 'YYYY-MM-DD'});
-        $('#id_fecha_hasta').datetimepicker({format: 'YYYY-MM-DD'});
+<script type="text/javascript">
+   $(function() {
+                var start = moment().subtract(29, 'days');
+                var end = moment();
+                function cb(start, end) {
+                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                }
 
-        });
+
+ $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+  });
+
+  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+});
+
+            // Init daterange plugin
+            $('#id_fecha').daterangepicker(
+                {
+
+                autoUpdateInput: false,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+        }, cb);
+
+        cb(start, end);
+
+});
     </script>
 {% endblock %}
 {% block content %}

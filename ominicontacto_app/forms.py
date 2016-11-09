@@ -232,8 +232,8 @@ class GrabacionBusquedaForm(forms.Form):
     """
     El form para la busqueda de grabaciones
     """
-    fecha_desde = forms.DateTimeField(required=False)
-    fecha_hasta = forms.DateTimeField(required=False)
+    fecha = forms.CharField(required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, ('', '---------'))
     tipo_llamada = forms.ChoiceField(required=False,

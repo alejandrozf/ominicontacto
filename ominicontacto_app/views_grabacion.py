@@ -30,8 +30,14 @@ class BusquedaGrabacionFormView(FormView):
             listado_de_grabaciones=Grabacion.objects.all()))
 
     def form_valid(self, form):
-        fecha_desde = form.cleaned_data.get('fecha_desde')
-        fecha_hasta = form.cleaned_data.get('fecha_hasta')
+        fecha = form.cleaned_data.get('fecha')
+        if fecha:
+            fecha_desde, fecha_hasta = fecha.split('-')
+            fecha_desde = convert_fecha_datetime(fecha_desde)
+            fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        else:
+            fecha_desde = ''
+            fecha_hasta = ''
         tipo_llamada = form.cleaned_data.get('tipo_llamada')
         id_cliente = form.cleaned_data.get('id_cliente')
         tel_cliente = form.cleaned_data.get('tel_cliente')
