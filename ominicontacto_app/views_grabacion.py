@@ -150,8 +150,6 @@ class GrabacionReporteFormView(FormView):
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
         graficos_estadisticas = service.general_llamadas_hoy(fecha_desde,
                                                              fecha_hasta)
         return self.render_to_response(self.get_context_data(

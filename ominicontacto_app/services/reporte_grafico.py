@@ -131,6 +131,10 @@ class GraficoService():
 
     def _obtener_agente_grabacion(self, fecha_inferior, fecha_superior):
         # lista de dict con la cantidad de cada campana
+        fecha_inferior = datetime.datetime.combine(fecha_inferior,
+                                                   datetime.time.min)
+        fecha_superior = datetime.datetime.combine(fecha_superior,
+                                                   datetime.time.max)
         dict_agentes = Grabacion.objects.obtener_count_agente().filter(
             fecha__range=(fecha_inferior, fecha_superior))
         agentes = []
