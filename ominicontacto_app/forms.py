@@ -243,7 +243,6 @@ class GrabacionBusquedaForm(forms.Form):
     sip_agente = forms.IntegerField(required=False)
 
 
-
 class CampanaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaForm, self).__init__(*args, **kwargs)
@@ -358,3 +357,10 @@ class GrupoAgenteForm(forms.Form):
         grupo_choice = [(grupo.id, grupo.nombre)
                         for grupo in Grupo.objects.all()]
         self.fields['grupo'].choices = grupo_choice
+
+
+class GrabacionReporteForm(forms.Form):
+    """
+    El form para reporte de grabaciones
+    """
+    fecha = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))

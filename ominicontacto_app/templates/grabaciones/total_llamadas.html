@@ -1,10 +1,68 @@
 {% extends "base.html" %}
 {% load static %}
+{% block head_js %}
+<script type="text/javascript">
+   $(function() {
+                var start = moment().subtract(29, 'days');
+                var end = moment();
+                function cb(start, end) {
+                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                }
 
+            // Init daterange plugin
+            $('#id_fecha').daterangepicker(
+                {
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+        }, cb);
+
+        cb(start, end);
+
+});
+    </script>
+{% endblock %}
 {% block content %}
  <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
+
+
+
 {% with graficos_estadisticas=graficos_estadisticas %}
+
+<div class="col-md-6">
+
+    <form role="form" method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <table class="table">
+           <tr>
+               <td>
+                   <div class="input-group date pull-right active" id="">
+                       {{form.fecha}}
+                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+               </td>
+               <td>
+                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                        Filtrar por esa fecha
+                </button>
+               </td>
+           </tr>
+        </table>
+
+    </form>
+</div>
+
+
 <table class="table table-bordered">
                         <thead>
                             <tr >
