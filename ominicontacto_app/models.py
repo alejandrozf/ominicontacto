@@ -74,7 +74,7 @@ class AgenteProfileManager(models.Manager):
 
         try:
             return self.get(sip_extension=sip_agente)
-        except self.AgenteProfile.DoesNotExist:
+        except AgenteProfile.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con este sip %s ".
                                       format(sip_agente)))
 
