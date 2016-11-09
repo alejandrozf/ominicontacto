@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pygal
+import datetime
 from pygal.style import Style, RedBlueStyle
 
 from ominicontacto_app.models import Grabacion, AgenteProfile
@@ -44,6 +45,10 @@ class GraficoService():
 
     def _obtener_campana_grabacion(self, fecha_inferior, fecha_superior):
         # lista de dict con la cantidad de cada campana
+        fecha_inferior = datetime.datetime.combine(fecha_inferior,
+                                                   datetime.time.min)
+        fecha_superior = datetime.datetime.combine(fecha_superior,
+                                                   datetime.time.max)
         dict_campana = Grabacion.objects.obtener_count_campana().filter(
             fecha__range=(fecha_inferior, fecha_superior))
         campana = []
