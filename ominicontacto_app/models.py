@@ -1096,6 +1096,9 @@ class GrabacionManager(models.Manager):
                                        "fecha"))
 
     def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
+        fecha_inicio = datetime.datetime.combine(fecha_inicio,
+                                                 datetime.time.min)
+        fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)
         try:
             return self.filter(fecha__range=(fecha_inicio, fecha_fin))
         except Grabacion.DoesNotExist:
