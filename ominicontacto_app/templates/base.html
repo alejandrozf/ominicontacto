@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}" >
+    		<link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
+
+    		<link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}"></link>
+
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -23,6 +27,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
+
     {% block head_js %}
     {% endblock %}
 
@@ -153,7 +159,7 @@
 						    </a>
 						    <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="{% url 'reporte_llamadas_hoy' %}"><span class=" glyphicon glyphicon-earphone" aria-hidden="true"></span> Llamadas</a>
+                                    <a href="{% url 'reporte_llamadas' %}"><span class=" glyphicon glyphicon-earphone" aria-hidden="true"></span> Llamadas</a>
                                 </li>
 						    	<li>
                                     <a href="#"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> SMS</a>

@@ -15,6 +15,7 @@ import tempfile
 import time
 import uuid
 import unicodedata
+import datetime
 
 from django.conf import settings
 from ominicontacto_app.errors import OmlError
@@ -185,3 +186,9 @@ def convert_string_in_boolean(cadena):
     else:
         # por defecto lo casteamos como false
         return False
+
+
+def convert_fecha_datetime(fecha):
+    mes, dia, ano = fecha.split('/')
+    fecha = datetime.datetime(int(ano), int(mes), int(dia))
+    return fecha

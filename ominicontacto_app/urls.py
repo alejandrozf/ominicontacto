@@ -317,6 +317,11 @@ urlpatterns = [
             views_grabacion.GrabacionReporteMesListView.as_view()),
         name='reporte_llamadas_mes',
         ),
+    url(r'^reporte/llamadas/$',
+        login_required(
+            views_grabacion.GrabacionReporteFormView.as_view()),
+        name='reporte_llamadas',
+        ),
     # ==========================================================================
     # Calificacion
     # ==========================================================================
