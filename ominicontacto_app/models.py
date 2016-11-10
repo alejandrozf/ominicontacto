@@ -1227,6 +1227,16 @@ class AgendaManager(models.Manager):
             raise (SuspiciousOperation("No se encontro evenos en el dia de la "
                                        "fecha"))
 
+    def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
+        eventos = self.filter()
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+            eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
+        return eventos.order_by('-fecha')
+
 
 class Agenda(models.Model):
     objects = AgendaManager()

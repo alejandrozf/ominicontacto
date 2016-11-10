@@ -21,7 +21,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
-    AgenteProfileForm, GrabacionBusquedaForm
+    AgenteProfileForm, AgendaBusquedaForm
 )
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
@@ -31,7 +31,8 @@ from services.asterisk_service import ActivacionAgenteService,\
 from services.regeneracion_asterisk import RegeneracionAsteriskService,\
     RestablecerDialplanError
 from django.views.decorators.csrf import csrf_protect
-from ominicontacto_app.utiles import convert_string_in_boolean
+from ominicontacto_app.utiles import convert_string_in_boolean,\
+    convert_fecha_datetime
 
 
 # def mensajes_recibidos_view(request):
@@ -376,27 +377,31 @@ def nuevo_evento_agenda_view(request):
     return response
 
 
-class AgenteEventosListView(ListView):
+class AgenteEventosFormView(FormView):
     model = AgenteProfile
     template_name = 'agente/agenda_agente.html'
+    form_class = AgendaBusquedaForm
 
-    def get_context_data(self, **kwargs):
-        context = super(AgenteEventosListView, self).get_context_data(
-            **kwargs)
+    def get(self, request, *args, **kwargs):
         agente = self.request.user.get_agente_profile()
-        if agente is not None:
-            listado_de_eventos = agente.eventos.eventos_fecha_hoy()
-            context['listado_de_eventos'] = listado_de_eventos
+        listado_de_eventos = agente.eventos.eventos_filtro_fecha('', '')
+        return self.render_to_response(self.get_context_data(
+            listado_de_eventos=listado_de_eventos))
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        if fecha:
+            fecha_desde, fecha_hasta = fecha.split('-')
+            fecha_desde = convert_fecha_datetime(fecha_desde)
+            fecha_hasta = convert_fecha_datetime(fecha_hasta)
         else:
-            message = ("Operación Errónea!"
-                       "No se pueden mostrar los eventos por el agente no tiene"
-                       " creado su perfil de agente")
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-        return context
+            fecha_desde = ''
+            fecha_hasta = ''
+        agente = self.request.user.get_agente_profile()
+        listado_de_eventos = agente.eventos.eventos_filtro_fecha(fecha_desde,
+                                                                 fecha_hasta)
+        return self.render_to_response(self.get_context_data(
+            listado_de_eventos=listado_de_eventos))
 
 
 def regenerar_asterisk_view(request):

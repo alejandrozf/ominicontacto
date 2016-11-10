@@ -112,7 +112,7 @@ urlpatterns = [
         name='agenda_nuevo',
         ),
     url(r'^agenda/agente_list/$',
-        login_required(views.AgenteEventosListView.as_view()),
+        login_required(views.AgenteEventosFormView.as_view()),
         name='agenda_agente_list',
         ),
     url(r'^regenerar_asterisk/$', views.regenerar_asterisk_view,

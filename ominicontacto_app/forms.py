@@ -369,4 +369,14 @@ class GrabacionReporteForm(forms.Form):
     """
     El form para reporte de grabaciones
     """
-    fecha = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    fecha = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control'}))
+
+
+class AgendaBusquedaForm(forms.Form):
+    """
+    El busquedad form poara agente
+    """
+    fecha = forms.CharField(required=False,
+                            widget=forms.TextInput(
+                                attrs={'class': 'form-control'}))
