@@ -90,19 +90,19 @@ class AgenteProfileForm(forms.ModelForm):
     #     else:
     #         return self.cleaned_data.get('user')
 
-    def clean_sip_extension(self):
-        sip_extension = self.cleaned_data['sip_extension']
-        if settings.OL_SIP_LIMITE_INFERIOR > sip_extension or\
-                sip_extension > settings.OL_SIP_LIMITE_SUPERIOR:
-            raise forms.ValidationError("El sip_extension es incorrecto debe "
-                                        "ingresar un numero entre {0} y {1}".
-                                        format(settings.OL_SIP_LIMITE_INFERIOR,
-                                               settings.OL_SIP_LIMITE_SUPERIOR))
-        return sip_extension
+    # def clean_sip_extension(self):
+    #     sip_extension = self.cleaned_data['sip_extension']
+    #     if settings.OL_SIP_LIMITE_INFERIOR > sip_extension or\
+    #             sip_extension > settings.OL_SIP_LIMITE_SUPERIOR:
+    #         raise forms.ValidationError("El sip_extension es incorrecto debe "
+    #                                     "ingresar un numero entre {0} y {1}".
+    #                                     format(settings.OL_SIP_LIMITE_INFERIOR,
+    #                                            settings.OL_SIP_LIMITE_SUPERIOR))
+    #     return sip_extension
 
     class Meta:
         model = AgenteProfile
-        fields = ('sip_extension', 'sip_password', 'modulos', 'grupo')
+        fields = ('sip_password', 'modulos', 'grupo')
 
 
 class QueueForm(forms.ModelForm):

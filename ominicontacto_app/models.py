@@ -78,6 +78,19 @@ class AgenteProfileManager(models.Manager):
             raise(SuspiciousOperation("No se encontro agente con este sip {0} ".
                                       format(sip_agente)))
 
+    def obtener_ultimo_sip_extension(self):
+        """
+        Este metodo se encarga de devolver el siguinte sip_extension
+        y si no existe agente e devuelve 100
+        """
+        try:
+            identificador = \
+                self.latest('id').sip_extension + 1
+        except AgenteProfile.DoesNotExist:
+            identificador = 100
+
+        return identificador
+
 
 class AgenteProfile(models.Model):
     objects = AgenteProfileManager()
