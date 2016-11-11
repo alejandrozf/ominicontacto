@@ -102,7 +102,7 @@ class AgenteProfileForm(forms.ModelForm):
 
     class Meta:
         model = AgenteProfile
-        fields = ('sip_password', 'modulos', 'grupo')
+        fields = ('modulos', 'grupo')
 
 
 class QueueForm(forms.ModelForm):

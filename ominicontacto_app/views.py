@@ -148,6 +148,7 @@ class AgenteProfileCreateView(CreateView):
         self.object.user = usuario
         self.object.sip_extension = AgenteProfile.objects.\
             obtener_ultimo_sip_extension()
+        self.object.sip_password = User.objects.make_random_password()
         self.object.save()
         kamailio_service = KamailioService()
         kamailio_service.crear_agente_kamailio(self.object)
