@@ -87,7 +87,7 @@ class AgenteProfileManager(models.Manager):
             identificador = \
                 self.latest('id').sip_extension + 1
         except AgenteProfile.DoesNotExist:
-            identificador = 100
+            identificador = 1000
 
         return identificador
 
