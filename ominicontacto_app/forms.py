@@ -246,6 +246,7 @@ class GrabacionBusquedaForm(forms.Form):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         agente_choice = [(agente.sip_extension, agente.user.get_full_name())
                         for agente in AgenteProfile.objects.all()]
+        agente_choice.insert(0, ('', '---------'))
         self.fields['sip_agente'].choices = agente_choice
 
 
