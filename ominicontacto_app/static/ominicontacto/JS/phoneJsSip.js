@@ -1,8 +1,8 @@
 //***************************************************
 //2001, 2002 (123456)
-var config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp; 
+var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp; 
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
-var KamailioIp = "192.168.1.82";
+var KamailioIp = "172.16.20.14";
 $(function() {
 	$('#modalSelectCmp').modal('hide');  
   var estado = JSON.stringify({'status' : 'online'});
@@ -155,6 +155,7 @@ $(function() {
       e.session.on('failed',function(e) {
         $("#aTransfer").prop('disabled', true);
         $("#bTransfer").prop('disabled', true);
+        $("#onHold").prop('disabled', true);
         $("#modalReceiveCalls").modal('hide');
         Sounds("","stop");
       });
@@ -259,8 +260,19 @@ $(function() {
         Sounds("", "stop");
         $("#aTransfer").prop('disabled', false);
         $("#bTransfer").prop('disabled', false);
+        $("#onHold").prop('disabled', false);
       });
   
+  		  var clickHold = document.getElementById("onHold");
+  		  clickHold.onclick = function () {
+  		  	if(flagHold) {
+  		  		flagHold = false;
+  		  	  e.session.hold({useUpdate: true});
+  		  	} else {
+  		  	  flagHold = true;
+  		  	  e.session.hold({useUpdate: true});  		  	
+  		  	}
+  		  };
         var aTransf = document.getElementById("aTransfer");
         aTransf.onclick = function() {
           flagTransf = true;
@@ -280,6 +292,12 @@ $(function() {
           objRTCsession.session.sendDTMF(displayNumber.value);
         }
     });
+  $("#redial").click(function () {  	
+  	entrante = false;
+  	$("#modalSelectCmp").modal("show");
+    // esto es para enviar un Invite/llamada
+    num = lastDialedNumber.value;
+  });
   $("#endCall").click(function() {
     Sounds("", "stop");
     userAgent.terminateSessions();
@@ -290,6 +308,7 @@ $(function() {
   	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
     num = displayNumber.value;
+    lastDialedNumber = num;
     });
     $("#SelectCamp").click(function () {
     	$("#modalSelectCmp").modal("hide");
@@ -423,6 +442,7 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
   function getData(campid, leadid) {
+  	//        var url = "/formulario/"+campid+"/tarjeta/"+leadid+"/";
   	var url = "/calificacion/"+campid+"/update/"+leadid+"/";
   	$("#dataView").attr('src', url);
   }
