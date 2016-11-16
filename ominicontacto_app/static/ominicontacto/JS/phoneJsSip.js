@@ -32,7 +32,8 @@ $(function() {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
       ws_servers : "wss://"+KamailioIp+":443",
-      password : $("#sipSec").val()//"123456"
+      password : $("#sipSec").val(),
+      session_timers: false//"123456"
     };
     userAgent = new JsSIP.UA(config);
     sesion = userAgent.start();
