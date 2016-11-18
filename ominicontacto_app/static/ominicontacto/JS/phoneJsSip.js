@@ -268,10 +268,10 @@ $(function() {
   		  clickHold.onclick = function () {
   		  	if(flagHold) {
   		  		flagHold = false;
-  		  	  e.session.hold({useUpdate: true});
+  		  	  e.session.hold({useUpdate: false});
   		  	} else {
   		  	  flagHold = true;
-  		  	  e.session.hold({useUpdate: true});  		  	
+  		  	  e.session.hold({useUpdate: false);  		  	
   		  	}
   		  };
         var aTransf = document.getElementById("aTransfer");
