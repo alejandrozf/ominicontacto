@@ -271,7 +271,7 @@ $(function() {
   		  	  e.session.hold({useUpdate: false});
   		  	} else {
   		  	  flagHold = true;
-  		  	  e.session.unhold({useUpdate: false);  		  	
+  		  	  e.session.unhold({useUpdate: false});  		  	
   		  	}
   		  };
         var aTransf = document.getElementById("aTransfer");
