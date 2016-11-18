@@ -394,6 +394,9 @@ $(function() {
     callSipStatus.style.color = "#80FF00";
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
+    $("#aTransfer").prop('disabled', true);
+    $("#bTransfer").prop('disabled', true);
+    $("#onHold").prop('disabled', true);
   }
   function setSipStatus(img, state, elem) {
     
