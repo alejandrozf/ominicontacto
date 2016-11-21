@@ -1,4 +1,5 @@
 var a = 0;
+var holdFlag = false;
 var centesimasO = 0;
 var segundosO = 0;
 var minutosO = 0;
@@ -192,7 +193,15 @@ $(function () {
 	         inicio2();
 	     //} 
 	 });
-	
+	 $("#onHold").click(function (){
+	 	 if(holdFlag === true) {
+	 	   $("#onHold").html("unhold");
+	 	   holdFlag = false;
+	 	 } else {
+	 	 	 $("#onHold").html("hold");
+	 	 	 holdFlag = true;
+	 	 }
+	 });
 	 $("#txtSms").click(function () {
 	     $.ajax({
 	         url: '/sms/getAll/',

@@ -1,10 +1,11 @@
 var user = '';
-var KamailioIp = "190.210.15.161";
+var KamailioIp = "172.16.20.14";
 $(function() {
 	var configuration = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
       ws_servers : "wss://"+KamailioIp+":443",
-      password : $("#sipSec").val()
+      password : $("#sipSec").val(),
+      session_timers: false
     };
   var ua = new JsSIP.UA(configuration);
   var sesion = ua.start();
