@@ -1476,7 +1476,7 @@ class CalificacionClienteManager(models.Manager):
 
 class CalificacionCliente(models.Model):
 
-    object = CalificacionClienteManager()
+    objects = CalificacionClienteManager()
 
     campana = models.ForeignKey(Campana, related_name="calificaconcliente")
     contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
