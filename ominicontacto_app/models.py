@@ -1464,7 +1464,19 @@ class FormularioDatoVenta(models.Model):
                "{1} ".format(self.campana, self.contacto)
 
 
+class CalificacionClienteManager(models.Manager):
+
+    def obtener_cantidad_calificacion_campana(self, campana):
+        try:
+            return self.values('calificacion').annotate(
+                cantidad=Count('campana')).filter(campana=campana)
+        except CalificacionCliente.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro califacaciones "))
+
+
 class CalificacionCliente(models.Model):
+
+    object = CalificacionClienteManager()
 
     campana = models.ForeignKey(Campana, related_name="calificaconcliente")
     contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
