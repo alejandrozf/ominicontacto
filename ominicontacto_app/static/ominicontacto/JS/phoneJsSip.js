@@ -269,10 +269,10 @@ $(function() {
   		  clickHold.onclick = function () {
   		  	if(flagHold) {
   		  		flagHold = false;
-  		  	  e.session.hold({useUpdate: true});
+  		  	  e.session.hold();
   		  	} else {
   		  	  flagHold = true;
-  		  	  e.session.unhold({useUpdate: true});  		  	
+  		  	  e.session.unhold();  		  	
   		  	}
   		  };
         var aTransf = document.getElementById("aTransfer");
