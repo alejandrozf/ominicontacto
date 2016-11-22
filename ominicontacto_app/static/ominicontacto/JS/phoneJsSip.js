@@ -4,6 +4,7 @@ var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgen
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 $(function() {
+	$("#redial").prop('disabled', true);
 	$('#modalSelectCmp').modal('hide');  
   var estado = JSON.stringify({'status' : 'online'});
   /*$.ajax({
@@ -268,10 +269,10 @@ $(function() {
   		  clickHold.onclick = function () {
   		  	if(flagHold) {
   		  		flagHold = false;
-  		  	  e.session.hold({useUpdate: false});
+  		  	  e.session.hold({useUpdate: true});
   		  	} else {
   		  	  flagHold = true;
-  		  	  e.session.unhold({useUpdate: false});  		  	
+  		  	  e.session.unhold({useUpdate: true});  		  	
   		  	}
   		  };
         var aTransf = document.getElementById("aTransfer");
@@ -315,6 +316,7 @@ $(function() {
     	$("#modalSelectCmp").modal("hide");
     	headerIdCamp = $("#cmpList").val();
     	headerNomCamp = $("#cmpList option:selected").html();
+      $("#redial").prop('disabled',false);
     	makeCall();
   });
   function makeCall() {
