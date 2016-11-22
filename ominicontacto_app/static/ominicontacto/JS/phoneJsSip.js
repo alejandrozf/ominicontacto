@@ -1,9 +1,10 @@
 //***************************************************
 //2001, 2002 (123456)
-var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp; 
+var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 $(function() {
+	$("#redial").prop('disabled', true);
 	$('#modalSelectCmp').modal('hide');  
   var estado = JSON.stringify({'status' : 'online'});
   /*$.ajax({
@@ -268,10 +269,10 @@ $(function() {
   		  clickHold.onclick = function () {
   		  	if(flagHold) {
   		  		flagHold = false;
-  		  	  e.session.hold({useUpdate: false});
+  		  	  e.session.hold();
   		  	} else {
   		  	  flagHold = true;
-  		  	  e.session.unhold({useUpdate: false});  		  	
+  		  	  e.session.unhold();  		  	
   		  	}
   		  };
         var aTransf = document.getElementById("aTransfer");
@@ -295,9 +296,9 @@ $(function() {
     });
   $("#redial").click(function () {  	
   	entrante = false;
+  	num = lastDialedNumber;
   	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
-    num = lastDialedNumber.value;
   });
   $("#endCall").click(function() {
     Sounds("", "stop");
@@ -315,6 +316,7 @@ $(function() {
     	$("#modalSelectCmp").modal("hide");
     	headerIdCamp = $("#cmpList").val();
     	headerNomCamp = $("#cmpList option:selected").html();
+      $("#redial").prop('disabled',false);
     	makeCall();
   });
   function makeCall() {

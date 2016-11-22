@@ -194,12 +194,12 @@ $(function () {
 	     //} 
 	 });
 	 $("#onHold").click(function (){
-	 	 if(holdFlag === true) {
+	 	 if(holdFlag === false) {
 	 	   $("#onHold").html("unhold");
-	 	   holdFlag = false;
+	 	   holdFlag = true;
 	 	 } else {
 	 	 	 $("#onHold").html("hold");
-	 	 	 holdFlag = true;
+	 	 	 holdFlag = false;
 	 	 }
 	 });
 	 $("#txtSms").click(function () {
