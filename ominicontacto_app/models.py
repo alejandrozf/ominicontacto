@@ -75,8 +75,9 @@ class AgenteProfileManager(models.Manager):
         try:
             return self.get(sip_extension=sip_agente)
         except AgenteProfile.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro agente con este sip {0} ".
-                                      format(sip_agente)))
+            logger.exception("Excepcion detectada al obtener_agente_por_sip "
+                             "con el sip {0} no existe ".format(sip_agente))
+            return None
 
     def obtener_ultimo_sip_extension(self):
         """
@@ -1228,7 +1229,9 @@ class Grabacion(models.Model):
 
     def obtener_nombre_agente(self):
         agente = AgenteProfile.objects.obtener_agente_por_sip(self.sip_agente)
-        return agente.user.get_full_name()
+        if agente:
+            return agente.user.get_full_name()
+        return self.sip_agente
 
 
 class AgendaManager(models.Manager):
