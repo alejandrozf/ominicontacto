@@ -203,9 +203,7 @@ class CalificacionClienteCreateView(CreateView):
     def get_form(self, form_class):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
-        calificacion_choice = [(calificacion.id, calificacion.nombre)
-                          for calificacion in calificaciones]
-        return form_class(calificacion_choice=calificacion_choice,
+        return form_class(calificacion_choice=calificaciones,
                           **self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
@@ -276,10 +274,7 @@ class CalificacionClienteUpdateView(UpdateView):
     def get_form(self, form_class):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
-
-        calificacion_choice = [(calificacion.id, calificacion.nombre)
-                          for calificacion in calificaciones]
-        return form_class(calificacion_choice=calificacion_choice,
+        return form_class(calificacion_choice=calificaciones,
                           **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
