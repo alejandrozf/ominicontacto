@@ -103,11 +103,22 @@ $(function() {
 	        flagPausa = true;
 	        parar1();
 	        inicio2();
-	        reinicio($("#horaC"), $("#minsC"), $("#segsC")); 
+	        //reinicio($("#horaC"), $("#minsC"), $("#segsC")); 
         }
+        reinicio($("#horaC"), $("#minsC"), $("#segsC"));
         parar3();
         defaultCallState();
       });
+      
+      function reinicio(horaDOM, minDOM, segDOM) {
+	     clearInterval(control);
+	     centesimasP = 0;
+	     segundosP = 0;
+	     minutosP = 0;
+	     segDOM.html(":00");
+	     minDOM.html(":00");
+	     horaDOM.html("00");
+  	 }
       //dar solucion a la repeticion de codigo, esto ya existe en main.js
       function parar1() {
 	     clearInterval(control1);
