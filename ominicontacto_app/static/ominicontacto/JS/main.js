@@ -96,7 +96,6 @@ $(function () {
 	             var found = arrPausas.indexOf(lastPause);
 	             if (found != -1) {
 	                 //if (pausas[i].id === lastPause) {
-	                 debugger;
 	                 horaToSum = $("#horaP").html();
 	                 minsToSum = $("#minsP").html().replace(":", "");
 	                 segsToSum = $("#segsP").html().replace(":", "");

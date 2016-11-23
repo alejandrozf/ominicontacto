@@ -103,6 +103,7 @@ $(function() {
 	        flagPausa = true;
 	        parar1();
 	        inicio2();
+	        reinicio($("#horaC"), $("#minsC"), $("#segsC")); 
         }
         parar3();
         defaultCallState();
