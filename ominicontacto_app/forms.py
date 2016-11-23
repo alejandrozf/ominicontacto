@@ -342,7 +342,7 @@ class CalificacionClienteForm(forms.ModelForm):
 
     def __init__(self, calificacion_choice, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
-        self.fields['calificacion'].choice = calificacion_choice
+        self.fields['calificacion'].queryset = calificacion_choice
         self.fields['calificacion'].empty_label = None
         self.fields['calificacion'].empty_label = 'venta'
 
