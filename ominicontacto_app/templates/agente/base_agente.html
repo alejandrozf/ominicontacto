@@ -138,6 +138,10 @@
                    <button id="aTransfer" value="*199" class="btn btn-warning btn-xs" disabled="disabled">A Transfer</button>
                    <button id="bTransfer" value="*198" class="btn btn-warning btn-xs" disabled="disabled">B Transfer</button>
                    <button id="onHold" value="*198" class="btn btn-warning btn-xs" disabled="disabled">Hold</button>
+                   <span id="sumTime" class="label label-default">
+            					 Total
+            			     <label id="horaC"></label><label id="minsC"></label><label id="segsC"></label>
+          				 </span>
                </div>
             </div>
         </div>
@@ -364,10 +368,12 @@
           <span id="operationTime" class="label label-default">
             Operacion
             <label id="horaO"></label><label id="minsO"></label><label id="segsO"></label>
-          </span>&nbsp;<span id="pauseTime" class="label label-default">
+          </span>&nbsp;
+          <span id="pauseTime" class="label label-default">
             Pausa
             <label id="horaP"></label><label id="minsP"></label><label id="segsP"></label>
-          </span>&nbsp;<span id="sumTime" class="label label-default">
+          </span>&nbsp;
+          <span id="sumTime" class="label label-default">
             Total
             <label id="horaT"></label><label id="minsT"></label><label id="segsT"></label>
           </span>
@@ -402,9 +408,9 @@
     <legend>Agenda</legend>
       <div class="container-fluid">
 				<div class="row">
-				  <div class='input-group date' id='fechaAgenda' data-date-format="YYYY-MM-DD">
+				  <div class='input-group date' id='fechaAgenda'>
               <input type='text' class="form-control" id="ctlfechaAgenda" name="txtFechaAgenda" required="required"/>
-              <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
               </span>
           </div><br>
           <div class='input-group date'>

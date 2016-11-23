@@ -49,17 +49,6 @@ $(function() {
     $("#modalCallList").modal('show');
   });
   $("#setPause").click(function() {
-    /*$.ajax({
-      url: '/status/setStat',
-      type: 'POST',
-      contentType: 'text/plain',
-      content: 'pause='+$("#pauseType").value,
-      error: function (jqXHR, textStatus, errorThrown) {
-              console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-      }
-    });*/
-    //console.log($("#pauseType").val());
-    //num = "0077"+$("#pauseType").value.toUpperCase();
     console.log($("#pauseType").val());
     num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall();
@@ -115,14 +104,21 @@ $(function() {
 	        parar1();
 	        inicio2();
         }
+        parar3();
         defaultCallState();
       });
       //dar solucion a la repeticion de codigo, esto ya existe en main.js
       function parar1() {
 	     clearInterval(control1);
 	 		}
+	 		function parar3() {
+	     clearInterval(control3);
+	 		}
 	 		function inicio2() {
 	     control2 = setInterval(cronometro2, 1000);
+	 		}
+	 		function inicio3() {
+	 			control3 = setInterval(cronometro3, 1000);
 	 		}
       function cronometro2() {
 	     if (centesimasP < 59) {
@@ -151,6 +147,36 @@ $(function() {
 	             minutosP = "0" + minutosP;
 	         }
 	         $("#horaP").html("" + minutosP);
+	     }
+	 }
+	 //****************************CRONOMETRO DE LLAMADA***********************************
+	 function cronometro3() {
+	     if (centesimasC < 59) {
+	         centesimasC++;
+	         if (centesimasC < 10) {
+	             centesimasC = "0" + centesimasC;
+	         }
+	         $("#segsC").html(":" + centesimasC);
+	     }
+	     if (centesimasC == 59) {
+	         centesimasC = -1;
+	     }
+	     if (centesimasC == 0) {
+	         segundosC++;
+	         if (segundosC < 10) {
+	             segundosC = "0" + segundosC;
+	         }
+	         $("#minsC").html(":" + segundosC);
+	     }
+	     if (segundosC == 59) {
+	         segundosC = -1;
+	     }
+	     if ((centesimasC == 0) && (segundosC == 0)) {
+	         minutosC++;
+	         if (minutosC < 10) {
+	             minutosC = "0" + minutosC;
+	         }
+	         $("#horaC").html("" + minutosC);
 	     }
 	 }
 	 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -201,18 +227,22 @@ $(function() {
         var atiendoSi = document.getElementById('answer');
         var atiendoNo = document.getElementById('doNotAnswer');
         var session_incoming = e.session;
+        
         session_incoming.on('addstream',function(e) {
           remote_stream = e.stream;
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
         });
+        
         var options = {'mediaConstraints': {'audio': true,'video': false}};
         processOrigin(originHeader, options);
+        
         atiendoSi.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           session_incoming.answer(options);
           setCallState("Connected", "orange");
           Sounds("","stop");
         };
+        
         atiendoNo.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           if($("#autopause").val() === "True") {
@@ -221,6 +251,7 @@ $(function() {
           userAgent.terminateSessions();
           defaultCallState();
         };
+        
         function processOrigin(origin, opt) {
 			  	var options = opt;
   				switch(origin) {
@@ -253,18 +284,21 @@ $(function() {
   		  			break;  
   				}
   			}
+  			
       } else {
         Sounds("Out", "play");
         var session_outgoing = e.session;
 
       }
+      
       e.session.on("accepted", function() {
         Sounds("", "stop");
         $("#aTransfer").prop('disabled', false);
         $("#bTransfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
+        inicio3();
       });
-  
+      
   		  var clickHold = document.getElementById("onHold");
   		  clickHold.onclick = function () {
   		  	if(flagHold) {
@@ -282,7 +316,6 @@ $(function() {
           e.session.sendDTMF("2");
           setTimeout(transferir(e), 3000);
         };
-
         var bTransf = document.getElementById("bTransfer");
         bTransf.onclick = function() {
           flagTransf = true;
@@ -290,21 +323,25 @@ $(function() {
           e.session.sendDTMF("#");
           setTimeout(transferir(e), 3000);
         };
+        
         function transferir(objRTCsession) {
           objRTCsession.session.sendDTMF(displayNumber.value);
         }
     });
+    
   $("#redial").click(function () {  	
   	entrante = false;
   	num = lastDialedNumber;
   	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
   });
+  
   $("#endCall").click(function() {
     Sounds("", "stop");
     userAgent.terminateSessions();
     defaultCallState();
   });
+  
   $("#call").click(function(e) {
   	entrante = false;
   	$("#modalSelectCmp").modal("show");
@@ -312,6 +349,7 @@ $(function() {
     num = displayNumber.value;
     lastDialedNumber = num;
     });
+    
     $("#SelectCamp").click(function () {
     	$("#modalSelectCmp").modal("hide");
     	headerIdCamp = $("#cmpList").val();
@@ -319,6 +357,7 @@ $(function() {
       $("#redial").prop('disabled',false);
     	makeCall();
   });
+  
   function makeCall() {
     eventHandlers = {
       'confirmed':  function(e) {
@@ -379,6 +418,7 @@ $(function() {
        displayNumber.value = "";
      }
   }
+  
   function setCallState(estado, color) {
     callSipStatus.parentNode.removeChild(callSipStatus);
     callSipStatus = document.createElement("em");
@@ -387,6 +427,7 @@ $(function() {
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
   }
+  
   function defaultCallState() {
     if(callStatus.childElementCount > 0) {
       callSipStatus.parentNode.removeChild(callSipStatus);
@@ -400,8 +441,8 @@ $(function() {
     $("#bTransfer").prop('disabled', true);
     $("#onHold").prop('disabled', true);
   }
+  
   function setSipStatus(img, state, elem) {
-    
     if(elem.childElementCount > 0) {
       var hijo1 = document.getElementById("textSipStatus");
       var hijo2 = document.getElementById("imgStatus");
@@ -417,6 +458,7 @@ $(function() {
     elem.appendChild(iconStatus);
     elem.appendChild(textSipStatus);
   }
+  
   function Sounds(callType, action) {
     var ring = null;
     if(action === "play") {
@@ -439,17 +481,20 @@ $(function() {
         ring.pause();
     }
   }
+  
   function getBlankFormCamp(campid) {
     var url = '/campana/'+campid+'/formulario_nuevo/';
     $("#dataView").attr('src', url); 
   }
+  
   function processCallid(callerid) {
   	var url = "/contacto/"+callerid+"/list/";
   	$("#dataView").attr('src', url);
   }
+  
   function getData(campid, leadid) {
-  	//        var url = "/formulario/"+campid+"/tarjeta/"+leadid+"/";
   	var url = "/calificacion/"+campid+"/update/"+leadid+"/";
   	$("#dataView").attr('src', url);
   }
+  
 });

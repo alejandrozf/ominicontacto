@@ -67,10 +67,9 @@ $(function () {
 	  setTimeout(function(){$(modal).modal("hide");}, 2000);
 	}
 	$('#fechaAgenda').datetimepicker({
-  	pickTime: false
+  	'format': 'DD/MM/YYYY'
 	});
 	$('#horaAgenda').datetimepicker({
-  	pickDate: false,
-  	format: 'HH:mm'
+  	'format': 'HH:mm'
 	});
 });
