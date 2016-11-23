@@ -17,7 +17,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView
 )
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa, Grabacion, Agenda
+    User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
@@ -424,3 +424,18 @@ def regenerar_asterisk_view(request):
                      ' asterisk y el reload se hizo de manera correcta')
     return render_to_response('regenerar_asterisk.html',
                               context_instance=RequestContext(request))
+
+
+def nuevo_duracion_llamada_view(request):
+    agente = request.GET['agente']
+    numero_telefono = request.GET['numero_telefono']
+    tipo_llamada = request.GET['tipo_llamada']
+    duracion = request.GET['duracion']
+
+    agente = AgenteProfile.objects.get(pk=int(agente))
+    DuracionDeLlamada.objects.create(agente=agente,
+                                     numero_telefono=numero_telefono,
+                                     tipo_llamada=tipo_llamada,
+                                     duracion=duracion)
+    response = JsonResponse({'status': 'OK'})
+    return response
