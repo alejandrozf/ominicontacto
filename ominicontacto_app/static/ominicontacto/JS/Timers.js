@@ -7,6 +7,9 @@ var minutosP = 0;
 var centesimasT = 0;
 var segundosT = 0;
 var minutosT = 0;
+var centesimasC = 0;
+var segundosC = 0;
+var minutosC = 0;
 
 $(function () {
 
@@ -19,6 +22,9 @@ $(function () {
   $("#segsT").html(":00");
   $("#minsT").html(":00");
   $("#horaT").html("00");
+  $("#segsC").html(":00");
+  $("#minsC").html(":00");
+  $("#horaC").html("00");
 
   function parar1 () {
     clearInterval(control1);
