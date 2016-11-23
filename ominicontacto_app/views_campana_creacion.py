@@ -23,6 +23,7 @@ from ominicontacto_app.services.reporte_campana_calificacion import \
     ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_venta import \
     ReporteFormularioVentaService
+from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 
 import logging as logging_
 
@@ -619,3 +620,29 @@ class ExportaReporteFormularioVentaView(UpdateView):
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
+
+
+class CampanaReporteGrafico(ListView):
+    """
+    Esta vista lista los objetos Capanas
+    diferenciadas por sus estados actuales.
+    Pasa un diccionario al template
+    con las claves como estados.
+    """
+
+    template_name = 'campana/reporte_campana.html'
+    context_object_name = 'campana'
+    model = Campana
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaReporteGrafico, self).get_context_data(
+           **kwargs)
+        # obtener_estadisticas_render_graficos_supervision()
+        service = EstadisticasService()
+
+        context['graficos_estadisticas'] = service.general_campana(
+            self.get_object(), 1, 2)
+        return context

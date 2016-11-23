@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_js %}
+<script type="text/javascript">
+   $(function() {
+                var start = moment();
+                var end = moment();
+                function cb(start, end) {
+                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                }
+
+            // Init daterange plugin
+            $('#id_fecha').daterangepicker(
+                {
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+        }, cb);
+
+        cb(start, end);
+
+});
+    </script>
+{% endblock %}
+{% block content %}
+ <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
+
+
+
+{% with graficos_estadisticas=graficos_estadisticas %}
+
+
+
+
+
+                <table class="table table-bordered">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <td colspan="2">
+                                    <h4>Cantidad de calificacion por campana</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Calificacion</th>
+                                            <th>cantidad </th>
+
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for calificaciones_nombre, calificaciones_cantidad in graficos_estadisticas.dict_campana_counter %}
+                                                <tr>
+                                                    <td><h5>{{ calificaciones_nombre }} </h5></td>
+                                                    <td><h5>{{ calificaciones_cantidad }} </h5></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.barra_campana_calificacion.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+{% endwith %}
+{% endblock %}

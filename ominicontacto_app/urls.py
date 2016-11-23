@@ -277,6 +277,11 @@ urlpatterns = [
             views_campana_creacion.CampanaReporteListView.as_view()),
         name='reporte_campana',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/reporte_grafico/$',
+        login_required(
+            views_campana_creacion.CampanaReporteGrafico.as_view()),
+        name='reporte_campana_grafico',
+        ),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
