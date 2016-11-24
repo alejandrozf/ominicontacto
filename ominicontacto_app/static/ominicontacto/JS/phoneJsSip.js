@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp;
+var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 $(function() {
@@ -29,6 +29,7 @@ $(function() {
     	flagPausa === true;
     }
   });
+  
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
@@ -38,16 +39,17 @@ $(function() {
     };
     userAgent = new JsSIP.UA(config);
     sesion = userAgent.start();
-    setSipStatus("greydot.png", "  No account", sipStatus);
   }
-  $("#UserStatus").html("Online");
+  
   $("#sipLogout").click(function() {
     num = "0077LOGOUT";
     makeCall();
   });
+  
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
   });
+  
   $("#setPause").click(function() {
     console.log($("#pauseType").val());
     num = "0077"+$("#pauseType").val().toUpperCase();
@@ -64,103 +66,131 @@ $(function() {
     }
     displayNumber.value = numPress;
   });
+  
   $("#unregister").click(function() {
     userAgent.unregister();
+    
     userAgent.on('unregistered', function(e) {
       setSipStatus("reddot.png", "  Unregistered", sipStatus);
     });
   });
-    $("#unregister").prop('disabled', false);
+  
+  $("#unregister").prop('disabled', false);
     //Connects to the WebSocket server
     userAgent.on('registered', function(e) {
-      num = "0077LOGIN";
-      makeCall();
-      $("#sendMessage").prop('disabled', false);
-      $("#chatMessage").prop('disabled', false);
-      iconStatus.parentNode.removeChild(iconStatus);
-      textSipStatus.parentNode.removeChild(textSipStatus);
-      setSipStatus("greendot.png", "  Registered", sipStatus);
+  	setSipStatus("greydot.png", "  No account", sipStatus);
+  	$("#UserStatus").html("Online");
+    num = "0077LOGIN";
+    makeCall();
+    $("#sendMessage").prop('disabled', false);
+    $("#chatMessage").prop('disabled', false);
+    iconStatus.parentNode.removeChild(iconStatus);
+    textSipStatus.parentNode.removeChild(textSipStatus);
+    setSipStatus("greendot.png", "  Registered", sipStatus);
+    defaultCallState();
+  });
+
+  userAgent.on('registrationFailed', function(e) {
+    setSipStatus("redcross.png", "  Registration failed", sipStatus);
+  });
+
+  userAgent.on('newRTCSession', function(e) {
+	  var originHeader = "";
+    e.session.on('ended',function() {
+      parar3();
       defaultCallState();
+      if($("#auto_pause").val() === "True" && originHeader !== "") {
+        num = "0077ACW";
+    		makeCall();
+    		entrante = false;    			
+    		// cod que se repite en main.js.. se deberia mejorar esto
+    		pauseButton.className = "btn btn-danger";
+	      pauseButton.innerHTML = "Resume";
+	      modifyUserStat = document.getElementById("UserStatus");
+	      modifyUserStat.className = "label label-warning";
+	      modifyUserStat.innerHTML = "ACW";
+	      flagPausa = true;
+	      parar1();
+	      inicio2();
+	      //reinicio($("#horaC"), $("#minsC"), $("#segsC")); 
+      } else if (num.substring(4,0) != "0077") {
+				var calledOrCaller = "";       	
+      	if(entrante) {
+      		calledOrCaller = fromUser;
+      	} else {
+      		calledOrCaller =  num;
+      	}
+      	
+        $.ajax({
+          type: "get",
+	   	    url: "/duracion/llamada/",
+	   	    contentType: "text/html",
+	   	    data : "duracion="+$("#horaC").val()+":"+$("#minsC").val() +":"+ $("#segsC").val()+"&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
+	   	    success: function (msg) {
+	   	 	    debugger;
+	   	 	    
+	   	    },
+	   	    error: function (jqXHR, textStatus, errorThrown) {
+	          debugger;
+	          console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+	        } 
+        });
+        
+      }
+      reinicio($("#horaC"), $("#minsC"), $("#segsC"));
     });
-
-    userAgent.on('registrationFailed', function(e) {
-      setSipStatus("redcross.png", "  Registration failed", sipStatus);
-    });
-
-    userAgent.on('newRTCSession', function(e) {
-		  var originHeader = "";
-      e.session.on('ended',function() {
-      	if($("#auto_pause").val() === "True" && originHeader !== "") {
-          num = "0077ACW";
-    			makeCall();
-    			entrante = false;    			
-    			// cod que se repite en main.js.. se deberia mejorar esto
-    			pauseButton.className = "btn btn-danger";
-	        pauseButton.innerHTML = "Resume";
-	        modifyUserStat = document.getElementById("UserStatus");
-	        modifyUserStat.className = "label label-warning";
-	        modifyUserStat.innerHTML = "ACW";
-	        flagPausa = true;
-	        parar1();
-	        inicio2();
-	        //reinicio($("#horaC"), $("#minsC"), $("#segsC")); 
-        }
-        reinicio($("#horaC"), $("#minsC"), $("#segsC"));
-        parar3();
-        defaultCallState();
-      });
       
-      function reinicio(horaDOM, minDOM, segDOM) {
-	     clearInterval(control);
-	     centesimasP = 0;
-	     segundosP = 0;
-	     minutosP = 0;
-	     segDOM.html(":00");
-	     minDOM.html(":00");
-	     horaDOM.html("00");
-  	 }
-      //dar solucion a la repeticion de codigo, esto ya existe en main.js
-      function parar1() {
-	     clearInterval(control1);
-	 		}
-	 		function parar3() {
-	     clearInterval(control3);
-	 		}
-	 		function inicio2() {
-	     control2 = setInterval(cronometro2, 1000);
-	 		}
-	 		function inicio3() {
-	 			control3 = setInterval(cronometro3, 1000);
-	 		}
-      function cronometro2() {
-	     if (centesimasP < 59) {
-	         centesimasP++;
-	         if (centesimasP < 10) {
-	             centesimasP = "0" + centesimasP;
-	         }
-	         $("#segsP").html(":" + centesimasP);
-	     }
-	     if (centesimasP == 59) {
-	         centesimasP = -1;
-	     }
-	     if (centesimasP == 0) {
-	         segundosP++;
-	         if (segundosP < 10) {
-	             segundosP = "0" + segundosP;
-	         }
-	         $("#minsP").html(":" + segundosP);
-	     }
-	     if (segundosP == 59) {
-	         segundosP = -1;
-	     }
-	     if ((centesimasP == 0) && (segundosP == 0)) {
-	         minutosP++;
-	         if (minutosP < 10) {
-	             minutosP = "0" + minutosP;
-	         }
-	         $("#horaP").html("" + minutosP);
-	     }
-	 }
+    function reinicio(horaDOM, minDOM, segDOM) {
+	    clearInterval(control);
+	    centesimasP = 0;
+	    segundosP = 0;
+	    minutosP = 0;
+	    segDOM.html(":00");
+	    minDOM.html(":00");
+	    horaDOM.html("00");
+  	}
+    //dar solucion a la repeticion de codigo, esto ya existe en main.js
+    function parar1() {
+	    clearInterval(control1);
+	 	}
+	 	function parar3() {
+	    clearInterval(control3);
+	 	}
+	 	function inicio2() {
+	    control2 = setInterval(cronometro2, 1000);
+	 	}
+	 	function inicio3() {
+	 		control3 = setInterval(cronometro3, 1000);
+	 	}
+    function cronometro2() {
+	    if (centesimasP < 59) {
+	      centesimasP++;
+	        if (centesimasP < 10) {
+	          centesimasP = "0" + centesimasP;
+	        }
+	        $("#segsP").html(":" + centesimasP);
+	    }
+	    if (centesimasP == 59) {
+	      centesimasP = -1;
+	    }
+	    if (centesimasP == 0) {
+	      segundosP++;
+	        if (segundosP < 10) {
+	          segundosP = "0" + segundosP;
+	        }
+	        $("#minsP").html(":" + segundosP);
+	    }
+	    if (segundosP == 59) {
+	      segundosP = -1;
+	    }
+	    if ((centesimasP == 0) && (segundosP == 0)) {
+	      minutosP++;
+	        if (minutosP < 10) {
+	          minutosP = "0" + minutosP;
+	        }
+	        $("#horaP").html("" + minutosP);
+	    }
+	  }
 	 //****************************CRONOMETRO DE LLAMADA***********************************
 	 function cronometro3() {
 	     if (centesimasC < 59) {
@@ -203,6 +233,7 @@ $(function() {
       	entrante = true;
       	if(e.request.headers.Origin) {
       	  originHeader = e.request.headers.Origin[0].raw;
+      	  
       	}
       	if (e.request.headers.Idcliente) {
       		var leadIdHeader = e.request.headers.Idcliente[0].raw;
@@ -246,6 +277,7 @@ $(function() {
         });
         
         var options = {'mediaConstraints': {'audio': true,'video': false}};
+        calltypeId = originToId(originHeader);
         processOrigin(originHeader, options);
         
         atiendoSi.onclick = function() {
@@ -263,7 +295,24 @@ $(function() {
           userAgent.terminateSessions();
           defaultCallState();
         };
-        
+        function originToId(origin) {
+        	var id = '';
+        	switch(origin) {
+  					case "DIALER":
+  						id = 2;
+  		  			break;
+  					case "IN":
+  		  			id = 3;
+  		  			break;
+			  		case "ICS":
+  						id = 1;
+  						break;
+ 						default:
+  						id = 4;
+  						break;
+  				}
+  				return id;
+        }
         function processOrigin(origin, opt) {
 			  	var options = opt;
   				switch(origin) {
