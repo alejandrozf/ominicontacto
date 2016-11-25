@@ -1474,3 +1474,34 @@ class CalificacionCliente(models.Model):
     def __unicode__(self):
         return "Califiacion para la campana{0} para el contacto " \
                "{1} ".format(self.campana, self.contacto)
+
+
+class DuracionDeLlamada(models.Model):
+    """Representa la duración de las llamdas de las campanas, con el fin
+        de contar con los datos para búsquedas y estadísticas"""
+
+    TYPE_ICS = 1
+    """Tipo de llamada ICS"""
+
+    TYPE_DIALER = 2
+    """Tipo de llamada DIALER"""
+
+    TYPE_INBOUND = 3
+    """Tipo de llamada inbound"""
+
+    TYPE_MANUAL = 4
+    """Tipo de llamada manual"""
+
+    TYPE_LLAMADA_CHOICES = (
+        (TYPE_ICS, 'ICS'),
+        (TYPE_DIALER, 'DIALER'),
+        (TYPE_INBOUND, 'INBOUND'),
+        (TYPE_MANUAL, 'MANUAL'),
+    )
+
+    agente = models.ForeignKey(AgenteProfile, related_name="llamadas")
+    numero_telefono = models.CharField(max_length=20)
+    fecha_hora_llamada = models.DateTimeField(auto_now=True)
+    tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
+    duracion = models.TimeField()
+

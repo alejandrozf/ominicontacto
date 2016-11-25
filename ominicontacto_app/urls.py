@@ -117,6 +117,10 @@ urlpatterns = [
         ),
     url(r'^regenerar_asterisk/$', views.regenerar_asterisk_view,
         name='regenerar_asterisk'),
+    url(r'^duracion/llamada/$',
+        login_required(views.nuevo_duracion_llamada_view),
+        name='nueva_duracion_llamada',
+        ),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
