@@ -1482,6 +1482,7 @@ class CalificacionCliente(models.Model):
     contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
     es_venta = models.BooleanField(default=False)
     calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return "Califiacion para la campana{0} para el contacto " \
