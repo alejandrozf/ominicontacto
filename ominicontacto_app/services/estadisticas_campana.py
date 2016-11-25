@@ -26,10 +26,12 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 
 class EstadisticasService():
 
-    def obtener_cantidad_calificacion(self, campana):
+    def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta):
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificaciones_query = CalificacionCliente.objects.filter(
-            campana=campana)
+            campana=campana, fecha__range=(fecha_desde, fecha_hasta))
         calificaciones_nombre = []
         calificaciones_cantidad = []
         for calificacion in calificaciones:
@@ -41,10 +43,11 @@ class EstadisticasService():
         calificaciones_cantidad.append(cant_venta)
         return calificaciones_nombre, calificaciones_cantidad
 
+    def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
 
-    def _calcular_estadisticas(self, campana, fecha_inferior, fecha_superior):
-
-        calificaciones_nombre, calificaciones_cantidad= self.obtener_cantidad_calificacion(campana)
+        calificaciones_nombre, calificaciones_cantidad = \
+            self.obtener_cantidad_calificacion(campana, fecha_desde,
+                                               fecha_hasta)
 
         dic_estadisticas = {
 

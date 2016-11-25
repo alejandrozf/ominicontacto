@@ -37,7 +37,29 @@
 
 
 {% with graficos_estadisticas=graficos_estadisticas %}
+<div class="col-md-6">
 
+    <form role="form" method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <table class="table">
+           <tr>
+               <td>
+                   <div class="input-group date pull-right active" id="">
+                       {{form.fecha}}
+                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+               </td>
+               <td>
+                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                        Filtrar por esa fecha
+                </button>
+               </td>
+           </tr>
+        </table>
+
+    </form>
+</div>
 
 
 

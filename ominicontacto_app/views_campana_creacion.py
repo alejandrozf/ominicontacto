@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -10,7 +11,9 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
-    FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm)
+    FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm,
+    ReporteForm
+)
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto,
     Grupo
@@ -27,6 +30,7 @@ from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 
 import logging as logging_
 
+from ominicontacto_app.utiles import convert_fecha_datetime
 
 logger = logging_.getLogger(__name__)
 
@@ -622,27 +626,34 @@ class ExportaReporteFormularioVentaView(UpdateView):
         return redirect(url)
 
 
-class CampanaReporteGrafico(ListView):
-    """
-    Esta vista lista los objetos Capanas
-    diferenciadas por sus estados actuales.
-    Pasa un diccionario al template
-    con las claves como estados.
-    """
+class CampanaReporteGrafico(FormView):
 
     template_name = 'campana/reporte_campana.html'
     context_object_name = 'campana'
     model = Campana
+    form_class = ReporteForm
 
     def get_object(self, queryset=None):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
-    def get_context_data(self, **kwargs):
-        context = super(CampanaReporteGrafico, self).get_context_data(
-           **kwargs)
+    def get(self, request, *args, **kwargs):
         # obtener_estadisticas_render_graficos_supervision()
         service = EstadisticasService()
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        graficos_estadisticas = service.general_campana(self.get_object(), hoy,
+                                                        hoy_ahora)
+        return self.render_to_response(self.get_context_data(
+            graficos_estadisticas=graficos_estadisticas))
 
-        context['graficos_estadisticas'] = service.general_campana(
-            self.get_object(), 1, 2)
-        return context
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        # obtener_estadisticas_render_graficos_supervision()
+        service = EstadisticasService()
+        graficos_estadisticas = service.general_campana(
+            self.get_object(), fecha_desde, fecha_hasta)
+        return self.render_to_response(self.get_context_data(
+            graficos_estadisticas=graficos_estadisticas))

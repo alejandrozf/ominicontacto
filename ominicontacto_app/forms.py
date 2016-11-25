@@ -381,3 +381,11 @@ class AgendaBusquedaForm(forms.Form):
     fecha = forms.CharField(required=False,
                             widget=forms.TextInput(
                                 attrs={'class': 'form-control'}))
+
+
+class ReporteForm(forms.Form):
+    """
+    El form para reporte con fecha
+    """
+    fecha = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control'}))
