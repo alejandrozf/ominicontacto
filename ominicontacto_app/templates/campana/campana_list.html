@@ -39,7 +39,10 @@
                         <span class="glyphicon glyphicon-trash" aria-hidden="true" title="eliminar campana"></span>
                     </a>
                     <a href="{% url 'reporte_campana' campana.pk %}">
-                        <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver reporte"></span>
+                        <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
+                    </a>
+                    <a href="{% url 'reporte_campana_grafico' campana.pk %}">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
                 </td>
             </tr>
