@@ -4,6 +4,7 @@ import pygal
 import datetime
 from pygal.style import Style, RedBlueStyle
 
+from django.db.models import Count
 from ominicontacto_app.models import CalificacionCliente, Calificacion
 import logging as _logging
 
@@ -43,14 +44,45 @@ class EstadisticasService():
         calificaciones_cantidad.append(cant_venta)
         return calificaciones_nombre, calificaciones_cantidad
 
-    def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
+    def obtener_agentes_campana(self, campana):
+        member_dict = campana.queue_campana.queuemember.all()
+        members_campana = []
+        for member in member_dict:
+            members_campana.append(member.member)
 
+        return members_campana
+
+    def obtener_venta(self, campana, members_campana, fecha_desde, fecha_hasta):
+        agentes_venta = []
+        total_calificados = 0
+        total_ventas = 0
+
+        for agente in members_campana:
+            dato_agente = []
+            dato_agente.append(agente)
+            total_cal_agente = len(agente.calificaciones.filter(
+                campana=campana, fecha__range=(fecha_desde, fecha_hasta)))
+            dato_agente.append(total_cal_agente)
+            total_calificados += total_cal_agente
+            total_ven_agente = len(agente.calificaciones.filter(
+                campana=campana, es_venta=True,
+                fecha__range=(fecha_desde, fecha_hasta)))
+            dato_agente.append(total_ven_agente)
+            total_ventas += total_ven_agente
+            agentes_venta.append(dato_agente)
+        return agentes_venta, total_calificados, total_ventas
+
+    def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
         calificaciones_nombre, calificaciones_cantidad = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
                                                fecha_hasta)
-
+        members_campana = self.obtener_agentes_campana(campana)
+        agentes_venta, total_calificados, total_ventas = self.obtener_venta(
+            campana, members_campana, fecha_desde, fecha_hasta)
         dic_estadisticas = {
-
+            'agentes_venta': agentes_venta,
+            'total_calificados': total_calificados,
+            'total_ventas': total_ventas,
             'calificaciones_nombre': calificaciones_nombre,
             'calificaciones_cantidad': calificaciones_cantidad,
         }
@@ -81,4 +113,8 @@ class EstadisticasService():
             'barra_campana_calificacion': barra_campana_calificacion,
             'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
                                         estadisticas['calificaciones_cantidad'])
+            ,
+            'agentes_venta': estadisticas['agentes_venta'],
+            'total_calificados': estadisticas['total_calificados'],
+            'total_ventas': estadisticas['total_ventas']
         }
