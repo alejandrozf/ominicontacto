@@ -395,8 +395,8 @@ class AgenteEventosFormView(FormView):
         fecha = form.cleaned_data.get('fecha')
         if fecha:
             fecha_desde, fecha_hasta = fecha.split('-')
-            fecha_desde = convert_fecha_datetime(fecha_desde)
-            fecha_hasta = convert_fecha_datetime(fecha_hasta)
+            fecha_desde = convert_fecha_datetime_2(fecha_desde)
+            fecha_hasta = convert_fecha_datetime_2(fecha_hasta)
         else:
             fecha_desde = ''
             fecha_hasta = ''
