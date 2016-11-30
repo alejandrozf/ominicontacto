@@ -25,13 +25,14 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 )
 
 
-class EstadisticasService():
+class EstadisticasAgenteService():
 
-    def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta):
+    def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta,
+                                      agente):
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         calificaciones = campana.calificacion_campana.calificacion.all()
-        calificaciones_query = CalificacionCliente.objects.filter(
+        calificaciones_query = CalificacionCliente.objects.filter(agente=agente,
             campana=campana, fecha__range=(fecha_desde, fecha_hasta))
         calificaciones_nombre = []
         calificaciones_cantidad = []
@@ -45,54 +46,40 @@ class EstadisticasService():
         calificaciones_cantidad.append(cant_venta)
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
-    def obtener_agentes_campana(self, campana):
-        member_dict = campana.queue_campana.queuemember.all()
-        members_campana = []
-        for member in member_dict:
-            members_campana.append(member.member)
+    def obtener_venta(self, campana, agente, fecha_desde, fecha_hasta):
+        dato_agente = []
+        dato_agente.append(agente)
+        total_cal_agente = len(agente.calificaciones.filter(campana=campana,
+                                                            fecha__range=(
+                                                                fecha_desde,
+                                                                fecha_hasta)))
+        dato_agente.append(total_cal_agente)
+        total_ven_agente = len(agente.calificaciones.filter(campana=campana,
+                                                            es_venta=True,
+                                                            fecha__range=(
+                                                                fecha_desde,
+                                                                fecha_hasta)))
+        dato_agente.append(total_ven_agente)
 
-        return members_campana
+        return dato_agente
 
-    def obtener_venta(self, campana, members_campana, fecha_desde, fecha_hasta):
-        agentes_venta = []
-        total_calificados = 0
-        total_ventas = 0
-
-        for agente in members_campana:
-            dato_agente = []
-            dato_agente.append(agente)
-            total_cal_agente = len(agente.calificaciones.filter(
-                campana=campana, fecha__range=(fecha_desde, fecha_hasta)))
-            dato_agente.append(total_cal_agente)
-            total_calificados += total_cal_agente
-            total_ven_agente = len(agente.calificaciones.filter(
-                campana=campana, es_venta=True,
-                fecha__range=(fecha_desde, fecha_hasta)))
-            dato_agente.append(total_ven_agente)
-            total_ventas += total_ven_agente
-            agentes_venta.append(dato_agente)
-        return agentes_venta, total_calificados, total_ventas
-
-    def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
+    def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta, agente):
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
-                                               fecha_hasta)
-        members_campana = self.obtener_agentes_campana(campana)
-        agentes_venta, total_calificados, total_ventas = self.obtener_venta(
-            campana, members_campana, fecha_desde, fecha_hasta)
+                                               fecha_hasta, agente)
+        agentes_venta = self.obtener_venta(campana, agente, fecha_desde,
+                                           fecha_hasta)
         dic_estadisticas = {
             'agentes_venta': agentes_venta,
             'total_asignados': total_asignados,
-            'total_ventas': total_ventas,
             'calificaciones_nombre': calificaciones_nombre,
             'calificaciones_cantidad': calificaciones_cantidad,
-            'total_calificados': total_calificados,
         }
         return dic_estadisticas
 
-    def general_campana(self, campana, fecha_inferior, fecha_superior):
+    def general_campana(self, agente,  campana, fecha_inferior, fecha_superior):
         estadisticas = self._calcular_estadisticas(campana, fecha_inferior,
-                                                   fecha_superior)
+                                                   fecha_superior, agente)
 
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
@@ -113,11 +100,8 @@ class EstadisticasService():
         return {
             'estadisticas': estadisticas,
             'barra_campana_calificacion': barra_campana_calificacion,
+            'total_asignados': estadisticas['total_asignados'],
             'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
                                         estadisticas['calificaciones_cantidad'])
             ,
-            'total_asignados': estadisticas['total_asignados'],
-            'agentes_venta': estadisticas['agentes_venta'],
-            'total_calificados': estadisticas['total_calificados'],
-            'total_ventas': estadisticas['total_ventas']
         }

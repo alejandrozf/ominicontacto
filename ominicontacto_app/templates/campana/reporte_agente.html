@@ -108,33 +108,6 @@
                             </tr>
                         </tbody>
                     </table>
-<div class="col-md-6">
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Agente</th>
-            <th>Contactos calificados</th>
-            <th>Ventas</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for agente in graficos_estadisticas.agentes_venta %}
-            <tr>
-                <td><a href="{% url 'reporte_agente_grafico' pk_campana agente.0.pk %}">{{agente.0}}</a></td>
-                <td>{{agente.1}}</td>
-                <td class="text-success"><strong>{{agente.2}}</strong></td>
-            </tr>
-        {% endfor %}
-        <tr>
-            <td><strong>Totales</strong></td>
-            <td><strong>{{graficos_estadisticas.total_calificados}}</strong></td>
-            <td><strong>{{graficos_estadisticas.total_ventas}}</strong></td>
-        </tr>
-    </tbody>
-</table>
-</div>
-
-
 
 {% endwith %}
 {% endblock %}
