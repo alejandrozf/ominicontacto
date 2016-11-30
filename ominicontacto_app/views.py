@@ -32,7 +32,7 @@ from services.regeneracion_asterisk import RegeneracionAsteriskService,\
     RestablecerDialplanError
 from django.views.decorators.csrf import csrf_protect
 from ominicontacto_app.utiles import convert_string_in_boolean,\
-    convert_fecha_datetime
+    convert_fecha_datetime, convert_fecha_datetime_2
 
 
 # def mensajes_recibidos_view(request):
@@ -346,7 +346,7 @@ def nuevo_evento_agenda_view(request):
     agente = request.GET['agente']
     es_personal = request.GET['personal']
     fecha = request.GET['fechaEvento']
-    fecha = convert_fecha_datetime(fecha)
+    fecha = convert_fecha_datetime_2(fecha)
     hora = request.GET['horaEvento']
     es_smart = request.GET['smart']
     medio_comunicacion = request.GET['channel']

@@ -192,3 +192,9 @@ def convert_fecha_datetime(fecha):
     mes, dia, ano = fecha.split('/')
     fecha = datetime.datetime(int(ano), int(mes), int(dia))
     return fecha
+
+
+def convert_fecha_datetime_2(fecha):
+    dia, mes, ano = fecha.split('/')
+    fecha = datetime.datetime(int(ano), int(mes), int(dia))
+    return fecha
