@@ -35,6 +35,7 @@ class EstadisticasService():
             campana=campana, fecha__range=(fecha_desde, fecha_hasta))
         calificaciones_nombre = []
         calificaciones_cantidad = []
+        total_asignados = len(calificaciones_query)
         for calificacion in calificaciones:
             cant = len(calificaciones_query.filter(calificacion=calificacion))
             calificaciones_nombre.append(calificacion.nombre)
@@ -42,7 +43,7 @@ class EstadisticasService():
         cant_venta = len(calificaciones_query.filter(es_venta=True))
         calificaciones_nombre.append('venta')
         calificaciones_cantidad.append(cant_venta)
-        return calificaciones_nombre, calificaciones_cantidad
+        return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_agentes_campana(self, campana):
         member_dict = campana.queue_campana.queuemember.all()
@@ -73,7 +74,7 @@ class EstadisticasService():
         return agentes_venta, total_calificados, total_ventas
 
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
-        calificaciones_nombre, calificaciones_cantidad = \
+        calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
                                                fecha_hasta)
         members_campana = self.obtener_agentes_campana(campana)
@@ -81,10 +82,11 @@ class EstadisticasService():
             campana, members_campana, fecha_desde, fecha_hasta)
         dic_estadisticas = {
             'agentes_venta': agentes_venta,
-            'total_calificados': total_calificados,
+            'total_asignados': total_asignados,
             'total_ventas': total_ventas,
             'calificaciones_nombre': calificaciones_nombre,
             'calificaciones_cantidad': calificaciones_cantidad,
+            'total_calificados': total_calificados,
         }
         return dic_estadisticas
 
@@ -114,6 +116,7 @@ class EstadisticasService():
             'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
                                         estadisticas['calificaciones_cantidad'])
             ,
+            'total_asignados': estadisticas['total_asignados'],
             'agentes_venta': estadisticas['agentes_venta'],
             'total_calificados': estadisticas['total_calificados'],
             'total_ventas': estadisticas['total_ventas']
