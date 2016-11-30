@@ -346,6 +346,7 @@ def nuevo_evento_agenda_view(request):
     agente = request.GET['agente']
     es_personal = request.GET['personal']
     fecha = request.GET['fechaEvento']
+    fecha = convert_fecha_datetime(fecha)
     hora = request.GET['horaEvento']
     es_smart = request.GET['smart']
     medio_comunicacion = request.GET['channel']
