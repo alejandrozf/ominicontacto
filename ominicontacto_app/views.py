@@ -32,7 +32,7 @@ from services.regeneracion_asterisk import RegeneracionAsteriskService,\
     RestablecerDialplanError
 from django.views.decorators.csrf import csrf_protect
 from ominicontacto_app.utiles import convert_string_in_boolean,\
-    convert_fecha_datetime, convert_fecha_datetime_2
+    convert_fecha_datetime
 
 
 # def mensajes_recibidos_view(request):
@@ -346,7 +346,7 @@ def nuevo_evento_agenda_view(request):
     agente = request.GET['agente']
     es_personal = request.GET['personal']
     fecha = request.GET['fechaEvento']
-    fecha = convert_fecha_datetime_2(fecha)
+    fecha = convert_fecha_datetime(fecha)
     hora = request.GET['horaEvento']
     es_smart = request.GET['smart']
     medio_comunicacion = request.GET['channel']
@@ -395,8 +395,8 @@ class AgenteEventosFormView(FormView):
         fecha = form.cleaned_data.get('fecha')
         if fecha:
             fecha_desde, fecha_hasta = fecha.split('-')
-            fecha_desde = convert_fecha_datetime_2(fecha_desde)
-            fecha_hasta = convert_fecha_datetime_2(fecha_hasta)
+            fecha_desde = convert_fecha_datetime(fecha_desde)
+            fecha_hasta = convert_fecha_datetime(fecha_hasta)
         else:
             fecha_desde = ''
             fecha_hasta = ''

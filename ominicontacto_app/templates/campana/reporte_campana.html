@@ -9,9 +9,22 @@
                     $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                 }
 
+ $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+
+  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+});
+
             // Init daterange plugin
             $('#id_fecha').daterangepicker(
                 {
+
+                locale: {
+                    format: 'DD/MM/YYYY'
+                 },
+
                 startDate: start,
                 endDate: end,
                 ranges: {
