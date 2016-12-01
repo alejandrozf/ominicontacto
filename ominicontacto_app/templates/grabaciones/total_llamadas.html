@@ -2,18 +2,30 @@
 {% load static %}
 {% block head_js %}
 <script type="text/javascript">
-   $(function() {
-                var start = moment();
+$(function() {
+                var start = moment().subtract(29, 'days');
                 var end = moment();
                 function cb(start, end) {
-                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                    $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
                 }
+
+
+ $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+
+  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+});
 
             // Init daterange plugin
             $('#id_fecha').daterangepicker(
                 {
-                startDate: start,
-                endDate: end,
+                 locale: {
+                    format: 'DD/MM/YYYY'
+                 },
+
+                autoUpdateInput: false,
                 ranges: {
                     'Hoy': [moment(), moment()],
                     'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
