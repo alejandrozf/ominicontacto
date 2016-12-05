@@ -683,6 +683,16 @@ class AgenteCampanaReporteGrafico(FormView):
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
 
+    def get_context_data(self, **kwargs):
+        context = super(AgenteCampanaReporteGrafico, self).get_context_data(
+            **kwargs)
+
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        context['pk_campana'] = self.kwargs['pk_campana']
+
+        context['agente'] = agente
+        return context
+
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')

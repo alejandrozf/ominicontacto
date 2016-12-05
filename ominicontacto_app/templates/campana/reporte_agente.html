@@ -49,6 +49,9 @@
 
 
 {% with graficos_estadisticas=graficos_estadisticas %}
+<div class="col-md-12">
+    <h4>Agente {{agente.user.get_full_name}}</h4>
+</div>
 <div class="col-md-6">
 
     <form role="form" method="post" enctype="multipart/form-data" >
@@ -80,7 +83,7 @@
                         <thead>
                             <tr class="fts-table-bg">
                                 <td colspan="2">
-                                    <h4>Cantidad de calificacion por campana</h4>
+                                    <h4>Cantidad de calificacion por el agente</h4>
                                 </td>
                             </tr>
                         </thead>
@@ -120,6 +123,12 @@
                             </tr>
                         </tbody>
                     </table>
+
+
+<div class="col-md-12">
+    <a class="btn btn-default"  href="{% url 'reporte_campana_grafico' pk_campana %}">Volver a reporte campana</a>
+
+</div>
 
 {% endwith %}
 {% endblock %}
