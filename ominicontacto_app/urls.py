@@ -387,6 +387,10 @@ urlpatterns = [
         login_required(views_formulario.FormularioListView.as_view()),
         name='formulario_list',
         ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/field/$',
+        login_required(views_formulario.FieldFormularioCreateView.as_view()),
+        name='formulario_field',
+        ),
 ]
 
 urlpatterns += patterns('',

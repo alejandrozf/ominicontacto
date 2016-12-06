@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, FormularioDemo, Contacto, FormularioDatoVenta, CalificacionCliente,
-    Grupo, Formulario
+    Grupo, Formulario, FieldFormulario
 )
 
 
@@ -399,4 +399,16 @@ class FormularioForm(forms.ModelForm):
         widgets = {
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "descripcion": forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+
+class FieldFormularioForm(forms.ModelForm):
+
+    class Meta:
+        model = FieldFormulario
+        fields = ('formulario', 'nombre_campo', 'tipo', 'orden')
+        widgets = {
+            'formulario': forms.HiddenInput(),
+            "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
+            "orden": forms.NumberInput(attrs={'class': 'form-control'}),
         }
