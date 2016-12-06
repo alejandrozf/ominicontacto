@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, FormularioDemo, Contacto, FormularioDatoVenta, CalificacionCliente,
-    Grupo
+    Grupo, Formulario
 )
 
 
@@ -394,3 +394,14 @@ class ReporteForm(forms.Form):
     """
     fecha = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control'}))
+
+
+class FormularioForm(forms.ModelForm):
+
+    class Meta:
+        model = Formulario
+        fields = ('nombre', 'descripcion')
+        widgets = {
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
+            "descripcion": forms.Textarea(attrs={'class': 'form-control'}),
+        }

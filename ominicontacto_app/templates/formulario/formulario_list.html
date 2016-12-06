@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-6">
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for formulario in object_list %}
+            <tr>
+                <td>{{ formulario.nombre }}</td>
+                <td>{{ formulario.descripcion }}</td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="2">No existen formularios creados</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}

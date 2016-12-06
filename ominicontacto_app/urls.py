@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
-    views_grabacion, views_weelo, views_calificacion)
+    views_grabacion, views_weelo, views_calificacion, views_formulario)
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
     handler400, handler403, handler404, handler500
@@ -375,6 +375,17 @@ urlpatterns = [
         login_required(
             views_calificacion.CalificacionCampanaDeleteView.as_view()),
         name='calificacion_campana_delete',
+        ),
+    # ==========================================================================
+    # Formulario
+    # ==========================================================================
+    url(r'^formulario/nuevo/$',
+        login_required(views_formulario.FormularioCreateView.as_view()),
+        name='formulario_nuevo',
+        ),
+    url(r'^formulario/list/$',
+        login_required(views_formulario.FormularioListView.as_view()),
+        name='formulario_list',
         ),
 ]
 
