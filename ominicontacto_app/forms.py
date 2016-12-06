@@ -414,6 +414,7 @@ class FieldFormularioForm(forms.ModelForm):
         fields = ('formulario', 'nombre_campo', 'tipo', 'orden')
         widgets = {
             'formulario': forms.HiddenInput(),
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
             "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
             "orden": forms.NumberInput(attrs={'class': 'form-control'}),
         }
