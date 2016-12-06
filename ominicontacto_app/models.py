@@ -137,6 +137,40 @@ class CalificacionCampana(models.Model):
         return self.nombre
 
 
+class Formulario(models.Model):
+    nombre = models.CharField(max_length=64)
+    descripcion = models.TextField()
+
+    def __unicode__(self):
+        return self.nombre
+
+
+class FieldFormulario(models.Model):
+
+    TIPO_TEXTO = 1
+    """Tipo de campo texto"""
+
+    TIPO_FECHA = 2
+    """Tipo de campo fecha"""
+
+    TIPO_LISTA = 3
+    """Tipo de campo lista"""
+
+    TIPO_CHOICES = (
+        (TIPO_TEXTO, 'Texto'),
+        (TIPO_FECHA, 'Fecha'),
+        (TIPO_LISTA, 'Lista'),
+    )
+
+    formulario = models.ForeignKey(Formulario, related_name="campos")
+    nombre_campo = models.CharField(max_length=64)
+    orden = models.PositiveIntegerField()
+    tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
+
+    def __unicode__(self):
+        return "campo {0} del formulario {1}".format(self.nombre_campo,
+                                                     self.formulario)
+
 class CampanaManager(models.Manager):
 
     def obtener_en_definicion_para_editar(self, campana_id):
@@ -1518,4 +1552,3 @@ class DuracionDeLlamada(models.Model):
     fecha_hora_llamada = models.DateTimeField(auto_now=True)
     tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
     duracion = models.TimeField()
-
