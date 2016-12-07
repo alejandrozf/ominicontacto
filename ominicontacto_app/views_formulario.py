@@ -2,12 +2,21 @@
 
 from __future__ import unicode_literals
 
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView
 )
+from django.views.generic.edit import BaseUpdateView
 from ominicontacto_app.models import Formulario, FieldFormulario
-from ominicontacto_app.forms import FormularioForm, FieldFormularioForm
+from ominicontacto_app.forms import (
+    FormularioForm, FieldFormularioForm, OrdenCamposForm
+)
+from ominicontacto_app.services.campos_formulario import (
+    OrdenCamposCampanaService
+)
 
 import logging as logging_
 
@@ -47,9 +56,95 @@ class FieldFormularioCreateView(CreateView):
             FieldFormularioCreateView, self).get_context_data(**kwargs)
         formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
         context['formulario'] = formulario
+        context['ORDEN_SENTIDO_UP'] = FieldFormulario.ORDEN_SENTIDO_UP
+        context['ORDEN_SENTIDO_DOWN'] = FieldFormulario.ORDEN_SENTIDO_DOWN
+        form_orden_campos = OrdenCamposForm()
+        context['form_orden_campos'] = form_orden_campos
         return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.orden = \
+            FieldFormulario.objects.obtener_siguiente_orden(
+                self.kwargs['pk_formulario'])
+        self.object.save()
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        message = '<strong>Operación Errónea!</strong> \
+                   No se pudo llevar a cabo la creacion de campo.'
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            message,
+        )
+        return redirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('formulario_field',
                        kwargs={"pk_formulario": self.kwargs['pk_formulario']}
                        )
+
+
+class FieldFormularioOrdenView(BaseUpdateView):
+    """
+    Esta vista actualiza el orden de los campos del formulario.
+    """
+
+    model = FieldFormulario
+
+    def get_initial(self):
+        initial = super(FieldFormularioOrdenView, self).get_initial()
+        formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
+        initial.update({'formulario': formulario.id})
+        return initial
+
+    def get(self, request, *args, **kwargs):
+        return self.redirecciona_a_campos_formulario()
+
+    def form_valid(self, form_orden_campos):
+        sentido_orden = int(form_orden_campos.cleaned_data.get(
+                            'sentido_orden'))
+
+        orden_campos_campana_service = OrdenCamposCampanaService()
+        if sentido_orden == FieldFormulario.ORDEN_SENTIDO_UP:
+            orden_campos_campana_service.baja_campo_una_posicion(
+                self.get_object())
+        elif sentido_orden == FieldFormulario.ORDEN_SENTIDO_DOWN:
+            orden_campos_campana_service.sube_campo_una_posicion(
+                self.get_object())
+        else:
+            return self.form_invalid(form_orden_campos)
+
+        message = '<strong>Operación Exitosa!</strong> \
+                   Se llevó a cabo con éxito el reordenamiento de los campos.'
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return self.redirecciona_a_campos_formulario()
+
+    def form_invalid(self, form_orden_campos):
+        message = '<strong>Operación Errónea!</strong> \
+                   No se pudo llevar a cabo el reordenamiento de los campos.'
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            message,
+        )
+        return self.redirecciona_a_campos_formulario()
+
+    def post(self, request, *args, **kwargs):
+
+        form_orden_campos = OrdenCamposForm(request.POST)
+
+        if form_orden_campos.is_valid():
+            return self.form_valid(form_orden_campos)
+        else:
+            return self.form_invalid(form_orden_campos)
+
+    def redirecciona_a_campos_formulario(self):
+        url = reverse('formulario_field',
+                      kwargs={"pk_formulario": self.kwargs['pk_formulario']})
+        return HttpResponseRedirect(url)

@@ -1,7 +1,34 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head_js %}
+<script type="text/javascript">
+    $(function(){
+        /* Maneja el submit del ordenamiento.*/
+            $(".orden").click(function (){
+                var sentido_orden = $(this).attr('data-sentido-orden');
+
+                $("#id_sentido_orden").val(sentido_orden);
+
+                var url = $(this).attr('data-url');
+                $("#form-orden-campos").attr('action', url);
+                $("#form-orden-campos").submit();
+            });
+            /**/
+    });
+    </script>
+{% endblock %}
 {% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs">
+            <li class="disabled"><a>Nuevo Formulario</a></li>
+            <li class="active"><a>Campos del formulario</a></li>
+        </ul>
+    </div>
+</div>
+</br>
+<div class="row">
 
 <div class="col-md-6">
 <form action="" enctype="multipart/form-data" method="post">
@@ -25,14 +52,6 @@
               {{ form.tipo}}
         </div>
     </div>
-    <div class="form-group row">
-        {{ form.orden.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.orden.id_for_label }}">Orden: </label>
-        <div class="col-sm-2">
-              {{ form.orden }}
-        </div>
-    </div>
-
                 <button type="submit" id="id_guardar" class="btn btn-success ">
                     <span class="glyphicon glyphicon-plus"></span>
                     Agregar campo
@@ -49,18 +68,37 @@
                             <th>Nombre de campo</th>
                             <th>Tipo</th>
                             <th></th>
+                            <th></th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                             {% for campo in formulario.campos.all %}
                                 <tr>
-                                    <td>{{ campo.orden }}</td>
+                                    <td>
+                                        <span class="badge va-top mg-top-5">{{ forloop.counter }}</span>
+                                    </td>
                                     <td>{{ campo.nombre_campo }} </td>
                                     <td>{{ campo.get_tipo_display }}</td>
                                     <td>
                                         <a href=""><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
 
                                     </td>
+                                    <td>
+                                            {% if not forloop.last %}
+                                                    <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_DOWN }}" type="button" class="btn btn-default btn-xs orden">
+
+                                                       <span class="glyphicon glyphicon-chevron-down"></span>
+                                                    </button>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if not forloop.first %}
+                                                     <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_UP }}" type="button" class="btn btn-default btn-xs orden">
+                                                    <span class="glyphicon glyphicon-chevron-up"></span>
+                                                </button>
+                                            {% endif %}
+                                        </td>
                                 </tr>
                              {% empty %}
                                 <tr>
@@ -73,10 +111,15 @@
                             {% endfor %}
                         </tbody>
                     </table>
+    <form role="form" method="post" action="" id="form-orden-campos">
+        {% csrf_token %}
+        {{ form_orden_campos.non_field_errors }}
+    {{ form_orden_campos.sentido_orden }}
+    </form>
                 {% endif %}
 
 
 
-</div>>
-
+</div>
+</div>
 {% endblock %}
