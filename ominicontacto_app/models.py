@@ -145,7 +145,23 @@ class Formulario(models.Model):
         return self.nombre
 
 
+class FieldFormularioManager(models.Manager):
+
+    def obtener_siguiente_orden(self, formulario_id):
+        try:
+            field_formulario = self.filter(formulario=formulario_id).latest(
+                'orden')
+            return field_formulario.orden + 1
+        except FieldFormulario.DoesNotExist:
+            return 1
+
+
 class FieldFormulario(models.Model):
+
+    objects = FieldFormularioManager()
+
+    ORDEN_SENTIDO_UP = 0
+    ORDEN_SENTIDO_DOWN = 1
 
     TIPO_TEXTO = 1
     """Tipo de campo texto"""
@@ -167,9 +183,30 @@ class FieldFormulario(models.Model):
     orden = models.PositiveIntegerField()
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
 
+    class Meta:
+        ordering = ['orden']
+        unique_together = ("orden", "formulario")
+
     def __unicode__(self):
         return "campo {0} del formulario {1}".format(self.nombre_campo,
                                                      self.formulario)
+
+    def obtener_campo_anterior(self):
+        """
+        Este método devuelve el field del formulario anterior a self,
+         teniendo en cuenta que pertenezca a la mismo formulario que self.
+        """
+        return FieldFormulario.objects.filter(formulario=self.formulario,
+                                              orden__lt=self.orden).last()
+
+    def obtener_campo_siguiente(self):
+        """
+        Este método devuelve el field del formulario siguiente a self,
+         teniendo en cuenta que pertenezca a la mismo formulario que self.
+        """
+        return FieldFormulario.objects.filter(formulario=self.formulario,
+                                              orden__gt=self.orden).first()
+
 
 class CampanaManager(models.Manager):
 
