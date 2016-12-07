@@ -411,10 +411,17 @@ class FieldFormularioForm(forms.ModelForm):
 
     class Meta:
         model = FieldFormulario
-        fields = ('formulario', 'nombre_campo', 'tipo', 'orden')
+        fields = ('formulario', 'nombre_campo', 'tipo')
         widgets = {
             'formulario': forms.HiddenInput(),
             'tipo': forms.Select(attrs={'class': 'form-control'}),
             "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
-            "orden": forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+
+class OrdenCamposForm(forms.Form):
+    sentido_orden = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super(OrdenCamposForm, self).__init__(*args, **kwargs)
+        self.fields['sentido_orden'].widget = forms.HiddenInput()
