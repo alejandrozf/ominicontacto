@@ -395,6 +395,10 @@ urlpatterns = [
         login_required(views_formulario.FieldFormularioOrdenView.as_view()),
         name='campo_formulario_orden',
         ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/campo/(?P<pk>\d+)/delete/$',
+        login_required(views_formulario.FieldFormularioDeleteView.as_view()),
+        name='formulario_field_delete',
+        ),
 ]
 
 urlpatterns += patterns('',

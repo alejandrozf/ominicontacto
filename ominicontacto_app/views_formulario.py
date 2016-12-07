@@ -148,3 +148,30 @@ class FieldFormularioOrdenView(BaseUpdateView):
         url = reverse('formulario_field',
                       kwargs={"pk_formulario": self.kwargs['pk_formulario']})
         return HttpResponseRedirect(url)
+
+
+class FieldFormularioDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto FieldFormulario seleccionado.
+    """
+
+    model = FieldFormulario
+    template_name = 'formulario/elimina_field_formulario.html'
+
+    def delete(self, request, *args, **kwargs):
+        message = '<strong>Operación Exitosa!</strong>\
+            Se llevó a cabo con éxito la eliminación del field.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return super(FieldFormularioDeleteView, self).delete(request, *args,
+                                                             **kwargs)
+
+    def get_success_url(self):
+        return reverse('formulario_field',
+                       kwargs={"pk_formulario": self.kwargs['pk_formulario']}
+                       )
