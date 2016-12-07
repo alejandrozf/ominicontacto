@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+        <div class="panel-body">
+            <div class="col-lg-8">
+                <form method="post">{% csrf_token %}
+
+                        <h4>Formularop <strong>{{ object.formulario.nombre }}</strong></h4>
+
+                    <h4>¿Esta seguro que desea eliminar el campo:
+                    <strong>{{ object.nombre_campo }}</strong>?</h4>
+
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <span class="glyphicon glyphicon-remove"></span> Eliminar
+                    </button>
+                    <a href="{% url 'formulario_field' object.formulario.pk %}">Cancelar</a>
+
+                </form>
+            </div>
+        </div>
+
+{% endblock %}

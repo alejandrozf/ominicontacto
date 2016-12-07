@@ -81,7 +81,7 @@
                                     <td>{{ campo.nombre_campo }} </td>
                                     <td>{{ campo.get_tipo_display }}</td>
                                     <td>
-                                        <a href=""><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                                        <a href="{% url 'formulario_field_delete' formulario.pk campo.pk %}" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
 
                                     </td>
                                     <td>
