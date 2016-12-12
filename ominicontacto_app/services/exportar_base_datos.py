@@ -88,10 +88,11 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(campana.queue_campana.timeout)
                 lista_opciones.append(campana.id)
                 lista_opciones.append(usa_contestador)
-                datos = json.loads(contacto.datos)
-                for col_telefono in telefonos:
-                    indice_columna_dato = int(col_telefono) - 7
-                    lista_opciones.append(datos[indice_columna_dato])
+                if contacto.datos:
+                    datos = json.loads(contacto.datos)
+                    for col_telefono in telefonos:
+                        indice_columna_dato = int(col_telefono) - 7
+                        lista_opciones.append(datos[indice_columna_dato])
 
                 # --- Finalmente, escribimos la linea
 

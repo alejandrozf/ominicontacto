@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -10,10 +11,12 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
-    FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm)
+    FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm,
+    ReporteForm
+)
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto,
-    Grupo
+    Grupo, AgenteProfile
 )
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -23,9 +26,11 @@ from ominicontacto_app.services.reporte_campana_calificacion import \
     ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_venta import \
     ReporteFormularioVentaService
+from ominicontacto_app.services.estadisticas_campana import EstadisticasService
+from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 
 import logging as logging_
-
 
 logger = logging_.getLogger(__name__)
 
@@ -619,3 +624,86 @@ class ExportaReporteFormularioVentaView(UpdateView):
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
+
+
+class CampanaReporteGrafico(FormView):
+
+    template_name = 'campana/reporte_campana.html'
+    context_object_name = 'campana'
+    model = Campana
+    form_class = ReporteForm
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        # obtener_estadisticas_render_graficos_supervision()
+        service = EstadisticasService()
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        graficos_estadisticas = service.general_campana(self.get_object(), hoy,
+                                                        hoy_ahora)
+        return self.render_to_response(self.get_context_data(
+            graficos_estadisticas=graficos_estadisticas,
+            pk_campana=self.kwargs['pk_campana']))
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        # obtener_estadisticas_render_graficos_supervision()
+        service = EstadisticasService()
+        graficos_estadisticas = service.general_campana(
+            self.get_object(), fecha_desde, fecha_hasta)
+        return self.render_to_response(self.get_context_data(
+            graficos_estadisticas=graficos_estadisticas,
+            pk_campana=self.kwargs['pk_campana']))
+
+
+class AgenteCampanaReporteGrafico(FormView):
+
+    template_name = 'campana/reporte_agente.html'
+    context_object_name = 'campana'
+    model = Campana
+    form_class = ReporteForm
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        # obtener_estadisticas_render_graficos_supervision()
+        service = EstadisticasAgenteService()
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        graficos_estadisticas = service.general_campana(agente,
+                                                        self.get_object(), hoy,
+                                                        hoy_ahora)
+        return self.render_to_response(self.get_context_data(
+            graficos_estadisticas=graficos_estadisticas))
+
+    def get_context_data(self, **kwargs):
+        context = super(AgenteCampanaReporteGrafico, self).get_context_data(
+            **kwargs)
+
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        context['pk_campana'] = self.kwargs['pk_campana']
+
+        context['agente'] = agente
+        return context
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        # obtener_estadisticas_render_graficos_supervision()
+        service = EstadisticasAgenteService()
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        graficos_estadisticas = service.general_campana(agente,
+                                                        self.get_object(),
+                                                        fecha_desde,
+                                                        fecha_hasta)
+        return self.render_to_response(self.get_context_data(
+            graficos_estadisticas=graficos_estadisticas))
