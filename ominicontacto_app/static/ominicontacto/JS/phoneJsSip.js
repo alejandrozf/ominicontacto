@@ -248,7 +248,7 @@ $(function() {
 
         if(CampIdHeader) {
         	if(leadIdHeader) {
-        		getData(CampIdHeader, leadIdHeader);
+        		getData(CampIdHeader, leadIdHeader, $("#idagt").val());
         	} else {
         		if(fromUser !== "Unknown") {
         	    processCallid(fromUser);
@@ -553,8 +553,8 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
   
-  function getData(campid, leadid) {
-  	var url = "/calificacion/"+campid+"/update/"+leadid+"/";
+  function getData(campid, leadid,agentid) {
+  	var url = "/calificacion/"+campid+"/update/"+leadid+"/"+agentid+"/";
   	$("#dataView").attr('src', url);
   }
   
