@@ -268,7 +268,8 @@ class CalificacionClienteUpdateView(UpdateView):
         except CalificacionCliente.DoesNotExist:
             return HttpResponseRedirect(reverse('calificacion_cliente',
                 kwargs={"pk_campana": self.kwargs['pk_campana'],
-                        "id_cliente": self.kwargs['id_cliente']}))
+                        "id_cliente": self.kwargs['id_cliente'],
+                        "id_agente": self.kwargs['id_agente']}))
 
         return super(CalificacionClienteUpdateView, self).dispatch(*args,
                                                                   **kwargs)
@@ -309,7 +310,8 @@ class CalificacionClienteUpdateView(UpdateView):
             messages.success(self.request, message)
             return HttpResponseRedirect(reverse('calificacion_cliente_update',
                            kwargs={"pk_campana": self.kwargs['pk_campana'],
-                                   "id_cliente": self.kwargs['id_cliente']}))
+                                   "id_cliente": self.kwargs['id_cliente'],
+                                   "id_agente": self.kwargs['id_agente']}))
 
     def get_success_url(self):
         return reverse('formulario_tarjeta_update',

@@ -306,7 +306,7 @@ urlpatterns = [
         login_required(views_weelo.CalificacionClienteCreateView.as_view()),
         name='calificacion_cliente',
         ),
-    url(r'^calificacion/(?P<pk_campana>\d+)/update/(?P<id_cliente>\d+)/$',
+    url(r'^calificacion/(?P<pk_campana>\d+)/update/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
         login_required(views_weelo.CalificacionClienteUpdateView.as_view()),
         name='calificacion_cliente_update',
         ),
