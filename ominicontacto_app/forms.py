@@ -409,9 +409,11 @@ class FormularioForm(forms.ModelForm):
 
 class FieldFormularioForm(forms.ModelForm):
     list_values = forms.MultipleChoiceField(widget=forms.SelectMultiple(
-        attrs={'class': 'form-control', 'style': 'width:100%;'}))
+        attrs={'class': 'form-control', 'style': 'width:100%;',
+               'disabled': 'disabled'}), required=False)
     value_item = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control'}))
+        attrs={'class': 'form-control', 'disabled': 'disabled',
+               'placeholder': 'agregar item a la lista'}), required=False)
 
     class Meta:
         model = FieldFormulario

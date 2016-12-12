@@ -14,7 +14,38 @@
                 $("#form-orden-campos").attr('action', url);
                 $("#form-orden-campos").submit();
             });
-            /**/
+            $("#agregar_lista").click(function (){
+                var item = $('#id_value_item').val()
+
+                $('#id_list_values').append($("<option>").val(item).html(item));
+
+                $('#id_value_item').val("");
+            });
+            $("#eliminar_lista").click(function (){
+                var list_values = document.getElementById("id_list_values");
+                var opt_seleccionados = list_values.selectedOptions;
+                var z = 0;
+                var length = opt_seleccionados.length;
+                 while (z < length) {
+                    var child = opt_seleccionados[0];
+                        list_values.removeChild(child);
+                    z++;
+                   }
+            });
+            $("#id_tipo").change(function() {
+                if( $("#id_tipo").val() == 3 ) {
+                    $("#id_value_item").removeAttr('disabled');
+                    $("#id_list_values").removeAttr('disabled');
+                    $("#agregar_lista").removeAttr('disabled');
+                    $("#eliminar_lista").removeAttr('disabled');
+                } else {
+                    $("#id_value_item").attr('disabled', true);
+                    $("#id_list_values").attr('disabled', true);
+                    $("#agregar_lista").attr('disabled', true);
+                    $("#eliminar_lista").attr('disabled', true);
+
+                }
+            });
     });
     </script>
 {% endblock %}
@@ -55,14 +86,21 @@
     <div class="form-group row">
 
         <div class="col-sm-4">
-            <div class="input-group">
+            <div class="input-group row">
               {{ form.value_item}}
                 <span class="input-group-btn">
-                    <a class="btn btn-default" style="color:black;"><strong>+</strong></a>
+                    <a id="agregar_lista" class="btn btn-default" style="color:black;" disabled="disabled"><strong>+</strong></a>
                 </span>
+
+            </div>
+            <br>
+            <div class="row">
+            <a id="eliminar_lista" class="btn btn-default btn-sm pull-right" style="color:black;" disabled="disabled">Eliminar seleccionados</a>
             </div>
         </div>
+
         <div class="col-sm-6">
+            {{ form.list_values.errors }}
               {{ form.list_values}}
         </div>
     </div>
