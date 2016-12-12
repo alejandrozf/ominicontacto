@@ -302,7 +302,7 @@ urlpatterns = [
         login_required(views_weelo.ContactoFormularioUpdateView.as_view()),
         name='formulario_tarjeta_update',
         ),
-    url(r'^calificacion/(?P<pk_campana>\d+)/cliente/(?P<id_cliente>\d+)/$',
+    url(r'^calificacion/(?P<pk_campana>\d+)/cliente/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
         login_required(views_weelo.CalificacionClienteCreateView.as_view()),
         name='calificacion_cliente',
         ),

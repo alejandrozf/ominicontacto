@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
-    Contacto, Campana, FormularioDatoVenta, CalificacionCliente
+    Contacto, Campana, FormularioDatoVenta, CalificacionCliente, AgenteProfile
 )
 from ominicontacto_app.forms import (
     ContactoForm, FormularioDatoVentaFormSet, CalificacionClienteForm
@@ -194,10 +194,12 @@ class CalificacionClienteCreateView(CreateView):
     def get_initial(self):
         initial = super(CalificacionClienteCreateView, self).get_initial()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
         contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
                                         bd_contacto=campana.bd_contacto)
         initial.update({'campana': campana.id,
-                        'contacto': contacto.id})
+                        'contacto': contacto.id,
+                        'agente': agente.id})
         return initial
 
     def get_form(self, form_class):

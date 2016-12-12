@@ -348,11 +348,12 @@ class CalificacionClienteForm(forms.ModelForm):
 
     class Meta:
         model = CalificacionCliente
-        fields = ('campana', 'contacto', 'es_venta', 'calificacion')
+        fields = ('campana', 'contacto', 'es_venta', 'calificacion', 'agente')
         widgets = {
             'campana': forms.HiddenInput(),
             'contacto': forms.HiddenInput(),
             'es_venta': forms.HiddenInput(),
+            'agente': forms.HiddenInput(),
         }
 
 
