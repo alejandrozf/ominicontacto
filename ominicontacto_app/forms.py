@@ -403,6 +403,10 @@ class FormularioForm(forms.ModelForm):
 
 
 class FieldFormularioForm(forms.ModelForm):
+    list_values = forms.MultipleChoiceField(widget=forms.SelectMultiple(
+        attrs={'class': 'form-control', 'style': 'width:100%;'}))
+    value_item = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control'}))
 
     class Meta:
         model = FieldFormulario
@@ -411,6 +415,7 @@ class FieldFormularioForm(forms.ModelForm):
             'formulario': forms.HiddenInput(),
             'tipo': forms.Select(attrs={'class': 'form-control'}),
             "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
+
         }
 
 
