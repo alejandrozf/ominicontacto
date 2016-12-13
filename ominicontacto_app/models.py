@@ -1493,6 +1493,7 @@ class CalificacionCliente(models.Model):
     calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
+    observaciones = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
         return "Califiacion para la campana{0} para el contacto " \

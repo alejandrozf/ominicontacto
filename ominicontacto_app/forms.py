@@ -351,7 +351,8 @@ class CalificacionClienteForm(forms.ModelForm):
 
     class Meta:
         model = CalificacionCliente
-        fields = ('campana', 'contacto', 'es_venta', 'calificacion', 'agente')
+        fields = ('campana', 'contacto', 'es_venta', 'calificacion', 'agente',
+                  'observaciones')
         widgets = {
             'campana': forms.HiddenInput(),
             'contacto': forms.HiddenInput(),
