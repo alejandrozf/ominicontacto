@@ -81,15 +81,15 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones = []
 
                 # --- Buscamos datos
-                lista_opciones.append(contacto.telefono)
-                lista_opciones.append(contacto.id_cliente)
-                lista_opciones.append(contacto.nombre + "" + contacto.apellido)
+                lista_opciones.append(contacto['telefono'])
+                lista_opciones.append(contacto['id_cliente'])
+                lista_opciones.append(contacto['nombre'] + " " + contacto['apellido'])
                 lista_opciones.append(campana.nombre)
                 lista_opciones.append(campana.queue_campana.timeout)
                 lista_opciones.append(campana.id)
                 lista_opciones.append(usa_contestador)
-                if contacto.datos:
-                    datos = json.loads(contacto.datos)
+                if contacto['datos']:
+                    datos = json.loads(contacto['datos'])
                     for col_telefono in telefonos:
                         indice_columna_dato = int(col_telefono) - 7
                         lista_opciones.append(datos[indice_columna_dato])
@@ -106,13 +106,18 @@ class ArchivoDeReporteCsv(object):
 
 class ExportarBaseDatosContactosService(object):
 
-    def crea_reporte_csv(self, base_datos, campana, telefonos, usa_contestador):
+    def crea_reporte_csv(self, base_datos, campana, telefonos, usa_contestador,
+                         evitar_duplicados):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
         archivo_de_reporte.crear_archivo_en_directorio()
-        contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
+        if evitar_duplicados:
+            contactos = Contacto.objects.contactos_by_bd_contacto_sin_duplicar(
+                base_datos)
+        else:
+            contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
         metadata = base_datos.get_metadata()
         campana = Campana.objects.get(pk=campana)
-        archivo_de_reporte.escribir_archivo_csv(contactos, metadata,campana,
+        archivo_de_reporte.escribir_archivo_csv(contactos, metadata, campana,
                                                 telefonos, usa_contestador)
 
     def obtener_url_reporte_csv_descargar(self, base_datos):

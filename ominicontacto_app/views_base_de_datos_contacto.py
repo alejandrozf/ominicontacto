@@ -848,11 +848,12 @@ class ExportaDialerView(FormView):
 
         campana = form.cleaned_data.get('campana')
         usa_contestador = form.cleaned_data.get('usa_contestador')
+        evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
         telefonos = form.cleaned_data.get('telefonos')
         self.object = self.get_object()
         service = ExportarBaseDatosContactosService()
         service.crea_reporte_csv(self.object, campana, telefonos,
-                                 usa_contestador)
+                                 usa_contestador, evitar_duplicados)
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito la exportación del reporte.'
 

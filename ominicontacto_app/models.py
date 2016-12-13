@@ -1013,6 +1013,15 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "base de datos de contactos"))
 
+    def contactos_by_bd_contacto_sin_duplicar(self, bd_contacto):
+        try:
+            return self.values('telefono', 'id_cliente', 'nombre', 'apellido',
+                               'dni', 'fecha_nacimiento', 'cuil', 'datos').\
+                filter(bd_contacto=bd_contacto).distinct()
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "base de datos de contactos"))
+
 
 class Contacto(models.Model):
     objects_default = models.Manager()

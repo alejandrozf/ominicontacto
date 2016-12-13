@@ -326,6 +326,7 @@ FormularioDatoVentaFormSet = inlineformset_factory(
 class ExportaDialerForm(forms.Form):
     campana = forms.ChoiceField(choices=())
     usa_contestador = forms.BooleanField(required=False)
+    evitar_duplicados = forms.BooleanField(required=False)
     telefonos = forms.MultipleChoiceField(
         required=False,
         widget=forms.CheckboxSelectMultiple,
