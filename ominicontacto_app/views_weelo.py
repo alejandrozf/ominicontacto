@@ -235,7 +235,9 @@ class CalificacionClienteCreateView(CreateView):
                                                     "pk_campana": self.kwargs[
                                                         'pk_campana'],
                                                     "id_cliente": self.kwargs[
-                                                        'id_cliente']}))
+                                                        'id_cliente'],
+                                                    "id_agente": self.kwargs[
+                                                        'id_agente']}))
 
     def get_success_url(self):
         return reverse('formulario_tarjeta_update',
