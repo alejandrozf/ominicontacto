@@ -604,3 +604,18 @@ class PredictorMetadataService(object):
 
         logger.debug("columnas_con_telefonos: %s", columnas_con_telefonos)
         return columnas_con_telefonos
+
+
+class BaseDatosService(object):
+
+    def eliminar_contactos_duplicados(self, base_datos):
+
+        contactos = Contacto.objects.filter(bd_contacto=base_datos)
+        cantidad_contactos = base_datos.cantidad_contactos
+        for contacto in contactos:
+            if contactos.filter(id_cliente=contacto.id_cliente).count() > 1:
+                contacto.delete()
+                cantidad_contactos -= 1
+
+        base_datos.cantidad_contactos = cantidad_contactos
+        base_datos.save()

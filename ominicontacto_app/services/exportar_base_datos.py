@@ -16,6 +16,7 @@ from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
 from ominicontacto_app.models import Contacto, Campana
+from ominicontacto_app.services.base_de_datos_contactos import BaseDatosService
 
 logger = logging.getLogger(__name__)
 
@@ -81,15 +82,15 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones = []
 
                 # --- Buscamos datos
-                lista_opciones.append(contacto['telefono'])
-                lista_opciones.append(contacto['id_cliente'])
-                lista_opciones.append(contacto['nombre'] + " " + contacto['apellido'])
+                lista_opciones.append(contacto.telefono)
+                lista_opciones.append(contacto.id_cliente)
+                lista_opciones.append(contacto.nombre + " " + contacto.apellido)
                 lista_opciones.append(campana.nombre)
                 lista_opciones.append(campana.queue_campana.timeout)
                 lista_opciones.append(campana.id)
                 lista_opciones.append(usa_contestador)
-                if contacto['datos']:
-                    datos = json.loads(contacto['datos'])
+                if contacto.datos:
+                    datos = json.loads(contacto.datos)
                     for col_telefono in telefonos:
                         indice_columna_dato = int(col_telefono) - 7
                         lista_opciones.append(datos[indice_columna_dato])
@@ -111,10 +112,10 @@ class ExportarBaseDatosContactosService(object):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
         archivo_de_reporte.crear_archivo_en_directorio()
         if evitar_duplicados:
-            contactos = Contacto.objects.contactos_by_bd_contacto_sin_duplicar(
-                base_datos)
-        else:
-            contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
+            service_base_datos = BaseDatosService()
+            service_base_datos.eliminar_contactos_duplicados(base_datos)
+
+        contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
         metadata = base_datos.get_metadata()
         campana = Campana.objects.get(pk=campana)
         archivo_de_reporte.escribir_archivo_csv(contactos, metadata, campana,
