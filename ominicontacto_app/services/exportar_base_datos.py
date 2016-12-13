@@ -52,7 +52,7 @@ class ArchivoDeReporteCsv(object):
             self.sufijo_nombre_de_archivo)
 
     def escribir_archivo_csv(self, contactos, metadata, campana, telefonos,
-                             usa_contestador):
+                             usa_contestador, prefijo_discador):
 
         with open(self.ruta, 'wb') as csvfile:
             nombres_de_columnas = metadata.nombres_de_columnas
@@ -82,7 +82,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones = []
 
                 # --- Buscamos datos
-                lista_opciones.append(contacto.telefono)
+                lista_opciones.append(prefijo_discador + contacto.telefono)
                 lista_opciones.append(contacto.id_cliente)
                 lista_opciones.append(contacto.nombre + " " + contacto.apellido)
                 lista_opciones.append(campana.nombre)
@@ -108,18 +108,26 @@ class ArchivoDeReporteCsv(object):
 class ExportarBaseDatosContactosService(object):
 
     def crea_reporte_csv(self, base_datos, campana, telefonos, usa_contestador,
-                         evitar_duplicados):
+                         evitar_duplicados, evitar_sin_telefono,
+                         prefijo_discador):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
         archivo_de_reporte.crear_archivo_en_directorio()
+
         if evitar_duplicados:
             service_base_datos = BaseDatosService()
             service_base_datos.eliminar_contactos_duplicados(base_datos)
 
         contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
+
+        if evitar_sin_telefono:
+            contactos = contactos.exclude(telefono__isnull=True).exclude(
+                telefono__exact='')
+
         metadata = base_datos.get_metadata()
         campana = Campana.objects.get(pk=campana)
         archivo_de_reporte.escribir_archivo_csv(contactos, metadata, campana,
-                                                telefonos, usa_contestador)
+                                                telefonos, usa_contestador,
+                                                prefijo_discador)
 
     def obtener_url_reporte_csv_descargar(self, base_datos):
         archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
