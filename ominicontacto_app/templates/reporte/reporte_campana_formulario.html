@@ -46,6 +46,7 @@
                         <th>Datos</th>
                         <th>Es venta</th>
                         <th>Calificacion no venta</th>
+                        <th>Observaciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -81,13 +82,18 @@
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                     {% endif %}
                                 </td>
-                                {% if contacto.calificacion %}
                                 <td>
+                                {% if contacto.calificacion %}
                                     {{ contacto.calificacion.nombre }}
-                                </td>
                                 {% else %}
-                                <td></td>
+                                    N/A
                                 {% endif %}
+                                </td>
+                                <td>
+                                    {% if contacto.observaciones %}
+                                        {{contacto.observaciones}}
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
