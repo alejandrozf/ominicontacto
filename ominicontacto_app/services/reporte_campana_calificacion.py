@@ -65,6 +65,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("datos")
             encabezado.append("Es una venta")
             encabezado.append("Calificacion No venta")
+            encabezado.append("Observaciones")
 
 
 
@@ -97,7 +98,8 @@ class ArchivoDeReporteCsv(object):
                 if calificacion.calificacion:
                     lista_opciones.append(calificacion.calificacion.nombre)
                 else:
-                    lista_opciones.append("")
+                    lista_opciones.append("N/A")
+                lista_opciones.append(calificacion.observaciones)
 
                 # --- Finalmente, escribimos la linea
 
