@@ -32,6 +32,13 @@ class ContactoFormularioCreateView(CreateView):
         return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
                                     bd_contacto=campana.bd_contacto)
 
+    def get_context_data(self, **kwargs):
+        context = super(ContactoFormularioCreateView, self).get_context_data(**kwargs)
+
+        context['id_agente'] = self.request.user.get_agente_profile()
+        context['campana_pk'] = self.kwargs['pk_campana']
+        return context
+
     def get(self, request, *args, **kwargs):
         """
         Handles GET requests and instantiates blank versions of the form
