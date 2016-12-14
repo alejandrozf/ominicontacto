@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
-    views_grabacion, views_weelo, views_calificacion)
+    views_grabacion, views_weelo, views_calificacion, views_agente)
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
     handler400, handler403, handler404, handler500
@@ -314,6 +314,21 @@ urlpatterns = [
         login_required(
             views_campana_creacion.ExportaReporteFormularioVentaView.as_view()),
         name='exporta_formulario_reporte',
+        ),
+    url(r'^agente/(?P<pk_agente>\d+)/reporte/$',
+        login_required(
+            views_agente.AgenteReporteCalificaciones.as_view()),
+        name='reporte_agente_calificaciones',
+        ),
+    url(r'^agente/(?P<pk_agente>\d+)/exporta/calificaciones/$',
+        login_required(
+            views_agente.ExportaReporteCalificacionView.as_view()),
+        name='exporta_reporte_calificaciones',
+        ),
+    url(r'^agente/(?P<pk_agente>\d+)/exporta/formularios/$',
+        login_required(
+            views_agente.ExportaReporteFormularioVentaView.as_view()),
+        name='exporta_reporte_formularios',
         ),
     # ==========================================================================
     # Reportes
