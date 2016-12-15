@@ -67,6 +67,8 @@ class FieldFormularioCreateView(CreateView):
         self.object.orden = \
             FieldFormulario.objects.obtener_siguiente_orden(
                 self.kwargs['pk_formulario'])
+        if self.object.tipo is not FieldFormulario.TIPO_LISTA:
+            self.object.values_select = None
         self.object.save()
         return redirect(self.get_success_url())
 

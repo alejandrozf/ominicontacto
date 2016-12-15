@@ -417,12 +417,12 @@ class FieldFormularioForm(forms.ModelForm):
 
     class Meta:
         model = FieldFormulario
-        fields = ('formulario', 'nombre_campo', 'tipo')
+        fields = ('formulario', 'nombre_campo', 'tipo', 'values_select')
         widgets = {
             'formulario': forms.HiddenInput(),
             'tipo': forms.Select(attrs={'class': 'form-control'}),
             "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
-
+            'values_select': forms.HiddenInput(),
         }
 
 

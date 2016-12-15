@@ -16,11 +16,16 @@
             });
 
             $("#agregar_lista").click(function (){
-                var item = $('#id_value_item').val()
+                var item = $('#id_value_item').val();
 
                 $('#id_list_values').append($("<option>").val(item).html(item));
 
                 $('#id_value_item').val("");
+
+                var lista = [];
+                $('#id_list_values').find('option').each(function(){  lista.push($(this).val()); });
+                $("#id_values_select").val(JSON.stringify(lista));
+
             });
             $("#eliminar_lista").click(function (){
                 var list_values = document.getElementById("id_list_values");
@@ -73,6 +78,7 @@
                 <h4>Nuevo campo</h4>
                 {{ form.non_field_errors }}
     {{ form.formulario }}
+    {{ form.values_select }}
     <div class="form-group row">
         {{ form.nombre_campo.errors }}
         <label class="col-sm-3 control-label" for="{{ form.nombre_campo.id_for_label }}">Nombre de campo: </label>
@@ -123,6 +129,7 @@
                             <th>Orden</th>
                             <th>Nombre de campo</th>
                             <th>Tipo</th>
+                            <th>Valores de la lista</th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -136,6 +143,11 @@
                                     </td>
                                     <td>{{ campo.nombre_campo }} </td>
                                     <td>{{ campo.get_tipo_display }}</td>
+                                    <td>
+                                        {% if campo.tipo == 3 %}
+                                            {{ campo.values_select }}
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         <a href="{% url 'formulario_field_delete' formulario.pk campo.pk %}" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
 
