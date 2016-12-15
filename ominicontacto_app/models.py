@@ -182,6 +182,7 @@ class FieldFormulario(models.Model):
     nombre_campo = models.CharField(max_length=64)
     orden = models.PositiveIntegerField()
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
+    values_select = models.TextField(blank=True, null=True)
 
     class Meta:
         ordering = ['orden']
