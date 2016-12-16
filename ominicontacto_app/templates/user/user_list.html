@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for usuario in object_list %}
+        {% for usuario in page_obj %}
             <tr>
                 <td>{{ usuario.id }}</td>
                 <td>{{ usuario.username }}</td>
@@ -48,6 +48,21 @@
         </tbody>
     </table>
 
+    <div class="pagination">
+        <span class="pager">
+            {% if page_obj.has_previous %}
+                <li><a href="{% url 'user_list' page=page_obj.previous_page_number%}">Anterior</a></li>
+            {% endif %}
+
+            <span class="current">
+                Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                 <li><a href="{% url 'user_list' page=page_obj.next_page_number %}">Siguiente</a></li>
+            {% endif %}
+        </span>
+    </div>
 
 </div>
 {% endblock %}

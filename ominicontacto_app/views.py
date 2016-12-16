@@ -121,6 +121,7 @@ class UserDeleteView(DeleteView):
 class UserListView(ListView):
     model = User
     template_name = 'user/user_list.html'
+    paginate_by = 15
 
 
 class AgenteProfileCreateView(CreateView):
