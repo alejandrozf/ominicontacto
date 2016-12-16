@@ -64,6 +64,7 @@
         <ul class="nav nav-tabs">
             <li class="disabled"><a>Nuevo Formulario</a></li>
             <li class="active"><a>Campos del formulario</a></li>
+            <li class="disabled"><a>Vista previa del formulario</a></li>
         </ul>
     </div>
 </div>
@@ -189,5 +190,10 @@
 
 
 </div>
+    <div class="col-md-12">
+        <a type="submit" href="{% url 'formulario_vista_previa' formulario.pk %}" class="btn btn-default pull-right">
+            Continuar
+        </a>
+    </div>
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from django.conf import settings
+import json
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.forms import (
@@ -432,3 +432,26 @@ class OrdenCamposForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(OrdenCamposForm, self).__init__(*args, **kwargs)
         self.fields['sentido_orden'].widget = forms.HiddenInput()
+
+
+class FormularioCRMForm(forms.Form):
+
+    def __init__(self, campos, *args, **kwargs):
+        super(FormularioCRMForm, self).__init__(*args, **kwargs)
+
+        for campo in campos:
+            if campo.tipo is FieldFormulario.TIPO_TEXTO:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'form-control'}))
+            elif campo.tipo is FieldFormulario.TIPO_FECHA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'class-fecha form-control'}))
+            elif campo.tipo is FieldFormulario.TIPO_LISTA:
+                choices = [(option, option)
+                           for option in json.loads(campo.values_select)]
+                self.fields[campo.nombre_campo] = forms.ChoiceField(
+                    choices=choices,
+                    label=campo.nombre_campo, widget=forms.Select(
+                        attrs={'class': 'form-control'}))

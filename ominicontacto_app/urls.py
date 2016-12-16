@@ -399,6 +399,10 @@ urlpatterns = [
         login_required(views_formulario.FieldFormularioDeleteView.as_view()),
         name='formulario_field_delete',
         ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/vista_previa/$',
+        login_required(views_formulario.FormularioPreviewFormView.as_view()),
+        name='formulario_vista_previa',
+        ),
 ]
 
 urlpatterns += patterns('',

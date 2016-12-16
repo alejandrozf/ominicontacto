@@ -12,7 +12,7 @@ from django.views.generic import (
 from django.views.generic.edit import BaseUpdateView
 from ominicontacto_app.models import Formulario, FieldFormulario
 from ominicontacto_app.forms import (
-    FormularioForm, FieldFormularioForm, OrdenCamposForm
+    FormularioForm, FieldFormularioForm, OrdenCamposForm, FormularioCRMForm
 )
 from ominicontacto_app.services.campos_formulario import (
     OrdenCamposCampanaService
@@ -177,3 +177,19 @@ class FieldFormularioDeleteView(DeleteView):
         return reverse('formulario_field',
                        kwargs={"pk_formulario": self.kwargs['pk_formulario']}
                        )
+
+
+class FormularioPreviewFormView(FormView):
+    form_class = FormularioCRMForm
+    template_name = 'formulario/formulario_preview.html'
+
+    def get_form(self, form_class):
+        formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
+        campos = formulario.campos.all()
+        return form_class(campos=campos, **self.get_form_kwargs())
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            FormularioPreviewFormView, self).get_context_data(**kwargs)
+        context['pk_formulario'] = self.kwargs['pk_formulario']
+        return context
