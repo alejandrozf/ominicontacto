@@ -1600,3 +1600,14 @@ class DuracionDeLlamada(models.Model):
     fecha_hora_llamada = models.DateTimeField(auto_now=True)
     tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
     duracion = models.TimeField()
+
+
+class MetadataCliente(models.Model):
+    agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
+    campana = models.ForeignKey(Campana, related_name="metadatacliente")
+    contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
+    metadata = models.TextField()
+
+    def __unicode__(self):
+        return "Metadata para el contacto {0} de la campana{1} " \
+               "{1} ".format(self.contacto, self.campana)
