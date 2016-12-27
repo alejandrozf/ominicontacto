@@ -10,7 +10,10 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView
 )
 from django.views.generic.edit import BaseUpdateView
-from ominicontacto_app.models import Formulario, FieldFormulario
+from ominicontacto_app.models import (
+    Formulario, FieldFormulario, MetadataCliente, Campana, AgenteProfile,
+    Contacto
+)
 from ominicontacto_app.forms import (
     FormularioForm, FieldFormularioForm, OrdenCamposForm, FormularioCRMForm
 )
@@ -211,5 +214,20 @@ class FormularioCreateFormView(FormView):
         return context
 
     def form_valid(self, form):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+                                        bd_contacto=campana.bd_contacto)
         metadata = form.cleaned_data
-        print metadata
+        MetadataCliente.objects.create(campana=campana, agente=agente,
+                                       contacto=contacto, metadata=metadata)
+        return HttpResponseRedirect('/blanco/')
+
+    def get_success_url(self):
+        # reverse('calificacion_cliente_update',
+        #         kwargs={"pk_campana": self.kwargs['pk_campana'],
+        #                 "id_cliente": self.kwargs['id_cliente'],
+        #                 "id_agente": self.kwargs['id_agente']
+        #                 }
+        #         )
+        reverse('view_blanco')

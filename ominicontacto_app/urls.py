@@ -403,7 +403,7 @@ urlpatterns = [
         login_required(views_formulario.FormularioPreviewFormView.as_view()),
         name='formulario_vista_previa',
         ),
-    url(r'^formulario/(?P<pk_formulario>\d+)/create/$',
+    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
         login_required(views_formulario.FormularioCreateFormView.as_view()),
         name='formulario_create',
         ),
