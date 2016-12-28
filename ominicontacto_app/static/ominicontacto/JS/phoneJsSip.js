@@ -5,7 +5,7 @@ var sipStatus = document.getElementById('SipStatus');var callStatus = document.g
 var KamailioIp = "172.16.20.14";
 $(function() {
 	$("#redial").prop('disabled', true);
-	$('#modalSelectCmp').modal('hide');  
+	$('#modalSelectCmp').modal('hide');
   var estado = JSON.stringify({'status' : 'online'});
   /*$.ajax({
     url: '/status/setStat',
@@ -50,8 +50,7 @@ $(function() {
     $("#modalCallList").modal('show');
   });
   
-  $("#setPause").click(function() {
-    console.log($("#pauseType").val());
+  $("#setPause").click(function() {    
     num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall();
   });
@@ -127,7 +126,6 @@ $(function() {
 	   	    contentType: "text/html",
 	   	    data : "duracion="+$("#horaC").val()+":"+$("#minsC").val() +":"+ $("#segsC").val()+"&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
-	   	 	    debugger;
 	   	 	    
 	   	    },
 	   	    error: function (jqXHR, textStatus, errorThrown) {
