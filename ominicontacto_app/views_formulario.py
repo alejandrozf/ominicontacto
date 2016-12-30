@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+import json
+
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -218,7 +220,7 @@ class FormularioCreateFormView(FormView):
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
         contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
                                         bd_contacto=campana.bd_contacto)
-        metadata = form.cleaned_data
+        metadata = json.dumps(form.cleaned_data)
         MetadataCliente.objects.create(campana=campana, agente=agente,
                                        contacto=contacto, metadata=metadata)
         return HttpResponseRedirect('/blanco/')
