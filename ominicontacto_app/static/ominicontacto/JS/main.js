@@ -34,7 +34,6 @@ $(function () {
 	   	 url: "/contacto/nuevo",
 	   	 contentType: "text/html",
 	   	 success: function (msg) {
-	   	 	debugger;
 	   	 	$("#crm").html(msg);
 	   	 },
 	   	 error: function (jqXHR, textStatus, errorThrown) {
@@ -54,7 +53,6 @@ $(function () {
 	     $("#modalWebCall").modal('show');
 	 });
 	 $("#Pause").click(function () {
-	 	debugger;
 	     if (flagPausa === false) {
 	         /*$.ajax({
 	             url: '/pauses/get',
@@ -85,7 +83,7 @@ $(function () {
 	         modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-success";
 	         var lastPause = modifyUserStat.innerHTML;
-	         //flagPausa = false;
+	         flagPausa = false;
 	         var containerTag = document.getElementById("timers");
 	         var pausas = document.getElementsByClassName("pausa");
 	         if (pausas.length) {
@@ -207,8 +205,6 @@ $(function () {
 	         type: 'GET',
 	         contentType: 'application/json',
 	         success: function (jsOn) {
-	             console.log(jsOn);
-	             debugger;
 	             var row;
 	             for (var i = 0; i < jsOn.length; i++) {
 	                 if (jsOn[i].content !== "") {
@@ -252,7 +248,6 @@ $(function () {
 	     }
 	   });
 	   $("#cuerpoTabla").on('click', '.ampliarConvers',function(e) {
-	     debugger;
 	     var nroTel = $(this).val();
 	     $("#phoneSendThread").attr('value',nroTel);
 	     var datos = {'phoneNumber':nroTel};
@@ -262,7 +257,6 @@ $(function () {
 	       contentType: 'application/json',
 	       data: datos,
 	       success: function (jsOn) {
-	         debugger;
 	         var row;
 	         for (var i=0; i < jsOn.length; i++) {
 	           if(jsOn[i].content !== "") {
