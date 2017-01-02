@@ -61,7 +61,6 @@ class ArchivoDeReporteCsv(object):
             encabezado = []
             encabezado.append("telefono")
             encabezado.append("id_cliente")
-            encabezado.append("nombre")
             encabezado.append("campana")
             encabezado.append("timeout")
             encabezado.append("id_campana")
@@ -84,7 +83,6 @@ class ArchivoDeReporteCsv(object):
                 # --- Buscamos datos
                 lista_opciones.append(prefijo_discador + contacto.telefono)
                 lista_opciones.append(contacto.id_cliente)
-                lista_opciones.append(contacto.nombre + " " + contacto.apellido)
                 lista_opciones.append(campana.nombre)
                 lista_opciones.append(campana.queue_campana.timeout)
                 lista_opciones.append(campana.id)
