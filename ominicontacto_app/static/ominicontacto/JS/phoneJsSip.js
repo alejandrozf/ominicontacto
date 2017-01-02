@@ -44,6 +44,7 @@ $(function() {
   $("#sipLogout").click(function() {
     num = "0077LOGOUT";
     makeCall();
+    userAgent.unregister();
   });
   
   $("#CallList").click(function() {

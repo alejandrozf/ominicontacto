@@ -9,7 +9,7 @@ var minutosP = 0;
 var centesimasT = 0;
 var segundosT = 0;
 var minutosT = 0;
-var flagPausa = false;
+var flagPause = false;
 var control = control2 = control3 = '';
 $(function () {
 	 /*$("#id_registrar").click(function () {
@@ -53,7 +53,7 @@ $(function () {
 	     $("#modalWebCall").modal('show');
 	 });
 	 $("#Pause").click(function () {
-	     if (flagPausa === false) {
+	     if (flagPause === false) {
 	         /*$.ajax({
 	             url: '/pauses/get',
 	             type: 'POST',
@@ -83,7 +83,7 @@ $(function () {
 	         modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-success";
 	         var lastPause = modifyUserStat.innerHTML;
-	         flagPausa = false;
+	         //flagPause = false;
 	         var containerTag = document.getElementById("timers");
 	         var pausas = document.getElementsByClassName("pausa");
 	         if (pausas.length) {
@@ -178,14 +178,14 @@ $(function () {
 	     }
 	 });
 	 $("#setPause").click(function () {
-	     //if (flagPausa === false) {
+	     //if (flagPause === false) {
 	         pauseButton.className = "btn btn-danger";
 	         pauseButton.innerHTML = "Resume";
 	         $("#modalPause").modal('hide');
 	         modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-warning";
 	         modifyUserStat.innerHTML = $("#pauseType").val();
-	         flagPausa = true;
+	         flagPause = true;
 	         parar1();
 	         inicio2();
 	     //} 
