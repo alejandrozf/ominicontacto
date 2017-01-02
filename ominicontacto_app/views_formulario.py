@@ -213,6 +213,19 @@ class FormularioCreateFormView(FormView):
         context = super(
             FormularioCreateFormView, self).get_context_data(**kwargs)
         context['pk_formulario'] = self.kwargs['pk_formulario']
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+                                        bd_contacto=campana.bd_contacto)
+        bd_contacto = campana.bd_contacto
+        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
+        datos = json.loads(contacto.datos)
+        mas_datos = []
+        for nombre, dato in zip(nombres, datos):
+            mas_datos.append((nombre, dato))
+        print mas_datos
+        context['contacto'] = contacto
+        context['mas_datos'] = mas_datos
+
         return context
 
     def form_valid(self, form):
