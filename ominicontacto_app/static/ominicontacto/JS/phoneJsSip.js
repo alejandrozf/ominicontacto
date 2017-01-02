@@ -52,6 +52,7 @@ $(function() {
   });
   
   $("#setPause").click(function() {    
+    flagPausa = true;
     num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall();
   });
