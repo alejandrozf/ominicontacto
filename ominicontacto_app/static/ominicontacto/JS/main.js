@@ -83,7 +83,6 @@ $(function () {
 	         modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-success";
 	         var lastPause = modifyUserStat.innerHTML;
-	         //flagPause = false;
 	         var containerTag = document.getElementById("timers");
 	         var pausas = document.getElementsByClassName("pausa");
 	         if (pausas.length) {
@@ -178,7 +177,7 @@ $(function () {
 	     }
 	 });
 	 $("#setPause").click(function () {
-	     //if (flagPause === false) {
+	     if (flagPause === false) {
 	         pauseButton.className = "btn btn-danger";
 	         pauseButton.innerHTML = "Resume";
 	         $("#modalPause").modal('hide');
@@ -188,7 +187,7 @@ $(function () {
 	         flagPause = true;
 	         parar1();
 	         inicio2();
-	     //} 
+	     } 
 	 });
 	 $("#onHold").click(function (){
 	 	 if(holdFlag === false) {
