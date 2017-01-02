@@ -279,6 +279,7 @@ class Campana(models.Model):
         null=True, blank=True,
         related_name="%(class)ss"
     )
+    formulario = models.ForeignKey(Formulario)
 
     def __unicode__(self):
             return self.nombre
