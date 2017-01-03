@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-9">
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Vista Previa</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for formulario in object_list %}
+            <tr>
+                <td>{{ formulario.nombre }}</td>
+                <td>{{ formulario.descripcion }}</td>
+                <td><a href="{% url 'formulario_vista' formulario.pk %}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="3">No existen formularios creados</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}
