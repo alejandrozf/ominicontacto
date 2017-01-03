@@ -5,7 +5,7 @@ from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_weelo, views_calificacion, views_formulario,
-    views_calificacion_formulario
+    views_agente, views_calificacion_formulario
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -33,8 +33,8 @@ urlpatterns = [
         login_required(views.UserDeleteView.as_view()),
         name='user_delete',
         ),
-    url(r'^user/list/$', login_required(views.UserListView.as_view()),
-        name='user_list',
+    url(r'^user/list/page(?P<page>[0-9]+)/$',
+        login_required(views.UserListView.as_view()), name='user_list',
         ),
     url(r'^user/update/(?P<pk>\d+)/$',
         login_required(views.CustomerUserUpdateView.as_view()),
@@ -316,6 +316,21 @@ urlpatterns = [
         login_required(
             views_campana_creacion.ExportaReporteFormularioVentaView.as_view()),
         name='exporta_formulario_reporte',
+        ),
+    url(r'^agente/(?P<pk_agente>\d+)/reporte/$',
+        login_required(
+            views_agente.AgenteReporteCalificaciones.as_view()),
+        name='reporte_agente_calificaciones',
+        ),
+    url(r'^agente/(?P<pk_agente>\d+)/exporta/calificaciones/$',
+        login_required(
+            views_agente.ExportaReporteCalificacionView.as_view()),
+        name='exporta_reporte_calificaciones',
+        ),
+    url(r'^agente/(?P<pk_agente>\d+)/exporta/formularios/$',
+        login_required(
+            views_agente.ExportaReporteFormularioVentaView.as_view()),
+        name='exporta_reporte_formularios',
         ),
     # ==========================================================================
     # Reportes

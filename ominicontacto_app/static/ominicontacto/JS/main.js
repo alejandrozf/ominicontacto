@@ -9,7 +9,7 @@ var minutosP = 0;
 var centesimasT = 0;
 var segundosT = 0;
 var minutosT = 0;
-var flagPausa = false;
+var flagPause = false;
 var control = control2 = control3 = '';
 $(function () {
 	 /*$("#id_registrar").click(function () {
@@ -34,7 +34,6 @@ $(function () {
 	   	 url: "/contacto/nuevo",
 	   	 contentType: "text/html",
 	   	 success: function (msg) {
-	   	 	debugger;
 	   	 	$("#crm").html(msg);
 	   	 },
 	   	 error: function (jqXHR, textStatus, errorThrown) {
@@ -54,8 +53,107 @@ $(function () {
 	     $("#modalWebCall").modal('show');
 	 });
 	 $("#Pause").click(function () {
-	 	debugger;
-	     if (flagPausa === false) {
+	 	 if($("#auto_pause").val() === "True") {
+	 	   inicio1();
+	         parar2();
+	         pauseButton.className = "btn btn-warning";
+	         pauseButton.innerHTML = "Pause";
+	         modifyUserStat = document.getElementById("UserStatus");
+	         modifyUserStat.className = "label label-success";
+	         var lastPause = modifyUserStat.innerHTML;
+	         var containerTag = document.getElementById("timers");
+	         var pausas = document.getElementsByClassName("pausa");
+	         if (pausas.length) {
+	             var arrPausas = [];
+	             for (var i = 0; i < pausas.length; i++) {
+	                 arrPausas[i] = pausas[i].id;
+	             }
+	             var found = arrPausas.indexOf(lastPause);
+	             if (found != -1) {
+	                 //if (pausas[i].id === lastPause) {
+	                 horaToSum = $("#horaP").html();
+	                 minsToSum = $("#minsP").html().replace(":", "");
+	                 segsToSum = $("#segsP").html().replace(":", "");
+	                 horap = document.getElementById("hora" + lastPause);
+	                 minsp = document.getElementById("mins" + lastPause);
+	                 segsp = document.getElementById("segs" + lastPause);
+	                 horap = horap.innerHTML;
+	                 minsp = minsp.innerHTML.replace(":", "");
+	                 segsp = segsp.innerHTML.replace(":", "");
+	                 horap = Number(horap) + Number(horaToSum);
+	                 minsp = Number(minsp) + Number(minsToSum);
+	                 segsp = Number(segsp) + Number(segsToSum);
+	                 if (horap < 10) {
+	                     horap = String(horap) + "0";
+	                 }
+	                 if (minsp < 10) {
+	                     minsp = ":0" + String(minsp);
+	                 } else {
+	                     minsp = ":" + String(minsp);
+	                 }
+	                 if (segsp < 10) {
+	                     segsp = ":0" + String(segsp);
+	                 } else {
+	                     segsp = ":" + String(segsp);
+	                 }
+	                 document.getElementById("hora" + lastPause).innerHTML = horap;
+	                 document.getElementById("mins" + lastPause).innerHTML = minsp;
+	                 document.getElementById("segs" + lastPause).innerHTML = segsp;
+	                 lastPause = "";
+	             } else {
+	                 //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	                 var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
+	                 var ContainerSegs = document.createTextNode($("#segsP").html());
+	                 var ContainerMins = document.createTextNode($("#minsP").html());
+	                 var ContainerHora = document.createTextNode($("#horaP").html());
+	                 var labelSegs = document.createElement("label");
+	                 var labelMins = document.createElement("label");
+	                 var labelHora = document.createElement("label");
+	                 var statusTag = document.createElement("span");
+	                 labelSegs.id = "segs" + $("#UserStatus").html();
+	                 labelMins.id = "mins" + $("#UserStatus").html();
+	                 labelHora.id = "hora" + $("#UserStatus").html();
+	                 labelSegs.appendChild(ContainerSegs);
+	                 labelMins.appendChild(ContainerMins);
+	                 labelHora.appendChild(ContainerHora);
+	                 statusTag.id = $("#UserStatus").html();
+	                 statusTag.className = "label label-default pausa";
+	                 statusTag.appendChild(descTxtContainerTag);
+	                 statusTag.appendChild(labelHora);
+	                 statusTag.appendChild(labelMins);
+	                 statusTag.appendChild(labelSegs);
+	                 containerTag.innerHTML += "&nbsp;";
+	                 containerTag.appendChild(statusTag);
+	             }
+	         } else {
+	             //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	             var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
+	             var ContainerSegs = document.createTextNode($("#segsP").html());
+	             var ContainerMins = document.createTextNode($("#minsP").html());
+	             var ContainerHora = document.createTextNode($("#horaP").html());
+	             var labelSegs = document.createElement("label");
+	             var labelMins = document.createElement("label");
+	             var labelHora = document.createElement("label");
+	             var statusTag = document.createElement("span");
+	             labelSegs.id = "segs" + $("#UserStatus").html();
+	             labelMins.id = "mins" + $("#UserStatus").html();
+	             labelHora.id = "hora" + $("#UserStatus").html();
+	             labelSegs.appendChild(ContainerSegs);
+	             labelMins.appendChild(ContainerMins);
+	             labelHora.appendChild(ContainerHora);
+	             statusTag.id = $("#UserStatus").html();
+	             statusTag.className = "label label-default pausa";
+	             statusTag.appendChild(descTxtContainerTag);
+	             statusTag.appendChild(labelHora);
+	             statusTag.appendChild(labelMins);
+	             statusTag.appendChild(labelSegs);
+	             containerTag.innerHTML += "&nbsp;";
+	             containerTag.appendChild(statusTag);
+	         }
+	         modifyUserStat.innerHTML = "Online";
+	         reinicio($("#horaP"), $("#minsP"), $("#segsP"));
+	 	 } else {
+	     if (flagPause === false) {
 	         /*$.ajax({
 	             url: '/pauses/get',
 	             type: 'POST',
@@ -78,6 +176,7 @@ $(function () {
 	         $("#modalPause").modal('show');
 	         $("#pauseTime").html();
 	     } else {
+	     	   flagPause = false;
 	         inicio1();
 	         parar2();
 	         pauseButton.className = "btn btn-warning";
@@ -85,7 +184,6 @@ $(function () {
 	         modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-success";
 	         var lastPause = modifyUserStat.innerHTML;
-	         //flagPausa = false;
 	         var containerTag = document.getElementById("timers");
 	         var pausas = document.getElementsByClassName("pausa");
 	         if (pausas.length) {
@@ -178,19 +276,20 @@ $(function () {
 	         modifyUserStat.innerHTML = "Online";
 	         reinicio($("#horaP"), $("#minsP"), $("#segsP"));
 	     }
+	  }
 	 });
 	 $("#setPause").click(function () {
-	     //if (flagPausa === false) {
+	     if (flagPause === false) {
 	         pauseButton.className = "btn btn-danger";
 	         pauseButton.innerHTML = "Resume";
 	         $("#modalPause").modal('hide');
 	         modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-warning";
 	         modifyUserStat.innerHTML = $("#pauseType").val();
-	         flagPausa = true;
+	         flagPause = true;
 	         parar1();
 	         inicio2();
-	     //} 
+	     } 
 	 });
 	 $("#onHold").click(function (){
 	 	 if(holdFlag === false) {
@@ -207,8 +306,6 @@ $(function () {
 	         type: 'GET',
 	         contentType: 'application/json',
 	         success: function (jsOn) {
-	             console.log(jsOn);
-	             debugger;
 	             var row;
 	             for (var i = 0; i < jsOn.length; i++) {
 	                 if (jsOn[i].content !== "") {
@@ -252,7 +349,6 @@ $(function () {
 	     }
 	   });
 	   $("#cuerpoTabla").on('click', '.ampliarConvers',function(e) {
-	     debugger;
 	     var nroTel = $(this).val();
 	     $("#phoneSendThread").attr('value',nroTel);
 	     var datos = {'phoneNumber':nroTel};
@@ -262,7 +358,6 @@ $(function () {
 	       contentType: 'application/json',
 	       data: datos,
 	       success: function (jsOn) {
-	         debugger;
 	         var row;
 	         for (var i=0; i < jsOn.length; i++) {
 	           if(jsOn[i].content !== "") {

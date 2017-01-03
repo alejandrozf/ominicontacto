@@ -47,6 +47,10 @@
   /*position: absolute;*/
   z-index: 1;
 }
+.Modal-Content{
+	left: 130%;
+	width: 360px;
+}
 .iconApp:hover {
   position: relative;
   -webkit-animation-name: example;

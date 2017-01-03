@@ -77,7 +77,7 @@ class CustomerUserCreateView(CreateView):
     template_name = 'user/user_create_update_form.html'
 
     def get_success_url(self):
-        return reverse('user_list')
+        return reverse('user_list', kwargs={"page": 1})
 
 
 class CustomerUserUpdateView(UpdateView):
@@ -100,7 +100,7 @@ class CustomerUserUpdateView(UpdateView):
         return ret
 
     def get_success_url(self):
-        return reverse('user_list')
+        return reverse('user_list', kwargs={"page": 1})
 
 
 class UserDeleteView(DeleteView):
@@ -115,12 +115,12 @@ class UserDeleteView(DeleteView):
      return User.objects.get(pk=self.kwargs['pk'])
 
     def get_success_url(self):
-        return reverse('user_list')
-
+        return reverse('user_list', kwargs={"page": 1})
 
 class UserListView(ListView):
     model = User
     template_name = 'user/user_list.html'
+    paginate_by = 15
 
 
 class AgenteProfileCreateView(CreateView):
@@ -166,7 +166,7 @@ class AgenteProfileCreateView(CreateView):
         return super(AgenteProfileCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('user_list')
+        return reverse('user_list', kwargs={"page": 1})
 
 
 class AgenteProfileUpdateView(UpdateView):
@@ -195,7 +195,7 @@ class AgenteProfileUpdateView(UpdateView):
         return super(AgenteProfileUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('user_list')
+        return reverse('user_list', kwargs={"page": 1})
 
 
 class ModuloCreateView(CreateView):

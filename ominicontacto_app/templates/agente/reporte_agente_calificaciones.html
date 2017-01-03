@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}" >
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap-theme.min.css' %}">
+	<link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}"></link>
+
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+
+    <!-- jquery UI -->
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'bootstrap-3.3.6/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
+</head>
+
+
+<script type="text/javascript">
+   $(function() {
+                var start = moment();
+                var end = moment();
+                function cb(start, end) {
+                    $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+                }
+
+ $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+
+  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+});
+
+            // Init daterange plugin
+            $('#id_fecha').daterangepicker(
+                {
+                locale: {
+                    format: 'DD/MM/YYYY'
+                 },
+
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+        }, cb);
+
+        cb(start, end);
+
+});
+    </script>
+<body>
+<div class="row">
+    <div class="col-md-4">
+        <h3>
+           Agente {{ agente.user.get_full_name }}
+        </h3>
+    </div>
+    <div class="col-md-3 pull-right">
+            <h5><a class="btn btn-info btn-sm" href="{% url 'exporta_reporte_calificaciones' agente.pk %}">Exportar Calificacion(CSV)</a></h5>
+    </div>
+    <div class="col-md-3 pull-right">
+
+            <h5><a class="btn btn-info btn-sm" href="{% url 'exporta_reporte_formularios' agente.pk %}">Exportar Venta(CSV)</a></h5>
+
+    </div>
+</div>
+
+<div class="col-md-6">
+
+    <form role="form" method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <table class="table">
+           <tr>
+               <td>
+                   <div class="input-group date pull-right active" id="">
+                       {{form.fecha}}
+                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+               </td>
+               <td>
+                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                        Filtrar por esa fecha
+                </button>
+               </td>
+           </tr>
+        </table>
+
+    </form>
+</div>
+
+
+                <table class="table table-bordered">
+                    <thead>
+                      <tr class="fts-table-bg">
+                        <th>Telefono</th>
+                        <th>Id Cliente</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Dni</th>
+                        <th>Fecha Nacimient</th>
+                        <th>Cuil</th>
+                        <th>Datos</th>
+                        <th>Es venta</th>
+                        <th>Calificacion no venta</th>
+                        <th>Observaciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for contacto in listado_calificaciones %}
+                            <tr>
+
+                                <td>
+                                    {{ contacto.contacto.telefono }}
+                                </td>
+                                <td>
+                                    {{contacto.contacto.id_cliente}}
+                                </td>
+                                <td>
+                                    {{ contacto.contacto.nombre}}
+                                </td>
+                                <td>{{ contacto.contacto.apellido}}</td>
+                                <td>
+                                    {{ contacto.contacto.dni }}
+                                </td>
+                                <td>
+                                    {{ contacto.contacto.fecha_nacimiento }}
+                                </td>
+                                <td>
+                                    {{ contacto.contacto.cuil }}
+                                </td>
+                                <td>
+                                    {{ contacto.contacto.datos}}
+                                </td>
+                                <td>
+                                    {% if contacto.es_venta %}
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                    {% else %}
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                {% if contacto.calificacion %}
+                                    {{ contacto.calificacion.nombre }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                                </td>
+                                <td>
+                                    {% if contacto.observaciones %}
+                                        {{contacto.observaciones}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="16">
+                                    <p class="text-center text-danger">
+                                        <em>No se encontraron calificaciones para el agente.</em>
+                                    </p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+</body>
+</html>

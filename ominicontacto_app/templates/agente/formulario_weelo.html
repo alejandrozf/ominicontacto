@@ -65,6 +65,8 @@
         <tr> {{ venta_form.non_form_errors }}{{venta_form.as_table}}</tr>
 
     </table>
+        <a class="btn btn-danger btn-lg" href="{% url 'calificacion_cliente_update' campana_pk contacto.id_cliente id_agente.pk %}">Deshacer y volver</a>
+
     <button type="submit" id="id_registrar" class="btn btn-success btn-lg">
         Guardar
     </button>

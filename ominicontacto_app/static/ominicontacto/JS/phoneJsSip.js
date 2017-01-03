@@ -1,11 +1,11 @@
 //***************************************************
 //2001, 2002 (123456)
-var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId;
+var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 $(function() {
 	$("#redial").prop('disabled', true);
-	$('#modalSelectCmp').modal('hide');  
+	$('#modalSelectCmp').modal('hide');
   var estado = JSON.stringify({'status' : 'online'});
   /*$.ajax({
     url: '/status/setStat',
@@ -24,9 +24,9 @@ $(function() {
     if (flagPausa === true) {
     num = "0077UNPAUSE";
     makeCall();
-    flagPausa === false;
+    flagPausa = false;
     } else {
-    	flagPausa === true;
+    	flagPausa = true;
     }
   });
   
@@ -44,14 +44,15 @@ $(function() {
   $("#sipLogout").click(function() {
     num = "0077LOGOUT";
     makeCall();
+    userAgent.unregister();
   });
   
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
   });
   
-  $("#setPause").click(function() {
-    console.log($("#pauseType").val());
+  $("#setPause").click(function() {    
+    flagPausa = true;
     num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall();
   });
@@ -127,7 +128,6 @@ $(function() {
 	   	    contentType: "text/html",
 	   	    data : "duracion="+$("#horaC").val()+":"+$("#minsC").val() +":"+ $("#segsC").val()+"&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
-	   	 	    debugger;
 	   	 	    
 	   	    },
 	   	    error: function (jqXHR, textStatus, errorThrown) {
