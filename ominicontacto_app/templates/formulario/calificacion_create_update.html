@@ -3,18 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-<link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
-        <!-- jquery UI -->
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+
 </head>
 <body>
-<script>
-    $(document).ready(function() {
-            $('.class-fecha').datetimepicker({format: 'DD/MM/YYYY'});
-    });
-    </script>
    {% for message in messages %}
 
         {% if "error" in message.tags %}
@@ -85,20 +76,18 @@
         </table>
     </div>
 
-<div class="col-md-9">
-<form action="" enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    <table class="table table-striped">
-        {{form.as_table}}
+    <div class="col-md-9">
+        <form id="form-calificacion" action = "" method = "post">
+            {% csrf_token %}
+            <table class="table table-striped">
+		        {{form.as_table}}
+            </table>
+            <button type="submit" id="id_registrar" class="btn btn-success btn-lg">
+                Guardar
+            </button>
 
-    </table>
-
-     <button type="submit"  class="btn btn-success btn-lg">
-        Guardar
-    </button>
-
-</form>
-</div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

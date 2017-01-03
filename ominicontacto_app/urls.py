@@ -4,7 +4,9 @@ from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
-    views_grabacion, views_weelo, views_calificacion, views_formulario)
+    views_grabacion, views_weelo, views_calificacion, views_formulario,
+    views_calificacion_formulario
+)
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
     handler400, handler403, handler404, handler500
@@ -411,6 +413,30 @@ urlpatterns = [
         login_required(views_formulario.FormularioVistaFormView.as_view()),
         name='formulario_vista',
         ),
+    # ==========================================================================
+    # Calificacion Formulario
+    # ==========================================================================
+    url(
+        r'^formulario/(?P<pk_campana>\d+)/venta/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
+        login_required(views_calificacion_formulario.FormularioCreateFormView.as_view()),
+        name='formulario_venta',
+        ),
+    url(
+        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/create/(?P<id_agente>\d+)/$',
+        login_required(views_calificacion_formulario.CalificacionClienteCreateView.as_view()),
+        name='calificacion_formulario_create',
+        ),
+    url(
+        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/update/(?P<id_agente>\d+)/$',
+        login_required(views_calificacion_formulario.CalificacionClienteUpdateView.as_view()),
+        name='calificacion_formulario_update',
+        ),
+    url(r'^formulario/(?P<pk>\d+)/detalle/$',
+        login_required(
+            views_calificacion_formulario.FormularioDetailView.as_view()),
+        name='formulario_detalle',
+        ),
+
 ]
 
 urlpatterns += patterns('',
