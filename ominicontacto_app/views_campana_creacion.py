@@ -29,6 +29,8 @@ from ominicontacto_app.services.reporte_campana_venta import \
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
+from ominicontacto_app.services.reporte_metadata_cliente import \
+    ReporteMetadataClienteService
 
 import logging as logging_
 
@@ -597,7 +599,7 @@ class CampanaReporteListView(ListView):
             **kwargs)
 
         service = ReporteCampanaService()
-        service_formulario = ReporteFormularioVentaService()
+        service_formulario = ReporteMetadataClienteService()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         service.crea_reporte_csv(campana)
         service_formulario.crea_reporte_csv(campana)
@@ -619,7 +621,7 @@ class ExportaReporteFormularioVentaView(UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        service = ReporteFormularioVentaService()
+        service = ReporteMetadataClienteService()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
