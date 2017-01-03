@@ -76,6 +76,7 @@ $(function () {
 	         $("#modalPause").modal('show');
 	         $("#pauseTime").html();
 	     } else {
+	     	   flagPause = false;
 	         inicio1();
 	         parar2();
 	         pauseButton.className = "btn btn-warning";
