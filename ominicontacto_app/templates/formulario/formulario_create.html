@@ -10,24 +10,26 @@
 {% block content %}
 
 <div class="row">
+    <div class="col-md-9">
         <table class="table table-striped">
             <tr>
-                <td>telefono</td>
+                <td><strong>Telefono</strong></td>
                 <td>{{contacto.telefono}}</td>
             </tr>
             <tr>
-                <td>id_cliente</td>
+                <td><strong>ID Cliente</strong></td>
                 <td>{{contacto.id_cliente}} </td>
             </tr>
         {% for datos in mas_datos %}
             <tr>
-                <td>{{datos.0}}</td>
+                <td><strong>{{datos.0|title}}</strong></td>
                 <td>{{datos.1}}</td>
             </tr>
         {% endfor %}
-    </table>
+        </table>
+    </div>
 
-<div class="col-md-6">
+<div class="col-md-9">
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     <table class="table table-striped">
