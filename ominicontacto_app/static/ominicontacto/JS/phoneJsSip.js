@@ -554,7 +554,7 @@ $(function() {
   }
   
   function getData(campid, leadid,agentid) {
-  	var url = "/calificacion/"+campid+"/update/"+leadid+"/"+agentid+"/";
+  	var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/";
   	$("#dataView").attr('src', url);
   }
   
