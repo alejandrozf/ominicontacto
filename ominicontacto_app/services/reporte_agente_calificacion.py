@@ -10,6 +10,7 @@ import csv
 import logging
 import os
 import datetime
+import json
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -57,15 +58,10 @@ class ArchivoDeReporteCsv(object):
 
             encabezado.append("Telefono")
             encabezado.append("Id Cliente")
-            encabezado.append("Nombre")
-            encabezado.append("Apellido")
-            encabezado.append("DNI")
-            encabezado.append("Fecha Nacimiento")
-            encabezado.append("Cuil")
-            encabezado.append("datos")
             encabezado.append("Es una venta")
             encabezado.append("Calificacion No venta")
             encabezado.append("Observaciones")
+            encabezado.append("datos del cliente")
 
 
 
@@ -85,12 +81,7 @@ class ArchivoDeReporteCsv(object):
 
                 lista_opciones.append(calificacion.contacto.telefono)
                 lista_opciones.append(calificacion.contacto.id_cliente)
-                lista_opciones.append(calificacion.contacto.nombre)
-                lista_opciones.append(calificacion.contacto.apellido)
-                lista_opciones.append(calificacion.contacto.dni)
-                lista_opciones.append(calificacion.contacto.fecha_nacimiento)
-                lista_opciones.append(calificacion.contacto.cuil)
-                lista_opciones.append(calificacion.contacto.datos)
+
                 if calificacion.es_venta:
                     lista_opciones.append("SI")
                 else:
@@ -100,7 +91,9 @@ class ArchivoDeReporteCsv(object):
                 else:
                     lista_opciones.append("N/A")
                 lista_opciones.append(calificacion.observaciones)
-
+                datos = json.loads(calificacion.contacto.datos)
+                for dato in datos:
+                    lista_opciones.append(dato)
                 # --- Finalmente, escribimos la linea
 
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')

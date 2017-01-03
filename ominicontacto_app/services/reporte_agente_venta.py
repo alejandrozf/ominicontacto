@@ -10,6 +10,7 @@ import csv
 import logging
 import os
 import datetime
+import json
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -49,7 +50,7 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, formularios):
+    def escribir_archivo_csv(self, agente):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
@@ -57,43 +58,7 @@ class ArchivoDeReporteCsv(object):
 
             encabezado.append("Telefono")
             encabezado.append("Id Cliente")
-            encabezado.append("Nombre")
-            encabezado.append("Apellido")
-            encabezado.append("DNI")
-            encabezado.append("Fecha Nacimiento")
-            encabezado.append("Cuil")
-            encabezado.append("datos")
-            encabezado.append("Calle")
-            encabezado.append("Numero")
-            encabezado.append("Depto")
-            encabezado.append("Localidad")
-            encabezado.append("Codigo postal")
-            encabezado.append("Empresa celular")
-            encabezado.append("Telefono celular")
-            encabezado.append("Telefono fijo")
-            encabezado.append("email")
-            encabezado.append("Nivel de estudio")
-            encabezado.append("Vivienda")
-            encabezado.append("Gastos mensuales")
-            encabezado.append("Nombre y apellido del padre")
-            encabezado.append("Nombre y apellido de la madre")
-            encabezado.append("Situacion laboral")
-            encabezado.append("Nombre de la empresa")
-            encabezado.append("tipo de empresa")
-            encabezado.append("Domicilio laboral")
-            encabezado.append("Cargo")
-            encabezado.append("Fecha de la venta")
-            encabezado.append("Vendedor")
-            encabezado.append("Domicilio de entrega")
-            encabezado.append("Numero")
-            encabezado.append("Barrio")
-            encabezado.append("Referencia")
-            encabezado.append("Localidad")
-            encabezado.append("Horario")
-            encabezado.append("Dia preferencia")
-            encabezado.append("Usuario")
-            encabezado.append("Limite")
-            encabezado.append("Adicional")
+            encabezado.append("datos del cliente")
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -104,51 +69,20 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de los contactos, con los eventos de TODOS los intentos
-            for formulario in formularios:
+            for metadata in agente.metadataagente.all():
                 lista_opciones = []
 
                 # --- Buscamos datos
 
-                lista_opciones.append(formulario.contacto.telefono)
-                lista_opciones.append(formulario.contacto.id_cliente)
-                lista_opciones.append(formulario.contacto.nombre)
-                lista_opciones.append(formulario.contacto.apellido)
-                lista_opciones.append(formulario.contacto.dni)
-                lista_opciones.append(formulario.contacto.fecha_nacimiento)
-                lista_opciones.append(formulario.contacto.cuil)
-                lista_opciones.append(formulario.contacto.datos)
-                lista_opciones.append(formulario.calle)
-                lista_opciones.append(formulario.numero)
-                lista_opciones.append(formulario.depto)
-                lista_opciones.append(formulario.localidad)
-                lista_opciones.append(formulario.codigo_postal)
-                lista_opciones.append(formulario.empresa_celular)
-                lista_opciones.append(formulario.telefono_celular)
-                lista_opciones.append(formulario.telefono_fijo)
-                lista_opciones.append(formulario.email)
-                lista_opciones.append(formulario.get_nivel_estudio_display())
-                lista_opciones.append(formulario.get_vivienda_display())
-                lista_opciones.append(formulario.gastos_mensuales)
-                lista_opciones.append(formulario.nombre_padre)
-                lista_opciones.append(formulario.nombre_madre)
-                lista_opciones.append(formulario.
-                                      get_situacion_laboral_display())
-                lista_opciones.append(formulario.nombre_empresa)
-                lista_opciones.append(formulario.get_tipo_empresa_display())
-                lista_opciones.append(formulario.domicilio_laboral)
-                lista_opciones.append(formulario.cargo)
-                lista_opciones.append(formulario.fecha)
-                lista_opciones.append(formulario.vendedor.user.get_full_name())
-                lista_opciones.append(formulario.domicilio)
-                lista_opciones.append(formulario.numero_domicilio)
-                lista_opciones.append(formulario.barrio)
-                lista_opciones.append(formulario.referencia)
-                lista_opciones.append(formulario.localidad_entrega)
-                lista_opciones.append(formulario.horario)
-                lista_opciones.append(formulario.get_dia_preferencia_display())
-                lista_opciones.append(formulario.usuario)
-                lista_opciones.append(formulario.limite)
-                lista_opciones.append(formulario.adicional)
+                lista_opciones.append(metadata.contacto.telefono)
+                lista_opciones.append(metadata.contacto.id_cliente)
+
+                datos = json.loads(metadata.contacto.datos)
+                for dato in datos:
+                    lista_opciones.append(dato)
+                datos = json.loads(metadata.metadata)
+                for clave, valor in datos.items():
+                    lista_opciones.append(valor)
 
                 # --- Finalmente, escribimos la linea
 
@@ -172,8 +106,8 @@ class ReporteFormularioVentaService(object):
         formularios = self._obtener_listado_formularios_fecha(agente,
                                                               fecha_desde,
                                                               fecha_hasta)
-        print
-        archivo_de_reporte.escribir_archivo_csv(formularios)
+
+        archivo_de_reporte.escribir_archivo_csv(agente)
 
     def obtener_url_reporte_csv_descargar(self, agente):
         #assert campana.estado == Campana.ESTADO_DEPURADA
