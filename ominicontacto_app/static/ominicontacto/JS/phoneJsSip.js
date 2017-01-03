@@ -24,9 +24,9 @@ $(function() {
     if (flagPausa === true) {
     num = "0077UNPAUSE";
     makeCall();
-    flagPausa === false;
+    flagPausa = false;
     } else {
-    	flagPausa === true;
+    	flagPausa = true;
     }
   });
   
