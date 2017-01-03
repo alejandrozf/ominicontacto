@@ -4,7 +4,9 @@ from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
-    views_grabacion, views_weelo, views_calificacion, views_agente)
+    views_grabacion, views_weelo, views_calificacion, views_formulario,
+    views_agente, views_calificacion_formulario
+)
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
     handler400, handler403, handler404, handler500
@@ -391,6 +393,65 @@ urlpatterns = [
             views_calificacion.CalificacionCampanaDeleteView.as_view()),
         name='calificacion_campana_delete',
         ),
+    # ==========================================================================
+    # Formulario
+    # ==========================================================================
+    url(r'^formulario/nuevo/$',
+        login_required(views_formulario.FormularioCreateView.as_view()),
+        name='formulario_nuevo',
+        ),
+    url(r'^formulario/list/$',
+        login_required(views_formulario.FormularioListView.as_view()),
+        name='formulario_list',
+        ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/field/$',
+        login_required(views_formulario.FieldFormularioCreateView.as_view()),
+        name='formulario_field',
+        ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/campo/(?P<pk>\d+)/orden/$',
+        login_required(views_formulario.FieldFormularioOrdenView.as_view()),
+        name='campo_formulario_orden',
+        ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/campo/(?P<pk>\d+)/delete/$',
+        login_required(views_formulario.FieldFormularioDeleteView.as_view()),
+        name='formulario_field_delete',
+        ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/vista_previa/$',
+        login_required(views_formulario.FormularioPreviewFormView.as_view()),
+        name='formulario_vista_previa',
+        ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
+        login_required(views_formulario.FormularioCreateFormView.as_view()),
+        name='formulario_create',
+        ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/vista/$',
+        login_required(views_formulario.FormularioVistaFormView.as_view()),
+        name='formulario_vista',
+        ),
+    # ==========================================================================
+    # Calificacion Formulario
+    # ==========================================================================
+    url(
+        r'^formulario/(?P<pk_campana>\d+)/venta/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
+        login_required(views_calificacion_formulario.FormularioCreateFormView.as_view()),
+        name='formulario_venta',
+        ),
+    url(
+        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/create/(?P<id_agente>\d+)/$',
+        login_required(views_calificacion_formulario.CalificacionClienteCreateView.as_view()),
+        name='calificacion_formulario_create',
+        ),
+    url(
+        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/update/(?P<id_agente>\d+)/$',
+        login_required(views_calificacion_formulario.CalificacionClienteUpdateView.as_view()),
+        name='calificacion_formulario_update',
+        ),
+    url(r'^formulario/(?P<pk>\d+)/detalle/$',
+        login_required(
+            views_calificacion_formulario.FormularioDetailView.as_view()),
+        name='formulario_detalle',
+        ),
+
 ]
 
 urlpatterns += patterns('',

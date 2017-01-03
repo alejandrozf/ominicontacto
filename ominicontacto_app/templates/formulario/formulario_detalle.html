@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="row">
+    <div class="col-md-9">
+        <table class="table table-striped">
+            <tr>
+                <td><strong>Telefono</strong></td>
+                <td>{{contacto.telefono}}</td>
+            </tr>
+            <tr>
+                <td><strong>ID Cliente</strong></td>
+                <td>{{contacto.id_cliente}} </td>
+            </tr>
+        {% for datos in mas_datos %}
+            <tr>
+                <td><strong>{{datos.0|title}}</strong></td>
+                <td>{{datos.1}}</td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td colspan="2"><strong>Formulario recientemente cargado</strong></td>
+            </tr>
+        {% for key, values in metadata.items %}
+            <tr>
+                <td><strong>{{key|title}}</strong></td>
+                <td>{{values}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

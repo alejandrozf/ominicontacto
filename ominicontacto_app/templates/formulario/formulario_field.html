@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_js %}
+<script type="text/javascript">
+    $(function(){
+        /* Maneja el submit del ordenamiento.*/
+            $(".orden").click(function (){
+                var sentido_orden = $(this).attr('data-sentido-orden');
+
+                $("#id_sentido_orden").val(sentido_orden);
+
+                var url = $(this).attr('data-url');
+                $("#form-orden-campos").attr('action', url);
+                $("#form-orden-campos").submit();
+            });
+
+            $("#agregar_lista").click(function (){
+                var item = $('#id_value_item').val();
+
+                $('#id_list_values').append($("<option>").val(item).html(item));
+
+                $('#id_value_item').val("");
+
+                var lista = [];
+                $('#id_list_values').find('option').each(function(){  lista.push($(this).val()); });
+                $("#id_values_select").val(JSON.stringify(lista));
+
+            });
+            $("#eliminar_lista").click(function (){
+                var list_values = document.getElementById("id_list_values");
+                var opt_seleccionados = list_values.selectedOptions;
+                var z = 0;
+                var length = opt_seleccionados.length;
+                 while (z < length) {
+                    var child = opt_seleccionados[0];
+                        list_values.removeChild(child);
+                    z++;
+                   }
+            });
+            $("#id_tipo").change(function() {
+                if( $("#id_tipo").val() == 3 ) {
+                    $("#id_value_item").removeAttr('disabled');
+                    $("#id_list_values").removeAttr('disabled');
+                    $("#agregar_lista").removeAttr('disabled');
+                    $("#eliminar_lista").removeAttr('disabled');
+                } else {
+                    $("#id_value_item").attr('disabled', true);
+                    $("#id_list_values").attr('disabled', true);
+                    $("#agregar_lista").attr('disabled', true);
+                    $("#eliminar_lista").attr('disabled', true);
+
+                }
+            });
+
+            /**/
+
+    });
+    </script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs">
+            <li class="disabled"><a>Nuevo Formulario</a></li>
+            <li class="active"><a>Campos del formulario</a></li>
+            <li class="disabled"><a>Vista previa del formulario</a></li>
+        </ul>
+    </div>
+</div>
+</br>
+<div class="row">
+
+<div class="col-md-6">
+<form action="" enctype="multipart/form-data" method="post">
+
+                {% csrf_token %}
+
+                <h4>Nuevo campo</h4>
+                {{ form.non_field_errors }}
+    {{ form.formulario }}
+    {{ form.values_select }}
+    <div class="form-group row">
+        {{ form.nombre_campo.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.nombre_campo.id_for_label }}">Nombre de campo: </label>
+        <div class="col-sm-6">
+              {{ form.nombre_campo }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.tipo.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.tipo.id_for_label }}">Tipo: </label>
+        <div class="col-sm-6">
+              {{ form.tipo}}
+        </div>
+    </div>
+    <div class="form-group row">
+
+        <div class="col-sm-4">
+            <div class="input-group row">
+              {{ form.value_item}}
+                <span class="input-group-btn">
+                    <a id="agregar_lista" class="btn btn-default" style="color:black;" disabled="disabled"><strong>+</strong></a>
+                </span>
+
+            </div>
+            <br>
+            <div class="row">
+            <a id="eliminar_lista" class="btn btn-default btn-sm pull-right" style="color:black;" disabled="disabled">Eliminar seleccionados</a>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            {{ form.list_values.errors }}
+              {{ form.list_values}}
+        </div>
+    </div>
+                <button type="submit" id="id_guardar" class="btn btn-success ">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Agregar campo
+                </button>
+</form>
+    </div>
+<div class="col-md-6">
+                {% if formulario %}
+                    <h4>Campos del formulario</h4>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr class="fts-table-bg">
+                            <th>Orden</th>
+                            <th>Nombre de campo</th>
+                            <th>Tipo</th>
+                            <th>Valores de la lista</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for campo in formulario.campos.all %}
+                                <tr>
+                                    <td>
+                                        <span class="badge va-top mg-top-5">{{ forloop.counter }}</span>
+                                    </td>
+                                    <td>{{ campo.nombre_campo }} </td>
+                                    <td>{{ campo.get_tipo_display }}</td>
+                                    <td>
+                                        {% if campo.tipo == 3 %}
+                                            {{ campo.values_select }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'formulario_field_delete' formulario.pk campo.pk %}" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+
+                                    </td>
+                                    <td>
+                                            {% if not forloop.last %}
+                                                    <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_DOWN }}" type="button" class="btn btn-default btn-xs orden">
+
+                                                       <span class="glyphicon glyphicon-chevron-down"></span>
+                                                    </button>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if not forloop.first %}
+                                                     <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_UP }}" type="button" class="btn btn-default btn-xs orden">
+                                                    <span class="glyphicon glyphicon-chevron-up"></span>
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                </tr>
+                             {% empty %}
+                                <tr>
+                                    <td colspan="4">
+                                        <p class="text-center text-danger">
+                                            <em>No se encontraron campos creados.</em>
+                                        </p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+    <form role="form" method="post" action="" id="form-orden-campos">
+        {% csrf_token %}
+        {{ form_orden_campos.non_field_errors }}
+    {{ form_orden_campos.sentido_orden }}
+    </form>
+                {% endif %}
+
+
+
+</div>
+    <div class="col-md-12">
+        <a type="submit" href="{% url 'formulario_vista_previa' formulario.pk %}" class="btn btn-default pull-right">
+            Continuar
+        </a>
+    </div>
+</div>
+{% endblock %}
