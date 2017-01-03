@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 import csv
 import logging
 import os
-
+import json
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -57,12 +57,9 @@ class ArchivoDeReporteCsv(object):
 
             encabezado.append("Telefono")
             encabezado.append("Id Cliente")
-            encabezado.append("Nombre")
-            encabezado.append("Apellido")
-            encabezado.append("DNI")
-            encabezado.append("Fecha Nacimiento")
-            encabezado.append("Cuil")
-            encabezado.append("datos")
+            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[2:]
+            for nombre in nombres:
+                encabezado.append(nombre)
             encabezado.append("Es una venta")
             encabezado.append("Calificacion No venta")
             encabezado.append("Observaciones")
@@ -85,12 +82,10 @@ class ArchivoDeReporteCsv(object):
 
                 lista_opciones.append(calificacion.contacto.telefono)
                 lista_opciones.append(calificacion.contacto.id_cliente)
-                lista_opciones.append(calificacion.contacto.nombre)
-                lista_opciones.append(calificacion.contacto.apellido)
-                lista_opciones.append(calificacion.contacto.dni)
-                lista_opciones.append(calificacion.contacto.fecha_nacimiento)
-                lista_opciones.append(calificacion.contacto.cuil)
-                lista_opciones.append(calificacion.contacto.datos)
+
+                datos = json.loads(calificacion.contacto.datos)
+                for dato in datos:
+                    lista_opciones.append(dato)
                 if calificacion.es_venta:
                     lista_opciones.append("SI")
                 else:
