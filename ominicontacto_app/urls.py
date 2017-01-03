@@ -407,6 +407,10 @@ urlpatterns = [
         login_required(views_formulario.FormularioCreateFormView.as_view()),
         name='formulario_create',
         ),
+    url(r'^formulario/(?P<pk_formulario>\d+)/vista/$',
+        login_required(views_formulario.FormularioVistaFormView.as_view()),
+        name='formulario_vista',
+        ),
 ]
 
 urlpatterns += patterns('',
