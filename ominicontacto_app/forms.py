@@ -241,6 +241,7 @@ class GrabacionBusquedaForm(forms.Form):
     id_cliente = forms.CharField(required=False)
     tel_cliente = forms.CharField(required=False)
     sip_agente = forms.ChoiceField(required=False, label='Agente', choices=())
+    campana = forms.ChoiceField(required=False, choices=())
 
     def __init__(self, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
@@ -248,6 +249,10 @@ class GrabacionBusquedaForm(forms.Form):
                         for agente in AgenteProfile.objects.all()]
         agente_choice.insert(0, ('', '---------'))
         self.fields['sip_agente'].choices = agente_choice
+        campana_choice = [(campana.pk, campana.nombre)
+                         for campana in Campana.objects.all()]
+        campana_choice.insert(0, ('', '---------'))
+        self.fields['campana'].choices = campana_choice
 
 
 class CampanaForm(forms.ModelForm):
