@@ -453,3 +453,11 @@ def mensaje_chat_view(request):
     MensajeChat.objects.create(sender=sender, to=to, mensaje=mensaje, chat=chat)
     response = JsonResponse({'status': 'OK'})
     return response
+
+
+def crear_chat_view(request):
+    agente = request.GET['agente']
+    user = request.GET['user']
+    chat = Chat.objects.create(agente=agente, user=user)
+    response = JsonResponse({'status': 'OK', 'chat': chat.pk})
+    return response
