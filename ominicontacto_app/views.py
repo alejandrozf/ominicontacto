@@ -17,7 +17,8 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView
 )
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda
+    User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
+    Chat, MensajeChat
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
@@ -438,5 +439,17 @@ def nuevo_duracion_llamada_view(request):
                                      numero_telefono=numero_telefono,
                                      tipo_llamada=tipo_llamada,
                                      duracion=duracion)
+    response = JsonResponse({'status': 'OK'})
+    return response
+
+
+def mensaje_chat_view(request):
+    sender = request.GET['sender']
+    to = request.GET['to']
+    mensaje = request.GET['mensaje']
+    chat = request.GET['chat']
+
+    chat = Chat.objects.get(pk=int(chat))
+    MensajeChat.objects.create(sender=sender, to=to, mensaje=mensaje, chat=chat)
     response = JsonResponse({'status': 'OK'})
     return response

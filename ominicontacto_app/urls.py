@@ -123,6 +123,10 @@ urlpatterns = [
         login_required(views.nuevo_duracion_llamada_view),
         name='nueva_duracion_llamada',
         ),
+    url(r'^chat/mensaje/$',
+        login_required(views.mensaje_chat_view),
+        name='nueva_mensaje_chat',
+        ),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================

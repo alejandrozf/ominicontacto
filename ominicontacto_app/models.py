@@ -1601,3 +1601,21 @@ class MetadataCliente(models.Model):
     def __unicode__(self):
         return "Metadata para el contacto {0} de la campana{1} " \
                "{1} ".format(self.contacto, self.campana)
+
+
+class Chat(models.Model):
+    agente = models.ForeignKey(AgenteProfile, related_name="chatsagente")
+    user = models.ForeignKey(User, related_name="chatsusuario")
+    fecha_hora_chat = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return "Chat entre el agente {0} y el usuario {1} " \
+               "{1} ".format(self.agente, self.user)
+
+
+class MensajeChat(models.Model):
+    sender = models.ForeignKey(User, related_name="chatssender")
+    to = models.ForeignKey(User, related_name="chatsto")
+    mensaje = models.TextField()
+    fecha_hora = models.DateTimeField(auto_now=True)
+    chat = models.ForeignKey(Chat, related_name="mensajeschat")
