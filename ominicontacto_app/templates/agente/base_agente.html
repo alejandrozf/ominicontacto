@@ -149,23 +149,29 @@
         <div class="col-md-12 table-responsive libreta">
             <table class="table table-condensed table-hover table-striped">
                 <thead>
-                    <th>tipo</th><th>numero</th><th>fecha</th><th>Llamar</th>
+                    <th>tipo</th><th>numero</th><th>fecha hora</th><th>Llamar</th>
                 </thead>
                 <tbody>
+                    {% for regs in registro %}
                     <tr>
-                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/incomingCall.png' %}" /></td><td>3517941214</td><td>07-11</td><td>
+                    {%if regs.tipo_llamada == 3 %}
+                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/incomingCall.png' %}" /></td><td>{{ regs.numero_telefono }}</td><td>{{ regs.fecha_hora_llamada }}</td><td>
+                        {% else %}
+                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/outgoingCall.png' %}" /></td><td>{{ regs.numero_telefono }}</td><td>{{ regs.fecha_hora_llamada }}</td><td>
+                    {% endif %}
                         <button type="button" class="btn btn-success btn-xs call">
                             <span class="glyphicon glyphicon-earphone"></span>
                         </button>
                         </td>
                     </tr>
-                    <tr>
-                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/incomingCall.png' %}" /></td><td>3517753156</td><td>16-11</td><td>
-                            <button type="button" class="btn btn-success btn-xs call">
-                                <span class="glyphicon glyphicon-earphone"></span>
-                            </button>
+                    {% endfor %}
+                    <!--<tr>
+                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/incomingCall.png' %}" /></td><td>3517941214</td><td>07-11</td><td>
+                        <button type="button" class="btn btn-success btn-xs call">
+                            <span class="glyphicon glyphicon-earphone"></span>
+                        </button>
                         </td>
-                    </tr>
+                    </tr>-->
                 </tbody>
             </table>
         </div>
