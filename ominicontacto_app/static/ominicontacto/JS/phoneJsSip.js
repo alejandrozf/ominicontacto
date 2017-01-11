@@ -128,7 +128,7 @@ $(function() {
 	   	    contentType: "text/html",
 	   	    data : "duracion="+$("#horaC").val()+":"+$("#minsC").val() +":"+ $("#segsC").val()+"&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
-	   	 	    
+	   	 	    reinicio($("#horaC"), $("#minsC"), $("#segsC"));
 	   	    },
 	   	    error: function (jqXHR, textStatus, errorThrown) {
 	          debugger;
@@ -137,7 +137,6 @@ $(function() {
         });
         
       }
-      reinicio($("#horaC"), $("#minsC"), $("#segsC"));
     });
       
     function reinicio(horaDOM, minDOM, segDOM) {
