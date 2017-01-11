@@ -113,7 +113,6 @@ $(function() {
 	      flagPausa = true;
 	      parar1();
 	      inicio2();
-	      //reinicio($("#horaC"), $("#minsC"), $("#segsC")); 
       } else if (num.substring(4,0) != "0077") {
 				var callerOrCalled = "";       	
       	if(entrante) {
@@ -138,7 +137,24 @@ $(function() {
         
       }
     });
-      
+    function originToId(origin) {
+      var id = '';
+      switch(origin) {
+  		  case "DIALER":
+  			  id = 2;
+  		  	break;
+  			case "IN":
+  		    id = 3;
+  		  	break;
+			  case "ICS":
+  				id = 1;
+  				break;
+ 				default:
+  			  id = 4;
+  			  break;
+  		}
+  	  return id;
+    }
     function reinicio(horaDOM, minDOM, segDOM) {
 	    clearInterval(control);
 	    centesimasP = 0;
@@ -294,24 +310,6 @@ $(function() {
           userAgent.terminateSessions();
           defaultCallState();
         };
-        function originToId(origin) {
-        	var id = '';
-        	switch(origin) {
-  					case "DIALER":
-  						id = 2;
-  		  			break;
-  					case "IN":
-  		  			id = 3;
-  		  			break;
-			  		case "ICS":
-  						id = 1;
-  						break;
- 						default:
-  						id = 4;
-  						break;
-  				}
-  				return id;
-        }
         function processOrigin(origin, opt) {
 			  	var options = opt;
   				switch(origin) {
