@@ -346,7 +346,7 @@ $(function() {
   			}
   			
       } else {
-      	calltypeId = originToId();
+      	calltypeId = originToId(null);
         Sounds("Out", "play");
         var session_outgoing = e.session;
 
