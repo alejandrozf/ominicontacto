@@ -115,11 +115,11 @@ $(function() {
 	      inicio2();
 	      //reinicio($("#horaC"), $("#minsC"), $("#segsC")); 
       } else if (num.substring(4,0) != "0077") {
-				var calledOrCaller = "";       	
+				var callerOrCalled = "";       	
       	if(entrante) {
-      		calledOrCaller = fromUser;
+      		callerOrCalled = fromUser;
       	} else {
-      		calledOrCaller =  num;
+      		callerOrCalled =  num;
       	}
       	
         $.ajax({
