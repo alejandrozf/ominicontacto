@@ -154,11 +154,17 @@
                 <tbody>
                     {% for regs in registro %}
                     <tr>
-                    {%if regs.tipo_llamada == 3 %}
-                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/incomingCall.png' %}" /></td><td>{{ regs.numero_telefono }}</td><td>{{ regs.fecha_hora_llamada | date: "d-M H:i" }}</td><td>
-                        {% else %}
-                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/outgoingCall.png' %}" /></td><td>{{ regs.numero_telefono }}</td><td>{{ regs.fecha_hora_llamada | date: "d-M H:i" }}</td><td>
-                    {% endif %}
+
+                        <td><img height='15' width='15' 
+                        {%if regs.tipo_llamada == 3 %} 
+                        src="{% static 'ominicontacto/Img/incomingCall.png' %}" 
+												{% else %}
+												src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
+												{% endif %}                        	
+                        /></td><td>{{ regs.numero_telefono }}</td><td>{{ regs.fecha_hora_llamada | date:"d-M H:i:s" }}</td><td>
+                        
+                        <!-- <td><img height='15' width='15' src="{% static 'ominicontacto/Img/outgoingCall.png' %}" /></td><td>{{ regs.numero_telefono }}</td><td>{{ regs.fecha_hora_llamada | date:"d-M H:i:s" }}</td><td>-->
+                    
                         <button type="button" class="btn btn-success btn-xs call">
                             <span class="glyphicon glyphicon-earphone"></span>
                         </button>
