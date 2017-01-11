@@ -67,5 +67,8 @@
     75%  {left:0px; top:5px;}
     100% {left:0px; top:0px;}
 }
-
+.call_list {
+	overflow: scroll;
+    height: 100px;
+}
 

@@ -151,7 +151,7 @@
                 <thead>
                     <th>tipo</th><th>numero</th><th>fecha hora</th><th>Llamar</th>
                 </thead>
-                <tbody>
+                <tbody class="call_list">
                     {% for regs in registro %}
                     <tr>
 
@@ -161,23 +161,16 @@
 												{% else %}
 												src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
 												{% endif %}                        	
-                        /></td><td>{{ regs.numero_telefono }}</td><td>{{ regs.fecha_hora_llamada | date:"d-M H:i:s" }}</td><td>
-                        
-                        <!-- <td><img height='15' width='15' src="{% static 'ominicontacto/Img/outgoingCall.png' %}" /></td><td>{{ regs.numero_telefono }}</td><td>{{ regs.fecha_hora_llamada | date:"d-M H:i:s" }}</td><td>-->
-                    
+                        /></td>
+                        <td>{{ regs.numero_telefono }}</td>
+                        <td>{{ regs.fecha_hora_llamada | date:"d-M H:i:s" }}</td><td>
                         <button type="button" class="btn btn-success btn-xs call">
                             <span class="glyphicon glyphicon-earphone"></span>
                         </button>
                         </td>
                     </tr>
                     {% endfor %}
-                    <!--<tr>
-                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/incomingCall.png' %}" /></td><td>3517941214</td><td>07-11</td><td>
-                        <button type="button" class="btn btn-success btn-xs call">
-                            <span class="glyphicon glyphicon-earphone"></span>
-                        </button>
-                        </td>
-                    </tr>-->
+                    
                 </tbody>
             </table>
         </div>
