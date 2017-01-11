@@ -1,4 +1,4 @@
-var user = '';
+var user, mensaje;
 var KamailioIp = "172.16.20.14";
 $(function() {
 	var configuration = {
@@ -65,12 +65,29 @@ $(function() {
       fila.appendChild(celda3);
       document.getElementById("tbodyContacts").appendChild(fila);
     });
+var chatId =  $("#conversationId").val();
   $("#sendMessage").click(function() {
-    var mensaje = $("#chatMessage").val();
+    mensaje = $("#chatMessage").val();
+    var receiver = '1007';
     user = $("#user").val();
     if(mensaje !== "") {
-        ua.sendMessage("sip:2003@"+KamailioIp, mensaje);
+        ua.sendMessage("sip:"+receiver+"@"+KamailioIp, mensaje);
       $("#chatMessage").val("");
     }
+    
+    $.ajax({
+    	
+		  url: '/chat/mensaje',
+    	type: 'GET',
+    	contentType: 'application/json',
+    	data: "sender="+user+"&to="+receiver+"&mensaje="+mensaje+"&chat="+chatId,
+    	succes: function (msg) {
+        console.log(JSON.parse(msg));
+    	},
+    	error: function (jqXHR, textStatus, errorThrown) {
+        console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+    	}    	
+    	
+    });
   });
 });

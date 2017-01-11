@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>  
+  </head>
+  <body>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    <script type="text/javascript" src=" {% static 'ominicontacto/JS/jssip.js' %}"></script>
+    <script>
+    var kamailioServer='172.16.20.14';
+    var user = '1007';
+	    var config = {
+	    uri : "sip:"+user+"@"+kamailioServer,
+      ws_servers : "wss://"+kamailioServer+":443",
+      password : "qnME44sxKK",
+      session_timers: false
+      };
+      var userAgent = new JsSIP.UA(config);
+      var sesion = userAgent.start();
+      userAgent.on('registered', function(e) {
+      	console.log("registered");
+    	});
+    	
+    	userAgent.on('newRTCSession', function(e) {
+    		e.session.on('ended',function() {      
+      		alert("would you want to call us again? so do it!");
+    		});
+    		if(e.originator=="remote") {
+    		console.log(e);
+    		}
+    	});
+
+      userAgent.on('newMessage', function(e) {
+        debugger;
+      	var chatWindow = document.getElementById("chatLog");
+      	var liMensaje = "";
+      	var textoDeMensaje = "";
+      	var msg = e.message.content;
+      	if(e.originator == "remote") {
+      		var fromUser = e.request.headers.From[0].raw;
+	        var endPos = fromUser.indexOf("@");
+        	var startPos = fromUser.indexOf(":");
+        	fromUser = fromUser.substring(startPos+1,endPos);
+          liMensaje = document.createElement("li");
+        	textoDeMensaje = document.createTextNode(fromUser+": "+msg);
+        	liMensaje.appendChild(textoDeMensaje);
+        	chatWindow.appendChild(liMensaje);
+      	} else {
+      	debugger;
+      		/*var fromUser = e.request.headers.From[0];
+        	var endPos = fromUser.indexOf("@");
+        	var startPos = fromUser.indexOf(":");*/
+        	var fromUser = "tu";
+        	liMensaje = document.createElement("li");
+        	var msgToSend = document.getElementById("mensaje").value;
+        	liMensaje = document.createElement("li");
+	        textoDeMensaje = document.createTextNode(fromUser+": "+msg);
+        	liMensaje.appendChild(textoDeMensaje);
+        	chatWindow.appendChild(liMensaje);
+        	document.getElementById("mensaje").value = "";
+      	}
+      });
+      
+  function makeCall(num) {
+  debugger;
+    eventHandlers = {
+      'confirmed':  function(e) {
+        // Attach local stream to selfView
+                    local.src = window.URL.createObjectURL(sesion.connection.getLocalStreams()[0]);
+                    },
+      'addstream':  function(e) {
+                    setCallState("Connected", "orange");
+                    var stream = e.stream;
+                    // Attach remote stream to remoteView
+                    remoto.src = window.URL.createObjectURL(stream);
+                    },
+      'failed': function(data) {
+                  if (data.cause === JsSIP.C.causes.BUSY) {
+                    alert("busy");
+                  } else if (data.cause === JsSIP.C.causes.REJECTED) {
+                    alert("rejected");
+                  } else if (data.cause === JsSIP.C.causes.UNAVAILABLE) {
+                      alert("unavailable");
+                  } else if (data.cause === JsSIP.C.causes.NOT_FOUND) {
+                    alert("not found");
+                  } else if (data.cause === JsSIP.C.causes.AUTHENTICATION_ERROR) {
+                    alert("auth error");
+                  } else if (data.cause === JsSIP.C.causes.MISSING_SDP) {
+                    alert("missing sdp");
+                  } else if (data.cause === JsSIP.C.causes.ADDRESS_INCOMPLETE) {
+                    alert("addr incomplete");
+                  }
+                }
+    };
+    opciones = {
+      'eventHandlers': eventHandlers,
+      'mediaConstraints': {
+                'audio': true,
+                'video': false
+              }
+    };
+    //Mando el invite/llamada
+    sesion = userAgent.call("sip:"+num+"@"+kamailioServer, opciones);
+  }
+    $( function() {
+			$("#sendMessage").click(function() {
+      	var mensaje = $("#mensaje").val();
+      	var receiver = '1006';
+      	if(mensaje !== "") {
+	          userAgent.sendMessage("sip:"+receiver+"@"+kamailioServer, mensaje);
+      	}
+
+				if($("#conversationId").val() == "") {
+    			$.ajax({
+		  			url: '/chat/create/',
+    				type: 'GET',
+    				contentType: 'application/json',
+    				data: "agente="+user+"&user="+receiver,
+    				succes: function (msg) {
+    	    		var JsonObj = JSON.parse(msg);
+		        	$("#conversationId").val(JsonObj.chat);
+    				},
+    				error: function (jqXHR, textStatus, errorThrown) {
+        			console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+    				}    	
+      		});
+    		}
+    		
+    		var chatId = $("#conversationId").val();
+    		
+    		$.ajax({
+		  		url: '/chat/mensaje',
+    			type: 'GET',
+    			contentType: 'application/json',
+    			data: "sender="+user+"&to="+receiver+"&mensaje="+mensaje+"&chat="+chatId,
+    			succes: function (msg) {
+        		
+    			},
+    			error: function (jqXHR, textStatus, errorThrown) {
+        		console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+    			}    	    	
+    		});      	
+      	
+    	});
+    	$("#call").click(function(e) {
+    		// esto es para enviar un Invite/llamada
+    		debugger;
+    		var num = 1006;
+    		makeCall(num);
+  		});
+      $( "#dialog" ).dialog({
+			  autoOpen: false,
+        show: {
+          effect: "blind",
+          duration: 600
+        }
+      });
+      $( "#opener" ).on( "click", function() {
+        $( "#dialog" ).dialog( "open" );
+      });
+    });
+  </script>
+	<div id="dialog" title="Contact us">
+  <p class="container-fluid">
+  	<div class="col-md-12">
+        <div id="chatLog" style="width: 230px; height: 200px" class="form-control" disabled="disabled">
+        </div>
+        <br>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-10">
+            <input type="text" class="form-control" placeholder="Your message here" id="mensaje">
+        </div>
+        <button id="sendMessage" type="button" class="btn btn-primary btn-xs">
+            <span class="glyphicon glyphicon-send"></span>
+        </button>
+        <br>
+    </div>
+    <div class="col-md-12">
+      <br>
+      <label style="color: #086A87;">Or you can phone us!&nbsp;&nbsp;&nbsp;</label>
+    	<button id="call" type="button" class="btn btn-success btn-xs">
+          <span class="glyphicon glyphicon-earphone"></span> 
+    	</button>
+    	<label style="color: green">Idle</label>
+    </div>
+  </p>
+</div>
+<button id="opener" type="button" class="btn btn-success btn-sm">Contact Us!</button>
+
+</body>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</html>
