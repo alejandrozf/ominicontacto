@@ -137,6 +137,78 @@ class CalificacionCampana(models.Model):
         return self.nombre
 
 
+class Formulario(models.Model):
+    nombre = models.CharField(max_length=64)
+    descripcion = models.TextField()
+
+    def __unicode__(self):
+        return self.nombre
+
+
+class FieldFormularioManager(models.Manager):
+
+    def obtener_siguiente_orden(self, formulario_id):
+        try:
+            field_formulario = self.filter(formulario=formulario_id).latest(
+                'orden')
+            return field_formulario.orden + 1
+        except FieldFormulario.DoesNotExist:
+            return 1
+
+
+class FieldFormulario(models.Model):
+
+    objects = FieldFormularioManager()
+
+    ORDEN_SENTIDO_UP = 0
+    ORDEN_SENTIDO_DOWN = 1
+
+    TIPO_TEXTO = 1
+    """Tipo de campo texto"""
+
+    TIPO_FECHA = 2
+    """Tipo de campo fecha"""
+
+    TIPO_LISTA = 3
+    """Tipo de campo lista"""
+
+    TIPO_CHOICES = (
+        (TIPO_TEXTO, 'Texto'),
+        (TIPO_FECHA, 'Fecha'),
+        (TIPO_LISTA, 'Lista'),
+    )
+
+    formulario = models.ForeignKey(Formulario, related_name="campos")
+    nombre_campo = models.CharField(max_length=64)
+    orden = models.PositiveIntegerField()
+    tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
+    values_select = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['orden']
+        unique_together = ("orden", "formulario")
+
+    def __unicode__(self):
+        return "campo {0} del formulario {1}".format(self.nombre_campo,
+                                                     self.formulario)
+
+    def obtener_campo_anterior(self):
+        """
+        Este método devuelve el field del formulario anterior a self,
+         teniendo en cuenta que pertenezca a la mismo formulario que self.
+        """
+        return FieldFormulario.objects.filter(formulario=self.formulario,
+                                              orden__lt=self.orden).last()
+
+    def obtener_campo_siguiente(self):
+        """
+        Este método devuelve el field del formulario siguiente a self,
+         teniendo en cuenta que pertenezca a la mismo formulario que self.
+        """
+        return FieldFormulario.objects.filter(formulario=self.formulario,
+                                              orden__gt=self.orden).first()
+
+
 class CampanaManager(models.Manager):
 
     def obtener_en_definicion_para_editar(self, campana_id):
@@ -207,6 +279,7 @@ class Campana(models.Model):
         null=True, blank=True,
         related_name="%(class)ss"
     )
+    formulario = models.ForeignKey(Formulario)
 
     def __unicode__(self):
             return self.nombre
@@ -982,13 +1055,8 @@ class ContactoManager(models.Manager):
 
     def contactos_by_filtro(self, bd_contacto, filtro):
         try:
-            contactos = self.filter(Q(nombre__contains=filtro) |
-                                    Q(telefono__contains=filtro) |
-                                    Q(id_cliente__contains=filtro) |
-                                    Q(apellido__contains=filtro) |
-                                    Q(dni__contains=filtro) |
-                                    Q(fecha_nacimiento__contains=filtro) |
-                                    Q(cuil__contains=filtro))
+            contactos = self.filter(Q(telefono__contains=filtro) |
+                                    Q(id_cliente__contains=filtro))
             return contactos.filter(bd_contacto=bd_contacto)
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
@@ -1015,8 +1083,7 @@ class ContactoManager(models.Manager):
 
     def contactos_by_bd_contacto_sin_duplicar(self, bd_contacto):
         try:
-            return self.values('telefono', 'id_cliente', 'nombre', 'apellido',
-                               'dni', 'fecha_nacimiento', 'cuil', 'datos').\
+            return self.values('telefono', 'id_cliente', 'datos').\
                 filter(bd_contacto=bd_contacto).distinct()
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
@@ -1033,11 +1100,6 @@ class Contacto(models.Model):
 
     telefono = models.CharField(max_length=128)
     id_cliente = models.IntegerField()
-    nombre = models.CharField(max_length=128)
-    apellido = models.CharField(max_length=128)
-    dni = models.CharField(max_length=128)
-    fecha_nacimiento = models.CharField(max_length=128)
-    cuil = models.CharField(max_length=128)
     datos = models.TextField()
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
@@ -1529,3 +1591,31 @@ class DuracionDeLlamada(models.Model):
     tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
     duracion = models.TimeField()
 
+
+class MetadataCliente(models.Model):
+    agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
+    campana = models.ForeignKey(Campana, related_name="metadatacliente")
+    contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
+    metadata = models.TextField()
+
+    def __unicode__(self):
+        return "Metadata para el contacto {0} de la campana{1} " \
+               "{1} ".format(self.contacto, self.campana)
+
+
+class Chat(models.Model):
+    agente = models.ForeignKey(AgenteProfile, related_name="chatsagente")
+    user = models.ForeignKey(User, related_name="chatsusuario")
+    fecha_hora_chat = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return "Chat entre el agente {0} y el usuario {1} " \
+               "{1} ".format(self.agente, self.user)
+
+
+class MensajeChat(models.Model):
+    sender = models.ForeignKey(User, related_name="chatssender")
+    to = models.ForeignKey(User, related_name="chatsto")
+    mensaje = models.TextField()
+    fecha_hora = models.DateTimeField(auto_now=True)
+    chat = models.ForeignKey(Chat, related_name="mensajeschat")

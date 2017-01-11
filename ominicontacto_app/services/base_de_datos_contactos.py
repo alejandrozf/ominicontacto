@@ -86,19 +86,14 @@ class CreacionBaseDatosService(object):
             if base_datos_contacto.cantidad_contactos:
                 cantidad_contactos = base_datos_contacto.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
-                if len(lista_dato) > 7:
-                    datos = json.dumps(lista_dato[7:])
+                if len(lista_dato) > 2:
+                    datos = json.dumps(lista_dato[2:])
                 else:
                     datos = ""
                 cantidad_contactos += 1
                 Contacto.objects.create(
                     telefono=lista_dato[0],
                     id_cliente=int(lista_dato[1]),
-                    nombre=lista_dato[2],
-                    apellido=lista_dato[3],
-                    dni=lista_dato[4],
-                    fecha_nacimiento=lista_dato[5],
-                    cuil=lista_dato[6],
                     datos=datos,
                     bd_contacto=base_datos_contacto,
                 )
@@ -292,25 +287,6 @@ class PredictorMetadataService(object):
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la segunda "
                                                  "columna debe ser id_cliente"))
 
-        if primer_linea[2] != 'nombre':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la tercera "
-                                                 "columna debe ser nombre"))
-
-        if primer_linea[3] != 'apellido':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la cuarta "
-                                                 "columna debe ser apellido"))
-
-        if primer_linea[4] != 'dni':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la quinta "
-                                                 "columna debe ser dni"))
-
-        if primer_linea[5] != 'fecha_nacimiento':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la sexta "
-                                                 "columna debe ser fecha_nacimiento"))
-
-        if primer_linea[6] != 'cuil':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la septima "
-                                                 "columna debe ser cuil"))
 
         # ======================================================================
         # Primero detectamos columnas de datos

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from django.conf import settings
+import json
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.forms import (
@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, FormularioDemo, Contacto, FormularioDatoVenta, CalificacionCliente,
-    Grupo
+    Grupo, Formulario, FieldFormulario
 )
 
 
@@ -241,6 +241,7 @@ class GrabacionBusquedaForm(forms.Form):
     id_cliente = forms.CharField(required=False)
     tel_cliente = forms.CharField(required=False)
     sip_agente = forms.ChoiceField(required=False, label='Agente', choices=())
+    campana = forms.ChoiceField(required=False, choices=())
 
     def __init__(self, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
@@ -248,6 +249,10 @@ class GrabacionBusquedaForm(forms.Form):
                         for agente in AgenteProfile.objects.all()]
         agente_choice.insert(0, ('', '---------'))
         self.fields['sip_agente'].choices = agente_choice
+        campana_choice = [(campana.pk, campana.nombre)
+                         for campana in Campana.objects.all()]
+        campana_choice.insert(0, ('', '---------'))
+        self.fields['campana'].choices = campana_choice
 
 
 class CampanaForm(forms.ModelForm):
@@ -266,7 +271,7 @@ class CampanaForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto')
+                  'bd_contacto', 'formulario')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -292,8 +297,7 @@ class ContactoForm(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('telefono', 'id_cliente', 'nombre', 'apellido', 'dni',
-                  'fecha_nacimiento', 'cuil', 'datos', 'bd_contacto')
+        fields = ('telefono', 'id_cliente', 'datos', 'bd_contacto')
         widgets = {
             'bd_contacto': forms.HiddenInput(),
         }
@@ -394,3 +398,64 @@ class ReporteForm(forms.Form):
     """
     fecha = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control'}))
+
+
+class FormularioForm(forms.ModelForm):
+
+    class Meta:
+        model = Formulario
+        fields = ('nombre', 'descripcion')
+        widgets = {
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
+            "descripcion": forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+
+class FieldFormularioForm(forms.ModelForm):
+    list_values = forms.MultipleChoiceField(widget=forms.SelectMultiple(
+        attrs={'class': 'form-control', 'style': 'width:100%;',
+               'disabled': 'disabled'}), required=False)
+    value_item = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'disabled': 'disabled',
+               'placeholder': 'agregar item a la lista'}), required=False)
+
+    class Meta:
+        model = FieldFormulario
+        fields = ('formulario', 'nombre_campo', 'tipo', 'values_select')
+        widgets = {
+            'formulario': forms.HiddenInput(),
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
+            "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
+            'values_select': forms.HiddenInput(),
+        }
+
+
+class OrdenCamposForm(forms.Form):
+    sentido_orden = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super(OrdenCamposForm, self).__init__(*args, **kwargs)
+        self.fields['sentido_orden'].widget = forms.HiddenInput()
+
+
+class FormularioCRMForm(forms.Form):
+
+    def __init__(self, campos, *args, **kwargs):
+        super(FormularioCRMForm, self).__init__(*args, **kwargs)
+
+        for campo in campos:
+            if campo.tipo is FieldFormulario.TIPO_TEXTO:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'form-control'}))
+            elif campo.tipo is FieldFormulario.TIPO_FECHA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'class-fecha form-control'}))
+            elif campo.tipo is FieldFormulario.TIPO_LISTA:
+                choices = [(option, option)
+                           for option in json.loads(campo.values_select)]
+                self.fields[campo.nombre_campo] = forms.ChoiceField(
+                    choices=choices,
+                    label=campo.nombre_campo, widget=forms.Select(
+                        attrs={'class': 'form-control'}))
