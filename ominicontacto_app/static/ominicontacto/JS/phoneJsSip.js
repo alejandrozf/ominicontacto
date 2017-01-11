@@ -121,7 +121,7 @@ $(function() {
       	} else {
       		callerOrCalled =  num;
       	}
-      	
+      	console.log($("#horaC").val()+":"+$("#minsC").val() +":"+ $("#segsC").val());
         $.ajax({
           type: "get",
 	   	    url: "/duracion/llamada/",
@@ -346,6 +346,7 @@ $(function() {
   			}
   			
       } else {
+      	calltypeId = originToId();
         Sounds("Out", "play");
         var session_outgoing = e.session;
 
