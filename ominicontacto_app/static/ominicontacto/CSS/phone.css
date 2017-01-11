@@ -33,7 +33,3 @@
 .cuerpoLlamEntrante {
   padding-left: 5%
 }
-.call_list {
-	overflow: scroll;
-    height: 40px;
-}
