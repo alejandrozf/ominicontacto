@@ -163,11 +163,12 @@
 												{% endif %}                        	
                         /></td>
                         <td>{{ regs.numero_telefono }}</td>
-                        <td>{{ regs.fecha_hora_llamada | date:"d-M" }}</td><td>
-                        <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td><td>
-                        <button type="button" class="btn btn-success btn-xs call">
-                            <span class="glyphicon glyphicon-earphone"></span>
-                        </button>
+                        <td>{{ regs.fecha_hora_llamada | date:"d-m" }}</td>
+                        <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td>
+                        <td>
+                            <button type="button" class="btn btn-success btn-xs call">
+                                <span class="glyphicon glyphicon-earphone"></span>
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
