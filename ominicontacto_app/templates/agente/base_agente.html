@@ -149,9 +149,9 @@
         <div class="col-md-12 table-responsive libreta">
             <table class="table table-condensed table-hover table-striped">
                 <thead>
-                    <th>tipo</th><th>numero</th><th>fecha hora</th><th>Llamar</th>
+                    <th>tipo</th><th>numero</th><th>fecha</th><th>hora</th><th>Llamar</th>
                 </thead>
-                <tbody class="call_list">
+                <tbody>
                     {% for regs in registro %}
                     <tr>
 
@@ -163,7 +163,8 @@
 												{% endif %}                        	
                         /></td>
                         <td>{{ regs.numero_telefono }}</td>
-                        <td>{{ regs.fecha_hora_llamada | date:"d-M H:i:s" }}</td><td>
+                        <td>{{ regs.fecha_hora_llamada | date:"d-M" }}</td><td>
+                        <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td><td>
                         <button type="button" class="btn btn-success btn-xs call">
                             <span class="glyphicon glyphicon-earphone"></span>
                         </button>
