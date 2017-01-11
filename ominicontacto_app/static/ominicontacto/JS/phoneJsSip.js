@@ -120,12 +120,12 @@ $(function() {
       	} else {
       		callerOrCalled =  num;
       	}
-      	console.log($("#horaC").html()+":"+$("#minsC").html() +":"+ $("#segsC").html());
+      	console.log($("#horaC").html()+$("#minsC").html() + $("#segsC").html());
         $.ajax({
           type: "get",
 	   	    url: "/duracion/llamada/",
 	   	    contentType: "text/html",
-	   	    data : "duracion="+$("#horaC").html()+":"+$("#minsC").html() +":"+ $("#segsC").html()+"&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
+	   	    data : "duracion=" + $("#horaC").html() + $("#minsC").html() + $("#segsC").html() + "&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
 	   	 	    reinicio($("#horaC"), $("#minsC"), $("#segsC"));
 	   	    },
