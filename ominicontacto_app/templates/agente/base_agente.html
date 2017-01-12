@@ -149,23 +149,29 @@
         <div class="col-md-12 table-responsive libreta">
             <table class="table table-condensed table-hover table-striped">
                 <thead>
-                    <th>tipo</th><th>numero</th><th>fecha</th><th>Llamar</th>
+                    <th>tipo</th><th>numero</th><th>fecha</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
                 </thead>
-                <tbody>
+                <tbody id="call_list">
+                    {% for regs in registro %}
                     <tr>
-                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/incomingCall.png' %}" /></td><td>3517941214</td><td>07-11</td><td>
-                        <button type="button" class="btn btn-success btn-xs call">
-                            <span class="glyphicon glyphicon-earphone"></span>
-                        </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img height='15' width='15' src="{% static 'ominicontacto/Img/incomingCall.png' %}" /></td><td>3517753156</td><td>16-11</td><td>
+
+                        <td><img height='15' width='15' 
+                        {%if regs.tipo_llamada == 3 %} 
+                        src="{% static 'ominicontacto/Img/incomingCall.png' %}" 
+												{% else %}
+												src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
+												{% endif %}                        	
+                        /></td>
+                        <td>{{ regs.numero_telefono }}</td>
+                        <td>{{ regs.fecha_hora_llamada | date:"d-m" }}</td>
+                        <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td>
+                        <!--<td style="align:right">
                             <button type="button" class="btn btn-success btn-xs call">
                                 <span class="glyphicon glyphicon-earphone"></span>
                             </button>
-                        </td>
+                        </td>-->
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
