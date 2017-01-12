@@ -123,23 +123,26 @@ $(function() {
       	} else {
       		callerOrCalled =  num;
       	}
-      	console.log($("#horaC").html()+$("#minsC").html() + $("#segsC").html());
-        $.ajax({
+        
+        saveCall();
+      }
+    });
+    function saveCall() {
+    	$.ajax({
           type: "get",
 	   	    url: "/duracion/llamada/",
 	   	    contentType: "text/html",
 	   	    data : "duracion=" + $("#horaC").html() + $("#minsC").html() + $("#segsC").html() + "&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
 	   	 	    reinicio($("#horaC"), $("#minsC"), $("#segsC"));
+	   	 	    $("#call_list").html(msg);
 	   	    },
 	   	    error: function (jqXHR, textStatus, errorThrown) {
 	          debugger;
 	          console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	        } 
         });
-        
-      }
-    });
+    }
     function originToId(origin) {
       var id = '';
       switch(origin) {
