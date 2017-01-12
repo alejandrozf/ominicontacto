@@ -50,7 +50,7 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, agente):
+    def escribir_archivo_csv(self, formularios):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
@@ -69,7 +69,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de los contactos, con los eventos de TODOS los intentos
-            for metadata in agente.metadataagente.all():
+            for metadata in formularios:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -107,7 +107,7 @@ class ReporteFormularioVentaService(object):
                                                               fecha_desde,
                                                               fecha_hasta)
 
-        archivo_de_reporte.escribir_archivo_csv(agente)
+        archivo_de_reporte.escribir_archivo_csv(formularios)
 
     def obtener_url_reporte_csv_descargar(self, agente):
         #assert campana.estado == Campana.ESTADO_DEPURADA
@@ -120,9 +120,9 @@ class ReporteFormularioVentaService(object):
         logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
                      " CSV de descarga para el agente %s", agente.pk)
 
-    def _obtener_listado_formularios_fecha(self, agente,fecha_desde,
+    def _obtener_listado_formularios_fecha(self, agente, fecha_desde,
                                            fecha_hasta):
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        return agente.formulariosagente.filter(fecha__range=(fecha_desde,
+        return agente.metadataagente.filter(fecha__range=(fecha_desde,
                                                              fecha_hasta))
