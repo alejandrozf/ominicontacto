@@ -124,10 +124,10 @@ $(function() {
       		callerOrCalled =  num;
       	}
         
-        saveCall();
+        saveCall(callerOrCalled);
       }
     });
-    function saveCall() {
+    function saveCall(callerOrCalled) {
     	$.ajax({
           type: "get",
 	   	    url: "/duracion/llamada/",
