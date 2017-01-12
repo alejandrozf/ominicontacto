@@ -101,7 +101,7 @@ $(function() {
       parar3();
       defaultCallState();
       if(num.substring(4,0) == '0077') {
-        reinicio($("#horaC"), $("#minsC"), $("#segsC"));
+        reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
       if($("#auto_pause").val() === "True" && originHeader !== "") {
         num = "0077ACW";
