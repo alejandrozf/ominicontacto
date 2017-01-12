@@ -134,7 +134,7 @@ $(function() {
 	   	    contentType: "text/html",
 	   	    data : "duracion=" + $("#horaC").html() + $("#minsC").html() + $("#segsC").html() + "&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
-	   	 	    reinicio($("#horaC"), $("#minsC"), $("#segsC"));
+	   	 	    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 	   	 	    $("#call_list").html(msg);
 	   	    },
 	   	    error: function (jqXHR, textStatus, errorThrown) {
@@ -183,6 +183,7 @@ $(function() {
 	 	function inicio3() {
 	 		control3 = setInterval(cronometro3, 1000);
 	 	}
+	 	//****************************CRONOMETRO DE ***********************************
     function cronometro2() {
 	    if (centesimasP < 59) {
 	      centesimasP++;
@@ -213,6 +214,15 @@ $(function() {
 	    }
 	  }
 	 //****************************CRONOMETRO DE LLAMADA***********************************
+	 function reinicio3(horaDOM, minDOM, segDOM) {
+	    clearInterval(control);
+	    centesimasC = 0;
+	    segundosC = 0;
+	    minutosC = 0;
+	    segDOM.html(":00");
+	    minDOM.html(":00");
+	    horaDOM.html("00");
+  	}
 	 function cronometro3() {
 	     if (centesimasC < 59) {
 	         centesimasC++;
