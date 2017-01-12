@@ -451,7 +451,8 @@ def nuevo_duracion_llamada_view(request):
         'registros': DuracionDeLlamada.objects.filter(
             agente=request.user.get_agente_profile(),
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
-                              DuracionDeLlamada.TYPE_MANUAL))
+                              DuracionDeLlamada.TYPE_MANUAL)).order_by(
+            "-fecha_hora_llamada")[:10]
     }
     return render_to_response('agente/update_registros_llamadas.html', ctx,
                               context_instance=RequestContext(request))
