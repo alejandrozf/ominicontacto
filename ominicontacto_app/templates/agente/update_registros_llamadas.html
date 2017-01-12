@@ -1,0 +1,15 @@
+{% load static %}
+{% for registro in registros %}
+ <tr>
+     <td><img height='15' width='15'
+              {%if registro.tipo_llamada == 3 %}
+                        src="{% static 'ominicontacto/Img/incomingCall.png' %}" 
+              {% else %}
+              src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
+              {% endif %}
+     /></td>
+     <td>{{ registro.numero_telefono }}</td>
+     <td>{{ registro.fecha_hora_llamada | date:"d-m" }}</td>
+     <td>{{ registro.fecha_hora_llamada | date:"H:i:s" }}</td>
+ </tr>
+{% endfor %}

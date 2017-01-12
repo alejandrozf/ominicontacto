@@ -100,6 +100,9 @@ $(function() {
     e.session.on('ended',function() {
       parar3();
       defaultCallState();
+      if(num.substring(4,0) == '0077') {
+        reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+      }
       if($("#auto_pause").val() === "True" && originHeader !== "") {
         num = "0077ACW";
     		makeCall();
@@ -113,7 +116,6 @@ $(function() {
 	      flagPausa = true;
 	      parar1();
 	      inicio2();
-	      //reinicio($("#horaC"), $("#minsC"), $("#segsC")); 
       } else if (num.substring(4,0) != "0077") {
 				var callerOrCalled = "";       	
       	if(entrante) {
@@ -121,25 +123,44 @@ $(function() {
       	} else {
       		callerOrCalled =  num;
       	}
-      	
-        $.ajax({
+        
+        saveCall(callerOrCalled);
+      }
+    });
+    function saveCall(callerOrCalled) {
+    	$.ajax({
           type: "get",
 	   	    url: "/duracion/llamada/",
 	   	    contentType: "text/html",
-	   	    data : "duracion="+$("#horaC").val()+":"+$("#minsC").val() +":"+ $("#segsC").val()+"&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
+	   	    data : "duracion=" + $("#horaC").html() + $("#minsC").html() + $("#segsC").html() + "&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
-	   	 	    
+	   	 	    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+	   	 	    $("#call_list").html(msg);
 	   	    },
 	   	    error: function (jqXHR, textStatus, errorThrown) {
 	          debugger;
 	          console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	        } 
         });
-        
-      }
-      reinicio($("#horaC"), $("#minsC"), $("#segsC"));
-    });
-      
+    }
+    function originToId(origin) {
+      var id = '';
+      switch(origin) {
+  		  case "DIALER":
+  			  id = 2;
+  		  	break;
+  			case "IN":
+  		    id = 3;
+  		  	break;
+			  case "ICS":
+  				id = 1;
+  				break;
+ 				default:
+  			  id = 4;
+  			  break;
+  		}
+  	  return id;
+    }
     function reinicio(horaDOM, minDOM, segDOM) {
 	    clearInterval(control);
 	    centesimasP = 0;
@@ -162,6 +183,7 @@ $(function() {
 	 	function inicio3() {
 	 		control3 = setInterval(cronometro3, 1000);
 	 	}
+	 	//****************************CRONOMETRO DE ***********************************
     function cronometro2() {
 	    if (centesimasP < 59) {
 	      centesimasP++;
@@ -192,6 +214,15 @@ $(function() {
 	    }
 	  }
 	 //****************************CRONOMETRO DE LLAMADA***********************************
+	 function reinicio3(horaDOM, minDOM, segDOM) {
+	    clearInterval(control);
+	    centesimasC = 0;
+	    segundosC = 0;
+	    minutosC = 0;
+	    segDOM.html(":00");
+	    minDOM.html(":00");
+	    horaDOM.html("00");
+  	}
 	 function cronometro3() {
 	     if (centesimasC < 59) {
 	         centesimasC++;
@@ -295,24 +326,6 @@ $(function() {
           userAgent.terminateSessions();
           defaultCallState();
         };
-        function originToId(origin) {
-        	var id = '';
-        	switch(origin) {
-  					case "DIALER":
-  						id = 2;
-  		  			break;
-  					case "IN":
-  		  			id = 3;
-  		  			break;
-			  		case "ICS":
-  						id = 1;
-  						break;
- 						default:
-  						id = 4;
-  						break;
-  				}
-  				return id;
-        }
         function processOrigin(origin, opt) {
 			  	var options = opt;
   				switch(origin) {
@@ -347,6 +360,7 @@ $(function() {
   			}
   			
       } else {
+      	calltypeId = originToId(null);
         Sounds("Out", "play");
         var session_outgoing = e.session;
 
