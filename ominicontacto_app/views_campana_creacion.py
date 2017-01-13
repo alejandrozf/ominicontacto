@@ -12,7 +12,7 @@ from django.views.generic import (
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
     FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm,
-    ReporteForm
+    ReporteForm, CampanaUpdateForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto,
@@ -108,7 +108,7 @@ class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     template_name = 'campana/nueva_edita_campana.html'
     model = Campana
     context_object_name = 'campana'
-    form_class = CampanaForm
+    form_class = CampanaUpdateForm
 
     def get_success_url(self):
         return reverse(
