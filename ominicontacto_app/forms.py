@@ -294,13 +294,16 @@ class CampanaUpdateForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario')
+                  'bd_contacto')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
         widgets = {
-            'bd_contacto': forms.Select(attrs={'disabled': 'disabled'}),
-            'formulario': forms.Select(attrs={'disabled': 'disabled'}),
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
+            #"fecha_inicio": forms.TextInput(attrs={'class': 'form-control'}),
+            #"fecha_fin": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 
