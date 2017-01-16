@@ -63,6 +63,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Es una venta")
             encabezado.append("Calificacion No venta")
             encabezado.append("Observaciones")
+            encabezado.append("base de datos")
 
 
 
@@ -95,6 +96,7 @@ class ArchivoDeReporteCsv(object):
                 else:
                     lista_opciones.append("N/A")
                 lista_opciones.append(calificacion.observaciones)
+                lista_opciones.append(calificacion.contacto.bd_contacto)
 
                 # --- Finalmente, escribimos la linea
 
