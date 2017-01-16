@@ -105,7 +105,7 @@ class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     Esta vista actualiza un objeto Campana.
     """
 
-    template_name = 'campana/nueva_edita_campana.html'
+    template_name = 'campana/edita_campana.html'
     model = Campana
     context_object_name = 'campana'
     form_class = CampanaUpdateForm
