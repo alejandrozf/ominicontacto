@@ -71,14 +71,14 @@ $(function() {
   $("#unregister").click(function() {
     userAgent.unregister();
     
-    userAgent.on('unregistered', function(e) {
+    userAgent.on('unregistered', function(e) {  // cuando se desregistra la entidad SIP
       setSipStatus("reddot.png", "  Unregistered", sipStatus);
     });
   });
   
   $("#unregister").prop('disabled', false);
     //Connects to the WebSocket server
-    userAgent.on('registered', function(e) {
+    userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
   	setSipStatus("greydot.png", "  No account", sipStatus);
   	$("#UserStatus").html("Online");
     num = "0077LOGIN";
@@ -91,13 +91,15 @@ $(function() {
     defaultCallState();
   });
 
-  userAgent.on('registrationFailed', function(e) {
+  userAgent.on('registrationFailed', function(e) {  // cuando falla la registracion
     setSipStatus("redcross.png", "  Registration failed", sipStatus);
   });
 
-  userAgent.on('newRTCSession', function(e) {
+  userAgent.on('newRTCSession', function(e) {       // cuando se crea una sesion RTC
 	  var originHeader = "";
-    e.session.on('ended',function() {
+    e.session.on('ended',function() {               // Cuando Finaliza la llamada
+    	$("#Pause").prop('disabled',false);
+    	$("#UserStatus").html("Online");
       parar3();
       defaultCallState();
       if($("#auto_pause").val() === "True" && originHeader !== "") {
@@ -222,14 +224,14 @@ $(function() {
 	     }
 	 }
 	 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      e.session.on('failed',function(e) {
+      e.session.on('failed',function(e) {  // cuando falla el establecimiento de la llamada
         $("#aTransfer").prop('disabled', true);
         $("#bTransfer").prop('disabled', true);
         $("#onHold").prop('disabled', true);
         $("#modalReceiveCalls").modal('hide');
         Sounds("","stop");
       });
-      if(e.originator=="remote") {
+      if(e.originator=="remote") {         // Origen de llamada Remoto
       	entrante = true;
       	if(e.request.headers.Origin) {
       	  originHeader = e.request.headers.Origin[0].raw;
@@ -271,12 +273,12 @@ $(function() {
         var atiendoNo = document.getElementById('doNotAnswer');
         var session_incoming = e.session;
         
-        session_incoming.on('addstream',function(e) {
+        session_incoming.on('addstream',function(e) {       // al cerrar el canal de audio entre los peers
           remote_stream = e.stream;
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
         });
         
-        var options = {'mediaConstraints': {'audio': true,'video': false}};
+        var options = {'mediaConstraints': {'audio': true, 'video': false}};
         calltypeId = originToId(originHeader);
         processOrigin(originHeader, options);
         
@@ -352,11 +354,13 @@ $(function() {
 
       }
       
-      e.session.on("accepted", function() {
+      e.session.on("accepted", function() { 			// cuando se establece una llamada
         Sounds("", "stop");
         $("#aTransfer").prop('disabled', false);
         $("#bTransfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
+    	  $("#Pause").prop('disabled',true);
+    	  $("#UserStatus").html("OnCall");
         inicio3();
       });
       
