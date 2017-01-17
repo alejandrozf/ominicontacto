@@ -12,7 +12,7 @@ from django.views.generic import (
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
     FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm,
-    ReporteForm
+    ReporteForm, CampanaUpdateForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto,
@@ -105,10 +105,32 @@ class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     Esta vista actualiza un objeto Campana.
     """
 
-    template_name = 'campana/nueva_edita_campana.html'
+    template_name = 'campana/edita_campana.html'
     model = Campana
     context_object_name = 'campana'
-    form_class = CampanaForm
+    form_class = CampanaUpdateForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        campana_service = CampanaService()
+        error = campana_service.validar_modificacion_bd_contacto(
+            self.get_object(),self.object.bd_contacto)
+        if error:
+            return self.form_invalid(form, error=error)
+        return super(CampanaUpdateView, self).form_valid(form)
+
+    def form_invalid(self, form, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                  La base de datos es erronea. {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+
+        return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
         return reverse(

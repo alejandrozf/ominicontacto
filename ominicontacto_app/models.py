@@ -1597,6 +1597,7 @@ class MetadataCliente(models.Model):
     campana = models.ForeignKey(Campana, related_name="metadatacliente")
     contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
     metadata = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return "Metadata para el contacto {0} de la campana{1} " \

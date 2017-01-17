@@ -33,3 +33,7 @@
 .cuerpoLlamEntrante {
   padding-left: 5%
 }
+.libreta {
+	overflow: scroll;
+  height: 140px;
+}
