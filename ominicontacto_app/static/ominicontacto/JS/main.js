@@ -53,7 +53,7 @@ $(function () {
 	     $("#modalWebCall").modal('show');
 	 });
 	 function updateButton(btn,clsnm,inht) {
-	 	 btn.className = lsnm;
+	 	 btn.className = clsnm;
 	 	 btn.innerHTML = inht;
 	 }
 	 $("#Pause").click(function () {
