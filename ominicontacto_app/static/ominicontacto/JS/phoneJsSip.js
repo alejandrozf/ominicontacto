@@ -20,6 +20,28 @@ $(function() {
     }
   });*/
  
+	 $("#SignCall").click(function () {
+	   $("#modalSignCall").modal('show');
+	 });
+	 $("#SaveSignedCall").click(function () {
+	 	 var campid = $("#idCamp").val();// camp ID
+	 	 var idagt = $("#idagt").val();// agent ID
+	 	 var desc = $("#SignDescription").html();// sign subject
+	 	 $.ajax({
+	 	   url: '//',
+	 	   type: 'GET',
+       contentType: 'application/json',
+       data: "CampId="+campid+"&AgentId="+idagt+"&SignDesc="+desc+"&phone=",
+       succes: function (msg) {
+         console.log(JSON.parse(msg));
+	     },
+    	 error: function (jqXHR, textStatus, errorThrown) {
+         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+    	 }
+	 	 });
+	   $("#modalSignCall").modal('hide');
+	   campid = idagt = desc = null;
+	 });
   $("#Pause").click(function () {
     if (flagPausa === true) {
     num = "0077UNPAUSE";
@@ -98,8 +120,6 @@ $(function() {
   userAgent.on('newRTCSession', function(e) {       // cuando se crea una sesion RTC
 	  var originHeader = "";
     e.session.on('ended',function() {               // Cuando Finaliza la llamada
-    	$("#Pause").prop('disabled',false);
-    	$("#UserStatus").html("Online");
       parar3();
       defaultCallState();
       if(num.substring(4,0) == '0077') {
@@ -125,7 +145,8 @@ $(function() {
       	} else {
       		callerOrCalled =  num;
       	}
-        
+      	$("#Pause").prop('disabled',false);
+    	  $("#UserStatus").html("Online");
         saveCall(callerOrCalled);
       }
     });
@@ -185,7 +206,7 @@ $(function() {
 	 	function inicio3() {
 	 		control3 = setInterval(cronometro3, 1000);
 	 	}
-	 	//****************************CRONOMETRO DE ***********************************
+	 	//****************************CRONOMETRO DE Pausas***********************************
     function cronometro2() {
 	    if (centesimasP < 59) {
 	      centesimasP++;
@@ -273,6 +294,7 @@ $(function() {
       	}
       	if (e.request.headers.Idcamp) {
       		var CampIdHeader = e.request.headers.Idcamp[0].raw;
+      		$("#idCamp").val(CampIdHeader);
       	}
         var fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
@@ -432,6 +454,7 @@ $(function() {
     $("#SelectCamp").click(function () {
     	$("#modalSelectCmp").modal("hide");
     	headerIdCamp = $("#cmpList").val();
+    	$("#idCamp").val(headerIdCamp);
     	headerNomCamp = $("#cmpList option:selected").html();
       $("#redial").prop('disabled',false);
     	makeCall();
@@ -574,6 +597,22 @@ $(function() {
   function getData(campid, leadid,agentid) {
   	var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/";
   	$("#dataView").attr('src', url);
+  }
+  
+  function sendStatus(pauseType,agent,statusAg) {
+  	$.ajax({
+      type: "get",
+	   	url: "///",
+	   	contentType: "text/html",
+	   	data : "agente=" + agent + "&estado="+statusAg+"&tipo_pausa="+pauseType,
+	   	success: function (msg) {
+	   	  
+	   	},
+	   	error: function (jqXHR, textStatus, errorThrown) {
+	      debugger;
+	      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+	    } 
+    });
   }
   
 });
