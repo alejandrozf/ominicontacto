@@ -139,6 +139,8 @@ $(function() {
 	      parar1();
 	      inicio2();
       } else if (num.substring(4,0) != "0077") {
+      	$("#Pause").prop('disabled',false);
+    	  $("#UserStatus").html("Online");
 				var callerOrCalled = "";       	
       	if(entrante) {
       		callerOrCalled = fromUser;
@@ -146,10 +148,7 @@ $(function() {
       		callerOrCalled =  num;
       	}
         saveCall(callerOrCalled);
-      } else {
-      	$("#Pause").prop('disabled',false);
-    	  $("#UserStatus").html("Online");
-      }
+      } 
     });
     function saveCall(callerOrCalled) {
     	$.ajax({
@@ -396,8 +395,10 @@ $(function() {
         $("#aTransfer").prop('disabled', false);
         $("#bTransfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
-    	  $("#Pause").prop('disabled',true);
-    	  $("#UserStatus").html("OnCall");
+        if(num.substring(4,0) != "0077") {
+        	$("#Pause").prop('disabled',true);
+    	    $("#UserStatus").html("OnCall");
+        }
         inicio3();
       });
       
