@@ -145,9 +145,10 @@ $(function() {
       	} else {
       		callerOrCalled =  num;
       	}
+        saveCall(callerOrCalled);
+      } else {
       	$("#Pause").prop('disabled',false);
     	  $("#UserStatus").html("Online");
-        saveCall(callerOrCalled);
       }
     });
     function saveCall(callerOrCalled) {
