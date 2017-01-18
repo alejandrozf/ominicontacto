@@ -57,6 +57,20 @@ $(function () {
 	 	 btn.innerHTML = inht;
 	 }
 	 $("#Pause").click(function () {
+	 	if (flagPause === false) {
+	    $("#modalPause").modal('show');
+	    $("#pauseTime").html();
+	  } else {
+	    flagPause = false;
+	    inicio1();
+	    parar2();
+	    updateButton(pauseButton, "btn btn-warning", "Pause");
+	    modifyUserStat = document.getElementById("UserStatus");
+	    modifyUserStat.className = "label label-success";
+	    var lastPause = modifyUserStat.innerHTML;
+	    var containerTag = document.getElementById("timers");
+	    var pausas = document.getElementsByClassName("pausa");
+	   }
 	 	 if($("#auto_pause").val() === "True") {
 	 	       inicio1();
 	         parar2();
@@ -160,22 +174,7 @@ $(function () {
 	         }
 	         modifyUserStat.innerHTML = "Online";
 	         reinicio($("#horaP"), $("#minsP"), $("#segsP"));
-	         if (flagPause === false) {
-	         	 $("#modalPause").modal('show');
-	           $("#pauseTime").html();
-	         } else {
-	         	flagPause = false;
-	         inicio1();
-	         parar2();
-	         updateButton(pauseButton, "btn btn-warning", "Pause");
-	         /*pauseButton.className = "btn btn-warning";
-	         pauseButton.innerHTML = "Pause";*/
-	         modifyUserStat = document.getElementById("UserStatus");
-	         modifyUserStat.className = "label label-success";
-	         var lastPause = modifyUserStat.innerHTML;
-	         var containerTag = document.getElementById("timers");
-	         var pausas = document.getElementsByClassName("pausa");
-	       }
+	         
 	 	 } else {
 	     if (flagPause === false) {
 /*$.ajax({url: '/pauses/get',type: 'POST',contentType: 'application/json',success: function (jsOn) {var option;for (var i = 0; i < jsOn.length; i++) {
