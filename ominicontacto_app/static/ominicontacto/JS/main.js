@@ -101,7 +101,7 @@ $(function () {
 	                 document.getElementById("segs" + lastPause).innerHTML = segsp;
 	                 lastPause = "";
 	             } else {
-	                 //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	               if($("#UserStatus").html() != "Online") {
 	                 var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	                 var ContainerSegs = document.createTextNode($("#segsP").html());
 	                 var ContainerMins = document.createTextNode($("#minsP").html());
@@ -124,6 +124,7 @@ $(function () {
 	                 statusTag.appendChild(labelSegs);
 	                 containerTag.innerHTML += "&nbsp;";
 	                 containerTag.appendChild(statusTag);
+	               }
 	             }
 	         } else {
 	         	if($("#UserStatus").html() != "Online") {
@@ -206,7 +207,7 @@ $(function () {
 	                 document.getElementById("segs" + lastPause).innerHTML = segsp;
 	                 lastPause = "";
 	             } else {
-	                 //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	               if($("#UserStatus").html() != "Online") {
 	                 var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	                 var ContainerSegs = document.createTextNode($("#segsP").html());
 	                 var ContainerMins = document.createTextNode($("#minsP").html());
@@ -229,9 +230,10 @@ $(function () {
 	                 statusTag.appendChild(labelSegs);
 	                 containerTag.innerHTML += "&nbsp;";
 	                 containerTag.appendChild(statusTag);
+	               }
 	             }
 	         } else {
-	             //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	           if($("#UserStatus").html() != "Online") {
 	             var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	             var ContainerSegs = document.createTextNode($("#segsP").html());
 	             var ContainerMins = document.createTextNode($("#minsP").html());
@@ -254,8 +256,9 @@ $(function () {
 	             statusTag.appendChild(labelSegs);
 	             containerTag.innerHTML += "&nbsp;";
 	             containerTag.appendChild(statusTag);
+	           }
 	         }	
-	         }
+	       }
 	 	 } else {
 	     if (flagPause === false) {
 	         /*$.ajax({
@@ -328,7 +331,7 @@ $(function () {
 	                 document.getElementById("segs" + lastPause).innerHTML = segsp;
 	                 lastPause = "";
 	             } else {
-	                 //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	               if($("#UserStatus").html() != "Online") {
 	                 var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	                 var ContainerSegs = document.createTextNode($("#segsP").html());
 	                 var ContainerMins = document.createTextNode($("#minsP").html());
@@ -351,9 +354,10 @@ $(function () {
 	                 statusTag.appendChild(labelSegs);
 	                 containerTag.innerHTML += "&nbsp;";
 	                 containerTag.appendChild(statusTag);
+	               }
 	             }
 	         } else {
-	             //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
+	           if($("#UserStatus").html() != "Online") {
 	             var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	             var ContainerSegs = document.createTextNode($("#segsP").html());
 	             var ContainerMins = document.createTextNode($("#minsP").html());
@@ -376,6 +380,7 @@ $(function () {
 	             statusTag.appendChild(labelSegs);
 	             containerTag.innerHTML += "&nbsp;";
 	             containerTag.appendChild(statusTag);
+	           }
 	         }
 	         modifyUserStat.innerHTML = "Online";
 	         reinicio($("#horaP"), $("#minsP"), $("#segsP"));
