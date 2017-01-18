@@ -52,7 +52,7 @@ $(function () {
 	 $("#webCall").click(function () {
 	     $("#modalWebCall").modal('show');
 	 });
-	 updateButton(btn,clsnm,inht) {
+	 function updateButton(btn,clsnm,inht) {
 	 	 btn.className = lsnm;
 	 	 btn.innerHTML = inht;
 	 }
