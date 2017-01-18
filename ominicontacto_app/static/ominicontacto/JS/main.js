@@ -82,7 +82,7 @@ $(function () {
 	         modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-warning";
 	         modifyUserStat.innerHTML = $("#pauseType").val();
-	         //flagPause = true;
+	         flagPause = true;
 	         parar1();
 	         inicio2();
 	     } 
