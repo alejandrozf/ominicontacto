@@ -66,8 +66,6 @@
                <h4 class="cuerpoLlamEntrante">
                  <span class="label label-info">De:</span>
                  <label name="callerid" id="callerid"></label><br>
-              <!--   <span class="label label-info">Line:</span>
-                 <label name="line" id="line">1</label><br>-->
                  <span class="label label-info">Info extra:</span>
                  <label name="extraInfo" id="extraInfo">.....</label>
                </h4>
@@ -100,7 +98,26 @@
           </div>
         </div>
       </div>
-      <!-- ---------------------------------------------------------------- -->
+      <!----------------------- Modal que se despliega al dar clic en Marcar Llamada --------------------- -->
+      <div id="modalSignCall" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-sm">
+           <div class="modal-content">
+             <div class="modal-header">
+               <em><b class="tituloLlamEntrante">Marcacion de Llamada</b></em>
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+             </div>
+             <div class="modal-body">
+             <input type="hidden" id="idCamp"/>
+             <textarea id="SignDescription" placeholder="Motivo de marca" class="form-control">
+             </textarea>
+             </div>
+            <div class="modal-footer">
+              <button type="button" id="SaveSignedCall" class="btn btn-success btn-sm">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-------------------------------------------------------------------------------------------------- -->      
     </div>
     <div class="row">
         <div class="backgroundWebPhone col-md-10 col-md-offset-1">
@@ -124,6 +141,9 @@
                 </button>
                 <button id="*" class="btn btn-warning key">*</button>
                 <button id="#" class="btn btn-warning key">#</button>
+                <button type="button" id="SignCall" class="btn btn-danger" title="Marcar Llamada">
+                    <span class="glyphicon glyphicon-saved"></span>
+                </button>
                 <!--<button type="button" id="CallList" class="btn btn-success" title="Lista de llamadas">
                     <span class="glyphicon glyphicon-th-list"></span>
                 </button>-->
@@ -402,7 +422,7 @@
       </div>
     </div>
   </div><br><br><br><br><br>
-  <div class="container">
+  <div class="container-fluid">
 
 <div class="row">
     <div class="col-md-10">&nbsp;
