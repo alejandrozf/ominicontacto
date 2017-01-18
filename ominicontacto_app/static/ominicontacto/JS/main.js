@@ -54,7 +54,7 @@ $(function () {
 	 });
 	 $("#Pause").click(function () {
 	 	 if($("#auto_pause").val() === "True") {
-	 	   inicio1();
+	 	       inicio1();
 	         parar2();
 	         pauseButton.className = "btn btn-warning";
 	         pauseButton.innerHTML = "Pause";
@@ -126,6 +126,7 @@ $(function () {
 	                 containerTag.appendChild(statusTag);
 	             }
 	         } else {
+	         	if($("#UserStatus").html() != "Online") {
 	             //var descTxtContainerTag = document.createTextNode($("#pauseType").val() + " ");
 	             var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	             var ContainerSegs = document.createTextNode($("#segsP").html());
@@ -149,6 +150,7 @@ $(function () {
 	             statusTag.appendChild(labelSegs);
 	             containerTag.innerHTML += "&nbsp;";
 	             containerTag.appendChild(statusTag);
+	           }
 	         }
 	         modifyUserStat.innerHTML = "Online";
 	         reinicio($("#horaP"), $("#minsP"), $("#segsP"));
