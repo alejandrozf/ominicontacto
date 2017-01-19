@@ -146,7 +146,7 @@ $(function() {
 	      flagPausa = true;
 	      parar1();
 	      inicio2();
-      } else if (num.substring(4,0) != "0077" || fromUser) {
+      } else if (num.substring(4,0) != "0077") {
       	$("#Pause").prop('disabled',false);
     	  $("#UserStatus").html("Online");
 				var callerOrCalled = "";       	
@@ -156,7 +156,9 @@ $(function() {
       		callerOrCalled =  num;
       	}
         saveCall(callerOrCalled);
-        //fromUser = num = null;
+      } else if(fromUser) {
+        $("#Pause").prop('disabled',false);
+    	  $("#UserStatus").html("Online");
       }
       
     });
@@ -206,6 +208,9 @@ $(function() {
     //dar solucion a la repeticion de codigo, esto ya existe en main.js
     function parar1() {
 	    clearInterval(control1);
+	 	}
+	 	function parar2() {
+	 		clearInterval(control2);
 	 	}
 	 	function parar3() {
 	    clearInterval(control3);
@@ -410,9 +415,7 @@ $(function() {
         	
 	       	$("#Pause").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
-        }
-        if(fromUser) {
-	       		
+        } else if(fromUser) {
 	       		$("#Pause").prop('disabled',true);
     	      $("#UserStatus").html("OnCall");
         	}
