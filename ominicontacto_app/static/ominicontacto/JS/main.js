@@ -69,9 +69,6 @@ $(function () {
 	    parar2();
 	    updateButton(pauseButton, "btn btn-warning", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
-	    /*modifyUserStat.className = "label label-success";
-	    var lastPause = modifyUserStat.innerHTML;
-	    modifyUserStat.innerHTML = "Online";*/
 	    var containerTag = document.getElementById("timers");
 	    var pausas = document.getElementsByClassName("pausa");
 	    if (pausas.length) { // Si ya existe pausa, ver si se repite
@@ -169,13 +166,8 @@ $(function () {
 	 $("#setPause").click(function () {
 	     if (flagPause === false) {
 	     	   updateButton(pauseButton, "btn btn-danger", "Resume");
-	         /*pauseButton.className = "btn btn-danger";
-	         pauseButton.innerHTML = "Resume";*/
 	         $("#modalPause").modal('hide');
 	         updateButton(modifyUserStat, "label label-warning", $("#pauseType").val());
-	         /*modifyUserStat = document.getElementById("UserStatus");
-	         modifyUserStat.className = "label label-warning";
-	         modifyUserStat.innerHTML = $("#pauseType").val();*/
 	         flagPause = true;
 	         parar1();
 	         inicio2();
