@@ -418,10 +418,10 @@ $(function() {
         	
 	       	$("#Pause").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
-        } else if(fromUser) {
+        } else*/ if(fromUser) {
 	       		$("#Pause").prop('disabled',true);
     	      $("#UserStatus").html("OnCall");
-        	}*/
+        	}
         inicio3();
       });
       
