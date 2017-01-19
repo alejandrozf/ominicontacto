@@ -3,7 +3,16 @@
 var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
+
+function updateButton(btn,clsnm,inht) {
+	 	 btn.className = clsnm;
+	 	 var lastval = btn.innerHTML;
+	 	 btn.innerHTML = inht;
+	 	 return lastval;
+}
+ 
 $(function() {
+	var modifyUserStat = document.getElementById("UserStatus");
 	$("#redial").prop('disabled', true);
 	$('#modalSelectCmp').modal('hide');
   var estado = JSON.stringify({'status' : 'online'});
@@ -132,9 +141,7 @@ $(function() {
     		// cod que se repite en main.js.. se deberia mejorar esto
     		pauseButton.className = "btn btn-danger";
 	      pauseButton.innerHTML = "Resume";
-	      modifyUserStat = document.getElementById("UserStatus");
-	      modifyUserStat.className = "label label-warning";
-	      modifyUserStat.innerHTML = "ACW";
+	      updateButton(modifyUserStat, "label label-warning", "ACW");
 	      flagPausa = true;
 	      parar1();
 	      inicio2();
@@ -395,7 +402,8 @@ $(function() {
         $("#aTransfer").prop('disabled', false);
         $("#bTransfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
-        if(num.substring(4,0) != "0077") {
+        
+        if(num.substring(4,0) != "0077" || fromUser) {
         	$("#Pause").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
         }
