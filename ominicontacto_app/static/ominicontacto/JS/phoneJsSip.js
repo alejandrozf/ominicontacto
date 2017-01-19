@@ -148,8 +148,8 @@ $(function() {
 	      parar1();
 	      inicio2();
       } else if (num.substring(4,0) != "0077") {
-      	/*$("#Pause").prop('disabled',false);
-    	  $("#UserStatus").html("Online");*/
+      	$("#Pause").prop('disabled',false);
+    	  $("#UserStatus").html("Online");
 				var callerOrCalled = "";       	
       	if(entrante) {
       		callerOrCalled = fromUser;
