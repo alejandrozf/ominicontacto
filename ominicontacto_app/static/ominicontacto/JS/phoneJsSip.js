@@ -131,7 +131,7 @@ $(function() {
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
       parar3();
       defaultCallState();
-      if(num.substring(4,0) == '0077' || fromUser) {
+      if(num.substring(4,0) == '0077') {
         reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
       if($("#auto_pause").val() === "True" && originHeader !== "") {
@@ -144,7 +144,7 @@ $(function() {
 	      flagPausa = true;
 	      parar1();
 	      inicio2();
-      } else if (num.substring(4,0) != "0077" || ) {
+      } else if (num.substring(4,0) != "0077" || fromUser) {
       	$("#Pause").prop('disabled',false);
     	  $("#UserStatus").html("Online");
 				var callerOrCalled = "";       	
