@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false;
+var lastDialedNumber, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false, fromUser;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 
@@ -128,10 +128,10 @@ $(function() {
 
   userAgent.on('newRTCSession', function(e) {       // cuando se crea una sesion RTC
 	  var originHeader = "";
-    e.session.on('ended',function() {               // Cuando Finaliza la llamada
+    e.session.on("ended",function() {               // Cuando Finaliza la llamada
       parar3();
       defaultCallState();
-      if(num.substring(4,0) == '0077') {
+      if(num.substring(4,0) == '0077' || fromUser) {
         reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
       if($("#auto_pause").val() === "True" && originHeader !== "") {
@@ -139,13 +139,12 @@ $(function() {
     		makeCall();
     		entrante = false;    			
     		// cod que se repite en main.js.. se deberia mejorar esto
-    		pauseButton.className = "btn btn-danger";
-	      pauseButton.innerHTML = "Resume";
-	      updateButton(modifyUserStat, "label label-warning", "ACW");
+    		updateButton(pauseButton, "btn btn-danger", "Resume"); 
+    		updateButton(modifyUserStat, "label label-warning", "ACW");
 	      flagPausa = true;
 	      parar1();
 	      inicio2();
-      } else if (num.substring(4,0) != "0077") {
+      } else if (num.substring(4,0) != "0077" || ) {
       	$("#Pause").prop('disabled',false);
     	  $("#UserStatus").html("Online");
 				var callerOrCalled = "";       	
@@ -283,7 +282,7 @@ $(function() {
 	     }
 	 }
 	 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      e.session.on('failed',function(e) {  // cuando falla el establecimiento de la llamada
+      e.session.on("failed",function(e) {  // cuando falla el establecimiento de la llamada
         $("#aTransfer").prop('disabled', true);
         $("#bTransfer").prop('disabled', true);
         $("#onHold").prop('disabled', true);
@@ -303,7 +302,7 @@ $(function() {
       		var CampIdHeader = e.request.headers.Idcamp[0].raw;
       		$("#idCamp").val(CampIdHeader);
       	}
-        var fromUser = e.request.headers.From[0].raw;
+        fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
         fromUser = fromUser.substring(startPos+1,endPos);
