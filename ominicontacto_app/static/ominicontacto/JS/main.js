@@ -60,12 +60,15 @@ $(function () {
 	 	 return lastval;
 	 }
 	 $("#Pause").click(function () {
+	 	if($("#auto_pause").val() === "True") {
+	    flagPause = true;
+	  }
 	 	if (flagPause === false) { // Si NO esta en pausa el agente, mostra el menu para elegir pausas
 	    $("#modalPause").modal('show');
 	    $("#pauseTime").html();
 	  } else { // Si esta en pausa el agente, quitalo de la pausa y gestiona el tiempo de pausa
 	    flagPause = false;
-	    inicio1();
+  	  inicio1();
 	    parar2();
 	    updateButton(pauseButton, "btn btn-warning", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
