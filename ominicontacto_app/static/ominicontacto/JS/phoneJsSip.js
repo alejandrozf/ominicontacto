@@ -147,7 +147,8 @@ $(function() {
 	      flagPausa = true;
 	      parar1();
 	      inicio2();
-      } else if (num.substring(4,0) != "0077") {
+      } else if (num.substring(4,0) != "0077") {// se evalua  en llamada saliente y modo manual
+      	num = '';
       	$("#Pause").prop('disabled',false);
     	  $("#UserStatus").html("Online");
 				var callerOrCalled = "";       	
