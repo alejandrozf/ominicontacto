@@ -414,14 +414,14 @@ $(function() {
         $("#bTransfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
         
-        /*if(num.substring(4,0) != "0077") {
+        if(num.substring(4,0) != "0077") {
         	
 	       	$("#Pause").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
-        } else*/ if(fromUser) {
+        }/* else if(fromUser) {
 	       		$("#Pause").prop('disabled',true);
     	      $("#UserStatus").html("OnCall");
-        	}
+        	}*/
         inicio3();
       });
       
