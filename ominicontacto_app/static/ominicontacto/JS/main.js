@@ -11,6 +11,7 @@ var segundosT = 0;
 var minutosT = 0;
 var flagPause = false;
 var control = control2 = control3 = '';
+var modifyUserStat = document.getElementById("UserStatus");
 $(function () {
 	 /*$("#id_registrar").click(function () {
 	 	 $.ajax({
@@ -67,7 +68,6 @@ $(function () {
 	    inicio1();
 	    parar2();
 	    updateButton(pauseButton, "btn btn-warning", "Pause");
-	    modifyUserStat = document.getElementById("UserStatus");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
 	    /*modifyUserStat.className = "label label-success";
 	    var lastPause = modifyUserStat.innerHTML;
