@@ -54,7 +54,9 @@ $(function () {
 	 });
 	 function updateButton(btn,clsnm,inht) {
 	 	 btn.className = clsnm;
+	 	 var lastval = btn.innerHTML;
 	 	 btn.innerHTML = inht;
+	 	 return lastval;
 	 }
 	 $("#Pause").click(function () {
 	 	if (flagPause === false) { // Si NO esta en pausa el agente, mostra el menu para elegir pausas
@@ -66,9 +68,10 @@ $(function () {
 	    parar2();
 	    updateButton(pauseButton, "btn btn-warning", "Pause");
 	    modifyUserStat = document.getElementById("UserStatus");
-	    modifyUserStat.className = "label label-success";
+	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
+	    /*modifyUserStat.className = "label label-success";
 	    var lastPause = modifyUserStat.innerHTML;
-	    modifyUserStat.innerHTML = "Online";
+	    modifyUserStat.innerHTML = "Online";*/
 	    var containerTag = document.getElementById("timers");
 	    var pausas = document.getElementsByClassName("pausa");
 	    if (pausas.length) { // Si ya existe pausa, ver si se repite
@@ -169,9 +172,10 @@ $(function () {
 	         /*pauseButton.className = "btn btn-danger";
 	         pauseButton.innerHTML = "Resume";*/
 	         $("#modalPause").modal('hide');
-	         modifyUserStat = document.getElementById("UserStatus");
+	         updateButton(modifyUserStat, "label label-warning", $("#pauseType").val());
+	         /*modifyUserStat = document.getElementById("UserStatus");
 	         modifyUserStat.className = "label label-warning";
-	         modifyUserStat.innerHTML = $("#pauseType").val();
+	         modifyUserStat.innerHTML = $("#pauseType").val();*/
 	         flagPause = true;
 	         parar1();
 	         inicio2();
