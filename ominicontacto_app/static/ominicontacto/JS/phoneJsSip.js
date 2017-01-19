@@ -157,9 +157,11 @@ $(function() {
       		callerOrCalled =  num;
       	}
         saveCall(callerOrCalled);
-      } else if(entrante && num.substring(4,0) != "0077") {
-        $("#Pause").prop('disabled',false);
-    	  $("#UserStatus").html("Online");
+      } else if(entrante) {
+      	if(num.substring(4,0) != "0077") {
+	        $("#Pause").prop('disabled',false);
+     	    $("#UserStatus").html("Online");
+      	}
       }
       
     });
