@@ -67,8 +67,8 @@ $(function () {
 	    updateButton(pauseButton, "btn btn-warning", "Pause");
 	    modifyUserStat = document.getElementById("UserStatus");
 	    modifyUserStat.className = "label label-success";
-	    modifyUserStat.innerHTML = "Online";
 	    var lastPause = modifyUserStat.innerHTML;
+	    modifyUserStat.innerHTML = "Online";
 	    var containerTag = document.getElementById("timers");
 	    var pausas = document.getElementsByClassName("pausa");
 	    if (pausas.length) { // Si ya existe pausa, ver si se repite
@@ -108,7 +108,7 @@ $(function () {
 	                 document.getElementById("segs" + lastPause).innerHTML = segsp;
 	                 lastPause = "";
 	             } else { //si NO se repite, crea un marcador nuevo siempre y cndo no sea el estado = Online
-	             	 if($("#UserStatus").html() != "Online") {
+	             	 if(lastPause != "Online") {
 	             	   var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	             		 var ContainerSegs = document.createTextNode($("#segsP").html());
 				           var ContainerMins = document.createTextNode($("#minsP").html());
@@ -134,7 +134,7 @@ $(function () {
 	               }
 	             }
 	           } else { //Si NO existe pausa, creala siempre y cuando no sea el statusAgente = ONLINE
-	             if($("#UserStatus").html() != "Online") {
+	             if(lastPause != "Online") {
 	             var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
 	             var ContainerSegs = document.createTextNode($("#segsP").html());
 	             var ContainerMins = document.createTextNode($("#minsP").html());
