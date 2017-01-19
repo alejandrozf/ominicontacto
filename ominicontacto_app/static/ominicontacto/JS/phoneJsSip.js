@@ -403,7 +403,7 @@ $(function() {
         $("#bTransfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
         
-        if(num.substring(4,0) != "0077" && fromUser) {
+        if(num.substring(4,0) != "0077" || fromUser) {
         	$("#Pause").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
         }
