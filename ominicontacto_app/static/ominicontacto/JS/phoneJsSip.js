@@ -156,7 +156,7 @@ $(function() {
       		callerOrCalled =  num;
       	}
         saveCall(callerOrCalled);
-        fromUser = num = null;
+        //fromUser = num = null;
       }
       
     });
@@ -407,12 +407,12 @@ $(function() {
         $("#onHold").prop('disabled', false);
         
         if(num.substring(4,0) != "0077") {
-        	//num = null;
+        	
 	       	$("#Pause").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
         }
         if(fromUser) {
-	       		fromUser = null;
+	       		
 	       		$("#Pause").prop('disabled',true);
     	      $("#UserStatus").html("OnCall");
         	}
