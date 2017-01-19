@@ -109,7 +109,7 @@ $(function () {
 	                 lastPause = "";
 	             } else { //si NO se repite, crea un marcador nuevo siempre y cndo no sea el estado = Online
 	             	 if(lastPause != "Online") {
-	             	   var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
+	             	   var descTxtContainerTag = document.createTextNode(lastPause + " ");
 	             		 var ContainerSegs = document.createTextNode($("#segsP").html());
 				           var ContainerMins = document.createTextNode($("#minsP").html());
 	    			       var ContainerHora = document.createTextNode($("#horaP").html());
@@ -135,7 +135,7 @@ $(function () {
 	             }
 	           } else { //Si NO existe pausa, creala siempre y cuando no sea el statusAgente = ONLINE
 	             if(lastPause != "Online") {
-	             var descTxtContainerTag = document.createTextNode($("#UserStatus").html() + " ");
+	             var descTxtContainerTag = document.createTextNode(lastPause + " ");
 	             var ContainerSegs = document.createTextNode($("#segsP").html());
 	             var ContainerMins = document.createTextNode($("#minsP").html());
 	             var ContainerHora = document.createTextNode($("#horaP").html());
