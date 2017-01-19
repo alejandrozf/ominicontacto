@@ -141,7 +141,8 @@ $(function() {
     		makeCall();
     		entrante = false;    			
     		// cod que se repite en main.js.. se deberia mejorar esto
-    		updateButton(pauseButton, "btn btn-danger", "Resume"); 
+    		updateButton(pauseButton, "btn btn-danger", "Resume");
+    		$("#Pause").prop('disabled',false); 
     		updateButton(modifyUserStat, "label label-warning", "ACW");
 	      flagPausa = true;
 	      parar1();
