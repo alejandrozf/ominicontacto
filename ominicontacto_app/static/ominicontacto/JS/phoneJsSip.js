@@ -147,8 +147,8 @@ $(function() {
 	      parar1();
 	      inicio2();
       } else if (num.substring(4,0) != "0077") {
-      	$("#Pause").prop('disabled',false);
-    	  $("#UserStatus").html("Online");
+      	/*$("#Pause").prop('disabled',false);
+    	  $("#UserStatus").html("Online");*/
 				var callerOrCalled = "";       	
       	if(entrante) {
       		callerOrCalled = fromUser;
@@ -342,6 +342,8 @@ $(function() {
         var session_incoming = e.session;
         
         session_incoming.on('addstream',function(e) {       // al cerrar el canal de audio entre los peers
+        	$("#Pause").prop('disabled',true);
+    	    $("#UserStatus").html("OnCall");
           remote_stream = e.stream;
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
         });
@@ -411,11 +413,11 @@ $(function() {
         $("#bTransfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
         
-        if(num.substring(4,0) != "0077") {
+        /*if(num.substring(4,0) != "0077") {
         	
 	       	$("#Pause").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
-        } /*else if(fromUser) {
+        } else if(fromUser) {
 	       		$("#Pause").prop('disabled',true);
     	      $("#UserStatus").html("OnCall");
         	}*/
