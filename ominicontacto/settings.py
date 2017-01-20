@@ -216,6 +216,17 @@ Ejemplo:
     OML_WOMBAT_URL = "http://172.16.20.222/wombat"
 """
 
+#==============================================================================
+# Directory Temporal de Json Wombat
+#==============================================================================
+
+OML_WOMBAT_FILENAME = None
+"""Url de discador de Wombat
+
+Ejemplo:
+    OML_WOMBAT_FILENAME = "/home/freetech/"
+"""
+
 
 #==============================================================================
 # Import de `oml_settings_local`
@@ -287,3 +298,8 @@ assert OML_KAMAILIO_IP is not None, \
 
 assert OML_WOMBAT_URL is not None, \
     "Falta definir setting para OML_WOMBAT_URL"
+
+# ~~~~~ Check OML_WOMBAT_URL
+
+assert OML_WOMBAT_FILENAME is not None, \
+    "Falta definir setting para OML_WOMBAT_FILENAME"
