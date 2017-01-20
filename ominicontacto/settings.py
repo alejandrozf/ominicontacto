@@ -206,6 +206,18 @@ Ejemplo:
 """
 
 #==============================================================================
+# URL DE WOMBAT
+#==============================================================================
+
+OML_WOMBAT_URL = None
+"""Url de discador de Wombat
+
+Ejemplo:
+    OML_WOMBAT_URL = "http://172.16.20.222/wombat"
+"""
+
+
+#==============================================================================
 # Import de `oml_settings_local`
 #==============================================================================
 
@@ -270,3 +282,8 @@ assert OML_GRABACIONES_URL is not None, \
 
 assert OML_KAMAILIO_IP is not None, \
     "Falta definir setting para OML_KAMAILIO_IP"
+
+# ~~~~~ Check OML_WOMBAT_URL
+
+assert OML_WOMBAT_URL is not None, \
+    "Falta definir setting para OML_WOMBAT_URL"
