@@ -299,7 +299,7 @@ $(function() {
       	entrante = true;
       	if(e.request.headers.Wombatid) {
       		wId = e.request.headers.Wombatid[0].raw;
-      		$("#wombatId").val(wId);
+      		$("#id_wombat").val(wId);
       	}
       	if(e.request.headers.Origin) {
       	  originHeader = e.request.headers.Origin[0].raw;
