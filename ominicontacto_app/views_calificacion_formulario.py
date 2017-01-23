@@ -3,11 +3,13 @@
 from __future__ import unicode_literals
 
 import json
+import requests
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
+from django.conf import settings
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView, FormView
 )
@@ -72,13 +74,21 @@ class CalificacionClienteCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         calificacion = form.cleaned_data.get('calificacion')
+        url_wombat = '/'.join([settings.OML_WOMBAT_URL,
+                               'api/calls/?op=extstatus&wombatid={0}&status={1}'
+                               ])
         if calificacion is None:
             self.object.es_venta = True
             self.object.save()
+            r = requests.post(
+                url_wombat.format(self.kwargs['wombat_id'], "venta"))
             return redirect(self.get_success_url())
         else:
             self.object.es_venta = False
             self.object.save()
+            r = requests.post(
+                url_wombat.format(self.kwargs['wombat_id'],
+                                  self.object.calificacion.nombre))
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
@@ -162,13 +172,23 @@ class CalificacionClienteUpdateView(UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         calificacion = form.cleaned_data.get('calificacion')
+        url_wombat = '/'.join([settings.OML_WOMBAT_URL,
+                               'api/calls/?op=extstatus&wombatid={0}&status={1}'
+                               ])
+
         if calificacion is None:
             self.object.es_venta = True
             self.object.save()
+            r = requests.post(
+                url_wombat.format(self.kwargs['wombat_id'], "venta"))
             return redirect(self.get_success_url())
+
         else:
             self.object.es_venta = False
             self.object.save()
+            r = requests.post(
+                url_wombat.format(self.kwargs['wombat_id'],
+                                  self.object.calificacion.nombre))
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
