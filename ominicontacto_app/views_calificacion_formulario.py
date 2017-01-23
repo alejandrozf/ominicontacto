@@ -98,6 +98,8 @@ class CalificacionClienteCreateView(CreateView):
                                                         'pk_campana'],
                                                     "id_cliente": self.kwargs[
                                                         'id_cliente'],
+                                                    "wombat_id": self.kwargs[
+                                                        'wombat_id'],
                                                     "id_agente": self.kwargs[
                                                         'id_agente']}))
 
@@ -134,7 +136,9 @@ class CalificacionClienteUpdateView(UpdateView):
             return HttpResponseRedirect(reverse('calificacion_formulario_create',
                 kwargs={"pk_campana": self.kwargs['pk_campana'],
                         "id_cliente": self.kwargs['id_cliente'],
-                        "id_agente": self.kwargs['id_agente']}))
+                        "id_agente": self.kwargs['id_agente'],
+                        "wombat_id": self.kwargs['wombat_id'],
+                        }))
 
         return super(CalificacionClienteUpdateView, self).dispatch(*args,
                                                                   **kwargs)
