@@ -377,9 +377,6 @@ class ExportaDialerForm(forms.Form):
 
 class CalificacionClienteForm(forms.ModelForm):
 
-    wombat = forms.CharField(label='', required=False,
-                                      widget=forms.HiddenInput())
-
     def __init__(self, calificacion_choice, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
         self.fields['calificacion'].queryset = calificacion_choice

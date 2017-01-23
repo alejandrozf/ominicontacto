@@ -445,12 +445,12 @@ urlpatterns = [
         name='formulario_venta',
         ),
     url(
-        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/create/(?P<id_agente>\d+)/$',
+        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/create/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
         login_required(views_calificacion_formulario.CalificacionClienteCreateView.as_view()),
         name='calificacion_formulario_create',
         ),
     url(
-        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/update/(?P<id_agente>\d+)/$',
+        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
         login_required(views_calificacion_formulario.CalificacionClienteUpdateView.as_view()),
         name='calificacion_formulario_update',
         ),
