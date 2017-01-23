@@ -297,8 +297,8 @@ $(function() {
       });
       if(e.originator=="remote") {         // Origen de llamada Remoto
       	entrante = true;
-      	if(e.request.headers.WombatID) {
-      		wId = e.request.headers.WombatID[0].raw;
+      	if(e.request.headers.Wombatid) {
+      		wId = e.request.headers.Wombatid[0].raw;
       		$("#wombatId").val(wId);
       	}
       	if(e.request.headers.Origin) {
