@@ -299,7 +299,6 @@ $(function() {
       	entrante = true;
       	if(e.request.headers.Wombatid) {
       		wId = e.request.headers.Wombatid[0].raw;
-      		$("#id_wombat").val(wId);
       	}
       	if(e.request.headers.Origin) {
       	  originHeader = e.request.headers.Origin[0].raw;
@@ -319,7 +318,7 @@ $(function() {
 
         if(CampIdHeader) {
         	if(leadIdHeader) {
-        		getData(CampIdHeader, leadIdHeader, $("#idagt").val());
+        		getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
         	} else {
         		if(fromUser !== "Unknown") {
         	    processCallid(fromUser);
@@ -619,8 +618,8 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
   
-  function getData(campid, leadid,agentid) {
-  	var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/";
+  function getData(campid, leadid,agentid, wombatId) {
+  	var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
   	$("#dataView").attr('src', url);
   }
   
