@@ -125,6 +125,16 @@ OML_WOMBAT_URL = "http://172.16.20.222/wombat"
 
 OML_WOMBAT_FILENAME = "/home/freetech/"
 
+# 'OML_WOMBAT_USER': user para conectarse con la api de WOMBAT DIALER
+# "user_test"
+
+OML_WOMBAT_USER = "user_test"
+
+# 'OML_WOMBAT_PASSWORD': password para ingresar con la api de WOMBAT DIALER
+# "user123"
+
+OML_WOMBAT_PASSWORD = "user123"
+
 _logging_output_file = os.environ.get("OML_LOGFILE", "django.log")
 assert os.path.split(_logging_output_file)[0] == "",\
     "La variable de entorno OML_LOGFILE solo debe contener " +\

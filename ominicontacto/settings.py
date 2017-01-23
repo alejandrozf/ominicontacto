@@ -206,7 +206,7 @@ Ejemplo:
 """
 
 #==============================================================================
-# URL DE WOMBAT
+# WOMBAT Config
 #==============================================================================
 
 OML_WOMBAT_URL = None
@@ -216,17 +216,22 @@ Ejemplo:
     OML_WOMBAT_URL = "http://172.16.20.222/wombat"
 """
 
-#==============================================================================
-# Directory Temporal de Json Wombat
-#==============================================================================
 
 OML_WOMBAT_FILENAME = None
-"""Url de discador de Wombat
+"""Directory donde se guardan los json de config de wombat
 
 Ejemplo:
     OML_WOMBAT_FILENAME = "/home/freetech/"
 """
 
+OML_WOMBAT_USER = None
+OML_WOMBAT_PASSWORD = None
+"""
+User y password por el cual se conectan con la api de WOMBAT DIALER
+Ejemplo:
+    OML_WOMBAT_USER = "user_test"
+    OML_WOMBAT_PASSWORD = "user123"
+"""
 
 #==============================================================================
 # Import de `oml_settings_local`
@@ -303,3 +308,14 @@ assert OML_WOMBAT_URL is not None, \
 
 assert OML_WOMBAT_FILENAME is not None, \
     "Falta definir setting para OML_WOMBAT_FILENAME"
+
+
+# ~~~~~ Check OML_WOMBAT_USER
+
+assert OML_WOMBAT_USER is not None, \
+    "Falta definir setting para OML_WOMBAT_USER"
+
+# ~~~~~ Check OML_WOMBAT_PASSWORD
+
+assert OML_WOMBAT_PASSWORD is not None, \
+    "Falta definir setting para OML_WOMBAT_PASSWORD"
