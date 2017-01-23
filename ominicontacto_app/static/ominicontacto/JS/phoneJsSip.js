@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false, fromUser;
+var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false, fromUser, wId;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 
@@ -76,6 +76,11 @@ $(function() {
     num = "0077LOGOUT";
     makeCall();
     userAgent.unregister();
+    userAgent.on('unregistered', function(e) {  // cuando se desregistra la entidad SIP
+      setSipStatus("reddot.png", "  Unregistered", sipStatus);
+      $("#Pause").prop('disabled',false);
+    	$("#UserStatus").html("Online");
+    });
   });
   
   $("#CallList").click(function() {
@@ -99,15 +104,6 @@ $(function() {
     displayNumber.value = numPress;
   });
   
-  $("#unregister").click(function() {
-    userAgent.unregister();
-    
-    userAgent.on('unregistered', function(e) {  // cuando se desregistra la entidad SIP
-      setSipStatus("reddot.png", "  Unregistered", sipStatus);
-    });
-  });
-  
-  $("#unregister").prop('disabled', false);
     //Connects to the WebSocket server
     userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
   	setSipStatus("greydot.png", "  No account", sipStatus);
@@ -301,6 +297,10 @@ $(function() {
       });
       if(e.originator=="remote") {         // Origen de llamada Remoto
       	entrante = true;
+      	if(e.request.headers.Wombatid) {
+      		wId = e.request.headers.Wombatid[0].raw;
+      		$("#id_wombat").val(wId);
+      	}
       	if(e.request.headers.Origin) {
       	  originHeader = e.request.headers.Origin[0].raw;
       	  
