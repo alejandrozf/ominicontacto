@@ -105,6 +105,7 @@ class ConfigFile(object):
 
 class CampanaConfigFile(ConfigFile):
     def __init__(self):
-        filename = settings.OML_WOMBAT_FILENAME + "newcampaign.json"
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "newcampaign.json")
         filename = filename.strip()
         super(CampanaConfigFile, self).__init__(filename)
