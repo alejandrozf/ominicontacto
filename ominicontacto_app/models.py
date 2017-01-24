@@ -1561,6 +1561,16 @@ class CalificacionCliente(models.Model):
         return "Califiacion para la campana{0} para el contacto " \
                "{1} ".format(self.campana, self.contacto)
 
+    def get_venta(self):
+        try:
+            return MetadataCliente.objects.get(campana=self.campana,
+                                               agente=self.agente,
+                                               contacto=self.contacto)
+        except MetadataCliente.DoesNotExist:
+            return None
+        except MetadataCliente.MultipleObjectsReturned:
+            return None
+
 
 class DuracionDeLlamada(models.Model):
     """Representa la duración de las llamdas de las campanas, con el fin
