@@ -459,6 +459,12 @@ urlpatterns = [
             views_calificacion_formulario.FormularioDetailView.as_view()),
         name='formulario_detalle',
         ),
+    url(
+        r'^formulario/(?P<pk_metadata>\d+)/metadata/$',
+        login_required(
+            views_calificacion_formulario.FormularioUpdateFormView.as_view()),
+        name='formulario_venta_update',
+    ),
 
 ]
 

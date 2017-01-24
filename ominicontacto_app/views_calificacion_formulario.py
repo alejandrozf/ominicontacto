@@ -283,3 +283,58 @@ class FormularioDetailView(DetailView):
         context['metadata'] = json.loads(metadata.metadata)
 
         return context
+
+
+class FormularioUpdateFormView(FormView):
+    form_class = FormularioCRMForm
+    template_name = 'formulario/formulario_create.html'
+
+    def get_initial(self):
+        initial = super(FormularioUpdateFormView, self).get_initial()
+        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
+        #import ipdb; ipdb.set_trace();
+        for clave, valor in json.loads(metadata.metadata).items():
+            initial.update({clave: valor})
+        return initial
+
+    def get_form(self, form_class):
+        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
+        #formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
+        campos = metadata.campana.formulario.campos.all()
+        return form_class(campos=campos, **self.get_form_kwargs())
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            FormularioUpdateFormView, self).get_context_data(**kwargs)
+        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
+
+        context['pk_formulario'] = metadata.campana.formulario.pk
+
+        bd_contacto = metadata.campana.bd_contacto
+        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
+        datos = json.loads(metadata.contacto.datos)
+        mas_datos = []
+        for nombre, dato in zip(nombres, datos):
+            mas_datos.append((nombre, dato))
+        context['contacto'] = metadata.contacto
+        context['mas_datos'] = mas_datos
+
+        return context
+
+    def form_valid(self, form):
+        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
+        metadata_datos = json.dumps(form.cleaned_data)
+        metadata.metadata = metadata_datos
+        metadata.save()
+
+        return HttpResponseRedirect(reverse('formulario_detalle',
+                                            kwargs={"pk": metadata.pk}))
+
+    def get_success_url(self):
+        # reverse('formulario_detalle',
+        #         kwargs={"pk": self.kwargs['pk_campana'],
+        #                 "id_cliente": self.kwargs['id_cliente'],
+        #                 "id_agente": self.kwargs['id_agente']
+        #                 }
+        #         )
+        reverse('view_blanco')
