@@ -59,6 +59,19 @@ $(function () {
 	 	 btn.innerHTML = inht;
 	 	 return lastval;
 	 }
+	 function predictMode () {
+               
+   }
+   $("#setPause").click(function () {
+     if (flagPause === false) {
+       updateButton(pauseButton, "btn btn-danger", "Resume");
+       $("#modalPause").modal('hide');
+       updateButton(modifyUserStat, "label label-warning", $("#pauseType").val());
+       flagPause = true;
+       parar1();
+       inicio2();
+     } 
+   });
 	 $("#Pause").click(function () {
 	 	if($("#auto_pause").val() === "True") {
 	    flagPause = true;
@@ -165,16 +178,6 @@ $(function () {
 	         reinicio($("#horaP"), $("#minsP"), $("#segsP"));
 	   }
 	 	 
-	 });
-	 $("#setPause").click(function () {
-	     if (flagPause === false) {
-	     	   updateButton(pauseButton, "btn btn-danger", "Resume");
-	         $("#modalPause").modal('hide');
-	         updateButton(modifyUserStat, "label label-warning", $("#pauseType").val());
-	         flagPause = true;
-	         parar1();
-	         inicio2();
-	     } 
 	 });
 	 $("#onHold").click(function (){
 	 	 if(holdFlag === false) {
