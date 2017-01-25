@@ -132,6 +132,49 @@ class RescheduleRuleCreator(object):
         self._reschedule_config_file.write(config_chunk)
 
 
+class EndPointCreator(object):
+
+    def __init__(self):
+        self._endpoint_config_file = EndPointConfigFile()
+
+    def _generar_json(self, queue):
+        """Genera json.
+        :returns: str -- json para la campana
+        """
+
+        dict_endpoint = {
+            "type": "QUEUE",
+            "queueName": queue.campana.nombre,
+            "name": "",
+            "astId": {
+                "id": 1
+            },
+            "idx": "",
+            "campaignId": "",
+            "maxChannels": 10,
+            "extension": "098098",
+            "context": "from-wombat-general-contact",
+            "boostFactor": 1,
+            "maxWaitingCalls": 2,
+            "reverseDialing": False,
+            "stepwiseReverse": False,
+            "securityKey":  "",
+            "description": queue.campana.nombre,
+            "dialFind": "",
+            "dialReplace": ""
+        }
+
+        return json.dumps(dict_endpoint)
+
+    def create_json(self, queue):
+        """Crea el archivo de json para trunk de campana
+        """
+        logger.info("Creando json end point para la campana %s",
+                    queue.campana.nombre)
+        config_chunk = self._generar_json(queue)
+        self._endpoint_config_file.write(config_chunk)
+
+
 class ConfigFile(object):
     def __init__(self, filename):
         self._filename = filename
@@ -180,3 +223,11 @@ class RescheduleRuleConfigFile(ConfigFile):
                                 "newcampaign_reschedule.json")
         filename = filename.strip()
         super(RescheduleRuleConfigFile, self).__init__(filename)
+
+
+class EndPointConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "newep.json")
+        filename = filename.strip()
+        super(EndPointConfigFile, self).__init__(filename)

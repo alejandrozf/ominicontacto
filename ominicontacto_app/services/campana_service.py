@@ -6,7 +6,7 @@ from ominicontacto_app.models import FormularioDemo, Campana
 from ominicontacto_app.utiles import elimina_coma
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
-    CampanaCreator, TrunkCreator, RescheduleRuleCreator
+    CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator
 )
 
 import logging
@@ -46,6 +46,19 @@ class CampanaService():
             return elimina_coma(lista[index+2])
         return None
 
+    def obtener_ep_ip_wombat(self, salida_comando):
+        lista = salida_comando.split()
+
+        index = None
+        for item in lista:
+            if item == '"epId"':
+                index = lista.index(item)
+                break
+
+        if index:
+            return elimina_coma(lista[index+2])
+        return None
+
     def crear_campana_wombat(self, campana):
         service_wombat = WombatService()
         service_wombat_config = CampanaCreator()
@@ -75,3 +88,17 @@ class CampanaService():
             campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "newcampaign_reschedule.json", url_edit)
+
+    def crear_endpoint_campana_wombat(self, queue):
+        service_wombat = WombatService()
+        service_wombat_config = EndPointCreator()
+        service_wombat_config.create_json(queue)
+        url_edit = "api/edit/ep/?mode=E&parent={0}".format(
+            queue.campana.campaign_id_wombat)
+        salida = service_wombat.update_config_wombat(
+            "newep.json", url_edit)
+        ep_id = self.obtener_ep_ip_wombat(salida)
+        if ep_id:
+            queue.guardar_ep_id_wombat(ep_id)
+            return True
+        return False
