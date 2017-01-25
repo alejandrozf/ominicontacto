@@ -116,6 +116,7 @@
                         <th>Es venta</th>
                         <th>Calificacion no venta</th>
                         <th>Observaciones</th>
+                        <th>acciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -148,6 +149,11 @@
                                 <td>
                                     {% if contacto.observaciones %}
                                         {{contacto.observaciones}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if contacto.get_venta %}
+                                    <a href="{% url 'formulario_venta_update' contacto.get_venta.pk %}">editar venta</a>
                                     {% endif %}
                                 </td>
                             </tr>
