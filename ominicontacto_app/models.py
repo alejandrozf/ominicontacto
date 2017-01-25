@@ -380,6 +380,7 @@ class Queue(models.Model):
     queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
+    ep_id_wombat = models.IntegerField(null=True, blank=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
@@ -407,6 +408,10 @@ class Queue(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def guardar_ep_id_wombat(self, ep_id_wombat):
+        self.ep_id_wombat = ep_id_wombat
+        self.save()
 
     class Meta:
         db_table = 'queue_table'
