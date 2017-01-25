@@ -3,6 +3,9 @@
 from __future__ import unicode_literals
 
 from ominicontacto_app.models import FormularioDemo, Campana
+from ominicontacto_app.utiles import elimina_coma
+from ominicontacto_app.services.wombat_service import WombatService
+from ominicontacto_app.services.wombat_config import CampanaCreator
 
 import logging
 
@@ -28,3 +31,26 @@ class CampanaService():
 
         return error
 
+    def obtener_campana_id_wombat(self, salida_comando):
+        lista = salida_comando.split()
+
+        index = None
+        for item in lista:
+            if item == '"campaignId"':
+                index = lista.index(item)
+                break
+
+        if index:
+            return elimina_coma(lista[index+2])
+        return None
+
+    def crear_campana_wombat(self, campana):
+        service_wombat = WombatService()
+        service_wombat_config = CampanaCreator()
+        service_wombat_config.create_json(campana)
+        salida = service_wombat.update_config_wombat()
+        campaign_id = self.obtener_campana_id_wombat(salida)
+        if campaign_id:
+            campana.guardar_campaign_id_wombat(campaign_id)
+            return True
+        return False

@@ -61,6 +61,13 @@ def elimina_espacios_parentesis_guiones(cadena):
     return re.sub("\(?\)?\s?\-?", "", cadena)
 
 
+def elimina_coma(cadena):
+    """
+    Elimina coma
+    """
+    return re.sub("\,?", "", cadena)
+
+
 def crear_archivo_en_media_root(dirname_template, prefix, suffix=""):
     """Crea un archivo en el directorio MEDIA_ROOT. Si los directorios
     no existen, los crea tambien.
