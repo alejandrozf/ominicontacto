@@ -9,8 +9,7 @@ var minutosP = 0;
 var centesimasT = 0;
 var segundosT = 0;
 var minutosT = 0;
-var flagPause = false;
-var autoPausa = false;
+var flagPause = 0;
 var control = control2 = control3 = '';
 var modifyUserStat = document.getElementById("UserStatus");
 $(function () {
@@ -61,27 +60,29 @@ $(function () {
 	 	 return lastval;
 	 }
 	 $("#setPause").click(function () {
-     if (flagPause === false) {
+     if (flagPause === 0) {
        updateButton(pauseButton, "btn btn-danger", "Resume");
        $("#modalPause").modal('hide');
        updateButton(modifyUserStat, "label label-warning", $("#pauseType").val());
-       flagPause = true;
+       flagPause = 1;
        parar1();
        inicio2();
      } 
    });
 	 $("#Pause").click(function () {
 	 	if($("#auto_pause").val() === "True") {
-	    autoPausa = true;
-	    flagPause = true;
+	    flagPause = 2;
 	  } else {
-	  	flagPause = true;
+	  	flagPause = 1;
 	  }
-	 	if (flagPause === false) { // Si NO esta en pausa el agente, mostra el menu para elegir pausas
+	 	if (flagPause === 0) { // Si NO esta en pausa el agente, mostra el menu para elegir pausas
 	    $("#modalPause").modal('show');
 	    $("#pauseTime").html();
+	  } else if(flagPause === 2) {
+	  	$("#modalPause").modal('show');
+	    $("#pauseTime").html();
 	  } else { // Si esta en pausa el agente, quitalo de la pausa y gestiona el tiempo de pausa
-	    flagPause = false;
+	    flagPause = 0;
   	  inicio1();
 	    parar2();
 	    updateButton(pauseButton, "btn btn-warning", "Pause");

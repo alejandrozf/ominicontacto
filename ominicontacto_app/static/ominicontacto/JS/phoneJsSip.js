@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false, fromUser, wId, autoPausa = false;
+var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 
@@ -52,21 +52,13 @@ $(function() {
 	   campid = idagt = desc = null;
 	 });
    $("#Pause").click(function () {
-     if(autoPausa === true) {
-  	   if (flagPausa === true) {
-         num = "0077UNPAUSE";
-         makeCall();
-         flagPausa = false;
-       }
-  	 } else {
-  	   if (flagPausa === true) {
-         num = "0077UNPAUSE";
-         makeCall();
-         flagPausa = false;
-       } else {
-    	   flagPausa = true;
-       }
-    }
+     if(flagPausa === 1) {
+       num = "0077UNPAUSE";
+       makeCall();
+       flagPausa = 0;
+     } elseif(flagPausa === 2) {
+       flagPausa = 1;
+     }
   });  
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
@@ -97,7 +89,7 @@ $(function() {
                
   }  
   $("#setPause").click(function() {    
-    flagPausa = true;
+    flagPausa = 1;
     num = "0077"+$("#pauseType").val().toUpperCase();
     makeCall();
   });
@@ -149,10 +141,9 @@ $(function() {
     		  updateButton(pauseButton, "btn btn-danger", "Resume");
     		  $("#Pause").prop('disabled',false); 
     		  updateButton(modifyUserStat, "label label-warning", "ACW");
-	        flagPausa = true;
+	        flagPausa = 2;
 	        parar1();
 	        inicio2();
-	        autoPausa = true;
         } else if (num.substring(4,0) != "0077") {// se evalua  en llamada saliente y modo manual
       	num = '';
       	$("#Pause").prop('disabled',false);
