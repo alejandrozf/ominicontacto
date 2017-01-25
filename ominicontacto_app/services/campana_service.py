@@ -5,8 +5,9 @@ from __future__ import unicode_literals
 from ominicontacto_app.models import FormularioDemo, Campana
 from ominicontacto_app.utiles import elimina_coma
 from ominicontacto_app.services.wombat_service import WombatService
-from ominicontacto_app.services.wombat_config import CampanaCreator,\
-    TrunkCreator
+from ominicontacto_app.services.wombat_config import (
+    CampanaCreator, TrunkCreator, RescheduleRuleCreator
+)
 
 import logging
 
@@ -65,3 +66,12 @@ class CampanaService():
             campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "newcampaign_trunk.json", url_edit)
+
+    def crear_reschedule_campana_wombat(self, campana):
+        service_wombat = WombatService()
+        service_wombat_config = RescheduleRuleCreator()
+        service_wombat_config.create_json(campana)
+        url_edit = "api/edit/campaign/reschedule/?mode=E&parent={0}".format(
+            campana.campaign_id_wombat)
+        salida = service_wombat.update_config_wombat(
+            "newcampaign_reschedule.json", url_edit)

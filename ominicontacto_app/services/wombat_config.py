@@ -103,6 +103,35 @@ class TrunkCreator(object):
         self._trunk_config_file.write(config_chunk)
 
 
+class RescheduleRuleCreator(object):
+
+    def __init__(self):
+        self._reschedule_config_file = RescheduleRuleConfigFile()
+
+    def _generar_json(self):
+        """Genera json.
+        :returns: str -- json para la campana
+        """
+
+        dict_reschedule = {
+            "status": "RS_BUSY",
+            "statusExt": "",
+            "maxAttempts": 2,
+            "retryAfterS": 120,
+            "mode": "FIXED"
+        }
+
+        return json.dumps(dict_reschedule)
+
+    def create_json(self, campana):
+        """Crea el archivo de json para trunk de campana
+        """
+        logger.info("Creando json para regla de reschedule para la campana %s",
+                    campana.nombre)
+        config_chunk = self._generar_json()
+        self._reschedule_config_file.write(config_chunk)
+
+
 class ConfigFile(object):
     def __init__(self, filename):
         self._filename = filename
@@ -143,3 +172,11 @@ class TrunkConfigFile(ConfigFile):
                                 "newcampaign_trunk.json")
         filename = filename.strip()
         super(TrunkConfigFile, self).__init__(filename)
+
+
+class RescheduleRuleConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "newcampaign_reschedule.json")
+        filename = filename.strip()
+        super(RescheduleRuleConfigFile, self).__init__(filename)
