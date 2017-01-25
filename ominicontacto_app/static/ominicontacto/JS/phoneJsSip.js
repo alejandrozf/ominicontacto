@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false, fromUser, wId, autoPausas = false;
+var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = false, fromUser, wId, autoPausa = false;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 
@@ -152,7 +152,7 @@ $(function() {
 	        flagPausa = true;
 	        parar1();
 	        inicio2();
-	        autoPausas = true;
+	        autoPausa = true;
         } else if (num.substring(4,0) != "0077") {// se evalua  en llamada saliente y modo manual
       	num = '';
       	$("#Pause").prop('disabled',false);
