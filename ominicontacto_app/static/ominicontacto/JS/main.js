@@ -73,6 +73,7 @@ $(function () {
 	 $("#Pause").click(function () {
 	 	if($("#auto_pause").val() === "True") {
 	    autoPausa = true;
+	    flagPause = true;
 	  } else {
 	  	flagPause = true;
 	  }
