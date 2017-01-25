@@ -5,7 +5,8 @@ from __future__ import unicode_literals
 from ominicontacto_app.models import FormularioDemo, Campana
 from ominicontacto_app.utiles import elimina_coma
 from ominicontacto_app.services.wombat_service import WombatService
-from ominicontacto_app.services.wombat_config import CampanaCreator
+from ominicontacto_app.services.wombat_config import CampanaCreator,\
+    TrunkCreator
 
 import logging
 
@@ -48,9 +49,19 @@ class CampanaService():
         service_wombat = WombatService()
         service_wombat_config = CampanaCreator()
         service_wombat_config.create_json(campana)
-        salida = service_wombat.update_config_wombat()
+        salida = service_wombat.update_config_wombat(
+            "newcampaign.json", 'api/edit/campaign/?mode=E')
         campaign_id = self.obtener_campana_id_wombat(salida)
         if campaign_id:
             campana.guardar_campaign_id_wombat(campaign_id)
             return True
         return False
+
+    def crear_trunk_campana_wombat(self, campana):
+        service_wombat = WombatService()
+        service_wombat_config = TrunkCreator()
+        service_wombat_config.create_json(campana)
+        url_edit = "api/edit/campaign/trunk/?mode=E&parent={0}".format(
+            campana.campaign_id_wombat)
+        salida = service_wombat.update_config_wombat(
+            "newcampaign_trunk.json", url_edit)

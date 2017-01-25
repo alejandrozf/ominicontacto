@@ -92,6 +92,7 @@ class CampanaCreateView(CreateView):
         self.object.save()
         campana_service.crear_formulario(self.object)
         campana_service.crear_campana_wombat(self.object)
+        campana_service.crear_trunk_campana_wombat(self.object)
         return super(CampanaCreateView, self).form_valid(form)
 
     def get_success_url(self):

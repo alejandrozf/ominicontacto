@@ -77,6 +77,32 @@ class CampanaCreator(object):
         self._campana_config_file.write(config_chunk)
 
 
+class TrunkCreator(object):
+
+    def __init__(self):
+        self._trunk_config_file = TrunkConfigFile()
+
+    def _generar_json(self):
+        """Genera json.
+        :returns: str -- json para la campana
+        """
+
+        dict_trunk = {
+           "trunkId": {
+                "trunkId": 1
+           }
+        }
+
+        return json.dumps(dict_trunk)
+
+    def create_json(self, campana):
+        """Crea el archivo de json para trunk de campana
+        """
+        logger.info("Creando json para trunk  campana %s", campana.nombre)
+        config_chunk = self._generar_json()
+        self._trunk_config_file.write(config_chunk)
+
+
 class ConfigFile(object):
     def __init__(self, filename):
         self._filename = filename
@@ -109,3 +135,11 @@ class CampanaConfigFile(ConfigFile):
                                 "newcampaign.json")
         filename = filename.strip()
         super(CampanaConfigFile, self).__init__(filename)
+
+
+class TrunkConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "newcampaign_trunk.json")
+        filename = filename.strip()
+        super(TrunkConfigFile, self).__init__(filename)
