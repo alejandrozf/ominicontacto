@@ -10,6 +10,7 @@ var centesimasT = 0;
 var segundosT = 0;
 var minutosT = 0;
 var flagPause = false;
+var autoPausa = false;
 var control = control2 = control3 = '';
 var modifyUserStat = document.getElementById("UserStatus");
 $(function () {
@@ -59,10 +60,7 @@ $(function () {
 	 	 btn.innerHTML = inht;
 	 	 return lastval;
 	 }
-	 function predictMode () {
-               
-   }
-   $("#setPause").click(function () {
+	 $("#setPause").click(function () {
      if (flagPause === false) {
        updateButton(pauseButton, "btn btn-danger", "Resume");
        $("#modalPause").modal('hide');
@@ -74,7 +72,9 @@ $(function () {
    });
 	 $("#Pause").click(function () {
 	 	if($("#auto_pause").val() === "True") {
-	    flagPause = true;
+	    autoPausa = true;
+	  } else {
+	  	flagPause = true;
 	  }
 	 	if (flagPause === false) { // Si NO esta en pausa el agente, mostra el menu para elegir pausas
 	    $("#modalPause").modal('show');
