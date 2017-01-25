@@ -280,9 +280,14 @@ class Campana(models.Model):
         related_name="%(class)ss"
     )
     formulario = models.ForeignKey(Formulario)
+    campaign_id_wombat = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
             return self.nombre
+
+    def guardar_campaign_id_wombat(self, campaign_id_wombat):
+        self.campaign_id_wombat = campaign_id_wombat
+        self.save()
 
 
 class QueueManager(models.Manager):
