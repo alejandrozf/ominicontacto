@@ -56,7 +56,7 @@ $(function() {
        num = "0077UNPAUSE";
        makeCall();
        flagPausa = 0;
-     } elseif(flagPausa === 2) {
+     } else if(flagPausa === 2) {
        flagPausa = 1;
      }
   });  
