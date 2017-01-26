@@ -56,8 +56,10 @@ $(function() {
        num = "0077UNPAUSE";
        makeCall();
        flagPausa = 0;
-     } else if(flagPausa === 2) {
+     } else if(flagPausa === 0) {
        flagPausa = 1;
+     } else {
+     	
      }
   });  
   if($("#sipExt").val() && $("#sipSec").val()) {
