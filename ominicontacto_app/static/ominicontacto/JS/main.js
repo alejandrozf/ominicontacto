@@ -61,14 +61,14 @@ $(function () {
 	 }
 	 $("#setPause").click(function () {
        $("#modalPause").modal('hide');
-       updateButton(modifyUserStat, "label label-warning", $("#pauseType").val());
+       updateButton(modifyUserStat, "label label-danger", $("#pauseType").val());
        parar1();
        inicio2(); 
    });
    $("#Resume").click(function () {
   	  inicio1();
 	    parar2();
-	    updateButton(pauseButton, "btn btn-warning", "Pause");
+	    updateButton(pauseButton, "btn btn-warning btn-xs", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
 	    var containerTag = document.getElementById("timers");
 	    var pausas = document.getElementsByClassName("pausa");

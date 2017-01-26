@@ -133,7 +133,7 @@ $(function() {
     		  entrante = false;    			
     		  // cod que se repite en main.js.. se deberia mejorar esto
     		  $("#Pause").prop('disabled',false); 
-    		  updateButton(modifyUserStat, "label label-warning", "ACW");
+    		  updateButton(modifyUserStat, "label label-danger", "ACW");
 	        parar1();
 	        inicio2();
         } else if (num.substring(4,0) != "0077") {// se evalua  en llamada saliente y modo manual
