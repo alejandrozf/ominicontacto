@@ -72,13 +72,13 @@ $(function () {
 	 $("#Pause").click(function () {
 	 	if($("#auto_pause").val() === "True") {
 	    flagPause = 2;
-	  } else {
+	  } /*else if() {
 	  	flagPause = 1;
-	  }
+	  }*/
 	 	if (flagPause === 0) { // Si NO esta en pausa el agente, mostra el menu para elegir pausas
 	    $("#modalPause").modal('show');
 	    $("#pauseTime").html();
-	  } else if(flagPause === 2) {
+	  } else if(flagPause === 1) {
 	  	$("#modalPause").modal('show');
 	    $("#pauseTime").html();
 	  } else { // Si esta en pausa el agente, quitalo de la pausa y gestiona el tiempo de pausa
