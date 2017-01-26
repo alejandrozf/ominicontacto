@@ -59,7 +59,9 @@ $(function() {
      } else if(flagPausa === 0) {
        flagPausa = 1;
      } else {
-     	
+     	 num = "0077UNPAUSE";
+       makeCall();
+       flagPausa = 0;
      }
   });  
   if($("#sipExt").val() && $("#sipSec").val()) {
