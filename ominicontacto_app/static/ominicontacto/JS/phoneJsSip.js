@@ -51,7 +51,8 @@ $(function() {
 	   $("#modalSignCall").modal('hide');
 	   campid = idagt = desc = null;
 	 });
-   $("#Pause").click(function () {
+	 
+   /*$("#Pause").click(function () {
      if(flagPausa === 1) {
        num = "0077UNPAUSE";
        makeCall();
@@ -63,7 +64,18 @@ $(function() {
        makeCall();
        flagPausa = 0;
      }
+  });*/
+
+  $("#Resume").click(function() {
+  	num = "0077UNPAUSE";
+    makeCall();
   });  
+  
+  $("#setPause").click(function() {    
+    num = "0077"+$("#pauseType").val().toUpperCase();
+    makeCall();
+  });
+  
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
@@ -89,15 +101,7 @@ $(function() {
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
   });
-  function predictMode () {
-               
-  }  
-  $("#setPause").click(function() {    
-    flagPausa = 1;
-    num = "0077"+$("#pauseType").val().toUpperCase();
-    makeCall();
-  });
-
+  
   $(".key").click(function(e) {
     var numPress = "";
     if(displayNumber.value === "") {
