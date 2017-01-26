@@ -79,8 +79,9 @@ $(function() {
     userAgent.unregister();
     userAgent.on('unregistered', function(e) {  // cuando se desregistra la entidad SIP
       setSipStatus("reddot.png", "  Unregistered", sipStatus);
-      $("#Pause").prop('disabled',false);
-    	$("#UserStatus").html("Online");
+      $("#Pause").prop('disabled',true);
+      $("#Resume").prop('disabled',true);
+    	$("#UserStatus").html("Offline");
     });
   });
   
@@ -123,7 +124,6 @@ $(function() {
       parar3();
       defaultCallState();
       
-      
  	    if(num.substring(4,0) == '0077') {
         reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
@@ -132,17 +132,20 @@ $(function() {
     		  makeCall();
     		  entrante = false;    			
     		  // cod que se repite en main.js.. se deberia mejorar esto
-    		  $("#Pause").prop('disabled',false); 
+    		  $("#Pause").prop('disabled',true); 
+    		  $("#Resume").prop('disabled',false);
     		  updateButton(modifyUserStat, "label label-danger", "ACW");
 	        parar1();
 	        inicio2();
         } else if (num.substring(4,0) != "0077") {// se evalua  en llamada saliente y modo manual
       	num = '';
       	$("#Pause").prop('disabled',false);
+      	$("#Resume").prop('disabled',true);
     	  $("#UserStatus").html("Online");
 				var callerOrCalled = "";       	
       	if(entrante) {
       		$("#Pause").prop('disabled',false);
+				  $("#Resume").prop('disabled',true);
      	    $("#UserStatus").html("Online");
       		callerOrCalled = fromUser;
       	} else {
@@ -336,6 +339,7 @@ $(function() {
         
         session_incoming.on('addstream',function(e) {       // al cerrar el canal de audio entre los peers
         	$("#Pause").prop('disabled',true);
+        	$("#Resume").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
           remote_stream = e.stream;
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
@@ -409,11 +413,9 @@ $(function() {
         if(num.substring(4,0) != "0077") {
         	
 	       	$("#Pause").prop('disabled',true);
+	       	$("#Resume").prop('disabled',true);
     	    $("#UserStatus").html("OnCall");
-        }/* else if(fromUser) {
-	       		$("#Pause").prop('disabled',true);
-    	      $("#UserStatus").html("OnCall");
-        	}*/
+        }
         inicio3();
       });
       

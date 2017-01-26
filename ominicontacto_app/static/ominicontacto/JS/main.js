@@ -13,6 +13,7 @@ var flagPause = 0;
 var control = control2 = control3 = '';
 var modifyUserStat = document.getElementById("UserStatus");
 $(function () {
+	$("#Resume").prop("disabled",true);
 	 /*$("#id_registrar").click(function () {
 	 	 $.ajax({
 	 	 	 type: "post",
@@ -60,15 +61,19 @@ $(function () {
 	 	 return lastval;
 	 }
 	 $("#setPause").click(function () {
-       $("#modalPause").modal('hide');
-       updateButton(modifyUserStat, "label label-danger", $("#pauseType").val());
-       parar1();
-       inicio2(); 
+	 	 $("#Pause").prop('disabled', true);
+	 	 $("#Resume").prop('disabled', false);
+     $("#modalPause").modal('hide');
+     updateButton(modifyUserStat, "label label-danger", $("#pauseType").val());
+     parar1();
+     inicio2(); 
    });
    $("#Resume").click(function () {
+   	  $("#Pause").prop('disabled', false);
+	 	  $("#Resume").prop('disabled', true);
   	  inicio1();
 	    parar2();
-	    updateButton(pauseButton, "btn btn-warning btn-sm", "Pause");
+	    //updateButton(pauseButton, "btn btn-warning btn-sm", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
 	    var containerTag = document.getElementById("timers");
 	    var pausas = document.getElementsByClassName("pausa");
