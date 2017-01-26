@@ -132,10 +132,8 @@ $(function() {
     		  makeCall();
     		  entrante = false;    			
     		  // cod que se repite en main.js.. se deberia mejorar esto
-    		  updateButton(pauseButton, "btn btn-danger", "Resume");
     		  $("#Pause").prop('disabled',false); 
     		  updateButton(modifyUserStat, "label label-warning", "ACW");
-	        flagPausa = 2;
 	        parar1();
 	        inicio2();
         } else if (num.substring(4,0) != "0077") {// se evalua  en llamada saliente y modo manual
