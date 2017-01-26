@@ -52,24 +52,10 @@ $(function() {
 	   campid = idagt = desc = null;
 	 });
 	 
-   /*$("#Pause").click(function () {
-     if(flagPausa === 1) {
-       num = "0077UNPAUSE";
-       makeCall();
-       flagPausa = 0;
-     } else if(flagPausa === 0) {
-       flagPausa = 1;
-     } else {
-     	 num = "0077UNPAUSE";
-       makeCall();
-       flagPausa = 0;
-     }
-  });*/
-
   $("#Resume").click(function() {
   	num = "0077UNPAUSE";
     makeCall();
-  });  
+  });
   
   $("#setPause").click(function() {    
     num = "0077"+$("#pauseType").val().toUpperCase();

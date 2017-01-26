@@ -60,7 +60,6 @@ $(function () {
 	 	 return lastval;
 	 }
 	 $("#setPause").click(function () {
-       updateButton(pauseButton, "btn btn-danger", "Resume");
        $("#modalPause").modal('hide');
        updateButton(modifyUserStat, "label label-warning", $("#pauseType").val());
        parar1();
