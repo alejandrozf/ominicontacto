@@ -165,6 +165,7 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         servicio_asterisk.insertar_cola_asterisk(self.object)
         campana_service = CampanaService()
         campana_service.crear_endpoint_campana_wombat(self.object)
+        campana_service.crear_endpoint_asociacion_campana_wombat(self.object)
         return super(QueueCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):

@@ -6,7 +6,8 @@ from ominicontacto_app.models import FormularioDemo, Campana
 from ominicontacto_app.utiles import elimina_coma
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
-    CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator
+    CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
+    CampanaEndPointCreator
 )
 
 import logging
@@ -102,3 +103,12 @@ class CampanaService():
             queue.guardar_ep_id_wombat(ep_id)
             return True
         return False
+
+    def crear_endpoint_asociacion_campana_wombat(self, queue):
+        service_wombat = WombatService()
+        service_wombat_config = CampanaEndPointCreator()
+        service_wombat_config.create_json(queue)
+        url_edit = "api/edit/campaign/ep/?mode=E&parent={0}".format(
+            queue.campana.campaign_id_wombat)
+        salida = service_wombat.update_config_wombat(
+            "newcampaign_ep.json", url_edit)

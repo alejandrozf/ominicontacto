@@ -175,6 +175,33 @@ class EndPointCreator(object):
         self._endpoint_config_file.write(config_chunk)
 
 
+class CampanaEndPointCreator(object):
+
+    def __init__(self):
+        self._campana_endpoint_config_file = CampanaEndPointConfigFile()
+
+    def _generar_json(self, queue):
+        """Genera json.
+        :returns: str -- json para la campana
+        """
+
+        dict_trunk = {
+            "epId": {
+                "epId": queue.ep_id_wombat
+            }
+        }
+
+        return json.dumps(dict_trunk)
+
+    def create_json(self, queue):
+        """Crea el archivo de json para endpoint de campana
+        """
+        logger.info("Creando json para asociacion campana %s endpoint",
+                    queue.campana.nombre)
+        config_chunk = self._generar_json(queue)
+        self._campana_endpoint_config_file.write(config_chunk)
+
+
 class ConfigFile(object):
     def __init__(self, filename):
         self._filename = filename
@@ -231,3 +258,11 @@ class EndPointConfigFile(ConfigFile):
                                 "newep.json")
         filename = filename.strip()
         super(EndPointConfigFile, self).__init__(filename)
+
+
+class CampanaEndPointConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "newcampaign_ep.json")
+        filename = filename.strip()
+        super(CampanaEndPointConfigFile, self).__init__(filename)
