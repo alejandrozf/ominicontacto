@@ -151,7 +151,7 @@ class EndPointCreator(object):
             },
             "idx": "",
             "campaignId": "",
-            "maxChannels": 10,
+            "maxChannels": queue.maxlen,
             "extension": "098098",
             "context": "from-wombat-general-contact",
             "boostFactor": 1,
