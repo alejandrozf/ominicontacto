@@ -68,7 +68,7 @@ $(function () {
    $("#Resume").click(function () {
   	  inicio1();
 	    parar2();
-	    updateButton(pauseButton, "btn btn-warning btn-xs", "Pause");
+	    updateButton(pauseButton, "btn btn-warning btn-sm", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
 	    var containerTag = document.getElementById("timers");
 	    var pausas = document.getElementsByClassName("pausa");
