@@ -261,16 +261,6 @@ urlpatterns = [
         login_required(views_campana_creacion.CampanaDeleteView.as_view()),
         name='campana_elimina',
         ),
-    url(r'^campana/(?P<pk_campana>\d+)/formulario/(?P<id_cliente>\d+)/$',
-        login_required(
-            views_campana_creacion.FormularioDemoFormUpdateView.as_view()),
-        name='formulario_update',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/formulario_nuevo/$',
-        login_required(
-            views_campana_creacion.FormularioDemoFormCreateView.as_view()),
-        name='formulario_nuevo',
-        ),
     url(r'^formulario/(?P<pk_campana>\d+)/update/(?P<id_cliente>\d+)/$',
         login_required(
             views_campana_creacion.ContactoFormularioUpdateView.as_view()),

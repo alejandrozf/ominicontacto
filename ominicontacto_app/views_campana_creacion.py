@@ -11,12 +11,12 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
-    FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm,
-    ReporteForm, CampanaUpdateForm
+    BusquedaContactoForm, ContactoForm, GrupoAgenteForm, ReporteForm,
+    CampanaUpdateForm
 )
 from ominicontacto_app.models import (
-    Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto,
-    Grupo, AgenteProfile
+    Campana, Queue, QueueMember, Contacto, BaseDatosContacto, Grupo,
+    AgenteProfile
 )
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -90,7 +90,6 @@ class CampanaCreateView(CreateView):
         self.object = form.save(commit=False)
         campana_service = CampanaService()
         self.object.save()
-        campana_service.crear_formulario(self.object)
         return super(CampanaCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -447,89 +446,6 @@ class CampanaDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('campana_list')
-
-
-class FormularioDemoFormUpdateView(UpdateView):
-    """
-    Esta vista actualiza un objeto formulario.
-    """
-
-    template_name = 'agente/formulario_create_update_form.html'
-    model = FormularioDemo
-    context_object_name = 'formulario_demo'
-    form_class = FormularioDemoForm
-
-    def get_context_data(self, **kwargs):
-        context = super(FormularioDemoFormUpdateView, self).get_context_data(
-            **kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
-                                        id_cliente=self.kwargs['id_cliente'])
-        context['contacto'] = contacto
-        return context
-
-    def get_object(self, queryset=None):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
-                                        id_cliente=self.kwargs['id_cliente'])
-        return FormularioDemo.objects.get(campana=campana, contacto=contacto)
-
-    def dispatch(self, *args, **kwargs):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        try:
-            Contacto.objects.get(bd_contacto=campana.bd_contacto,
-                                 id_cliente=self.kwargs['id_cliente'])
-        except Contacto.DoesNotExist:
-            return HttpResponseRedirect(reverse('formulario_buscar',
-                                                kwargs={"pk_campana":
-                                                self.kwargs['pk_campana']}))
-        except Contacto.MultipleObjectsReturned:
-            return HttpResponseRedirect(reverse('contacto_list_id_cliente',
-                                                kwargs={"id_cliente":
-                                                self.kwargs['id_cliente']}))
-        return super(FormularioDemoFormUpdateView, self).dispatch(*args,
-                                                                  **kwargs)
-
-    def get_success_url(self):
-        return reverse('formulario_update',
-                       kwargs={"pk_campana": self.kwargs['pk_campana'],
-                               "id_cliente": self.object.contacto.id_cliente})
-
-
-class FormularioDemoFormCreateView(CreateView):
-    """
-    Esta vista actualiza un objeto formulario.
-    """
-
-    template_name = 'agente/formulario_create_update_form.html'
-    model = FormularioDemo
-    context_object_name = 'formulario_demo'
-    form_class = FormularioDemoForm
-
-    def get_initial(self):
-        initial = super(FormularioDemoFormCreateView, self).get_initial()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        initial.update({'campana': campana.id})
-        return initial
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        contacto = Contacto.objects.create(id_cliente=self.object.id_cliente,
-                                           nombre=self.object.nombre,
-                                           apellido=self.object.apellido,
-                                           telefono=self.object.telefono,
-                                           email=self.object.email,
-                                           datos=self.object.datos,
-                                           bd_contacto=self.object.campana.
-                                           bd_contacto)
-        self.object.contacto = contacto
-        self.object.save()
-        return super(FormularioDemoFormCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse('formulario_update',
-                       kwargs={"pk_campana": self.kwargs['pk_campana'],
-                               "id_cliente": self.object.contacto.id_cliente})
 
 
 class ContactoFormularioUpdateView(UpdateView):

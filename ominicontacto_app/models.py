@@ -1359,26 +1359,6 @@ class Agenda(models.Model):
             self.fecha, self.hora)
 
 
-class FormularioDemo(models.Model):
-
-    campana = models.ForeignKey(Campana, related_name="formularios")
-    contacto = models.ForeignKey(Contacto, related_name="formulario_contacto")
-    extra_1 = models.TextField(blank=True, null=True)
-    extra_2 = models.CharField(max_length=128, blank=True, null=True)
-    extra_3 = models.CharField(max_length=128, blank=True, null=True)
-    extra_4 = models.TextField(blank=True, null=True)
-    extra_5 = models.CharField(max_length=128, blank=True, null=True)
-    extra_6 = models.CharField(max_length=128, blank=True, null=True)
-    extra_7 = models.CharField(max_length=128, blank=True, null=True)
-    extra_8 = models.CharField(max_length=128, blank=True, null=True)
-    extra_9 = models.CharField(max_length=128, blank=True, null=True)
-    extra_10 = models.CharField(max_length=128, blank=True, null=True)
-
-    def __unicode__(self):
-        return "Formulario demo para campana{0} para el contacto {1} ".format(
-            self.campana, self.contacto)
-
-
 class FormularioDatoVenta(models.Model):
     NIVEL_PRIMARIO_INCOMPLETO = 1
     """Nivel de estudio primario incompleto"""

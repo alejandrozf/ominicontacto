@@ -13,8 +13,8 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana, FormularioDemo, Contacto, FormularioDatoVenta, CalificacionCliente,
-    Grupo, Formulario, FieldFormulario
+    Campana, Contacto, FormularioDatoVenta, CalificacionCliente,Grupo,
+    Formulario, FieldFormulario
 )
 
 
@@ -304,19 +304,6 @@ class CampanaUpdateForm(forms.ModelForm):
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             #"fecha_inicio": forms.TextInput(attrs={'class': 'form-control'}),
             #"fecha_fin": forms.TextInput(attrs={'class': 'form-control'}),
-        }
-
-
-class FormularioDemoForm(forms.ModelForm):
-
-    class Meta:
-        model = FormularioDemo
-        fields = ('extra_1', 'extra_2', 'extra_3', 'extra_4', 'extra_5',
-                  'extra_6', 'extra_7', 'extra_8', 'extra_9', 'extra_10',
-                  'campana')
-        widgets = {
-            'campana': forms.HiddenInput(),
-            # 'contacto': forms.HiddenInput(),
         }
 
 
