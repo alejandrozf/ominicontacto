@@ -89,6 +89,7 @@ class CampanaDeleteView(DeleteView):
         return reverse('campana_list')
 
 
+# FIXME eliminar prontamente esta vista
 class ContactoFormularioUpdateView(UpdateView):
     model = Contacto
     template_name = 'agente/contacto_create_update_form.html'
