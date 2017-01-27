@@ -1,6 +1,6 @@
 //***************************************************
 //2001, 2002 (123456)
-var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId;
+var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 var KamailioIp = "172.16.20.14";
 
@@ -137,11 +137,17 @@ $(function() {
     		  updateButton(modifyUserStat, "label label-danger", "ACW");
 	        parar1();
 	        inicio2();
-        } else if (num.substring(4,0) != "0077") {// se evalua  en llamada saliente y modo manual
+        } else if (num.substring(4,0) != "0077") {// se evalua al finalizar una llamada saliente
       	num = '';
-      	$("#Pause").prop('disabled',false);
-      	$("#Resume").prop('disabled',true);
-    	  $("#UserStatus").html("Online");
+      	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {
+      		$("#Pause").prop('disabled',true);
+      	  $("#Resume").prop('disabled',false);
+      		$("#UserStatus").html(lastPause);
+      	} else {
+      		$("#Pause").prop('disabled',false);
+      	  $("#Resume").prop('disabled',true);
+      	  $("#UserStatus").html("Online");
+      	}
 				var callerOrCalled = "";       	
       	if(entrante) {
       		$("#Pause").prop('disabled',false);
@@ -340,6 +346,7 @@ $(function() {
         session_incoming.on('addstream',function(e) {       // al cerrar el canal de audio entre los peers
         	$("#Pause").prop('disabled',true);
         	$("#Resume").prop('disabled',true);
+        	lastPause = $("#UserStatus").html();
     	    $("#UserStatus").html("OnCall");
           remote_stream = e.stream;
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
@@ -414,6 +421,7 @@ $(function() {
         	
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
+	       	lastPause = $("#UserStatus").html(); 
     	    $("#UserStatus").html("OnCall");
         }
         inicio3();
