@@ -413,6 +413,12 @@ class Queue(models.Model):
         self.ep_id_wombat = ep_id_wombat
         self.save()
 
+    def es_dialer(self):
+        if self.type is self.TYPE_DIALER:
+            return True
+        else:
+            return False
+
     class Meta:
         db_table = 'queue_table'
 

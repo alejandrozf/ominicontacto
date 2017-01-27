@@ -12,7 +12,7 @@ from django.views.generic import (
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm,
     FormularioDemoForm, BusquedaContactoForm, ContactoForm, GrupoAgenteForm,
-    ReporteForm, CampanaUpdateForm
+    ReporteForm, CampanaUpdateForm, SincronizaDialerForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, FormularioDemo, Contacto, BaseDatosContacto,
@@ -737,3 +737,54 @@ class AgenteCampanaReporteGrafico(FormView):
                                                         fecha_hasta)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
+
+
+class SincronizaDialerView(FormView):
+    """
+    Esta vista sincroniza base datos con discador
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+    form_class = SincronizaDialerForm
+    template_name = 'base_create_update_form.html'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_form(self, form_class):
+        self.object = self.get_object()
+        metadata = self.object.bd_contacto.get_metadata()
+        columnas_telefono = metadata.columnas_con_telefono
+        nombres_de_columnas = metadata.nombres_de_columnas
+        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
+                       columnas_telefono if columna > 6]
+        return form_class(tts_choices=tts_choices, **self.get_form_kwargs())
+    #
+    # def dispatch(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     if not self.object.campanas.all():
+    #         message = ("Esta base de datos no tiene ninguna campaña ")
+    #         messages.warning(self.request, message)
+    #     return super(SincronizaDialerView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        usa_contestador = form.cleaned_data.get('usa_contestador')
+        evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
+        evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
+        prefijo_discador = form.cleaned_data.get('prefijo_discador')
+        telefonos = form.cleaned_data.get('telefonos')
+        self.object = self.get_object()
+
+        message = 'Operación Exitosa!\
+                Se llevó a cabo con éxito la exportación del reporte.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('campana_list')

@@ -489,3 +489,19 @@ class FormularioCRMForm(forms.Form):
                     choices=choices,
                     label=campo.nombre_campo, widget=forms.Select(
                         attrs={'class': 'form-control'}))
+
+
+class SincronizaDialerForm(forms.Form):
+    usa_contestador = forms.BooleanField(required=False)
+    evitar_duplicados = forms.BooleanField(required=False)
+    evitar_sin_telefono = forms.BooleanField(required=False)
+    prefijo_discador = forms.CharField(required=False)
+    telefonos = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=(),
+    )
+
+    def __init__(self, tts_choices, *args, **kwargs):
+        super(SincronizaDialerForm, self).__init__(*args, **kwargs)
+        self.fields['telefonos'].choices = tts_choices
