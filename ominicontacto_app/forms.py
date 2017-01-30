@@ -476,3 +476,30 @@ class FormularioCRMForm(forms.Form):
                     choices=choices,
                     label=campo.nombre_campo, widget=forms.Select(
                         attrs={'class': 'form-control'}))
+
+
+class FormularioNuevoContacto(forms.ModelForm):
+
+    def __init__(self, campos, *args, **kwargs):
+        super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
+        for campo in campos:
+            self.fields[campo] = forms.CharField(
+                label=campo, widget=forms.TextInput(
+                    attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Contacto
+        fields = ('telefono', 'id_cliente')
+        widgets = {
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+            'id_cliente': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+class FormularioCampanaContacto(forms.Form):
+    campana = forms.ChoiceField(
+        choices=(), widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, campana_choice, *args, **kwargs):
+        super(FormularioCampanaContacto, self).__init__(*args, **kwargs)
+        self.fields['campana'].choices = campana_choice

@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+import json
 import datetime
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -10,7 +11,8 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView)
 from ominicontacto_app.forms import (
-    BusquedaContactoForm, ContactoForm, ReporteForm,
+    BusquedaContactoForm, ContactoForm, ReporteForm, FormularioNuevoContacto,
+    FormularioCampanaContacto
 )
 from ominicontacto_app.models import (
     Campana, Queue, Contacto, AgenteProfile
@@ -289,3 +291,93 @@ class AgenteCampanaReporteGrafico(FormView):
                                                         fecha_hasta)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
+
+
+class FormularioSeleccionCampanaFormView(FormView):
+    form_class = FormularioCampanaContacto
+    template_name = 'agente/seleccion_campana_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated()\
+                and self.request.user.get_agente_profile():
+            agente = self.request.user.get_agente_profile()
+        if not agente.campana_member.all():
+            message = ("Este agente no esta asignado a ninguna campaña ")
+            messages.warning(self.request, message)
+        return super(FormularioSeleccionCampanaFormView,
+                     self).dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class):
+        if self.request.user.is_authenticated()\
+                and self.request.user.get_agente_profile():
+            agente = self.request.user.get_agente_profile()
+            campanas = [queue.queue_name.campana
+                        for queue in agente.campana_member.all()]
+
+        campana_choice = [(campana.id, campana.nombre) for campana in
+                          campanas]
+        return form_class(campana_choice=campana_choice,
+                          **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        campana = form.cleaned_data.get('campana')
+        return HttpResponseRedirect(
+            reverse('nuevo_contacto_campana',
+                    kwargs={"pk_campana": campana}))
+
+    def get_success_url(self):
+        reverse('view_blanco')
+
+
+class FormularioNuevoContactoFormView(FormView):
+    form_class = FormularioNuevoContacto
+    template_name = 'agente/nuevo_contacto_campana.html'
+
+    def get_form(self, form_class):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        base_datos = campana.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        return form_class(campos=campos, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        base_datos = campana.bd_contacto
+        metadata = base_datos.get_metadata()
+        nombres = metadata.nombres_de_columnas
+        telefono = form.cleaned_data.get('telefono')
+        id_cliente = form.cleaned_data.get('id_cliente')
+        contacto = Contacto.objects.filter(id_cliente=int(id_cliente),
+                                           bd_contacto=base_datos)
+        if contacto.count() > 0:
+            return self.form_invalid(form, id_cliente=id_cliente)
+        datos = []
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        contacto = Contacto.objects.create(
+            telefono=telefono, id_cliente=id_cliente, datos=json.dumps(datos),
+            bd_contacto=base_datos)
+        agente = self.request.user.get_agente_profile()
+        return HttpResponseRedirect(
+            reverse('calificacion_formulario_update',
+                    kwargs={"pk_campana": self.kwargs['pk_campana'],
+                            "id_cliente": contacto.id_cliente,
+                            "id_agente": agente.pk,
+                            "wombat_id": 0}))
+
+    def form_invalid(self, form, id_cliente=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                  ya existe un cliente con este id_cliente. {0}'.format(
+            id_cliente)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+        return self.render_to_response(self.get_context_data())
+
+    def get_success_url(self):
+        reverse('view_blanco')

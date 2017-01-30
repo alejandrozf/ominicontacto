@@ -291,6 +291,16 @@ urlpatterns = [
             views_campana.AgenteCampanaReporteGrafico.as_view()),
         name='reporte_agente_grafico',
         ),
+    url(r'^campana/selecciona/$',
+        login_required(
+            views_campana.FormularioSeleccionCampanaFormView.as_view()),
+        name='seleccion_campana',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
+        login_required(
+            views_campana.FormularioNuevoContactoFormView.as_view()),
+        name='nuevo_contacto_campana',
+        ),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
