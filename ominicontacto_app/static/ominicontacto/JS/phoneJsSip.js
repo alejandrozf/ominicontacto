@@ -60,7 +60,7 @@ $(function() {
   $("#setPause").click(function() {
   	var pausa = $("#pauseType").val().toUpperCase();
   	if(pausa.indexOf(' ')) {
-  		pausa = pausa.replace(' ','_');
+  		pausa = pausa.replace(' ','');
   	}
     num = "0077" + pausa;
     makeCall();
