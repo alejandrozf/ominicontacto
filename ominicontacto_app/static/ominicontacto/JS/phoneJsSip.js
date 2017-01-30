@@ -119,15 +119,30 @@ $(function() {
   });
 
   userAgent.on('newRTCSession', function(e) {       // cuando se crea una sesion RTC
+  
 	  var originHeader = "";
-    e.session.on("ended",function() {               // Cuando Finaliza la llamada
+	  
+    e.session.on("ended",function() {               // Cuando Finaliza la llamada      
+			var callerOrCalled = "";
+			       	
+      if(entrante) {
+      	$("#Pause").prop('disabled',false);
+				$("#Resume").prop('disabled',true);
+				$("#sipLogout").prop('disabled',true);
+				updateButton(modifyUserStat, "label label-success", "Online");
+      	callerOrCalled = fromUser;
+      } else {
+        callerOrCalled =  num;
+      }
+      saveCall(callerOrCalled);
       parar3();
       defaultCallState();
       
  	    if(num.substring(4,0) == '0077') {
         reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
-      if($("#auto_pause").val() === "True" && originHeader !== "") {
+      
+      if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
           num = "0077ACW";
     		  makeCall();
     		  entrante = false;    			
@@ -138,32 +153,27 @@ $(function() {
     		  updateButton(modifyUserStat, "label label-danger", "ACW");
 	        parar1();
 	        inicio2();
-        } else if (num.substring(4,0) != "0077") {// se evalua al finalizar una llamada saliente
-      	num = '';
-      	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {
-      		$("#Pause").prop('disabled',true);
-      	  $("#Resume").prop('disabled',false);
-      	  $("#sipLogout").prop('disabled',false);
-      	  updateButton(modifyUserStat, "label label-danger", lastPause);
-      	} else {
-      		$("#Pause").prop('disabled',false);
-      	  $("#Resume").prop('disabled',true);
-      	  $("#sipLogout").prop('disabled',true);
-      	  updateButton(modifyUserStat, "label label-success", "Online");
-      	}
-				var callerOrCalled = "";       	
-      	if(entrante) {
-      		$("#Pause").prop('disabled',false);
-				  $("#Resume").prop('disabled',true);
-				  $("#sipLogout").prop('disabled',true);
-				  updateButton(modifyUserStat, "label label-success", "Online");
-      		callerOrCalled = fromUser;
-      	} else {
-      		callerOrCalled =  num;
-      	}
-        saveCall(callerOrCalled);
-      }
-      
+        } else if (num.substring(4,0) != "0077") {//Si el nro es distinto de 0077ABC (se evalua al finalizar una llamada saliente)
+      	  num = '';
+      	  if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
+      		  if(lastPause != "Online") {
+      		  	$("#Pause").prop('disabled',true);
+      	      $("#Resume").prop('disabled',false);
+      	      $("#sipLogout").prop('disabled',false);
+      	    	updateButton(modifyUserStat, "label label-danger", lastPause);
+      	    } else {
+      	    	$("#Pause").prop('disabled',false);
+      	      $("#Resume").prop('disabled',true);
+      	      $("#sipLogout").prop('disabled',false);
+      	    	updateButton(modifyUserStat, "label label-primary", lastPause);
+      	    }
+      	  } else { 
+      		  $("#Pause").prop('disabled',false);
+      	    $("#Resume").prop('disabled',true);
+      	    $("#sipLogout").prop('disabled',true);
+      	    updateButton(modifyUserStat, "label label-success", "Online");
+      	  }
+        }   
     });
     function saveCall(callerOrCalled) {
     	$.ajax({
