@@ -31,7 +31,7 @@
         {% for contacto in listado_de_contacto %}
             <tr>
                 <td>{{ contacto.id_cliente }}</td>
-                <td>{{ contacto.nombre }}</td>
+                <td>{{ contacto.telefono }}</td>
                 <td><a href="{% url 'contacto_update' contacto.id_cliente %}" >
                     <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Modificar"></span></a>
                     <a href="" >

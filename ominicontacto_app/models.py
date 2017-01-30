@@ -1053,7 +1053,15 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "id_cliente"))
 
-    def contactos_by_filtro(self, bd_contacto, filtro):
+    def contactos_by_filtro(self, filtro):
+        try:
+            return self.filter(Q(telefono__contains=filtro) |
+                               Q(id_cliente__contains=filtro))
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "filtro"))
+
+    def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
         try:
             contactos = self.filter(Q(telefono__contains=filtro) |
                                     Q(id_cliente__contains=filtro))
