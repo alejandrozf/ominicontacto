@@ -347,7 +347,7 @@ $(function() {
         	$("#Pause").prop('disabled',true);
         	$("#Resume").prop('disabled',true);
         	lastPause = $("#UserStatus").html();
-        	updateButton(modifyUserStat, "label label-warning", "OnCall");
+        	updateButton(modifyUserStat, "label label-active", "OnCall");
           remote_stream = e.stream;
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
         });
@@ -422,7 +422,7 @@ $(function() {
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
-	       	updateButton(modifyUserStat, "label label-warning", "OnCall"); 
+	       	updateButton(modifyUserStat, "label label-active", "OnCall"); 
         }
         inicio3();
       });
