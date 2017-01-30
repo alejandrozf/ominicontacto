@@ -134,7 +134,6 @@ $(function() {
       } else {
         callerOrCalled =  num;
       }
-      saveCall(callerOrCalled);
       parar3();
       defaultCallState();
       
@@ -154,9 +153,10 @@ $(function() {
 	        parar1();
 	        inicio2();
         } else if (num.substring(4,0) != "0077") {//Si el nro es distinto de 0077ABC (se evalua al finalizar una llamada saliente)
-      	  num = '';
-      	  if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
+        	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
       		  if(lastPause != "Online") {
+      	    	saveCall(callerOrCalled);
+      	      num = '';
       		  	$("#Pause").prop('disabled',true);
       	      $("#Resume").prop('disabled',false);
       	      $("#sipLogout").prop('disabled',false);
@@ -165,9 +165,11 @@ $(function() {
       	    	$("#Pause").prop('disabled',false);
       	      $("#Resume").prop('disabled',true);
       	      $("#sipLogout").prop('disabled',false);
-      	    	updateButton(modifyUserStat, "label label-primary", lastPause);
+      	    	updateButton(modifyUserStat, "label label-success", lastPause);
       	    }
-      	  } else { 
+      	  } else {
+      	  	saveCall(callerOrCalled);
+      	    num = '';
       		  $("#Pause").prop('disabled',false);
       	    $("#Resume").prop('disabled',true);
       	    $("#sipLogout").prop('disabled',true);
