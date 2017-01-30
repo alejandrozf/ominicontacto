@@ -81,7 +81,7 @@ $(function() {
       setSipStatus("reddot.png", "  Unregistered", sipStatus);
       $("#Pause").prop('disabled',true);
       $("#Resume").prop('disabled',true);
-    	$("#UserStatus").html("Offline");
+      updateButton(modifyUserStat, "label label-default", "Offline");
     });
   });
   
@@ -103,7 +103,7 @@ $(function() {
     //Connects to the WebSocket server
     userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
   	setSipStatus("greydot.png", "  No account", sipStatus);
-  	$("#UserStatus").html("Online");
+  	updateButton(modifyUserStat, "label label-success", "Online");
     num = "0077LOGIN";
     makeCall();
     $("#sendMessage").prop('disabled', false);
@@ -142,17 +142,17 @@ $(function() {
       	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {
       		$("#Pause").prop('disabled',true);
       	  $("#Resume").prop('disabled',false);
-      		$("#UserStatus").html(lastPause);
+      	  updateButton(modifyUserStat, "label label-danger", lastPause);
       	} else {
       		$("#Pause").prop('disabled',false);
       	  $("#Resume").prop('disabled',true);
-      	  $("#UserStatus").html("Online");
+      	  updateButton(modifyUserStat, "label label-success", "Online");
       	}
 				var callerOrCalled = "";       	
       	if(entrante) {
       		$("#Pause").prop('disabled',false);
 				  $("#Resume").prop('disabled',true);
-     	    $("#UserStatus").html("Online");
+				  updateButton(modifyUserStat, "label label-success", "Online");
       		callerOrCalled = fromUser;
       	} else {
       		callerOrCalled =  num;
@@ -347,7 +347,7 @@ $(function() {
         	$("#Pause").prop('disabled',true);
         	$("#Resume").prop('disabled',true);
         	lastPause = $("#UserStatus").html();
-    	    $("#UserStatus").html("OnCall");
+        	updateButton(modifyUserStat, "label label-warning", "OnCall");
           remote_stream = e.stream;
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
         });
@@ -421,8 +421,8 @@ $(function() {
         	
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
-	       	lastPause = $("#UserStatus").html(); 
-    	    $("#UserStatus").html("OnCall");
+	       	lastPause = $("#UserStatus").html();
+	       	updateButton(modifyUserStat, "label label-warning", "OnCall"); 
         }
         inicio3();
       });
