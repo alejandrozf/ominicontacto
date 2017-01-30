@@ -5,7 +5,7 @@ from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_weelo, views_calificacion, views_formulario,
-    views_agente, views_calificacion_formulario
+    views_agente, views_calificacion_formulario, views_campana
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -254,52 +254,52 @@ urlpatterns = [
         name='queuemember_elimina',
         ),
     url(r'campana/list/$',
-        login_required(views_campana_creacion.CampanaListView.as_view()),
+        login_required(views_campana.CampanaListView.as_view()),
         name='campana_list',
         ),
     url(r'^campana/elimina/(?P<pk_campana>\d+)/$',
-        login_required(views_campana_creacion.CampanaDeleteView.as_view()),
+        login_required(views_campana.CampanaDeleteView.as_view()),
         name='campana_elimina',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/formulario/(?P<id_cliente>\d+)/$',
-        login_required(
-            views_campana_creacion.FormularioDemoFormUpdateView.as_view()),
-        name='formulario_update',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/formulario_nuevo/$',
-        login_required(
-            views_campana_creacion.FormularioDemoFormCreateView.as_view()),
-        name='formulario_nuevo',
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/update/(?P<id_cliente>\d+)/$',
         login_required(
-            views_campana_creacion.ContactoFormularioUpdateView.as_view()),
+            views_campana.ContactoFormularioUpdateView.as_view()),
         name='formulario_update_contacto',
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/buscar/$',
         login_required(
-            views_campana_creacion.BusquedaFormularioFormView.as_view()),
+            views_campana.BusquedaFormularioFormView.as_view()),
         name='formulario_buscar',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/exporta/$',
         login_required(
-            views_campana_creacion.ExportaReporteCampanaView.as_view()),
+            views_campana.ExportaReporteCampanaView.as_view()),
         name='exporta_campana_reporte',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/reporte/$',
         login_required(
-            views_campana_creacion.CampanaReporteListView.as_view()),
+            views_campana.CampanaReporteListView.as_view()),
         name='reporte_campana',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/reporte_grafico/$',
         login_required(
-            views_campana_creacion.CampanaReporteGrafico.as_view()),
+            views_campana.CampanaReporteGrafico.as_view()),
         name='reporte_campana_grafico',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/reporte_grafico/(?P<pk_agente>\d+)/agente/$',
         login_required(
-            views_campana_creacion.AgenteCampanaReporteGrafico.as_view()),
+            views_campana.AgenteCampanaReporteGrafico.as_view()),
         name='reporte_agente_grafico',
+        ),
+    url(r'^campana/selecciona/$',
+        login_required(
+            views_campana.FormularioSeleccionCampanaFormView.as_view()),
+        name='seleccion_campana',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
+        login_required(
+            views_campana.FormularioNuevoContactoFormView.as_view()),
+        name='nuevo_contacto_campana',
         ),
     # ==========================================================================
     # Formulario Weelo
@@ -322,7 +322,7 @@ urlpatterns = [
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/exporta/$',
         login_required(
-            views_campana_creacion.ExportaReporteFormularioVentaView.as_view()),
+            views_campana.ExportaReporteFormularioVentaView.as_view()),
         name='exporta_formulario_reporte',
         ),
     url(r'^agente/(?P<pk_agente>\d+)/reporte/$',
