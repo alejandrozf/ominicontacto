@@ -134,6 +134,7 @@ $(function() {
     		  // cod que se repite en main.js.. se deberia mejorar esto
     		  $("#Pause").prop('disabled',true); 
     		  $("#Resume").prop('disabled',false);
+    		  $("#sipLogout").prop('disabled',false);
     		  updateButton(modifyUserStat, "label label-danger", "ACW");
 	        parar1();
 	        inicio2();
@@ -142,18 +143,19 @@ $(function() {
       	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {
       		$("#Pause").prop('disabled',true);
       	  $("#Resume").prop('disabled',false);
+      	  $("#sipLogout").prop('disabled',false);
       	  updateButton(modifyUserStat, "label label-danger", lastPause);
       	} else {
       		$("#Pause").prop('disabled',false);
       	  $("#Resume").prop('disabled',true);
-      	  $("#sipLogout").prop('disabled',false);
+      	  $("#sipLogout").prop('disabled',true);
       	  updateButton(modifyUserStat, "label label-success", "Online");
       	}
 				var callerOrCalled = "";       	
       	if(entrante) {
       		$("#Pause").prop('disabled',false);
 				  $("#Resume").prop('disabled',true);
-				  $("#sipLogout").prop('disabled',false);
+				  $("#sipLogout").prop('disabled',true);
 				  updateButton(modifyUserStat, "label label-success", "Online");
       		callerOrCalled = fromUser;
       	} else {
