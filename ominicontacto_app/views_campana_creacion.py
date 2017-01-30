@@ -363,7 +363,7 @@ class QueueUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
     def get_success_url(self):
         return reverse(
-            'queue_member',
+            'queue_member_campana',
             kwargs={"pk_campana": self.campana.pk})
 
 
