@@ -146,12 +146,14 @@ $(function() {
       	} else {
       		$("#Pause").prop('disabled',false);
       	  $("#Resume").prop('disabled',true);
+      	  $("#sipLogout").prop('disabled',false);
       	  updateButton(modifyUserStat, "label label-success", "Online");
       	}
 				var callerOrCalled = "";       	
       	if(entrante) {
       		$("#Pause").prop('disabled',false);
 				  $("#Resume").prop('disabled',true);
+				  $("#sipLogout").prop('disabled',false);
 				  updateButton(modifyUserStat, "label label-success", "Online");
       		callerOrCalled = fromUser;
       	} else {
@@ -346,6 +348,7 @@ $(function() {
         session_incoming.on('addstream',function(e) {       // al cerrar el canal de audio entre los peers
         	$("#Pause").prop('disabled',true);
         	$("#Resume").prop('disabled',true);
+        	$("#sipLogout").prop('disabled',true);
         	lastPause = $("#UserStatus").html();
         	updateButton(modifyUserStat, "label label-primary", "OnCall");
           remote_stream = e.stream;
@@ -421,6 +424,7 @@ $(function() {
         	
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
+	       	$("#sipLogout").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall"); 
         }
