@@ -59,7 +59,7 @@ $(function() {
   
   $("#setPause").click(function() {
   	var pausa = $("#pauseType").val().toUpperCase();
-  	if(pausa.indexOf(' ') {
+  	if(pausa.indexOf(' ')) {
   		pausa = pausa.replace(' ','_');
   	}
     num = "0077" + pausa;
