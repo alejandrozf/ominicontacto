@@ -232,7 +232,6 @@ class FormularioCreateFormView(FormView):
         mas_datos = []
         for nombre, dato in zip(nombres, datos):
             mas_datos.append((nombre, dato))
-        print mas_datos
         context['contacto'] = contacto
         context['mas_datos'] = mas_datos
 
