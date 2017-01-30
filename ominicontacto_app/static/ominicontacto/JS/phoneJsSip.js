@@ -123,7 +123,7 @@ $(function() {
 	  var originHeader = "";
 	  
     e.session.on("ended",function() {               // Cuando Finaliza la llamada      
-			var callerOrCalled = "";
+      var callerOrCalled = "";
 			       	
       if(entrante) {
       	$("#Pause").prop('disabled',false);
@@ -170,10 +170,17 @@ $(function() {
       	  } else {
       	  	saveCall(callerOrCalled);
       	    num = '';
-      		  $("#Pause").prop('disabled',false);
-      	    $("#Resume").prop('disabled',true);
-      	    $("#sipLogout").prop('disabled',true);
-      	    updateButton(modifyUserStat, "label label-success", "Online");
+      	    if(lastPause != "Online") {
+      	    	$("#Resume").prop('disabled',false);
+      	      $("#sipLogout").prop('disabled',false);
+      	    	$("#Pause").prop('disabled',true);
+      	      updateButton(modifyUserStat, "label label-success", lastPause);
+      	    } else {
+      	    	$("#Resume").prop('disabled',true);
+      	      $("#sipLogout").prop('disabled',false);
+      	    	$("#Pause").prop('disabled',false);
+      	    	updateButton(modifyUserStat, "label label-success", "Online");
+      	    }
       	  }
         }   
     });
