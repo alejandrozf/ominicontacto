@@ -183,6 +183,7 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         return """
 
         [{oml_queue_name}]
+        announce=beep
         announce-frequency=0
         announce-holdtime=no
         announce-position=no
@@ -206,7 +207,6 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         setqueuevar=yes
         updatecdr=yes
         shared_lastcall=yes
-        memberdelay=1
         strategy={oml_strategy}
         timeout={oml_timeout}
         servicelevel={oml_servicelevel}
