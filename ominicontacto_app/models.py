@@ -1544,6 +1544,7 @@ class CalificacionCliente(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
     observaciones = models.TextField(blank=True, null=True)
+    wombat_id = models.IntegerField()
 
     def __unicode__(self):
         return "Califiacion para la campana{0} para el contacto " \

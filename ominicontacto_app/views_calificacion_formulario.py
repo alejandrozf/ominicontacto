@@ -79,12 +79,14 @@ class CalificacionClienteCreateView(CreateView):
                                ])
         if calificacion is None:
             self.object.es_venta = True
+            self.object.wombat_id = int(self.kwargs['wombat_id'])
             self.object.save()
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
             return redirect(self.get_success_url())
         else:
             self.object.es_venta = False
+            self.object.wombat_id = int(self.kwargs['wombat_id'])
             self.object.save()
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'],
@@ -384,16 +386,16 @@ class CalificacionUpdateView(UpdateView):
         if calificacion is None:
             self.object.es_venta = True
             self.object.save()
-            #r = requests.post(
-             #   url_wombat.format(self.kwargs['wombat_id'], "venta"))
+            r = requests.post(
+                url_wombat.format(self.get_object().wombat_id, "venta"))
             return redirect(self.get_success_url())
 
         else:
             self.object.es_venta = False
             self.object.save()
-            #r = requests.post(
-             #   url_wombat.format(self.kwargs['wombat_id'],
-              #                    self.object.calificacion.nombre))
+            r = requests.post(
+                url_wombat.format(self.get_object().wombat_id,
+                                  self.object.calificacion.nombre))
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
