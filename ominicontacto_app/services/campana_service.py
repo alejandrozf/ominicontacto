@@ -15,7 +15,6 @@ import logging
 
 class CampanaService():
 
-
     def validar_modificacion_bd_contacto(self, campana, base_datos_modificar):
         error = None
         base_datos_actual = campana.bd_contacto
@@ -108,3 +107,9 @@ class CampanaService():
             queue.campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "newcampaign_ep.json", url_edit)
+
+    def crear_lista_wombat(self, lista, campana):
+        service_wombat = WombatService()
+        url_edit = "api/lists/?op=addToList&list={0}".format(
+            campana.nombre)
+        salida = service_wombat.update_lista_wombat(lista, url_edit)

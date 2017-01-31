@@ -165,7 +165,7 @@ class SincronizarBaseDatosContactosService(object):
     def escribir_lista(self, contactos, metadata, campana, telefonos,
                              usa_contestador, prefijo_discador):
 
-            lista_contactos = ""
+            lista_contactos = "numbers="
             for contacto in contactos:
                 dato_contacto = ""
 

@@ -20,6 +20,8 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.exportar_base_datos import\
+    SincronizarBaseDatosContactosService
 
 
 import logging as logging_
@@ -408,13 +410,6 @@ class SincronizaDialerView(FormView):
         tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
                        columnas_telefono if columna > 6]
         return form_class(tts_choices=tts_choices, **self.get_form_kwargs())
-    #
-    # def dispatch(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if not self.object.campanas.all():
-    #         message = ("Esta base de datos no tiene ninguna campaña ")
-    #         messages.warning(self.request, message)
-    #     return super(SincronizaDialerView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         usa_contestador = form.cleaned_data.get('usa_contestador')
@@ -423,7 +418,12 @@ class SincronizaDialerView(FormView):
         prefijo_discador = form.cleaned_data.get('prefijo_discador')
         telefonos = form.cleaned_data.get('telefonos')
         self.object = self.get_object()
-
+        service_base = SincronizarBaseDatosContactosService()
+        lista = service_base.crear_lista(self.object, telefonos,
+                                         usa_contestador, evitar_duplicados,
+                                         evitar_sin_telefono, prefijo_discador)
+        campana_service = CampanaService()
+        campana_service.crear_lista_wombat(lista, self.object)
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito la exportación del reporte.'
 
@@ -432,6 +432,7 @@ class SincronizaDialerView(FormView):
             messages.SUCCESS,
             message,
         )
+
         return redirect(self.get_success_url())
 
     def get_success_url(self):

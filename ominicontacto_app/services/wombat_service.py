@@ -41,3 +41,29 @@ class WombatService():
             logger.warn("Exit status erroneo: %s", e.returncode)
             logger.warn(" - Comando ejecutado: %s", e.cmd)
             print e
+
+    def update_lista_wombat(self, lista, url_edit):
+        """Realiza un update en la config de wombat
+
+        :returns: int -- exit status de proceso ejecutado.
+                  0 (cero) si fue exitoso, otro valor si se produjo
+                  un error
+        """
+        stdout_file = tempfile.TemporaryFile()
+        stderr_file = tempfile.TemporaryFile()
+
+        try:
+            #subprocess.check_call(settings.FTS_RELOAD_CMD,
+            #                      stdout=stdout_file, stderr=stderr_file)
+            out = subprocess.check_output(['curl', '--user',
+                                    ':'.join([settings.OML_WOMBAT_USER,
+                                              settings.OML_WOMBAT_PASSWORD]),
+                                     '-m', '30', '-X', 'POST', '-w', 'string',
+                                     '-d',  lista,
+                                    '/'.join([settings.OML_WOMBAT_URL,
+                                             url_edit])])
+            return out
+        except subprocess.CalledProcessError, e:
+            logger.warn("Exit status erroneo: %s", e.returncode)
+            logger.warn(" - Comando ejecutado: %s", e.cmd)
+            print e
