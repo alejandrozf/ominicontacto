@@ -183,6 +183,7 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         return """
 
         [{oml_queue_name}]
+        announce=beep
         announce-frequency=0
         announce-holdtime=no
         announce-position=no
@@ -206,7 +207,6 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         setqueuevar=yes
         updatecdr=yes
         shared_lastcall=yes
-        memberdelay=1
         strategy={oml_strategy}
         timeout={oml_timeout}
         servicelevel={oml_servicelevel}
@@ -247,7 +247,7 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         notifyringing=yes
         callevents=yes
         callcounter=yes
-        callerid='{oml_agente_name}' <{oml_agente_sip}>
+        callerid={oml_agente_name} <{oml_agente_sip}>
         secret=
         deny=0.0.0.0/0.0.0.0
         permit={oml_kamailio_ip}

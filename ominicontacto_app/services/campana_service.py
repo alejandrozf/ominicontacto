@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from ominicontacto_app.models import FormularioDemo, Campana
+from ominicontacto_app.models import Campana
 from ominicontacto_app.utiles import elimina_coma
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
@@ -15,10 +15,6 @@ import logging
 
 class CampanaService():
 
-    def crear_formulario(self, campana):
-        assert isinstance(campana, Campana)
-        for contacto in campana.bd_contacto.contactos.all():
-            FormularioDemo.objects.create(campana=campana, contacto=contacto)
 
     def validar_modificacion_bd_contacto(self, campana, base_datos_modificar):
         error = None

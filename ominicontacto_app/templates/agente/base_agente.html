@@ -369,8 +369,9 @@
 		                        Contactos <span class="caret"></span>
 		                    </a>
 		                    <ul class="dropdown-menu" role="menu">
+		                        <li id="wombatId"></li>
 		                        <li>
-		                            <a href="{% url 'contacto_nuevo' %}" target="crm">Nuevo contacto</a>
+		                            <a href="{% url 'seleccion_campana' %}" target="crm">Nuevo contacto</a>
 		                        </li>
 		                        <li>
 		                            <a href="{% url 'contacto_list' 1 %}" target="crm">Lista de contactos</a>
@@ -394,7 +395,7 @@
   <div class="row">
     <div class="toolbar">
       <div class="form-horizontal">
-      <div class="col-md-9">
+      <div class="col-md-8">
         <h5 id="timers">
           <span id="operationTime" class="label label-default">
             Operacion
@@ -410,11 +411,12 @@
           </span>
         </h5>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <label class="barInfo">&nbsp;Estado</label>
         <span class="label label-success" id="UserStatus"></span>
-        <button type="button" id="Pause" class="btn btn-warning btn-sm">Pause</button>
-        <button type="button" id="sipLogout" class="btn btn-info btn-sm">End Session</button>
+        <button type="button" id="Pause" class="btn btn-warning btn-sm">Pausar</button>
+        <button type="button" id="Resume" class="btn btn-success btn-sm">Salir Pausa</button>
+        <button type="button" id="sipLogout" class="btn btn-info btn-sm">Fin Sesion</button>
       </div>
         <input type="hidden" value="{{ user.get_agente_profile.id }}" id="idagt"/>
         <input type="hidden" value="{{ user.get_agente_profile.sip_extension }}" id="sipExt"/>

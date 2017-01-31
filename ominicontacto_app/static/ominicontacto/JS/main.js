@@ -9,10 +9,11 @@ var minutosP = 0;
 var centesimasT = 0;
 var segundosT = 0;
 var minutosT = 0;
-var flagPause = false;
+var flagPause = 0;
 var control = control2 = control3 = '';
 var modifyUserStat = document.getElementById("UserStatus");
 $(function () {
+	$("#Resume").prop("disabled",true);
 	 /*$("#id_registrar").click(function () {
 	 	 $.ajax({
 	 	 	 type: "post",
@@ -59,122 +60,117 @@ $(function () {
 	 	 btn.innerHTML = inht;
 	 	 return lastval;
 	 }
-	 $("#Pause").click(function () {
-	 	if($("#auto_pause").val() === "True") {
-	    flagPause = true;
-	  }
-	 	if (flagPause === false) { // Si NO esta en pausa el agente, mostra el menu para elegir pausas
-	    $("#modalPause").modal('show');
-	    $("#pauseTime").html();
-	  } else { // Si esta en pausa el agente, quitalo de la pausa y gestiona el tiempo de pausa
-	    flagPause = false;
+	 $("#setPause").click(function () {
+	 	 $("#Pause").prop('disabled', true);
+	 	 $("#Resume").prop('disabled', false);
+     $("#modalPause").modal('hide');
+     updateButton(modifyUserStat, "label label-danger", $("#pauseType").val());
+     parar1();
+     inicio2(); 
+   });
+   $("#Resume").click(function () {
+   	  $("#Pause").prop('disabled', false);
+	 	  $("#Resume").prop('disabled', true);
   	  inicio1();
 	    parar2();
-	    updateButton(pauseButton, "btn btn-warning", "Pause");
+	    //updateButton(pauseButton, "btn btn-warning btn-sm", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
 	    var containerTag = document.getElementById("timers");
 	    var pausas = document.getElementsByClassName("pausa");
 	    if (pausas.length) { // Si ya existe pausa, ver si se repite
-	             var arrPausas = [];
-	             for (var i = 0; i < pausas.length; i++) {
-	                 arrPausas[i] = pausas[i].id;
-	             }
-	             var found = arrPausas.indexOf(lastPause);
-	             if (found != -1) { // Si se repite, suma los tiempos
-	                 horaToSum = $("#horaP").html();
-	                 minsToSum = $("#minsP").html().replace(":", "");
-	                 segsToSum = $("#segsP").html().replace(":", "");
-	                 horap = document.getElementById("hora" + lastPause);
-	                 minsp = document.getElementById("mins" + lastPause);
-	                 segsp = document.getElementById("segs" + lastPause);
-	                 horap = horap.innerHTML;
-	                 minsp = minsp.innerHTML.replace(":", "");
-	                 segsp = segsp.innerHTML.replace(":", "");
-	                 horap = Number(horap) + Number(horaToSum);
-	                 minsp = Number(minsp) + Number(minsToSum);
-	                 segsp = Number(segsp) + Number(segsToSum);
-	                 if (horap < 10) {
-	                     horap = String(horap) + "0";
-	                 }
-	                 if (minsp < 10) {
-	                     minsp = ":0" + String(minsp);
-	                 } else {
-	                     minsp = ":" + String(minsp);
-	                 }
-	                 if (segsp < 10) {
-	                     segsp = ":0" + String(segsp);
-	                 } else {
-	                     segsp = ":" + String(segsp);
-	                 }
-	                 document.getElementById("hora" + lastPause).innerHTML = horap;
-	                 document.getElementById("mins" + lastPause).innerHTML = minsp;
-	                 document.getElementById("segs" + lastPause).innerHTML = segsp;
-	                 lastPause = "";
-	             } else { //si NO se repite, crea un marcador nuevo siempre y cndo no sea el estado = Online
-	             	 if(lastPause != "Online") {
-	             	   var descTxtContainerTag = document.createTextNode(lastPause + " ");
-	             		 var ContainerSegs = document.createTextNode($("#segsP").html());
-				           var ContainerMins = document.createTextNode($("#minsP").html());
-	    			       var ContainerHora = document.createTextNode($("#horaP").html());
-	          			 var labelSegs = document.createElement("label");
-				           var labelMins = document.createElement("label");
-				           var labelHora = document.createElement("label");
-	                 var statusTag = document.createElement("span");
-				           labelSegs.id = "segs" + lastPause;
-	             		 labelMins.id = "mins" + lastPause;
-	                 labelHora.id = "hora" + lastPause;
-	                 labelSegs.appendChild(ContainerSegs);
-	                 labelMins.appendChild(ContainerMins);
-	                 labelHora.appendChild(ContainerHora);
-	                 statusTag.id = lastPause;
-	                 statusTag.className = "label label-default pausa";
-	                 statusTag.appendChild(descTxtContainerTag);
-	                 statusTag.appendChild(labelHora);
-	                 statusTag.appendChild(labelMins);
-	                 statusTag.appendChild(labelSegs);
-	                 containerTag.innerHTML += "&nbsp;";
-	                 containerTag.appendChild(statusTag);
-	               }
-	             }
-	           } else { //Si NO existe pausa, creala siempre y cuando no sea el statusAgente = ONLINE
-	             if(lastPause != "Online") {
-	             var descTxtContainerTag = document.createTextNode(lastPause + " ");
-	             var ContainerSegs = document.createTextNode($("#segsP").html());
-	             var ContainerMins = document.createTextNode($("#minsP").html());
-	             var ContainerHora = document.createTextNode($("#horaP").html());
-	             var labelSegs = document.createElement("label");
-	             var labelMins = document.createElement("label");
-	             var labelHora = document.createElement("label");
-	             var statusTag = document.createElement("span");
-	             labelSegs.id = "segs" + lastPause;
-	             labelMins.id = "mins" + lastPause;
-	             labelHora.id = "hora" + lastPause;
-	             labelSegs.appendChild(ContainerSegs);
-	             labelMins.appendChild(ContainerMins);
-	             labelHora.appendChild(ContainerHora);
-	             statusTag.id = lastPause;
-	             statusTag.className = "label label-default pausa";
-	             statusTag.appendChild(descTxtContainerTag);
-	             statusTag.appendChild(labelHora);
-	             statusTag.appendChild(labelMins);
-	             statusTag.appendChild(labelSegs);
-	             containerTag.innerHTML += "&nbsp;";
-	             containerTag.appendChild(statusTag);
-	           }
-	         }
-	         reinicio($("#horaP"), $("#minsP"), $("#segsP"));
-	   }
-	 	 
-	 });
-	 $("#setPause").click(function () {
-	     if (flagPause === false) {
-	     	   updateButton(pauseButton, "btn btn-danger", "Resume");
-	         $("#modalPause").modal('hide');
-	         updateButton(modifyUserStat, "label label-warning", $("#pauseType").val());
-	         flagPause = true;
-	         parar1();
-	         inicio2();
-	     } 
+	      var arrPausas = [];
+	      for (var i = 0; i < pausas.length; i++) {
+	        arrPausas[i] = pausas[i].id;
+	      }
+	      var found = arrPausas.indexOf(lastPause);
+	        if (found != -1) { // Si se repite, suma los tiempos
+	          horaToSum = $("#horaP").html();
+	          minsToSum = $("#minsP").html().replace(":", "");
+	          segsToSum = $("#segsP").html().replace(":", "");
+	          horap = document.getElementById("hora" + lastPause);
+	          minsp = document.getElementById("mins" + lastPause);
+	          segsp = document.getElementById("segs" + lastPause);
+	          horap = horap.innerHTML;
+	          minsp = minsp.innerHTML.replace(":", "");
+	          segsp = segsp.innerHTML.replace(":", "");
+	          horap = Number(horap) + Number(horaToSum);
+	          minsp = Number(minsp) + Number(minsToSum);
+	          segsp = Number(segsp) + Number(segsToSum);
+	          if (horap < 10) {
+	            horap = String(horap) + "0";
+	          }
+	          if (minsp < 10) {
+	            minsp = ":0" + String(minsp);
+	          } else {
+	            minsp = ":" + String(minsp);
+	          }
+	          if (segsp < 10) {
+	            segsp = ":0" + String(segsp);
+	          } else {
+	            segsp = ":" + String(segsp);
+	          }
+	          document.getElementById("hora" + lastPause).innerHTML = horap;
+	          document.getElementById("mins" + lastPause).innerHTML = minsp;
+	          document.getElementById("segs" + lastPause).innerHTML = segsp;
+	          lastPause = "";
+	        } else { //si NO se repite, crea un marcador nuevo siempre y cndo no sea el estado = Online
+	          if(lastPause != "Online") {
+	            var descTxtContainerTag = document.createTextNode(lastPause + " ");
+	            var ContainerSegs = document.createTextNode($("#segsP").html());
+				      var ContainerMins = document.createTextNode($("#minsP").html());
+	    			  var ContainerHora = document.createTextNode($("#horaP").html());
+	          	var labelSegs = document.createElement("label");
+				      var labelMins = document.createElement("label");
+				      var labelHora = document.createElement("label");
+	            var statusTag = document.createElement("span");
+				      labelSegs.id = "segs" + lastPause;
+	            labelMins.id = "mins" + lastPause;
+	            labelHora.id = "hora" + lastPause;
+	            labelSegs.appendChild(ContainerSegs);
+	            labelMins.appendChild(ContainerMins);
+	            labelHora.appendChild(ContainerHora);
+	            statusTag.id = lastPause;
+	            statusTag.className = "label label-default pausa";
+	            statusTag.appendChild(descTxtContainerTag);
+	            statusTag.appendChild(labelHora);
+	            statusTag.appendChild(labelMins);
+	            statusTag.appendChild(labelSegs);
+	            containerTag.innerHTML += "&nbsp;";
+	            containerTag.appendChild(statusTag);
+	          }
+	        }
+	      } else { //Si NO existe pausa, creala siempre y cuando no sea el statusAgente = ONLINE
+	        if(lastPause != "Online") {
+	          var descTxtContainerTag = document.createTextNode(lastPause + " ");
+	          var ContainerSegs = document.createTextNode($("#segsP").html());
+	          var ContainerMins = document.createTextNode($("#minsP").html());
+	          var ContainerHora = document.createTextNode($("#horaP").html());
+	          var labelSegs = document.createElement("label");
+	          var labelMins = document.createElement("label");
+	          var labelHora = document.createElement("label");
+	          var statusTag = document.createElement("span");
+	          labelSegs.id = "segs" + lastPause;
+	          labelMins.id = "mins" + lastPause;
+	          labelHora.id = "hora" + lastPause;
+	          labelSegs.appendChild(ContainerSegs);
+	          labelMins.appendChild(ContainerMins);
+	          labelHora.appendChild(ContainerHora);
+	          statusTag.id = lastPause;
+	          statusTag.className = "label label-default pausa";
+	          statusTag.appendChild(descTxtContainerTag);
+	          statusTag.appendChild(labelHora);
+	          statusTag.appendChild(labelMins);
+	          statusTag.appendChild(labelSegs);
+	          containerTag.innerHTML += "&nbsp;";
+	          containerTag.appendChild(statusTag);
+	        }
+	      }
+	      reinicio($("#horaP"), $("#minsP"), $("#segsP"));
+	  });
+	 	
+	 $("#Pause").click(function () {
+	 	$("#modalPause").modal('show');
+	  $("#pauseTime").html();
 	 });
 	 $("#onHold").click(function (){
 	 	 if(holdFlag === false) {
