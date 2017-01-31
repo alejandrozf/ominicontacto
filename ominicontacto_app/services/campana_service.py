@@ -7,7 +7,7 @@ from ominicontacto_app.utiles import elimina_coma
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
-    CampanaEndPointCreator
+    CampanaEndPointCreator, CampanaListCreator
 )
 
 import logging
@@ -53,6 +53,23 @@ class CampanaService():
 
         if index:
             return elimina_coma(lista[index+2])
+        return None
+
+    def obtener_list_id_wombat(self, salida_comando, campana):
+        lista = salida_comando.split()
+        nombre_campana = '"' + campana.nombre + '"'
+        index = None
+        indice = None
+        for item in lista:
+            if item == '"name"':
+                index = lista.index(item)
+                nombre = elimina_coma(lista[index + 2])
+                if nombre_campana == nombre:
+                    indice = lista.index(item)
+                    break
+
+        if indice:
+            return elimina_coma(lista[index-1])
         return None
 
     def crear_campana_wombat(self, campana):
@@ -113,3 +130,17 @@ class CampanaService():
         url_edit = "api/lists/?op=addToList&list={0}".format(
             campana.nombre)
         salida = service_wombat.update_lista_wombat(lista, url_edit)
+
+    def crear_lista_asociacion_campana_wombat(self, campana):
+        service_wombat = WombatService()
+        url_edit = "api/edit/list/?mode=L"
+        salida = service_wombat.list_config_wombat(url_edit)
+        list_id = self.obtener_list_id_wombat(salida, campana)
+        if not list_id:
+            list_id = 1
+        service_wombat_config = CampanaListCreator()
+        service_wombat_config.create_json(list_id)
+        url_edit = "api/edit/campaign/list/?mode=E&parent={0}".format(
+            campana.campaign_id_wombat)
+        salida = service_wombat.update_config_wombat(
+            "newcampaign_list.json", url_edit)

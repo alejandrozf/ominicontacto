@@ -424,6 +424,7 @@ class SincronizaDialerView(FormView):
                                          evitar_sin_telefono, prefijo_discador)
         campana_service = CampanaService()
         campana_service.crear_lista_wombat(lista, self.object)
+        campana_service.crear_lista_asociacion_campana_wombat(self.object)
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito la exportación del reporte.'
 

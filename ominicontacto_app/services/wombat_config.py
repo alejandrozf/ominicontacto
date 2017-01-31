@@ -202,6 +202,33 @@ class CampanaEndPointCreator(object):
         self._campana_endpoint_config_file.write(config_chunk)
 
 
+class CampanaListCreator(object):
+
+    def __init__(self):
+        self._campana_list_config_file = CampanaListConfigFile()
+
+    def _generar_json(self, list):
+        """Genera json.
+        :returns: str -- json para la campana
+        """
+
+        dict_trunk = {
+            "cl": {
+                "listId": list
+            }
+        }
+
+        return json.dumps(dict_trunk)
+
+    def create_json(self, list):
+        """Crea el archivo de json para list de campana
+        """
+        logger.info("Creando json para asociacion lista %s campana",
+                    list)
+        config_chunk = self._generar_json(list)
+        self._campana_list_config_file.write(config_chunk)
+
+
 class ConfigFile(object):
     def __init__(self, filename):
         self._filename = filename
@@ -266,3 +293,11 @@ class CampanaEndPointConfigFile(ConfigFile):
                                 "newcampaign_ep.json")
         filename = filename.strip()
         super(CampanaEndPointConfigFile, self).__init__(filename)
+
+
+class CampanaListConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "newcampaign_list.json ")
+        filename = filename.strip()
+        super(CampanaListConfigFile, self).__init__(filename)
