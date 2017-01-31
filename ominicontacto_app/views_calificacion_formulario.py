@@ -337,3 +337,73 @@ class FormularioUpdateFormView(FormView):
         #                 }
         #         )
         reverse('view_blanco')
+
+
+class CalificacionUpdateView(UpdateView):
+
+    template_name = 'formulario/calificacion_create_update.html'
+    context_object_name = 'calificacion_cliente'
+    model = CalificacionCliente
+    form_class = CalificacionClienteForm
+
+    def get_form(self, form_class):
+        campana = self.get_object().campana
+        calificaciones = campana.calificacion_campana.calificacion.all()
+        return form_class(calificacion_choice=calificaciones,
+                          **self.get_form_kwargs())
+
+    def get_object(self, queryset=None):
+        return CalificacionCliente.objects.get(
+            pk=self.kwargs['pk_calificacion'])
+
+    def get_context_data(self, **kwargs):
+        context = super(CalificacionUpdateView,
+                        self).get_context_data(**kwargs)
+        campana = self.get_object().campana
+        contacto = self.get_object().contacto
+
+        bd_contacto = campana.bd_contacto
+        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
+        datos = json.loads(contacto.datos)
+        mas_datos = []
+        for nombre, dato in zip(nombres, datos):
+            mas_datos.append((nombre, dato))
+
+        context['mas_datos'] = mas_datos
+        context['contacto'] = contacto
+        context['campana_pk'] = campana.pk
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        calificacion = form.cleaned_data.get('calificacion')
+        url_wombat = '/'.join([settings.OML_WOMBAT_URL,
+                               'api/calls/?op=extstatus&wombatid={0}&status={1}'
+                               ])
+
+        if calificacion is None:
+            self.object.es_venta = True
+            self.object.save()
+            #r = requests.post(
+             #   url_wombat.format(self.kwargs['wombat_id'], "venta"))
+            return redirect(self.get_success_url())
+
+        else:
+            self.object.es_venta = False
+            self.object.save()
+            #r = requests.post(
+             #   url_wombat.format(self.kwargs['wombat_id'],
+              #                    self.object.calificacion.nombre))
+            message = 'Operación Exitosa!\
+            Se llevó a cabo con éxito la calificacion del cliente'
+            messages.success(self.request, message)
+            return HttpResponseRedirect(reverse('reporte_agente_calificaciones',
+                           kwargs={
+                                   "pk_agente": self.get_object().agente.pk}))
+
+    def get_success_url(self):
+        return reverse('formulario_venta',
+                       kwargs={
+                           "pk_campana": self.get_object().campana.pk,
+                            "id_cliente": self.get_object().contacto.id_cliente,
+                            "id_agente": self.get_object().agente.pk})

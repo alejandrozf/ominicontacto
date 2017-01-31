@@ -465,6 +465,13 @@ urlpatterns = [
             views_calificacion_formulario.FormularioUpdateFormView.as_view()),
         name='formulario_venta_update',
     ),
+    url(
+        r'^formulario/(?P<pk_calificacion>\d+)/calificacion/actualiza/$',
+        login_required(
+            views_calificacion_formulario.CalificacionUpdateView.as_view()),
+        name='formulario_califiacion_actualiza',
+    ),
+
 
 ]
 

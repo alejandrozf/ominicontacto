@@ -152,6 +152,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    <a href="{% url 'formulario_califiacion_actualiza' contacto.pk %}">editar calificacion</a>
                                     {% if contacto.get_venta %}
                                     <a href="{% url 'formulario_venta_update' contacto.get_venta.pk %}">editar venta</a>
                                     {% endif %}
