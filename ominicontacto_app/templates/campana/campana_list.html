@@ -2,17 +2,17 @@
 {% load static %}
 
 {% block content %}
+<br>
+<div class="col-md-8 col-md-offset-2">
 
-<div class="col-md-3">
-
-    <table class="table table-bordered">
+    <table class="table table-stripped table-condensed">
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Fecha desde</th>
-                <th>Fecha hasta</th>
+                <th>Fecha Ini</th>
+                <th>Fecha Fin</th>
                 <th>Base de datos</th>
-                <th></th>
+                <th>Acciones&nbsp;&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@
                 <td>
                     {{ campana.bd_contacto }}
                 </td>
-                <td>
+                <td width="14%">
                     <a href="{% url 'queue_update' campana.pk %}">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar cola"></span>
                     </a>
