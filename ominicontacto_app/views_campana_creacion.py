@@ -157,6 +157,10 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         campana_service = CampanaService()
         campana_service.crear_endpoint_campana_wombat(self.object)
         campana_service.crear_endpoint_asociacion_campana_wombat(self.object)
+        if self.object.type == Queue.TYPE_DIALER:
+            return HttpResponseRedirect(
+                reverse('sincroniza_dialer',
+                        kwargs={"pk_campana": self.kwargs['pk_campana']}))
         return super(QueueCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -165,9 +169,7 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         return context
 
     def get_success_url(self):
-        return reverse(
-            'queue_member_campana',
-            kwargs={"pk_campana": self.campana.pk})
+        return reverse('campana_list')
 
 
 class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
@@ -359,9 +361,7 @@ class QueueUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         return context
 
     def get_success_url(self):
-        return reverse(
-            'queue_member_campana',
-            kwargs={"pk_campana": self.campana.pk})
+        return reverse('campana_list')
 
 
 # usa template de confirmacion por eso se usa la view queue_member_delete_view
