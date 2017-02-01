@@ -6,11 +6,12 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm, GrupoAgenteForm,
-    CampanaUpdateForm
+    CampanaUpdateForm, SincronizaDialerForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, QueueMember, BaseDatosContacto, Grupo,
@@ -19,6 +20,8 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.exportar_base_datos import\
+    SincronizarBaseDatosContactosService
 
 
 import logging as logging_
@@ -79,6 +82,9 @@ class CampanaCreateView(CreateView):
         self.object = form.save(commit=False)
         campana_service = CampanaService()
         self.object.save()
+        campana_service.crear_campana_wombat(self.object)
+        campana_service.crear_trunk_campana_wombat(self.object)
+        campana_service.crear_reschedule_campana_wombat(self.object)
         return super(CampanaCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -148,6 +154,9 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         self.object.save()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(self.object)
+        campana_service = CampanaService()
+        campana_service.crear_endpoint_campana_wombat(self.object)
+        campana_service.crear_endpoint_asociacion_campana_wombat(self.object)
         return super(QueueCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -378,3 +387,54 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     queue_member.delete()
     return HttpResponseRedirect("/campana/" + str(pk_campana) +
                                 "/queue_member_campana/")
+
+
+class SincronizaDialerView(FormView):
+    """
+    Esta vista sincroniza base datos con discador
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+    form_class = SincronizaDialerForm
+    template_name = 'base_create_update_form.html'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_form(self, form_class):
+        self.object = self.get_object()
+        metadata = self.object.bd_contacto.get_metadata()
+        columnas_telefono = metadata.columnas_con_telefono
+        nombres_de_columnas = metadata.nombres_de_columnas
+        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
+                       columnas_telefono if columna > 6]
+        return form_class(tts_choices=tts_choices, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        usa_contestador = form.cleaned_data.get('usa_contestador')
+        evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
+        evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
+        prefijo_discador = form.cleaned_data.get('prefijo_discador')
+        telefonos = form.cleaned_data.get('telefonos')
+        self.object = self.get_object()
+        service_base = SincronizarBaseDatosContactosService()
+        lista = service_base.crear_lista(self.object, telefonos,
+                                         usa_contestador, evitar_duplicados,
+                                         evitar_sin_telefono, prefijo_discador)
+        campana_service = CampanaService()
+        campana_service.crear_lista_wombat(lista, self.object)
+        campana_service.crear_lista_asociacion_campana_wombat(self.object)
+        message = 'Operación Exitosa!\
+                Se llevó a cabo con éxito la exportación del reporte.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('campana_list')

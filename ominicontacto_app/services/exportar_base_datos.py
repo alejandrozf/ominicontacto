@@ -136,3 +136,48 @@ class ExportarBaseDatosContactosService(object):
         logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
                      " CSV de descarga para la base de datos %s", base_datos.pk)
         assert os.path.exists(archivo_de_reporte.url_descarga)
+
+
+class SincronizarBaseDatosContactosService(object):
+
+    def crear_lista(self, campana, telefonos, usa_contestador,
+                    evitar_duplicados, evitar_sin_telefono, prefijo_discador):
+
+        base_datos = campana.bd_contacto
+
+        if evitar_duplicados:
+            service_base_datos = BaseDatosService()
+            service_base_datos.eliminar_contactos_duplicados(base_datos)
+
+        contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
+
+        if evitar_sin_telefono:
+            contactos = contactos.exclude(telefono__isnull=True).exclude(
+                telefono__exact='')
+
+        metadata = base_datos.get_metadata()
+
+        lista_contacto = self.escribir_lista(contactos, metadata, campana,
+                                             telefonos, usa_contestador,
+                                             prefijo_discador)
+        return lista_contacto
+
+    def escribir_lista(self, contactos, metadata, campana, telefonos,
+                             usa_contestador, prefijo_discador):
+
+            lista_contactos = "numbers="
+            for contacto in contactos:
+                dato_contacto = ""
+
+                # --- Buscamos datos
+                dato_contacto += prefijo_discador + contacto.telefono + ","
+                dato_contacto += "id_cliente:" + str(contacto.id_cliente) + ","
+                dato_contacto += "campana:" + campana.nombre + ","
+                dato_contacto += "timeout:" + str(campana.queue_campana.timeout)
+                dato_contacto += ",id_campana:" + str(campana.id) + ","
+                dato_contacto += "usa_contestador:" + str(usa_contestador) + "|"
+
+                lista_contactos += dato_contacto
+
+            return lista_contactos
+

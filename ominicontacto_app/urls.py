@@ -291,6 +291,10 @@ urlpatterns = [
             views_campana.AgenteCampanaReporteGrafico.as_view()),
         name='reporte_agente_grafico',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/sincroniza_dialer/$',
+        login_required(
+            views_campana_creacion.SincronizaDialerView.as_view()),
+        name='sincroniza_dialer',),
     url(r'^campana/selecciona/$',
         login_required(
             views_campana.FormularioSeleccionCampanaFormView.as_view()),
