@@ -150,6 +150,14 @@ class QueueUpdateForm(forms.ModelForm):
             'timeout': """En segundos """,
         }
 
+    def clean_maxlen(self):
+        maxlen = self.cleaned_data.get('maxlen')
+        if not maxlen < 0:
+            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
+                                        ' mayor a cero')
+
+        return self.cleaned_data
+
 
 class BaseDatosContactoForm(forms.ModelForm):
 

@@ -158,7 +158,7 @@ class EndPointCreator(object):
             "maxWaitingCalls": 2,
             "reverseDialing": False,
             "stepwiseReverse": False,
-            "securityKey":  "",
+            "securityKey": "",
             "description": queue.campana.nombre,
             "dialFind": "",
             "dialReplace": ""

@@ -106,7 +106,7 @@ class CampanaService():
         service_wombat = WombatService()
         service_wombat_config = EndPointCreator()
         service_wombat_config.create_json(queue)
-        url_edit = "api/edit/ep/?mode=E&parent={0}".format(
+        url_edit = "api/edit/ep/?mode=E".format(
             queue.campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "newep.json", url_edit)
