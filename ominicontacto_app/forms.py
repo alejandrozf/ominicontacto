@@ -142,17 +142,17 @@ class QueueUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Queue
-        fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'type', 'wait',
+        fields = ('type', 'timeout', 'retry', 'maxlen', 'wrapuptime',
+                  'servicelevel', 'strategy', 'weight', 'wait',
                   'auto_grabacion')
 
         help_texts = {
             'timeout': """En segundos """,
         }
 
-    def clean_maxlen(self):
+    def clean(self):
         maxlen = self.cleaned_data.get('maxlen')
-        if not maxlen < 0:
+        if not maxlen > 0:
             raise forms.ValidationError('Cantidad Max de llamadas debe ser'
                                         ' mayor a cero')
 

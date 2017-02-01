@@ -3,12 +3,7 @@
 
 {% block content %}
  <div class="panel-body">
-            <ul class="nav nav-tabs">
-                <li><a href="{%  url 'campana_update' campana.pk %}">Campaña</a></li>
-                <li><a href="{% url 'queue_update' campana.pk %}">Datos Básicos de la cola</a></li>
-                <li class="disabled"><a>Agregar agentes a la cola de la campaña</a></li>
-            </ul>
-            <br>
+
      <div class="col-lg-4">
          {% if campana%}
                     <p>Campaña <strong>{{ campana.nombre }}</strong></p>
@@ -74,15 +69,9 @@
                     {% endif %}
                 </div>
                 <div class="col-lg-12">
-                    {% if campana.queue_campana.es_dialer %}
-                        <a href="{% url 'sincroniza_dialer' campana.pk %}" class="btn btn-success pull-right" role="button">
-                            Siguiente
-                        </a>
-                    {% else %}
                          <a href="{% url 'campana_list' %}" class="btn btn-default pull-right" role="button">
                             Finalizar
                         </a>
-                    {% endif %}
                 </div>
         </div>
 {% endblock %}
