@@ -142,8 +142,8 @@ class QueueUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Queue
-        fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'type', 'wait',
+        fields = ('type', 'timeout', 'retry', 'maxlen', 'wrapuptime',
+                  'servicelevel', 'strategy', 'weight', 'wait',
                   'auto_grabacion')
 
         help_texts = {
