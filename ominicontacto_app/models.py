@@ -280,9 +280,14 @@ class Campana(models.Model):
         related_name="%(class)ss"
     )
     formulario = models.ForeignKey(Formulario)
+    campaign_id_wombat = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
             return self.nombre
+
+    def guardar_campaign_id_wombat(self, campaign_id_wombat):
+        self.campaign_id_wombat = campaign_id_wombat
+        self.save()
 
 
 class QueueManager(models.Manager):
@@ -375,6 +380,7 @@ class Queue(models.Model):
     queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
+    ep_id_wombat = models.IntegerField(null=True, blank=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
@@ -402,6 +408,16 @@ class Queue(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def guardar_ep_id_wombat(self, ep_id_wombat):
+        self.ep_id_wombat = ep_id_wombat
+        self.save()
+
+    def es_dialer(self):
+        if self.type is self.TYPE_DIALER:
+            return True
+        else:
+            return False
 
     class Meta:
         db_table = 'queue_table'

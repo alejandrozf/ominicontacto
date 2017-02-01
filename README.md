@@ -27,7 +27,7 @@ Editar oml_settings_local.py para que contenga:
 """
 Defaults para ambientes de desarrollo.
 
-Para utilizar estos settings, crear ``fts_web_settings_local``
+Para utilizar estos settings, crear ``oml_settings_local``
 (en paquete ROOT de Python) con:
 
     from fts_web_settings_local_dev import *  # @UnusedWildImport
@@ -114,6 +114,26 @@ OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
 # 'OML_KAMAILIO_IP': ip donde se encuentra kamailio
 # ejemplo "172.16.20.219/255.255.255.255"
 OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
+
+# 'OML_WOMBAT_URL': url donde se encuentra el discador de wombat
+# ejemplo "http://172.16.20.222/wombat"
+
+OML_WOMBAT_URL = "http://172.16.20.222/wombat"
+
+# 'OML_WOMBAT_FILENAME': donde se alojara temporalmente los json de wombat
+# ejemplo "/home/freetech/"
+
+OML_WOMBAT_FILENAME = "/home/freetech/"
+
+# 'OML_WOMBAT_USER': user para conectarse con la api de WOMBAT DIALER
+# "user_test"
+
+OML_WOMBAT_USER = "user_test"
+
+# 'OML_WOMBAT_PASSWORD': password para ingresar con la api de WOMBAT DIALER
+# "user123"
+
+OML_WOMBAT_PASSWORD = "user123"
 
 _logging_output_file = os.environ.get("OML_LOGFILE", "django.log")
 assert os.path.split(_logging_output_file)[0] == "",\

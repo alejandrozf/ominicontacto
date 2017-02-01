@@ -150,6 +150,14 @@ class QueueUpdateForm(forms.ModelForm):
             'timeout': """En segundos """,
         }
 
+    def clean_maxlen(self):
+        maxlen = self.cleaned_data.get('maxlen')
+        if not maxlen < 0:
+            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
+                                        ' mayor a cero')
+
+        return self.cleaned_data
+
 
 class BaseDatosContactoForm(forms.ModelForm):
 
@@ -478,6 +486,22 @@ class FormularioCRMForm(forms.Form):
                         attrs={'class': 'form-control'}))
 
 
+class SincronizaDialerForm(forms.Form):
+    usa_contestador = forms.BooleanField(required=False)
+    evitar_duplicados = forms.BooleanField(required=False)
+    evitar_sin_telefono = forms.BooleanField(required=False)
+    prefijo_discador = forms.CharField(required=False)
+    telefonos = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=(),
+    )
+
+    def __init__(self, tts_choices, *args, **kwargs):
+        super(SincronizaDialerForm, self).__init__(*args, **kwargs)
+        self.fields['telefonos'].choices = tts_choices
+
+
 class FormularioNuevoContacto(forms.ModelForm):
 
     def __init__(self, campos, *args, **kwargs):
@@ -503,3 +527,4 @@ class FormularioCampanaContacto(forms.Form):
     def __init__(self, campana_choice, *args, **kwargs):
         super(FormularioCampanaContacto, self).__init__(*args, **kwargs)
         self.fields['campana'].choices = campana_choice
+
