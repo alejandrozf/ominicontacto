@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView)
+from django.views.generic.base import RedirectView
 from ominicontacto_app.forms import (
     BusquedaContactoForm, ContactoForm, ReporteForm, FormularioNuevoContacto,
     FormularioCampanaContacto
@@ -28,6 +29,7 @@ from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_metadata_cliente import \
     ReporteMetadataClienteService
+from ominicontacto_app.services.campana_service import CampanaService
 
 import logging as logging_
 
@@ -42,6 +44,14 @@ class CampanaListView(ListView):
     template_name = 'campana/campana_list.html'
     context_object_name = 'campanas'
     model = Campana
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaListView, self).get_context_data(
+           **kwargs)
+        context['inactivas'] = Campana.objects.obtener_inactivas()
+        context['pausadas'] = Campana.objects.obtener_pausadas()
+        context['activas'] = Campana.objects.obtener_activas()
+        return context
 
 
 class CampanaDeleteView(DeleteView):
@@ -381,3 +391,110 @@ class FormularioNuevoContactoFormView(FormView):
 
     def get_success_url(self):
         reverse('view_blanco')
+
+
+class PlayCampanaView(RedirectView):
+    """
+    Esta vista actualiza la campañana activándola.
+    """
+
+    pattern_name = 'campana_list'
+
+    def post(self, request, *args, **kwargs):
+        campana = Campana.objects.get(pk=request.POST['campana_id'])
+        campana_service = CampanaService()
+        resultado =  campana_service.start_campana_wombat(campana)
+        campana.play()
+        if resultado:
+            message = '<strong>Operación Exitosa!</strong>\
+            Se llevó a cabo con éxito la activación de\
+            la Campaña.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+        else:
+            message = '<strong>ERROR!</strong>\
+                        No se pudo llevar  cabo con éxito la activación de\
+                        la Campaña.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+        return super(PlayCampanaView, self).post(request, *args, **kwargs)
+
+
+class PausarCampanaView(RedirectView):
+    """
+    Esta vista actualiza la campañana activándola.
+    """
+
+    pattern_name = 'campana_list'
+
+    def post(self, request, *args, **kwargs):
+        campana = Campana.objects.get(pk=request.POST['campana_id'])
+        campana_service = CampanaService()
+        resultado = campana_service.pausar_campana_wombat(campana)
+        campana.pausar()
+
+        if resultado:
+            message = '<strong>Operación Exitosa!</strong>\
+            Se llevó a cabo con éxito la pausa de\
+            la Campaña.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+        else:
+            message = '<strong>ERROR!</strong>\
+                        No se pudo llevar  cabo con éxito el pausado de\
+                        la Campaña.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+        return super(PausarCampanaView, self).post(request, *args, **kwargs)
+
+
+class ActivarCampanaView(RedirectView):
+    """
+    Esta vista actualiza la campañana activándola.
+    """
+
+    pattern_name = 'campana_list'
+
+    def post(self, request, *args, **kwargs):
+        campana = Campana.objects.get(pk=request.POST['campana_id'])
+        campana_service = CampanaService()
+        resultado = campana_service.despausar_campana_wombat(campana)
+        campana.activar()
+
+        if resultado:
+            message = '<strong>Operación Exitosa!</strong>\
+            Se llevó a cabo con éxito la activación de\
+            la Campaña.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+        else:
+            message = '<strong>ERROR!</strong>\
+                        No se pudo llevar  cabo con éxito la activación de\
+                        la Campaña.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+        return super(ActivarCampanaView, self).post(request, *args, **kwargs)
