@@ -183,6 +183,7 @@ class FieldFormulario(models.Model):
     orden = models.PositiveIntegerField()
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
     values_select = models.TextField(blank=True, null=True)
+    is_required = models.BooleanField()
 
     class Meta:
         ordering = ['orden']
