@@ -2,6 +2,9 @@
 
 from __future__ import unicode_literals
 
+import requests
+
+from django.conf import settings
 from ominicontacto_app.models import Campana
 from ominicontacto_app.utiles import elimina_coma
 from ominicontacto_app.services.wombat_service import WombatService
@@ -144,3 +147,31 @@ class CampanaService():
             campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "newcampaign_list.json", url_edit)
+
+    def start_campana_wombat(self, campana):
+        url_edit = "api/campaigns/?op=start&campaign={0}".format(campana.nombre)
+        url = '/'.join([settings.OML_WOMBAT_URL,
+                  url_edit])
+        r = requests.post(url)
+        if r.status_code == 200:
+            return True
+        return False
+
+    def pausar_campana_wombat(self, campana):
+        url_edit = "api/campaigns/?op=pause&campaign={0}".format(campana.nombre)
+        url = '/'.join([settings.OML_WOMBAT_URL,
+                  url_edit])
+        r = requests.post(url)
+        if r.status_code == 200:
+            return True
+        return False
+
+    def despausar_campana_wombat(self, campana):
+        url_edit = "api/campaigns/?op=unpause&campaign={0}".format(
+            campana.nombre)
+        url = '/'.join([settings.OML_WOMBAT_URL,
+                  url_edit])
+        r = requests.post(url)
+        if r.status_code == 200:
+            return True
+        return False
