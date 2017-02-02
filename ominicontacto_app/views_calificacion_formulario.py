@@ -198,10 +198,17 @@ class CalificacionClienteUpdateView(UpdateView):
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
-            return HttpResponseRedirect(reverse('calificacion_cliente_update',
-                           kwargs={"pk_campana": self.kwargs['pk_campana'],
-                                   "id_cliente": self.kwargs['id_cliente'],
-                                   "id_agente": self.kwargs['id_agente']}))
+            return HttpResponseRedirect(
+                reverse('calificacion_formulario_update',
+                        kwargs={
+                            "pk_campana": self.kwargs[
+                                'pk_campana'],
+                            "id_cliente": self.kwargs[
+                                'id_cliente'],
+                            "wombat_id": self.kwargs[
+                                'wombat_id'],
+                            "id_agente": self.kwargs[
+                                'id_agente']}))
 
     def get_success_url(self):
         return reverse('formulario_venta',
