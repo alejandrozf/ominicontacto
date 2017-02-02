@@ -403,7 +403,7 @@ class PlayCampanaView(RedirectView):
     def post(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=request.POST['campana_id'])
         campana_service = CampanaService()
-        resultado =  campana_service.start_campana_wombat(campana)
+        resultado = campana_service.start_campana_wombat(campana)
         campana.play()
         if resultado:
             message = '<strong>Operación Exitosa!</strong>\

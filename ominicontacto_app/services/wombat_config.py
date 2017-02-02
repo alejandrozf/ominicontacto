@@ -108,27 +108,27 @@ class RescheduleRuleCreator(object):
     def __init__(self):
         self._reschedule_config_file = RescheduleRuleConfigFile()
 
-    def _generar_json(self):
+    def _generar_json(self, parametros):
         """Genera json.
         :returns: str -- json para la campana
         """
 
         dict_reschedule = {
-            "status": "RS_BUSY",
-            "statusExt": "",
-            "maxAttempts": 2,
-            "retryAfterS": 120,
+            "status": parametros[0],
+            "statusExt": parametros[1],
+            "maxAttempts": parametros[2],
+            "retryAfterS": parametros[3],
             "mode": "FIXED"
         }
 
         return json.dumps(dict_reschedule)
 
-    def create_json(self, campana):
+    def create_json(self, campana, parametros):
         """Crea el archivo de json para trunk de campana
         """
         logger.info("Creando json para regla de reschedule para la campana %s",
                     campana.nombre)
-        config_chunk = self._generar_json()
+        config_chunk = self._generar_json(parametros)
         self._reschedule_config_file.write(config_chunk)
 
 

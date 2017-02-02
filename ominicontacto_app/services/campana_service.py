@@ -96,10 +96,10 @@ class CampanaService():
         salida = service_wombat.update_config_wombat(
             "newcampaign_trunk.json", url_edit)
 
-    def crear_reschedule_campana_wombat(self, campana):
+    def crear_reschedule_campana_wombat(self, campana, parametros):
         service_wombat = WombatService()
         service_wombat_config = RescheduleRuleCreator()
-        service_wombat_config.create_json(campana)
+        service_wombat_config.create_json(campana, parametros)
         url_edit = "api/edit/campaign/reschedule/?mode=E&parent={0}".format(
             campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(

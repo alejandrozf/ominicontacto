@@ -84,7 +84,16 @@ class CampanaCreateView(CreateView):
         self.object.save()
         campana_service.crear_campana_wombat(self.object)
         campana_service.crear_trunk_campana_wombat(self.object)
-        campana_service.crear_reschedule_campana_wombat(self.object)
+        parametros = ["RS_BUSY", "", 3, 120]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        parametros = ["TERMINATED", "CONTESTADOR", 3, 1800]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        parametros = ["RS_NOANSWER", "", 3, 220]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        parametros = ["RS_REJECTED", "", 3, 300]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        parametros = ["RS_TIMEOUT", "", 3, 300]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
         return super(CampanaCreateView, self).form_valid(form)
 
     def get_success_url(self):
