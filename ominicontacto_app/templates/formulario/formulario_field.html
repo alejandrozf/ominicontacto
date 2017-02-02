@@ -95,6 +95,13 @@
         </div>
     </div>
     <div class="form-group row">
+        {{ form.is_required.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.tipo.id_for_label }}">Campo requerido: </label>
+        <div class="col-sm-6">
+              {{ form.is_required}}
+        </div>
+    </div>
+    <div class="form-group row">
 
         <div class="col-sm-4">
             <div class="input-group row">
@@ -130,6 +137,7 @@
                             <th>Orden</th>
                             <th>Nombre de campo</th>
                             <th>Tipo</th>
+                            <th>Campo requerido</th>
                             <th>Valores de la lista</th>
                             <th></th>
                             <th></th>
@@ -144,6 +152,13 @@
                                     </td>
                                     <td>{{ campo.nombre_campo }} </td>
                                     <td>{{ campo.get_tipo_display }}</td>
+                                                                        <td>
+                                        {% if campo.is_required %}
+                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                        {% else %}
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         {% if campo.tipo == 3 %}
                                             {{ campo.values_select }}
