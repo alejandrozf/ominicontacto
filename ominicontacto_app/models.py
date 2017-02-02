@@ -227,6 +227,24 @@ class CampanaManager(models.Manager):
             raise(SuspiciousOperation("No se encontro campana %s en "
                                       "estado ESTADO_EN_DEFINICION"))
 
+    def obtener_pausadas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=Campana.ESTADO_PAUSADA)
+
+    def obtener_inactivas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=Campana.ESTADO_EN_DEFINICION)
+
+    def obtener_activas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=Campana.ESTADO_ACTIVA)
+
 
 class Campana(models.Model):
     """Una campaña del call center"""
@@ -257,11 +275,15 @@ class Campana(models.Model):
     ESTADO_BORRADA = 4
     """La campaña ya fue borrada"""
 
+    ESTADO_PAUSADA = 5
+    """La campaña pausada"""
+
     ESTADOS = (
-        (ESTADO_EN_DEFINICION, '(en definicion)'),
+        (ESTADO_EN_DEFINICION, 'Inactiva'),
         (ESTADO_ACTIVA, 'Activa'),
         (ESTADO_FINALIZADA, 'Finalizada'),
         (ESTADO_BORRADA, 'Borrada'),
+        (ESTADO_PAUSADA, 'Pausada'),
     )
 
     estado = models.PositiveIntegerField(
@@ -287,6 +309,27 @@ class Campana(models.Model):
 
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
+        self.save()
+
+    def play(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = Campana.ESTADO_ACTIVA
+        self.save()
+
+    def pausar(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_PAUSADA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = Campana.ESTADO_PAUSADA
+        self.save()
+
+    def activar(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = Campana.ESTADO_ACTIVA
         self.save()
 
 
