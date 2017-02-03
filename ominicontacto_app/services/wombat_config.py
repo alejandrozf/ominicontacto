@@ -229,6 +229,31 @@ class CampanaListCreator(object):
         self._campana_list_config_file.write(config_chunk)
 
 
+class CampanaDeleteListCreator(object):
+
+    def __init__(self):
+        self._campana_list_config_file = CampanaDesListConfigFile()
+
+    def _generar_json(self, cclId):
+        """Genera json.
+        :returns: str -- json para la campana
+        """
+
+        dict_trunk = {
+            "cclId": cclId
+        }
+
+        return json.dumps(dict_trunk)
+
+    def create_json(self, cclId):
+        """Crea el archivo de json para list de campana
+        """
+        logger.info("Creando json para asociacion lista %s campana",
+                    list)
+        config_chunk = self._generar_json(cclId)
+        self._campana_list_config_file.write(config_chunk)
+
+
 class ConfigFile(object):
     def __init__(self, filename):
         self._filename = filename
@@ -301,3 +326,11 @@ class CampanaListConfigFile(ConfigFile):
                                 "newcampaign_list.json ")
         filename = filename.strip()
         super(CampanaListConfigFile, self).__init__(filename)
+
+
+class CampanaDesListConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "deletecampaign_list.json ")
+        filename = filename.strip()
+        super(CampanaDesListConfigFile, self).__init__(filename)

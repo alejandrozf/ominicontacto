@@ -320,6 +320,10 @@ urlpatterns = [
             views_campana.ActivarCampanaView.as_view()),
         name='activar_campana',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/update_base_datos/$',
+        login_required(
+            views_campana.UpdateBaseDatosView.as_view()),
+        name='update_base_datos_campana', ),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================

@@ -6,11 +6,11 @@ import requests
 
 from django.conf import settings
 from ominicontacto_app.models import Campana
-from ominicontacto_app.utiles import elimina_coma
+from ominicontacto_app.utiles import elimina_coma, elimina_comillas
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
-    CampanaEndPointCreator, CampanaListCreator
+    CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator
 )
 
 import logging
@@ -60,19 +60,34 @@ class CampanaService():
 
     def obtener_list_id_wombat(self, salida_comando, campana):
         lista = salida_comando.split()
-        nombre_campana = '"' + campana.nombre + '"'
+        nombre_lista = '_'.join([str(campana.bd_contacto.id),
+                                 campana.bd_contacto.nombre])
+        nombre_lista = '"' + nombre_lista + '"'
         index = None
         indice = None
         for item in lista:
             if item == '"name"':
                 index = lista.index(item)
                 nombre = elimina_coma(lista[index + 2])
-                if nombre_campana == nombre:
+                if nombre_lista == nombre:
                     indice = lista.index(item)
                     break
 
         if indice:
             return elimina_coma(lista[index-1])
+        return None
+
+    def obtener_ccl_id_wombat(self, salida_comando):
+        lista = salida_comando.split()
+
+        index = None
+        for item in lista:
+            if item == '"cclId"':
+                index = lista.index(item)
+                break
+
+        if index:
+            return elimina_coma(lista[index+2])
         return None
 
     def crear_campana_wombat(self, campana):
@@ -130,8 +145,10 @@ class CampanaService():
 
     def crear_lista_wombat(self, lista, campana):
         service_wombat = WombatService()
+        nombre_lista = '_'.join([str(campana.bd_contacto.id),
+                                 campana.bd_contacto.nombre])
         url_edit = "api/lists/?op=addToList&list={0}".format(
-            campana.nombre)
+            nombre_lista)
         salida = service_wombat.update_lista_wombat(lista, url_edit)
 
     def crear_lista_asociacion_campana_wombat(self, campana):
@@ -175,3 +192,19 @@ class CampanaService():
         if r.status_code == 200:
             return True
         return False
+
+    def desasociacion_campana_wombat(self, campana):
+        service_wombat = WombatService()
+        url_edit = "api/edit/campaign/list/?mode=L&parent={0}".format(
+            campana.campaign_id_wombat)
+        salida = service_wombat.list_config_wombat(url_edit)
+        cclId = self.obtener_ccl_id_wombat(salida)
+        cclId = elimina_comillas(cclId)
+        if not cclId:
+            cclId = 0
+        service_wombat_config = CampanaDeleteListCreator()
+        service_wombat_config.create_json(cclId)
+        url_edit = "api/edit/campaign/list/?mode=D&parent={0}".format(
+            campana.campaign_id_wombat)
+        salida = service_wombat.update_config_wombat(
+            "deletecampaign_list.json", url_edit)
