@@ -13,7 +13,7 @@ from django.views.generic import (
 from django.views.generic.base import RedirectView
 from ominicontacto_app.forms import (
     BusquedaContactoForm, ContactoForm, ReporteForm, FormularioNuevoContacto,
-    FormularioCampanaContacto
+    FormularioCampanaContacto, UpdateBaseDatosForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, Contacto, AgenteProfile
@@ -30,6 +30,9 @@ from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_metadata_cliente import \
     ReporteMetadataClienteService
 from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.exportar_base_datos import\
+    SincronizarBaseDatosContactosService
+
 
 import logging as logging_
 
@@ -498,3 +501,55 @@ class ActivarCampanaView(RedirectView):
                 message,
             )
         return super(ActivarCampanaView, self).post(request, *args, **kwargs)
+
+
+class UpdateBaseDatosView(FormView):
+    """
+    Esta vista sincroniza base datos con discador
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+    form_class = UpdateBaseDatosForm
+    template_name = 'base_create_update_form.html'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_form(self, form_class):
+        self.object = self.get_object()
+        metadata = self.object.bd_contacto.get_metadata()
+        columnas_telefono = metadata.columnas_con_telefono
+        nombres_de_columnas = metadata.nombres_de_columnas
+        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
+                       columnas_telefono if columna > 6]
+        return form_class(tts_choices=tts_choices, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        usa_contestador = form.cleaned_data.get('usa_contestador')
+        evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
+        evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
+        prefijo_discador = form.cleaned_data.get('prefijo_discador')
+        telefonos = form.cleaned_data.get('telefonos')
+        self.object = self.get_object()
+        service_base = SincronizarBaseDatosContactosService()
+        lista = service_base.crear_lista(self.object, telefonos,
+                                         usa_contestador, evitar_duplicados,
+                                         evitar_sin_telefono, prefijo_discador)
+        campana_service = CampanaService()
+        campana_service.desasociacion_campana_wombat(self.object)
+        campana_service.crear_lista_wombat(lista, self.object)
+        campana_service.crear_lista_asociacion_campana_wombat(self.object)
+        message = 'Operación Exitosa!\
+                Se llevó a cabo con éxito la exportación del reporte.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('campana_list')

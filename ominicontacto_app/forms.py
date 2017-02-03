@@ -532,3 +532,25 @@ class FormularioCampanaContacto(forms.Form):
         super(FormularioCampanaContacto, self).__init__(*args, **kwargs)
         self.fields['campana'].choices = campana_choice
 
+
+class UpdateBaseDatosForm(forms.ModelForm):
+    usa_contestador = forms.BooleanField(required=False)
+    evitar_duplicados = forms.BooleanField(required=False)
+    evitar_sin_telefono = forms.BooleanField(required=False)
+    prefijo_discador = forms.CharField(required=False)
+    telefonos = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=(),
+    )
+
+    def __init__(self, tts_choices, *args, **kwargs):
+        super(UpdateBaseDatosForm, self).__init__(*args, **kwargs)
+        self.fields['telefonos'].choices = tts_choices
+
+    class Meta:
+        model = Campana
+        fields = ('bd_contacto',)
+        labels = {
+            'bd_contacto': 'Base de Datos de Contactos',
+        }
