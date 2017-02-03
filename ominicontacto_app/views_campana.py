@@ -531,12 +531,20 @@ class UpdateBaseDatosView(FormView):
         evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
         prefijo_discador = form.cleaned_data.get('prefijo_discador')
         telefonos = form.cleaned_data.get('telefonos')
+        bd_contacto = form.cleaned_data.get('bd_contacto')
         self.object = self.get_object()
+        campana_service = CampanaService()
+        error = campana_service.validar_modificacion_bd_contacto(
+            self.get_object(), bd_contacto)
+        if error:
+            return self.form_invalid(form, error=error)
+        self.object.bd_contacto = bd_contacto
+        self.object.save()
         service_base = SincronizarBaseDatosContactosService()
         lista = service_base.crear_lista(self.object, telefonos,
                                          usa_contestador, evitar_duplicados,
                                          evitar_sin_telefono, prefijo_discador)
-        campana_service = CampanaService()
+
         campana_service.desasociacion_campana_wombat(self.object)
         campana_service.crear_lista_wombat(lista, self.object)
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
@@ -550,6 +558,17 @@ class UpdateBaseDatosView(FormView):
         )
 
         return redirect(self.get_success_url())
+
+    def form_invalid(self, form, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                  La base de datos es erronea. {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
 
     def get_success_url(self):
         return reverse('campana_list')
