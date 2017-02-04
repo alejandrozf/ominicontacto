@@ -62,19 +62,18 @@ class CampanaService():
         lista = salida_comando.split()
         nombre_lista = '_'.join([str(campana.bd_contacto.id),
                                  campana.bd_contacto.nombre])
+
         nombre_lista = '"' + nombre_lista + '"'
         index = None
         indice = None
         for item in lista:
-            if item == '"name"':
-                index = lista.index(item)
-                nombre = elimina_coma(lista[index + 2])
-                if nombre_lista == nombre:
-                    indice = lista.index(item)
-                    break
+            nombre = elimina_coma(item)
+            if nombre_lista == nombre:
+                indice = lista.index(item)
+                break
 
         if indice:
-            return elimina_coma(lista[index-1])
+            return elimina_coma(lista[indice-3])
         return None
 
     def obtener_ccl_id_wombat(self, salida_comando):
