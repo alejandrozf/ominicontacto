@@ -549,7 +549,7 @@ class UpdateBaseDatosView(FormView):
         campana_service.crear_lista_wombat(lista, self.object)
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
         message = 'Operación Exitosa!\
-                Se llevó a cabo con éxito la exportación del reporte.'
+                Se llevó a cabo con éxito el cambio de base de datos.'
 
         messages.add_message(
             self.request,
@@ -569,6 +569,10 @@ class UpdateBaseDatosView(FormView):
             messages.WARNING,
             message,
         )
+        return self.render_to_response(self.get_context_data())
+        # return HttpResponseRedirect(
+        #     reverse('update_base_datos_campana',
+        #             kwargs={"pk_campana": self.kwargs['pk_campana']}))
 
     def get_success_url(self):
         return reverse('campana_list')
