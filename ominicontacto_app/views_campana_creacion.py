@@ -102,8 +102,7 @@ class CampanaCreateView(CreateView):
             kwargs={"pk_campana": self.object.pk})
 
 
-class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                        UpdateView):
+class CampanaUpdateView(UpdateView):
     """
     Esta vista actualiza un objeto Campana.
     """
@@ -113,11 +112,14 @@ class CampanaUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     context_object_name = 'campana'
     form_class = CampanaUpdateForm
 
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         campana_service = CampanaService()
         error = campana_service.validar_modificacion_bd_contacto(
-            self.get_object(),self.object.bd_contacto)
+            self.get_object(), self.object.bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
         return super(CampanaUpdateView, self).form_valid(form)
@@ -181,16 +183,16 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         return reverse('campana_list')
 
 
-class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                            FormView):
+class QueueMemberCreateView(FormView):
     model = QueueMember
     form_class = QueueMemberForm
     template_name = 'queue/queue_member.html'
 
     def form_valid(self, form):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = form.save(commit=False)
         existe_member = QueueMember.objects.\
-            existe_member_queue(self.object.member, self.campana.queue_campana)
+            existe_member_queue(self.object.member, campana.queue_campana)
 
         if existe_member:
             message = 'Operación Errónea! \
@@ -202,7 +204,7 @@ class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
             )
             return self.form_invalid(form)
         else:
-            self.object.queue_name = self.campana.queue_campana
+            self.object.queue_name = campana.queue_campana
             self.object.membername = self.object.member.user.get_full_name()
             self.object.interface = """Local/{0}@from-queue/n""".format(
             self.object.member.sip_extension)
@@ -214,28 +216,29 @@ class QueueMemberCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     def get_context_data(self, **kwargs):
         context = super(
             QueueMemberCreateView, self).get_context_data(**kwargs)
-        context['campana'] = self.campana
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
         return context
 
     def get_success_url(self):
         return reverse(
             'queue_member_campana',
-            kwargs={"pk_campana": self.campana.pk})
+            kwargs={"pk_campana": self.kwargs['pk_campana']})
 
 
-class GrupoAgenteCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                            FormView):
+class GrupoAgenteCreateView(FormView):
     model = QueueMember
     form_class = GrupoAgenteForm
     template_name = 'queue/queue_member.html'
 
     def form_valid(self, form):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         grupo_id = form.cleaned_data.get('grupo')
         grupo = Grupo.objects.get(pk=grupo_id)
         for agente in grupo.agentes.all():
             QueueMember.objects.get_or_create(
                 member=agente,
-                queue_name=self.campana.queue_campana,
+                queue_name=campana.queue_campana,
                 defaults={'membername': agente.user.get_full_name(),
                           'interface': """Local/{0}@from-queue/n""".format(
                               agente.sip_extension),
@@ -247,21 +250,22 @@ class GrupoAgenteCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     def get_context_data(self, **kwargs):
         context = super(
             GrupoAgenteCreateView, self).get_context_data(**kwargs)
-        context['campana'] = self.campana
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
         return context
 
     def get_success_url(self):
         return reverse(
             'queue_member_campana',
-            kwargs={"pk_campana": self.campana.pk})
+            kwargs={"pk_campana": self.kwargs['pk_campana']})
 
 
-class QueueMemberCampanaView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                             TemplateView):
+class QueueMemberCampanaView(TemplateView):
     template_name = 'queue/queue_member.html'
 
     def get_object(self, queryset=None):
-        return self.campana.queue_campana
+         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+         return campana.queue_campana
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -287,7 +291,8 @@ class QueueMemberCampanaView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     def get_context_data(self, **kwargs):
         context = super(
             QueueMemberCampanaView, self).get_context_data(**kwargs)
-        context['campana'] = self.campana
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
         return context
 
 
@@ -344,18 +349,17 @@ class QueueDeleteView(DeleteView):
         return reverse('queue_list')
 
 
-class QueueUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                      UpdateView):
+class QueueUpdateView(UpdateView):
     model = Queue
     form_class = QueueUpdateForm
     template_name = 'queue/create_update_queue.html'
 
     def get_object(self, queryset=None):
-         return self.campana.queue_campana
+         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+         return campana.queue_campana
 
     def dispatch(self, *args, **kwargs):
-        campana = Campana.objects.obtener_en_definicion_para_editar(
-            self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         try:
             Queue.objects.get(campana=campana)
         except Queue.DoesNotExist:
@@ -366,7 +370,8 @@ class QueueUpdateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
     def get_context_data(self, **kwargs):
         context = super(QueueUpdateView, self).get_context_data(**kwargs)
-        context['campana'] = self.campana
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
         return context
 
     def get_success_url(self):
