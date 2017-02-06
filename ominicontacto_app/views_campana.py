@@ -54,6 +54,7 @@ class CampanaListView(ListView):
         context['inactivas'] = Campana.objects.obtener_inactivas()
         context['pausadas'] = Campana.objects.obtener_pausadas()
         context['activas'] = Campana.objects.obtener_activas()
+        context['borradas'] = Campana.objects.obtener_borradas()
         return context
 
 
@@ -548,8 +549,12 @@ class UpdateBaseDatosView(FormView):
         campana_service.desasociacion_campana_wombat(self.object)
         campana_service.crear_lista_wombat(lista, self.object)
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
-        campana_service.remove_campana_wombat(self.object)
-        campana_service.start_campana_wombat(self.object)
+        resultado = campana_service.remove_campana_wombat(self.object)
+        if resultado:
+            self.object.remover()
+        resultado = campana_service.start_campana_wombat( self.object)
+        if resultado:
+            self.object.play()
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito el cambio de base de datos.'
 

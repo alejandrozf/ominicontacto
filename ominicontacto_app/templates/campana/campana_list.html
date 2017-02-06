@@ -206,6 +206,66 @@
         {% endfor %}
         </tbody>
     </table>
+        <h4>Campañas Borradas</h4>
+    <table class="table table-stripped table-condensed">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Fecha Ini</th>
+                <th>Fecha Fin</th>
+                <th>Base de datos</th>
+                <th>Estado</th>
+                <th>Acciones&nbsp;&nbsp;</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for campana in borradas %}
+            <tr>
+                <td width="45%">
+                    <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
+                </td>
+                <td>
+                    {{ campana.fecha_inicio|date:"d/m/Y" }}
+                </td>
+                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
+                <td>
+                    {{ campana.bd_contacto }}
+                   {% if campana.queue_campana.es_dialer %}
+                    <a href="{% url 'update_base_datos_campana' campana.pk %}">
+                        cambiar base
+                    </a>
+                    {% endif %}
+                </td>
+                <td> {{campana.get_estado_display}}  </td>
+                <td width="14%">
+                    <a href="{% url 'queue_update' campana.pk %}">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar cola"></span>
+                    </a>
+                    <a href="{% url 'queue_member_campana' campana.pk %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
+                    </a>
+                    <a href="{% url 'campana_elimina' campana.pk %}">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true" title="eliminar campana"></span>
+                    </a>
+                    <a href="{% url 'reporte_campana' campana.pk %}">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
+                    </a>
+                    <a href="{% url 'reporte_campana_grafico' campana.pk %}">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="ver reportes graficos"></span>
+                    </a>
+                    <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana' %}" class="btn-submit">
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true" title="pause"></span>
+                    </a>
+                </td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="5">No existen campañas</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
     </form>
 </div>
 

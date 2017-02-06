@@ -246,6 +246,12 @@ class CampanaManager(models.Manager):
         """
         return self.filter(estado=Campana.ESTADO_ACTIVA)
 
+    def obtener_borradas(self):
+        """
+        Devuelve campañas en estado borradas.
+        """
+        return self.filter(estado=Campana.ESTADO_BORRADA)
+
 
 class Campana(models.Model):
     """Una campaña del call center"""
@@ -331,6 +337,13 @@ class Campana(models.Model):
         logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
         #assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_ACTIVA
+        self.save()
+
+    def remover(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = Campana.ESTADO_BORRADA
         self.save()
 
 
