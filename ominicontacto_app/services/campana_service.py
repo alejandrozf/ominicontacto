@@ -207,3 +207,12 @@ class CampanaService():
             campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "deletecampaign_list.json", url_edit)
+
+    def remove_campana_wombat(self, campana):
+        url_edit = "api/campaigns/?op=remove&campaign={0}".format(campana.nombre)
+        url = '/'.join([settings.OML_WOMBAT_URL,
+                  url_edit])
+        r = requests.post(url)
+        if r.status_code == 200:
+            return True
+        return False
