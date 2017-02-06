@@ -60,7 +60,7 @@ class CampanaService():
 
     def obtener_list_id_wombat(self, salida_comando, campana):
         lista = salida_comando.split()
-        nombre_lista = '_'.join([str(campana.bd_contacto.id),
+        nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  campana.bd_contacto.nombre])
 
         nombre_lista = '"' + nombre_lista + '"'
@@ -144,7 +144,7 @@ class CampanaService():
 
     def crear_lista_wombat(self, lista, campana):
         service_wombat = WombatService()
-        nombre_lista = '_'.join([str(campana.bd_contacto.id),
+        nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  campana.bd_contacto.nombre])
         url_edit = "api/lists/?op=addToList&list={0}".format(
             nombre_lista)
