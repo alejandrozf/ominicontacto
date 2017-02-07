@@ -366,6 +366,8 @@ class FormularioNuevoContactoFormView(FormView):
         if contacto.count() > 0:
             return self.form_invalid(form, id_cliente=id_cliente)
         datos = []
+        nombres.remove('telefono')
+        nombres.remove('id_cliente')
         for nombre in nombres:
             campo = form.cleaned_data.get(nombre)
             datos.append(campo)
