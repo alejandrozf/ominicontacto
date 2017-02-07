@@ -541,22 +541,25 @@ class UpdateBaseDatosView(FormView):
             return self.form_invalid(form, error=error)
         self.object.bd_contacto = bd_contacto
         self.object.save()
-        service_base = SincronizarBaseDatosContactosService()
-        lista = service_base.crear_lista(self.get_object(), telefonos,
-                                         usa_contestador, evitar_duplicados,
-                                         evitar_sin_telefono, prefijo_discador)
-
-        print campana_service.desasociacion_campana_wombat(self.get_object())
-        print campana_service.crear_lista_wombat(lista, self.get_object())
-        print campana_service.crear_lista_asociacion_campana_wombat(self.get_object())
-        resultado = campana_service.remove_campana_wombat(self.get_object())
-        print resultado
-        if resultado:
-            self.object.remover()
-        resultado = campana_service.start_campana_wombat(self.get_object())
-        print resultado
-        if resultado:
-            self.object.play()
+        # service_base = SincronizarBaseDatosContactosService()
+        # lista = service_base.crear_lista(self.get_object(), telefonos,
+        #                                  usa_contestador, evitar_duplicados,
+        #                                  evitar_sin_telefono, prefijo_discador)
+        #
+        # print campana_service.desasociacion_campana_wombat(self.get_object())
+        # print campana_service.crear_lista_wombat(lista, self.get_object())
+        # print campana_service.crear_lista_asociacion_campana_wombat(self.get_object())
+        # resultado = campana_service.remove_campana_wombat(self.get_object())
+        # print resultado
+        # if resultado:
+        #     self.object.remover()
+        # resultado_2 = campana_service.start_campana_wombat(self.get_object())
+        # print resultado_2
+        # if resultado_2:
+        #     self.object.play()
+        campana_service.cambiar_base(self.get_object(), telefonos,
+                                     usa_contestador, evitar_duplicados,
+                                     evitar_sin_telefono, prefijo_discador)
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito el cambio de base de datos.'
 

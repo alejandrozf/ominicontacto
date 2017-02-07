@@ -12,6 +12,8 @@ from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
     CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator
 )
+from ominicontacto_app.services.exportar_base_datos import\
+    SincronizarBaseDatosContactosService
 
 import logging
 
@@ -169,6 +171,7 @@ class CampanaService():
         url = '/'.join([settings.OML_WOMBAT_URL,
                   url_edit])
         r = requests.post(url)
+        print r
         if r.status_code == 200:
             return True
         return False
@@ -197,7 +200,9 @@ class CampanaService():
         url_edit = "api/edit/campaign/list/?mode=L&parent={0}".format(
             campana.campaign_id_wombat)
         salida = service_wombat.list_config_wombat(url_edit)
+        print salida
         cclId = self.obtener_ccl_id_wombat(salida)
+        print cclId
         cclId = elimina_comillas(cclId)
         if not cclId:
             cclId = 0
@@ -213,6 +218,26 @@ class CampanaService():
         url = '/'.join([settings.OML_WOMBAT_URL,
                   url_edit])
         r = requests.post(url)
+
         if r.status_code == 200:
             return True
         return False
+
+    def cambiar_base(self, campana, telefonos, usa_contestador,
+                     evitar_duplicados, evitar_sin_telefono, prefijo_discador):
+        service_base = SincronizarBaseDatosContactosService()
+        lista = service_base.crear_lista(campana, telefonos,
+                                         usa_contestador, evitar_duplicados,
+                                         evitar_sin_telefono, prefijo_discador)
+
+        print self.desasociacion_campana_wombat(campana)
+        print self.crear_lista_wombat(lista, campana)
+        print self.crear_lista_asociacion_campana_wombat(campana)
+        resultado = self.remove_campana_wombat(campana)
+        print resultado
+        if resultado:
+            campana.remover()
+        resultado_2 = self.start_campana_wombat(campana)
+        print resultado_2
+        if resultado_2:
+            campana.play()
