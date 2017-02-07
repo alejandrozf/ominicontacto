@@ -542,17 +542,19 @@ class UpdateBaseDatosView(FormView):
         self.object.bd_contacto = bd_contacto
         self.object.save()
         service_base = SincronizarBaseDatosContactosService()
-        lista = service_base.crear_lista(self.object, telefonos,
+        lista = service_base.crear_lista(self.get_object(), telefonos,
                                          usa_contestador, evitar_duplicados,
                                          evitar_sin_telefono, prefijo_discador)
 
-        campana_service.desasociacion_campana_wombat(self.object)
-        campana_service.crear_lista_wombat(lista, self.object)
-        campana_service.crear_lista_asociacion_campana_wombat(self.object)
-        resultado = campana_service.remove_campana_wombat(self.object)
+        print campana_service.desasociacion_campana_wombat(self.get_object())
+        print campana_service.crear_lista_wombat(lista, self.get_object())
+        print campana_service.crear_lista_asociacion_campana_wombat(self.get_object())
+        resultado = campana_service.remove_campana_wombat(self.get_object())
+        print resultado
         if resultado:
             self.object.remover()
-        resultado = campana_service.start_campana_wombat( self.object)
+        resultado = campana_service.start_campana_wombat(self.get_object())
+        print resultado
         if resultado:
             self.object.play()
         message = 'Operación Exitosa!\
