@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import requests
+import time
 
 from django.conf import settings
 from ominicontacto_app.models import Campana
@@ -223,6 +224,11 @@ class CampanaService():
             return True
         return False
 
+    def obtener_dato_campana_run(self, campana):
+        service_wombat = WombatService()
+        url_edit = "api/live/runs/"
+        salida = service_wombat.list_config_wombat(url_edit)
+
     def cambiar_base(self, campana, telefonos, usa_contestador,
                      evitar_duplicados, evitar_sin_telefono, prefijo_discador):
         service_base = SincronizarBaseDatosContactosService()
@@ -230,13 +236,15 @@ class CampanaService():
                                          usa_contestador, evitar_duplicados,
                                          evitar_sin_telefono, prefijo_discador)
 
-        print self.desasociacion_campana_wombat(campana)
-        print self.crear_lista_wombat(lista, campana)
-        print self.crear_lista_asociacion_campana_wombat(campana)
         resultado = self.remove_campana_wombat(campana)
         print resultado
         if resultado:
             campana.remover()
+        time.sleep(30)
+        print self.desasociacion_campana_wombat(campana)
+        print self.crear_lista_wombat(lista, campana)
+        print self.crear_lista_asociacion_campana_wombat(campana)
+
         resultado_2 = self.start_campana_wombat(campana)
         print resultado_2
         if resultado_2:
