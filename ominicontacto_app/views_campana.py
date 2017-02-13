@@ -7,7 +7,7 @@ import datetime
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import RedirectView
@@ -590,3 +590,18 @@ class UpdateBaseDatosView(FormView):
 
     def get_success_url(self):
         return reverse('campana_list')
+
+
+def detalle_campana_view(request):
+    pk_campana = int(request.GET['pk_campana'])
+    campana = Campana.objects.get(pk=pk_campana)
+    campana_service = CampanaService()
+    dato_campana = campana_service.obtener_dato_campana_run(campana)
+    data = {
+        'campana': campana,
+        'efectuadas': dato_campana['n_calls_completed'],
+        'terminadas': dato_campana['n_calls_attempted'],
+        'estimadas': dato_campana['n_est_remaining_calls']
+
+    }
+    return render(request, 'campana/detalle_campana.html', data)

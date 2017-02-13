@@ -324,6 +324,9 @@ urlpatterns = [
         login_required(
             views_campana.UpdateBaseDatosView.as_view()),
         name='update_base_datos_campana', ),
+    url(r'^campana/detalle/$',
+        login_required(views_campana.detalle_campana_view),
+        name='detalle_campana', ),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================

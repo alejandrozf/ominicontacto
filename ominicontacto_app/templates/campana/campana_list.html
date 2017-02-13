@@ -16,6 +16,23 @@
                 $("#form_estados_campanas").submit();
             }
         });
+
+        function mostrar_detalle_campana(pk_campana) {
+             if ($('#modal_ventana').attr('first-time') == 'true'){
+                  $('#modal_ventana').attr('first-time', 'false')
+             }
+            else{
+                $('#modal_ventana').fadeOut('slow');
+             }
+
+             $('#modal_ventana').html("");
+            $.get('{% url  'detalle_campana' %}', {pk_campana: pk_campana},
+                    function (data) {
+                        $('#modal_ventana').html(data);
+                        $('#modal_ventana').fadeIn('slow');
+                    });
+        }
+        ;
     </script>
 {% endblock %}
 
@@ -42,7 +59,7 @@
         {% for campana in activas %}
             <tr>
                 <td width="45%">
-                    <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
+                    <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                 </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
@@ -97,7 +114,7 @@
         {% for campana in pausadas %}
             <tr>
                 <td width="45%">
-                    <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
+                    <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                 </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
@@ -264,5 +281,27 @@
     </form>
 </div>
 
+ <div class="modal fade" id="myMapModal">
+        <div class="modal-dialog" id="modal_ventana">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 id="address" class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div id="map-canvas" class=""></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 
 {% endblock %}

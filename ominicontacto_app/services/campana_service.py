@@ -47,6 +47,20 @@ class CampanaService():
 
         return id_lista
 
+    def obtener_datos_campana_run(self, salida, campana):
+        results = salida['result']
+        campanas = results['campaigns']
+        dato_campana = None
+        for campaing in campanas:
+            if campaing['campaignId'] == campana.campaign_id_wombat:
+                if campana.ESTADO_ACTIVA and campaing['state'] == 'RUNNING':
+                    dato_campana = campaing
+                    break
+                elif campana.ESTADO_PAUSADA and campaing['state'] == 'PAUSED':
+                    dato_campana = campaing
+                    break
+        return dato_campana
+
     def crear_campana_wombat(self, campana):
         service_wombat = WombatService()
         service_wombat_config = CampanaCreator()
@@ -183,7 +197,7 @@ class CampanaService():
         service_wombat = WombatService()
         url_edit = "api/live/runs/"
         salida = service_wombat.list_config_wombat(url_edit)
-        return salida
+        return self.obtener_datos_campana_run(salida, campana)
 
     def cambiar_base(self, campana, telefonos, usa_contestador,
                      evitar_duplicados, evitar_sin_telefono, prefijo_discador):
