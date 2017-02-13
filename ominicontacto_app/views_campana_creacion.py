@@ -78,24 +78,6 @@ class CampanaCreateView(CreateView):
             messages.warning(self.request, message)
         return super(CampanaCreateView, self).dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        campana_service = CampanaService()
-        self.object.save()
-        campana_service.crear_campana_wombat(self.object)
-        campana_service.crear_trunk_campana_wombat(self.object)
-        parametros = ["RS_BUSY", "", 3, 120]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["TERMINATED", "CONTESTADOR", 3, 1800]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_NOANSWER", "", 3, 220]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_REJECTED", "", 3, 300]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_TIMEOUT", "", 3, 300]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        return super(CampanaCreateView, self).form_valid(form)
-
     def get_success_url(self):
         return reverse(
             'queue_nuevo',
@@ -165,9 +147,6 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         self.object.save()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(self.object)
-        campana_service = CampanaService()
-        campana_service.crear_endpoint_campana_wombat(self.object)
-        campana_service.crear_endpoint_asociacion_campana_wombat(self.object)
         if self.object.type == Queue.TYPE_DIALER:
             return HttpResponseRedirect(
                 reverse('sincroniza_dialer',
@@ -437,6 +416,20 @@ class SincronizaDialerView(FormView):
                                          usa_contestador, evitar_duplicados,
                                          evitar_sin_telefono, prefijo_discador)
         campana_service = CampanaService()
+        campana_service.crear_campana_wombat(self.object)
+        campana_service.crear_trunk_campana_wombat(self.object)
+        parametros = ["RS_BUSY", "", 3, 120]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        parametros = ["TERMINATED", "CONTESTADOR", 3, 1800]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        parametros = ["RS_NOANSWER", "", 3, 220]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        parametros = ["RS_REJECTED", "", 3, 300]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        parametros = ["RS_TIMEOUT", "", 3, 300]
+        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        campana_service.crear_endpoint_campana_wombat(self.object)
+        campana_service.crear_endpoint_asociacion_campana_wombat(self.object)
         campana_service.crear_lista_wombat(lista, self.object)
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
         message = 'Operación Exitosa!\
