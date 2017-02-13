@@ -255,8 +255,24 @@ class FormularioCreateFormView(FormView):
         obj = MetadataCliente.objects.create(campana=campana, agente=agente,
                                              contacto=contacto,
                                              metadata=metadata)
+        message = 'Operación Exitosa!' \
+                  'Se llevó a cabo con éxito el llenado del formulario del' \
+                  ' cliente'
+        messages.success(self.request, message)
         return HttpResponseRedirect(reverse('formulario_detalle',
                                             kwargs={"pk": obj.pk}))
+
+    def form_invalid(self, form):
+
+        message = '<strong>Operación Errónea!</strong> \
+                  Error en el formulario revise bien los datos llenados.'
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+        return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
         # reverse('formulario_detalle',
@@ -334,7 +350,10 @@ class FormularioUpdateFormView(FormView):
         metadata_datos = json.dumps(form.cleaned_data)
         metadata.metadata = metadata_datos
         metadata.save()
-
+        message = 'Operación Exitosa!' \
+                  'Se llevó a cabo con éxito el llenado del formulario del' \
+                  ' cliente'
+        messages.success(self.request, message)
         return HttpResponseRedirect(reverse('formulario_detalle',
                                             kwargs={"pk": metadata.pk}))
 
