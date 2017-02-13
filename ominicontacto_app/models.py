@@ -1667,7 +1667,7 @@ class DuracionDeLlamada(models.Model):
 class MetadataCliente(models.Model):
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
     campana = models.ForeignKey(Campana, related_name="metadatacliente")
-    contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
+    contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
 
