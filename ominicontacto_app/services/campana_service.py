@@ -35,57 +35,17 @@ class CampanaService():
 
         return error
 
-    def obtener_campana_id_wombat(self, salida_comando):
-        lista = salida_comando.split()
-
-        index = None
-        for item in lista:
-            if item == '"campaignId"':
-                index = lista.index(item)
-                break
-
-        if index:
-            return elimina_coma(lista[index+2])
-        return None
-
-    def obtener_ep_ip_wombat(self, salida_comando):
-        lista = salida_comando.split()
-
-        index = None
-        for item in lista:
-            if item == '"epId"':
-                index = lista.index(item)
-                break
-
-        if index:
-            return elimina_coma(lista[index+2])
-        return None
-
     def obtener_list_id_wombat(self, salida_comando, campana):
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  campana.bd_contacto.nombre])
         id_lista = None
         results = salida_comando['results']
         for lista in results:
-            print lista["name"]
             if lista["name"] == nombre_lista:
                 id_lista = lista["listId"]
                 break
 
         return id_lista
-
-    def obtener_ccl_id_wombat(self, salida_comando):
-        lista = salida_comando.split()
-
-        index = None
-        for item in lista:
-            if item == '"cclId"':
-                index = lista.index(item)
-                break
-
-        if index:
-            return elimina_coma(lista[index+2])
-        return None
 
     def crear_campana_wombat(self, campana):
         service_wombat = WombatService()
@@ -93,7 +53,8 @@ class CampanaService():
         service_wombat_config.create_json(campana)
         salida = service_wombat.update_config_wombat(
             "newcampaign.json", 'api/edit/campaign/?mode=E')
-        campaign_id = self.obtener_campana_id_wombat(salida)
+        results = salida['results']
+        campaign_id = results[0]['campaignId']
         if campaign_id:
             campana.guardar_campaign_id_wombat(campaign_id)
             return True
@@ -125,7 +86,8 @@ class CampanaService():
             queue.campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "newep.json", url_edit)
-        ep_id = self.obtener_ep_ip_wombat(salida)
+        results = salida['results']
+        ep_id = results[0]['epId']
         if ep_id:
             queue.guardar_ep_id_wombat(ep_id)
             return True
@@ -167,7 +129,6 @@ class CampanaService():
         url = '/'.join([settings.OML_WOMBAT_URL,
                   url_edit])
         r = requests.post(url)
-        print r
         if r.status_code == 200:
             return True
         return False

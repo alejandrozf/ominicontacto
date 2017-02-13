@@ -18,7 +18,7 @@ class WombatService():
     def update_config_wombat(self, json_file, url_edit):
         """Realiza un update en la config de wombat
 
-        :returns: int -- exit status de proceso ejecutado.
+        :returns: json -- exit status de proceso ejecutado.
                   0 (cero) si fue exitoso, otro valor si se produjo
                   un error
         """
@@ -32,12 +32,12 @@ class WombatService():
             out = subprocess.check_output(['curl', '--user',
                                     ':'.join([settings.OML_WOMBAT_USER,
                                               settings.OML_WOMBAT_PASSWORD]),
-                                     '-i', '-X', 'POST', '--data-urlencode',
+                                     '-X', 'POST', '--data-urlencode',
                                      '@'.join(['data', filename]),
                                      '/'.join([settings.OML_WOMBAT_URL,
                                                url_edit])])
             logger.info("actualizacion en WOMBAT OK")
-            return out
+            return json.loads(out)
         except subprocess.CalledProcessError, e:
             logger.warn("Exit status erroneo: %s", e.returncode)
             logger.warn(" - Comando ejecutado: %s", e.cmd)
