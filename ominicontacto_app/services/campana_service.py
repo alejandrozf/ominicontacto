@@ -62,22 +62,17 @@ class CampanaService():
         return None
 
     def obtener_list_id_wombat(self, salida_comando, campana):
-        lista = salida_comando.split()
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  campana.bd_contacto.nombre])
-
-        nombre_lista = '"' + nombre_lista + '"'
-        index = None
-        indice = None
-        for item in lista:
-            nombre = elimina_coma(item)
-            if nombre_lista == nombre:
-                indice = lista.index(item)
+        id_lista = None
+        results = salida_comando['results']
+        for lista in results:
+            print lista["name"]
+            if lista["name"] == nombre_lista:
+                id_lista = lista["listId"]
                 break
 
-        if indice:
-            return elimina_coma(lista[indice-3])
-        return None
+        return id_lista
 
     def obtener_ccl_id_wombat(self, salida_comando):
         lista = salida_comando.split()
@@ -201,9 +196,8 @@ class CampanaService():
         url_edit = "api/edit/campaign/list/?mode=L&parent={0}".format(
             campana.campaign_id_wombat)
         salida = service_wombat.list_config_wombat(url_edit)
-        print salida
-        cclId = self.obtener_ccl_id_wombat(salida)
-        print cclId
+        results = salida['results']
+        cclId = results[0]['cclId']
         cclId = elimina_comillas(cclId)
         if not cclId:
             cclId = 0
@@ -228,6 +222,7 @@ class CampanaService():
         service_wombat = WombatService()
         url_edit = "api/live/runs/"
         salida = service_wombat.list_config_wombat(url_edit)
+        return salida
 
     def cambiar_base(self, campana, telefonos, usa_contestador,
                      evitar_duplicados, evitar_sin_telefono, prefijo_discador):
@@ -237,7 +232,6 @@ class CampanaService():
                                          evitar_sin_telefono, prefijo_discador)
 
         resultado = self.remove_campana_wombat(campana)
-        print resultado
         if resultado:
             campana.remover()
         time.sleep(30)
