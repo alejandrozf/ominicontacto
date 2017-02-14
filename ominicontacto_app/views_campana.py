@@ -89,6 +89,18 @@ class CampanaDeleteView(DeleteView):
                 message,
             )
 
+        service = CampanaService()
+        remover = service.remove_campana_wombat(self.object)
+        if not remover:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo eliminar la campana {0} del discador".
+                       format(self.object.nombre))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+
         message = '<strong>Operación Exitosa!</strong>\
         Se llevó a cabo con éxito la eliminación de la campana.'
 
