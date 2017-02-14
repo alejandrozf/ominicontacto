@@ -599,8 +599,8 @@ def detalle_campana_view(request):
     dato_campana = campana_service.obtener_dato_campana_run(campana)
     data = {
         'campana': campana,
-        'efectuadas': dato_campana['n_calls_completed'],
-        'terminadas': dato_campana['n_calls_attempted'],
+        'efectuadas': dato_campana['n_calls_attempted'],
+        'terminadas': dato_campana['n_calls_completed'],
         'estimadas': dato_campana['n_est_remaining_calls']
 
     }
