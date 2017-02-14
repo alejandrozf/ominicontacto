@@ -22,7 +22,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
-    AgenteProfileForm, AgendaBusquedaForm
+    AgenteProfileForm, AgendaBusquedaForm, PausaForm
 )
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
@@ -117,6 +117,7 @@ class UserDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})
+
 
 class UserListView(ListView):
     model = User
@@ -279,7 +280,7 @@ class GrupoDeleteView(DeleteView):
 class PausaCreateView(CreateView):
     model = Pausa
     template_name = 'base_create_update_form.html'
-    fields = ('nombre',)
+    form_class = PausaForm
 
     def get_success_url(self):
         return reverse('pausa_list')
@@ -288,7 +289,7 @@ class PausaCreateView(CreateView):
 class PausaUpdateView(UpdateView):
     model = Pausa
     template_name = 'base_create_update_form.html'
-    fields = ('nombre',)
+    form_class = PausaForm
 
     def get_success_url(self):
         return reverse('pausa_list')

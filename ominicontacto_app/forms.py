@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, FormularioDatoVenta, CalificacionCliente,Grupo,
-    Formulario, FieldFormulario
+    Formulario, FieldFormulario, Pausa
 )
 
 
@@ -554,3 +554,16 @@ class UpdateBaseDatosForm(forms.ModelForm):
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
+
+
+class PausaForm(forms.ModelForm):
+
+    class Meta:
+        model = Pausa
+        fields = ('nombre', )
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if ' ' in nombre:
+            raise forms.ValidationError('el nombre no puede contener espacios')
+        return nombre
