@@ -428,8 +428,9 @@ class SincronizaDialerView(FormView):
         campana_service.crear_reschedule_campana_wombat(self.object, parametros)
         parametros = ["RS_TIMEOUT", "", 3, 300]
         campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        campana_service.crear_endpoint_campana_wombat(self.object)
-        campana_service.crear_endpoint_asociacion_campana_wombat(self.object)
+        campana_service.crear_endpoint_campana_wombat(self.object.queue_campana)
+        campana_service.crear_endpoint_asociacion_campana_wombat(
+            self.object.queue_campana)
         campana_service.crear_lista_wombat(lista, self.object)
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
         message = 'Operación Exitosa!\
