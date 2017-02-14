@@ -310,6 +310,7 @@ class Campana(models.Model):
     )
     formulario = models.ForeignKey(Formulario)
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
+    oculto = models.BooleanField(default=False)
 
     def __unicode__(self):
             return self.nombre
@@ -346,6 +347,15 @@ class Campana(models.Model):
         self.estado = Campana.ESTADO_BORRADA
         self.save()
 
+    def ocultar(self):
+        """setea la campana como oculta"""
+        self.oculto = True
+        self.save()
+
+    def desocultar(self):
+        """setea la campana como visible"""
+        self.oculto = False
+        self.save()
 
 class QueueManager(models.Manager):
 
