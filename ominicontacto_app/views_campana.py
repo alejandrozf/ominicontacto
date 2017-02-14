@@ -73,7 +73,7 @@ class CampanaDeleteView(DeleteView):
         servicio_asterisk = AsteriskService()
         servicio_asterisk.delete_cola_asterisk(self.object.queue_campana)
         # realizamos la eliminacion de la queue
-        self.object.delete()
+        self.object.remover()
         # actualizamos el archivo de dialplan
         activacion_queue_service = ActivacionQueueService()
         try:
