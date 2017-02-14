@@ -328,6 +328,15 @@ urlpatterns = [
     url(r'^campana/detalle/$',
         login_required(views_campana.detalle_campana_view),
         name='detalle_campana', ),
+    url(r'^campana/(?P<pk_campana>\d+)/ocultar/$',
+        login_required(views_campana.OcultarCampanaView.as_view()),
+        name='oculta_campana', ),
+    url(r'^campana/(?P<pk_campana>\d+)/desocultar/$',
+        login_required(views_campana.DesOcultarCampanaView.as_view()),
+        name='desoculta_campana', ),
+    url(r'^mostrar/campanas_ocultas/$',
+        login_required(views_campana.mostrar_campanas_borradas_ocultas_view),
+        name='mostrar_campanas_ocultas', ),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================

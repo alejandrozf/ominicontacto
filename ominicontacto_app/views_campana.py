@@ -54,7 +54,8 @@ class CampanaListView(ListView):
         context['inactivas'] = Campana.objects.obtener_inactivas()
         context['pausadas'] = Campana.objects.obtener_pausadas()
         context['activas'] = Campana.objects.obtener_activas()
-        context['borradas'] = Campana.objects.obtener_borradas()
+        context['borradas'] = Campana.objects.obtener_borradas().filter(
+            oculto=False)
         return context
 
 
@@ -605,3 +606,37 @@ def detalle_campana_view(request):
 
     }
     return render(request, 'campana/detalle_campana.html', data)
+
+
+class OcultarCampanaView(RedirectView):
+    """
+    Esta vista actualiza la campañana ocultandola.
+    """
+
+    pattern_name = 'campana_list'
+
+    def get(self, request, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana.ocultar()
+        return HttpResponseRedirect(reverse('campana_list'))
+
+
+class DesOcultarCampanaView(RedirectView):
+    """
+    Esta vista actualiza la campañana haciendola visible.
+    """
+
+    pattern_name = 'campana_list'
+
+    def get(self, request, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana.desocultar()
+        return HttpResponseRedirect(reverse('campana_list'))
+
+
+def mostrar_campanas_borradas_ocultas_view(request):
+    borradas = Campana.objects.obtener_borradas()
+    data = {
+        'borradas': borradas,
+    }
+    return render(request, 'campana/campanas_borradas.html', data)
