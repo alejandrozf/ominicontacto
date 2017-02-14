@@ -5,11 +5,12 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView, FormView
 )
 from django.views.generic.list import ListView
+from django.views.generic.base import RedirectView
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
     OmlParserMaxRowError, OmlDepuraBaseDatoContactoError,
@@ -880,3 +881,37 @@ class GeneraExportacionDialerView(UpdateView):
         context['url_descarga'] = url
         context['base_datos_contacto'] = self.object
         return context
+
+
+class OcultarBaseView(RedirectView):
+    """
+    Esta vista actualiza la base de datos ocultandola.
+    """
+
+    pattern_name = 'lista_base_datos_contacto'
+
+    def get(self, request, *args, **kwargs):
+        base = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
+        base.ocultar()
+        return HttpResponseRedirect(reverse('lista_base_datos_contacto'))
+
+
+class DesOcultarBaseView(RedirectView):
+    """
+    Esta vista actualiza la base haciendola visible.
+    """
+
+    pattern_name = 'lista_base_datos_contacto'
+
+    def get(self, request, *args, **kwargs):
+        base = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
+        base.desocultar()
+        return HttpResponseRedirect(reverse('lista_base_datos_contacto'))
+
+
+def mostrar_bases_datos_borradas_ocultas_view(request):
+    bases_datos_contacto = BaseDatosContacto.objects.obtener_definidas_ocultas()
+    data = {
+        'bases_datos_contacto': bases_datos_contacto,
+    }
+    return render(request, 'base_datos_contacto/base_datos_ocultas.html', data)

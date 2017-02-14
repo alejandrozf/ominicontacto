@@ -210,6 +210,17 @@ urlpatterns = [
         login_required(views_contacto.ContactoBDContactoDeleteView.as_view()),
         name='eliminar_contacto',
         ),
+    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/ocultar/$',
+        login_required(views_base_de_datos_contacto.OcultarBaseView.as_view()),
+        name='oculta_base_dato', ),
+    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/desocultar/$',
+        login_required(
+            views_base_de_datos_contacto.DesOcultarBaseView.as_view()),
+        name='desoculta_base_datos', ),
+    url(r'^base_datos_contacto/bases_ocultas/$',
+        login_required(views_base_de_datos_contacto.
+                       mostrar_bases_datos_borradas_ocultas_view),
+        name='mostrar_bases_datos_ocultas', ),
     # ==========================================================================
     # Campana
     # ==========================================================================
