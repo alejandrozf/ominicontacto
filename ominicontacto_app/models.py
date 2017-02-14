@@ -357,6 +357,7 @@ class Campana(models.Model):
         self.oculto = False
         self.save()
 
+
 class QueueManager(models.Manager):
 
     def ultimo_queue_asterisk(self):
@@ -564,7 +565,17 @@ class BaseDatosContactoManager(models.Manager):
     def obtener_definidas(self):
         """
         Este método filtra lo objetos BaseDatosContacto que
-        esté definidos.
+        esté definidos no mostrando ocultas.
+        """
+        definidas = [BaseDatosContacto.ESTADO_DEFINIDA,
+                     BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA]
+        return self.filter(estado__in=definidas, oculto=False).order_by(
+            'fecha_alta')
+
+    def obtener_definidas_ocultas(self):
+        """
+        Este método filtra lo objetos BaseDatosContacto que
+        esté definidos mostrando ocultas
         """
         definidas = [BaseDatosContacto.ESTADO_DEFINIDA,
                      BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA]
@@ -1009,6 +1020,7 @@ class BaseDatosContacto(models.Model):
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
     )
+    oculto = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "{0}: ({1} contactos)".format(self.nombre,
@@ -1118,6 +1130,16 @@ class BaseDatosContacto(models.Model):
             metadata=self.metadata,
         )
         return copia
+
+    def ocultar(self):
+        """setea la base de datos como oculta"""
+        self.oculto = True
+        self.save()
+
+    def desocultar(self):
+        """setea la base de datos como visible"""
+        self.oculto = False
+        self.save()
 
 
 class ContactoManager(models.Manager):
