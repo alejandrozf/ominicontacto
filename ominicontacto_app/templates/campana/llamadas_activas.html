@@ -2,10 +2,16 @@
 {% load static %}
 
 {% block head_js %}
-    <script type="text/javascript">
+<script type="text/javascript">
+    $(document).ready(function() {
 
+        setInterval(function() {
+            window.location.reload(true)
+        }, 5000);
 
-    </script>
+    });
+
+</script>
 {% endblock %}
 
 {% block content %}
