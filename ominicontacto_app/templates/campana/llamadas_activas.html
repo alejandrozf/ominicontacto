@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_js %}
+    <script type="text/javascript">
+
+
+    </script>
+{% endblock %}
+
+{% block content %}
+<br>
+<table class="table table-stripped">
+    <thead>
+        <tr>
+            <th>Campaña</th>
+            <th>Numero</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for llamada in llamadas %}
+        <tr>
+            <td>{{llamada.campaignRun}}</td>
+            <td>{{llamada.number}}</td>
+            <td>{{llamada.state}}</td>
+        </tr>
+       {% empty %}
+        <tr>
+            <td colspan="3">No existen llamadas</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

@@ -61,6 +61,11 @@ class CampanaService():
                     break
         return dato_campana
 
+    def obtener_datos_calls(self, salida):
+        results = salida['result']
+        llamadas = results['hopperState']
+        return llamadas
+
     def crear_campana_wombat(self, campana):
         service_wombat = WombatService()
         service_wombat_config = CampanaCreator()
@@ -218,3 +223,9 @@ class CampanaService():
         print resultado_2
         if resultado_2:
             campana.play()
+
+    def obtener_calls_live(self):
+        service_wombat = WombatService()
+        url_edit = "api/live/calls/"
+        salida = service_wombat.list_config_wombat(url_edit)
+        return self.obtener_datos_calls(salida)
