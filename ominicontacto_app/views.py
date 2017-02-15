@@ -481,3 +481,10 @@ def crear_chat_view(request):
     chat = Chat.objects.create(agente=agente, user=user)
     response = JsonResponse({'status': 'OK', 'chat': chat.pk})
     return response
+
+
+def wombat_log_view(request):
+    print request.POST
+    import ipdb; ipdb.set_trace();
+    response = JsonResponse({'status': 'OK'})
+    return response

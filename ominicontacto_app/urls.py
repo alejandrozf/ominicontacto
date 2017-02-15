@@ -525,6 +525,9 @@ urlpatterns = [
         login_required(views_campana_reportes.LlamadasActivasView.as_view()),
         name='llamadas_activas',
         ),
+    url(r'^wombat/logs/$', views.wombat_log_view,
+        name='wombat_log',
+        ),
 ]
 
 urlpatterns += patterns('',
