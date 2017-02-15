@@ -11,7 +11,7 @@
                     </div>
                     <hr>
                         <div class="row">
-                            <div class="col-md-8 col-md-offset-1">
+                            <div class="col-md-6 ">
 
                             <p> Llamadas efectuadas <strong>{{ efectuadas }}</strong></p>
 
@@ -21,7 +21,12 @@
 
                             <p> Llamadas restantes estimadas <strong>{{ estimadas }}</strong></p>
 
-                                 </div>
+                            </div>
+                            <div class="col-md-6">
+                                {% for statu in status %}
+                                    <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
+                                {% endfor %}
+                            </div>
                             </div>
 
 

@@ -229,3 +229,11 @@ class CampanaService():
         url_edit = "api/live/calls/"
         salida = service_wombat.list_config_wombat(url_edit)
         return self.obtener_datos_calls(salida)
+
+    def obtener_status_campana_running(self, hopper_camp_id):
+        service_wombat = WombatService()
+        url_edit = "api/reports/stats/?id={0}".format(hopper_camp_id)
+        salida = service_wombat.list_config_wombat(url_edit)
+        result = salida['result']
+        status = result['statsOut']
+        return status
