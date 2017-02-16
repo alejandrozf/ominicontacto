@@ -5,6 +5,7 @@ import datetime
 from django.conf import settings
 from django.views.generic.detail import DetailView
 from django.views.generic import FormView, ListView
+from django.core import paginator as django_paginator
 from ominicontacto_app.forms import (
     GrabacionBusquedaForm, GrabacionReporteForm
 )
@@ -22,6 +23,26 @@ class BusquedaGrabacionFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super(BusquedaGrabacionFormView, self).get_context_data(
             **kwargs)
+
+        listado_de_grabaciones = []
+
+        if 'listado_de_grabaciones' in context:
+            listado_de_grabaciones = context['listado_de_grabaciones']
+
+        qs = listado_de_grabaciones
+         # ----- <Paginate> -----
+        page = self.kwargs['pagina']
+        if context['pagina']:
+            page = context['pagina']
+        result_paginator = django_paginator.Paginator(qs, 4)
+        try:
+            qs = result_paginator.page(page)
+        except django_paginator.PageNotAnInteger:
+            qs = result_paginator.page(1)
+        except django_paginator.EmptyPage:
+            qs = result_paginator.page(result_paginator.num_pages)
+        # ----- </Paginate> -----
+        context['listado_de_grabaciones'] = qs
         context['grabacion_url'] = settings.OML_GRABACIONES_URL
         return context
 
@@ -30,7 +51,8 @@ class BusquedaGrabacionFormView(FormView):
         hoy = hoy_ahora.date()
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=Grabacion.objects.
-                grabacion_by_fecha_intervalo(hoy, hoy)))
+                grabacion_by_fecha_intervalo(hoy, hoy),
+            pagina=self.kwargs['pagina']))
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
@@ -46,11 +68,12 @@ class BusquedaGrabacionFormView(FormView):
         tel_cliente = form.cleaned_data.get('tel_cliente')
         sip_agente = form.cleaned_data.get('sip_agente')
         campana = form.cleaned_data.get('campana')
+        pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, id_cliente, tel_cliente,
             sip_agente, campana)
         return self.render_to_response(self.get_context_data(
-            listado_de_grabaciones=listado_de_grabaciones))
+            listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
 
 
 class GrabacionReporteListView(ListView):

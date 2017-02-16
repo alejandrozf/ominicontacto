@@ -250,6 +250,7 @@ class GrabacionBusquedaForm(forms.Form):
     tel_cliente = forms.CharField(required=False)
     sip_agente = forms.ChoiceField(required=False, label='Agente', choices=())
     campana = forms.ChoiceField(required=False, choices=())
+    pagina = forms.CharField(required=False, widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
