@@ -77,6 +77,11 @@ class CalificacionClienteCreateView(CreateView):
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
+        url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
+            'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
+        r = requests.post(
+            url_wombat_agente.format(self.kwargs['wombat_id'],
+                                     self.kwargs['id_agente']))
         if calificacion is None:
             self.object.es_venta = True
             self.object.wombat_id = int(self.kwargs['wombat_id'])
@@ -181,7 +186,11 @@ class CalificacionClienteUpdateView(UpdateView):
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
-
+        url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
+                                      'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
+        r = requests.post(
+            url_wombat_agente.format(self.kwargs['wombat_id'],
+                                     self.kwargs['id_agente']))
         if calificacion is None:
             self.object.es_venta = True
             self.object.save()
