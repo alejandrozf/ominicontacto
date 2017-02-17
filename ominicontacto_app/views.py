@@ -487,6 +487,8 @@ def crear_chat_view(request):
 @csrf_exempt
 def wombat_log_view(request):
     print request.POST
-    import ipdb; ipdb.set_trace();
+    for item in request.POST.items():
+	print item
+    #import ipdb; ipdb.set_trace();
     response = JsonResponse({'status': 'OK'})
     return response
