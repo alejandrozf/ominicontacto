@@ -34,6 +34,7 @@ from services.regeneracion_asterisk import RegeneracionAsteriskService,\
 from django.views.decorators.csrf import csrf_protect
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
+from django.views.decorators.csrf import csrf_exempt
 
 
 # def mensajes_recibidos_view(request):
@@ -483,6 +484,7 @@ def crear_chat_view(request):
     return response
 
 
+@csrf_exempt
 def wombat_log_view(request):
     print request.POST
     import ipdb; ipdb.set_trace();
