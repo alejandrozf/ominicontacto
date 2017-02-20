@@ -492,8 +492,7 @@ def crear_chat_view(request):
 def wombat_log_view(request):
     print request.POST
     dict_post = request.POST
-    for item in dict_post:
-        print item
+
     id_cliente = int(dict_post['I_ID_CLIENTE'])
     telefono = dict_post['num']
     estado = dict_post['state']
