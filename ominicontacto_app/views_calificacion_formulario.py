@@ -62,7 +62,6 @@ class CalificacionClienteCreateView(CreateView):
         return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):
-        self.object = self.get_object()
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
