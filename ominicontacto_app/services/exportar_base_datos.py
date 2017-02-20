@@ -65,6 +65,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("timeout")
             encabezado.append("id_campana")
             encabezado.append("usa_contestador")
+            encabezado.append("id_contacto")
             for columna in telefonos:
                 encabezado.append(nombres_de_columnas[int(columna)])
 
@@ -87,6 +88,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(campana.queue_campana.timeout)
                 lista_opciones.append(campana.id)
                 lista_opciones.append(usa_contestador)
+                lista_opciones.append(contacto.pk)
                 if contacto.datos:
                     datos = json.loads(contacto.datos)
                     for col_telefono in telefonos:
@@ -175,6 +177,7 @@ class SincronizarBaseDatosContactosService(object):
                 dato_contacto += "campana:" + campana.nombre + ","
                 dato_contacto += "timeout:" + str(campana.queue_campana.timeout)
                 dato_contacto += ",id_campana:" + str(campana.id) + ","
+                dato_contacto += "id_contacto:" + str(contacto.pk) + ","
                 dato_contacto += "usa_contestador:" + str(usa_contestador) + "|"
 
                 lista_contactos += dato_contacto
