@@ -495,14 +495,21 @@ def wombat_log_view(request):
     for item in dict_post:
         print item
     id_cliente = int(dict_post['I_ID_CLIENTE'])
+    del dict_post['I_ID_CLIENTE']
     telefono = dict_post['num']
+    del dict_post['num']
     estado = dict_post['state']
+    del dict_post['state']
     calificacion = dict_post['extstate']
+    del dict_post['extstate']
     timeout = int(dict_post['I_TIMEOUT'])
+    del dict_post['I_TIMEOUT']
     id_campana = int(dict_post['I_ID_CAMPANA'])
+    del dict_post['I_ID_CAMPANA']
     id_agente = None
     if 'O_id_agente' in dict_post.keys():
         id_agente = int(dict_post['O_id_agente'])
+        del dict_post['O_id_agente']
 
     try:
         campana = Campana.objects.get(pk=id_campana)
