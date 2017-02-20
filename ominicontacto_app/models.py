@@ -1724,3 +1724,17 @@ class MensajeChat(models.Model):
     mensaje = models.TextField()
     fecha_hora = models.DateTimeField(auto_now=True)
     chat = models.ForeignKey(Chat, related_name="mensajeschat")
+
+
+class WombatLog(models.Model):
+    campana = models.ForeignKey(Campana, related_name="logswombat")
+    agente = models.ForeignKey(AgenteProfile, related_name="logsaagente")
+    telefono = models.CharField(max_length=128)
+    id_cliente = models.IntegerField()
+    estado = models.CharField(max_length=128)
+    calificacion = models.CharField(max_length=128)
+    timeout = models.IntegerField()
+    metadata = models.TextField()
+    fecha_hora = models.DateTimeField(auto_now=True)
+
+
