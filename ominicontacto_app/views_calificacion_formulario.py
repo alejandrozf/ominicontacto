@@ -77,11 +77,11 @@ class CalificacionClienteCreateView(CreateView):
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
-        url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
-            'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
-        r = requests.post(
-            url_wombat_agente.format(self.kwargs['wombat_id'],
-                                     self.kwargs['id_agente']))
+       # url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
+        #    'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
+        #r = requests.post(
+         #   url_wombat_agente.format(self.kwargs['wombat_id'],
+          #                           self.kwargs['id_agente']))
         if calificacion is None:
             self.object.es_venta = True
             self.object.wombat_id = int(self.kwargs['wombat_id'])
@@ -150,6 +150,14 @@ class CalificacionClienteUpdateView(UpdateView):
         return super(CalificacionClienteUpdateView, self).dispatch(*args,
                                                                   **kwargs)
 
+    def get(self, request, *args, **kwargs):
+        url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
+                                      'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
+        r = requests.post(
+            url_wombat_agente.format(self.kwargs['wombat_id'],
+                                     self.kwargs['id_agente']))
+        return self.render_to_response(self.get_context_data())
+
     def get_form(self, form_class):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
@@ -186,11 +194,11 @@ class CalificacionClienteUpdateView(UpdateView):
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
-        url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
-                                      'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
-        r = requests.post(
-            url_wombat_agente.format(self.kwargs['wombat_id'],
-                                     self.kwargs['id_agente']))
+        #url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
+        #                              'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
+        #r = requests.post(
+         #   url_wombat_agente.format(self.kwargs['wombat_id'],
+          #                           self.kwargs['id_agente']))
         if calificacion is None:
             self.object.es_venta = True
             self.object.save()
