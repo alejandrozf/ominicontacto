@@ -59,7 +59,8 @@ class CalificacionClienteCreateView(CreateView):
         r = requests.post(
             url_wombat_agente.format(self.kwargs['wombat_id'],
                                      self.kwargs['id_agente']))
-        return self.render_to_response(self.get_context_data())
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
@@ -164,7 +165,8 @@ class CalificacionClienteUpdateView(UpdateView):
         r = requests.post(
             url_wombat_agente.format(self.kwargs['wombat_id'],
                                      self.kwargs['id_agente']))
-        return self.render_to_response(self.get_context_data())
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
     def get_form(self, form_class):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
