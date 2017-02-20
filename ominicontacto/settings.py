@@ -150,7 +150,7 @@ OML_OMNILEADS_IP = None
 """IP donde se encuentra kamailio
 
 Ejemplo:
-    OML_OMNILEADS_IP = "172.16.20.241
+    OML_OMNILEADS_IP = "172.16.20.241"
 """
 
 #==============================================================================

@@ -79,6 +79,7 @@ DATABASES = {
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 MEDIA_ROOT = os.path.join(BASE_DIR, '/home/FreeTech/media_root')
 
+OML_OMNILEADS_IP = "172.16.20.241"
 
 # 'OML_QUEUE_FILENAME': donde se genera la config de queues. Asterisk debe estar configurado
 # 'OML_ASTERISK_HOSTNAME': servidor donde se copiara la config de queues. Asterisk debe estar configurado
