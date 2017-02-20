@@ -1726,7 +1726,19 @@ class MensajeChat(models.Model):
     chat = models.ForeignKey(Chat, related_name="mensajeschat")
 
 
+class WombatLogManager(models.Manager):
+
+    def obtener_wombat_log_contacto(self, contacto):
+        try:
+            return self.filter(contacto=contacto)
+        except WombatLog.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contacto con el id"
+                                       ": {0}".format(contacto.pk)))
+
+
 class WombatLog(models.Model):
+    objects = WombatLogManager()
+
     campana = models.ForeignKey(Campana, related_name="logswombat")
     contacto = models.ForeignKey(Contacto)
     agente = models.ForeignKey(AgenteProfile, related_name="logsaagente",

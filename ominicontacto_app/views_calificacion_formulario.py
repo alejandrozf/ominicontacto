@@ -15,7 +15,8 @@ from django.views.generic.edit import (
 )
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
-    Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente
+    Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
+    WombatLog
 )
 from ominicontacto_app.forms import (
     FormularioCRMForm, CalificacionClienteForm
@@ -86,17 +87,18 @@ class CalificacionClienteCreateView(CreateView):
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
-       # url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
-        #    'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
-        #r = requests.post(
-         #   url_wombat_agente.format(self.kwargs['wombat_id'],
-          #                           self.kwargs['id_agente']))
+
         if calificacion is None:
             self.object.es_venta = True
             self.object.wombat_id = int(self.kwargs['wombat_id'])
             self.object.save()
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
+            wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
+                self.object.contacto)
+            if wombat_log:
+                wombat_log.calificacion = "venta"
+                wombat_log.save()
             return redirect(self.get_success_url())
         else:
             self.object.es_venta = False
@@ -105,6 +107,11 @@ class CalificacionClienteCreateView(CreateView):
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'],
                                   self.object.calificacion.nombre))
+            wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
+                self.object.contacto)
+            if wombat_log:
+                wombat_log.calificacion = self.object.calificacion.nombre
+                wombat_log.save()
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
@@ -205,16 +212,17 @@ class CalificacionClienteUpdateView(UpdateView):
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
-        #url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
-        #                              'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
-        #r = requests.post(
-         #   url_wombat_agente.format(self.kwargs['wombat_id'],
-          #                           self.kwargs['id_agente']))
+
         if calificacion is None:
             self.object.es_venta = True
             self.object.save()
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
+            wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
+                self.object.contacto)
+            if wombat_log:
+                wombat_log.calificacion = "venta"
+                wombat_log.save()
             return redirect(self.get_success_url())
 
         else:
@@ -223,6 +231,11 @@ class CalificacionClienteUpdateView(UpdateView):
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'],
                                   self.object.calificacion.nombre))
+            wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
+                self.object.contacto)
+            if wombat_log:
+                wombat_log.calificacion = self.object.calificacion.nombre
+                wombat_log.save()
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
