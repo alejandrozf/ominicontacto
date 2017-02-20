@@ -2,6 +2,9 @@
 
 from __future__ import unicode_literals
 
+import json
+import logging
+
 from services.sms_services import SmsManager
 from django.conf import settings
 from django.http import JsonResponse
@@ -18,7 +21,7 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat
+    Chat, MensajeChat, WombatLog, Campana
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
@@ -36,6 +39,7 @@ from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
 from django.views.decorators.csrf import csrf_exempt
 
+logger = logging.getLogger(__name__)
 
 # def mensajes_recibidos_view(request):
 #
@@ -487,8 +491,37 @@ def crear_chat_view(request):
 @csrf_exempt
 def wombat_log_view(request):
     print request.POST
-    for item in request.POST.items():
-	print item
+    dict_post = request.POST
+    for item in dict_post:
+        print item
+    id_cliente = int(dict_post['I_ID_CLIENTE'])
+    telefono = dict_post['num']
+    estado = dict_post['state']
+    calificacion = dict_post['extstate']
+    timeout = int(dict_post['I_TIMEOUT'])
+    id_campana = int(dict_post['I_ID_CAMPANA'])
+    id_agente = None
+    if 'O_id_agente' in dict_post.keys():
+        id_agente = int(dict_post['O_id_agente'])
+    if not id_agente:
+        if request.user.get_agente_profile():
+            id_agente = request.user.get_agente_profile().pk
+    try:
+        campana = Campana.objects.get(pk=id_campana)
+        agente = AgenteProfile.objects.get(pk=id_agente)
+    except Campana.DoesNotExist:
+        campana = None
+        logger.exception("Excepcion detectada al obtener campana "
+                         "con la id {0} no existe ".format(id_campana))
+    except AgenteProfile.DoesNotExist:
+        agente = None
+        logger.exception("Excepcion detectada al obtener agente "
+                         "con la id {0} no existe ".format(id_agente))
+
+    WombatLog.object.create(campana=campana, agente=agente, telefono=telefono,
+                            estado=estado, calificacion=calificacion,
+                            timeout=timeout, id_cliente=id_cliente,
+                            metadata=json.dumps(dict_post))
     #import ipdb; ipdb.set_trace();
     response = JsonResponse({'status': 'OK'})
     return response
