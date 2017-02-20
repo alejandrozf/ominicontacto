@@ -96,6 +96,7 @@ class CalificacionClienteCreateView(CreateView):
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
                 self.object.contacto)
+            wombat_log = wombat_log[0]
             if wombat_log:
                 wombat_log.calificacion = "venta"
                 wombat_log.save()
@@ -109,6 +110,7 @@ class CalificacionClienteCreateView(CreateView):
                                   self.object.calificacion.nombre))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
                 self.object.contacto)
+            wombat_log = wombat_log[0]
             if wombat_log:
                 wombat_log.calificacion = self.object.calificacion.nombre
                 wombat_log.save()
@@ -220,6 +222,7 @@ class CalificacionClienteUpdateView(UpdateView):
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
                 self.object.contacto)
+            wombat_log = wombat_log[0]
             if wombat_log:
                 wombat_log.calificacion = "venta"
                 wombat_log.save()
@@ -233,6 +236,7 @@ class CalificacionClienteUpdateView(UpdateView):
                                   self.object.calificacion.nombre))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
                 self.object.contacto)
+            wombat_log = wombat_log[0]
             if wombat_log:
                 wombat_log.calificacion = self.object.calificacion.nombre
                 wombat_log.save()
