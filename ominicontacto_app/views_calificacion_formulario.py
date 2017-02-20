@@ -53,6 +53,14 @@ class CalificacionClienteCreateView(CreateView):
         return form_class(calificacion_choice=calificaciones,
                           **self.get_form_kwargs())
 
+    def get(self, request, *args, **kwargs):
+        url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
+                                      'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
+        r = requests.post(
+            url_wombat_agente.format(self.kwargs['wombat_id'],
+                                     self.kwargs['id_agente']))
+        return self.render_to_response(self.get_context_data())
+
     def get_context_data(self, **kwargs):
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
