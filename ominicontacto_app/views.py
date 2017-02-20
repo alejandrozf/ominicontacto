@@ -503,9 +503,7 @@ def wombat_log_view(request):
     id_agente = None
     if 'O_id_agente' in dict_post.keys():
         id_agente = int(dict_post['O_id_agente'])
-    if not id_agente:
-        if request.user.get_agente_profile():
-            id_agente = request.user.get_agente_profile().pk
+
     try:
         campana = Campana.objects.get(pk=id_campana)
         agente = AgenteProfile.objects.get(pk=id_agente)

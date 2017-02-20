@@ -1728,7 +1728,8 @@ class MensajeChat(models.Model):
 
 class WombatLog(models.Model):
     campana = models.ForeignKey(Campana, related_name="logswombat")
-    agente = models.ForeignKey(AgenteProfile, related_name="logsaagente")
+    agente = models.ForeignKey(AgenteProfile, related_name="logsaagente",
+                               blank=True, null=True)
     telefono = models.CharField(max_length=128)
     id_cliente = models.IntegerField()
     estado = models.CharField(max_length=128)
