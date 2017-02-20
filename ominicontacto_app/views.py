@@ -516,10 +516,10 @@ def wombat_log_view(request):
         logger.exception("Excepcion detectada al obtener agente "
                          "con la id {0} no existe ".format(id_agente))
 
-    WombatLog.object.create(campana=campana, agente=agente, telefono=telefono,
-                            estado=estado, calificacion=calificacion,
-                            timeout=timeout, id_cliente=id_cliente,
-                            metadata=json.dumps(dict_post))
+    WombatLog.objects.create(campana=campana, agente=agente, telefono=telefono,
+                             estado=estado, calificacion=calificacion,
+                             timeout=timeout, id_cliente=id_cliente,
+                             metadata=json.dumps(dict_post))
     #import ipdb; ipdb.set_trace();
     response = JsonResponse({'status': 'OK'})
     return response
