@@ -21,7 +21,7 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, WombatLog, Campana
+    Chat, MensajeChat, WombatLog, Campana, Contacto
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
@@ -493,7 +493,7 @@ def wombat_log_view(request):
     print request.POST
     dict_post = request.POST
 
-    id_cliente = int(dict_post['I_ID_CLIENTE'])
+    id_contacto = int(dict_post['I_ID_CONTACTO'])
     telefono = dict_post['num']
     estado = dict_post['state']
     calificacion = dict_post['extstate']
@@ -511,6 +511,7 @@ def wombat_log_view(request):
 
     try:
         campana = Campana.objects.get(pk=id_campana)
+        contacto = Contacto.objects.get(pk=id_contacto)
         agente = AgenteProfile.objects.get(pk=id_agente)
     except Campana.DoesNotExist:
         campana = None
@@ -523,7 +524,7 @@ def wombat_log_view(request):
 
     WombatLog.objects.create(campana=campana, agente=agente, telefono=telefono,
                              estado=estado, calificacion=calificacion,
-                             timeout=timeout, id_cliente=id_cliente,
+                             timeout=timeout, contacto=contacto,
                              metadata=json.dumps(metadata))
     #import ipdb; ipdb.set_trace();
     response = JsonResponse({'status': 'OK'})
