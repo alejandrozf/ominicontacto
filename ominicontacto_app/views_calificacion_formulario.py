@@ -59,10 +59,10 @@ class CalificacionClienteCreateView(CreateView):
         r = requests.post(
             url_wombat_agente.format(self.kwargs['wombat_id'],
                                      self.kwargs['id_agente']))
-        context = self.get_context_data(**kwargs)
-        return self.render_to_response(context)
+        return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):
+        self.object = self.get_object()
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
@@ -166,7 +166,7 @@ class CalificacionClienteUpdateView(UpdateView):
             url_wombat_agente.format(self.kwargs['wombat_id'],
                                      self.kwargs['id_agente']))
         context = self.get_context_data(**kwargs)
-        return self.render_to_response(context)
+        return self.render_to_response(self.get_context_data())
 
     def get_form(self, form_class):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -181,6 +181,7 @@ class CalificacionClienteUpdateView(UpdateView):
         return CalificacionCliente.objects.get(contacto=contacto)
 
     def get_context_data(self, **kwargs):
+        self.object = self.get_object()
         context = super(CalificacionClienteUpdateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
