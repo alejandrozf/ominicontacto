@@ -143,6 +143,17 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #==============================================================================
 
 #==============================================================================
+# DEPLOY -> IP OMNILEADS
+#==============================================================================
+
+OML_OMNILEADS_IP = None
+"""IP donde se encuentra kamailio
+
+Ejemplo:
+    OML_OMNILEADS_IP = "172.16.20.241
+"""
+
+#==============================================================================
 # DEPLOY -> Asterisk
 #==============================================================================
 
@@ -319,3 +330,9 @@ assert OML_WOMBAT_USER is not None, \
 
 assert OML_WOMBAT_PASSWORD is not None, \
     "Falta definir setting para OML_WOMBAT_PASSWORD"
+
+
+# ~~~~~ Check OML_OMNILEADS_IP
+
+assert OML_OMNILEADS_IP is not None, \
+    "Falta definir setting para OML_OMNILEADS_IP"

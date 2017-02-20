@@ -62,7 +62,8 @@ class CampanaCreator(object):
             "addlLogging": "QM_COMPATIBLE",
             "loggingAlias": "alias_nombre",
             "loggingQmVars": "",
-            "httpNotify": "",
+            "httpNotify": "http://{0}:8000/wombat/logs/".format(
+                settings.OML_OMNILEADS_IP),
             "emailEvents": "NO",
             "emailAddresses": ""
         }
