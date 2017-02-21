@@ -5,9 +5,9 @@ import datetime
 from pygal.style import Style, RedBlueStyle
 
 from django.db.models import Count
-from ominicontacto_app.models import (
-    CalificacionCliente, Calificacion, WombatLog
-)
+from ominicontacto_app.models import CalificacionCliente
+from ominicontacto_app.services.campana_service import CampanaService
+
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -94,6 +94,13 @@ class EstadisticasService():
 
         return resultado_nombre, resultado_cantidad, total_no_atendidos
 
+    def obtener_total_llamadas(self, campana):
+        campana_service = CampanaService()
+        dato_campana = campana_service.obtener_dato_campana_run(campana)
+        llamadas_pendientes = dato_campana['n_est_remaining_calls']
+        llamadas_realizadas = dato_campana['n_calls_attempted']
+        return llamadas_pendientes, llamadas_realizadas
+
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
@@ -106,6 +113,10 @@ class EstadisticasService():
         members_campana = self.obtener_agentes_campana(campana)
         agentes_venta, total_calificados, total_ventas = self.obtener_venta(
             campana, members_campana, fecha_desde, fecha_hasta)
+
+        llamadas_pendientes, llamadas_realizadas = self.obtener_total_llamadas(
+            campana)
+
         dic_estadisticas = {
             'agentes_venta': agentes_venta,
             'total_asignados': total_asignados,
@@ -115,7 +126,9 @@ class EstadisticasService():
             'total_calificados': total_calificados,
             'resultado_nombre': resultado_nombre,
             'resultado_cantidad': resultado_cantidad,
-            'total_no_atendidos': total_no_atendidos
+            'total_no_atendidos': total_no_atendidos,
+            'llamadas_pendientes': llamadas_pendientes,
+            'llamadas_realizadas': llamadas_realizadas
         }
         return dic_estadisticas
 

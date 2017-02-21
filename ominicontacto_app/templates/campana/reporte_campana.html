@@ -50,6 +50,14 @@
 
 
 {% with graficos_estadisticas=graficos_estadisticas %}
+
+<div class="col-md-12">
+    <div class="row"><h4>Llamadas Pendientes<strong>{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</strong></h4></div>
+    <div class="row"><h4>Llamadas Realizadas<strong>{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</strong></h4></div>
+
+
+</div>
+
 <div class="col-md-6">
 
     <form role="form" method="post" enctype="multipart/form-data" >
