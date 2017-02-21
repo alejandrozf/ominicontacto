@@ -88,7 +88,14 @@ class EstadisticasService():
         resultado_cantidad = []
         total_no_atendidos = 0
         for resultado in campana_log_wombat:
-            resultado_nombre.append(resultado['estado'])
+            estado = resultado['estado']
+            if estado is "RS_LOST":
+                estado = "Agente no disponible"
+            elif estado is "RS_BUSY":
+                estado = "Ocupado"
+            elif estado is "RS_NOANSWER":
+                estado = "No contesta"
+            resultado_nombre.append(estado)
             resultado_cantidad.append(resultado['estado__count'])
             total_no_atendidos += resultado['estado__count']
 
