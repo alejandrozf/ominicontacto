@@ -109,6 +109,8 @@ class EstadisticasService():
 
     def obtener_total_calificacion_agente(self, campana, members_campana,
                                           fecha_desde, fecha_hasta):
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         agentes_venta = []
         total_calificados = 0
         total_ventas = 0
