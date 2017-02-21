@@ -258,6 +258,13 @@ class CampanaReporteGrafico(FormView):
             graficos_estadisticas=graficos_estadisticas,
             pk_campana=self.kwargs['pk_campana']))
 
+    def get_context_data(self, **kwargs):
+        context = super(CampanaReporteGrafico, self).get_context_data(
+            **kwargs)
+
+        context['campana'] = self.get_object()
+        return context
+
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')
