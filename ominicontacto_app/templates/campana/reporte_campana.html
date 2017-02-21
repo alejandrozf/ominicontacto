@@ -121,6 +121,51 @@
                             </tr>
                         </tbody>
                     </table>
+
+  <table class="table table-bordered">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <td colspan="2">
+                                    <h4>Cantidad de llamados no atendido</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Resultado</th>
+                                            <th>cantidad </th>
+
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for resultado_nombre, resultado_cantidad in graficos_estadisticas.dict_no_atendido_counter %}
+                                                <tr>
+                                                    <td><h5>{{ resultado_nombre }} </h5></td>
+                                                    <td><h5>{{ resultado_cantidad }} </h5></td>
+                                                </tr>
+                                            {% endfor %}
+                                                <tr>
+                                                    <td><strong>Total no atendidos</strong></td>
+                                                    <td><strong>{{graficos_estadisticas.total_no_atendidos}}</strong></td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.barra_campana_no_atendido.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 <div class="col-md-6">
 <table class="table table-bordered">
     <thead>

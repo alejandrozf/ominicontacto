@@ -5,7 +5,9 @@ import datetime
 from pygal.style import Style, RedBlueStyle
 
 from django.db.models import Count
-from ominicontacto_app.models import CalificacionCliente, Calificacion
+from ominicontacto_app.models import (
+    CalificacionCliente, Calificacion, WombatLog
+)
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -73,10 +75,34 @@ class EstadisticasService():
             agentes_venta.append(dato_agente)
         return agentes_venta, total_calificados, total_ventas
 
+    def obtener_cantidad_no_atendidos(self, campana, fecha_desde, fecha_hasta):
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
+        campana_log_wombat = campana.logswombat.filter(
+            fecha_hora__range=(fecha_desde, fecha_hasta))
+        campana_log_wombat = campana_log_wombat.exclude(estado="TERMINATED")
+        campana_log_wombat = campana_log_wombat.values('estado').annotate(
+            Count('estado'))
+
+        resultado_nombre = []
+        resultado_cantidad = []
+        total_no_atendidos = 0
+        for resultado in campana_log_wombat:
+            resultado_nombre.append(resultado['estado'])
+            resultado_cantidad.append(resultado['estado__count'])
+            total_no_atendidos += resultado['estado__count']
+
+        return resultado_nombre, resultado_cantidad, total_no_atendidos
+
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
                                                fecha_hasta)
+
+        resultado_nombre, resultado_cantidad, total_no_atendidos = \
+            self.obtener_cantidad_no_atendidos(campana, fecha_desde,
+                                               fecha_hasta)
+
         members_campana = self.obtener_agentes_campana(campana)
         agentes_venta, total_calificados, total_ventas = self.obtener_venta(
             campana, members_campana, fecha_desde, fecha_hasta)
@@ -87,6 +113,9 @@ class EstadisticasService():
             'calificaciones_nombre': calificaciones_nombre,
             'calificaciones_cantidad': calificaciones_cantidad,
             'total_calificados': total_calificados,
+            'resultado_nombre': resultado_nombre,
+            'resultado_cantidad': resultado_cantidad,
+            'total_no_atendidos': total_no_atendidos
         }
         return dic_estadisticas
 
@@ -110,6 +139,17 @@ class EstadisticasService():
         barra_campana_calificacion.add('cantidad',
                                        estadisticas['calificaciones_cantidad'])
 
+        # Barra: Total de llamados no atendidos en cada intento por campana.
+        barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        barra_campana_no_atendido.title = 'Cantidad de llamadas no atendidos '
+
+        barra_campana_no_atendido.x_labels = \
+            estadisticas['resultado_nombre']
+        barra_campana_no_atendido.add('cantidad',
+                                      estadisticas['resultado_cantidad'])
+
         return {
             'estadisticas': estadisticas,
             'barra_campana_calificacion': barra_campana_calificacion,
@@ -119,5 +159,9 @@ class EstadisticasService():
             'total_asignados': estadisticas['total_asignados'],
             'agentes_venta': estadisticas['agentes_venta'],
             'total_calificados': estadisticas['total_calificados'],
-            'total_ventas': estadisticas['total_ventas']
+            'total_ventas': estadisticas['total_ventas'],
+            'barra_campana_no_atendido': barra_campana_no_atendido,
+            'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
+                                            estadisticas['resultado_cantidad']),
+            'total_no_atendidos': estadisticas['total_no_atendidos']
         }
