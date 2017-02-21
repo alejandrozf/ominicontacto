@@ -101,6 +101,45 @@ class EstadisticasService():
         llamadas_realizadas = dato_campana['n_calls_attempted']
         return llamadas_pendientes, llamadas_realizadas
 
+    def obtener_total_calificacion_agente(self, campana, members_campana,
+                                          fecha_desde, fecha_hasta):
+        agentes_venta = []
+        total_calificados = 0
+        total_ventas = 0
+
+        calificaciones = campana.calificacion_campana.calificacion.all()
+
+        dict_calificaciones = {}
+
+        for calificacion in calificaciones:
+            dict_calificaciones.update({calificacion.pk: 0})
+
+        for agente in members_campana:
+            dato_agente = []
+            dato_agente.append(agente)
+            agente_calificaciones = agente.calificaciones.filter(
+                campana=campana, fecha__range=(fecha_desde, fecha_hasta))
+            total_cal_agente = agente_calificaciones.count()
+            dato_agente.append(total_cal_agente)
+            total_calificados += total_cal_agente
+
+            dict_total = dict_calificaciones.copy()
+
+            for calificacion in calificaciones:
+                cantidad = agente_calificaciones.filter(
+                    calificacion=calificacion).count()
+                dict_total[calificacion.pk] = cantidad
+
+            dato_agente.append(dict_total)
+
+            total_ven_agente = agente_calificaciones.filter(
+                es_venta=True).count()
+            dato_agente.append(total_ven_agente)
+            total_ventas += total_ven_agente
+            agentes_venta.append(dato_agente)
+
+        return agentes_venta, total_calificados, total_ventas, calificaciones
+
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
@@ -111,8 +150,16 @@ class EstadisticasService():
                                                fecha_hasta)
 
         members_campana = self.obtener_agentes_campana(campana)
-        agentes_venta, total_calificados, total_ventas = self.obtener_venta(
-            campana, members_campana, fecha_desde, fecha_hasta)
+        #agentes_venta, total_calificados, total_ventas = self.obtener_venta(
+         #   campana, members_campana, fecha_desde, fecha_hasta)
+
+        total_calificacion_agente = self.obtener_total_calificacion_agente(
+            campana, members_campana, fecha_desde, fecha_hasta
+        )
+        agentes_venta = total_calificacion_agente[0]
+        total_calificados = total_calificacion_agente[1]
+        total_ventas = total_calificacion_agente[2]
+        calificaciones = total_calificacion_agente[3]
 
         llamadas_pendientes, llamadas_realizadas = self.obtener_total_llamadas(
             campana)
@@ -128,7 +175,8 @@ class EstadisticasService():
             'resultado_cantidad': resultado_cantidad,
             'total_no_atendidos': total_no_atendidos,
             'llamadas_pendientes': llamadas_pendientes,
-            'llamadas_realizadas': llamadas_realizadas
+            'llamadas_realizadas': llamadas_realizadas,
+            'calificaciones': calificaciones
         }
         return dic_estadisticas
 
@@ -176,5 +224,6 @@ class EstadisticasService():
             'barra_campana_no_atendido': barra_campana_no_atendido,
             'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
                                             estadisticas['resultado_cantidad']),
-            'total_no_atendidos': estadisticas['total_no_atendidos']
+            'total_no_atendidos': estadisticas['total_no_atendidos'],
+            'calificaciones': estadisticas['calificaciones']
         }
