@@ -32,6 +32,11 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+
+ALLOWED_HOSTS = [
+    "*",
+]
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 
@@ -51,6 +56,7 @@ DATABASES = {
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 MEDIA_ROOT = os.path.join(BASE_DIR, '/home/freetech/media_root')
 
+OML_OMNILEADS_IP = "172.16.20.241"
 
 #  para hacer un include de este archivo
 # **** RECORDAR: revisar permisos y que existan los directorios ****
@@ -58,6 +64,7 @@ OML_QUEUE_FILENAME = "/home/freetech/extensions_fts_queues.conf"
 OML_ASTERISK_HOSTNAME = "root@172.16.20.222"
 OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
 OML_SIP_FILENAME = "/home/freetech/sip_fts.conf"
+OML_QUEUES_FILENAME = "/home/freetech/queues_fts.conf"
 # parametros de conexion con base de datos mysql de asterisk
 DATABASE_MYSQL_ASTERISK = {
     'BASE': 'asterisk',
@@ -77,7 +84,27 @@ OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
 
 # 'OML_KAMAILIO_IP': ip donde se encuentra kamailio
 # ejemplo "172.16.20.219/255.255.255.255"
-OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
+OML_KAMAILIO_IP = "172.16.20.14/255.255.255.255"
+
+# 'OML_WOMBAT_URL': url donde se encuentra el discador de wombat
+# ejemplo "http://172.16.20.222/wombat"
+
+OML_WOMBAT_URL = "http://172.16.20.222:8080/wombat"
+
+# 'OML_WOMBAT_FILENAME': donde se alojara temporalmente los json de wombat
+# ejemplo "http://172.16.20.222/wombat"
+
+OML_WOMBAT_FILENAME = "/home/freetech/"
+
+# 'OML_WOMBAT_USER': user para conectarse con la api de WOMBAT DIALER
+# "user_test"
+
+OML_WOMBAT_USER = "demoadmin"
+
+# 'OML_WOMBAT_PASSWORD': password para ingresar con la api de WOMBAT DIALER
+# "user123"
+
+OML_WOMBAT_PASSWORD = "demo"
 
 _logging_output_file = os.environ.get("OML_LOGFILE", "django.log")
 assert os.path.split(_logging_output_file)[0] == "",\
@@ -116,5 +143,10 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'INFO',
         },
-    }
+    },
+   'django.security.DisallowedHost': {
+        'handlers': ['mail_admins'],
+        'level': 'CRITICAL',
+        'propagate': False,
+    },
 }
