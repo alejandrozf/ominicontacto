@@ -52,6 +52,11 @@
 {% with graficos_estadisticas=graficos_estadisticas %}
 
 <h4>Campaña <strong>{{campana.nombre}}</strong></h4>
+<div class="col-md-3 pull-right">
+
+            <h5><a class="btn btn-info btn-sm" href="{% url 'reporte_campana_pdf' campana.pk %}" target="_blank">Exportar Reporte(PDF)</a></h5>
+
+    </div>
 
 <div class="col-md-12">
     <div class="row">
