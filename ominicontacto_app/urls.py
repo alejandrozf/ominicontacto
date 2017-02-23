@@ -6,7 +6,7 @@ from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_weelo, views_calificacion, views_formulario,
     views_agente, views_calificacion_formulario, views_campana,
-    views_campana_reportes
+    views_campana_reportes, views_pdf
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -528,6 +528,15 @@ urlpatterns = [
     url(r'^wombat/logs/$', views.wombat_log_view,
         name='wombat_log',
         ),
+    # ==========================================================================
+    # Reportes PDF
+    # ==========================================================================
+    url(r'^reporte_personas_pdf/$',
+        login_required(views_pdf.ReportePersonasPDF.as_view()),
+        name="reporte_personas_pdf"),
+    url(r'^reporte/(?P<pk_campana>\d+)/campana/$',
+        login_required(views_pdf.ReporteCampanaPDF.as_view()),
+        name="reporte_campana_pdf"),
 ]
 
 urlpatterns += patterns('',

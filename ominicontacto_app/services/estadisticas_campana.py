@@ -2,8 +2,11 @@
 
 import pygal
 import datetime
+import os
+
 from pygal.style import Style, RedBlueStyle
 
+from django.conf import settings
 from django.db.models import Count
 from ominicontacto_app.models import CalificacionCliente
 from ominicontacto_app.services.campana_service import CampanaService
@@ -207,6 +210,8 @@ class EstadisticasService():
             estadisticas['calificaciones_nombre']
         barra_campana_calificacion.add('cantidad',
                                        estadisticas['calificaciones_cantidad'])
+        barra_campana_calificacion.render_to_png(os.path.join(settings.MEDIA_ROOT,
+            "imagenes", "barra_campana_calificacion.png"))
 
         # Barra: Total de llamados no atendidos en cada intento por campana.
         barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
@@ -218,6 +223,10 @@ class EstadisticasService():
             estadisticas['resultado_nombre']
         barra_campana_no_atendido.add('cantidad',
                                       estadisticas['resultado_cantidad'])
+        barra_campana_no_atendido.render_to_png(
+            os.path.join(settings.MEDIA_ROOT,
+                         "imagenes", "barra_campana_no_atendido.png"))
+
 
         return {
             'estadisticas': estadisticas,
