@@ -93,9 +93,9 @@ class ReportePersonasPDF(View):
 class ReporteCampanaPDF(View):
     def cabecera(self, pdf, campana):
 
-        archivo_imagen = settings.STATIC_ROOT + 'ominicontacto/Img/fts.png'
-        pdf.drawImage(archivo_imagen, 40, 750, 120, 90,
-                      preserveAspectRatio=True)
+        #archivo_imagen = settings.STATIC_ROOT + '/ominicontacto/Img/fts.png'
+        #pdf.drawImage(archivo_imagen, 40, 750, 120, 90,
+         #             preserveAspectRatio=True)
         # Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
         pdf.setFont("Helvetica", 16)
         # Dibujamos una cadena en la ubicación X,Y especificada
