@@ -211,7 +211,7 @@ class EstadisticasService():
         barra_campana_calificacion.add('cantidad',
                                        estadisticas['calificaciones_cantidad'])
         barra_campana_calificacion.render_to_png(os.path.join(settings.MEDIA_ROOT,
-            "imagenes", "barra_campana_calificacion.png"))
+            "reporte_campana", "barra_campana_calificacion.png"))
 
         # Barra: Total de llamados no atendidos en cada intento por campana.
         barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
@@ -225,8 +225,7 @@ class EstadisticasService():
                                       estadisticas['resultado_cantidad'])
         barra_campana_no_atendido.render_to_png(
             os.path.join(settings.MEDIA_ROOT,
-                         "imagenes", "barra_campana_no_atendido.png"))
-
+                         "reporte_campana", "barra_campana_no_atendido.png"))
 
         return {
             'estadisticas': estadisticas,
