@@ -93,7 +93,7 @@ class ReportePersonasPDF(View):
 class ReporteCampanaPDF(View):
     def cabecera(self, pdf, campana):
 
-        archivo_imagen = settings.MEDIA_ROOT + '/imagenes/fts.png'
+        archivo_imagen = settings.STATIC_ROOT + 'ominicontacto/Img/fts.png'
         pdf.drawImage(archivo_imagen, 40, 750, 120, 90,
                       preserveAspectRatio=True)
         # Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
