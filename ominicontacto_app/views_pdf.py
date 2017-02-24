@@ -125,6 +125,8 @@ class ReporteCampanaPDF(View):
         self.tabla_no_atendidos(pdf, estadisticas['dict_no_atendido_counter'],
                                 estadisticas['total_no_atendidos']
                                 )
+
+        pdf.showPage()
         self.tabla_agente(pdf, estadisticas['agentes_venta'],
                           estadisticas['calificaciones'])
         pdf.showPage()
@@ -220,17 +222,17 @@ class ReporteCampanaPDF(View):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75*inch, 520, u"Cantidad de llamados no atendidos")
+        pdf.drawString(0.75*inch, 430, u"Cantidad de llamados no atendidos")
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 5.8*inch)
+        detalle_orden.drawOn(pdf,  0.75*inch, 4.3*inch)
         archivo_imagen = settings.MEDIA_ROOT + \
                          '/imagenes/barra_campana_no_atendido.png'
 
-        pdf.drawImage(archivo_imagen, 4*inch, 4.5*inch, 250, 200,
+        pdf.drawImage(archivo_imagen, 4*inch, 3.5*inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
 
     def tabla_agente(self, pdf, agente_venta, calificaciones):
@@ -268,11 +270,11 @@ class ReporteCampanaPDF(View):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75*inch, 300, u"Calificaciones por agente")
+        pdf.drawString(0.75*inch, 9 * inch, u"Calificaciones por agente")
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 50, 50)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 3*inch)
+        detalle_orden.drawOn(pdf, 0.75 * inch, 7.5 * inch)
 
