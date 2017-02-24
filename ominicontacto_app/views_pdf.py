@@ -192,7 +192,7 @@ class ReporteCampanaPDF(View):
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 7.5*inch)
+        detalle_orden.drawOn(pdf,  0.75*inch, 7.1*inch)
         archivo_imagen = settings.MEDIA_ROOT + \
                          '/imagenes/barra_campana_calificacion.png'
 
@@ -270,11 +270,11 @@ class ReporteCampanaPDF(View):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75*inch, 9 * inch, u"Calificaciones por agente")
+        #pdf.drawString(0.75*inch, 9 * inch, u"Calificaciones por agente")
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 50, 50)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 7.5 * inch)
+        detalle_orden.drawOn(pdf, 0.75 * inch, 300)
 
