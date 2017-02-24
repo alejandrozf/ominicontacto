@@ -348,6 +348,11 @@ urlpatterns = [
     url(r'^mostrar/campanas_ocultas/$',
         login_required(views_campana.mostrar_campanas_borradas_ocultas_view),
         name='mostrar_campanas_ocultas', ),
+    url(r'^campana/(?P<pk_campana>\d+)/exporta_pdf/$',
+        login_required(
+            views_campana.ExportaReportePDFView.as_view()),
+        name='exporta_campana_reporte_pdf',
+        ),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================

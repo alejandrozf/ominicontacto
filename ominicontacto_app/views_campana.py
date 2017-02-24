@@ -30,8 +30,8 @@ from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_metadata_cliente import \
     ReporteMetadataClienteService
 from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.services.exportar_base_datos import\
-    SincronizarBaseDatosContactosService
+from ominicontacto_app.services.reporte_campana_pdf import \
+    ReporteCampanaPDFService
 
 
 import logging as logging_
@@ -254,6 +254,8 @@ class CampanaReporteGrafico(FormView):
         hoy = hoy_ahora.date()
         graficos_estadisticas = service.general_campana(self.get_object(), hoy,
                                                         hoy_ahora)
+        service_pdf = ReporteCampanaPDFService()
+        service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas,
             pk_campana=self.kwargs['pk_campana']))
@@ -274,9 +276,29 @@ class CampanaReporteGrafico(FormView):
         service = EstadisticasService()
         graficos_estadisticas = service.general_campana(
             self.get_object(), fecha_desde, fecha_hasta)
+        service_pdf = ReporteCampanaPDFService()
+        service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas,
             pk_campana=self.kwargs['pk_campana']))
+
+
+class ExportaReportePDFView(UpdateView):
+    """
+    Esta vista invoca a generar un pdf de reporte de la campana
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        service = ReporteCampanaPDFService()
+        url = service.obtener_url_reporte_pdf_descargar(self.object)
+        return redirect(url)
 
 
 class AgenteCampanaReporteGrafico(FormView):
