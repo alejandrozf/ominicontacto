@@ -508,11 +508,12 @@ def wombat_log_view(request):
         'reschedule': dict_post['reschedule'],
         'retry': dict_post['retry']
     }
-
+    agente = None
     try:
         campana = Campana.objects.get(pk=id_campana)
         contacto = Contacto.objects.get(pk=id_contacto)
-        agente = AgenteProfile.objects.get(pk=id_agente)
+        if id_agente:
+            agente = AgenteProfile.objects.get(pk=id_agente)
     except Campana.DoesNotExist:
         campana = None
         logger.exception("Excepcion detectada al obtener campana "
