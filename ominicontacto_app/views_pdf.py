@@ -49,7 +49,7 @@ class ReportePersonasPDF(View):
         self.tabla(pdf, y)
         # Con show page hacemos un corte de página para pasar a la siguiente
         archivo_imagen = settings.MEDIA_ROOT +\
-                         '/imagenes/barra_campana_calificacion.png'
+                         '/reporte_campana/barra_campana_calificacion.png'
         # Definimos el tamaño de la imagen a cargar y las coordenadas
         # correspondientes
         pdf.drawImage(archivo_imagen, 40, 300, 250, 200,
@@ -194,7 +194,7 @@ class ReporteCampanaPDF(View):
         # 7.5 mas cercano del margen TOP
         detalle_orden.drawOn(pdf,  0.75*inch, 7.1*inch)
         archivo_imagen = settings.MEDIA_ROOT + \
-                         '/imagenes/barra_campana_calificacion.png'
+                         '/reporte_campana/barra_campana_calificacion.png'
 
         pdf.drawImage(archivo_imagen, 4*inch, 7.5*inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
@@ -230,7 +230,7 @@ class ReporteCampanaPDF(View):
         # 7.5 mas cercano del margen TOP
         detalle_orden.drawOn(pdf,  0.75*inch, 4.3*inch)
         archivo_imagen = settings.MEDIA_ROOT + \
-                         '/imagenes/barra_campana_no_atendido.png'
+                         '/reporte_campana/barra_campana_no_atendido.png'
 
         pdf.drawImage(archivo_imagen, 4*inch, 3.5*inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
