@@ -110,7 +110,7 @@ class ReporteCampanaPDF(View):
         service = EstadisticasService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        hoy = datetime.date(2015, 1, 1)
+        #hoy = datetime.date(2015, 1, 1)
         estadisticas = service.general_campana(campana, hoy, hoy_ahora)
         response = HttpResponse(content_type='application/pdf')
         buffer = BytesIO()
