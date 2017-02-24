@@ -171,8 +171,7 @@ class ReporteCampanaPDF(View):
                     in dict_calificacion]
         detalles.append(('Total asignados', total_asignados))
         # Establecemos el tamaño de cada una de las columnas de la tabla
-        detalle_orden = Table([encabezados] + detalles,
-                              colWidths=[3 * cm, 4 * cm])
+        detalle_orden = Table([encabezados] + detalles)
         # Aplicamos estilos a las celdas de la tabla
         detalle_orden.setStyle(TableStyle(
             [
@@ -187,11 +186,11 @@ class ReporteCampanaPDF(View):
         pdf.setFont("Helvetica", 10)
         pdf.drawString(0.75*inch, 740, u"Cantidad por calificacion")
         # Establecemos el tamaño de la hoja que ocupará la tabla
-        detalle_orden.wrapOn(pdf, 800, 600)
+        detalle_orden.wrapOn(pdf, 50, 50)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 8.3*inch)
+        detalle_orden.drawOn(pdf,  0.75*inch, 7.5*inch)
         archivo_imagen = settings.MEDIA_ROOT + \
                          '/imagenes/barra_campana_calificacion.png'
 
@@ -208,8 +207,7 @@ class ReporteCampanaPDF(View):
                         resultado_cantidad in dict_no_atendidos]
         detalles.append(('Total no atendidos', total_no_atendidos))
         # Establecemos el tamaño de cada una de las columnas de la tabla
-        detalle_orden = Table([encabezados] + detalles,
-                              colWidths=[3 * cm, 4 * cm])
+        detalle_orden = Table([encabezados] + detalles)
         # Aplicamos estilos a las celdas de la tabla
         detalle_orden.setStyle(TableStyle(
             [
@@ -272,7 +270,7 @@ class ReporteCampanaPDF(View):
         pdf.setFont("Helvetica", 10)
         pdf.drawString(0.75*inch, 300, u"Calificaciones por agente")
         # Establecemos el tamaño de la hoja que ocupará la tabla
-        detalle_orden.wrapOn(pdf, 800, 600)
+        detalle_orden.wrapOn(pdf, 50, 50)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
