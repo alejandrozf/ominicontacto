@@ -92,7 +92,7 @@ class EstadisticasService():
         total_no_atendidos = 0
         for resultado in campana_log_wombat:
             estado = resultado['estado']
-            if estado == "RS_LOST":
+            if estado == "RS_LOST" and resultado['calificacion'] == "":
                 estado = "Agente no disponible"
             elif estado == "RS_BUSY":
                 estado = "Ocupado"
