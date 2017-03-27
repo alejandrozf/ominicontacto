@@ -59,6 +59,9 @@ class CampanaService():
                 elif campana.ESTADO_PAUSADA and campaing['state'] == 'PAUSED':
                     dato_campana = campaing
                     break
+                elif campaing['state'] == 'COMPLETED':
+                    dato_campana = campaing
+                    break
         return dato_campana
 
     def obtener_datos_calls(self, salida):
