@@ -84,7 +84,8 @@ class EstadisticasService():
         campana_log_wombat = campana.logswombat.filter(
             fecha_hora__range=(fecha_desde, fecha_hasta))
         campana_log_wombat = campana_log_wombat.exclude(estado="TERMINATED")
-        campana_log_wombat = campana_log_wombat.values('estado').annotate(
+        campana_log_wombat = campana_log_wombat.values('estado',
+                                                       'calificacion').annotate(
             Count('estado'))
 
         resultado_nombre = []
