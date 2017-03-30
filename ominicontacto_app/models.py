@@ -1751,3 +1751,18 @@ class WombatLog(models.Model):
     fecha_hora = models.DateTimeField(auto_now=True)
 
 
+class Queuelog(models.Model):
+
+    time = models.DateTimeField()
+    callid = models.CharField(max_length=32, blank=True, null=True)
+    queuename = models.CharField(max_length=32, blank=True, null=True)
+    campana_id = models.IntegerField(blank=True, null=True)
+    agent = models.CharField(max_length=32, blank=True, null=True)
+    agent_id = models.IntegerField(blank=True, null=True)
+    event = models.CharField(max_length=32, blank=True, null=True)
+    data1 = models.CharField(max_length=128, blank=True, null=True)
+    data2 = models.CharField(max_length=128, blank=True, null=True)
+    data3 = models.CharField(max_length=128, blank=True, null=True)
+    data4 = models.CharField(max_length=128, blank=True, null=True)
+    data5 = models.CharField(max_length=128, blank=True, null=True)
+
