@@ -1766,3 +1766,7 @@ class Queuelog(models.Model):
     data4 = models.CharField(max_length=128, blank=True, null=True)
     data5 = models.CharField(max_length=128, blank=True, null=True)
 
+    def __unicode__(self):
+        return "Log queue en la fecha {0} de la queue {1} del agente {2} " \
+               "con el evento {3} ".format(self.time, self.queuename,
+                                           self.agent, self.event)
