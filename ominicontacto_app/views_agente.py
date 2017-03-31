@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import datetime
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, ListView
 from django.shortcuts import redirect
 from ominicontacto_app.models import AgenteProfile
 from ominicontacto_app.forms import ReporteForm
@@ -12,6 +12,7 @@ from ominicontacto_app.services.reporte_agente_calificacion import \
 from ominicontacto_app.services.reporte_agente_venta import \
     ReporteFormularioVentaService
 from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.services.reporte_llamadas import EstadisticasService
 
 
 class AgenteReporteCalificaciones(FormView):
@@ -95,3 +96,21 @@ class ExportaReporteCalificacionView(UpdateView):
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
+
+
+class AgenteReporteListView(ListView):
+    """
+    Esta vista lista los tiempo de los agentes
+
+    """
+
+    template_name = 'agente/tiempos.html'
+    context_object_name = 'agentes'
+    model = AgenteProfile
+
+    def get_context_data(self, **kwargs):
+        context = super(AgenteReporteListView, self).get_context_data(
+           **kwargs)
+        agente_service = EstadisticasService()
+        context['estadisticas'] = agente_service._calcular_estadisticas()
+        return context

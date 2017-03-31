@@ -392,6 +392,11 @@ urlpatterns = [
             views_agente.ExportaReporteFormularioVentaView.as_view()),
         name='exporta_reporte_formularios',
         ),
+    url(r'^agente/tiempos/$',
+        login_required(
+            views_agente.AgenteReporteListView.as_view()),
+        name='agente_tiempos',
+        ),
     # ==========================================================================
     # Reportes
     # ==========================================================================
