@@ -98,7 +98,7 @@ class ExportaReporteCalificacionView(UpdateView):
         return redirect(url)
 
 
-class AgenteReporteListView(ListView):
+class AgenteReporteListView(FormView):
     """
     Esta vista lista los tiempo de los agentes
 
@@ -107,10 +107,31 @@ class AgenteReporteListView(ListView):
     template_name = 'agente/tiempos.html'
     context_object_name = 'agentes'
     model = AgenteProfile
+    form_class = ReporteForm
 
-    def get_context_data(self, **kwargs):
-        context = super(AgenteReporteListView, self).get_context_data(
-           **kwargs)
+    # def get_context_data(self, **kwargs):
+    #     context = super(AgenteReporteListView, self).get_context_data(
+    #        **kwargs)
+    #     agente_service = EstadisticasService()
+    #     context['estadisticas'] = agente_service._calcular_estadisticas()
+    #     return context
+
+    def get(self, request, *args, **kwargs):
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
         agente_service = EstadisticasService()
-        context['estadisticas'] = agente_service._calcular_estadisticas()
-        return context
+        estadisticas = agente_service.general_campana(hoy, hoy_ahora)
+        return self.render_to_response(self.get_context_data(
+            estadisticas=estadisticas))
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+
+        agente_service = EstadisticasService()
+        estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta)
+        print estadisticas
+        return self.render_to_response(self.get_context_data(
+            estadisticas=estadisticas))

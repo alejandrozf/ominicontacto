@@ -38,12 +38,20 @@ class EstadisticasService():
             agentes.append(agente.agent)
         return agentes
 
-    def calcular_tiempo_sesion(self, agentes):
+    def calcular_tiempo_sesion(self, agentes, fecha_inferior, fecha_superior):
 
         eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
 
-        logs_queue = Queuelog.objects.filter(event__in=eventos_sesion).order_by(
-            '-time')
+        if fecha_inferior and fecha_superior:
+            fecha_desde = datetime.datetime.combine(fecha_inferior,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_superior,
+                                                    datetime.time.max)
+
+        logs_queue = Queuelog.objects.filter(
+            event__in=eventos_sesion,
+            time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+
 
         agentes_tiempo = []
         print logs_queue
@@ -72,21 +80,25 @@ class EstadisticasService():
         print agentes_tiempo
         return agentes_tiempo
 
-    def _calcular_estadisticas(self):
+    def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
         agentes = self._obtener_agentes()
-        agentes_tiempo = self.calcular_tiempo_sesion(agentes)
-
+        agentes_tiempo = self.calcular_tiempo_sesion(agentes, fecha_inferior,
+                                                     fecha_superior)
+        #print agentes_tiempo
         dic_estadisticas = {
             'agentes_tiempo': agentes_tiempo
 
         }
         return dic_estadisticas
 
-    def general_campana(self):
-        estadisticas = self._calcular_estadisticas()
+    def general_campana(self, fecha_inferior, fecha_superior):
+        estadisticas = self._calcular_estadisticas(fecha_inferior,
+                                                   fecha_superior)
 
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
+
+        return estadisticas
 
 
 
