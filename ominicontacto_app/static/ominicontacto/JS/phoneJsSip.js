@@ -10,7 +10,7 @@ function updateButton(btn,clsnm,inht) {
 	 	 btn.innerHTML = inht;
 	 	 return lastval;
 }
- 
+
 $(function() {
 	var modifyUserStat = document.getElementById("UserStatus");
 	$("#redial").prop('disabled', true);
@@ -28,7 +28,7 @@ $(function() {
             console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
     }
   });*/
- 
+
 	 $("#SignCall").click(function () {
 	   $("#modalSignCall").modal('show');
 	 });
@@ -51,12 +51,12 @@ $(function() {
 	   $("#modalSignCall").modal('hide');
 	   campid = idagt = desc = null;
 	 });
-	 
+
   $("#Resume").click(function() {
   	num = "0077UNPAUSE";
     makeCall();
   });
-  
+
   $("#setPause").click(function() {
   	var pausa = $("#pauseType").val().toUpperCase();
   	if(pausa.indexOf(' ')) {
@@ -65,19 +65,20 @@ $(function() {
     num = "0077" + pausa;
     makeCall();
   });
-  
+
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
       ws_servers : "wss://"+KamailioIp+":443",
       password : $("#sipSec").val(),
       hack_ip_in_contact: true,
-      session_timers: false
+      session_timers: false,
+			rtcpMuxPolicy: 'negotiate'
     };
     userAgent = new JsSIP.UA(config);
     sesion = userAgent.start();
   }
-  
+
   $("#sipLogout").click(function() {
     num = "0077LOGOUT";
     makeCall();
@@ -89,11 +90,11 @@ $(function() {
       updateButton(modifyUserStat, "label label-default", "Offline");
     });
   });
-  
+
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
   });
-  
+
   $(".key").click(function(e) {
     var numPress = "";
     if(displayNumber.value === "") {
@@ -104,7 +105,7 @@ $(function() {
     }
     displayNumber.value = numPress;
   });
-  
+
     //Connects to the WebSocket server
     userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
   	setSipStatus("greydot.png", "  No account", sipStatus);
@@ -124,12 +125,12 @@ $(function() {
   });
 
   userAgent.on('newRTCSession', function(e) {       // cuando se crea una sesion RTC
-  
+
 	  var originHeader = "";
-	  
-    e.session.on("ended",function() {               // Cuando Finaliza la llamada      
+
+    e.session.on("ended",function() {               // Cuando Finaliza la llamada
       var callerOrCalled = "";
-			       	
+
       if(entrante) {
       	$("#Pause").prop('disabled',false);
 				$("#Resume").prop('disabled',true);
@@ -141,17 +142,17 @@ $(function() {
       }
       parar3();
       defaultCallState();
-      
+
  	    if(num.substring(4,0) == '0077') {
         reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
-      
+
       if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
           num = "0077ACW";
     		  makeCall();
-    		  entrante = false;    			
+    		  entrante = false;
     		  // cod que se repite en main.js.. se deberia mejorar esto
-    		  $("#Pause").prop('disabled',true); 
+    		  $("#Pause").prop('disabled',true);
     		  $("#Resume").prop('disabled',false);
     		  $("#sipLogout").prop('disabled',false);
     		  updateButton(modifyUserStat, "label label-danger", "ACW");
@@ -187,7 +188,7 @@ $(function() {
       	    	updateButton(modifyUserStat, "label label-success", "Online");
       	    }
       	  }
-        }   
+        }
     });
     function saveCall(callerOrCalled) {
     	$.ajax({
@@ -202,7 +203,7 @@ $(function() {
 	   	    error: function (jqXHR, textStatus, errorThrown) {
 	          debugger;
 	          console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-	        } 
+	        }
         });
     }
     function originToId(origin) {
@@ -332,7 +333,7 @@ $(function() {
       	}
       	if(e.request.headers.Origin) {
       	  originHeader = e.request.headers.Origin[0].raw;
-      	  
+
       	}
       	if (e.request.headers.Idcliente) {
       		var leadIdHeader = e.request.headers.Idcliente[0].raw;
@@ -370,7 +371,7 @@ $(function() {
         var atiendoSi = document.getElementById('answer');
         var atiendoNo = document.getElementById('doNotAnswer');
         var session_incoming = e.session;
-        
+
         session_incoming.on('addstream',function(e) {       // al cerrar el canal de audio entre los peers
         	$("#Pause").prop('disabled',true);
         	$("#Resume").prop('disabled',true);
@@ -380,22 +381,22 @@ $(function() {
           remote_stream = e.stream;
           remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
         });
-        
+
         var options = {'mediaConstraints': {'audio': true, 'video': false}};
         calltypeId = originToId(originHeader);
         processOrigin(originHeader, options);
-        
+
         atiendoSi.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           session_incoming.answer(options);
           setCallState("Connected", "orange");
           Sounds("","stop");
         };
-        
+
         atiendoNo.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           if($("#autopause").val() === "True") {
-          	
+
           }
           userAgent.terminateSessions();
           defaultCallState();
@@ -428,35 +429,35 @@ $(function() {
   			  			session_incoming.answer(options);
           			setCallState("Connected", "orange");
           			Sounds("","stop");
-  						}	
-  		  			break;  
+  						}
+  		  			break;
   				}
   			}
-  			
+
       } else {
       	calltypeId = originToId(null);
         Sounds("Out", "play");
         var session_outgoing = e.session;
 
       }
-      
+
       e.session.on("accepted", function() { 			// cuando se establece una llamada
         Sounds("", "stop");
         $("#aTransfer").prop('disabled', false);
         $("#bTransfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
-        
+
         if(num.substring(4,0) != "0077") {
-        	
+
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
 	       	$("#sipLogout").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
-	       	updateButton(modifyUserStat, "label label-primary", "OnCall"); 
+	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
         }
         inicio3();
       });
-      
+
   		  var clickHold = document.getElementById("onHold");
   		  clickHold.onclick = function () {
   		  	if(flagHold) {
@@ -464,7 +465,7 @@ $(function() {
   		  	  e.session.hold();
   		  	} else {
   		  	  flagHold = true;
-  		  	  e.session.unhold();  		  	
+  		  	  e.session.unhold();
   		  	}
   		  };
         var aTransf = document.getElementById("aTransfer");
@@ -481,25 +482,25 @@ $(function() {
           e.session.sendDTMF("#");
           setTimeout(transferir(e), 3000);
         };
-        
+
         function transferir(objRTCsession) {
           objRTCsession.session.sendDTMF(displayNumber.value);
         }
     });
-    
-  $("#redial").click(function () {  	
+
+  $("#redial").click(function () {
   	entrante = false;
   	num = lastDialedNumber;
   	$("#modalSelectCmp").modal("show");
     // esto es para enviar un Invite/llamada
   });
-  
+
   $("#endCall").click(function() {
     Sounds("", "stop");
     userAgent.terminateSessions();
     defaultCallState();
   });
-  
+
   $("#call").click(function(e) {
   	entrante = false;
   	$("#modalSelectCmp").modal("show");
@@ -507,7 +508,7 @@ $(function() {
     num = displayNumber.value;
     lastDialedNumber = num;
     });
-    
+
     $("#SelectCamp").click(function () {
     	$("#modalSelectCmp").modal("hide");
     	headerIdCamp = $("#cmpList").val();
@@ -516,7 +517,7 @@ $(function() {
       $("#redial").prop('disabled',false);
     	makeCall();
   });
-  
+
   function makeCall() {
     eventHandlers = {
       'confirmed':  function(e) {
@@ -565,7 +566,8 @@ $(function() {
                 'audio': true,
                 'video': false
               },
-      'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp] 
+      'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp],
+			'rtcpMuxPolicy': 'negotiate'
     };
     //Mando el invite/llamada
      if(flagInit === true) {
@@ -577,7 +579,7 @@ $(function() {
        displayNumber.value = "";
      }
   }
-  
+
   function setCallState(estado, color) {
     callSipStatus.parentNode.removeChild(callSipStatus);
     callSipStatus = document.createElement("em");
@@ -586,7 +588,7 @@ $(function() {
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
   }
-  
+
   function defaultCallState() {
     if(callStatus.childElementCount > 0) {
       callSipStatus.parentNode.removeChild(callSipStatus);
@@ -600,7 +602,7 @@ $(function() {
     $("#bTransfer").prop('disabled', true);
     $("#onHold").prop('disabled', true);
   }
-  
+
   function setSipStatus(img, state, elem) {
     if(elem.childElementCount > 0) {
       var hijo1 = document.getElementById("textSipStatus");
@@ -617,7 +619,7 @@ $(function() {
     elem.appendChild(iconStatus);
     elem.appendChild(textSipStatus);
   }
-  
+
   function Sounds(callType, action) {
     var ring = null;
     if(action === "play") {
@@ -640,22 +642,22 @@ $(function() {
         ring.pause();
     }
   }
-  
+
   function getBlankFormCamp(campid) {
     var url = '/campana/'+campid+'/formulario_nuevo/';
-    $("#dataView").attr('src', url); 
+    $("#dataView").attr('src', url);
   }
-  
+
   function processCallid(callerid) {
   	var url = "/contacto/"+callerid+"/list/";
   	$("#dataView").attr('src', url);
   }
-  
+
   function getData(campid, leadid,agentid, wombatId) {
   	var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
   	$("#dataView").attr('src', url);
   }
-  
+
   function sendStatus(pauseType,agent,statusAg) {
   	$.ajax({
       type: "get",
@@ -663,13 +665,13 @@ $(function() {
 	   	contentType: "text/html",
 	   	data : "agente=" + agent + "&estado="+statusAg+"&tipo_pausa="+pauseType,
 	   	success: function (msg) {
-	   	  
+
 	   	},
 	   	error: function (jqXHR, textStatus, errorThrown) {
 	      debugger;
 	      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-	    } 
+	    }
     });
   }
-  
+
 });
