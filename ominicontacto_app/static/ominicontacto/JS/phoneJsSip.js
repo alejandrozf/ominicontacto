@@ -73,7 +73,7 @@ $(function() {
       password : $("#sipSec").val(),
       hack_ip_in_contact: true,
       session_timers: false,
-			rtcpMuxPolicy: 'negotiate'
+			pcConfig: {rtcpMuxPolicy: 'negotiate'}
     };
     userAgent = new JsSIP.UA(config);
     sesion = userAgent.start();
@@ -567,7 +567,7 @@ $(function() {
                 'video': false
               },
       'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp],
-			'rtcpMuxPolicy': 'negotiate'
+			pcConfig: {rtcpMuxPolicy: 'negotiate'}
     };
     //Mando el invite/llamada
      if(flagInit === true) {
