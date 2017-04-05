@@ -119,6 +119,35 @@ class EstadisticasService():
                     is_unpause = True
         return agentes_tiempo
 
+    def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
+
+        eventos_sesion = ['COMPLETECALLER', 'COMPLETEAGENT']
+
+        if fecha_inferior and fecha_superior:
+            fecha_desde = datetime.datetime.combine(fecha_inferior,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_superior,
+                                                    datetime.time.max)
+
+        logs_queue = Queuelog.objects.filter(
+            event__in=eventos_sesion,
+            time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+
+        agentes_tiempo = []
+
+        for agente in agentes:
+            tiempo_agente = []
+            logs_agentes = logs_queue.filter(agent=agente)
+            tiempo_agente.append(agente)
+            lista_tiempo_cola = [int(log.data1) for log in logs_agentes ]
+            lista_tiempo_llamada = [int(log.data2) for log in logs_agentes]
+            tiempo_agente.append(sum(lista_tiempo_cola))
+            tiempo_agente.append(sum(lista_tiempo_llamada))
+            agentes_tiempo.append(tiempo_agente)
+            tiempo_agente = []
+
+        return agentes_tiempo
+
 
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
         agentes = self._obtener_agentes()
@@ -126,10 +155,12 @@ class EstadisticasService():
                                                      fecha_superior)
         agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
                                                    fecha_superior)
-
+        agentes_llamadas = self.calcular_tiempo_llamada(agentes,
+                                                        fecha_inferior, fecha_superior)
         dic_estadisticas = {
             'agentes_tiempo': agentes_tiempo,
-            'agentes_pausa': agentes_pausa
+            'agentes_pausa': agentes_pausa,
+            'agentes_llamadas': agentes_llamadas
 
         }
         return dic_estadisticas

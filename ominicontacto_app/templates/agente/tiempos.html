@@ -119,6 +119,29 @@
 </table>
 </div>
 
+<div class="col-md-12">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Agente</th>
+            <th>Tiempo de cola(segundos)</th>
+            <th>Tiempo en llamada (segundos) </th>
+
+
+        </tr>
+    </thead>
+    {% for agente in estadisticas.agentes_llamadas %}
+        <tr>
+            <td>{{agente.0}}</td>
+            <td>{{agente.1}}</td>
+            <td>{{agente.2}}</td>
+        </tr>
+    {% endfor %}
+    <tbody>
+
+    </tbody>
+</table>
+</div>
 
 
 
