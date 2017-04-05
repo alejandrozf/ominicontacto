@@ -146,6 +146,7 @@ class GeneradorParaQueueSinGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
+        same => n,Set(TIPOLLAMADA=IN)
         same => n,Queue({oml_queue_name},{oml_queue_wait},tT)
         """
 
@@ -170,6 +171,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
+        same => n,Set(TIPOLLAMADA=IN)
         same => n,Queue({oml_queue_name},{oml_queue_wait},tT)
         """
 
