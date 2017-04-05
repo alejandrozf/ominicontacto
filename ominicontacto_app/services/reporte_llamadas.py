@@ -49,9 +49,9 @@ class EstadisticasService():
                                                     datetime.time.max)
 
         logs_queue = Queuelog.objects.filter(
+            queuename='ALL',
             event__in=eventos_sesion,
             time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-
 
         agentes_tiempo = []
         print logs_queue
@@ -80,13 +80,56 @@ class EstadisticasService():
         print agentes_tiempo
         return agentes_tiempo
 
+    def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
+
+        eventos_sesion = ['PAUSEALL', 'UNPAUSEALL']
+
+        if fecha_inferior and fecha_superior:
+            fecha_desde = datetime.datetime.combine(fecha_inferior,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_superior,
+                                                    datetime.time.max)
+
+        logs_queue = Queuelog.objects.filter(
+            queuename='ALL',
+            event__in=eventos_sesion,
+            time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+
+        agentes_tiempo = []
+
+        for agente in agentes:
+            tiempo_agente = []
+            logs_time = logs_queue.filter(agent=agente)
+            is_unpause = False
+            time_actual = None
+            for logs in logs_time:
+                if is_unpause and logs.event == 'PAUSEALL':
+                    resta = time_actual - logs.time
+                    tiempo_agente.append(agente)
+                    tiempo_agente.append(logs.time.strftime('%Y-%m-%d'))
+                    tiempo_string = str(resta) + "hs"
+                    tiempo_agente.append(str(tiempo_string))
+                    tiempo_agente.append(logs.data1)
+                    agentes_tiempo.append(tiempo_agente)
+                    tiempo_agente = []
+                    is_unpause = False
+                    time_actual = None
+                if logs.event == 'UNPAUSEALL':
+                    time_actual = logs.time
+                    is_unpause = True
+        return agentes_tiempo
+
+
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
         agentes = self._obtener_agentes()
         agentes_tiempo = self.calcular_tiempo_sesion(agentes, fecha_inferior,
                                                      fecha_superior)
-        #print agentes_tiempo
+        agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
+                                                   fecha_superior)
+
         dic_estadisticas = {
-            'agentes_tiempo': agentes_tiempo
+            'agentes_tiempo': agentes_tiempo,
+            'agentes_pausa': agentes_pausa
 
         }
         return dic_estadisticas
