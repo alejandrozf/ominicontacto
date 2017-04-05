@@ -22,7 +22,7 @@ from ominicontacto_app.forms import (
 from ominicontacto_app.services.campos_formulario import (
     OrdenCamposCampanaService
 )
-
+from ominicontacto_app.utiles import elimina_tildes
 import logging as logging_
 
 logger = logging_.getLogger(__name__)
@@ -69,6 +69,7 @@ class FieldFormularioCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        self.object.nombre_campo = elimina_tildes(self.object.nombre_campo)
         self.object.orden = \
             FieldFormulario.objects.obtener_siguiente_orden(
                 self.kwargs['pk_formulario'])
