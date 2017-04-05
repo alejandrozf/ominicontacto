@@ -30,6 +30,9 @@ $(function () {
 	     }
 	 	 });
 	 });*/
+	 $("#facebookChat").click(function() {
+     $("#modalFacebook").modal('show');
+   });
 	 $("#newLead").click(function () {
 	   $.ajax({
 	   	 type: "get",
@@ -41,7 +44,7 @@ $(function () {
 	   	 error: function (jqXHR, textStatus, errorThrown) {
 	                 debugger;
 	                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-	     } 
+	     }
 	   });
 	 });
 	 $("#webChat").click(function () {
@@ -66,7 +69,7 @@ $(function () {
      $("#modalPause").modal('hide');
      updateButton(modifyUserStat, "label label-danger", $("#pauseType").val());
      parar1();
-     inicio2(); 
+     inicio2();
    });
    $("#Resume").click(function () {
    	  $("#Pause").prop('disabled', false);
@@ -167,7 +170,7 @@ $(function () {
 	      }
 	      reinicio($("#horaP"), $("#minsP"), $("#segsP"));
 	  });
-	 	
+
 	 $("#Pause").click(function () {
 	 	$("#modalPause").modal('show');
 	  $("#pauseTime").html();
@@ -204,7 +207,7 @@ $(function () {
 	     });
 	     $("#modalSMS").modal("show");
 	 });
-	
+
 	       $("#threadMsgsTable").DataTable({
 	     paging:false,
 	     searching:false,
@@ -259,7 +262,7 @@ $(function () {
 	       }
 	     });
 	   });
-	
+
 	 function inicio1() {
 	     control1 = setInterval(cronometro1, 1000);
 	 }
@@ -301,7 +304,7 @@ $(function () {
 	 $("#segsT").html(":00");
 	 $("#minsT").html(":00");
 	 $("#horaT").html("00");
-	
+
 	 function parar1() {
 	     clearInterval(control1);
 	 }
@@ -314,7 +317,7 @@ $(function () {
 	 function inicio3() {
 	     control3 = setInterval(cronometro3, 1000);
 	 }
-	
+
 	 function cronometro2() {
 	     if (centesimasP < 59) {
 	         centesimasP++;
@@ -373,7 +376,7 @@ $(function () {
 	         $("#horaT").html("" + minutosT);
 	     }
 	 }
-	
+
 	 function reinicio(horaDOM, minDOM, segDOM) {
 	     clearInterval(control);
 	     centesimasP = 0;
@@ -383,7 +386,7 @@ $(function () {
 	     minDOM.html(":00");
 	     horaDOM.html("00");
 	 }
-	
+
 	 function inicio() {
 	     control = setInterval(cronometro1, 1000);
 	 }
