@@ -104,5 +104,5 @@ def cambiar_estado_agente_view(request):
     agente = AgenteProfile.objects.get(pk=int(pk_agente))
     agente.estado = int(estado)
     agente.save()
-    response = JsonResponse({'status': 'OK', 'chat': chat.pk})
+    response = JsonResponse({'status': 'OK'})
     return response
