@@ -77,9 +77,12 @@
     <thead>
         <tr>
             <th>Agente</th>
-             <th>Tiempo de session</th>
+            <th>Tiempo de session</th>
             <th>Tiempo de pausa</th>
             <th>Tiempos en llamada</th>
+            <th>Porcentaje en llamada</th>
+            <th>Porcentaje en pausa</th>
+            <th>Porcentaje en espera</th>
 
 
         </tr>
@@ -90,6 +93,9 @@
             <td>{{agente.tiempo_sesion}}hs</td>
             <td>{{agente.tiempo_pausa}}hs</td>
             <td>{{agente.tiempo_llamada}}s</td>
+            <td>{{agente.tiempo_porcentaje_llamada}}%</td>
+            <td>{{agente.tiempo_porcentaje_pausa}}%</td>
+            <td>{{agente.tiempo_porcentaje_wait}}%</td>
         </tr>
     {% endfor %}
     <tbody>
