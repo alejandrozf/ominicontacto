@@ -12,6 +12,7 @@ from ominicontacto_app.services.reporte_agente_calificacion import \
 from ominicontacto_app.services.reporte_agente_venta import \
     ReporteFormularioVentaService
 from ominicontacto_app.utiles import convert_fecha_datetime
+from django.http import JsonResponse
 
 
 class AgenteReporteCalificaciones(FormView):
