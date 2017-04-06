@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import datetime
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, ListView
 from django.shortcuts import redirect
 from ominicontacto_app.models import AgenteProfile
 from ominicontacto_app.forms import ReporteForm
@@ -12,7 +12,9 @@ from ominicontacto_app.services.reporte_agente_calificacion import \
 from ominicontacto_app.services.reporte_agente_venta import \
     ReporteFormularioVentaService
 from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.services.reporte_llamadas import EstadisticasService
 from django.http import JsonResponse
+
 
 
 class AgenteReporteCalificaciones(FormView):
@@ -96,6 +98,45 @@ class ExportaReporteCalificacionView(UpdateView):
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
+
+
+class AgenteReporteListView(FormView):
+    """
+    Esta vista lista los tiempo de los agentes
+
+    """
+
+    template_name = 'agente/tiempos.html'
+    context_object_name = 'agentes'
+    model = AgenteProfile
+    form_class = ReporteForm
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(AgenteReporteListView, self).get_context_data(
+    #        **kwargs)
+    #     agente_service = EstadisticasService()
+    #     context['estadisticas'] = agente_service._calcular_estadisticas()
+    #     return context
+
+    def get(self, request, *args, **kwargs):
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        agente_service = EstadisticasService()
+        estadisticas = agente_service.general_campana(hoy, hoy_ahora)
+        return self.render_to_response(self.get_context_data(
+            estadisticas=estadisticas))
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+
+        agente_service = EstadisticasService()
+        estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta)
+
+        return self.render_to_response(self.get_context_data(
+            estadisticas=estadisticas))
 
 
 def cambiar_estado_agente_view(request):

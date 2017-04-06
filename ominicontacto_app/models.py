@@ -1767,3 +1767,53 @@ class WombatLog(models.Model):
     fecha_hora = models.DateTimeField(auto_now=True)
 
 
+class QueuelogManager(models.Manager):
+
+    def obtener_log_agente_event_periodo_all(
+            self, eventos, fecha_desde, fecha_hasta, agente):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(queuename='ALL', event__in=eventos, agent=agente,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
+    def obtener_log_agente_event_periodo(
+            self, eventos, fecha_desde, fecha_hasta, agente):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(event__in=eventos, agent=agente,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
+
+class Queuelog(models.Model):
+
+    objects = QueuelogManager()
+
+    time = models.DateTimeField()
+    callid = models.CharField(max_length=32, blank=True, null=True)
+    queuename = models.CharField(max_length=32, blank=True, null=True)
+    campana_id = models.IntegerField(blank=True, null=True)
+    agent = models.CharField(max_length=32, blank=True, null=True)
+    agent_id = models.IntegerField(blank=True, null=True)
+    event = models.CharField(max_length=32, blank=True, null=True)
+    data1 = models.CharField(max_length=128, blank=True, null=True)
+    data2 = models.CharField(max_length=128, blank=True, null=True)
+    data3 = models.CharField(max_length=128, blank=True, null=True)
+    data4 = models.CharField(max_length=128, blank=True, null=True)
+    data5 = models.CharField(max_length=128, blank=True, null=True)
+
+    def __unicode__(self):
+        return "Log queue en la fecha {0} de la queue {1} del agente {2} " \
+               "con el evento {3} ".format(self.time, self.queuename,
+                                           self.agent, self.event)
