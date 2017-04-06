@@ -132,6 +132,6 @@ class AgenteReporteListView(FormView):
 
         agente_service = EstadisticasService()
         estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta)
-        print estadisticas
+
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))

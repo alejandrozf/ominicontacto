@@ -69,48 +69,27 @@
     </form>
 </div>
 
+
+
 <div class="col-md-12">
+    <h4>Periodo evaluado {{estadisticas.fecha_desde|date:"d/m/Y"}} - {{estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
 <table class="table table-bordered">
     <thead>
         <tr>
             <th>Agente</th>
-            <th>Fecha</th>
-            <th>Tiempo de session</th>
-
-
-        </tr>
-    </thead>
-    {% for agente in estadisticas.agentes_tiempo %}
-        <tr>
-            <td>{{agente.0}}</td>
-            <td>{{agente.1}}</td>
-            <td>{{agente.2}}</td>
-        </tr>
-    {% endfor %}
-    <tbody>
-
-    </tbody>
-</table>
-</div>
-
-<div class="col-md-12">
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Agente</th>
-            <th>Fecha</th>
+             <th>Tiempo de session</th>
             <th>Tiempo de pausa</th>
-            <th>Tipo de pausa</th>
+            <th>Tiempos en llamada</th>
 
 
         </tr>
     </thead>
-    {% for agente in estadisticas.agentes_pausa %}
+    {% for agente in estadisticas.agentes_tiempos %}
         <tr>
-            <td>{{agente.0}}</td>
-            <td>{{agente.1}}</td>
-            <td>{{agente.2}}</td>
-            <td>{{agente.3}}</td>
+            <td>{{agente.agente}}</td>
+            <td>{{agente.tiempo_sesion}}hs</td>
+            <td>{{agente.tiempo_pausa}}hs</td>
+            <td>{{agente.tiempo_llamada}}s</td>
         </tr>
     {% endfor %}
     <tbody>
@@ -118,29 +97,5 @@
     </tbody>
 </table>
 </div>
-
-<div class="col-md-12">
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Agente</th>
-               <th>Tiempo en llamada (segundos) </th>
-
-
-        </tr>
-    </thead>
-    {% for agente in estadisticas.agentes_llamadas %}
-        <tr>
-            <td>{{agente.0}}</td>
-            <td>{{agente.1}}</td>
-        </tr>
-    {% endfor %}
-    <tbody>
-
-    </tbody>
-</table>
-</div>
-
-
 
 {% endblock %}

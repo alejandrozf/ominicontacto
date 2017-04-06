@@ -10,15 +10,29 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class QueueLogService():
+class AgenteTiemposReporte(object):
+    """Encapsula los datos de los tiempos de sesion, pausa y llamada del agente.
+    """
 
-    def obtener_queue_log_all_sesion(self):
+    def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada):
 
-        cursor = connection.cursor()
-        sql = """select time, agent, event from queue_log
-        where queuename='ALL' and event in ('REMOVEMEMBER', 'ADDMEMBER')
-        """
+        self._agente = agente
+        self._tiempo_sesion = tiempo_sesion
+        self._tiempo_pausa = tiempo_pausa
+        self._tiempo_llamada = tiempo_llamada
 
-        cursor.execute(sql)
-        values = cursor.fetchall()
-        return values
+    @property
+    def agente(self):
+        return self._agente
+
+    @property
+    def tiempo_sesion(self):
+        return self._tiempo_sesion
+
+    @property
+    def tiempo_pausa(self):
+        return self._tiempo_pausa
+
+    @property
+    def tiempo_llamada(self):
+        return self._tiempo_llamada
