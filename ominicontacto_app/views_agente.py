@@ -99,7 +99,7 @@ class ExportaReporteCalificacionView(UpdateView):
 
 def cambiar_estado_agente_view(request):
     pk_agente = request.GET['pk_agente']
-    estado = request.GET['user']
+    estado = request.GET['estado']
     agente = AgenteProfile.objects.get(pk=int(pk_agente))
     agente.estado = int(estado)
     agente.save()
