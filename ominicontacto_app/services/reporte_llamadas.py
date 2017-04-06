@@ -139,9 +139,7 @@ class EstadisticasService():
             tiempo_agente = []
             logs_agentes = logs_queue.filter(agent=agente)
             tiempo_agente.append(agente)
-            lista_tiempo_cola = [int(log.data1) for log in logs_agentes ]
             lista_tiempo_llamada = [int(log.data2) for log in logs_agentes]
-            tiempo_agente.append(sum(lista_tiempo_cola))
             tiempo_agente.append(sum(lista_tiempo_llamada))
             agentes_tiempo.append(tiempo_agente)
             tiempo_agente = []
