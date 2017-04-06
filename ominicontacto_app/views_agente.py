@@ -95,3 +95,13 @@ class ExportaReporteCalificacionView(UpdateView):
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
+
+
+def cambiar_estado_agente_view(request):
+    pk_agente = request.GET['pk_agente']
+    estado = request.GET['user']
+    agente = AgenteProfile.objects.get(pk=int(pk_agente))
+    agente.estado = int(estado)
+    agente.save()
+    response = JsonResponse({'status': 'OK', 'chat': chat.pk})
+    return response

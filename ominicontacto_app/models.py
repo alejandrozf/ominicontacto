@@ -94,12 +94,28 @@ class AgenteProfileManager(models.Manager):
 
 
 class AgenteProfile(models.Model):
+    ESTADO_OFFLINE = 1
+    """Agente en estado offline"""
+
+    ESTADO_ONLINE = 2
+    """Agente en estado online"""
+
+    ESTADO_PAUSA = 3
+    """Agente en estado pausa"""
+
+    ESTADO_CHOICES = (
+        (ESTADO_OFFLINE, 'OFFLINE'),
+        (ESTADO_ONLINE, 'ONLINE'),
+        (ESTADO_PAUSA, 'PAUSA'),
+    )
+
     objects = AgenteProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     modulos = models.ManyToManyField(Modulo)
     grupo = models.ForeignKey(Grupo, related_name='agentes')
+    estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
 
     def __unicode__(self):
         return self.user.get_full_name()
