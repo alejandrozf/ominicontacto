@@ -529,6 +529,13 @@ urlpatterns = [
         name='formulario_califiacion_actualiza',
     ),
     # ==========================================================================
+    # Agente
+    # ==========================================================================
+    url(r'^agente/cambiar_estado/$',
+        views_agente.cambiar_estado_agente_view,
+        name='agente_cambiar_estado',
+        ),
+    # ==========================================================================
     # Supervision
     # ==========================================================================
     url(r'^llamadas/activas/$',

@@ -13,6 +13,8 @@ from ominicontacto_app.services.reporte_agente_venta import \
     ReporteFormularioVentaService
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_llamadas import EstadisticasService
+from django.http import JsonResponse
+
 
 
 class AgenteReporteCalificaciones(FormView):
@@ -135,3 +137,13 @@ class AgenteReporteListView(FormView):
 
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
+
+
+def cambiar_estado_agente_view(request):
+    pk_agente = request.GET['pk_agente']
+    estado = request.GET['estado']
+    agente = AgenteProfile.objects.get(pk=int(pk_agente))
+    agente.estado = int(estado)
+    agente.save()
+    response = JsonResponse({'status': 'OK'})
+    return response
