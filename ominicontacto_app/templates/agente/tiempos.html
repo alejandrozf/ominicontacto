@@ -90,7 +90,7 @@
     {% for agente in estadisticas.agentes_tiempos %}
         <tr>
             <td>{{agente.agente}}</td>
-            <td>{{agente.tiempo_sesion}}hs</td>
+            <td>{{agente.get_string_tiempo_sesion}}hs</td>
             <td>{{agente.tiempo_pausa}}hs</td>
             <td>{{agente.tiempo_llamada}}s</td>
             <td>{{agente.tiempo_porcentaje_llamada}}%</td>

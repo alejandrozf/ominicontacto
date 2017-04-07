@@ -66,3 +66,6 @@ class AgenteTiemposReporte(object):
         if self.tiempo_wait and  self.tiempo_sesion:
             return self.tiempo_wait / self.tiempo_sesion.total_seconds()
         return None
+
+    def get_string_tiempo_sesion(self):
+        return str(self.tiempo_sesion)
