@@ -83,6 +83,8 @@
             <th>Porcentaje en llamada</th>
             <th>Porcentaje en pausa</th>
             <th>Porcentaje en espera</th>
+            <th>Cantidad de llamadas procesadas</th>
+            <th>Cantidad de llamadas perdidas</th>
 
 
         </tr>
@@ -96,6 +98,8 @@
             <td>{{agente.tiempo_porcentaje_llamada}}%</td>
             <td>{{agente.tiempo_porcentaje_pausa}}%</td>
             <td>{{agente.tiempo_porcentaje_wait}}%</td>
+            <td>{{agente.cantidad_llamadas_procesadas}}</td>
+            <td>{{agente.cantidad_llamadas_perdidas}}</td>
         </tr>
     {% endfor %}
     <tbody>

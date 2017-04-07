@@ -166,7 +166,7 @@ class EstadisticasService():
                             agente_nuevo._tiempo_pausa = resta
                     else:
                         agente_nuevo = AgenteTiemposReporte(
-                            agente, None, resta, None)
+                            agente, None, resta, None, 0, 0)
                         agentes_tiempo.append(agente_nuevo)
                     agente_nuevo = None
                     is_unpause = False
@@ -197,7 +197,7 @@ class EstadisticasService():
                             agente_nuevo._tiempo_sesion = resta
                     else:
                         agente_nuevo = AgenteTiemposReporte(
-                            agente, resta, None, None)
+                            agente, resta, None, None, 0, 0)
                         agentes_tiempo.append(agente_nuevo)
                     agente_nuevo = None
                     is_remove = False
@@ -220,7 +220,28 @@ class EstadisticasService():
                 agente_nuevo._tiempo_llamada = sum(lista_tiempo_llamada)
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, sum(lista_tiempo_llamada))
+                    agente, None, None, sum(lista_tiempo_llamada), 0, 0)
+                agentes_tiempo.append(agente_nuevo)
+
+        eventos_llamadas_perdidas = ['RINGNOANSWER']
+
+        for agente in agentes:
+            agente_nuevo = None
+            logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
+                eventos_llamadas, fecha_inferior, fecha_superior, agente)
+            logs_time_perdidas = Queuelog.objects.obtener_log_agente_event_periodo(
+                eventos_llamadas_perdidas, fecha_inferior, fecha_superior, agente)
+
+            agente_en_lista = filter(lambda x: x.agente == agente,
+                                     agentes_tiempo)
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                agente_nuevo._cantidad_llamadas_procesadas = logs_time.count()
+                agente_nuevo._cantidad_llamadas_perdidas = logs_time_perdidas.count()
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    agente, None, None, None, logs_time.count(),
+                    logs_time_perdidas.count())
                 agentes_tiempo.append(agente_nuevo)
 
         return agentes_tiempo
@@ -228,12 +249,12 @@ class EstadisticasService():
 
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
         agentes = self._obtener_agentes()
-        agentes_tiempo = self.calcular_tiempo_sesion(agentes, fecha_inferior,
-                                                     fecha_superior)
-        agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
-                                                   fecha_superior)
-        agentes_llamadas = self.calcular_tiempo_llamada(agentes,
-                                                        fecha_inferior, fecha_superior)
+        #agentes_tiempo = self.calcular_tiempo_sesion(agentes, fecha_inferior,
+         #                                            fecha_superior)
+        #agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
+         #                                          fecha_superior)
+        #agentes_llamadas = self.calcular_tiempo_llamada(agentes,
+         #                                               fecha_inferior, fecha_superior)
         agentes_tiempos = self.calcular_tiempos_agentes(agentes, fecha_inferior, fecha_superior)
         dic_estadisticas = {
             'agentes_tiempos': agentes_tiempos,

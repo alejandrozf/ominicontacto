@@ -15,12 +15,15 @@ class AgenteTiemposReporte(object):
     """Encapsula los datos de los tiempos de sesion, pausa y llamada del agente.
     """
 
-    def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada):
+    def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada,
+                 cantidad_llamadas_procesadas, cantidad_llamadas_perdidas):
 
         self._agente = agente
         self._tiempo_sesion = tiempo_sesion
         self._tiempo_pausa = tiempo_pausa
         self._tiempo_llamada = tiempo_llamada
+        self._cantidad_llamadas_procesadas = cantidad_llamadas_procesadas
+        self._cantidad_llamadas_perdidas = cantidad_llamadas_perdidas
 
     @property
     def agente(self):
@@ -37,6 +40,14 @@ class AgenteTiemposReporte(object):
     @property
     def tiempo_llamada(self):
         return self._tiempo_llamada
+
+    @property
+    def cantidad_llamadas_procesadas(self):
+        return self._cantidad_llamadas_procesadas
+
+    @property
+    def cantidad_llamadas_perdidas(self):
+        return self._cantidad_llamadas_perdidas
 
     @property
     def tiempo_porcentaje_llamada(self):
