@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import connection
 
+import datetime
 import logging
 
 
@@ -68,4 +69,7 @@ class AgenteTiemposReporte(object):
         return None
 
     def get_string_tiempo_sesion(self):
-        return str(self.tiempo_sesion)
+        return str(datetime.timedelta(seconds=self.tiempo_sesion.seconds))
+
+    def get_string_tiempo_llamada(self):
+        return datetime.timedelta(0, self.tiempo_llamada)
