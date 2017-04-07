@@ -16,7 +16,8 @@ class AgenteTiemposReporte(object):
     """
 
     def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada,
-                 cantidad_llamadas_procesadas, cantidad_llamadas_perdidas):
+                 cantidad_llamadas_procesadas, cantidad_llamadas_perdidas,
+                 media_asignada, media_saliente):
 
         self._agente = agente
         self._tiempo_sesion = tiempo_sesion
@@ -24,6 +25,8 @@ class AgenteTiemposReporte(object):
         self._tiempo_llamada = tiempo_llamada
         self._cantidad_llamadas_procesadas = cantidad_llamadas_procesadas
         self._cantidad_llamadas_perdidas = cantidad_llamadas_perdidas
+        self._media_asignada = media_asignada
+        self._media_saliente = media_saliente
 
     @property
     def agente(self):
@@ -48,6 +51,14 @@ class AgenteTiemposReporte(object):
     @property
     def cantidad_llamadas_perdidas(self):
         return self._cantidad_llamadas_perdidas
+
+    @property
+    def media_asignada(self):
+        return self._media_asignada
+
+    @property
+    def media_saliente(self):
+        return self._media_saliente
 
     @property
     def tiempo_porcentaje_llamada(self):

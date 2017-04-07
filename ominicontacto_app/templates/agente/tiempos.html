@@ -85,6 +85,8 @@
             <th>Porcentaje en espera</th>
             <th>Cantidad de llamadas procesadas</th>
             <th>Cantidad de llamadas perdidas</th>
+            <th>Media de llamadas asignadas</th>
+            <th>Media de llamadas salientes manuales</th>
 
 
         </tr>
@@ -100,6 +102,8 @@
             <td>{{agente.tiempo_porcentaje_wait}}%</td>
             <td>{{agente.cantidad_llamadas_procesadas}}</td>
             <td>{{agente.cantidad_llamadas_perdidas}}</td>
+            <td>{{agente.media_asignada}}</td>
+            <td>{{agente.media_saliente}}</td>
         </tr>
     {% endfor %}
     <tbody>
