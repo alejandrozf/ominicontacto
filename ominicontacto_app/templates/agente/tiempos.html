@@ -102,8 +102,32 @@
             <td>{{agente.tiempo_porcentaje_wait}}%</td>
             <td>{{agente.cantidad_llamadas_procesadas}}</td>
             <td>{{agente.cantidad_llamadas_perdidas}}</td>
-            <td>{{agente.media_asignada}}</td>
-            <td>{{agente.media_saliente}}</td>
+            <td>{{agente.media_asignada}}s</td>
+            <td>{{agente.media_saliente}}s</td>
+        </tr>
+    {% endfor %}
+    <tbody>
+
+    </tbody>
+</table>
+</div>
+
+<div class="col-md-12">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Agente</th>
+            <th>Fecha</th>
+            <th>Tiempo de pausa</th>
+            <th>Tipo de pausa</th>
+        </tr>
+    </thead>
+    {% for agente in estadisticas.agentes_pausa %}
+        <tr>
+            <td>{{agente.0}}</td>
+            <td>{{agente.1}}</td>
+            <td>{{agente.2}}hs</td>
+            <td>{{agente.3}}</td>
         </tr>
     {% endfor %}
     <tbody>

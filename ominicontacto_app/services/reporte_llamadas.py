@@ -78,24 +78,14 @@ class EstadisticasService():
 
     def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
 
-        eventos_sesion = ['PAUSEALL', 'UNPAUSEALL']
-
-        if fecha_inferior and fecha_superior:
-            fecha_desde = datetime.datetime.combine(fecha_inferior,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_superior,
-                                                    datetime.time.max)
-
-        logs_queue = Queuelog.objects.filter(
-            queuename='ALL',
-            event__in=eventos_sesion,
-            time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL']
 
         agentes_tiempo = []
 
         for agente in agentes:
             tiempo_agente = []
-            logs_time = logs_queue.filter(agent=agente)
+            logs_time = Queuelog.objects.obtener_log_agente_event_periodo_all(
+                eventos_pausa, fecha_inferior, fecha_superior, agente)
             is_unpause = False
             time_actual = None
             for logs in logs_time:
@@ -285,15 +275,17 @@ class EstadisticasService():
         agentes = self._obtener_agentes()
         #agentes_tiempo = self.calcular_tiempo_sesion(agentes, fecha_inferior,
          #                                            fecha_superior)
-        #agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
-         #                                          fecha_superior)
+        agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
+                                                   fecha_superior)
+        print agentes_pausa
         #agentes_llamadas = self.calcular_tiempo_llamada(agentes,
          #                                               fecha_inferior, fecha_superior)
         agentes_tiempos = self.calcular_tiempos_agentes(agentes, fecha_inferior, fecha_superior)
         dic_estadisticas = {
             'agentes_tiempos': agentes_tiempos,
             'fecha_desde': fecha_inferior,
-            'fecha_hasta': fecha_superior
+            'fecha_hasta': fecha_superior,
+            'agentes_pausa': agentes_pausa
 
         }
         return dic_estadisticas
