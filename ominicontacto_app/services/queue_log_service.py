@@ -69,7 +69,11 @@ class AgenteTiemposReporte(object):
         return None
 
     def get_string_tiempo_sesion(self):
-        return str(datetime.timedelta(seconds=self.tiempo_sesion.seconds))
+        if self.tiempo_sesion:
+            return str(datetime.timedelta(seconds=self.tiempo_sesion.seconds))
+        return self.tiempo_sesion
 
     def get_string_tiempo_llamada(self):
-        return datetime.timedelta(0, self.tiempo_llamada)
+        if self.tiempo_llamada:
+            return datetime.timedelta(0, self.tiempo_llamada)
+        return self.tiempo_llamada
