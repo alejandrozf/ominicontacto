@@ -93,7 +93,7 @@ class EstadisticasService():
                     resta = time_actual - logs.time
                     tiempo_agente.append(agente)
                     tiempo_agente.append(logs.time.strftime('%Y-%m-%d'))
-                    tiempo_string = str(resta) + "hs"
+                    tiempo_string = str(datetime.timedelta(seconds=resta.seconds))
                     tiempo_agente.append(str(tiempo_string))
                     tiempo_agente.append(logs.data1)
                     agentes_tiempo.append(tiempo_agente)
