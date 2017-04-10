@@ -60,7 +60,7 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
             encabezado.append("telefono")
-            encabezado.append("id_cliente")
+            encabezado.append("pk_contacto")
             encabezado.append("campana")
             encabezado.append("timeout")
             encabezado.append("id_campana")
@@ -83,7 +83,7 @@ class ArchivoDeReporteCsv(object):
 
                 # --- Buscamos datos
                 lista_opciones.append(prefijo_discador + contacto.telefono)
-                lista_opciones.append(contacto.id_cliente)
+                lista_opciones.append(contacto.pk)
                 lista_opciones.append(campana.nombre)
                 lista_opciones.append(campana.queue_campana.timeout)
                 lista_opciones.append(campana.id)
@@ -173,7 +173,7 @@ class SincronizarBaseDatosContactosService(object):
 
                 # --- Buscamos datos
                 dato_contacto += prefijo_discador + contacto.telefono + ","
-                dato_contacto += "id_cliente:" + str(contacto.id_cliente) + ","
+                dato_contacto += "pk_contacto:" + str(contacto.pk) + ","
                 dato_contacto += "campana:" + campana.nombre + ","
                 dato_contacto += "timeout:" + str(campana.queue_campana.timeout)
                 dato_contacto += ",id_campana:" + str(campana.id) + ","
