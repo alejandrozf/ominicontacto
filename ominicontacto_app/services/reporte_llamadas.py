@@ -107,28 +107,23 @@ class EstadisticasService():
 
     def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
 
-        eventos_sesion = ['COMPLETECALLER', 'COMPLETEAGENT']
-
-        if fecha_inferior and fecha_superior:
-            fecha_desde = datetime.datetime.combine(fecha_inferior,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_superior,
-                                                    datetime.time.max)
-
-        logs_queue = Queuelog.objects.filter(
-            event__in=eventos_sesion,
-            time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
         agentes_tiempo = []
 
         for agente in agentes:
             tiempo_agente = []
-            logs_agentes = logs_queue.filter(agent=agente)
-            tiempo_agente.append(agente)
-            lista_tiempo_llamada = [int(log.data2) for log in logs_agentes]
-            tiempo_agente.append(sum(lista_tiempo_llamada))
-            agentes_tiempo.append(tiempo_agente)
-            tiempo_agente = []
+            logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
+                eventos_llamadas, fecha_inferior, fecha_superior, agente)
+            for logs in logs_time:
+                tiempo_agente.append(agente)
+                tiempo_agente.append(logs.time.strftime('%Y-%m-%d %H:%M'))
+                tiempo_agente.append(logs.queuename)
+                tiempo_agente.append(logs.data4)
+                tiempo_llamada = int(logs.data2)
+                tiempo_agente.append(datetime.timedelta(0, tiempo_llamada))
+                agentes_tiempo.append(tiempo_agente)
+                tiempo_agente = []
 
         return agentes_tiempo
 
@@ -278,14 +273,15 @@ class EstadisticasService():
         agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
                                                    fecha_superior)
         print agentes_pausa
-        #agentes_llamadas = self.calcular_tiempo_llamada(agentes,
-         #                                               fecha_inferior, fecha_superior)
+        agentes_llamadas = self.calcular_tiempo_llamada(agentes,
+                                                        fecha_inferior, fecha_superior)
         agentes_tiempos = self.calcular_tiempos_agentes(agentes, fecha_inferior, fecha_superior)
         dic_estadisticas = {
             'agentes_tiempos': agentes_tiempos,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
-            'agentes_pausa': agentes_pausa
+            'agentes_pausa': agentes_pausa,
+            'agentes_llamadas': agentes_llamadas
 
         }
         return dic_estadisticas
