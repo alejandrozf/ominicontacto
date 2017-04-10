@@ -8,7 +8,7 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import AgenteProfile, Queuelog
+from ominicontacto_app.models import AgenteProfile, Queuelog, Campana
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
 import logging as _logging
@@ -265,6 +265,28 @@ class EstadisticasService():
 
         return agentes_tiempo
 
+    def obtener_count_llamadas_campana(self, agentes, fecha_inferior, fecha_superior):
+        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+
+        campanas = Campana.objects.all()
+
+        agentes_tiempo = []
+
+        for agente in agentes:
+            tiempo_agente = []
+            logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
+                eventos_llamadas, fecha_inferior, fecha_superior, agente)
+            for campana in campanas:
+                cantidad_llamada = logs_time.filter(queuename=campana.nombre).count()
+                if cantidad_llamada > 0:
+                    tiempo_agente.append(agente)
+                    tiempo_agente.append(campana.nombre)
+                    tiempo_agente.append(cantidad_llamada)
+                    agentes_tiempo.append(tiempo_agente)
+                    tiempo_agente = []
+
+        return agentes_tiempo
+
 
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
         agentes = self._obtener_agentes()
@@ -272,16 +294,20 @@ class EstadisticasService():
          #                                            fecha_superior)
         agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
                                                    fecha_superior)
-        print agentes_pausa
         agentes_llamadas = self.calcular_tiempo_llamada(agentes,
                                                         fecha_inferior, fecha_superior)
-        agentes_tiempos = self.calcular_tiempos_agentes(agentes, fecha_inferior, fecha_superior)
+        agentes_tiempos = self.calcular_tiempos_agentes(agentes, fecha_inferior,
+                                                        fecha_superior)
+        count_llamada_campana = self.obtener_count_llamadas_campana(
+            agentes, fecha_inferior, fecha_superior)
+    
         dic_estadisticas = {
             'agentes_tiempos': agentes_tiempos,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
             'agentes_pausa': agentes_pausa,
-            'agentes_llamadas': agentes_llamadas
+            'agentes_llamadas': agentes_llamadas,
+            'count_llamada_campana': count_llamada_campana
 
         }
         return dic_estadisticas
