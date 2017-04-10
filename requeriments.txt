@@ -16,7 +16,7 @@ pathlib2==2.1.0
 pexpect==4.2.1
 pickleshare==0.7.4
 Pillow==4.0.0
-pkg-resources==0.0.0
+#pkg-resources==0.0.0
 prompt-toolkit==1.0.7
 psycopg2==2.6.1
 ptyprocess==0.5.1
