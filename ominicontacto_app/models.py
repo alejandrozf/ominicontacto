@@ -1167,41 +1167,41 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "número télefonico"))
 
-    def contactos_by_id_cliente(self, id_cliente):
-        try:
-            return self.filter(id_cliente=id_cliente)
-        except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con este "
-                                       "id_cliente"))
+    # def contactos_by_id_cliente(self, id_cliente):
+    #     try:
+    #         return self.filter(id_cliente=id_cliente)
+    #     except Contacto.DoesNotExist:
+    #         raise (SuspiciousOperation("No se encontro contactos con este "
+    #                                    "id_cliente"))
 
-    def contactos_by_filtro(self, filtro):
-        try:
-            return self.filter(Q(telefono__contains=filtro) |
-                               Q(id_cliente__contains=filtro))
-        except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con este "
-                                       "filtro"))
+    # def contactos_by_filtro(self, filtro):
+    #     try:
+    #         return self.filter(Q(telefono__contains=filtro) |
+    #                            Q(id_cliente__contains=filtro))
+    #     except Contacto.DoesNotExist:
+    #         raise (SuspiciousOperation("No se encontro contactos con este "
+    #                                    "filtro"))
+    #
+    # def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
+    #     try:
+    #         contactos = self.filter(Q(telefono__contains=filtro) |
+    #                                 Q(id_cliente__contains=filtro))
+    #         return contactos.filter(bd_contacto=bd_contacto)
+    #     except Contacto.DoesNotExist:
+    #         raise (SuspiciousOperation("No se encontro contactos con este "
+    #                                    "filtro"))
 
-    def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
-        try:
-            contactos = self.filter(Q(telefono__contains=filtro) |
-                                    Q(id_cliente__contains=filtro))
-            return contactos.filter(bd_contacto=bd_contacto)
-        except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con este "
-                                       "filtro"))
-
-    def obtener_contacto_editar(self, id_cliente):
-        """Devuelve el contacto pasado por ID, siempre que dicha
-        pedido pueda ser editar
-        FIXME: chequear que sea unico el id_cliente no está definido asi en el
-        modelo
-        En caso de no encontarse, lanza SuspiciousOperation
-        """
-        try:
-            return self.get(id_cliente=id_cliente)
-        except Contacto.DoesNotExist:
-            return None
+    # def obtener_contacto_editar(self, id_cliente):
+    #     """Devuelve el contacto pasado por ID, siempre que dicha
+    #     pedido pueda ser editar
+    #     FIXME: chequear que sea unico el id_cliente no está definido asi en el
+    #     modelo
+    #     En caso de no encontarse, lanza SuspiciousOperation
+    #     """
+    #     try:
+    #         return self.get(id_cliente=id_cliente)
+    #     except Contacto.DoesNotExist:
+    #         return None
 
     def contactos_by_bd_contacto(self, bd_contacto):
         try:
@@ -1210,13 +1210,13 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "base de datos de contactos"))
 
-    def contactos_by_bd_contacto_sin_duplicar(self, bd_contacto):
-        try:
-            return self.values('telefono', 'id_cliente', 'datos').\
-                filter(bd_contacto=bd_contacto).distinct()
-        except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con este "
-                                       "base de datos de contactos"))
+    # def contactos_by_bd_contacto_sin_duplicar(self, bd_contacto):
+    #     try:
+    #         return self.values('telefono', 'id_cliente', 'datos').\
+    #             filter(bd_contacto=bd_contacto).distinct()
+    #     except Contacto.DoesNotExist:
+    #         raise (SuspiciousOperation("No se encontro contactos con este "
+    #                                    "base de datos de contactos"))
 
 
 class Contacto(models.Model):
@@ -1228,7 +1228,6 @@ class Contacto(models.Model):
     objects = ContactoManager()
 
     telefono = models.CharField(max_length=128)
-    id_cliente = models.IntegerField()
     datos = models.TextField()
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
