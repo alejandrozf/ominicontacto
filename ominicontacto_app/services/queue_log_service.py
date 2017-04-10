@@ -28,6 +28,7 @@ class AgenteTiemposReporte(object):
         self._media_asignada = media_asignada
         self._media_saliente = media_saliente
 
+
     @property
     def agente(self):
         return self._agente
