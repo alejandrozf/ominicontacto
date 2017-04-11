@@ -715,7 +715,7 @@ class ActualizaBaseDatosContactoView(UpdateView):
         creacion_base_datos = CreacionBaseDatosService()
 
         try:
-            creacion_base_datos.valida_contactos(self.object)
+            #creacion_base_datos.valida_contactos(self.object)
             creacion_base_datos.importa_contactos(self.object)
         except OmlParserCsvImportacionError as e:
 
