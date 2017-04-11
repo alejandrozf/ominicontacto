@@ -29,7 +29,7 @@ class ContactoFormularioCreateView(CreateView):
 
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+        return Contacto.objects.get(pk=self.kwargs['id_cliente'],
                                     bd_contacto=campana.bd_contacto)
 
     def get_context_data(self, **kwargs):
@@ -113,7 +113,7 @@ class ContactoFormularioUpdateView(UpdateView):
 
         try:
             contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
-                                            id_cliente=self.kwargs[
+                                            pk=self.kwargs[
                                                 'id_cliente'])
         except Contacto.DoesNotExist:
             return HttpResponseRedirect(reverse('formulario_buscar',
@@ -130,7 +130,7 @@ class ContactoFormularioUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+        return Contacto.objects.get(pk=self.kwargs['id_cliente'],
                                     bd_contacto=campana.bd_contacto)
 
     def get(self, request, *args, **kwargs):
@@ -202,7 +202,7 @@ class CalificacionClienteCreateView(CreateView):
         initial = super(CalificacionClienteCreateView, self).get_initial()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+        contacto = Contacto.objects.get(pk=self.kwargs['id_cliente'],
                                         bd_contacto=campana.bd_contacto)
         initial.update({'campana': campana.id,
                         'contacto': contacto.id,
@@ -218,7 +218,7 @@ class CalificacionClienteCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+        contacto = Contacto.objects.get(pk=self.kwargs['id_cliente'],
                                         bd_contacto=campana.bd_contacto)
         context['contacto'] = contacto
         context['campana_pk'] = self.kwargs['pk_campana']
@@ -291,14 +291,14 @@ class CalificacionClienteUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+        contacto = Contacto.objects.get(pk=self.kwargs['id_cliente'],
                                     bd_contacto=campana.bd_contacto)
         return CalificacionCliente.objects.get(contacto=contacto)
 
     def get_context_data(self, **kwargs):
         context = super(CalificacionClienteUpdateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
+        contacto = Contacto.objects.get(pk=self.kwargs['id_cliente'],
                                         bd_contacto=campana.bd_contacto)
         context['contacto'] = contacto
         context['campana_pk'] = self.kwargs['pk_campana']
