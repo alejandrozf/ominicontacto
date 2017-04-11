@@ -323,7 +323,7 @@ class ContactoForm(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('telefono', 'id_cliente', 'datos', 'bd_contacto')
+        fields = ('telefono', 'datos', 'bd_contacto')
         widgets = {
             'bd_contacto': forms.HiddenInput(),
         }
@@ -518,10 +518,9 @@ class FormularioNuevoContacto(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('telefono', 'id_cliente')
+        fields = ('telefono',)
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-            'id_cliente': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 
