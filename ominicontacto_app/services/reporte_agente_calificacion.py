@@ -57,7 +57,6 @@ class ArchivoDeReporteCsv(object):
             encabezado = []
 
             encabezado.append("Telefono")
-            encabezado.append("Id Cliente")
             encabezado.append("Es una venta")
             encabezado.append("Calificacion No venta")
             encabezado.append("Observaciones")
@@ -80,7 +79,6 @@ class ArchivoDeReporteCsv(object):
                 # --- Buscamos datos
 
                 lista_opciones.append(calificacion.contacto.telefono)
-                lista_opciones.append(calificacion.contacto.id_cliente)
 
                 if calificacion.es_venta:
                     lista_opciones.append("SI")
