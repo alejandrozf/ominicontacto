@@ -231,8 +231,7 @@ class FormularioCreateFormView(FormView):
             FormularioCreateFormView, self).get_context_data(**kwargs)
         context['pk_formulario'] = self.kwargs['pk_formulario']
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
-                                        bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         bd_contacto = campana.bd_contacto
         nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
         datos = json.loads(contacto.datos)
@@ -248,8 +247,7 @@ class FormularioCreateFormView(FormView):
     def form_valid(self, form):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
-                                        bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         metadata = json.dumps(form.cleaned_data)
         MetadataCliente.objects.create(campana=campana, agente=agente,
                                        contacto=contacto, metadata=metadata)
@@ -258,7 +256,7 @@ class FormularioCreateFormView(FormView):
     def get_success_url(self):
         # reverse('calificacion_cliente_update',
         #         kwargs={"pk_campana": self.kwargs['pk_campana'],
-        #                 "id_cliente": self.kwargs['id_cliente'],
+        #                 "pk_contacto": self.kwargs['pk_contacto'],
         #                 "id_agente": self.kwargs['id_agente']
         #                 }
         #         )
