@@ -41,8 +41,7 @@ class CalificacionClienteCreateView(CreateView):
         initial = super(CalificacionClienteCreateView, self).get_initial()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
-                                        bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         initial.update({'campana': campana.id,
                         'contacto': contacto.id,
                         'agente': agente.id})
@@ -66,11 +65,10 @@ class CalificacionClienteCreateView(CreateView):
         self.object = None
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
-                                        bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
         bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
+        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         mas_datos = []
         for nombre, dato in zip(nombres, datos):
@@ -151,12 +149,8 @@ class CalificacionClienteUpdateView(UpdateView):
     form_class = CalificacionClienteForm
 
     def dispatch(self, *args, **kwargs):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-
         try:
-            contacto = Contacto.objects.get(bd_contacto=campana.bd_contacto,
-                                            id_cliente=self.kwargs[
-                                                'id_cliente'])
+            contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         except Contacto.DoesNotExist:
             return HttpResponseRedirect(reverse('formulario_buscar',
                                                 kwargs={"pk_campana":
@@ -166,7 +160,7 @@ class CalificacionClienteUpdateView(UpdateView):
         except CalificacionCliente.DoesNotExist:
             return HttpResponseRedirect(reverse('calificacion_formulario_create',
                 kwargs={"pk_campana": self.kwargs['pk_campana'],
-                        "id_cliente": self.kwargs['id_cliente'],
+                        "pk_contacto": self.kwargs['pk_contacto'],
                         "id_agente": self.kwargs['id_agente'],
                         "wombat_id": self.kwargs['wombat_id'],
                         }))
