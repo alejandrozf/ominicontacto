@@ -26,15 +26,7 @@ class ContactoUpdateView(UpdateView):
     form_class = ContactoForm
 
     def get_object(self, queryset=None):
-        return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'])
-
-    def dispatch(self, *args, **kwargs):
-        contacto = Contacto.objects.obtener_contacto_editar(
-            self.kwargs['id_cliente'])
-        if not contacto:
-            return HttpResponseRedirect(reverse('contacto_nuevo'))
-        else:
-            return super(ContactoUpdateView, self).dispatch(*args, **kwargs)
+        return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
     def get_success_url(self):
         return reverse('view_blanco')
