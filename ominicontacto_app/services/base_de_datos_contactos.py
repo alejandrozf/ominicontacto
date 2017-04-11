@@ -87,7 +87,7 @@ class CreacionBaseDatosService(object):
                 cantidad_contactos = base_datos_contacto.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
                 if len(lista_dato) > 2:
-                    datos = json.dumps(lista_dato[2:])
+                    datos = json.dumps(lista_dato[1:])
                 else:
                     datos = ""
                 cantidad_contactos += 1
