@@ -125,8 +125,8 @@ class CalificacionClienteCreateView(CreateView):
                                                 kwargs={
                                                     "pk_campana": self.kwargs[
                                                         'pk_campana'],
-                                                    "id_cliente": self.kwargs[
-                                                        'id_cliente'],
+                                                    "pk_contacto": self.kwargs[
+                                                        'pk_contacto'],
                                                     "wombat_id": self.kwargs[
                                                         'wombat_id'],
                                                     "id_agente": self.kwargs[
@@ -135,7 +135,7 @@ class CalificacionClienteCreateView(CreateView):
     def get_success_url(self):
         return reverse('formulario_venta',
                        kwargs={"pk_campana": self.kwargs['pk_campana'],
-                               "id_cliente": self.kwargs['id_cliente'],
+                               "pk_contacto": self.kwargs['pk_contacto'],
                                "id_agente": self.kwargs['id_agente']})
 
 
@@ -185,19 +185,17 @@ class CalificacionClienteUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
-                                    bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         return CalificacionCliente.objects.get(contacto=contacto)
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
         context = super(CalificacionClienteUpdateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
-                                        bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
         bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
+        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         mas_datos = []
         for nombre, dato in zip(nombres, datos):
@@ -254,8 +252,8 @@ class CalificacionClienteUpdateView(UpdateView):
                         kwargs={
                             "pk_campana": self.kwargs[
                                 'pk_campana'],
-                            "id_cliente": self.kwargs[
-                                'id_cliente'],
+                            "pk_contacto": self.kwargs[
+                                'pk_contacto'],
                             "wombat_id": self.kwargs[
                                 'wombat_id'],
                             "id_agente": self.kwargs[
@@ -264,7 +262,7 @@ class CalificacionClienteUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('formulario_venta',
                        kwargs={"pk_campana": self.kwargs['pk_campana'],
-                               "id_cliente": self.kwargs['id_cliente'],
+                               "pk_contacto": self.kwargs['pk_contacto'],
                                "id_agente": self.kwargs['id_agente']})
 
 
@@ -284,10 +282,9 @@ class FormularioCreateFormView(FormView):
 
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         context['pk_formulario'] = campana.formulario.pk
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
-                                        bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
+        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         mas_datos = []
         for nombre, dato in zip(nombres, datos):
@@ -300,8 +297,7 @@ class FormularioCreateFormView(FormView):
     def form_valid(self, form):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        contacto = Contacto.objects.get(id_cliente=self.kwargs['id_cliente'],
-                                        bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         metadata = json.dumps(form.cleaned_data)
         obj = MetadataCliente.objects.create(campana=campana, agente=agente,
                                              contacto=contacto,
@@ -328,7 +324,7 @@ class FormularioCreateFormView(FormView):
     def get_success_url(self):
         # reverse('formulario_detalle',
         #         kwargs={"pk": self.kwargs['pk_campana'],
-        #                 "id_cliente": self.kwargs['id_cliente'],
+        #                 "pk_contacto": self.kwargs['pk_contacto'],
         #                 "id_agente": self.kwargs['id_agente']
         #                 }
         #         )
@@ -344,10 +340,9 @@ class FormularioDetailView(DetailView):
             FormularioDetailView, self).get_context_data(**kwargs)
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk'])
         campana = Campana.objects.get(pk=metadata.campana.pk)
-        contacto = Contacto.objects.get(id_cliente=metadata.contacto.id_cliente,
-                                        bd_contacto=campana.bd_contacto)
+        contacto = Contacto.objects.get(pk=metadata.contacto.pk)
         bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
+        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         mas_datos = []
         for nombre, dato in zip(nombres, datos):
@@ -411,7 +406,7 @@ class FormularioUpdateFormView(FormView):
     def get_success_url(self):
         # reverse('formulario_detalle',
         #         kwargs={"pk": self.kwargs['pk_campana'],
-        #                 "id_cliente": self.kwargs['id_cliente'],
+        #                 "pk_contacto": self.kwargs['pk_contacto'],
         #                 "id_agente": self.kwargs['id_agente']
         #                 }
         #         )
@@ -484,5 +479,5 @@ class CalificacionUpdateView(UpdateView):
         return reverse('formulario_venta',
                        kwargs={
                            "pk_campana": self.get_object().campana.pk,
-                            "id_cliente": self.get_object().contacto.id_cliente,
+                            "pk_contacto": self.get_object().contacto.pk,
                             "id_agente": self.get_object().agente.pk})
