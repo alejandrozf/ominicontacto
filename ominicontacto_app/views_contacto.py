@@ -91,19 +91,33 @@ class BusquedaContactoFormView(FormView):
 class ContactoBDContactoCreateView(CreateView):
     model = Contacto
     template_name = 'base_create_update_form.html'
-    form_class = ContactoForm
+    form_class = FormularioNuevoContacto
 
     def get_initial(self):
         initial = super(ContactoBDContactoCreateView, self).get_initial()
         initial.update({'bd_contacto': self.kwargs['bd_contacto']})
 
+    def get_form(self, form_class):
+        base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        return form_class(campos=campos, **self.get_form_kwargs())
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        base_datos_contactos = BaseDatosContacto.objects.get(
-            pk=self.kwargs['bd_contacto'])
-        base_datos_contactos.cantidad_contactos += 1
-        base_datos_contactos.save()
-        self.object.bd_contacto = base_datos_contactos
+        base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
+        base_datos.cantidad_contactos += 1
+        base_datos.save()
+        self.object.bd_contacto = base_datos
+
+        metadata = base_datos.get_metadata()
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
         self.object.save()
         return super(ContactoBDContactoCreateView, self).form_valid(form)
 
