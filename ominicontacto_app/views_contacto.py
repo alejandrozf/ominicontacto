@@ -2,13 +2,17 @@
 
 from __future__ import unicode_literals
 
+import json
+
 from django.http import HttpResponseRedirect
 from django.views.generic import DeleteView
 from django.views.generic import ListView, CreateView, UpdateView, FormView
 from ominicontacto_app.models import Contacto, BaseDatosContacto
 from django.core import paginator as django_paginator
 from django.core.urlresolvers import reverse
-from ominicontacto_app.forms import BusquedaContactoForm, ContactoForm
+from ominicontacto_app.forms import (
+    BusquedaContactoForm, ContactoForm, FormularioNuevoContacto
+)
 
 
 class ContactoCreateView(CreateView):
@@ -126,10 +130,43 @@ class ContactoBDContactoListView(ListView):
 class ContactoBDContactoUpdateView(UpdateView):
     model = Contacto
     template_name = 'base_create_update_form.html'
-    form_class = ContactoForm
+    form_class = FormularioNuevoContacto
+
+    def get_initial(self):
+        initial = super(ContactoBDContactoUpdateView, self).get_initial()
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        base_datos = contacto.bd_contacto
+        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+        datos = json.loads(contacto.datos)
+        for nombre, dato in zip(nombres, datos):
+            initial.update({nombre: dato})
+        return initial
+
+    def get_form(self, form_class):
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        return form_class(campos=campos, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
+        return super(ContactoBDContactoUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('contacto_list_bd_contacto',
