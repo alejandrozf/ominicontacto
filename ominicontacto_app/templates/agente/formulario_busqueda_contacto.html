@@ -22,7 +22,6 @@
         <thead>
             <tr>
                 <th>Telefono</th>
-                <th>id_cliente</th>
                 <th>Acciones</th>
 
             </tr>
@@ -31,8 +30,7 @@
         {% for contacto in listado_de_contacto %}
             <tr>
                 <td>{{ contacto.telefono }}</td>
-                <td>{{ contacto.id_cliente }}</td>
-                <td><a href="{% url 'calificacion_formulario_update' campana.pk contacto.id_cliente user.get_agente_profile.pk 0 %}" >
+                <td><a href="{% url 'calificacion_formulario_update' campana.pk contacto.pk user.get_agente_profile.pk 0 %}" >
                     <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Formulario actualizar"></span></a>
                     <a href="" >
                     <span class=" glyphicon glyphicon-trash" aria-hidden="true" title="Llamar"></span></a>

@@ -57,7 +57,6 @@ class ArchivoDeReporteCsv(object):
             encabezado = []
 
             encabezado.append("Telefono")
-            encabezado.append("Id Cliente")
             encabezado.append("datos del cliente")
 
             # Creamos csvwriter
@@ -75,7 +74,6 @@ class ArchivoDeReporteCsv(object):
                 # --- Buscamos datos
 
                 lista_opciones.append(metadata.contacto.telefono)
-                lista_opciones.append(metadata.contacto.id_cliente)
 
                 datos = json.loads(metadata.contacto.datos)
                 for dato in datos:

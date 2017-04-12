@@ -13,8 +13,7 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana, Contacto, FormularioDatoVenta, CalificacionCliente,Grupo,
-    Formulario, FieldFormulario, Pausa
+    Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa
 )
 
 
@@ -323,34 +322,10 @@ class ContactoForm(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('telefono', 'id_cliente', 'datos', 'bd_contacto')
+        fields = ('telefono', 'datos', 'bd_contacto')
         widgets = {
             'bd_contacto': forms.HiddenInput(),
         }
-
-
-class FormularioDatoVentaForm(forms.ModelForm):
-
-    class Meta:
-        model = FormularioDatoVenta
-        fields = ('campana', 'calle', 'numero', 'depto', 'localidad',
-                  'codigo_postal', 'empresa_celular', 'telefono_celular',
-                  'telefono_fijo', 'email', 'nivel_estudio', 'vivienda',
-                  'gastos_mensuales', 'nombre_padre', 'nombre_madre',
-                  'situacion_laboral', 'nombre_empresa', 'tipo_empresa',
-                  'domicilio_laboral', 'cargo', 'domicilio', 'numero_domicilio',
-                  'barrio', 'referencia', 'localidad_entrega', 'horario',
-                  'dia_preferencia', 'usuario', 'limite', 'adicional',
-                  'vendedor')
-        widgets = {
-            'campana': forms.HiddenInput(),
-            'vendedor': forms.HiddenInput(),
-        }
-
-
-FormularioDatoVentaFormSet = inlineformset_factory(
-    Contacto, FormularioDatoVenta, form=FormularioDatoVentaForm,
-    can_delete=False)
 
 
 class ExportaDialerForm(forms.Form):
@@ -518,10 +493,9 @@ class FormularioNuevoContacto(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('telefono', 'id_cliente')
+        fields = ('telefono',)
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-            'id_cliente': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 

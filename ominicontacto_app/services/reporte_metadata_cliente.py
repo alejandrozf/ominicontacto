@@ -56,12 +56,12 @@ class ArchivoDeReporteCsv(object):
             encabezado = []
 
             encabezado.append("Telefono")
-            encabezado.append("Id Cliente")
-            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[2:]
+            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append("base_datos")
             campos = campana.formulario.campos.all()
+
             for campo in campos:
                 encabezado.append(campo.nombre_campo)
 
@@ -80,7 +80,6 @@ class ArchivoDeReporteCsv(object):
                 # --- Buscamos datos
 
                 lista_opciones.append(metadata.contacto.telefono)
-                lista_opciones.append(metadata.contacto.id_cliente)
 
                 datos = json.loads(metadata.contacto.datos)
                 for dato in datos:

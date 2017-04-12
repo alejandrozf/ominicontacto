@@ -351,9 +351,6 @@ class DefineBaseDatosContactoView(UpdateView):
         if lista_columnas_encabezado[0] != 'telefono':
             error = "El nombre de la primera columna debe ser telefono"
 
-        if lista_columnas_encabezado[1] != 'id_cliente':
-            error = "El nombre de la segunda columna debe ser id_cliente"
-
         if error:
             return self.form_invalid(estructura_archivo,
                                      form_primer_linea_encabezado, error=error)
@@ -377,7 +374,7 @@ class DefineBaseDatosContactoView(UpdateView):
         creacion_base_datos = CreacionBaseDatosService()
 
         try:
-            creacion_base_datos.valida_contactos(self.object)
+            #creacion_base_datos.valida_contactos(self.object)
             creacion_base_datos.importa_contactos(self.object)
         except OmlParserCsvImportacionError as e:
 
@@ -718,7 +715,7 @@ class ActualizaBaseDatosContactoView(UpdateView):
         creacion_base_datos = CreacionBaseDatosService()
 
         try:
-            creacion_base_datos.valida_contactos(self.object)
+            #creacion_base_datos.valida_contactos(self.object)
             creacion_base_datos.importa_contactos(self.object)
         except OmlParserCsvImportacionError as e:
 

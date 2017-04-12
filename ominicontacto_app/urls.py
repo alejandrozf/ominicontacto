@@ -4,9 +4,8 @@ from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
-    views_grabacion, views_weelo, views_calificacion, views_formulario,
-    views_agente, views_calificacion_formulario, views_campana,
-    views_campana_reportes, views_pdf
+    views_grabacion, views_calificacion, views_formulario, views_agente,
+    views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -182,21 +181,13 @@ urlpatterns = [
         login_required(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
         ),
-    url(r'^contacto/(?P<id_cliente>\d+)/update/$',
+    url(r'^contacto/(?P<pk_contacto>\d+)/update/$',
         login_required(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
-        ),
-    url(r'^contacto/(?P<telefono>[\w\-]+)/list/$',
-        login_required(views_contacto.ContactoTelefonoListView.as_view()),
-        name='contacto_list_telefono',
         ),
     url(r'^contacto/buscar/$',
         login_required(views_contacto.BusquedaContactoFormView.as_view()),
         name='contacto_buscar',
-        ),
-    url(r'^contacto/(?P<id_cliente>\d+)/id_cliente/$',
-        login_required(views_contacto.ContactoIdClienteListView.as_view()),
-        name='contacto_list_id_cliente',
         ),
     url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/list_contacto/$',
         login_required(views_contacto.ContactoBDContactoListView.as_view()),
@@ -272,11 +263,6 @@ urlpatterns = [
     url(r'^campana/elimina/(?P<pk_campana>\d+)/$',
         login_required(views_campana.CampanaDeleteView.as_view()),
         name='campana_elimina',
-        ),
-    url(r'^formulario/(?P<pk_campana>\d+)/update/(?P<id_cliente>\d+)/$',
-        login_required(
-            views_campana.ContactoFormularioUpdateView.as_view()),
-        name='formulario_update_contacto',
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/buscar/$',
         login_required(
@@ -356,22 +342,6 @@ urlpatterns = [
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
-    url(r'^formulario_nuevo/(?P<pk_campana>\d+)/tarjeta/(?P<id_cliente>\d+)/$',
-        login_required(views_weelo.ContactoFormularioCreateView.as_view()),
-        name='formulario_tarjeta',
-        ),
-    url(r'^formulario/(?P<pk_campana>\d+)/tarjeta/(?P<id_cliente>\d+)/$',
-        login_required(views_weelo.ContactoFormularioUpdateView.as_view()),
-        name='formulario_tarjeta_update',
-        ),
-    url(r'^calificacion/(?P<pk_campana>\d+)/cliente/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
-        login_required(views_weelo.CalificacionClienteCreateView.as_view()),
-        name='calificacion_cliente',
-        ),
-    url(r'^calificacion/(?P<pk_campana>\d+)/update/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
-        login_required(views_weelo.CalificacionClienteUpdateView.as_view()),
-        name='calificacion_cliente_update',
-        ),
     url(r'^formulario/(?P<pk_campana>\d+)/exporta/$',
         login_required(
             views_campana.ExportaReporteFormularioVentaView.as_view()),
@@ -485,7 +455,7 @@ urlpatterns = [
         login_required(views_formulario.FormularioPreviewFormView.as_view()),
         name='formulario_vista_previa',
         ),
-    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
+    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
         login_required(views_formulario.FormularioCreateFormView.as_view()),
         name='formulario_create',
         ),
@@ -497,17 +467,17 @@ urlpatterns = [
     # Calificacion Formulario
     # ==========================================================================
     url(
-        r'^formulario/(?P<pk_campana>\d+)/venta/(?P<id_cliente>\d+)/(?P<id_agente>\d+)/$',
+        r'^formulario/(?P<pk_campana>\d+)/venta/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
         login_required(views_calificacion_formulario.FormularioCreateFormView.as_view()),
         name='formulario_venta',
         ),
     url(
-        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/create/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
+        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
         login_required(views_calificacion_formulario.CalificacionClienteCreateView.as_view()),
         name='calificacion_formulario_create',
         ),
     url(
-        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_cliente>\d+)/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
+        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
         login_required(views_calificacion_formulario.CalificacionClienteUpdateView.as_view()),
         name='calificacion_formulario_update',
         ),

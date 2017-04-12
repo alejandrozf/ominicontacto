@@ -17,7 +17,7 @@
         <thead>
             <tr>
                 <th>Telefono</th>
-                <th>id_cliente</th>
+                <th>ID de Contacto</th>
                 <th>Acciones</th>
 
             </tr>
@@ -26,7 +26,7 @@
         {% for contacto in object_list %}
             <tr>
                 <td>{{ contacto.telefono }}</td>
-                <td>{{ contacto.id_cliente }}</td>
+                <td>{{ contacto.pk }}</td>
                 <td><a href="{% url 'actualizar_contacto' contacto.pk %}" >
                     <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Modificar"></span></a>
                     <a href="{% url 'eliminar_contacto' contacto.pk %}" >

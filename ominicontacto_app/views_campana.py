@@ -118,21 +118,6 @@ class CampanaDeleteView(DeleteView):
         return reverse('campana_list')
 
 
-# FIXME eliminar prontamente esta vista
-class ContactoFormularioUpdateView(UpdateView):
-    model = Contacto
-    template_name = 'agente/contacto_create_update_form.html'
-    form_class = ContactoForm
-
-    def get_object(self, queryset=None):
-        return Contacto.objects.get(pk=self.kwargs['id_cliente'])
-
-    def get_success_url(self):
-        return reverse('formulario_update',
-                       kwargs={"pk_campana": self.kwargs['pk_campana'],
-                               "id_cliente": self.object.id_cliente})
-
-
 class BusquedaFormularioFormView(FormView):
     form_class = BusquedaContactoForm
     template_name = 'agente/formulario_busqueda_contacto.html'
@@ -402,40 +387,23 @@ class FormularioNuevoContactoFormView(FormView):
         metadata = base_datos.get_metadata()
         nombres = metadata.nombres_de_columnas
         telefono = form.cleaned_data.get('telefono')
-        id_cliente = form.cleaned_data.get('id_cliente')
-        contacto = Contacto.objects.filter(id_cliente=int(id_cliente),
-                                           bd_contacto=base_datos)
-        if contacto.count() > 0:
-            return self.form_invalid(form, id_cliente=id_cliente)
+
         datos = []
         nombres.remove('telefono')
-        nombres.remove('id_cliente')
+
         for nombre in nombres:
             campo = form.cleaned_data.get(nombre)
             datos.append(campo)
         contacto = Contacto.objects.create(
-            telefono=telefono, id_cliente=id_cliente, datos=json.dumps(datos),
+            telefono=telefono, datos=json.dumps(datos),
             bd_contacto=base_datos)
         agente = self.request.user.get_agente_profile()
         return HttpResponseRedirect(
             reverse('calificacion_formulario_update',
                     kwargs={"pk_campana": self.kwargs['pk_campana'],
-                            "id_cliente": contacto.id_cliente,
+                            "pk_contacto": contacto.pk,
                             "id_agente": agente.pk,
                             "wombat_id": 0}))
-
-    def form_invalid(self, form, id_cliente=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                  ya existe un cliente con este id_cliente. {0}'.format(
-            id_cliente)
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-        return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
         reverse('view_blanco')

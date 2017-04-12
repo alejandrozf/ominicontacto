@@ -21,7 +21,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>id_cliente</th>
+                <th>ID de Contacto</th>
                 <th>Telefono</th>
                 <th>Acciones</th>
 
@@ -30,9 +30,9 @@
         <tbody>
         {% for contacto in listado_de_contacto %}
             <tr>
-                <td>{{ contacto.id_cliente }}</td>
+                <td>{{ contacto.pk }}</td>
                 <td>{{ contacto.telefono }}</td>
-                <td><a href="{% url 'contacto_update' contacto.id_cliente %}" >
+                <td><a href="{% url 'contacto_update' contacto.pk %}" >
                     <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Modificar"></span></a>
                     <a href="" >
                     <span class=" glyphicon glyphicon-earphone" aria-hidden="true" title="Llamar"></span></a>

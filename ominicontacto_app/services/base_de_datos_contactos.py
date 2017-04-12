@@ -87,13 +87,12 @@ class CreacionBaseDatosService(object):
                 cantidad_contactos = base_datos_contacto.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
                 if len(lista_dato) > 2:
-                    datos = json.dumps(lista_dato[2:])
+                    datos = json.dumps(lista_dato[1:])
                 else:
                     datos = ""
                 cantidad_contactos += 1
                 Contacto.objects.create(
                     telefono=lista_dato[0],
-                    id_cliente=int(lista_dato[1]),
                     datos=datos,
                     bd_contacto=base_datos_contacto,
                 )
@@ -155,7 +154,7 @@ class CreacionBaseDatosService(object):
                     datos = ""
                 cantidad_contactos += 1
                 contacto = Contacto.objects.filter(
-                    id_cliente=int(lista_dato[1]),
+                   # id_cliente=int(lista_dato[1]),
                     bd_contacto=base_datos_contacto
                 )
                 if len(contacto) > 0:
@@ -283,9 +282,6 @@ class PredictorMetadataService(object):
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
                                                  "columna debe ser telefono"))
 
-        if primer_linea[1] != 'id_cliente':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la segunda "
-                                                 "columna debe ser id_cliente"))
 
 
         # ======================================================================
@@ -589,7 +585,7 @@ class BaseDatosService(object):
         contactos = Contacto.objects.filter(bd_contacto=base_datos)
         cantidad_contactos = base_datos.cantidad_contactos
         for contacto in contactos:
-            if contactos.filter(id_cliente=contacto.id_cliente).count() > 1:
+            if contactos.filter(pk=contacto.pk).count() > 1:
                 contacto.delete()
                 cantidad_contactos -= 1
 

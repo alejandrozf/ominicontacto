@@ -26,15 +26,7 @@ class ContactoUpdateView(UpdateView):
     form_class = ContactoForm
 
     def get_object(self, queryset=None):
-        return Contacto.objects.get(id_cliente=self.kwargs['id_cliente'])
-
-    def dispatch(self, *args, **kwargs):
-        contacto = Contacto.objects.obtener_contacto_editar(
-            self.kwargs['id_cliente'])
-        if not contacto:
-            return HttpResponseRedirect(reverse('contacto_nuevo'))
-        else:
-            return super(ContactoUpdateView, self).dispatch(*args, **kwargs)
+        return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
     def get_success_url(self):
         return reverse('view_blanco')
@@ -63,23 +55,6 @@ class ContactoListView(ListView):
         context['url_paginator'] = 'contacto_list'
 
         return context
-
-
-class ContactoTelefonoListView(ListView):
-    model = Contacto
-    template_name = 'agente/contacto_list_telefono.html'
-
-    def get_queryset(self):
-        return Contacto.objects.contactos_by_telefono(self.kwargs['telefono'])
-
-
-class ContactoIdClienteListView(ListView):
-    model = Contacto
-    template_name = 'agente/contacto_list_telefono.html'
-
-    def get_queryset(self):
-        return Contacto.objects.contactos_by_id_cliente(
-            self.kwargs['id_cliente'])
 
 
 class BusquedaContactoFormView(FormView):
