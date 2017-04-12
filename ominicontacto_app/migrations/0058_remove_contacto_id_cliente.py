@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0057_insert_trigger_queue_log'),
+        ('ominicontacto_app', '0056_merge'),
     ]
 
     operations = [

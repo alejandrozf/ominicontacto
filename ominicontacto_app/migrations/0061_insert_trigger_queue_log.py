@@ -30,7 +30,7 @@ def create_procedemiento_trigger(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0056_merge'),
+        ('ominicontacto_app', '0060_create_queuelog_asterisk'),
     ]
 
     operations = [
