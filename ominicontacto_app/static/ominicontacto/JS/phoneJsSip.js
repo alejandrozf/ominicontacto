@@ -648,8 +648,8 @@ $(function() {
     $("#dataView").attr('src', url);
   }
 
-  function processCallid(callerid) {
-  	var url = "/contacto/"+callerid+"/list/";
+	function processCallid(callerid) {
+  	var url = "/campana/selecciona/";
   	$("#dataView").attr('src', url);
   }
 
