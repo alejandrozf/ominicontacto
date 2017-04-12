@@ -343,22 +343,6 @@ urlpatterns = [
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
-    url(r'^formulario_nuevo/(?P<pk_campana>\d+)/tarjeta/(?P<pk_contacto>\d+)/$',
-        login_required(views_weelo.ContactoFormularioCreateView.as_view()),
-        name='formulario_tarjeta',
-        ),
-    url(r'^formulario/(?P<pk_campana>\d+)/tarjeta/(?P<pk_contacto>\d+)/$',
-        login_required(views_weelo.ContactoFormularioUpdateView.as_view()),
-        name='formulario_tarjeta_update',
-        ),
-    url(r'^calificacion/(?P<pk_campana>\d+)/cliente/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
-        login_required(views_weelo.CalificacionClienteCreateView.as_view()),
-        name='calificacion_cliente',
-        ),
-    url(r'^calificacion/(?P<pk_campana>\d+)/update/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
-        login_required(views_weelo.CalificacionClienteUpdateView.as_view()),
-        name='calificacion_cliente_update',
-        ),
     url(r'^formulario/(?P<pk_campana>\d+)/exporta/$',
         login_required(
             views_campana.ExportaReporteFormularioVentaView.as_view()),
