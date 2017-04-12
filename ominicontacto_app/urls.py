@@ -4,9 +4,8 @@ from django.conf import settings
 from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
-    views_grabacion, views_weelo, views_calificacion, views_formulario,
-    views_agente, views_calificacion_formulario, views_campana,
-    views_campana_reportes, views_pdf
+    views_grabacion, views_calificacion, views_formulario, views_agente,
+    views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
