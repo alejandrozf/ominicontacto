@@ -542,3 +542,8 @@ class PausaForm(forms.ModelForm):
         if ' ' in nombre:
             raise forms.ValidationError('el nombre no puede contener espacios')
         return nombre
+
+
+FormularioCalificacionFormSet = inlineformset_factory(
+    Contacto, CalificacionCliente, form=CalificacionClienteForm,
+    can_delete=False)
