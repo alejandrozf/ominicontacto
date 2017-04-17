@@ -13,7 +13,8 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa
+    Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
+    MetadataCliente
 )
 
 
@@ -547,3 +548,43 @@ class PausaForm(forms.ModelForm):
 FormularioCalificacionFormSet = inlineformset_factory(
     Contacto, CalificacionCliente, form=CalificacionClienteForm,
     can_delete=False)
+
+
+class FormularioVentaForm(forms.ModelForm):
+
+    def __init__(self, campos, *args, **kwargs):
+        super(FormularioVentaForm, self).__init__(*args, **kwargs)
+
+        for campo in campos:
+            if campo.tipo is FieldFormulario.TIPO_TEXTO:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_FECHA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'class-fecha form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_LISTA:
+                choices = [(option, option)
+                           for option in json.loads(campo.values_select)]
+                self.fields[campo.nombre_campo] = forms.ChoiceField(
+                    choices=choices,
+                    label=campo.nombre_campo, widget=forms.Select(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+
+    class Meta:
+        model = MetadataCliente
+        fields = ('campana', 'contacto', 'agente')
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'contacto': forms.HiddenInput(),
+            'agente': forms.HiddenInput(),
+        }
+
+
+FormularioVentaFormSet = inlineformset_factory(
+    Contacto, MetadataCliente, form=FormularioVentaForm,
+    can_delete=False, extra=1)
