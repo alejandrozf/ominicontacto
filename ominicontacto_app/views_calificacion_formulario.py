@@ -737,7 +737,6 @@ class CalificacionUpdateView(UpdateView):
 
     def form_valid(self, form, calificacion_form):
         self.object_calificacion = calificacion_form.save(commit=False)
-        print self.object_calificacion
         if not self.object_calificacion:
             self.object_calificacion = calificacion_form.cleaned_data[0]['id']
         else:
