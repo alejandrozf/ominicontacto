@@ -589,20 +589,21 @@ class FormularioUpdateFormView(UpdateView):
 
     def form_valid(self, form, venta_form):
         self.object_venta = venta_form.save(commit=False)
+        metadata_cliente = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
         cleaned_data_venta = venta_form.cleaned_data[0]
         del cleaned_data_venta['agente']
         del cleaned_data_venta['campana']
         del cleaned_data_venta['contacto']
         del cleaned_data_venta['id']
         metadata = json.dumps(cleaned_data_venta)
-        self.object_venta[0].metadata = metadata
-        self.object_venta[0].save()
+        metadata_cliente.metadata = metadata
+        metadata_cliente.save()
         message = 'Operación Exitosa!' \
                   'Se llevó a cabo con éxito el llenado del formulario del' \
                   ' cliente'
         messages.success(self.request, message)
         return HttpResponseRedirect(reverse('formulario_detalle',
-                                            kwargs={"pk": self.object_venta[0].pk}))
+                                            kwargs={"pk": metadata_cliente.pk}))
 
     def post(self, request, *args, **kwargs):
         """
