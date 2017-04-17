@@ -587,4 +587,4 @@ class FormularioVentaForm(forms.ModelForm):
 
 FormularioVentaFormSet = inlineformset_factory(
     Contacto, MetadataCliente, form=FormularioVentaForm,
-    can_delete=False, extra=1)
+    can_delete=False, extra=1, max_num=1)
