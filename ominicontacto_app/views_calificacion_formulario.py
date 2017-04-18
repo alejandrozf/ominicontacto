@@ -72,7 +72,8 @@ class CalificacionClienteCreateView(CreateView):
             {'campana': campana.id,
              'contacto': self.object.id,
              'agente': agente.id}],
-            form_kwargs={'calificacion_choice': calificaciones}
+            form_kwargs={'calificacion_choice': calificaciones,
+                         'gestion': campana.gestion}
         )
         url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
                                       'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
@@ -111,7 +112,8 @@ class CalificacionClienteCreateView(CreateView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
-            self.request.POST, form_kwargs={'calificacion_choice': calificaciones},
+            self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
+                         'gestion': campana.gestion},
         instance= self.object)
 
         if form.is_valid():
@@ -232,7 +234,9 @@ class CalificacionClienteUpdateView(UpdateView):
             {'campana': campana.id,
              'contacto': self.object.id,
              'agente': agente.id}],
-            form_kwargs={'calificacion_choice': calificaciones}, instance=self.object
+            form_kwargs={'calificacion_choice': calificaciones,
+                         'gestion': campana.gestion},
+            instance=self.object
         )
         url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
                                       'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
@@ -293,8 +297,9 @@ class CalificacionClienteUpdateView(UpdateView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
-            self.request.POST, form_kwargs={'calificacion_choice': calificaciones},
-        instance= self.object)
+            self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
+                                            'gestion': campana.gestion},
+            instance= self.object)
 
         if form.is_valid():
             if calificacion_form.is_valid():
@@ -705,7 +710,9 @@ class CalificacionUpdateView(UpdateView):
             {'campana': campana.id,
              'contacto': self.object.id,
              'agente': agente.id}],
-            form_kwargs={'calificacion_choice': calificaciones}, instance=self.object
+            form_kwargs={'calificacion_choice': calificaciones,
+                         'gestion': campana.gestion},
+            instance=self.object
         )
 
         return self.render_to_response(self.get_context_data(
@@ -723,8 +730,9 @@ class CalificacionUpdateView(UpdateView):
         campana = calificacion.campana
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
-            self.request.POST, form_kwargs={'calificacion_choice': calificaciones},
-        instance= self.object)
+            self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
+                                            'gestion': campana.gestion},
+            instance= self.object)
 
         if form.is_valid():
             if calificacion_form.is_valid():
