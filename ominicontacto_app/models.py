@@ -327,6 +327,7 @@ class Campana(models.Model):
     formulario = models.ForeignKey(Formulario)
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     oculto = models.BooleanField(default=False)
+    gestion = models.CharField(max_length=128, default="Venta")
 
     def __unicode__(self):
             return self.nombre

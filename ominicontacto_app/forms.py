@@ -280,7 +280,7 @@ class CampanaForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario')
+                  'bd_contacto', 'formulario', 'gestion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -303,7 +303,7 @@ class CampanaUpdateForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto')
+                  'bd_contacto', 'gestion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -349,11 +349,11 @@ class ExportaDialerForm(forms.Form):
 
 class CalificacionClienteForm(forms.ModelForm):
 
-    def __init__(self, calificacion_choice, *args, **kwargs):
+    def __init__(self, calificacion_choice, gestion, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
         self.fields['calificacion'].queryset = calificacion_choice
         self.fields['calificacion'].empty_label = None
-        self.fields['calificacion'].empty_label = 'venta'
+        self.fields['calificacion'].empty_label = gestion
 
     class Meta:
         model = CalificacionCliente
