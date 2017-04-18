@@ -1504,7 +1504,7 @@ class CalificacionCliente(models.Model):
     wombat_id = models.IntegerField()
 
     def __unicode__(self):
-        return "Califiacion para la campana{0} para el contacto " \
+        return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.campana, self.contacto)
 
     def get_venta(self):
