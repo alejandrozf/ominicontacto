@@ -1654,3 +1654,30 @@ class Queuelog(models.Model):
         return "Log queue en la fecha {0} de la queue {1} del agente {2} " \
                "con el evento {3} ".format(self.time, self.queuename,
                                            self.agent, self.event)
+
+
+class AgendaContacto(models.Model):
+
+    TYPE_PERSONAL = 1
+    """Tipo de agenda Personal"""
+
+    TYPE_GLOBAL = 2
+    """Tipo de agenda Global"""
+
+
+    TYPE_AGENDA_CHOICES = (
+        (TYPE_PERSONAL, 'PERSONAL'),
+        (TYPE_GLOBAL, 'GLOBAL'),
+    )
+
+    agente = models.ForeignKey(AgenteProfile, related_name="agendacontacto")
+    contacto = models.ForeignKey(Contacto)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
+    observaciones = models.TextField(blank=True, null=True)
+
+    def __unicode__(self):
+        return "Agenda para el contacto {0} agendado por el agente {1} para la fecha " \
+               "{2} a la hora {3}hs ".format(self.contacto, self.agente, self.fecha,
+                                             self.hora)
