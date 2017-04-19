@@ -600,4 +600,6 @@ class AgendaContactoForm(forms.ModelForm):
             'agente': forms.HiddenInput(),
             'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
+            "fecha": forms.TextInput(attrs={'class': 'form-control'}),
+            "hora": forms.TextInput(attrs={'class': 'form-control'}),
         }
