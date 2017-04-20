@@ -531,9 +531,10 @@ urlpatterns = [
     url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/$',
         login_required(views_agenda_contacto.AgendaContactoCreateView.as_view()),
         name="agenda_contacto_create"),
-    url(r'^reporte/(?P<pk_campana>\d+)/campana/$',
-        login_required(views_pdf.ReporteCampanaPDF.as_view()),
-        name="reporte_campana_pdf"),
+    url(r'^agenda_contacto/(?P<pk>\d+)/detalle/$',
+        login_required(views_agenda_contacto.AgendaContactoDetailView.as_view()),
+        name="agenda_contacto_detalle"),
+
 ]
 
 urlpatterns += patterns('',
