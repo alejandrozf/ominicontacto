@@ -173,11 +173,10 @@ class SincronizarBaseDatosContactosService(object):
 
                 # --- Buscamos datos
                 dato_contacto += prefijo_discador + contacto.telefono + ","
-                dato_contacto += "pk_contacto:" + str(contacto.pk) + ","
+                dato_contacto += "id_cliente:" + str(contacto.pk) + ","
                 dato_contacto += "campana:" + campana.nombre + ","
                 dato_contacto += "timeout:" + str(campana.queue_campana.timeout)
                 dato_contacto += ",id_campana:" + str(campana.id) + ","
-                dato_contacto += "id_contacto:" + str(contacto.pk) + ","
                 dato_contacto += "usa_contestador:" + str(usa_contestador) + "|"
 
                 lista_contactos += dato_contacto
