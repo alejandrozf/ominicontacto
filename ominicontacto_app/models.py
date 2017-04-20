@@ -1656,7 +1656,28 @@ class Queuelog(models.Model):
                                            self.agent, self.event)
 
 
+class AgendaContactoManager(models.Manager):
+
+    def eventos_fecha_hoy(self):
+        try:
+            return self.filter(fecha=datetime.datetime.today())
+        except AgendaContacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
+                                       "fecha"))
+
+    def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
+        eventos = self.filter(tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+            eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
+        return eventos.order_by('-fecha')
+
+
 class AgendaContacto(models.Model):
+    objects = AgendaContactoManager()
 
     TYPE_PERSONAL = 1
     """Tipo de agenda Personal"""

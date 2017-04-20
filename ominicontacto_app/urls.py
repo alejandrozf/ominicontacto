@@ -534,6 +534,9 @@ urlpatterns = [
     url(r'^agenda_contacto/(?P<pk>\d+)/detalle/$',
         login_required(views_agenda_contacto.AgendaContactoDetailView.as_view()),
         name="agenda_contacto_detalle"),
+    url(r'^agenda_contacto/eventos/$',
+        login_required(views_agenda_contacto.AgenteContactoListFormView.as_view()),
+        name="agenda_contacto_listado"),
 
 ]
 
