@@ -493,7 +493,7 @@ def wombat_log_view(request):
     print request.POST
     dict_post = request.POST
 
-    id_contacto = int(dict_post['I_ID_CONTACTO'])
+    id_contacto = int(dict_post['I_ID_CLIENTE'])
     telefono = dict_post['num']
     estado = dict_post['state']
     calificacion = dict_post['extstate']
