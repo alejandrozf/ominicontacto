@@ -28,6 +28,12 @@ class AgendaContactoCreateView(CreateView):
                         'agente': agente})
         return initial
 
+    def get_context_data(self, **kwargs):
+        context = super(
+            AgendaContactoCreateView, self).get_context_data(**kwargs)
+        context['contacto'] = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        return context
+
     def get_success_url(self):
         return reverse(
             'agenda_contacto_detalle', kwargs={'pk': self.object.pk})

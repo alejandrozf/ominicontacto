@@ -74,6 +74,7 @@
        {% endfor %}
 <div class="row">
     <div class="col-md-9">
+        <p><strong>Agenda para el contacto con el telefono </strong>{{contacto.telefono}} </p>
         <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
