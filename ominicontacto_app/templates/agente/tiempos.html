@@ -94,12 +94,42 @@
     {% for agente in estadisticas.agentes_tiempos %}
         <tr>
             <td>{{agente.agente}}</td>
-            <td>{{agente.get_string_tiempo_sesion}}hs</td>
-            <td>{{agente.get_string_tiempo_pausa}}hs</td>
+            <td>
+                {% if agente.get_string_tiempo_sesion %}
+                    {{agente.get_string_tiempo_sesion}}hs
+                {% else %}
+                    0hs
+                {% endif %}
+            </td>
+            <td>
+                {% if agente.get_string_tiempo_pausa %}
+                    {{agente.get_string_tiempo_pausa}}hs
+                {% else %}
+                    0hs
+                {% endif %}
+            </td>
             <td>{{agente.get_string_tiempo_llamada}}hs</td>
-            <td>{{agente.tiempo_porcentaje_llamada}}%</td>
-            <td>{{agente.tiempo_porcentaje_pausa}}%</td>
-            <td>{{agente.tiempo_porcentaje_wait}}%</td>
+            <td>
+                {% if agente.tiempo_porcentaje_llamada %}
+                    {{agente.tiempo_porcentaje_llamada}}%
+                {% else %}
+                    0%
+                {% endif %}
+            </td>
+            <td>
+                {% if agente.tiempo_porcentaje_pausa %}
+                    {{agente.tiempo_porcentaje_pausa}}%
+                {% else %}
+                    0%
+                {% endif %}
+            </td>
+            <td>
+                {% if agente.tiempo_porcentaje_wait %}
+                    {{agente.tiempo_porcentaje_wait}}%
+                {% else %}
+                    0%
+                {% endif %}
+            </td>
             <td>{{agente.cantidad_llamadas_procesadas}}</td>
             <td>{{agente.cantidad_llamadas_perdidas}}</td>
             <td>{{agente.media_asignada}}s</td>
@@ -117,9 +147,9 @@
     <thead>
         <tr>
             <th>Agente</th>
-            <th>Fecha</th>
-            <th>Tiempo de pausa</th>
             <th>Tipo de pausa</th>
+            <th>Tiempo de pausa</th>
+
         </tr>
     </thead>
     {% for agente in estadisticas.agentes_pausa %}
@@ -127,7 +157,6 @@
             <td>{{agente.0}}</td>
             <td>{{agente.1}}</td>
             <td>{{agente.2}}hs</td>
-            <td>{{agente.3}}</td>
         </tr>
     {% endfor %}
     <tbody>
@@ -141,9 +170,7 @@
     <thead>
         <tr>
             <th>Agente</th>
-            <th>Fecha</th>
             <th>Cola</th>
-            <th>Tipo de llamada</th>
             <th>Tiempos de llamadas</th>
 
         </tr>
@@ -152,9 +179,7 @@
         <tr>
             <td>{{agente.0}}</td>
             <td>{{agente.1}}</td>
-            <td>{{agente.2}}</td>
-            <td>{{agente.3}}</td>
-            <td>{{agente.4}}hs</td>
+            <td>{{agente.2}}hs</td>
 
         </tr>
     {% endfor %}

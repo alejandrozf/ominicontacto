@@ -63,6 +63,13 @@
               {{ campana.formulario }}
         </div>
     </div>
+    <div class="form-group row">
+        {{ form.gestion.errors }}
+        <label class="col-sm-3 control-label">Gestion: </label>
+        <div class="col-sm-6">
+              {{ form.gestion }}
+        </div>
+    </div>
     </br>
     <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
         Guardar campaña y Continuar

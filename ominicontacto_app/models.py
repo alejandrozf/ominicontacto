@@ -327,6 +327,7 @@ class Campana(models.Model):
     formulario = models.ForeignKey(Formulario)
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     oculto = models.BooleanField(default=False)
+    gestion = models.CharField(max_length=128, default="Venta")
 
     def __unicode__(self):
             return self.nombre
@@ -1504,7 +1505,7 @@ class CalificacionCliente(models.Model):
     wombat_id = models.IntegerField()
 
     def __unicode__(self):
-        return "Califiacion para la campana{0} para el contacto " \
+        return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.campana, self.contacto)
 
     def get_venta(self):

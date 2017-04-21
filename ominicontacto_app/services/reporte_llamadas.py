@@ -83,26 +83,33 @@ class EstadisticasService():
         agentes_tiempo = []
 
         for agente in agentes:
-            tiempo_agente = []
+
             logs_time = Queuelog.objects.obtener_log_agente_event_periodo_all(
                 eventos_pausa, fecha_inferior, fecha_superior, agente)
             is_unpause = False
             time_actual = None
+            tiempos_pausa = {}
             for logs in logs_time:
                 if is_unpause and logs.event == 'PAUSEALL':
                     resta = time_actual - logs.time
-                    tiempo_agente.append(agente)
-                    tiempo_agente.append(logs.time.strftime('%Y-%m-%d'))
-                    tiempo_string = str(datetime.timedelta(seconds=resta.seconds))
-                    tiempo_agente.append(str(tiempo_string))
-                    tiempo_agente.append(logs.data1)
-                    agentes_tiempo.append(tiempo_agente)
-                    tiempo_agente = []
+                    if logs.data1  in tiempos_pausa.keys():
+                        tiempos_pausa[logs.data1] += resta
+                    else:
+                        tiempos_pausa.update({logs.data1: resta})
                     is_unpause = False
                     time_actual = None
                 if logs.event == 'UNPAUSEALL':
                     time_actual = logs.time
                     is_unpause = True
+            for tiempo_pausa in tiempos_pausa:
+                tiempo_agente = []
+                tiempo_agente.append(agente)
+                tiempo_agente.append(tiempo_pausa)
+                tiempos_pausa[tiempo_pausa] = str(datetime.timedelta(
+                    seconds=tiempos_pausa[tiempo_pausa].seconds))
+                tiempo_agente.append(tiempos_pausa[tiempo_pausa])
+                agentes_tiempo.append(tiempo_agente)
+
         return agentes_tiempo
 
     def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
@@ -112,18 +119,23 @@ class EstadisticasService():
         agentes_tiempo = []
 
         for agente in agentes:
-            tiempo_agente = []
             logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
                 eventos_llamadas, fecha_inferior, fecha_superior, agente)
+            llamadas_cola = {}
             for logs in logs_time:
-                tiempo_agente.append(agente)
-                tiempo_agente.append(logs.time.strftime('%Y-%m-%d %H:%M'))
-                tiempo_agente.append(logs.queuename)
-                tiempo_agente.append(logs.data4)
                 tiempo_llamada = int(logs.data2)
-                tiempo_agente.append(datetime.timedelta(0, tiempo_llamada))
-                agentes_tiempo.append(tiempo_agente)
+                if logs.queuename in llamadas_cola.keys():
+                    llamadas_cola[logs.queuename] += tiempo_llamada
+                else:
+                    llamadas_cola.update({logs.queuename: tiempo_llamada})
+            for tiempo_cola in llamadas_cola:
                 tiempo_agente = []
+                tiempo_agente.append(agente)
+                tiempo_agente.append(tiempo_cola)
+                llamadas_cola[tiempo_cola] = str(datetime.timedelta(
+                    0, llamadas_cola[tiempo_cola]))
+                tiempo_agente.append(llamadas_cola[tiempo_cola])
+                agentes_tiempo.append(tiempo_agente)
 
         return agentes_tiempo
 

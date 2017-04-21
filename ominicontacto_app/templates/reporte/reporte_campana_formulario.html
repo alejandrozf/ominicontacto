@@ -28,7 +28,7 @@
                                     </h5>
                                 </td>
                                 <td><h5><a href="{% url 'exporta_campana_reporte' campana.pk %}">Exportar Calificacion(CSV)</a></h5></td>
-                                <td><h5><a href="{% url 'exporta_formulario_reporte' campana.pk %}">Exportar Venta(CSV)</a></h5></td>
+                                <td><h5><a href="{% url 'exporta_formulario_reporte' campana.pk %}">Exportar Gestion: {{campana.gestion}}(CSV)</a></h5></td>
                             </tr>
                         </tbody>
                     </table>
@@ -38,8 +38,8 @@
                       <tr class="fts-table-bg">
                         <th>Telefono</th>
                         <th>Datos</th>
-                        <th>Es venta</th>
-                        <th>Calificacion no venta</th>
+                        <th>Gestionado como: {{campana.gestion}}</th>
+                        <th>Calificacion no gestion</th>
                         <th>Observaciones</th>
                           <th>base de datos</th>
                       </tr>

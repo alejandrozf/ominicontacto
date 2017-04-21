@@ -77,7 +77,7 @@
     </div>
     <div class="col-md-3 pull-right">
 
-            <h5><a class="btn btn-info btn-sm" href="{% url 'exporta_reporte_formularios' agente.pk %}">Exportar Venta(CSV)</a></h5>
+            <h5><a class="btn btn-info btn-sm" href="{% url 'exporta_reporte_formularios' agente.pk %}">Exportar Gestion(CSV)</a></h5>
 
     </div>
 </div>
@@ -112,8 +112,8 @@
                       <tr class="fts-table-bg">
                         <th>Telefono</th>
                         <th>Datos</th>
-                        <th>Es venta</th>
-                        <th>Calificacion no venta</th>
+                        <th>Gestionado</th>
+                        <th>Calificacion no gestion</th>
                         <th>Observaciones</th>
                         <th>acciones</th>
                       </tr>
@@ -150,7 +150,7 @@
                                 <td>
                                     <a href="{% url 'formulario_califiacion_actualiza' contacto.pk %}">editar calificacion</a>
                                     {% if contacto.get_venta %}
-                                    <a href="{% url 'formulario_venta_update' contacto.get_venta.pk %}">editar venta</a>
+                                    <a href="{% url 'formulario_venta_update' contacto.get_venta.pk %}">editar gestion</a>
                                     {% endif %}
                                 </td>
                             </tr>
