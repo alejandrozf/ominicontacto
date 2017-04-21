@@ -18,6 +18,9 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
   </head>
   <body>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
@@ -353,7 +356,7 @@
                                   <thead>
                                   <th style="text-align: left">Conversaciones</th>
                                 </thead>
-                                <tbody id="cuerpoTabla">
+                                <tbody id="cuerpoTablaFb">
                                 </tbody>
                                 <tr>
                                 </tr>
@@ -362,12 +365,13 @@
                           </div>
                           <div class="col-md-6">
                                   <div class="col-md-4 chatWindowFb">
-                                      <ul id="messages"></ul>
+                                    <hr>
+                                      <ul id="messagesFb"></ul>
                                   </div>
                                   <div class="form-inline">
-                                    <textarea cols="42" rows="1" name='textSend' id="textSend" placeholder="El contenido de tu mensaje aqui..." class="form-control" required></textarea>
+                                    <textarea cols="42" rows="1" name='textSend' id="textSendFb" placeholder="El contenido de tu mensaje aqui..." class="form-control" required></textarea>
                                     <button id="sendMessage" type="button" name="Enviar" class="btn btn-sm btn-primary">Enviar</button>
-                                    <button id="sendMessage" type="button" name="" class="btn btn-sm btn-warning">Fin</button>
+                                    <button id="endDialog" type="button" name="" class="btn btn-sm btn-warning">Fin</button>
                                 </div>
                           </div>
                       </div>
@@ -541,6 +545,7 @@
             <img src="{% static 'ominicontacto/Img/fbchatTransp.png' %}" class="iconApp" id="facebookChat" alt="Facebook" title="Facebook Chat"></img>
           </td>
           <td>
+            <i id="fbNotReadMessagesCounter" class="material-icons"></i>
             <img src="{% static 'ominicontacto/Img/emailTransp.png' %}" class="iconApp" alt="E-mail" title="E-mails"></img>
           </td>
 			<!--<td>
@@ -568,16 +573,10 @@
 <script type="text/javascript" src="{% static 'ominicontacto/JS/textMessages.js' %}"></script>
 <!-- webChat -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/JQueryWebChat.js' %}"></script>
-<!-- FacebookMessenger -->
-<script type="text/javascript" src="{% static 'ominicontacto/JS/facebookMessenger.js' %}"></script>
 <!-- Socket.IO -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/socket.io.js' %}"></script>
-<script>
-var socket = io.connect('http://172.16.20.237:8082');
-socket.on('news', function (data) {
-  console.log(data);
-});
-</script>
+<!-- FacebookMessenger -->
+<script type="text/javascript" src="{% static 'ominicontacto/JS/facebookMessenger.js' %}"></script>
 <!-- Calendar -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
