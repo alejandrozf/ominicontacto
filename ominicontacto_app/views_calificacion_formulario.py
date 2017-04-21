@@ -53,7 +53,6 @@ class CalificacionClienteCreateView(CreateView):
 
     def get_form(self, form_class):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        calificaciones = campana.calificacion_campana.calificacion.all()
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
@@ -66,7 +65,6 @@ class CalificacionClienteCreateView(CreateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(initial=[
             {'campana': campana.id,
@@ -86,19 +84,8 @@ class CalificacionClienteCreateView(CreateView):
     def get_context_data(self, **kwargs):
         self.object = None
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-
-        bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        mas_datos = []
-        for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
-
-        context['mas_datos'] = mas_datos
-        context['contacto'] = contacto
-        context['campana_pk'] = self.kwargs['pk_campana']
+        context['pk_contacto'] = self.kwargs['pk_contacto']
+        context['id_agente'] = self.kwargs['id_agente']
         return context
 
     def post(self, request, *args, **kwargs):
@@ -269,21 +256,9 @@ class CalificacionClienteUpdateView(UpdateView):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
     def get_context_data(self, **kwargs):
-        self.object = self.get_object()
         context = super(CalificacionClienteUpdateView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-
-        bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        mas_datos = []
-        for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
-
-        context['mas_datos'] = mas_datos
-        context['contacto'] = contacto
-        context['campana_pk'] = self.kwargs['pk_campana']
+        context['pk_contacto'] = self.kwargs['pk_contacto']
+        context['id_agente'] = self.kwargs['id_agente']
         return context
 
     def post(self, request, *args, **kwargs):
@@ -717,6 +692,14 @@ class CalificacionUpdateView(UpdateView):
 
         return self.render_to_response(self.get_context_data(
             form=form, calificacion_form=calificacion_form))
+
+    def get_context_data(self, **kwargs):
+        self.object = None
+        context = super(CalificacionUpdateView, self).get_context_data(**kwargs)
+        calificacion = CalificacionCliente.objects.get(pk=self.kwargs['pk_calificacion'])
+        context['pk_contacto'] = calificacion.contacto.pk
+        context['id_agente'] = calificacion.agente.pk
+        return context
 
     def post(self, request, *args, **kwargs):
         """

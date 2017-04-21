@@ -1,0 +1,105 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
+    <script type="text/javascript">
+   $(function() {
+                var start = moment().subtract(29, 'days');
+                var end = moment();
+                function cb(start, end) {
+                    $('#id_fecha').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
+                }
+
+
+ $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+
+  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+});
+
+            // Init daterange plugin
+            $('#id_fecha').daterangepicker(
+                {
+                locale: {
+                    format: 'DD/MM/YYYY'
+                 },
+
+                autoUpdateInput: false,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+        }, cb);
+
+        cb(start, end);
+
+});
+    </script>
+</head>
+<body>
+
+<div class="col-md-4">
+
+    <form role="form" method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <table class="table">
+           <tr>
+               <td>
+                   <div class="input-group date pull-right active" id="">
+                       {{form.fecha}}
+                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+               </td>
+               <td>
+                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                        Filtrar por este rango
+                </button>
+               </td>
+           </tr>
+        </table>
+
+    </form>
+</div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>contacto</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Tipo</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for evento in listado_de_eventos %}
+            <tr>
+                <td>telefono de contacto {{ evento.contacto.telefono}}</td>
+                <td>{{ evento.fecha }}</td>
+                <td>{{ evento.hora}}</td>
+                <td>{{ evento.get_tipo_agenda_display }}</td>
+                <td>{{ evento.observaciones }}</td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="5">No existen eventos para el día de hoy</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
