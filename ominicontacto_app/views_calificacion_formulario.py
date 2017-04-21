@@ -84,6 +84,7 @@ class CalificacionClienteCreateView(CreateView):
     def get_context_data(self, **kwargs):
         self.object = None
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
+        context['pk_campana'] = self.kwargs['pk_campana']
         context['pk_contacto'] = self.kwargs['pk_contacto']
         context['id_agente'] = self.kwargs['id_agente']
         return context
@@ -257,6 +258,7 @@ class CalificacionClienteUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(CalificacionClienteUpdateView, self).get_context_data(**kwargs)
+        context['pk_campana'] = self.kwargs['pk_campana']
         context['pk_contacto'] = self.kwargs['pk_contacto']
         context['id_agente'] = self.kwargs['id_agente']
         return context
@@ -697,6 +699,7 @@ class CalificacionUpdateView(UpdateView):
         self.object = None
         context = super(CalificacionUpdateView, self).get_context_data(**kwargs)
         calificacion = CalificacionCliente.objects.get(pk=self.kwargs['pk_calificacion'])
+        context['pk_campana'] = calificacion.campana.pk
         context['pk_contacto'] = calificacion.contacto.pk
         context['id_agente'] = calificacion.agente.pk
         return context
