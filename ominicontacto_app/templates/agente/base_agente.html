@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/phone.css' %}"></link>
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/webchat.css' %}"></link>
 		<link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -360,12 +361,13 @@
                             </div>
                           </div>
                           <div class="col-md-6">
-                                  <div class="col-md-4 chatWindow">
+                                  <div class="col-md-4 chatWindowFb">
                                       <ul id="messages"></ul>
                                   </div>
                                   <div class="form-inline">
-                                    <textarea cols="36" rows="1" name='textSend' id="textSend" placeholder="El contenido de tu mensaje aqui..." class="form-control" required></textarea>
-                                    <button id="sendMessage" type="button" name="Enviar" class="btn btn-success">Enviar</button>
+                                    <textarea cols="42" rows="1" name='textSend' id="textSend" placeholder="El contenido de tu mensaje aqui..." class="form-control" required></textarea>
+                                    <button id="sendMessage" type="button" name="Enviar" class="btn btn-sm btn-primary">Enviar</button>
+                                    <button id="sendMessage" type="button" name="" class="btn btn-sm btn-warning">Fin</button>
                                 </div>
                           </div>
                       </div>
