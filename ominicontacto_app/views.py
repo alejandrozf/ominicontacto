@@ -490,6 +490,7 @@ def crear_chat_view(request):
 
 @csrf_exempt
 def wombat_log_view(request):
+    print request.POST
     dict_post = request.POST
 
     id_contacto = int(dict_post['I_ID_CLIENTE'])
