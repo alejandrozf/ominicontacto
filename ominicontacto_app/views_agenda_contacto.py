@@ -46,7 +46,7 @@ class AgendaContactoCreateView(CreateView):
             campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
             url_wombat = '/'.join(
                 [settings.OML_WOMBAT_URL,
-                 'api/calls/?op=addcall&campaign={0}&number={1}&schedule={2}&attrs=id_campana={3},id_cliente={4}'
+                 'api/calls/?op=addcall&campaign={0}&number={1}&schedule={2}&attrs=ID_CAMPANA:{3},ID_CLIENTE:{4}'
                                    ])
             fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
             r = requests.post(
