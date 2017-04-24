@@ -150,7 +150,7 @@ class CalificacionClienteCreateView(CreateView):
             else:
                 wombat_log = None
             if wombat_log:
-                wombat_log.calificacion = self.object_calificacion.calificacion.nombre
+                wombat_log.calificacion = self.object_calificacion[0].calificacion.nombre
                 wombat_log.save()
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
