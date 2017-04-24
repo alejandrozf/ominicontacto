@@ -6,3 +6,12 @@
   opacity: 0.75;
   border-radius: 5px;
 }
+
+.chatWindowFb {
+  height: 410px;
+  width: 394px;
+  overflow-y: scroll;
+  background-color: #81BEF7;
+  opacity: 0.75;
+  border-radius: 5px;
+}
