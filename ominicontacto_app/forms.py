@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
-    MetadataCliente
+    MetadataCliente, AgendaContacto
 )
 
 
@@ -500,6 +500,23 @@ class FormularioNuevoContacto(forms.ModelForm):
         }
 
 
+class FormularioContactoCalificacion(forms.ModelForm):
+
+    def __init__(self, campos, *args, **kwargs):
+        super(FormularioContactoCalificacion, self).__init__(*args, **kwargs)
+        for campo in campos:
+            self.fields[campo] = forms.CharField(required=False,
+                label=campo, widget=forms.TextInput(
+                    attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Contacto
+        fields = ('telefono',)
+        widgets = {
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
 class FormularioCampanaContacto(forms.Form):
     campana = forms.ChoiceField(
         choices=(), widget=forms.Select(attrs={'class': 'form-control'}))
@@ -588,3 +605,18 @@ class FormularioVentaForm(forms.ModelForm):
 FormularioVentaFormSet = inlineformset_factory(
     Contacto, MetadataCliente, form=FormularioVentaForm,
     can_delete=False, extra=1, max_num=1)
+
+
+class AgendaContactoForm(forms.ModelForm):
+
+    class Meta:
+        model = AgendaContacto
+        fields = ('contacto', 'agente', 'tipo_agenda', 'fecha', 'hora', 'observaciones')
+        widgets = {
+            'contacto': forms.HiddenInput(),
+            'agente': forms.HiddenInput(),
+            'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
+            "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
+            "fecha": forms.TextInput(attrs={'class': 'form-control'}),
+            "hora": forms.TextInput(attrs={'class': 'form-control'}),
+        }

@@ -20,7 +20,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.forms import (
     FormularioCRMForm, CalificacionClienteForm, FormularioCalificacionFormSet,
-    FormularioNuevoContacto, FormularioVentaFormSet
+    FormularioContactoCalificacion, FormularioVentaFormSet
 )
 
 import logging as logging_
@@ -36,7 +36,7 @@ class CalificacionClienteCreateView(CreateView):
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
@@ -53,7 +53,6 @@ class CalificacionClienteCreateView(CreateView):
 
     def get_form(self, form_class):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        calificaciones = campana.calificacion_campana.calificacion.all()
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
@@ -66,7 +65,6 @@ class CalificacionClienteCreateView(CreateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(initial=[
             {'campana': campana.id,
@@ -86,19 +84,9 @@ class CalificacionClienteCreateView(CreateView):
     def get_context_data(self, **kwargs):
         self.object = None
         context = super(CalificacionClienteCreateView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-
-        bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        mas_datos = []
-        for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
-
-        context['mas_datos'] = mas_datos
-        context['contacto'] = contacto
-        context['campana_pk'] = self.kwargs['pk_campana']
+        context['pk_campana'] = self.kwargs['pk_campana']
+        context['pk_contacto'] = self.kwargs['pk_contacto']
+        context['id_agente'] = self.kwargs['id_agente']
         return context
 
     def post(self, request, *args, **kwargs):
@@ -125,6 +113,19 @@ class CalificacionClienteCreateView(CreateView):
             return self.form_invalid(form, calificacion_form)
 
     def form_valid(self, form, calificacion_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_calificacion =calificacion_form.save(commit=False)
         cleaned_data_calificacion = calificacion_form.cleaned_data
         calificacion = cleaned_data_calificacion[0]['calificacion']
@@ -162,7 +163,7 @@ class CalificacionClienteCreateView(CreateView):
             else:
                 wombat_log = None
             if wombat_log:
-                wombat_log.calificacion = self.object_calificacion.calificacion.nombre
+                wombat_log.calificacion = self.object_calificacion[0].calificacion.nombre
                 wombat_log.save()
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
@@ -201,7 +202,7 @@ class CalificacionClienteUpdateView(UpdateView):
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def dispatch(self, *args, **kwargs):
         try:
@@ -269,21 +270,10 @@ class CalificacionClienteUpdateView(UpdateView):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
     def get_context_data(self, **kwargs):
-        self.object = self.get_object()
         context = super(CalificacionClienteUpdateView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-
-        bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        mas_datos = []
-        for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
-
-        context['mas_datos'] = mas_datos
-        context['contacto'] = contacto
-        context['campana_pk'] = self.kwargs['pk_campana']
+        context['pk_campana'] = self.kwargs['pk_campana']
+        context['pk_contacto'] = self.kwargs['pk_contacto']
+        context['id_agente'] = self.kwargs['id_agente']
         return context
 
     def post(self, request, *args, **kwargs):
@@ -311,6 +301,19 @@ class CalificacionClienteUpdateView(UpdateView):
 
 
     def form_valid(self, form, calificacion_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_calificacion = calificacion_form.save(commit=False)
 
         if not self.object_calificacion:
@@ -389,7 +392,7 @@ class CalificacionClienteUpdateView(UpdateView):
 class FormularioCreateFormView(CreateView):
     template_name = 'formulario/formulario_create.html'
     model = MetadataCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
@@ -447,6 +450,19 @@ class FormularioCreateFormView(CreateView):
         return context
 
     def form_valid(self, form, venta_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_venta = venta_form.save(commit=False)
         cleaned_data_venta = venta_form.cleaned_data[0]
         del cleaned_data_venta['agente']
@@ -535,7 +551,7 @@ class FormularioDetailView(DetailView):
 class FormularioUpdateFormView(UpdateView):
     template_name = 'formulario/formulario_create.html'
     model = MetadataCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def get_object(self, queryset=None):
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
@@ -600,6 +616,19 @@ class FormularioUpdateFormView(UpdateView):
             form=form, venta_form=venta_form))
 
     def form_valid(self, form, venta_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_venta = venta_form.save(commit=False)
         metadata_cliente = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
         cleaned_data_venta = venta_form.cleaned_data[0]
@@ -668,7 +697,7 @@ class CalificacionUpdateView(UpdateView):
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def get_form(self, form_class):
         campana = self.get_object().campana
@@ -718,6 +747,15 @@ class CalificacionUpdateView(UpdateView):
         return self.render_to_response(self.get_context_data(
             form=form, calificacion_form=calificacion_form))
 
+    def get_context_data(self, **kwargs):
+        self.object = None
+        context = super(CalificacionUpdateView, self).get_context_data(**kwargs)
+        calificacion = CalificacionCliente.objects.get(pk=self.kwargs['pk_calificacion'])
+        context['pk_campana'] = calificacion.campana.pk
+        context['pk_contacto'] = calificacion.contacto.pk
+        context['id_agente'] = calificacion.agente.pk
+        return context
+
     def post(self, request, *args, **kwargs):
         """
         Handles POST requests, instantiating a form instance and its inline
@@ -744,6 +782,19 @@ class CalificacionUpdateView(UpdateView):
 
 
     def form_valid(self, form, calificacion_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_calificacion = calificacion_form.save(commit=False)
         if not self.object_calificacion:
             self.object_calificacion = calificacion_form.cleaned_data[0]['id']

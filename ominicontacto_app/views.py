@@ -497,7 +497,9 @@ def wombat_log_view(request):
     telefono = dict_post['num']
     estado = dict_post['state']
     calificacion = dict_post['extstate']
-    timeout = int(dict_post['I_TIMEOUT'])
+    timeout = 0
+    if 'I_TIMEOUT' in dict_post.keys():
+        timeout = int(dict_post['I_TIMEOUT'])
     id_campana = int(dict_post['I_ID_CAMPANA'])
     id_agente = None
     if 'O_id_agente' in dict_post.keys():
