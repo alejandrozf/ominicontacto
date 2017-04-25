@@ -68,7 +68,7 @@ class QueueDialplanConfigCreator(object):
         # Ver de obtener activa ya que en este momemento no estamos manejando
         # estados
         # Queue.objects.obtener_todas_para_generar_dialplan()
-        return Queue.objects.all()
+        return Queue.objects.obtener_all_except_borradas()
 
     def create_dialplan(self, queue=None, queues=None):
         """Crea el archivo de dialplan para queue existentes
@@ -246,7 +246,7 @@ class QueuesCreator(object):
         # Ver de obtener activa ya que en este momemento no estamos manejando
         # estados
         # Queue.objects.obtener_todas_para_generar_dialplan()
-        return Queue.objects.all()
+        return Queue.objects.obtener_all_except_borradas()
 
     def create_dialplan(self, queue=None, queues=None):
         """Crea el archivo de dialplan para queue existentes
