@@ -385,6 +385,12 @@ class QueueManager(models.Manager):
             return number['queue_asterisk__max'] + 1
 
 
+    def obtener_all_except_borradas(self):
+        """
+        Devuelve queue excluyendo las campanas borradas
+        """
+        return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
+
 class Queue(models.Model):
     """
     Clase cola para el servidor de kamailio
