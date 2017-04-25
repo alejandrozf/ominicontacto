@@ -113,6 +113,19 @@ class CalificacionClienteCreateView(CreateView):
             return self.form_invalid(form, calificacion_form)
 
     def form_valid(self, form, calificacion_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_calificacion =calificacion_form.save(commit=False)
         cleaned_data_calificacion = calificacion_form.cleaned_data
         calificacion = cleaned_data_calificacion[0]['calificacion']
@@ -288,6 +301,19 @@ class CalificacionClienteUpdateView(UpdateView):
 
 
     def form_valid(self, form, calificacion_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_calificacion = calificacion_form.save(commit=False)
 
         if not self.object_calificacion:
@@ -424,6 +450,19 @@ class FormularioCreateFormView(CreateView):
         return context
 
     def form_valid(self, form, venta_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_venta = venta_form.save(commit=False)
         cleaned_data_venta = venta_form.cleaned_data[0]
         del cleaned_data_venta['agente']
@@ -577,6 +616,19 @@ class FormularioUpdateFormView(UpdateView):
             form=form, venta_form=venta_form))
 
     def form_valid(self, form, venta_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_venta = venta_form.save(commit=False)
         metadata_cliente = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
         cleaned_data_venta = venta_form.cleaned_data[0]
@@ -730,6 +782,19 @@ class CalificacionUpdateView(UpdateView):
 
 
     def form_valid(self, form, calificacion_form):
+        self.object = form.save(commit=False)
+        contacto = self.get_object()
+        base_datos = contacto.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        self.object.datos = json.dumps(datos)
+        self.object.save()
         self.object_calificacion = calificacion_form.save(commit=False)
         if not self.object_calificacion:
             self.object_calificacion = calificacion_form.cleaned_data[0]['id']
