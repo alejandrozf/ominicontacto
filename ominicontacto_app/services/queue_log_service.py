@@ -64,14 +64,17 @@ class AgenteTiemposReporte(object):
     @property
     def tiempo_porcentaje_llamada(self):
         if self.tiempo_llamada and  self.tiempo_sesion:
-            return '%.2f' % (self.tiempo_llamada / self.tiempo_sesion.total_seconds())
+            return float('%.2f' % (self.tiempo_llamada /
+                                   self.tiempo_sesion.total_seconds())
+                         )* 100
         return None
 
     @property
     def tiempo_porcentaje_pausa(self):
         if self.tiempo_pausa and  self.tiempo_sesion:
-            return '%.2f' % (self.tiempo_pausa.total_seconds() /
+            return  float('%.2f' % (self.tiempo_pausa.total_seconds() /
                              self.tiempo_sesion.total_seconds())
+                          ) * 100
         return None
 
     @property
@@ -89,7 +92,9 @@ class AgenteTiemposReporte(object):
     @property
     def tiempo_porcentaje_wait(self):
         if self.tiempo_wait and  self.tiempo_sesion:
-            return '%.2f' % (self.tiempo_wait / self.tiempo_sesion.total_seconds())
+            return float('%.2f' % (self.tiempo_wait /
+                                   self.tiempo_sesion.total_seconds())
+                         ) * 100
         return None
 
     def get_string_tiempo_sesion(self):
