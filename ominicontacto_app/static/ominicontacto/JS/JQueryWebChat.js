@@ -1,5 +1,5 @@
 var user, mensaje;
-var KamailioIp = "172.16.20.14";
+//var KamailioIp = "172.16.20.14";
 $(function() {
 	var configuration = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
@@ -74,9 +74,9 @@ var chatId =  $("#conversationId").val();
         ua.sendMessage("sip:"+receiver+"@"+KamailioIp, mensaje);
       $("#chatMessage").val("");
     }
-    
+
     $.ajax({
-    	
+
 		  url: '/chat/mensaje',
     	type: 'GET',
     	contentType: 'application/json',
@@ -86,8 +86,8 @@ var chatId =  $("#conversationId").val();
     	},
     	error: function (jqXHR, textStatus, errorThrown) {
         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-    	}    	
-    	
+    	}
+
     });
   });
 });

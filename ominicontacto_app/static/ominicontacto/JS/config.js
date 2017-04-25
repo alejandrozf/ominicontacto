@@ -1,0 +1,2 @@
+var KamailioIp = "";
+var socketIoIp = "";

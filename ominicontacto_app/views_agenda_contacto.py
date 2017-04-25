@@ -2,14 +2,18 @@
 
 from __future__ import unicode_literals
 
+import requests
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView
 )
 from django.views.generic.detail import DetailView
-from ominicontacto_app.models import AgendaContacto, Contacto, AgenteProfile
+from ominicontacto_app.models import (
+    AgendaContacto, Contacto, AgenteProfile, Campana
+)
 from ominicontacto_app.forms import AgendaContactoForm, AgendaBusquedaForm
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
@@ -35,6 +39,22 @@ class AgendaContactoCreateView(CreateView):
             AgendaContactoCreateView, self).get_context_data(**kwargs)
         context['contacto'] = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL:
+            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+            url_wombat = '/'.join(
+                [settings.OML_WOMBAT_URL,
+                 'api/calls/?op=addcall&campaign={0}&number={1}&schedule={2}&attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'
+                                   ])
+            fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
+            r = requests.post(
+                url_wombat.format(
+                    campana.nombre, self.object.contacto.telefono, fecha_hora,
+                    campana.pk, self.object.contacto.pk))
+        self.object.save()
+        return super(AgendaContactoCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(

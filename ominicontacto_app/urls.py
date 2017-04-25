@@ -528,7 +528,7 @@ urlpatterns = [
     # ==========================================================================
     # Agenda Contacto
     # ==========================================================================
-    url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/$',
+    url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/(?P<pk_campana>\d+)$',
         login_required(views_agenda_contacto.AgendaContactoCreateView.as_view()),
         name="agenda_contacto_create"),
     url(r'^agenda_contacto/(?P<pk>\d+)/detalle/$',
