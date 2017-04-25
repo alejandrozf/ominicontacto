@@ -1,5 +1,4 @@
 var user, mensaje;
-//var KamailioIp = "172.16.20.14";
 $(function() {
 	var configuration = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
