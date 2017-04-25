@@ -172,37 +172,17 @@
             <th>Agente</th>
             <th>Cola</th>
             <th>Tiempos de llamadas</th>
-
-        </tr>
-    </thead>
-    {% for agente in estadisticas.agentes_llamadas %}
-        <tr>
-            <td>{{agente.0}}</td>
-            <td>{{agente.1}}</td>
-            <td>{{agente.2}}hs</td>
-
-        </tr>
-    {% endfor %}
-    <tbody>
-
-    </tbody>
-</table>
-</div>
-
-<div class="col-md-12">
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Agente</th>
-            <th>Cola</th>
             <th>Cantidad de llamadas procesadas</th>
+
         </tr>
     </thead>
     {% for agente in estadisticas.count_llamada_campana %}
         <tr>
             <td>{{agente.0}}</td>
             <td>{{agente.1}}</td>
-            <td>{{agente.2}}</td>
+            <td>{{agente.2}}hs</td>
+            <td>{{agente.3}}</td>
+
         </tr>
     {% endfor %}
     <tbody>
@@ -210,5 +190,6 @@
     </tbody>
 </table>
 </div>
+
 
 {% endblock %}
