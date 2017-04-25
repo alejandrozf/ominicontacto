@@ -1,2 +1,0 @@
-var KamailioIp = "";
-var socketIoIp = "";
