@@ -5,7 +5,8 @@ from django.conf.urls import url, patterns
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
-    views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf
+    views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
+    views_agenda_contacto
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -524,6 +525,19 @@ urlpatterns = [
     url(r'^reporte/(?P<pk_campana>\d+)/campana/$',
         login_required(views_pdf.ReporteCampanaPDF.as_view()),
         name="reporte_campana_pdf"),
+    # ==========================================================================
+    # Agenda Contacto
+    # ==========================================================================
+    url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/(?P<pk_campana>\d+)$',
+        login_required(views_agenda_contacto.AgendaContactoCreateView.as_view()),
+        name="agenda_contacto_create"),
+    url(r'^agenda_contacto/(?P<pk>\d+)/detalle/$',
+        login_required(views_agenda_contacto.AgendaContactoDetailView.as_view()),
+        name="agenda_contacto_detalle"),
+    url(r'^agenda_contacto/eventos/$',
+        login_required(views_agenda_contacto.AgenteContactoListFormView.as_view()),
+        name="agenda_contacto_listado"),
+
 ]
 
 urlpatterns += patterns('',
