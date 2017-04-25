@@ -500,6 +500,23 @@ class FormularioNuevoContacto(forms.ModelForm):
         }
 
 
+class FormularioContactoCalificacion(forms.ModelForm):
+
+    def __init__(self, campos, *args, **kwargs):
+        super(FormularioContactoCalificacion, self).__init__(*args, **kwargs)
+        for campo in campos:
+            self.fields[campo] = forms.CharField(required=False,
+                label=campo, widget=forms.TextInput(
+                    attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Contacto
+        fields = ('telefono',)
+        widgets = {
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
 class FormularioCampanaContacto(forms.Form):
     campana = forms.ChoiceField(
         choices=(), widget=forms.Select(attrs={'class': 'form-control'}))

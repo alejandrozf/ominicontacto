@@ -20,7 +20,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.forms import (
     FormularioCRMForm, CalificacionClienteForm, FormularioCalificacionFormSet,
-    FormularioNuevoContacto, FormularioVentaFormSet
+    FormularioContactoCalificacion, FormularioVentaFormSet
 )
 
 import logging as logging_
@@ -36,7 +36,7 @@ class CalificacionClienteCreateView(CreateView):
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
@@ -189,7 +189,7 @@ class CalificacionClienteUpdateView(UpdateView):
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def dispatch(self, *args, **kwargs):
         try:
@@ -366,7 +366,7 @@ class CalificacionClienteUpdateView(UpdateView):
 class FormularioCreateFormView(CreateView):
     template_name = 'formulario/formulario_create.html'
     model = MetadataCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
@@ -512,7 +512,7 @@ class FormularioDetailView(DetailView):
 class FormularioUpdateFormView(UpdateView):
     template_name = 'formulario/formulario_create.html'
     model = MetadataCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def get_object(self, queryset=None):
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
@@ -645,7 +645,7 @@ class CalificacionUpdateView(UpdateView):
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
-    form_class = FormularioNuevoContacto
+    form_class = FormularioContactoCalificacion
 
     def get_form(self, form_class):
         campana = self.get_object().campana
