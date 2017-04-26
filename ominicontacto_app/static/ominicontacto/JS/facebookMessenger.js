@@ -2,8 +2,8 @@ $(function() {
   var a = 0;
   var socket = io.connect('http://'+socketIoIp+':8082');
   var formAgtId = document.getElementById('idagt');
+  var li = "";
   socket.on('news', function (datos) {
-    debugger;
       if(datos) {
         if(datos.agentId === parseInt(formAgtId.value)) {
           getDialog(datos.call_id);
@@ -11,10 +11,13 @@ $(function() {
       }
   });
 
+  $("#endDialog").click(function () {
+    var selectedRecipFb = $("input[name=dialogId]:checked","#cuerpoTablaFb").val();
+    moveDialog(selectedRecipFb);
+  });
+
   $("#cuerpoTablaFb").on("change", ".fb_username", function() {
     if(this.checked) {
-      debugger;
-
       $("#messagesFb").append(li);// adjunto li al ul contenedor de dialogo
     } else {
       $("#cuerpoTablaFb").html("");
@@ -25,8 +28,7 @@ $(function() {
     resetFBMessagesCounter();
   });
 
-  $("#sendFbMessage").click(function() {
-    debugger;
+  $("#sendMessageFb").click(function() {
     var textoFbaEnviar = $("#textSendFb").val();
     var selectedRecipFb = $("input[name=dialogId]:checked","#cuerpoTablaFb").val();
     var callId = $("#"+selectedRecipFb).val();
@@ -41,20 +43,39 @@ $(function() {
 
     socket.emit('responseDialog', jsondata);
     $("#textSendFb").val("");
-    var li = document.createElement("li");
-    var textLi = document.createTextNode("yo: " + textoFbaEnviar);
+    setTimeout(function () {getDialog(callId);}, 3000);
+    /*var li = document.createElement("div");
+    var textLi = document.createTextNode(textoFbaEnviar);
+    li.style.listStyleType = "none";
+    li.style.borderRadius = "5px";
+    li.style.paddingLeft = "5px";
+    li.style.marginBottom = "2px";
+    li.style.boxShadow = "3px 3px #2E2E2E";
+    li.style.backgroundColor = "yellowgreen";
+    li.style.color = "black";
     li.appendChild(textLi);
-    $("#messagesFb").append(li);
+    $("#messagesFb").append(li);*/
   });
 
-  var li = "";
+  function removeDialog(clid) {
+    $("#messagesFb").empty();
+    var nodoCall_id = document.getElementById(clid);
+    //var nodoCall_id = document.getElementById(clid);
+    //var nodoCall_id = document.getElementById(clid);
+
+    TDNodoCall_id = nodoCall_id.parentNode;
+    TRNodoCall_id = TDNodoCall_id.parentNode;
+    TRNodoCall_id.parentNode.removeChild(TRNodoCall_id);
+  }
+
   function createDialog(mensaje) {
     if(!$("#modalFacebook").hasClass('in')) {
       a = a + 1;
       notReadMessages(a);
     }
     var json = JSON.parse(mensaje);
-    for(var l = 0; l < json.dialog.length; l++) {
+    var messagesCuantity = json.dialog.length;
+    for(var l = 0; l < messagesCuantity; l++) {
       if(!document.getElementById(json.dialog[l].fb_username) && !document.getElementById(json.dialog[l].call_id)) {
         var inputClidHidden = document.createElement('input');//creo input para type=hidden de call_id
         inputClidHidden.id = json.dialog[l].fb_username;
@@ -80,26 +101,47 @@ $(function() {
         tdRadioContainerFB.appendChild(inputClidHidden);//inserto el input type=hidden con call_id al td
         tdRadioContainerFB.appendChild(inputReidHidden);//inserto el input type=hidden con recipient_id al td
         filaFBUsers.appendChild(tdRadioContainerFB);//inserto td de radiobtn a tr
-
         var tdUserFB = document.createElement('td');//creo td para texto de usuario
         var textTdFB = document.createTextNode(json.dialog[l].fb_username);
         tdUserFB.appendChild(textTdFB);//agrego texto a td de user de fb
-        filaFBUsers.appendChild(tdUserFB);
-        $("#cuerpoTablaFb").append(filaFBUsers);
+        filaFBUsers.appendChild(tdUserFB);//agrego td que contiene el usuario de fb, a una fila de tabla
+        $("#cuerpoTablaFb").append(filaFBUsers);// agrego la fila de tabla que contiene el td con el usuario de fb, a la tabla de usuarios
+
       }
-      li = document.createElement("li");// creo li para que contenga el textNode de dialogo
+      li = document.createElement("div");// creo li para que contenga el textNode de dialogo
       textLi = document.createTextNode(json.dialog[l].text_message);// creo textNode de dialogo
-      li.appendChild(textLi);// adjunto textNode a li
+      li.style.listStyleType = "none";
+      li.style.borderRadius = "5px";
+      li.style.paddingLeft = "5px";
+      li.style.marginBottom = "2px";
+      li.style.boxShadow = "3px 3px #2E2E2E";
+      var selectedRecipFb = $("input[name=dialogId]:checked","#cuerpoTablaFb").val();
+      if(json.dialog[l].send_flag == 'f') {
+        li.style.backgroundColor = "#819FF7";
+        li.style.color = "black";
+        li.appendChild(textLi);// adjunto textNode a li
+        if(selectedRecipFb == json.dialog[l].fb_username) {
+          $("#messagesFb").append(li);// adjunto li al div contenedor de dialogo
+        }
+      } else {
+        li.style.backgroundColor = "yellowgreen";
+        li.style.color = "black";
+        li.appendChild(textLi);// adjunto textNode a li
+        if(selectedRecipFb == json.dialog[l].fb_username) {
+          $("#messagesFb").append(li);// adjunto li al div contenedor de dialogo
+        }
+      }
     }
   }
 
   function getDialog(clid) {
     $.ajax({
       contentType: "application/json",
-      url: "http://localhost/testfb.php?callid="+clid,
+      url: "http://localhost/getmessages.php?callid="+clid,
       type: "GET",
       success: function (msg) {
         if(msg !== "") {
+          $("#messagesFb").empty();
           createDialog(msg);
         }
       },
@@ -108,6 +150,23 @@ $(function() {
         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
       }
     });
+  }
+
+  function moveDialog(clid) {
+    /*$.ajax({
+      contentType: "application/json",
+      url: "http://localhost/movemessages.php?callid="+clid,
+      type: "GET",
+      success: function (msg) {
+        if(msg !== "") {*/
+          removeDialog(clid);
+        /*}
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        debugger;
+        console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+      }
+    });*/
   }
 
   function notReadMessages(point) {
