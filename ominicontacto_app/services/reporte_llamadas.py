@@ -291,8 +291,14 @@ class EstadisticasService():
             for campana in campanas:
                 cantidad_llamada = logs_time.filter(queuename=campana.nombre).count()
                 if cantidad_llamada > 0:
+
+                    lola = logs_time.filter(queuename=campana.nombre)
+                    lista_tiempo_llamada = [int(log.data2) for log in lola]
+
                     tiempo_agente.append(agente)
                     tiempo_agente.append(campana.nombre)
+                    tiempo_llamadas = sum(lista_tiempo_llamada)
+                    tiempo_agente.append(str(datetime.timedelta(0, tiempo_llamadas)))
                     tiempo_agente.append(cantidad_llamada)
                     agentes_tiempo.append(tiempo_agente)
                     tiempo_agente = []
@@ -312,7 +318,7 @@ class EstadisticasService():
                                                         fecha_superior)
         count_llamada_campana = self.obtener_count_llamadas_campana(
             agentes, fecha_inferior, fecha_superior)
-    
+
         dic_estadisticas = {
             'agentes_tiempos': agentes_tiempos,
             'fecha_desde': fecha_inferior,
