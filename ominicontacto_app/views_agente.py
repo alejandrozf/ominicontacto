@@ -188,8 +188,8 @@ class LlamarContactoView(RedirectView):
     pattern_name = 'view_blanco'
 
     def post(self, request, *args, **kwargs):
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
+        contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
         calificacion_cliente = CalificacionCliente.objects.filter(
             contacto=contacto,agente=agente).order_by('-fecha')
         campana_id = 0
