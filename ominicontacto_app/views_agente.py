@@ -158,7 +158,6 @@ def cambiar_estado_agente_view(request):
 
 
 def logout_view(request):
-    logout(request)
     if request.user.is_agente and request.user.get_agente_profile():
         agente = request.user.get_agente_profile()
         variables = {
@@ -176,5 +175,5 @@ def logout_view(request):
 
         except:
             logger.exception("Originate failed - agente: %s ", agente)
-
+    logout(request)
     return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
