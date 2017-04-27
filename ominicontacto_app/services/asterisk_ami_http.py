@@ -358,7 +358,7 @@ class AsteriskHttpClient(object):
         logger.debug("AsteriskHttpClient - Got http response:\n%s",
             response.content)
 
-        if settings.FTS_DUMP_HTTP_AMI_RESPONSES:
+        if settings.OML_DUMP_HTTP_AMI_RESPONSES:
             prefix = "http-ami-respones-"
             try:
                 tmp_fd, tmp_filename = tempfile.mkstemp(".xml",

@@ -103,6 +103,15 @@ DATABASE_MYSQL_ASTERISK = {
     'PASSWORD': None,
 }
 
+ASTERISK = {
+    'USERNAME': None,  # Usuario para AMI
+    'PASSWORD': None,  # Password para usuario para AMI
+    'HTTP_AMI_URL': None,
+    # URL usado por Daemon p/acceder a Asterisk AMI via HTTP
+        # Ej:
+        #    "http://1.2.3.4:7088"
+}
+
 # 'OML_RELOAD_CMD': comando a ejecutar para realizar el reload de la configuracion de Asterisk
 # **** RECORDAR: revisar permisos, usuario, etc.
 OML_RELOAD_CMD = '["ssh root@172.16.20.222",  "/usr/sbin/asterisk", "-rx", "dialplan reload"]'
