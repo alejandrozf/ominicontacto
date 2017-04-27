@@ -77,7 +77,7 @@ $(function() {
     sesion = userAgent.start();
   }
 
-  $("#sipLogout").click(function() {
+  /*$("#sipLogout").click(function() {
     num = "0077LOGOUT";
     makeCall();
     userAgent.unregister();
@@ -87,7 +87,7 @@ $(function() {
       $("#Resume").prop('disabled',true);
       updateButton(modifyUserStat, "label label-default", "Offline");
     });
-  });
+  });*/
 
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
