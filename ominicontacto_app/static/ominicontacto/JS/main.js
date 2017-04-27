@@ -30,6 +30,28 @@ $(function () {
 	     }
 	 	 });
 	 });*/
+	 changeStatus(2, $("#idagt").val());
+
+	 /*
+	 ESTADO_OFFLINE = 1    """Agente en estado offline"""
+	 ESTADO_ONLINE = 2    """Agente en estado online"""
+	 ESTADO_PAUSA = 3    """Agente en estado pausa"""
+	 */
+	 function changeStatus(status, idagente) {
+		 $.ajax({
+	   	 type: "get",
+	   	 url: "/agente/cambiar_estado?estado="+status+"&pk_agente="+idagente,
+	   	 contentType: "text/html",
+	   	 success: function (msg) {
+
+	   	 },
+	   	 error: function (jqXHR, textStatus, errorThrown) {
+	                 debugger;
+	                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+	     }
+	   });
+	 }
+
 	 $("#facebookChat").click(function() {
      $("#modalFacebook").modal('show');
    });
@@ -64,6 +86,7 @@ $(function () {
 	 	 return lastval;
 	 }
 	 $("#setPause").click(function () {
+		 changeStatus(3, $("#idagt").val());
 	 	 $("#Pause").prop('disabled', true);
 	 	 $("#Resume").prop('disabled', false);
      $("#modalPause").modal('hide');
@@ -71,7 +94,12 @@ $(function () {
      parar1();
      inicio2();
    });
+	 $("#logout").click(function () {
+		 changeStatus(3, $("#idagt").val());
+	 });
+
    $("#Resume").click(function () {
+		 changeStatus(1, $("#idagt").val());
    	  $("#Pause").prop('disabled', false);
 	 	  $("#Resume").prop('disabled', true);
   	  inicio1();
