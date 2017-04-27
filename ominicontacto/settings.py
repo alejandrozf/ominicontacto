@@ -136,6 +136,8 @@ OL_MAX_CANTIDAD_CONTACTOS = 60000
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+OML_DUMP_HTTP_AMI_RESPONSES = False
+
 #==============================================================================
 # Settings de DEPLOY (para ser customizados en distintos deploys)
 #     Nota: Los settings que siguen, pueden (y algunos DEBEN) ser modificados
@@ -193,6 +195,16 @@ Ejemplo:
 
     OML_RELOAD_CMD = ["/usr/bin/asterisk", "-x", "reload"]
 """
+
+ASTERISK = {
+    'USERNAME': None,  # Usuario para AMI
+    'PASSWORD': None,  # Password para usuario para AMI
+    'HTTP_AMI_URL': None,
+    # URL usado por Daemon p/acceder a Asterisk AMI via HTTP
+        # Ej:
+        #    "http://1.2.3.4:7088"
+}
+
 
 #==============================================================================
 # DEPLOY -> KAMAILIO
@@ -292,6 +304,14 @@ for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
             format(key)
     assert DATABASE_MYSQL_ASTERISK[key] is not None, \
         "Falta key '{0}' en configuracion de la base de datos ASTERISK".\
+            format(key)
+
+for key in ('USERNAME', 'PASSWORD', 'HTTP_AMI_URL'):
+    assert key in ASTERISK, \
+        "Falta key '{0}' en configuracion de ASTERISK".\
+            format(key)
+    assert ASTERISK[key] is not None, \
+        "Falta key '{0}' en configuracion de ASTERISK".\
             format(key)
 
 # ~~~~~ Check OML_RELOAD_CMD

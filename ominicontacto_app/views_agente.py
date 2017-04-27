@@ -14,7 +14,15 @@ from ominicontacto_app.services.reporte_agente_venta import \
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_llamadas import EstadisticasService
 from django.http import JsonResponse
+from django.contrib.auth import logout
+from django.conf import settings
+from ominicontacto_app.services.asterisk_ami_http import (
+    AsteriskHttpClient, AsteriskHttpOriginateError
+)
+import logging as _logging
 
+
+logger = _logging.getLogger(__name__)
 
 
 class AgenteReporteCalificaciones(FormView):
@@ -147,3 +155,25 @@ def cambiar_estado_agente_view(request):
     agente.save()
     response = JsonResponse({'status': 'OK'})
     return response
+
+
+def logout_view(request):
+    if request.user.is_agente and request.user.get_agente_profile():
+        agente = request.user.get_agente_profile()
+        variables = {
+            'AGENTE': str(agente.sip_extension),
+            'AGENTNAME': request.user.get_full_name()
+        }
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.originate("Local/066LOGOUT@fts-pausas/n", "ftp-pausas", True,
+                             variables, True, aplication='Hangup')
+
+        except AsteriskHttpOriginateError:
+            logger.exception("Originate failed - agente: %s ", agente)
+
+        except:
+            logger.exception("Originate failed - agente: %s ", agente)
+    logout(request)
+    return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
