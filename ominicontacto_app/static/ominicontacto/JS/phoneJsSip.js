@@ -10,22 +10,31 @@ function updateButton(btn,clsnm,inht) {
 }
 
 $(function() {
+
+	/*
+	ESTADO_OFFLINE = 1    """Agente en estado offline"""
+	ESTADO_ONLINE = 2    """Agente en estado online"""
+	ESTADO_PAUSA = 3    """Agente en estado pausa"""
+	*/
+	function changeStatus(status, idagente) {
+		$.ajax({
+			type: "get",
+			url: "/agente/cambiar_estado?estado="+status+"&pk_agente="+idagente,
+			contentType: "text/html",
+			success: function (msg) {
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+									debugger;
+									console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+			}
+		});
+	}
+
 	var modifyUserStat = document.getElementById("UserStatus");
 	$("#redial").prop('disabled', true);
 	$('#modalSelectCmp').modal('hide');
   var estado = JSON.stringify({'status' : 'online'});
-  /*$.ajax({
-    url: '/status/setStat',
-    type: 'POST',
-    contentType: 'application/json',
-    data: estado,
-    succes: function (msg) {
-        console.log(JSON.parse(msg));
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-            console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-    }
-  });*/
 
 	 $("#SignCall").click(function () {
 	   $("#modalSignCall").modal('show');
@@ -71,7 +80,8 @@ $(function() {
       password : $("#sipSec").val(),
       hack_ip_in_contact: true,
       session_timers: false,
-			pcConfig: {rtcpMuxPolicy: 'negotiate'}
+			pcConfig: {
+				rtcpMuxPolicy: 'negotiate'}
     };
     userAgent = new JsSIP.UA(config);
     sesion = userAgent.start();
@@ -146,6 +156,7 @@ $(function() {
       }
 
       if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
+					changeStatus(3, $("#idagt").val());
           num = "0077ACW";
     		  makeCall();
     		  entrante = false;

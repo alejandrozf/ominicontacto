@@ -1,6 +1,6 @@
 $(function() {
   var a = 0;
-  var socket = io.connect('http://'+socketIoIp+':8082');
+  var socket = io.connect('https://'+socketIoIp+':8082', {secure: true});
   var formAgtId = document.getElementById('idagt');
   var li = "";
   socket.on('news', function (datos) {
