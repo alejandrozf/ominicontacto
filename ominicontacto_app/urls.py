@@ -368,6 +368,9 @@ urlpatterns = [
             views_agente.AgenteReporteListView.as_view()),
         name='agente_tiempos',
         ),
+    url(r'^agente/logout/$',
+        login_required(views_agente.logout_view), name='agente_logout',
+        ),
     # ==========================================================================
     # Reportes
     # ==========================================================================

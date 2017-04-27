@@ -400,8 +400,8 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
-    def originate(self, channel, context, exten, priority, timeout, async,
-                  variables_de_canal):
+    def originate(self, channel, context, es_aplication, variables_de_canal, async,
+                  aplication=None, exten=None, priority=None, timeout=None):
         """
         Send an ORIGINATE action.
         Parameters:
@@ -415,7 +415,7 @@ class AsteriskHttpClient(object):
         Raises:
             - AsteriskHttpOriginateError: if originate failed
         """
-        assert type(timeout) == int
+        #assert type(timeout) == int
 
         # FIXME: esto se hizo asi para detectar intentos de realizacion de
         #  originates con async=False. Una vez q' finalicemos la refactori-
@@ -454,35 +454,21 @@ class AsteriskHttpClient(object):
         # var64=x64,var65=x65,var66=x66,var67=x67,(...)
 
         lista_de_variables = []
-       # for key, value in variables_de_canal.iteritems():
-        #    lista_de_variables.append(key + "=" + value)
-
-        # response_body, _ = self._request("/mxml", {
-        #     'action': 'originate',
-        #     'channel': channel,
-        #     'context': context,
-        #     #'exten': exten,
-        #     'application': 'Hangup',
-        #     #'priority': priority,
-        #     #'timeout': timeout,
-        #     'async': "true",
-        #     #'variable': ",".join(lista_de_variables),
-        #     'variable': 'AGENTE=1003, AGENTNAME=federico peker',
-        # }, timeout=request_timeout)
+        for key, value in variables_de_canal.iteritems():
+            lista_de_variables.append(key + "=" + value)
 
         response_body, _ = self._request("/mxml", {
             'action': 'originate',
             'channel': channel,
             'context': context,
-            'exten': exten,
-            'priority': priority,
-            'timeout': timeout,
-            'async': "true",
-            'Callerid': exten,
-            #'variable': ",".join(lista_de_variables),
-            'variable': 'IdCamp=14, codCli=1244, CAMPANA=test-2404, origin=click2call',
+            #'exten': exten,
+            'application': aplication,
+            #'priority': priority,
+            #'timeout': timeout,
+            'async': async,
+            'variable': ",".join(lista_de_variables),
+            #'variable': 'AGENTE=1003, AGENTNAME=federico peker',
         }, timeout=request_timeout)
-
 
         parser = AsteriskXmlParserForOriginate()
         parser.parse(response_body)
