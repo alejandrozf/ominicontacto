@@ -371,6 +371,11 @@ urlpatterns = [
     url(r'^agente/logout/$',
         login_required(views_agente.logout_view), name='agente_logout',
         ),
+    url(r'^agente/(?P<pk_agente>\d+)/llamar/(?P<pk_contacto>\d+)/$',
+        login_required(
+            views_agente.LlamarContactoView.as_view()),
+        name='agente_llamar_contacto',
+        ),
     # ==========================================================================
     # Reportes
     # ==========================================================================

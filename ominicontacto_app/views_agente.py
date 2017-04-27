@@ -4,8 +4,9 @@ from __future__ import unicode_literals
 
 import datetime
 from django.views.generic import FormView, UpdateView, ListView
+from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
-from ominicontacto_app.models import AgenteProfile
+from ominicontacto_app.models import AgenteProfile, Contacto, CalificacionCliente
 from ominicontacto_app.forms import ReporteForm
 from ominicontacto_app.services.reporte_agente_calificacion import \
     ReporteAgenteService
@@ -177,3 +178,41 @@ def logout_view(request):
             logger.exception("Originate failed - agente: %s ", agente)
     logout(request)
     return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+
+
+class LlamarContactoView(RedirectView):
+    """
+    Esta vista realiza originate hacia wombate
+    """
+
+    pattern_name = 'view_blanco'
+
+    def post(self, request, *args, **kwargs):
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        calificacion_cliente = CalificacionCliente.objects.filter(
+            contacto=contacto,agente=agente).order_by('-fecha')
+        campana_id = 0
+        campana_nombre = "None"
+        if calificacion_cliente > 0:
+            campana_id = calificacion_cliente[0].campana.pk
+            campana_nombre = calificacion_cliente[0].campana.nombre
+        variables = {
+            'IdCamp': str(campana_id),
+            'codCli': str(contacto.pk),
+            'CAMPANA': campana_nombre,
+            'origin': 'click2call'
+        }
+        channel = "Local/{0}@click2call/n".format(agente.sip_extension)
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.originate(channel, "from-internal", False, variables, True,
+                             exten=contacto.telefono, priority=1, timeout=45000)
+
+        except AsteriskHttpOriginateError:
+            logger.exception("Originate failed - contacto: %s ", contacto.telefono)
+
+        except:
+            logger.exception("Originate failed - contacto: %s ", contacto.telefono)
+        return super(LlamarContactoView, self).post(request, *args, **kwargs)

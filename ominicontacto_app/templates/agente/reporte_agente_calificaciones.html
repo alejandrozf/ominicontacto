@@ -123,7 +123,8 @@
                             <tr>
 
                                 <td>
-                                    {{ contacto.contacto.telefono }}
+
+                                    <a href="{% url 'agente_llamar_contacto' agente.pk contacto.pk %}">{{ contacto.contacto.telefono }}</a>
                                 </td>
                                 <td>
                                     {{ contacto.contacto.datos}}
