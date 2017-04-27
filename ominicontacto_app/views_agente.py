@@ -161,7 +161,7 @@ def logout_view(request):
     if request.user.is_agente and request.user.get_agente_profile():
         agente = request.user.get_agente_profile()
         variables = {
-            'AGENTE': str(agente.pk),
+            'AGENTE': str(agente.sip_extension),
             'AGENTNAME': request.user.get_full_name()
         }
         try:
