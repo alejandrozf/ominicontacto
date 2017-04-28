@@ -371,6 +371,11 @@ urlpatterns = [
     url(r'^agente/logout/$',
         login_required(views_agente.logout_view), name='agente_logout',
         ),
+    url(r'^agente/llamar/$',
+        login_required(
+            views_agente.LlamarContactoView.as_view()),
+        name='agente_llamar_contacto',
+        ),
     # ==========================================================================
     # Reportes
     # ==========================================================================
@@ -531,7 +536,7 @@ urlpatterns = [
     # ==========================================================================
     # Agenda Contacto
     # ==========================================================================
-    url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/(?P<pk_campana>\d+)$',
+    url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/(?P<pk_campana>\d+)/$',
         login_required(views_agenda_contacto.AgendaContactoCreateView.as_view()),
         name="agenda_contacto_create"),
     url(r'^agenda_contacto/(?P<pk>\d+)/detalle/$',

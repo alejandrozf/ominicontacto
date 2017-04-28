@@ -63,6 +63,20 @@
 
         cb(start, end);
 
+        $(".btn-submit").click(function (){
+                var action = $(this).attr("name");
+                var pk_contacto = $(this).attr("id");
+                var pk_agente = $(this).attr("agente");
+                submit_form(pk_contacto, pk_agente, action);
+            })
+
+         function submit_form(pk_contacto, pk_agente, action){
+         $("#pk_contacto").val(pk_contacto);
+         $("#pk_agente").val(pk_agente);
+                $("#form_llamar").attr("action", action);
+                $("#form_llamar").submit();
+            }
+
 });
     </script>
 <body>
@@ -106,7 +120,10 @@
     </form>
 </div>
 
-
+ <form id="form_llamar" role="form" method="post" >
+        {% csrf_token %}
+     <input type="hidden" id="pk_agente" name="pk_agente">
+     <input type="hidden" id="pk_contacto" name="pk_contacto">
                 <table class="table table-bordered">
                     <thead>
                       <tr class="fts-table-bg">
@@ -123,7 +140,9 @@
                             <tr>
 
                                 <td>
-                                    {{ contacto.contacto.telefono }}
+
+                                    <a type="button" id="{{contacto.contacto.pk}}" agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}" class="btn-submit">{{ contacto.contacto.telefono }}</a>
+
                                 </td>
                                 <td>
                                     {{ contacto.contacto.datos}}
@@ -165,5 +184,6 @@
                         {% endfor %}
                     </tbody>
                 </table>
+     </form>
 </body>
 </html>

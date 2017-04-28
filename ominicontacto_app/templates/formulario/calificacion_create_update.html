@@ -1,9 +1,23 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+        <script type="text/javascript">
+    $(document).ready(function() {
 
+        $("#id_guardar_agendar").click(function(e){
+            e.preventDefault();
+            debugger;;
+            $("#id_calificacioncliente-0-agendado").val("True");
+            $("#form-calificacion").submit();
+        });
+
+
+        });
+    </script>
 </head>
 <body>
    {% for message in messages %}
@@ -67,10 +81,13 @@
                 {{calificacion_form.management_form}}
                 <tr>{{calificacion_form.as_table}}</tr>
             </table>
-            <button type="submit" id="id_registrar" class="btn btn-success btn-sm">
+            <button type="submit" id="id_guardar" class="btn btn-success btn-sm">
                 Guardar
             </button>
-            <a class="btn btn-info btn-sm" href="{% url 'agenda_contacto_create' pk_contacto id_agente pk_campana %}">Agendar</a>
+            <button  id="id_guardar_agendar" class="btn btn-info btn-sm">
+                Guardar y Agendar
+            </button>
+            <!--<a class="btn btn-info btn-sm" href="{% url 'agenda_contacto_create' pk_contacto id_agente pk_campana %}">Agendar</a>-->
         </form>
     </div>
 </div>

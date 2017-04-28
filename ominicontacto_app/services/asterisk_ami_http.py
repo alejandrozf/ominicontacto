@@ -457,18 +457,28 @@ class AsteriskHttpClient(object):
         for key, value in variables_de_canal.iteritems():
             lista_de_variables.append(key + "=" + value)
 
-        response_body, _ = self._request("/mxml", {
-            'action': 'originate',
-            'channel': channel,
-            'context': context,
-            #'exten': exten,
-            'application': aplication,
-            #'priority': priority,
-            #'timeout': timeout,
-            'async': async,
-            'variable': ",".join(lista_de_variables),
-            #'variable': 'AGENTE=1003, AGENTNAME=federico peker',
-        }, timeout=request_timeout)
+        if es_aplication:
+            response_body, _ = self._request("/mxml", {
+                'action': 'originate',
+                'channel': channel,
+                'context': context,
+                'application': aplication,
+                'async': async,
+                'variable': ",".join(lista_de_variables),
+
+            }, timeout=request_timeout)
+        else:
+            response_body, _ = self._request("/mxml", {
+                'action': 'originate',
+                'channel': channel,
+                'context': context,
+                'exten': exten,
+                'priority': priority,
+                'timeout': timeout,
+                'async': async,
+                'Callerid': exten,
+                    'variable': ",".join(lista_de_variables),
+            }, timeout=request_timeout)
 
         parser = AsteriskXmlParserForOriginate()
         parser.parse(response_body)
