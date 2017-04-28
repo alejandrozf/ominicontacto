@@ -137,7 +137,7 @@ $(function() {
   function getDialog(clid) {
     $.ajax({
       contentType: "application/json",
-      "https://"+socketIoIp+":8444/getmessages?callid="+clid,
+      url: "https://"+socketIoIp+":8444/getmessages?callid="+clid,
       type: "GET",
       success: function (msg) {
         if(msg !== "") {
