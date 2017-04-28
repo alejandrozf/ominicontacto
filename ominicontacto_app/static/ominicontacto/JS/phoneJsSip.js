@@ -156,7 +156,10 @@ $(function() {
       }
 
       if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
-					changeStatus(3, $("#idagt").val());
+				if(originHeader == "click2call") {
+
+				} else {
+				  changeStatus(3, $("#idagt").val());
           num = "0077ACW";
     		  makeCall();
     		  entrante = false;
@@ -167,37 +170,38 @@ $(function() {
     		  updateButton(modifyUserStat, "label label-danger", "ACW");
 	        parar1();
 	        inicio2();
-        } else if (num.substring(4,0) != "0077") {//Si el nro es distinto de 0077ABC (se evalua al finalizar una llamada saliente)
-        	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
-      		  if(lastPause != "Online") {
-      	    	saveCall(callerOrCalled);
-      	      num = '';
-      		  	$("#Pause").prop('disabled',true);
-      	      $("#Resume").prop('disabled',false);
-      	      $("#sipLogout").prop('disabled',false);
-      	    	updateButton(modifyUserStat, "label label-danger", lastPause);
-      	    } else {
-      	    	$("#Pause").prop('disabled',false);
-      	      $("#Resume").prop('disabled',true);
-      	      $("#sipLogout").prop('disabled',false);
-      	    	updateButton(modifyUserStat, "label label-success", lastPause);
-      	    }
-      	  } else {
-      	  	saveCall(callerOrCalled);
-      	    num = '';
-      	    if(lastPause != "Online") {
-      	    	$("#Resume").prop('disabled',false);
-      	      $("#sipLogout").prop('disabled',false);
-      	    	$("#Pause").prop('disabled',true);
-      	      updateButton(modifyUserStat, "label label-danger", lastPause);
-      	    } else {
-      	    	$("#Resume").prop('disabled',true);
-      	      $("#sipLogout").prop('disabled',false);
-      	    	$("#Pause").prop('disabled',false);
-      	    	updateButton(modifyUserStat, "label label-success", "Online");
-      	    }
-      	  }
-        }
+				}
+      } else if (num.substring(4,0) != "0077") {//Si el nro es distinto de 0077ABC (se evalua al finalizar una llamada saliente)
+      	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
+      	  if(lastPause != "Online") {
+          	saveCall(callerOrCalled);
+            num = '';
+      	  	$("#Pause").prop('disabled',true);
+            $("#Resume").prop('disabled',false);
+            $("#sipLogout").prop('disabled',false);
+          	updateButton(modifyUserStat, "label label-danger", lastPause);
+          } else {
+          	$("#Pause").prop('disabled',false);
+            $("#Resume").prop('disabled',true);
+            $("#sipLogout").prop('disabled',false);
+          	updateButton(modifyUserStat, "label label-success", lastPause);
+          }
+        } else {
+      	 	saveCall(callerOrCalled);
+      	   num = '';
+      	   if(lastPause != "Online") {
+      	   	 $("#Resume").prop('disabled',false);
+      	     $("#sipLogout").prop('disabled',false);
+      	     $("#Pause").prop('disabled',true);
+      	     updateButton(modifyUserStat, "label label-danger", lastPause);
+      	   } else {
+      	     $("#Resume").prop('disabled',true);
+      	     $("#sipLogout").prop('disabled',false);
+      	     $("#Pause").prop('disabled',false);
+      	     updateButton(modifyUserStat, "label label-success", "Online");
+      	   }
+      	 }
+      }
     });
     function saveCall(callerOrCalled) {
     	$.ajax({
@@ -218,6 +222,9 @@ $(function() {
     function originToId(origin) {
       var id = '';
       switch(origin) {
+				case "click2call":
+  			  id = 5;
+  		  	break;
   		  case "DIALER":
   			  id = 2;
   		  	break;
@@ -342,7 +349,6 @@ $(function() {
       	}
       	if(e.request.headers.Origin) {
       	  originHeader = e.request.headers.Origin[0].raw;
-
       	}
       	if (e.request.headers.Idcliente) {
       		var leadIdHeader = e.request.headers.Idcliente[0].raw;
@@ -440,6 +446,12 @@ $(function() {
           			Sounds("","stop");
   						}
   		  			break;
+						case "click2call":
+						  $("#modalReceiveCalls").modal('hide');
+							session_incoming.answer(options);
+							setCallState("Connected", "orange");
+							Sounds("","stop");
+						  break;
   				}
   			}
 
