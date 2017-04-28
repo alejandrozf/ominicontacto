@@ -137,7 +137,7 @@ $(function() {
   function getDialog(clid) {
     $.ajax({
       contentType: "application/json",
-      url: "http://localhost/getmessages.php?callid="+clid,
+      "https://"+socketIoIp+":8444/getmessages?callid="+clid,
       type: "GET",
       success: function (msg) {
         if(msg !== "") {
@@ -155,7 +155,7 @@ $(function() {
   function moveDialog(clid) {
     /*$.ajax({
       contentType: "application/json",
-      url: "http://localhost/movemessages.php?callid="+clid,
+      url: "http://"+socketIoIp+"/movemessages.php?callid="+clid,
       type: "GET",
       success: function (msg) {
         if(msg !== "") {*/

@@ -156,7 +156,7 @@ $(function() {
       }
 
       if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
-				if(originHeader == "click2call") {
+				if(originHeader == "CLICK2CALL") {
 
 				} else {
 				  changeStatus(3, $("#idagt").val());
@@ -222,7 +222,7 @@ $(function() {
     function originToId(origin) {
       var id = '';
       switch(origin) {
-				case "click2call":
+				case "CLICK2CALL":
   			  id = 5;
   		  	break;
   		  case "DIALER":
@@ -446,7 +446,7 @@ $(function() {
           			Sounds("","stop");
   						}
   		  			break;
-						case "click2call":
+						case "CLICK2CALL":
 						  $("#modalReceiveCalls").modal('hide');
 							session_incoming.answer(options);
 							setCallState("Connected", "orange");
