@@ -80,7 +80,7 @@ class AgenteContactoListFormView(FormView):
         agente = self.request.user.get_agente_profile()
         listado_de_eventos = agente.agendacontacto.eventos_filtro_fecha('', '')
         return self.render_to_response(self.get_context_data(
-            listado_de_eventos=listado_de_eventos))
+            listado_de_eventos=listado_de_eventos, agente=agente))
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
@@ -95,4 +95,4 @@ class AgenteContactoListFormView(FormView):
         listado_de_eventos = agente.agendacontacto.eventos_filtro_fecha(fecha_desde,
                                                                         fecha_hasta)
         return self.render_to_response(self.get_context_data(
-            listado_de_eventos=listado_de_eventos))
+            listado_de_eventos=listado_de_eventos, agente=agente))
