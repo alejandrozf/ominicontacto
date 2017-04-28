@@ -168,6 +168,8 @@ class CalificacionClienteCreateView(CreateView):
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
+            if self.object_calificacion[0].agendado:
+                return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(reverse('calificacion_formulario_update',
                                                 kwargs={
                                                     "pk_campana": self.kwargs[
@@ -190,6 +192,12 @@ class CalificacionClienteCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('formulario_venta',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "pk_contacto": self.kwargs['pk_contacto'],
+                               "id_agente": self.kwargs['id_agente']})
+
+    def get_success_url_agenda(self):
+        return reverse('agenda_contacto_create',
                        kwargs={"pk_campana": self.kwargs['pk_campana'],
                                "pk_contacto": self.kwargs['pk_contacto'],
                                "id_agente": self.kwargs['id_agente']})
@@ -362,6 +370,8 @@ class CalificacionClienteUpdateView(UpdateView):
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
+            if self.object_calificacion.agendado:
+                return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(
                 reverse('calificacion_formulario_update',
                         kwargs={
@@ -384,6 +394,12 @@ class CalificacionClienteUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('formulario_venta',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "pk_contacto": self.kwargs['pk_contacto'],
+                               "id_agente": self.kwargs['id_agente']})
+
+    def get_success_url_agenda(self):
+        return reverse('agenda_contacto_create',
                        kwargs={"pk_campana": self.kwargs['pk_campana'],
                                "pk_contacto": self.kwargs['pk_contacto'],
                                "id_agente": self.kwargs['id_agente']})
@@ -821,6 +837,8 @@ class CalificacionUpdateView(UpdateView):
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
+            if self.object_calificacion.agendado:
+                return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(reverse('reporte_agente_calificaciones',
                            kwargs={
                                    "pk_agente": self.object_calificacion.agente.pk}))
@@ -836,6 +854,14 @@ class CalificacionUpdateView(UpdateView):
     def get_success_url(self):
         calificacion = CalificacionCliente.objects.get(pk=self.kwargs['pk_calificacion'])
         return reverse('formulario_venta',
+                       kwargs={
+                           "pk_campana": calificacion.campana.pk,
+                            "pk_contacto": calificacion.contacto.pk,
+                            "id_agente": calificacion.agente.pk})
+
+    def get_success_url_agenda(self):
+        calificacion = CalificacionCliente.objects.get(pk=self.kwargs['pk_calificacion'])
+        return reverse('agenda_contacto_create',
                        kwargs={
                            "pk_campana": calificacion.campana.pk,
                             "pk_contacto": calificacion.contacto.pk,
