@@ -9,6 +9,7 @@ import re
 import datetime
 
 from django.contrib.auth.models import AbstractUser
+from django.contrib.sessions.models import Session
 from django.core.exceptions import SuspiciousOperation
 from django.db import models
 from django.db.models import Max, Q, Count
@@ -25,12 +26,26 @@ class User(AbstractUser):
     is_agente = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
+    last_session_key = models.CharField(blank=True, null=True, max_length=40)
 
     def get_agente_profile(self):
         agente_profile = None
         if hasattr(self, 'agenteprofile'):
             agente_profile = self.agenteprofile
         return agente_profile
+
+    def set_session_key(self, key):
+        if self.last_session_key and not self.last_session_key == key:
+            print key
+            print self.last_session_key
+            try:
+                Session.objects.get(session_key=self.last_session_key).delete()
+            except Session.DoesNotExist:
+                logger.exception("Excepcion detectada al obtener session "
+                                 "con el key {0} no existe ".format(self.last_session_key))
+
+        self.last_session_key = key
+        self.save()
 
 #     def get_patient_profile(self):
 #         patient_profile = None
@@ -48,6 +63,8 @@ class User(AbstractUser):
 #         db_table = 'auth_user'
 #
 #
+
+
 
 
 class Modulo(models.Model):
