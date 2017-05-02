@@ -63,8 +63,6 @@ class User(AbstractUser):
 #
 
 
-
-
 class Modulo(models.Model):
     nombre = models.CharField(max_length=20)
 
