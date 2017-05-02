@@ -60,6 +60,25 @@ class KamailioService():
             print e
             connection.close()
 
+    def delete_agente_kamailio(self, agente):
+        """
+        crear usuario
+        """
+        connection, cursor = self._conectar_base_datos()
+
+        try:
+            sql = """DELETE from subscriber WHERE username like %(username)s"""
+            params = {
+                'username': str(agente.sip_extension)
+            }
+            cursor.execute(sql, params)
+            connection.commit()
+            connection.close()
+        except psycopg2.DatabaseError, e:
+            print "error base de datos"
+            print e
+            connection.close()
+
     def crear_queue_kamailio(self, queue):
         """
         crear usuario
