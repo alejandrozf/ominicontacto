@@ -81,6 +81,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '/home/FreeTech/media_root')
 
 OML_OMNILEADS_IP = "172.16.20.241"
 
+# Tiempo de session en segundo por ejemplo 10 minutos=600
+SESSION_COOKIE_AGE = 600
+
 # 'OML_QUEUE_FILENAME': donde se genera la config de queues. Asterisk debe estar configurado
 # 'OML_ASTERISK_HOSTNAME': servidor donde se copiara la config de queues. Asterisk debe estar configurado
 # 'OML_ASTERISK_REMOTEPATH': path del server donde se guardara. Asterisk debe estar configurado
