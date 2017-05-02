@@ -64,10 +64,7 @@ def login_view(request):
         if form.is_valid():
             login(request, user)
             user.set_session_key(request.session.session_key)
-            #request.session['last_activity'] = datetime.datetime.now()
-            #request.session.set_expiry(300)
             if user.is_agente:
-               # request.session.set_expiry(request.session.get_expiry_age())
                 return HttpResponseRedirect(reverse('view_node'))
             else:
                 return HttpResponseRedirect(reverse('index'))

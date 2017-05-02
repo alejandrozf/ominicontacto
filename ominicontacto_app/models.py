@@ -36,8 +36,6 @@ class User(AbstractUser):
 
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
-            print key
-            print self.last_session_key
             try:
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:

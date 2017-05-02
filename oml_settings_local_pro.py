@@ -58,6 +58,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '/home/freetech/media_root')
 
 OML_OMNILEADS_IP = "172.16.20.241"
 
+# Tiempo de session en segundo por ejemplo 10 minutos=600
+SESSION_COOKIE_AGE = 600
+
 #  para hacer un include de este archivo
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 OML_QUEUE_FILENAME = "/home/freetech/extensions_fts_queues.conf"
