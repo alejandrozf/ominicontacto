@@ -126,15 +126,18 @@ $(function() {
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
       var callerOrCalled = "";
 
-      if(entrante) {
-      	$("#Pause").prop('disabled',false);
-				$("#Resume").prop('disabled',true);
-				$("#sipLogout").prop('disabled',true);
-				updateButton(modifyUserStat, "label label-success", "Online");
-      	callerOrCalled = fromUser;
-      } else {
-        callerOrCalled =  num;
-      }
+			if(num.substring(4,0) != '0077') {
+				if(entrante) {
+	      	$("#Pause").prop('disabled',false);
+					$("#Resume").prop('disabled',true);
+					$("#sipLogout").prop('disabled',true);
+					updateButton(modifyUserStat, "label label-success", "Online");
+	      	callerOrCalled = fromUser;
+	      } else {
+	        callerOrCalled =  num;
+	      }
+			}
+
       parar3();
       defaultCallState();
 
