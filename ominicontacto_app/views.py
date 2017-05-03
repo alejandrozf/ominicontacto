@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import json
 import logging
+import datetime
 
 from services.sms_services import SmsManager
 from django.conf import settings
@@ -62,6 +63,7 @@ def login_view(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             login(request, user)
+            user.set_session_key(request.session.session_key)
             if user.is_agente:
                 return HttpResponseRedirect(reverse('view_node'))
             else:
@@ -114,11 +116,15 @@ class UserDeleteView(DeleteView):
     Esta vista se encarga de la eliminación del
     objeto user
     """
-    model = AgenteProfile
+    model = User
     template_name = 'user/delete_user.html'
 
-    def get_object(self, queryset=None):
-     return User.objects.get(pk=self.kwargs['pk'])
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.is_agente and self.object.get_agente_profile():
+            kamailio_service = KamailioService()
+            kamailio_service.delete_agente_kamailio(self.object.get_agente_profile())
+        return super(UserDeleteView, self).delete(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})
@@ -186,8 +192,7 @@ class AgenteProfileUpdateView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        kamailio_service = KamailioService()
-        kamailio_service.update_agente_kamailio(self.object)
+
         asterisk_sip_service = ActivacionAgenteService()
         try:
             asterisk_sip_service.activar()

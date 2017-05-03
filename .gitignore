@@ -1,4 +1,5 @@
 /oml_settings_local.py
+/ominicontacto_app/static/ominicontacto/JS/config.js
 .idea/
 virtualenv/
 *.pyc
