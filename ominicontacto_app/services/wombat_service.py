@@ -43,7 +43,7 @@ class WombatService():
             logger.warn(" - Comando ejecutado: %s", e.cmd)
             print e
 
-    def update_lista_wombat(self, lista, url_edit):
+    def update_lista_wombat(self, nombre_archivo, url_edit):
         """Realiza un update en la config de wombat
 
         :returns: int -- exit status de proceso ejecutado.
@@ -56,11 +56,12 @@ class WombatService():
         try:
             #subprocess.check_call(settings.FTS_RELOAD_CMD,
             #                      stdout=stdout_file, stderr=stderr_file)
+            filename_archivo = settings.OML_WOMBAT_FILENAME + nombre_archivo
             out = subprocess.check_output(['curl', '--user',
                                     ':'.join([settings.OML_WOMBAT_USER,
                                               settings.OML_WOMBAT_PASSWORD]),
                                      '-m', '30', '-X', 'POST', '-w', 'string',
-                                     '-d',  lista,
+                                     '-d',  "@{0}".format(filename_archivo),
                                     '/'.join([settings.OML_WOMBAT_URL,
                                              url_edit])])
             return out
