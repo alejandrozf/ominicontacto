@@ -10,7 +10,6 @@ function updateButton(btn,clsnm,inht) {
 }
 
 $(function() {
-
 	/*
 	ESTADO_OFFLINE = 1    """Agente en estado offline"""
 	ESTADO_ONLINE = 2    """Agente en estado online"""
@@ -86,18 +85,6 @@ $(function() {
     userAgent = new JsSIP.UA(config);
     sesion = userAgent.start();
   }
-
-  /*$("#sipLogout").click(function() {
-    num = "0077LOGOUT";
-    makeCall();
-    userAgent.unregister();
-    userAgent.on('unregistered', function(e) {  // cuando se desregistra la entidad SIP
-      setSipStatus("reddot.png", "  Unregistered", sipStatus);
-      $("#Pause").prop('disabled',true);
-      $("#Resume").prop('disabled',true);
-      updateButton(modifyUserStat, "label label-default", "Offline");
-    });
-  });*/
 
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
