@@ -128,15 +128,13 @@ $(function() {
 
 
 			if(entrante) {
-			  if(fromUser.substring(4,0) != '0077') {
+				callerOrCalled = fromUser;
+	    } else {
+			  if(num.substring(4,0) != '0077') {
 					$("#Pause").prop('disabled',false);
 					$("#Resume").prop('disabled',true);
 					$("#sipLogout").prop('disabled',true);
 					updateButton(modifyUserStat, "label label-success", "Online");
-		     	callerOrCalled = fromUser;
-				}
-	    } else {
-			  if(num.substring(4,0) != '0077') {
 	        callerOrCalled =  num;
 	      }
 			}
