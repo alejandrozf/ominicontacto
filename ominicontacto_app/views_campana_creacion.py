@@ -412,9 +412,9 @@ class SincronizaDialerView(FormView):
         telefonos = form.cleaned_data.get('telefonos')
         self.object = self.get_object()
         service_base = SincronizarBaseDatosContactosService()
-        service_base.crear_lista(self.object, telefonos,
-                                         usa_contestador, evitar_duplicados,
-                                         evitar_sin_telefono, prefijo_discador)
+        service_base.crear_lista(self.object, telefonos, usa_contestador,
+                                 evitar_duplicados, evitar_sin_telefono,
+                                 prefijo_discador)
         campana_service = CampanaService()
         campana_service.crear_campana_wombat(self.object)
         campana_service.crear_trunk_campana_wombat(self.object)
