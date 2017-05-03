@@ -127,8 +127,13 @@ $(function() {
       var callerOrCalled = "";
 
 
-			if(entrante) {
+			if(entrante && fromUser) {
 				callerOrCalled = fromUser;
+				$("#Pause").prop('disabled',false);
+				$("#Resume").prop('disabled',true);
+				$("#sipLogout").prop('disabled',true);
+				updateButton(modifyUserStat, "label label-success", "Online");
+				fromUser = "";
 	    } else {
 			  if(num.substring(4,0) != '0077') {
 					$("#Pause").prop('disabled',false);
