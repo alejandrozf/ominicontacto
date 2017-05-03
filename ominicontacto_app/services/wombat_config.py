@@ -329,6 +329,13 @@ class CampanaListConfigFile(ConfigFile):
         super(CampanaListConfigFile, self).__init__(filename)
 
 
+class CampanaListContactoConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "newcampaign_list_contacto.txt ")
+        filename = filename.strip()
+        super(CampanaListContactoConfigFile, self).__init__(filename)
+
 class CampanaDesListConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_WOMBAT_FILENAME,
