@@ -140,7 +140,7 @@ $(function() {
 				$("#sipLogout").prop('disabled',true);
 				updateButton(modifyUserStat, "label label-success", "Online");
 				fromUser = "";
-	    } else if(5==originToId("CLICK2CALL")) {
+	    } else if(calltypeId == 5) {
 				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
 				$("#Resume").prop('disabled', objLastPause.LastBtnStatusResume);
 				$("#sipLogout").prop('disabled', objLastPause.LastBtnStatusSipLogout);
