@@ -34,6 +34,12 @@ class User(AbstractUser):
             agente_profile = self.agenteprofile
         return agente_profile
 
+    def get_supervisor_profile(self):
+        supervisor_profile = None
+        if hasattr(self, 'supervisorprofile'):
+            supervisor_profile = self.supervisorprofile
+        return supervisor_profile
+
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
             try:
@@ -136,12 +142,30 @@ class AgenteProfile(models.Model):
     def get_modulos(self):
         return "\n".join([modulo.nombre for modulo in self.modulos.all()])
 
-#
-# class PatientProfile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     active = models.BooleanField(default=True)
-#     name = models.CharField(max_length=64)
-#
+
+class SupervisorProfileManager(models.Manager):
+
+    def obtener_ultimo_sip_extension(self):
+        """
+        Este metodo se encarga de devolver el siguinte sip_extension
+        y si no existe supervisor e devuelve 3000
+        """
+        try:
+            identificador = \
+                self.latest('id').sip_extension + 1
+        except SupervisorProfile.DoesNotExist:
+            identificador = 3000
+
+        return identificador
+
+class SupervisorProfile(models.Model):
+    objects = SupervisorProfileManager()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    sip_extension = models.IntegerField(unique=True)
+    sip_password = models.CharField(max_length=128, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.user.get_full_name()
 #
 # class PhysiotherapistProfile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
