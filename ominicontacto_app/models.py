@@ -201,10 +201,14 @@ class FieldFormulario(models.Model):
     TIPO_LISTA = 3
     """Tipo de campo lista"""
 
+    TIPO_TEXTO_AREA = 4
+    """Tipo de campo text area"""
+
     TIPO_CHOICES = (
         (TIPO_TEXTO, 'Texto'),
         (TIPO_FECHA, 'Fecha'),
         (TIPO_LISTA, 'Lista'),
+        (TIPO_TEXTO_AREA, 'Caja de Texto de Area'),
     )
 
     formulario = models.ForeignKey(Formulario, related_name="campos")
