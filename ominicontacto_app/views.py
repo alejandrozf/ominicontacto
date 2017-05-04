@@ -149,6 +149,9 @@ class UserDeleteView(DeleteView):
         if self.object.is_agente and self.object.get_agente_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(self.object.get_agente_profile())
+        if self.object.is_supervisor and self.object.get_supervisor_profile():
+            kamailio_service = KamailioService()
+            kamailio_service.delete_agente_kamailio(self.object.get_supervisor_profile())
         return super(UserDeleteView, self).delete(request, *args, **kwargs)
 
     def get_success_url(self):
