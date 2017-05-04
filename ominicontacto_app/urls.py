@@ -132,6 +132,9 @@ urlpatterns = [
         login_required(views.crear_chat_view),
         name='chat_create',
         ),
+    url(r'^supervisor/list/$',
+        login_required(views.SupervisorListView.as_view()), name='supervisor_list',
+        ),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================

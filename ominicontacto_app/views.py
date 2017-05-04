@@ -22,7 +22,7 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, WombatLog, Campana, Contacto
+    Chat, MensajeChat, WombatLog, Campana, Contacto, SupervisorProfile
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
@@ -84,6 +84,31 @@ class CustomerUserCreateView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'user/user_create_update_form.html'
 
+    def form_valid(self, form):
+        self.object = form.save()
+        if self.object.is_supervisor:
+            sip_extension = SupervisorProfile.objects.obtener_ultimo_sip_extension()
+            sip_password = User.objects.make_random_password()
+            supervisor_creado = SupervisorProfile.objects.create(
+                user=self.object, sip_extension=sip_extension, sip_password=sip_password
+            )
+            kamailio_service = KamailioService()
+            #FIXME = Crear servicio para crer un supervisor en kamailio o renombrar el
+            # metodo
+            kamailio_service.crear_agente_kamailio(supervisor_creado)
+            asterisk_sip_service = ActivacionAgenteService()
+            try:
+                asterisk_sip_service.activar()
+            except RestablecerConfigSipError, e:
+                message = ("<strong>¡Cuidado!</strong> "
+                           "con el siguiente error{0} .".format(e))
+                messages.add_message(
+                    self.request,
+                    messages.WARNING,
+                    message,
+                )
+        return super(CustomerUserCreateView, self).form_valid(form)
+
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})
 
@@ -124,6 +149,9 @@ class UserDeleteView(DeleteView):
         if self.object.is_agente and self.object.get_agente_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(self.object.get_agente_profile())
+        if self.object.is_supervisor and self.object.get_supervisor_profile():
+            kamailio_service = KamailioService()
+            kamailio_service.delete_agente_kamailio(self.object.get_supervisor_profile())
         return super(UserDeleteView, self).delete(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -249,6 +277,10 @@ class AgenteListView(ListView):
     model = AgenteProfile
     template_name = 'agente_profile_list.html'
 
+
+class SupervisorListView(ListView):
+    model = SupervisorProfile
+    template_name = 'supervisor_profile_list.html'
 
 class GrupoCreateView(CreateView):
     model = Grupo

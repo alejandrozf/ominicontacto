@@ -15,7 +15,7 @@ import traceback
 
 from django.conf import settings
 
-from ominicontacto_app.models import Queue, AgenteProfile
+from ominicontacto_app.models import Queue, AgenteProfile, SupervisorProfile
 import logging as _logging
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory)
@@ -133,7 +133,7 @@ class SipConfigCreator(object):
         :returns: str -- config sip para los agentes
         """
 
-        assert agente is not None, "AgenteProfile == None"
+        #assert agente is not None, "AgenteProfile == None"
         assert agente.user.get_full_name() is not None,\
             "agente.user.get_full_name() == None"
         assert agente.sip_extension is not None, "agente.sip_extension  == None"
@@ -155,6 +155,11 @@ class SipConfigCreator(object):
         """Devuelve los agente para crear config de sip.
         """
         return AgenteProfile.objects.all()
+
+    def _obtener_supervisores_para_generar_config_sip(self):
+        """Devuelve los supervisor para crear config de sip.
+        """
+        return SupervisorProfile.objects.all()
 
     def create_config_sip(self, agente=None, agentes=None):
         """Crea el archivo de dialplan para queue existentes
@@ -199,6 +204,40 @@ class SipConfigCreator(object):
                         param_failed)
                 config_chunk = generador_failed.generar_pedazo()
 
+
+            sip.append(config_chunk)
+
+        supervisores = self._obtener_supervisores_para_generar_config_sip()
+
+        for supervisor in supervisores:
+            logger.info("Creando config sip para supervisor %s", supervisor.user.
+                        get_full_name())
+            try:
+                config_chunk = self._generar_config_sip(supervisor)
+                logger.info("Config sip generado OK para supervisor %s",
+                            supervisor.user.get_full_name())
+            except:
+                logger.exception(
+                    "No se pudo generar configuracion de "
+                    "Asterisk para la quene {0}".format(supervisor.user.get_full_name()))
+
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except:
+                    traceback_lines = "Error al intentar generar traceback"
+                    logger.exception("Error al intentar generar traceback")
+
+                # FAILED: Creamos la porción para el fallo del config sip.
+                param_failed = {'oml_queue_name': supervisor.user.get_full_name(),
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
             sip.append(config_chunk)
 
         self._sip_config_file.write(sip)
