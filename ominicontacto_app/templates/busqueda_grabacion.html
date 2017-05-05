@@ -70,7 +70,6 @@ function filtrar_pagina(pagina) {
             <tr>
                 <th>Fecha</th>
                 <th>Tipo de llamada</th>
-                <th>id_cliente</th>
                 <th>tel_cliente</th>
                 <th>Agente</th>
                 <th>Campaña</th>
@@ -82,7 +81,6 @@ function filtrar_pagina(pagina) {
             <tr>
                 <td>{{ grabacion.fecha|date:"Y-m-d H:i"}}</td>
                 <td>{{ grabacion.get_tipo_llamada_display}}</td>
-                <td>{{ grabacion.id_cliente }}</td>
                 <td>{{ grabacion.tel_cliente}}</td>
                 <td>{{ grabacion.obtener_nombre_agente}}</td>
                 <td>{{ grabacion.campana}}</td>

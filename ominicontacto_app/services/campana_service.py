@@ -124,7 +124,7 @@ class CampanaService():
         salida = service_wombat.update_config_wombat(
             "newcampaign_ep.json", url_edit)
 
-    def crear_lista_wombat(self, lcampana):
+    def crear_lista_wombat(self, campana):
         service_wombat = WombatService()
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  campana.bd_contacto.nombre])
