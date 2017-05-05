@@ -246,7 +246,6 @@ class GrabacionBusquedaForm(forms.Form):
     tipo_llamada_choice.insert(0, ('', '---------'))
     tipo_llamada = forms.ChoiceField(required=False,
                                      choices=tipo_llamada_choice)
-    id_cliente = forms.CharField(required=False)
     tel_cliente = forms.CharField(required=False)
     sip_agente = forms.ChoiceField(required=False, label='Agente', choices=())
     campana = forms.ChoiceField(required=False, choices=())

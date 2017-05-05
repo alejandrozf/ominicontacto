@@ -1388,7 +1388,7 @@ class GrabacionManager(models.Manager):
                                        "sip agente"))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            id_cliente, tel_cliente, sip_agente, campana):
+                            tel_cliente, sip_agente, campana):
         grabaciones = self.filter()
 
         if fecha_desde and fecha_hasta:
@@ -1402,11 +1402,8 @@ class GrabacionManager(models.Manager):
         if tipo_llamada:
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
 
-        if id_cliente:
-            grabaciones = grabaciones.filter(id_cliente=id_cliente)
-
         if tel_cliente:
-            grabaciones = grabaciones.filter(tel_cliente=tel_cliente)
+            grabaciones = grabaciones.filter(tel_cliente__contains=tel_cliente)
 
         if sip_agente:
             grabaciones = grabaciones.filter(sip_agente=sip_agente)
