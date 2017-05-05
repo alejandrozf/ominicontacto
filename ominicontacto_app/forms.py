@@ -246,7 +246,6 @@ class GrabacionBusquedaForm(forms.Form):
     tipo_llamada_choice.insert(0, ('', '---------'))
     tipo_llamada = forms.ChoiceField(required=False,
                                      choices=tipo_llamada_choice)
-    id_cliente = forms.CharField(required=False)
     tel_cliente = forms.CharField(required=False)
     sip_agente = forms.ChoiceField(required=False, label='Agente', choices=())
     campana = forms.ChoiceField(required=False, choices=())
@@ -466,6 +465,11 @@ class FormularioCRMForm(forms.Form):
                     label=campo.nombre_campo, widget=forms.Select(
                         attrs={'class': 'form-control'}),
                     required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_TEXTO_AREA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.Textarea(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
 
 
 class SincronizaDialerForm(forms.Form):
@@ -590,6 +594,11 @@ class FormularioVentaForm(forms.ModelForm):
                 self.fields[campo.nombre_campo] = forms.ChoiceField(
                     choices=choices,
                     label=campo.nombre_campo, widget=forms.Select(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_TEXTO_AREA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.Textarea(
                         attrs={'class': 'form-control'}),
                     required=campo.is_required)
 

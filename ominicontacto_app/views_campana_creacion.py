@@ -412,9 +412,9 @@ class SincronizaDialerView(FormView):
         telefonos = form.cleaned_data.get('telefonos')
         self.object = self.get_object()
         service_base = SincronizarBaseDatosContactosService()
-        lista = service_base.crear_lista(self.object, telefonos,
-                                         usa_contestador, evitar_duplicados,
-                                         evitar_sin_telefono, prefijo_discador)
+        service_base.crear_lista(self.object, telefonos, usa_contestador,
+                                 evitar_duplicados, evitar_sin_telefono,
+                                 prefijo_discador)
         campana_service = CampanaService()
         campana_service.crear_campana_wombat(self.object)
         campana_service.crear_trunk_campana_wombat(self.object)
@@ -433,7 +433,7 @@ class SincronizaDialerView(FormView):
         campana_service.crear_endpoint_campana_wombat(self.object.queue_campana)
         campana_service.crear_endpoint_asociacion_campana_wombat(
             self.object.queue_campana)
-        campana_service.crear_lista_wombat(lista, self.object)
+        campana_service.crear_lista_wombat(self.object)
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito la exportación del reporte.'

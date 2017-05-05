@@ -17,6 +17,7 @@ from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
 from ominicontacto_app.models import Contacto, Campana
 from ominicontacto_app.services.base_de_datos_contactos import BaseDatosService
+from ominicontacto_app.services.wombat_config import CampanaListContactoConfigFile
 
 logger = logging.getLogger(__name__)
 
@@ -142,11 +143,15 @@ class ExportarBaseDatosContactosService(object):
 
 class SincronizarBaseDatosContactosService(object):
 
+    def __init__(self):
+        self._campana_list_contacto_config_file = CampanaListContactoConfigFile()
+
     def crear_lista(self, campana, telefonos, usa_contestador,
                     evitar_duplicados, evitar_sin_telefono, prefijo_discador):
 
         base_datos = campana.bd_contacto
 
+        # no tiene sentido ya que esto hace un filtro por pk
         if evitar_duplicados:
             service_base_datos = BaseDatosService()
             service_base_datos.eliminar_contactos_duplicados(base_datos)
@@ -162,7 +167,12 @@ class SincronizarBaseDatosContactosService(object):
         lista_contacto = self.escribir_lista(contactos, metadata, campana,
                                              telefonos, usa_contestador,
                                              prefijo_discador)
-        return lista_contacto
+
+        logger.info("Creando archivo para asociacion lista %s campana",
+                    campana.nombre)
+
+        self._campana_list_contacto_config_file.write(lista_contacto)
+        #return lista_contacto
 
     def escribir_lista(self, contactos, metadata, campana, telefonos,
                              usa_contestador, prefijo_discador):

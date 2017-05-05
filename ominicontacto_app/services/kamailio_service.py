@@ -25,7 +25,7 @@ class KamailioService():
             VALUES (%(id)s, %(name)s, %(kamailiopass)s)
             """
             params = {
-                'id': agente.id,
+                'id': agente.user.id,
                 'name': agente.sip_extension,
                 'kamailiopass': agente.sip_password
             }
@@ -48,7 +48,7 @@ class KamailioService():
                   password=%(kamailiopass)s
                   WHERE id=%(id)s"""
             params = {
-                'id': agente.id,
+                'id': agente.user.id,
                 'name': agente.sip_extension,
                 'kamailiopass': agente.sip_password
             }

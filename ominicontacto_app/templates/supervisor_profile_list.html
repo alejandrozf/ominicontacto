@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<br>
+<div class="col-md-6 col-md-offset-3">
+
+    <table class="table table-stripped">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>nombre del supervisor</th>
+                <th>sip_extension</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for supervisor in object_list %}
+            <tr>
+                <td>{{ supervisor.id }}</td>
+                <td>{{ supervisor.user.get_full_name}}</td>
+                <td>{{ supervisor.sip_extension }}</td>
+              </tr>
+       {% empty %}
+        <tr>
+            <td colspan="5">No existen supervisores</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}

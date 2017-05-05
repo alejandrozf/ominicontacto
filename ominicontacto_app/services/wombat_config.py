@@ -35,7 +35,7 @@ class CampanaCreator(object):
 
             "priority": 10,
             "pace": "RUNNABLE",
-            "pauseWhenFinished": 0,
+            "pauseWhenFinished": 1,
             "batchSize": 100,
             "securityKey": "",
 
@@ -328,6 +328,13 @@ class CampanaListConfigFile(ConfigFile):
         filename = filename.strip()
         super(CampanaListConfigFile, self).__init__(filename)
 
+
+class CampanaListContactoConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "newcampaign_list_contacto.txt ")
+        filename = filename.strip()
+        super(CampanaListContactoConfigFile, self).__init__(filename)
 
 class CampanaDesListConfigFile(ConfigFile):
     def __init__(self):
