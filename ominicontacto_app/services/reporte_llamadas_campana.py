@@ -37,17 +37,35 @@ class EstadisticasCampanaLlamadasService():
     def calcular_cantidad_llamadas(self, queues, fecha_inferior, fecha_superior):
 
         eventos_llamadas_ingresadas = ['ENTERQUEUE']
+        eventos_llamadas_atendidas = ['CONNECT']
+        eventos_llamadas_abandonadas = ['ABANDON']
+        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
 
         queues_tiempo = []
 
         for queue in queues:
-            logs_time = Queuelog.objects.obtener_log_queuename_event_periodo(
+            ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
                 eventos_llamadas_ingresadas, fecha_inferior, fecha_superior,
                 queue.campana.nombre)
-            count_llamadas_ingresadas = logs_time.count()
+            atendidas = Queuelog.objects.obtener_log_queuename_event_periodo(
+                eventos_llamadas_atendidas, fecha_inferior, fecha_superior,
+                queue.campana.nombre)
+            abandonadas = Queuelog.objects.obtener_log_queuename_event_periodo(
+                eventos_llamadas_abandonadas, fecha_inferior, fecha_superior,
+                queue.campana.nombre)
+            expiradas = Queuelog.objects.obtener_log_queuename_event_periodo(
+                eventos_llamadas_expiradas, fecha_inferior, fecha_superior,
+                queue.campana.nombre)
+            count_llamadas_ingresadas = ingresadas.count()
+            count_llamadas_atendidas = atendidas.count()
+            count_llamadas_abandonadas = abandonadas.count()
+            count_llamadas_expiradas = expiradas.count()
             cantidad_campana = []
             cantidad_campana.append(queue.campana.nombre)
             cantidad_campana.append(count_llamadas_ingresadas)
+            cantidad_campana.append(count_llamadas_atendidas)
+            cantidad_campana.append(count_llamadas_expiradas)
+            cantidad_campana.append(count_llamadas_abandonadas)
 
             queues_tiempo.append(cantidad_campana)
 
