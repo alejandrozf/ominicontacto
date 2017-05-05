@@ -60,12 +60,14 @@ class EstadisticasCampanaLlamadasService():
             count_llamadas_atendidas = atendidas.count()
             count_llamadas_abandonadas = abandonadas.count()
             count_llamadas_expiradas = expiradas.count()
+            count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
             cantidad_campana = []
             cantidad_campana.append(queue.campana.nombre)
             cantidad_campana.append(count_llamadas_ingresadas)
             cantidad_campana.append(count_llamadas_atendidas)
             cantidad_campana.append(count_llamadas_expiradas)
             cantidad_campana.append(count_llamadas_abandonadas)
+            cantidad_campana.append(count_llamadas_manuales)
 
             queues_tiempo.append(cantidad_campana)
 
