@@ -77,6 +77,38 @@ class EstadisticasCampanaLlamadasService():
 
         return queues_tiempo
 
+    def obtener_total_llamadas(self, fecha_inferior, fecha_superior):
+
+        eventos_llamadas_ingresadas = ['ENTERQUEUE']
+        eventos_llamadas_atendidas = ['CONNECT']
+        eventos_llamadas_abandonadas = ['ABANDON']
+        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
+
+        ingresadas = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior)
+        atendidas = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_atendidas, fecha_inferior, fecha_superior)
+        abandonadas = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior)
+        expiradas = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_expiradas, fecha_inferior, fecha_superior)
+        count_llamadas_ingresadas = ingresadas.count()
+        count_llamadas_atendidas = atendidas.count()
+        count_llamadas_abandonadas = abandonadas.count()
+        count_llamadas_expiradas = expiradas.count()
+        count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
+        count_manuales_atendidas = atendidas.filter(data4='saliente').count()
+        count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
+        cantidad_campana = []
+        cantidad_campana.append(count_llamadas_ingresadas)
+        cantidad_campana.append(count_llamadas_atendidas)
+        cantidad_campana.append(count_llamadas_expiradas)
+        cantidad_campana.append(count_llamadas_abandonadas)
+        cantidad_campana.append(count_llamadas_manuales)
+        cantidad_campana.append(count_manuales_atendidas)
+        cantidad_campana.append(count_manuales_abandonadas)
+
+        return cantidad_campana
 
 
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
@@ -87,12 +119,13 @@ class EstadisticasCampanaLlamadasService():
         queues_llamadas = self.calcular_cantidad_llamadas(
             cola, fecha_inferior, fecha_superior)
 
+        total_llamadas = self.obtener_total_llamadas(fecha_inferior, fecha_superior)
 
         dic_estadisticas = {
             'queues_llamadas': queues_llamadas,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
-
+            'total_llamadas': total_llamadas,
 
         }
         return dic_estadisticas

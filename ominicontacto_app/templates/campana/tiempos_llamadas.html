@@ -71,8 +71,49 @@
 
 
 
-<div class="col-md-12">
+<div class="col-md-9">
     <h4>Periodo evaluado {{estadisticas.fecha_desde|date:"d/m/Y"}} - {{estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
+<table class="table table-bordered">
+    <tr>
+        <td colspan="2"><strong>Total llamadas</strong></td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas recibidas</td>
+        <td>{{estadisticas.total_llamadas.0}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas atendidas</td>
+        <td>{{estadisticas.total_llamadas.1}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas expiradas</td>
+        <td>{{estadisticas.total_llamadas.2}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas abandonadas</td>
+        <td>{{estadisticas.total_llamadas.3}}</td>
+    <tr>
+    <tr>
+    <td colspan="2"><strong>Llamadas salientes</strong></td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas salientes</td>
+        <td>{{estadisticas.total_llamadas.4}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas atendidas</td>
+        <td>{{estadisticas.total_llamadas.5}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas abandonas</td>
+        <td>{{estadisticas.total_llamadas.6}}</td>
+    <tr>
+
+</table>
+</div>
+
+<div class="col-md-12">
+    <h4>Distribucion por campaña</h4>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -105,7 +146,6 @@
     </tbody>
 </table>
 </div>
-
 
 
 {% endblock %}
