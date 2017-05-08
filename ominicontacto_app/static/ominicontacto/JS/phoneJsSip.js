@@ -38,6 +38,7 @@ $(function() {
 	 $("#SignCall").click(function () {
 	   $("#modalSignCall").modal('show');
 	 });
+
 	 $("#SaveSignedCall").click(function () {
 	 	 var campid = $("#idCamp").val();// camp ID
 	 	 var idagt = $("#idagt").val();// agent ID
@@ -101,9 +102,9 @@ $(function() {
     displayNumber.value = numPress;
   });
 
-    //Connects to the WebSocket server
-    userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
-  	setSipStatus("greydot.png", "  No account", sipStatus);
+  //Connects to the WebSocket server
+  userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
+    setSipStatus("greydot.png", "  No account", sipStatus);
   	updateButton(modifyUserStat, "label label-success", "Online");
     num = "0077LOGIN";
     makeCall();
@@ -121,19 +122,35 @@ $(function() {
 
   userAgent.on('newRTCSession', function(e) {       // cuando se crea una sesion RTC
 
+		var objLastPause = {};
+		objLastPause.LastStatusAgent = $("#UserStatus").html();
+		objLastPause.LastStatusAgentClass = $("#UserStatus").attr('class');
+		objLastPause.LastBtnStatusPause = $("#Pause").prop('disabled');
+		objLastPause.LastBtnStatusResume = $("#Resume").prop('disabled');
+		objLastPause.LastBtnStatusSipLogout = $("#sipLogout").prop('disabled');
 	  var originHeader = "";
 
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
       var callerOrCalled = "";
 
-			if(num.substring(4,0) != '0077') {
-				if(entrante) {
-	      	$("#Pause").prop('disabled',false);
+			if(entrante && fromUser) { // INGRESA CUANDO CORTA UNA LLAMADA CON UN ABONADO o CLICK2CALL
+				callerOrCalled = fromUser;
+				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
+				$("#Resume").prop('disabled', objLastPause.LastBtnStatusResume);
+				$("#sipLogout").prop('disabled', objLastPause.LastBtnStatusSipLogout);
+				updateButton(modifyUserStat, objLastPause.LastStatusAgentClass, objLastPause.LastStatusAgent);
+				fromUser = "";
+	    } /*else if(calltypeId == 5) {
+				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
+				$("#Resume").prop('disabled', objLastPause.LastBtnStatusResume);
+				$("#sipLogout").prop('disabled', objLastPause.LastBtnStatusSipLogout);
+				updateButton(modifyUserStat, objLastPause.LastStatusAgentClass, objLastPause.LastStatusAgent);
+			} */else {
+			  if(num.substring(4,0) != '0077') { // INGRESA CUANDO CORTA LA LLAMADA CONTRA KAMAILIO, EJ 0077UNPAUSE
+					$("#Pause").prop('disabled',false);
 					$("#Resume").prop('disabled',true);
 					$("#sipLogout").prop('disabled',true);
 					updateButton(modifyUserStat, "label label-success", "Online");
-	      	callerOrCalled = fromUser;
-	      } else {
 	        callerOrCalled =  num;
 	      }
 			}
@@ -406,6 +423,7 @@ $(function() {
           userAgent.terminateSessions();
           defaultCallState();
         };
+
         function processOrigin(origin, opt) {
 			  	var options = opt;
   				switch(origin) {
@@ -449,7 +467,6 @@ $(function() {
       	calltypeId = originToId(null);
         Sounds("Out", "play");
         var session_outgoing = e.session;
-
       }
 
       e.session.on("accepted", function() { 			// cuando se establece una llamada
@@ -459,7 +476,6 @@ $(function() {
         $("#onHold").prop('disabled', false);
 
         if(num.substring(4,0) != "0077") {
-
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
 	       	$("#sipLogout").prop('disabled',true);
@@ -469,35 +485,35 @@ $(function() {
         inicio3();
       });
 
-  		  var clickHold = document.getElementById("onHold");
-  		  clickHold.onclick = function () {
-  		  	if(flagHold) {
-  		  		flagHold = false;
-  		  	  e.session.hold();
-  		  	} else {
-  		  	  flagHold = true;
-  		  	  e.session.unhold();
-  		  	}
-  		  };
-        var aTransf = document.getElementById("aTransfer");
-        aTransf.onclick = function() {
-          flagTransf = true;
-          e.session.sendDTMF("*");
-          e.session.sendDTMF("2");
-          setTimeout(transferir(e), 3000);
-        };
-        var bTransf = document.getElementById("bTransfer");
-        bTransf.onclick = function() {
-          flagTransf = true;
-          e.session.sendDTMF("#");
-          e.session.sendDTMF("#");
-          setTimeout(transferir(e), 3000);
-        };
+  	var clickHold = document.getElementById("onHold");
+  	clickHold.onclick = function () {
+  	 	if(flagHold) {
+  	 		flagHold = false;
+  	 	  e.session.hold();
+  	 	} else {
+  	 	  flagHold = true;
+  	 	  e.session.unhold();
+  	 	}
+  	};
+    var aTransf = document.getElementById("aTransfer");
+    aTransf.onclick = function() {
+      flagTransf = true;
+      e.session.sendDTMF("*");
+      e.session.sendDTMF("2");
+      setTimeout(transferir(e), 3000);
+    };
+    var bTransf = document.getElementById("bTransfer");
+    bTransf.onclick = function() {
+      flagTransf = true;
+      e.session.sendDTMF("#");
+      e.session.sendDTMF("#");
+      setTimeout(transferir(e), 3000);
+    };
 
-        function transferir(objRTCsession) {
-          objRTCsession.session.sendDTMF(displayNumber.value);
-        }
-    });
+    function transferir(objRTCsession) {
+      objRTCsession.session.sendDTMF(displayNumber.value);
+    }
+  });
 
   $("#redial").click(function () {
   	entrante = false;
@@ -520,13 +536,13 @@ $(function() {
     lastDialedNumber = num;
     });
 
-    $("#SelectCamp").click(function () {
-    	$("#modalSelectCmp").modal("hide");
-    	headerIdCamp = $("#cmpList").val();
-    	$("#idCamp").val(headerIdCamp);
-    	headerNomCamp = $("#cmpList option:selected").html();
-      $("#redial").prop('disabled',false);
-    	makeCall();
+  $("#SelectCamp").click(function () {
+  	$("#modalSelectCmp").modal("hide");
+  	headerIdCamp = $("#cmpList").val();
+  	$("#idCamp").val(headerIdCamp);
+  	headerNomCamp = $("#cmpList option:selected").html();
+    $("#redial").prop('disabled',false);
+  	makeCall();
   });
 
   function makeCall() {

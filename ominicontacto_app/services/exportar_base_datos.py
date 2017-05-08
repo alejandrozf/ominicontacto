@@ -151,6 +151,7 @@ class SincronizarBaseDatosContactosService(object):
 
         base_datos = campana.bd_contacto
 
+        # no tiene sentido ya que esto hace un filtro por pk
         if evitar_duplicados:
             service_base_datos = BaseDatosService()
             service_base_datos.eliminar_contactos_duplicados(base_datos)
