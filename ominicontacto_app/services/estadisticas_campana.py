@@ -278,7 +278,6 @@ class EstadisticasService():
             style=ESTILO_AZUL_ROJO_AMARILLO)
         barra_campana_llamadas.title = 'Detalles de llamadas '
 
-        print estadisticas['cantidad_llamadas'][0]
         barra_campana_llamadas.x_labels = \
             estadisticas['cantidad_llamadas'][0]
         barra_campana_llamadas.add('cantidad',
