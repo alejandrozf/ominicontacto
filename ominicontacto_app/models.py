@@ -309,6 +309,11 @@ class CampanaManager(models.Manager):
         """
         return self.filter(estado=Campana.ESTADO_BORRADA)
 
+    def obtener_all_except_borradas(self):
+        """
+        Devuelve campañas excluyendo las campanas borradas
+        """
+        return self.exclude(estado=Campana.ESTADO_BORRADA)
 
 class Campana(models.Model):
     """Una campaña del call center"""
@@ -1677,6 +1682,30 @@ class QueuelogManager(models.Manager):
         except Queuelog.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con esos filtros "))
 
+    def obtener_log_queuename_event_periodo(
+            self, eventos, fecha_desde, fecha_hasta, queue):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(event__in=eventos, queuename=queue,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
+    def obtener_log_event_periodo(self, eventos, fecha_desde, fecha_hasta):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(event__in=eventos,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
 
 class Queuelog(models.Model):
 

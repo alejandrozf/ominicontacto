@@ -8,7 +8,7 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import CalificacionCliente
+from ominicontacto_app.models import CalificacionCliente, Queuelog
 from ominicontacto_app.services.campana_service import CampanaService
 
 import logging as _logging
@@ -107,8 +107,12 @@ class EstadisticasService():
     def obtener_total_llamadas(self, campana):
         campana_service = CampanaService()
         dato_campana = campana_service.obtener_dato_campana_run(campana)
-        llamadas_pendientes = dato_campana['n_est_remaining_calls']
-        llamadas_realizadas = dato_campana['n_calls_attempted']
+        llamadas_pendientes = 0
+        if dato_campana and 'n_est_remaining_calls' in dato_campana.keys():
+            llamadas_pendientes = dato_campana['n_est_remaining_calls']
+        llamadas_realizadas = 0
+        if dato_campana and 'n_calls_attempted' in dato_campana.keys():
+            llamadas_realizadas = dato_campana['n_calls_attempted']
         return llamadas_pendientes, llamadas_realizadas
 
     def obtener_total_calificacion_agente(self, campana, members_campana,
@@ -152,6 +156,42 @@ class EstadisticasService():
 
         return agentes_venta, total_calificados, total_ventas, calificaciones
 
+    def calcular_cantidad_llamadas(self, campana, fecha_inferior, fecha_superior):
+
+        eventos_llamadas_ingresadas = ['ENTERQUEUE']
+        eventos_llamadas_atendidas = ['CONNECT']
+        eventos_llamadas_abandonadas = ['ABANDON']
+        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
+
+        ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
+            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, campana.nombre)
+        atendidas = Queuelog.objects.obtener_log_queuename_event_periodo(
+            eventos_llamadas_atendidas, fecha_inferior, fecha_superior, campana.nombre)
+        abandonadas = Queuelog.objects.obtener_log_queuename_event_periodo(
+            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, campana.nombre)
+        expiradas = Queuelog.objects.obtener_log_queuename_event_periodo(
+            eventos_llamadas_expiradas, fecha_inferior, fecha_superior, campana.nombre)
+        count_llamadas_ingresadas = ingresadas.count()
+        count_llamadas_atendidas = atendidas.count()
+        count_llamadas_abandonadas = abandonadas.count()
+        count_llamadas_expiradas = expiradas.count()
+        count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
+        count_manuales_atendidas = atendidas.filter(data4='saliente').count()
+        count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
+        cantidad_campana = []
+        nombres_cantidades = ["Recibidas", "Atendidas", "Expiradas", "Abandonadas",
+                              "Manuales", "Manuales atendidas", "Manuales no atendidas"]
+        cantidad_campana.append(count_llamadas_ingresadas)
+        cantidad_campana.append(count_llamadas_atendidas)
+        cantidad_campana.append(count_llamadas_expiradas)
+        cantidad_campana.append(count_llamadas_abandonadas)
+        cantidad_campana.append(count_llamadas_manuales)
+        cantidad_campana.append(count_manuales_atendidas)
+        cantidad_campana.append(count_manuales_abandonadas)
+
+
+        return nombres_cantidades, cantidad_campana
+
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
@@ -176,6 +216,9 @@ class EstadisticasService():
         llamadas_pendientes, llamadas_realizadas = self.obtener_total_llamadas(
             campana)
 
+        cantidad_llamadas = self.calcular_cantidad_llamadas(
+            campana, fecha_desde, fecha_hasta)
+
         dic_estadisticas = {
             'agentes_venta': agentes_venta,
             'total_asignados': total_asignados,
@@ -188,7 +231,8 @@ class EstadisticasService():
             'total_no_atendidos': total_no_atendidos,
             'llamadas_pendientes': llamadas_pendientes,
             'llamadas_realizadas': llamadas_realizadas,
-            'calificaciones': calificaciones
+            'calificaciones': calificaciones,
+            'cantidad_llamadas': cantidad_llamadas,
         }
         return dic_estadisticas
 
@@ -228,6 +272,18 @@ class EstadisticasService():
             os.path.join(settings.MEDIA_ROOT,
                          "reporte_campana", "barra_campana_no_atendido.png"))
 
+        # Barra: Total de llamados  en cada intento por campana.
+        barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        barra_campana_llamadas.title = 'Detalles de llamadas '
+
+        print estadisticas['cantidad_llamadas'][0]
+        barra_campana_llamadas.x_labels = \
+            estadisticas['cantidad_llamadas'][0]
+        barra_campana_llamadas.add('cantidad',
+                                       estadisticas['cantidad_llamadas'][1])
+
         return {
             'estadisticas': estadisticas,
             'barra_campana_calificacion': barra_campana_calificacion,
@@ -242,5 +298,9 @@ class EstadisticasService():
             'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
                                             estadisticas['resultado_cantidad']),
             'total_no_atendidos': estadisticas['total_no_atendidos'],
-            'calificaciones': estadisticas['calificaciones']
+            'calificaciones': estadisticas['calificaciones'],
+            'barra_campana_llamadas': barra_campana_llamadas,
+            'dict_llamadas_counter': zip(estadisticas['cantidad_llamadas'][0],
+                                         estadisticas['cantidad_llamadas'][1]),
+
         }

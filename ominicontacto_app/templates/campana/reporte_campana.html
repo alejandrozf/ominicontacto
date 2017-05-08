@@ -224,6 +224,49 @@
 </table>
 </div>
 
+<div>
+        <table class="table table-bordered">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <td colspan="2">
+                                    <h4>Detalle de las llamadas</h4>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Llamadas</th>
+                                            <th>cantidad </th>
+
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for llamadas_nombre, llamadas_cantidad in graficos_estadisticas.dict_llamadas_counter %}
+                                                <tr>
+                                                    <td><h5>{{ llamadas_nombre }} </h5></td>
+                                                    <td><h5>{{ llamadas_cantidad }} </h5></td>
+                                                </tr>
+                                            {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.barra_campana_llamadas.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+</div>
 
 
 {% endwith %}

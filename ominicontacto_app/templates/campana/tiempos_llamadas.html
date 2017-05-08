@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_js %}
+<script type="text/javascript">
+   $(function() {
+                var start = moment();
+                var end = moment();
+                function cb(start, end) {
+                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                }
+
+ $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+
+  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+});
+
+            // Init daterange plugin
+            $('#id_fecha').daterangepicker(
+                {
+
+                locale: {
+                    format: 'DD/MM/YYYY'
+                 },
+
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+        }, cb);
+
+        cb(start, end);
+
+});
+    </script>
+{% endblock %}
+{% block content %}
+ <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
+{% with estadisticas=estadisticas %}
+<div class="col-md-6">
+
+    <form role="form" method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <table class="table">
+           <tr>
+               <td>
+                   <div class="input-group date pull-right active" id="">
+                       {{form.fecha}}
+                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+               </td>
+               <td>
+                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                        Filtrar por esa fecha
+                </button>
+               </td>
+           </tr>
+        </table>
+
+    </form>
+</div>
+
+
+
+<div class="col-md-9">
+    <h4>Periodo evaluado {{estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
+<table class="table table-bordered">
+    <tr>
+        <td colspan="2"><strong>Total llamadas</strong></td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas recibidas</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.0}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas atendidas</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.1}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas expiradas</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.2}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas abandonadas</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.3}}</td>
+    <tr>
+    <tr>
+    <td colspan="2"><strong>Llamadas salientes</strong></td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas salientes</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.4}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas atendidas</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.5}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas abandonas</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.6}}</td>
+    <tr>
+
+</table>
+</div>
+
+<div class="col-md-12">
+    <h4>Distribucion por campaña</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Campana</th>
+            <th>Recibidas</th>
+            <th>Atendidas</th>
+            <th>Expiradas</th>
+            <th>Abandonadas</th>
+            <th>Manuales</th>
+            <th>Manuales atendidas</th>
+            <th>Manuales no atendidas</th>
+
+
+        </tr>
+    </thead>
+    {% for campana in estadisticas.estadisticas.queues_llamadas %}
+        <tr>
+            <td>{{campana.0}}</td>
+            <td>{{campana.1}}</td>
+            <td>{{campana.2}}</td>
+            <td>{{campana.3}}</td>
+            <td>{{campana.4}}</td>
+            <td>{{campana.5}}</td>
+            <td>{{campana.6}}</td>
+            <td>{{campana.7}}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="8" width="50%" align="center">
+             <div class="graficos-avances">
+                                        <figure>
+                                            {{ estadisticas.barra_campana_llamadas.render|safe }}
+                                        </figure>
+                                    </div>
+        </td>
+    </tr>
+    <tbody>
+
+    </tbody>
+</table>
+
+
+</div>
+
+{% endwith %}
+{% endblock %}
