@@ -107,8 +107,12 @@ class EstadisticasService():
     def obtener_total_llamadas(self, campana):
         campana_service = CampanaService()
         dato_campana = campana_service.obtener_dato_campana_run(campana)
-        llamadas_pendientes = dato_campana['n_est_remaining_calls']
-        llamadas_realizadas = dato_campana['n_calls_attempted']
+        llamadas_pendientes = 0
+        if dato_campana and 'n_est_remaining_calls' in dato_campana.keys():
+            llamadas_pendientes = dato_campana['n_est_remaining_calls']
+        llamadas_realizadas = 0
+        if dato_campana and 'n_calls_attempted' in dato_campana.keys():
+            llamadas_realizadas = dato_campana['n_calls_attempted']
         return llamadas_pendientes, llamadas_realizadas
 
     def obtener_total_calificacion_agente(self, campana, members_campana,

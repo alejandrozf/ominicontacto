@@ -343,6 +343,11 @@ urlpatterns = [
             views_campana.ExportaReportePDFView.as_view()),
         name='exporta_campana_reporte_pdf',
         ),
+    url(r'^campana/llamadas_cola/$',
+        login_required(
+            views_campana.CampanaReporteListView.as_view()),
+        name='reporte_llamadas_queue',
+        ),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================

@@ -32,6 +32,8 @@ from ominicontacto_app.services.reporte_metadata_cliente import \
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.reporte_campana_pdf import \
     ReporteCampanaPDFService
+from ominicontacto_app.services.reporte_llamadas_campana import \
+    EstadisticasCampanaLlamadasService
 
 
 import logging as logging_
@@ -652,3 +654,36 @@ def mostrar_campanas_borradas_ocultas_view(request):
         'borradas': borradas,
     }
     return render(request, 'campana/campanas_borradas.html', data)
+
+
+class CampanaReporteListView(FormView):
+    """
+    Esta vista lista los tiempo de llamadas de las camapans
+
+    """
+
+    template_name = 'campana/tiempos_llamadas.html'
+    context_object_name = 'campanas'
+    model = Campana
+    form_class = ReporteForm
+
+
+    def get(self, request, *args, **kwargs):
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        campana_llamadas_service = EstadisticasCampanaLlamadasService()
+        estadisticas = campana_llamadas_service.general_campana(hoy, hoy_ahora)
+        return self.render_to_response(self.get_context_data(
+            estadisticas=estadisticas))
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+
+        campana_llamadas_service = EstadisticasCampanaLlamadasService()
+        estadisticas = campana_llamadas_service.general_campana(fecha_desde, fecha_hasta)
+
+        return self.render_to_response(self.get_context_data(
+            estadisticas=estadisticas))
