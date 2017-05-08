@@ -211,16 +211,15 @@ class CampanaService():
     def cambiar_base(self, campana, telefonos, usa_contestador,
                      evitar_duplicados, evitar_sin_telefono, prefijo_discador):
         service_base = SincronizarBaseDatosContactosService()
-        lista = service_base.crear_lista(campana, telefonos,
-                                         usa_contestador, evitar_duplicados,
-                                         evitar_sin_telefono, prefijo_discador)
+        service_base.crear_lista(campana, telefonos, usa_contestador, evitar_duplicados,
+                                 evitar_sin_telefono, prefijo_discador)
 
         resultado = self.remove_campana_wombat(campana)
         if resultado:
             campana.remover()
         time.sleep(30)
         print self.desasociacion_campana_wombat(campana)
-        print self.crear_lista_wombat(lista, campana)
+        print self.crear_lista_wombat(campana)
         print self.crear_lista_asociacion_campana_wombat(campana)
 
         resultado_2 = self.start_campana_wombat(campana)
