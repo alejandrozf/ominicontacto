@@ -41,6 +41,11 @@ class EstadisticasCampanaLlamadasService():
         eventos_llamadas_abandonadas = ['ABANDON']
         eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
 
+        nombres_queues = []
+        total_atendidas = []
+        total_abandonadas = []
+        total_expiradas = []
+
         queues_tiempo = []
 
         for queue in queues:
@@ -75,7 +80,20 @@ class EstadisticasCampanaLlamadasService():
 
             queues_tiempo.append(cantidad_campana)
 
-        return queues_tiempo
+            # para reportes
+            nombres_queues.append(queue.campana.nombre)
+            total_atendidas.append(count_llamadas_atendidas)
+            total_abandonadas.append(count_llamadas_expiradas)
+            total_expiradas.append(count_llamadas_abandonadas)
+
+        totales_grafico = {
+            'nombres_queues': nombres_queues,
+            'total_atendidas': total_atendidas,
+            'total_abandonadas': total_abandonadas,
+            'total_expiradas': total_expiradas
+        }
+
+        return queues_tiempo, totales_grafico
 
     def obtener_total_llamadas(self, fecha_inferior, fecha_superior):
 
@@ -116,7 +134,7 @@ class EstadisticasCampanaLlamadasService():
         cola = Queue.objects.obtener_all_except_borradas()
         campanas = Campana.objects.obtener_all_except_borradas()
 
-        queues_llamadas = self.calcular_cantidad_llamadas(
+        queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
             cola, fecha_inferior, fecha_superior)
 
         total_llamadas = self.obtener_total_llamadas(fecha_inferior, fecha_superior)
@@ -126,6 +144,7 @@ class EstadisticasCampanaLlamadasService():
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
             'total_llamadas': total_llamadas,
+            'totales_grafico': totales_grafico,
 
         }
         return dic_estadisticas
@@ -137,50 +156,24 @@ class EstadisticasCampanaLlamadasService():
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
 
-        return estadisticas
+        # Barra: Total de llamados atendidos en cada intento por campana.
+        barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        barra_campana_llamadas.title = 'Distribucion por campana'
+
+        barra_campana_llamadas.x_labels = \
+            estadisticas['totales_grafico']['nombres_queues']
+        barra_campana_llamadas.add('atendidas',
+                                   estadisticas['totales_grafico']['total_atendidas'])
+        barra_campana_llamadas.add('abandonadas ',
+                                   estadisticas['totales_grafico']['total_abandonadas'])
+        barra_campana_llamadas.add('expiradas',
+                                   estadisticas['totales_grafico']['total_expiradas'])
 
 
+        return {
+            'estadisticas': estadisticas,
+            'barra_campana_llamadas': barra_campana_llamadas,
 
-        # # Barra: Total de llamados atendidos en cada intento por campana.
-        # barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
-        #     show_legend=False,
-        #     style=ESTILO_AZUL_ROJO_AMARILLO)
-        # barra_campana_calificacion.title = 'Cantidad de calificacion de cliente '
-        #
-        # barra_campana_calificacion.x_labels = \
-        #     estadisticas['calificaciones_nombre']
-        # barra_campana_calificacion.add('cantidad',
-        #                                estadisticas['calificaciones_cantidad'])
-        # barra_campana_calificacion.render_to_png(os.path.join(settings.MEDIA_ROOT,
-        #     "reporte_campana", "barra_campana_calificacion.png"))
-        #
-        # # Barra: Total de llamados no atendidos en cada intento por campana.
-        # barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
-        #     show_legend=False,
-        #     style=ESTILO_AZUL_ROJO_AMARILLO)
-        # barra_campana_no_atendido.title = 'Cantidad de llamadas no atendidos '
-        #
-        # barra_campana_no_atendido.x_labels = \
-        #     estadisticas['resultado_nombre']
-        # barra_campana_no_atendido.add('cantidad',
-        #                               estadisticas['resultado_cantidad'])
-        # barra_campana_no_atendido.render_to_png(
-        #     os.path.join(settings.MEDIA_ROOT,
-        #                  "reporte_campana", "barra_campana_no_atendido.png"))
-        #
-        # return {
-        #     'estadisticas': estadisticas,
-        #     'barra_campana_calificacion': barra_campana_calificacion,
-        #     'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
-        #                                 estadisticas['calificaciones_cantidad'])
-        #     ,
-        #     'total_asignados': estadisticas['total_asignados'],
-        #     'agentes_venta': estadisticas['agentes_venta'],
-        #     'total_calificados': estadisticas['total_calificados'],
-        #     'total_ventas': estadisticas['total_ventas'],
-        #     'barra_campana_no_atendido': barra_campana_no_atendido,
-        #     'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
-        #                                     estadisticas['resultado_cantidad']),
-        #     'total_no_atendidos': estadisticas['total_no_atendidos'],
-        #     'calificaciones': estadisticas['calificaciones']
-        # }
+        }

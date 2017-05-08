@@ -44,7 +44,7 @@
     </script>
 {% endblock %}
 {% block content %}
-
+{% with estadisticas=estadisticas %}
 <div class="col-md-6">
 
     <form role="form" method="post" enctype="multipart/form-data" >
@@ -72,41 +72,41 @@
 
 
 <div class="col-md-9">
-    <h4>Periodo evaluado {{estadisticas.fecha_desde|date:"d/m/Y"}} - {{estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
+    <h4>Periodo evaluado {{estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
 <table class="table table-bordered">
     <tr>
         <td colspan="2"><strong>Total llamadas</strong></td>
     <tr>
     <tr>
         <td>Numero de llamadas recibidas</td>
-        <td>{{estadisticas.total_llamadas.0}}</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.0}}</td>
     <tr>
     <tr>
         <td>Numero de llamadas atendidas</td>
-        <td>{{estadisticas.total_llamadas.1}}</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.1}}</td>
     <tr>
     <tr>
         <td>Numero de llamadas expiradas</td>
-        <td>{{estadisticas.total_llamadas.2}}</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.2}}</td>
     <tr>
     <tr>
         <td>Numero de llamadas abandonadas</td>
-        <td>{{estadisticas.total_llamadas.3}}</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.3}}</td>
     <tr>
     <tr>
     <td colspan="2"><strong>Llamadas salientes</strong></td>
     <tr>
     <tr>
         <td>Numero de llamadas salientes</td>
-        <td>{{estadisticas.total_llamadas.4}}</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.4}}</td>
     <tr>
     <tr>
         <td>Numero de llamadas atendidas</td>
-        <td>{{estadisticas.total_llamadas.5}}</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.5}}</td>
     <tr>
     <tr>
         <td>Numero de llamadas abandonas</td>
-        <td>{{estadisticas.total_llamadas.6}}</td>
+        <td>{{estadisticas.estadisticas.total_llamadas.6}}</td>
     <tr>
 
 </table>
@@ -129,7 +129,7 @@
 
         </tr>
     </thead>
-    {% for campana in estadisticas.queues_llamadas %}
+    {% for campana in estadisticas.estadisticas.queues_llamadas %}
         <tr>
             <td>{{campana.0}}</td>
             <td>{{campana.1}}</td>
@@ -141,11 +141,22 @@
             <td>{{campana.7}}</td>
         </tr>
     {% endfor %}
+    <tr>
+        <td colspan="8">
+             <div class="graficos-avances">
+                                        <figure>
+                                            {{ estadisticas.barra_campana_llamadas.render|safe }}
+                                        </figure>
+                                    </div>
+        </td>
+    </tr>
     <tbody>
 
     </tbody>
 </table>
+
+
 </div>
 
-
+{% endwith %}
 {% endblock %}
