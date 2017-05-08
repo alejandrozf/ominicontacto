@@ -160,7 +160,7 @@ class EstadisticasCampanaLlamadasService():
         barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
-        barra_campana_llamadas.title = 'Distribucion por campana'
+        #barra_campana_llamadas.title = 'Distribucion por campana'
 
         barra_campana_llamadas.x_labels = \
             estadisticas['totales_grafico']['nombres_queues']

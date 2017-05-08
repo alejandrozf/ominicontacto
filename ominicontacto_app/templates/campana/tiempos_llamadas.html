@@ -44,6 +44,8 @@
     </script>
 {% endblock %}
 {% block content %}
+ <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
 {% with estadisticas=estadisticas %}
 <div class="col-md-6">
 
@@ -142,7 +144,7 @@
         </tr>
     {% endfor %}
     <tr>
-        <td colspan="8">
+        <td colspan="8" width="50%" align="center">
              <div class="graficos-avances">
                                         <figure>
                                             {{ estadisticas.barra_campana_llamadas.render|safe }}
