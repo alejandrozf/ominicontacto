@@ -7,7 +7,7 @@ import time
 
 from django.conf import settings
 from ominicontacto_app.models import Campana
-from ominicontacto_app.utiles import elimina_coma, elimina_comillas
+from ominicontacto_app.utiles import elimina_coma, elimina_comillas, elimina_espacios
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
@@ -37,7 +37,7 @@ class CampanaService():
 
     def obtener_list_id_wombat(self, salida_comando, campana):
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
-                                 campana.bd_contacto.nombre])
+                                 elimina_espacios(campana.bd_contacto.nombre)])
         id_lista = None
         results = salida_comando['results']
         for lista in results:
@@ -127,7 +127,7 @@ class CampanaService():
     def crear_lista_wombat(self, campana):
         service_wombat = WombatService()
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
-                                 campana.bd_contacto.nombre])
+                                 elimina_espacios(campana.bd_contacto.nombre)])
         url_edit = "api/lists/?op=addToList&list={0}".format(
             nombre_lista)
         salida = service_wombat.update_lista_wombat("newcampaign_list_contacto.txt",

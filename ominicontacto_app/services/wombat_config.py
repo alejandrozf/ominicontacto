@@ -9,6 +9,7 @@ import logging
 import json
 
 from django.conf import settings
+from ominicontacto_app.utiles import elimina_espacios
 
 
 
@@ -31,7 +32,7 @@ class CampanaCreator(object):
         assert campana is not None, "Campana == None"
 
         dict_campana = {
-            "name": campana.nombre,
+            "name": elimina_espacios(campana.nombre),
 
             "priority": 10,
             "pace": "RUNNABLE",
@@ -145,7 +146,7 @@ class EndPointCreator(object):
 
         dict_endpoint = {
             "type": "QUEUE",
-            "queueName": queue.campana.nombre,
+            "queueName": elimina_espacios(queue.campana.nombre),
             "name": "",
             "astId": {
                 "id": 1
@@ -160,7 +161,7 @@ class EndPointCreator(object):
             "reverseDialing": False,
             "stepwiseReverse": False,
             "securityKey": "",
-            "description": queue.campana.nombre,
+            "description": elimina_espacios(queue.campana.nombre),
             "dialFind": "",
             "dialReplace": ""
         }
