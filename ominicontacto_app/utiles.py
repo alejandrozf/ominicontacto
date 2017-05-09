@@ -61,6 +61,14 @@ def elimina_espacios_parentesis_guiones(cadena):
     return re.sub("\(?\)?\s?\-?", "", cadena)
 
 
+def elimina_espacios(cadena):
+    """
+    Elimina espacios de la cadena recibida por parametro
+    La cadena debe ser una instancia de unicode
+    """
+    assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
+    return re.sub("\s?", "", cadena)
+
 def elimina_coma(cadena):
     """
     Elimina coma
