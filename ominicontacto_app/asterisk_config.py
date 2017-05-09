@@ -14,7 +14,7 @@ import tempfile
 import traceback
 
 from django.conf import settings
-
+from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.models import Queue, AgenteProfile, SupervisorProfile
 import logging as _logging
 from ominicontacto_app.asterisk_config_generador_de_partes import (
@@ -43,7 +43,7 @@ class QueueDialplanConfigCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': queue.name,
+            'oml_queue_name': elimina_espacios(queue.name),
             'oml_queue_id_asterisk': '0077' + str(queue.queue_asterisk),
             'oml_queue_wait': queue.wait,
             'oml_campana_id': queue.campana.id,
@@ -262,7 +262,7 @@ class QueuesCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': queue.name,
+            'oml_queue_name': elimina_espacios(queue.name),
             'oml_strategy': queue.strategy,
             'oml_timeout': queue.timeout,
             'oml_servicelevel': queue.servicelevel,
