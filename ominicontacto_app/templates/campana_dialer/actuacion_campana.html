@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_js %}
+<script>
+$(document).ready(function() {
+    $('#id_hora_desde').datetimepicker({
+        format: 'HH:mm',
+    });
+    $('#id_hora_hasta').datetimepicker({
+        format: 'HH:mm',
+    });
+
+});
+</script>
+{% endblock %}
+{% block content %}
+            <ul class="nav nav-tabs">
+                <li><a>Campaña</a></li>
+                <li class="active"><a>Actuacion</a></li>
+                <li class="disabled"><a>Sincronizar</a></li>
+            </ul>
+            <br>
+            <form role="form" method="post">
+            <div class="col-lg-4">
+      {% csrf_token %}
+    {{ form.non_field_errors }}
+                {{form.campana}}
+    <div class="form-group row">
+        {{ form.dia_semanal.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.dia_semanal.id_for_label }}">Dia de la semana: </label>
+        <div class="col-sm-6">
+              {{ form.dia_semanal }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.hora_desde.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.hora_desde.id_for_label }}">Hora desde: </label>
+        <div class="col-sm-3">
+              {{ form.hora_desde }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.hora_hasta.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.hora_hasta.id_for_label }}">Hora hasta: </label>
+        <div class="col-sm-3">
+              {{ form.hora_hasta }}
+        </div>
+    </div>
+            </div>
+            <div class="col-lg-6">
+                {% if campana %}
+                    <h4>Actuaciones</h4>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr class="fts-table-bg">
+                            <th>Día</th>
+                            <th>Hora Desde</th>
+                            <th>Hora Hasta</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for actuacion in campana.actuacionesdialer.all %}
+                                <tr>
+                                    <td>
+                                        {% if actuacion in actuaciones_validas %}
+                                            <span class="text-success">{{ actuacion.get_dia_semanal_display }}</span>
+                                        {% else %}
+                                            {% if es_template %}
+                                                {{ actuacion.get_dia_semanal_display }}
+                                            {% else %}
+                                                <span class="text-danger">{{ actuacion.get_dia_semanal_display }}</span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ actuacion.hora_desde }} Hs.</td>
+                                    <td>{{ actuacion.hora_hasta }} Hs.</td>
+                                    <td>
+                                        <a href="{% url 'actuacion_campana_dialer_elimina' campana.pk actuacion.pk %}"> Eliminar</a>
+
+                                    </td>       
+                                </tr>
+                             {% empty %}
+                                <tr>
+                                    <td colspan="6">
+                                        <p class="text-center text-danger">
+                                            <em>No se encontraron Actuaciones creadas.</em>
+                                        </p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+            <div class="col-lg-12">
+                <br>
+                <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Agregar Actuación
+                </button>
+
+                    {% if actuaciones_validas %}
+                        <a href="#" class="btn btn-default pull-right" role="button">
+                            Continuar <span class="glyphicon glyphicon-chevron-right"></span>
+                        </a>
+                    {% endif %} 
+
+            </div>
+            </form>        
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+        <div class="panel-body">
+            <div class="col-lg-8">
+                <form method="post">{% csrf_token %}
+
+                        <h4>Campaña <strong>{{ object.campana.nombre }}</strong></h4>
+
+                    <h4>¿Esta seguro que desea eliminar la Actuación:  
+                        <strong>
+                            {{ object.get_dia_semanal_display }}:
+                            {{ object.hora_desde }} -
+                            {{ object.hora_hasta }}
+                        </strong>?</h4>
+
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <span class="glyphicon glyphicon-remove"></span> Eliminar
+                    </button>
+
+                        <a href="{% url 'actuacion_campana_dialer' object.campana.pk %}">Cancelar</a>
+
+                    
+                </form>
+            </div>
+        </div>
+
+{% endblock %}

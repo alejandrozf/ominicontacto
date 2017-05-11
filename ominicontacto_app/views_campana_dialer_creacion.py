@@ -11,10 +11,10 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaDialerForm, QueueForm, QueueMemberForm, QueueUpdateForm, GrupoAgenteForm,
-    CampanaUpdateForm, SincronizaDialerForm
+    CampanaUpdateForm, SincronizaDialerForm, ActuacionDialerForm
 )
 from ominicontacto_app.models import (
-    CampanaDialer, Campana, Queue, QueueMember, BaseDatosContacto, Grupo,
+    CampanaDialer, Campana, Queue, QueueMember, BaseDatosContacto, Grupo, Actuacion
 )
 
 from ominicontacto_app.services.campana_service import CampanaService
@@ -87,7 +87,7 @@ class CampanaDialerCreateView(CreateView):
 
     def get_success_url(self):
         return reverse(
-            'queue_nuevo',
+            'actuacion_campana_dialer',
             kwargs={"pk_campana": self.object.pk})
 
 
@@ -131,6 +131,96 @@ class CampanaUpdateView(UpdateView):
             'queue_update',
             kwargs={"pk_campana": self.object.pk})
 
+
+class ActuacionCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, CreateView):
+    """
+    Esta vista crea uno o varios objetos Actuacion
+    para la Campana que se este creando.
+    Inicializa el form con campo campana (hidden)
+    con el id de campana que viene en la url.
+    """
+
+    template_name = 'campana_dialer/actuacion_campana.html'
+    model = Actuacion
+    context_object_name = 'actuacion'
+    form_class = ActuacionDialerForm
+
+    def get_initial(self):
+        initial = super(ActuacionCampanaDialerCreateView, self).get_initial()
+        initial.update({'campana': self.campana.id})
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ActuacionCampanaDialerCreateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        context['actuaciones_validas'] = \
+            self.campana.obtener_actuaciones_validas()
+        return context
+
+    def form_valid(self, form):
+        form_valid = super(ActuacionCampanaDialerCreateView, self).form_valid(form)
+
+        if not self.campana.valida_actuaciones():
+            message = """<strong>¡Cuidado!</strong>
+            Los días del rango de fechas seteados en la campaña NO coinciden
+            con ningún día de las actuaciones programadas. Por consiguiente
+            la campaña NO se ejecutará."""
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+
+        return form_valid
+
+    def get_success_url(self):
+        return reverse(
+            'actuacion_campana_dialer',
+            kwargs={"pk_campana": self.kwargs['pk_campana']}
+        )
+
+
+class ActuacionCampanaDialerDeleteView(CheckEstadoCampanaDialerMixin, DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto Actuación seleccionado.
+    """
+
+    model = Actuacion
+    template_name = 'campana_dialer/elimina_actuacion_campana.html'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+
+        if not self.campana.valida_actuaciones():
+            message = """<strong>¡Cuidado!</strong>
+            Los días del rango de fechas seteados en la campaña NO coinciden
+            con ningún día de las actuaciones programadas. Por consiguiente
+            la campaña NO se ejecutará."""
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+
+        message = '<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la Actuación.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(success_url)
+
+    def get_success_url(self):
+        return reverse(
+            'actuacion_campana_dialer',
+            kwargs={"pk_campana": self.campana.pk}
+        )
 
 class QueueMemberCreateView(FormView):
     model = QueueMember

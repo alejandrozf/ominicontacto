@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
-    MetadataCliente, AgendaContacto, CampanaDialer
+    MetadataCliente, AgendaContacto, CampanaDialer, Actuacion
 )
 
 
@@ -664,4 +664,18 @@ class CampanaDialerForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ActuacionDialerForm(forms.ModelForm):
+
+    class Meta:
+        model = Actuacion
+        fields = ('dia_semanal', 'hora_desde', 'hora_hasta', 'campana')
+
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'dia_semanal': forms.Select(attrs={'class': 'form-control'}),
+            "hora_desde": forms.TextInput(attrs={'class': 'form-control'}),
+            "hora_hasta": forms.TextInput(attrs={'class': 'form-control'}),
         }
