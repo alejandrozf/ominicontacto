@@ -625,6 +625,209 @@ class Pausa(models.Model):
         return self.nombre
 
 
+# ==============================================================================
+# CampanaDialer
+# ==============================================================================
+class CampanaDialerManager(models.Manager):
+
+    def obtener_en_definicion_para_editar(self, campana_id):
+        """Devuelve la campaña pasada por ID, siempre que dicha
+        campaña pueda ser editar (editada en el proceso de
+        definirla, o sea, en el proceso de "creacion" de la
+        campaña).
+
+        En caso de no encontarse, lanza SuspiciousOperation
+        """
+        try:
+            return self.filter(
+                estado=self.model.ESTADO_EN_DEFINICION).get(
+                pk=campana_id)
+        except self.model.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro campana %s en "
+                                      "estado ESTADO_EN_DEFINICION"))
+
+    def obtener_pausadas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=CampanaDialer.ESTADO_PAUSADA)
+
+    def obtener_inactivas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=CampanaDialer.ESTADO_EN_DEFINICION)
+
+    def obtener_activas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=CampanaDialer.ESTADO_ACTIVA)
+
+    def obtener_borradas(self):
+        """
+        Devuelve campañas en estado borradas.
+        """
+        return self.filter(estado=CampanaDialer.ESTADO_BORRADA)
+
+    def obtener_all_except_borradas(self):
+        """
+        Devuelve campañas excluyendo las campanas borradas
+        """
+        return self.exclude(estado=CampanaDialer.ESTADO_BORRADA)
+
+class CampanaDialer(models.Model):
+    """Una campaña del call center"""
+
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = CampanaDialerManager()
+
+    ESTADO_EN_DEFINICION = 1
+    """La campaña esta siendo definida en el wizard"""
+
+    ESTADO_ACTIVA = 2
+    """La campaña esta activa, o sea, EN_CURSO o PROGRAMADA
+    A nivel de modelos, solo queremos registrar si está ACTIVA, y no nos
+    importa si esta EN_CURSO (o sea, si en este momento el daemon está
+    generando llamadas asociadas a la campaña) o PROGRAMADA (si todavia no
+    estamos en el rango de dias y horas en los que se deben generar
+    las llamadas)
+    """
+
+    ESTADO_FINALIZADA = 3
+    """La campaña fue finalizada, automatica o manualmente.
+    Para mas inforacion, ver `finalizar()`"""
+
+    ESTADO_BORRADA = 4
+    """La campaña ya fue borrada"""
+
+    ESTADO_PAUSADA = 5
+    """La campaña pausada"""
+
+    ESTADOS = (
+        (ESTADO_EN_DEFINICION, 'Inactiva'),
+        (ESTADO_ACTIVA, 'Activa'),
+        (ESTADO_FINALIZADA, 'Finalizada'),
+        (ESTADO_BORRADA, 'Borrada'),
+        (ESTADO_PAUSADA, 'Pausada'),
+    )
+
+    RINGALL = 'ringall'
+    """ring all available channels until one answers (default)"""
+
+    ROUNDROBIN = 'roundrobin'
+    """take turns ringing each available interface (deprecated in 1.4,
+    use rrmemory)"""
+
+    LEASTRECENT = 'leastrecent'
+    """ring interface which was least recently called by this queue"""
+
+    FEWESTCALLS = 'fewestcalls'
+    """ring the one with fewest completed calls from this queue"""
+
+    RANDOM = 'random'
+    """ring random interface"""
+
+    RRMEMORY = 'rrmemory'
+    """round robin with memory, remember where we left off last ring pass"""
+
+    STRATEGY_CHOICES = (
+        (RINGALL, 'Ringall'),
+        (ROUNDROBIN, 'Roundrobin'),
+        (LEASTRECENT, 'Leastrecent'),
+        (FEWESTCALLS, 'Fewestcalls'),
+        (RANDOM, 'Random'),
+        (RRMEMORY, 'Rremory'),
+    )
+
+    estado = models.PositiveIntegerField(
+        choices=ESTADOS,
+        default=ESTADO_EN_DEFINICION,
+    )
+    nombre = models.CharField(max_length=128)
+    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_fin = models.DateField(null=True, blank=True)
+    calificacion_campana = models.ForeignKey(CalificacionCampana,
+                                             related_name="calificacioncampanadialer"
+                                             )
+    bd_contacto = models.ForeignKey(
+        'BaseDatosContacto',
+        null=True, blank=True,
+        related_name="%(class)ss"
+    )
+    formulario = models.ForeignKey(Formulario)
+    campaign_id_wombat = models.IntegerField(null=True, blank=True)
+    oculto = models.BooleanField(default=False)
+    gestion = models.CharField(max_length=128, default="Venta")
+
+    maxlen = models.BigIntegerField(verbose_name='Cantidad Max de llamadas')
+    wrapuptime = models.BigIntegerField(
+        verbose_name='Tiempo de descanso entre llamadas')
+    servicelevel = models.BigIntegerField(verbose_name='Nivel de Servicio')
+    strategy = models.CharField(max_length=128, choices=STRATEGY_CHOICES,
+                                verbose_name='Estrategia de distribucion')
+    eventmemberstatus = models.BooleanField()
+    eventwhencalled = models.BooleanField()
+    weight = models.BigIntegerField(verbose_name='Importancia de campaña')
+    ringinuse = models.BooleanField()
+    setinterfacevar = models.BooleanField()
+    #members = models.ManyToManyField(AgenteProfile, through='QueueMember')
+
+    wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
+    auto_grabacion = models.BooleanField(default=False,
+                                         verbose_name='Grabar llamados')
+    ep_id_wombat = models.IntegerField(null=True, blank=True)
+
+    def __unicode__(self):
+            return self.nombre
+
+    def guardar_campaign_id_wombat(self, campaign_id_wombat):
+        self.campaign_id_wombat = campaign_id_wombat
+        self.save()
+
+    def play(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = CampanaDialer.ESTADO_ACTIVA
+        self.save()
+
+    def pausar(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_PAUSADA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = CampanaDialer.ESTADO_PAUSADA
+        self.save()
+
+    def activar(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = CampanaDialer.ESTADO_ACTIVA
+        self.save()
+
+    def remover(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = CampanaDialer.ESTADO_BORRADA
+        self.save()
+
+    def ocultar(self):
+        """setea la campana como oculta"""
+        self.oculto = True
+        self.save()
+
+    def desocultar(self):
+        """setea la campana como visible"""
+        self.oculto = False
+        self.save()
+
+
 #==============================================================================
 # Base Datos Contactos
 #==============================================================================
