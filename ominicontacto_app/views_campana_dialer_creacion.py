@@ -408,6 +408,8 @@ class SincronizaDialerView(FormView):
             self.object)
         campana_service.crear_lista_wombat(self.object)
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
+        self.object.estado = CampanaDialer.ESTADO_INACTIVA
+        self.object.save()
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito la exportación del reporte.'
 
@@ -420,4 +422,4 @@ class SincronizaDialerView(FormView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('campana_list')
+        return reverse('campana_dialer_list')
