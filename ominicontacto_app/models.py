@@ -827,6 +827,113 @@ class CampanaDialer(models.Model):
         self.oculto = False
         self.save()
 
+    def obtener_actuaciones_validas(self):
+        """
+        Este método devuelve un lista con las actuaciones válidas de una
+        campaña. Teniendo como válidas aquellas que se van a ser procesadas
+        teniendo en cuenta las fechas y horas que se le setearon.
+
+        En caso de que las fecha_iniio y fecha_fin sean nulas, como ser en un
+        template, devuelve una lista vacia.
+        """
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        ahora = hoy_ahora.time()
+
+        lista_actuaciones = [actuacion.dia_semanal for actuacion in
+                             self.actuacionesdialer.all()]
+        lista_actuaciones_validas = []
+
+        dias_totales = (self.fecha_fin - self.fecha_inicio).days + 1
+        for numero_dia in range(dias_totales):
+            dia_actual = (self.fecha_inicio + datetime.timedelta(
+                days=numero_dia))
+            dia_semanal_actual = dia_actual.weekday()
+
+            if dia_semanal_actual in lista_actuaciones:
+                actuaciones_diaria = self.actuacionesdialer.filter(
+                    dia_semanal=dia_semanal_actual)
+                for actuacion in actuaciones_diaria:
+                    actuacion_valida = True
+                    if dia_actual == hoy and ahora > actuacion.hora_hasta:
+                        actuacion_valida = False
+
+                    if actuacion_valida:
+                        lista_actuaciones_validas.append(actuacion)
+        return lista_actuaciones_validas
+
+    def obtener_actuacion_actual(self):
+        """
+        Este método devuelve la actuación correspondiente al
+        momento de hacer la llamada al método.
+        Si no hay ninguna devuelve None.
+        """
+        hoy_ahora = datetime.datetime.today()
+        assert hoy_ahora.tzinfo is None
+        dia_semanal = hoy_ahora.weekday()
+        hora_actual = hoy_ahora.time()
+
+        # FIXME: PERFORMANCE: ver si el resultado de 'filter()' se cachea,
+        # sino, usar algo que se cachee, ya que este metodo es ejecutado
+        # muchas veces desde el daemon
+        actuaciones_hoy = self.actuacionesdialer.filter(dia_semanal=dia_semanal)
+        if not actuaciones_hoy:
+            return None
+
+        for actuacion in actuaciones_hoy:
+            if actuacion.hora_desde <= hora_actual <= actuacion.hora_hasta:
+                return actuacion
+        return None
+
+    def verifica_fecha(self, hoy_ahora):
+        """
+        Este método se encarga de verificar si la fecha pasada como
+        parametro en hoy_ahora es válida para la campaña actual.
+        Devuelve True o False.
+        """
+        assert isinstance(hoy_ahora, datetime.datetime)
+
+        fecha_actual = hoy_ahora.date()
+
+        if self.fecha_inicio <= fecha_actual <= self.fecha_fin:
+            return True
+        return False
+
+    def valida_actuaciones(self):
+        """
+        Este método verifica que la actuaciones de una campana, sean válidas.
+        Corrobora que al menos uno de los días semanales del rango de fechas
+        de la campana concuerde con algún dia de la actuación que tenga la
+        campana al momento de ser consultado este método.
+        Si la campaña tiene un solo día de ejecución o si tiene un solo día
+        de actuación, y los días semanales coinciden y es hoy, valida que
+        hora actual sea menor que la hora_hasta de la actuación.
+        """
+        valida = False
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        ahora = hoy_ahora.time()
+
+        fecha_inicio = self.fecha_inicio
+        fecha_fin = self.fecha_fin
+
+        lista_actuaciones = [actuacion.dia_semanal for actuacion in
+                             self.actuacionesdialer.all()]
+
+        dias_totales = (self.fecha_fin - self.fecha_inicio).days + 1
+        for numero_dia in range(dias_totales):
+            dia_actual = (self.fecha_inicio + datetime.timedelta(
+                days=numero_dia))
+            dia_semanal_actual = dia_actual.weekday()
+
+            if dia_semanal_actual in lista_actuaciones:
+                valida = True
+                actuaciones_diaria = self.actuacionesdialer.filter(
+                    dia_semanal=dia_semanal_actual)
+                for actuacion in actuaciones_diaria:
+                    if dia_actual == hoy and ahora > actuacion.hora_hasta:
+                        valida = False
+        return valida
 
 #==============================================================================
 # Base Datos Contactos
@@ -1979,3 +2086,150 @@ class AgendaContacto(models.Model):
         return "Agenda para el contacto {0} agendado por el agente {1} para la fecha " \
                "{2} a la hora {3}hs ".format(self.contacto, self.agente, self.fecha,
                                              self.hora)
+
+
+#==============================================================================
+# Actuaciones
+#==============================================================================
+
+
+class AbstractActuacion(models.Model):
+    """
+    Modelo abstracto para las actuaciones de las campanas
+    de audio y sms.
+    """
+
+    """Dias de la semana, compatibles con datetime.date.weekday()"""
+    LUNES = 0
+    MARTES = 1
+    MIERCOLES = 2
+    JUEVES = 3
+    VIERNES = 4
+    SABADO = 5
+    DOMINGO = 6
+
+    DIA_SEMANAL_CHOICES = (
+        (LUNES, 'LUNES'),
+        (MARTES, 'MARTES'),
+        (MIERCOLES, 'MIERCOLES'),
+        (JUEVES, 'JUEVES'),
+        (VIERNES, 'VIERNES'),
+        (SABADO, 'SABADO'),
+        (DOMINGO, 'DOMINGO'),
+    )
+    dia_semanal = models.PositiveIntegerField(
+        choices=DIA_SEMANAL_CHOICES,
+    )
+
+    hora_desde = models.TimeField()
+    hora_hasta = models.TimeField()
+
+    class Meta:
+        abstract = True
+
+    def verifica_actuacion(self, hoy_ahora):
+        """
+        Este método verifica que el día de la semana y la hora
+        pasada en el parámetro hoy_ahora sea válida para la
+        actuación actual.
+        Devuelve True o False.
+        """
+
+        assert isinstance(hoy_ahora, datetime.datetime)
+
+        dia_semanal = hoy_ahora.weekday()
+        hora_actual = datetime.time(
+            hoy_ahora.hour, hoy_ahora.minute, hoy_ahora.second)
+
+        if not self.dia_semanal == dia_semanal:
+            return False
+
+        if not self.hora_desde <= hora_actual <= self.hora_hasta:
+            return False
+
+        return True
+
+    def dia_concuerda(self, fecha_a_chequear):
+        """Este método evalua si el dia de la actuacion actual `self`
+        concuerda con el dia de la semana de la fecha pasada por parametro.
+
+        :param fecha_a_chequear: fecha a chequear
+        :type fecha_a_chequear: `datetime.date`
+        :returns: bool - True si la actuacion es para el mismo dia de
+                  la semana que el dia de la semana de `fecha_a_chequear`
+        """
+        # NO quiero que funcione con `datatime` ni ninguna otra
+        #  subclase, más que específicamente `datetime.date`,
+        #  por eso no uso `isinstance()`.
+        assert type(fecha_a_chequear) == datetime.date
+
+        return self.dia_semanal == fecha_a_chequear.weekday()
+
+    def es_anterior_a(self, time_a_chequear):
+        """Este método evalua si el rango de tiempo de la actuacion
+        actual `self` es anterior a la hora pasada por parametro.
+        Verifica que sea 'estrictamente' anterior, o sea, ambas horas
+        de la Actuacion deben ser anteriores a la hora a chequear
+        para que devuelva True.
+
+        :param time_a_chequear: hora a chequear
+        :type time_a_chequear: `datetime.time`
+        :returns: bool - True si ambas horas de la actuacion son anteriores
+                  a la hora pasada por parametro `time_a_chequear`.
+        """
+        # NO quiero que funcione con ninguna subclase, más que
+        #  específicamente `datetime.time`, por eso no uso `isinstance()`.
+        assert type(time_a_chequear) == datetime.time
+
+        # Es algo redundante chequear ambos, pero bueno...
+        return self.hora_desde < time_a_chequear and \
+            self.hora_hasta < time_a_chequear
+
+    def clean(self):
+        """
+        Valida que al crear una actuación a una campaña
+        no exista ya una actuación en el rango horario
+        especificado y en el día semanal seleccionado.
+        """
+        if self.hora_desde and self.hora_hasta:
+            if self.hora_desde >= self.hora_hasta:
+                raise ValidationError({
+                    'hora_desde': ["La hora desde debe ser\
+                        menor o igual a la hora hasta."],
+                    'hora_hasta': ["La hora hasta debe ser\
+                        mayor a la hora desde."],
+                })
+
+            conflicto = self.get_campana().actuacionesdialer.filter(
+                dia_semanal=self.dia_semanal,
+                hora_desde__lte=self.hora_hasta,
+                hora_hasta__gte=self.hora_desde,
+            )
+            if any(conflicto):
+                raise ValidationError({
+                    'hora_desde': ["Ya esta cubierto el rango horario\
+                        en ese día semanal."],
+                    'hora_hasta': ["Ya esta cubierto el rango horario\
+                        en ese día semanal."],
+                })
+
+
+class Actuacion(AbstractActuacion):
+    """
+    Representa los días de la semana y los
+    horarios en que una campaña se ejecuta.
+    """
+
+    campana = models.ForeignKey(
+        'CampanaDialer',
+        related_name='actuacionesdialer'
+    )
+
+    def __unicode__(self):
+        return "Campaña {0} - Actuación: {1}".format(
+            self.campana,
+            self.get_dia_semanal_display(),
+        )
+
+    def get_campana(self):
+        return self.campana
