@@ -132,43 +132,6 @@ class CampanaUpdateView(UpdateView):
             kwargs={"pk_campana": self.object.pk})
 
 
-class QueueCreateView(CheckEstadoCampanaDialerMixin, CampanaDialerEnDefinicionMixin,
-                      CreateView):
-    model = Queue
-    form_class = QueueForm
-    template_name = 'queue/create_update_queue.html'
-
-    def get_initial(self):
-        initial = super(QueueCreateView, self).get_initial()
-        initial.update({'campana': self.campana.id,
-                        'name': self.campana.nombre})
-        return initial
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.eventmemberstatus = True
-        self.object.eventwhencalled = True
-        self.object.ringinuse = True
-        self.object.setinterfacevar = True
-        self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
-        self.object.save()
-        #servicio_asterisk = AsteriskService()
-        #servicio_asterisk.insertar_cola_asterisk(self.object)
-        if self.object.type == Queue.TYPE_DIALER:
-            return HttpResponseRedirect(
-                reverse('sincroniza_dialer',
-                        kwargs={"pk_campana": self.kwargs['pk_campana']}))
-        return super(QueueCreateView, self).form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super(QueueCreateView, self).get_context_data(**kwargs)
-        context['campana'] = self.campana
-        return context
-
-    def get_success_url(self):
-        return reverse('campana_list')
-
-
 class QueueMemberCreateView(FormView):
     model = QueueMember
     form_class = QueueMemberForm
@@ -269,55 +232,6 @@ class QueueMemberCampanaView(TemplateView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
         return context
-
-
-class QueueListView(ListView):
-    model = Queue
-    template_name = 'queue/queue_list.html'
-
-
-class QueueDeleteView(DeleteView):
-    """
-    Esta vista se encarga de la eliminación del
-    objeto queue.
-    """
-    model = Queue
-    template_name = 'queue/delete_queue.html'
-
-    def get_object(self, queryset=None):
-        return Queue.objects.get(name=self.kwargs['pk_queue'])
-
-    def get_success_url(self):
-        return reverse('queue_list')
-
-
-class QueueUpdateView(UpdateView):
-    model = Queue
-    form_class = QueueUpdateForm
-    template_name = 'queue/create_update_queue.html'
-
-    def get_object(self, queryset=None):
-         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-         return campana.queue_campana
-
-    def dispatch(self, *args, **kwargs):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        try:
-            Queue.objects.get(campana=campana)
-        except Queue.DoesNotExist:
-            return HttpResponseRedirect("/campana/" + self.kwargs['pk_campana']
-                                        + "/cola/")
-        else:
-            return super(QueueUpdateView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(QueueUpdateView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        context['campana'] = campana
-        return context
-
-    def get_success_url(self):
-        return reverse('campana_list')
 
 
 # usa template de confirmacion por eso se usa la view queue_member_delete_view
