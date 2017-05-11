@@ -94,7 +94,7 @@
                     <a href="{% url 'reporte_campana_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana' %}" class="btn-submit">
+                    <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana_dialer' %}" class="btn-submit">
                         <span class="glyphicon glyphicon-pause" aria-hidden="true" title="pause"></span>
                     </a>
                 </td>
@@ -154,7 +154,7 @@
                     <a href="{% url 'reporte_campana_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'activar_campana' %}" class="btn-submit">
+                    <a type="button" id="{{ campana.id }}" name="{% url 'activar_campana_dialer' %}" class="btn-submit">
                         <span class="glyphicon glyphicon-play" aria-hidden="true" title="activar"></span>
                     </a>
                 </td>
@@ -215,7 +215,7 @@
                     <a href="{% url 'reporte_campana_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'start_campana' %}" class="btn-submit">
+                    <a type="button" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}" class="btn-submit">
                         <span class="glyphicon glyphicon-play" aria-hidden="true" title="play"></span>
                     </a>
                 </td>
@@ -280,7 +280,7 @@
                     <a href="{% url 'reporte_campana_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana' %}" class="btn-submit">
+                    <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana_dialer' %}" class="btn-submit">
                         <span class="glyphicon glyphicon-pause" aria-hidden="true" title="pause"></span>
                     </a>
                     {% if campana.oculto %}

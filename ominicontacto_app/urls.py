@@ -577,6 +577,21 @@ urlpatterns = [
     url(r'^campana_dialer/list/$',
         login_required(views_campana_dialer.CampanaDialerListView.as_view()),
         name="campana_dialer_list"),
+    url(r'^campana_dialer/start/$',
+        login_required(
+            views_campana_dialer.PlayCampanaDialerView.as_view()),
+        name='start_campana_dialer',
+        ),
+    url(r'^campana_dialer/pausar/$',
+        login_required(
+            views_campana_dialer.PausarCampanaDialerView.as_view()),
+        name='pausar_campana_dialer',
+        ),
+    url(r'^campana_dialer/activar/$',
+        login_required(
+            views_campana_dialer.ActivarCampanaDialerView.as_view()),
+        name='activar_campana_dialer',
+        ),
 ]
 
 urlpatterns += patterns('',
