@@ -4,11 +4,12 @@ from __future__ import unicode_literals
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from ominicontacto_app.models import (
     CampanaDialer
 )
 from django.views.generic import (
-    ListView
+    ListView, DeleteView
 )
 from django.views.generic.base import RedirectView
 from ominicontacto_app.services.campana_service import CampanaService
@@ -145,3 +146,43 @@ class ActivarCampanaDialerView(RedirectView):
                 message,
             )
         return super(ActivarCampanaDialerView, self).post(request, *args, **kwargs)
+
+
+class CampanaDialerDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación de una campana
+    """
+    model = CampanaDialer
+    template_name = 'campana_dialer/delete_campana.html'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        service = CampanaService()
+        remover = service.remove_campana_wombat(self.object)
+        if not remover:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo eliminar la campana {0} del discador".
+                       format(self.object.nombre))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        self.object.remover()
+        message = '<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la campana.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(success_url)
+
+    def get_object(self, queryset=None):
+        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_success_url(self):
+        return reverse('campana_dialer_list')

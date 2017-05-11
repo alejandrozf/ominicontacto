@@ -592,6 +592,10 @@ urlpatterns = [
             views_campana_dialer.ActivarCampanaDialerView.as_view()),
         name='activar_campana_dialer',
         ),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/delete/$',
+        login_required(
+            views_campana_dialer.CampanaDialerDeleteView.as_view()),
+        name="campana_dialer_delete"),
 ]
 
 urlpatterns += patterns('',
