@@ -6,7 +6,7 @@ from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
-    views_agenda_contacto
+    views_agenda_contacto, views_campana_dialer_creacion
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -553,7 +553,12 @@ urlpatterns = [
     url(r'^agenda_contacto/eventos/$',
         login_required(views_agenda_contacto.AgenteContactoListFormView.as_view()),
         name="agenda_contacto_listado"),
-
+    # ==========================================================================
+    # Agenda Contacto
+    # ==========================================================================
+    url(r'^campana_dialer/create/$',
+        login_required(views_campana_dialer_creacion.CampanaDialerCreateView.as_view()),
+        name="campana_dialer_create"),
 ]
 
 urlpatterns += patterns('',
