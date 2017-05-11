@@ -608,6 +608,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer.mostrar_campanas_dialer_borradas_ocultas_view),
         name="campana_dialer_mostrar_ocultas"),
+    url(r'^campana_dialer/detalle_wombat/$',
+        login_required(
+            views_campana_dialer.detalle_campana_dialer_view),
+        name="campana_dialer_detalle_wombat"),
 ]
 
 urlpatterns += patterns('',

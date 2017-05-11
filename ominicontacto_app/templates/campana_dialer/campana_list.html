@@ -26,7 +26,7 @@
              }
 
              $('#modal_ventana').html("");
-            $.get('{% url  'detalle_campana' %}', {pk_campana: pk_campana},
+            $.get('{% url  'campana_dialer_detalle_wombat' %}', {pk_campana: pk_campana},
                     function (data) {
                         $('#modal_ventana').html(data);
                         $('#modal_ventana').fadeIn('slow');

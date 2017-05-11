@@ -222,3 +222,20 @@ def mostrar_campanas_dialer_borradas_ocultas_view(request):
     }
     return render(request, 'campana_dialer/campanas_borradas.html', data)
 
+
+def detalle_campana_dialer_view(request):
+    pk_campana = int(request.GET['pk_campana'])
+    campana = CampanaDialer.objects.get(pk=pk_campana)
+    campana_service = CampanaService()
+    dato_campana = campana_service.obtener_dato_campana_run(campana)
+    status = campana_service.obtener_status_campana_running(
+        dato_campana['hoppercampId'])
+    data = {
+        'campana': campana,
+        'efectuadas': dato_campana['n_calls_attempted'],
+        'terminadas': dato_campana['n_calls_completed'],
+        'estimadas': dato_campana['n_est_remaining_calls'],
+        'status': status
+
+    }
+    return render(request, 'campana_dialer/detalle_campana.html', data)
