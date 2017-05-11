@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render
 from ominicontacto_app.models import (
     CampanaDialer
 )
@@ -186,3 +187,38 @@ class CampanaDialerDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('campana_dialer_list')
+
+
+class OcultarCampanaDialerView(RedirectView):
+    """
+    Esta vista actualiza la campañana ocultandola.
+    """
+
+    pattern_name = 'campana_dialer_list'
+
+    def get(self, request, *args, **kwargs):
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana.ocultar()
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
+
+
+class DesOcultarCampanaDialerView(RedirectView):
+    """
+    Esta vista actualiza la campañana haciendola visible.
+    """
+
+    pattern_name = 'campana_dialer_list'
+
+    def get(self, request, *args, **kwargs):
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana.desocultar()
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
+
+
+def mostrar_campanas_dialer_borradas_ocultas_view(request):
+    borradas = CampanaDialer.objects.obtener_borradas()
+    data = {
+        'borradas': borradas,
+    }
+    return render(request, 'campana_dialer/campanas_borradas.html', data)
+

@@ -596,6 +596,18 @@ urlpatterns = [
         login_required(
             views_campana_dialer.CampanaDialerDeleteView.as_view()),
         name="campana_dialer_delete"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/ocultar/$',
+        login_required(
+            views_campana_dialer.OcultarCampanaDialerView.as_view()),
+        name="campana_dialer_ocultar"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/desocultar/$',
+        login_required(
+            views_campana_dialer.DesOcultarCampanaDialerView.as_view()),
+        name="campana_dialer_desocultar"),
+    url(r'^campana_dialer/mostrar_ocultas/$',
+        login_required(
+            views_campana_dialer.mostrar_campanas_dialer_borradas_ocultas_view),
+        name="campana_dialer_mostrar_ocultas"),
 ]
 
 urlpatterns += patterns('',

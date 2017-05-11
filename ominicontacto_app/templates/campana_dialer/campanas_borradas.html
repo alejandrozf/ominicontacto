@@ -1,0 +1,53 @@
+{% for campana in borradas %}
+           <tr>
+                <td width="45%">
+                    {{ campana.nombre }}
+                </td>
+                <td>
+                    {{ campana.fecha_inicio|date:"d/m/Y" }}
+                </td>
+                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
+                <td>
+                    {{ campana.bd_contacto }}
+                   {% if campana.queue_campana.es_dialer %}
+                    <a href="{% url 'update_base_datos_campana' campana.pk %}">
+                        cambiar base
+                    </a>
+                    {% endif %}
+                </td>
+                <td> {{campana.get_estado_display}}  </td>
+                <td width="14%">
+                    <a href="{% url 'campana_dialer_update' campana.pk %}">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar campana"></span>
+                    </a>
+                    <a href="{% url 'queue_member_campana' campana.pk %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
+                    </a>
+                    <a href="{% url 'campana_dialer_delete' campana.pk %}">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true" title="eliminar campana"></span>
+                    </a>
+                    <a href="{% url 'reporte_campana' campana.pk %}">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
+                    </a>
+                    <a href="{% url 'reporte_campana_grafico' campana.pk %}">
+                        <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
+                    </a>
+                    <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana_dialer' %}" class="btn-submit">
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true" title="pause"></span>
+                    </a>
+                    {% if campana.oculto %}
+                    <a type="button"  href="{% url 'campana_dialer_desocultar' campana.pk %}" c>
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
+                    </a>
+                    {% else %}
+                    <a type="button" href="{% url 'campana_dialer_ocultar' campana.pk %}" >
+                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="5">No existen campañas</td>
+        </tr>
+        {% endfor %}
