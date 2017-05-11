@@ -11,7 +11,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaDialerForm, QueueForm, QueueMemberForm, QueueUpdateForm, GrupoAgenteForm,
-    CampanaUpdateForm, SincronizaDialerForm, ActuacionDialerForm
+    CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm
 )
 from ominicontacto_app.models import (
     CampanaDialer, Campana, Queue, QueueMember, BaseDatosContacto, Grupo, Actuacion
@@ -64,7 +64,7 @@ class CampanaDialerCreateView(CreateView):
     """
 
     template_name = 'campana_dialer/nueva_edita_campana.html'
-    model = Campana
+    model = CampanaDialer
     context_object_name = 'campana'
     form_class = CampanaDialerForm
 
@@ -91,18 +91,18 @@ class CampanaDialerCreateView(CreateView):
             kwargs={"pk_campana": self.object.pk})
 
 
-class CampanaUpdateView(UpdateView):
+class CampanaDialerUpdateView(UpdateView):
     """
     Esta vista actualiza un objeto Campana.
     """
 
-    template_name = 'campana/edita_campana.html'
-    model = Campana
+    template_name = 'campana_dialer/edita_campana.html'
+    model = CampanaDialer
     context_object_name = 'campana'
-    form_class = CampanaUpdateForm
+    form_class = CampanaDialerUpdateForm
 
     def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -111,7 +111,7 @@ class CampanaUpdateView(UpdateView):
             self.get_object(), self.object.bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
-        return super(CampanaUpdateView, self).form_valid(form)
+        return super(CampanaDialerUpdateView, self).form_valid(form)
 
     def form_invalid(self, form, error=None):
 
@@ -128,7 +128,7 @@ class CampanaUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse(
-            'queue_update',
+            'actuacion_campana_dialer',
             kwargs={"pk_campana": self.object.pk})
 
 

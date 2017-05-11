@@ -554,7 +554,7 @@ urlpatterns = [
         login_required(views_agenda_contacto.AgenteContactoListFormView.as_view()),
         name="agenda_contacto_listado"),
     # ==========================================================================
-    # Agenda Contacto
+    # Campana Dialer
     # ==========================================================================
     url(r'^campana_dialer/create/$',
         login_required(views_campana_dialer_creacion.CampanaDialerCreateView.as_view()),
@@ -570,6 +570,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.SincronizaDialerView.as_view()),
         name="campana_dialer_sincronizar"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/update/$',
+        login_required(
+            views_campana_dialer_creacion.CampanaDialerUpdateView.as_view()),
+        name="campana_dialer_update"),
 ]
 
 urlpatterns += patterns('',

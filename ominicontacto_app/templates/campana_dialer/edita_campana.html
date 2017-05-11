@@ -1,0 +1,131 @@
+    {% extends "base.html" %}
+{% load static %}
+{% block head_js %}
+<script>
+    $(document).ready(function() {
+            $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
+        $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
+
+        });
+    </script>
+{% endblock %}
+{% block content %}
+
+
+            <ul class="nav nav-tabs">
+                <li class="active"><a>Campaña</a></li>
+                <li class="disabled"><a>Actuacion</a></li>
+                <li class="disabled"><a>Sincronizar</a></li>
+            </ul>
+            <br>
+<div class="col-md-6">
+<form action="" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-group row">
+        {{ form.nombre.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
+        <div class="col-sm-6">
+              {{ form.nombre }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.fecha_inicio.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>
+        <div class="col-sm-3">
+              {{ form.fecha_inicio }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.fecha_fin.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
+        <div class="col-sm-3">
+              {{ form.fecha_fin }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.calificacion_campana.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.calificacion_campana.id_for_label }}">Calificacion campana: </label>
+        <div class="col-sm-6">
+              {{ form.calificacion_campana }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.bd_contacto.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
+        <div class="col-sm-6">
+              {{ form.bd_contacto }}
+        </div>
+    </div>
+   <div class="form-group row">
+
+        <label class="col-sm-3 control-label">Formulario: </label>
+        <div class="col-sm-6">
+              {{ campana.formulario }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.gestion.errors }}
+        <label class="col-sm-3 control-label">Gestion: </label>
+        <div class="col-sm-6">
+              {{ form.gestion }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.maxlen.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
+        <div class="col-sm-3">
+              {{ form.maxlen }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.wrapuptime.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.wrapuptime.id_for_label }}">Tiempo de descanso entre llamadas:</label>
+        <div class="col-sm-3">
+              {{ form.wrapuptime }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.servicelevel.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.servicelevel.id_for_label }}">Nivel de Servicio:</label>
+        <div class="col-sm-3">
+              {{ form.servicelevel }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.strategy.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.strategy.id_for_label }}">Estrategia de distribucion:</label>
+        <div class="col-sm-6">
+              {{ form.strategy }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.weight.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.weight.id_for_label }}">Importancia de campaña:</label>
+        <div class="col-sm-3">
+              {{ form.weight }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.wait.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.wait.id_for_label }}">Tiempo de espera en cola:</label>
+        <div class="col-sm-3">
+              {{ form.wait }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.auto_grabacion.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados:</label>
+        <div class="col-sm-3">
+              {{ form.auto_grabacion }}
+        </div>
+    </div>
+    </br>
+    <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
+        Guardar campaña y Continuar
+    </button>
+
+</form>
+</div>
+
+{% endblock %}
