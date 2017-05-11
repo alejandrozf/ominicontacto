@@ -789,6 +789,10 @@ class CampanaDialer(models.Model):
         self.campaign_id_wombat = campaign_id_wombat
         self.save()
 
+    def guardar_ep_id_wombat(self, ep_id_wombat):
+        self.ep_id_wombat = ep_id_wombat
+        self.save()
+
     def play(self):
         """Setea la campaña como ESTADO_ACTIVA"""
         logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)

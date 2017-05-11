@@ -354,13 +354,19 @@ class SincronizaDialerView(FormView):
     Esta vista sincroniza base datos con discador
     """
 
-    model = Campana
+    model = CampanaDialer
     context_object_name = 'campana'
     form_class = SincronizaDialerForm
-    template_name = 'base_create_update_form.html'
+    template_name = 'campana_dialer/sincronizar_lista.html'
 
     def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            SincronizaDialerView, self).get_context_data(**kwargs)
+        context['campana'] = self.get_object()
+        return context
 
     def get_form(self, form_class):
         self.object = self.get_object()
@@ -397,9 +403,9 @@ class SincronizaDialerView(FormView):
         campana_service.crear_reschedule_campana_wombat(self.object, parametros)
         #parametros = ["RS_LOST", "", 1, 360]
         #campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        campana_service.crear_endpoint_campana_wombat(self.object.queue_campana)
+        campana_service.crear_endpoint_campana_wombat(self.object)
         campana_service.crear_endpoint_asociacion_campana_wombat(
-            self.object.queue_campana)
+            self.object)
         campana_service.crear_lista_wombat(self.object)
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
         message = 'Operación Exitosa!\

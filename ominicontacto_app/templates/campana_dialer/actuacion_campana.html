@@ -101,7 +101,7 @@ $(document).ready(function() {
                 </button>
 
                     {% if actuaciones_validas %}
-                        <a href="#" class="btn btn-default pull-right" role="button">
+                        <a href="{% url 'campana_dialer_sincronizar' campana.pk %}" class="btn btn-default pull-right" role="button">
                             Continuar <span class="glyphicon glyphicon-chevron-right"></span>
                         </a>
                     {% endif %} 

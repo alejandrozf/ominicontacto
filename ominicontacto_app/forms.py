@@ -476,7 +476,8 @@ class SincronizaDialerForm(forms.Form):
     usa_contestador = forms.BooleanField(required=False)
     evitar_duplicados = forms.BooleanField(required=False)
     evitar_sin_telefono = forms.BooleanField(required=False)
-    prefijo_discador = forms.CharField(required=False)
+    prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={'class': 'class-fecha form-control'}))
     telefonos = forms.MultipleChoiceField(
         required=False,
         widget=forms.CheckboxSelectMultiple,

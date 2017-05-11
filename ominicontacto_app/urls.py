@@ -566,6 +566,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.ActuacionCampanaDialerDeleteView.as_view()),
         name="actuacion_campana_dialer_elimina"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/sincronizar_lista/$',
+        login_required(
+            views_campana_dialer_creacion.SincronizaDialerView.as_view()),
+        name="campana_dialer_sincronizar"),
 ]
 
 urlpatterns += patterns('',
