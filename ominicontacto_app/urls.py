@@ -612,6 +612,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer.detalle_campana_dialer_view),
         name="campana_dialer_detalle_wombat"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/update_base/$',
+        login_required(
+            views_campana_dialer.UpdateBaseDatosDialerView.as_view()),
+        name="campana_dialer_update_base"),
 ]
 
 urlpatterns += patterns('',

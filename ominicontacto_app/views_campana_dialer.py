@@ -10,10 +10,11 @@ from ominicontacto_app.models import (
     CampanaDialer
 )
 from django.views.generic import (
-    ListView, DeleteView
+    ListView, DeleteView, FormView
 )
 from django.views.generic.base import RedirectView
 from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.forms import UpdateBaseDatosDialerForm
 
 import logging as logging_
 
@@ -239,3 +240,71 @@ def detalle_campana_dialer_view(request):
 
     }
     return render(request, 'campana_dialer/detalle_campana.html', data)
+
+
+class UpdateBaseDatosDialerView(FormView):
+    """
+    Esta vista sincroniza base datos con discador
+    """
+
+    model = CampanaDialer
+    context_object_name = 'campana'
+    form_class = UpdateBaseDatosDialerForm
+    template_name = 'base_create_update_form.html'
+
+    def get_object(self, queryset=None):
+        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_form(self, form_class):
+        self.object = self.get_object()
+        metadata = self.object.bd_contacto.get_metadata()
+        columnas_telefono = metadata.columnas_con_telefono
+        nombres_de_columnas = metadata.nombres_de_columnas
+        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
+                       columnas_telefono if columna > 6]
+        return form_class(tts_choices=tts_choices, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        usa_contestador = form.cleaned_data.get('usa_contestador')
+        evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
+        evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
+        prefijo_discador = form.cleaned_data.get('prefijo_discador')
+        telefonos = form.cleaned_data.get('telefonos')
+        bd_contacto = form.cleaned_data.get('bd_contacto')
+        self.object = self.get_object()
+        campana_service = CampanaService()
+        error = campana_service.validar_modificacion_bd_contacto(
+            self.get_object(), bd_contacto)
+        if error:
+            return self.form_invalid(form, error=error)
+        self.object.bd_contacto = bd_contacto
+        self.object.save()
+
+        campana_service.cambiar_base(self.get_object(), telefonos,
+                                     usa_contestador, evitar_duplicados,
+                                     evitar_sin_telefono, prefijo_discador)
+        message = 'Operación Exitosa!\
+                Se llevó a cabo con éxito el cambio de base de datos.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                  La base de datos es erronea. {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+        return self.render_to_response(self.get_context_data())
+
+    def get_success_url(self):
+        return reverse('campana_dialer_list')

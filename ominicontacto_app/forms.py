@@ -714,3 +714,30 @@ class CampanaDialerUpdateForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class UpdateBaseDatosDialerForm(forms.ModelForm):
+    usa_contestador = forms.BooleanField(required=False)
+    evitar_duplicados = forms.BooleanField(required=False)
+    evitar_sin_telefono = forms.BooleanField(required=False)
+    prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={'class': 'class-fecha form-control'}))
+    telefonos = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=(),
+    )
+
+    def __init__(self, tts_choices, *args, **kwargs):
+        super(UpdateBaseDatosDialerForm, self).__init__(*args, **kwargs)
+        self.fields['telefonos'].choices = tts_choices
+
+    class Meta:
+        model = CampanaDialer
+        fields = ('bd_contacto',)
+        labels = {
+            'bd_contacto': 'Base de Datos de Contactos',
+        }
+        widgets = {
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+        }
