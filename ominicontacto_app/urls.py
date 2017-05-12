@@ -636,10 +636,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer.CampanaDialerBusquedaContactoFormView.as_view()),
         name="campana_dialer_busqueda_contacto"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/seleciona_campana/$',
+    url(r'^campana_dialer/seleciona_campana/$',
         login_required(
             views_campana_dialer.FormularioSeleccionCampanaDialerFormView.as_view()),
-        name="campana_dialer_selecciona_contacto"),
+        name="campana_dialer_selecciona_campana"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/nuevo_contacto/$',
         login_required(
             views_campana_dialer.FormularioNuevoContactoFormView.as_view()),
