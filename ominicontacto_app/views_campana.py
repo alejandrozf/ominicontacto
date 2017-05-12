@@ -656,7 +656,7 @@ def mostrar_campanas_borradas_ocultas_view(request):
     return render(request, 'campana/campanas_borradas.html', data)
 
 
-class CampanaReporteListView(FormView):
+class CampanaReporteQueueListView(FormView):
     """
     Esta vista lista los tiempo de llamadas de las camapans
 

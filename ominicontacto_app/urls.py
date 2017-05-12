@@ -345,7 +345,7 @@ urlpatterns = [
         ),
     url(r'^campana/llamadas_cola/$',
         login_required(
-            views_campana.CampanaReporteListView.as_view()),
+            views_campana.CampanaReporteQueueListView.as_view()),
         name='reporte_llamadas_queue',
         ),
     # ==========================================================================
