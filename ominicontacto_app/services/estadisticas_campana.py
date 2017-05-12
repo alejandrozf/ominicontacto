@@ -51,7 +51,7 @@ class EstadisticasService():
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_agentes_campana(self, campana):
-        member_dict = campana.queue_campana.queuemember.all()
+        member_dict = campana.members.all()
         members_campana = []
         for member in member_dict:
             members_campana.append(member.member)

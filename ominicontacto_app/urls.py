@@ -652,6 +652,14 @@ urlpatterns = [
         login_required(
             views_campana_dialer_reportes.CampanaDialerReporteCalificacionListView.as_view()),
         name="campana_dialer_reporte_calificacion"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_grafico/$',
+        login_required(
+            views_campana_dialer_reportes.CampanaDialerReporteGrafico.as_view()),
+        name="campana_dialer_reporte_grafico"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_pdf/$',
+        login_required(
+            views_campana_dialer_reportes.ExportaCampanaDialerReportePDFView.as_view()),
+        name="campana_dialer_reporte_pdf"),
 ]
 
 urlpatterns += patterns('',
