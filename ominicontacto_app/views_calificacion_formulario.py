@@ -15,7 +15,7 @@ from django.views.generic.edit import (
 )
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
-    Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
+    Contacto, CampanaDialer, CalificacionCliente, AgenteProfile, MetadataCliente,
     WombatLog
 )
 from ominicontacto_app.forms import (
@@ -52,7 +52,7 @@ class CalificacionClienteCreateView(CreateView):
         return initial
 
     def get_form(self, form_class):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
@@ -61,7 +61,7 @@ class CalificacionClienteCreateView(CreateView):
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -97,7 +97,7 @@ class CalificacionClienteCreateView(CreateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
@@ -216,7 +216,7 @@ class CalificacionClienteUpdateView(UpdateView):
         try:
             contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         except Contacto.DoesNotExist:
-            return HttpResponseRedirect(reverse('formulario_buscar',
+            return HttpResponseRedirect(reverse('campana_dialer_busqueda_contacto',
                                                 kwargs={"pk_campana":
                                                 self.kwargs['pk_campana']}))
         try:
@@ -234,7 +234,7 @@ class CalificacionClienteUpdateView(UpdateView):
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -266,7 +266,7 @@ class CalificacionClienteUpdateView(UpdateView):
         return initial
 
     def get_form(self, form_class):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
@@ -292,7 +292,7 @@ class CalificacionClienteUpdateView(UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
@@ -424,7 +424,7 @@ class FormularioCreateFormView(CreateView):
         return initial
 
     def get_form(self, form_class):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
@@ -433,7 +433,7 @@ class FormularioCreateFormView(CreateView):
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -451,7 +451,7 @@ class FormularioCreateFormView(CreateView):
         context = super(
             FormularioCreateFormView, self).get_context_data(**kwargs)
 
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         context['pk_formulario'] = campana.formulario.pk
         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         bd_contacto = campana.bd_contacto
@@ -503,7 +503,7 @@ class FormularioCreateFormView(CreateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         venta_form = FormularioVentaFormSet(
             self.request.POST, form_kwargs={'campos':campana.formulario.campos.all()},
         instance=self.object)
@@ -548,7 +548,7 @@ class FormularioDetailView(DetailView):
         context = super(
             FormularioDetailView, self).get_context_data(**kwargs)
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk'])
-        campana = Campana.objects.get(pk=metadata.campana.pk)
+        campana = CampanaDialer.objects.get(pk=metadata.campana.pk)
         contacto = Contacto.objects.get(pk=metadata.contacto.pk)
         bd_contacto = campana.bd_contacto
         nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]

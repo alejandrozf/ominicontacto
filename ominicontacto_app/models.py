@@ -1600,14 +1600,13 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "filtro"))
 
-    # def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
-    #     try:
-    #         contactos = self.filter(Q(telefono__contains=filtro) |
-    #                                 Q(id_cliente__contains=filtro))
-    #         return contactos.filter(bd_contacto=bd_contacto)
-    #     except Contacto.DoesNotExist:
-    #         raise (SuspiciousOperation("No se encontro contactos con este "
-    #                                    "filtro"))
+    def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
+        try:
+            contactos = self.filter(Q(telefono__contains=filtro))
+            return contactos.filter(bd_contacto=bd_contacto)
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "filtro"))
 
     # def obtener_contacto_editar(self, id_cliente):
     #     """Devuelve el contacto pasado por ID, siempre que dicha

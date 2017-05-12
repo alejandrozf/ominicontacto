@@ -632,6 +632,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.campana_member_delete_view),
         name="campana_dialer_delete_member"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/busqueda_contacto/$',
+        login_required(
+            views_campana_dialer.CampanaDialerBusquedaContactoFormView.as_view()),
+        name="campana_dialer_busqueda_contacto"),
 ]
 
 urlpatterns += patterns('',

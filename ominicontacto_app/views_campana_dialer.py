@@ -7,14 +7,14 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from ominicontacto_app.models import (
-    CampanaDialer
+    CampanaDialer, Contacto
 )
 from django.views.generic import (
     ListView, DeleteView, FormView
 )
 from django.views.generic.base import RedirectView
 from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.forms import UpdateBaseDatosDialerForm
+from ominicontacto_app.forms import UpdateBaseDatosDialerForm, BusquedaContactoForm
 
 import logging as logging_
 
@@ -308,3 +308,43 @@ class UpdateBaseDatosDialerView(FormView):
 
     def get_success_url(self):
         return reverse('campana_dialer_list')
+
+
+class CampanaDialerBusquedaContactoFormView(FormView):
+    form_class = BusquedaContactoForm
+    template_name = 'campana_dialer/busqueda_contacto.html'
+
+    def get(self, request, *args, **kwargs):
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
+            campana.bd_contacto)
+        return self.render_to_response(self.get_context_data(
+            listado_de_contacto=listado_de_contacto))
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaDialerBusquedaContactoFormView, self).get_context_data(
+            **kwargs)
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
+        return context
+
+    def form_valid(self, form):
+        filtro = form.cleaned_data.get('buscar')
+        try:
+            campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+            listado_de_contacto = Contacto.objects.\
+                contactos_by_filtro_bd_contacto(campana.bd_contacto, filtro)
+        except Contacto.DoesNotExist:
+            listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
+                campana.bd_contacto)
+            return self.render_to_response(self.get_context_data(
+                form=form, listado_de_contacto=listado_de_contacto))
+
+        if listado_de_contacto:
+            return self.render_to_response(self.get_context_data(
+                form=form, listado_de_contacto=listado_de_contacto))
+        else:
+            listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
+                campana.bd_contacto)
+            return self.render_to_response(self.get_context_data(
+                form=form, listado_de_contacto=listado_de_contacto))
