@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
-    MetadataCliente, AgendaContacto, CampanaDialer, Actuacion
+    MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember
 )
 
 
@@ -741,3 +741,13 @@ class UpdateBaseDatosDialerForm(forms.ModelForm):
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class CampanaMemberForm(forms.ModelForm):
+    """
+    El form de miembro de una cola
+    """
+
+    class Meta:
+        model = CampanaMember
+        fields = ('member', 'penalty')

@@ -616,6 +616,22 @@ urlpatterns = [
         login_required(
             views_campana_dialer.UpdateBaseDatosDialerView.as_view()),
         name="campana_dialer_update_base"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/member/$',
+        login_required(
+            views_campana_dialer_creacion.CampanaDialerMemberView.as_view()),
+        name="campana_dialer_member"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/add_member/$',
+        login_required(
+            views_campana_dialer_creacion.CampanaDialerMemberCreateView.as_view()),
+        name="campana_dialer_add_member"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/add_grupo/$',
+        login_required(
+            views_campana_dialer_creacion.GrupoAgenteCreateView.as_view()),
+        name="campana_dialer_add_grupo"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/delete_member/(?P<pk_campanamember>\d+)/$',
+        login_required(
+            views_campana_dialer_creacion.campana_member_delete_view),
+        name="campana_dialer_delete_member"),
 ]
 
 urlpatterns += patterns('',

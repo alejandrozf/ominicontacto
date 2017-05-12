@@ -10,11 +10,11 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
-    CampanaDialerForm, QueueForm, QueueMemberForm, QueueUpdateForm, GrupoAgenteForm,
+    CampanaDialerForm, QueueForm, CampanaMemberForm, QueueUpdateForm, GrupoAgenteForm,
     CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm
 )
 from ominicontacto_app.models import (
-    CampanaDialer, Campana, Queue, QueueMember, BaseDatosContacto, Grupo, Actuacion
+    CampanaDialer, Campana, Queue, CampanaMember, BaseDatosContacto, Grupo, Actuacion
 )
 
 from ominicontacto_app.services.campana_service import CampanaService
@@ -222,16 +222,16 @@ class ActuacionCampanaDialerDeleteView(CheckEstadoCampanaDialerMixin, DeleteView
             kwargs={"pk_campana": self.campana.pk}
         )
 
-class QueueMemberCreateView(FormView):
-    model = QueueMember
-    form_class = QueueMemberForm
-    template_name = 'queue/queue_member.html'
+class CampanaDialerMemberCreateView(FormView):
+    model = CampanaMember
+    form_class = CampanaMemberForm
+    template_name = 'campana_dialer/campana_member.html'
 
     def form_valid(self, form):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         self.object = form.save(commit=False)
-        existe_member = QueueMember.objects.\
-            existe_member_queue(self.object.member, campana.queue_campana)
+        existe_member = CampanaMember.objects. \
+            existe_member_campana(self.object.member, campana)
 
         if existe_member:
             message = 'Operación Errónea! \
@@ -243,41 +243,41 @@ class QueueMemberCreateView(FormView):
             )
             return self.form_invalid(form)
         else:
-            self.object.queue_name = campana.queue_campana
+            self.object.campana = campana
             self.object.membername = self.object.member.user.get_full_name()
             self.object.interface = """Local/{0}@from-queue/n""".format(
             self.object.member.sip_extension)
             self.object.paused = 0  # por ahora no lo definimos
             self.object.save()
 
-        return super(QueueMemberCreateView, self).form_valid(form)
+        return super(CampanaDialerMemberCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(
-            QueueMemberCreateView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+            CampanaDialerMemberCreateView, self).get_context_data(**kwargs)
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
         return context
 
     def get_success_url(self):
         return reverse(
-            'queue_member_campana',
+            'campana_dialer_member',
             kwargs={"pk_campana": self.kwargs['pk_campana']})
 
 
 class GrupoAgenteCreateView(FormView):
-    model = QueueMember
+    model = CampanaMember
     form_class = GrupoAgenteForm
-    template_name = 'queue/queue_member.html'
+    template_name = 'campana_dialer/campana_member.html'
 
     def form_valid(self, form):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         grupo_id = form.cleaned_data.get('grupo')
         grupo = Grupo.objects.get(pk=grupo_id)
         for agente in grupo.agentes.all():
-            QueueMember.objects.get_or_create(
+            CampanaMember.objects.get_or_create(
                 member=agente,
-                queue_name=campana.queue_campana,
+                campana=campana,
                 defaults={'membername': agente.user.get_full_name(),
                           'interface': """Local/{0}@from-queue/n""".format(
                               agente.sip_extension),
@@ -289,64 +289,47 @@ class GrupoAgenteCreateView(FormView):
     def get_context_data(self, **kwargs):
         context = super(
             GrupoAgenteCreateView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
         return context
 
     def get_success_url(self):
         return reverse(
-            'queue_member_campana',
+            'campana_dialer_member',
             kwargs={"pk_campana": self.kwargs['pk_campana']})
 
 
-class QueueMemberCampanaView(TemplateView):
-    template_name = 'queue/queue_member.html'
+class CampanaDialerMemberView(TemplateView):
+    template_name = 'campana_dialer/campana_member.html'
 
     def get_object(self, queryset=None):
-         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-         return campana.queue_campana
+         campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+         return campana
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        queue_member_form = QueueMemberForm(self.request.GET or None)
+        campana_member_form = CampanaMemberForm(self.request.GET or None)
         grupo_agente_form = GrupoAgenteForm(self.request.GET or None)
         context = self.get_context_data(**kwargs)
-        context['queue_member_form'] = queue_member_form
+        context['campana_member_form'] = campana_member_form
         context['grupo_agente_form'] = grupo_agente_form
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super(
-            QueueMemberCampanaView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+            CampanaDialerMemberView, self).get_context_data(**kwargs)
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
         return context
 
 
-# usa template de confirmacion por eso se usa la view queue_member_delete_view
-class QueueMemberDeleteView(DeleteView):
-    """
-    Esta vista se encarga de la eliminación del
-    objeto queue.
-    """
-    model = QueueMember
+def campana_member_delete_view(request, pk_campana, pk_campanamember):
 
-    def get_object(self, queryset=None):
-        return QueueMember.objects.get(pk=self.kwargs['pk_queuemember'])
-
-    def get_success_url(self):
-        return reverse(
-            'queue_member_campana',
-            kwargs={"pk_campana": self.campana.pk})
-
-
-def queue_member_delete_view(request, pk_queuemember, pk_campana):
-
-    queue_member = QueueMember.objects.get(pk=pk_queuemember)
-    queue_member.delete()
-    return HttpResponseRedirect("/campana/" + str(pk_campana) +
-                                "/queue_member_campana/")
+    campana_member = CampanaMember.objects.get(pk=pk_campanamember)
+    campana_member.delete()
+    return HttpResponseRedirect("/campana_dialer/" + str(pk_campana) +
+                                "/member/")
 
 
 class SincronizaDialerView(FormView):
