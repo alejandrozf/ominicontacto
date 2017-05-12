@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+import json
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -14,7 +16,10 @@ from django.views.generic import (
 )
 from django.views.generic.base import RedirectView
 from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.forms import UpdateBaseDatosDialerForm, BusquedaContactoForm
+from ominicontacto_app.forms import (
+    UpdateBaseDatosDialerForm, BusquedaContactoForm, FormularioCampanaContacto,
+    FormularioNuevoContacto
+)
 
 import logging as logging_
 
@@ -348,3 +353,78 @@ class CampanaDialerBusquedaContactoFormView(FormView):
                 campana.bd_contacto)
             return self.render_to_response(self.get_context_data(
                 form=form, listado_de_contacto=listado_de_contacto))
+
+
+class FormularioSeleccionCampanaDialerFormView(FormView):
+    form_class = FormularioCampanaContacto
+    template_name = 'campana_dialer/seleccion_campana_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated()\
+                and self.request.user.get_agente_profile():
+            agente = self.request.user.get_agente_profile()
+        if not agente.campanasmember.all():
+            message = ("Este agente no esta asignado a ninguna campaña ")
+            messages.warning(self.request, message)
+        return super(FormularioSeleccionCampanaDialerFormView,
+                     self).dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class):
+        if self.request.user.is_authenticated()\
+                and self.request.user.get_agente_profile():
+            agente = self.request.user.get_agente_profile()
+            campanas = [campana.campana
+                        for campana in agente.campanasmember.all()]
+
+        campana_choice = [(campana.id, campana.nombre) for campana in
+                          campanas]
+        return form_class(campana_choice=campana_choice,
+                          **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        campana = form.cleaned_data.get('campana')
+        return HttpResponseRedirect(
+            reverse('nuevo_contacto_campana_dialer',
+                    kwargs={"pk_campana": campana}))
+
+    def get_success_url(self):
+        reverse('view_blanco')
+
+
+class FormularioNuevoContactoFormView(FormView):
+    form_class = FormularioNuevoContacto
+    template_name = 'campana_dialer/nuevo_contacto_campana.html'
+
+    def get_form(self, form_class):
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        base_datos = campana.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        return form_class(campos=campos, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        base_datos = campana.bd_contacto
+        metadata = base_datos.get_metadata()
+        nombres = metadata.nombres_de_columnas
+        telefono = form.cleaned_data.get('telefono')
+
+        datos = []
+        nombres.remove('telefono')
+
+        for nombre in nombres:
+            campo = form.cleaned_data.get(nombre)
+            datos.append(campo)
+        contacto = Contacto.objects.create(
+            telefono=telefono, datos=json.dumps(datos),
+            bd_contacto=base_datos)
+        agente = self.request.user.get_agente_profile()
+        return HttpResponseRedirect(
+            reverse('calificacion_formulario_update',
+                    kwargs={"pk_campana": self.kwargs['pk_campana'],
+                            "pk_contacto": contacto.pk,
+                            "id_agente": agente.pk,
+                            "wombat_id": 0}))
+
+    def get_success_url(self):
+        reverse('view_blanco')
