@@ -943,6 +943,60 @@ class CampanaDialer(models.Model):
                         valida = False
         return valida
 
+
+class CampanaMemberManager(models.Manager):
+
+    def obtener_member_por_campana(self, campana):
+        """Devuelve el campanamember filtrando por campana
+        """
+        return self.filter(campana=campana)
+
+    def existe_member_campana(self, member, campana):
+        return self.obtener_member_por_campana(campana).filter(
+            member=member).exists()
+
+
+class CampanaMember(models.Model):
+    """
+    Clase campana por miembro, agente en cada campana
+    """
+
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = CampanaMemberManager()
+
+    """Considero opciones solo del 0 a 9"""
+    (CERO, UNO, DOS, TRES, CUATRO,
+    CINCO, SEIS, SIETE, OCHO, NUEVE) = range(0, 10)
+    DIGITO_CHOICES = (
+        (CERO, '0'),
+        (UNO, '1'),
+        (DOS, '2'),
+        (TRES, '3'),
+        (CUATRO, '4'),
+        (CINCO, '5'),
+        (SEIS, '6'),
+        (SIETE, '7'),
+        (OCHO, '8'),
+        (NUEVE, '9'),
+    )
+    member = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE,
+                               related_name='campanasmember')
+    campana = models.ForeignKey(CampanaDialer, on_delete=models.CASCADE,
+                                related_name='members')
+    membername = models.CharField(max_length=128)
+    interface = models.CharField(max_length=128)
+    penalty = models.IntegerField(choices=DIGITO_CHOICES,)
+    paused = models.IntegerField()
+
+    def __unicode__(self):
+        return "agente: {0} para la campana {1} ".format(
+            self.member.user.get_full_name(), self.campana.nombre)
+
+
 #==============================================================================
 # Base Datos Contactos
 #==============================================================================
