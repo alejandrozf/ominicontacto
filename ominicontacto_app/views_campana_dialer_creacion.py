@@ -128,8 +128,7 @@ class CampanaDialerUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse(
-            'actuacion_campana_dialer',
-            kwargs={"pk_campana": self.object.pk})
+            'campana_dialer_list')
 
 
 class ActuacionCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, CreateView):
