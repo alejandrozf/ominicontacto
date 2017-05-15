@@ -9,11 +9,6 @@
                 <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
                 <td>
                     {{ campana.bd_contacto }}
-                   {% if campana.queue_campana.es_dialer %}
-                    <a href="{% url 'update_base_datos_campana' campana.pk %}">
-                        cambiar base
-                    </a>
-                    {% endif %}
                 </td>
                 <td> {{campana.get_estado_display}}  </td>
                 <td width="14%">
