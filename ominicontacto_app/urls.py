@@ -619,6 +619,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer.FormularioNuevoContactoFormView.as_view()),
         name="nuevo_contacto_campana_dialer"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/actuacion_vigente/$',
+        login_required(
+            views_campana_dialer_creacion.ActuacionVigenteCampanaDialerCreateView.as_view()),
+        name="nuevo_actuacion_vigente_campana_dialer"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================

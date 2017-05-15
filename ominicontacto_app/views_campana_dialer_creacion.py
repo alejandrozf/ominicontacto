@@ -11,10 +11,12 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     CampanaDialerForm, QueueForm, CampanaMemberForm, QueueUpdateForm, GrupoAgenteForm,
-    CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm
+    CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm,
+    ActuacionVigenteForm
 )
 from ominicontacto_app.models import (
-    CampanaDialer, Campana, Queue, CampanaMember, BaseDatosContacto, Grupo, Actuacion
+    CampanaDialer, Campana, Queue, CampanaMember, BaseDatosContacto, Grupo, Actuacion,
+    ActuacionVigente
 )
 
 from ominicontacto_app.services.campana_service import CampanaService
@@ -101,7 +103,7 @@ class CampanaDialerCreateView(CreateView):
 
     def get_success_url(self):
         return reverse(
-            'actuacion_campana_dialer',
+            'nuevo_actuacion_vigente_campana_dialer',
             kwargs={"pk_campana": self.object.pk})
 
 
@@ -433,3 +435,34 @@ class SincronizaDialerView(FormView):
 
     def get_success_url(self):
         return reverse('campana_dialer_list')
+
+
+class ActuacionVigenteCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, CreateView):
+    """
+    Esta vista crea uno objeto ActuacionVigente
+    para la Campana que se este creando.
+    Inicializa el form con campo campana (hidden)
+    con el id de campana que viene en la url.
+    """
+
+    template_name = 'campana_dialer/actuacion_vigente_campana.html'
+    model = ActuacionVigente
+    context_object_name = 'actuacion'
+    form_class = ActuacionVigenteForm
+
+    def get_initial(self):
+        initial = super(ActuacionVigenteCampanaDialerCreateView, self).get_initial()
+        initial.update({'campana': self.campana.id})
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ActuacionVigenteCampanaDialerCreateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'campana_dialer_sincronizar',
+            kwargs={"pk_campana": self.kwargs['pk_campana']}
+        )

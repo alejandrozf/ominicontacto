@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_js %}
+<script>
+$(document).ready(function() {
+    $('#id_hora_desde').datetimepicker({
+        format: 'HH:mm',
+    });
+    $('#id_hora_hasta').datetimepicker({
+        format: 'HH:mm',
+    });
+
+});
+</script>
+{% endblock %}
+{% block content %}
+            <ul class="nav nav-tabs">
+                <li><a href="{% url 'campana_dialer_update' campana.pk %}" >Campaña</a></li>
+                <li class="active"><a>Actuacion</a></li>
+                <li class="disabled"><a>Sincronizar</a></li>
+            </ul>
+            <br>
+    <div class="col-md-4">
+
+        <form action = "" method = "post"> {% csrf_token %}
+              {{ form.non_field_errors }} {{form.campana}}
+    <div class="form-group row">
+        {{ form.domingo.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.domingo.id_for_label }}">Domingo:</label>
+        <div class="col-sm-6">
+              {{ form.domingo }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.lunes.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.lunes.id_for_label }}">Lunes: </label>
+        <div class="col-sm-3">
+              {{ form.lunes }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.martes.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.martes.id_for_label }}">Martes: </label>
+        <div class="col-sm-3">
+              {{ form.martes }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.miercoles.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.miercoles.id_for_label }}">Miercoles: </label>
+        <div class="col-sm-3">
+              {{ form.miercoles }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.jueves.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.jueves.id_for_label }}">Jueves: </label>
+        <div class="col-sm-6">
+              {{ form.jueves }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.viernes.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.viernes.id_for_label }}">Viernes: </label>
+        <div class="col-sm-6">
+              {{ form.viernes }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.sabado.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.sabado.id_for_label }}">Sabado: </label>
+        <div class="col-sm-6">
+              {{ form.sabado }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.hora_desde.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.hora_desde.id_for_label }}">Hora desde: </label>
+        <div class="col-sm-3">
+              {{ form.hora_desde }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.hora_hasta.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.hora_hasta.id_for_label }}">Hora hasta: </label>
+        <div class="col-sm-3">
+              {{ form.hora_hasta }}
+        </div>
+    </div>
+            <button type="submit" id="id_registrar" class="btn btn-success btn-lg">
+                Guardar
+            </button>
+	    </form>
+
+    </div>
+
+{% endblock %}
