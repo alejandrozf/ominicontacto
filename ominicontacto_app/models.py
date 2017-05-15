@@ -956,7 +956,7 @@ class CampanaMember(models.Model):
     campana = models.ForeignKey(CampanaDialer, on_delete=models.CASCADE,
                                 related_name='members')
     membername = models.CharField(max_length=128)
-    campana_nombre = models.CharField(max_length=128)
+    campana_nombre = models.CharField(max_length=128    )
     interface = models.CharField(max_length=128)
     penalty = models.IntegerField(choices=DIGITO_CHOICES,)
     paused = models.IntegerField()
@@ -2263,3 +2263,52 @@ class Actuacion(AbstractActuacion):
 
     def get_campana(self):
         return self.campana
+
+
+class ActuacionVigente(models.Model):
+    """
+    Modelo  para las actuaciones de las campanas
+
+    """
+
+    """Dias de la semana, compatibles con datetime.date.weekday()"""
+
+    campana = models.OneToOneField('CampanaDialer')
+    domingo = models.BooleanField()
+    lunes = models.BooleanField()
+    martes = models.BooleanField()
+    miercoles = models.BooleanField()
+    jueves = models.BooleanField()
+    viernes = models.BooleanField()
+    sabado = models.BooleanField()
+    hora_desde = models.TimeField()
+    hora_hasta = models.TimeField()
+
+    def __unicode__(self):
+        return "Campaña {0} - Actuación vigente: hora dese {1} a horas hasta {2}".format(
+            self.campana, self.hora_desde, self.hora_hasta
+        )
+
+    def get_dias_vigente_wombat(self):
+        dias = ""
+        if self.domingo:
+            dias += "1"
+        if self.lunes:
+            dias += "2"
+        if self.martes:
+            dias += "3"
+        if self.miercoles:
+            dias += "4"
+        if self.jueves:
+            dias += "5"
+        if self.viernes:
+            dias += "6"
+        if self.sabado:
+            dias += "7"
+        return dias
+
+    def get_hora_desde_wombat(self):
+        return "{0}00".format(self.hora_desde.strftime("%H%M"))
+
+    def get_hora_hasta_wombat(self):
+        return "{0}00".format(self.hora_hasta.strftime("%H%M"))

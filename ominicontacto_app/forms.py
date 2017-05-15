@@ -14,7 +14,8 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
-    MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember
+    MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember,
+    ActuacionVigente
 )
 
 
@@ -744,3 +745,33 @@ class CampanaMemberForm(forms.ModelForm):
     class Meta:
         model = CampanaMember
         fields = ('member', 'penalty')
+
+
+class ActuacionVigenteForm(forms.ModelForm):
+    """
+    El form de miembro de una cola
+    """
+
+    def clean(self):
+        domingo = self.cleaned_data.get('domingo')
+        lunes = self.cleaned_data.get('lunes')
+        martes = self.cleaned_data.get('martes')
+        miercoles = self.cleaned_data.get('miercoles')
+        jueves = self.cleaned_data.get('jueves')
+        viernes = self.cleaned_data.get('viernes')
+        sabado = self.cleaned_data.get('sabado')
+        if domingo==lunes==martes==miercoles==jueves==viernes==sabado==False:
+            raise forms.ValidationError('debe seleccionar algun día')
+
+        return self.cleaned_data
+
+    class Meta:
+        model = ActuacionVigente
+        fields = ('campana', 'domingo', 'lunes', 'martes', 'miercoles', 'jueves',
+                  'viernes', 'sabado', 'hora_desde', 'hora_hasta')
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'dia_semanal': forms.Select(attrs={'class': 'form-control'}),
+            "hora_desde": forms.TextInput(attrs={'class': 'form-control'}),
+            "hora_hasta": forms.TextInput(attrs={'class': 'form-control'}),
+        }

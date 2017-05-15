@@ -40,9 +40,9 @@ class CampanaCreator(object):
             "batchSize": 100,
             "securityKey": "",
 
-            "timeStartHr": "000000",
-            "timeEndHr": "235959",
-            "timeDow": "234567",
+            "timeStartHr": campana.actuacionvigente.get_hora_desde_wombat(),
+            "timeEndHr": campana.actuacionvigente.get_hora_hasta_wombat(),
+            "timeDow": campana.actuacionvigente.get_dias_vigente_wombat(),
 
             "dial_timeout": 30000,
             "maxCallLength": 0,
