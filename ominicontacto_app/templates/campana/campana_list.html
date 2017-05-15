@@ -17,22 +17,7 @@
             }
         });
 
-        function mostrar_detalle_campana(pk_campana) {
-             if ($('#modal_ventana').attr('first-time') == 'true'){
-                  $('#modal_ventana').attr('first-time', 'false')
-             }
-            else{
-                $('#modal_ventana').fadeOut('slow');
-             }
 
-             $('#modal_ventana').html("");
-            $.get('{% url  'detalle_campana' %}', {pk_campana: pk_campana},
-                    function (data) {
-                        $('#modal_ventana').html(data);
-                        $('#modal_ventana').fadeIn('slow');
-                    });
-        }
-        ;
         function mostrar_campanas_ocultas() {
 
             $.get('{% url  'mostrar_campanas_ocultas' %}',

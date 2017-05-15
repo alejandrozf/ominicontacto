@@ -294,10 +294,6 @@ urlpatterns = [
             views_campana.AgenteCampanaReporteGrafico.as_view()),
         name='reporte_agente_grafico',
         ),
-    url(r'^campana/(?P<pk_campana>\d+)/sincroniza_dialer/$',
-        login_required(
-            views_campana_creacion.SincronizaDialerView.as_view()),
-        name='sincroniza_dialer',),
     url(r'^campana/selecciona/$',
         login_required(
             views_campana.FormularioSeleccionCampanaFormView.as_view()),
@@ -323,13 +319,6 @@ urlpatterns = [
             views_campana.ActivarCampanaView.as_view()),
         name='activar_campana',
         ),
-    url(r'^campana/(?P<pk_campana>\d+)/update_base_datos/$',
-        login_required(
-            views_campana.UpdateBaseDatosView.as_view()),
-        name='update_base_datos_campana', ),
-    url(r'^campana/detalle/$',
-        login_required(views_campana.detalle_campana_view),
-        name='detalle_campana', ),
     url(r'^campana/(?P<pk_campana>\d+)/ocultar/$',
         login_required(views_campana.OcultarCampanaView.as_view()),
         name='oculta_campana', ),
