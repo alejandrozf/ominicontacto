@@ -147,6 +147,8 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         self.object.save()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(self.object)
+        self.campana.estado = Campana.ESTADO_ACTIVA
+        self.campana.save()
         return super(QueueCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
