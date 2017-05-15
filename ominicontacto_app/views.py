@@ -286,7 +286,7 @@ class GrupoCreateView(CreateView):
     model = Grupo
     template_name = 'base_create_update_form.html'
     fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
-              'auto_attend_dialer', 'auto_pause')
+              'auto_attend_dialer', 'auto_pause', 'auto_unpause')
 
     def get_success_url(self):
         return reverse('grupo_list')
@@ -296,7 +296,7 @@ class GrupoUpdateView(UpdateView):
     model = Grupo
     template_name = 'base_create_update_form.html'
     fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
-              'auto_attend_dialer', 'auto_pause')
+              'auto_attend_dialer', 'auto_pause', 'auto_unpause')
 
     def get_success_url(self):
         return reverse('grupo_list')
