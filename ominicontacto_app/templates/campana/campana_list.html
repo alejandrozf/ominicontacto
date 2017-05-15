@@ -31,8 +31,7 @@
 {% endblock %}
 
 {% block content %}
-<br>
-<div class="col-md-8 col-md-offset-2">
+<div class="col-md-10 col-md-offset-1">
     <form id="form_estados_campanas" role="form" method="post">
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
@@ -52,7 +51,7 @@
         <tbody>
         {% for campana in activas %}
             <tr>
-                <td width="45%">
+                <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td>
@@ -88,6 +87,7 @@
         {% endfor %}
         </tbody>
     </table>
+    <br>
 <h4>Campañas Pausadas</h4>
       <table class="table table-stripped table-condensed">
         <thead>
@@ -104,7 +104,7 @@
         <tbody>
         {% for campana in pausadas %}
             <tr>
-                <td width="45%">
+                <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td>
@@ -140,8 +140,8 @@
         {% endfor %}
         </tbody>
     </table>
-<h4>Campañas Inactivas</h4>
-
+    <br>
+    <h4>Campañas Inactivas</h4>
     <table class="table table-stripped table-condensed">
         <thead>
             <tr>
@@ -157,7 +157,7 @@
         <tbody>
         {% for campana in inactivas %}
             <tr>
-                <td width="45%">
+                <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td>
@@ -193,8 +193,8 @@
         {% endfor %}
         </tbody>
     </table>
-        <h4>Campañas Borrada </h4>
-
+    <br>
+    <h4>Campañas Borrada </h4>
     <table class="table table-stripped table-condensed">
         <thead>
             <tr>
@@ -214,7 +214,7 @@
         <tbody id="t_body_borradas">
         {% for campana in borradas %}
             <tr>
-                <td width="45%">
+                <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td>
