@@ -273,6 +273,7 @@ class CampanaDialerMemberCreateView(FormView):
             self.object.interface = """Local/{0}@from-queue/n""".format(
             self.object.member.sip_extension)
             self.object.paused = 0  # por ahora no lo definimos
+            self.object.campana_nombre = campana.nombre
             self.object.save()
 
         return super(CampanaDialerMemberCreateView, self).form_valid(form)
@@ -303,6 +304,7 @@ class GrupoAgenteCreateView(FormView):
             CampanaMember.objects.get_or_create(
                 member=agente,
                 campana=campana,
+                campana_nombre=campana.nombre,
                 defaults={'membername': agente.user.get_full_name(),
                           'interface': """Local/{0}@from-queue/n""".format(
                               agente.sip_extension),
