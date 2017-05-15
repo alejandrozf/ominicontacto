@@ -29,7 +29,6 @@ from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_metadata_cliente import \
     ReporteMetadataClienteService
-from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.reporte_campana_pdf import \
     ReporteCampanaPDFService
 from ominicontacto_app.services.reporte_llamadas_campana import \
