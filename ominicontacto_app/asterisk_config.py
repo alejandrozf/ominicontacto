@@ -15,7 +15,9 @@ import traceback
 
 from django.conf import settings
 from ominicontacto_app.utiles import elimina_espacios
-from ominicontacto_app.models import Queue, AgenteProfile, SupervisorProfile
+from ominicontacto_app.models import (
+    Queue, AgenteProfile, SupervisorProfile, CampanaDialer
+)
 import logging as _logging
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory)
@@ -279,6 +281,35 @@ class QueuesCreator(object):
 
         return ''.join(partes)
 
+    def _generar_dialplan_dialer(self, campana):
+        """Genera el dialplan para una campana dialer.
+
+        :param campana: Campana para la cual hay crear el dialplan
+        :type queue: ominicontacto_app.models.CamapanaDialer
+        :returns: str -- dialplan para la queue
+        """
+
+        assert campana is not None, "campana == None"
+
+        partes = []
+        param_generales = {
+            'oml_queue_name': elimina_espacios(campana.nombre),
+            'oml_strategy': campana.strategy,
+            'oml_timeout': campana.wait,
+            'oml_servicelevel': campana.servicelevel,
+            'oml_weight': campana.weight,
+            'oml_wrapuptime': campana.wrapuptime,
+            'oml_maxlen': campana.maxlen,
+            'oml_retry': 1
+        }
+
+        # QUEUE: Creamos la porción inicial del Queue.
+        generador_queue = self._generador_factory.\
+            crear_generador_para_queue(param_generales)
+        partes.append(generador_queue.generar_pedazo())
+
+        return ''.join(partes)
+
     def _obtener_todas_para_generar_dialplan(self):
         """Devuelve las queues para crear el dialplan.
         """
@@ -286,6 +317,13 @@ class QueuesCreator(object):
         # estados
         # Queue.objects.obtener_todas_para_generar_dialplan()
         return Queue.objects.obtener_all_except_borradas()
+
+    def _obtener_campanas_dialer_para_generar_dialplan(self):
+        """Devuelve las campanas dialer para crear el dialplan.
+        """
+        # Ver de obtener activa ya que en este momemento no estamos manejando
+        # estados
+        return CampanaDialer.objects.obtener_all_except_borradas()
 
     def create_dialplan(self, queue=None, queues=None):
         """Crea el archivo de dialplan para queue existentes
@@ -323,6 +361,38 @@ class QueuesCreator(object):
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
                 param_failed = {'oml_queue_name': queue.name,
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+
+            dialplan.append(config_chunk)
+
+        campanas = self._obtener_campanas_dialer_para_generar_dialplan()
+        for queue in campanas:
+            logger.info("Creando dialplan para campana diaer %s", queue.nombre)
+            try:
+                config_chunk = self._generar_dialplan_dialer(queue)
+                logger.info("Dialplan generado OK para campana dialer %s",
+                            queue.nombre)
+            except:
+                logger.exception(
+                    "No se pudo generar configuracion de "
+                    "Asterisk para la quene {0}".format(queue.nombre))
+
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except:
+                    traceback_lines = "Error al intentar generar traceback"
+                    logger.exception("Error al intentar generar traceback")
+
+                # FAILED: Creamos la porción para el fallo del Dialplan.
+                param_failed = {'oml_queue_name': queue.nombre,
                                 'date': str(datetime.datetime.now()),
                                 'traceback_lines': traceback_lines}
                 generador_failed = \

@@ -20,6 +20,8 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import\
     SincronizarBaseDatosContactosService
+from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
+                                                       RestablecerDialplanError)
 
 
 import logging as logging_
@@ -83,6 +85,18 @@ class CampanaDialerCreateView(CreateView):
         self.object.ringinuse = True
         self.object.setinterfacevar = True
         self.object.save()
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
         return super(CampanaDialerCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -111,6 +125,18 @@ class CampanaDialerUpdateView(UpdateView):
             self.get_object(), self.object.bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
         return super(CampanaDialerUpdateView, self).form_valid(form)
 
     def form_invalid(self, form, error=None):
