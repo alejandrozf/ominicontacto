@@ -476,21 +476,6 @@ class Queue(models.Model):
         (RRMEMORY, 'Rremory'),
     )
 
-    TYPE_ICS = 1
-    """Tipo de cola ICS"""
-
-    TYPE_DIALER = 2
-    """Tipo de cola DIALER"""
-
-    TYPE_INBOUND = 3
-    """Tipo de cola inbound"""
-
-    TYPE_CHOICES = (
-        (TYPE_ICS, 'ICS'),
-        (TYPE_DIALER, 'DIALER'),
-        (TYPE_INBOUND, 'INBOUND'),
-    )
-
     campana = models.OneToOneField(
         Campana,
         related_name='queue_campana', blank=True, null=True
@@ -511,8 +496,7 @@ class Queue(models.Model):
     ringinuse = models.BooleanField()
     setinterfacevar = models.BooleanField()
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
-    type = models.PositiveIntegerField(choices=TYPE_CHOICES,
-                                       verbose_name='Tipo de campaña')
+
     wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
     queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
@@ -549,12 +533,6 @@ class Queue(models.Model):
     def guardar_ep_id_wombat(self, ep_id_wombat):
         self.ep_id_wombat = ep_id_wombat
         self.save()
-
-    def es_dialer(self):
-        if self.type is self.TYPE_DIALER:
-            return True
-        else:
-            return False
 
     class Meta:
         db_table = 'queue_table'
@@ -623,6 +601,378 @@ class Pausa(models.Model):
 
     def __unicode__(self):
         return self.nombre
+
+
+# ==============================================================================
+# CampanaDialer
+# ==============================================================================
+class CampanaDialerManager(models.Manager):
+
+    def obtener_en_definicion_para_editar(self, campana_id):
+        """Devuelve la campaña pasada por ID, siempre que dicha
+        campaña pueda ser editar (editada en el proceso de
+        definirla, o sea, en el proceso de "creacion" de la
+        campaña).
+
+        En caso de no encontarse, lanza SuspiciousOperation
+        """
+        try:
+            return self.filter(
+                estado=self.model.ESTADO_EN_DEFINICION).get(
+                pk=campana_id)
+        except self.model.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro campana %s en "
+                                      "estado ESTADO_EN_DEFINICION"))
+
+    def obtener_pausadas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=CampanaDialer.ESTADO_PAUSADA)
+
+    def obtener_inactivas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=CampanaDialer.ESTADO_INACTIVA)
+
+    def obtener_activas(self):
+        """
+        Devuelve campañas en estado pausadas.
+        """
+        return self.filter(estado=CampanaDialer.ESTADO_ACTIVA)
+
+    def obtener_borradas(self):
+        """
+        Devuelve campañas en estado borradas.
+        """
+        return self.filter(estado=CampanaDialer.ESTADO_BORRADA)
+
+    def obtener_all_except_borradas(self):
+        """
+        Devuelve campañas excluyendo las campanas borradas
+        """
+        return self.exclude(estado=CampanaDialer.ESTADO_BORRADA)
+
+class CampanaDialer(models.Model):
+    """Una campaña del call center"""
+
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = CampanaDialerManager()
+
+    ESTADO_EN_DEFINICION = 1
+    """La campaña esta siendo definida en el wizard"""
+
+    ESTADO_ACTIVA = 2
+    """La campaña esta activa, o sea, EN_CURSO o PROGRAMADA
+    A nivel de modelos, solo queremos registrar si está ACTIVA, y no nos
+    importa si esta EN_CURSO (o sea, si en este momento el daemon está
+    generando llamadas asociadas a la campaña) o PROGRAMADA (si todavia no
+    estamos en el rango de dias y horas en los que se deben generar
+    las llamadas)
+    """
+
+    ESTADO_FINALIZADA = 3
+    """La campaña fue finalizada, automatica o manualmente.
+    Para mas inforacion, ver `finalizar()`"""
+
+    ESTADO_BORRADA = 4
+    """La campaña ya fue borrada"""
+
+    ESTADO_PAUSADA = 5
+    """La campaña pausada"""
+
+    ESTADO_INACTIVA = 6
+    """La campaña inactiva"""
+
+    ESTADOS = (
+        (ESTADO_EN_DEFINICION, 'En definicion'),
+        (ESTADO_ACTIVA, 'Activa'),
+        (ESTADO_FINALIZADA, 'Finalizada'),
+        (ESTADO_BORRADA, 'Borrada'),
+        (ESTADO_PAUSADA, 'Pausada'),
+        (ESTADO_INACTIVA, 'Inactiva'),
+    )
+
+    RINGALL = 'ringall'
+    """ring all available channels until one answers (default)"""
+
+    ROUNDROBIN = 'roundrobin'
+    """take turns ringing each available interface (deprecated in 1.4,
+    use rrmemory)"""
+
+    LEASTRECENT = 'leastrecent'
+    """ring interface which was least recently called by this queue"""
+
+    FEWESTCALLS = 'fewestcalls'
+    """ring the one with fewest completed calls from this queue"""
+
+    RANDOM = 'random'
+    """ring random interface"""
+
+    RRMEMORY = 'rrmemory'
+    """round robin with memory, remember where we left off last ring pass"""
+
+    STRATEGY_CHOICES = (
+        (RINGALL, 'Ringall'),
+        (ROUNDROBIN, 'Roundrobin'),
+        (LEASTRECENT, 'Leastrecent'),
+        (FEWESTCALLS, 'Fewestcalls'),
+        (RANDOM, 'Random'),
+        (RRMEMORY, 'Rremory'),
+    )
+
+    estado = models.PositiveIntegerField(
+        choices=ESTADOS,
+        default=ESTADO_EN_DEFINICION,
+    )
+    nombre = models.CharField(max_length=128)
+    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_fin = models.DateField(null=True, blank=True)
+    calificacion_campana = models.ForeignKey(CalificacionCampana,
+                                             related_name="calificacioncampanadialer"
+                                             )
+    bd_contacto = models.ForeignKey(
+        'BaseDatosContacto',
+        null=True, blank=True,
+        related_name="%(class)ss"
+    )
+    formulario = models.ForeignKey(Formulario)
+    campaign_id_wombat = models.IntegerField(null=True, blank=True)
+    oculto = models.BooleanField(default=False)
+    gestion = models.CharField(max_length=128, default="Venta")
+
+    maxlen = models.BigIntegerField(verbose_name='Cantidad Max de llamadas')
+    wrapuptime = models.BigIntegerField(
+        verbose_name='Tiempo de descanso entre llamadas')
+    servicelevel = models.BigIntegerField(verbose_name='Nivel de Servicio')
+    strategy = models.CharField(max_length=128, choices=STRATEGY_CHOICES,
+                                verbose_name='Estrategia de distribucion')
+    eventmemberstatus = models.BooleanField()
+    eventwhencalled = models.BooleanField()
+    weight = models.BigIntegerField(verbose_name='Importancia de campaña')
+    ringinuse = models.BooleanField()
+    setinterfacevar = models.BooleanField()
+    #members = models.ManyToManyField(AgenteProfile, through='QueueMember')
+
+    wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
+    auto_grabacion = models.BooleanField(default=False,
+                                         verbose_name='Grabar llamados')
+    ep_id_wombat = models.IntegerField(null=True, blank=True)
+
+    def __unicode__(self):
+            return self.nombre
+
+    def guardar_campaign_id_wombat(self, campaign_id_wombat):
+        self.campaign_id_wombat = campaign_id_wombat
+        self.save()
+
+    def guardar_ep_id_wombat(self, ep_id_wombat):
+        self.ep_id_wombat = ep_id_wombat
+        self.save()
+
+    def play(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = CampanaDialer.ESTADO_ACTIVA
+        self.save()
+
+    def pausar(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_PAUSADA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = CampanaDialer.ESTADO_PAUSADA
+        self.save()
+
+    def activar(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = CampanaDialer.ESTADO_ACTIVA
+        self.save()
+
+    def remover(self):
+        """Setea la campaña como ESTADO_ACTIVA"""
+        logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = CampanaDialer.ESTADO_BORRADA
+        self.save()
+
+    def ocultar(self):
+        """setea la campana como oculta"""
+        self.oculto = True
+        self.save()
+
+    def desocultar(self):
+        """setea la campana como visible"""
+        self.oculto = False
+        self.save()
+
+    def obtener_actuaciones_validas(self):
+        """
+        Este método devuelve un lista con las actuaciones válidas de una
+        campaña. Teniendo como válidas aquellas que se van a ser procesadas
+        teniendo en cuenta las fechas y horas que se le setearon.
+
+        En caso de que las fecha_iniio y fecha_fin sean nulas, como ser en un
+        template, devuelve una lista vacia.
+        """
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        ahora = hoy_ahora.time()
+
+        lista_actuaciones = [actuacion.dia_semanal for actuacion in
+                             self.actuacionesdialer.all()]
+        lista_actuaciones_validas = []
+
+        dias_totales = (self.fecha_fin - self.fecha_inicio).days + 1
+        for numero_dia in range(dias_totales):
+            dia_actual = (self.fecha_inicio + datetime.timedelta(
+                days=numero_dia))
+            dia_semanal_actual = dia_actual.weekday()
+
+            if dia_semanal_actual in lista_actuaciones:
+                actuaciones_diaria = self.actuacionesdialer.filter(
+                    dia_semanal=dia_semanal_actual)
+                for actuacion in actuaciones_diaria:
+                    actuacion_valida = True
+                    if dia_actual == hoy and ahora > actuacion.hora_hasta:
+                        actuacion_valida = False
+
+                    if actuacion_valida:
+                        lista_actuaciones_validas.append(actuacion)
+        return lista_actuaciones_validas
+
+    def obtener_actuacion_actual(self):
+        """
+        Este método devuelve la actuación correspondiente al
+        momento de hacer la llamada al método.
+        Si no hay ninguna devuelve None.
+        """
+        hoy_ahora = datetime.datetime.today()
+        assert hoy_ahora.tzinfo is None
+        dia_semanal = hoy_ahora.weekday()
+        hora_actual = hoy_ahora.time()
+
+        # FIXME: PERFORMANCE: ver si el resultado de 'filter()' se cachea,
+        # sino, usar algo que se cachee, ya que este metodo es ejecutado
+        # muchas veces desde el daemon
+        actuaciones_hoy = self.actuacionesdialer.filter(dia_semanal=dia_semanal)
+        if not actuaciones_hoy:
+            return None
+
+        for actuacion in actuaciones_hoy:
+            if actuacion.hora_desde <= hora_actual <= actuacion.hora_hasta:
+                return actuacion
+        return None
+
+    def verifica_fecha(self, hoy_ahora):
+        """
+        Este método se encarga de verificar si la fecha pasada como
+        parametro en hoy_ahora es válida para la campaña actual.
+        Devuelve True o False.
+        """
+        assert isinstance(hoy_ahora, datetime.datetime)
+
+        fecha_actual = hoy_ahora.date()
+
+        if self.fecha_inicio <= fecha_actual <= self.fecha_fin:
+            return True
+        return False
+
+    def valida_actuaciones(self):
+        """
+        Este método verifica que la actuaciones de una campana, sean válidas.
+        Corrobora que al menos uno de los días semanales del rango de fechas
+        de la campana concuerde con algún dia de la actuación que tenga la
+        campana al momento de ser consultado este método.
+        Si la campaña tiene un solo día de ejecución o si tiene un solo día
+        de actuación, y los días semanales coinciden y es hoy, valida que
+        hora actual sea menor que la hora_hasta de la actuación.
+        """
+        valida = False
+        hoy_ahora = datetime.datetime.today()
+        hoy = hoy_ahora.date()
+        ahora = hoy_ahora.time()
+
+        fecha_inicio = self.fecha_inicio
+        fecha_fin = self.fecha_fin
+
+        lista_actuaciones = [actuacion.dia_semanal for actuacion in
+                             self.actuacionesdialer.all()]
+
+        dias_totales = (self.fecha_fin - self.fecha_inicio).days + 1
+        for numero_dia in range(dias_totales):
+            dia_actual = (self.fecha_inicio + datetime.timedelta(
+                days=numero_dia))
+            dia_semanal_actual = dia_actual.weekday()
+
+            if dia_semanal_actual in lista_actuaciones:
+                valida = True
+                actuaciones_diaria = self.actuacionesdialer.filter(
+                    dia_semanal=dia_semanal_actual)
+                for actuacion in actuaciones_diaria:
+                    if dia_actual == hoy and ahora > actuacion.hora_hasta:
+                        valida = False
+        return valida
+
+
+class CampanaMemberManager(models.Manager):
+
+    def obtener_member_por_campana(self, campana):
+        """Devuelve el campanamember filtrando por campana
+        """
+        return self.filter(campana=campana)
+
+    def existe_member_campana(self, member, campana):
+        return self.obtener_member_por_campana(campana).filter(
+            member=member).exists()
+
+
+class CampanaMember(models.Model):
+    """
+    Clase campana por miembro, agente en cada campana
+    """
+
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = CampanaMemberManager()
+
+    """Considero opciones solo del 0 a 9"""
+    (CERO, UNO, DOS, TRES, CUATRO,
+    CINCO, SEIS, SIETE, OCHO, NUEVE) = range(0, 10)
+    DIGITO_CHOICES = (
+        (CERO, '0'),
+        (UNO, '1'),
+        (DOS, '2'),
+        (TRES, '3'),
+        (CUATRO, '4'),
+        (CINCO, '5'),
+        (SEIS, '6'),
+        (SIETE, '7'),
+        (OCHO, '8'),
+        (NUEVE, '9'),
+    )
+    member = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE,
+                               related_name='campanasmember')
+    campana = models.ForeignKey(CampanaDialer, on_delete=models.CASCADE,
+                                related_name='members')
+    membername = models.CharField(max_length=128)
+    interface = models.CharField(max_length=128)
+    penalty = models.IntegerField(choices=DIGITO_CHOICES,)
+    paused = models.IntegerField()
+
+    def __unicode__(self):
+        return "agente: {0} para la campana {1} ".format(
+            self.member.user.get_full_name(), self.campana.nombre)
 
 
 #==============================================================================
@@ -1228,14 +1578,13 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "filtro"))
 
-    # def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
-    #     try:
-    #         contactos = self.filter(Q(telefono__contains=filtro) |
-    #                                 Q(id_cliente__contains=filtro))
-    #         return contactos.filter(bd_contacto=bd_contacto)
-    #     except Contacto.DoesNotExist:
-    #         raise (SuspiciousOperation("No se encontro contactos con este "
-    #                                    "filtro"))
+    def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
+        try:
+            contactos = self.filter(Q(telefono__contains=filtro))
+            return contactos.filter(bd_contacto=bd_contacto)
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con este "
+                                       "filtro"))
 
     # def obtener_contacto_editar(self, id_cliente):
     #     """Devuelve el contacto pasado por ID, siempre que dicha
@@ -1544,7 +1893,7 @@ class CalificacionCliente(models.Model):
 
     objects = CalificacionClienteManager()
 
-    campana = models.ForeignKey(Campana, related_name="calificaconcliente")
+    campana = models.ForeignKey(CampanaDialer, related_name="calificaconcliente")
     contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
     es_venta = models.BooleanField(default=False)
     calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
@@ -1601,7 +1950,7 @@ class DuracionDeLlamada(models.Model):
 
 class MetadataCliente(models.Model):
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
-    campana = models.ForeignKey(Campana, related_name="metadatacliente")
+    campana = models.ForeignKey(CampanaDialer, related_name="metadatacliente")
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
@@ -1642,7 +1991,7 @@ class WombatLogManager(models.Manager):
 class WombatLog(models.Model):
     objects = WombatLogManager()
 
-    campana = models.ForeignKey(Campana, related_name="logswombat")
+    campana = models.ForeignKey(CampanaDialer, related_name="logswombat")
     contacto = models.ForeignKey(Contacto)
     agente = models.ForeignKey(AgenteProfile, related_name="logsaagente",
                                blank=True, null=True)
@@ -1776,3 +2125,150 @@ class AgendaContacto(models.Model):
         return "Agenda para el contacto {0} agendado por el agente {1} para la fecha " \
                "{2} a la hora {3}hs ".format(self.contacto, self.agente, self.fecha,
                                              self.hora)
+
+
+#==============================================================================
+# Actuaciones
+#==============================================================================
+
+
+class AbstractActuacion(models.Model):
+    """
+    Modelo abstracto para las actuaciones de las campanas
+    de audio y sms.
+    """
+
+    """Dias de la semana, compatibles con datetime.date.weekday()"""
+    LUNES = 0
+    MARTES = 1
+    MIERCOLES = 2
+    JUEVES = 3
+    VIERNES = 4
+    SABADO = 5
+    DOMINGO = 6
+
+    DIA_SEMANAL_CHOICES = (
+        (LUNES, 'LUNES'),
+        (MARTES, 'MARTES'),
+        (MIERCOLES, 'MIERCOLES'),
+        (JUEVES, 'JUEVES'),
+        (VIERNES, 'VIERNES'),
+        (SABADO, 'SABADO'),
+        (DOMINGO, 'DOMINGO'),
+    )
+    dia_semanal = models.PositiveIntegerField(
+        choices=DIA_SEMANAL_CHOICES,
+    )
+
+    hora_desde = models.TimeField()
+    hora_hasta = models.TimeField()
+
+    class Meta:
+        abstract = True
+
+    def verifica_actuacion(self, hoy_ahora):
+        """
+        Este método verifica que el día de la semana y la hora
+        pasada en el parámetro hoy_ahora sea válida para la
+        actuación actual.
+        Devuelve True o False.
+        """
+
+        assert isinstance(hoy_ahora, datetime.datetime)
+
+        dia_semanal = hoy_ahora.weekday()
+        hora_actual = datetime.time(
+            hoy_ahora.hour, hoy_ahora.minute, hoy_ahora.second)
+
+        if not self.dia_semanal == dia_semanal:
+            return False
+
+        if not self.hora_desde <= hora_actual <= self.hora_hasta:
+            return False
+
+        return True
+
+    def dia_concuerda(self, fecha_a_chequear):
+        """Este método evalua si el dia de la actuacion actual `self`
+        concuerda con el dia de la semana de la fecha pasada por parametro.
+
+        :param fecha_a_chequear: fecha a chequear
+        :type fecha_a_chequear: `datetime.date`
+        :returns: bool - True si la actuacion es para el mismo dia de
+                  la semana que el dia de la semana de `fecha_a_chequear`
+        """
+        # NO quiero que funcione con `datatime` ni ninguna otra
+        #  subclase, más que específicamente `datetime.date`,
+        #  por eso no uso `isinstance()`.
+        assert type(fecha_a_chequear) == datetime.date
+
+        return self.dia_semanal == fecha_a_chequear.weekday()
+
+    def es_anterior_a(self, time_a_chequear):
+        """Este método evalua si el rango de tiempo de la actuacion
+        actual `self` es anterior a la hora pasada por parametro.
+        Verifica que sea 'estrictamente' anterior, o sea, ambas horas
+        de la Actuacion deben ser anteriores a la hora a chequear
+        para que devuelva True.
+
+        :param time_a_chequear: hora a chequear
+        :type time_a_chequear: `datetime.time`
+        :returns: bool - True si ambas horas de la actuacion son anteriores
+                  a la hora pasada por parametro `time_a_chequear`.
+        """
+        # NO quiero que funcione con ninguna subclase, más que
+        #  específicamente `datetime.time`, por eso no uso `isinstance()`.
+        assert type(time_a_chequear) == datetime.time
+
+        # Es algo redundante chequear ambos, pero bueno...
+        return self.hora_desde < time_a_chequear and \
+            self.hora_hasta < time_a_chequear
+
+    def clean(self):
+        """
+        Valida que al crear una actuación a una campaña
+        no exista ya una actuación en el rango horario
+        especificado y en el día semanal seleccionado.
+        """
+        if self.hora_desde and self.hora_hasta:
+            if self.hora_desde >= self.hora_hasta:
+                raise ValidationError({
+                    'hora_desde': ["La hora desde debe ser\
+                        menor o igual a la hora hasta."],
+                    'hora_hasta': ["La hora hasta debe ser\
+                        mayor a la hora desde."],
+                })
+
+            conflicto = self.get_campana().actuacionesdialer.filter(
+                dia_semanal=self.dia_semanal,
+                hora_desde__lte=self.hora_hasta,
+                hora_hasta__gte=self.hora_desde,
+            )
+            if any(conflicto):
+                raise ValidationError({
+                    'hora_desde': ["Ya esta cubierto el rango horario\
+                        en ese día semanal."],
+                    'hora_hasta': ["Ya esta cubierto el rango horario\
+                        en ese día semanal."],
+                })
+
+
+class Actuacion(AbstractActuacion):
+    """
+    Representa los días de la semana y los
+    horarios en que una campaña se ejecuta.
+    """
+
+    campana = models.ForeignKey(
+        'CampanaDialer',
+        related_name='actuacionesdialer'
+    )
+
+    def __unicode__(self):
+        return "Campaña {0} - Actuación: {1}".format(
+            self.campana,
+            self.get_dia_semanal_display(),
+        )
+
+    def get_campana(self):
+        return self.campana

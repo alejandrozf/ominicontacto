@@ -147,10 +147,6 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         self.object.save()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(self.object)
-        if self.object.type == Queue.TYPE_DIALER:
-            return HttpResponseRedirect(
-                reverse('sincroniza_dialer',
-                        kwargs={"pk_campana": self.kwargs['pk_campana']}))
         return super(QueueCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -380,71 +376,3 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     queue_member.delete()
     return HttpResponseRedirect("/campana/" + str(pk_campana) +
                                 "/queue_member_campana/")
-
-
-class SincronizaDialerView(FormView):
-    """
-    Esta vista sincroniza base datos con discador
-    """
-
-    model = Campana
-    context_object_name = 'campana'
-    form_class = SincronizaDialerForm
-    template_name = 'base_create_update_form.html'
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get_form(self, form_class):
-        self.object = self.get_object()
-        metadata = self.object.bd_contacto.get_metadata()
-        columnas_telefono = metadata.columnas_con_telefono
-        nombres_de_columnas = metadata.nombres_de_columnas
-        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
-                       columnas_telefono if columna > 6]
-        return form_class(tts_choices=tts_choices, **self.get_form_kwargs())
-
-    def form_valid(self, form):
-        usa_contestador = form.cleaned_data.get('usa_contestador')
-        evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
-        evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
-        prefijo_discador = form.cleaned_data.get('prefijo_discador')
-        telefonos = form.cleaned_data.get('telefonos')
-        self.object = self.get_object()
-        service_base = SincronizarBaseDatosContactosService()
-        service_base.crear_lista(self.object, telefonos, usa_contestador,
-                                 evitar_duplicados, evitar_sin_telefono,
-                                 prefijo_discador)
-        campana_service = CampanaService()
-        campana_service.crear_campana_wombat(self.object)
-        campana_service.crear_trunk_campana_wombat(self.object)
-        parametros = ["RS_BUSY", "", 3, 120]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["TERMINATED", "CONTESTADOR", 3, 1800]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_NOANSWER", "", 3, 220]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_REJECTED", "", 3, 300]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_TIMEOUT", "", 3, 300]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        #parametros = ["RS_LOST", "", 1, 360]
-        #campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        campana_service.crear_endpoint_campana_wombat(self.object.queue_campana)
-        campana_service.crear_endpoint_asociacion_campana_wombat(
-            self.object.queue_campana)
-        campana_service.crear_lista_wombat(self.object)
-        campana_service.crear_lista_asociacion_campana_wombat(self.object)
-        message = 'Operación Exitosa!\
-                Se llevó a cabo con éxito la exportación del reporte.'
-
-        messages.add_message(
-            self.request,
-            messages.SUCCESS,
-            message,
-        )
-
-        return redirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse('campana_list')

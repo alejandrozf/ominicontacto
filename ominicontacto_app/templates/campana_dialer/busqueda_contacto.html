@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+<form role="form" method="post" enctype="multipart/form-data" >
+{% csrf_token %}
+		<table>
+				<td>
+						{{ form.as_p }}&nbsp;
+				</td>
+        <td>&nbsp;
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Buscar
+            </button>
+				</td>
+	  </table>        
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Telefono</th>
+                <th>Acciones</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for contacto in listado_de_contacto %}
+            <tr>
+                <td>{{ contacto.telefono }}</td>
+                <td><a href="{% url 'calificacion_formulario_update' campana.pk contacto.pk user.get_agente_profile.pk 0 %}" >
+                    <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Formulario actualizar"></span></a>
+                    <a href="" >
+                    <span class=" glyphicon glyphicon-trash" aria-hidden="true" title="Llamar"></span></a>
+                </td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="3">No existen contactos</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</form>
+</body>
+</html>

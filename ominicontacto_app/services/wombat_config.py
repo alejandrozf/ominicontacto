@@ -139,21 +139,21 @@ class EndPointCreator(object):
     def __init__(self):
         self._endpoint_config_file = EndPointConfigFile()
 
-    def _generar_json(self, queue):
+    def _generar_json(self, campana):
         """Genera json.
         :returns: str -- json para la campana
         """
 
         dict_endpoint = {
             "type": "QUEUE",
-            "queueName": elimina_espacios(queue.campana.nombre),
+            "queueName": elimina_espacios(campana.nombre),
             "name": "",
             "astId": {
                 "id": 1
             },
             "idx": "",
             "campaignId": "",
-            "maxChannels": queue.maxlen,
+            "maxChannels": campana.maxlen,
             "extension": "098098",
             "context": "from-wombat-general-contact",
             "boostFactor": 1,
@@ -161,19 +161,19 @@ class EndPointCreator(object):
             "reverseDialing": False,
             "stepwiseReverse": False,
             "securityKey": "",
-            "description": elimina_espacios(queue.campana.nombre),
+            "description": elimina_espacios(campana.nombre),
             "dialFind": "",
             "dialReplace": ""
         }
 
         return json.dumps(dict_endpoint)
 
-    def create_json(self, queue):
+    def create_json(self, campana):
         """Crea el archivo de json para trunk de campana
         """
         logger.info("Creando json end point para la campana %s",
-                    queue.campana.nombre)
-        config_chunk = self._generar_json(queue)
+                    campana.nombre)
+        config_chunk = self._generar_json(campana)
         self._endpoint_config_file.write(config_chunk)
 
 
@@ -182,25 +182,25 @@ class CampanaEndPointCreator(object):
     def __init__(self):
         self._campana_endpoint_config_file = CampanaEndPointConfigFile()
 
-    def _generar_json(self, queue):
+    def _generar_json(self, campana):
         """Genera json.
         :returns: str -- json para la campana
         """
 
         dict_trunk = {
             "epId": {
-                "epId": queue.ep_id_wombat
+                "epId": campana.ep_id_wombat
             }
         }
 
         return json.dumps(dict_trunk)
 
-    def create_json(self, queue):
+    def create_json(self, campana):
         """Crea el archivo de json para endpoint de campana
         """
         logger.info("Creando json para asociacion campana %s endpoint",
-                    queue.campana.nombre)
-        config_chunk = self._generar_json(queue)
+                    campana.nombre)
+        config_chunk = self._generar_json(campana)
         self._campana_endpoint_config_file.write(config_chunk)
 
 
