@@ -304,21 +304,6 @@ urlpatterns = [
             views_campana.FormularioNuevoContactoFormView.as_view()),
         name='nuevo_contacto_campana',
         ),
-    url(r'^campana/start/$',
-        login_required(
-            views_campana.PlayCampanaView.as_view()),
-        name='start_campana',
-        ),
-    url(r'^campana/pausar/$',
-        login_required(
-            views_campana.PausarCampanaView.as_view()),
-        name='pausar_campana',
-        ),
-    url(r'^campana/activar/$',
-        login_required(
-            views_campana.ActivarCampanaView.as_view()),
-        name='activar_campana',
-        ),
     url(r'^campana/(?P<pk_campana>\d+)/ocultar/$',
         login_required(views_campana.OcultarCampanaView.as_view()),
         name='oculta_campana', ),
