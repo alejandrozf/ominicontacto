@@ -476,21 +476,6 @@ class Queue(models.Model):
         (RRMEMORY, 'Rremory'),
     )
 
-    TYPE_ICS = 1
-    """Tipo de cola ICS"""
-
-    TYPE_DIALER = 2
-    """Tipo de cola DIALER"""
-
-    TYPE_INBOUND = 3
-    """Tipo de cola inbound"""
-
-    TYPE_CHOICES = (
-        (TYPE_ICS, 'ICS'),
-        (TYPE_DIALER, 'DIALER'),
-        (TYPE_INBOUND, 'INBOUND'),
-    )
-
     campana = models.OneToOneField(
         Campana,
         related_name='queue_campana', blank=True, null=True
@@ -511,8 +496,7 @@ class Queue(models.Model):
     ringinuse = models.BooleanField()
     setinterfacevar = models.BooleanField()
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
-    type = models.PositiveIntegerField(choices=TYPE_CHOICES,
-                                       verbose_name='Tipo de campaña')
+
     wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
     queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
@@ -549,12 +533,6 @@ class Queue(models.Model):
     def guardar_ep_id_wombat(self, ep_id_wombat):
         self.ep_id_wombat = ep_id_wombat
         self.save()
-
-    def es_dialer(self):
-        if self.type is self.TYPE_DIALER:
-            return True
-        else:
-            return False
 
     class Meta:
         db_table = 'queue_table'
