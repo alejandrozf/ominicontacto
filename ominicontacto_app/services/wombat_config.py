@@ -46,7 +46,7 @@ class CampanaCreator(object):
 
             "dial_timeout": 30000,
             "maxCallLength": 0,
-            "dial_clid": "",
+            "dial_clid": elimina_espacios(campana.nombre),
             "agentClid": "",
             "dial_account": "",
             "dial_pres": "",
