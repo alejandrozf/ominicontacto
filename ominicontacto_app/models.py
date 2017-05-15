@@ -956,6 +956,7 @@ class CampanaMember(models.Model):
     campana = models.ForeignKey(CampanaDialer, on_delete=models.CASCADE,
                                 related_name='members')
     membername = models.CharField(max_length=128)
+    campana_nombre = models.CharField(max_length=128)
     interface = models.CharField(max_length=128)
     penalty = models.IntegerField(choices=DIGITO_CHOICES,)
     paused = models.IntegerField()
