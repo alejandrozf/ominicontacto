@@ -68,7 +68,7 @@
         {% for campana in activas %}
             <tr>
                 <td width="45%">
-                    <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                    <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
@@ -93,9 +93,6 @@
                     </a>
                     <a href="{% url 'reporte_campana_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
-                    </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana' %}" class="btn-submit">
-                        <span class="glyphicon glyphicon-pause" aria-hidden="true" title="pause"></span>
                     </a>
                 </td>
             </tr>
@@ -123,7 +120,7 @@
         {% for campana in pausadas %}
             <tr>
                 <td width="45%">
-                    <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                    <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
@@ -148,9 +145,6 @@
                     </a>
                     <a href="{% url 'reporte_campana_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
-                    </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'activar_campana' %}" class="btn-submit">
-                        <span class="glyphicon glyphicon-play" aria-hidden="true" title="activar"></span>
                     </a>
                 </td>
             </tr>
@@ -204,9 +198,6 @@
                     </a>
                     <a href="{% url 'reporte_campana_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
-                    </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'start_campana' %}" class="btn-submit">
-                        <span class="glyphicon glyphicon-play" aria-hidden="true" title="play"></span>
                     </a>
                 </td>
             </tr>
@@ -265,11 +256,8 @@
                     <a href="{% url 'reporte_campana_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana' %}" class="btn-submit">
-                        <span class="glyphicon glyphicon-pause" aria-hidden="true" title="pause"></span>
-                    </a>
                     {% if campana.oculto %}
-                    <a type="button"  href="{% url 'desoculta_campana' campana.pk %}" c>
+                    <a type="button"  href="{% url 'desoculta_campana' campana.pk %}">
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
                     </a>
                     {% else %}

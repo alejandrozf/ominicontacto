@@ -147,10 +147,6 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         self.object.save()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(self.object)
-        if self.object.type == Queue.TYPE_DIALER:
-            return HttpResponseRedirect(
-                reverse('sincroniza_dialer',
-                        kwargs={"pk_campana": self.kwargs['pk_campana']}))
         return super(QueueCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
