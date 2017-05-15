@@ -100,27 +100,27 @@ class CampanaService():
         salida = service_wombat.update_config_wombat(
             "newcampaign_reschedule.json", url_edit)
 
-    def crear_endpoint_campana_wombat(self, queue):
+    def crear_endpoint_campana_wombat(self, campana):
         service_wombat = WombatService()
         service_wombat_config = EndPointCreator()
-        service_wombat_config.create_json(queue)
+        service_wombat_config.create_json(campana)
         url_edit = "api/edit/ep/?mode=E".format(
-            queue.campana.campaign_id_wombat)
+            campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "newep.json", url_edit)
         results = salida['results']
         ep_id = results[0]['epId']
         if ep_id:
-            queue.guardar_ep_id_wombat(ep_id)
+            campana.guardar_ep_id_wombat(ep_id)
             return True
         return False
 
-    def crear_endpoint_asociacion_campana_wombat(self, queue):
+    def crear_endpoint_asociacion_campana_wombat(self, campana):
         service_wombat = WombatService()
         service_wombat_config = CampanaEndPointCreator()
-        service_wombat_config.create_json(queue)
+        service_wombat_config.create_json(campana)
         url_edit = "api/edit/campaign/ep/?mode=E&parent={0}".format(
-            queue.campana.campaign_id_wombat)
+            campana.campaign_id_wombat)
         salida = service_wombat.update_config_wombat(
             "newcampaign_ep.json", url_edit)
 

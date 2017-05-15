@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <div class="col-md-4">
+
+        <form action = "" method = "post"> {% csrf_token %}
+              {{ form.non_field_errors }}
+    <div class="form-group row">
+        {{ form.bd_contacto.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos:</label>
+        <div class="col-sm-6">
+              {{ form.bd_contacto }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.usa_contestador.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.usa_contestador.id_for_label }}">Usa contestador:</label>
+        <div class="col-sm-6">
+              {{ form.usa_contestador }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.evitar_duplicados.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.evitar_duplicados.id_for_label }}">Evitar duplicados: </label>
+        <div class="col-sm-3">
+              {{ form.evitar_duplicados }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.evitar_sin_telefono.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.evitar_sin_telefono.id_for_label }}">Evitar sin telefono: </label>
+        <div class="col-sm-3">
+              {{ form.evitar_sin_telefono }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.prefijo_discador.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.prefijo_discador.id_for_label }}">Prefijo discador: </label>
+        <div class="col-sm-3">
+              {{ form.prefijo_discador }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.telefonos.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.telefonos.id_for_label }}">Telefonos: </label>
+        <div class="col-sm-6">
+              {{ form.telefonos }}
+        </div>
+    </div>
+            <button type="submit" id="id_registrar" class="btn btn-success btn-lg">
+                Guardar
+            </button>
+	    </form>
+
+    </div>
+
+{% endblock %}

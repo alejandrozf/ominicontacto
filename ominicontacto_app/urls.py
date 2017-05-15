@@ -6,7 +6,8 @@ from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
-    views_agenda_contacto
+    views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
+    views_campana_dialer_reportes
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -293,10 +294,6 @@ urlpatterns = [
             views_campana.AgenteCampanaReporteGrafico.as_view()),
         name='reporte_agente_grafico',
         ),
-    url(r'^campana/(?P<pk_campana>\d+)/sincroniza_dialer/$',
-        login_required(
-            views_campana_creacion.SincronizaDialerView.as_view()),
-        name='sincroniza_dialer',),
     url(r'^campana/selecciona/$',
         login_required(
             views_campana.FormularioSeleccionCampanaFormView.as_view()),
@@ -307,28 +304,6 @@ urlpatterns = [
             views_campana.FormularioNuevoContactoFormView.as_view()),
         name='nuevo_contacto_campana',
         ),
-    url(r'^campana/start/$',
-        login_required(
-            views_campana.PlayCampanaView.as_view()),
-        name='start_campana',
-        ),
-    url(r'^campana/pausar/$',
-        login_required(
-            views_campana.PausarCampanaView.as_view()),
-        name='pausar_campana',
-        ),
-    url(r'^campana/activar/$',
-        login_required(
-            views_campana.ActivarCampanaView.as_view()),
-        name='activar_campana',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/update_base_datos/$',
-        login_required(
-            views_campana.UpdateBaseDatosView.as_view()),
-        name='update_base_datos_campana', ),
-    url(r'^campana/detalle/$',
-        login_required(views_campana.detalle_campana_view),
-        name='detalle_campana', ),
     url(r'^campana/(?P<pk_campana>\d+)/ocultar/$',
         login_required(views_campana.OcultarCampanaView.as_view()),
         name='oculta_campana', ),
@@ -553,7 +528,116 @@ urlpatterns = [
     url(r'^agenda_contacto/eventos/$',
         login_required(views_agenda_contacto.AgenteContactoListFormView.as_view()),
         name="agenda_contacto_listado"),
-
+    # ==========================================================================
+    # Campana Dialer
+    # ==========================================================================
+    url(r'^campana_dialer/create/$',
+        login_required(views_campana_dialer_creacion.CampanaDialerCreateView.as_view()),
+        name="campana_dialer_create"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/actuacion/$',
+        login_required(views_campana_dialer_creacion.ActuacionCampanaDialerCreateView.as_view()),
+        name="actuacion_campana_dialer"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/actuacion/(?P<pk>\d+)/elimina/$',
+        login_required(
+            views_campana_dialer_creacion.ActuacionCampanaDialerDeleteView.as_view()),
+        name="actuacion_campana_dialer_elimina"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/sincronizar_lista/$',
+        login_required(
+            views_campana_dialer_creacion.SincronizaDialerView.as_view()),
+        name="campana_dialer_sincronizar"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/update/$',
+        login_required(
+            views_campana_dialer_creacion.CampanaDialerUpdateView.as_view()),
+        name="campana_dialer_update"),
+    url(r'^campana_dialer/list/$',
+        login_required(views_campana_dialer.CampanaDialerListView.as_view()),
+        name="campana_dialer_list"),
+    url(r'^campana_dialer/start/$',
+        login_required(
+            views_campana_dialer.PlayCampanaDialerView.as_view()),
+        name='start_campana_dialer',
+        ),
+    url(r'^campana_dialer/pausar/$',
+        login_required(
+            views_campana_dialer.PausarCampanaDialerView.as_view()),
+        name='pausar_campana_dialer',
+        ),
+    url(r'^campana_dialer/activar/$',
+        login_required(
+            views_campana_dialer.ActivarCampanaDialerView.as_view()),
+        name='activar_campana_dialer',
+        ),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/delete/$',
+        login_required(
+            views_campana_dialer.CampanaDialerDeleteView.as_view()),
+        name="campana_dialer_delete"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/ocultar/$',
+        login_required(
+            views_campana_dialer.OcultarCampanaDialerView.as_view()),
+        name="campana_dialer_ocultar"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/desocultar/$',
+        login_required(
+            views_campana_dialer.DesOcultarCampanaDialerView.as_view()),
+        name="campana_dialer_desocultar"),
+    url(r'^campana_dialer/mostrar_ocultas/$',
+        login_required(
+            views_campana_dialer.mostrar_campanas_dialer_borradas_ocultas_view),
+        name="campana_dialer_mostrar_ocultas"),
+    url(r'^campana_dialer/detalle_wombat/$',
+        login_required(
+            views_campana_dialer.detalle_campana_dialer_view),
+        name="campana_dialer_detalle_wombat"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/update_base/$',
+        login_required(
+            views_campana_dialer.UpdateBaseDatosDialerView.as_view()),
+        name="campana_dialer_update_base"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/member/$',
+        login_required(
+            views_campana_dialer_creacion.CampanaDialerMemberView.as_view()),
+        name="campana_dialer_member"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/add_member/$',
+        login_required(
+            views_campana_dialer_creacion.CampanaDialerMemberCreateView.as_view()),
+        name="campana_dialer_add_member"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/add_grupo/$',
+        login_required(
+            views_campana_dialer_creacion.GrupoAgenteCreateView.as_view()),
+        name="campana_dialer_add_grupo"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/delete_member/(?P<pk_campanamember>\d+)/$',
+        login_required(
+            views_campana_dialer_creacion.campana_member_delete_view),
+        name="campana_dialer_delete_member"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/busqueda_contacto/$',
+        login_required(
+            views_campana_dialer.CampanaDialerBusquedaContactoFormView.as_view()),
+        name="campana_dialer_busqueda_contacto"),
+    url(r'^campana_dialer/seleciona_campana/$',
+        login_required(
+            views_campana_dialer.FormularioSeleccionCampanaDialerFormView.as_view()),
+        name="campana_dialer_selecciona_campana"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/nuevo_contacto/$',
+        login_required(
+            views_campana_dialer.FormularioNuevoContactoFormView.as_view()),
+        name="nuevo_contacto_campana_dialer"),
+    # ==========================================================================
+    # Campana Dialer Reportes
+    # ==========================================================================
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_calificacion/$',
+        login_required(
+            views_campana_dialer_reportes.CampanaDialerReporteCalificacionListView.as_view()),
+        name="campana_dialer_reporte_calificacion"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_grafico/$',
+        login_required(
+            views_campana_dialer_reportes.CampanaDialerReporteGrafico.as_view()),
+        name="campana_dialer_reporte_grafico"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_pdf/$',
+        login_required(
+            views_campana_dialer_reportes.ExportaCampanaDialerReportePDFView.as_view()),
+        name="campana_dialer_reporte_pdf"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_agente/(?P<pk_agente>\d+)/$',
+        login_required(
+            views_campana_dialer_reportes.AgenteCampanaDialerReporteGrafico.as_view()),
+        name="campana_dialer_reporte_agente"),
 ]
 
 urlpatterns += patterns('',

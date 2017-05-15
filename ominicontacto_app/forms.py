@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
-    MetadataCliente, AgendaContacto
+    MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember
 )
 
 
@@ -113,7 +113,7 @@ class QueueForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'type', 'wait',
+                  'servicelevel', 'strategy', 'weight', 'wait',
                   'auto_grabacion', 'campana')
 
         help_texts = {
@@ -142,7 +142,7 @@ class QueueUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Queue
-        fields = ('type', 'timeout', 'retry', 'maxlen', 'wrapuptime',
+        fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
                   'servicelevel', 'strategy', 'weight', 'wait',
                   'auto_grabacion')
 
@@ -476,7 +476,8 @@ class SincronizaDialerForm(forms.Form):
     usa_contestador = forms.BooleanField(required=False)
     evitar_duplicados = forms.BooleanField(required=False)
     evitar_sin_telefono = forms.BooleanField(required=False)
-    prefijo_discador = forms.CharField(required=False)
+    prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={'class': 'class-fecha form-control'}))
     telefonos = forms.MultipleChoiceField(
         required=False,
         widget=forms.CheckboxSelectMultiple,
@@ -630,3 +631,116 @@ class AgendaContactoForm(forms.ModelForm):
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
             "hora": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class CampanaDialerForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CampanaDialerForm, self).__init__(*args, **kwargs)
+
+        self.fields['bd_contacto'].queryset =\
+            BaseDatosContacto.objects.obtener_definidas()
+
+        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
+        self.fields['fecha_inicio'].required = True
+
+        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
+        self.fields['fecha_fin'].required = True
+
+    class Meta:
+        model = CampanaDialer
+        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
+                  'bd_contacto', 'formulario', 'gestion', 'maxlen', 'wrapuptime',
+                  'servicelevel', 'strategy', 'weight', 'wait', 'auto_grabacion')
+        labels = {
+            'bd_contacto': 'Base de Datos de Contactos',
+        }
+        widgets = {
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ActuacionDialerForm(forms.ModelForm):
+
+    class Meta:
+        model = Actuacion
+        fields = ('dia_semanal', 'hora_desde', 'hora_hasta', 'campana')
+
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'dia_semanal': forms.Select(attrs={'class': 'form-control'}),
+            "hora_desde": forms.TextInput(attrs={'class': 'form-control'}),
+            "hora_hasta": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class CampanaDialerUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CampanaDialerUpdateForm, self).__init__(*args, **kwargs)
+
+        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
+        self.fields['fecha_inicio'].required = True
+
+        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
+        self.fields['fecha_fin'].required = True
+
+    class Meta:
+        model = CampanaDialer
+        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
+                  'gestion', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy',
+                  'weight', 'wait', 'auto_grabacion')
+        widgets = {
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class UpdateBaseDatosDialerForm(forms.ModelForm):
+    usa_contestador = forms.BooleanField(required=False)
+    evitar_duplicados = forms.BooleanField(required=False)
+    evitar_sin_telefono = forms.BooleanField(required=False)
+    prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={'class': 'class-fecha form-control'}))
+    telefonos = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=(),
+    )
+
+    def __init__(self, tts_choices, *args, **kwargs):
+        super(UpdateBaseDatosDialerForm, self).__init__(*args, **kwargs)
+        self.fields['telefonos'].choices = tts_choices
+
+    class Meta:
+        model = CampanaDialer
+        fields = ('bd_contacto',)
+        labels = {
+            'bd_contacto': 'Base de Datos de Contactos',
+        }
+        widgets = {
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+
+class CampanaMemberForm(forms.ModelForm):
+    """
+    El form de miembro de una cola
+    """
+
+    class Meta:
+        model = CampanaMember
+        fields = ('member', 'penalty')
