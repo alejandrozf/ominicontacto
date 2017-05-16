@@ -7,7 +7,7 @@ from ominicontacto_app import (
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
-    views_campana_dialer_reportes
+    views_campana_dialer_reportes, views_back_list
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -642,6 +642,15 @@ urlpatterns = [
         login_required(
             views_campana_dialer_reportes.AgenteCampanaDialerReporteGrafico.as_view()),
         name="campana_dialer_reporte_agente"),
+    # ==========================================================================
+    # Backlist
+    # ==========================================================================
+    url(r'^backlist/nueva/$',
+        login_required(views_back_list.BacklistCreateView.as_view()),
+        name="back_list_create"),
+    url(r'^backlist/lista/$',
+        login_required(views_back_list.BackListView.as_view()),
+        name="back_list_list"),
 ]
 
 urlpatterns += patterns('',
