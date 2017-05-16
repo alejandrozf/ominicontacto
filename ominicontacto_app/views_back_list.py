@@ -144,6 +144,7 @@ class BacklistCreateView(CreateView):
                 message,
             )
             return self.form_invalid(form)
+        self.object.save()
         creacion_back_list = CreacionBacklistService()
         creacion_back_list.importa_contactos(self.object)
         return redirect(self.get_success_url())

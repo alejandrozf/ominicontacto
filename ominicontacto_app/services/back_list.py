@@ -50,7 +50,7 @@ class CreacionBacklistService(object):
             raise(OmlArchivoImportacionInvalidoError("El archivo especificado "
                   "para realizar la importación de contactos no es válido"))
 
-        back_list.save()
+
 
     def importa_contactos(self, backlist):
         """
