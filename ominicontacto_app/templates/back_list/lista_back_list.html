@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+<br/>
+<div class="col-md-6 col-md-offset-3">
+
+<table class="table table-stripped">
+                    <thead>
+                      <tr class="fts-table-bg">
+                        <th>Backlist</th>
+                        <th>Creada</th>
+                        <th>Cantidad Contactos</th>
+                      </tr>
+                    </thead>
+                    <tbody id="t_body_ocultas">
+                        {% for backlist in back_lists %}
+                            <tr>
+                                <td>
+                                    {{ backlist.nombre }}
+                                </td>
+                                <td>
+                                    {{ backlist.fecha_alta|date:"d/m/Y" }}
+                                </td>
+                                <td>
+                                    {{ backlist.cantidad_contactos }}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">
+                                    <p class="text-center text-danger">
+                                        <em>No se encontraron Backlist creadas.</em>
+                                    </p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+</div>
+{% endblock %}
