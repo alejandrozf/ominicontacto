@@ -17,9 +17,8 @@ from django.utils.encoding import smart_text
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
 from ominicontacto_app.models import Backlist, ContactoBacklist
-from ominicontacto_app.parser import ParserCsv, validate_telefono, validate_fechas, \
-    validate_horas
-from ominicontacto_app.utiles import elimina_tildes
+from ominicontacto_app.parser import ParserCsv
+from ominicontacto_app.asterisk_config import BackListConfigFile
 
 
 logger = logging.getLogger(__name__)
@@ -84,6 +83,16 @@ class CreacionBacklistService(object):
 
         backlist.cantidad_contactos = cantidad_contactos
         backlist.save()
+
+    def crear_archivo_backlist(self, back_list):
+        contactos = ContactoBacklist.objects.filter(back_list=back_list)
+        lista_contacto = []
+        for contacto in contactos:
+            telefono = contacto.telefono + "\n"
+            lista_contacto.append(telefono)
+        backlist_config_file = BackListConfigFile()
+        backlist_config_file.write(lista_contacto)
+        backlist_config_file.copy_asterisk()
 
 
 class NoSePuedeInferirMetadataError(OmlError):

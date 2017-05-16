@@ -147,6 +147,7 @@ class BacklistCreateView(CreateView):
         self.object.save()
         creacion_back_list = CreacionBacklistService()
         creacion_back_list.importa_contactos(self.object)
+        creacion_back_list.crear_archivo_backlist(self.object)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
