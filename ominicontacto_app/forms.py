@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember,
-    ActuacionVigente
+    ActuacionVigente, Backlist
 )
 
 
@@ -775,3 +775,10 @@ class ActuacionVigenteForm(forms.ModelForm):
             "hora_desde": forms.TextInput(attrs={'class': 'form-control'}),
             "hora_hasta": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class BacklistForm(forms.ModelForm):
+
+    class Meta:
+        model = Backlist
+        fields = ('nombre', 'archivo_importacion')

@@ -68,6 +68,7 @@ OML_ASTERISK_HOSTNAME = "root@172.16.20.222"
 OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
 OML_SIP_FILENAME = "/home/freetech/sip_fts.conf"
 OML_QUEUES_FILENAME = "/home/freetech/queues_fts.conf"
+OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
 # parametros de conexion con base de datos mysql de asterisk
 DATABASE_MYSQL_ASTERISK = {
     'BASE': 'asterisk',

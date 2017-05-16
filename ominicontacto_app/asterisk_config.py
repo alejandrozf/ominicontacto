@@ -504,3 +504,12 @@ class QueuesConfigFile(ConfigFile):
         hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
         super(QueuesConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class BackListConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "oml_backlist.txt")
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_BACKLIST_REMOTEPATH
+        super(BackListConfigFile, self).__init__(filename, hostname, remote_path)
