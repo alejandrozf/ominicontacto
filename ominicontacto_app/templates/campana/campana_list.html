@@ -35,7 +35,7 @@
     <form id="form_estados_campanas" role="form" method="post">
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
-<h4>Campañas Activas</h4>
+<h3><b>Campañas Activas</b></h3>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
@@ -45,7 +45,6 @@
                 <th>Base de datos</th>
                 <th>Estado</th>
                 <th>Acciones&nbsp;&nbsp;</th>
-
             </tr>
         </thead>
         <tbody>
@@ -88,7 +87,7 @@
         </tbody>
     </table>
     <br>
-<h4>Campañas Pausadas</h4>
+<h3><b>Campañas Pausadas</b></h3>
       <table class="table table-stripped table-condensed  table-bordered">
         <thead>
             <tr>
@@ -98,7 +97,6 @@
                 <th>Base de datos</th>
                 <th>Estado</th>
                 <th>Acciones&nbsp;&nbsp;</th>
-
             </tr>
         </thead>
         <tbody>
@@ -141,7 +139,7 @@
         </tbody>
     </table>
     <br>
-    <h4>Campañas Inactivas</h4>
+    <h3><b>Campañas Inactivas</b></h3>
     <table class="table table-stripped table-condensed  table-bordered">
         <thead>
             <tr>
@@ -151,7 +149,6 @@
                 <th>Base de datos</th>
                 <th>Estado</th>
                 <th>Acciones&nbsp;&nbsp;</th>
-
             </tr>
         </thead>
         <tbody>
@@ -194,7 +191,7 @@
         </tbody>
     </table>
     <br>
-    <h4>Campañas Borrada </h4>
+    <h3><b>Campañas Eliminadas</b></h3>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
@@ -208,7 +205,6 @@
                         <span class="glyphicon glyphicon-resize-small" aria-hidden="true" title="Mostrar ocultas"></span>
                     </a>
                 </th>
-
             </tr>
         </thead>
         <tbody id="t_body_borradas">
