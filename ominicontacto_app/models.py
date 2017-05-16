@@ -2313,3 +2313,45 @@ class ActuacionVigente(models.Model):
 
     def get_hora_hasta_wombat(self):
         return "{0}00".format(self.hora_hasta.strftime("%H%M"))
+
+
+class Backlist(models.Model):
+
+    nombre = models.CharField(
+        max_length=128,
+    )
+    fecha_alta = models.DateTimeField(
+        auto_now_add=True,
+    )
+    archivo_importacion = models.FileField(
+        upload_to=upload_to,
+        max_length=256,
+    )
+    nombre_archivo_importacion = models.CharField(
+        max_length=256,
+    )
+
+    sin_definir = models.BooleanField(
+        default=True,
+    )
+    cantidad_contactos = models.PositiveIntegerField(
+        default=0)
+
+
+    def __unicode__(self):
+        return "{0}: ({1} contactos)".format(self.nombre,
+                                             self.cantidad_contactos)
+
+
+class ContactoBacklist(models.Model):
+    """
+    Lista de contacto que no quieren que los llamen
+    """
+
+    telefono = models.CharField(max_length=128)
+    back_list = models.ForeignKey(Backlist,
+        related_name='contactosbacklist', blank=True, null=True
+    )
+
+    def __unicode__(self):
+        return "Telefono no llame {0}  ".format(self.telefono)
