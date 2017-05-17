@@ -140,6 +140,16 @@ $(function() {
 				$("#sipLogout").prop('disabled', objLastPause.LastBtnStatusSipLogout);
 				updateButton(modifyUserStat, objLastPause.LastStatusAgentClass, objLastPause.LastStatusAgent);
 				fromUser = "";
+				if($("#auto_unpause").val()) {
+					var timeoutACW = $("#auto_unpause").val();
+					timeoutACW = timeoutACW * 100;
+					var toOnline = function() {
+						num = "0077UNPAUSE";
+				    makeCall();
+						$("#Resume").trigger('click');
+					};
+					setTimeout(toOnline, timeoutACW);
+				}
 	    } /*else if(calltypeId == 5) {
 				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
 				$("#Resume").prop('disabled', objLastPause.LastBtnStatusResume);
