@@ -91,8 +91,8 @@
              										<div class="modal-body">
                											<div class="col-md-10">
                  												<select class="form-control" id="cmpList">
-                 														{% for queue_member in user.get_agente_profile.campana_member.all %}
-        																		<option value = "{{ queue_member.queue_name.campana.pk }}"> {{ queue_member.queue_name.campana.nombre }} </option>
+                 														{% for queue_member in user.get_agente_profile.campanasmember.all %}
+        																		<option value = "{{ queue_member.campana.pk }}"> {{ queue_member.campana.nombre }} </option>
         				 														{% endfor %}
                  												</select>
                											</div>
@@ -478,6 +478,7 @@
         <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
         <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_ics }}" id="auto_attend_ICS"/>
         <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_pause }}" id="auto_pause"/>
+        <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
         <iframe src="{% url 'agenda_agente_list' %}" id="dataView" class="crm" name="crm">
         </iframe>
     </div>
