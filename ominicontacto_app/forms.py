@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember,
-    ActuacionVigente, Backlist
+    ActuacionVigente, Backlist, SitioExterno
 )
 
 
@@ -651,7 +651,8 @@ class CampanaDialerForm(forms.ModelForm):
         model = CampanaDialer
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
                   'bd_contacto', 'formulario', 'gestion', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait', 'auto_grabacion')
+                  'servicelevel', 'strategy', 'weight', 'wait', 'auto_grabacion',
+                  'sitio_externo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -782,3 +783,15 @@ class BacklistForm(forms.ModelForm):
     class Meta:
         model = Backlist
         fields = ('nombre', 'archivo_importacion')
+
+
+class SitioExternoForm(forms.ModelForm):
+
+    class Meta:
+        model = SitioExterno
+        fields = ('nombre', 'url')
+
+        widgets = {
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
+            "url": forms.TextInput(attrs={'class': 'form-control'}),
+        }
