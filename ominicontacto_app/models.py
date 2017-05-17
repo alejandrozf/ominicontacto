@@ -754,6 +754,7 @@ class CampanaDialer(models.Model):
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
     ep_id_wombat = models.IntegerField(null=True, blank=True)
+    sitio_externo = models.ForeignKey("SitioExterno", null=True, blank=True)
 
     def __unicode__(self):
             return self.nombre
@@ -2355,3 +2356,15 @@ class ContactoBacklist(models.Model):
 
     def __unicode__(self):
         return "Telefono no llame {0}  ".format(self.telefono)
+
+
+class SitioExterno(models.Model):
+    """
+    sitio externo para embeber en el agente
+    """
+
+    nombre = models.CharField(max_length=128)
+    url = models.CharField(max_length=256)
+
+    def __unicode__(self):
+        return "Sitio {0} - url{1}  ".format(self.nombre, self.url)
