@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+<br/>
+<div class="col-md-6 col-md-offset-3">
+
+<table class="table table-stripped">
+                    <thead>
+                      <tr class="fts-table-bg">
+                        <th>Sitio externo</th>
+                        <th>Url</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="t_body_ocultas">
+                        {% for sitio in sitios_externos %}
+                            <tr>
+                                <td>
+                                    {{ sitio.nombre }}
+                                </td>
+                                <td>
+                                    {{ sitio.url }}
+                                </td>
+                                <td></td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">
+                                    <p class="text-center text-danger">
+                                        <em>No se encontraron sitios externos creados.</em>
+                                    </p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+</div>
+{% endblock %}

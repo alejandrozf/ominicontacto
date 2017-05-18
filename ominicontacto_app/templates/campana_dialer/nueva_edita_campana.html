@@ -57,11 +57,19 @@
               {{ form.bd_contacto }}
         </div>
     </div>
+     {{ form.tipo_interaccion.errors }}
     <div class="form-group row">
         {{ form.formulario.errors }}
-        <label class="col-sm-3 control-label">Formulario: </label>
+        <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.0 }}</div></label>
         <div class="col-sm-6">
               {{ form.formulario }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.sitio_externo.errors }}
+        <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
+        <div class="col-sm-6">
+              {{ form.sitio_externo }}
         </div>
     </div>
     <div class="form-group row">
