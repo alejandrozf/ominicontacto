@@ -657,6 +657,9 @@ urlpatterns = [
     url(r'^sitio_externo/nuevo/$',
         login_required(views_sitio_externo.SitioExternoCreateView.as_view()),
         name="sitio_externo_create"),
+    url(r'^sitio_externo/list/$',
+        login_required(views_sitio_externo.SitioExternoListView.as_view()),
+        name="sitio_externo_list"),
 ]
 
 urlpatterns += patterns('',

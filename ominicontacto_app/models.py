@@ -2367,4 +2367,4 @@ class SitioExterno(models.Model):
     url = models.CharField(max_length=256)
 
     def __unicode__(self):
-        return "Sitio {0} - url{1}  ".format(self.nombre, self.url)
+        return "Sitio: {0} - url: {1}".format(self.nombre, self.url)
