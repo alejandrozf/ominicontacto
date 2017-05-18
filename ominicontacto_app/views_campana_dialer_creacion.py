@@ -80,8 +80,28 @@ class CampanaDialerCreateView(CreateView):
             messages.warning(self.request, message)
         return super(CampanaDialerCreateView, self).dispatch(request, *args, **kwargs)
 
+    def form_invalid(self, form, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                . {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+        return self.render_to_response(self.get_context_data())
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        if self.object.tipo_interaccion is CampanaDialer.FORMULARIO and \
+            not self.object.formulario:
+            error = "Debe seleccionar un formulario"
+            return self.form_invalid(form, error=error)
+        elif self.object.tipo_interaccion is CampanaDialer.SITIO_EXTERNO and \
+            not self.object.sitio_externo:
+            error = "Debe seleccionar un sitio externo"
+            return self.form_invalid(form, error=error)
         self.object.eventmemberstatus = True
         self.object.eventwhencalled = True
         self.object.ringinuse = True

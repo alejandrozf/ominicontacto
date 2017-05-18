@@ -635,6 +635,7 @@ class AgendaContactoForm(forms.ModelForm):
 
 
 class CampanaDialerForm(forms.ModelForm):
+
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
 
@@ -652,7 +653,7 @@ class CampanaDialerForm(forms.ModelForm):
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
                   'bd_contacto', 'formulario', 'gestion', 'maxlen', 'wrapuptime',
                   'servicelevel', 'strategy', 'weight', 'wait', 'auto_grabacion',
-                  'sitio_externo')
+                  'sitio_externo', 'tipo_interaccion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -668,6 +669,7 @@ class CampanaDialerForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
         }
 
 
