@@ -12,11 +12,11 @@ from django.views.generic import (
 from ominicontacto_app.forms import (
     CampanaDialerForm, QueueForm, CampanaMemberForm, QueueUpdateForm, GrupoAgenteForm,
     CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm,
-    ActuacionVigenteForm
+    ActuacionVigenteForm, ReglasIncidenciaForm
 )
 from ominicontacto_app.models import (
     CampanaDialer, Campana, Queue, CampanaMember, BaseDatosContacto, Grupo, Actuacion,
-    ActuacionVigente
+    ActuacionVigente, ReglasIncidencia
 )
 
 from ominicontacto_app.services.campana_service import CampanaService
@@ -486,3 +486,63 @@ class ActuacionVigenteCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, Cre
             'campana_dialer_sincronizar',
             kwargs={"pk_campana": self.kwargs['pk_campana']}
         )
+
+
+class ReglasIncidenciaCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, CreateView):
+    """
+    Esta vista crea uno o varios objetos ReglasIncidencia
+    para la Campana que se este creando.
+    Inicializa el form con campo campana (hidden)
+    con el id de campana que viene en la url.
+    """
+
+    template_name = 'campana_dialer/reglas_incidencia.html'
+    model = ReglasIncidencia
+    context_object_name = 'reglas_incidencia'
+    form_class = ReglasIncidenciaForm
+
+    def get_initial(self):
+        initial = super(ReglasIncidenciaCampanaDialerCreateView, self).get_initial()
+        initial.update({'campana': self.campana.id})
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ReglasIncidenciaCampanaDialerCreateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if self.campana.valida_reglas_incidencia(self.object):
+            message = """¡Cuidado!
+            El estado {0} ya se encuentra cargado""".format(
+                self.object.get_estado_display())
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+            return self.form_invalid(form)
+        if self.object.estado is ReglasIncidencia.TERMINATED:
+            self.object.estado_personalizado = "CONTESTADOR"
+        self.object.save()
+
+        return super(ReglasIncidenciaCampanaDialerCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'nueva_reglas_incidencia_campana_dialer',
+            kwargs={"pk_campana": self.kwargs['pk_campana']}
+        )
+
+
+def regla_incidencia_delete_view(request, pk_campana, pk_regla):
+
+    regla = ReglasIncidencia.objects.get(pk=pk_regla)
+    regla.delete()
+    return HttpResponseRedirect(
+        reverse(
+            'nueva_reglas_incidencia_campana_dialer',
+            kwargs={"pk_campana": pk_campana}
+        ))

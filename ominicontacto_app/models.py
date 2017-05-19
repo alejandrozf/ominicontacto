@@ -928,6 +928,20 @@ class CampanaDialer(models.Model):
                         valida = False
         return valida
 
+    def valida_reglas_incidencia(self, regla_incidencia):
+        """
+        Este metodo valida si es posible agrega nueva regla de incidencia
+        :param regla_incidencia: en una ReglaIncidencia
+        :return: si es valida agregar
+        """
+        reglas_incidencia = [regla.estado for regla in self.reglas_incidencia.all()]
+
+        valida = False
+        for regla in reglas_incidencia:
+            if regla is regla_incidencia.estado:
+                valida = True
+                break
+        return valida
 
 class CampanaMemberManager(models.Manager):
 

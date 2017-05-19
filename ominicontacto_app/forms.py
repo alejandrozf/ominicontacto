@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember,
-    ActuacionVigente, Backlist, SitioExterno
+    ActuacionVigente, Backlist, SitioExterno, ReglasIncidencia
 )
 
 
@@ -797,4 +797,18 @@ class SitioExternoForm(forms.ModelForm):
         widgets = {
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "url": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ReglasIncidenciaForm(forms.ModelForm):
+
+    class Meta:
+        model = ReglasIncidencia
+        fields = ('campana', 'estado', 'intento_max', 'reintentar_tarde')
+
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'estado': forms.Select(attrs={'class': 'form-control'}),
+            "intento_max": forms.TextInput(attrs={'class': 'form-control'}),
+            "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
         }
