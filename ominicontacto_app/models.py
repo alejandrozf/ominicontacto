@@ -2383,3 +2383,52 @@ class SitioExterno(models.Model):
 
     def __unicode__(self):
         return "Sitio: {0} - url: {1}".format(self.nombre, self.url)
+
+
+class ReglasIncidencia(models.Model):
+    """
+    Reglas de llamada de wombat para las campañas dialer
+    """
+
+    RS_BUSY = 1
+    "Regla de llamado para ocupado"
+
+    TERMINATED = 2
+    "Regla para llamada terminado"
+
+    RS_NOANSWER = 3
+    "Regla para llamada no atendida"
+
+    RS_REJECTED = 4
+    "Regla para llamada rechazada"
+
+    RS_TIMEOUT = 5
+    "Regla para timeout"
+
+    ESTADOS_CHOICES = (
+        (RS_BUSY, "Ocupado"),
+        (TERMINATED, "Contestador"),
+        (RS_NOANSWER, "No atendido"),
+        (RS_REJECTED, "Rechazado"),
+        (RS_TIMEOUT, "Timeout")
+    )
+
+    FIXED = 1
+
+    MULT = 2
+
+    EN_MODO_CHOICES = (
+        (FIXED, "FIXED"),
+        (MULT, "MULT")
+    )
+
+    campana = models.ForeignKey(CampanaDialer, related_name='reglas_incidencia')
+    estado = models.PositiveIntegerField(choices=ESTADOS_CHOICES)
+    estado_personalizado = models.CharField(max_length=128, blank=True, null=True)
+    intento_max = models.IntegerField()
+    reintentar_tarde = models.IntegerField()
+    en_modo = models.PositiveIntegerField(choices=EN_MODO_CHOICES, default=MULT)
+
+    def __unicode__(self):
+        return "Regla de incidencia para la campana: {0} - estado: {1}".format(
+            self.campana.nombre, self.estado)
