@@ -2446,3 +2446,25 @@ class ReglasIncidencia(models.Model):
     def __unicode__(self):
         return "Regla de incidencia para la campana: {0} - estado: {1}".format(
             self.campana.nombre, self.estado)
+
+    def get_estado_wombat(self):
+        if self.estado is ReglasIncidencia.RS_BUSY:
+            return "RS_BUSY"
+        elif self.estado is ReglasIncidencia.TERMINATED:
+            return "TERMINATED"
+        elif self.estado is ReglasIncidencia.RS_NOANSWER:
+            return "RS_NOANSWER"
+        elif self.estado is ReglasIncidencia.RS_REJECTED:
+            return "RS_REJECTED"
+        elif self.estado is ReglasIncidencia.RS_TIMEOUT:
+            return "RS_TIMEOUT"
+        else:
+            return ""
+
+    def get_en_modo_wombat(self):
+        if self.en_modo is ReglasIncidencia.FIXED:
+            return "FIXED"
+        elif self.en_modo is ReglasIncidencia.MULT:
+            return "MULT"
+        else:
+            return ""

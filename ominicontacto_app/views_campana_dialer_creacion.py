@@ -423,18 +423,12 @@ class SincronizaDialerView(FormView):
         campana_service = CampanaService()
         campana_service.crear_campana_wombat(self.object)
         campana_service.crear_trunk_campana_wombat(self.object)
-        parametros = ["RS_BUSY", "", 3, 120]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["TERMINATED", "CONTESTADOR", 3, 1800]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_NOANSWER", "", 3, 220]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_REJECTED", "", 3, 300]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        parametros = ["RS_TIMEOUT", "", 3, 300]
-        campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-        #parametros = ["RS_LOST", "", 1, 360]
-        #campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+        for regla in self.object.reglas_incidencia.all():
+            parametros = [regla.get_estado_wombat(), regla.estado_personalizado,
+                          regla.intento_max, regla.reintentar_tarde,
+                          regla.get_en_modo_wombat( )]
+            campana_service.crear_reschedule_campana_wombat(self.object, parametros)
+
         campana_service.crear_endpoint_campana_wombat(self.object)
         campana_service.crear_endpoint_asociacion_campana_wombat(
             self.object)
@@ -483,7 +477,7 @@ class ActuacionVigenteCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, Cre
 
     def get_success_url(self):
         return reverse(
-            'campana_dialer_sincronizar',
+            'nueva_reglas_incidencia_campana_dialer',
             kwargs={"pk_campana": self.kwargs['pk_campana']}
         )
 
