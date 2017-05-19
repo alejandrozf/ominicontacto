@@ -623,6 +623,14 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.ActuacionVigenteCampanaDialerCreateView.as_view()),
         name="nuevo_actuacion_vigente_campana_dialer"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/reglas_incidencia/$',
+        login_required(
+            views_campana_dialer_creacion.ReglasIncidenciaCampanaDialerCreateView.as_view()),
+        name="nueva_reglas_incidencia_campana_dialer"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/reglas_incidencia/(?P<pk_regla>\d+)/delete/$',
+        login_required(
+            views_campana_dialer_creacion.regla_incidencia_delete_view),
+        name="delete_regla_incidencia_campana_dialer"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================

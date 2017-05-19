@@ -120,7 +120,7 @@ class RescheduleRuleCreator(object):
             "statusExt": parametros[1],
             "maxAttempts": parametros[2],
             "retryAfterS": parametros[3],
-            "mode": "FIXED"
+            "mode": parametros[4]
         }
 
         return json.dumps(dict_reschedule)
