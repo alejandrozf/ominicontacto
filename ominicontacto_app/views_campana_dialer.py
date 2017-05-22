@@ -38,11 +38,17 @@ class CampanaDialerListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CampanaDialerListView, self).get_context_data(
            **kwargs)
-        context['inactivas'] = CampanaDialer.objects.obtener_inactivas()
-        context['pausadas'] = CampanaDialer.objects.obtener_pausadas()
-        context['activas'] = CampanaDialer.objects.obtener_activas()
-        context['borradas'] = CampanaDialer.objects.obtener_borradas().filter(
-            oculto=False)
+
+        user = None
+        if self.request.user.is_authenticated():
+            user = self.request.user
+
+        if user:
+            context['inactivas'] = CampanaDialer.objects.obtener_inactivas(user)
+            context['pausadas'] = CampanaDialer.objects.obtener_pausadas(user)
+            context['activas'] = CampanaDialer.objects.obtener_activas(user)
+            context['borradas'] = CampanaDialer.objects.obtener_borradas(user).filter(
+                oculto=False)
         return context
 
 
