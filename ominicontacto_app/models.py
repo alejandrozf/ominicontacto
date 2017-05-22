@@ -599,6 +599,12 @@ class Pausa(models.Model):
 # ==============================================================================
 class CampanaDialerManager(models.Manager):
 
+    def get_objects_for_user(self, user):
+        """
+        Devuelve todos los objectos por cual tiene acceso este user.
+        """
+        return self.filter(reported_by=user)
+
     def obtener_en_definicion_para_editar(self, campana_id):
         """Devuelve la campaña pasada por ID, siempre que dicha
         campaña pueda ser editar (editada en el proceso de
@@ -615,35 +621,35 @@ class CampanaDialerManager(models.Manager):
             raise(SuspiciousOperation("No se encontro campana %s en "
                                       "estado ESTADO_EN_DEFINICION"))
 
-    def obtener_pausadas(self):
+    def obtener_pausadas(self, user):
         """
         Devuelve campañas en estado pausadas.
         """
-        return self.filter(estado=CampanaDialer.ESTADO_PAUSADA)
+        return self.filter(estado=CampanaDialer.ESTADO_PAUSADA, reported_by=user)
 
-    def obtener_inactivas(self):
+    def obtener_inactivas(self, user):
         """
         Devuelve campañas en estado pausadas.
         """
-        return self.filter(estado=CampanaDialer.ESTADO_INACTIVA)
+        return self.filter(estado=CampanaDialer.ESTADO_INACTIVA, reported_by=user)
 
-    def obtener_activas(self):
+    def obtener_activas(self, user):
         """
         Devuelve campañas en estado pausadas.
         """
-        return self.filter(estado=CampanaDialer.ESTADO_ACTIVA)
+        return self.filter(estado=CampanaDialer.ESTADO_ACTIVA, reported_by=user)
 
-    def obtener_borradas(self):
+    def obtener_borradas(self, user):
         """
         Devuelve campañas en estado borradas.
         """
-        return self.filter(estado=CampanaDialer.ESTADO_BORRADA)
+        return self.filter(estado=CampanaDialer.ESTADO_BORRADA, reported_by=user)
 
-    def obtener_all_except_borradas(self):
+    def obtener_all_except_borradas(self, user):
         """
         Devuelve campañas excluyendo las campanas borradas
         """
-        return self.exclude(estado=CampanaDialer.ESTADO_BORRADA)
+        return self.filter(reported_by=user).exclude(estado=CampanaDialer.ESTADO_BORRADA)
 
 class CampanaDialer(models.Model):
     """Una campaña del call center"""
@@ -770,6 +776,7 @@ class CampanaDialer(models.Model):
         choices=TIPO_INTERACCION,
         default=FORMULARIO,
     )
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __unicode__(self):
             return self.nombre
