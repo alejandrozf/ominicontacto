@@ -16,6 +16,7 @@ from ominicontacto_app.services.reporte_campana_pdf import \
     ReporteCampanaPDFService
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
+from ominicontacto_app.utiles import convert_fecha_datetime
 
 
 class CampanaDialerReporteCalificacionListView(ListView):
