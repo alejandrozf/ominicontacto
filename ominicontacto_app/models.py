@@ -356,6 +356,17 @@ class Campana(models.Model):
         (ESTADO_PAUSADA, 'Pausada'),
     )
 
+    TYPE_ENTRANTE = 1
+    """La campaña está definida como entrante"""
+
+    TYPE_DIALER = 2
+    """La campaña está definida como de discador"""
+
+    TYPES_CAMPANA = (
+        (TYPE_ENTRANTE, 'Entrante'),
+        (TYPE_DIALER, 'Dialer')
+    )
+
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
@@ -374,9 +385,15 @@ class Campana(models.Model):
     formulario = models.ForeignKey(Formulario)
     oculto = models.BooleanField(default=False)
     gestion = models.CharField(max_length=128, default="Venta")
+    campaign_id_wombat = models.IntegerField(null=True, blank=True)
+    type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
 
     def __unicode__(self):
             return self.nombre
+
+    def guardar_campaign_id_wombat(self, campaign_id_wombat):
+        self.campaign_id_wombat = campaign_id_wombat
+        self.save()
 
     def play(self):
         """Setea la campaña como ESTADO_ACTIVA"""
@@ -478,8 +495,10 @@ class Queue(models.Model):
     )
 
     name = models.CharField(max_length=128, primary_key=True)
-    timeout = models.BigIntegerField(verbose_name='Tiempo de Ring')
-    retry = models.BigIntegerField(verbose_name='Tiempo de Reintento')
+    timeout = models.BigIntegerField(verbose_name='Tiempo de Ring',
+                                     null=True, blank=True)
+    retry = models.BigIntegerField(verbose_name='Tiempo de Reintento',
+                                   null=True, blank=True)
     maxlen = models.BigIntegerField(verbose_name='Cantidad Max de llamadas')
     wrapuptime = models.BigIntegerField(
         verbose_name='Tiempo de descanso entre llamadas')
@@ -497,6 +516,7 @@ class Queue(models.Model):
     queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
+    ep_id_wombat = models.IntegerField(null=True, blank=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
@@ -524,6 +544,10 @@ class Queue(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def guardar_ep_id_wombat(self, ep_id_wombat):
+        self.ep_id_wombat = ep_id_wombat
+        self.save()
 
     class Meta:
         db_table = 'queue_table'

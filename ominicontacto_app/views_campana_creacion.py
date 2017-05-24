@@ -78,6 +78,12 @@ class CampanaCreateView(CreateView):
             messages.warning(self.request, message)
         return super(CampanaCreateView, self).dispatch(request, *args, **kwargs)
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.type = Campana.TYPE_ENTRANTE
+        self.object.save()
+        return super(CampanaCreateView, self).form_valid(form)
+
     def get_success_url(self):
         return reverse(
             'queue_nuevo',
