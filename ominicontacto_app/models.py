@@ -1922,7 +1922,7 @@ class CalificacionCliente(models.Model):
 
     objects = CalificacionClienteManager()
 
-    campana = models.ForeignKey(CampanaDialer, related_name="calificaconcliente")
+    campana = models.ForeignKey(Campana, related_name="calificaconcliente")
     contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
     es_venta = models.BooleanField(default=False)
     calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
@@ -1979,7 +1979,7 @@ class DuracionDeLlamada(models.Model):
 
 class MetadataCliente(models.Model):
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
-    campana = models.ForeignKey(CampanaDialer, related_name="metadatacliente")
+    campana = models.ForeignKey(Campana, related_name="metadatacliente")
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
@@ -2020,7 +2020,7 @@ class WombatLogManager(models.Manager):
 class WombatLog(models.Model):
     objects = WombatLogManager()
 
-    campana = models.ForeignKey(CampanaDialer, related_name="logswombat")
+    campana = models.ForeignKey(Campana, related_name="logswombat")
     contacto = models.ForeignKey(Contacto)
     agente = models.ForeignKey(AgenteProfile, related_name="logsaagente",
                                blank=True, null=True)
