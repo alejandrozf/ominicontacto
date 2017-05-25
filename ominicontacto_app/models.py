@@ -367,6 +367,17 @@ class Campana(models.Model):
         (TYPE_DIALER, 'Dialer')
     )
 
+    FORMULARIO = 1
+    "El tipo de interaccion es por formulario"
+
+    SITIO_EXTERNO = 2
+    "El tipo de interaccion es por sitio externo"
+
+    TIPO_INTERACCION = (
+        (FORMULARIO, "Formulario"),
+        (SITIO_EXTERNO, "Url externa")
+    )
+
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
@@ -382,11 +393,16 @@ class Campana(models.Model):
         null=True, blank=True,
         related_name="%(class)ss"
     )
-    formulario = models.ForeignKey(Formulario)
+    formulario = models.ForeignKey(Formulario, null=True, blank=True)
     oculto = models.BooleanField(default=False)
     gestion = models.CharField(max_length=128, default="Venta")
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
+    sitio_externo = models.ForeignKey("SitioExterno", null=True, blank=True)
+    tipo_interaccion = models.PositiveIntegerField(
+        choices=TIPO_INTERACCION,
+        default=FORMULARIO,
+    )
 
     def __unicode__(self):
             return self.nombre
