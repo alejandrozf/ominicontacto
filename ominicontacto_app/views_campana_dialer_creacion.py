@@ -12,7 +12,7 @@ from django.views.generic import (
 from ominicontacto_app.forms import (
     CampanaDialerForm, QueueForm, CampanaMemberForm, QueueUpdateForm, GrupoAgenteForm,
     CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm,
-    ActuacionVigenteForm, ReglasIncidenciaForm
+    ActuacionVigenteForm, ReglasIncidenciaForm, CampanaForm
 )
 from ominicontacto_app.models import (
     CampanaDialer, Campana, Queue, CampanaMember, BaseDatosContacto, Grupo, Actuacion,
@@ -42,7 +42,7 @@ class CheckEstadoCampanaDialerMixin(object):
     def dispatch(self, request, *args, **kwargs):
         chequeada = kwargs.pop('_campana_chequeada', False)
         if not chequeada:
-            self.campana = CampanaDialer.objects.obtener_en_definicion_para_editar(
+            self.campana = Campana.objects.obtener_en_definicion_para_editar(
                 self.kwargs['pk_campana'])
 
         return super(CheckEstadoCampanaDialerMixin, self).dispatch(request, *args,
@@ -68,9 +68,9 @@ class CampanaDialerCreateView(CreateView):
     """
 
     template_name = 'campana_dialer/nueva_edita_campana.html'
-    model = CampanaDialer
+    model = Campana
     context_object_name = 'campana'
-    form_class = CampanaDialerForm
+    form_class = CampanaForm
 
     def dispatch(self, request, *args, **kwargs):
         base_datos = BaseDatosContacto.objects.obtener_definidas()
@@ -94,31 +94,28 @@ class CampanaDialerCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        if self.object.tipo_interaccion is CampanaDialer.FORMULARIO and \
+        if self.object.tipo_interaccion is Campana.FORMULARIO and \
             not self.object.formulario:
             error = "Debe seleccionar un formulario"
             return self.form_invalid(form, error=error)
-        elif self.object.tipo_interaccion is CampanaDialer.SITIO_EXTERNO and \
+        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
             not self.object.sitio_externo:
             error = "Debe seleccionar un sitio externo"
             return self.form_invalid(form, error=error)
-        self.object.eventmemberstatus = True
-        self.object.eventwhencalled = True
-        self.object.ringinuse = True
-        self.object.setinterfacevar = True
+        self.object.type = Campana.TYPE_DIALER
         self.object.save()
-        activacion_queue_service = ActivacionQueueService()
-        try:
-            activacion_queue_service.activar()
-        except RestablecerDialplanError, e:
-            message = ("<strong>Operación Errónea!</strong> "
-                       "No se pudo confirmar la creación del dialplan  "
-                       "al siguiente error: {0}".format(e))
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
+        # activacion_queue_service = ActivacionQueueService()
+        # try:
+        #     activacion_queue_service.activar()
+        # except RestablecerDialplanError, e:
+        #     message = ("<strong>Operación Errónea!</strong> "
+        #                "No se pudo confirmar la creación del dialplan  "
+        #                "al siguiente error: {0}".format(e))
+        #     messages.add_message(
+        #         self.request,
+        #         messages.ERROR,
+        #         message,
+        #     )
         return super(CampanaDialerCreateView, self).form_valid(form)
 
     def get_success_url(self):
