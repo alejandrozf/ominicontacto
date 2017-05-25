@@ -280,7 +280,7 @@ class CampanaForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario', 'gestion')
+                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo', 'tipo_interaccion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -290,6 +290,8 @@ class CampanaForm(forms.ModelForm):
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
         }
 
 

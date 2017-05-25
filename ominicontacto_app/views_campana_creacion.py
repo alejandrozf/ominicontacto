@@ -78,8 +78,28 @@ class CampanaCreateView(CreateView):
             messages.warning(self.request, message)
         return super(CampanaCreateView, self).dispatch(request, *args, **kwargs)
 
+    def form_invalid(self, form, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                . {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+        return self.render_to_response(self.get_context_data())
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        if self.object.tipo_interaccion is Campana.FORMULARIO and \
+            not self.object.formulario:
+            error = "Debe seleccionar un formulario"
+            return self.form_invalid(form, error=error)
+        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
+            not self.object.sitio_externo:
+            error = "Debe seleccionar un sitio externo"
+            return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_ENTRANTE
         self.object.save()
         return super(CampanaCreateView, self).form_valid(form)
