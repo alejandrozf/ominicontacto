@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from ominicontacto_app.models import (
-    CampanaDialer, Contacto
+    CampanaDialer, Contacto, Campana
 )
 from django.views.generic import (
     ListView, DeleteView, FormView
@@ -62,7 +62,7 @@ class PlayCampanaDialerView(RedirectView):
     pattern_name = 'campana_dialer_list'
 
     def post(self, request, *args, **kwargs):
-        campana = CampanaDialer.objects.get(pk=request.POST['campana_id'])
+        campana = Campana.objects.get(pk=request.POST['campana_id'])
         campana_service = CampanaService()
         resultado = campana_service.start_campana_wombat(campana)
         campana.play()
@@ -97,7 +97,7 @@ class PausarCampanaDialerView(RedirectView):
     pattern_name = 'campana_dialer_list'
 
     def post(self, request, *args, **kwargs):
-        campana = CampanaDialer.objects.get(pk=request.POST['campana_id'])
+        campana = Campana.objects.get(pk=request.POST['campana_id'])
         campana_service = CampanaService()
         resultado = campana_service.pausar_campana_wombat(campana)
         campana.pausar()
@@ -133,7 +133,7 @@ class ActivarCampanaDialerView(RedirectView):
     pattern_name = 'campana_dialer_list'
 
     def post(self, request, *args, **kwargs):
-        campana = CampanaDialer.objects.get(pk=request.POST['campana_id'])
+        campana = Campana.objects.get(pk=request.POST['campana_id'])
         campana_service = CampanaService()
         resultado = campana_service.despausar_campana_wombat(campana)
         campana.activar()
@@ -165,7 +165,7 @@ class CampanaDialerDeleteView(DeleteView):
     """
     Esta vista se encarga de la eliminación de una campana
     """
-    model = CampanaDialer
+    model = Campana
     template_name = 'campana_dialer/delete_campana.html'
 
     def delete(self, request, *args, **kwargs):
@@ -195,7 +195,7 @@ class CampanaDialerDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
-        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get_success_url(self):
         return reverse('campana_dialer_list')
@@ -209,7 +209,7 @@ class OcultarCampanaDialerView(RedirectView):
     pattern_name = 'campana_dialer_list'
 
     def get(self, request, *args, **kwargs):
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         campana.ocultar()
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
@@ -222,13 +222,13 @@ class DesOcultarCampanaDialerView(RedirectView):
     pattern_name = 'campana_dialer_list'
 
     def get(self, request, *args, **kwargs):
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         campana.desocultar()
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
 def mostrar_campanas_dialer_borradas_ocultas_view(request):
-    borradas = CampanaDialer.objects.obtener_borradas()
+    borradas = Campana.objects.obtener_borradas()
     data = {
         'borradas': borradas,
     }
@@ -237,7 +237,7 @@ def mostrar_campanas_dialer_borradas_ocultas_view(request):
 
 def detalle_campana_dialer_view(request):
     pk_campana = int(request.GET['pk_campana'])
-    campana = CampanaDialer.objects.get(pk=pk_campana)
+    campana = Campana.objects.get(pk=pk_campana)
     campana_service = CampanaService()
     dato_campana = campana_service.obtener_dato_campana_run(campana)
     status = campana_service.obtener_status_campana_running(
