@@ -2351,7 +2351,7 @@ class ActuacionVigente(models.Model):
 
     """Dias de la semana, compatibles con datetime.date.weekday()"""
 
-    campana = models.OneToOneField('CampanaDialer')
+    campana = models.OneToOneField(Campana)
     domingo = models.BooleanField()
     lunes = models.BooleanField()
     martes = models.BooleanField()
@@ -2483,7 +2483,7 @@ class ReglasIncidencia(models.Model):
         (MULT, "MULT")
     )
 
-    campana = models.ForeignKey(CampanaDialer, related_name='reglas_incidencia')
+    campana = models.ForeignKey(Campana, related_name='reglas_incidencia')
     estado = models.PositiveIntegerField(choices=ESTADOS_CHOICES)
     estado_personalizado = models.CharField(max_length=128, blank=True, null=True)
     intento_max = models.IntegerField()
