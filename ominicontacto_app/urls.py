@@ -631,6 +631,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.regla_incidencia_delete_view),
         name="delete_regla_incidencia_campana_dialer"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/cola/$',
+        login_required(
+            views_campana_dialer_creacion.QueueDialerCreateView.as_view()),
+        name="campana_dialer_queue_create"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================

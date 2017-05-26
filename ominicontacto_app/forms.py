@@ -821,3 +821,25 @@ class ReglasIncidenciaForm(forms.ModelForm):
             "intento_max": forms.TextInput(attrs={'class': 'form-control'}),
             "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class QueueDialerForm(forms.ModelForm):
+    """
+    El form de cola para las llamadas
+    """
+
+    class Meta:
+        model = Queue
+        fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
+                  'wait', 'auto_grabacion', 'campana')
+
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'name': forms.HiddenInput(),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+        }

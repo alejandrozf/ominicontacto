@@ -10,7 +10,8 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
-    CampanaDialerForm, QueueForm, CampanaMemberForm, QueueUpdateForm, GrupoAgenteForm,
+    CampanaDialerForm, QueueDialerForm, CampanaMemberForm, QueueUpdateForm,
+    GrupoAgenteForm,
     CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm,
     ActuacionVigenteForm, ReglasIncidenciaForm, CampanaForm
 )
@@ -104,23 +105,11 @@ class CampanaDialerCreateView(CreateView):
             return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_DIALER
         self.object.save()
-        # activacion_queue_service = ActivacionQueueService()
-        # try:
-        #     activacion_queue_service.activar()
-        # except RestablecerDialplanError, e:
-        #     message = ("<strong>Operación Errónea!</strong> "
-        #                "No se pudo confirmar la creación del dialplan  "
-        #                "al siguiente error: {0}".format(e))
-        #     messages.add_message(
-        #         self.request,
-        #         messages.ERROR,
-        #         message,
-        #     )
         return super(CampanaDialerCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(
-            'nuevo_actuacion_vigente_campana_dialer',
+            'campana_dialer_queue_create',
             kwargs={"pk_campana": self.object.pk})
 
 
@@ -397,14 +386,15 @@ class SincronizaDialerView(FormView):
         context['campana'] = self.get_object()
         return context
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         self.object = self.get_object()
         metadata = self.object.bd_contacto.get_metadata()
         columnas_telefono = metadata.columnas_con_telefono
         nombres_de_columnas = metadata.nombres_de_columnas
         tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
                        columnas_telefono if columna > 6]
-        return form_class(tts_choices=tts_choices, **self.get_form_kwargs())
+        return self.form_class(tts_choices=tts_choices, **self.get_form_kwargs())
 
     def form_valid(self, form):
         usa_contestador = form.cleaned_data.get('usa_contestador')
@@ -537,3 +527,49 @@ def regla_incidencia_delete_view(request, pk_campana, pk_regla):
             'nueva_reglas_incidencia_campana_dialer',
             kwargs={"pk_campana": pk_campana}
         ))
+
+
+class QueueDialerCreateView(CheckEstadoCampanaDialerMixin,
+                            CampanaDialerEnDefinicionMixin, CreateView):
+    model = Queue
+    form_class = QueueDialerForm
+    template_name = 'campana_dialer/create_update_queue.html'
+
+    def get_initial(self):
+        initial = super(QueueDialerCreateView, self).get_initial()
+        initial.update({'campana': self.campana.id,
+                        'name': self.campana.nombre})
+        return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.eventmemberstatus = True
+        self.object.eventwhencalled = True
+        self.object.ringinuse = True
+        self.object.setinterfacevar = True
+        self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
+        self.object.save()
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        return super(QueueDialerCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(QueueDialerCreateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'nuevo_actuacion_vigente_campana_dialer',
+            kwargs={"pk_campana": self.campana.pk}
+        )
