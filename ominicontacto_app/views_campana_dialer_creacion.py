@@ -10,13 +10,13 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
-    CampanaDialerForm, QueueDialerForm, CampanaMemberForm, QueueDialerUpdateForm,
-    GrupoAgenteForm, CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm,
+    CampanaDialerForm, QueueDialerForm, QueueDialerUpdateForm,
+    CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm,
     ActuacionVigenteForm, ReglasIncidenciaForm, CampanaForm
 )
 from ominicontacto_app.models import (
-    CampanaDialer, Campana, Queue, CampanaMember, BaseDatosContacto, Grupo, Actuacion,
-    ActuacionVigente, ReglasIncidencia
+    CampanaDialer, Campana, Queue, BaseDatosContacto, Actuacion, ActuacionVigente,
+    ReglasIncidencia
 )
 
 from ominicontacto_app.services.campana_service import CampanaService
@@ -55,7 +55,7 @@ class CampanaDialerEnDefinicionMixin(object):
     """
 
     def get_object(self, queryset=None):
-        return CampanaDialer.objects.obtener_en_definicion_para_editar(
+        return Campana.objects.obtener_en_definicion_para_editar(
             self.kwargs['pk_campana'])
 
 

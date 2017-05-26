@@ -10,12 +10,9 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
-    CampanaForm, QueueForm, QueueMemberForm, QueueUpdateForm, GrupoAgenteForm,
-    CampanaUpdateForm, SincronizaDialerForm
+    CampanaForm, QueueForm, QueueUpdateForm, CampanaUpdateForm, SincronizaDialerForm
 )
-from ominicontacto_app.models import (
-    Campana, Queue, QueueMember, BaseDatosContacto, Grupo,
-)
+from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
