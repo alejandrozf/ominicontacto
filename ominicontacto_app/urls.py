@@ -635,6 +635,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.QueueDialerCreateView.as_view()),
         name="campana_dialer_queue_create"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/cola_update/$',
+        login_required(
+            views_campana_dialer_creacion.QueueDialerUpdateView.as_view()),
+        name="campana_dialer_queue_update"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================

@@ -320,8 +320,7 @@ class CampanaUpdateForm(forms.ModelForm):
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
-            #"fecha_inicio": forms.TextInput(attrs={'class': 'form-control'}),
-            #"fecha_fin": forms.TextInput(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 
@@ -707,21 +706,15 @@ class CampanaDialerUpdateForm(forms.ModelForm):
         self.fields['fecha_fin'].required = True
 
     class Meta:
-        model = CampanaDialer
+        model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'gestion', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion')
+                  'gestion')
+
         widgets = {
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
-            'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
         }
-
 
 class UpdateBaseDatosDialerForm(forms.ModelForm):
     usa_contestador = forms.BooleanField(required=False)
@@ -843,3 +836,22 @@ class QueueDialerForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class QueueDialerUpdateForm(forms.ModelForm):
+    """
+    El form para actualizar la cola para las llamadas
+    """
+
+    class Meta:
+        model = Queue
+        fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
+                  'auto_grabacion')
+
+    def clean(self):
+        maxlen = self.cleaned_data.get('maxlen')
+        if not maxlen > 0:
+            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
+                                        ' mayor a cero')
+
+        return self.cleaned_data

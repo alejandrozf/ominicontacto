@@ -10,9 +10,8 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
-    CampanaDialerForm, QueueDialerForm, CampanaMemberForm, QueueUpdateForm,
-    GrupoAgenteForm,
-    CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm,
+    CampanaDialerForm, QueueDialerForm, CampanaMemberForm, QueueDialerUpdateForm,
+    GrupoAgenteForm, CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionDialerForm,
     ActuacionVigenteForm, ReglasIncidenciaForm, CampanaForm
 )
 from ominicontacto_app.models import (
@@ -119,50 +118,17 @@ class CampanaDialerUpdateView(UpdateView):
     """
 
     template_name = 'campana_dialer/edita_campana.html'
-    model = CampanaDialer
+    model = Campana
     context_object_name = 'campana'
     form_class = CampanaDialerUpdateForm
 
     def get_object(self, queryset=None):
-        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        campana_service = CampanaService()
-        error = campana_service.validar_modificacion_bd_contacto(
-            self.get_object(), self.object.bd_contacto)
-        if error:
-            return self.form_invalid(form, error=error)
-        activacion_queue_service = ActivacionQueueService()
-        try:
-            activacion_queue_service.activar()
-        except RestablecerDialplanError, e:
-            message = ("<strong>Operación Errónea!</strong> "
-                       "No se pudo confirmar la creación del dialplan  "
-                       "al siguiente error: {0}".format(e))
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-        return super(CampanaDialerUpdateView, self).form_valid(form)
-
-    def form_invalid(self, form, error=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                  La base de datos es erronea. {0}'.format(error)
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-
-        return self.render_to_response(self.get_context_data())
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get_success_url(self):
         return reverse(
-            'campana_dialer_list')
+            'campana_dialer_queue_update',
+            kwargs={"pk_campana": self.object.pk})
 
 
 class ActuacionCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, CreateView):
@@ -566,6 +532,7 @@ class QueueDialerCreateView(CheckEstadoCampanaDialerMixin,
     def get_context_data(self, **kwargs):
         context = super(QueueDialerCreateView, self).get_context_data(**kwargs)
         context['campana'] = self.campana
+        context['create'] = True
         return context
 
     def get_success_url(self):
@@ -573,3 +540,47 @@ class QueueDialerCreateView(CheckEstadoCampanaDialerMixin,
             'nuevo_actuacion_vigente_campana_dialer',
             kwargs={"pk_campana": self.campana.pk}
         )
+
+
+class QueueDialerUpdateView(UpdateView):
+    model = Queue
+    form_class = QueueDialerUpdateForm
+    template_name = 'campana_dialer/create_update_queue.html'
+
+    def get_object(self, queryset=None):
+         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+         return campana.queue_campana
+
+    def dispatch(self, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        try:
+            Queue.objects.get(campana=campana)
+        except Queue.DoesNotExist:
+            return HttpResponseRedirect("/campana_dialer/" + self.kwargs['pk_campana']
+                                        + "/cola/")
+        else:
+            return super(QueueDialerUpdateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        return super(QueueDialerUpdateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(QueueDialerUpdateView, self).get_context_data(**kwargs)
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
+        return context
+
+    def get_success_url(self):
+        return reverse('campana_dialer_list')
