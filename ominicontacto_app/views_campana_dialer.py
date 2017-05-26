@@ -266,14 +266,15 @@ class UpdateBaseDatosDialerView(FormView):
     def get_object(self, queryset=None):
         return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         self.object = self.get_object()
         metadata = self.object.bd_contacto.get_metadata()
         columnas_telefono = metadata.columnas_con_telefono
         nombres_de_columnas = metadata.nombres_de_columnas
         tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
                        columnas_telefono if columna > 6]
-        return form_class(tts_choices=tts_choices, **self.get_form_kwargs())
+        return self.form_class(tts_choices=tts_choices, **self.get_form_kwargs())
 
     def form_valid(self, form):
         usa_contestador = form.cleaned_data.get('usa_contestador')
@@ -375,7 +376,8 @@ class FormularioSeleccionCampanaDialerFormView(FormView):
         return super(FormularioSeleccionCampanaDialerFormView,
                      self).dispatch(request, *args, **kwargs)
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         if self.request.user.is_authenticated()\
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
@@ -384,8 +386,7 @@ class FormularioSeleccionCampanaDialerFormView(FormView):
 
         campana_choice = [(campana.id, campana.nombre) for campana in
                           campanas]
-        return form_class(campana_choice=campana_choice,
-                          **self.get_form_kwargs())
+        return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
 
     def form_valid(self, form):
         campana = form.cleaned_data.get('campana')
@@ -401,12 +402,13 @@ class FormularioNuevoContactoFormView(FormView):
     form_class = FormularioNuevoContacto
     template_name = 'campana_dialer/nuevo_contacto_campana.html'
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
         base_datos = campana.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def form_valid(self, form):
         campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
