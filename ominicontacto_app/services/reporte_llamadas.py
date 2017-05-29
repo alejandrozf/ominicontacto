@@ -8,7 +8,7 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import AgenteProfile, Queuelog, Campana
+from ominicontacto_app.models import AgenteProfile, Queuelog, Campana, CampanaDialer
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
 import logging as _logging
@@ -281,6 +281,7 @@ class EstadisticasService():
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
         campanas = Campana.objects.all()
+        campanas_dialer = CampanaDialer.objects.obtener_all_except_borradas()
 
         agentes_tiempo = []
 
@@ -289,6 +290,21 @@ class EstadisticasService():
             logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
                 eventos_llamadas, fecha_inferior, fecha_superior, agente)
             for campana in campanas:
+                cantidad_llamada = logs_time.filter(queuename=campana.nombre).count()
+                if cantidad_llamada > 0:
+
+                    lola = logs_time.filter(queuename=campana.nombre)
+                    lista_tiempo_llamada = [int(log.data2) for log in lola]
+
+                    tiempo_agente.append(agente)
+                    tiempo_agente.append(campana.nombre)
+                    tiempo_llamadas = sum(lista_tiempo_llamada)
+                    tiempo_agente.append(str(datetime.timedelta(0, tiempo_llamadas)))
+                    tiempo_agente.append(cantidad_llamada)
+                    agentes_tiempo.append(tiempo_agente)
+                    tiempo_agente = []
+
+            for campana in campanas_dialer:
                 cantidad_llamada = logs_time.filter(queuename=campana.nombre).count()
                 if cantidad_llamada > 0:
 
