@@ -263,7 +263,7 @@ class QueuesCreator(object):
 
         retry = 1
         if campana.queue_campana.retry:
-            retry = ampana.queue_campana.retry
+            retry = campana.queue_campana.retry
 
         partes = []
         param_generales = {
