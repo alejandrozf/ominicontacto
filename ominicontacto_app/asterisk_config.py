@@ -16,7 +16,7 @@ import traceback
 from django.conf import settings
 from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.models import (
-    Queue, AgenteProfile, SupervisorProfile, CampanaDialer, Campana
+    AgenteProfile, SupervisorProfile, Campana
 )
 import logging as _logging
 from ominicontacto_app.asterisk_config_generador_de_partes import (
