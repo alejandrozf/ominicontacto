@@ -323,6 +323,12 @@ class CampanaManager(models.Manager):
         campanas_excludes = [Campana.ESTADO_BORRADA, Campana.ESTADO_EN_DEFINICION]
         return self.exclude(estado__in=campanas_excludes)
 
+    def get_objects_for_user(self, user):
+        """
+        Devuelve todos los objectos por cual tiene acceso este user.
+        """
+        return self.filter(reported_by=user)
+
 class Campana(models.Model):
     """Una campaña del call center"""
 
@@ -414,6 +420,7 @@ class Campana(models.Model):
         choices=TIPO_INTERACCION,
         default=FORMULARIO,
     )
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __unicode__(self):
             return self.nombre
