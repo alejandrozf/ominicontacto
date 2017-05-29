@@ -43,12 +43,21 @@ class CampanaDialerListView(ListView):
         if self.request.user.is_authenticated():
             user = self.request.user
 
-        if user:
-            context['inactivas'] = CampanaDialer.objects.obtener_inactivas(user)
-            context['pausadas'] = CampanaDialer.objects.obtener_pausadas(user)
-            context['activas'] = CampanaDialer.objects.obtener_activas(user)
-            context['borradas'] = CampanaDialer.objects.obtener_borradas(user).filter(
-                oculto=False)
+        # if user:
+        #     context['inactivas'] = CampanaDialer.objects.obtener_inactivas(user)
+        #     context['pausadas'] = CampanaDialer.objects.obtener_pausadas(user)
+        #     context['activas'] = CampanaDialer.objects.obtener_activas(user)
+        #     context['borradas'] = CampanaDialer.objects.obtener_borradas(user).filter(
+        #         oculto=False)
+
+        context['inactivas'] = Campana.objects.obtener_inactivas().filter(
+            type=Campana.TYPE_DIALER)
+        context['pausadas'] = Campana.objects.obtener_pausadas().filter(
+            type=Campana.TYPE_DIALER)
+        context['activas'] = Campana.objects.obtener_activas().filter(
+            type=Campana.TYPE_DIALER)
+        context['borradas'] = Campana.objects.obtener_borradas().filter(
+            oculto=False, type=Campana.TYPE_DIALER)
         return context
 
 
