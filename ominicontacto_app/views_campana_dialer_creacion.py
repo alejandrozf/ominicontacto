@@ -103,6 +103,7 @@ class CampanaDialerCreateView(CreateView):
             error = "Debe seleccionar un sitio externo"
             return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_DIALER
+        self.object.reported_by = self.request.user
         self.object.save()
         return super(CampanaDialerCreateView, self).form_valid(form)
 

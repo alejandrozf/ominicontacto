@@ -98,6 +98,7 @@ class CampanaCreateView(CreateView):
             error = "Debe seleccionar un sitio externo"
             return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_ENTRANTE
+        self.object.reported_by = self.request.user
         self.object.save()
         return super(CampanaCreateView, self).form_valid(form)
 
