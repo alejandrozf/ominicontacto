@@ -69,7 +69,7 @@ class QueueDialplanConfigCreator(object):
         # Ver de obtener activa ya que en este momemento no estamos manejando
         # estados
         # Queue.objects.obtener_todas_para_generar_dialplan()
-        return Campana.objects.obtener_all_except_borradas().filter(
+        return Campana.objects.obtener_all_dialplan_asterisk().filter(
             type=Campana.TYPE_ENTRANTE)
 
     def create_dialplan(self, campana=None, campanas=None):
@@ -92,7 +92,7 @@ class QueueDialplanConfigCreator(object):
             try:
                 config_chunk = self._generar_dialplan(campana)
                 logger.info("Dialplan generado OK para queue %s",
-                            queue.name)
+                            campana.nombre)
             except:
                 logger.exception(
                     "No se pudo generar configuracion de "
@@ -290,7 +290,7 @@ class QueuesCreator(object):
         # Ver de obtener activa ya que en este momemento no estamos manejando
         # estados
         # Queue.objects.obtener_todas_para_generar_dialplan()
-        return Campana.objects.obtener_all_except_borradas()
+        return Campana.objects.obtener_all_dialplan_asterisk()
 
     def create_dialplan(self, campana=None, campanas=None):
         """Crea el archivo de dialplan para queue existentes

@@ -316,6 +316,13 @@ class CampanaManager(models.Manager):
         """
         return self.exclude(estado=Campana.ESTADO_BORRADA)
 
+    def obtener_all_dialplan_asterisk(self):
+        """
+        Devuelve campañas excluyendo las campanas borradas
+        """
+        campanas_excludes = [Campana.ESTADO_BORRADA, Campana.ESTADO_EN_DEFINICION]
+        return self.exclude(estado__in=campanas_excludes)
+
 class Campana(models.Model):
     """Una campaña del call center"""
 
