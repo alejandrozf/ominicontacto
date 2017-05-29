@@ -857,6 +857,15 @@ class QueueDialerUpdateForm(forms.ModelForm):
         model = Queue
         fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
                   'auto_grabacion')
+        widgets = {
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
 
     def clean(self):
         maxlen = self.cleaned_data.get('maxlen')
