@@ -310,7 +310,7 @@ class QueuesCreator(object):
             try:
                 config_chunk = self._generar_dialplan(campana)
                 logger.info("Dialplan generado OK para queue %s",
-                            queue.name)
+                            campana.nombre)
             except:
                 logger.exception(
                     "No se pudo generar configuracion de "
