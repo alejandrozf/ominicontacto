@@ -304,7 +304,7 @@ class QueuesCreator(object):
             campanas = [campana]
         else:
             campanas = self._obtener_todas_para_generar_dialplan()
-
+        dialplan = []
         for campana in campanas:
             logger.info("Creando dialplan para queue %s", campana.nombre)
             try:
