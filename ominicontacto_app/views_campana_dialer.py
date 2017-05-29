@@ -8,9 +8,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from ominicontacto_app.models import (
-    CampanaDialer, Contacto, Campana
-)
+from ominicontacto_app.models import Contacto, Campana
 from django.views.generic import (
     ListView, DeleteView, FormView
 )
@@ -33,7 +31,7 @@ class CampanaDialerListView(ListView):
 
     template_name = 'campana_dialer/campana_list.html'
     context_object_name = 'campanas'
-    model = CampanaDialer
+    model = Campana
 
     def get_context_data(self, **kwargs):
         context = super(CampanaDialerListView, self).get_context_data(
@@ -336,7 +334,7 @@ class CampanaDialerBusquedaContactoFormView(FormView):
     template_name = 'campana_dialer/busqueda_contacto.html'
 
     def get(self, request, *args, **kwargs):
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
             campana.bd_contacto)
         return self.render_to_response(self.get_context_data(
@@ -345,14 +343,14 @@ class CampanaDialerBusquedaContactoFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super(CampanaDialerBusquedaContactoFormView, self).get_context_data(
             **kwargs)
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
         return context
 
     def form_valid(self, form):
         filtro = form.cleaned_data.get('buscar')
         try:
-            campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
             listado_de_contacto = Contacto.objects.\
                 contactos_by_filtro_bd_contacto(campana.bd_contacto, filtro)
         except Contacto.DoesNotExist:
@@ -379,7 +377,7 @@ class FormularioSeleccionCampanaDialerFormView(FormView):
         if self.request.user.is_authenticated()\
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
-        if not agente.campanasmember.all():
+        if not agente.campana_member.all():
             message = ("Este agente no esta asignado a ninguna campaña ")
             messages.warning(self.request, message)
         return super(FormularioSeleccionCampanaDialerFormView,
@@ -390,8 +388,8 @@ class FormularioSeleccionCampanaDialerFormView(FormView):
         if self.request.user.is_authenticated()\
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
-            campanas = [campana.campana
-                        for campana in agente.campanasmember.all()]
+            campanas = [queue.queue_name.campana
+                        for queue in agente.campana_member.all()]
 
         campana_choice = [(campana.id, campana.nombre) for campana in
                           campanas]
@@ -413,14 +411,14 @@ class FormularioNuevoContactoFormView(FormView):
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         base_datos = campana.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
         return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def form_valid(self, form):
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         base_datos = campana.bd_contacto
         metadata = base_datos.get_metadata()
         nombres = metadata.nombres_de_columnas
