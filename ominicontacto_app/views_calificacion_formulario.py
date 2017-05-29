@@ -15,7 +15,7 @@ from django.views.generic.edit import (
 )
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
-    Contacto, CampanaDialer, CalificacionCliente, AgenteProfile, MetadataCliente,
+    Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
     WombatLog
 )
 from ominicontacto_app.forms import (
@@ -51,20 +51,20 @@ class CalificacionClienteCreateView(CreateView):
             initial.update({nombre: dato})
         return initial
 
-    def get_form(self, form_class):
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+        form = self.get_form()
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(initial=[
             {'campana': campana.id,
@@ -95,9 +95,8 @@ class CalificacionClienteCreateView(CreateView):
         formsets with the passed POST variables and then checking them for validity.
         """
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        form = self.get_form()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
@@ -234,10 +233,9 @@ class CalificacionClienteUpdateView(UpdateView):
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+        form = self.get_form()
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(initial=[
             {'campana': campana.id,
@@ -265,14 +263,15 @@ class CalificacionClienteUpdateView(UpdateView):
             initial.update({nombre: dato})
         return initial
 
-    def get_form(self, form_class):
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
@@ -290,9 +289,8 @@ class CalificacionClienteUpdateView(UpdateView):
         formsets with the passed POST variables and then checking them for validity.
         """
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        form = self.get_form()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
@@ -423,20 +421,20 @@ class FormularioCreateFormView(CreateView):
             initial.update({nombre: dato})
         return initial
 
-    def get_form(self, form_class):
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+        form = self.get_form()
         venta_form = FormularioVentaFormSet(initial=[
             {'campana': campana.id,
              'contacto': self.object.id,
@@ -451,7 +449,7 @@ class FormularioCreateFormView(CreateView):
         context = super(
             FormularioCreateFormView, self).get_context_data(**kwargs)
 
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         context['pk_formulario'] = campana.formulario.pk
         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         bd_contacto = campana.bd_contacto
@@ -501,9 +499,8 @@ class FormularioCreateFormView(CreateView):
         formsets with the passed POST variables and then checking them for validity.
         """
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        form = self.get_form()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         venta_form = FormularioVentaFormSet(
             self.request.POST, form_kwargs={'campos':campana.formulario.campos.all()},
         instance=self.object)
@@ -548,7 +545,7 @@ class FormularioDetailView(DetailView):
         context = super(
             FormularioDetailView, self).get_context_data(**kwargs)
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk'])
-        campana = CampanaDialer.objects.get(pk=metadata.campana.pk)
+        campana = Campana.objects.get(pk=metadata.campana.pk)
         contacto = Contacto.objects.get(pk=metadata.contacto.pk)
         bd_contacto = campana.bd_contacto
         nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
@@ -584,14 +581,15 @@ class FormularioUpdateFormView(UpdateView):
             initial.update({nombre: dato})
         return initial
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
         campana = metadata.campana
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -614,8 +612,7 @@ class FormularioUpdateFormView(UpdateView):
     def get(self, request, *args, **kwargs):
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+        form = self.get_form()
         initial = {
             'campana': metadata.campana.id,
             'contacto': self.object.id,
@@ -668,8 +665,7 @@ class FormularioUpdateFormView(UpdateView):
         formsets with the passed POST variables and then checking them for validity.
         """
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+        form = self.get_form()
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
         campana = metadata.campana
         venta_form = FormularioVentaFormSet(
@@ -715,11 +711,12 @@ class CalificacionUpdateView(UpdateView):
     model = CalificacionCliente
     form_class = FormularioContactoCalificacion
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         campana = self.get_object().campana
         calificaciones = campana.calificacion_campana.calificacion.all()
-        return form_class(calificacion_choice=calificaciones,
-                          **self.get_form_kwargs())
+        return self.form_class(calificacion_choice=calificaciones,
+                               **self.get_form_kwargs())
 
     def get_initial(self):
         initial = super(CalificacionUpdateView, self).get_initial()
@@ -732,12 +729,13 @@ class CalificacionUpdateView(UpdateView):
             initial.update({nombre: dato})
         return initial
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
         calificacion = CalificacionCliente.objects.get(pk=self.kwargs['pk_calificacion'])
@@ -748,8 +746,7 @@ class CalificacionUpdateView(UpdateView):
         agente = calificacion.agente
         campana = calificacion.campana
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+        form = self.get_form()
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(initial=[
             {'campana': campana.id,
@@ -778,8 +775,7 @@ class CalificacionUpdateView(UpdateView):
         formsets with the passed POST variables and then checking them for validity.
         """
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+        form = self.get_form()
         calificacion = CalificacionCliente.objects.get(pk=self.kwargs['pk_calificacion'])
         campana = calificacion.campana
         calificaciones = campana.calificacion_campana.calificacion.all()
