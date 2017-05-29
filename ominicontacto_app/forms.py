@@ -111,6 +111,11 @@ class QueueForm(forms.ModelForm):
     El form de cola para las llamadas
     """
 
+    def __init__(self, *args, **kwargs):
+        super(QueueForm, self).__init__(*args, **kwargs)
+        self.fields['timeout'].required = True
+        self.fields['retry'].required = True
+
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
@@ -140,6 +145,11 @@ class QueueUpdateForm(forms.ModelForm):
     """
     El form para actualizar la cola para las llamadas
     """
+
+    def __init__(self, *args, **kwargs):
+        super(QueueUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['timeout'].required = True
+        self.fields['retry'].required = True
 
     class Meta:
         model = Queue
