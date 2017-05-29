@@ -192,7 +192,7 @@ class SincronizarBaseDatosContactosService(object):
             dato_contacto += prefijo_discador + contacto.telefono + ","
             dato_contacto += "id_cliente:" + str(contacto.pk) + ","
             dato_contacto += "campana:" + campana.nombre + ","
-            dato_contacto += "timeout:" + str(campana.wait)
+            dato_contacto += "timeout:" + str(campana.queue_campana.wait)
             dato_contacto += ",id_campana:" + str(campana.id) + ","
             dato_contacto += "usa_contestador:" + str(usa_contestador)
             if list_multinum:

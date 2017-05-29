@@ -258,13 +258,13 @@ class UpdateBaseDatosDialerView(FormView):
     Esta vista sincroniza base datos con discador
     """
 
-    model = CampanaDialer
+    model = Campana
     context_object_name = 'campana'
     form_class = UpdateBaseDatosDialerForm
     template_name = 'base_create_update_form.html'
 
     def get_object(self, queryset=None):
-        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get_form(self):
         self.form_class = self.get_form_class()

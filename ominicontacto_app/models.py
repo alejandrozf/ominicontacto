@@ -296,7 +296,7 @@ class CampanaManager(models.Manager):
         """
         Devuelve campañas en estado pausadas.
         """
-        return self.filter(estado=Campana.ESTADO_EN_DEFINICION)
+        return self.filter(estado=Campana.ESTADO_INACTIVA)
 
     def obtener_activas(self):
         """
@@ -348,12 +348,16 @@ class Campana(models.Model):
     ESTADO_PAUSADA = 5
     """La campaña pausada"""
 
+    ESTADO_INACTIVA = 6
+    """La campaña inactiva"""
+
     ESTADOS = (
-        (ESTADO_EN_DEFINICION, 'Inactiva'),
+        (ESTADO_EN_DEFINICION, 'En definicion'),
         (ESTADO_ACTIVA, 'Activa'),
         (ESTADO_FINALIZADA, 'Finalizada'),
         (ESTADO_BORRADA, 'Borrada'),
         (ESTADO_PAUSADA, 'Pausada'),
+        (ESTADO_INACTIVA, 'Inactiva'),
     )
 
     TYPE_ENTRANTE = 1
