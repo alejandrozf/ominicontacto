@@ -7,7 +7,8 @@ from ominicontacto_app import (
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
-    views_campana_dialer_reportes, views_back_list, views_sitio_externo
+    views_campana_dialer_reportes, views_back_list, views_sitio_externo,
+    views_queue_member
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -232,34 +233,9 @@ urlpatterns = [
         login_required(views_campana_creacion.QueueCreateView.as_view()),
         name='queue_nuevo',
         ),
-    url(r'^campana/(?P<pk_campana>\d+)/queue_member/$',
-        login_required(views_campana_creacion.QueueMemberCreateView.as_view()),
-        name='queue_member',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/grupo_agente/$',
-        login_required(views_campana_creacion.GrupoAgenteCreateView.as_view()),
-        name='grupo_agente',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/queue_member_campana/$',
-        login_required(views_campana_creacion.QueueMemberCampanaView.as_view()),
-        name='queue_member_campana',
-        ),
-    url(r'queue/list/$',
-        login_required(views_campana_creacion.QueueListView.as_view()),
-        name='queue_list',
-        ),
-    url(r'^queue/elimina/(?P<pk_queue>[\w\-]+)/$',
-        login_required(views_campana_creacion.QueueDeleteView.as_view()),
-        name='queue_elimina',
-        ),
     url(r'^campana/update/(?P<pk_campana>\d+)/cola/$',
         login_required(views_campana_creacion.QueueUpdateView.as_view()),
         name='queue_update',
-        ),
-    url(
-        r'^queue_member/(?P<pk_queuemember>\d+)/elimina/(?P<pk_campana>\d+)/$',
-        login_required(views_campana_creacion.queue_member_delete_view),
-        name='queuemember_elimina',
         ),
     url(r'campana/list/$',
         login_required(views_campana.CampanaListView.as_view()),
@@ -591,22 +567,6 @@ urlpatterns = [
         login_required(
             views_campana_dialer.UpdateBaseDatosDialerView.as_view()),
         name="campana_dialer_update_base"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/member/$',
-        login_required(
-            views_campana_dialer_creacion.CampanaDialerMemberView.as_view()),
-        name="campana_dialer_member"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/add_member/$',
-        login_required(
-            views_campana_dialer_creacion.CampanaDialerMemberCreateView.as_view()),
-        name="campana_dialer_add_member"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/add_grupo/$',
-        login_required(
-            views_campana_dialer_creacion.GrupoAgenteCreateView.as_view()),
-        name="campana_dialer_add_grupo"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/delete_member/(?P<pk_campanamember>\d+)/$',
-        login_required(
-            views_campana_dialer_creacion.campana_member_delete_view),
-        name="campana_dialer_delete_member"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/busqueda_contacto/$',
         login_required(
             views_campana_dialer.CampanaDialerBusquedaContactoFormView.as_view()),
@@ -631,6 +591,14 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.regla_incidencia_delete_view),
         name="delete_regla_incidencia_campana_dialer"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/cola/$',
+        login_required(
+            views_campana_dialer_creacion.QueueDialerCreateView.as_view()),
+        name="campana_dialer_queue_create"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/cola_update/$',
+        login_required(
+            views_campana_dialer_creacion.QueueDialerUpdateView.as_view()),
+        name="campana_dialer_queue_update"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================
@@ -668,6 +636,26 @@ urlpatterns = [
     url(r'^sitio_externo/list/$',
         login_required(views_sitio_externo.SitioExternoListView.as_view()),
         name="sitio_externo_list"),
+    # ==========================================================================
+    # QueueMember
+    # ==========================================================================
+    url(r'^campana/(?P<pk_campana>\d+)/queue_member/$',
+        login_required(views_queue_member.QueueMemberCreateView.as_view()),
+        name='queue_member_add',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/grupo_agente/$',
+        login_required(views_queue_member.GrupoAgenteCreateView.as_view()),
+        name='queue_member_grupo_agente',
+        ),
+    url(r'^queue_member/(?P<pk_campana>\d+)/queue_member_campana/$',
+        login_required(views_queue_member.QueueMemberCampanaView.as_view()),
+        name='queue_member_campana',
+        ),
+    url(
+        r'^queue_member/(?P<pk_queuemember>\d+)/elimina/(?P<pk_campana>\d+)/$',
+        login_required(views_queue_member.queue_member_delete_view),
+        name='queue_member_elimina',
+    ),
 ]
 
 urlpatterns += patterns('',

@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import datetime
 
 from django.shortcuts import redirect
-from ominicontacto_app.models import CampanaDialer, AgenteProfile
+from ominicontacto_app.models import Campana, AgenteProfile
 from ominicontacto_app.forms import ReporteForm
 from django.views.generic import ListView, FormView, UpdateView
 from ominicontacto_app.services.reporte_metadata_cliente import \
@@ -25,7 +25,7 @@ class CampanaDialerReporteCalificacionListView(ListView):
     """
     template_name = 'reporte/reporte_campana_formulario.html'
     context_object_name = 'campana'
-    model = CampanaDialer
+    model = Campana
 
     def get_context_data(self, **kwargs):
         context = super(CampanaDialerReporteCalificacionListView, self).get_context_data(
@@ -33,7 +33,7 @@ class CampanaDialerReporteCalificacionListView(ListView):
 
         service = ReporteCampanaService()
         service_formulario = ReporteMetadataClienteService()
-        campana = CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         service.crea_reporte_csv(campana)
         service_formulario.crea_reporte_csv(campana)
         context['campana'] = campana
@@ -44,11 +44,11 @@ class CampanaDialerReporteGrafico(FormView):
 
     template_name = 'campana_dialer/reporte_campana_grafico.html'
     context_object_name = 'campana'
-    model = CampanaDialer
+    model = Campana
     form_class = ReporteForm
 
     def get_object(self, queryset=None):
-        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get(self, request, *args, **kwargs):
         # obtener_estadisticas_render_graficos_supervision()
@@ -91,7 +91,7 @@ class ExportaCampanaDialerReportePDFView(UpdateView):
     Esta vista invoca a generar un pdf de reporte de la campana
     """
 
-    model = CampanaDialer
+    model = Campana
     context_object_name = 'campana'
 
     def get_object(self, queryset=None):
@@ -108,11 +108,11 @@ class AgenteCampanaDialerReporteGrafico(FormView):
 
     template_name = 'campana/reporte_agente.html'
     context_object_name = 'campana'
-    model = CampanaDialer
+    model = Campana
     form_class = ReporteForm
 
     def get_object(self, queryset=None):
-        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get(self, request, *args, **kwargs):
         # obtener_estadisticas_render_graficos_supervision()

@@ -9,7 +9,7 @@ from pygal.style import Style, RedBlueStyle
 from django.conf import settings
 from django.db.models import Count
 from ominicontacto_app.models import (
-    AgenteProfile, Queuelog, Campana, Queue, CampanaDialer
+    AgenteProfile, Queuelog, Campana, Queue
 )
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
@@ -36,8 +36,7 @@ class EstadisticasCampanaLlamadasService():
 
 
 
-    def calcular_cantidad_llamadas(self, campanas, queues, fecha_inferior,
-                                   fecha_superior):
+    def calcular_cantidad_llamadas(self, queues, fecha_inferior, fecha_superior):
 
         eventos_llamadas_ingresadas = ['ENTERQUEUE']
         eventos_llamadas_atendidas = ['CONNECT']
@@ -89,44 +88,6 @@ class EstadisticasCampanaLlamadasService():
             total_abandonadas.append(count_llamadas_expiradas)
             total_expiradas.append(count_llamadas_abandonadas)
 
-        for campana in campanas:
-            ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
-                eventos_llamadas_ingresadas, fecha_inferior, fecha_superior,
-                campana.nombre)
-            atendidas = Queuelog.objects.obtener_log_queuename_event_periodo(
-                eventos_llamadas_atendidas, fecha_inferior, fecha_superior,
-                campana.nombre)
-            abandonadas = Queuelog.objects.obtener_log_queuename_event_periodo(
-                eventos_llamadas_abandonadas, fecha_inferior, fecha_superior,
-                campana.nombre)
-            expiradas = Queuelog.objects.obtener_log_queuename_event_periodo(
-                eventos_llamadas_expiradas, fecha_inferior, fecha_superior,
-                campana.nombre)
-            count_llamadas_ingresadas = ingresadas.count()
-            count_llamadas_atendidas = atendidas.count()
-            count_llamadas_abandonadas = abandonadas.count()
-            count_llamadas_expiradas = expiradas.count()
-            count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
-            count_manuales_atendidas = atendidas.filter(data4='saliente').count()
-            count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
-            cantidad_campana = []
-            cantidad_campana.append(campana.nombre)
-            cantidad_campana.append(count_llamadas_ingresadas)
-            cantidad_campana.append(count_llamadas_atendidas)
-            cantidad_campana.append(count_llamadas_expiradas)
-            cantidad_campana.append(count_llamadas_abandonadas)
-            cantidad_campana.append(count_llamadas_manuales)
-            cantidad_campana.append(count_manuales_atendidas)
-            cantidad_campana.append(count_manuales_abandonadas)
-
-            queues_tiempo.append(cantidad_campana)
-
-            # para reportes
-            nombres_queues.append(campana.nombre)
-            total_atendidas.append(count_llamadas_atendidas)
-            total_abandonadas.append(count_llamadas_expiradas)
-            total_expiradas.append(count_llamadas_abandonadas)
-
         totales_grafico = {
             'nombres_queues': nombres_queues,
             'total_atendidas': total_atendidas,
@@ -173,10 +134,9 @@ class EstadisticasCampanaLlamadasService():
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
 
         cola = Queue.objects.obtener_all_except_borradas()
-        campanas = CampanaDialer.objects.obtener_all_except_borradas()
 
         queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
-            campanas, cola, fecha_inferior, fecha_superior)
+            cola, fecha_inferior, fecha_superior)
 
         total_llamadas = self.obtener_total_llamadas(fecha_inferior, fecha_superior)
 

@@ -189,10 +189,11 @@ class FormularioPreviewFormView(FormView):
     form_class = FormularioCRMForm
     template_name = 'formulario/formulario_preview.html'
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
         campos = formulario.campos.all()
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -205,10 +206,11 @@ class FormularioVistaFormView(FormView):
     form_class = FormularioCRMForm
     template_name = 'formulario/formulario_vista.html'
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
         campos = formulario.campos.all()
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -221,10 +223,11 @@ class FormularioCreateFormView(FormView):
     form_class = FormularioCRMForm
     template_name = 'formulario/formulario_create.html'
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
         campos = formulario.campos.all()
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super(
