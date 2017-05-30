@@ -399,7 +399,7 @@ class Campana(models.Model):
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
     )
-    nombre = models.CharField(max_length=128)
+    nombre = models.CharField(max_length=128, unique=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
     calificacion_campana = models.ForeignKey(CalificacionCampana,
