@@ -111,7 +111,7 @@ class CampanaService():
         results = salida['results']
         ep_id = results[0]['epId']
         if ep_id:
-            campana.guardar_ep_id_wombat(ep_id)
+            campana.queue_campana.guardar_ep_id_wombat(ep_id)
             return True
         return False
 

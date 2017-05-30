@@ -8,7 +8,7 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import AgenteProfile, Queuelog, Campana
+from ominicontacto_app.models import AgenteProfile, Queuelog, Campana, CampanaDialer
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
 import logging as _logging
@@ -34,7 +34,7 @@ class EstadisticasService():
 
     def _obtener_agentes(self):
         agentes = []
-        for agente in AgenteProfile.objects.all():
+        for agente in AgenteProfile.objects.filter(reported_by=self.request.user):
             agentes.append(agente.user.get_full_name())
         return agentes
 

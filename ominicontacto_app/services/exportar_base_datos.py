@@ -177,19 +177,31 @@ class SincronizarBaseDatosContactosService(object):
     def escribir_lista(self, contactos, metadata, campana, telefonos,
                              usa_contestador, prefijo_discador):
 
-            lista_contactos = "numbers="
-            for contacto in contactos:
-                dato_contacto = ""
+        nombres = metadata.nombres_de_columnas
+        nombres.remove('telefono')
+        list_multinum = []
+        for columna in nombres:
+            if "MULTINUM" in columna:
+                list_multinum.append((columna, nombres.index(columna)))
 
-                # --- Buscamos datos
-                dato_contacto += prefijo_discador + contacto.telefono + ","
-                dato_contacto += "id_cliente:" + str(contacto.pk) + ","
-                dato_contacto += "campana:" + campana.nombre + ","
-                dato_contacto += "timeout:" + str(campana.wait)
-                dato_contacto += ",id_campana:" + str(campana.id) + ","
-                dato_contacto += "usa_contestador:" + str(usa_contestador) + "|"
+        lista_contactos = "numbers="
+        for contacto in contactos:
+            dato_contacto = ""
 
-                lista_contactos += dato_contacto
+            # --- Buscamos datos
+            dato_contacto += prefijo_discador + contacto.telefono + ","
+            dato_contacto += "id_cliente:" + str(contacto.pk) + ","
+            dato_contacto += "campana:" + campana.nombre + ","
+            dato_contacto += "timeout:" + str(campana.queue_campana.wait)
+            dato_contacto += ",id_campana:" + str(campana.id) + ","
+            dato_contacto += "usa_contestador:" + str(usa_contestador)
+            if list_multinum:
+                datos = json.loads(contacto.datos)
+                for item in list_multinum:
+                    dato_contacto += "," + item[0] + ":" + datos[item[1]]
+            dato_contacto += "|"
 
-            return lista_contactos
+            lista_contactos += dato_contacto
+
+        return lista_contactos
 

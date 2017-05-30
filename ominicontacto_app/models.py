@@ -136,6 +136,7 @@ class AgenteProfile(models.Model):
     modulos = models.ManyToManyField(Modulo)
     grupo = models.ForeignKey(Grupo, related_name='agentes')
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
+    reported_by = models.ForeignKey(User, related_name="reportedby")
 
     def __unicode__(self):
         return self.user.get_full_name()
@@ -296,7 +297,7 @@ class CampanaManager(models.Manager):
         """
         Devuelve campañas en estado pausadas.
         """
-        return self.filter(estado=Campana.ESTADO_EN_DEFINICION)
+        return self.filter(estado=Campana.ESTADO_INACTIVA)
 
     def obtener_activas(self):
         """
@@ -315,6 +316,31 @@ class CampanaManager(models.Manager):
         Devuelve campañas excluyendo las campanas borradas
         """
         return self.exclude(estado=Campana.ESTADO_BORRADA)
+
+    def obtener_all_dialplan_asterisk(self):
+        """
+        Devuelve campañas excluyendo las campanas borradas
+        """
+        campanas_excludes = [Campana.ESTADO_BORRADA, Campana.ESTADO_EN_DEFINICION]
+        return self.exclude(estado__in=campanas_excludes)
+
+    def get_objects_for_user(self, user):
+        """
+        Devuelve todos los objectos por cual tiene acceso este user.
+        """
+        return self.filter(reported_by=user)
+
+    def obtener_campanas_dialer(self):
+        """
+        Devuelve campañas de tipo dialer
+        """
+        return self.filter(type=Campana.TYPE_DIALER)
+
+    def obtener_campanas_entrantes(self):
+        """
+        Devuelve campañas de tipo dialer
+        """
+        return self.filter(type=Campana.TYPE_ENTRANTE)
 
 class Campana(models.Model):
     """Una campaña del call center"""
@@ -348,19 +374,45 @@ class Campana(models.Model):
     ESTADO_PAUSADA = 5
     """La campaña pausada"""
 
+    ESTADO_INACTIVA = 6
+    """La campaña inactiva"""
+
     ESTADOS = (
-        (ESTADO_EN_DEFINICION, 'Inactiva'),
+        (ESTADO_EN_DEFINICION, 'En definicion'),
         (ESTADO_ACTIVA, 'Activa'),
         (ESTADO_FINALIZADA, 'Finalizada'),
         (ESTADO_BORRADA, 'Borrada'),
         (ESTADO_PAUSADA, 'Pausada'),
+        (ESTADO_INACTIVA, 'Inactiva'),
+    )
+
+    TYPE_ENTRANTE = 1
+    """La campaña está definida como entrante"""
+
+    TYPE_DIALER = 2
+    """La campaña está definida como de discador"""
+
+    TYPES_CAMPANA = (
+        (TYPE_ENTRANTE, 'Entrante'),
+        (TYPE_DIALER, 'Dialer')
+    )
+
+    FORMULARIO = 1
+    "El tipo de interaccion es por formulario"
+
+    SITIO_EXTERNO = 2
+    "El tipo de interaccion es por sitio externo"
+
+    TIPO_INTERACCION = (
+        (FORMULARIO, "Formulario"),
+        (SITIO_EXTERNO, "Url externa")
     )
 
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
     )
-    nombre = models.CharField(max_length=128)
+    nombre = models.CharField(max_length=128, unique=True       )
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
     calificacion_campana = models.ForeignKey(CalificacionCampana,
@@ -371,12 +423,24 @@ class Campana(models.Model):
         null=True, blank=True,
         related_name="%(class)ss"
     )
-    formulario = models.ForeignKey(Formulario)
+    formulario = models.ForeignKey(Formulario, null=True, blank=True)
     oculto = models.BooleanField(default=False)
     gestion = models.CharField(max_length=128, default="Venta")
+    campaign_id_wombat = models.IntegerField(null=True, blank=True)
+    type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
+    sitio_externo = models.ForeignKey("SitioExterno", null=True, blank=True)
+    tipo_interaccion = models.PositiveIntegerField(
+        choices=TIPO_INTERACCION,
+        default=FORMULARIO,
+    )
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __unicode__(self):
             return self.nombre
+
+    def guardar_campaign_id_wombat(self, campaign_id_wombat):
+        self.campaign_id_wombat = campaign_id_wombat
+        self.save()
 
     def play(self):
         """Setea la campaña como ESTADO_ACTIVA"""
@@ -415,6 +479,21 @@ class Campana(models.Model):
         """setea la campana como visible"""
         self.oculto = False
         self.save()
+
+    def valida_reglas_incidencia(self, regla_incidencia):
+        """
+        Este metodo valida si es posible agrega nueva regla de incidencia
+        :param regla_incidencia: en una ReglaIncidencia
+        :return: si es valida agregar
+        """
+        reglas_incidencia = [regla.estado for regla in self.reglas_incidencia.all()]
+
+        valida = False
+        for regla in reglas_incidencia:
+            if regla is regla_incidencia.estado:
+                valida = True
+                break
+        return valida
 
 
 class QueueManager(models.Manager):
@@ -478,8 +557,10 @@ class Queue(models.Model):
     )
 
     name = models.CharField(max_length=128, primary_key=True)
-    timeout = models.BigIntegerField(verbose_name='Tiempo de Ring')
-    retry = models.BigIntegerField(verbose_name='Tiempo de Reintento')
+    timeout = models.BigIntegerField(verbose_name='Tiempo de Ring',
+                                     null=True, blank=True)
+    retry = models.BigIntegerField(verbose_name='Tiempo de Reintento',
+                                   null=True, blank=True)
     maxlen = models.BigIntegerField(verbose_name='Cantidad Max de llamadas')
     wrapuptime = models.BigIntegerField(
         verbose_name='Tiempo de descanso entre llamadas')
@@ -497,6 +578,7 @@ class Queue(models.Model):
     queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
+    ep_id_wombat = models.IntegerField(null=True, blank=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
@@ -524,6 +606,10 @@ class Queue(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def guardar_ep_id_wombat(self, ep_id_wombat):
+        self.ep_id_wombat = ep_id_wombat
+        self.save()
 
     class Meta:
         db_table = 'queue_table'
@@ -599,6 +685,12 @@ class Pausa(models.Model):
 # ==============================================================================
 class CampanaDialerManager(models.Manager):
 
+    def get_objects_for_user(self, user):
+        """
+        Devuelve todos los objectos por cual tiene acceso este user.
+        """
+        return self.filter(reported_by=user)
+
     def obtener_en_definicion_para_editar(self, campana_id):
         """Devuelve la campaña pasada por ID, siempre que dicha
         campaña pueda ser editar (editada en el proceso de
@@ -615,35 +707,35 @@ class CampanaDialerManager(models.Manager):
             raise(SuspiciousOperation("No se encontro campana %s en "
                                       "estado ESTADO_EN_DEFINICION"))
 
-    def obtener_pausadas(self):
+    def obtener_pausadas(self, user):
         """
         Devuelve campañas en estado pausadas.
         """
-        return self.filter(estado=CampanaDialer.ESTADO_PAUSADA)
+        return self.filter(estado=CampanaDialer.ESTADO_PAUSADA, reported_by=user)
 
-    def obtener_inactivas(self):
+    def obtener_inactivas(self, user):
         """
         Devuelve campañas en estado pausadas.
         """
-        return self.filter(estado=CampanaDialer.ESTADO_INACTIVA)
+        return self.filter(estado=CampanaDialer.ESTADO_INACTIVA, reported_by=user)
 
-    def obtener_activas(self):
+    def obtener_activas(self, user):
         """
         Devuelve campañas en estado pausadas.
         """
-        return self.filter(estado=CampanaDialer.ESTADO_ACTIVA)
+        return self.filter(estado=CampanaDialer.ESTADO_ACTIVA, reported_by=user)
 
-    def obtener_borradas(self):
+    def obtener_borradas(self, user):
         """
         Devuelve campañas en estado borradas.
         """
-        return self.filter(estado=CampanaDialer.ESTADO_BORRADA)
+        return self.filter(estado=CampanaDialer.ESTADO_BORRADA, reported_by=user)
 
-    def obtener_all_except_borradas(self):
+    def obtener_all_except_borradas(self, user):
         """
         Devuelve campañas excluyendo las campanas borradas
         """
-        return self.exclude(estado=CampanaDialer.ESTADO_BORRADA)
+        return self.filter(reported_by=user).exclude(estado=CampanaDialer.ESTADO_BORRADA)
 
 class CampanaDialer(models.Model):
     """Una campaña del call center"""
@@ -717,6 +809,17 @@ class CampanaDialer(models.Model):
         (RRMEMORY, 'Rremory'),
     )
 
+    FORMULARIO = 1
+    "El tipo de interaccion es por formulario"
+
+    SITIO_EXTERNO = 2
+    "El tipo de interaccion es por sitio externo"
+
+    TIPO_INTERACCION = (
+        (FORMULARIO, "Formulario"),
+        (SITIO_EXTERNO, "Url externa")
+    )
+
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
@@ -732,7 +835,7 @@ class CampanaDialer(models.Model):
         null=True, blank=True,
         related_name="%(class)ss"
     )
-    formulario = models.ForeignKey(Formulario)
+    formulario = models.ForeignKey(Formulario, null=True, blank=True)
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     oculto = models.BooleanField(default=False)
     gestion = models.CharField(max_length=128, default="Venta")
@@ -754,6 +857,12 @@ class CampanaDialer(models.Model):
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
     ep_id_wombat = models.IntegerField(null=True, blank=True)
+    sitio_externo = models.ForeignKey("SitioExterno", null=True, blank=True)
+    tipo_interaccion = models.PositiveIntegerField(
+        choices=TIPO_INTERACCION,
+        default=FORMULARIO,
+    )
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __unicode__(self):
             return self.nombre
@@ -912,6 +1021,20 @@ class CampanaDialer(models.Model):
                         valida = False
         return valida
 
+    def valida_reglas_incidencia(self, regla_incidencia):
+        """
+        Este metodo valida si es posible agrega nueva regla de incidencia
+        :param regla_incidencia: en una ReglaIncidencia
+        :return: si es valida agregar
+        """
+        reglas_incidencia = [regla.estado for regla in self.reglas_incidencia.all()]
+
+        valida = False
+        for regla in reglas_incidencia:
+            if regla is regla_incidencia.estado:
+                valida = True
+                break
+        return valida
 
 class CampanaMemberManager(models.Manager):
 
@@ -1885,7 +2008,7 @@ class CalificacionCliente(models.Model):
 
     objects = CalificacionClienteManager()
 
-    campana = models.ForeignKey(CampanaDialer, related_name="calificaconcliente")
+    campana = models.ForeignKey(Campana, related_name="calificaconcliente")
     contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
     es_venta = models.BooleanField(default=False)
     calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
@@ -1942,7 +2065,7 @@ class DuracionDeLlamada(models.Model):
 
 class MetadataCliente(models.Model):
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
-    campana = models.ForeignKey(CampanaDialer, related_name="metadatacliente")
+    campana = models.ForeignKey(Campana, related_name="metadatacliente")
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
@@ -1983,7 +2106,7 @@ class WombatLogManager(models.Manager):
 class WombatLog(models.Model):
     objects = WombatLogManager()
 
-    campana = models.ForeignKey(CampanaDialer, related_name="logswombat")
+    campana = models.ForeignKey(Campana, related_name="logswombat")
     contacto = models.ForeignKey(Contacto)
     agente = models.ForeignKey(AgenteProfile, related_name="logsaagente",
                                blank=True, null=True)
@@ -2274,7 +2397,7 @@ class ActuacionVigente(models.Model):
 
     """Dias de la semana, compatibles con datetime.date.weekday()"""
 
-    campana = models.OneToOneField('CampanaDialer')
+    campana = models.OneToOneField(Campana)
     domingo = models.BooleanField()
     lunes = models.BooleanField()
     martes = models.BooleanField()
@@ -2355,3 +2478,86 @@ class ContactoBacklist(models.Model):
 
     def __unicode__(self):
         return "Telefono no llame {0}  ".format(self.telefono)
+
+
+class SitioExterno(models.Model):
+    """
+    sitio externo para embeber en el agente
+    """
+
+    nombre = models.CharField(max_length=128)
+    url = models.CharField(max_length=256)
+
+    def __unicode__(self):
+        return "Sitio: {0} - url: {1}".format(self.nombre, self.url)
+
+
+class ReglasIncidencia(models.Model):
+    """
+    Reglas de llamada de wombat para las campañas dialer
+    """
+
+    RS_BUSY = 1
+    "Regla de llamado para ocupado"
+
+    TERMINATED = 2
+    "Regla para llamada terminado"
+
+    RS_NOANSWER = 3
+    "Regla para llamada no atendida"
+
+    RS_REJECTED = 4
+    "Regla para llamada rechazada"
+
+    RS_TIMEOUT = 5
+    "Regla para timeout"
+
+    ESTADOS_CHOICES = (
+        (RS_BUSY, "Ocupado"),
+        (TERMINATED, "Contestador"),
+        (RS_NOANSWER, "No atendido"),
+        (RS_REJECTED, "Rechazado"),
+        (RS_TIMEOUT, "Timeout")
+    )
+
+    FIXED = 1
+
+    MULT = 2
+
+    EN_MODO_CHOICES = (
+        (FIXED, "FIXED"),
+        (MULT, "MULT")
+    )
+
+    campana = models.ForeignKey(Campana, related_name='reglas_incidencia')
+    estado = models.PositiveIntegerField(choices=ESTADOS_CHOICES)
+    estado_personalizado = models.CharField(max_length=128, blank=True, null=True)
+    intento_max = models.IntegerField()
+    reintentar_tarde = models.IntegerField()
+    en_modo = models.PositiveIntegerField(choices=EN_MODO_CHOICES, default=MULT)
+
+    def __unicode__(self):
+        return "Regla de incidencia para la campana: {0} - estado: {1}".format(
+            self.campana.nombre, self.estado)
+
+    def get_estado_wombat(self):
+        if self.estado is ReglasIncidencia.RS_BUSY:
+            return "RS_BUSY"
+        elif self.estado is ReglasIncidencia.TERMINATED:
+            return "TERMINATED"
+        elif self.estado is ReglasIncidencia.RS_NOANSWER:
+            return "RS_NOANSWER"
+        elif self.estado is ReglasIncidencia.RS_REJECTED:
+            return "RS_REJECTED"
+        elif self.estado is ReglasIncidencia.RS_TIMEOUT:
+            return "RS_TIMEOUT"
+        else:
+            return ""
+
+    def get_en_modo_wombat(self):
+        if self.en_modo is ReglasIncidencia.FIXED:
+            return "FIXED"
+        elif self.en_modo is ReglasIncidencia.MULT:
+            return "MULT"
+        else:
+            return ""

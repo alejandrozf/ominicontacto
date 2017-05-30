@@ -808,7 +808,8 @@ class ExportaDialerView(FormView):
     def get_object(self, queryset=None):
         return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         self.object = self.get_object()
         metadata = self.object.get_metadata()
         columnas_telefono = metadata.columnas_con_telefono
@@ -817,8 +818,8 @@ class ExportaDialerView(FormView):
                        columnas_telefono if columna > 6]
         campana_choice = [(campana.id, campana.nombre) for campana in
                           self.object.campanas.all()]
-        return form_class(campana_choice=campana_choice, tts_choices=tts_choices
-                          , **self.get_form_kwargs())
+        return self.form_class(campana_choice=campana_choice, tts_choices=tts_choices,
+                               **self.get_form_kwargs())
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()

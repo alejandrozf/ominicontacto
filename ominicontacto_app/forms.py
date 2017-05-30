@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember,
-    ActuacionVigente, Backlist
+    ActuacionVigente, Backlist, SitioExterno, ReglasIncidencia
 )
 
 
@@ -111,6 +111,11 @@ class QueueForm(forms.ModelForm):
     El form de cola para las llamadas
     """
 
+    def __init__(self, *args, **kwargs):
+        super(QueueForm, self).__init__(*args, **kwargs)
+        self.fields['timeout'].required = True
+        self.fields['retry'].required = True
+
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
@@ -131,6 +136,11 @@ class QueueMemberForm(forms.ModelForm):
     El form de miembro de una cola
     """
 
+    def __init__(self, members, *args, **kwargs):
+        super(QueueMemberForm, self).__init__(*args, **kwargs)
+
+        self.fields['member'].queryset = members
+
     class Meta:
         model = QueueMember
         fields = ('member', 'penalty')
@@ -140,6 +150,11 @@ class QueueUpdateForm(forms.ModelForm):
     """
     El form para actualizar la cola para las llamadas
     """
+
+    def __init__(self, *args, **kwargs):
+        super(QueueUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['timeout'].required = True
+        self.fields['retry'].required = True
 
     class Meta:
         model = Queue
@@ -280,9 +295,18 @@ class CampanaForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario', 'gestion')
+                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo', 'tipo_interaccion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
+        }
+
+        widgets = {
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
         }
 
 
@@ -311,8 +335,7 @@ class CampanaUpdateForm(forms.ModelForm):
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
-            #"fecha_inicio": forms.TextInput(attrs={'class': 'form-control'}),
-            #"fecha_fin": forms.TextInput(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 
@@ -635,6 +658,7 @@ class AgendaContactoForm(forms.ModelForm):
 
 
 class CampanaDialerForm(forms.ModelForm):
+
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
 
@@ -651,7 +675,8 @@ class CampanaDialerForm(forms.ModelForm):
         model = CampanaDialer
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
                   'bd_contacto', 'formulario', 'gestion', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait', 'auto_grabacion')
+                  'servicelevel', 'strategy', 'weight', 'wait', 'auto_grabacion',
+                  'sitio_externo', 'tipo_interaccion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -659,6 +684,7 @@ class CampanaDialerForm(forms.ModelForm):
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
@@ -666,6 +692,7 @@ class CampanaDialerForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
         }
 
 
@@ -694,21 +721,15 @@ class CampanaDialerUpdateForm(forms.ModelForm):
         self.fields['fecha_fin'].required = True
 
     class Meta:
-        model = CampanaDialer
+        model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'gestion', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion')
+                  'gestion')
+
         widgets = {
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
-            'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
         }
-
 
 class UpdateBaseDatosDialerForm(forms.ModelForm):
     usa_contestador = forms.BooleanField(required=False)
@@ -782,3 +803,79 @@ class BacklistForm(forms.ModelForm):
     class Meta:
         model = Backlist
         fields = ('nombre', 'archivo_importacion')
+
+
+class SitioExternoForm(forms.ModelForm):
+
+    class Meta:
+        model = SitioExterno
+        fields = ('nombre', 'url')
+
+        widgets = {
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
+            "url": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ReglasIncidenciaForm(forms.ModelForm):
+
+    class Meta:
+        model = ReglasIncidencia
+        fields = ('campana', 'estado', 'intento_max', 'reintentar_tarde')
+
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'estado': forms.Select(attrs={'class': 'form-control'}),
+            "intento_max": forms.TextInput(attrs={'class': 'form-control'}),
+            "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class QueueDialerForm(forms.ModelForm):
+    """
+    El form de cola para las llamadas
+    """
+
+    class Meta:
+        model = Queue
+        fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
+                  'wait', 'auto_grabacion', 'campana')
+
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'name': forms.HiddenInput(),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class QueueDialerUpdateForm(forms.ModelForm):
+    """
+    El form para actualizar la cola para las llamadas
+    """
+
+    class Meta:
+        model = Queue
+        fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
+                  'auto_grabacion')
+        widgets = {
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+    def clean(self):
+        maxlen = self.cleaned_data.get('maxlen')
+        if not maxlen > 0:
+            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
+                                        ' mayor a cero')
+
+        return self.cleaned_data

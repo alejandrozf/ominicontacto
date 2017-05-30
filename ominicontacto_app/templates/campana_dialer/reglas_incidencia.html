@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_js %}
+<script>
+$(document).ready(function() {
+    $('#id_hora_desde').datetimepicker({
+        format: 'HH:mm',
+    });
+    $('#id_hora_hasta').datetimepicker({
+        format: 'HH:mm',
+    });
+
+});
+</script>
+{% endblock %}
+{% block content %}
+            <ul class="nav nav-tabs">
+                <li><a href="{% url 'campana_dialer_update' campana.pk %}" >Campaña</a></li>
+                <li><a>Cola</a></li>
+                <li class="disabled"><a>Actuacion</a></li>
+                <li class="active"><a>Reglas Incidencias</a></li>
+                <li class="disabled"><a>Sincronizar</a></li>
+            </ul>
+            <br>
+            <form role="form" method="post">
+            <div class="col-lg-4">
+      {% csrf_token %}
+    {{ form.non_field_errors }}
+                {{form.campana}}
+    <div class="form-group row">
+        {{ form.estado.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.estado.id_for_label }}">Estado: </label>
+        <div class="col-sm-6">
+              {{ form.estado }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.intento_max.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.intento_max.id_for_label }}">Intentos max.: </label>
+        <div class="col-sm-3">
+              {{ form.intento_max }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.reintentar_tarde.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.reintentar_tarde.id_for_label }}">Reintentar más tarde: </label>
+        <div class="col-sm-3">
+              {{ form.reintentar_tarde }}
+        </div>
+    </div>
+            </div>
+            <div class="col-lg-6">
+                {% if campana %}
+                    <h4>Reglas de incidencia</h4>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr class="fts-table-bg">
+                            <th>Estado</th>
+                            <th>Con estado personalizado</th>
+                            <th>Reintentar más tarde</th>
+                            <th>Modo de reintento</th>
+                            <th>Intento max.</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for reglas in campana.reglas_incidencia.all %}
+                                <tr>
+                                    <td>{{reglas.get_estado_display}}</td>
+                                    <td>
+                                        {% if reglas.estado_personalizado %}
+                                            {{ reglas.estado_personalizado }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ reglas.reintentar_tarde }}s.</td>
+                                    <td>{{ reglas.get_en_modo_display}}</td>
+                                    <td>{{ reglas.intento_max }}</td>
+                                    <td>
+                                        <a href="{% url 'delete_regla_incidencia_campana_dialer' campana.pk reglas.pk %}"> Eliminar</a>
+
+                                    </td>       
+                                </tr>
+                             {% empty %}
+                                <tr>
+                                    <td colspan="6">
+                                        <p class="text-center text-danger">
+                                            <em>No se encontraron reglas creadas.</em>
+                                        </p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+            <div class="col-lg-12">
+                <br>
+                <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Agregar Regla
+                </button>
+
+<a href="{% url 'campana_dialer_sincronizar' campana.pk %}" class="btn btn-default pull-right" role="button">
+                            Continuar <span class="glyphicon glyphicon-chevron-right"></span>
+                        </a>
+
+            </div>
+            </form>        
+        </div>
+    </div>
+{% endblock %}

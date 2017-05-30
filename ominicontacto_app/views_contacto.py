@@ -97,11 +97,12 @@ class ContactoBDContactoCreateView(CreateView):
         initial = super(ContactoBDContactoCreateView, self).get_initial()
         initial.update({'bd_contacto': self.kwargs['bd_contacto']})
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -156,12 +157,13 @@ class ContactoBDContactoUpdateView(UpdateView):
             initial.update({nombre: dato})
         return initial
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])

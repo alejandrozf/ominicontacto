@@ -120,7 +120,7 @@ class RescheduleRuleCreator(object):
             "statusExt": parametros[1],
             "maxAttempts": parametros[2],
             "retryAfterS": parametros[3],
-            "mode": "FIXED"
+            "mode": parametros[4]
         }
 
         return json.dumps(dict_reschedule)
@@ -153,7 +153,7 @@ class EndPointCreator(object):
             },
             "idx": "",
             "campaignId": "",
-            "maxChannels": campana.maxlen,
+            "maxChannels": campana.queue_campana.maxlen,
             "extension": "098098",
             "context": "from-wombat-general-contact",
             "boostFactor": 1,
@@ -189,7 +189,7 @@ class CampanaEndPointCreator(object):
 
         dict_trunk = {
             "epId": {
-                "epId": campana.ep_id_wombat
+                "epId": campana.queue_campana.ep_id_wombat
             }
         }
 

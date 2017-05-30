@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for agente in object_list %}
+        {% for agente in agentes %}
             <tr>
                 <td>{{ agente.id }}</td>
                 <td>{{ agente.user.get_full_name}}</td>

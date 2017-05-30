@@ -8,7 +8,9 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import AgenteProfile, Queuelog, Campana, Queue
+from ominicontacto_app.models import (
+    AgenteProfile, Queuelog, Campana, Queue
+)
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
 import logging as _logging
@@ -132,7 +134,6 @@ class EstadisticasCampanaLlamadasService():
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
 
         cola = Queue.objects.obtener_all_except_borradas()
-        campanas = Campana.objects.obtener_all_except_borradas()
 
         queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
             cola, fecha_inferior, fecha_superior)

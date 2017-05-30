@@ -52,11 +52,17 @@ class CampanaListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CampanaListView, self).get_context_data(
            **kwargs)
-        context['inactivas'] = Campana.objects.obtener_inactivas()
-        context['pausadas'] = Campana.objects.obtener_pausadas()
-        context['activas'] = Campana.objects.obtener_activas()
-        context['borradas'] = Campana.objects.obtener_borradas().filter(
-            oculto=False)
+        campanas = Campana.objects.obtener_campanas_entrantes()
+
+        if self.request.user.is_authenticated() and self.request.user:
+            user = self.request.user
+            campanas = campanas.filter(reported_by=user)
+
+        context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
+        context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
+        context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
+        context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
+                                              oculto=False)
         return context
 
 
@@ -337,7 +343,8 @@ class FormularioSeleccionCampanaFormView(FormView):
         return super(FormularioSeleccionCampanaFormView,
                      self).dispatch(request, *args, **kwargs)
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         if self.request.user.is_authenticated()\
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
@@ -346,8 +353,7 @@ class FormularioSeleccionCampanaFormView(FormView):
 
         campana_choice = [(campana.id, campana.nombre) for campana in
                           campanas]
-        return form_class(campana_choice=campana_choice,
-                          **self.get_form_kwargs())
+        return self.form_class(campana_choice=campana_choice,   **self.get_form_kwargs())
 
     def form_valid(self, form):
         campana = form.cleaned_data.get('campana')
@@ -363,12 +369,13 @@ class FormularioNuevoContactoFormView(FormView):
     form_class = FormularioNuevoContacto
     template_name = 'agente/nuevo_contacto_campana.html'
 
-    def get_form(self, form_class):
+    def get_form(self):
+        self.form_class = self.get_form_class()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         base_datos = campana.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
-        return form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def form_valid(self, form):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
