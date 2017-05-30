@@ -34,7 +34,7 @@ class EstadisticasService():
 
     def _obtener_agentes(self):
         agentes = []
-        for agente in AgenteProfile.objects.all():
+        for agente in AgenteProfile.objects.filter(reported_by=self.request.user):
             agentes.append(agente.user.get_full_name())
         return agentes
 
