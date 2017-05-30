@@ -32,9 +32,9 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 
 class EstadisticasService():
 
-    def _obtener_agentes(self):
+    def _obtener_agentes(self, user):
         agentes = []
-        for agente in AgenteProfile.objects.filter(reported_by=self.request.user):
+        for agente in AgenteProfile.objects.filter(reported_by=user):
             agentes.append(agente.user.get_full_name())
         return agentes
 
@@ -306,8 +306,8 @@ class EstadisticasService():
         return agentes_tiempo
 
 
-    def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
-        agentes = self._obtener_agentes()
+    def _calcular_estadisticas(self, fecha_inferior, fecha_superior, user):
+        agentes = self._obtener_agentes(user)
         #agentes_tiempo = self.calcular_tiempo_sesion(agentes, fecha_inferior,
          #                                            fecha_superior)
         agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
@@ -330,9 +330,9 @@ class EstadisticasService():
         }
         return dic_estadisticas
 
-    def general_campana(self, fecha_inferior, fecha_superior):
+    def general_campana(self, fecha_inferior, fecha_superior, user):
         estadisticas = self._calcular_estadisticas(fecha_inferior,
-                                                   fecha_superior)
+                                                   fecha_superior, user)
 
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
