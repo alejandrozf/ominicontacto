@@ -325,7 +325,7 @@ class ActuacionVigenteCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, Cre
                 messages.ERROR,
                 message,
             )
-        return self.render_to_response(context)
+        return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):
         context = super(
