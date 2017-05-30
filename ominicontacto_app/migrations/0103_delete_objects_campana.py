@@ -13,7 +13,7 @@ def create_delete_objects_models(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0103_remove_campana_nombre'),
+        ('ominicontacto_app', '0102_auto_20170529_1517'),
     ]
 
     operations = [
