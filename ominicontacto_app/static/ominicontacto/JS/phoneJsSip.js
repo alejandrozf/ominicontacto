@@ -142,7 +142,7 @@ $(function() {
 				fromUser = "";
 				if($("#auto_unpause").val()) {
 					var timeoutACW = $("#auto_unpause").val();
-					timeoutACW = timeoutACW * 100;
+					timeoutACW = timeoutACW * 1000;
 					var toOnline = function() {
 						num = "0077UNPAUSE";
 				    makeCall();
@@ -150,12 +150,7 @@ $(function() {
 					};
 					setTimeout(toOnline, timeoutACW);
 				}
-	    } /*else if(calltypeId == 5) {
-				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
-				$("#Resume").prop('disabled', objLastPause.LastBtnStatusResume);
-				$("#sipLogout").prop('disabled', objLastPause.LastBtnStatusSipLogout);
-				updateButton(modifyUserStat, objLastPause.LastStatusAgentClass, objLastPause.LastStatusAgent);
-			} */else {
+	    } else {
 			  if(num.substring(4,0) != '0077') { // INGRESA CUANDO CORTA LA LLAMADA CONTRA KAMAILIO, EJ 0077UNPAUSE
 					$("#Pause").prop('disabled',false);
 					$("#Resume").prop('disabled',true);
@@ -694,6 +689,35 @@ $(function() {
   	var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
   	$("#dataView").attr('src', url);
   }
+
+	function getIframe(campanaid) {
+		$.ajax({
+      type: "get",
+	   	url: "///",
+	   	contentType: "text/html",
+	   	data : "campana_id="+campanaid,
+			success: function (msg) {
+				var jsonResult = JSON.parse(msg);
+				var url = "";
+				if(jsonResult.tipo_interac == 2) {
+					url = jsonResult.sitio_externo.url;
+				}
+				$("#dataView").attr('src', url);
+	   	},
+	   	error: function (jqXHR, textStatus, errorThrown) {
+	      debugger;
+	      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+	    }
+    });
+		/*tipo_interac; //= 2 "sitioexterno"
+		// 1 "url comun"
+		campana.sitio_externo.url
+		sitio_externo;
+		nombre;
+		fecha_inicio;
+		fecha_fin;
+		calificacion*/
+	}
 
   function sendStatus(pauseType,agent,statusAg) {
   	$.ajax({
