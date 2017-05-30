@@ -136,6 +136,11 @@ class QueueMemberForm(forms.ModelForm):
     El form de miembro de una cola
     """
 
+    def __init__(self, members, *args, **kwargs):
+        super(QueueMemberForm, self).__init__(*args, **kwargs)
+
+        self.fields['member'].queryset = members
+
     class Meta:
         model = QueueMember
         fields = ('member', 'penalty')

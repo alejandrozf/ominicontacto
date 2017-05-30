@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm
-from ominicontacto_app.models import Campana, Queue, QueueMember, Grupo
+from ominicontacto_app.models import Campana, Queue, QueueMember, Grupo, AgenteProfile
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
@@ -23,6 +23,11 @@ class QueueMemberCreateView(FormView):
     model = QueueMember
     form_class = QueueMemberForm
     template_name = 'queue/queue_member.html'
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        agentes = AgenteProfile.objects.filter(reported_by=self.request.user)
+        return self.form_class(members=agentes, **self.get_form_kwargs())
 
     def form_valid(self, form):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -71,7 +76,8 @@ class GrupoAgenteCreateView(FormView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         grupo_id = form.cleaned_data.get('grupo')
         grupo = Grupo.objects.get(pk=grupo_id)
-        for agente in grupo.agentes.all():
+        agentes = grupo.agentes.filter(reported_by=self.request.user)
+        for agente in agentes:
             QueueMember.objects.get_or_create(
                 member=agente,
                 queue_name=campana.queue_campana,
@@ -117,7 +123,10 @@ class QueueMemberCampanaView(TemplateView):
                 messages.ERROR,
                 message,
             )
-        queue_member_form = QueueMemberForm(self.request.GET or None)
+
+        agentes = AgenteProfile.objects.filter(reported_by=request.user)
+        queue_member_form = QueueMemberForm(data=self.request.GET or None,
+                                            members= agentes)
         grupo_agente_form = GrupoAgenteForm(self.request.GET or None)
         context = self.get_context_data(**kwargs)
         context['queue_member_form'] = queue_member_form
