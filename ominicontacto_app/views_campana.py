@@ -52,14 +52,17 @@ class CampanaListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CampanaListView, self).get_context_data(
            **kwargs)
-        context['inactivas'] = Campana.objects.obtener_inactivas().filter(
-            type=Campana.TYPE_ENTRANTE)
-        context['pausadas'] = Campana.objects.obtener_pausadas().filter(
-            type=Campana.TYPE_ENTRANTE)
-        context['activas'] = Campana.objects.obtener_activas().filter(
-            type=Campana.TYPE_ENTRANTE)
-        context['borradas'] = Campana.objects.obtener_borradas().filter(
-            oculto=False, type=Campana.TYPE_ENTRANTE)
+        campanas = Campana.objects.obtener_campanas_entrantes()
+
+        if self.request.user.is_authenticated() and self.request.user:
+            user = self.request.user
+            campanas = campanas.filter(reported_by=user)
+
+        context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
+        context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
+        context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
+        context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
+                                              oculto=False)
         return context
 
 

@@ -36,26 +36,17 @@ class CampanaDialerListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CampanaDialerListView, self).get_context_data(
            **kwargs)
+        campanas = Campana.objects.obtener_campanas_dialer()
 
-        user = None
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated() and self.request.user:
             user = self.request.user
+            campanas = campanas.filter(reported_by=user)
 
-        # if user:
-        #     context['inactivas'] = CampanaDialer.objects.obtener_inactivas(user)
-        #     context['pausadas'] = CampanaDialer.objects.obtener_pausadas(user)
-        #     context['activas'] = CampanaDialer.objects.obtener_activas(user)
-        #     context['borradas'] = CampanaDialer.objects.obtener_borradas(user).filter(
-        #         oculto=False)
-
-        context['inactivas'] = Campana.objects.obtener_inactivas().filter(
-            type=Campana.TYPE_DIALER)
-        context['pausadas'] = Campana.objects.obtener_pausadas().filter(
-            type=Campana.TYPE_DIALER)
-        context['activas'] = Campana.objects.obtener_activas().filter(
-            type=Campana.TYPE_DIALER)
-        context['borradas'] = Campana.objects.obtener_borradas().filter(
-            oculto=False, type=Campana.TYPE_DIALER)
+        context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
+        context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
+        context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
+        context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
+                                              oculto=False)
         return context
 
 
