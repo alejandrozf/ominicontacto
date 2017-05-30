@@ -173,6 +173,18 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         servicio_asterisk.insertar_cola_asterisk(self.object)
         self.campana.estado = Campana.ESTADO_ACTIVA
         self.campana.save()
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
         return super(QueueCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -202,6 +214,21 @@ class QueueUpdateView(UpdateView):
                                         + "/cola/")
         else:
             return super(QueueUpdateView, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        return super(QueueUpdateView, self).post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(QueueUpdateView, self).get_context_data(**kwargs)

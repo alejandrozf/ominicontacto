@@ -312,6 +312,21 @@ class ActuacionVigenteCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, Cre
         initial.update({'campana': self.campana.id})
         return initial
 
+    def get(self, request, *args, **kwargs):
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super(
             ActuacionVigenteCampanaDialerCreateView, self).get_context_data(**kwargs)
