@@ -136,6 +136,7 @@ class AgenteProfile(models.Model):
     modulos = models.ManyToManyField(Modulo)
     grupo = models.ForeignKey(Grupo, related_name='agentes')
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
+    reported_by = models.ForeignKey(User, related_name="reportedby")
 
     def __unicode__(self):
         return self.user.get_full_name()
