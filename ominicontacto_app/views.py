@@ -190,6 +190,7 @@ class AgenteProfileCreateView(CreateView):
         self.object.sip_extension = AgenteProfile.objects.\
             obtener_ultimo_sip_extension()
         self.object.sip_password = User.objects.make_random_password()
+        self.object.reported_by = self.request.user
         self.object.save()
         kamailio_service = KamailioService()
         kamailio_service.crear_agente_kamailio(self.object)
@@ -276,6 +277,18 @@ class ModuloListView(ListView):
 class AgenteListView(ListView):
     model = AgenteProfile
     template_name = 'agente_profile_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AgenteListView, self).get_context_data(
+           **kwargs)
+        agentes = AgenteProfile.objects.all()
+
+        if self.request.user.is_authenticated() and self.request.user:
+            user = self.request.user
+            agentes = agentes.filter(reported_by=user)
+
+        context['agentes'] = agentes
+        return context
 
 
 class SupervisorListView(ListView):
