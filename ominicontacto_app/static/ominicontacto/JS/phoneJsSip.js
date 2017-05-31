@@ -383,7 +383,7 @@ $(function() {
 					   	url: "/campana/"+CampIdHeader+"/mostrar_json/",
 					   	contentType: "text/html",
 							success: function (msg) {
-								if(msg.tipo_interaccion == 2) {
+								if(msg.tipo_interacion == 2) {
 									link = msg.url_sitio_externo;
 									if(link === "") {
 										getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
