@@ -53,12 +53,22 @@
               {{ campana.bd_contacto }}
         </div>
     </div>
-   <div class="form-group row">
+    {% if campana.tipo_interaccion == 1 %}
+    <div class="form-group row">
         <label class="col-sm-3 control-label">Formulario: </label>
         <div class="col-sm-6">
               {{ campana.formulario }}
         </div>
     </div>
+    {% endif %}
+    {% if campana.tipo_interaccion == 2 %}
+    <div class="form-group row">
+        <label class="col-sm-3 control-label">Sitio externo: </label>
+        <div class="col-sm-6">
+              {{ campana.sitio_externo }}
+        </div>
+    </div>
+    {% endif %}
     <div class="form-group row">
         {{ form.gestion.errors }}
         <label class="col-sm-3 control-label">Gestion: </label>
