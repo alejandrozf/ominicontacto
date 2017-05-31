@@ -145,8 +145,10 @@ $(function() {
 					timeoutACW = timeoutACW * 1000;
 					var toOnline = function() {
 						num = "0077UNPAUSE";
-				    makeCall();
-						$("#Resume").trigger('click');
+						if($("#UserStatus").html() === "ACW") {
+							makeCall();
+							$("#Resume").trigger('click');
+						}
 					};
 					setTimeout(toOnline, timeoutACW);
 				}
