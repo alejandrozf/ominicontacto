@@ -383,7 +383,10 @@ $(function() {
 					   	url: "/campana/"+CampIdHeader+"/mostrar_json/",
 					   	contentType: "text/html",
 							success: function (msg) {
-
+								debugger;
+								console.log(msg);
+								var a = msg.campana;
+								var jsonObj = JSON.parse(msg);
 								if(msg.tipo_interaccion == 2) {
 									link = msg.url_sitio_externo;
 									if(link === "") {
