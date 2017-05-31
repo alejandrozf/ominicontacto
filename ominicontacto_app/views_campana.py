@@ -474,17 +474,17 @@ class CampanaReporteQueueListView(FormView):
 
 def campana_json_view(request, pk_campana):
     campana = Campana.objects.get(pk=pk_campana)
-    nombre_iteracion = 'SITIO_EXTERNO'
+    nombre_interacion = 'SITIO_EXTERNO'
     if campana.tipo_interaccion is Campana.FORMULARIO:
-        nombre_iteracion = 'FORMULARIO'
+        nombre_interacion = 'FORMULARIO'
     url_sitio_externo = None
     if campana.sitio_externo:
         url_sitio_externo = campana.sitio_externo.url
     repuesta = {
         'campana': campana.nombre,
         'pk_campana': campana.pk,
-        'tipo_iteraccion': campana.tipo_interaccion,
-        'nombre_iteracion': nombre_iteracion,
+        'tipo_interaccion': campana.tipo_interaccion,
+        'nombre_interacion': nombre_interacion,
         'url_sitio_externo': url_sitio_externo
     }
     response = JsonResponse(repuesta)
