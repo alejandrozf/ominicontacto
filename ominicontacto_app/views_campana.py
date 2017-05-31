@@ -6,7 +6,7 @@ import json
 import datetime
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView)
@@ -470,3 +470,22 @@ class CampanaReporteQueueListView(FormView):
 
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
+
+
+def campana_json_view(request, pk_campana):
+    campana = Campana.objects.get(pk=pk_campana)
+    nombre_interacion = 'SITIO_EXTERNO'
+    if campana.tipo_interaccion is Campana.FORMULARIO:
+        nombre_interacion = 'FORMULARIO'
+    url_sitio_externo = None
+    if campana.sitio_externo:
+        url_sitio_externo = campana.sitio_externo.url
+    repuesta = {
+        'campana': campana.nombre,
+        'pk_campana': campana.pk,
+        'tipo_interaccion': campana.tipo_interaccion,
+        'nombre_interacion': nombre_interacion,
+        'url_sitio_externo': url_sitio_externo
+    }
+    response = JsonResponse(repuesta)
+    return response

@@ -299,6 +299,9 @@ urlpatterns = [
             views_campana.CampanaReporteQueueListView.as_view()),
         name='reporte_llamadas_queue',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/mostrar_json/$',
+        login_required(views_campana.campana_json_view),
+        ),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
