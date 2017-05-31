@@ -376,7 +376,12 @@ $(function() {
 
         if(CampIdHeader) {
         	if(leadIdHeader) {
-        		getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
+						var link = getIframe(CampIdHeader);
+						if(link === "") {
+							getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
+						} else {
+							$("#dataView").attr('src', link);
+						}
         	} else {
         		if(fromUser !== "Unknown") {
         	    processCallid(fromUser);
@@ -691,24 +696,23 @@ $(function() {
   }
 
 	function getIframe(campanaid) {
+		var url = "";
 		$.ajax({
       type: "get",
-	   	url: "///",
+	   	url: "/campana/"+campanaid+"/mostrar_json/",
 	   	contentType: "text/html",
-	   	data : "campana_id="+campanaid,
 			success: function (msg) {
 				var jsonResult = JSON.parse(msg);
-				var url = "";
-				if(jsonResult.tipo_interac == 2) {
-					url = jsonResult.sitio_externo.url;
+				if(jsonResult.tipo_interaccion == 2) {
+					url = jsonResult.url_sitio_externo;
 				}
-				$("#dataView").attr('src', url);
 	   	},
 	   	error: function (jqXHR, textStatus, errorThrown) {
 	      debugger;
 	      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	    }
     });
+		return url;
 		/*tipo_interac; //= 2 "sitioexterno"
 		// 1 "url comun"
 		campana.sitio_externo.url
