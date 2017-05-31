@@ -383,9 +383,9 @@ $(function() {
 					   	url: "/campana/"+CampIdHeader+"/mostrar_json/",
 					   	contentType: "text/html",
 							success: function (msg) {
-								var jsonResult = JSON.parse(msg);
-								if(jsonResult.tipo_interaccion == 2) {
-									link = jsonResult.url_sitio_externo;
+
+								if(msg.tipo_interaccion == 2) {
+									link = msg.url_sitio_externo;
 									if(link === "") {
 										getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
 									} else {
