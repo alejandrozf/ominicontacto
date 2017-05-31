@@ -383,15 +383,13 @@ $(function() {
 					   	url: "/campana/"+CampIdHeader+"/mostrar_json/",
 					   	contentType: "text/html",
 							success: function (msg) {
-								if(msg.tipo_interacion == 2) {
+								if(msg.tipo_interaccion === 2) {
+									$("#dataView").attr('src', link);
 									link = msg.url_sitio_externo;
-									if(link === "") {
+								} else {
 										getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
-									} else {
-										$("#dataView").attr('src', link);
-									}
 								}
-					   	},
+					    },
 					   	error: function (jqXHR, textStatus, errorThrown) {
 					      debugger;
 					      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
