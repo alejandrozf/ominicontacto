@@ -384,8 +384,8 @@ $(function() {
 					   	contentType: "text/html",
 							success: function (msg) {
 								if(msg.tipo_interaccion === 2) {
-									$("#dataView").attr('src', link);
 									link = msg.url_sitio_externo;
+									$("#dataView").attr('src', link);
 								} else {
 										getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
 								}
