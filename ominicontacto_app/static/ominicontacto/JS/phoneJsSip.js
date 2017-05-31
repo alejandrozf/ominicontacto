@@ -380,7 +380,7 @@ $(function() {
 
 						$.ajax({
 				      type: "get",
-					   	url: "/campana/"+campanaid+"/mostrar_json/",
+					   	url: "/campana/"+CampIdHeader+"/mostrar_json/",
 					   	contentType: "text/html",
 							success: function (msg) {
 								var jsonResult = JSON.parse(msg);
