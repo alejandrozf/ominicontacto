@@ -376,12 +376,29 @@ $(function() {
 
         if(CampIdHeader) {
         	if(leadIdHeader) {
-						var link = getIframe(CampIdHeader);
-						if(link === "") {
-							getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
-						} else {
-							$("#dataView").attr('src', link);
-						}
+						var link = "";
+
+						$.ajax({
+				      type: "get",
+					   	url: "/campana/"+campanaid+"/mostrar_json/",
+					   	contentType: "text/html",
+							success: function (msg) {
+								var jsonResult = JSON.parse(msg);
+								if(jsonResult.tipo_interaccion == 2) {
+									link = jsonResult.url_sitio_externo;
+									if(link === "") {
+										getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
+									} else {
+										$("#dataView").attr('src', link);
+									}
+								}
+					   	},
+					   	error: function (jqXHR, textStatus, errorThrown) {
+					      debugger;
+					      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+					    }
+				    });
+
         	} else {
         		if(fromUser !== "Unknown") {
         	    processCallid(fromUser);
