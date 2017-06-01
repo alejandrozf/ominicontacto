@@ -216,14 +216,15 @@ class DefineBaseDatosContactoView(UpdateView):
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
         if estructura_archivo:
             cantidad_de_columnas = len(estructura_archivo[0])
-
+            parser = ParserCsv()
+            encoding = parser.detectar_encoding_csv(estructura_archivo)
             try:
                 error_predictor = False
                 error_predictor_encabezado = False
 
                 predictor_metadata = PredictorMetadataService()
                 metadata = predictor_metadata.inferir_metadata_desde_lineas(
-                    estructura_archivo)
+                    estructura_archivo, encoding)
             except NoSePuedeInferirMetadataError:
                 initial_predecido_columna_telefono = {}
                 initial_predecido_datos_extras = {}

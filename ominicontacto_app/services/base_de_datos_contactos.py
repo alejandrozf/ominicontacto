@@ -82,12 +82,14 @@ class CreacionBaseDatosService(object):
 
         try:
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
+            encoding = parser.detectar_encoding_csv(estructura_archivo)
             cantidad_contactos = 0
             if base_datos_contacto.cantidad_contactos:
                 cantidad_contactos = base_datos_contacto.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
                 if len(lista_dato) > 2:
-                    datos = json.dumps(lista_dato[1:])
+                    item = [value.decode(encoding) for value in lista_dato[1:]]
+                    datos = json.dumps(item)
                 else:
                     datos = ""
                 cantidad_contactos += 1
@@ -234,7 +236,7 @@ class PredictorMetadataService(object):
         nombre = elimina_tildes(nombre)
         return nombre
 
-    def inferir_metadata_desde_lineas(self, lineas_unsafe):
+    def inferir_metadata_desde_lineas(self, lineas_unsafe, encoding):
         """Infiere los metadatos desde las lineas pasadas por parametros.
 
         Devuelve instancias de MetadataBaseDatosContactoDTO.
@@ -244,7 +246,7 @@ class PredictorMetadataService(object):
         lineas = []
         for linea in lineas_unsafe:
             lineas.append(
-                [smart_text(col) for col in linea]
+                [smart_text(col.decode(encoding)) for col in linea]
             )
         del lineas_unsafe
 

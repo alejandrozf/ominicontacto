@@ -14,7 +14,7 @@ from django.conf import settings
 from django.utils.encoding import smart_text
 from ominicontacto_app.errors import\
     (OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserMaxRowError,
-     OmlParserCsvImportacionError)
+     OmlParserCsvImportacionError, OmlParserCsvEncodingError)
 from ominicontacto_app.models import MetadataBaseDatosContactoDTO
 
 
@@ -266,6 +266,40 @@ class ParserCsv(object):
                                            "3 filas")
         return structure_dic
 
+    def detectar_encoding_csv(self, estructura_archivo):
+        """
+        Detecta el encoding la estructura pasada por parametro
+        :param estructura_archivo: estructura del archiva
+        :return: retorna el enconding del archivo
+        """
+
+        error_utf_8 = False
+        error_iso = False
+        for item in estructura_archivo:
+            for value in item:
+                try:
+                    value.decode('utf-8')
+                except UnicodeDecodeError:
+                    error_utf_8 = True
+                    break
+
+        if not error_utf_8:
+            return "utf-8"
+        else:
+            for item in estructura_archivo:
+                for value in item:
+                    try:
+                        value.decode('iso-8859-1')
+                    except UnicodeDecodeError:
+                        error_iso = True
+                    break
+
+        if error_iso:
+            logger.warn("No se pudo detectar el encoding del archivo csv")
+            raise OmlParserCsvEncodingError("No se pudo detectar el encoding"
+                                            " del archivo csv")
+        else:
+            return "iso-8859-1"
 
 # =============================================================================
 # Funciones utilitarias
