@@ -310,7 +310,7 @@ $(function() {
 	    }
 	  }
 	 //****************************CRONOMETRO DE LLAMADA***********************************
-	 function reinicio3(horaDOM, minDOM, segDOM) {
+	 function reinicio3(horaDOM, minDOM, segDOM) { // Cronometro embebido en el webphone
 	    clearInterval(control);
 	    centesimasC = 0;
 	    segundosC = 0;
@@ -319,7 +319,7 @@ $(function() {
 	    minDOM.html(":00");
 	    horaDOM.html("00");
   	}
-	 function cronometro3() {
+	 function cronometro3() { // Cronometro embebido en el webphone
 	     if (centesimasC < 59) {
 	         centesimasC++;
 	         if (centesimasC < 10) {
@@ -378,26 +378,14 @@ $(function() {
 
         if(CampIdHeader) {
         	if(leadIdHeader) {
-						var link = "";
+						if(originHeader === "Dialer-Form") {
+							getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
+						} else if (originHeader === "Dialer-Url") {
+							var linkaddress = e.request.headers.ExternalLink[0].raw;
+							getIframe(linkaddress);
+						} else if (originHeader === "Dialer-JSON") {
 
-						$.ajax({
-				      type: "get",
-					   	url: "/campana/"+CampIdHeader+"/mostrar_json/",
-					   	contentType: "text/html",
-							success: function (msg) {
-								if(msg.tipo_interaccion === 2) {
-									link = msg.url_sitio_externo;
-									$("#dataView").attr('src', link);
-								} else {
-										getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
-								}
-					    },
-					   	error: function (jqXHR, textStatus, errorThrown) {
-					      debugger;
-					      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-					    }
-				    });
-
+						}
         	} else {
         		if(fromUser !== "Unknown") {
         	    processCallid(fromUser);
@@ -408,6 +396,7 @@ $(function() {
         } else {
           alert("Problemas con Identificador de Campaña");
         }
+
         $("#callerid").text(fromUser);
         if($("#modalWebCall").is(':visible')) {
           $("#modalReceiveCalls").modal('show');
@@ -711,24 +700,8 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
 
-	function getIframe(campanaid) {
-		var url = "";
-		$.ajax({
-      type: "get",
-	   	url: "/campana/"+campanaid+"/mostrar_json/",
-	   	contentType: "text/html",
-			success: function (msg) {
-				var jsonResult = JSON.parse(msg);
-				if(jsonResult.tipo_interaccion == 2) {
-					url = jsonResult.url_sitio_externo;
-				}
-	   	},
-	   	error: function (jqXHR, textStatus, errorThrown) {
-	      debugger;
-	      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-	    }
-    });
-		return url;
+	function getIframe(url) {
+		$("#dataView").attr('src', url);
 		/*tipo_interac; //= 2 "sitioexterno"
 		// 1 "url comun"
 		campana.sitio_externo.url
