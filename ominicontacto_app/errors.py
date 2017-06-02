@@ -110,6 +110,13 @@ class OmlParserMinRowError(OmlError):
     pass
 
 
+class OmlParserCsvEncodingError(OmlError):
+    """
+    Error al intentar detectar el enconding en el ParserCsv
+    """
+    pass
+
+
 class OmlParserMaxRowError(OmlError):
     """
     El archivo querido Parsear tiene mas filas de las permitidas.
