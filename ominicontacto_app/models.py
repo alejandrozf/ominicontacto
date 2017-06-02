@@ -2368,25 +2368,25 @@ class AbstractActuacion(models.Model):
                 })
 
 
-class Actuacion(AbstractActuacion):
-    """
-    Representa los días de la semana y los
-    horarios en que una campaña se ejecuta.
-    """
-
-    campana = models.ForeignKey(
-        'CampanaDialer',
-        related_name='actuacionesdialer'
-    )
-
-    def __unicode__(self):
-        return "Campaña {0} - Actuación: {1}".format(
-            self.campana,
-            self.get_dia_semanal_display(),
-        )
-
-    def get_campana(self):
-        return self.campana
+# class Actuacion(AbstractActuacion):
+#     """
+#     Representa los días de la semana y los
+#     horarios en que una campaña se ejecuta.
+#     """
+#
+#     campana = models.ForeignKey(
+#         'CampanaDialer',
+#         related_name='actuacionesdialer'
+#     )
+#
+#     def __unicode__(self):
+#         return "Campaña {0} - Actuación: {1}".format(
+#             self.campana,
+#             self.get_dia_semanal_display(),
+#         )
+#
+#     def get_campana(self):
+#         return self.campana
 
 
 class ActuacionVigente(models.Model):
