@@ -8,7 +8,7 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import AgenteProfile, Queuelog, Campana, CampanaDialer
+from ominicontacto_app.models import AgenteProfile, Queuelog, Campana
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
 import logging as _logging
@@ -138,7 +138,6 @@ class EstadisticasService():
                 agentes_tiempo.append(tiempo_agente)
 
         return agentes_tiempo
-
 
     def calcular_tiempos_agentes(self, agentes, fecha_inferior, fecha_superior):
         eventos_pausa = ['PAUSEALL', 'UNPAUSEALL']
@@ -304,7 +303,6 @@ class EstadisticasService():
                     tiempo_agente = []
 
         return agentes_tiempo
-
 
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior, user):
         agentes = self._obtener_agentes(user)

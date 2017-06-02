@@ -15,7 +15,7 @@ from django.views.generic import (
 from django.views.generic.base import RedirectView
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.forms import (
-    UpdateBaseDatosDialerForm, BusquedaContactoForm, FormularioCampanaContacto,
+    UpdateBaseDatosForm, BusquedaContactoForm, FormularioCampanaContacto,
     FormularioNuevoContacto
 )
 
@@ -26,7 +26,7 @@ logger = logging_.getLogger(__name__)
 
 class CampanaDialerListView(ListView):
     """
-    Esta vista lista los objetos CampanaDialer
+    Esta vista lista los objetos Campana de type dialer
     """
 
     template_name = 'campana_dialer/campana_list.html'
@@ -258,7 +258,7 @@ class UpdateBaseDatosDialerView(FormView):
 
     model = Campana
     context_object_name = 'campana'
-    form_class = UpdateBaseDatosDialerForm
+    form_class = UpdateBaseDatosForm
     template_name = 'base_create_update_form.html'
 
     def get_object(self, queryset=None):
