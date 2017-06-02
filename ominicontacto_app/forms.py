@@ -13,9 +13,9 @@ from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
-    Campana, Contacto, CalificacionCliente,Grupo, Formulario, FieldFormulario, Pausa,
-    MetadataCliente, AgendaContacto, CampanaDialer, Actuacion, CampanaMember,
-    ActuacionVigente, Backlist, SitioExterno, ReglasIncidencia
+    Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
+    MetadataCliente, AgendaContacto, CampanaDialer, CampanaMember, ActuacionVigente,
+    Backlist, SitioExterno, ReglasIncidencia
 )
 
 
@@ -693,20 +693,6 @@ class CampanaDialerForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "tipo_interaccion": forms.RadioSelect(),
-        }
-
-
-class ActuacionDialerForm(forms.ModelForm):
-
-    class Meta:
-        model = Actuacion
-        fields = ('dia_semanal', 'hora_desde', 'hora_hasta', 'campana')
-
-        widgets = {
-            'campana': forms.HiddenInput(),
-            'dia_semanal': forms.Select(attrs={'class': 'form-control'}),
-            "hora_desde": forms.TextInput(attrs={'class': 'form-control'}),
-            "hora_hasta": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 

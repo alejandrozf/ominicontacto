@@ -513,13 +513,6 @@ urlpatterns = [
     url(r'^campana_dialer/create/$',
         login_required(views_campana_dialer_creacion.CampanaDialerCreateView.as_view()),
         name="campana_dialer_create"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/actuacion/$',
-        login_required(views_campana_dialer_creacion.ActuacionCampanaDialerCreateView.as_view()),
-        name="actuacion_campana_dialer"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/actuacion/(?P<pk>\d+)/elimina/$',
-        login_required(
-            views_campana_dialer_creacion.ActuacionCampanaDialerDeleteView.as_view()),
-        name="actuacion_campana_dialer_elimina"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/sincronizar_lista/$',
         login_required(
             views_campana_dialer_creacion.SincronizaDialerView.as_view()),
