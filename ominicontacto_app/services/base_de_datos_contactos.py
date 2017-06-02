@@ -572,9 +572,14 @@ class PredictorMetadataService(object):
 
         return metadata
 
-    def inferir_columnas_telefono(self, otras_lineas):
+    def inferir_columnas_telefono(self, otras_lineas, encoding):
+        lineas = []
+        for linea in otras_lineas:
+            lineas.append(
+                [smart_text(col.decode(encoding)) for col in linea]
+            )
         columnas_con_telefonos = self._inferir_columnas(
-            otras_lineas, validate_telefono)
+            lineas, validate_telefono)
 
         logger.debug("columnas_con_telefonos: %s", columnas_con_telefonos)
         return columnas_con_telefonos

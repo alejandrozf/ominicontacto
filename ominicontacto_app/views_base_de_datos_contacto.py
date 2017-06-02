@@ -214,10 +214,14 @@ class DefineBaseDatosContactoView(UpdateView):
         self.object = self.get_object()
 
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
+
         if estructura_archivo:
             cantidad_de_columnas = len(estructura_archivo[0])
             parser = ParserCsv()
             encoding = parser.detectar_encoding_csv(estructura_archivo)
+            estructura_archivo_transformada = parser.visualizar_estructura_template(
+                estructura_archivo, encoding
+            )
             try:
                 error_predictor = False
                 error_predictor_encabezado = False
@@ -280,7 +284,7 @@ class DefineBaseDatosContactoView(UpdateView):
             return self.render_to_response(self.get_context_data(
                 error_predictor_encabezado=error_predictor_encabezado,
                 error_predictor=error_predictor,
-                estructura_archivo=estructura_archivo,
+                estructura_archivo=estructura_archivo_transformada,
                 #form_columna_telefono=form_columna_telefono,
                 #form_datos_extras=form_datos_extras,
                 #form_nombre_columnas=form_nombre_columnas,
@@ -356,15 +360,18 @@ class DefineBaseDatosContactoView(UpdateView):
             return self.form_invalid(estructura_archivo,
                                      form_primer_linea_encabezado, error=error)
 
+        parser = ParserCsv()
+        encoding = parser.detectar_encoding_csv(estructura_archivo)
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
         predictor_metadata = PredictorMetadataService()
         columnas_con_telefonos = predictor_metadata.inferir_columnas_telefono(
-            estructura_archivo[1:])
+            estructura_archivo[1:], encoding)
         metadata.columnas_con_telefono = columnas_con_telefonos
         #metadata.columnas_con_fecha = lista_columnas_fechas
         #metadata.columnas_con_hora = lista_columnas_horas
-        metadata.nombres_de_columnas = estructura_archivo[0]
+        metadata.nombres_de_columnas = [value.decode(encoding)
+                                        for value in estructura_archivo[0]]
 
         es_encabezado = False
         if self.request.POST.get('es_encabezado', False):

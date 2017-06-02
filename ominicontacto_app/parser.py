@@ -301,6 +301,14 @@ class ParserCsv(object):
         else:
             return "iso-8859-1"
 
+    def visualizar_estructura_template(self, estructura_archivo, encoding):
+
+        transformado = []
+        for fila in estructura_archivo:
+            item = [value.decode(encoding) for value in fila]
+            transformado.append(item)
+        return transformado
+
 # =============================================================================
 # Funciones utilitarias
 # =============================================================================
