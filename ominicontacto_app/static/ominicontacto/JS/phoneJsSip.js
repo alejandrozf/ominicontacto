@@ -310,7 +310,7 @@ $(function() {
 	    }
 	  }
 	 //****************************CRONOMETRO DE LLAMADA***********************************
-	 function reinicio3(horaDOM, minDOM, segDOM) {
+	 function reinicio3(horaDOM, minDOM, segDOM) { // Cronometro embebido en el webphone
 	    clearInterval(control);
 	    centesimasC = 0;
 	    segundosC = 0;
@@ -319,7 +319,7 @@ $(function() {
 	    minDOM.html(":00");
 	    horaDOM.html("00");
   	}
-	 function cronometro3() {
+	 function cronometro3() { // Cronometro embebido en el webphone
 	     if (centesimasC < 59) {
 	         centesimasC++;
 	         if (centesimasC < 10) {
