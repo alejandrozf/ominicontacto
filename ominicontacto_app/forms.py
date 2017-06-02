@@ -14,8 +14,8 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
-    MetadataCliente, AgendaContacto, CampanaDialer, CampanaMember, ActuacionVigente,
-    Backlist, SitioExterno, ReglasIncidencia
+    MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
+    ReglasIncidencia
 )
 
 
@@ -577,6 +577,9 @@ class UpdateBaseDatosForm(forms.ModelForm):
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
+        widgets = {
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 
 class PausaForm(forms.ModelForm):
@@ -657,45 +660,6 @@ class AgendaContactoForm(forms.ModelForm):
         }
 
 
-class CampanaDialerForm(forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        super(CampanaDialerForm, self).__init__(*args, **kwargs)
-
-        self.fields['bd_contacto'].queryset =\
-            BaseDatosContacto.objects.obtener_definidas()
-
-        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
-        self.fields['fecha_inicio'].required = True
-
-        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
-        self.fields['fecha_fin'].required = True
-
-    class Meta:
-        model = CampanaDialer
-        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario', 'gestion', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait', 'auto_grabacion',
-                  'sitio_externo', 'tipo_interaccion')
-        labels = {
-            'bd_contacto': 'Base de Datos de Contactos',
-        }
-        widgets = {
-            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
-            'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "tipo_interaccion": forms.RadioSelect(),
-        }
-
-
 class CampanaDialerUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaDialerUpdateForm, self).__init__(*args, **kwargs)
@@ -716,42 +680,6 @@ class CampanaDialerUpdateForm(forms.ModelForm):
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
         }
-
-class UpdateBaseDatosDialerForm(forms.ModelForm):
-    usa_contestador = forms.BooleanField(required=False)
-    evitar_duplicados = forms.BooleanField(required=False)
-    evitar_sin_telefono = forms.BooleanField(required=False)
-    prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
-        attrs={'class': 'class-fecha form-control'}))
-    telefonos = forms.MultipleChoiceField(
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-        choices=(),
-    )
-
-    def __init__(self, tts_choices, *args, **kwargs):
-        super(UpdateBaseDatosDialerForm, self).__init__(*args, **kwargs)
-        self.fields['telefonos'].choices = tts_choices
-
-    class Meta:
-        model = CampanaDialer
-        fields = ('bd_contacto',)
-        labels = {
-            'bd_contacto': 'Base de Datos de Contactos',
-        }
-        widgets = {
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-
-class CampanaMemberForm(forms.ModelForm):
-    """
-    El form de miembro de una cola
-    """
-
-    class Meta:
-        model = CampanaMember
-        fields = ('member', 'penalty')
 
 
 class ActuacionVigenteForm(forms.ModelForm):

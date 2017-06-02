@@ -10,13 +10,11 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
-    CampanaDialerForm, QueueDialerForm, QueueDialerUpdateForm,
-    CampanaDialerUpdateForm, SincronizaDialerForm, ActuacionVigenteForm,
-    ReglasIncidenciaForm, CampanaForm
+    QueueDialerForm, QueueDialerUpdateForm, CampanaDialerUpdateForm,
+    SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm, CampanaForm
 )
 from ominicontacto_app.models import (
-    CampanaDialer, Campana, Queue, BaseDatosContacto, ActuacionVigente,
-    ReglasIncidencia
+    Campana, Queue, BaseDatosContacto, ActuacionVigente, ReglasIncidencia
 )
 
 from ominicontacto_app.services.campana_service import CampanaService
