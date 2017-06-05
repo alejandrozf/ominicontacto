@@ -355,7 +355,7 @@ class GeneradorParaCampanaDialerFormulario(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
         same => n,Gosub(hangup-fts,llamado_handler,1)
-        same => n,Queue(test-extensions-form,tTc,,,120)
+        same => n,Queue({oml_queue_name},tTc,,,120)
         same => n,Hangup()
         """
 
@@ -372,7 +372,7 @@ class GeneradorParaCampanaDialerSitioExterno(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(SITIOEXTERNO: {oml_sitio_externo_url}=${{IDCLI}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
         same => n,Gosub(hangup-fts,llamado_handler,1)
-        same => n,Queue(test-extensions-form,tTc,,,120)
+        same => n,Queue({oml_queue_name},tTc,,,120)
         same => n,Hangup()
         """
 
