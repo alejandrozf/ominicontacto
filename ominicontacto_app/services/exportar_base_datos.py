@@ -189,7 +189,6 @@ class SincronizarBaseDatosContactosService(object):
             # --- Buscamos datos
             dato_contacto += prefijo_discador + contacto.telefono + ","
             dato_contacto += "id_cliente:" + str(contacto.pk) + ","
-            dato_contacto += "campana:" + campana.nombre + ","
             dato_contacto += "id_campana:" + str(campana.id) + ","
             if list_multinum:
                 datos = json.loads(contacto.datos)
