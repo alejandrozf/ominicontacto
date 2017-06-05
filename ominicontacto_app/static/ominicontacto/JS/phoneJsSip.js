@@ -235,6 +235,12 @@ $(function() {
     }
     function originToId(origin) {
       var id = '';
+			var origin = origin;
+			if(origin) {
+				if(origin.search("DIALER") === 0) {
+					origin = "DIALER";
+				}
+			}
       switch(origin) {
 				case "CLICK2CALL":
   			  id = 5;
@@ -378,26 +384,14 @@ $(function() {
 
         if(CampIdHeader) {
         	if(leadIdHeader) {
-						var link = "";
+						if(originHeader === "DIALER-FORM") {
+							getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
+						} else if (originHeader === "DIALER-SITIOEXTERNO") {
+							var linkaddress = e.request.headers.Sitioexterno[0].raw;
+							getIframe(linkaddress);
+						} else if (originHeader === "DIALER-JSON") {
 
-						$.ajax({
-				      type: "get",
-					   	url: "/campana/"+CampIdHeader+"/mostrar_json/",
-					   	contentType: "text/html",
-							success: function (msg) {
-								if(msg.tipo_interaccion === 2) {
-									link = msg.url_sitio_externo;
-									$("#dataView").attr('src', link);
-								} else {
-										getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
-								}
-					    },
-					   	error: function (jqXHR, textStatus, errorThrown) {
-					      debugger;
-					      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-					    }
-				    });
-
+						}
         	} else {
         		if(fromUser !== "Unknown") {
         	    processCallid(fromUser);
@@ -408,6 +402,7 @@ $(function() {
         } else {
           alert("Problemas con Identificador de Campaña");
         }
+
         $("#callerid").text(fromUser);
         if($("#modalWebCall").is(':visible')) {
           $("#modalReceiveCalls").modal('show');
@@ -452,6 +447,12 @@ $(function() {
 
         function processOrigin(origin, opt) {
 			  	var options = opt;
+					var origin = origin;
+					if(origin) {
+						if(origin.search("DIALER") === 0) {
+							origin = "DIALER";
+						}
+					}
   				switch(origin) {
   					case "DIALER":
   						var dialerTag = document.getElementById("auto_attend_DIALER");
@@ -711,24 +712,8 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
 
-	function getIframe(campanaid) {
-		var url = "";
-		$.ajax({
-      type: "get",
-	   	url: "/campana/"+campanaid+"/mostrar_json/",
-	   	contentType: "text/html",
-			success: function (msg) {
-				var jsonResult = JSON.parse(msg);
-				if(jsonResult.tipo_interaccion == 2) {
-					url = jsonResult.url_sitio_externo;
-				}
-	   	},
-	   	error: function (jqXHR, textStatus, errorThrown) {
-	      debugger;
-	      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-	    }
-    });
-		return url;
+	function getIframe(url) {
+		$("#dataView").attr('src', url);
 		/*tipo_interac; //= 2 "sitioexterno"
 		// 1 "url comun"
 		campana.sitio_externo.url
