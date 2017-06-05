@@ -235,6 +235,10 @@ $(function() {
     }
     function originToId(origin) {
       var id = '';
+			var origin = origin;
+			if(origin.search("DIALER") === 0) {
+				origin = "DIALER";
+			}
       switch(origin) {
 				case "CLICK2CALL":
   			  id = 5;
@@ -441,6 +445,10 @@ $(function() {
 
         function processOrigin(origin, opt) {
 			  	var options = opt;
+					var origin = origin;
+					if(origin.search("DIALER") === 0) {
+						origin = "DIALER";
+					}
   				switch(origin) {
   					case "DIALER":
   						var dialerTag = document.getElementById("auto_attend_DIALER");
