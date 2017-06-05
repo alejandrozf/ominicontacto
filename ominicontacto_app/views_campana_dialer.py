@@ -273,7 +273,6 @@ class UpdateBaseDatosDialerView(FormView):
         return self.form_class(tts_choices=tts_choices, **self.get_form_kwargs())
 
     def form_valid(self, form):
-        usa_contestador = form.cleaned_data.get('usa_contestador')
         evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
         evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
         prefijo_discador = form.cleaned_data.get('prefijo_discador')
@@ -288,8 +287,7 @@ class UpdateBaseDatosDialerView(FormView):
         self.object.bd_contacto = bd_contacto
         self.object.save()
 
-        campana_service.cambiar_base(self.get_object(), telefonos,
-                                     usa_contestador, evitar_duplicados,
+        campana_service.cambiar_base(self.get_object(), telefonos, evitar_duplicados,
                                      evitar_sin_telefono, prefijo_discador)
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito el cambio de base de datos.'
