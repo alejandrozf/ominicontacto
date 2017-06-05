@@ -236,8 +236,10 @@ $(function() {
     function originToId(origin) {
       var id = '';
 			var origin = origin;
-			if(origin.search("DIALER") === 0) {
-				origin = "DIALER";
+			if(origin) {
+				if(origin.search("DIALER") === 0) {
+					origin = "DIALER";
+				}
 			}
       switch(origin) {
 				case "CLICK2CALL":
@@ -446,8 +448,10 @@ $(function() {
         function processOrigin(origin, opt) {
 			  	var options = opt;
 					var origin = origin;
-					if(origin.search("DIALER") === 0) {
-						origin = "DIALER";
+					if(origin) {
+						if(origin.search("DIALER") === 0) {
+							origin = "DIALER";
+						}
 					}
   				switch(origin) {
   					case "DIALER":
