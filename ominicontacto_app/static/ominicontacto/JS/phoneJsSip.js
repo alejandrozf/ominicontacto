@@ -381,7 +381,7 @@ $(function() {
 						if(originHeader === "DIALER-FORM") {
 							getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
 						} else if (originHeader === "DIALER-SITIOEXTERNO") {
-							var linkaddress = e.request.headers.SITIOEXTERNO[0].raw;
+							var linkaddress = e.request.headers.Sitioexterno[0].raw;
 							getIframe(linkaddress);
 						} else if (originHeader === "DIALER-JSON") {
 
