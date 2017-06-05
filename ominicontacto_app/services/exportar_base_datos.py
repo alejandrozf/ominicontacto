@@ -146,7 +146,7 @@ class SincronizarBaseDatosContactosService(object):
     def __init__(self):
         self._campana_list_contacto_config_file = CampanaListContactoConfigFile()
 
-    def crear_lista(self, campana, telefonos, evitar_duplicados, evitar_sin_telefono,
+    def crear_lista(self, campana, columnas, evitar_duplicados, evitar_sin_telefono,
                     prefijo_discador):
 
         base_datos = campana.bd_contacto
@@ -164,7 +164,7 @@ class SincronizarBaseDatosContactosService(object):
 
         metadata = base_datos.get_metadata()
 
-        lista_contacto = self.escribir_lista(contactos, metadata, campana, telefonos,
+        lista_contacto = self.escribir_lista(contactos, metadata, campana, columnas,
                                              prefijo_discador)
 
         logger.info("Creando archivo para asociacion lista %s campana",
@@ -173,7 +173,7 @@ class SincronizarBaseDatosContactosService(object):
         self._campana_list_contacto_config_file.write(lista_contacto)
         #return lista_contacto
 
-    def escribir_lista(self, contactos, metadata, campana, telefonos, prefijo_discador):
+    def escribir_lista(self, contactos, metadata, campana, columnas, prefijo_discador):
 
         nombres = metadata.nombres_de_columnas
         nombres.remove('telefono')
@@ -181,6 +181,11 @@ class SincronizarBaseDatosContactosService(object):
         for columna in nombres:
             if "MULTINUM" in columna:
                 list_multinum.append((columna, nombres.index(columna)))
+        list_columnas = []
+        for nombre in nombres:
+            for columna in columnas:
+                if columna in nombre:
+                    list_columnas.append((nombre, nombres.index(columna)))
 
         lista_contactos = "numbers="
         for contacto in contactos:
@@ -189,12 +194,16 @@ class SincronizarBaseDatosContactosService(object):
             # --- Buscamos datos
             dato_contacto += prefijo_discador + contacto.telefono + ","
             dato_contacto += "id_cliente:" + str(contacto.pk) + ","
-            dato_contacto += "campana:" + campana.nombre + ","
             dato_contacto += "id_campana:" + str(campana.id) + ","
             if list_multinum:
                 datos = json.loads(contacto.datos)
                 for item in list_multinum:
                     dato_contacto += "," + item[0] + ":" + datos[item[1]]
+            if list_columnas:
+                datos = json.loads(contacto.datos)
+                for item in list_columnas:
+                    dato_contacto += "," + item[0] + ":" + datos[item[1]]
+
             dato_contacto += "|"
 
             lista_contactos += dato_contacto

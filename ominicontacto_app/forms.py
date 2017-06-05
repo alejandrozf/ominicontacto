@@ -500,7 +500,7 @@ class SincronizaDialerForm(forms.Form):
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'class-fecha form-control'}))
-    telefonos = forms.MultipleChoiceField(
+    columnas = forms.MultipleChoiceField(
         required=False,
         widget=forms.CheckboxSelectMultiple,
         choices=(),
@@ -508,7 +508,7 @@ class SincronizaDialerForm(forms.Form):
 
     def __init__(self, tts_choices, *args, **kwargs):
         super(SincronizaDialerForm, self).__init__(*args, **kwargs)
-        self.fields['telefonos'].choices = tts_choices
+        self.fields['columnas'].choices = tts_choices
 
 
 class FormularioNuevoContacto(forms.ModelForm):
