@@ -354,7 +354,6 @@ class ContactoForm(forms.ModelForm):
 
 class ExportaDialerForm(forms.Form):
     campana = forms.ChoiceField(choices=())
-    usa_contestador = forms.BooleanField(required=False)
     evitar_duplicados = forms.BooleanField(required=False)
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False)
@@ -497,7 +496,6 @@ class FormularioCRMForm(forms.Form):
 
 
 class SincronizaDialerForm(forms.Form):
-    usa_contestador = forms.BooleanField(required=False)
     evitar_duplicados = forms.BooleanField(required=False)
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
@@ -557,7 +555,6 @@ class FormularioCampanaContacto(forms.Form):
 
 
 class UpdateBaseDatosForm(forms.ModelForm):
-    usa_contestador = forms.BooleanField(required=False)
     evitar_duplicados = forms.BooleanField(required=False)
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False)
@@ -753,7 +750,7 @@ class QueueDialerForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
-                  'wait', 'auto_grabacion', 'campana')
+                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -775,7 +772,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion')
+                  'auto_grabacion', 'detectar_contestadores')
         widgets = {
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),

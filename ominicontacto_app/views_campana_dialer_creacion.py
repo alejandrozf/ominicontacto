@@ -160,16 +160,14 @@ class SincronizaDialerView(FormView):
         return self.form_class(tts_choices=tts_choices, **self.get_form_kwargs())
 
     def form_valid(self, form):
-        usa_contestador = form.cleaned_data.get('usa_contestador')
         evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
         evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
         prefijo_discador = form.cleaned_data.get('prefijo_discador')
         telefonos = form.cleaned_data.get('telefonos')
         self.object = self.get_object()
         service_base = SincronizarBaseDatosContactosService()
-        service_base.crear_lista(self.object, telefonos, usa_contestador,
-                                 evitar_duplicados, evitar_sin_telefono,
-                                 prefijo_discador)
+        service_base.crear_lista(self.object, telefonos, evitar_duplicados,
+                                 evitar_sin_telefono, prefijo_discador)
         campana_service = CampanaService()
         campana_service.crear_campana_wombat(self.object)
         campana_service.crear_trunk_campana_wombat(self.object)
