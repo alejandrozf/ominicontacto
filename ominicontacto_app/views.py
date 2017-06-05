@@ -556,7 +556,6 @@ def wombat_log_view(request):
         id_agente = int(dict_post['O_id_agente'])
 
     metadata = {
-        'usa_contestador': dict_post['I_USA_CONTESTADOR'],
         'reschedule': dict_post['reschedule'],
         'retry': dict_post['retry']
     }

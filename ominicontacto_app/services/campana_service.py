@@ -208,10 +208,10 @@ class CampanaService():
         salida = service_wombat.list_config_wombat(url_edit)
         return self.obtener_datos_campana_run(salida, campana)
 
-    def cambiar_base(self, campana, telefonos, usa_contestador,
-                     evitar_duplicados, evitar_sin_telefono, prefijo_discador):
+    def cambiar_base(self, campana, telefonos, evitar_duplicados, evitar_sin_telefono,
+                     prefijo_discador):
         service_base = SincronizarBaseDatosContactosService()
-        service_base.crear_lista(campana, telefonos, usa_contestador, evitar_duplicados,
+        service_base.crear_lista(campana, telefonos, evitar_duplicados,
                                  evitar_sin_telefono, prefijo_discador)
 
         resultado = self.remove_campana_wombat(campana)
