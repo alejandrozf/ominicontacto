@@ -370,6 +370,8 @@ class GeneradorParaCampanaDialerSitioExterno(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(WombatID:${{WOMBAT_HOPPER_ID}})
         same => n,SIPAddHeader(Origin:DIALER-SITIOEXTERNO)
         same => n,SIPAddHeader(SITIOEXTERNO: {oml_sitio_externo_url}=${{IDCLI}})
+        same => n,SIPAddHeader(IDCliente:${{ID_CLIENTE}})
+        same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
         same => n,Gosub(hangup-fts,llamado_handler,1)
         same => n,Queue({oml_queue_name},tTc,,,120)
