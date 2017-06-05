@@ -380,8 +380,8 @@ $(function() {
         	if(leadIdHeader) {
 						if(originHeader === "DIALER-FORM") {
 							getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
-						} else if (originHeader === "DIALER-URL") {
-							var linkaddress = e.request.headers.ExternalLink[0].raw;
+						} else if (originHeader === "DIALER-SITIOEXTERNO") {
+							var linkaddress = e.request.headers.SITIOEXTERNO[0].raw;
 							getIframe(linkaddress);
 						} else if (originHeader === "DIALER-JSON") {
 
