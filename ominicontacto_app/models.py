@@ -580,6 +580,7 @@ class Queue(models.Model):
     queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
+    detectar_contestadores = models.BooleanField(default=False)
     ep_id_wombat = models.IntegerField(null=True, blank=True)
 
     # campos que no usamos
