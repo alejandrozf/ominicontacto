@@ -378,12 +378,12 @@ $(function() {
 
         if(CampIdHeader) {
         	if(leadIdHeader) {
-						if(originHeader === "Dialer-Form") {
+						if(originHeader === "DIALER-FORM") {
 							getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
-						} else if (originHeader === "Dialer-Url") {
-							var linkaddress = e.request.headers.ExternalLink[0].raw;
+						} else if (originHeader === "DIALER-SITIOEXTERNO") {
+							var linkaddress = e.request.headers.SITIOEXTERNO[0].raw;
 							getIframe(linkaddress);
-						} else if (originHeader === "Dialer-JSON") {
+						} else if (originHeader === "DIALER-JSON") {
 
 						}
         	} else {
