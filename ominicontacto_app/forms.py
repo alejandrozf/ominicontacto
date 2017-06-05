@@ -354,7 +354,6 @@ class ContactoForm(forms.ModelForm):
 
 class ExportaDialerForm(forms.Form):
     campana = forms.ChoiceField(choices=())
-    usa_contestador = forms.BooleanField(required=False)
     evitar_duplicados = forms.BooleanField(required=False)
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False)
@@ -497,7 +496,6 @@ class FormularioCRMForm(forms.Form):
 
 
 class SincronizaDialerForm(forms.Form):
-    usa_contestador = forms.BooleanField(required=False)
     evitar_duplicados = forms.BooleanField(required=False)
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
@@ -557,7 +555,6 @@ class FormularioCampanaContacto(forms.Form):
 
 
 class UpdateBaseDatosForm(forms.ModelForm):
-    usa_contestador = forms.BooleanField(required=False)
     evitar_duplicados = forms.BooleanField(required=False)
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False)
