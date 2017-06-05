@@ -50,8 +50,6 @@ class CampanaDialerListView(ListView):
         return context
 
 
-
-
 class PlayCampanaDialerView(RedirectView):
     """
     Esta vista actualiza la campañana activándola.
