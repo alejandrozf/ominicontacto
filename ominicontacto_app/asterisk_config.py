@@ -20,7 +20,9 @@ from ominicontacto_app.models import (
 )
 import logging as _logging
 from ominicontacto_app.asterisk_config_generador_de_partes import (
-    GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory)
+    GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
+    GeneradorDePedazoDeCampanaDialerFactory
+)
 
 
 logger = _logging.getLogger(__name__)
@@ -31,6 +33,7 @@ class QueueDialplanConfigCreator(object):
     def __init__(self):
         self._dialplan_config_file = QueueConfigFile()
         self._generador_factory = GeneradorDePedazoDeQueueFactory()
+        self._generador_dialer_factory = GeneradorDePedazoDeCampanaDialerFactory()
 
     def _generar_dialplan(self, campana):
         """Genera el dialplan para una queue.
@@ -63,7 +66,59 @@ class QueueDialplanConfigCreator(object):
 
         return ''.join(partes)
 
-    def _obtener_todas_para_generar_dialplan(self):
+    def _generar_dialplan_campana_dialer(self, campana):
+        """Genera el dialplan para una queue.
+
+        :param campana: Campana para la cual hay crear el dialplan
+        :type campana: ominicontacto_app.models.Campana
+        :returns: str -- dialplan para la queue
+        """
+
+        assert campana.queue_campana is not None, "campana.queue_campana == None"
+
+        partes = []
+        param_generales = {
+            'oml_queue_name': elimina_espacios(campana.nombre),
+            'oml_queue_id_asterisk': '0077' + str(campana.queue_campana.queue_asterisk),
+            'date': str(datetime.datetime.now())
+        }
+
+        # Generador inicial para campana dialer
+        generador_queue = self._generador_dialer_factory.\
+            crear_generador_para_campana_dialer_start(param_generales)
+        partes.append(generador_queue.generar_pedazo())
+
+        #Generador para contestadores
+        if campana.queue_campana.detectar_contestadores:
+            generador_queue = self._generador_dialer_factory. \
+            crear_generador_para_campana_dialer_contestadores(param_generales)
+            partes.append(generador_queue.generar_pedazo())
+
+        # Generador para grabacion
+        if campana.queue_campana.auto_grabacion:
+            generador_queue = self._generador_dialer_factory. \
+                crear_generador_para_campana_dialer_grabacion(param_generales)
+            partes.append(generador_queue.generar_pedazo())
+
+        # generador de acuerdo al tipo de interacion
+        if campana.tipo_interaccion is Campana.FORMULARIO:
+            generador_queue = self._generador_dialer_factory. \
+                crear_generador_para_campana_dialer_formulario(param_generales)
+            partes.append(generador_queue.generar_pedazo())
+        elif campana.tipo_interaccion is Campana.SITIO_EXTERNO:
+            param_generales.update({'oml_sitio_externo_url': campana.sitio_externo.url})
+            generador_queue = self._generador_dialer_factory. \
+                crear_generador_para_campana_dialer_sitio_externo(param_generales)
+            partes.append(generador_queue.generar_pedazo())
+
+        # Generador para contestadores para end
+        if campana.queue_campana.detectar_contestadores:
+            generador_queue = self._generador_dialer_factory. \
+                crear_generador_para_campana_dialer_contestadores_end(param_generales)
+            partes.append(generador_queue.generar_pedazo())
+        return ''.join(partes)
+
+    def _obtener_todas_entrante_para_generar_dialplan(self):
         """Devuelve las queues para crear el dialplan.
         """
         # Ver de obtener activa ya que en este momemento no estamos manejando
@@ -71,6 +126,15 @@ class QueueDialplanConfigCreator(object):
         # Queue.objects.obtener_todas_para_generar_dialplan()
         return Campana.objects.obtener_all_dialplan_asterisk().filter(
             type=Campana.TYPE_ENTRANTE)
+
+    def _obtener_todas_dialer_para_generar_dialplan(self):
+        """Devuelve las queues para crear el dialplan.
+        """
+        # Ver de obtener activa ya que en este momemento no estamos manejando
+        # estados
+        # Queue.objects.obtener_todas_para_generar_dialplan()
+        return Campana.objects.obtener_all_dialplan_asterisk().filter(
+            type=Campana.TYPE_DIALER)
 
     def create_dialplan(self, campana=None, campanas=None):
         """Crea el archivo de dialplan para queue existentes
@@ -83,7 +147,7 @@ class QueueDialplanConfigCreator(object):
         elif campana:
             campanas = [campana]
         else:
-            campanas = self._obtener_todas_para_generar_dialplan()
+            campanas = self._obtener_todas_entrante_para_generar_dialplan()
         dialplan = []
         # agrego linea inicial que lleva [from-queue-fts] el archivo de asterisk
         dialplan.append("[from-queue-fts]")
@@ -91,6 +155,39 @@ class QueueDialplanConfigCreator(object):
             logger.info("Creando dialplan para queue %s", campana.nombre)
             try:
                 config_chunk = self._generar_dialplan(campana)
+                logger.info("Dialplan generado OK para queue %s",
+                            campana.nombre)
+            except:
+                logger.exception(
+                    "No se pudo generar configuracion de "
+                    "Asterisk para la queue {0}".format(campana.nombre))
+
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except:
+                    traceback_lines = "Error al intentar generar traceback"
+                    logger.exception("Error al intentar generar traceback")
+
+                # FAILED: Creamos la porción para el fallo del Dialplan.
+                param_failed = {'oml_queue_name': campana.nombre,
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+
+            dialplan.append(config_chunk)
+
+        campanas = self._obtener_todas_dialer_para_generar_dialplan()
+
+        for campana in campanas:
+            logger.info("Creando dialplan para queue %s", campana.nombre)
+            try:
+                config_chunk = self._generar_dialplan_campana_dialer(campana)
                 logger.info("Dialplan generado OK para queue %s",
                             campana.nombre)
             except:

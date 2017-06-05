@@ -753,7 +753,7 @@ class QueueDialerForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
-                  'wait', 'auto_grabacion', 'campana')
+                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -775,7 +775,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion')
+                  'auto_grabacion', 'detectar_contestadores')
         widgets = {
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),

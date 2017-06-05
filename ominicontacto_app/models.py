@@ -160,6 +160,7 @@ class SupervisorProfileManager(models.Manager):
 
         return identificador
 
+
 class SupervisorProfile(models.Model):
     objects = SupervisorProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -342,6 +343,7 @@ class CampanaManager(models.Manager):
         """
         return self.filter(type=Campana.TYPE_ENTRANTE)
 
+
 class Campana(models.Model):
     """Una campaña del call center"""
 
@@ -505,12 +507,12 @@ class QueueManager(models.Manager):
         else:
             return number['queue_asterisk__max'] + 1
 
-
     def obtener_all_except_borradas(self):
         """
         Devuelve queue excluyendo las campanas borradas
         """
         return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
+
 
 class Queue(models.Model):
     """
@@ -578,6 +580,7 @@ class Queue(models.Model):
     queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
+    detectar_contestadores = models.BooleanField(default=False)
     ep_id_wombat = models.IntegerField(null=True, blank=True)
 
     # campos que no usamos
@@ -1761,6 +1764,7 @@ class QueuelogManager(models.Manager):
         except Queuelog.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con esos filtros "))
 
+
 class Queuelog(models.Model):
 
     objects = QueuelogManager()
@@ -2049,7 +2053,6 @@ class Backlist(models.Model):
     )
     cantidad_contactos = models.PositiveIntegerField(
         default=0)
-
 
     def __unicode__(self):
         return "{0}: ({1} contactos)".format(self.nombre,

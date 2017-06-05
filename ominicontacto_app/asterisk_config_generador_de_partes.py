@@ -117,6 +117,31 @@ class GeneradorDePedazoDeAgenteFactory(object):
         return GeneradorParaFailed(parametros)
 
 
+# Factory para las Queue.
+
+class GeneradorDePedazoDeCampanaDialerFactory(object):
+
+    def crear_generador_para_campana_dialer_start(self, parametros):
+        return GeneradorParaCampanaDialerStart(parametros)
+
+    def crear_generador_para_campana_dialer_contestadores(self, parametros):
+        return GeneradorParaCampanaDialerContestadores(parametros)
+
+    def crear_generador_para_campana_dialer_grabacion(self, parametros):
+        return GeneradorParaCampanaDialerGrabacion(parametros)
+
+    def crear_generador_para_campana_dialer_formulario(self, parametros):
+        return GeneradorParaCampanaDialerFormulario(parametros)
+
+    def crear_generador_para_campana_dialer_sitio_externo(self, parametros):
+        return GeneradorParaCampanaDialerSitioExterno(parametros)
+
+    def crear_generador_para_campana_dialer_contestadores_end(self, parametros):
+        return GeneradorParaCampanaDialerContestadoresEnd(parametros)
+
+    def crear_generador_para_failed(self, parametros):
+        return GeneradorParaFailed(parametros)
+
 #==============================================================================
 # Queue
 #==============================================================================
@@ -253,6 +278,116 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         secret=
         deny=0.0.0.0/0.0.0.0
         permit={oml_kamailio_ip}
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+#==============================================================================
+# Campana Dialer
+#==============================================================================
+
+
+class GeneradorDePedazoDeCampanaDialer(GeneradorDePedazo):
+    """Interfaz / Clase abstracta para generar el pedazo de queue para una
+    cola.
+    """
+
+    def __init__(self, parametros):
+        self._parametros = parametros
+
+
+class GeneradorParaCampanaDialerStart(GeneradorDePedazoDeCampanaDialer):
+
+    def get_template(self):
+        return """
+
+        ;----------------------------------------------------------------------
+        ; TEMPLATE_DIALPLAN_START_CAMPANA_DIALER-{oml_queue_name}
+        ;   Autogenerado {date}
+        ;----------------------------------------------------------------------
+
+        exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Set(AUX=${{CUT(CHANNEL,@,1)}})
+        same => n,Set(NUMMARCADO=${{CUT(AUX,/,2)}})
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaCampanaDialerContestadores(GeneradorDePedazoDeCampanaDialer):
+
+    def get_template(self):
+        return """
+        same => n,Background(silence/1)
+        same => n,AMD()
+        same => n,NoOp(AMDSTATUS=${{AMDSTATUS}})
+        same => n,GotoIf($["${{AMDSTATUS}}" == "MACHINE"]?amd_machine)
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaCampanaDialerGrabacion(GeneradorDePedazoDeCampanaDialer):
+
+    def get_template(self):
+        return """
+        same => n,Set(__MONITOR_FILENAME=q-${{STRFTIME(${{EPOCH}},,%Y%m%d%H%M%S)}}-${{CAMPANA}}-${{NUMMARCADO}}-${{UNIQUEID}})
+        same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{{UNIQUEID}} ^{{MIXMONITOR_FILENAME}})
+        same => n,Set(__TIPOLLAMADA=DIALER)
+        same => n,MixMonitor(${{MONITOR_FILENAME}}.wav,b)
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaCampanaDialerFormulario(GeneradorDePedazoDeCampanaDialer):
+
+    def get_template(self):
+        return """
+        same => n,SIPAddHeader(WombatID:${{WOMBAT_HOPPER_ID}})
+        same => n,SIPAddHeader(Origin:DIALER-FORM)
+        same => n,SIPAddHeader(IDCliente:${{ID_CLIENTE}})
+        same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
+        same => n,Set(CALLERID(num)=${{NUMMARCADO}})
+        same => n,Gosub(hangup-fts,llamado_handler,1)
+        same => n,Queue(test-extensions-form,tTc,,,120)
+        same => n,Hangup()
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaCampanaDialerSitioExterno(GeneradorDePedazoDeCampanaDialer):
+
+    def get_template(self):
+        return """
+        same => n,SIPAddHeader(WombatID:${{WOMBAT_HOPPER_ID}})
+        same => n,SIPAddHeader(Origin:DIALER-SITIOEXTERNO)
+        same => n,SIPAddHeader(SITIOEXTERNO: {oml_sitio_externo_url}=${{IDCLI}})
+        same => n,Set(CALLERID(num)=${{NUMMARCADO}})
+        same => n,Gosub(hangup-fts,llamado_handler,1)
+        same => n,Queue(test-extensions-form,tTc,,,120)
+        same => n,Hangup()
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaCampanaDialerContestadoresEnd(GeneradorDePedazoDeCampanaDialer):
+
+    def get_template(self):
+        return """
+        same => n(amd_machine),NoOp(es una maquina)
+        same => n,UserEvent(CALLSTATUS,Uniqueid:${{UNIQUEID}},V:CONTESTADOR)
+        same => n,SET(CDR(userfield)=CONTESTADOR)
+        same => n,Hangup()
         """
 
     def get_parametros(self):
