@@ -91,7 +91,7 @@ class AgenteTiemposReporte(object):
 
     @property
     def tiempo_porcentaje_wait(self):
-        if self.tiempo_wait and  self.tiempo_sesion:
+        if self.tiempo_wait > 0 and self.tiempo_sesion:
             return float('%.2f' % (self.tiempo_wait /
                                    self.tiempo_sesion.total_seconds())
                          ) * 100
