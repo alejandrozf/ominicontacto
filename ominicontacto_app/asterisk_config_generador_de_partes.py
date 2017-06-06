@@ -309,7 +309,7 @@ class GeneradorParaCampanaDialerStart(GeneradorDePedazoDeCampanaDialer):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
-        same => Set(CAMPANA={oml_queue_name})
+        same => n,Set(CAMPANA={oml_queue_name})
         same => n,Set(AUX=${{CUT(CHANNEL,@,1)}})
         same => n,Set(NUMMARCADO=${{CUT(AUX,/,2)}})
         """
