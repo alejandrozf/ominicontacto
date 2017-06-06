@@ -2080,9 +2080,20 @@ class SitioExterno(models.Model):
 
     nombre = models.CharField(max_length=128)
     url = models.CharField(max_length=256)
+    oculto = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "Sitio: {0} - url: {1}".format(self.nombre, self.url)
+
+    def ocultar(self):
+        """setea la campana como oculta"""
+        self.oculto = True
+        self.save()
+
+    def desocultar(self):
+        """setea la campana como visible"""
+        self.oculto = False
+        self.save()
 
 
 class ReglasIncidencia(models.Model):
