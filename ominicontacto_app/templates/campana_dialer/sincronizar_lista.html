@@ -35,6 +35,7 @@
               {{ form.prefijo_discador }}
         </div>
     </div>
+    {% if campana.tipo_interaccion == 2%}
     <div class="form-group row">
         {{ form.columnas.errors }}
         <label class="col-sm-3 control-label" for="{{ form.columnas.id_for_label }}">Columnas: </label>
@@ -42,6 +43,7 @@
               {{ form.columnas }}
         </div>
     </div>
+    {% endif %}
             <button type="submit" id="id_registrar" class="btn btn-success btn-lg">
                 Guardar
             </button>
