@@ -445,8 +445,8 @@ class AsteriskConfigReloader(object):
                   0 (cero) si fue exitoso, otro valor si se produjo
                   un error
         """
-        stdout_file = tempfile.TemporaryFile()
-        stderr_file = tempfile.TemporaryFile()
+        stdout_file = tempfile.mkstemp()
+        stderr_file = tempfile.mkstemp()
 
         try:
             subprocess.check_call(settings.OML_RELOAD_CMD,
