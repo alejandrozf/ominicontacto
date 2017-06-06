@@ -632,6 +632,16 @@ urlpatterns = [
     url(r'^sitio_externo/list/$',
         login_required(views_sitio_externo.SitioExternoListView.as_view()),
         name="sitio_externo_list"),
+    url(r'^sitio_externo/(?P<pk_sitio_externo>\d+)/ocultar/$',
+        login_required(views_sitio_externo.OcultarSitioExternoView.as_view()),
+        name='oculta_sitio_externo', ),
+    url(r'^sitio_externo/(?P<pk_sitio_externo>\d+)/desocultar/$',
+        login_required(
+            views_sitio_externo.DesOcultarSitioExternoView.as_view()),
+        name='desoculta_sitio_externo', ),
+    url(r'^sitio_externo/sitios_ocultos/$',
+        login_required(views_sitio_externo.mostrar_sitio_externos_ocultos_view),
+        name='mostrar_sitios_externo_ocultos', ),
     # ==========================================================================
     # QueueMember
     # ==========================================================================
