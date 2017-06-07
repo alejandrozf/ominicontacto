@@ -151,5 +151,6 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     queue_member.delete()
     return HttpResponseRedirect(
         reverse('queue_member_campana',
-            kwargs={"pk_campana": pk_campana}
-        ))
+                kwargs={"pk_campana": pk_campana}
+                )
+    )
