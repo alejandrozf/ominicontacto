@@ -286,16 +286,10 @@ class CampanaForm(forms.ModelForm):
         self.fields['bd_contacto'].queryset =\
             BaseDatosContacto.objects.obtener_definidas()
 
-        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
-        self.fields['fecha_inicio'].required = True
-
-        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
-        self.fields['fecha_fin'].required = True
-
     class Meta:
         model = Campana
-        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo', 'tipo_interaccion')
+        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'formulario',
+                  'gestion', 'sitio_externo', 'tipo_interaccion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -318,16 +312,9 @@ class CampanaUpdateForm(forms.ModelForm):
         self.fields['bd_contacto'].queryset = \
             BaseDatosContacto.objects.obtener_definidas()
 
-        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
-        self.fields['fecha_inicio'].required = True
-
-        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
-        self.fields['fecha_fin'].required = True
-
     class Meta:
         model = Campana
-        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'gestion')
+        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'gestion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -657,6 +644,37 @@ class AgendaContactoForm(forms.ModelForm):
         }
 
 
+class CampanaDialerForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CampanaDialerForm, self).__init__(*args, **kwargs)
+
+        self.fields['bd_contacto'].queryset =\
+            BaseDatosContacto.objects.obtener_definidas()
+
+        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
+        self.fields['fecha_inicio'].required = True
+
+        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
+        self.fields['fecha_fin'].required = True
+
+    class Meta:
+        model = Campana
+        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
+                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo', 'tipo_interaccion')
+        labels = {
+            'bd_contacto': 'Base de Datos de Contactos',
+        }
+
+        widgets = {
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
+        }
+
+
 class CampanaDialerUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaDialerUpdateForm, self).__init__(*args, **kwargs)
@@ -781,7 +799,6 @@ class QueueDialerUpdateForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
         }
-
 
     def clean(self):
         maxlen = self.cleaned_data.get('maxlen')
