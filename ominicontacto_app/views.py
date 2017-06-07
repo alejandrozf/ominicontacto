@@ -586,6 +586,6 @@ def wombat_log_view(request):
 def supervision_url_externa(request):
     if request.user.is_authenticated() and request.user.get_supervisor_profile():
         supervisor = request.user.get_supervisor_profile()
-        url = settings.OML_SUPERVISION_URL + supervisor.pk
+        url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
         return redirect(url)
     return HttpResponseRedirect(reverse('index'))
