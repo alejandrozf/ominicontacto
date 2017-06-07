@@ -11,7 +11,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
     QueueDialerForm, QueueDialerUpdateForm, CampanaDialerUpdateForm,
-    SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm, CampanaForm
+    SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm, CampanaDialerForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, BaseDatosContacto, ActuacionVigente, ReglasIncidencia
@@ -68,7 +68,7 @@ class CampanaDialerCreateView(CreateView):
     template_name = 'campana_dialer/nueva_edita_campana.html'
     model = Campana
     context_object_name = 'campana'
-    form_class = CampanaForm
+    form_class = CampanaDialerForm
 
     def dispatch(self, request, *args, **kwargs):
         base_datos = BaseDatosContacto.objects.obtener_definidas()
