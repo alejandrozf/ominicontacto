@@ -9,7 +9,7 @@ import datetime
 from services.sms_services import SmsManager
 from django.conf import settings
 from django.http import JsonResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.contrib import messages
@@ -581,3 +581,11 @@ def wombat_log_view(request):
     #import ipdb; ipdb.set_trace();
     response = JsonResponse({'status': 'OK'})
     return response
+
+
+def supervision_url_externa(request):
+    if request.user.is_authenticated() and request.user.get_supervisor_profile():
+        supervisor = request.user.get_supervisor_profile()
+        url = settings.OML_SUPERVISION_URL + supervisor.pk
+        return redirect(url)
+    return HttpResponseRedirect(reverse('index'))

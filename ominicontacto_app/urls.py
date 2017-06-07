@@ -137,6 +137,9 @@ urlpatterns = [
     url(r'^supervisor/list/$',
         login_required(views.SupervisorListView.as_view()), name='supervisor_list',
         ),
+    url(r'^supervision_externa/$',
+        login_required(views.supervision_url_externa), name='supervision_externa_url',
+        ),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
