@@ -233,6 +233,17 @@ Ejemplo:
 """
 
 #==============================================================================
+# URL DE SUPERVISION
+#==============================================================================
+
+OML_SUPERVISION_URL = None
+"""Url de donde se encuentra la supervision
+
+Ejemplo:
+    OML_SUPERVISION_URL = "http://172.16.20.222:8090/Omnisup/index.php"
+"""
+
+#==============================================================================
 # WOMBAT Config
 #==============================================================================
 
@@ -328,6 +339,11 @@ assert OML_RELOAD_CMD is not None, \
 
 assert OML_GRABACIONES_URL is not None, \
     "Falta definir setting para OML_GRABACIONES_URL"
+
+# ~~~~~ Check OML_GRABACIONES_URL
+
+assert OML_SUPERVISION_URL is not None, \
+    "Falta definir setting para OML_SUPERVISION_URL"
 
 # ~~~~~ Check OML_KAMAILIO_IP
 
