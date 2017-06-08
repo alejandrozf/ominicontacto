@@ -2165,3 +2165,11 @@ class ReglasIncidencia(models.Model):
             return "MULT"
         else:
             return ""
+
+
+class UserApiCrm(models.Model):
+    usuario = models.CharField(max_length=64, unique=True)
+    password = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.usuario
