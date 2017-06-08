@@ -8,7 +8,9 @@ import requests
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
+from django.http import JsonResponse
 from django.shortcuts import redirect
+from django.core.exceptions import SuspiciousOperation
 from django.conf import settings
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView, FormView
@@ -16,12 +18,13 @@ from django.views.generic.edit import (
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
-    WombatLog
+    WombatLog, Calificacion, UserApiCrm
 )
 from ominicontacto_app.forms import (
     FormularioCRMForm, CalificacionClienteForm, FormularioCalificacionFormSet,
     FormularioContactoCalificacion, FormularioVentaFormSet
 )
+from django.views.decorators.csrf import csrf_exempt
 
 import logging as logging_
 
@@ -513,7 +516,6 @@ class FormularioCreateFormView(CreateView):
         else:
             return self.form_invalid(form, venta_form)
 
-
     def form_invalid(self, form, venta_form):
 
         message = '<strong>Operación Errónea!</strong> \
@@ -680,7 +682,6 @@ class FormularioUpdateFormView(UpdateView):
         else:
             return self.form_invalid(form, venta_form)
 
-
     def form_invalid(self, form, venta_form):
 
         message = '<strong>Operación Errónea!</strong> \
@@ -792,7 +793,6 @@ class CalificacionUpdateView(UpdateView):
         else:
             return self.form_invalid(form, calificacion_form)
 
-
     def form_valid(self, form, calificacion_form):
         self.object = form.save(commit=False)
         contacto = self.get_object()
@@ -862,3 +862,38 @@ class CalificacionUpdateView(UpdateView):
                            "pk_campana": calificacion.campana.pk,
                             "pk_contacto": calificacion.contacto.pk,
                             "id_agente": calificacion.agente.pk})
+
+
+@csrf_exempt
+def calificacion_cliente_externa_view(request):
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        print received_json_data
+
+        data_esperada = ['pk_campana', 'id_cliente', 'id_calificacion', 'id_agente',
+                         'user_api', 'password_api']
+        for data in data_esperada:
+            if data not in received_json_data.keys():
+                return JsonResponse({'status': 'Error en falta {0}'.format(data)})
+
+        try:
+            usuario = UserApiCrm.objects.get(
+                usuario=received_json_data['user_api'])
+            print usuario.password
+            print received_json_data['password_api']
+            if usuario.password == received_json_data['password_api']:
+                campana = Campana.objects.get(pk=received_json_data['pk_campana'])
+                contacto = Contacto.objects.get(pk=received_json_data['id_cliente'])
+                calificacion = Calificacion.objects.get(
+                    pk=received_json_data['id_calificacion'])
+                agente = AgenteProfile.objects.get(pk=received_json_data['id_agente'])
+                CalificacionCliente.objects.create(
+                    campana=campana, contacto=contacto, calificacion=calificacion,
+                    agente=agente, wombat_id=0)
+            else:
+                return JsonResponse({'status': 'no coinciden usuario y/o password'})
+        except UserApiCrm.DoesNotExist:
+            return JsonResponse({'status': 'no existe este usuario {0}'.format(
+                received_json_data['user_api'])})
+    response = JsonResponse({'status': 'OK'})
+    return response
