@@ -8,7 +8,7 @@ from ominicontacto_app import (
     views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
-    views_queue_member
+    views_queue_member, views_user_api_crm
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -472,6 +472,10 @@ urlpatterns = [
             views_calificacion_formulario.CalificacionUpdateView.as_view()),
         name='formulario_califiacion_actualiza',
     ),
+    url(r'^califacacion_cliente/externa/$',
+        views_calificacion_formulario.calificacion_cliente_externa_view,
+        name='califiacion_cliente_externa'
+        ),
     # ==========================================================================
     # Agente
     # ==========================================================================
@@ -665,6 +669,21 @@ urlpatterns = [
         login_required(views_queue_member.queue_member_delete_view),
         name='queue_member_elimina',
     ),
+    # ==========================================================================
+    # UserApiCrm
+    # ==========================================================================
+    url(r'^user_api_crm/create/$',
+        login_required(views_user_api_crm.UserApiCrmCreateView.as_view()),
+        name='user_api_crm_create',
+        ),
+    url(r'^user_api_crm/(?P<pk>\d+)/update/$',
+        login_required(views_user_api_crm.UserApiCrmUpdateView.as_view()),
+        name='user_api_crm_update',
+        ),
+    url(r'^user_api_crm/list/$',
+        login_required(views_user_api_crm.UserApiCrmListView.as_view()),
+        name='user_api_crm_list',
+        ),
 ]
 
 urlpatterns += patterns('',

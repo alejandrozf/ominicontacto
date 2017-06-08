@@ -295,6 +295,7 @@ class SupervisorListView(ListView):
     model = SupervisorProfile
     template_name = 'supervisor_profile_list.html'
 
+
 class GrupoCreateView(CreateView):
     model = Grupo
     template_name = 'base_create_update_form.html'

@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia
+    ReglasIncidencia, UserApiCrm
 )
 
 
@@ -249,7 +249,12 @@ class PrimerLineaEncabezadoForm(forms.Form):
 
 
 class BusquedaContactoForm(forms.Form):
-    buscar = forms.CharField(required=False,  widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'search pattern'}))
+    buscar = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'search pattern'}
+        )
+    )
 
 
 class GrabacionBusquedaForm(forms.Form):
@@ -807,3 +812,21 @@ class QueueDialerUpdateForm(forms.ModelForm):
                                         ' mayor a cero')
 
         return self.cleaned_data
+
+
+class UserApiCrmForm(forms.ModelForm):
+
+    class Meta:
+        model = UserApiCrm
+        fields = ('usuario', 'password')
+
+        widgets = {
+            "usuario": forms.TextInput(attrs={'class': 'form-control'}),
+            "password": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def clean_usuario(self):
+        usuario = self.cleaned_data['usuario']
+        if ' ' in usuario:
+            raise forms.ValidationError('el usuario no puede contener espacios')
+        return usuario
