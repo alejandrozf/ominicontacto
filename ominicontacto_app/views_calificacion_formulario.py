@@ -885,9 +885,12 @@ def calificacion_cliente_externa_view(request):
                 calificacion = Calificacion.objects.get(
                     pk=received_json_data['id_calificacion'])
                 agente = AgenteProfile.objects.get(pk=received_json_data['id_agente'])
-                CalificacionCliente.objects.create(
-                    campana=campana, contacto=contacto, calificacion=calificacion,
-                    agente=agente, wombat_id=0)
+                try:
+                    calificacion = CalificacionCliente.objects.get(contacto=contacto)
+                except CalificacionCliente.DoesNotExist:
+                    CalificacionCliente.objects.create(
+                        campana=campana, contacto=contacto, calificacion=calificacion,
+                        agente=agente, wombat_id=0)
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:
