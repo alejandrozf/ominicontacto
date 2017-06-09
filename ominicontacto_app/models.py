@@ -171,6 +171,7 @@ class SupervisorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
+    is_administrador = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
