@@ -22,7 +22,7 @@ class UserApiCrmCreateView(CreateView):
     form_class = UserApiCrmForm
 
     def get_success_url(self):
-        return reverse('view_blanco')
+        return reverse('user_api_crm_list')
 
 
 class UserApiCrmUpdateView(UpdateView):
@@ -31,7 +31,7 @@ class UserApiCrmUpdateView(UpdateView):
     form_class = UserApiCrmForm
 
     def get_success_url(self):
-        return reverse('view_blanco')
+        return reverse('user_api_crm_list')
 
 
 class UserApiCrmListView(ListView):
