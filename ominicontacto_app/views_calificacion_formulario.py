@@ -868,7 +868,6 @@ class CalificacionUpdateView(UpdateView):
 def calificacion_cliente_externa_view(request):
     if request.method == 'POST':
         received_json_data = json.loads(request.body)
-        print received_json_data
 
         data_esperada = ['pk_campana', 'id_cliente', 'id_calificacion', 'id_agente',
                          'user_api', 'password_api']
@@ -879,8 +878,7 @@ def calificacion_cliente_externa_view(request):
         try:
             usuario = UserApiCrm.objects.get(
                 usuario=received_json_data['user_api'])
-            print usuario.password
-            print received_json_data['password_api']
+
             if usuario.password == received_json_data['password_api']:
                 campana = Campana.objects.get(pk=received_json_data['pk_campana'])
                 contacto = Contacto.objects.get(pk=received_json_data['id_cliente'])
@@ -895,5 +893,6 @@ def calificacion_cliente_externa_view(request):
         except UserApiCrm.DoesNotExist:
             return JsonResponse({'status': 'no existe este usuario {0}'.format(
                 received_json_data['user_api'])})
-    response = JsonResponse({'status': 'OK'})
-    return response
+        return JsonResponse({'status': 'OK'})
+    else:
+        return JsonResponse({'status': 'este es un metodo post'})
