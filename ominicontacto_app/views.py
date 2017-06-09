@@ -258,9 +258,9 @@ class AgenteListView(ListView):
            **kwargs)
         agentes = AgenteProfile.objects.all()
 
-        if self.request.user.is_authenticated() and self.request.user:
-            user = self.request.user
-            agentes = agentes.filter(reported_by=user)
+        # if self.request.user.is_authenticated() and self.request.user:
+        #     user = self.request.user
+        #     agentes = agentes.filter(reported_by=user)
 
         context['agentes'] = agentes
         return context

@@ -11,6 +11,7 @@
                 <th>id</th>
                 <th>nombre del supervisor</th>
                 <th>sip_extension</th>
+                <th>Es administrador</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,13 @@
                 <td>{{ supervisor.id }}</td>
                 <td>{{ supervisor.user.get_full_name}}</td>
                 <td>{{ supervisor.sip_extension }}</td>
+                <td>
+                    {% if  supervisor.is_administrador %}
+                        <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                    {% else %}
+                           <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
               </tr>
        {% empty %}
         <tr>
