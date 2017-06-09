@@ -63,6 +63,7 @@
 						    	<li>
                             		<a href="{% url 'user_list' page=1 %}">Usuarios</a>
                         		</li>
+                                {% if user.get_is_administrador %}
                         		<li>
                             		<a href="{% url 'user_nuevo' %}">Crear Usuario</a>
                         		</li>
@@ -73,22 +74,28 @@
                         		<li>
                             		<a href="{% url 'user_api_crm_create' %}">Crear usuario api crm</a>
                         		</li>
+                                {% endif %}
                         		<li class="divider"></li>
                         		<li>
                             		<a href="{% url 'agente_list' %}">Agentes</a>
                         		</li>
+                                {% if user.get_is_administrador %}
                                 <li>
                             		<a href="{% url 'supervisor_list' %}">Supervisores</a>
                         		</li>
+                                {% endif %}
                                 <li class="divider"></li>
                                 <li>
                             		<a href="{% url 'grupo_list' %}">Grupos</a>
                         		</li>
+                                {% if user.get_is_administrador %}
                         		<li>
                             		<a href="{% url 'grupo_nuevo' %}">Crear Grupo</a>
                         		</li>
+                                {% endif %}
 						    </ul>
 						</li>
+                         {% if user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Modulos <span class="caret"></span>
@@ -104,6 +111,7 @@
 
 						    </ul>
 						</li>
+                        {% endif %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Campaña <span class="caret"></span>
@@ -121,9 +129,11 @@
 						    	<li>
                             		<a href="{% url 'campana_dialer_create' %}">Crear nueva campaña dialer</a>
                         		</li>
+                                {% if user.get_is_administrador %}
                                 <li>
                             		<a href="{% url 'regenerar_asterisk' %}">Regenerar asterisk</a>
                         		</li>
+                                {% endif %}
                                 <li class="divider"></li>
                                 <li>
                             		<a href="{% url 'calificacion_list' %}">Listado de Calificaciones</a>

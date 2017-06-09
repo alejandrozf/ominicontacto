@@ -40,6 +40,11 @@ class User(AbstractUser):
             supervisor_profile = self.supervisorprofile
         return supervisor_profile
 
+    def get_is_administrador(self):
+        if not self.is_agente and not self.is_customer and not self.is_supervisor:
+            return True
+        return False
+
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
             try:
