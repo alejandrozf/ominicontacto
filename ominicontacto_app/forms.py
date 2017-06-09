@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm
+    ReglasIncidencia, UserApiCrm, SupervisorProfile
 )
 
 
@@ -830,3 +830,14 @@ class UserApiCrmForm(forms.ModelForm):
         if ' ' in usuario:
             raise forms.ValidationError('el usuario no puede contener espacios')
         return usuario
+
+
+class SupervisorProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = SupervisorProfile
+        fields = ('is_administrador',)
+
+        labels = {
+            'is_administrador': 'Es administrador de sistema',
+        }

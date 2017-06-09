@@ -8,7 +8,7 @@ from ominicontacto_app import (
     views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
-    views_queue_member, views_user_api_crm
+    views_queue_member, views_user_api_crm, views_supervisor
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -133,9 +133,6 @@ urlpatterns = [
     url(r'^chat/create/$',
         login_required(views.crear_chat_view),
         name='chat_create',
-        ),
-    url(r'^supervisor/list/$',
-        login_required(views.SupervisorListView.as_view()), name='supervisor_list',
         ),
     url(r'^supervision_externa/$',
         login_required(views.supervision_url_externa), name='supervision_externa_url',
@@ -683,6 +680,21 @@ urlpatterns = [
     url(r'^user_api_crm/list/$',
         login_required(views_user_api_crm.UserApiCrmListView.as_view()),
         name='user_api_crm_list',
+        ),
+    # ==========================================================================
+    # Supervisor
+    # ==========================================================================
+    url(r'^supervisor/list/$',
+        login_required(views_supervisor.SupervisorListView.as_view()),
+        name='supervisor_list',
+        ),
+    url(r'^supervisor/(?P<pk_user>\d+)/create/$',
+        login_required(views_supervisor.SupervisorProfileCreateView.as_view()),
+        name='supervisor_create',
+        ),
+    url(r'^supervisor/(?P<pk>\d+)/update/$',
+        login_required(views_supervisor.SupervisorProfileUpdateView.as_view()),
+        name='supervisor_update',
         ),
 ]
 

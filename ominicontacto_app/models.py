@@ -41,7 +41,10 @@ class User(AbstractUser):
         return supervisor_profile
 
     def get_is_administrador(self):
-        if not self.is_agente and not self.is_customer and not self.is_supervisor:
+        if self.get_supervisor_profile() and \
+                self.get_supervisor_profile().is_administrador:
+            return True
+        elif self.is_staff:
             return True
         return False
 
@@ -171,6 +174,7 @@ class SupervisorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
+    is_administrador = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
