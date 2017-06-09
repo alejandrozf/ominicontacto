@@ -41,7 +41,10 @@ class User(AbstractUser):
         return supervisor_profile
 
     def get_is_administrador(self):
-        if not self.is_agente and not self.is_customer and not self.is_supervisor:
+        if self.get_supervisor_profile() and \
+                self.get_supervisor_profile().is_administrador:
+            return True
+        elif self.is_staff:
             return True
         return False
 

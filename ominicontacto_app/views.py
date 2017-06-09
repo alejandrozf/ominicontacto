@@ -558,7 +558,11 @@ def supervision_url_externa(request):
     if request.user.is_authenticated() and request.user.get_supervisor_profile():
         supervisor = request.user.get_supervisor_profile()
         url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
+        if supervisor.is_administrador:
+            url += "&es_admin=t"
+        else:
+            url += "&es_admin=f"
         return redirect(url)
-    message = ("Supervision: Funcion valida para usuario tipo supervisor!!!")
+    message = "Supervision: Funcion valida para usuario tipo supervisor!!!"
     messages.warning(request, message)
     return HttpResponseRedirect(reverse('index'))
