@@ -84,31 +84,6 @@ class CustomerUserCreateView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'user/user_create_update_form.html'
 
-    def form_valid(self, form):
-        self.object = form.save()
-        if self.object.is_supervisor:
-            sip_extension = SupervisorProfile.objects.obtener_ultimo_sip_extension()
-            sip_password = User.objects.make_random_password()
-            supervisor_creado = SupervisorProfile.objects.create(
-                user=self.object, sip_extension=sip_extension, sip_password=sip_password
-            )
-            kamailio_service = KamailioService()
-            #FIXME = Crear servicio para crer un supervisor en kamailio o renombrar el
-            # metodo
-            kamailio_service.crear_agente_kamailio(supervisor_creado)
-            asterisk_sip_service = ActivacionAgenteService()
-            try:
-                asterisk_sip_service.activar()
-            except RestablecerConfigSipError, e:
-                message = ("<strong>¡Cuidado!</strong> "
-                           "con el siguiente error{0} .".format(e))
-                messages.add_message(
-                    self.request,
-                    messages.WARNING,
-                    message,
-                )
-        return super(CustomerUserCreateView, self).form_valid(form)
-
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})
 
@@ -289,11 +264,6 @@ class AgenteListView(ListView):
 
         context['agentes'] = agentes
         return context
-
-
-class SupervisorListView(ListView):
-    model = SupervisorProfile
-    template_name = 'supervisor_profile_list.html'
 
 
 class GrupoCreateView(CreateView):
