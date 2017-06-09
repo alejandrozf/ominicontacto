@@ -26,7 +26,8 @@ class QueueMemberCreateView(FormView):
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        agentes = AgenteProfile.objects.filter(reported_by=self.request.user)
+        #agentes = AgenteProfile.objects.filter(reported_by=self.request.user)
+        agentes = AgenteProfile.objects.all()
         return self.form_class(members=agentes, **self.get_form_kwargs())
 
     def form_valid(self, form):
@@ -76,7 +77,8 @@ class GrupoAgenteCreateView(FormView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         grupo_id = form.cleaned_data.get('grupo')
         grupo = Grupo.objects.get(pk=grupo_id)
-        agentes = grupo.agentes.filter(reported_by=self.request.user)
+        #agentes = grupo.agentes.filter(reported_by=self.request.user)
+        agentes = grupo.agentes.all()
         for agente in agentes:
             QueueMember.objects.get_or_create(
                 member=agente,
@@ -124,9 +126,10 @@ class QueueMemberCampanaView(TemplateView):
                 message,
             )
 
-        agentes = AgenteProfile.objects.filter(reported_by=request.user)
+        #agentes = AgenteProfile.objects.filter(reported_by=request.user)
+        agentes = AgenteProfile.objects.all()
         queue_member_form = QueueMemberForm(data=self.request.GET or None,
-                                            members= agentes)
+                                            members=agentes)
         grupo_agente_form = GrupoAgenteForm(self.request.GET or None)
         context = self.get_context_data(**kwargs)
         context['queue_member_form'] = queue_member_form
