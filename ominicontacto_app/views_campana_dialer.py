@@ -38,7 +38,8 @@ class CampanaDialerListView(ListView):
            **kwargs)
         campanas = Campana.objects.obtener_campanas_dialer()
 
-        if self.request.user.is_authenticated() and self.request.user:
+        if self.request.user.is_authenticated() and self.request.user and \
+                not self.request.user.get_is_administrador():
             user = self.request.user
             campanas = campanas.filter(reported_by=user)
 
