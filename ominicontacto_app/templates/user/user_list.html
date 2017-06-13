@@ -12,9 +12,11 @@
                 <th>username</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
+                {% if user.get_is_administrador %}
                 <td>&nbsp;agente</td>
                 <td>supervisor</td>
                 <td>acciones</td>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -24,6 +26,7 @@
                 <td>{{ usuario.username }}</td>
                 <td>{{ usuario.first_name }}</td>
                 <td>{{ usuario.last_name }}</td>
+                {% if user.get_is_administrador %}
                 <td>
                     {% if usuario.is_agente %}
                         <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
@@ -53,6 +56,7 @@
                 <td><a href="{% url 'user_update' usuario.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar Usuario"></span></a>
                     <a href="{% url 'user_delete' usuario.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Usuario"></span></a>
                 </td>
+                {% endif %}
             </tr>
        {% empty %}
         <tr>
