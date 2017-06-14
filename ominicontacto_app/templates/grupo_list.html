@@ -15,7 +15,9 @@
                 <th>Auto attend dialer</th>
                 <th>Auto pause</th>
                 <th>Auto unpause</th>
+                {% if user.get_is_administrador %}
                 <th>acciones</th>
+                {% endif %}
 
             </tr>
         </thead>
@@ -53,11 +55,13 @@
                     {% endif %}
                 </td>
                 <td>{{grupo.auto_unpause}}</td>
+                {% if user.get_is_administrador %}
                 <td>
                     <a href="{% url 'grupo_update' grupo.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
                     <a href="{% url 'grupo_delete' grupo.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Grupo"></span></a>
 
                 </td>
+                {% endif %}
             </tr>
        {% empty %}
         <tr>
