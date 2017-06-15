@@ -48,6 +48,9 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
+                            <a>{{ user.get_full_name }}</a>
+                        </li>
+                        <li>
                             <a href="{% url 'logout' %}" title="Deslogueo">
                                 <span class="glyphicon glyphicon-off"></span>
                             </a>
