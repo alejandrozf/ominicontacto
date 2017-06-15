@@ -308,6 +308,12 @@ class CampanaForm(forms.ModelForm):
             "tipo_interaccion": forms.RadioSelect(),
         }
 
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if ' ' in nombre:
+            raise forms.ValidationError('el nombre no puede contener espacios')
+        return nombre
+
 
 class CampanaUpdateForm(forms.ModelForm):
 
@@ -329,6 +335,12 @@ class CampanaUpdateForm(forms.ModelForm):
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if ' ' in nombre:
+            raise forms.ValidationError('el nombre no puede contener espacios')
+        return nombre
 
 
 class ContactoForm(forms.ModelForm):
@@ -679,6 +691,12 @@ class CampanaDialerForm(forms.ModelForm):
             "tipo_interaccion": forms.RadioSelect(),
         }
 
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if ' ' in nombre:
+            raise forms.ValidationError('el nombre no puede contener espacios')
+        return nombre
+
 
 class CampanaDialerUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -700,6 +718,12 @@ class CampanaDialerUpdateForm(forms.ModelForm):
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if ' ' in nombre:
+            raise forms.ValidationError('el nombre no puede contener espacios')
+        return nombre
 
 
 class ActuacionVigenteForm(forms.ModelForm):
