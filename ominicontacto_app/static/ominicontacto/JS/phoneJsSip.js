@@ -10,6 +10,7 @@ function updateButton(btn,clsnm,inht) {
 }
 
 $(function() {
+	$("#modalWebCall").modal('show');
 	/*
 	ESTADO_OFFLINE = 1    """Agente en estado offline"""
 	ESTADO_ONLINE = 2    """Agente en estado online"""
@@ -522,6 +523,13 @@ $(function() {
   	 	  e.session.unhold();
   	 	}
   	};
+
+		var digito = document.getElementsByClassName("key");
+		digito.onclick = function() {
+			var val = digito.innerHTML;
+			e.session.sendDTMF(val);
+		};
+
     var aTransf = document.getElementById("aTransfer");
     aTransf.onclick = function() {
       flagTransf = true;
@@ -529,6 +537,7 @@ $(function() {
       e.session.sendDTMF("2");
       setTimeout(transferir(e), 3000);
     };
+
     var bTransf = document.getElementById("bTransfer");
     bTransf.onclick = function() {
       flagTransf = true;
