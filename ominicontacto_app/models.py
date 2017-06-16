@@ -445,6 +445,7 @@ class Campana(models.Model):
         default=FORMULARIO,
     )
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    supervisors = models.ManyToManyField(User, related_name="campanasupervisors")
 
     def __unicode__(self):
             return self.nombre
