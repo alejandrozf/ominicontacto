@@ -302,6 +302,10 @@ urlpatterns = [
     url(r'^campana/(?P<pk_campana>\d+)/mostrar_json/$',
         login_required(views_campana.campana_json_view),
         ),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/supervisors/$',
+        login_required(
+            views_campana.CampanaSupervisorUpdateView.as_view()),
+        name="campana_supervisors"),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
@@ -599,6 +603,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.QueueDialerUpdateView.as_view()),
         name="campana_dialer_queue_update"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/supervisors/$',
+        login_required(
+            views_campana_dialer.CampanaDialerSupervisorUpdateView.as_view()),
+        name="campana_dialer_supervisors"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================

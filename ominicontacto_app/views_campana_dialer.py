@@ -8,15 +8,15 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from ominicontacto_app.models import Contacto, Campana
+from ominicontacto_app.models import Contacto, Campana, SupervisorProfile
 from django.views.generic import (
-    ListView, DeleteView, FormView
+    ListView, DeleteView, FormView, UpdateView
 )
 from django.views.generic.base import RedirectView
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.forms import (
     UpdateBaseDatosForm, BusquedaContactoForm, FormularioCampanaContacto,
-    FormularioNuevoContacto
+    FormularioNuevoContacto, CampanaSupervisorUpdateForm
 )
 
 import logging as logging_
@@ -431,3 +431,28 @@ class FormularioNuevoContactoFormView(FormView):
 
     def get_success_url(self):
         reverse('view_blanco')
+
+
+class CampanaDialerSupervisorUpdateView(UpdateView):
+    """
+    Esta vista actualiza un objeto Campana.
+    """
+
+    template_name = 'campana_dialer/campana_supervisors.html'
+    model = Campana
+    context_object_name = 'campana'
+    form_class = CampanaSupervisorUpdateForm
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        supervisores = SupervisorProfile.objects.all()
+        supervisors_choices = [(supervisor.user.pk, supervisor.user) for supervisor in
+                               supervisores]
+        return self.form_class(supervisors_choices=supervisors_choices,
+                               **self.get_form_kwargs())
+
+    def get_success_url(self):
+        return reverse('campana_dialer_list')

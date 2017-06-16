@@ -13,10 +13,10 @@ from django.views.generic import (
 from django.views.generic.base import RedirectView
 from ominicontacto_app.forms import (
     BusquedaContactoForm, ContactoForm, ReporteForm, FormularioNuevoContacto,
-    FormularioCampanaContacto, UpdateBaseDatosForm
+    FormularioCampanaContacto, UpdateBaseDatosForm, CampanaSupervisorUpdateForm
 )
 from ominicontacto_app.models import (
-    Campana, Queue, Contacto, AgenteProfile
+    Campana, Queue, Contacto, AgenteProfile, SupervisorProfile
 )
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -490,3 +490,28 @@ def campana_json_view(request, pk_campana):
     }
     response = JsonResponse(repuesta)
     return response
+
+
+class CampanaSupervisorUpdateView(UpdateView):
+    """
+    Esta vista actualiza un objeto Campana.
+    """
+
+    template_name = 'campana_dialer/campana_supervisors.html'
+    model = Campana
+    context_object_name = 'campana'
+    form_class = CampanaSupervisorUpdateForm
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        supervisores = SupervisorProfile.objects.all()
+        supervisors_choices = [(supervisor.user.pk, supervisor.user) for supervisor in
+                               supervisores]
+        return self.form_class(supervisors_choices=supervisors_choices,
+                               **self.get_form_kwargs())
+
+    def get_success_url(self):
+        return reverse('campana_list')
