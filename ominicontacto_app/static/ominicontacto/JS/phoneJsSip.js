@@ -524,10 +524,49 @@ $(function() {
   	 	}
   	};
 
-		var digito = document.getElementsByClassName("key");
-		digito.onclick = function() {
-			var val = digito.innerHTML;
-			e.session.sendDTMF(val);
+		var one = document.getElementById("1");
+		one.onclick = function() {
+			e.session.sendDTMF('1');
+		};
+
+		var two = document.getElementById("2");
+		two.onclick = function() {
+			e.session.sendDTMF('2');
+		};
+
+		var three = document.getElementById("3");
+		three.onclick = function() {
+			e.session.sendDTMF('3');
+		};
+
+		var four = document.getElementById("4");
+		four.onclick = function() {
+			e.session.sendDTMF('4');
+		};
+
+		var five = document.getElementById("5");
+		five.onclick = function() {
+			e.session.sendDTMF('5');
+		};
+
+		var six = document.getElementById("6");
+		six.onclick = function() {
+			e.session.sendDTMF('6');
+		};
+
+		var seven = document.getElementById("7");
+		seven.onclick = function() {
+			e.session.sendDTMF('7');
+		};
+
+		var eight = document.getElementById("8");
+		eight.onclick = function() {
+			e.session.sendDTMF('8');
+		};
+
+		var nine = document.getElementById("9");
+		nine.onclick = function() {
+			e.session.sendDTMF("9");
 		};
 
     var aTransf = document.getElementById("aTransfer");
