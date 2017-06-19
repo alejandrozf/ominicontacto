@@ -3,10 +3,13 @@
   background-color: #2E2E2E;
   box-shadow: 10px 10px 5px grey;
 }
+.key {
+  margin-top: 2%;
+}
 .filaBotonesDiscar {
   padding-top: 3%;
-  margin-left: 5%;
-  width: 100%;
+  margin-left: 12%;
+  width: 80%;
   margin-bottom: 1%;
 }
 .filaBotonesDiscar2 {
