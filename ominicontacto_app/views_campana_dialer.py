@@ -377,7 +377,7 @@ class FormularioSeleccionCampanaDialerFormView(FormView):
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
             campanas = [queue.queue_name.campana
-                        for queue in agente.campana_member.all()]
+                        for queue in agente.get_campanas_activas_miembro()]
 
         campana_choice = [(campana.id, campana.nombre) for campana in
                           campanas]
