@@ -352,6 +352,15 @@ class CampanaManager(models.Manager):
         """
         return self.filter(type=Campana.TYPE_ENTRANTE)
 
+    def obtener_campanas_vista_by_user(self, campanas, user):
+        """
+        devuelve las campanas filtradas por user
+        :param campanas: queryset de campanas a filtrar
+        :param user: usuario a filtrar
+        :return: campanas filtradas por usuaro
+        """
+        return campanas.filter(Q(supervisors=user) | Q(reported_by=user))
+
 
 class Campana(models.Model):
     """Una campaña del call center"""

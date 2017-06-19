@@ -41,7 +41,7 @@ class CampanaDialerListView(ListView):
         if self.request.user.is_authenticated() and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
-            campanas = campanas.filter(reported_by=user)
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
