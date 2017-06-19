@@ -91,7 +91,7 @@
              										<div class="modal-body">
                											<div class="col-md-10">
                  												<select class="form-control" id="cmpList">
-                 														{% for queue_member in user.get_agente_profile.campana_member.all %}
+                 														{% for queue_member in user.get_agente_profile.get_campanas_activas_miembro %}
         																		<option value = "{{ queue_member.queue_name.campana.pk }}"> {{ queue_member.queue_name.campana.nombre }} </option>
         				 														{% endfor %}
                  												</select>

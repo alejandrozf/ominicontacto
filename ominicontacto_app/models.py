@@ -152,6 +152,10 @@ class AgenteProfile(models.Model):
     def get_modulos(self):
         return "\n".join([modulo.nombre for modulo in self.modulos.all()])
 
+    def get_campanas_activas_miembro(self):
+        campanas_member = self.campana_member.all()
+        return campanas_member.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
+
 
 class SupervisorProfileManager(models.Manager):
 
@@ -648,6 +652,9 @@ class QueueMemberManager(models.Manager):
         return self.obtener_member_por_queue(queue).filter(
             member=member).exists()
 
+    def get_campanas_activas(self):
+        return self.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
+
 
 class QueueMember(models.Model):
     """
@@ -689,6 +696,8 @@ class QueueMember(models.Model):
     def __unicode__(self):
         return "agente: {0} para la campana {1} ".format(
             self.member.user.get_full_name(), self.queue_name)
+
+
 
     class Meta:
         db_table = 'queue_member_table'
