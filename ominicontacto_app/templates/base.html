@@ -207,9 +207,11 @@
 						      Reportes <span class="caret"></span>
 						    </a>
 						    <ul class="dropdown-menu" role="menu">
+                                {% if user.get_is_administrador %}
                                 <li>
                                     <a href="{% url 'reporte_llamadas' %}"><span class=" glyphicon glyphicon-earphone" aria-hidden="true"></span> Llamadas</a>
                                 </li>
+                                 {% endif %}
                                 <li>
                                     <a href="{% url 'agente_tiempos' %}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Agentes</a>
                                 </li>

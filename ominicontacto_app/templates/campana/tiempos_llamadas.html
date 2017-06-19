@@ -70,11 +70,12 @@
 
     </form>
 </div>
+<div class="col-md-12">
 
-
-
-<div class="col-md-9">
     <h4>Periodo evaluado {{estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
+</div>
+{% if user.get_is_administrador %}
+<div class="col-md-9">
 <table class="table table-bordered">
     <tr>
         <td colspan="2"><strong>Total llamadas</strong></td>
@@ -113,7 +114,7 @@
 
 </table>
 </div>
-
+ {% endif %}
 <div class="col-md-12">
     <h4>Distribucion por campaña</h4>
 <table class="table table-bordered">
