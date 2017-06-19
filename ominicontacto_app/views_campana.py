@@ -451,12 +451,12 @@ class CampanaReporteQueueListView(FormView):
     model = Campana
     form_class = ReporteForm
 
-
     def get(self, request, *args, **kwargs):
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
         campana_llamadas_service = EstadisticasCampanaLlamadasService()
-        estadisticas = campana_llamadas_service.general_campana(hoy, hoy_ahora)
+        estadisticas = campana_llamadas_service.general_campana(hoy, hoy_ahora,
+                                                                request.user)
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
 
@@ -467,7 +467,8 @@ class CampanaReporteQueueListView(FormView):
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
 
         campana_llamadas_service = EstadisticasCampanaLlamadasService()
-        estadisticas = campana_llamadas_service.general_campana(fecha_desde, fecha_hasta)
+        estadisticas = campana_llamadas_service.general_campana(fecha_desde, fecha_hasta,
+                                                                self.request.user)
 
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
