@@ -865,3 +865,14 @@ class SupervisorProfileForm(forms.ModelForm):
         labels = {
             'is_administrador': 'Es administrador de sistema',
         }
+
+
+class CampanaSupervisorUpdateForm(forms.ModelForm):
+
+    def __init__(self, supervisors_choices, *args, **kwargs):
+        super(CampanaSupervisorUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['supervisors'].choices = supervisors_choices
+
+    class Meta:
+        model = Campana
+        fields = ('supervisors',)
