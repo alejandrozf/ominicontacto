@@ -133,7 +133,8 @@ class EstadisticasCampanaLlamadasService():
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior, user):
 
         campanas = Campana.objects.obtener_all_dialplan_asterisk()
-        campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+        if not user.get_is_administrador():
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
             campanas, fecha_inferior, fecha_superior)
