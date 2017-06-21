@@ -4,6 +4,11 @@
 {% block head_js %}
     <script type="text/javascript">
         $(function(){
+
+            setInterval(function() {
+            window.location.reload(true)
+        }, 180000);
+
             $(".btn-submit").click(function (){
                 var campana_id = $(this).attr("id");
                 var action = $(this).attr("name");
