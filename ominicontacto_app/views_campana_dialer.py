@@ -43,8 +43,9 @@ class CampanaDialerListView(ListView):
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
-        campana_service = CampanaService(campanas.filter(estado=Campana.ESTADO_ACTIVA))
-        campana_service.chequear_campanas_finalizada_eliminarlas()
+        campana_service = CampanaService()
+        campana_service.chequear_campanas_finalizada_eliminarlas(
+            campanas.filter(estado=Campana.ESTADO_ACTIVA))
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
