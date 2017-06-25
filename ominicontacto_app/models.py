@@ -301,6 +301,22 @@ class CampanaManager(models.Manager):
             raise(SuspiciousOperation("No se encontro campana %s en "
                                       "estado ESTADO_EN_DEFINICION"))
 
+    def obtener_template_en_definicion_para_editar(self, campana_id):
+        """Devuelve la campaña template pasada por ID, siempre que dicha
+        campaña pueda ser editar (editada en el proceso de
+        definirla, o sea, en el proceso de "creacion" de la
+        campaña).
+
+        En caso de no encontarse, lanza SuspiciousOperation
+        """
+        try:
+            return self.filter(
+                estado=self.model.ESTADO_TEMPLATE_EN_DEFINICION).get(
+                pk=campana_id)
+        except self.model.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro campana %s en "
+                                      "estado ESTADO_TEMPLATE_EN_DEFINICION"))
+
     def obtener_pausadas(self):
         """
         Devuelve campañas en estado pausadas.
@@ -364,6 +380,12 @@ class CampanaManager(models.Manager):
         :return: campanas filtradas por usuaro
         """
         return campanas.filter(Q(supervisors=user) | Q(reported_by=user))
+
+    def obtener_ultimo_id_campana(self):
+        last = self.last()
+        if last:
+            return last.pk
+        return 0
 
 
 class Campana(models.Model):
@@ -451,7 +473,7 @@ class Campana(models.Model):
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
     )
-    nombre = models.CharField(max_length=128, unique=True       )
+    nombre = models.CharField(max_length=128, unique=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
     calificacion_campana = models.ForeignKey(CalificacionCampana,

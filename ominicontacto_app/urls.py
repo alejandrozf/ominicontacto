@@ -8,7 +8,8 @@ from ominicontacto_app import (
     views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
-    views_queue_member, views_user_api_crm, views_supervisor
+    views_queue_member, views_user_api_crm, views_supervisor,
+    views_campana_dialer_template
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -704,6 +705,30 @@ urlpatterns = [
         login_required(views_supervisor.SupervisorProfileUpdateView.as_view()),
         name='supervisor_update',
         ),
+    # ==========================================================================
+    # Campana Dialer Template
+    # ==========================================================================
+    url(r'^campana_dialer_template/create/$',
+        login_required(
+            views_campana_dialer_template.CampanaDialerTemplateCreateView.as_view()),
+        name="campana_dialer_template_create"),
+    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/cola/$',
+        login_required(
+            views_campana_dialer_template.QueueDialerTemplateCreateView.as_view()),
+        name="campana_dialer_template_queue_create"),
+    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/actuacion_vigente/$',
+        login_required(
+            views_campana_dialer_template.ActuacionVigenteCampanaDialerTemplateCreateView.as_view()),
+        name="nuevo_actuacion_vigente_campana_dialer_template"),
+    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/reglas_incidencia/$',
+        login_required(
+            views_campana_dialer_template.ReglasIncidenciaCampanaDialerTemplateCreateView.as_view()),
+        name="nueva_reglas_incidencia_campana_dialer_template"),
+    url(
+        r'^campana_dialer_template/(?P<pk_campana>\d+)/reglas_incidencia/(?P<pk_regla>\d+)/delete/$',
+        login_required(
+            views_campana_dialer_template.regla_incidencia_delete_view),
+        name="delete_regla_incidencia_campana_dialer_template"),
 ]
 
 urlpatterns += patterns('',

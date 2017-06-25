@@ -76,8 +76,11 @@ $(document).ready(function() {
                                     <td>{{ reglas.get_en_modo_display}}</td>
                                     <td>{{ reglas.intento_max }}</td>
                                     <td>
+                                        {% if es_template %}
+                                        <a href="{% url 'delete_regla_incidencia_campana_dialer_template' campana.pk reglas.pk %}"> Eliminar</a>
+                                        {% else %}
                                         <a href="{% url 'delete_regla_incidencia_campana_dialer' campana.pk reglas.pk %}"> Eliminar</a>
-
+                                        {% endif %}
                                     </td>       
                                 </tr>
                              {% empty %}
