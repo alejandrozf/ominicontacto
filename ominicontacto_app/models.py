@@ -387,6 +387,12 @@ class CampanaManager(models.Manager):
             return last.pk
         return 0
 
+    def obtener_templates_activos(self):
+        """
+        Devuelve templates campañas en estado activo.
+        """
+        return self.filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+
 
 class Campana(models.Model):
     """Una campaña del call center"""

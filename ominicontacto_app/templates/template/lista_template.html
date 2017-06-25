@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="col-md-10 col-md-offset-1">
+
+    <h4><b>Lista template</b></h4>
+    <table class="table table-stripped table-condensed table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+
+                <th>Acciones&nbsp;&nbsp;</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for campana in templates_activos %}
+            <tr>
+                <td width="25%">
+                    {% if campana.nombre_template %}
+                        {{ campana.nombre_template }}
+                    {% else %}
+                        {{ campana.nombre }}
+                    {% endif %}
+
+                </td>
+
+                <td width="14%">
+
+                </td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="5">No existen templates campañas dialer</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

@@ -38,6 +38,22 @@ class TemplateMixin(object):
         return context
 
 
+class TemplateListView(TemplateMixin, ListView):
+    """
+    Esta vista lista los objetos Capanas-->Templates activos.
+    """
+
+    template_name = 'template/lista_template.html'
+    context_object_name = 'campanas'
+    model = Campana
+
+    def get_context_data(self, **kwargs):
+        context = super(TemplateListView, self).get_context_data(**kwargs)
+        context['templates_activos'] = \
+            Campana.objects.obtener_templates_activos()
+        return context
+
+
 class CheckEstadoCampanaDialerTemplateMixin(object):
     """Mixin para utilizar en las vistas de creación de campañas.
     Utiliza `Campana.objects.obtener_en_definicion_para_editar()`

@@ -729,6 +729,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_template.regla_incidencia_delete_view),
         name="delete_regla_incidencia_campana_dialer_template"),
+    url(r'^campana_dialer_template/lista/$',
+        login_required(
+            views_campana_dialer_template.TemplateListView.as_view()),
+        name="lista_campana_dialer_template"),
 ]
 
 urlpatterns += patterns('',
