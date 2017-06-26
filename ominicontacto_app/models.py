@@ -2202,6 +2202,24 @@ class ActuacionVigente(models.Model):
     def get_hora_hasta_wombat(self):
         return "{0}00".format(self.hora_hasta.strftime("%H%M"))
 
+    def get_dias_vigente_display(self):
+        dias = ""
+        if self.domingo:
+            dias += "Domingo,"
+        if self.lunes:
+            dias += "Lunes,"
+        if self.martes:
+            dias += "Martes,"
+        if self.miercoles:
+            dias += "Miercoles,"
+        if self.jueves:
+            dias += "Jueves,"
+        if self.viernes:
+            dias += "Vienes,"
+        if self.sabado:
+            dias += "Sabado"
+        return dias
+
 
 class Backlist(models.Model):
 

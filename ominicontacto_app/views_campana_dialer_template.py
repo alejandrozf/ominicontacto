@@ -10,6 +10,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from django.views.generic.base import RedirectView
+from django.views.generic.detail import DetailView
 from ominicontacto_app.forms import (
     QueueDialerForm, QueueDialerUpdateForm, CampanaDialerUpdateForm,
     SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm,
@@ -299,3 +300,8 @@ class CreaCampanaTemplateView(TemplateMixin, RedirectView):
 
         return super(CreaCampanaTemplateView, self).get(request, *args,
                                                         **kwargs)
+
+
+class TemplateDetailView(TemplateMixin, DetailView):
+    template_name = 'template/template_detalle.html'
+    model = Campana

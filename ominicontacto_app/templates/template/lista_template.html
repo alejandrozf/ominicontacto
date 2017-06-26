@@ -19,12 +19,13 @@
         {% for campana in templates_activos %}
             <tr>
                 <td width="25%">
+                    <a href="{% url 'campana_dialer_template_detalle' campana.pk %}">
                     {% if campana.nombre_template %}
                         {{ campana.nombre_template }}
                     {% else %}
                         {{ campana.nombre }}
                     {% endif %}
-
+                    </a>
                 </td>
 
                 <td width="14%">
