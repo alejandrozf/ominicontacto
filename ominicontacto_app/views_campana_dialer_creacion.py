@@ -474,5 +474,35 @@ class QueueDialerReplicarView(CheckEstadoCampanaDialerMixin,
         return context
 
     def get_success_url(self):
-        return reverse('nuevo_actuacion_vigente_campana_dialer',
-            kwargs={"pk_campana": self.campana.pk})
+        return reverse('campana_dialer_update_actuacion_vigente',
+                       kwargs={"pk_campana": self.campana.pk})
+
+
+class ActuacionVigenteCampanaDialerUpdateView(CheckEstadoCampanaDialerMixin, UpdateView):
+    """
+    Esta vista actualiza uno objeto ActuacionVigente
+    para la Campana que se este creando.
+    Inicializa el form con campo campana (hidden)
+    con el id de campana que viene en la url.
+    """
+
+    template_name = 'campana_dialer/actuacion_vigente_campana.html'
+    model = ActuacionVigente
+    context_object_name = 'actuacion'
+    form_class = ActuacionVigenteForm
+
+    def get_object(self, queryset=None):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return campana.actuacionvigente
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ActuacionVigenteCampanaDialerUpdateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'nueva_reglas_incidencia_campana_dialer',
+            kwargs={"pk_campana": self.kwargs['pk_campana']}
+        )
