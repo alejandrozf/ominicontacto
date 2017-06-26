@@ -673,6 +673,7 @@ class CampanaDialerForm(forms.ModelForm):
 
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
         self.fields['fecha_fin'].required = True
+        self.fields['bd_contacto'].required = True
 
     class Meta:
         model = Campana
