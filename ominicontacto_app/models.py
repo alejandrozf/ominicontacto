@@ -663,6 +663,16 @@ class Campana(models.Model):
                 break
         return valida
 
+    def borrar_template(self):
+        """
+        Setea la campaña como BORRADA
+        """
+        logger.info("Seteando campana-->template %s como BORRADA", self.id)
+        assert self.estado == Campana.ESTADO_TEMPLATE_ACTIVO
+
+        self.estado = Campana.ESTADO_TEMPLATE_BORRADO
+        self.save()
+
 
 class QueueManager(models.Manager):
 

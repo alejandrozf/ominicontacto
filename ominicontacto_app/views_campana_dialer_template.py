@@ -305,3 +305,43 @@ class CreaCampanaTemplateView(TemplateMixin, RedirectView):
 class TemplateDetailView(TemplateMixin, DetailView):
     template_name = 'template/template_detalle.html'
     model = Campana
+
+
+class TemplateDeleteView(TemplateMixin, DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto Campana-->Template.
+    """
+
+    model = Campana
+    template_name = 'campana_dialer/delete_campana.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.campana = \
+            Campana.objects.obtener_activo_para_eliminar_crear_ver(
+                kwargs['pk_campana'])
+        return super(TemplateDeleteView, self).dispatch(request, *args,
+                                                        **kwargs)
+
+    def get_object(self, queryset=None):
+        return Campana.objects.obtener_activo_para_eliminar_crear_ver(
+            self.kwargs['pk_campana'])
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        self.object.borrar_template()
+
+        message = '<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación del Template.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(success_url)
+
+    def get_success_url(self):
+        return reverse('lista_campana_dialer_template')

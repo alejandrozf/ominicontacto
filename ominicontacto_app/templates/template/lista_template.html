@@ -33,6 +33,10 @@
                                             <span class="glyphicon glyphicon-plus"></span>
                                             Crear Campaña de Template
                                         </a>
+                    <a href="{% url 'campana_dialer_template_elimina' campana.pk %}"  class="btn btn-danger btn-sm">
+                                                <span class="glyphicon glyphicon-remove"></span>
+                                                Eliminar
+                                        </a>
                 </td>
             </tr>
        {% empty %}
