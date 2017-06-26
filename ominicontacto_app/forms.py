@@ -880,24 +880,15 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
 
 
 class CampanaDialerTemplateForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(CampanaDialerTemplateForm, self).__init__(*args, **kwargs)
-
-        self.fields['bd_contacto'].queryset =\
-            BaseDatosContacto.objects.obtener_definidas()
 
     class Meta:
         model = Campana
-        fields = ('nombre_template', 'calificacion_campana', 'bd_contacto', 'formulario',
-                  'gestion', 'sitio_externo', 'tipo_interaccion')
-        labels = {
-            'bd_contacto': 'Base de Datos de Contactos',
-        }
+        fields = ('nombre_template', 'calificacion_campana', 'formulario', 'gestion',
+                  'sitio_externo', 'tipo_interaccion')
 
         widgets = {
             "nombre_template": forms.TextInput(attrs={'class': 'form-control'}),
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),

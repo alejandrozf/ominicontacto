@@ -96,14 +96,6 @@ class CampanaDialerTemplateCreateView(TemplateMixin, CreateView):
     context_object_name = 'campana'
     form_class = CampanaDialerTemplateForm
 
-    def dispatch(self, request, *args, **kwargs):
-        base_datos = BaseDatosContacto.objects.obtener_definidas()
-        if not base_datos:
-            message = ("Debe cargar una base de datos antes de comenzar a "
-                       "configurar una campana dialer")
-            messages.warning(self.request, message)
-        return super(CampanaDialerTemplateCreateView, self).dispatch(request, *args, **kwargs)
-
     def form_invalid(self, form, error=None):
 
         message = '<strong>Operación Errónea!</strong> \
@@ -302,7 +294,7 @@ class CreaCampanaTemplateView(TemplateMixin, RedirectView):
         )
         campana = Campana.objects.crea_campana_de_template(template)
 
-        self.url = reverse('campana_dialer_update',
+        self.url = reverse('campana_dialer_replicar_update',
                            kwargs={"pk_campana": campana.pk})
 
         return super(CreaCampanaTemplateView, self).get(request, *args,

@@ -378,3 +378,54 @@ class QueueDialerUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('campana_dialer_list')
+
+
+class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
+                                CampanaDialerEnDefinicionMixin, UpdateView):
+    """
+    Esta vista actualiza una campana luego de crearla por template
+    """
+
+    template_name = 'campana_dialer/nueva_edita_campana.html'
+    model = Campana
+    context_object_name = 'campana'
+    form_class = CampanaDialerForm
+
+    def dispatch(self, request, *args, **kwargs):
+        base_datos = BaseDatosContacto.objects.obtener_definidas()
+        if not base_datos:
+            message = ("Debe cargar una base de datos antes de comenzar a "
+                       "configurar una campana dialer")
+            messages.warning(self.request, message)
+        return super(CampanaDialerReplicarView, self).dispatch(request, *args, **kwargs)
+
+    def form_invalid(self, form, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                . {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+        return self.render_to_response(self.get_context_data())
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if self.object.tipo_interaccion is Campana.FORMULARIO and \
+            not self.object.formulario:
+            error = "Debe seleccionar un formulario"
+            return self.form_invalid(form, error=error)
+        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
+            not self.object.sitio_externo:
+            error = "Debe seleccionar un sitio externo"
+            return self.form_invalid(form, error=error)
+        self.object.reported_by = self.request.user
+        self.object.save()
+        return super(CampanaDialerReplicarView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'campana_dialer_queue_create',
+            kwargs={"pk_campana": self.object.pk})

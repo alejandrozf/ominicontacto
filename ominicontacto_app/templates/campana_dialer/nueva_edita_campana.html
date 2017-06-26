@@ -66,6 +66,7 @@
               {{ form.calificacion_campana }}
         </div>
     </div>
+     {% if not es_template %}
     <div class="form-group row">
         {{ form.bd_contacto.errors }}
         <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
@@ -73,6 +74,7 @@
               {{ form.bd_contacto }}
         </div>
     </div>
+    {% endif %}
      {{ form.tipo_interaccion.errors }}
     <div class="form-group row">
         {{ form.formulario.errors }}
