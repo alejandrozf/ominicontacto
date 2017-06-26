@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
+from django.views.generic.base import RedirectView
 from ominicontacto_app.forms import (
     QueueDialerForm, QueueDialerUpdateForm, CampanaDialerUpdateForm,
     SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm,
@@ -271,3 +272,17 @@ class QueueDialerTemplateCreateView(CheckEstadoCampanaDialerTemplateMixin,
             kwargs={"pk_campana": self.campana.pk}
         )
 
+
+class ConfirmaCampanaDialerTemplateView(
+    CheckEstadoCampanaDialerTemplateMixin, CampanaDialerTemplateEnDefinicionMixin,
+    RedirectView):
+    pattern_name = 'lista_campana_dialer_template'
+    url = None
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.estado = Campana.ESTADO_TEMPLATE_ACTIVO
+        self.object.save()
+        self.url = reverse('lista_campana_dialer_template')
+        return super(ConfirmaCampanaDialerTemplateView, self).post(
+            request, *args, **kwargs)

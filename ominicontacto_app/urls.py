@@ -733,6 +733,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_template.TemplateListView.as_view()),
         name="lista_campana_dialer_template"),
+    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/confirma/$',
+        login_required(
+            views_campana_dialer_template.ConfirmaCampanaDialerTemplateView.as_view()),
+        name="confirma_campana_dialer_template"),
 ]
 
 urlpatterns += patterns('',
