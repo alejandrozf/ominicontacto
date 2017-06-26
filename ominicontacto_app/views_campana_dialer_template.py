@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from django.views.generic.base import RedirectView
@@ -118,7 +118,6 @@ class CampanaDialerTemplateCreateView(TemplateMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        import ipdb; ipdb.set_trace();
         ultimo_id = Campana.objects.obtener_ultimo_id_campana()
         self.object.nombre = "TEMPLATE_{0}".format(ultimo_id + 1)
         self.object.es_template = True
@@ -286,3 +285,25 @@ class ConfirmaCampanaDialerTemplateView(
         self.url = reverse('lista_campana_dialer_template')
         return super(ConfirmaCampanaDialerTemplateView, self).post(
             request, *args, **kwargs)
+
+
+class CreaCampanaTemplateView(TemplateMixin, RedirectView):
+    permanent = False
+    url = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.campana = \
+            Campana.objects.obtener_activo_para_eliminar_crear_ver(kwargs['pk_campana'])
+        return super(CreaCampanaTemplateView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        template = get_object_or_404(
+            Campana, pk=self.kwargs['pk_campana']
+        )
+        campana = Campana.objects.crea_campana_de_template(template)
+
+        self.url = reverse('campana_dialer_update',
+                           kwargs={"pk_campana": campana.pk})
+
+        return super(CreaCampanaTemplateView, self).get(request, *args,
+                                                        **kwargs)
