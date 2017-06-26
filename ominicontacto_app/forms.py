@@ -673,11 +673,13 @@ class CampanaDialerForm(forms.ModelForm):
 
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
         self.fields['fecha_fin'].required = True
+        self.fields['bd_contacto'].required = True
 
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo', 'tipo_interaccion')
+                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo',
+                  'tipo_interaccion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -876,3 +878,20 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('supervisors',)
+
+
+class CampanaDialerTemplateForm(forms.ModelForm):
+
+    class Meta:
+        model = Campana
+        fields = ('nombre_template', 'calificacion_campana', 'formulario', 'gestion',
+                  'sitio_externo', 'tipo_interaccion')
+
+        widgets = {
+            "nombre_template": forms.TextInput(attrs={'class': 'form-control'}),
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
+        }

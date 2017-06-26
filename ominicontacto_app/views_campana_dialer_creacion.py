@@ -378,3 +378,131 @@ class QueueDialerUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('campana_dialer_list')
+
+
+class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
+                                CampanaDialerEnDefinicionMixin, UpdateView):
+    """
+    Esta vista actualiza una campana luego de crearla por template
+    """
+
+    template_name = 'campana_dialer/nueva_edita_campana.html'
+    model = Campana
+    context_object_name = 'campana'
+    form_class = CampanaDialerForm
+
+    def dispatch(self, request, *args, **kwargs):
+        base_datos = BaseDatosContacto.objects.obtener_definidas()
+        if not base_datos:
+            message = ("Debe cargar una base de datos antes de comenzar a "
+                       "configurar una campana dialer")
+            messages.warning(self.request, message)
+        return super(CampanaDialerReplicarView, self).dispatch(request, *args, **kwargs)
+
+    def form_invalid(self, form, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                . {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+        return self.render_to_response(self.get_context_data())
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if self.object.tipo_interaccion is Campana.FORMULARIO and \
+            not self.object.formulario:
+            error = "Debe seleccionar un formulario"
+            return self.form_invalid(form, error=error)
+        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
+            not self.object.sitio_externo:
+            error = "Debe seleccionar un sitio externo"
+            return self.form_invalid(form, error=error)
+        self.object.reported_by = self.request.user
+        self.object.save()
+        return super(CampanaDialerReplicarView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'campana_dialer_replicar_cola',
+            kwargs={"pk_campana": self.object.pk})
+
+
+class QueueDialerReplicarView(CheckEstadoCampanaDialerMixin,
+                              CampanaDialerEnDefinicionMixin, UpdateView):
+    model = Queue
+    form_class = QueueDialerUpdateForm
+    template_name = 'campana_dialer/create_update_queue.html'
+
+    def get_object(self, queryset=None):
+         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+         return campana.queue_campana
+
+    def dispatch(self, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        try:
+            Queue.objects.get(campana=campana)
+        except Queue.DoesNotExist:
+            return HttpResponseRedirect("/campana_dialer/" + self.kwargs['pk_campana']
+                                        + "/cola/")
+        else:
+            return super(QueueDialerReplicarView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        return super(QueueDialerReplicarView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(QueueDialerReplicarView, self).get_context_data(**kwargs)
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
+        context['create'] = True
+        return context
+
+    def get_success_url(self):
+        return reverse('campana_dialer_update_actuacion_vigente',
+                       kwargs={"pk_campana": self.campana.pk})
+
+
+class ActuacionVigenteCampanaDialerUpdateView(CheckEstadoCampanaDialerMixin, UpdateView):
+    """
+    Esta vista actualiza uno objeto ActuacionVigente
+    para la Campana que se este creando.
+    Inicializa el form con campo campana (hidden)
+    con el id de campana que viene en la url.
+    """
+
+    template_name = 'campana_dialer/actuacion_vigente_campana.html'
+    model = ActuacionVigente
+    context_object_name = 'actuacion'
+    form_class = ActuacionVigenteForm
+
+    def get_object(self, queryset=None):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return campana.actuacionvigente
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ActuacionVigenteCampanaDialerUpdateView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
+    def get_success_url(self):
+        return reverse(
+            'nueva_reglas_incidencia_campana_dialer',
+            kwargs={"pk_campana": self.kwargs['pk_campana']}
+        )

@@ -22,8 +22,9 @@ $(document).ready(function() {
                 <li class="disabled"><a>Sincronizar</a></li>
             </ul>
             <br>
-            <form role="form" method="post">
+
             <div class="col-lg-4">
+                  <form role="form" method="post">
       {% csrf_token %}
     {{ form.non_field_errors }}
                 {{form.campana}}
@@ -48,6 +49,11 @@ $(document).ready(function() {
               {{ form.reintentar_tarde }}
         </div>
     </div>
+                <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Agregar Regla
+                </button>
+                </form>
             </div>
             <div class="col-lg-6">
                 {% if campana %}
@@ -76,8 +82,11 @@ $(document).ready(function() {
                                     <td>{{ reglas.get_en_modo_display}}</td>
                                     <td>{{ reglas.intento_max }}</td>
                                     <td>
+                                        {% if es_template %}
+                                        <a href="{% url 'delete_regla_incidencia_campana_dialer_template' campana.pk reglas.pk %}"> Eliminar</a>
+                                        {% else %}
                                         <a href="{% url 'delete_regla_incidencia_campana_dialer' campana.pk reglas.pk %}"> Eliminar</a>
-
+                                        {% endif %}
                                     </td>       
                                 </tr>
                              {% empty %}
@@ -95,17 +104,21 @@ $(document).ready(function() {
             </div>
             <div class="col-lg-12">
                 <br>
-                <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Agregar Regla
-                </button>
+                {% if es_template %}
+                    <form id="form_estados_campanas" role="form" method="post" action="{% url 'confirma_campana_dialer_template' campana.pk %}">
+                        {% csrf_token %}
+                        <button type="submit"  class="btn btn-default pull-right" role="button">
+                            Finalizar
+                        </button>
 
-<a href="{% url 'campana_dialer_sincronizar' campana.pk %}" class="btn btn-default pull-right" role="button">
+                     </form>
+                {% else %}
+                <a href="{% url 'campana_dialer_sincronizar' campana.pk %}" class="btn btn-default pull-right" role="button">
                             Siguiente <span class="glyphicon glyphicon-chevron-right"></span>
                         </a>
-
+                {% endif %}
             </div>
-            </form>        
+
         </div>
     </div>
 {% endblock %}
