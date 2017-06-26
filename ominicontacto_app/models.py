@@ -301,6 +301,22 @@ class CampanaManager(models.Manager):
             raise(SuspiciousOperation("No se encontro campana %s en "
                                       "estado ESTADO_EN_DEFINICION"))
 
+    def obtener_template_en_definicion_para_editar(self, campana_id):
+        """Devuelve la campaña template pasada por ID, siempre que dicha
+        campaña pueda ser editar (editada en el proceso de
+        definirla, o sea, en el proceso de "creacion" de la
+        campaña).
+
+        En caso de no encontarse, lanza SuspiciousOperation
+        """
+        try:
+            return self.filter(
+                estado=self.model.ESTADO_TEMPLATE_EN_DEFINICION).get(
+                pk=campana_id)
+        except self.model.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro campana %s en "
+                                      "estado ESTADO_TEMPLATE_EN_DEFINICION"))
+
     def obtener_pausadas(self):
         """
         Devuelve campañas en estado pausadas.
@@ -365,6 +381,116 @@ class CampanaManager(models.Manager):
         """
         return campanas.filter(Q(supervisors=user) | Q(reported_by=user))
 
+    def obtener_ultimo_id_campana(self):
+        last = self.last()
+        if last:
+            return last.pk
+        return 0
+
+    def obtener_templates_activos(self):
+        """
+        Devuelve templates campañas en estado activo.
+        """
+        return self.filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+
+    def crea_campana_de_template(self, template):
+        """
+        Este método se encarga de crear una campana a partir del template
+        proporcionado.
+        """
+        assert template.estado == Campana.ESTADO_TEMPLATE_ACTIVO
+        assert template.es_template
+
+        campana = Campana.objects.replicar_campana(template)
+        return campana
+
+    def replicar_campana(self, campana):
+        """
+        Este método se encarga de replicar una campana existente, creando una
+        campana nueva de iguales características.
+        """
+        assert isinstance(campana, Campana)
+
+        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
+
+        # Replica Campana.
+        campana_replicada = self.create(
+            nombre="CAMPANA_GENERADA_{0}".format(ultimo_id + 1),
+            fecha_inicio=campana.fecha_inicio,
+            fecha_fin=campana.fecha_fin,
+            bd_contacto=campana.bd_contacto,
+            calificacion_campana=campana.calificacion_campana,
+            gestion=campana.gestion,
+            type=campana.type,
+            formulario=campana.formulario,
+            sitio_externo=campana.sitio_externo,
+            tipo_interaccion=campana.tipo_interaccion,
+            reported_by=campana.reported_by,
+        )
+
+        # Replica Cola
+        Queue.objects.create(
+            campana=campana_replicada,
+            name=campana_replicada.nombre,
+            timeout=campana.queue_campana.timeout,
+            retry=campana.queue_campana.retry,
+            maxlen=campana.queue_campana.maxlen,
+            wrapuptime=campana.queue_campana.wrapuptime,
+            servicelevel=campana.queue_campana.servicelevel,
+            strategy=campana.queue_campana.strategy,
+            eventmemberstatus=campana.queue_campana.eventmemberstatus,
+            eventwhencalled=campana.queue_campana.eventwhencalled,
+            weight=campana.queue_campana.weight,
+            ringinuse=campana.queue_campana.ringinuse,
+            setinterfacevar=campana.queue_campana.setinterfacevar,
+            wait=campana.queue_campana.wait,
+            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+            auto_grabacion=campana.queue_campana.auto_grabacion,
+            detectar_contestadores=campana.queue_campana.detectar_contestadores,
+
+        )
+
+        # Replica Actuacion Vigente
+        ActuacionVigente.objects.create(
+            campana=campana_replicada,
+            domingo=campana.actuacionvigente.domingo,
+            lunes=campana.actuacionvigente.lunes,
+            martes=campana.actuacionvigente.martes,
+            miercoles=campana.actuacionvigente.miercoles,
+            jueves=campana.actuacionvigente.jueves,
+            viernes=campana.actuacionvigente.viernes,
+            sabado=campana.actuacionvigente.sabado,
+            hora_desde=campana.actuacionvigente.hora_desde,
+            hora_hasta=campana.actuacionvigente.hora_hasta,
+        )
+
+        # Replica Reglas Incidentes
+        reglas = campana.reglas_incidencia.all()
+        for regla in reglas:
+            ReglasIncidencia.objects.create(
+                campana=campana_replicada,
+                estado=regla.estado,
+                estado_personalizado=regla.estado_personalizado,
+                intento_max=regla.intento_max,
+                reintentar_tarde=regla.reintentar_tarde,
+                en_modo=regla.en_modo,
+            )
+
+        return campana_replicada
+
+    def obtener_activo_para_eliminar_crear_ver(self, campana_id):
+        """Devuelve la campaña pasada por ID, siempre que dicha
+        campaña pueda ser eliminada.
+
+        En caso de no encontarse, lanza SuspiciousOperation
+        """
+        try:
+            return self.filter(
+                estado=Campana.ESTADO_TEMPLATE_ACTIVO).get(pk=campana_id)
+        except Campana.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro campana/template %s en "
+                                      "estado ESTADO_TEMPLATE_ACTIVO"))
+
 
 class Campana(models.Model):
     """Una campaña del call center"""
@@ -401,6 +527,17 @@ class Campana(models.Model):
     ESTADO_INACTIVA = 6
     """La campaña inactiva"""
 
+    ESTADO_TEMPLATE_EN_DEFINICION = 7
+    """La campaña se creo como template y esta en proceso de definición."""
+
+    ESTADO_TEMPLATE_ACTIVO = 8
+    """La campaña se creo como template y esta activa, en condición de usarse
+    como tal."""
+
+    ESTADO_TEMPLATE_BORRADO = 9
+    """La campaña se creo como template y esta borrada, ya no puede usarse
+    como tal."""
+
     ESTADOS = (
         (ESTADO_EN_DEFINICION, 'En definicion'),
         (ESTADO_ACTIVA, 'Activa'),
@@ -408,6 +545,10 @@ class Campana(models.Model):
         (ESTADO_BORRADA, 'Borrada'),
         (ESTADO_PAUSADA, 'Pausada'),
         (ESTADO_INACTIVA, 'Inactiva'),
+
+        (ESTADO_TEMPLATE_EN_DEFINICION, '(Template en definicion)'),
+        (ESTADO_TEMPLATE_ACTIVO, 'Template Activo'),
+        (ESTADO_TEMPLATE_BORRADO, 'Template Borrado'),
     )
 
     TYPE_ENTRANTE = 1
@@ -436,7 +577,7 @@ class Campana(models.Model):
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
     )
-    nombre = models.CharField(max_length=128, unique=True       )
+    nombre = models.CharField(max_length=128, unique=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
     calificacion_campana = models.ForeignKey(CalificacionCampana,
@@ -459,6 +600,8 @@ class Campana(models.Model):
     )
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
     supervisors = models.ManyToManyField(User, related_name="campanasupervisors")
+    es_template = models.BooleanField(default=False)
+    nombre_template = models.CharField(max_length=128, null=True, blank=True)
 
     def __unicode__(self):
             return self.nombre
@@ -519,6 +662,16 @@ class Campana(models.Model):
                 valida = True
                 break
         return valida
+
+    def borrar_template(self):
+        """
+        Setea la campaña como BORRADA
+        """
+        logger.info("Seteando campana-->template %s como BORRADA", self.id)
+        assert self.estado == Campana.ESTADO_TEMPLATE_ACTIVO
+
+        self.estado = Campana.ESTADO_TEMPLATE_BORRADO
+        self.save()
 
 
 class QueueManager(models.Manager):
@@ -2058,6 +2211,24 @@ class ActuacionVigente(models.Model):
 
     def get_hora_hasta_wombat(self):
         return "{0}00".format(self.hora_hasta.strftime("%H%M"))
+
+    def get_dias_vigente_display(self):
+        dias = ""
+        if self.domingo:
+            dias += "Domingo,"
+        if self.lunes:
+            dias += "Lunes,"
+        if self.martes:
+            dias += "Martes,"
+        if self.miercoles:
+            dias += "Miercoles,"
+        if self.jueves:
+            dias += "Jueves,"
+        if self.viernes:
+            dias += "Vienes,"
+        if self.sabado:
+            dias += "Sabado"
+        return dias
 
 
 class Backlist(models.Model):
