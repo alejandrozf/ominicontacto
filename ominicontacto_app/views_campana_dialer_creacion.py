@@ -427,5 +427,52 @@ class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
 
     def get_success_url(self):
         return reverse(
-            'campana_dialer_queue_create',
+            'campana_dialer_replicar_cola',
             kwargs={"pk_campana": self.object.pk})
+
+
+class QueueDialerReplicarView(CheckEstadoCampanaDialerMixin,
+                              CampanaDialerEnDefinicionMixin, UpdateView):
+    model = Queue
+    form_class = QueueDialerUpdateForm
+    template_name = 'campana_dialer/create_update_queue.html'
+
+    def get_object(self, queryset=None):
+         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+         return campana.queue_campana
+
+    def dispatch(self, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        try:
+            Queue.objects.get(campana=campana)
+        except Queue.DoesNotExist:
+            return HttpResponseRedirect("/campana_dialer/" + self.kwargs['pk_campana']
+                                        + "/cola/")
+        else:
+            return super(QueueDialerReplicarView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError, e:
+            message = ("<strong>Operación Errónea!</strong> "
+                       "No se pudo confirmar la creación del dialplan  "
+                       "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        return super(QueueDialerReplicarView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(QueueDialerReplicarView, self).get_context_data(**kwargs)
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        context['campana'] = campana
+        context['create'] = True
+        return context
+
+    def get_success_url(self):
+        return reverse('nuevo_actuacion_vigente_campana_dialer',
+            kwargs={"pk_campana": self.campana.pk})

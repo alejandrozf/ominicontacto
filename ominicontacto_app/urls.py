@@ -612,6 +612,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.CampanaDialerReplicarView.as_view()),
         name="campana_dialer_replicar_update"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/replicar_cola/$',
+        login_required(
+            views_campana_dialer_creacion.QueueDialerReplicarView.as_view()),
+        name="campana_dialer_replicar_cola"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================
