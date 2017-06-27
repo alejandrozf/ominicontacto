@@ -416,7 +416,7 @@ class CampanaManager(models.Manager):
 
         # Replica Campana.
         campana_replicada = self.create(
-            nombre="CAMPANA_GENERADA_{0}".format(ultimo_id + 1),
+            nombre="CAMPANA_CLONADA_{0}".format(ultimo_id + 1),
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=campana.bd_contacto,
