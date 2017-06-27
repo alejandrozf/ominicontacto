@@ -492,6 +492,41 @@ class CampanaManager(models.Manager):
             raise(SuspiciousOperation("No se encontro campana/template %s en "
                                       "estado ESTADO_TEMPLATE_ACTIVO"))
 
+    def replicar_campana_queue(self, campana):
+        """
+        En este metodo vamos a crear una nueva cola y se la vamos a reasginar a la 
+        campana para eso vamos a crear un objecto Queue con los datos de actuales
+        y vamos a eliminar la quueue de la campana asignada y vamos asiganar esta nueva
+        creado
+        :param campana: campana a asignar nueva cola
+        """
+        # Replica Cola
+        queue_replicada = Queue(
+            campana=campana,
+            name=campana.nombre,
+            timeout=campana.queue_campana.timeout,
+            retry=campana.queue_campana.retry,
+            maxlen=campana.queue_campana.maxlen,
+            wrapuptime=campana.queue_campana.wrapuptime,
+            servicelevel=campana.queue_campana.servicelevel,
+            strategy=campana.queue_campana.strategy,
+            eventmemberstatus=campana.queue_campana.eventmemberstatus,
+            eventwhencalled=campana.queue_campana.eventwhencalled,
+            weight=campana.queue_campana.weight,
+            ringinuse=campana.queue_campana.ringinuse,
+            setinterfacevar=campana.queue_campana.setinterfacevar,
+            wait=campana.queue_campana.wait,
+            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+            auto_grabacion=campana.queue_campana.auto_grabacion,
+            detectar_contestadores=campana.queue_campana.detectar_contestadores,
+        )
+        # Eliminamos queuue de la campana asignada
+        queue_a_eliminar = Queue.objects.get(campana=campana)
+        queue_a_eliminar.delete()
+        # guardarmos la nueva queue
+        queue_replicada.save()
+
+
 
 class Campana(models.Model):
     """Una campaña del call center"""

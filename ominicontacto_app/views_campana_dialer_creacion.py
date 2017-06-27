@@ -438,8 +438,9 @@ class QueueDialerReplicarView(CheckEstadoCampanaDialerMixin,
     template_name = 'campana_dialer/create_update_queue.html'
 
     def get_object(self, queryset=None):
-         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-         return campana.queue_campana
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        Campana.objects.replicar_campana_queue(campana)
+        return campana.queue_campana
 
     def dispatch(self, *args, **kwargs):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
