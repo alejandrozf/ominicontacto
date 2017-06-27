@@ -351,8 +351,9 @@ class CampanaManager(models.Manager):
         """
         Devuelve campañas excluyendo las campanas borradas
         """
-        campanas_excludes = [Campana.ESTADO_BORRADA, Campana.ESTADO_EN_DEFINICION]
-        return self.exclude(estado__in=campanas_excludes)
+        campanas_include = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                            Campana.ESTADO_INACTIVA]
+        return self.filter(estado__in=campanas_include)
 
     def get_objects_for_user(self, user):
         """
