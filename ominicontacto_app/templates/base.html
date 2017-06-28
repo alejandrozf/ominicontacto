@@ -58,6 +58,7 @@
                     </ul>
 
                     <ul class="nav navbar-nav">
+                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Usuarios <span class="caret"></span>
@@ -98,6 +99,7 @@
                                 {% endif %}
 						    </ul>
 						</li>
+                         {% endif %}
                          {% if user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
@@ -115,6 +117,7 @@
 						    </ul>
 						</li>
                         {% endif %}
+                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Campaña <span class="caret"></span>
@@ -205,9 +208,11 @@
                         		</li>
 						    </ul>
 						</li>
+                        {% endif %}
                         <li>
                             <a href="{% url 'grabacion_buscar' 1 %}">Buscar Grabación</a>
                         </li>
+                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Reportes <span class="caret"></span>
@@ -229,6 +234,7 @@
                         		</li>
 						    </ul>
 						</li>
+                        {% endif %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Supervision <span class="caret"></span>

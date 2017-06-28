@@ -10,7 +10,7 @@ from ominicontacto_app.forms import (
     GrabacionBusquedaForm, GrabacionReporteForm
 )
 from ominicontacto_app.models import (
-    Grabacion
+    Grabacion, Campana
 )
 from ominicontacto_app.services.reporte_grafico import GraficoService
 from utiles import convert_fecha_datetime
@@ -49,10 +49,24 @@ class BusquedaGrabacionFormView(FormView):
     def get(self, request, *args, **kwargs):
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
+        campanas = Campana.objects.all()
+        if self.request.user.get_is_supervisor_customer():
+            user = self.request.user
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=Grabacion.objects.
-                grabacion_by_fecha_intervalo(hoy, hoy),
+                grabacion_by_fecha_intervalo(hoy, hoy, campanas),
             pagina=self.kwargs['pagina']))
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        campanas = Campana.objects.all()
+        if self.request.user.get_is_supervisor_customer():
+            user = self.request.user
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+        campana_choice = [(campana.pk, campana.nombre)
+                          for campana in campanas]
+        return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
@@ -67,9 +81,14 @@ class BusquedaGrabacionFormView(FormView):
         tel_cliente = form.cleaned_data.get('tel_cliente')
         sip_agente = form.cleaned_data.get('sip_agente')
         campana = form.cleaned_data.get('campana')
+        campanas = Campana.objects.all()
+        if self.request.user.get_is_supervisor_customer():
+            user = self.request.user
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
         pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
-            fecha_desde, fecha_hasta, tipo_llamada,tel_cliente, sip_agente, campana)
+            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, sip_agente, campana,
+        campanas)
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
 

@@ -48,6 +48,11 @@ class User(AbstractUser):
             return True
         return False
 
+    def get_is_supervisor_customer(self):
+        if self.get_supervisor_profile() and \
+                self.get_supervisor_profile().is_customer:
+            return True
+
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
             try:
@@ -179,6 +184,7 @@ class SupervisorProfile(models.Model):
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     is_administrador = models.BooleanField(default=False)
+    is_customer = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
@@ -1628,12 +1634,13 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con esa "
                                        "fecha"))
 
-    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
+    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin, campanas):
         fecha_inicio = datetime.datetime.combine(fecha_inicio,
                                                  datetime.time.min)
         fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)
         try:
-            return self.filter(fecha__range=(fecha_inicio, fecha_fin))
+            return self.filter(fecha__range=(fecha_inicio, fecha_fin),
+                               campana__in=campanas)
         except Grabacion.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con ese rango "
                                        "de fechas"))
@@ -1667,8 +1674,8 @@ class GrabacionManager(models.Manager):
                                        "sip agente"))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, sip_agente, campana):
-        grabaciones = self.filter()
+                            tel_cliente, sip_agente, campana, campanas):
+        grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime.datetime.combine(fecha_desde,
