@@ -49,9 +49,13 @@ class BusquedaGrabacionFormView(FormView):
     def get(self, request, *args, **kwargs):
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
+        campanas = Campana.objects.all()
+        if self.request.user.get_is_supervisor_customer():
+            user = self.request.user
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=Grabacion.objects.
-                grabacion_by_fecha_intervalo(hoy, hoy),
+                grabacion_by_fecha_intervalo(hoy, hoy, campanas),
             pagina=self.kwargs['pagina']))
 
     def get_form(self):
