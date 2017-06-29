@@ -34,7 +34,7 @@ class BusquedaGrabacionFormView(FormView):
         page = self.kwargs['pagina']
         if context['pagina']:
             page = context['pagina']
-        result_paginator = django_paginator.Paginator(qs, 15)
+        result_paginator = django_paginator.Paginator(qs, 40)
         try:
             qs = result_paginator.page(page)
         except django_paginator.PageNotAnInteger:
