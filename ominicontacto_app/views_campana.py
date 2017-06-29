@@ -434,8 +434,12 @@ class DesOcultarCampanaView(RedirectView):
 
 def mostrar_campanas_borradas_ocultas_view(request):
     borradas = Campana.objects.obtener_borradas()
+    if request.user.is_authenticated() and request.user and \
+            not request.user.get_is_administrador():
+        user = self.request.user
+        borradas = Campana.objects.obtener_campanas_vista_by_user(borradas, user)
     data = {
-        'borradas': borradas,
+        'borradas': borradas.filter(type=Campana.TYPE_ENTRANTE),
     }
     return render(request, 'campana/campanas_borradas.html', data)
 
