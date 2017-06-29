@@ -2,6 +2,10 @@
 var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause;
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
+function suma(a, b) {
+	return a+b;
+}
+
 function updateButton(btn,clsnm,inht) {
 	 	 btn.className = clsnm;
 	 	 var lastval = btn.innerHTML;
@@ -400,9 +404,9 @@ $(function() {
         			getBlankFormCamp(CampIdHeader);
         		}
         	}
-        } else {
+        } /*else {
           alert("Problemas con Identificador de Campaña");
-        }
+        }*/
 
         $("#callerid").text(fromUser);
         if($("#modalWebCall").is(':visible')) {
