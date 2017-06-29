@@ -404,9 +404,9 @@ $(function() {
         			getBlankFormCamp(CampIdHeader);
         		}
         	}
-        } else {
+        } /*else {
           alert("Problemas con Identificador de Campaña");
-        }
+        }*/
 
         $("#callerid").text(fromUser);
         if($("#modalWebCall").is(':visible')) {
