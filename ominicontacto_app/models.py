@@ -533,7 +533,6 @@ class CampanaManager(models.Manager):
         queue_replicada.save()
 
 
-
 class Campana(models.Model):
     """Una campaña del call center"""
 
@@ -831,6 +830,9 @@ class Queue(models.Model):
     def guardar_ep_id_wombat(self, ep_id_wombat):
         self.ep_id_wombat = ep_id_wombat
         self.save()
+
+    def get_string_queue_asterisk(self):
+        return '0077' + str(self.queue_asterisk)
 
     class Meta:
         db_table = 'queue_table'

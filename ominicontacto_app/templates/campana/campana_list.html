@@ -40,6 +40,7 @@
         <thead>
             <tr>
                 <th>Nombre</th>
+                <th>Número</th>
                 <th>Fecha Ini</th>
                 <th>Fecha Fin</th>
                 <th>Base de datos</th>
@@ -53,6 +54,7 @@
                 <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
+                <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -84,7 +86,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="5">No existen campañas</td>
+            <td colspan="7">No existen campañas</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -95,6 +97,7 @@
         <thead>
             <tr>
                 <th>Nombre</th>
+                <th>Número</th>
                 <th>Fecha Ini</th>
                 <th>Fecha Fin</th>
                 <th>Base de datos</th>
@@ -108,6 +111,7 @@
                 <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
+                <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -139,7 +143,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="5">No existen campañas</td>
+            <td colspan="7">No existen campañas</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -150,6 +154,7 @@
         <thead>
             <tr>
                 <th>Nombre</th>
+                <th>Número</th>
                 <th>Fecha Ini</th>
                 <th>Fecha Fin</th>
                 <th>Base de datos</th>
@@ -163,6 +168,7 @@
                 <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
+                <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -194,7 +200,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="5">No existen campañas</td>
+            <td colspan="7">No existen campañas</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -205,6 +211,7 @@
         <thead>
             <tr>
                 <th>Nombre</th>
+                <th>Número</th>
                 <th>Fecha Ini</th>
                 <th>Fecha Fin</th>
                 <th>Base de datos</th>
@@ -222,6 +229,7 @@
                 <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
+                <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -262,7 +270,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="5">No existen campañas</td>
+            <td colspan="7">No existen campañas</td>
         </tr>
         {% endfor %}
         </tbody>
