@@ -36,7 +36,7 @@ class EstadisticasCampanaLlamadasService():
 
 
 
-    def calcular_cantidad_llamadas(self, queues, fecha_inferior, fecha_superior):
+    def calcular_cantidad_llamadas(self, campanas, fecha_inferior, fecha_superior):
 
         eventos_llamadas_ingresadas = ['ENTERQUEUE']
         eventos_llamadas_atendidas = ['CONNECT']
@@ -50,19 +50,19 @@ class EstadisticasCampanaLlamadasService():
 
         queues_tiempo = []
 
-        for queue in queues:
+        for campana in campanas:
             ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
                 eventos_llamadas_ingresadas, fecha_inferior, fecha_superior,
-                queue.campana.nombre)
+                campana.nombre)
             atendidas = Queuelog.objects.obtener_log_queuename_event_periodo(
                 eventos_llamadas_atendidas, fecha_inferior, fecha_superior,
-                queue.campana.nombre)
+                campana.nombre)
             abandonadas = Queuelog.objects.obtener_log_queuename_event_periodo(
                 eventos_llamadas_abandonadas, fecha_inferior, fecha_superior,
-                queue.campana.nombre)
+                campana.nombre)
             expiradas = Queuelog.objects.obtener_log_queuename_event_periodo(
                 eventos_llamadas_expiradas, fecha_inferior, fecha_superior,
-                queue.campana.nombre)
+                campana.nombre)
             count_llamadas_ingresadas = ingresadas.count()
             count_llamadas_atendidas = atendidas.count()
             count_llamadas_abandonadas = abandonadas.count()
@@ -71,7 +71,7 @@ class EstadisticasCampanaLlamadasService():
             count_manuales_atendidas = atendidas.filter(data4='saliente').count()
             count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
             cantidad_campana = []
-            cantidad_campana.append(queue.campana.nombre)
+            cantidad_campana.append(campana.nombre)
             cantidad_campana.append(count_llamadas_ingresadas)
             cantidad_campana.append(count_llamadas_atendidas)
             cantidad_campana.append(count_llamadas_expiradas)
@@ -83,7 +83,7 @@ class EstadisticasCampanaLlamadasService():
             queues_tiempo.append(cantidad_campana)
 
             # para reportes
-            nombres_queues.append(queue.campana.nombre)
+            nombres_queues.append(campana.nombre)
             total_atendidas.append(count_llamadas_atendidas)
             total_abandonadas.append(count_llamadas_expiradas)
             total_expiradas.append(count_llamadas_abandonadas)
@@ -130,13 +130,14 @@ class EstadisticasCampanaLlamadasService():
 
         return cantidad_campana
 
+    def _calcular_estadisticas(self, fecha_inferior, fecha_superior, user):
 
-    def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
-
-        cola = Queue.objects.obtener_all_except_borradas()
+        campanas = Campana.objects.obtener_all_dialplan_asterisk()
+        if not user.get_is_administrador():
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
-            cola, fecha_inferior, fecha_superior)
+            campanas, fecha_inferior, fecha_superior)
 
         total_llamadas = self.obtener_total_llamadas(fecha_inferior, fecha_superior)
 
@@ -150,9 +151,9 @@ class EstadisticasCampanaLlamadasService():
         }
         return dic_estadisticas
 
-    def general_campana(self, fecha_inferior, fecha_superior):
+    def general_campana(self, fecha_inferior, fecha_superior, user):
         estadisticas = self._calcular_estadisticas(fecha_inferior,
-                                                   fecha_superior)
+                                                   fecha_superior, user)
 
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")

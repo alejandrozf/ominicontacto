@@ -272,14 +272,12 @@ class GrabacionBusquedaForm(forms.Form):
     campana = forms.ChoiceField(required=False, choices=())
     pagina = forms.CharField(required=False, widget=forms.HiddenInput())
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         agente_choice = [(agente.sip_extension, agente.user.get_full_name())
                         for agente in AgenteProfile.objects.all()]
         agente_choice.insert(0, ('', '---------'))
         self.fields['sip_agente'].choices = agente_choice
-        campana_choice = [(campana.pk, campana.nombre)
-                         for campana in Campana.objects.all()]
         campana_choice.insert(0, ('', '---------'))
         self.fields['campana'].choices = campana_choice
 
@@ -673,11 +671,13 @@ class CampanaDialerForm(forms.ModelForm):
 
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
         self.fields['fecha_fin'].required = True
+        self.fields['bd_contacto'].required = True
 
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo', 'tipo_interaccion')
+                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo',
+                  'tipo_interaccion')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -860,8 +860,37 @@ class SupervisorProfileForm(forms.ModelForm):
 
     class Meta:
         model = SupervisorProfile
-        fields = ('is_administrador',)
+        fields = ('is_administrador', 'is_customer')
 
         labels = {
             'is_administrador': 'Es administrador de sistema',
+            'is_customer': 'Es usuario cliente',
+        }
+
+
+class CampanaSupervisorUpdateForm(forms.ModelForm):
+
+    def __init__(self, supervisors_choices, *args, **kwargs):
+        super(CampanaSupervisorUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['supervisors'].choices = supervisors_choices
+
+    class Meta:
+        model = Campana
+        fields = ('supervisors',)
+
+
+class CampanaDialerTemplateForm(forms.ModelForm):
+
+    class Meta:
+        model = Campana
+        fields = ('nombre_template', 'calificacion_campana', 'formulario', 'gestion',
+                  'sitio_externo', 'tipo_interaccion')
+
+        widgets = {
+            "nombre_template": forms.TextInput(attrs={'class': 'form-control'}),
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
         }

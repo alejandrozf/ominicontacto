@@ -58,6 +58,7 @@
                     </ul>
 
                     <ul class="nav navbar-nav">
+                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Usuarios <span class="caret"></span>
@@ -98,6 +99,7 @@
                                 {% endif %}
 						    </ul>
 						</li>
+                         {% endif %}
                          {% if user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
@@ -115,6 +117,7 @@
 						    </ul>
 						</li>
                         {% endif %}
+                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Campaña <span class="caret"></span>
@@ -137,6 +140,12 @@
                             		<a href="{% url 'regenerar_asterisk' %}">Regenerar asterisk</a>
                         		</li>
                                 {% endif %}
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="{% url 'lista_campana_dialer_template' %}">Listado de templates de campañas dialer</a>
+                                </li>
+						    	<li>
+                            		<a href="{% url 'campana_dialer_template_create' %}">Crear nueva template de campaña dialer</a>
                                 <li class="divider"></li>
                                 <li>
                             		<a href="{% url 'calificacion_list' %}">Listado de Calificaciones</a>
@@ -199,20 +208,26 @@
                         		</li>
 						    </ul>
 						</li>
+                        {% endif %}
                         <li>
                             <a href="{% url 'grabacion_buscar' 1 %}">Buscar Grabación</a>
                         </li>
+
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Reportes <span class="caret"></span>
 						    </a>
 						    <ul class="dropdown-menu" role="menu">
+                                {% if user.get_is_administrador %}
                                 <li>
                                     <a href="{% url 'reporte_llamadas' %}"><span class=" glyphicon glyphicon-earphone" aria-hidden="true"></span> Llamadas</a>
                                 </li>
+                                 {% endif %}
+                                 {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
                                 <li>
                                     <a href="{% url 'agente_tiempos' %}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Agentes</a>
                                 </li>
+                                {% endif %}
 						    	<li>
                                     <a href="{% url 'reporte_llamadas_queue' %}"><span class="glyphicon glyphicon-scale" aria-hidden="true"></span> Campañas</a>
                         		</li>
@@ -221,6 +236,7 @@
                         		</li>
 						    </ul>
 						</li>
+
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Supervision <span class="caret"></span>

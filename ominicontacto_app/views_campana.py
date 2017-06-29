@@ -13,10 +13,10 @@ from django.views.generic import (
 from django.views.generic.base import RedirectView
 from ominicontacto_app.forms import (
     BusquedaContactoForm, ContactoForm, ReporteForm, FormularioNuevoContacto,
-    FormularioCampanaContacto, UpdateBaseDatosForm
+    FormularioCampanaContacto, UpdateBaseDatosForm, CampanaSupervisorUpdateForm
 )
 from ominicontacto_app.models import (
-    Campana, Queue, Contacto, AgenteProfile
+    Campana, Queue, Contacto, AgenteProfile, SupervisorProfile
 )
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -57,7 +57,7 @@ class CampanaListView(ListView):
         if self.request.user.is_authenticated() and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
-            campanas = campanas.filter(reported_by=user)
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
@@ -451,12 +451,12 @@ class CampanaReporteQueueListView(FormView):
     model = Campana
     form_class = ReporteForm
 
-
     def get(self, request, *args, **kwargs):
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
         campana_llamadas_service = EstadisticasCampanaLlamadasService()
-        estadisticas = campana_llamadas_service.general_campana(hoy, hoy_ahora)
+        estadisticas = campana_llamadas_service.general_campana(hoy, hoy_ahora,
+                                                                request.user)
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
 
@@ -467,7 +467,8 @@ class CampanaReporteQueueListView(FormView):
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
 
         campana_llamadas_service = EstadisticasCampanaLlamadasService()
-        estadisticas = campana_llamadas_service.general_campana(fecha_desde, fecha_hasta)
+        estadisticas = campana_llamadas_service.general_campana(fecha_desde, fecha_hasta,
+                                                                self.request.user)
 
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
@@ -490,3 +491,28 @@ def campana_json_view(request, pk_campana):
     }
     response = JsonResponse(repuesta)
     return response
+
+
+class CampanaSupervisorUpdateView(UpdateView):
+    """
+    Esta vista actualiza un objeto Campana.
+    """
+
+    template_name = 'campana_dialer/campana_supervisors.html'
+    model = Campana
+    context_object_name = 'campana'
+    form_class = CampanaSupervisorUpdateForm
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        supervisores = SupervisorProfile.objects.all()
+        supervisors_choices = [(supervisor.user.pk, supervisor.user) for supervisor in
+                               supervisores]
+        return self.form_class(supervisors_choices=supervisors_choices,
+                               **self.get_form_kwargs())
+
+    def get_success_url(self):
+        return reverse('campana_list')

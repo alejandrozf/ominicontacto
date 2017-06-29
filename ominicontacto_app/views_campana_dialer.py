@@ -8,15 +8,15 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from ominicontacto_app.models import Contacto, Campana
+from ominicontacto_app.models import Contacto, Campana, SupervisorProfile
 from django.views.generic import (
-    ListView, DeleteView, FormView
+    ListView, DeleteView, FormView, UpdateView
 )
 from django.views.generic.base import RedirectView
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.forms import (
     UpdateBaseDatosForm, BusquedaContactoForm, FormularioCampanaContacto,
-    FormularioNuevoContacto
+    FormularioNuevoContacto, CampanaSupervisorUpdateForm
 )
 
 import logging as logging_
@@ -41,14 +41,20 @@ class CampanaDialerListView(ListView):
         if self.request.user.is_authenticated() and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
-            campanas = campanas.filter(reported_by=user)
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
+        campana_service = CampanaService()
+        campana_service.chequear_campanas_finalizada_eliminarlas(
+            campanas.filter(estado=Campana.ESTADO_ACTIVA))
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
                                               oculto=False)
         return context
+
+    #def get(self, request, *args, **kwargs):
+     #   return self.render_to_response(self.get_context_data())
 
 
 class PlayCampanaDialerView(RedirectView):
@@ -377,7 +383,7 @@ class FormularioSeleccionCampanaDialerFormView(FormView):
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
             campanas = [queue.queue_name.campana
-                        for queue in agente.campana_member.all()]
+                        for queue in agente.get_campanas_activas_miembro()]
 
         campana_choice = [(campana.id, campana.nombre) for campana in
                           campanas]
@@ -431,3 +437,28 @@ class FormularioNuevoContactoFormView(FormView):
 
     def get_success_url(self):
         reverse('view_blanco')
+
+
+class CampanaDialerSupervisorUpdateView(UpdateView):
+    """
+    Esta vista actualiza un objeto Campana.
+    """
+
+    template_name = 'campana_dialer/campana_supervisors.html'
+    model = Campana
+    context_object_name = 'campana'
+    form_class = CampanaSupervisorUpdateForm
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        supervisores = SupervisorProfile.objects.all()
+        supervisors_choices = [(supervisor.user.pk, supervisor.user) for supervisor in
+                               supervisores]
+        return self.form_class(supervisors_choices=supervisors_choices,
+                               **self.get_form_kwargs())
+
+    def get_success_url(self):
+        return reverse('campana_dialer_list')
