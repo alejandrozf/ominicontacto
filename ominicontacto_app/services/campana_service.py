@@ -244,7 +244,8 @@ class CampanaService():
     def chequear_campanas_finalizada_eliminarlas(self, campanas):
         for campana in campanas:
             detalle = self.obtener_dato_campana_run(campana)
-            restantes = int(detalle['n_est_remaining_calls'])
-            if restantes == 0:
-                self.remove_campana_wombat(campana)
-                campana.remover()
+            if detalle:
+                restantes = int(detalle['n_est_remaining_calls'])
+                if restantes == 0:
+                    self.remove_campana_wombat(campana)
+                    campana.remover()
