@@ -114,42 +114,7 @@ function filtrar_pagina(pagina) {
         <li> <a href="#" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">Next</a></li>
     {% endif %}
  </ul>
- <!--   <nav>
-                    <ul class="pagination pagination-lg">
 
-                        <li class="{% if not listado_de_grabaciones.has_previous %} disabled {% endif %}">
-                        {% if listado_de_grabaciones.has_previous %}
-                            <a href="#" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">
-                            &laquo;
-                            </a>
-                        {% else %}
-                            <a href="javascript:void(0);">
-                            &laquo;
-                            </a>
-                        {% endif %}
-                        </li>
-
-                        <li>
-                            <a href="javascript:void(0);">
-                            Página {{ listado_de_grabaciones.number }} de {{ listado_de_grabaciones.paginator.num_pages }}
-                            </a>
-                        </li>
-
-                        <li class="{% if not listado_de_grabaciones.has_next %} disabled {% endif %}">
-                            {% if listado_de_grabaciones.has_next %}
-                            <a href="#" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">
-
-                            &raquo;
-                            </a>
-                            {% else %}
-                            <a href="javascript:void(0);">
-                            &raquo;
-                            </a>
-                            {% endif %}
-                        </li>
-
-                    </ul>
-                </nav>-->
 
 </div>
 {% endblock %}

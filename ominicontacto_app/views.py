@@ -136,7 +136,11 @@ class UserDeleteView(DeleteView):
 class UserListView(ListView):
     model = User
     template_name = 'user/user_list.html'
-    paginate_by = 15
+    paginate_by = 40
+
+    def get_queryset(self):
+        """Returns user ordernado por id"""
+        return User.objects.all().order_by('id')
 
 
 class AgenteProfileCreateView(CreateView):
