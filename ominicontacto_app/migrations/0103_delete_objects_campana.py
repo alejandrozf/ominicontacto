@@ -7,7 +7,8 @@ from ominicontacto_app.models import Campana
 
 
 def create_delete_objects_models(apps, schema_editor):
-    Campana.objects.all().delete()
+    # Campana.objects.all().delete()
+    pass
 
 
 class Migration(migrations.Migration):
