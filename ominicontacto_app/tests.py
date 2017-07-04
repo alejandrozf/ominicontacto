@@ -92,25 +92,56 @@ class SimpleSeleniumTest(TestCase):
         self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
         self.driver.close()
 
-    # def test_cerrar_modal_pausa(self):
-    #     for _ in range(10):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #
-    #     self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
-    #     for _ in range(10):
-    #         if not self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #
-    #     self.driver.find_element_by_id("Pause").click()
-    #     for _ in range(10):
-    #         if self.driver.find_element_by_id("modalPause").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
-    #
-    #     self.driver.close()
+    def test_cerrar_modal_pausa(self):
+        for _ in range(10):
+            if self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
+
+        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
+        for _ in range(10):
+            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
+
+        self.driver.find_element_by_id("Pause").click()
+        for _ in range(10):
+            if self.driver.find_element_by_id("modalPause").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
+
+        self.driver.find_element_by_id("modalPause").find_element_by_class_name("close").click()
+        for _ in range(10):
+            if not self.driver.find_element_by_id("modalPause").is_displayed():
+                break
+            time.sleep(1)
+        self.assertFalse(self.driver.find_element_by_id("modalPause").is_displayed())
+        self.driver.close()
+
+    def test_pausar_agente(self):
+        for _ in range(10):
+            if self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
+
+        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
+        for _ in range(10):
+            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
+
+        self.driver.find_element_by_id("Pause").click()
+        for _ in range(10):
+            if self.driver.find_element_by_id("modalPause").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
+
+        self.driver.find_element_by_id("setPause").click()
+        self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Gestion")
+        self.driver.close()
