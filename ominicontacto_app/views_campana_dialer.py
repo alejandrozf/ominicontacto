@@ -18,6 +18,7 @@ from ominicontacto_app.forms import (
     UpdateBaseDatosForm, BusquedaContactoForm, FormularioCampanaContacto,
     FormularioNuevoContacto, CampanaSupervisorUpdateForm
 )
+from ominicontacto_app.utiles import convertir_ascii_string
 
 import logging as logging_
 
@@ -426,7 +427,7 @@ class FormularioNuevoContactoFormView(FormView):
         nombres.remove('telefono')
 
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         contacto = Contacto.objects.create(
             telefono=telefono, datos=json.dumps(datos),

@@ -25,7 +25,7 @@ from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.reporte_campana_calificacion import \
     ReporteCampanaService
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
-from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.utiles import convert_fecha_datetime, convertir_ascii_string
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_metadata_cliente import \
     ReporteMetadataClienteService
@@ -389,7 +389,7 @@ class FormularioNuevoContactoFormView(FormView):
         nombres.remove('telefono')
 
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         contacto = Contacto.objects.create(
             telefono=telefono, datos=json.dumps(datos),
