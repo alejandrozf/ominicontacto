@@ -392,6 +392,31 @@ ALTER TABLE carrierroute_id_seq OWNER TO kamailio;
 
 ALTER SEQUENCE carrierroute_id_seq OWNED BY carrierroute.id;
 
+--
+-- Name: cdr; Type: TABLE; Schema: public; Owner: kamailio; Tablespace:
+--
+
+
+CREATE TABLE cdr (
+    calldate timestamp without time zone NOT NULL,
+    clid character varying(80) NOT NULL,
+    src character varying(80) NOT NULL,
+    dst character varying(80) NOT NULL,
+    dcontext character varying(80) NOT NULL,
+    channel character varying(80) NOT NULL,
+    dstchannel character varying(80) NOT NULL,
+    lastapp character varying(80) NOT NULL,
+    lastdata character varying(80) NOT NULL,
+    duration integer NOT NULL,
+    billsec integer NOT NULL,
+    disposition character varying(45) NOT NULL,
+    amaflags integer NOT NULL,
+    accountcode character varying(20) NOT NULL,
+    uniqueid character varying(150) NOT NULL,
+    userfield character varying(255) NOT NULL
+);
+
+ALTER TABLE cdr OWNER TO kamailio;
 
 --
 -- Name: cpl; Type: TABLE; Schema: public; Owner: kamailio

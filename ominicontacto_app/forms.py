@@ -17,6 +17,7 @@ from ominicontacto_app.models import (
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile
 )
+from ominicontacto_app.utiles import convertir_ascii_string
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -518,7 +519,7 @@ class FormularioNuevoContacto(forms.ModelForm):
     def __init__(self, campos, *args, **kwargs):
         super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
         for campo in campos:
-            self.fields[campo] = forms.CharField(
+            self.fields[convertir_ascii_string(campo)] = forms.CharField(
                 label=campo, widget=forms.TextInput(
                     attrs={'class': 'form-control'}))
 
@@ -535,7 +536,7 @@ class FormularioContactoCalificacion(forms.ModelForm):
     def __init__(self, campos, *args, **kwargs):
         super(FormularioContactoCalificacion, self).__init__(*args, **kwargs)
         for campo in campos:
-            self.fields[campo] = forms.CharField(required=False,
+            self.fields[convertir_ascii_string(campo)] = forms.CharField(required=False,
                 label=campo, widget=forms.TextInput(
                     attrs={'class': 'form-control'}))
 
