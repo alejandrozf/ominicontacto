@@ -6,8 +6,10 @@ import datetime
 from django.views.generic import FormView, UpdateView, ListView
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
-from ominicontacto_app.models import AgenteProfile, Contacto, CalificacionCliente
-from ominicontacto_app.forms import ReporteForm
+from ominicontacto_app.models import (
+    AgenteProfile, Contacto, CalificacionCliente, Grupo
+)
+from ominicontacto_app.forms import ReporteForm, ReporteAgenteForm
 from ominicontacto_app.services.reporte_agente_calificacion import \
     ReporteAgenteService
 from ominicontacto_app.services.reporte_agente_venta import \
@@ -118,7 +120,7 @@ class AgenteReporteListView(FormView):
     template_name = 'agente/tiempos.html'
     context_object_name = 'agentes'
     model = AgenteProfile
-    form_class = ReporteForm
+    form_class = ReporteAgenteForm
 
     # def get_context_data(self, **kwargs):
     #     context = super(AgenteReporteListView, self).get_context_data(
@@ -131,7 +133,8 @@ class AgenteReporteListView(FormView):
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
         agente_service = EstadisticasService()
-        estadisticas = agente_service.general_campana(hoy, hoy_ahora, request.user)
+        agentes = []
+        estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes)
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
 
@@ -140,10 +143,19 @@ class AgenteReporteListView(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
-
+        grupo_id = form.cleaned_data.get('grupo_agente')
+        agentes_pk = form.cleaned_data.get('agente')
+        agentes = []
+        if agentes_pk:
+            for agente_pk in agentes_pk:
+                agente = AgenteProfile.objects.get(pk=agente_pk)
+                agentes.append(agente)
+        if grupo_id:
+            grupo = Grupo.objects.get(pk=int(grupo_id))
+            agentes = grupo.agentes.all()
         agente_service = EstadisticasService()
         estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta,
-                                                      self.request.user)
+                                                      agentes)
 
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
