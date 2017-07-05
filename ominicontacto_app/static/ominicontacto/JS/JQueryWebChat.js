@@ -16,7 +16,7 @@ $(function() {
     //Connects to the WebSocket server
 
     ua.on('registered', function(e) {
-      console.log("peer registered");
+      //console.log("peer registered");
     });
     ua.on('newMessage', function(e) {
       var chatWindow = document.getElementById("messages");
