@@ -49,22 +49,38 @@
 
     <form role="form" method="post" enctype="multipart/form-data" >
         {% csrf_token %}
-        <table class="table">
-           <tr>
-               <td>
-                   <div class="input-group date pull-right active" id="">
+        {{ form.non_field_errors }}
+        <div class="form-group row">
+        {{ form.fecha.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.fecha.id_for_label }}">Fecha: </label>
+            <div class="col-sm-6">
+                <div class="input-group date pull-right active" id="">
                        {{form.fecha}}
                         <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
                         </span>
-                    </div>
-               </td>
-               <td>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+        {{ form.agente.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.agente.id_for_label }}">Agente: </label>
+            <div class="col-sm-6">
+              {{ form.agente }}
+            </div>
+        </div>
+        <div class="form-group row">
+        {{ form.grupo_agente.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.agente.id_for_label }}">Grupo de agentes: </label>
+            <div class="col-sm-6">
+              {{ form.grupo_agente }}
+            </div>
+        </div>
+
                    <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                        Filtrar por esa fecha
+                        Buscar
                 </button>
-               </td>
-           </tr>
-        </table>
+
 
     </form>
 </div>
