@@ -614,6 +614,8 @@ $(function() {
       // esto es para enviar un Invite/llamada
       num = displayNumber.value;
       lastDialedNumber = num;
+		} else {
+      displayNumber.style.borderColor = "red";
 		}
   });
 
