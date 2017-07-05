@@ -691,7 +691,7 @@ $(function() {
     callSipStatus = document.createElement("em");
     var textCallSipStatus = document.createTextNode(estado);
     callSipStatus.style.color = color;
-		callSipStatus.id "sip_status";
+		callSipStatus.id = "sip_status";
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
   }
