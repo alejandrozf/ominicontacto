@@ -152,7 +152,6 @@ class AgenteReporteListView(FormView):
                 agentes.append(agente)
         if grupo_id:
             grupo = Grupo.objects.get(pk=int(grupo_id))
-        # agentes = grupo.agentes.filter(reported_by=self.request.user)
             agentes = grupo.agentes.all()
         agente_service = EstadisticasService()
         estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta,
