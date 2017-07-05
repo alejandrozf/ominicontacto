@@ -40,6 +40,22 @@
 
         cb(start, end);
 
+        $("#id_agente").change(function() {
+                if( $("#id_agente").val() == null) {
+                    $("#id_grupo_agente").removeAttr('disabled');
+                } else {
+                    $("#id_grupo_agente").attr('disabled', true);
+                }
+            });
+
+            $("#id_grupo_agente").change(function() {
+                if( $("#id_grupo_agente").val() == "") {
+                    $("#id_agente").removeAttr('disabled');
+                } else {
+                    $("#id_agente").attr('disabled', true);
+                }
+            });
+
 });
     </script>
 {% endblock %}
