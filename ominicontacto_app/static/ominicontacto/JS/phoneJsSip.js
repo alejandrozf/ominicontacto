@@ -610,6 +610,7 @@ $(function() {
   $("#call").click(function(e) {
   	entrante = false;
 		if(displayNumber.value != "") {
+			displayNumber.style.borderColor = "black";
   	  $("#modalSelectCmp").modal("show");
       // esto es para enviar un Invite/llamada
       num = displayNumber.value;
