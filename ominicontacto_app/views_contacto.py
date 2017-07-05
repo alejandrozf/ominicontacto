@@ -13,6 +13,7 @@ from django.core.urlresolvers import reverse
 from ominicontacto_app.forms import (
     BusquedaContactoForm, ContactoForm, FormularioNuevoContacto
 )
+from ominicontacto_app.utiles import convertir_ascii_string
 
 
 class ContactoCreateView(CreateView):
@@ -116,7 +117,7 @@ class ContactoBDContactoCreateView(CreateView):
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         self.object.datos = json.dumps(datos)
         self.object.save()
@@ -154,7 +155,7 @@ class ContactoBDContactoUpdateView(UpdateView):
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         for nombre, dato in zip(nombres, datos):
-            initial.update({nombre: dato})
+            initial.update({convertir_ascii_string(nombre): dato})
         return initial
 
     def get_form(self):
@@ -163,6 +164,7 @@ class ContactoBDContactoUpdateView(UpdateView):
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
+
         return self.form_class(campos=campos, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
@@ -178,7 +180,7 @@ class ContactoBDContactoUpdateView(UpdateView):
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         self.object.datos = json.dumps(datos)
         self.object.save()
