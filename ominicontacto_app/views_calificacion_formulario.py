@@ -25,6 +25,7 @@ from ominicontacto_app.forms import (
     FormularioContactoCalificacion, FormularioVentaFormSet
 )
 from django.views.decorators.csrf import csrf_exempt
+from ominicontacto_app.utiles import convertir_ascii_string
 
 import logging as logging_
 
@@ -51,7 +52,7 @@ class CalificacionClienteCreateView(CreateView):
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         for nombre, dato in zip(nombres, datos):
-            initial.update({nombre: dato})
+            initial.update({convertir_ascii_string(nombre): dato})
         return initial
 
     def get_form(self):
@@ -124,7 +125,7 @@ class CalificacionClienteCreateView(CreateView):
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         self.object.datos = json.dumps(datos)
         self.object.save()
@@ -190,7 +191,6 @@ class CalificacionClienteCreateView(CreateView):
         """
         return self.render_to_response(
             self.get_context_data(form=form, calificacion_form=calificacion_form))
-
 
     def get_success_url(self):
         return reverse('formulario_venta',
@@ -263,7 +263,7 @@ class CalificacionClienteUpdateView(UpdateView):
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         for nombre, dato in zip(nombres, datos):
-            initial.update({nombre: dato})
+            initial.update({convertir_ascii_string(nombre): dato})
         return initial
 
     def get_form(self):
@@ -308,7 +308,6 @@ class CalificacionClienteUpdateView(UpdateView):
         else:
             return self.form_invalid(form, calificacion_form)
 
-
     def form_valid(self, form, calificacion_form):
         self.object = form.save(commit=False)
         contacto = self.get_object()
@@ -319,7 +318,7 @@ class CalificacionClienteUpdateView(UpdateView):
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         self.object.datos = json.dumps(datos)
         self.object.save()
@@ -421,7 +420,7 @@ class FormularioCreateFormView(CreateView):
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         for nombre, dato in zip(nombres, datos):
-            initial.update({nombre: dato})
+            initial.update({convertir_ascii_string(nombre): dato})
         return initial
 
     def get_form(self):
@@ -476,7 +475,7 @@ class FormularioCreateFormView(CreateView):
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         self.object.datos = json.dumps(datos)
         self.object.save()
@@ -580,7 +579,7 @@ class FormularioUpdateFormView(UpdateView):
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         for nombre, dato in zip(nombres, datos):
-            initial.update({nombre: dato})
+            initial.update({convertir_ascii_string(nombre): dato})
         return initial
 
     def get_form(self):
@@ -640,7 +639,7 @@ class FormularioUpdateFormView(UpdateView):
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         self.object.datos = json.dumps(datos)
         self.object.save()
@@ -727,7 +726,7 @@ class CalificacionUpdateView(UpdateView):
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(contacto.datos)
         for nombre, dato in zip(nombres, datos):
-            initial.update({nombre: dato})
+            initial.update({convertir_ascii_string(nombre): dato})
         return initial
 
     def get_form(self):
@@ -803,7 +802,7 @@ class CalificacionUpdateView(UpdateView):
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
-            campo = form.cleaned_data.get(nombre)
+            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         self.object.datos = json.dumps(datos)
         self.object.save()

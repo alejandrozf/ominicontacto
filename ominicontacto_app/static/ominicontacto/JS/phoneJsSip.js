@@ -691,6 +691,7 @@ $(function() {
     callSipStatus = document.createElement("em");
     var textCallSipStatus = document.createTextNode(estado);
     callSipStatus.style.color = color;
+		callSipStatus.id "sip_status";
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
   }
@@ -702,6 +703,7 @@ $(function() {
     callSipStatus = document.createElement("em");
     textCallSipStatus = document.createTextNode("Idle");
     callSipStatus.style.color = "#80FF00";
+		callSipStatus.id = "sip_status";
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
     $("#aTransfer").prop('disabled', true);

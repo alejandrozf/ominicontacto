@@ -69,6 +69,7 @@ def elimina_espacios(cadena):
     assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
     return re.sub("\s?", "", cadena)
 
+
 def elimina_coma(cadena):
     """
     Elimina coma
@@ -214,3 +215,8 @@ def convert_fecha_datetime(fecha):
     dia, mes, ano = fecha.split('/')
     fecha = datetime.datetime(int(ano), int(mes), int(dia))
     return fecha
+
+
+def convertir_ascii_string(cadena):
+    """ Devuelve ascii ignorando caracteres extraños"""
+    return cadena.encode('ascii', errors='ignore')
