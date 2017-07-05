@@ -5,7 +5,6 @@ from selenium import webdriver
 
 
 class SimpleSeleniumTest(TestCase):
-
     def setUp(self):
         self.driver = webdriver.Chrome()
         self.driver.set_window_size(1366, 760)
@@ -144,4 +143,36 @@ class SimpleSeleniumTest(TestCase):
 
         self.driver.find_element_by_id("setPause").click()
         self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Gestion")
+        self.driver.close()
+
+    def test_quitar_pausa_agente(self):
+        for _ in range(10):
+            if self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
+
+        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
+        for _ in range(10):
+            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
+
+        self.driver.find_element_by_id("Pause").click()
+        for _ in range(10):
+            if self.driver.find_element_by_id("modalPause").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
+
+        self.driver.find_element_by_id("setPause").click()
+        self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Gestion")
+
+        for _ in range(10):
+            if self.driver.find_element_by_id("Resume").get_attribute("enabled"):
+                break
+            time.sleep(1)
+        self.driver.find_element_by_id("Resume").click()
+        self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Online")
         self.driver.close()
