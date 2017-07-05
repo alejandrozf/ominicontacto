@@ -169,10 +169,64 @@ class SimpleSeleniumTest(TestCase):
         self.driver.find_element_by_id("setPause").click()
         self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Gestion")
 
-        for _ in range(10):
+        for _ in range(9):
             if self.driver.find_element_by_id("Resume").get_attribute("enabled"):
                 break
             time.sleep(1)
         self.driver.find_element_by_id("Resume").click()
         self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Online")
         self.driver.close()
+
+    def test_sip_status_idle(self):
+        for _ in range(9):
+            if self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
+        for _ in range(9):
+            if self.driver.find_element_by_id("CallStatus"):
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
+        for _ in range(9):
+            if self.driver.find_element_by_id("sip_status"):
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("sip_status"))
+        for _ in range(10):
+            if self.driver.find_element_by_id("sip_status").text == "Idle":
+                break
+            time.sleep(1)
+        self.assertEquals(self.driver.find_element_by_id("sip_status").text, "Idle")
+        self.driver.close()
+
+    def test_abre_modal_camp_manual_call(self):
+        for _ in range(9):
+            if self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
+        for _ in range(9):
+            if self.driver.find_element_by_id("CallStatus"):
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
+        for _ in range(9):
+            if self.driver.find_element_by_id("sip_status"):
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("sip_status"))
+        for _ in range(10):
+            if self.driver.find_element_by_id("sip_status").text == "Idle":
+                break
+            time.sleep(1)
+        self.assertEquals(self.driver.find_element_by_id("sip_status").text, "Idle")
+        self.driver.find_element_by_id("numberToCall").send_keys("1234")
+        self.driver.find_element_by_id("call").click()
+        for _ in range(10):
+            if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
+        self.driver.close()
+
