@@ -95,7 +95,7 @@ class ExportaCampanaDialerReportePDFView(UpdateView):
     context_object_name = 'campana'
 
     def get_object(self, queryset=None):
-        return CampanaDialer.objects.get(pk=self.kwargs['pk_campana'])
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
