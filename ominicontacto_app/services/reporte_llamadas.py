@@ -329,7 +329,7 @@ class EstadisticasService():
         }
         return dic_estadisticas
 
-    def general_campana(self, fecha_inferior, fecha_superior, agentes):
+    def general_campana(self, fecha_inferior, fecha_superior, agentes   ):
         estadisticas = self._calcular_estadisticas(fecha_inferior,
                                                    fecha_superior, agentes)
 
