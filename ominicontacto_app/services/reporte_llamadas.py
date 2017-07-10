@@ -279,7 +279,7 @@ class EstadisticasService():
     def obtener_count_llamadas_campana(self, agentes, fecha_inferior, fecha_superior):
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
-        campanas = Campana.objects.all()
+        campanas = Campana.objects.obtener_all_dialplan_asterisk()
 
         agentes_tiempo = []
 
