@@ -1636,7 +1636,17 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con esa "
                                        "fecha"))
 
-    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin, campanas):
+    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
+        fecha_inicio = datetime.datetime.combine(fecha_inicio,
+                                                 datetime.time.min)
+        fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)
+        try:
+            return self.filter(fecha__range=(fecha_inicio, fecha_fin))
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con ese rango "
+                                       "de fechas"))
+
+    def grabacion_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
         fecha_inicio = datetime.datetime.combine(fecha_inicio,
                                                  datetime.time.min)
         fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)

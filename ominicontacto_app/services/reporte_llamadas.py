@@ -276,10 +276,13 @@ class EstadisticasService():
 
         return agentes_tiempo
 
-    def obtener_count_llamadas_campana(self, agentes, fecha_inferior, fecha_superior):
+    def obtener_count_llamadas_campana(self, agentes, fecha_inferior, fecha_superior,
+                                       user):
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
-        campanas = Campana.objects.all()
+        campanas = Campana.objects.obtener_all_dialplan_asterisk()
+        if not user.get_is_administrador():
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         agentes_tiempo = []
 
@@ -304,7 +307,7 @@ class EstadisticasService():
 
         return agentes_tiempo
 
-    def _calcular_estadisticas(self, fecha_inferior, fecha_superior, agentes):
+    def _calcular_estadisticas(self, fecha_inferior, fecha_superior, agentes, user):
         if not agentes:
             agentes = self._obtener_agentes()
         #agentes_tiempo = self.calcular_tiempo_sesion(agentes, fecha_inferior,
@@ -316,7 +319,7 @@ class EstadisticasService():
         agentes_tiempos = self.calcular_tiempos_agentes(agentes, fecha_inferior,
                                                         fecha_superior)
         count_llamada_campana = self.obtener_count_llamadas_campana(
-            agentes, fecha_inferior, fecha_superior)
+            agentes, fecha_inferior, fecha_superior, user)
 
         dic_estadisticas = {
             'agentes_tiempos': agentes_tiempos,
@@ -329,9 +332,9 @@ class EstadisticasService():
         }
         return dic_estadisticas
 
-    def general_campana(self, fecha_inferior, fecha_superior, agentes):
+    def general_campana(self, fecha_inferior, fecha_superior, agentes, user):
         estadisticas = self._calcular_estadisticas(fecha_inferior,
-                                                   fecha_superior, agentes)
+                                                   fecha_superior, agentes, user)
 
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
