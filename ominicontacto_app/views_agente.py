@@ -134,7 +134,8 @@ class AgenteReporteListView(FormView):
         hoy = hoy_ahora.date()
         agente_service = EstadisticasService()
         agentes = []
-        estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes)
+        estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes,
+                                                      request.user)
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
 
@@ -155,7 +156,7 @@ class AgenteReporteListView(FormView):
             agentes = grupo.agentes.all()
         agente_service = EstadisticasService()
         estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta,
-                                                      agentes)
+                                                      agentes, self.request.user)
 
         return self.render_to_response(self.get_context_data(
             estadisticas=estadisticas))
