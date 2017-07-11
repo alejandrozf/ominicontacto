@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+""" Servicio de interaccion con asterisk"""
+
 from __future__ import unicode_literals
 
 import logging
@@ -15,8 +17,14 @@ logger = logging.getLogger(__name__)
 
 
 class AsteriskService():
+    """
+    Este servicio realiza la interaccion con la base de mysql de asterisk
+    """
 
     def _conectar_base_datos(self):
+        """
+        _conectar_base_datos() returna el connection y el cursor de la base mysql
+        """
         connection = MySQLdb.connect(
             db=settings.DATABASE_MYSQL_ASTERISK['BASE'],
             user=settings.DATABASE_MYSQL_ASTERISK['USER'],
@@ -71,6 +79,7 @@ class RestablecerConfigSipError(OmlError):
 
 
 class ActivacionAgenteService(object):
+    """Este servicio regenera y recarga los archivos de configuracion para los agentes"""
 
     def __init__(self):
         self.sip_config_creator = SipConfigCreator()
