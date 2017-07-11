@@ -280,6 +280,7 @@ class PredictorMetadataService(object):
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
+        # chequeamos que el nombre de la primera columna sea telefono
         if primer_linea[0] != 'telefono':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
                                                  "columna debe ser telefono"))
@@ -405,6 +406,7 @@ class PredictorMetadataService(object):
         """Infiere los metadatos desde las lineas pasadas por parametros.
             con base de datos exitente
         Devuelve instancias de MetadataBaseDatosContactoDTO.
+        Copiado desde self.inferir_metadata_desde_lineas()
         """
         assert isinstance(lineas_unsafe, (list, tuple))
 
@@ -451,6 +453,7 @@ class PredictorMetadataService(object):
                                                  "de columnas"))
         metadata.cantidad_de_columnas = len(primer_linea)
 
+        # chequeamos que el nombre de las columnas sean los mismo cargado previamente
         for columna_base, columna_csv in zip(metadata.nombres_de_columnas, primer_linea):
             if columna_base != columna_csv:
                 raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la"
@@ -586,6 +589,10 @@ class PredictorMetadataService(object):
 
 
 class BaseDatosService(object):
+    """Servicio de base de datos usado para eliminar contactos duplicados
+       se podria eliminar este servicio ya que el filtro se está haciendo por la pk
+       jamas habria una pk duplicada
+    """
 
     def eliminar_contactos_duplicados(self, base_datos):
 
