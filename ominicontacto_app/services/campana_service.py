@@ -327,6 +327,8 @@ class CampanaService():
         :param evitar_duplicados: si se desea evitar duplicados
         :param evitar_sin_telefono: si se desea evitar los contactos sin telefono
         :param prefijo_discador: el prefijo del discador
+
+        Deuda Tecnica mover a otro servico la creacion del archivo con  la lista
         """
         service_base = SincronizarBaseDatosContactosService()
         # crea archivo con lista para crear lista en wombat
