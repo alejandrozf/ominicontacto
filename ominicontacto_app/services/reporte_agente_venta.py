@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Servicio de reportes de campanas
+Servicio para generar reporte csv para un agente el cual muestrar todas las
+gestiones(ventas) de un agente
 """
 
 from __future__ import unicode_literals
