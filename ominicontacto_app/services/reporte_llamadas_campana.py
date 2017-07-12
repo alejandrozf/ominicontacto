@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Servicio para generar reportes de las llamadas por campañas"""
+
 import pygal
 import datetime
 import os
@@ -34,10 +36,13 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 
 class EstadisticasCampanaLlamadasService():
 
-
-
     def calcular_cantidad_llamadas(self, campanas, fecha_inferior, fecha_superior):
-
+        """
+        Calcula la cantidad de llamadas ingresadas, atendidas, abandondas, expiradas
+        por campana
+        :return: en un dicionaros los totales por campana y los totales para hacer el
+        grafico
+        """
         eventos_llamadas_ingresadas = ['ENTERQUEUE']
         eventos_llamadas_atendidas = ['CONNECT']
         eventos_llamadas_abandonadas = ['ABANDON']
@@ -98,6 +103,10 @@ class EstadisticasCampanaLlamadasService():
         return queues_tiempo, totales_grafico
 
     def obtener_total_llamadas(self, fecha_inferior, fecha_superior):
+        """
+        Calcula la cantidad de llamadas ingresadas, atendidas, abandondas, expiradas
+        :return: los totales de llamadas por ingresadas, atendidas, abandonad y expiradas
+        """
 
         eventos_llamadas_ingresadas = ['ENTERQUEUE']
         eventos_llamadas_atendidas = ['CONNECT']
@@ -158,7 +167,7 @@ class EstadisticasCampanaLlamadasService():
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
 
-        # Barra: Total de llamados atendidos en cada intento por campana.
+        # Barra: Cantidad de llamadas por campana
         barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
@@ -172,7 +181,6 @@ class EstadisticasCampanaLlamadasService():
                                    estadisticas['totales_grafico']['total_abandonadas'])
         barra_campana_llamadas.add('expiradas',
                                    estadisticas['totales_grafico']['total_expiradas'])
-
 
         return {
             'estadisticas': estadisticas,
