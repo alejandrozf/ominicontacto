@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Servicio para generar reporte de supervision de los agentes """
+
 import pygal
 import datetime
 import os
@@ -33,13 +35,19 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 class EstadisticasService():
 
     def _obtener_agentes(self):
+        """
+        Obtine listado de nombres de agentes
+        :return lista agentes por nombre"""
         agentes = []
         for agente in AgenteProfile.objects.all():
             agentes.append(agente.user.get_full_name())
         return agentes
 
     def calcular_tiempo_sesion(self, agentes, fecha_inferior, fecha_superior):
-
+        """
+        Calcula el tiempo de session de los agentes en el periodo evaluado
+        :return: un listado de agentes con el tiempo de session
+        """
         eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
 
         if fecha_inferior and fecha_superior:
@@ -55,11 +63,14 @@ class EstadisticasService():
 
         agentes_tiempo = []
 
+        # iterar por agente evaluando los eventos de session
         for agente in agentes:
             tiempo_agente = []
             logs_time = logs_queue.filter(agent=agente)
             is_remove = False
             time_actual = None
+            # iterar los log teniendo en cuenta que si encuentra un evento REMOVEMEMBER
+            # y luego un ADDMEMBER calcula el tiempo de session
             for logs in logs_time:
                 if is_remove and logs.event == 'ADDMEMBER':
                     resta = time_actual - logs.time
@@ -77,11 +88,15 @@ class EstadisticasService():
         return agentes_tiempo
 
     def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
-
+        """
+        Calcula el tiempo de pausa de los agentes en el periodo evaluado
+        :return: un listado de agentes con el tiempo de pausa
+        """
         eventos_pausa = ['PAUSEALL', 'UNPAUSEALL']
 
         agentes_tiempo = []
 
+        # iterar por agente evaluando los eventos de pausa
         for agente in agentes:
 
             logs_time = Queuelog.objects.obtener_log_agente_event_periodo_all(
@@ -89,10 +104,12 @@ class EstadisticasService():
             is_unpause = False
             time_actual = None
             tiempos_pausa = {}
+            # iterar los log teniendo en cuenta que si encuentra un evento UNPAUSEALL
+            # y luego un PAUSEALL calcula el tiempo de session
             for logs in logs_time:
                 if is_unpause and logs.event == 'PAUSEALL':
                     resta = time_actual - logs.time
-                    if logs.data1  in tiempos_pausa.keys():
+                    if logs.data1 in tiempos_pausa.keys():
                         tiempos_pausa[logs.data1] += resta
                     else:
                         tiempos_pausa.update({logs.data1: resta})
@@ -113,11 +130,15 @@ class EstadisticasService():
         return agentes_tiempo
 
     def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
-
+        """
+        Calcula el tiempo de llamadas de los agentes en el periodo evaluado
+        :return: un listado de agentes con el tiempo de llamadas
+        """
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
         agentes_tiempo = []
 
+        # iterar por agente evaluando los eventos de llamadas
         for agente in agentes:
             logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
                 eventos_llamadas, fecha_inferior, fecha_superior, agente)
@@ -340,49 +361,3 @@ class EstadisticasService():
             logger.info("Generando grafico calificaciones de campana por cliente ")
 
         return estadisticas
-
-
-
-        # # Barra: Total de llamados atendidos en cada intento por campana.
-        # barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
-        #     show_legend=False,
-        #     style=ESTILO_AZUL_ROJO_AMARILLO)
-        # barra_campana_calificacion.title = 'Cantidad de calificacion de cliente '
-        #
-        # barra_campana_calificacion.x_labels = \
-        #     estadisticas['calificaciones_nombre']
-        # barra_campana_calificacion.add('cantidad',
-        #                                estadisticas['calificaciones_cantidad'])
-        # barra_campana_calificacion.render_to_png(os.path.join(settings.MEDIA_ROOT,
-        #     "reporte_campana", "barra_campana_calificacion.png"))
-        #
-        # # Barra: Total de llamados no atendidos en cada intento por campana.
-        # barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
-        #     show_legend=False,
-        #     style=ESTILO_AZUL_ROJO_AMARILLO)
-        # barra_campana_no_atendido.title = 'Cantidad de llamadas no atendidos '
-        #
-        # barra_campana_no_atendido.x_labels = \
-        #     estadisticas['resultado_nombre']
-        # barra_campana_no_atendido.add('cantidad',
-        #                               estadisticas['resultado_cantidad'])
-        # barra_campana_no_atendido.render_to_png(
-        #     os.path.join(settings.MEDIA_ROOT,
-        #                  "reporte_campana", "barra_campana_no_atendido.png"))
-        #
-        # return {
-        #     'estadisticas': estadisticas,
-        #     'barra_campana_calificacion': barra_campana_calificacion,
-        #     'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
-        #                                 estadisticas['calificaciones_cantidad'])
-        #     ,
-        #     'total_asignados': estadisticas['total_asignados'],
-        #     'agentes_venta': estadisticas['agentes_venta'],
-        #     'total_calificados': estadisticas['total_calificados'],
-        #     'total_ventas': estadisticas['total_ventas'],
-        #     'barra_campana_no_atendido': barra_campana_no_atendido,
-        #     'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
-        #                                     estadisticas['resultado_cantidad']),
-        #     'total_no_atendidos': estadisticas['total_no_atendidos'],
-        #     'calificaciones': estadisticas['calificaciones']
-        # }
