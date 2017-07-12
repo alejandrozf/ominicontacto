@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-'''
-Created on Apr 15, 2014
-
-@author: Horacio G. de Oro
-'''
+"""Funciones de utilidad en el sistema"""
 
 from __future__ import unicode_literals
 
@@ -79,7 +75,7 @@ def elimina_coma(cadena):
 
 def elimina_comillas(cadena):
     """
-    Elimina coma
+    Elimina comillas
     """
     return re.sub('"', "", cadena)
 
