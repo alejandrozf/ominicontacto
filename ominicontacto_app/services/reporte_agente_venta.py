@@ -68,7 +68,7 @@ class ArchivoDeReporteCsv(object):
                                       for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
-            # Iteramos cada uno de los contactos, con los eventos de TODOS los intentos
+            # Iteramos cada una de las calificaciones del agente
             for metadata in formularios:
                 lista_opciones = []
 
