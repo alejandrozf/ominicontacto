@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Servicio para crear los json para crear los objectos en wombat"""
+
 from __future__ import unicode_literals
 
 import os
@@ -10,8 +12,6 @@ import json
 
 from django.conf import settings
 from ominicontacto_app.utiles import elimina_espacios
-
-
 
 logger = logging.getLogger(__name__)
 
