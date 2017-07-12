@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+"""
+Aca se encuentra las vista relacionada con la creacion de una agenda en el caso que el 
+agente de desee agendar un llamado. Al modulo de agenda le esta faltando algun demonio
+o algo por el estilo para que lance una llamada agenda,etc 
+"""
+
 from __future__ import unicode_literals
 
 import requests
@@ -20,7 +26,7 @@ from ominicontacto_app.utiles import convert_string_in_boolean,\
 
 
 class AgendaContactoCreateView(CreateView):
-
+    """Vista para crear una nueva agenda"""
     template_name = 'agenda_contacto/create_agenda_contacto.html'
     model = AgendaContacto
     context_object_name = 'agendacontacto'
@@ -62,6 +68,7 @@ class AgendaContactoCreateView(CreateView):
 
 
 class AgendaContactoDetailView(DetailView):
+    """Detalle de una agenda de contacto"""
     template_name = 'agenda_contacto/agenda_detalle.html'
     model = AgendaContacto
 
@@ -72,6 +79,7 @@ class AgendaContactoDetailView(DetailView):
 
 
 class AgenteContactoListFormView(FormView):
+    """Vista listado evento de agenda por agente"""
     model = AgendaContacto
     template_name = 'agenda_contacto/agenda_agente.html'
     form_class = AgendaBusquedaForm
