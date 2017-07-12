@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Servicio de exportacion de base de datos de contactos para discador
+Servicio para exportar la batos a un csv y para generar la lista en una archivo
+para insertar en wombat
 """
 
 from __future__ import unicode_literals
