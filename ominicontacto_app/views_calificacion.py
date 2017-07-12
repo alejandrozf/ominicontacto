@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""Vista relacionada con la creacion de una calificacion en el sentido no llamar,
+no interesado,etc y luego la agrupacion de la misma en un grupo lo cual se va utilizar
+ para la creacion de una campana en el momento de ser calificada"""
+
 from __future__ import unicode_literals
 
 from django.contrib import messages
@@ -13,6 +17,8 @@ from ominicontacto_app.models import (
 
 
 class CalificacionCreateView(CreateView):
+    """Vista para crear una calificacion
+    DT: remover fields de la vista y crear un formulario"""
     model = Calificacion
     template_name = 'base_create_update_form.html'
     fields = ('nombre',)
@@ -22,6 +28,8 @@ class CalificacionCreateView(CreateView):
 
 
 class CalificacionUpdateView(UpdateView):
+    """Vista para modificar una calificacion
+    DT: remover fields de la vista y crear un formulario"""
     model = Calificacion
     template_name = 'base_create_update_form.html'
     fields = ('nombre',)
@@ -33,7 +41,7 @@ class CalificacionUpdateView(UpdateView):
 class CalificacionDeleteView(DeleteView):
     """
     Esta vista se encarga de la eliminación del
-    objeto grupo
+    objeto calificacion
     """
     model = Calificacion
     template_name = 'calificacion/delete_calificacion.html'
@@ -43,11 +51,14 @@ class CalificacionDeleteView(DeleteView):
 
 
 class CalificacionListView(ListView):
+    """Lista las calificaciones"""
     model = Calificacion
     template_name = 'calificacion/calificacion_list.html'
 
 
 class CalificacionCampanaCreateView(CreateView):
+    """Vista para crear un un grupo de calificacion
+    DT: remover fields de la vista y crear un formulario"""
     model = CalificacionCampana
     template_name = 'base_create_update_form.html'
     fields = ('nombre', 'calificacion')
@@ -67,6 +78,8 @@ class CalificacionCampanaCreateView(CreateView):
 
 
 class CalificacionCampanaUpdateView(UpdateView):
+    """Vista para crear un grupo de calificacion
+    DT: remover fields de la vista y crear un formulario"""
     model = CalificacionCampana
     template_name = 'base_create_update_form.html'
     fields = ('nombre', 'calificacion')
@@ -88,7 +101,7 @@ class CalificacionCampanaUpdateView(UpdateView):
 class CalificacionCampanaDeleteView(DeleteView):
     """
     Esta vista se encarga de la eliminación del
-    objeto grupo
+    objeto CalificacionCampana
     """
     model = CalificacionCampana
     template_name = 'calificacion/delete_calificacion_campana.html'
