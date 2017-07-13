@@ -396,6 +396,8 @@ $(function() {
 							getIframe(linkaddress);
 						} else if (originHeader === "DIALER-JSON") {
 
+						} else if (originHeader === "CLICK2CALL") {
+						  getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
 						}
         	} else {
         		if(fromUser !== "Unknown") {
