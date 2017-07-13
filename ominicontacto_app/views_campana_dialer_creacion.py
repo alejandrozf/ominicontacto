@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Vista para generar un objecto campana de tipo dialer"""
+
 from __future__ import unicode_literals
 
 
@@ -166,21 +168,28 @@ class SincronizaDialerView(FormView):
         columnas = form.cleaned_data.get('columnas')
         self.object = self.get_object()
         service_base = SincronizarBaseDatosContactosService()
+        # Crea un achivo con la lista de contactos para importar a wombat
         service_base.crear_lista(self.object, columnas, evitar_duplicados,
                                  evitar_sin_telefono, prefijo_discador)
         campana_service = CampanaService()
+        # crear campana en wombat
         campana_service.crear_campana_wombat(self.object)
+        # crea trunk en wombat
         campana_service.crear_trunk_campana_wombat(self.object)
+        # crea reglas de incidencia en wombat
         for regla in self.object.reglas_incidencia.all():
             parametros = [regla.get_estado_wombat(), regla.estado_personalizado,
                           regla.intento_max, regla.reintentar_tarde,
                           regla.get_en_modo_wombat( )]
             campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-
+        # crea endpoint en wombat
         campana_service.crear_endpoint_campana_wombat(self.object)
+        # asocia endpoint en wombat a campana
         campana_service.crear_endpoint_asociacion_campana_wombat(
             self.object)
+        # crea lista en wombat
         campana_service.crear_lista_wombat(self.object)
+        # asocia lista a campana en wombat
         campana_service.crear_lista_asociacion_campana_wombat(self.object)
         self.object.estado = Campana.ESTADO_INACTIVA
         self.object.save()
@@ -291,7 +300,7 @@ class ReglasIncidenciaCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, Cre
 
 
 def regla_incidencia_delete_view(request, pk_campana, pk_regla):
-
+    """Esta vista elimina una regla de incidencia en wombat"""
     regla = ReglasIncidencia.objects.get(pk=pk_regla)
     regla.delete()
     return HttpResponseRedirect(
@@ -303,6 +312,7 @@ def regla_incidencia_delete_view(request, pk_campana, pk_regla):
 
 class QueueDialerCreateView(CheckEstadoCampanaDialerMixin,
                             CampanaDialerEnDefinicionMixin, CreateView):
+    """Vista crear cola para campana dialer"""
     model = Queue
     form_class = QueueDialerForm
     template_name = 'campana_dialer/create_update_queue.html'
@@ -337,6 +347,7 @@ class QueueDialerCreateView(CheckEstadoCampanaDialerMixin,
 
 
 class QueueDialerUpdateView(UpdateView):
+    """Vista actualiza cola para campana dialer"""
     model = Queue
     form_class = QueueDialerUpdateForm
     template_name = 'campana_dialer/create_update_queue.html'
@@ -433,6 +444,7 @@ class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
 
 class QueueDialerReplicarView(CheckEstadoCampanaDialerMixin,
                               CampanaDialerEnDefinicionMixin, UpdateView):
+    """Vista replicar cola de campana dialer"""
     model = Queue
     form_class = QueueDialerUpdateForm
     template_name = 'campana_dialer/create_update_queue.html'
