@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Vista de reportes de campana"""
+
 from __future__ import unicode_literals
 
 import json
