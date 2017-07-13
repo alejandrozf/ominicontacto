@@ -246,7 +246,14 @@ Crear usuario y BD de Postgresql:
 
 
 
+Sync de BD:
 
+    $ ./manage.py migrate
+
+Run proyecto y crear superuser:
+
+    $ ./manage.py createsuperuser
+    $ ./manage.py runserver
 
 ### Configuracion ssl para desarrollo ###
 Generar certificado usando el siguiente el comando
