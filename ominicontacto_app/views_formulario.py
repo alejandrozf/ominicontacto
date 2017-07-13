@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+"""Aca se encuentran las vistas con la creacion de los formularios dinamico en la
+caso de que califica como gestion(que generalmente vulgarmente llamada venta)"""
+
 from __future__ import unicode_literals
 
 import json
@@ -29,6 +32,7 @@ logger = logging_.getLogger(__name__)
 
 
 class FormularioCreateView(CreateView):
+    """Vista para crear el fomulario"""
     model = Formulario
     form_class = FormularioForm
     template_name = 'formulario/formulario_create_update_form.html'
@@ -40,11 +44,13 @@ class FormularioCreateView(CreateView):
 
 
 class FormularioListView(ListView):
+    """Vista para listar los formularios"""
     template_name = 'formulario/formulario_list.html'
     model = Formulario
 
 
 class FieldFormularioCreateView(CreateView):
+    """Vista para crear un campo del formulario"""
     model = FieldFormulario
     template_name = 'formulario/formulario_field.html'
     context_object_name = 'fieldformulario'
@@ -186,6 +192,7 @@ class FieldFormularioDeleteView(DeleteView):
 
 
 class FormularioPreviewFormView(FormView):
+    """Vista para ver el formulario una vez finalizado"""
     form_class = FormularioCRMForm
     template_name = 'formulario/formulario_preview.html'
 
@@ -203,6 +210,7 @@ class FormularioPreviewFormView(FormView):
 
 
 class FormularioVistaFormView(FormView):
+    """Vista para visualizar el fomulario en una vista previa"""
     form_class = FormularioCRMForm
     template_name = 'formulario/formulario_vista.html'
 

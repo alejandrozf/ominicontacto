@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""Aca se encuentran las vistas para crear el objecto sitio externo lo cual consite
+nombre y una url externa para crm externo en el momento de crear una campa se selecciona
+el sitio externo el cual va abrirse en una pestaña 
+"""
+
 from __future__ import unicode_literals
 
 from django.contrib import messages
@@ -18,6 +23,7 @@ from ominicontacto_app.forms import SitioExternoForm
 
 
 class SitioExternoCreateView(CreateView):
+    """Vista para crear un sitio externo"""
     model = SitioExterno
     template_name = 'sitio_externo/create_update_form.html'
     form_class = SitioExternoForm
@@ -29,7 +35,7 @@ class SitioExternoCreateView(CreateView):
 class SitioExternoListView(ListView):
     """
     Esta vista es para generar el listado de
-    Lista de Contactos.
+    Lista de sitios externos.
     """
 
     template_name = 'sitio_externo/sitio_externo_list.html'
@@ -68,6 +74,7 @@ class DesOcultarSitioExternoView(RedirectView):
 
 
 def mostrar_sitio_externos_ocultos_view(request):
+    """Esta vista muestro los sitios externos ocultos"""
     sitios = SitioExterno.objects.all()
     data = {
         'sitios_externos': sitios,

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+Empezo siendo un servicio ahora siemplemente tiene un objecto para guardar
+los tiempo del agente
+"""
+
 from __future__ import unicode_literals
 
 from django.db import connection

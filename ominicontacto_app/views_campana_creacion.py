@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Vista para la creacion de un objecto campana de tipo entrante"""
+
 from __future__ import unicode_literals
 
 
@@ -151,6 +153,7 @@ class CampanaUpdateView(UpdateView):
 
 class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
                       CreateView):
+    """Vista para la creacion de una Cola"""
     model = Queue
     form_class = QueueForm
     template_name = 'queue/create_update_queue.html'
@@ -197,6 +200,7 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
 
 class QueueUpdateView(UpdateView):
+    """Vista actualiza una Queue(Cola)"""
     model = Queue
     form_class = QueueUpdateForm
     template_name = 'queue/create_update_queue.html'

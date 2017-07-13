@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+"""En este modulo se encuentran las vistas basicas para inicializar el sistema, usuarios
+modulos, grupos, pausas
+
+DT:Mover la creacion de agente a otra vista
+"""
+
 from __future__ import unicode_literals
 
 import json
@@ -56,6 +62,9 @@ def index_view(request):
 
 
 def login_view(request):
+    """
+    Vista login, si el user es un agente lo redirijo a la vista del agente(view_node)
+    """
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
@@ -80,6 +89,7 @@ def login_view(request):
 
 
 class CustomerUserCreateView(CreateView):
+    """Vista para crear un usuario"""
     model = User
     form_class = CustomUserCreationForm
     template_name = 'user/user_create_update_form.html'
@@ -89,6 +99,7 @@ class CustomerUserCreateView(CreateView):
 
 
 class CustomerUserUpdateView(UpdateView):
+    """Vista para modificar un usuario"""
     model = User
     form_class = UserChangeForm
     template_name = 'user/user_create_update_form.html'
@@ -134,6 +145,8 @@ class UserDeleteView(DeleteView):
 
 
 class UserListView(ListView):
+    """Vista que que muestra el listao de usuario paginado 40 por pagina y
+    ordenado por id"""
     model = User
     template_name = 'user/user_list.html'
     paginate_by = 40
@@ -144,6 +157,7 @@ class UserListView(ListView):
 
 
 class AgenteProfileCreateView(CreateView):
+    """Vista para crear un agente"""
     model = AgenteProfile
     form_class = AgenteProfileForm
     template_name = 'base_create_update_form.html'
@@ -168,11 +182,14 @@ class AgenteProfileCreateView(CreateView):
         self.object.user = usuario
         self.object.sip_extension = AgenteProfile.objects.\
             obtener_ultimo_sip_extension()
+        # generar un sip_password aleatorio
         self.object.sip_password = User.objects.make_random_password()
         self.object.reported_by = self.request.user
         self.object.save()
+        # insertar agente en kamailio
         kamailio_service = KamailioService()
         kamailio_service.crear_agente_kamailio(self.object)
+        # generar archivos sip en asterisk
         asterisk_sip_service = ActivacionAgenteService()
         try:
             asterisk_sip_service.activar()
@@ -191,6 +208,7 @@ class AgenteProfileCreateView(CreateView):
 
 
 class AgenteProfileUpdateView(UpdateView):
+    """Vista para modificar un agente"""
     model = AgenteProfile
     form_class = AgenteProfileForm
     template_name = 'base_create_update_form.html'
@@ -219,6 +237,7 @@ class AgenteProfileUpdateView(UpdateView):
 
 
 class ModuloCreateView(CreateView):
+    """Vista para crear un modulo"""
     model = Modulo
     template_name = 'base_create_update_form.html'
     fields = ('nombre',)
@@ -228,6 +247,7 @@ class ModuloCreateView(CreateView):
 
 
 class ModuloUpdateView(UpdateView):
+    """Vista para modificar un modulo"""
     model = Modulo
     template_name = 'base_create_update_form.html'
     fields = ('nombre',)
@@ -239,7 +259,7 @@ class ModuloUpdateView(UpdateView):
 class ModuloDeleteView(DeleteView):
     """
     Esta vista se encarga de la eliminación del
-    objeto grupo
+    objeto modulo
     """
     model = Modulo
     template_name = 'delete_modulo.html'
@@ -249,11 +269,13 @@ class ModuloDeleteView(DeleteView):
 
 
 class ModuloListView(ListView):
+    """Vista para listar los modulos"""
     model = Modulo
     template_name = 'modulo_list.html'
 
 
 class AgenteListView(ListView):
+    """Vista para listar los agentes"""
     model = AgenteProfile
     template_name = 'agente_profile_list.html'
 
@@ -271,6 +293,9 @@ class AgenteListView(ListView):
 
 
 class GrupoCreateView(CreateView):
+    """Vista para crear un grupo
+    DT: eliminar fields de la vista crear un form para ello
+    """
     model = Grupo
     template_name = 'base_create_update_form.html'
     fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
@@ -281,6 +306,9 @@ class GrupoCreateView(CreateView):
 
 
 class GrupoUpdateView(UpdateView):
+    """Vista para modificar un grupo
+        DT: eliminar fields de la vista crear un form para ello
+        """
     model = Grupo
     template_name = 'base_create_update_form.html'
     fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
@@ -291,6 +319,7 @@ class GrupoUpdateView(UpdateView):
 
 
 class GrupoListView(ListView):
+    """Vista para listar los grupos"""
     model = Grupo
     template_name = 'grupo_list.html'
 
@@ -308,6 +337,7 @@ class GrupoDeleteView(DeleteView):
 
 
 class PausaCreateView(CreateView):
+    """Vista para crear pausa"""
     model = Pausa
     template_name = 'base_create_update_form.html'
     form_class = PausaForm
@@ -317,6 +347,7 @@ class PausaCreateView(CreateView):
 
 
 class PausaUpdateView(UpdateView):
+    """Vista para modificar pausa"""
     model = Pausa
     template_name = 'base_create_update_form.html'
     form_class = PausaForm
@@ -326,6 +357,7 @@ class PausaUpdateView(UpdateView):
 
 
 class PausaListView(ListView):
+    """Vista para listar pausa"""
     model = Pausa
     template_name = 'pausa_list.html'
 
@@ -343,6 +375,7 @@ class PausaDeleteView(DeleteView):
 
 
 def node_view(request):
+    """Esta vista renderiza la pantalla del agente"""
     registro = []
     if request.user.is_authenticated() and request.user.get_agente_profile():
         registro = DuracionDeLlamada.objects.filter(
@@ -383,6 +416,8 @@ def blanco_view(request):
 
 
 def nuevo_evento_agenda_view(request):
+    """Vista get para insertar un nuevo evento en la agenda
+    REVISAR si se usa esta vista si no es obsoleta"""
     agente = request.GET['agente']
     es_personal = request.GET['personal']
     fecha = request.GET['fechaEvento']
@@ -421,6 +456,7 @@ def nuevo_evento_agenda_view(request):
 
 
 class AgenteEventosFormView(FormView):
+    """Esta vista devuelve el listado de los eventos de agenda por agente"""
     model = AgenteProfile
     template_name = 'agente/agenda_agente.html'
     form_class = AgendaBusquedaForm
@@ -448,6 +484,7 @@ class AgenteEventosFormView(FormView):
 
 
 def regenerar_asterisk_view(request):
+    """Vista para regenerar los archivos de asterisk"""
     activacion_queue_service = RegeneracionAsteriskService()
     try:
         activacion_queue_service.regenerar()
@@ -468,6 +505,7 @@ def regenerar_asterisk_view(request):
 
 
 def nuevo_duracion_llamada_view(request):
+    """Vista para crear una nueva duracion de llamada"""
     agente = request.GET['agente']
     numero_telefono = request.GET['numero_telefono']
     tipo_llamada = request.GET['tipo_llamada']
@@ -490,6 +528,7 @@ def nuevo_duracion_llamada_view(request):
 
 
 def mensaje_chat_view(request):
+    """Vistar para crear un nuevo mensaje de chat"""
     sender = request.GET['sender']
     to = request.GET['to']
     mensaje = request.GET['mensaje']
@@ -504,6 +543,7 @@ def mensaje_chat_view(request):
 
 
 def crear_chat_view(request):
+    """Vista para crear un nuevo char"""
     agente = request.GET['agente']
     user = request.GET['user']
     agente = User.objects.get(pk=int(agente))
@@ -515,6 +555,7 @@ def crear_chat_view(request):
 
 @csrf_exempt
 def wombat_log_view(request):
+    """Log de wombat insertar los log q devuelve los log de las campana de wombat"""
     print request.POST
     dict_post = request.POST
 
@@ -559,6 +600,7 @@ def wombat_log_view(request):
 
 
 def supervision_url_externa(request):
+    """Vista que redirect a la supervision externa de marce"""
     if request.user.is_authenticated() and request.user.get_supervisor_profile():
         supervisor = request.user.get_supervisor_profile()
         url = settings.OML_SUPERVISION_URL + str(supervisor.pk)

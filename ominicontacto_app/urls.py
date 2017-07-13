@@ -346,19 +346,6 @@ urlpatterns = [
     # ==========================================================================
     # Reportes
     # ==========================================================================
-    url(r'^reporte/llamadas/hoy/$',
-        login_required(views_grabacion.GrabacionReporteListView.as_view()),
-        name='reporte_llamadas_hoy',
-        ),
-    url(r'^reporte/llamadas/semana/$',
-        login_required(views_grabacion.GrabacionReporteSemanaListView.as_view()),
-        name='reporte_llamadas_semana',
-        ),
-    url(r'^reporte/llamadas/mes/$',
-        login_required(
-            views_grabacion.GrabacionReporteMesListView.as_view()),
-        name='reporte_llamadas_mes',
-        ),
     url(r'^reporte/llamadas/$',
         login_required(
             views_grabacion.GrabacionReporteFormView.as_view()),

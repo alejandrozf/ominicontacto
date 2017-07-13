@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Vista para el modelo de Contacto de la base de datos
+"""
+
 from __future__ import unicode_literals
 
 import json
@@ -17,6 +21,7 @@ from ominicontacto_app.utiles import convertir_ascii_string
 
 
 class ContactoCreateView(CreateView):
+    """Vista para crear un contacto"""
     model = Contacto
     template_name = 'agente/contacto_create_update_form.html'
     form_class = ContactoForm
@@ -26,6 +31,7 @@ class ContactoCreateView(CreateView):
 
 
 class ContactoUpdateView(UpdateView):
+    """Vista para modificar un contacto"""
     model = Contacto
     template_name = 'agente/contacto_create_update_form.html'
     form_class = ContactoForm
@@ -38,6 +44,7 @@ class ContactoUpdateView(UpdateView):
 
 
 class ContactoListView(ListView):
+    """Vista que lista los contactos"""
     model = Contacto
     template_name = 'agente/contacto_list.html'
 
@@ -63,6 +70,7 @@ class ContactoListView(ListView):
 
 
 class BusquedaContactoFormView(FormView):
+    """Vista para buscar un contacto de la ventana del agente"""
     form_class = BusquedaContactoForm
     template_name = 'agente/busqueda_contacto.html'
 
@@ -90,6 +98,7 @@ class BusquedaContactoFormView(FormView):
 
 
 class ContactoBDContactoCreateView(CreateView):
+    """Vista para agregar un contacto a una base de datos ya existente"""
     model = Contacto
     template_name = 'base_create_update_form.html'
     form_class = FormularioNuevoContacto
@@ -128,6 +137,7 @@ class ContactoBDContactoCreateView(CreateView):
 
 
 class ContactoBDContactoListView(ListView):
+    """Vista que lista los contactos de una base de datos"""
     model = Contacto
     template_name = 'base_datos_contacto/contacto_list_bd_contacto.html'
 
@@ -144,6 +154,7 @@ class ContactoBDContactoListView(ListView):
 
 
 class ContactoBDContactoUpdateView(UpdateView):
+    """Vista para modificar un contacto de la base de datos"""
     model = Contacto
     template_name = 'base_create_update_form.html'
     form_class = FormularioNuevoContacto

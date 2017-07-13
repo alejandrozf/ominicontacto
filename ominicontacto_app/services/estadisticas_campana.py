@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Servicio para generar reporte grafico de una campana
+"""
+
 import pygal
 import datetime
 import os
@@ -33,6 +37,16 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 class EstadisticasService():
 
     def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta):
+        """
+        Obtiene las cantidad de llamadas por calificacion de la campana y el total de
+        llamadas calificadas
+        :param campana: campana la cual se van obtiene las calificaciones
+        :param fecha_desde: fecha desde que se va evaluar las calificaciones
+        :param fecha_hasta: fecha hasta que se va evaluar las calificaciones
+        :return: calificaciones_nombre - nombre de las calificaciones
+        calificaciones_cantidad - cantidad de llamdas por calificacion
+        total_asignados - cantidad total de calificaciones
+        """
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         calificaciones = campana.calificacion_campana.calificacion.all()
@@ -51,6 +65,11 @@ class EstadisticasService():
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_agentes_campana(self, campana):
+        """
+        Obtiene los agentes asigandos a esta campana
+        :param campana: campana la cual se obtiene los agentes
+        :return: los agentes asigandos a la campana
+        """
         member_dict = campana.queue_campana.queuemember.all()
         members_campana = []
         for member in member_dict:
@@ -58,27 +77,15 @@ class EstadisticasService():
 
         return members_campana
 
-    def obtener_venta(self, campana, members_campana, fecha_desde, fecha_hasta):
-        agentes_venta = []
-        total_calificados = 0
-        total_ventas = 0
-
-        for agente in members_campana:
-            dato_agente = []
-            dato_agente.append(agente)
-            total_cal_agente = len(agente.calificaciones.filter(
-                campana=campana, fecha__range=(fecha_desde, fecha_hasta)))
-            dato_agente.append(total_cal_agente)
-            total_calificados += total_cal_agente
-            total_ven_agente = len(agente.calificaciones.filter(
-                campana=campana, es_venta=True,
-                fecha__range=(fecha_desde, fecha_hasta)))
-            dato_agente.append(total_ven_agente)
-            total_ventas += total_ven_agente
-            agentes_venta.append(dato_agente)
-        return agentes_venta, total_calificados, total_ventas
-
     def obtener_cantidad_no_atendidos(self, campana, fecha_desde, fecha_hasta):
+        """
+        Obtiene los llamados no atendidos por campana
+        :param campana: campana a la cual se van obtener los llamados no atendidos
+        :param fecha_desde: fecha desde la cual se obtener los llamados no atendidos
+        :param fecha_hasta: fehca hasta la cual se va obtener los llamados no atendidos
+        :return: nombre del evento no atendidos, la cantidad por ese evento y el total
+        de  llamados no atendidos
+        """
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         campana_log_wombat = campana.logswombat.filter(
@@ -105,6 +112,11 @@ class EstadisticasService():
         return resultado_nombre, resultado_cantidad, total_no_atendidos
 
     def obtener_total_llamadas(self, campana):
+        """
+        Obtiene los totales de llamadas realizadas y pendiente por la campana
+        :param campana: campana la cual se obtiene los totales
+        :return: lso totales de llamadas realizadas y pendiente de la campana
+        """
         campana_service = CampanaService()
         dato_campana = campana_service.obtener_dato_campana_run(campana)
         llamadas_pendientes = 0
@@ -117,6 +129,15 @@ class EstadisticasService():
 
     def obtener_total_calificacion_agente(self, campana, members_campana,
                                           fecha_desde, fecha_hasta):
+        """
+        Obtiene el total de las calificaciones por calificacion por agente
+        :param campana: campana de las cual se obtiene las campana
+        :param members_campana: agentes de la campana
+        :param fecha_desde: fecha desde la que se obtendran las calificacioens
+        :param fecha_hasta: fecha hasta la que se obtendran las calificaciones
+        :return: agentes_venta, un dicionario con el total des las calificaciones,
+        una lista con el total de las calificaciones y las calificaciones
+        """
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         agentes_venta = []
@@ -126,7 +147,7 @@ class EstadisticasService():
         calificaciones = campana.calificacion_campana.calificacion.all()
 
         dict_calificaciones = {}
-
+        # armo dict de las calificaciones e inicializandolo en 0
         for calificacion in calificaciones:
             dict_calificaciones.update({calificacion.pk: 0})
 
@@ -157,18 +178,28 @@ class EstadisticasService():
         return agentes_venta, total_calificados, total_ventas, calificaciones
 
     def calcular_cantidad_llamadas(self, campana, fecha_inferior, fecha_superior):
-
+        """
+        Obtiene las cantidades toteles detalladas como resultado de las llamadas
+        :param campana: campana la cuales se obtendran el detalle de la llamada
+        :param fecha_inferior: fecha desde la cual se obtendran las llamadas
+        :param fecha_superior: fecha hasta la cual se obtendran las llamadas
+        :return: los eventos de llamadas con sus cantidades totales
+        """
         eventos_llamadas_ingresadas = ['ENTERQUEUE']
         eventos_llamadas_atendidas = ['CONNECT']
         eventos_llamadas_abandonadas = ['ABANDON']
         eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
 
+        # obtiene las llamadas recibidas
         ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, campana.nombre)
+        # obtiene las llamadas atendidas
         atendidas = Queuelog.objects.obtener_log_queuename_event_periodo(
             eventos_llamadas_atendidas, fecha_inferior, fecha_superior, campana.nombre)
+        # obtiene las llamadas abandonadas
         abandonadas = Queuelog.objects.obtener_log_queuename_event_periodo(
             eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, campana.nombre)
+        # obtiene las llamadas expiradas
         expiradas = Queuelog.objects.obtener_log_queuename_event_periodo(
             eventos_llamadas_expiradas, fecha_inferior, fecha_superior, campana.nombre)
         count_llamadas_ingresadas = ingresadas.count()
@@ -189,22 +220,22 @@ class EstadisticasService():
         cantidad_campana.append(count_manuales_atendidas)
         cantidad_campana.append(count_manuales_abandonadas)
 
-
         return nombres_cantidades, cantidad_campana
 
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
+        # obtener cantidad de calificaciones por campana
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
                                                fecha_hasta)
 
+        # obtiene detalle de llamados no atendidos
         resultado_nombre, resultado_cantidad, total_no_atendidos = \
             self.obtener_cantidad_no_atendidos(campana, fecha_desde,
                                                fecha_hasta)
-
+        # obtiene los agentes miembros a la campana
         members_campana = self.obtener_agentes_campana(campana)
-        #agentes_venta, total_calificados, total_ventas = self.obtener_venta(
-         #   campana, members_campana, fecha_desde, fecha_hasta)
 
+        # obtiene el total de calificaciones por agente
         total_calificacion_agente = self.obtener_total_calificacion_agente(
             campana, members_campana, fecha_desde, fecha_hasta
         )
@@ -213,9 +244,11 @@ class EstadisticasService():
         total_ventas = total_calificacion_agente[2]
         calificaciones = total_calificacion_agente[3]
 
+        # obtiene las llamadas pendientes y realizadas por campana
         llamadas_pendientes, llamadas_realizadas = self.obtener_total_llamadas(
             campana)
 
+        # obtiene las cantidades totales por evento de las llamadas
         cantidad_llamadas = self.calcular_cantidad_llamadas(
             campana, fecha_desde, fecha_hasta)
 
@@ -243,9 +276,7 @@ class EstadisticasService():
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
 
-
-
-        # Barra: Total de llamados atendidos en cada intento por campana.
+        # Barra: Cantidad de calificacion de cliente
         barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
@@ -272,7 +303,7 @@ class EstadisticasService():
             os.path.join(settings.MEDIA_ROOT,
                          "reporte_campana", "barra_campana_no_atendido.png"))
 
-        # Barra: Total de llamados  en cada intento por campana.
+        # Barra: Detalles de llamadas por evento de llamada.
         barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)

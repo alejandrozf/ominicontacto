@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+Aca se encuentran las vistas relacionada  a la creacion de un reporte pdf  para el
+grafico de la campana ver revisar ya que se hizo una sola version y no se interoo mas
+"""
+
 from __future__ import unicode_literals
 
 import datetime
@@ -18,6 +23,7 @@ from ominicontacto_app.models import User, Campana
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 
 
+#Vista utilizada de ejemplo para crear la vista ReporteCampanaPDF
 class ReportePersonasPDF(View):
     def cabecera(self, pdf):
         # Utilizamos el archivo logo_django.png que está guardado en la

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+"""
+Esta vista se configua user y password del cual se van conectar a la api de la cuál se
+conecta al servicio json configurada calificacion_cliente_externa_view() en el
+modulo views_calificacion_formulario
+"""
+
 from __future__ import unicode_literals
 
 
@@ -17,6 +23,7 @@ logger = logging_.getLogger(__name__)
 
 
 class UserApiCrmCreateView(CreateView):
+    """Vista para crear un nuevo userapicrm"""
     model = UserApiCrm
     template_name = 'base_create_update_form.html'
     form_class = UserApiCrmForm
@@ -26,6 +33,7 @@ class UserApiCrmCreateView(CreateView):
 
 
 class UserApiCrmUpdateView(UpdateView):
+    """Vista para modificar el userapicrm"""
     model = UserApiCrm
     template_name = 'base_create_update_form.html'
     form_class = UserApiCrmForm
@@ -35,5 +43,6 @@ class UserApiCrmUpdateView(UpdateView):
 
 
 class UserApiCrmListView(ListView):
+    """Vista para listar los userapicrm"""
     model = UserApiCrm
     template_name = 'user_api_crm_list.html'

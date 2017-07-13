@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+"""En este modulo se encuentran las vista de interaccion formularios de calificacion
+y gestion con el agente"""
+
 from __future__ import unicode_literals
 
 import json
@@ -35,7 +38,7 @@ logger = logging_.getLogger(__name__)
 
 class CalificacionClienteCreateView(CreateView):
     """
-    Muestra el detalle de contacto
+    En esta vista se crea la calificacion del contacto
     """
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
@@ -77,6 +80,7 @@ class CalificacionClienteCreateView(CreateView):
             form_kwargs={'calificacion_choice': calificaciones,
                          'gestion': campana.gestion}
         )
+        # actualiza el estado de wombat a travez de un post
         url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
                                       'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
         r = requests.post(
@@ -104,8 +108,8 @@ class CalificacionClienteCreateView(CreateView):
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
-                         'gestion': campana.gestion},
-        instance= self.object)
+                                            'gestion': campana.gestion},
+            instance=self.object)
 
         if form.is_valid():
             if calificacion_form.is_valid():
@@ -140,6 +144,7 @@ class CalificacionClienteCreateView(CreateView):
             self.object_calificacion[0].es_venta = True
             self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
             self.object_calificacion[0].save()
+            # actualiza la calificacion en wombat
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
@@ -156,6 +161,7 @@ class CalificacionClienteCreateView(CreateView):
             self.object_calificacion[0].es_venta = False
             self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
             self.object_calificacion[0].save()
+            # actualiza la calificacion en wombat
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'],
                                   self.object_calificacion[0].calificacion.nombre))
@@ -207,7 +213,7 @@ class CalificacionClienteCreateView(CreateView):
 
 class CalificacionClienteUpdateView(UpdateView):
     """
-    Muestra el detalle de contacto
+    En esta vista se modifica la calificacion del contacto
     """
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
@@ -250,6 +256,7 @@ class CalificacionClienteUpdateView(UpdateView):
         )
         url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
                                       'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
+        # actualiza el estado de la llamada en wombat
         r = requests.post(
             url_wombat_agente.format(self.kwargs['wombat_id'],
                                      self.kwargs['id_agente']))
@@ -298,7 +305,7 @@ class CalificacionClienteUpdateView(UpdateView):
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
                                             'gestion': campana.gestion},
-            instance= self.object)
+            instance=self.object)
 
         if form.is_valid():
             if calificacion_form.is_valid():
@@ -337,8 +344,7 @@ class CalificacionClienteUpdateView(UpdateView):
         if calificacion is None:
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
-           # calificacion_form.es_venta = True
-            #calificacion_form.save()
+            # actualiza la calificacion en wombat
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
@@ -355,6 +361,7 @@ class CalificacionClienteUpdateView(UpdateView):
         else:
             self.object_calificacion.es_venta = False
             self.object_calificacion.save()
+            # actualiza la calificacion en wombat
             r = requests.post(
                 url_wombat.format(self.kwargs['wombat_id'],
                                   self.object_calificacion.calificacion.nombre))
@@ -406,6 +413,7 @@ class CalificacionClienteUpdateView(UpdateView):
 
 
 class FormularioCreateFormView(CreateView):
+    """En esta vista se crea el formulario de gestion"""
     template_name = 'formulario/formulario_create.html'
     model = MetadataCliente
     form_class = FormularioContactoCalificacion
@@ -539,6 +547,7 @@ class FormularioCreateFormView(CreateView):
 
 
 class FormularioDetailView(DetailView):
+    """Vista muestra el formulario de gestion recientemente creado"""
     template_name = 'formulario/formulario_detalle.html'
     model = MetadataCliente
 
@@ -563,6 +572,7 @@ class FormularioDetailView(DetailView):
 
 
 class FormularioUpdateFormView(UpdateView):
+    """Vista para actualizar un formulario de gestion"""
     template_name = 'formulario/formulario_create.html'
     model = MetadataCliente
     form_class = FormularioContactoCalificacion
@@ -705,7 +715,7 @@ class FormularioUpdateFormView(UpdateView):
 
 
 class CalificacionUpdateView(UpdateView):
-
+    """Vista para actualizar la calificacion de un contacto"""
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
@@ -819,6 +829,7 @@ class CalificacionUpdateView(UpdateView):
         if calificacion is None:
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
+            # actualiza la calficacion de wombat
             r = requests.post(
                 url_wombat.format(self.object_calificacion.wombat_id, "venta"))
             return redirect(self.get_success_url())
@@ -826,6 +837,7 @@ class CalificacionUpdateView(UpdateView):
         else:
             self.object_calificacion.es_venta = False
             self.object_calificacion.save()
+            # actualizar la calificacion de wombat
             r = requests.post(
                 url_wombat.format(self.object_calificacion.wombat_id,
                                   self.object_calificacion.calificacion.nombre))
@@ -865,9 +877,10 @@ class CalificacionUpdateView(UpdateView):
 
 @csrf_exempt
 def calificacion_cliente_externa_view(request):
+    """Servicio externo para calificar via post"""
     if request.method == 'POST':
         received_json_data = json.loads(request.body)
-
+        # tener en cuenta que se espera json con estas claves
         data_esperada = ['pk_campana', 'id_cliente', 'id_calificacion', 'id_agente',
                          'user_api', 'password_api']
         for data in data_esperada:

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Servicio para el manejo de los sms enviados y recibidos a traves de dinstar"""
+
 from __future__ import unicode_literals
 
 from django.db import connection

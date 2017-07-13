@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Servicio de reportes de campanas
+Servicio para generar reporte csv  para una agente el cual muestra todas las
+calificaciones de sus llamadas
 """
 
 from __future__ import unicode_literals
@@ -72,7 +73,7 @@ class ArchivoDeReporteCsv(object):
                                       for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
-            # Iteramos cada uno de los contactos, con los eventos de TODOS los intentos
+            # Iteramos cada una de las calificaciones del agente
             for calificacion in calificaciones:
                 lista_opciones = []
 

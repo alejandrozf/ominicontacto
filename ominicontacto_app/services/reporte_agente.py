@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Servicio para generar reporte grafico de un agente en particular para una campana 
+"""
+
 import pygal
 import datetime
 from pygal.style import Style, RedBlueStyle
@@ -29,6 +33,15 @@ class EstadisticasAgenteService():
 
     def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta,
                                       agente):
+        """
+        Obtiene el total por calificacipn para el agente por la campana
+        :param campana: campana las cual se obtendran las calificaciones
+        :param fecha_desde: fecha desde la cual se obtendran las calificaciones
+        :param fecha_hasta: fecha hasta la cual se obtendran las calificaciones
+        :param agente: agente el cual se evaluara
+        :return: retorna el nombre y cantidades de la calificaiones y el total de
+        calificaciones
+        """
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         calificaciones = campana.calificacion_campana.calificacion.all()
@@ -47,6 +60,15 @@ class EstadisticasAgenteService():
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_venta(self, campana, agente, fecha_desde, fecha_hasta):
+        """
+        Obtiene total de calificado como no gestion y el total de los calificado como
+        gestion(venta)
+        :param campana: campana la cual se evaluara las calificaciones 
+        :param agente: agente el caul se evauluara sus calificaciones
+        :param fecha_desde: fecha desde el cual se obtendran las calificaciones
+        :param fecha_hasta: fecha hasta la cual se obtendran las calificaciones
+        :return: los totales calificados como no gestion y los calificado como gestion
+        """
         dato_agente = []
         dato_agente.append(agente)
         total_cal_agente = len(agente.calificaciones.filter(campana=campana,
@@ -84,9 +106,7 @@ class EstadisticasAgenteService():
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
 
-
-
-        # Barra: Total de llamados atendidos en cada intento por campana.
+        # Barra: Cantidad de calificacion de cliente
         barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)

@@ -9,7 +9,7 @@ from django.utils.encoding import force_text
 
 
 class OmlError(Exception):
-    """Excepcion base para FTS"""
+    """Excepcion base para OML"""
 
     def __init__(self, message=None, cause=None):
         """Crea excepcion.
@@ -62,7 +62,7 @@ class OmlParserCsvImportacionError(OmlError):
     """
     def __init__(self, numero_fila, numero_columna, fila, valor_celda, *args,
                  **kwargs):
-        super(FtsParserCsvImportacionError, self).__init__(*args, **kwargs)
+        super(OmlParserCsvImportacionError, self).__init__(*args, **kwargs)
         self._numero_fila = numero_fila
         self._numero_columna = numero_columna
 

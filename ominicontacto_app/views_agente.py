@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Vista relacionada al Agente
+"""
+
 from __future__ import unicode_literals
 
 import datetime
@@ -29,7 +33,7 @@ logger = _logging.getLogger(__name__)
 
 
 class AgenteReporteCalificaciones(FormView):
-
+    """Vista que muestra reporte de las calificaciones de las llamadas"""
     template_name = 'agente/reporte_agente_calificaciones.html'
     context_object_name = 'agente'
     model = AgenteProfile
@@ -44,6 +48,7 @@ class AgenteReporteCalificaciones(FormView):
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        # Crear reporte csv para las calficaciones no interesada(no gestion) y gestion
         service.crea_reporte_csv(agente, hoy, hoy_ahora)
         service_formulario.crea_reporte_csv(agente, hoy, hoy_ahora)
         fecha_desde = datetime.datetime.combine(hoy, datetime.time.min)
@@ -61,6 +66,8 @@ class AgenteReporteCalificaciones(FormView):
         service = ReporteAgenteService()
         service_formulario = ReporteFormularioVentaService()
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        # Crear reporte csv para las calficaciones no interesada(no gestion) y gestion
+        # de acuerdo al periodo de fecha seleccionado
         service.crea_reporte_csv(agente, fecha_desde, fecha_hasta)
         service_formulario.crea_reporte_csv(agente, fecha_desde, fecha_hasta)
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
@@ -163,6 +170,7 @@ class AgenteReporteListView(FormView):
 
 
 def cambiar_estado_agente_view(request):
+    """Vista GET para cambiar el estado del agente"""
     pk_agente = request.GET['pk_agente']
     estado = request.GET['estado']
     agente = AgenteProfile.objects.get(pk=int(pk_agente))
@@ -173,12 +181,14 @@ def cambiar_estado_agente_view(request):
 
 
 def logout_view(request):
+    """Vista para desloguear el agente de django y de asterisk"""
     if request.user.is_agente and request.user.get_agente_profile():
         agente = request.user.get_agente_profile()
         variables = {
             'AGENTE': str(agente.sip_extension),
             'AGENTNAME': request.user.get_full_name()
         }
+        # Deslogueo el agente de asterisk via AMI
         try:
             client = AsteriskHttpClient()
             client.login()
@@ -218,6 +228,7 @@ class LlamarContactoView(RedirectView):
             'origin': 'click2call'
         }
         channel = "Local/{0}@click2call/n".format(agente.sip_extension)
+        # Genero la llamada via originate por AMI
         try:
             client = AsteriskHttpClient()
             client.login()

@@ -2,6 +2,7 @@
 
 """
 Servicio encargado de validar y crear las listas negras
+OJO: servicio copiado del modulo base_de_datos_contactos
 """
 
 from __future__ import unicode_literals
@@ -49,16 +50,13 @@ class CreacionBacklistService(object):
             raise(OmlArchivoImportacionInvalidoError("El archivo especificado "
                   "para realizar la importación de contactos no es válido"))
 
-
-
     def importa_contactos(self, backlist):
         """
-        Tercer paso de la creación de una BaseDatosContacto.
+        Segundo paso de la creación de una Backlist.
         Este método se encarga de generar los objectos Contacto por cada linea
         del archivo de importación especificado para la base de datos de
         contactos.
         """
-
 
         parser = ParserCsv()
 
@@ -85,6 +83,9 @@ class CreacionBacklistService(object):
         backlist.save()
 
     def crear_archivo_backlist(self, back_list):
+        """ Crear archivo de backlist para ser importado al discador para tener en
+        en cuenta y no llamar a estos contactos
+        """
         contactos = ContactoBacklist.objects.filter(back_list=back_list)
         lista_contacto = []
         for contacto in contactos:
