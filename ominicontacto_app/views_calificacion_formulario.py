@@ -223,12 +223,13 @@ class CalificacionClienteUpdateView(UpdateView):
     def dispatch(self, *args, **kwargs):
         try:
             contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         except Contacto.DoesNotExist:
             return HttpResponseRedirect(reverse('campana_dialer_busqueda_contacto',
                                                 kwargs={"pk_campana":
                                                 self.kwargs['pk_campana']}))
         try:
-            CalificacionCliente.objects.get(contacto=contacto)
+            CalificacionCliente.objects.get(contacto=contacto, campana=campana)
         except CalificacionCliente.DoesNotExist:
             return HttpResponseRedirect(reverse('calificacion_formulario_create',
                 kwargs={"pk_campana": self.kwargs['pk_campana'],
