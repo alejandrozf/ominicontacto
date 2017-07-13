@@ -1,3 +1,33 @@
+Entorno de desarrollo
+
+El entorno utilizado para desarrollo es Debian 8 Jessie
+
+El sistema debe ser desarrollado usando Python 2.7 y virtualenv.
+
+Para la instalación de algunos paquetes en virtualenv, puede ser necesario instalar paquetes en el sistema operativo.
+
+Paquetes sugeridos:
+sudo apt-get install virtualenv libcairo2-dev openssl nginx libpq-dev python-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libffi-dev gcc libmysqlclient-dev python-virtualenv postgresql-9.4 postgresql-contrib postgresql-server-dev-9.4 python-mysqldb libjpeg-dev git vim postgresql-plpython-9.4
+
+El sistema requiere que los siguientes sistemas estén funcionando:
+
+    PostgreSql 9.4 o superior, con 'plpythonu'
+        sudo apt-get install postgresql-plpython-9.4
+        ANTES de crear la BD, ejecutar (con un usuario con permisos de administrador de Postgresql):
+        $ createlang plpythonu template1
+
+Armado inicial del entorno
+--------------------------
+
+    $ git clone git@bitbucket.org:freetechdesarrollo/ominicontacto.git
+    $ cd cd ftsenderweb/
+    $ virtualenv -p python2.7 virtualenv
+    $ . virtualenv/bin/activate
+    $ pip install -r requirements.txt
+    $ touch oml_settings_local.py
+
+
+
 En el servidor 172.16.20.241
 
 reiniciar el uwsgi: echo r > /tmp/.ominicontacto-uwsgi-fifo 
