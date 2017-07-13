@@ -397,7 +397,7 @@ $(function() {
 						} else if (originHeader === "DIALER-JSON") {
 
 						} else if (originHeader === "CLICK2CALL") {
-						  getData(CampIdHeader, leadIdHeader, $("#idagt").val(), wId);
+						  getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
         		if(fromUser !== "Unknown") {
@@ -406,9 +406,7 @@ $(function() {
         			getBlankFormCamp(CampIdHeader);
         		}
         	}
-        } /*else {
-          alert("Problemas con Identificador de Campaña");
-        }*/
+        }
 
         $("#callerid").text(fromUser);
         if($("#modalWebCall").is(':visible')) {
@@ -769,7 +767,7 @@ $(function() {
   }
 
   function getData(campid, leadid,agentid, wombatId) {
-  	var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
+		var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
   	$("#dataView").attr('src', url);
   }
 
