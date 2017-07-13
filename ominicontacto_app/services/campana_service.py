@@ -380,4 +380,4 @@ class CampanaService():
                 restantes = int(detalle['n_est_remaining_calls'])
                 if restantes == 0:
                     self.remove_campana_wombat(campana)
-                    campana.remover()
+                    campana.finalizar()

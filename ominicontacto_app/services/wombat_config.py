@@ -36,7 +36,7 @@ class CampanaCreator(object):
 
             "priority": 10,
             "pace": "RUNNABLE",
-            "pauseWhenFinished": 1,
+            "pauseWhenFinished": 0,
             "batchSize": 100,
             "securityKey": "",
 

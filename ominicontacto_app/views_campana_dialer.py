@@ -59,6 +59,7 @@ class CampanaDialerListView(ListView):
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
                                               oculto=False)
+        context['finalizadas'] = campanas.filter(estado=Campana.ESTADO_FINALIZADA)
         return context
 
     #def get(self, request, *args, **kwargs):

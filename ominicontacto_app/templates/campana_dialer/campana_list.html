@@ -244,6 +244,67 @@
         </tbody>
     </table>
     <br>
+            <h4><b>Campañas Finalizadas</b></h4>
+    <table class="table table-stripped table-condensed table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Número</th>
+                <th>Fecha Ini</th>
+                <th>Fecha Fin</th>
+                <th>Base de datos</th>
+                <th>Estado</th>
+                <th>Acciones&nbsp;&nbsp;</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for campana in finalizadas %}
+            <tr>
+                <td width="25%">
+                    {{ campana.nombre }}
+                </td>
+                <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
+                <td>
+                    {{ campana.fecha_inicio|date:"d/m/Y" }}
+                </td>
+                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
+                <td>
+                    {{ campana.bd_contacto }}
+                    <a href="{% url 'campana_dialer_update_base' campana.pk %}">
+                        cambiar base
+                    </a>
+                </td>
+                <td> {{campana.get_estado_display}}  </td>
+                <td width="14%">
+                    <a href="{% url 'campana_dialer_update' campana.pk %}">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar campana"></span>
+                    </a>
+                    <a href="{% url 'queue_member_campana' campana.pk %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
+                    </a>
+                    <a href="{% url 'campana_dialer_supervisors' campana.pk %}">
+                        <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
+                    </a>
+                    <a href="{% url 'campana_dialer_delete' campana.pk %}">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true" title="eliminar campana"></span>
+                    </a>
+                    <a href="{% url 'campana_dialer_reporte_calificacion' campana.pk %}">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
+                    </a>
+                    <a href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
+                        <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
+                    </a>
+                </td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="7">No existen campañas</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
     <h4><b>Campañas Eliminadas</b></h4>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>

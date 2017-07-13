@@ -659,7 +659,7 @@ class Campana(models.Model):
         self.save()
 
     def pausar(self):
-        """Setea la campaña como ESTADO_ACTIVA"""
+        """Setea la campaña como ESTADO_PAUSADA"""
         logger.info("Seteando campana %s como ESTADO_PAUSADA", self.id)
         #assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_PAUSADA
@@ -673,10 +673,17 @@ class Campana(models.Model):
         self.save()
 
     def remover(self):
-        """Setea la campaña como ESTADO_ACTIVA"""
+        """Setea la campaña como ESTADO_BORRADA"""
         logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
         #assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_BORRADA
+        self.save()
+
+    def finalizar(self):
+        """Setea la campaña como ESTADO_FINALIZADA"""
+        logger.info("Seteando campana %s como ESTADO_FINALIZADA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = Campana.ESTADO_FINALIZADA
         self.save()
 
     def ocultar(self):
