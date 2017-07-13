@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Vista para administrar el modelo Campana de tipo entrantes"""
+
 from __future__ import unicode_literals
 
 import json
@@ -42,7 +44,7 @@ logger = logging_.getLogger(__name__)
 
 class CampanaListView(ListView):
     """
-    Esta vista lista los objetos Campana
+    Esta vista lista los objetos Campana de tipo Entrantes
     """
 
     template_name = 'campana/campana_list.html'
@@ -53,7 +55,8 @@ class CampanaListView(ListView):
         context = super(CampanaListView, self).get_context_data(
            **kwargs)
         campanas = Campana.objects.obtener_campanas_entrantes()
-
+        # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
+        # las mismas
         if self.request.user.is_authenticated() and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
@@ -115,6 +118,7 @@ class CampanaDeleteView(DeleteView):
 
 
 class BusquedaFormularioFormView(FormView):
+    """Vista para buscar un contacto dentro de una campana"""
     form_class = BusquedaContactoForm
     template_name = 'agente/formulario_busqueda_contacto.html'
 
@@ -177,8 +181,8 @@ class ExportaReporteCampanaView(UpdateView):
 
 class CampanaReporteListView(ListView):
     """
-    Muestra un listado de contactos a los cuales se le enviaron o se estan
-    por enviar mensajes de texto
+    Vista muetra un listado de listado de las calificaciones de la campana y
+    genera los reportes csv de gestion y de calificacion
     """
     template_name = 'reporte/reporte_campana_formulario.html'
     context_object_name = 'campana'
@@ -219,6 +223,7 @@ class ExportaReporteFormularioVentaView(UpdateView):
 
 
 class CampanaReporteGrafico(FormView):
+    """Esta vista genera el reporte grafico de la campana"""
 
     template_name = 'campana/reporte_campana.html'
     context_object_name = 'campana'
@@ -233,8 +238,10 @@ class CampanaReporteGrafico(FormView):
         service = EstadisticasService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
+        # genera los reportes grafico de la campana
         graficos_estadisticas = service.general_campana(self.get_object(), hoy,
                                                         hoy_ahora)
+        # generar el reporte pdf
         service_pdf = ReporteCampanaPDFService()
         service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
@@ -253,10 +260,11 @@ class CampanaReporteGrafico(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        # obtener_estadisticas_render_graficos_supervision()
+        # generar el reporte grafico de acuerdo al periodo de fecha seleccionado
         service = EstadisticasService()
         graficos_estadisticas = service.general_campana(
             self.get_object(), fecha_desde, fecha_hasta)
+        # genera el reporte pdf de la campana
         service_pdf = ReporteCampanaPDFService()
         service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
@@ -283,7 +291,7 @@ class ExportaReportePDFView(UpdateView):
 
 
 class AgenteCampanaReporteGrafico(FormView):
-
+    """Esta vista genera el reporte grafico de la campana para un agente"""
     template_name = 'campana/reporte_agente.html'
     context_object_name = 'campana'
     model = Campana
@@ -293,11 +301,11 @@ class AgenteCampanaReporteGrafico(FormView):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get(self, request, *args, **kwargs):
-        # obtener_estadisticas_render_graficos_supervision()
         service = EstadisticasAgenteService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        # generar el reporte para el agente de la campana
         graficos_estadisticas = service.general_campana(agente,
                                                         self.get_object(), hoy,
                                                         hoy_ahora)
@@ -319,7 +327,7 @@ class AgenteCampanaReporteGrafico(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        # obtener_estadisticas_render_graficos_supervision()
+        # genera el reporte para el agente de esta campana
         service = EstadisticasAgenteService()
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         graficos_estadisticas = service.general_campana(agente,
@@ -331,6 +339,7 @@ class AgenteCampanaReporteGrafico(FormView):
 
 
 class FormularioSeleccionCampanaFormView(FormView):
+    """Vista para seleccionar una campana a la cual se le agregar un nuevo contacto"""
     form_class = FormularioCampanaContacto
     template_name = 'agente/seleccion_campana_form.html'
 
@@ -367,6 +376,7 @@ class FormularioSeleccionCampanaFormView(FormView):
 
 
 class FormularioNuevoContactoFormView(FormView):
+    """Esta vista agrega un nuevo contacto para la campana seleccionada"""
     form_class = FormularioNuevoContacto
     template_name = 'agente/nuevo_contacto_campana.html'
 
@@ -433,6 +443,7 @@ class DesOcultarCampanaView(RedirectView):
 
 
 def mostrar_campanas_borradas_ocultas_view(request):
+    """Vista para mostrar las campanas ocultas"""
     borradas = Campana.objects.obtener_borradas()
     if request.user.is_authenticated() and request.user and \
             not request.user.get_is_administrador():
@@ -446,8 +457,7 @@ def mostrar_campanas_borradas_ocultas_view(request):
 
 class CampanaReporteQueueListView(FormView):
     """
-    Esta vista lista los tiempo de llamadas de las camapans
-
+    Esta vista lista los tiempo de llamadas de las campanas
     """
 
     template_name = 'campana/tiempos_llamadas.html'
@@ -479,6 +489,7 @@ class CampanaReporteQueueListView(FormView):
 
 
 def campana_json_view(request, pk_campana):
+    """Esta vista devuelve un json con datos de la campana"""
     campana = Campana.objects.get(pk=pk_campana)
     nombre_interacion = 'SITIO_EXTERNO'
     if campana.tipo_interaccion is Campana.FORMULARIO:
@@ -499,7 +510,7 @@ def campana_json_view(request, pk_campana):
 
 class CampanaSupervisorUpdateView(UpdateView):
     """
-    Esta vista actualiza un objeto Campana.
+    Esta vista agrega supervisores a una campana
     """
 
     template_name = 'campana_dialer/campana_supervisors.html'

@@ -1,19 +1,31 @@
-En el servidor 172.16.20.241
+Entorno de desarrollo
+=====================
 
-reiniciar el uwsgi: echo r > /tmp/.ominicontacto-uwsgi-fifo 
+El entorno utilizado para desarrollo es Debian 8 Jessie
 
-El proyecto se encuentra: /home/freetech/ominicontacto
+El sistema debe ser desarrollado usando Python 2.7 y virtualenv.
 
-Ejecucion del sistema desde uWSGI
----------------------------------
+Para la instalación de algunos paquetes en virtualenv, puede ser necesario instalar paquetes en el sistema operativo.
 
-Existe un script que lanza la aplicación usando uWSGI.
+Paquetes sugeridos:
+sudo apt-get install virtualenv libcairo2-dev openssl nginx libpq-dev python-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libffi-dev gcc libmysqlclient-dev python-virtualenv postgresql-9.4 postgresql-contrib postgresql-server-dev-9.4 python-mysqldb libjpeg-dev git vim postgresql-plpython-9.4
 
-Para utilizar el sistema con uWSGI:
+El sistema requiere que los siguientes sistemas estén funcionando:
 
-freetech@fts-omni:~$ cd /home/freetech/ominicontacto
+    PostgreSql 9.4 o superior, con 'plpythonu'
+        sudo apt-get install postgresql-plpython-9.4
+        ANTES de crear la BD, ejecutar (con un usuario con permisos de administrador de Postgresql):
+        $ createlang plpythonu template1
 
-$ ./run_uwsgi.sh
+Armado inicial del entorno
+--------------------------
+
+    $ git clone git@bitbucket.org:freetechdesarrollo/ominicontacto.git
+    $ cd ominicontacto/
+    $ virtualenv -p python2.7 virtualenv
+    $ . virtualenv/bin/activate
+    $ pip install -r requirements.txt
+    $ touch oml_settings_local.py
 
 ### Armado inicial del entorno ###
 
@@ -196,8 +208,54 @@ LOGGING = {
 
 ```
 
+Crear usuario y BD de Postgresql:
+
+    Nos logueamos con usuario postgres(sudo -u postgres -i)
+    createuser -P --superuser kamailio (password kamailiorw) 
+    createuser -P --superuser kamailioro (password kamailioro)
+    createdb -O kamailio kamailio
+    sudo cp docs/kamailio_2709-2.sql /var/lib/postgresql/
+    postgres@freetech:~$ psql -U kamailio -W -h 127.0.0.1 -d kamailio -f  kamailio_2709-2.sql
+
+    Ahora vamos a editar algunos archivos de configuaracion de postgres
+    sudo vim /etc/postgresql/9.5/main/postgresql.conf
+    listen_addresses =’*’
+    sudo vim /etc/postgresql/9.5/main/pg_hba.conf
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+    host    all            all          192.168.1.0/24           trust
+    sudo /etc/init.d/postgresql restart
+
+
+
+Sync de BD:
+
+    $ ./manage.py migrate
+
+Run proyecto y crear superuser:
+
+    $ ./manage.py createsuperuser
+    $ ./manage.py runserver
+
 ### Configuracion ssl para desarrollo ###
 Generar certificado usando el siguiente el comando
 ```
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
 ```
+
+
+En el servidor 172.16.20.241
+
+reiniciar el uwsgi: echo r > /tmp/.ominicontacto-uwsgi-fifo 
+
+El proyecto se encuentra: /home/freetech/ominicontacto
+
+Ejecucion del sistema desde uWSGI
+---------------------------------
+
+Existe un script que lanza la aplicación usando uWSGI.
+
+Para utilizar el sistema con uWSGI:
+
+freetech@fts-omni:~$ cd /home/freetech/ominicontacto
+
+$ ./run_uwsgi.sh

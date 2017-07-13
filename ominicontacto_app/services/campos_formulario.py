@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Servicio de campos de formularios.
+Servicio de campos de formularios dinamicos.
 """
 
 from __future__ import unicode_literals

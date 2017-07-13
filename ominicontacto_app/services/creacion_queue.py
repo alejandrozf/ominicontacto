@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Servicio de activación de Campañas y Templates.
+Servicio vinculado a la creacion de una cola pero principalmente con generacion de los
+archivos extensions_fts_queues.conf y queues_fts.conf
 """
 
 from __future__ import unicode_literals

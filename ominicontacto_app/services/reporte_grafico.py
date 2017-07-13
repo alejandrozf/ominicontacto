@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Servicio para generar reporte de las grabaciones de las llamadas
+"""
+
 import pygal
 import datetime
 from pygal.style import Style, RedBlueStyle
@@ -27,6 +31,11 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 class GraficoService():
 
     def _obtener_total_llamdas_tipo(self, listado_grabaciones):
+        """
+        Obtiene el total de llamadas por tipo de origen de llamadas
+        :param listado_grabaciones: listados de las grabaciones de las llamadas
+        :return: dicionario con los totales por tipo de llamadas
+        """
         counter_por_tipo = {
             Grabacion.TYPE_DIALER: 0,
             Grabacion.TYPE_ICS: 0,
@@ -44,7 +53,13 @@ class GraficoService():
         return counter_por_tipo
 
     def _obtener_campana_grabacion(self, fecha_inferior, fecha_superior):
-        # lista de dict con la cantidad de cada campana
+        """
+        Obtiene el totales de llamadas por campanas
+        :param fecha_inferior: fecha desde cual se obtendran las grabaciones
+        :param fecha_superior: fecha hasta el cual se obtendran las grabaciones
+        :return: queryset con las cantidades totales por campana
+        """
+        # lista de dict con la cantidad por  cada campana
         fecha_inferior = datetime.datetime.combine(fecha_inferior,
                                                    datetime.time.min)
         fecha_superior = datetime.datetime.combine(fecha_superior,
@@ -60,6 +75,9 @@ class GraficoService():
         return dict_campana, campana, campana_nombre
 
     def _obtener_total_campana_grabacion(self, dict_campana, campana):
+        """
+        Obtiene el totales de grabaciones por campana en una lista
+        """
 
         total_campana = []
 
@@ -72,7 +90,10 @@ class GraficoService():
         return total_campana
 
     def _obtener_total_ics_grabacion(self, dict_campana, campana):
-
+        """
+        Obtiene el total grabaciones ICS por campana en una lista
+        :return: lista con el total de llamadas ics por campana
+        """
         total_ics = []
 
         for campana_id in campana:
@@ -87,7 +108,10 @@ class GraficoService():
         return total_ics
 
     def _obtener_total_dialer_grabacion(self, dict_campana, campana):
-
+        """
+        Obtiene el total grabaciones DIALER por campana en una lista
+        :return: lista con el total de llamadas DIALER por campana
+        """
         total_dialer = []
 
         for campana_id in campana:
@@ -102,7 +126,10 @@ class GraficoService():
         return total_dialer
 
     def _obtener_total_inbound_grabacion(self, dict_campana, campana):
-
+        """
+        Obtiene el total grabaciones INBOUND por campana en una lista
+        :return: lista con el total de llamadas INBOUND por campana
+        """
         total_inbound = []
         for campana_id in campana:
             cantidad = 0
@@ -115,7 +142,10 @@ class GraficoService():
         return total_inbound
 
     def _obtener_total_manual_grabacion(self, dict_campana, campana):
-
+        """
+        Obtiene el total grabaciones MANUAL por campana en una lista
+        :return: lista con el total de llamadas MANUAL por campana
+        """
         total_manual = []
 
         for campana_id in campana:
@@ -130,7 +160,12 @@ class GraficoService():
         return total_manual
 
     def _obtener_agente_grabacion(self, fecha_inferior, fecha_superior):
-        # lista de dict con la cantidad de cada campana
+        """
+        Obtiene el totales de llamadas por agente
+        :param fecha_inferior: fecha desde cual se obtendran las grabaciones
+        :param fecha_superior: fecha hasta el cual se obtendran las grabaciones
+        :return: queryset con las cantidades totales por agente
+        """
         fecha_inferior = datetime.datetime.combine(fecha_inferior,
                                                    datetime.time.min)
         fecha_superior = datetime.datetime.combine(fecha_superior,
@@ -151,7 +186,10 @@ class GraficoService():
         return dict_agentes, agentes, sip_agentes
 
     def _obtener_total_agente_grabacion(self, dict_agentes, agentes):
-
+        """
+        Obtiene el total grabaciones  por agente en una lista
+        :return: lista con el total de llamadas por agente
+        """
         total_agentes = []
 
         for agente_unit, agente in zip(dict_agentes, agentes):
@@ -163,7 +201,10 @@ class GraficoService():
         return total_agentes
 
     def _obtener_total_ics_agente(self, dict_agentes, agentes):
-
+        """
+        Obtiene el total grabaciones ICS por agente en una lista
+        :return: lista con el total de llamadas ICS por agente
+        """
         total_ics = []
 
         for agente in agentes:
@@ -178,7 +219,10 @@ class GraficoService():
         return total_ics
 
     def _obtener_total_dialer_agente(self, dict_agentes, agentes):
-
+        """
+        Obtiene el total grabaciones DIALER por agente en una lista
+        :return: lista con el total de llamadas DIALER por agente
+        """
         total_dialer = []
 
         for agente in agentes:
@@ -193,7 +237,10 @@ class GraficoService():
         return total_dialer
 
     def _obtener_total_inbound_agente(self, dict_agentes, agentes):
-
+        """
+        Obtiene el total grabaciones INBOUND por agente en una lista
+        :return: lista con el total de llamadas INBOUND por agente
+        """
         total_inbound = []
         for agente in agentes:
             cantidad = 0
@@ -206,7 +253,10 @@ class GraficoService():
         return total_inbound
 
     def _obtener_total_manual_agente(self, dict_agentes, agentes):
-
+        """
+        Obtiene el total grabaciones MANUAL por agente en una lista
+        :return: lista con el total de llamadas MANUAL por agente
+        """
         total_manual = []
 
         for agente in agentes:
@@ -249,10 +299,12 @@ class GraficoService():
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
         grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(fecha_inferior,
                                                                      fecha_superior)
+
+        # obtiene el total de llamadas por tipo de llamadas
         counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
 
         total_grabaciones = len(grabaciones)
-
+        # calculo el porcentaje de las llamadas por tipo de llamadas
         porcentaje_dialer = 0.0
         porcentaje_ics = 0.0
         porcentaje_inbound = 0.0
@@ -340,7 +392,7 @@ class GraficoService():
         torta_grabaciones.add('Ics', estadisticas['porcentaje_inbound'])
         torta_grabaciones.add('Manual', estadisticas['porcentaje_manual'])
 
-        # Barra: Total de llamados atendidos en cada intento por campana.
+        # Barra: Cantidad de llamadas de las campana por tipo de llamadas
         barra_campana_total = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
@@ -356,7 +408,7 @@ class GraficoService():
         barra_campana_total.add('MANUAL',
                                 estadisticas['total_grabacion_manual'])
 
-        # Barra: Total de llamados atendidos en cada intento por agente.
+        # Barra: Cantidad de llamadas de los agentes por tipo de llamadas.
         barra_agente_total = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)

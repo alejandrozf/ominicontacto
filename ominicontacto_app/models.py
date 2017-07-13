@@ -659,7 +659,7 @@ class Campana(models.Model):
         self.save()
 
     def pausar(self):
-        """Setea la campaña como ESTADO_ACTIVA"""
+        """Setea la campaña como ESTADO_PAUSADA"""
         logger.info("Seteando campana %s como ESTADO_PAUSADA", self.id)
         #assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_PAUSADA
@@ -673,10 +673,17 @@ class Campana(models.Model):
         self.save()
 
     def remover(self):
-        """Setea la campaña como ESTADO_ACTIVA"""
+        """Setea la campaña como ESTADO_BORRADA"""
         logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
         #assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_BORRADA
+        self.save()
+
+    def finalizar(self):
+        """Setea la campaña como ESTADO_FINALIZADA"""
+        logger.info("Seteando campana %s como ESTADO_FINALIZADA", self.id)
+        #assert self.estado == Campana.ESTADO_ACTIVA
+        self.estado = Campana.ESTADO_FINALIZADA
         self.save()
 
     def ocultar(self):
@@ -1636,7 +1643,17 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con esa "
                                        "fecha"))
 
-    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin, campanas):
+    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
+        fecha_inicio = datetime.datetime.combine(fecha_inicio,
+                                                 datetime.time.min)
+        fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)
+        try:
+            return self.filter(fecha__range=(fecha_inicio, fecha_fin))
+        except Grabacion.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro contactos con ese rango "
+                                       "de fechas"))
+
+    def grabacion_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
         fecha_inicio = datetime.datetime.combine(fecha_inicio,
                                                  datetime.time.min)
         fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)

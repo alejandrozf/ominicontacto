@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Vista para generar templates de campana"""
+
 from __future__ import unicode_literals
 
 
@@ -220,7 +222,7 @@ class ReglasIncidenciaCampanaDialerTemplateCreateView(
 
 
 def regla_incidencia_delete_view(request, pk_campana, pk_regla):
-
+    """Elimina regla de incidencia de un template de campna"""
     regla = ReglasIncidencia.objects.get(pk=pk_regla)
     regla.delete()
     return HttpResponseRedirect(
@@ -232,6 +234,7 @@ def regla_incidencia_delete_view(request, pk_campana, pk_regla):
 
 class QueueDialerTemplateCreateView(CheckEstadoCampanaDialerTemplateMixin,
                                     CampanaDialerTemplateEnDefinicionMixin, CreateView):
+    """Vista para crear una cola dialer para template de campana"""
     model = Queue
     form_class = QueueDialerForm
     template_name = 'campana_dialer/create_update_queue.html'
@@ -268,6 +271,7 @@ class QueueDialerTemplateCreateView(CheckEstadoCampanaDialerTemplateMixin,
 class ConfirmaCampanaDialerTemplateView(
     CheckEstadoCampanaDialerTemplateMixin, CampanaDialerTemplateEnDefinicionMixin,
     RedirectView):
+    """Vista confirma la creacion de un template de campana"""
     pattern_name = 'lista_campana_dialer_template'
     url = None
 
@@ -281,6 +285,7 @@ class ConfirmaCampanaDialerTemplateView(
 
 
 class CreaCampanaTemplateView(TemplateMixin, RedirectView):
+    """Vista crea campana apartir de template"""
     permanent = False
     url = None
 
@@ -303,6 +308,7 @@ class CreaCampanaTemplateView(TemplateMixin, RedirectView):
 
 
 class TemplateDetailView(TemplateMixin, DetailView):
+    """Vista muestra el detalle de la campana"""
     template_name = 'template/template_detalle.html'
     model = Campana
 

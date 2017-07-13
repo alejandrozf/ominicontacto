@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Vista Backlist para crear una nueva Backlist o llamada listas negras de telefonos"""
+
 from __future__ import unicode_literals
 
 from django.contrib import messages
@@ -13,7 +15,7 @@ from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
     OmlArchivoImportacionInvalidoError)
 from ominicontacto_app.forms import BacklistForm
-from ominicontacto_app.models import BaseDatosContacto, Backlist
+from ominicontacto_app.models import Backlist
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.back_list import (
     CreacionBacklistService, ValidaDataService, NoSePuedeInferirMetadataError,
@@ -23,10 +25,6 @@ import logging as logging_
 
 
 logger = logging_.getLogger(__name__)
-
-# =============================================================================
-# Base Datos Contacto
-# =============================================================================
 
 
 class BackListView(ListView):
@@ -42,7 +40,7 @@ class BackListView(ListView):
 
 class BacklistCreateView(CreateView):
     """
-    Esta vista crea una instancia de BaseDatosContacto
+    Esta vista crea una instancia de Backlist
     sin definir, lo que implica que no esta disponible
     hasta que se procese su definición.
     """
@@ -94,7 +92,7 @@ class BacklistCreateView(CreateView):
 
     template_name = 'back_list/nueva_edita_back_list.html'
     model = Backlist
-    context_object_name = 'base_datos_contacto'
+    context_object_name = 'backlist'
     form_class = BacklistForm
 
     def form_valid(self, form):
@@ -124,7 +122,7 @@ class BacklistCreateView(CreateView):
             validata_data.valida_datos_desde_lineas(estructura_archivo)
         except NoSePuedeInferirMetadataError:
             message = '<strong>Operación Errónea!</strong> \
-                        No se puede interferir lo datos de la base de datos y \
+                        No se puede interferir lo datos de la backlist y \
                         no es válido.'
 
             messages.add_message(

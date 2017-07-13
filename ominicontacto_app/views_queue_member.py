@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""Aca se encuentran las vistas para agregar los agente a la campañas/cola
+por la relacion esta en cola ya que se hizo con un modelo de queue sacado de la
+documentacion de asterisk"""
+
 from __future__ import unicode_literals
 
 
@@ -20,6 +24,7 @@ logger = logging_.getLogger(__name__)
 
 
 class QueueMemberCreateView(FormView):
+    """Vista para agregar un agente a una campana"""
     model = QueueMember
     form_class = QueueMemberForm
     template_name = 'queue/queue_member.html'
@@ -33,6 +38,7 @@ class QueueMemberCreateView(FormView):
     def form_valid(self, form):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = form.save(commit=False)
+        # valido que este agente no se encuentre agregado en esta campana
         existe_member = QueueMember.objects.\
             existe_member_queue(self.object.member, campana.queue_campana)
 
@@ -69,6 +75,7 @@ class QueueMemberCreateView(FormView):
 
 
 class GrupoAgenteCreateView(FormView):
+    """Vista para agregar grupo de agentes a una campana"""
     model = QueueMember
     form_class = GrupoAgenteForm
     template_name = 'queue/queue_member.html'
@@ -79,6 +86,7 @@ class GrupoAgenteCreateView(FormView):
         grupo = Grupo.objects.get(pk=grupo_id)
         #agentes = grupo.agentes.filter(reported_by=self.request.user)
         agentes = grupo.agentes.all()
+        # agrega los agentes a la campana siempre cuando no se encuentren agregados
         for agente in agentes:
             QueueMember.objects.get_or_create(
                 member=agente,
@@ -105,6 +113,8 @@ class GrupoAgenteCreateView(FormView):
 
 
 class QueueMemberCampanaView(TemplateView):
+    """Vista template despliega el template de cual se van agregar agente o grupos de
+    agentes a la campana"""
     template_name = 'queue/queue_member.html'
 
     def get_object(self, queryset=None):
@@ -149,7 +159,7 @@ class QueueMemberCampanaView(TemplateView):
 
 
 def queue_member_delete_view(request, pk_queuemember, pk_campana):
-
+    """Elimina agente asignado en la campana"""
     queue_member = QueueMember.objects.get(pk=pk_queuemember)
     queue_member.delete()
     return HttpResponseRedirect(

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+"""Aca en esta vista se crear el supervisor que es un perfil de usuario con su
+sip extension y sip password"""
+
 from __future__ import unicode_literals
 
 
@@ -20,6 +23,7 @@ logger = logging_.getLogger(__name__)
 
 
 class SupervisorProfileCreateView(CreateView):
+    """Vista para crear un usuario con perfil de supervisor"""
     model = SupervisorProfile
     template_name = 'base_create_update_form.html'
     form_class = SupervisorProfileForm
@@ -30,6 +34,7 @@ class SupervisorProfileCreateView(CreateView):
         self.object.user = usuario
         self.object.sip_extension = SupervisorProfile.objects.\
             obtener_ultimo_sip_extension()
+        # se le genera un sip_password aleatorio
         self.object.sip_password = User.objects.make_random_password()
         self.object.save()
         kamailio_service = KamailioService()
@@ -54,6 +59,7 @@ class SupervisorProfileCreateView(CreateView):
 
 
 class SupervisorProfileUpdateView(UpdateView):
+    """Vista para modificar el perfil de un usuario supervisor"""
     model = SupervisorProfile
     template_name = 'base_create_update_form.html'
     form_class = SupervisorProfileForm
@@ -63,5 +69,6 @@ class SupervisorProfileUpdateView(UpdateView):
 
 
 class SupervisorListView(ListView):
+    """Vista lista los supervisores """
     model = SupervisorProfile
     template_name = 'supervisor_profile_list.html'

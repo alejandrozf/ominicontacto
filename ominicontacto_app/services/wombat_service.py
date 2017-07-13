@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Servicio para generar los curl hacia wombat"""
+
 from __future__ import unicode_literals
 
 import logging
@@ -46,7 +48,7 @@ class WombatService():
     def update_lista_wombat(self, nombre_archivo, url_edit):
         """Realiza un update en la config de wombat
 
-        :returns: int -- exit status de proceso ejecutado.
+        :returns: out -- salida del comando ejectuado hacia wombat.
                   0 (cero) si fue exitoso, otro valor si se produjo
                   un error
         """

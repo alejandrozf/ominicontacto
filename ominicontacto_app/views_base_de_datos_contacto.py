@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Views para generar una nueva base de datos de contactos"""
+
 from __future__ import unicode_literals
 
 from django.contrib import messages
@@ -361,6 +363,7 @@ class DefineBaseDatosContactoView(UpdateView):
                                      form_primer_linea_encabezado, error=error)
 
         parser = ParserCsv()
+        # Detecto el encondig de la base de datoss recientemente subida
         encoding = parser.detectar_encoding_csv(estructura_archivo)
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
@@ -914,6 +917,7 @@ class DesOcultarBaseView(RedirectView):
 
 
 def mostrar_bases_datos_borradas_ocultas_view(request):
+    """Esta vista muestra la base de datos ocultas"""
     bases_datos_contacto = BaseDatosContacto.objects.obtener_definidas_ocultas()
     data = {
         'bases_datos_contacto': bases_datos_contacto,

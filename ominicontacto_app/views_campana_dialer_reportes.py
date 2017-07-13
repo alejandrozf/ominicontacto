@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Vista para reportes de campana dialer"""
+
 from __future__ import unicode_literals
 
 import datetime
@@ -21,7 +23,7 @@ from ominicontacto_app.utiles import convert_fecha_datetime
 
 class CampanaDialerReporteCalificacionListView(ListView):
     """
-    Muestra un listado de contactos a los cuales se los calificaron
+    Muestra un listado de contactos a los cuales se los calificaron en la campana
     """
     template_name = 'reporte/reporte_campana_formulario.html'
     context_object_name = 'campana'
@@ -41,7 +43,9 @@ class CampanaDialerReporteCalificacionListView(ListView):
 
 
 class CampanaDialerReporteGrafico(FormView):
-
+    """Vista genera reporte grafico de la campana dialer
+    copiada del modulo views_campana
+    """
     template_name = 'campana_dialer/reporte_campana_grafico.html'
     context_object_name = 'campana'
     model = Campana
@@ -51,12 +55,13 @@ class CampanaDialerReporteGrafico(FormView):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get(self, request, *args, **kwargs):
-        # obtener_estadisticas_render_graficos_supervision()
         service = EstadisticasService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
+        # genera los reportes grafico de la campana
         graficos_estadisticas = service.general_campana(self.get_object(), hoy,
                                                         hoy_ahora)
+        # generar el reporte pdf
         service_pdf = ReporteCampanaPDFService()
         service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
@@ -79,6 +84,7 @@ class CampanaDialerReporteGrafico(FormView):
         service = EstadisticasService()
         graficos_estadisticas = service.general_campana(
             self.get_object(), fecha_desde, fecha_hasta)
+        # generar el reporte pdf
         service_pdf = ReporteCampanaPDFService()
         service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
@@ -105,7 +111,8 @@ class ExportaCampanaDialerReportePDFView(UpdateView):
 
 
 class AgenteCampanaDialerReporteGrafico(FormView):
-
+    """Esta vista genera el reporte grafico de la campana para un agente
+    copiada del modulo views_campana"""
     template_name = 'campana/reporte_agente.html'
     context_object_name = 'campana'
     model = Campana
@@ -115,11 +122,11 @@ class AgenteCampanaDialerReporteGrafico(FormView):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def get(self, request, *args, **kwargs):
-        # obtener_estadisticas_render_graficos_supervision()
         service = EstadisticasAgenteService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        # generar el reporte para el agente de esta campana
         graficos_estadisticas = service.general_campana(agente,
                                                         self.get_object(), hoy,
                                                         hoy_ahora)
@@ -141,7 +148,7 @@ class AgenteCampanaDialerReporteGrafico(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        # obtener_estadisticas_render_graficos_supervision()
+        # genera el reporte para el agente de esta campana
         service = EstadisticasAgenteService()
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         graficos_estadisticas = service.general_campana(agente,
