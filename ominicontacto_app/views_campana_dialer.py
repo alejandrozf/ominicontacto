@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+Vista para administrar el modelo Campana de tipo dialer
+Observacion se copiaron varias vistas del modulo views_campana
+"""
+
 from __future__ import unicode_literals
 
 import json
@@ -28,6 +33,7 @@ logger = logging_.getLogger(__name__)
 class CampanaDialerListView(ListView):
     """
     Esta vista lista los objetos Campana de type dialer
+    Vista copiada
     """
 
     template_name = 'campana_dialer/campana_list.html'
@@ -38,7 +44,8 @@ class CampanaDialerListView(ListView):
         context = super(CampanaDialerListView, self).get_context_data(
            **kwargs)
         campanas = Campana.objects.obtener_campanas_dialer()
-
+        # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
+        # las mismas
         if self.request.user.is_authenticated() and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
@@ -95,7 +102,7 @@ class PlayCampanaDialerView(RedirectView):
 
 class PausarCampanaDialerView(RedirectView):
     """
-    Esta vista actualiza la campañana activándola.
+    Esta vista actualiza la campañana pausandola.
     """
 
     pattern_name = 'campana_dialer_list'
@@ -177,6 +184,7 @@ class CampanaDialerDeleteView(DeleteView):
         success_url = self.get_success_url()
 
         service = CampanaService()
+        # remueve campana de wombat
         remover = service.remove_campana_wombat(self.object)
         if not remover:
             message = ("<strong>Operación Errónea!</strong> "
@@ -232,6 +240,7 @@ class DesOcultarCampanaDialerView(RedirectView):
 
 
 def mostrar_campanas_dialer_borradas_ocultas_view(request):
+    """Vista para mostrar campanas dialer ocultas"""
     borradas = Campana.objects.obtener_borradas()
     if request.user.is_authenticated() and request.user and \
             not request.user.get_is_administrador():
@@ -244,6 +253,7 @@ def mostrar_campanas_dialer_borradas_ocultas_view(request):
 
 
 def detalle_campana_dialer_view(request):
+    """Vista que muestrar el detalle de campana en wombat"""
     pk_campana = int(request.GET['pk_campana'])
     campana = Campana.objects.get(pk=pk_campana)
     campana_service = CampanaService()
@@ -263,7 +273,8 @@ def detalle_campana_dialer_view(request):
 
 class UpdateBaseDatosDialerView(FormView):
     """
-    Esta vista sincroniza base datos con discador
+    Esta vista actualiza la base de datos de una campana y sincroniza la base de datos
+    /lista en wombat
     """
 
     model = Campana
@@ -292,13 +303,15 @@ class UpdateBaseDatosDialerView(FormView):
         bd_contacto = form.cleaned_data.get('bd_contacto')
         self.object = self.get_object()
         campana_service = CampanaService()
+        # valida de que se pueda cambiar la base de datos que tenga las misma columnas
+        # que la actualmente poseee
         error = campana_service.validar_modificacion_bd_contacto(
             self.get_object(), bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
         self.object.bd_contacto = bd_contacto
         self.object.save()
-
+        # realiza el cambio de la base de datos en wombat
         campana_service.cambiar_base(self.get_object(), columnas, evitar_duplicados,
                                      evitar_sin_telefono, prefijo_discador)
         message = 'Operación Exitosa!\
@@ -329,6 +342,10 @@ class UpdateBaseDatosDialerView(FormView):
 
 
 class CampanaDialerBusquedaContactoFormView(FormView):
+    """Vista realiza la busqueda de contacto en una campana dialer
+    Copiada del modulo views_campana actualmente se usa esta vista, revisar la otra
+    vista si se usa
+    """
     form_class = BusquedaContactoForm
     template_name = 'campana_dialer/busqueda_contacto.html'
 
@@ -369,6 +386,10 @@ class CampanaDialerBusquedaContactoFormView(FormView):
 
 
 class FormularioSeleccionCampanaDialerFormView(FormView):
+    """Vista para seleccionar una campana a la cual se le agregar un nuevo contacto
+    Copiada del modulo views_campana actualmente se usa esta vista, revisar la otra
+    vista si se usa
+    """
     form_class = FormularioCampanaContacto
     template_name = 'campana_dialer/seleccion_campana_form.html'
 
@@ -405,6 +426,10 @@ class FormularioSeleccionCampanaDialerFormView(FormView):
 
 
 class FormularioNuevoContactoFormView(FormView):
+    """Esta vista agrega un nuevo contacto para la campana seleccionada
+    Copiada del modulo views_campana actualmente se usa esta vista, revisar la otra
+    vista si se usa
+    """
     form_class = FormularioNuevoContacto
     template_name = 'campana_dialer/nuevo_contacto_campana.html'
 
@@ -446,7 +471,8 @@ class FormularioNuevoContactoFormView(FormView):
 
 class CampanaDialerSupervisorUpdateView(UpdateView):
     """
-    Esta vista actualiza un objeto Campana.
+    Esta vista agrega supervisores a una campana
+    vista copiada
     """
 
     template_name = 'campana_dialer/campana_supervisors.html'
