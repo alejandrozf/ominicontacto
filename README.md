@@ -20,7 +20,7 @@ Armado inicial del entorno
 --------------------------
 
     $ git clone git@bitbucket.org:freetechdesarrollo/ominicontacto.git
-    $ cd cd ftsenderweb/
+    $ cd ominicontacto/
     $ virtualenv -p python2.7 virtualenv
     $ . virtualenv/bin/activate
     $ pip install -r requirements.txt
