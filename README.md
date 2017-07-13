@@ -227,6 +227,27 @@ LOGGING = {
 
 ```
 
+Crear usuario y BD de Postgresql:
+
+    Nos logueamos con usuario postgres(sudo -u postgres -i)
+    createuser -P --superuser kamailio (password kamailiorw) 
+    createuser -P --superuser kamailioro (password kamailioro)
+    createdb -O kamailio kamailio
+    sudo cp docs/kamailio_2709-2.sql /var/lib/postgresql/
+    postgres@freetech:~$ psql -U kamailio -W -h 127.0.0.1 -d kamailio -f  kamailio_2709-2.sql
+
+    Ahora vamos a editar algunos archivos de configuaracion de postgres
+    sudo vim /etc/postgresql/9.5/main/postgresql.conf
+    listen_addresses =’*’
+    sudo vim /etc/postgresql/9.5/main/pg_hba.conf
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+    host    all            all          192.168.1.0/24           trust
+    sudo /etc/init.d/postgresql restart
+
+
+
+
+
 ### Configuracion ssl para desarrollo ###
 Generar certificado usando el siguiente el comando
 ```
