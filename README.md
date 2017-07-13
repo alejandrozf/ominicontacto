@@ -27,25 +27,6 @@ Armado inicial del entorno
     $ pip install -r requirements.txt
     $ touch oml_settings_local.py
 
-
-
-En el servidor 172.16.20.241
-
-reiniciar el uwsgi: echo r > /tmp/.ominicontacto-uwsgi-fifo 
-
-El proyecto se encuentra: /home/freetech/ominicontacto
-
-Ejecucion del sistema desde uWSGI
----------------------------------
-
-Existe un script que lanza la aplicación usando uWSGI.
-
-Para utilizar el sistema con uWSGI:
-
-freetech@fts-omni:~$ cd /home/freetech/ominicontacto
-
-$ ./run_uwsgi.sh
-
 ### Armado inicial del entorno ###
 
 Editar oml_settings_local.py para que contenga:
@@ -260,3 +241,21 @@ Generar certificado usando el siguiente el comando
 ```
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
 ```
+
+
+En el servidor 172.16.20.241
+
+reiniciar el uwsgi: echo r > /tmp/.ominicontacto-uwsgi-fifo 
+
+El proyecto se encuentra: /home/freetech/ominicontacto
+
+Ejecucion del sistema desde uWSGI
+---------------------------------
+
+Existe un script que lanza la aplicación usando uWSGI.
+
+Para utilizar el sistema con uWSGI:
+
+freetech@fts-omni:~$ cd /home/freetech/ominicontacto
+
+$ ./run_uwsgi.sh
