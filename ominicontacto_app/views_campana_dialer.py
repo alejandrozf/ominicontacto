@@ -292,6 +292,7 @@ class UpdateBaseDatosDialerView(FormView):
         metadata = self.object.bd_contacto.get_metadata()
         columnas_telefono = metadata.columnas_con_telefono
         nombres_de_columnas = metadata.nombres_de_columnas
+        nombres_de_columnas.remove('telefono')
         tts_choices = [(columna, columna) for columna in
                        nombres_de_columnas]
         return self.form_class(tts_choices=tts_choices, **self.get_form_kwargs())
