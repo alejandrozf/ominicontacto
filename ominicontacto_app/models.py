@@ -1845,7 +1845,7 @@ class CalificacionCliente(models.Model):
     objects = CalificacionClienteManager()
 
     campana = models.ForeignKey(Campana, related_name="calificaconcliente")
-    contacto = models.OneToOneField(Contacto, on_delete=models.CASCADE)
+    contacto = models.ForeignKey(Contacto)
     es_venta = models.BooleanField(default=False)
     calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
