@@ -641,7 +641,12 @@ $(function() {
 			$("#campAssocManualCall").html(headerNomCamp);
 	  	makeCall();
 		} else {
-			displayNumber.style.borderColor = "red";			
+			$("#modalSelectCmp").modal("hide");
+			headerIdCamp = $("#cmpList").val();
+	  	$("#idCamp").val(headerIdCamp);
+	  	headerNomCamp = $("#cmpList option:selected").html();
+	    $("#redial").prop('disabled',false);
+			$("#campAssocManualCall").html(headerNomCamp);
 		}
   });
 
