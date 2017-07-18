@@ -47,7 +47,8 @@ class QueueDialplanConfigCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': elimina_espacios(campana.nombre),
+            'oml_queue_name': "{0}_{1}".format(campana.id,
+                                               elimina_espacios(campana.nombre)),
             'oml_queue_id_asterisk': '0077' + str(campana.queue_campana.queue_asterisk),
             'oml_queue_wait': campana.queue_campana.wait,
             'oml_campana_id': campana.id,
@@ -78,7 +79,8 @@ class QueueDialplanConfigCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': elimina_espacios(campana.nombre),
+            'oml_queue_name': "{0}_{1}".format(campana.id,
+                                               elimina_espacios(campana.nombre)),
             'oml_queue_id_asterisk': '0077' + str(campana.queue_campana.queue_asterisk),
             'date': str(datetime.datetime.now())
         }
@@ -239,7 +241,8 @@ class SipConfigCreator(object):
 
         partes = []
         param_generales = {
-            'oml_agente_name': agente.user.get_full_name(),
+                'oml_agente_name': "{0}_{1}".format(agente.id,
+                                                    agente.user.get_full_name()),
             'oml_agente_sip': agente.sip_extension,
             'oml_kamailio_ip': settings.OML_KAMAILIO_IP,
         }
@@ -364,7 +367,8 @@ class QueuesCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': elimina_espacios(campana.nombre),
+            'oml_queue_name': "{0}_{1}".format(campana.id,
+                                               elimina_espacios(campana.nombre)),
             'oml_strategy': campana.queue_campana.strategy,
             'oml_timeout': campana.queue_campana.wait,
             'oml_servicelevel': campana.queue_campana.servicelevel,
