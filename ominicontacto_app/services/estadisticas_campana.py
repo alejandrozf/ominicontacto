@@ -106,6 +106,8 @@ class EstadisticasService():
                 estado = "Ocupado"
             elif estado == "RS_NOANSWER":
                 estado = "No contesta"
+            elif estado == "RS_NUMBER":
+                estado = "Numero erroneo"
             resultado_nombre.append(estado)
             resultado_cantidad.append(resultado['estado__count'])
             total_no_atendidos += resultado['estado__count']
