@@ -165,7 +165,7 @@
             </div>
             <div class="row">
                 <div class="filaCampoNroDiscar">
-                    <input type="text" class="form-control" id="numberToCall" name="numberToCall" required="required">
+                    <input type="text" class="form-control" id="numberToCall" name="numberToCall">
                 </div>
             </div>
             <div class="row">
@@ -176,6 +176,16 @@
                    <span id="sumTime" class="label label-default">
             			     <label id="horaC"></label><label id="minsC"></label><label id="segsC"></label>
           				 </span>
+               </div>
+            </div>
+            <div class="row">
+               <div class="filaBotonesDiscar2">
+                 <label class="label label-default">Campaña de manuales:</label>
+                 <button id="changeCampAssocManualCall" class="btn btn-success btn-xs">Cambiar</button>
+                 <br>
+                 <span class="label label-primary">
+                   <label id="campAssocManualCall"></label>
+                 </span>
                </div>
             </div>
         </div>
@@ -531,18 +541,18 @@
 <!-- Main Index -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/Timers.js' %}" ></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/main.js' %}"></script>
-<!-- autobahn -->
-<script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 <!-- JsSIP -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
 <!-- mi propio js para phone en jssip -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/phoneJsSip.js' %}"></script>
 <!-- JsSip Debug -->
 <!--<script>JsSIP.debug.enable('JsSIP:*');</script>-->
-<!-- smschat -->
-<script type="text/javascript" src="{% static 'ominicontacto/JS/textMessages.js' %}"></script>
 <!-- webChat -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/JQueryWebChat.js' %}"></script>
+<!-- autobahn -->
+<!-- <script type="text/javascript" src="{% static 'ominicontacto/JS/autobahn.min.js' %}"></script> -->
+<!-- smschat -->
+<script type="text/javascript" src="{% static 'ominicontacto/JS/textMessages.js' %}"></script>
 <!-- Socket.IO -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/socket.io.js' %}"></script>
 <!-- FacebookMessenger -->

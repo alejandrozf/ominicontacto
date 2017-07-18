@@ -611,22 +611,43 @@ $(function() {
   	entrante = false;
 		if(displayNumber.value != "") {
 			displayNumber.style.borderColor = "black";
-  	  $("#modalSelectCmp").modal("show");
-      // esto es para enviar un Invite/llamada
       num = displayNumber.value;
       lastDialedNumber = num;
+			if($("#campAssocManualCall").html() == "") {
+				$("#modalSelectCmp").modal("show");
+			} else {
+				headerIdCamp = $("#cmpList").val();
+		  	$("#idCamp").val(headerIdCamp);
+		  	headerNomCamp = $("#cmpList option:selected").html();
+		    $("#redial").prop('disabled',false);
+		  	makeCall();
+			}
 		} else {
       displayNumber.style.borderColor = "red";
 		}
   });
 
+	$("#changeCampAssocManualCall").click(function () {
+		$("#modalSelectCmp").modal("show");
+	});
+
   $("#SelectCamp").click(function () {
-  	$("#modalSelectCmp").modal("hide");
-  	headerIdCamp = $("#cmpList").val();
-  	$("#idCamp").val(headerIdCamp);
-  	headerNomCamp = $("#cmpList option:selected").html();
-    $("#redial").prop('disabled',false);
-  	makeCall();
+		if(displayNumber.value != "") {
+			$("#modalSelectCmp").modal("hide");
+	  	headerIdCamp = $("#cmpList").val();
+	  	$("#idCamp").val(headerIdCamp);
+	  	headerNomCamp = $("#cmpList option:selected").html();
+	    $("#redial").prop('disabled',false);
+			$("#campAssocManualCall").html(headerNomCamp);
+	  	makeCall();
+		} else {
+			$("#modalSelectCmp").modal("hide");
+			headerIdCamp = $("#cmpList").val();
+	  	$("#idCamp").val(headerIdCamp);
+	  	headerNomCamp = $("#cmpList option:selected").html();
+	    $("#redial").prop('disabled',false);
+			$("#campAssocManualCall").html(headerNomCamp);
+		}
   });
 
   function makeCall() {
