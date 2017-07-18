@@ -11,7 +11,7 @@ import datetime
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
 from django.core.exceptions import SuspiciousOperation
-from django.db import models
+from django.db import models, connection
 from django.db.models import Max, Q, Count
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from ominicontacto_app.utiles import log_timing,\
@@ -2006,6 +2006,34 @@ class QueuelogManager(models.Manager):
                                time__range=(fecha_desde, fecha_hasta)).order_by('-time')
         except Queuelog.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
+    def obtener_agentes_campanas_total(self, eventos, fecha_desde, fecha_hasta, agentes,
+                                       campanas):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+
+        cursor = connection.cursor()
+        sql = """select agent, queuename, SUM(data2::integer), Count(*)
+                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent = ANY(%(agentes)s)
+                 and queuename = ANY(%(campanas)s) GROUP BY agent, queuename order by
+                 agent, queuename
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+            'campanas': [campana.nombre for campana in campanas],
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
 
 
 class Queuelog(models.Model):

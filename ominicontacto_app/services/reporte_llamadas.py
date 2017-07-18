@@ -307,24 +307,16 @@ class EstadisticasService():
 
         agentes_tiempo = []
 
-        for agente in agentes:
+        logs_time = Queuelog.objects.obtener_agentes_campanas_total(
+            eventos_llamadas, fecha_inferior, fecha_superior, agentes, campanas)
+
+        for log in logs_time:
             tiempo_agente = []
-            logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente)
-            for campana in campanas:
-                cantidad_llamada = logs_time.filter(queuename=campana.nombre).count()
-                if cantidad_llamada > 0:
-
-                    lola = logs_time.filter(queuename=campana.nombre)
-                    lista_tiempo_llamada = [int(log.data2) for log in lola]
-
-                    tiempo_agente.append(agente)
-                    tiempo_agente.append(campana.nombre)
-                    tiempo_llamadas = sum(lista_tiempo_llamada)
-                    tiempo_agente.append(str(datetime.timedelta(0, tiempo_llamadas)))
-                    tiempo_agente.append(cantidad_llamada)
-                    agentes_tiempo.append(tiempo_agente)
-                    tiempo_agente = []
+            tiempo_agente.append(log[0])
+            tiempo_agente.append(log[1])
+            tiempo_agente.append(str(datetime.timedelta(0, log[2])))
+            tiempo_agente.append(log[3])
+            agentes_tiempo.append(tiempo_agente)
 
         return agentes_tiempo
 
