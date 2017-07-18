@@ -632,13 +632,17 @@ $(function() {
 	});
 
   $("#SelectCamp").click(function () {
-  	$("#modalSelectCmp").modal("hide");
-  	headerIdCamp = $("#cmpList").val();
-  	$("#idCamp").val(headerIdCamp);
-  	headerNomCamp = $("#cmpList option:selected").html();
-    $("#redial").prop('disabled',false);
-		$("#campAssocManualCall").html(headerNomCamp);
-  	makeCall();
+		if(displayNumber.value != "") {
+			$("#modalSelectCmp").modal("hide");
+	  	headerIdCamp = $("#cmpList").val();
+	  	$("#idCamp").val(headerIdCamp);
+	  	headerNomCamp = $("#cmpList option:selected").html();
+	    $("#redial").prop('disabled',false);
+			$("#campAssocManualCall").html(headerNomCamp);
+	  	makeCall();
+		} else {
+			displayNumber.style.borderColor = "red";			
+		}
   });
 
   function makeCall() {
