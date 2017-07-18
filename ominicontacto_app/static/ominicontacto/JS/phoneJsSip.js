@@ -617,6 +617,21 @@ $(function() {
 		}
   });
 
+	$("#numberToCall").focus(function () {
+	  $(document).keypress(function () {
+      if(displayNumber.value != "") {
+        headerIdCamp = $("#cmpList").val();
+        $("#idCamp").val(headerIdCamp);
+        headerNomCamp = $("#cmpList option:selected").html();
+        $("#redial").prop('disabled',false);
+        $("#campAssocManualCall").html(headerNomCamp);
+        makeCall();
+     } else {
+        displayNumber.style.borderColor = "red";
+     }
+   });
+  });
+
   $("#SelectCamp").click(function () {
   	$("#modalSelectCmp").modal("hide");
   	headerIdCamp = $("#cmpList").val();
