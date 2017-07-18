@@ -161,6 +161,7 @@ class AgenteReporteListView(FormView):
         if grupo_id:
             grupo = Grupo.objects.get(pk=int(grupo_id))
             agentes = grupo.agentes.all()
+        agentes = [agente.user.get_full_name() for agente in agentes]
         agente_service = EstadisticasService()
         estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta,
                                                       agentes, self.request.user)
