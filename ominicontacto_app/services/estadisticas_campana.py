@@ -192,18 +192,20 @@ class EstadisticasService():
         eventos_llamadas_abandonadas = ['ABANDON']
         eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
 
+        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
+
         # obtiene las llamadas recibidas
         ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
-            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, campana.nombre)
+            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, nombre_campana)
         # obtiene las llamadas atendidas
         atendidas = Queuelog.objects.obtener_log_queuename_event_periodo(
-            eventos_llamadas_atendidas, fecha_inferior, fecha_superior, campana.nombre)
+            eventos_llamadas_atendidas, fecha_inferior, fecha_superior, nombre_campana)
         # obtiene las llamadas abandonadas
         abandonadas = Queuelog.objects.obtener_log_queuename_event_periodo(
-            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, campana.nombre)
+            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, nombre_campana)
         # obtiene las llamadas expiradas
         expiradas = Queuelog.objects.obtener_log_queuename_event_periodo(
-            eventos_llamadas_expiradas, fecha_inferior, fecha_superior, campana.nombre)
+            eventos_llamadas_expiradas, fecha_inferior, fecha_superior, nombre_campana)
         count_llamadas_ingresadas = ingresadas.count()
         count_llamadas_atendidas = atendidas.count()
         count_llamadas_abandonadas = abandonadas.count()
