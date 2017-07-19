@@ -40,7 +40,8 @@ class EstadisticasService():
         :return lista agentes por nombre"""
         agentes = []
         for agente in AgenteProfile.objects.all():
-            agentes.append(agente.user.get_full_name())
+            nombre_agente = "{0}_{1}".format(agente.id, agente.user.get_full_name())
+            agentes.append(nombre_agente)
         return agentes
 
     def calcular_tiempo_sesion(self, agentes, fecha_inferior, fecha_superior):
