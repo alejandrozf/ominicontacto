@@ -116,3 +116,11 @@ class AgenteTiemposReporte(object):
         if self.tiempo_llamada:
             return datetime.timedelta(0, self.tiempo_llamada)
         return self.tiempo_llamada
+
+    def get_nombre_agente_sin_id(self):
+        agente = self.agente.split('_')
+        try:
+            agente_nombre = agente[1]
+        except ValueError:
+            agente_nombre = self.agente
+        return agente_nombre

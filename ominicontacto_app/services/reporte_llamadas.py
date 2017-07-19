@@ -121,7 +121,12 @@ class EstadisticasService():
                     is_unpause = True
             for tiempo_pausa in tiempos_pausa:
                 tiempo_agente = []
-                tiempo_agente.append(agente)
+                agente_split = agente.split('_')
+                try:
+                    agente_nombre = agente_split[1]
+                except ValueError:
+                    agente_nombre = agente
+                tiempo_agente.append(agente_nombre)
                 tiempo_agente.append(tiempo_pausa)
                 tiempos_pausa[tiempo_pausa] = str(datetime.timedelta(
                     seconds=tiempos_pausa[tiempo_pausa].seconds))
@@ -312,9 +317,19 @@ class EstadisticasService():
             eventos_llamadas, fecha_inferior, fecha_superior, agentes, campanas)
 
         for log in logs_time:
+            campana = log[1].split('_')
+            try:
+                campana_nombre = campana[1]
+            except ValueError:
+                campana_nombre = log[1]
+            agente = log[0].split('_')
+            try:
+                agente_nombre = agente[1]
+            except ValueError:
+                agente_nombre = log[0]
             tiempo_agente = []
-            tiempo_agente.append(log[0])
-            tiempo_agente.append(log[1])
+            tiempo_agente.append(agente_nombre)
+            tiempo_agente.append(campana_nombre)
             tiempo_agente.append(str(datetime.timedelta(0, log[2])))
             tiempo_agente.append(log[3])
             agentes_tiempo.append(tiempo_agente)
