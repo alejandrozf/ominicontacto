@@ -627,9 +627,26 @@ $(function() {
 		}
   });
 
+<<<<<<< HEAD
 	$("#changeCampAssocManualCall").click(function () {
 		$("#modalSelectCmp").modal("show");
 	});
+=======
+	$("#numberToCall").focus(function () {
+	  $(document).keypress(function () {
+      if(displayNumber.value != "") {
+        headerIdCamp = $("#cmpList").val();
+        $("#idCamp").val(headerIdCamp);
+        headerNomCamp = $("#cmpList option:selected").html();
+        $("#redial").prop('disabled',false);
+        $("#campAssocManualCall").html(headerNomCamp);
+        makeCall();
+     } else {
+        displayNumber.style.borderColor = "red";
+     }
+   });
+  });
+>>>>>>> 08b3d3936b1c35fd425ac4f00dbf1c5049af097d
 
   $("#SelectCamp").click(function () {
 		if(displayNumber.value != "") {
