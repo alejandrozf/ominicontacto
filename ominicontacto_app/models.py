@@ -2028,7 +2028,8 @@ class QueuelogManager(models.Manager):
             'fecha_hasta': fecha_hasta,
             'eventos': eventos,
             'agentes': agentes,
-            'campanas': [campana.nombre for campana in campanas],
+            'campanas': ["{0}_{1}".format(campana.id, campana.nombre)
+                         for campana in campanas],
         }
 
         cursor.execute(sql, params)
