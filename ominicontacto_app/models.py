@@ -896,6 +896,7 @@ class QueueMember(models.Model):
     interface = models.CharField(max_length=128)
     penalty = models.IntegerField(choices=DIGITO_CHOICES,)
     paused = models.IntegerField()
+    id_campana = models.CharField(max_length=128)
 
     def __unicode__(self):
         return "agente: {0} para la campana {1} ".format(
