@@ -597,7 +597,7 @@ class PausaForm(forms.ModelForm):
 
 FormularioCalificacionFormSet = inlineformset_factory(
     Contacto, CalificacionCliente, form=CalificacionClienteForm,
-    can_delete=False)
+    can_delete=False, extra=1, max_num=1)
 
 
 class FormularioVentaForm(forms.ModelForm):
