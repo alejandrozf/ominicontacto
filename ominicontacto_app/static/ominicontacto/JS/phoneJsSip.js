@@ -513,8 +513,8 @@ $(function() {
 	       	$("#sipLogout").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
+		inicio3();
         }
-        inicio3();
       });
 
   	var clickHold = document.getElementById("onHold");
