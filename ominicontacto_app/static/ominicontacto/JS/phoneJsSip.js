@@ -594,6 +594,29 @@ $(function() {
     }
   });
 
+	$("#numberToCall").bind("keypress", function(event) {
+		if(event.which == 13) {
+			event.preventDefault();
+			entrante = false;
+			if(displayNumber.value != "") {
+				displayNumber.style.borderColor = "black";
+	      num = displayNumber.value;
+	      lastDialedNumber = num;
+				if($("#campAssocManualCall").html() == "") {
+					$("#modalSelectCmp").modal("show");
+				} else {
+					headerIdCamp = $("#cmpList").val();
+			  	$("#idCamp").val(headerIdCamp);
+			  	headerNomCamp = $("#cmpList option:selected").html();
+			    $("#redial").prop('disabled',false);
+			  	makeCall();
+				}
+			} else {
+	      displayNumber.style.borderColor = "red";
+			}
+		}
+	});
+
   $("#redial").click(function () {
   	entrante = false;
   	num = lastDialedNumber;

@@ -381,3 +381,38 @@ class SimpleSeleniumTest(TestCase):
         # def test_sip_status_registered(self):
         # def test_sip_status_registration_failed(self):
         # def test_sip_status_no_account(self):
+
+    def test_elegir_camp_llam_manual(self):
+        for _ in range(9):
+            if self.driver.find_element_by_id("modalWebCall").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
+        for _ in range(9):
+            if self.driver.find_element_by_id("CallStatus"):
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
+        time.sleep(9)
+        for _ in range(9):
+            if self.driver.find_element_by_id("dial_status"):
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("dial_status"))
+        for _ in range(10):
+            if self.driver.find_element_by_id("dial_status").text == "Idle":
+                break
+            time.sleep(1)
+        self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
+        self.driver.find_element_by_id("numberToCall").send_keys("1234")
+        self.driver.find_element_by_id("call").click()
+        for _ in range(10):
+            if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
+                break
+            time.sleep(1)
+        self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
+        for _ in range(10):
+            if self.driver.find_element_by_id("cmpList").get_attribute("value") == 36:
+                break
+            time.sleep(1)
+        self.assertEquals('36', self.driver.find_element_by_id("cmpList").get_attribute("value"))
