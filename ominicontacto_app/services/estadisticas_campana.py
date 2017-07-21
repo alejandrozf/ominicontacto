@@ -90,6 +90,8 @@ class EstadisticasService():
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         campana_log_wombat = campana.logswombat.filter(
             fecha_hora__range=(fecha_desde, fecha_hasta))
+        campana_log_terminated = campana_log_wombat.filter(estado="TERMINATED",
+                                                           calificacion='CONTESTADOR')
         campana_log_wombat = campana_log_wombat.exclude(estado="TERMINATED")
         campana_log_wombat = campana_log_wombat.values('estado',
                                                        'calificacion').annotate(
@@ -115,6 +117,10 @@ class EstadisticasService():
             resultado_nombre.append(estado)
             resultado_cantidad.append(resultado['estado__count'])
             total_no_atendidos += resultado['estado__count']
+        resultado_nombre.append("Contestador Detectado")
+        cantidad_constestador = campana_log_terminated.count()
+        resultado_cantidad.append(cantidad_constestador)
+        total_no_atendidos += cantidad_constestador
         return resultado_nombre, resultado_cantidad, total_no_atendidos
 
     def obtener_total_llamadas(self, campana):
