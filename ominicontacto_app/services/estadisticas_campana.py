@@ -108,6 +108,10 @@ class EstadisticasService():
                 estado = "No contesta"
             elif estado == "RS_NUMBER":
                 estado = "Numero erroneo"
+            elif estado == "RS_ERROR":
+                estado = "Error de sistema"
+            elif estado == "RS_REJECTED":
+                estado = "Congestion"
             resultado_nombre.append(estado)
             resultado_cantidad.append(resultado['estado__count'])
             total_no_atendidos += resultado['estado__count']
