@@ -125,7 +125,7 @@
     </thead>
     {% for agente in estadisticas.agentes_tiempos %}
         <tr>
-            <td>{{agente.get_nombre_agente_sin_id}}</td>
+            <td>{{agente.get_nombre_agente}}</td>
             <td>
                 {% if agente.get_string_tiempo_sesion %}
                     {{agente.get_string_tiempo_sesion}}hs

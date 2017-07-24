@@ -1973,6 +1973,19 @@ class QueuelogManager(models.Manager):
         except Queuelog.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con esos filtros "))
 
+    def obtener_log_agente_pk_event_periodo_all(
+            self, eventos, fecha_desde, fecha_hasta, agente_pk):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(queuename='ALL', event__in=eventos, agent_id=agente_pk,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
     def obtener_log_agente_event_periodo(
             self, eventos, fecha_desde, fecha_hasta, agente):
         if fecha_desde and fecha_hasta:
@@ -1982,6 +1995,19 @@ class QueuelogManager(models.Manager):
                                                     datetime.time.max)
         try:
             return self.filter(event__in=eventos, agent=agente,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
+    def obtener_log_agente_pk_event_periodo(
+            self, eventos, fecha_desde, fecha_hasta, agente_pk):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(event__in=eventos, agent_id=agente_pk,
                                time__range=(fecha_desde, fecha_hasta)).order_by('-time')
         except Queuelog.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con esos filtros "))
@@ -2023,7 +2049,7 @@ class QueuelogManager(models.Manager):
         cursor = connection.cursor()
         sql = """select agent, queuename, SUM(data2::integer), Count(*)
                  from ominicontacto_app_queuelog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent = ANY(%(agentes)s)
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
                  and queuename = ANY(%(campanas)s) GROUP BY agent, queuename order by
                  agent, queuename
         """

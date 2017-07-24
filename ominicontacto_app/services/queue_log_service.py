@@ -124,3 +124,6 @@ class AgenteTiemposReporte(object):
         except ValueError:
             agente_nombre = self.agente
         return agente_nombre
+
+    def get_nombre_agente(self):
+        return self.agente.user.get_full_name()

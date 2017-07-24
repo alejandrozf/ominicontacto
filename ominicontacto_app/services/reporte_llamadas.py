@@ -35,14 +35,7 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 class EstadisticasService():
 
     def _obtener_agentes(self):
-        """
-        Obtine listado de nombres de agentes
-        :return lista agentes por nombre"""
-        agentes = []
-        for agente in AgenteProfile.objects.all():
-            nombre_agente = agente.get_id_nombre_agente()
-            agentes.append(nombre_agente)
-        return agentes
+        return AgenteProfile.objects.all()
 
     def calcular_tiempo_sesion(self, agentes, fecha_inferior, fecha_superior):
         """
@@ -100,8 +93,8 @@ class EstadisticasService():
         # iterar por agente evaluando los eventos de pausa
         for agente in agentes:
 
-            logs_time = Queuelog.objects.obtener_log_agente_event_periodo_all(
-                eventos_pausa, fecha_inferior, fecha_superior, agente)
+            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
+                eventos_pausa, fecha_inferior, fecha_superior, agente.id)
             is_unpause = False
             time_actual = None
             tiempos_pausa = {}
@@ -121,12 +114,8 @@ class EstadisticasService():
                     is_unpause = True
             for tiempo_pausa in tiempos_pausa:
                 tiempo_agente = []
-                agente_split = agente.split('_')
-                try:
-                    agente_nombre = agente_split[1]
-                except ValueError:
-                    agente_nombre = agente
-                tiempo_agente.append(agente_nombre)
+
+                tiempo_agente.append(agente.user.get_full_name())
                 tiempo_agente.append(tiempo_pausa)
                 tiempos_pausa[tiempo_pausa] = str(datetime.timedelta(
                     seconds=tiempos_pausa[tiempo_pausa].seconds))
@@ -169,11 +158,12 @@ class EstadisticasService():
     def calcular_tiempos_agentes(self, agentes, fecha_inferior, fecha_superior):
         eventos_pausa = ['PAUSEALL', 'UNPAUSEALL']
         agentes_tiempo = []
+
         for agente in agentes:
             tiempo_agente = []
             agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_event_periodo_all(
-                eventos_pausa, fecha_inferior, fecha_superior, agente)
+            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
+                eventos_pausa, fecha_inferior, fecha_superior, agente.id)
             is_unpause = False
             time_actual = None
             for logs in logs_time:
@@ -203,8 +193,8 @@ class EstadisticasService():
         for agente in agentes:
             tiempo_agente = []
             agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_event_periodo_all(
-                eventos_sesion, fecha_inferior, fecha_superior, agente)
+            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
+                eventos_sesion, fecha_inferior, fecha_superior, agente.id)
             is_remove = False
             time_actual = None
             for logs in logs_time:
@@ -233,8 +223,8 @@ class EstadisticasService():
 
         for agente in agentes:
             agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente)
+            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo(
+                eventos_llamadas, fecha_inferior, fecha_superior, agente.id)
             lista_tiempo_llamada = [int(log.data2) for log in logs_time]
             agente_en_lista = filter(lambda x: x.agente == agente,
                                      agentes_tiempo)
@@ -250,10 +240,10 @@ class EstadisticasService():
 
         for agente in agentes:
             agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente)
-            logs_time_perdidas = Queuelog.objects.obtener_log_agente_event_periodo(
-                eventos_llamadas_perdidas, fecha_inferior, fecha_superior, agente)
+            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo(
+                eventos_llamadas, fecha_inferior, fecha_superior, agente.id)
+            logs_time_perdidas = Queuelog.objects.obtener_log_agente_pk_event_periodo(
+                eventos_llamadas_perdidas, fecha_inferior, fecha_superior, agente.id)
 
             agente_en_lista = filter(lambda x: x.agente == agente,
                                      agentes_tiempo)
@@ -271,8 +261,8 @@ class EstadisticasService():
 
         for agente in agentes:
             agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente)
+            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo(
+                eventos_llamadas, fecha_inferior, fecha_superior, agente.id)
             lista_tiempo_llamada = [int(log.data2) for log in logs_time]
             logs_saliente = logs_time.filter(data4='saliente')
             lista_tiempo_saliente = [int(log.data2) for log in logs_saliente]
@@ -312,7 +302,7 @@ class EstadisticasService():
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         agentes_tiempo = []
-
+        agentes = [agente.id for agente in agentes]
         logs_time = Queuelog.objects.obtener_agentes_campanas_total(
             eventos_llamadas, fecha_inferior, fecha_superior, agentes, campanas)
 
@@ -343,8 +333,8 @@ class EstadisticasService():
          #                                            fecha_superior)
         agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
                                                    fecha_superior)
-        agentes_llamadas = self.calcular_tiempo_llamada(agentes,
-                                                        fecha_inferior, fecha_superior)
+        #agentes_llamadas = self.calcular_tiempo_llamada(agentes,
+         #                                               fecha_inferior, fecha_superior)
         agentes_tiempos = self.calcular_tiempos_agentes(agentes, fecha_inferior,
                                                         fecha_superior)
         count_llamada_campana = self.obtener_count_llamadas_campana(
@@ -355,7 +345,7 @@ class EstadisticasService():
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
             'agentes_pausa': agentes_pausa,
-            'agentes_llamadas': agentes_llamadas,
+            #'agentes_llamadas': agentes_llamadas,
             'count_llamada_campana': count_llamada_campana
 
         }
