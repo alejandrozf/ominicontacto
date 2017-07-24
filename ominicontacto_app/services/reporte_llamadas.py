@@ -160,7 +160,6 @@ class EstadisticasService():
         agentes_tiempo = []
 
         for agente in agentes:
-            tiempo_agente = []
             agente_nuevo = None
             logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
                 eventos_pausa, fecha_inferior, fecha_superior, agente.id)
@@ -191,7 +190,6 @@ class EstadisticasService():
         eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
 
         for agente in agentes:
-            tiempo_agente = []
             agente_nuevo = None
             logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
                 eventos_sesion, fecha_inferior, fecha_superior, agente.id)
@@ -270,14 +268,14 @@ class EstadisticasService():
             cantidad_saliente = logs_saliente.count()
             cantidad_asignadas = cantidad_llamadas - cantidad_saliente
             tiempo_llamadas = sum(lista_tiempo_llamada)
-            tiempo_saliente =  sum(lista_tiempo_saliente)
+            tiempo_saliente = sum(lista_tiempo_saliente)
             tiempo_asignadas = tiempo_llamadas - tiempo_saliente
             media_asignadas = 0
             if tiempo_asignadas > 0:
                 media_asignadas = tiempo_asignadas / cantidad_asignadas
             media_salientes = 0
             if tiempo_saliente > 0:
-                media_salientes =  tiempo_saliente / cantidad_saliente
+                media_salientes = tiempo_saliente / cantidad_saliente
             agente_en_lista = filter(lambda x: x.agente == agente,
                                      agentes_tiempo)
             if agente_en_lista:
