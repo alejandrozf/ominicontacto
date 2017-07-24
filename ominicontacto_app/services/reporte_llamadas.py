@@ -40,7 +40,7 @@ class EstadisticasService():
         :return lista agentes por nombre"""
         agentes = []
         for agente in AgenteProfile.objects.all():
-            nombre_agente = "{0}_{1}".format(agente.id, agente.user.get_full_name())
+            nombre_agente = agente.get_id_nombre_agente()
             agentes.append(nombre_agente)
         return agentes
 

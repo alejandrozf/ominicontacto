@@ -161,6 +161,9 @@ class AgenteProfile(models.Model):
         campanas_member = self.campana_member.all()
         return campanas_member.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
 
+    def get_id_nombre_agente(self):
+        return "{0}_{1}".format(self.id, self.user.get_full_name())
+
 
 class SupervisorProfileManager(models.Manager):
 
