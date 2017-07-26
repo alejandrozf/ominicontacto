@@ -109,8 +109,6 @@ class EstadisticasAgenteService():
                 time_actual = logs.time
                 is_unpause = True
 
-        print agente_nuevo.tiempo_pausa
-
         eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
 
         logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
@@ -173,7 +171,6 @@ class EstadisticasAgenteService():
 
         agente_nuevo._media_asignada = media_asignadas
         agente_nuevo._media_saliente = media_salientes
-        print agente_nuevo.tiempo_pausa
         return agente_nuevo
 
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta, agente):
@@ -185,7 +182,7 @@ class EstadisticasAgenteService():
 
         agente_tiempo = self.calcular_tiempo_agente(agente, fecha_desde, fecha_hasta,
                                                     campana)
-        print agente_tiempo.tiempo_pausa
+
         dic_estadisticas = {
             'agentes_venta': agentes_venta,
             'total_asignados': total_asignados,
