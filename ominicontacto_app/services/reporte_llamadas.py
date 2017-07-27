@@ -10,7 +10,7 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import AgenteProfile, Queuelog, Campana
+from ominicontacto_app.models import AgenteProfile, Queuelog, Campana, Grabacion
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
 import logging as _logging
@@ -324,6 +324,123 @@ class EstadisticasService():
 
         return agentes_tiempo
 
+    ########################################################################
+    #           ATENCION COPIADO de reporte_grafico.py
+
+    def _obtener_agente_grabacion(self, agentes, fecha_inferior, fecha_superior):
+        """
+        Obtiene el totales de llamadas por agente
+        :param fecha_inferior: fecha desde cual se obtendran las grabaciones
+        :param fecha_superior: fecha hasta el cual se obtendran las grabaciones
+        :return: queryset con las cantidades totales por agente
+        """
+        fecha_inferior = datetime.datetime.combine(fecha_inferior,
+                                                   datetime.time.min)
+        fecha_superior = datetime.datetime.combine(fecha_superior,
+                                                   datetime.time.max)
+        agentes = [agente.sip_extension for agente in agentes]
+        dict_agentes = Grabacion.objects.obtener_count_agente().filter(
+            fecha__range=(fecha_inferior, fecha_superior), sip_agente__in=agentes)
+        agentes = []
+        sip_agentes = []
+
+        for sip_agente in dict_agentes:
+            sip_agentes.append(sip_agente['sip_agente'])
+            try:
+                agente = AgenteProfile.objects.get(sip_extension=sip_agente['sip_agente'])
+                agentes.append(agente.user.get_full_name())
+            except AgenteProfile.DoesNotExist:
+                agentes.append(sip_agente['sip_agente'])
+
+        return dict_agentes, agentes, sip_agentes
+
+    def _obtener_total_agente_grabacion(self, dict_agentes, agentes):
+        """
+        Obtiene el total grabaciones  por agente en una lista
+        :return: lista con el total de llamadas por agente
+        """
+        total_agentes = []
+
+        for agente_unit, agente in zip(dict_agentes, agentes):
+            if agente_unit['sip_agente'] == agente:
+                total_agentes.append(agente_unit['cantidad'])
+            else:
+                total_agentes.append(0)
+
+        return total_agentes
+
+    def _obtener_total_ics_agente(self, dict_agentes, agentes):
+        """
+        Obtiene el total grabaciones ICS por agente en una lista
+        :return: lista con el total de llamadas ICS por agente
+        """
+        total_ics = []
+
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_ICS).\
+                filter(sip_agente=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_ics.append(cantidad)
+
+        return total_ics
+
+    def _obtener_total_dialer_agente(self, dict_agentes, agentes):
+        """
+        Obtiene el total grabaciones DIALER por agente en una lista
+        :return: lista con el total de llamadas DIALER por agente
+        """
+        total_dialer = []
+
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_DIALER). \
+                filter(sip_agente=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_dialer.append(cantidad)
+
+        return total_dialer
+
+    def _obtener_total_inbound_agente(self, dict_agentes, agentes):
+        """
+        Obtiene el total grabaciones INBOUND por agente en una lista
+        :return: lista con el total de llamadas INBOUND por agente
+        """
+        total_inbound = []
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_INBOUND). \
+                filter(sip_agente=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_inbound.append(cantidad)
+        return total_inbound
+
+    def _obtener_total_manual_agente(self, dict_agentes, agentes):
+        """
+        Obtiene el total grabaciones MANUAL por agente en una lista
+        :return: lista con el total de llamadas MANUAL por agente
+        """
+        total_manual = []
+
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_MANUAL). \
+                filter(sip_agente=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_manual.append(cantidad)
+
+        return total_manual
+
+    ############################################################################
+
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior, agentes, user):
         if not agentes:
             agentes = self._obtener_agentes()
@@ -338,13 +455,30 @@ class EstadisticasService():
         count_llamada_campana = self.obtener_count_llamadas_campana(
             agentes, fecha_inferior, fecha_superior, user)
 
+        # Copiado del modulo reporte_grafico
+        dict_agentes, agentes_nombre, agentes = self._obtener_agente_grabacion(agentes,
+            fecha_inferior, fecha_superior)
+
+        total_agentes = self._obtener_total_agente_grabacion(dict_agentes, agentes)
+        total_agente_ics = self._obtener_total_ics_agente(dict_agentes, agentes)
+        total_agente_dialer = self._obtener_total_dialer_agente(dict_agentes, agentes)
+        total_agente_inbound = self._obtener_total_inbound_agente(dict_agentes, agentes)
+        total_agente_manual = self._obtener_total_manual_agente(dict_agentes, agentes)
+
         dic_estadisticas = {
             'agentes_tiempos': agentes_tiempos,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
             'agentes_pausa': agentes_pausa,
             #'agentes_llamadas': agentes_llamadas,
-            'count_llamada_campana': count_llamada_campana
+            'count_llamada_campana': count_llamada_campana,
+            'agentes': agentes,
+            'agentes_nombre': agentes_nombre,
+            'total_agentes': total_agentes,
+            'total_agente_ics': total_agente_ics,
+            'total_agente_dialer': total_agente_dialer,
+            'total_agente_inbound': total_agente_inbound,
+            'total_agente_manual': total_agente_manual,
 
         }
         return dic_estadisticas
@@ -356,4 +490,30 @@ class EstadisticasService():
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
 
-        return estadisticas
+        # copiado de reporte_grafico
+        # Barra: Cantidad de llamadas de los agentes por tipo de llamadas.
+        barra_agente_total = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        barra_agente_total.title = 'Cantidad de llamadas de los agentes por tipo de llamadas'
+
+        barra_agente_total.x_labels = estadisticas['agentes_nombre']
+        barra_agente_total.add('ICS',
+                                estadisticas['total_agente_ics'])
+        barra_agente_total.add('DIALER',
+                                estadisticas['total_agente_dialer'])
+        barra_agente_total.add('INBOUND',
+                                estadisticas['total_agente_inbound'])
+        barra_agente_total.add('MANUAL',
+                                estadisticas['total_agente_manual'])
+
+        return {
+            'estadisticas': estadisticas,
+            'dict_agente_counter': zip(estadisticas['agentes_nombre'],
+                                       estadisticas['total_agentes'],
+                                       estadisticas['total_agente_ics'],
+                                       estadisticas['total_agente_dialer'],
+                                       estadisticas['total_agente_inbound'],
+                                       estadisticas['total_agente_manual']),
+            'barra_agente_total': barra_agente_total,
+        }

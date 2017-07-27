@@ -141,10 +141,10 @@ class AgenteReporteListView(FormView):
         hoy = hoy_ahora.date()
         agente_service = EstadisticasService()
         agentes = []
-        estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes,
-                                                      request.user)
+        graficos_estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes,
+                                                               request.user)
         return self.render_to_response(self.get_context_data(
-            estadisticas=estadisticas))
+            graficos_estadisticas=graficos_estadisticas))
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
@@ -164,11 +164,11 @@ class AgenteReporteListView(FormView):
         #agentes = ["{0}_{1}".format(agente.id, agente.user.get_full_name())
          #          for agente in agentes]
         agente_service = EstadisticasService()
-        estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta,
-                                                      agentes, self.request.user)
+        graficos_estadisticas = agente_service.general_campana(
+            fecha_desde, fecha_hasta, agentes, self.request.user)
 
         return self.render_to_response(self.get_context_data(
-            estadisticas=estadisticas))
+            graficos_estadisticas=graficos_estadisticas))
 
 
 def cambiar_estado_agente_view(request):
