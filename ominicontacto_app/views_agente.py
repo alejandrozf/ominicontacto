@@ -26,6 +26,7 @@ from django.conf import settings
 from ominicontacto_app.services.asterisk_ami_http import (
     AsteriskHttpClient, AsteriskHttpOriginateError
 )
+from ominicontacto_app.services.reporte_llamada_csv import ReporteAgenteCSVService
 import logging as _logging
 
 
@@ -166,6 +167,9 @@ class AgenteReporteListView(FormView):
         agente_service = EstadisticasService()
         graficos_estadisticas = agente_service.general_campana(
             fecha_desde, fecha_hasta, agentes, self.request.user)
+
+        service_csv = ReporteAgenteCSVService()
+        service_csv.crea_reporte_csv(graficos_estadisticas)
 
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
