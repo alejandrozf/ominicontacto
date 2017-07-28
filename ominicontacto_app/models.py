@@ -364,6 +364,14 @@ class CampanaManager(models.Manager):
                             Campana.ESTADO_INACTIVA]
         return self.filter(estado__in=campanas_include)
 
+    def obtener_all_activas_finalizadas(self):
+        """
+        Devuelve campañas excluyendo las campanas borradas
+        """
+        campanas_include = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                            Campana.ESTADO_INACTIVA, Campana.ESTADO_FINALIZADA]
+        return self.filter(estado__in=campanas_include)
+
     def get_objects_for_user(self, user):
         """
         Devuelve todos los objectos por cual tiene acceso este user.

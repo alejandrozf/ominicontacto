@@ -409,6 +409,7 @@ class GrabacionReporteForm(forms.Form):
     """
     fecha = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control'}))
+    finalizadas = forms.BooleanField(required=False)
 
 
 class AgendaBusquedaForm(forms.Form):
