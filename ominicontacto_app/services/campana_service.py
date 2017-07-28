@@ -83,6 +83,8 @@ class CampanaService():
                     break
                 elif campaing['state'] == 'COMPLETED':
                     dato_campana = campaing
+                elif campaing['state'] == 'WRONG_TIME':
+                    dato_campana = campaing
                     break
         return dato_campana
 
