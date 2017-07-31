@@ -353,6 +353,8 @@ urlpatterns = [
             views_grabacion.GrabacionReporteFormView.as_view()),
         name='reporte_llamadas',
         ),
+    url(r'^reportes/llamadas_exporta/(?P<tipo_reporte>[\w\-]+)/$',
+        views_grabacion.exporta_reporte_grabacion_llamada_view, name='llamadas_exporta'),
     # ==========================================================================
     # Calificacion
     # ==========================================================================

@@ -119,11 +119,13 @@
         <td>{{graficos_estadisticas.estadisticas.total_llamadas.5}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas abandonas</td>
+        <td>Numero de llamadas abandonadas</td>
         <td>{{graficos_estadisticas.estadisticas.total_llamadas.6}}</td>
     <tr>
 
 </table>
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='total_llamadas' %}">Exportar totales llamadas(CSV)</a></h5>
+
 </div>
  {% endif %}
 
@@ -170,6 +172,8 @@
                             </tr>
                         </tbody>
                     </table>
+            <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_tipo' %}">Exportar totales llamadas por tipor de llamada(CSV)</a></h5>
+
 
                 <table class="table table-bordered">
                         <thead>
@@ -218,6 +222,7 @@
                             </tr>
                         </tbody>
                     </table>
+            <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_campana' %}">Exportar reporte de llamadas por campana(CSV)</a></h5>
 
 
 
@@ -263,6 +268,7 @@
 
     </tbody>
 </table>
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='distribucion_campana' %}">Exportar reporte por distribucion en campana(CSV)</a></h5>
 
 
 </div>
