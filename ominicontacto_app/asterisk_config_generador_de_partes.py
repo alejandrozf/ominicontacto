@@ -116,8 +116,9 @@ class GeneradorDePedazoDeAgenteFactory(object):
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
 
-    def crer_generador_para_agente_global(self, parametros):
-        return GeneradorParaAgenteGlobal
+    def crear_generador_para_agente_global(self, parametros):
+        return GeneradorParaAgenteGlobal(parametros)
+
 
 # Factory para las Queue.
 

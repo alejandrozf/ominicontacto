@@ -443,7 +443,7 @@ class QueuesCreator(object):
 class GlobalsVariableConfigCreator(object):
 
     def __init__(self):
-        self._globals_config_file = GlobalsVariableConfigCreator()
+        self._globals_config_file = GlobalsConfigFile()
         self._generador_factory = GeneradorDePedazoDeAgenteFactory()
 
     def _generar_config_agente(self, agente):
@@ -465,7 +465,7 @@ class GlobalsVariableConfigCreator(object):
             'oml_agente_pk': agente.id
         }
 
-        generador_agente= self._generador_factory.crer_generador_para_agente_global(
+        generador_agente= self._generador_factory.crear_generador_para_agente_global(
             param_generales)
         partes.append(generador_agente.generar_pedazo())
 
@@ -521,7 +521,7 @@ class GlobalsVariableConfigCreator(object):
 
             sip.append(config_chunk)
 
-        self._sip_config_file.write(sip)
+        self._globals_config_file.write(sip)
 
 
 class AsteriskConfigReloader(object):
