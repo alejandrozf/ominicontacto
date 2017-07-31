@@ -105,7 +105,7 @@
 
 <div class="col-md-12">
     <h4>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
-<table class="table table-bordered">
+    <table class="table table-bordered">
     <thead>
         <tr>
             <th>Agente</th>
@@ -172,6 +172,8 @@
 
     </tbody>
 </table>
+
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='tiempos_agentes' %}">Exportar reporte de tiempos(CSV)</a></h5>
 </div>
 
 <div class="col-md-12">
@@ -195,6 +197,8 @@
 
     </tbody>
 </table>
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='pausas_agentes' %}">Exportar reporte de pausas(CSV)</a></h5>
+
 </div>
 
 <div class="col-md-12">
@@ -221,6 +225,8 @@
 
     </tbody>
 </table>
+                <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_agentes' %}">Exportar reporte cantidad llamadas(CSV)</a></h5>
+
 </div>
 <div class="col-md-12">
                <table class="table table-bordered">
@@ -270,5 +276,7 @@
                             </tr>
                         </tbody>
                     </table>
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a></h5>
+
 </div>
 {% endblock %}

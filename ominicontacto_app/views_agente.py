@@ -221,7 +221,7 @@ class LlamarContactoView(RedirectView):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
         calificacion_cliente = CalificacionCliente.objects.filter(
-            contacto=contacto,agente=agente).order_by('-fecha')
+            contacto=contacto, agente=agente).order_by('-fecha')
         campana_id = 0
         campana_nombre = "None"
         if calificacion_cliente > 0:
@@ -247,3 +247,12 @@ class LlamarContactoView(RedirectView):
         except:
             logger.exception("Originate failed - contacto: %s ", contacto.telefono)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
+
+
+def exporta_reporte_agente_llamada_view(request, tipo_reporte):
+    """
+    Esta vista invoca a generar un csv de reporte de la campana.
+    """
+    service = service_csv = ReporteAgenteCSVService()
+    url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
+    return redirect(url)

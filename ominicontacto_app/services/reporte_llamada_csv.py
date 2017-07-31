@@ -52,12 +52,11 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, estadisticas):
+    def escribir_archivo_tiempos_csv(self, estadisticas):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []
-
 
             encabezado.append("Agente")
             encabezado.append("Tiempo de session")
@@ -121,6 +120,116 @@ class ArchivoDeReporteCsv(object):
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
+    def escribir_archivo_pausas_csv(self, estadisticas):
+
+        with open(self.ruta, 'wb') as csvfile:
+            # Creamos encabezado
+            encabezado = []
+
+            encabezado.append("Agente")
+            encabezado.append("Tipo de pausa")
+            encabezado.append("Tiempo de pausa")
+
+            # Creamos csvwriter
+            csvwiter = csv.writer(csvfile)
+
+            # guardamos encabezado
+            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
+                                      for item in encabezado]
+            csvwiter.writerow(lista_encabezados_utf8)
+
+            # Iteramos cada uno de las metadata de la gestion del formulario
+            for agente in estadisticas["estadisticas"]["agentes_pausa"]:
+                lista_opciones = []
+
+                # --- Buscamos datos
+
+                lista_opciones.append(agente[0])
+                lista_opciones.append(agente[1])
+                lista_opciones.append(agente[2] + "hs")
+
+                # --- Finalmente, escribimos la linea
+
+                lista_opciones_utf8 = [force_text(item).encode('utf-8')
+                                       for item in lista_opciones]
+                csvwiter.writerow(lista_opciones_utf8)
+
+    def escribir_archivo_llamadas_csv(self, estadisticas):
+
+        with open(self.ruta, 'wb') as csvfile:
+            # Creamos encabezado
+            encabezado = []
+
+            encabezado.append("Agente")
+            encabezado.append("Cola")
+            encabezado.append("Tiempo de llamadas")
+            encabezado.append("Cantidad de llamadas procesadas")
+
+            # Creamos csvwriter
+            csvwiter = csv.writer(csvfile)
+
+            # guardamos encabezado
+            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
+                                      for item in encabezado]
+            csvwiter.writerow(lista_encabezados_utf8)
+
+            # Iteramos cada uno de las metadata de la gestion del formulario
+            for agente in estadisticas["estadisticas"]["count_llamada_campana"]:
+                lista_opciones = []
+
+                # --- Buscamos datos
+
+                lista_opciones.append(agente[0])
+                lista_opciones.append(agente[1])
+                lista_opciones.append(agente[2] + "hs")
+                lista_opciones.append(agente[3])
+
+                # --- Finalmente, escribimos la linea
+
+                lista_opciones_utf8 = [force_text(item).encode('utf-8')
+                                       for item in lista_opciones]
+                csvwiter.writerow(lista_opciones_utf8)
+
+    def escribir_archivo_llamadas_tipo_csv(self, estadisticas):
+
+        with open(self.ruta, 'wb') as csvfile:
+            # Creamos encabezado
+            encabezado = []
+
+            encabezado.append("Agente")
+            encabezado.append("Total")
+            encabezado.append("ICS")
+            encabezado.append("DIALER")
+            encabezado.append("INBOUND")
+            encabezado.append("MANUAL")
+
+            # Creamos csvwriter
+            csvwiter = csv.writer(csvfile)
+
+            # guardamos encabezado
+            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
+                                      for item in encabezado]
+            csvwiter.writerow(lista_encabezados_utf8)
+
+            # Iteramos cada uno de las metadata de la gestion del formulario
+            for agente, total_campana, total_ics, total_dialer, total_inbound, total_manual in estadisticas["dict_agente_counter"]:
+                lista_opciones = []
+
+                # --- Buscamos datos
+
+                lista_opciones.append(agente)
+                lista_opciones.append(total_campana)
+                lista_opciones.append(total_ics)
+                lista_opciones.append(total_dialer)
+                lista_opciones.append(total_inbound)
+                lista_opciones.append(total_manual)
+
+                # --- Finalmente, escribimos la linea
+
+                lista_opciones_utf8 = [force_text(item).encode('utf-8')
+                                       for item in lista_opciones]
+                csvwiter.writerow(lista_opciones_utf8)
+
     def ya_existe(self):
         return os.path.exists(self.ruta)
 
@@ -132,8 +241,22 @@ class ReporteAgenteCSVService(object):
         # Reporte de tiempos de agente
         archivo_de_reporte = ArchivoDeReporteCsv("tiempos_agentes")
         archivo_de_reporte.crear_archivo_en_directorio()
+        archivo_de_reporte.escribir_archivo_tiempos_csv(estadisticas)
 
-        archivo_de_reporte.escribir_archivo_csv(estadisticas)
+        # Reporte de tiempos de pausa de los agentes
+        archivo_de_reporte = ArchivoDeReporteCsv("pausas_agentes")
+        archivo_de_reporte.crear_archivo_en_directorio()
+        archivo_de_reporte.escribir_archivo_pausas_csv(estadisticas)
+
+        # Reporte de tiempos de llamadas de los agentes
+        archivo_de_reporte = ArchivoDeReporteCsv("llamadas_agentes")
+        archivo_de_reporte.crear_archivo_en_directorio()
+        archivo_de_reporte.escribir_archivo_llamadas_csv(estadisticas)
+
+        # Reporte de cantidad de llamadas por tipo de los agentes
+        archivo_de_reporte = ArchivoDeReporteCsv("llamadas_tipo_agentes")
+        archivo_de_reporte.crear_archivo_en_directorio()
+        archivo_de_reporte.escribir_archivo_llamadas_tipo_csv(estadisticas)
 
     def obtener_url_reporte_csv_descargar(self, nombre_reporte):
         #assert campana.estado == Campana.ESTADO_DEPURADA

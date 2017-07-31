@@ -343,6 +343,8 @@ urlpatterns = [
             views_agente.LlamarContactoView.as_view()),
         name='agente_llamar_contacto',
         ),
+    url(r'^agente/llamadas_exporta/(?P<tipo_reporte>[\w\-]+)/$',
+        views_agente.exporta_reporte_agente_llamada_view, name='agente_llamada_exporta'),
     # ==========================================================================
     # Reportes
     # ==========================================================================
