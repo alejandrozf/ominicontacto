@@ -116,6 +116,8 @@ class GeneradorDePedazoDeAgenteFactory(object):
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
 
+    def crer_generador_para_agente_global(self, parametros):
+        return GeneradorParaAgenteGlobal
 
 # Factory para las Queue.
 
@@ -283,6 +285,16 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
     def get_parametros(self):
         return self._parametros
 
+
+class GeneradorParaAgenteGlobal(GeneradorDePedazoDeAgenteSip):
+
+    def get_template(self):
+        return """
+        SIP/{oml_agente_sip} = {oml_agente_pk}
+        """
+
+    def get_parametros(self):
+        return self._parametros
 
 #==============================================================================
 # Campana Dialer
