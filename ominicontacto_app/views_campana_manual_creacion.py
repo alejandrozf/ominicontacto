@@ -191,7 +191,7 @@ class QueueManualCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
                 messages.ERROR,
                 message,
             )
-        return super(QueueCreateView, self).form_valid(form)
+        return super(QueueManualCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(QueueManualCreateView, self).get_context_data(**kwargs)
