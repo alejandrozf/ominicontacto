@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
-    CampanaManualForm, QueueForm, QueueUpdateForm, SincronizaDialerForm
+    CampanaManualForm, QueueDialerForm, QueueDialerUpdateForm, SincronizaDialerForm
 )
 from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
@@ -106,7 +106,7 @@ class CampanaManualCreateView(CreateView):
 
     def get_success_url(self):
         return reverse(
-            'queue_nuevo',
+            'campana_manual_queue_create',
             kwargs={"pk_campana": self.object.pk})
 
 
@@ -150,19 +150,19 @@ class CampanaManualUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse(
-            'queue_update',
+            'campana_manual_queue_update',
             kwargs={"pk_campana": self.object.pk})
 
 
-class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                      CreateView):
+class QueueManualCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
+                            CreateView):
     """Vista para la creacion de una Cola"""
     model = Queue
-    form_class = QueueForm
-    template_name = 'queue/create_update_queue.html'
+    form_class = QueueDialerForm
+    template_name = 'campana_manual/create_update_queue.html'
 
     def get_initial(self):
-        initial = super(QueueCreateView, self).get_initial()
+        initial = super(QueueManualCreateView, self).get_initial()
         initial.update({'campana': self.campana.id,
                         'name': self.campana.nombre})
         return initial
@@ -194,19 +194,19 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         return super(QueueCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
-        context = super(QueueCreateView, self).get_context_data(**kwargs)
+        context = super(QueueManualCreateView, self).get_context_data(**kwargs)
         context['campana'] = self.campana
         return context
 
     def get_success_url(self):
-        return reverse('campana_list')
+        return reverse('campana_manual_list')
 
 
-class QueueUpdateView(UpdateView):
+class QueueManualUpdateView(UpdateView):
     """Vista actualiza una Queue(Cola)"""
     model = Queue
-    form_class = QueueUpdateForm
-    template_name = 'queue/create_update_queue.html'
+    form_class = QueueDialerUpdateForm
+    template_name = 'campana_manual/create_update_queue.html'
 
     def get_object(self, queryset=None):
          campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -217,10 +217,10 @@ class QueueUpdateView(UpdateView):
         try:
             Queue.objects.get(campana=campana)
         except Queue.DoesNotExist:
-            return HttpResponseRedirect("/campana/" + self.kwargs['pk_campana']
+            return HttpResponseRedirect("/campana_manual/" + self.kwargs['pk_campana']
                                         + "/cola/")
         else:
-            return super(QueueUpdateView, self).dispatch(*args, **kwargs)
+            return super(QueueManualUpdateView, self).dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         activacion_queue_service = ActivacionQueueService()
@@ -235,13 +235,13 @@ class QueueUpdateView(UpdateView):
                 messages.ERROR,
                 message,
             )
-        return super(QueueUpdateView, self).post(request, *args, **kwargs)
+        return super(QueueManualUpdateView, self).post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(QueueUpdateView, self).get_context_data(**kwargs)
+        context = super(QueueManualUpdateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
         return context
 
     def get_success_url(self):
-        return reverse('campana_list')
+        return reverse('campana_manual_list')

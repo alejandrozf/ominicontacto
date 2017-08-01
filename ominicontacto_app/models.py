@@ -390,6 +390,12 @@ class CampanaManager(models.Manager):
         """
         return self.filter(type=Campana.TYPE_ENTRANTE)
 
+    def obtener_campanas_manuales(self):
+        """
+        Devuelve campañas de tipo dialer
+        """
+        return self.filter(type=Campana.TYPE_MANUAL)
+
     def obtener_campanas_vista_by_user(self, campanas, user):
         """
         devuelve las campanas filtradas por user
