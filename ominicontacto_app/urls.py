@@ -759,6 +759,10 @@ urlpatterns = [
         login_required(
             views_campana_manual_creacion.CampanaManualCreateView.as_view()),
         name="campana_manual_create"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/update/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualUpdateView.as_view()),
+        name="campana_manual_update"),
 ]
 
 urlpatterns += patterns('',

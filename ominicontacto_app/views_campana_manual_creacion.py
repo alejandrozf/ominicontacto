@@ -12,8 +12,7 @@ from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
 from ominicontacto_app.forms import (
-    CampanaManualForm, QueueForm, QueueUpdateForm, CampanaUpdateForm,
-    SincronizaDialerForm
+    CampanaManualForm, QueueForm, QueueUpdateForm, SincronizaDialerForm
 )
 from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
@@ -111,39 +110,42 @@ class CampanaManualCreateView(CreateView):
             kwargs={"pk_campana": self.object.pk})
 
 
-class CampanaUpdateView(UpdateView):
+class CampanaManualUpdateView(UpdateView):
     """
     Esta vista actualiza un objeto Campana.
     """
 
-    template_name = 'campana/edita_campana.html'
+    template_name = 'campana_manual/nueva_edita_campana.html'
     model = Campana
     context_object_name = 'campana'
-    form_class = CampanaUpdateForm
+    form_class = CampanaManualForm
 
     def get_object(self, queryset=None):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        campana_service = CampanaService()
-        error = campana_service.validar_modificacion_bd_contacto(
-            self.get_object(), self.object.bd_contacto)
-        if error:
+        if self.object.tipo_interaccion is Campana.FORMULARIO and \
+            not self.object.formulario:
+            error = "Debe seleccionar un formulario"
             return self.form_invalid(form, error=error)
-        return super(CampanaUpdateView, self).form_valid(form)
+        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
+            not self.object.sitio_externo:
+            error = "Debe seleccionar un sitio externo"
+            return self.form_invalid(form, error=error)
+        self.object.save()
+        return super(CampanaManualUpdateView, self).form_valid(form)
 
     def form_invalid(self, form, error=None):
 
         message = '<strong>Operación Errónea!</strong> \
-                  La base de datos es erronea. {0}'.format(error)
+                . {0}'.format(error)
 
         messages.add_message(
             self.request,
             messages.WARNING,
             message,
         )
-
         return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
