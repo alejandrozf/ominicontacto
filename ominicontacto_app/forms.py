@@ -918,3 +918,27 @@ class ReporteAgenteForm(forms.Form):
                         for grupo in Grupo.objects.all()]
         grupo_choice.insert(0, ('', '---------'))
         self.fields['grupo_agente'].choices = grupo_choice
+
+
+class CampanaManualForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CampanaManualForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Campana
+        fields = ('nombre', 'calificacion_campana', 'formulario', 'gestion',
+                  'sitio_externo', 'tipo_interaccion')
+
+        widgets = {
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
+        }
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if ' ' in nombre:
+            raise forms.ValidationError('el nombre no puede contener espacios')
+        return nombre

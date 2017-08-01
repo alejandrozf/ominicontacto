@@ -9,7 +9,7 @@ from ominicontacto_app import (
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
-    views_campana_dialer_template
+    views_campana_dialer_template, views_campana_manual_creacion
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -752,6 +752,13 @@ urlpatterns = [
         login_required(
             views_campana_dialer_template.TemplateDeleteView.as_view()),
         name="campana_dialer_template_elimina"),
+    # ==========================================================================
+    # Campana Manual
+    # ==========================================================================
+    url(r'^campana_manual/create/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualCreateView.as_view()),
+        name="campana_manual_create"),
 ]
 
 urlpatterns += patterns('',

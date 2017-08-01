@@ -609,9 +609,13 @@ class Campana(models.Model):
     TYPE_DIALER = 2
     """La campaña está definida como de discador"""
 
+    TYPE_MANUAL = 3
+    """La campaña está definida como manual"""
+
     TYPES_CAMPANA = (
         (TYPE_ENTRANTE, 'Entrante'),
-        (TYPE_DIALER, 'Dialer')
+        (TYPE_DIALER, 'Dialer'),
+        (TYPE_MANUAL, 'Manual')
     )
 
     FORMULARIO = 1
