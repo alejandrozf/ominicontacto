@@ -1660,7 +1660,7 @@ class GrabacionManager(models.Manager):
         fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)
         try:
             return self.filter(fecha__range=(fecha_inicio, fecha_fin),
-                               campana__in=campanas)
+                               campana__in=campanas).order_by('-fecha')
         except Grabacion.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con ese rango "
                                        "de fechas"))
@@ -1716,7 +1716,7 @@ class GrabacionManager(models.Manager):
         if campana:
             grabaciones = grabaciones.filter(campana=campana)
 
-        return grabaciones
+        return grabaciones.order_by('-fecha')
 
     def obtener_count_campana(self):
         try:
