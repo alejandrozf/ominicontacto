@@ -343,6 +343,8 @@ urlpatterns = [
             views_agente.LlamarContactoView.as_view()),
         name='agente_llamar_contacto',
         ),
+    url(r'^agente/llamadas_exporta/(?P<tipo_reporte>[\w\-]+)/$',
+        views_agente.exporta_reporte_agente_llamada_view, name='agente_llamada_exporta'),
     # ==========================================================================
     # Reportes
     # ==========================================================================
@@ -351,6 +353,8 @@ urlpatterns = [
             views_grabacion.GrabacionReporteFormView.as_view()),
         name='reporte_llamadas',
         ),
+    url(r'^reportes/llamadas_exporta/(?P<tipo_reporte>[\w\-]+)/$',
+        views_grabacion.exporta_reporte_grabacion_llamada_view, name='llamadas_exporta'),
     # ==========================================================================
     # Calificacion
     # ==========================================================================

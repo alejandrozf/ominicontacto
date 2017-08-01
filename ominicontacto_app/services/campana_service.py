@@ -234,7 +234,8 @@ class CampanaService():
         :return: True si accion se ejecuto correctamente, False si tuvo algun
         inconveniente
         """
-        url_edit = "api/campaigns/?op=start&campaign={0}".format(campana.nombre)
+        nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
+        url_edit = "api/campaigns/?op=start&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL,
                   url_edit])
         r = requests.post(url)
@@ -249,7 +250,8 @@ class CampanaService():
         :return: True si accion se ejecuto correctamente, False si tuvo algun
         inconveniente
         """
-        url_edit = "api/campaigns/?op=pause&campaign={0}".format(campana.nombre)
+        nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
+        url_edit = "api/campaigns/?op=pause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL,
                   url_edit])
         r = requests.post(url)
@@ -264,8 +266,8 @@ class CampanaService():
         :return: True si accion se ejecuto correctamente, False si tuvo algun
         inconveniente
         """
-        url_edit = "api/campaigns/?op=unpause&campaign={0}".format(
-            campana.nombre)
+        nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
+        url_edit = "api/campaigns/?op=unpause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL,
                   url_edit])
         r = requests.post(url)
@@ -304,7 +306,8 @@ class CampanaService():
         :return: True si accion se ejecuto correctamente, False si tuvo algun
         inconveniente
         """
-        url_edit = "api/campaigns/?op=remove&campaign={0}".format(campana.nombre)
+        nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
+        url_edit = "api/campaigns/?op=remove&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL,
                   url_edit])
         r = requests.post(url)

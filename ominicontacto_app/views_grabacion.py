@@ -8,6 +8,7 @@ ya que el insert lo hace kamailio/asterisk(hablar con fabian como hace el insert
 import datetime
 
 from django.conf import settings
+from django.shortcuts import redirect
 from django.views.generic.detail import DetailView
 from django.views.generic import FormView, ListView
 from django.core import paginator as django_paginator
@@ -19,6 +20,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.reporte_grafico import GraficoService
 from utiles import convert_fecha_datetime
+from ominicontacto_app.services.reporte_campana_csv import ReporteCampanaCSVService
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -112,7 +114,10 @@ class GrabacionReporteFormView(FormView):
         service = GraficoService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        graficos_estadisticas = service.general_llamadas_hoy(hoy, hoy_ahora)
+        graficos_estadisticas = service.general_llamadas_hoy(
+            hoy, hoy_ahora, request.user, False)
+        service_csv = ReporteCampanaCSVService()
+        service_csv.crea_reporte_csv(graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
 
@@ -121,9 +126,21 @@ class GrabacionReporteFormView(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        finalizadas = form.cleaned_data.get('finalizadas')
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
-        graficos_estadisticas = service.general_llamadas_hoy(fecha_desde,
-                                                             fecha_hasta)
+        graficos_estadisticas = service.general_llamadas_hoy(
+            fecha_desde, fecha_hasta, self.request.user, finalizadas)
+        service_csv = ReporteCampanaCSVService()
+        service_csv.crea_reporte_csv(graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
+
+
+def exporta_reporte_grabacion_llamada_view(request, tipo_reporte):
+    """
+    Esta vista invoca a generar un csv de reporte de la campana.
+    """
+    service = service_csv = ReporteCampanaCSVService()
+    url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
+    return redirect(url)

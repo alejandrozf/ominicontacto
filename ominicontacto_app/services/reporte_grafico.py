@@ -8,7 +8,7 @@ import pygal
 import datetime
 from pygal.style import Style, RedBlueStyle
 
-from ominicontacto_app.models import Grabacion, AgenteProfile
+from ominicontacto_app.models import Grabacion, AgenteProfile, Queuelog, Campana
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -52,7 +52,7 @@ class GraficoService():
 
         return counter_por_tipo
 
-    def _obtener_campana_grabacion(self, fecha_inferior, fecha_superior):
+    def _obtener_campana_grabacion(self, fecha_inferior, fecha_superior, campanas):
         """
         Obtiene el totales de llamadas por campanas
         :param fecha_inferior: fecha desde cual se obtendran las grabaciones
@@ -64,8 +64,9 @@ class GraficoService():
                                                    datetime.time.min)
         fecha_superior = datetime.datetime.combine(fecha_superior,
                                                    datetime.time.max)
+        campanas = [campana.id for campana in campanas]
         dict_campana = Grabacion.objects.obtener_count_campana().filter(
-            fecha__range=(fecha_inferior, fecha_superior))
+            fecha__range=(fecha_inferior, fecha_superior), campana_id__in=campanas)
         campana = []
         campana_nombre = []
 
@@ -159,117 +160,6 @@ class GraficoService():
 
         return total_manual
 
-    def _obtener_agente_grabacion(self, fecha_inferior, fecha_superior):
-        """
-        Obtiene el totales de llamadas por agente
-        :param fecha_inferior: fecha desde cual se obtendran las grabaciones
-        :param fecha_superior: fecha hasta el cual se obtendran las grabaciones
-        :return: queryset con las cantidades totales por agente
-        """
-        fecha_inferior = datetime.datetime.combine(fecha_inferior,
-                                                   datetime.time.min)
-        fecha_superior = datetime.datetime.combine(fecha_superior,
-                                                   datetime.time.max)
-        dict_agentes = Grabacion.objects.obtener_count_agente().filter(
-            fecha__range=(fecha_inferior, fecha_superior))
-        agentes = []
-        sip_agentes = []
-
-        for sip_agente in dict_agentes:
-            sip_agentes.append(sip_agente['sip_agente'])
-            try:
-                agente = AgenteProfile.objects.get(sip_extension=sip_agente['sip_agente'])
-                agentes.append(agente.user.get_full_name())
-            except AgenteProfile.DoesNotExist:
-                agentes.append(sip_agente['sip_agente'])
-
-        return dict_agentes, agentes, sip_agentes
-
-    def _obtener_total_agente_grabacion(self, dict_agentes, agentes):
-        """
-        Obtiene el total grabaciones  por agente en una lista
-        :return: lista con el total de llamadas por agente
-        """
-        total_agentes = []
-
-        for agente_unit, agente in zip(dict_agentes, agentes):
-            if agente_unit['sip_agente'] == agente:
-                total_agentes.append(agente_unit['cantidad'])
-            else:
-                total_agentes.append(0)
-
-        return total_agentes
-
-    def _obtener_total_ics_agente(self, dict_agentes, agentes):
-        """
-        Obtiene el total grabaciones ICS por agente en una lista
-        :return: lista con el total de llamadas ICS por agente
-        """
-        total_ics = []
-
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_ICS).\
-                filter(sip_agente=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_ics.append(cantidad)
-
-        return total_ics
-
-    def _obtener_total_dialer_agente(self, dict_agentes, agentes):
-        """
-        Obtiene el total grabaciones DIALER por agente en una lista
-        :return: lista con el total de llamadas DIALER por agente
-        """
-        total_dialer = []
-
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_DIALER). \
-                filter(sip_agente=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_dialer.append(cantidad)
-
-        return total_dialer
-
-    def _obtener_total_inbound_agente(self, dict_agentes, agentes):
-        """
-        Obtiene el total grabaciones INBOUND por agente en una lista
-        :return: lista con el total de llamadas INBOUND por agente
-        """
-        total_inbound = []
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_INBOUND). \
-                filter(sip_agente=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_inbound.append(cantidad)
-        return total_inbound
-
-    def _obtener_total_manual_agente(self, dict_agentes, agentes):
-        """
-        Obtiene el total grabaciones MANUAL por agente en una lista
-        :return: lista con el total de llamadas MANUAL por agente
-        """
-        total_manual = []
-
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_MANUAL). \
-                filter(sip_agente=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_manual.append(cantidad)
-
-        return total_manual
-
     def _obtener_total_llamadas_campana_inbound(self, fecha_inferior,
                                                 fecha_superior):
         # lista de dict con la cantidad de cada campana
@@ -296,9 +186,122 @@ class GraficoService():
             list_cantidad.append(agente_counter['cantidad'])
         return list_agente, list_cantidad
 
-    def _calcular_estadisticas(self, fecha_inferior, fecha_superior):
-        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(fecha_inferior,
-                                                                     fecha_superior)
+    def calcular_cantidad_llamadas(self, campanas, fecha_inferior, fecha_superior):
+        """
+        Calcula la cantidad de llamadas ingresadas, atendidas, abandondas, expiradas
+        por campana
+        :return: en un dicionaros los totales por campana y los totales para hacer el
+        grafico
+        """
+        eventos_llamadas_ingresadas = ['ENTERQUEUE']
+        eventos_llamadas_atendidas = ['CONNECT']
+        eventos_llamadas_abandonadas = ['ABANDON']
+        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
+
+        nombres_queues = []
+        total_atendidas = []
+        total_abandonadas = []
+        total_expiradas = []
+
+        queues_tiempo = []
+
+        for campana in campanas:
+            nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
+            ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
+                eventos_llamadas_ingresadas, fecha_inferior, fecha_superior,
+                nombre_campana)
+            atendidas = Queuelog.objects.obtener_log_queuename_event_periodo(
+                eventos_llamadas_atendidas, fecha_inferior, fecha_superior,
+                nombre_campana)
+            abandonadas = Queuelog.objects.obtener_log_queuename_event_periodo(
+                eventos_llamadas_abandonadas, fecha_inferior, fecha_superior,
+                nombre_campana)
+            expiradas = Queuelog.objects.obtener_log_queuename_event_periodo(
+                eventos_llamadas_expiradas, fecha_inferior, fecha_superior,
+                nombre_campana)
+            count_llamadas_ingresadas = ingresadas.count()
+            count_llamadas_atendidas = atendidas.count()
+            count_llamadas_abandonadas = abandonadas.count()
+            count_llamadas_expiradas = expiradas.count()
+            count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
+            count_manuales_atendidas = atendidas.filter(data4='saliente').count()
+            count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
+            cantidad_campana = []
+            cantidad_campana.append(campana.nombre)
+            cantidad_campana.append(count_llamadas_ingresadas)
+            cantidad_campana.append(count_llamadas_atendidas)
+            cantidad_campana.append(count_llamadas_expiradas)
+            cantidad_campana.append(count_llamadas_abandonadas)
+            cantidad_campana.append(count_llamadas_manuales)
+            cantidad_campana.append(count_manuales_atendidas)
+            cantidad_campana.append(count_manuales_abandonadas)
+
+            queues_tiempo.append(cantidad_campana)
+
+            # para reportes
+            nombres_queues.append(campana.nombre)
+            total_atendidas.append(count_llamadas_atendidas)
+            total_abandonadas.append(count_llamadas_expiradas)
+            total_expiradas.append(count_llamadas_abandonadas)
+
+        totales_grafico = {
+            'nombres_queues': nombres_queues,
+            'total_atendidas': total_atendidas,
+            'total_abandonadas': total_abandonadas,
+            'total_expiradas': total_expiradas
+        }
+
+        return queues_tiempo, totales_grafico
+
+    def obtener_total_llamadas(self, fecha_inferior, fecha_superior, campanas):
+        """
+        Calcula la cantidad de llamadas ingresadas, atendidas, abandondas, expiradas
+        :return: los totales de llamadas por ingresadas, atendidas, abandonad y expiradas
+        """
+
+        eventos_llamadas_ingresadas = ['ENTERQUEUE']
+        eventos_llamadas_atendidas = ['CONNECT']
+        eventos_llamadas_abandonadas = ['ABANDON']
+        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
+        campanas = [campana.id for campana in campanas]
+        ingresadas = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(campana_id__in=campanas)
+        atendidas = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(campana_id__in=campanas)
+        abandonadas = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(campana_id__in=campanas)
+        expiradas = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(campana_id__in=campanas)
+        count_llamadas_ingresadas = ingresadas.count()
+        count_llamadas_atendidas = atendidas.count()
+        count_llamadas_abandonadas = abandonadas.count()
+        count_llamadas_expiradas = expiradas.count()
+        count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
+        count_manuales_atendidas = atendidas.filter(data4='saliente').count()
+        count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
+        cantidad_campana = []
+        cantidad_campana.append(count_llamadas_ingresadas)
+        cantidad_campana.append(count_llamadas_atendidas)
+        cantidad_campana.append(count_llamadas_expiradas)
+        cantidad_campana.append(count_llamadas_abandonadas)
+        cantidad_campana.append(count_llamadas_manuales)
+        cantidad_campana.append(count_manuales_atendidas)
+        cantidad_campana.append(count_manuales_abandonadas)
+
+        return cantidad_campana
+
+    def _calcular_estadisticas(self, fecha_inferior, fecha_superior, user, finalizadas):
+
+        if finalizadas:
+            campanas = Campana.objects.obtener_all_activas_finalizadas()
+        else:
+            campanas = Campana.objects.obtener_all_dialplan_asterisk()
+
+        if not user.get_is_administrador():
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+
+        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(
+            fecha_inferior, fecha_superior).filter(campana__in=campanas)
 
         # obtiene el total de llamadas por tipo de llamadas
         counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
@@ -324,7 +327,14 @@ class GraficoService():
         total_inbound = counter_tipo_llamada[Grabacion.TYPE_INBOUND]
         total_manual = counter_tipo_llamada[Grabacion.TYPE_MANUAL]
 
-        dict_campana, campana, campana_nombre = self._obtener_campana_grabacion(fecha_inferior, fecha_superior)
+        queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
+            campanas, fecha_inferior, fecha_superior)
+
+        total_llamadas = self.obtener_total_llamadas(fecha_inferior, fecha_superior,
+                                                     campanas)
+
+        dict_campana, campana, campana_nombre = self._obtener_campana_grabacion(
+            fecha_inferior, fecha_superior, campanas)
         total_campana = self._obtener_total_campana_grabacion(dict_campana, campana)
         total_grabacion_ics = self._obtener_total_ics_grabacion(dict_campana,
                                                               campana)
@@ -334,13 +344,6 @@ class GraficoService():
                                                               campana)
         total_grabacion_manual = self._obtener_total_manual_grabacion(dict_campana,
                                                               campana)
-        dict_agentes, agentes_nombre, agentes = self._obtener_agente_grabacion(fecha_inferior, fecha_superior)
-
-        total_agentes = self._obtener_total_agente_grabacion(dict_agentes, agentes)
-        total_agente_ics = self._obtener_total_ics_agente(dict_agentes, agentes)
-        total_agente_dialer = self._obtener_total_dialer_agente(dict_agentes, agentes)
-        total_agente_inbound = self._obtener_total_inbound_agente(dict_agentes, agentes)
-        total_agente_manual = self._obtener_total_manual_agente(dict_agentes, agentes)
 
         dic_estadisticas = {
             'porcentaje_dialer': porcentaje_dialer,
@@ -359,19 +362,18 @@ class GraficoService():
             'total_grabacion_dialer': total_grabacion_dialer,
             'total_grabacion_inbound': total_grabacion_inbound,
             'total_grabacion_manual': total_grabacion_manual,
-            'agentes': agentes,
-            'agentes_nombre': agentes_nombre,
-            'total_agentes': total_agentes,
-            'total_agente_ics': total_agente_ics,
-            'total_agente_dialer': total_agente_dialer,
-            'total_agente_inbound': total_agente_inbound,
-            'total_agente_manual': total_agente_manual,
+            'queues_llamadas': queues_llamadas,
+            'fecha_desde': fecha_inferior,
+            'fecha_hasta': fecha_superior,
+            'total_llamadas': total_llamadas,
+            'totales_grafico': totales_grafico,
+
         }
         return dic_estadisticas
 
-    def general_llamadas_hoy(self, fecha_inferior, fecha_superior):
-        estadisticas = self._calcular_estadisticas(fecha_inferior,
-                                                   fecha_superior)
+    def general_llamadas_hoy(self, fecha_inferior, fecha_superior, user, finalizadas):
+        estadisticas = self._calcular_estadisticas(
+            fecha_inferior, fecha_superior, user, finalizadas)
 
         if estadisticas:
             logger.info("Generando grafico para grabaciones de llamadas ")
@@ -408,21 +410,20 @@ class GraficoService():
         barra_campana_total.add('MANUAL',
                                 estadisticas['total_grabacion_manual'])
 
-        # Barra: Cantidad de llamadas de los agentes por tipo de llamadas.
-        barra_agente_total = pygal.Bar(  # @UndefinedVariable
+        # Barra: Cantidad de llamadas por campana
+        barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
-        barra_agente_total.title = 'Cantidad de llamadas de los agentes por tipo de llamadas'
+        #barra_campana_llamadas.title = 'Distribucion por campana'
 
-        barra_agente_total.x_labels = estadisticas['agentes_nombre']
-        barra_agente_total.add('ICS',
-                                estadisticas['total_agente_ics'])
-        barra_agente_total.add('DIALER',
-                                estadisticas['total_agente_dialer'])
-        barra_agente_total.add('INBOUND',
-                                estadisticas['total_agente_inbound'])
-        barra_agente_total.add('MANUAL',
-                                estadisticas['total_agente_manual'])
+        barra_campana_llamadas.x_labels = \
+            estadisticas['totales_grafico']['nombres_queues']
+        barra_campana_llamadas.add('atendidas',
+                                   estadisticas['totales_grafico']['total_atendidas'])
+        barra_campana_llamadas.add('abandonadas ',
+                                   estadisticas['totales_grafico']['total_abandonadas'])
+        barra_campana_llamadas.add('expiradas',
+                                   estadisticas['totales_grafico']['total_expiradas'])
 
         return {
             'estadisticas': estadisticas,
@@ -434,11 +435,5 @@ class GraficoService():
                                         estadisticas['total_grabacion_inbound'],
                                         estadisticas['total_grabacion_manual']),
             'barra_campana_total': barra_campana_total,
-            'dict_agente_counter': zip(estadisticas['agentes_nombre'],
-                                        estadisticas['total_agentes'],
-                                        estadisticas['total_agente_ics'],
-                                        estadisticas['total_agente_dialer'],
-                                        estadisticas['total_agente_inbound'],
-                                        estadisticas['total_agente_manual']),
-            'barra_agente_total': barra_agente_total,
+            'barra_campana_llamadas': barra_campana_llamadas,
         }

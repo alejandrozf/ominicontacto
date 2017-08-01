@@ -32,7 +32,7 @@ class CampanaCreator(object):
         assert campana is not None, "Campana == None"
 
         dict_campana = {
-            "name": elimina_espacios(campana.nombre),
+            "name": "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
 
             "priority": 10,
             "pace": "RUNNABLE",
@@ -146,7 +146,7 @@ class EndPointCreator(object):
 
         dict_endpoint = {
             "type": "QUEUE",
-            "queueName": elimina_espacios(campana.nombre),
+            "queueName": "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
             "name": "",
             "astId": {
                 "id": 1
@@ -161,7 +161,7 @@ class EndPointCreator(object):
             "reverseDialing": False,
             "stepwiseReverse": False,
             "securityKey": "",
-            "description": elimina_espacios(campana.nombre),
+            "description": "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
             "dialFind": "",
             "dialReplace": ""
         }
@@ -336,6 +336,7 @@ class CampanaListContactoConfigFile(ConfigFile):
                                 "newcampaign_list_contacto.txt ")
         filename = filename.strip()
         super(CampanaListContactoConfigFile, self).__init__(filename)
+
 
 class CampanaDesListConfigFile(ConfigFile):
     def __init__(self):

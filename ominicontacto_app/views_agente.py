@@ -26,6 +26,7 @@ from django.conf import settings
 from ominicontacto_app.services.asterisk_ami_http import (
     AsteriskHttpClient, AsteriskHttpOriginateError
 )
+from ominicontacto_app.services.reporte_llamada_csv import ReporteAgenteCSVService
 import logging as _logging
 
 
@@ -141,10 +142,10 @@ class AgenteReporteListView(FormView):
         hoy = hoy_ahora.date()
         agente_service = EstadisticasService()
         agentes = []
-        estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes,
-                                                      request.user)
+        graficos_estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes,
+                                                               request.user)
         return self.render_to_response(self.get_context_data(
-            estadisticas=estadisticas))
+            graficos_estadisticas=graficos_estadisticas))
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
@@ -161,13 +162,17 @@ class AgenteReporteListView(FormView):
         if grupo_id:
             grupo = Grupo.objects.get(pk=int(grupo_id))
             agentes = grupo.agentes.all()
-        agentes = [agente.user.get_full_name() for agente in agentes]
+        #agentes = ["{0}_{1}".format(agente.id, agente.user.get_full_name())
+         #          for agente in agentes]
         agente_service = EstadisticasService()
-        estadisticas = agente_service.general_campana(fecha_desde, fecha_hasta,
-                                                      agentes, self.request.user)
+        graficos_estadisticas = agente_service.general_campana(
+            fecha_desde, fecha_hasta, agentes, self.request.user)
+
+        service_csv = ReporteAgenteCSVService()
+        service_csv.crea_reporte_csv(graficos_estadisticas)
 
         return self.render_to_response(self.get_context_data(
-            estadisticas=estadisticas))
+            graficos_estadisticas=graficos_estadisticas))
 
 
 def cambiar_estado_agente_view(request):
@@ -216,7 +221,7 @@ class LlamarContactoView(RedirectView):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
         calificacion_cliente = CalificacionCliente.objects.filter(
-            contacto=contacto,agente=agente).order_by('-fecha')
+            contacto=contacto, agente=agente).order_by('-fecha')
         campana_id = 0
         campana_nombre = "None"
         if calificacion_cliente > 0:
@@ -242,3 +247,12 @@ class LlamarContactoView(RedirectView):
         except:
             logger.exception("Originate failed - contacto: %s ", contacto.telefono)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
+
+
+def exporta_reporte_agente_llamada_view(request, tipo_reporte):
+    """
+    Esta vista invoca a generar un csv de reporte de la campana.
+    """
+    service = service_csv = ReporteAgenteCSVService()
+    url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
+    return redirect(url)
