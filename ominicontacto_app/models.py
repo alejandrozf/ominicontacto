@@ -643,6 +643,7 @@ class Campana(models.Model):
     supervisors = models.ManyToManyField(User, related_name="campanasupervisors")
     es_template = models.BooleanField(default=False)
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
+    es_manual = models.BooleanField(default=False)
 
     def __unicode__(self):
             return self.nombre
