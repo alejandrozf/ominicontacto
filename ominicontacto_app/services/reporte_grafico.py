@@ -206,7 +206,8 @@ class GraficoService():
         queues_tiempo = []
 
         for campana in campanas:
-            nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
+            nombre = campana.nombre.decode('iso-8859-1')
+            nombre_campana = "{0}_{1}".format(campana.id, nombre)
             ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
                 eventos_llamadas_ingresadas, fecha_inferior, fecha_superior,
                 nombre_campana)
