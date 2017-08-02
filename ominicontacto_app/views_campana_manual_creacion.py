@@ -140,6 +140,14 @@ class CampanaManualUpdateView(UpdateView):
     context_object_name = 'campana'
     form_class = CampanaManualForm
 
+    def get_initial(self):
+        initial = super(CampanaManualUpdateView, self).get_initial()
+        campana = self.get_object()
+        initial.update({
+            'auto_grabacion': campana.queue_campana.auto_grabacion,
+            'detectar_contestadores': campana.queue_campana.detectar_contestadores})
+        return initial
+
     def get_object(self, queryset=None):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
@@ -154,6 +162,12 @@ class CampanaManualUpdateView(UpdateView):
             error = "Debe seleccionar un sitio externo"
             return self.form_invalid(form, error=error)
         self.object.save()
+        auto_grabacion = form.cleaned_data['auto_grabacion']
+        detectar_contestadores = form.cleaned_data['detectar_contestadores']
+        queue = self.object.queue_campana
+        queue.auto_grabacion = auto_grabacion
+        queue.detectar_contestadores = detectar_contestadores
+        queue.save()
         return super(CampanaManualUpdateView, self).form_valid(form)
 
     def form_invalid(self, form, error=None):
@@ -169,9 +183,7 @@ class CampanaManualUpdateView(UpdateView):
         return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
-        return reverse(
-            'campana_manual_queue_update',
-            kwargs={"pk_campana": self.object.pk})
+        return reverse('campana_manual_list')
 
 
 class QueueManualCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
