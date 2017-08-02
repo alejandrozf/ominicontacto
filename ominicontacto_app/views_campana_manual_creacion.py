@@ -101,13 +101,33 @@ class CampanaManualCreateView(CreateView):
             return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_MANUAL
         self.object.reported_by = self.request.user
+        self.object.estado = Campana.ESTADO_ACTIVA
         self.object.save()
+        auto_grabacion = form.cleaned_data['auto_grabacion']
+        detectar_contestadores = form.cleaned_data['detectar_contestadores']
+        queue = Queue(
+            campana=self.object,
+            name=self.object.nombre,
+            maxlen=5,
+            wrapuptime=5,
+            servicelevel=30,
+            strategy='rrmemory',
+            eventmemberstatus=True,
+            eventwhencalled=True,
+            ringinuse=True,
+            setinterfacevar=True,
+            weight=0,
+            wait=120,
+            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+            auto_grabacion=auto_grabacion,
+            detectar_contestadores=detectar_contestadores
+        )
+        queue.save()
         return super(CampanaManualCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(
-            'campana_manual_queue_create',
-            kwargs={"pk_campana": self.object.pk})
+            'campana_manual_list')
 
 
 class CampanaManualUpdateView(UpdateView):

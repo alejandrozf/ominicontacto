@@ -921,6 +921,9 @@ class ReporteAgenteForm(forms.Form):
 
 
 class CampanaManualForm(forms.ModelForm):
+    auto_grabacion = forms.BooleanField(required=False)
+    detectar_contestadores = forms.BooleanField(required=False)
+
     def __init__(self, *args, **kwargs):
         super(CampanaManualForm, self).__init__(*args, **kwargs)
 

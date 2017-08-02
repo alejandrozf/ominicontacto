@@ -10,16 +10,9 @@
     </script>
 {% endblock %}
 {% block content %}
-            {% if es_template %}
-                <h4 class="inline">Nuevo Template de Campaña Dialer: Datos Básicos</h4>
-            {% else %}
-                <h4 class="inline">Nueva Campaña Manual: Datos Básicos</h4>
-            {% endif %}
 
-            <ul class="nav nav-tabs">
-                <li class="active"><a>Campaña</a></li>
-                <li class="disabled"><a>Cola</a></li>
-            </ul>
+                <h4 class="inline">Campaña Manual: Datos Básicos</h4>
+
             <br>
 <div class="col-md-6">
 <form action="" enctype="multipart/form-data" method="post">
@@ -72,9 +65,23 @@
               {{ form.gestion }}
         </div>
     </div>
+    <div class="form-group row">
+        {{ form.auto_grabacion.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados: </label>
+        <div class="col-sm-6">
+              {{ form.auto_grabacion }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.detectar_contestadores.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.detectar_contestadores.id_for_label }}">Detectar Contestadores: </label>
+        <div class="col-sm-6">
+              {{ form.detectar_contestadores }}
+        </div>
+    </div>
     </br>
     <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
-        Siguiente
+        Guardar
     </button>
 
 </form>
