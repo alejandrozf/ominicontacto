@@ -77,13 +77,19 @@ class QueueDialplanConfigCreator(object):
 
         assert campana.queue_campana is not None, "campana.queue_campana == None"
 
+        tipo_campana = campana.type
+        if campana.type is Campana.TYPE_DIALER:
+            tipo_campana = "DIALER"
+        elif campana.type is Campana.TYPE_MANUAL:
+            tipo_campana = "MANUAL"
+
         partes = []
         param_generales = {
             'oml_queue_name': "{0}_{1}".format(campana.id,
                                                elimina_espacios(campana.nombre)),
             'oml_queue_id_asterisk': '0077' + str(campana.queue_campana.queue_asterisk),
             'date': str(datetime.datetime.now()),
-            'oml_tipo_campana': campana.type.get_type_display()
+            'oml_tipo_campana': tipo_campana
         }
 
         # Generador inicial para campana dialer
