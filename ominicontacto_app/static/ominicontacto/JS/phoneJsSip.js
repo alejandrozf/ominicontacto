@@ -609,7 +609,9 @@ $(function() {
 				} else {
 					headerIdCamp = $("#cmpList").val();
 			  	$("#idCamp").val(headerIdCamp);
-			  	headerNomCamp = $("#idCamp").val() + '_' + $("#cmpList option:selected").html();
+					var nombrecamp = $("#cmpList option:selected").html();
+					nombrecamp = nombrecamp.substr(0,1);
+			  	headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 			    $("#redial").prop('disabled',false);
 			  	makeCall();
 				}
@@ -643,7 +645,9 @@ $(function() {
 			} else {
 				headerIdCamp = $("#cmpList").val();
 		  	$("#idCamp").val(headerIdCamp);
-		  	headerNomCamp = $("#idCamp").val() + '_' + $("#cmpList option:selected").html();
+				var nombrecamp = $("#cmpList option:selected").html();
+				nombrecamp = nombrecamp.substr(0,1);
+				headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
 			}
@@ -661,7 +665,9 @@ $(function() {
 			$("#modalSelectCmp").modal("hide");
 	  	headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
-	  	headerNomCamp = $("#idCamp").val() + '_' + $("#cmpList option:selected").html();
+			var nombrecamp = $("#cmpList option:selected").html();
+			nombrecamp = nombrecamp.substr(0,1);
+			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
 	  	makeCall();
@@ -669,7 +675,9 @@ $(function() {
 			$("#modalSelectCmp").modal("hide");
 			headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
-	  	headerNomCamp = $("#idCamp").val() + '_' + $("#cmpList option:selected").html();
+			var nombrecamp = $("#cmpList option:selected").html();
+			nombrecamp = nombrecamp.substr(0,1);
+			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
 		}
