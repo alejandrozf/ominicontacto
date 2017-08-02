@@ -183,7 +183,7 @@ class QueueDialplanConfigCreator(object):
 
             dialplan.append(config_chunk)
 
-        campanas = self._obtener_todas_dialer_para_generar_dialplan()
+        campanas = self._obtener_todas_dialer_manuales_para_generar_dialplan()
 
         for campana in campanas:
             logger.info("Creando dialplan para queue %s", campana.nombre)
