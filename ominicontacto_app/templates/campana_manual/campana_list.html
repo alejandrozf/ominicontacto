@@ -55,9 +55,6 @@
 
                 <td> {{campana.get_estado_display}}  </td>
                 <td width="14%">
-                    <a href="{% url 'campana_manual_queue_update' campana.pk %}">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar cola"></span>
-                    </a>
                     <a href="{% url 'queue_member_campana' campana.pk %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
                     </a>
@@ -99,9 +96,6 @@
 
                 <td> {{campana.get_estado_display}}  </td>
                 <td width="14%">
-                    <a href="{% url 'campana_manual_queue_update' campana.pk %}">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar cola"></span>
-                    </a>
                     <a href="{% url 'queue_member_campana' campana.pk %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
                     </a>
