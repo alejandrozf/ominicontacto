@@ -409,6 +409,7 @@ class GrabacionReporteForm(forms.Form):
     """
     fecha = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control'}))
+    finalizadas = forms.BooleanField(required=False)
 
 
 class AgendaBusquedaForm(forms.Form):
@@ -597,7 +598,7 @@ class PausaForm(forms.ModelForm):
 
 FormularioCalificacionFormSet = inlineformset_factory(
     Contacto, CalificacionCliente, form=CalificacionClienteForm,
-    can_delete=False)
+    can_delete=False, extra=1, max_num=1)
 
 
 class FormularioVentaForm(forms.ModelForm):

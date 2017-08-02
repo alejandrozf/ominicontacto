@@ -124,6 +124,49 @@
                         </tbody>
                     </table>
 
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tiempo de session</th>
+            <th>Tiempo de pausa</th>
+            <th>Tiempos en llamada</th>
+            <th>Cantidad de llamadas procesadas</th>
+            <th>Cantidad de llamadas perdidas</th>
+            <th>Media de llamadas asignadas</th>
+            <th>Media de llamadas salientes manuales</th>
+
+
+        </tr>
+    </thead>
+
+        <tr>
+            <td>
+                {% if graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_sesion %}
+                    {{graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_sesion}}hs
+                {% else %}
+                    0hs
+                {% endif %}
+            </td>
+            <td>
+                {% if graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_pausa %}
+                    {{graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_pausa}}hs
+                {% else %}
+                    0hs
+                {% endif %}
+            </td>
+            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_llamada}}hs</td>
+            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.cantidad_llamadas_procesadas}}</td>
+            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.cantidad_llamadas_perdidas}}</td>
+            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.media_asignada}}s</td>
+            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.media_saliente}}s</td>
+        </tr>
+
+    <tbody>
+
+    </tbody>
+</table>
+
+
 
 <div class="col-md-12">
     <a class="btn btn-default"  href="{% url 'reporte_campana_grafico' pk_campana %}">Volver a reporte campana</a>
