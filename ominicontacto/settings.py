@@ -175,6 +175,7 @@ OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
 OML_BACKLIST_REMOTEPATH  = None
+OML_GLOBALS_VARIABLES_FILENAME  = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
@@ -187,6 +188,7 @@ Ejemplos:
     OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
     OML_QUEUES_FILENAME = "/etc/asterisk/queues_fts.conf"
     OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
+    OML_GLOBALS_VARIABLES_FILENAME = "/etc/asterisk/extensions_fts_globals.conf"
 
 """
 
@@ -382,3 +384,9 @@ assert OML_OMNILEADS_IP is not None, \
 
 assert OML_BACKLIST_REMOTEPATH is not None, \
     "Falta definir setting para OML_BACKLIST_REMOTEPATH"
+
+
+# ~~~~~ Check OML_GLOBALS_VARIABLES_FILENAME
+
+assert OML_GLOBALS_VARIABLES_FILENAME is not None, \
+    "Falta definir setting para OML_GLOBALS_VARIABLES_FILENAME"

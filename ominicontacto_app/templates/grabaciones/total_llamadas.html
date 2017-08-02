@@ -2,13 +2,12 @@
 {% load static %}
 {% block head_js %}
 <script type="text/javascript">
-$(function() {
-                var start = moment().subtract(29, 'days');
+   $(function() {
+                var start = moment();
                 var end = moment();
                 function cb(start, end) {
-                    $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                 }
-
 
  $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
       $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
@@ -21,11 +20,13 @@ $(function() {
             // Init daterange plugin
             $('#id_fecha').daterangepicker(
                 {
-                 locale: {
+
+                locale: {
                     format: 'DD/MM/YYYY'
                  },
 
-                autoUpdateInput: false,
+                startDate: start,
+                endDate: end,
                 ranges: {
                     'Hoy': [moment(), moment()],
                     'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -50,6 +51,9 @@ $(function() {
 
 {% with graficos_estadisticas=graficos_estadisticas %}
 
+
+
+
 <div class="col-md-6">
 
     <form role="form" method="post" enctype="multipart/form-data" >
@@ -62,6 +66,9 @@ $(function() {
                         <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
                         </span>
                     </div>
+                   <div>
+                       Incluir campañas finalizadas {{form.finalizadas}}
+                   </div>
                </td>
                <td>
                    <button type="submit" id="id_buscar_btn" class="btn btn-primary">
@@ -74,6 +81,53 @@ $(function() {
     </form>
 </div>
 
+<div class="col-md-12">
+
+    <h4>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
+</div>
+{% if user.get_is_administrador %}
+<div class="col-md-9">
+<table class="table table-bordered">
+    <tr>
+        <td colspan="2"><strong>Total llamadas</strong></td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas recibidas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.0}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas atendidas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.1}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas expiradas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.2}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas abandonadas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.3}}</td>
+    <tr>
+    <tr>
+    <td colspan="2"><strong>Llamadas salientes</strong></td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas salientes</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.4}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas atendidas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.5}}</td>
+    <tr>
+    <tr>
+        <td>Numero de llamadas abandonadas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.6}}</td>
+    <tr>
+
+</table>
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='total_llamadas' %}">Exportar totales llamadas(CSV)</a></h5>
+
+</div>
+ {% endif %}
 
 <table class="table table-bordered">
                         <thead>
@@ -118,6 +172,8 @@ $(function() {
                             </tr>
                         </tbody>
                     </table>
+            <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_tipo' %}">Exportar totales llamadas por tipor de llamada(CSV)</a></h5>
+
 
                 <table class="table table-bordered">
                         <thead>
@@ -166,53 +222,55 @@ $(function() {
                             </tr>
                         </tbody>
                     </table>
+            <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_campana' %}">Exportar reporte de llamadas por campana(CSV)</a></h5>
 
-                <table class="table table-bordered">
-                        <thead>
-                            <tr class="fts-table-bg">
-                                <td colspan="2">
-                                    <h4>Cantidad de llamadas por agente</h4>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td width="50%">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th>Agente</th>
-                                            <th>Total </th>
-                                            <th>ICS</th>
-                                            <th>DIALER</th>
-                                            <th>INBOUND</th>
-                                            <th>MANUAL</th>
 
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for agente, total_campana, total_ics, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
-                                                <tr>
-                                                    <td><h5>{{ agente }} </h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_ics }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_dialer }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_inbound }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manual }}</span></h5></td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td width="50%" align="center">
-                                    <div class="graficos-avances">
+
+<div class="col-md-12">
+    <h4>Distribucion por campaña</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Campana</th>
+            <th>Recibidas</th>
+            <th>Atendidas</th>
+            <th>Expiradas</th>
+            <th>Abandonadas</th>
+            <th>Manuales</th>
+            <th>Manuales atendidas</th>
+            <th>Manuales no atendidas</th>
+
+
+        </tr>
+    </thead>
+    {% for campana in graficos_estadisticas.estadisticas.queues_llamadas %}
+        <tr>
+            <td>{{campana.0}}</td>
+            <td>{{campana.1}}</td>
+            <td>{{campana.2}}</td>
+            <td>{{campana.3}}</td>
+            <td>{{campana.4}}</td>
+            <td>{{campana.5}}</td>
+            <td>{{campana.6}}</td>
+            <td>{{campana.7}}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="8" width="50%" align="center">
+             <div class="graficos-avances">
                                         <figure>
-                                            {{ graficos_estadisticas.barra_agente_total.render|safe }}
+                                            {{ graficos_estadisticas.barra_campana_llamadas.render|safe }}
                                         </figure>
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        </td>
+    </tr>
+    <tbody>
+
+    </tbody>
+</table>
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='distribucion_campana' %}">Exportar reporte por distribucion en campana(CSV)</a></h5>
+
+
+</div>
 {% endwith %}
 {% endblock %}

@@ -161,6 +161,9 @@ class AgenteProfile(models.Model):
         campanas_member = self.campana_member.all()
         return campanas_member.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
 
+    def get_id_nombre_agente(self):
+        return "{0}_{1}".format(self.id, self.user.get_full_name())
+
 
 class SupervisorProfileManager(models.Manager):
 
@@ -359,6 +362,14 @@ class CampanaManager(models.Manager):
         """
         campanas_include = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
                             Campana.ESTADO_INACTIVA]
+        return self.filter(estado__in=campanas_include)
+
+    def obtener_all_activas_finalizadas(self):
+        """
+        Devuelve campañas excluyendo las campanas borradas
+        """
+        campanas_include = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                            Campana.ESTADO_INACTIVA, Campana.ESTADO_FINALIZADA]
         return self.filter(estado__in=campanas_include)
 
     def get_objects_for_user(self, user):
@@ -643,6 +654,7 @@ class Campana(models.Model):
     supervisors = models.ManyToManyField(User, related_name="campanasupervisors")
     es_template = models.BooleanField(default=False)
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
+    es_manual = models.BooleanField(default=False)
 
     def __unicode__(self):
             return self.nombre
@@ -896,6 +908,7 @@ class QueueMember(models.Model):
     interface = models.CharField(max_length=128)
     penalty = models.IntegerField(choices=DIGITO_CHOICES,)
     paused = models.IntegerField()
+    id_campana = models.CharField(max_length=128)
 
     def __unicode__(self):
         return "agente: {0} para la campana {1} ".format(
@@ -1659,7 +1672,7 @@ class GrabacionManager(models.Manager):
         fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)
         try:
             return self.filter(fecha__range=(fecha_inicio, fecha_fin),
-                               campana__in=campanas)
+                               campana__in=campanas).order_by('-fecha')
         except Grabacion.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con ese rango "
                                        "de fechas"))
@@ -1715,7 +1728,7 @@ class GrabacionManager(models.Manager):
         if campana:
             grabaciones = grabaciones.filter(campana=campana)
 
-        return grabaciones
+        return grabaciones.order_by('-fecha')
 
     def obtener_count_campana(self):
         try:
@@ -1969,6 +1982,19 @@ class QueuelogManager(models.Manager):
         except Queuelog.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con esos filtros "))
 
+    def obtener_log_agente_pk_event_periodo_all(
+            self, eventos, fecha_desde, fecha_hasta, agente_pk):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(queuename='ALL', event__in=eventos, agent_id=agente_pk,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
     def obtener_log_agente_event_periodo(
             self, eventos, fecha_desde, fecha_hasta, agente):
         if fecha_desde and fecha_hasta:
@@ -1982,6 +2008,33 @@ class QueuelogManager(models.Manager):
         except Queuelog.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con esos filtros "))
 
+    def obtener_log_agente_pk_event_periodo(
+            self, eventos, fecha_desde, fecha_hasta, agente_pk):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(event__in=eventos, agent_id=agente_pk,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
+    def obtener_log_agente_campana_event_periodo(
+            self, eventos, fecha_desde, fecha_hasta, agente_pk, campana_pk):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(event__in=eventos, agent_id=agente_pk,
+                               campana_id=campana_pk,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
     def obtener_log_queuename_event_periodo(
             self, eventos, fecha_desde, fecha_hasta, queue):
         if fecha_desde and fecha_hasta:
@@ -1991,6 +2044,19 @@ class QueuelogManager(models.Manager):
                                                     datetime.time.max)
         try:
             return self.filter(event__in=eventos, queuename=queue,
+                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
+        except Queuelog.DoesNotExist:
+            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
+
+    def obtener_log_campana_id_event_periodo(
+            self, eventos, fecha_desde, fecha_hasta, campana_pk):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+        try:
+            return self.filter(event__in=eventos, campana_id=campana_pk,
                                time__range=(fecha_desde, fecha_hasta)).order_by('-time')
         except Queuelog.DoesNotExist:
             raise(SuspiciousOperation("No se encontro agente con esos filtros "))
@@ -2019,7 +2085,7 @@ class QueuelogManager(models.Manager):
         cursor = connection.cursor()
         sql = """select agent, queuename, SUM(data2::integer), Count(*)
                  from ominicontacto_app_queuelog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent = ANY(%(agentes)s)
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
                  and queuename = ANY(%(campanas)s) GROUP BY agent, queuename order by
                  agent, queuename
         """
@@ -2028,7 +2094,8 @@ class QueuelogManager(models.Manager):
             'fecha_hasta': fecha_hasta,
             'eventos': eventos,
             'agentes': agentes,
-            'campanas': [campana.nombre for campana in campanas],
+            'campanas': ["{0}_{1}".format(campana.id, campana.nombre)
+                         for campana in campanas],
         }
 
         cursor.execute(sql, params)

@@ -16,6 +16,7 @@ from ominicontacto_app.models import Campana, Queue, QueueMember, Grupo, AgenteP
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
+from ominicontacto_app.utiles import elimina_espacios
 
 
 import logging as logging_
@@ -53,6 +54,8 @@ class QueueMemberCreateView(FormView):
             return self.form_invalid(form)
         else:
             self.object.queue_name = campana.queue_campana
+            self.object.id_campana = "{0}_{1}".format(campana.id,
+                                                      elimina_espacios(campana.nombre))
             self.object.membername = self.object.member.user.get_full_name()
             self.object.interface = """Local/{0}@from-queue/n""".format(
             self.object.member.sip_extension)
@@ -95,7 +98,10 @@ class GrupoAgenteCreateView(FormView):
                           'interface': """Local/{0}@from-queue/n""".format(
                               agente.sip_extension),
                           'penalty': 0,
-                          'paused': 0},
+                          'paused': 0,
+                          'id_campana': "{0}_{1}".format(
+                              campana.id, elimina_espacios(campana.nombre))
+                            },
             )
         return super(GrupoAgenteCreateView, self).form_valid(form)
 
