@@ -513,8 +513,10 @@ $(function() {
 	       	$("#sipLogout").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
-        }
-        inicio3();
+		    }
+				if(fromUser) {
+					inicio3();
+				}
       });
 
   	var clickHold = document.getElementById("onHold");
@@ -594,6 +596,31 @@ $(function() {
     }
   });
 
+	$("#numberToCall").bind("keypress", function(event) {
+		if(event.which == 13) {
+			event.preventDefault();
+			entrante = false;
+			if(displayNumber.value != "") {
+				displayNumber.style.borderColor = "black";
+	      num = displayNumber.value;
+	      lastDialedNumber = num;
+				if($("#campAssocManualCall").html() == "") {
+					$("#modalSelectCmp").modal("show");
+				} else {
+					headerIdCamp = $("#cmpList").val();
+			  	$("#idCamp").val(headerIdCamp);
+					var nombrecamp = $("#cmpList option:selected").html();
+					nombrecamp = nombrecamp.substring(1);
+			  	headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
+			    $("#redial").prop('disabled',false);
+			  	makeCall();
+				}
+			} else {
+	      displayNumber.style.borderColor = "red";
+			}
+		}
+	});
+
   $("#redial").click(function () {
   	entrante = false;
   	num = lastDialedNumber;
@@ -618,7 +645,9 @@ $(function() {
 			} else {
 				headerIdCamp = $("#cmpList").val();
 		  	$("#idCamp").val(headerIdCamp);
-		  	headerNomCamp = $("#cmpList option:selected").html();
+				var nombrecamp = $("#cmpList option:selected").html();
+				nombrecamp = nombrecamp.substring(1);
+				headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
 			}
@@ -636,7 +665,9 @@ $(function() {
 			$("#modalSelectCmp").modal("hide");
 	  	headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
-	  	headerNomCamp = $("#cmpList option:selected").html();
+			var nombrecamp = $("#cmpList option:selected").html();
+			nombrecamp = nombrecamp.substring(1);
+			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
 	  	makeCall();
@@ -644,7 +675,9 @@ $(function() {
 			$("#modalSelectCmp").modal("hide");
 			headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
-	  	headerNomCamp = $("#cmpList option:selected").html();
+			var nombrecamp = $("#cmpList option:selected").html();
+			nombrecamp = nombrecamp.substring(1);
+			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
 		}

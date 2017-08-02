@@ -84,6 +84,12 @@ class CampanaService():
                 elif campaing['state'] == 'COMPLETED':
                     dato_campana = campaing
                     break
+                elif campaing['state'] == 'WRONG_TIME':
+                    dato_campana = campaing
+                    break
+                elif campaing['state'] == 'IDLE':
+                    dato_campana = campaing
+                    break
         return dato_campana
 
     def obtener_datos_calls(self, salida):
@@ -381,6 +387,6 @@ class CampanaService():
             detalle = self.obtener_dato_campana_run(campana)
             if detalle:
                 restantes = int(detalle['n_est_remaining_calls'])
-                if restantes == 0:
+                if restantes == 0 and not campana.es_manual:
                     self.remove_campana_wombat(campana)
                     campana.finalizar()

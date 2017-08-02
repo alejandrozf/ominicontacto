@@ -90,6 +90,8 @@ class EstadisticasService():
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         campana_log_wombat = campana.logswombat.filter(
             fecha_hora__range=(fecha_desde, fecha_hasta))
+        campana_log_terminated = campana_log_wombat.filter(estado="TERMINATED",
+                                                           calificacion='CONTESTADOR')
         campana_log_wombat = campana_log_wombat.exclude(estado="TERMINATED")
         campana_log_wombat = campana_log_wombat.values('estado',
                                                        'calificacion').annotate(
@@ -108,9 +110,17 @@ class EstadisticasService():
                 estado = "No contesta"
             elif estado == "RS_NUMBER":
                 estado = "Numero erroneo"
+            elif estado == "RS_ERROR":
+                estado = "Error de sistema"
+            elif estado == "RS_REJECTED":
+                estado = "Congestion"
             resultado_nombre.append(estado)
             resultado_cantidad.append(resultado['estado__count'])
             total_no_atendidos += resultado['estado__count']
+        resultado_nombre.append("Contestador Detectado")
+        cantidad_constestador = campana_log_terminated.count()
+        resultado_cantidad.append(cantidad_constestador)
+        total_no_atendidos += cantidad_constestador
         return resultado_nombre, resultado_cantidad, total_no_atendidos
 
     def obtener_total_llamadas(self, campana):
@@ -192,20 +202,18 @@ class EstadisticasService():
         eventos_llamadas_abandonadas = ['ABANDON']
         eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
 
-        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
-
         # obtiene las llamadas recibidas
-        ingresadas = Queuelog.objects.obtener_log_queuename_event_periodo(
-            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, nombre_campana)
+        ingresadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
+            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, campana.id)
         # obtiene las llamadas atendidas
-        atendidas = Queuelog.objects.obtener_log_queuename_event_periodo(
-            eventos_llamadas_atendidas, fecha_inferior, fecha_superior, nombre_campana)
+        atendidas = Queuelog.objects.obtener_log_campana_id_event_periodo(
+            eventos_llamadas_atendidas, fecha_inferior, fecha_superior, campana.id)
         # obtiene las llamadas abandonadas
-        abandonadas = Queuelog.objects.obtener_log_queuename_event_periodo(
-            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, nombre_campana)
+        abandonadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
+            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, campana.id)
         # obtiene las llamadas expiradas
-        expiradas = Queuelog.objects.obtener_log_queuename_event_periodo(
-            eventos_llamadas_expiradas, fecha_inferior, fecha_superior, nombre_campana)
+        expiradas = Queuelog.objects.obtener_log_campana_id_event_periodo(
+            eventos_llamadas_expiradas, fecha_inferior, fecha_superior, campana.id)
         count_llamadas_ingresadas = ingresadas.count()
         count_llamadas_atendidas = atendidas.count()
         count_llamadas_abandonadas = abandonadas.count()
