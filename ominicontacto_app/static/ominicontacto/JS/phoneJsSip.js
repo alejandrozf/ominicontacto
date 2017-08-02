@@ -610,7 +610,7 @@ $(function() {
 					headerIdCamp = $("#cmpList").val();
 			  	$("#idCamp").val(headerIdCamp);
 					var nombrecamp = $("#cmpList option:selected").html();
-					nombrecamp = nombrecamp.substr(0,1);
+					nombrecamp = nombrecamp.substring(1);
 			  	headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 			    $("#redial").prop('disabled',false);
 			  	makeCall();
@@ -646,7 +646,7 @@ $(function() {
 				headerIdCamp = $("#cmpList").val();
 		  	$("#idCamp").val(headerIdCamp);
 				var nombrecamp = $("#cmpList option:selected").html();
-				nombrecamp = nombrecamp.substr(0,1);
+				nombrecamp = nombrecamp.substring(1);
 				headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
@@ -666,7 +666,7 @@ $(function() {
 	  	headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
 			var nombrecamp = $("#cmpList option:selected").html();
-			nombrecamp = nombrecamp.substr(0,1);
+			nombrecamp = nombrecamp.substring(1);
 			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
@@ -676,7 +676,7 @@ $(function() {
 			headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
 			var nombrecamp = $("#cmpList option:selected").html();
-			nombrecamp = nombrecamp.substr(0,1);
+			nombrecamp = nombrecamp.substring(1);
 			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
