@@ -125,18 +125,17 @@ class QueueDialplanConfigCreator(object):
         """
         # Ver de obtener activa ya que en este momemento no estamos manejando
         # estados
-        # Queue.objects.obtener_todas_para_generar_dialplan()
         return Campana.objects.obtener_all_dialplan_asterisk().filter(
             type=Campana.TYPE_ENTRANTE)
 
-    def _obtener_todas_dialer_para_generar_dialplan(self):
+    def _obtener_todas_dialer_manuales_para_generar_dialplan(self):
         """Devuelve las queues para crear el dialplan.
         """
         # Ver de obtener activa ya que en este momemento no estamos manejando
         # estados
-        # Queue.objects.obtener_todas_para_generar_dialplan()
+        tipos = [Campana.TYPE_MANUAL, Campana.TYPE_DIALER]
         return Campana.objects.obtener_all_dialplan_asterisk().filter(
-            type=Campana.TYPE_DIALER)
+            type__in=tipos)
 
     def create_dialplan(self, campana=None, campanas=None):
         """Crea el archivo de dialplan para queue existentes
