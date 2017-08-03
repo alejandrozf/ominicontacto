@@ -173,14 +173,43 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                        {% empty %}
+
+                        {% endfor %}
+                        {% for contacto in calificaciones_manuales %}
                             <tr>
-                                <td colspan="16">
-                                    <p class="text-center text-danger">
-                                        <em>No se encontraron calificaciones para el agente.</em>
-                                    </p>
+
+                                <td>
+
+                                    {{contacto.telefono}}
+
+                                </td>
+                                <td>
+                                    no aplica
+                                </td>
+                                <td>
+                                    {% if contacto.es_gestion %}
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                    {% else %}
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                {% if contacto.calificacion %}
+                                    {{ contacto.calificacion.nombre }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                                </td>
+                                <td>
+                                    {% if contacto.observaciones %}
+                                        {{contacto.observaciones}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'campana_manual_calificacion_update' contacto.pk %}">editar calificacion</a>
                                 </td>
                             </tr>
+
                         {% endfor %}
                     </tbody>
                 </table>

@@ -772,6 +772,10 @@ urlpatterns = [
         login_required(
             views_calificacion_manual.CalificacionManualCreateView.as_view()),
         name="campana_manual_calificacion_create"),
+    url(r'^campana_manual/(?P<pk_calificacion>\d+)/calificacion//update//$',
+        login_required(
+            views_calificacion_manual.CalificacionManualUpdateView.as_view()),
+        name="campana_manual_calificacion_update"),
 ]
 
 urlpatterns += patterns('',

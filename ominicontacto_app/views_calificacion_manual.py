@@ -52,3 +52,27 @@ class CalificacionManualCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('view_blanco')
+
+
+class CalificacionManualUpdateView(UpdateView):
+    """
+    En esta vista se actualiza la calificacion del contacto de una campana manual
+    """
+    template_name = 'campana_manual/calificacion_create_update.html'
+    model = CalificacionManual
+    form_class = CalificacionManualForm
+
+    def get_object(self, queryset=None):
+        return CalificacionManual.objects.get(pk=self.kwargs['pk_calificacion'])
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        calificacion = self.get_object()
+        campana = calificacion.campana
+        calificaciones = campana.calificacion_campana.calificacion.all()
+        return self.form_class(
+            calificacion_choice=calificaciones, gestion=campana.gestion,
+            **self.get_form_kwargs())
+
+    def get_success_url(self):
+        return reverse('view_blanco')
