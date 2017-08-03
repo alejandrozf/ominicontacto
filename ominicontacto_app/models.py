@@ -2526,3 +2526,21 @@ class UserApiCrm(models.Model):
 
     def __unicode__(self):
         return self.usuario
+
+
+class CalificacionManual(models.Model):
+
+    #objects = CalificacionClienteManager()
+
+    campana = models.ForeignKey(Campana, related_name="calificacionmanual")
+    telefono = models.CharField(max_length=128)
+    es_gestion = models.BooleanField(default=False)
+    calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
+    observaciones = models.TextField(blank=True, null=True)
+    agendado = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return "Calificacion manual para la campana {0} para el telefono " \
+               "{1} ".format(self.campana, self.telefono)

@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile
+    ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual
 )
 from ominicontacto_app.utiles import convertir_ascii_string
 
@@ -945,3 +945,22 @@ class CampanaManualForm(forms.ModelForm):
         if ' ' in nombre:
             raise forms.ValidationError('el nombre no puede contener espacios')
         return nombre
+
+
+class CalificacionManualForm(forms.ModelForm):
+
+    def __init__(self, calificacion_choice, gestion, *args, **kwargs):
+        super(CalificacionManualForm, self).__init__(*args, **kwargs)
+        self.fields['calificacion'].queryset = calificacion_choice
+        self.fields['calificacion'].empty_label = None
+        self.fields['calificacion'].empty_label = gestion
+
+    class Meta:
+        model = CalificacionManual
+        fields = ('campana', 'telefono', 'es_gestion', 'calificacion', 'agente',
+                  'observaciones')
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'es_gestion': forms.HiddenInput(),
+            'agente': forms.HiddenInput(),
+        }
