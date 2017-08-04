@@ -2540,6 +2540,7 @@ class CalificacionManual(models.Model):
     agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
     observaciones = models.TextField(blank=True, null=True)
     agendado = models.BooleanField(default=False)
+    metadata = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
         return "Calificacion manual para la campana {0} para el telefono " \

@@ -963,4 +963,44 @@ class CalificacionManualForm(forms.ModelForm):
             'campana': forms.HiddenInput(),
             'es_gestion': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class FormularioManualGestionForm(forms.ModelForm):
+
+    def __init__(self, campos, *args, **kwargs):
+        super(FormularioManualGestionForm, self).__init__(*args, **kwargs)
+
+        for campo in campos:
+            if campo.tipo is FieldFormulario.TIPO_TEXTO:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_FECHA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'class-fecha form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_LISTA:
+                choices = [(option, option)
+                           for option in json.loads(campo.values_select)]
+                self.fields[campo.nombre_campo] = forms.ChoiceField(
+                    choices=choices,
+                    label=campo.nombre_campo, widget=forms.Select(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_TEXTO_AREA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.Textarea(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+
+    class Meta:
+        model = CalificacionManual
+        fields = ('telefono',)
+
+        widgets = {
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
         }
