@@ -161,6 +161,8 @@ class QueueMemberCampanaView(TemplateView):
             context['url_finalizar'] = 'campana_list'
         elif campana.type is Campana.TYPE_DIALER:
             context['url_finalizar'] = 'campana_dialer_list'
+        elif campana.type is Campana.TYPE_MANUAL:
+            context['url_finalizar'] = 'campana_manual_list'
         return context
 
 
