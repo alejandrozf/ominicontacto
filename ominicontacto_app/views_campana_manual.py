@@ -15,8 +15,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from ominicontacto_app.models import Campana
 from django.views.generic import (
-    ListView,
+    ListView, UpdateView
 )
+from ominicontacto_app.services.reporte_campana_manual_calificacion import \
+    ReporteCampanaService
+from ominicontacto_app.services.reporte_campana_manual_gestion import \
+    ReporteGestionCampanaService
 
 
 import logging as logging_
@@ -51,3 +55,65 @@ class CampanaManualListView(ListView):
 
         return context
 
+
+class CampanaManualReporteCalificacionListView(ListView):
+    """
+    Muestra un listado de contactos a los cuales se los calificaron en la campana
+    """
+    template_name = 'campana_manual/reporte_campana_formulario.html'
+    context_object_name = 'campana'
+    model = Campana
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaManualReporteCalificacionListView, self).get_context_data(
+            **kwargs)
+
+        service = ReporteCampanaService()
+        service_formulario = ReporteGestionCampanaService()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        service.crea_reporte_csv(campana)
+        service_formulario.crea_reporte_csv(campana)
+        context['campana'] = campana
+        return context
+
+
+class ExportaReporteFormularioGestionView(UpdateView):
+    """
+    Esta vista invoca a generar un csv de reporte de la la venta.
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        service = ReporteGestionCampanaService()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        url = service.obtener_url_reporte_csv_descargar(self.object)
+
+        return redirect(url)
+
+
+class ExportaReporteCampanaManualView(UpdateView):
+    """
+    Esta vista invoca a generar un csv de reporte de la campana.
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        service = ReporteCampanaService()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        url = service.obtener_url_reporte_csv_descargar(self.object)
+
+        return redirect(url)

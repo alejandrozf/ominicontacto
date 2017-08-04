@@ -780,6 +780,18 @@ urlpatterns = [
         login_required(
             views_calificacion_manual.CalificacionManualGestion.as_view()),
         name="campana_manual_calificacion_gestion"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_calificacion/$',
+        login_required(
+            views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
+        name="campana_manual_calificacion_reporte_calificacion"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/exporta_gestion/$',
+        login_required(
+            views_campana_manual.ExportaReporteFormularioGestionView.as_view()),
+        name="exporta_csv_gestion"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/exporta_calificacion/$',
+        login_required(
+            views_campana_manual.ExportaReporteCampanaManualView.as_view()),
+        name="exporta_csv_calificacon"),
 ]
 
 urlpatterns += patterns('',
