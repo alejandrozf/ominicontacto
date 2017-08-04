@@ -90,11 +90,8 @@ class ExportaReporteFormularioGestionView(UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-
         service = ReporteGestionCampanaService()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         url = service.obtener_url_reporte_csv_descargar(self.object)
-
         return redirect(url)
 
 
@@ -111,9 +108,6 @@ class ExportaReporteCampanaManualView(UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-
         service = ReporteCampanaService()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         url = service.obtener_url_reporte_csv_descargar(self.object)
-
         return redirect(url)
