@@ -117,6 +117,14 @@ class CalificacionManualGestion(UpdateView):
         campos = campana.formulario.campos.all()
         return self.form_class(campos=campos, **self.get_form_kwargs())
 
+    def get_initial(self):
+        initial = super(CalificacionManualGestion, self).get_initial()
+        self.object = self.get_object()
+        if self.object.metadata:
+            datos = json.loads(self.object.metadata)
+            initial.update(datos)
+        return initial
+
     def form_valid(self, form):
         cleaned_data = form.cleaned_data
         del cleaned_data['telefono']
