@@ -120,7 +120,7 @@ class EstadisticasService():
             dato_agente.append(dict_total)
 
             total_ven_agente = agente_calificaciones.filter(
-                es_venta=True).count()
+                es_gestion=True).count()
             dato_agente.append(total_ven_agente)
             total_ventas += total_ven_agente
             agentes_venta.append(dato_agente)
@@ -178,7 +178,17 @@ class EstadisticasService():
             self.obtener_cantidad_calificacion(campana, fecha_desde,
                                                fecha_hasta)
 
+        # obtiene los agentes miembros a la campana
+        members_campana = self.obtener_agentes_campana(campana)
 
+        # obtiene el total de calificaciones por agente
+        total_calificacion_agente = self.obtener_total_calificacion_agente(
+            campana, members_campana, fecha_desde, fecha_hasta
+        )
+        agentes_venta = total_calificacion_agente[0]
+        total_calificados = total_calificacion_agente[1]
+        total_ventas = total_calificacion_agente[2]
+        calificaciones = total_calificacion_agente[3]
 
 
         # obtiene las cantidades totales por evento de las llamadas
@@ -186,16 +196,16 @@ class EstadisticasService():
             campana, fecha_desde, fecha_hasta)
 
         dic_estadisticas = {
-            #'agentes_venta': agentes_venta,
+            'agentes_venta': agentes_venta,
             'total_asignados': total_asignados,
-            #'total_ventas': total_ventas,
+            'total_ventas': total_ventas,
             'calificaciones_nombre': calificaciones_nombre,
             'calificaciones_cantidad': calificaciones_cantidad,
-            #'total_calificados': total_calificados,
+            'total_calificados': total_calificados,
             #'resultado_nombre': resultado_nombre,
             #'resultado_cantidad': resultado_cantidad,
 
-            #'calificaciones': calificaciones,
+            'calificaciones': calificaciones,
             'cantidad_llamadas': cantidad_llamadas,
         }
         return dic_estadisticas
@@ -252,14 +262,14 @@ class EstadisticasService():
                                         estadisticas['calificaciones_cantidad'])
             ,
             'total_asignados': estadisticas['total_asignados'],
-            #'agentes_venta': estadisticas['agentes_venta'],
-            #'total_calificados': estadisticas['total_calificados'],
-            #'total_ventas': estadisticas['total_ventas'],
+            'agentes_venta': estadisticas['agentes_venta'],
+            'total_calificados': estadisticas['total_calificados'],
+            'total_ventas': estadisticas['total_ventas'],
             #'barra_campana_no_atendido': barra_campana_no_atendido,
             #'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
              #                               estadisticas['resultado_cantidad']),
 
-            #'calificaciones': estadisticas['calificaciones'],
+            'calificaciones': estadisticas['calificaciones'],
             'barra_campana_llamadas': barra_campana_llamadas,
             'dict_llamadas_counter': zip(estadisticas['cantidad_llamadas'][0],
                                          estadisticas['cantidad_llamadas'][1]),
