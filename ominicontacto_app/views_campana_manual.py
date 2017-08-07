@@ -18,6 +18,7 @@ from ominicontacto_app.models import Campana, AgenteProfile
 from django.views.generic import (
     ListView, UpdateView, FormView, DeleteView
 )
+from django.views.generic.base import RedirectView
 from ominicontacto_app.services.reporte_campana_manual_calificacion import \
     ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_manual_gestion import \
@@ -238,3 +239,43 @@ class CampanaManualDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('campana_manual_list')
+
+
+class OcultarCampanaManualView(RedirectView):
+    """
+    Esta vista actualiza la campañana ocultandola.
+    """
+
+    pattern_name = 'campana_manual_list'
+
+    def get(self, request, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana.ocultar()
+        return HttpResponseRedirect(reverse('campana_manual_list'))
+
+
+class DesOcultarCampanaManualView(RedirectView):
+    """
+    Esta vista actualiza la campañana haciendola visible.
+    """
+
+    pattern_name = 'campana_manual_list'
+
+    def get(self, request, *args, **kwargs):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana.desocultar()
+        return HttpResponseRedirect(reverse('campana_manual_list'))
+
+
+def mostrar_campanas_manual_borradas_ocultas_view(request):
+    """Vista para mostrar campanas dialer ocultas"""
+    borradas = Campana.objects.obtener_borradas()
+    if request.user.is_authenticated() and request.user and \
+            not request.user.get_is_administrador():
+        user = self.request.user
+        borradas = Campana.objects.obtener_campanas_vista_by_user(borradas, user)
+    data = {
+        'borradas': borradas.filter(type=Campana.TYPE_MANUAL),
+    }
+    return render(request, 'campana_manual/campanas_borradas.html', data)
+

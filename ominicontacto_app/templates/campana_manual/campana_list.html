@@ -20,7 +20,7 @@
 
         function mostrar_campanas_ocultas() {
 
-            $.get('{% url  'mostrar_campanas_ocultas' %}',
+            $.get('{% url  'campana_manual_mostrar_ocultas' %}',
                     function (data) {
                         $('#t_body_borradas').html(data);
 
@@ -118,11 +118,11 @@
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
                     {% if campana.oculto %}
-                    <a type="button"  href="{% url 'desoculta_campana' campana.pk %}">
+                    <a type="button"  href="{% url 'campana_manual_desocultar' campana.pk %}">
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
                     </a>
                     {% else %}
-                    <a type="button" href="{% url 'oculta_campana' campana.pk %}" >
+                    <a type="button" href="{% url 'campana_manual_ocultar' campana.pk %}" >
                         <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
                     </a>
                     {% endif %}

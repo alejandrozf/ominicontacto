@@ -804,6 +804,18 @@ urlpatterns = [
         login_required(
             views_campana_manual.CampanaManualDeleteView.as_view()),
         name="campana_manual_delete"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/ocultar/$',
+        login_required(
+            views_campana_manual.OcultarCampanaManualView.as_view()),
+        name="campana_manual_ocultar"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/desocultar/$',
+        login_required(
+            views_campana_manual.DesOcultarCampanaManualView.as_view()),
+        name="campana_manual_desocultar"),
+    url(r'^campana_manual/mostrar_ocultas/$',
+        login_required(
+            views_campana_manual.mostrar_campanas_manual_borradas_ocultas_view),
+        name="campana_manual_mostrar_ocultas"),
 ]
 
 urlpatterns += patterns('',
