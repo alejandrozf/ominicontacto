@@ -146,7 +146,7 @@
     <tbody>
         {% for agente in graficos_estadisticas.agentes_venta %}
             <tr>
-                <td><a href="{% url 'reporte_agente_grafico' pk_campana agente.0.pk %}">{{agente.0}}</a></td>
+                <td><a href="{% url 'campana_manual_reporte_agente' pk_campana agente.0.pk %}">{{agente.0}}</a></td>
                 <td class="text-success"><strong>{{agente.3}}</strong></td>
 
                 {% for calificacion in graficos_estadisticas.calificaciones %}

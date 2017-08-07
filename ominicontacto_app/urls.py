@@ -796,6 +796,10 @@ urlpatterns = [
         login_required(
             views_campana_manual.CampanaManualReporteGrafico.as_view()),
         name="campana_manual_reporte_grafico"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_agente/(?P<pk_agente>\d+)/$',
+        login_required(
+            views_campana_manual.AgenteCampanaManualReporteGrafico.as_view()),
+        name="campana_manual_reporte_agente"),
 ]
 
 urlpatterns += patterns('',
