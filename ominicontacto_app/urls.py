@@ -800,6 +800,10 @@ urlpatterns = [
         login_required(
             views_campana_manual.AgenteCampanaManualReporteGrafico.as_view()),
         name="campana_manual_reporte_agente"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/delete/$',
+        login_required(
+            views_campana_manual.CampanaManualDeleteView.as_view()),
+        name="campana_manual_delete"),
 ]
 
 urlpatterns += patterns('',

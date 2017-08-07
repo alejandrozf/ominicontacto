@@ -16,7 +16,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from ominicontacto_app.models import Campana, AgenteProfile
 from django.views.generic import (
-    ListView, UpdateView, FormView
+    ListView, UpdateView, FormView, DeleteView
 )
 from ominicontacto_app.services.reporte_campana_manual_calificacion import \
     ReporteCampanaService
@@ -209,3 +209,32 @@ class AgenteCampanaManualReporteGrafico(FormView):
                                                         fecha_hasta)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
+
+
+class CampanaManualDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación de una campana
+    """
+    model = Campana
+    template_name = 'campana_manual/delete_campana.html'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        self.object.remover()
+        message = '<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la campana.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(success_url)
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get_success_url(self):
+        return reverse('campana_manual_list')
