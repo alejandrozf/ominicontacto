@@ -792,6 +792,10 @@ urlpatterns = [
         login_required(
             views_campana_manual.ExportaReporteCampanaManualView.as_view()),
         name="exporta_csv_calificacon"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_grafico/$',
+        login_required(
+            views_campana_manual.CampanaManualReporteGrafico.as_view()),
+        name="campana_manual_reporte_grafico"),
 ]
 
 urlpatterns += patterns('',

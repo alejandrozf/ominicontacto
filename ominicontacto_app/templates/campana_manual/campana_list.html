@@ -64,6 +64,9 @@
                     <a href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
                         <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
                     </a>
+                    <a href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
+                        <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
+                    </a>
                 </td>
             </tr>
        {% empty %}
@@ -108,7 +111,9 @@
                     <a href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
                         <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
                     </a>
-
+                    <a href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
+                        <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
+                    </a>
                     {% if campana.oculto %}
                     <a type="button"  href="{% url 'desoculta_campana' campana.pk %}">
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
