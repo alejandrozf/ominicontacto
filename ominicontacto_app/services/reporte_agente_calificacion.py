@@ -51,7 +51,7 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, calificaciones):
+    def escribir_archivo_csv(self, calificaciones, calificaciones_manuales):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
@@ -99,6 +99,27 @@ class ArchivoDeReporteCsv(object):
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
+            for calificacion in calificaciones_manuales:
+                lista_opciones = []
+
+                # --- Buscamos datos
+
+                lista_opciones.append(calificacion.telefono)
+
+                if calificacion.es_gestion:
+                    lista_opciones.append("SI")
+                else:
+                    lista_opciones.append("NO")
+                if calificacion.calificacion:
+                    lista_opciones.append(calificacion.calificacion.nombre)
+                else:
+                    lista_opciones.append("N/A")
+                lista_opciones.append(calificacion.observaciones)
+
+                lista_opciones_utf8 = [force_text(item).encode('utf-8')
+                                       for item in lista_opciones]
+                csvwiter.writerow(lista_opciones_utf8)
+
     def ya_existe(self):
         return os.path.exists(self.ruta)
 
@@ -115,8 +136,10 @@ class ReporteAgenteService(object):
         calificaciones = self._obtener_listado_calificaciones_fecha(agente,
                                                                     fecha_desde,
                                                                     fecha_hasta)
+        calificaciones_manuales = self._obtener_listado_calificaciones_manuales_fecha(
+            agente, fecha_desde, fecha_hasta)
 
-        archivo_de_reporte.escribir_archivo_csv(calificaciones)
+        archivo_de_reporte.escribir_archivo_csv(calificaciones, calificaciones_manuales)
 
     def obtener_url_reporte_csv_descargar(self, agente):
         #assert campana.estado == Campana.ESTADO_DEPURADA
@@ -136,3 +159,10 @@ class ReporteAgenteService(object):
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         return agente.calificaciones.filter(fecha__range=(fecha_desde,
                                                           fecha_hasta))
+
+    def _obtener_listado_calificaciones_manuales_fecha(self, agente,fecha_desde,
+                                                       fecha_hasta):
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
+        return agente.calificacionesmanuales.filter(fecha__range=(fecha_desde,
+                                                                  fecha_hasta))

@@ -390,6 +390,12 @@ class CampanaManager(models.Manager):
         """
         return self.filter(type=Campana.TYPE_ENTRANTE)
 
+    def obtener_campanas_manuales(self):
+        """
+        Devuelve campañas de tipo dialer
+        """
+        return self.filter(type=Campana.TYPE_MANUAL)
+
     def obtener_campanas_vista_by_user(self, campanas, user):
         """
         devuelve las campanas filtradas por user
@@ -609,9 +615,13 @@ class Campana(models.Model):
     TYPE_DIALER = 2
     """La campaña está definida como de discador"""
 
+    TYPE_MANUAL = 3
+    """La campaña está definida como manual"""
+
     TYPES_CAMPANA = (
         (TYPE_ENTRANTE, 'Entrante'),
-        (TYPE_DIALER, 'Dialer')
+        (TYPE_DIALER, 'Dialer'),
+        (TYPE_MANUAL, 'Manual')
     )
 
     FORMULARIO = 1
@@ -2516,3 +2526,22 @@ class UserApiCrm(models.Model):
 
     def __unicode__(self):
         return self.usuario
+
+
+class CalificacionManual(models.Model):
+
+    #objects = CalificacionClienteManager()
+
+    campana = models.ForeignKey(Campana, related_name="calificacionmanual")
+    telefono = models.CharField(max_length=128)
+    es_gestion = models.BooleanField(default=False)
+    calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
+    observaciones = models.TextField(blank=True, null=True)
+    agendado = models.BooleanField(default=False)
+    metadata = models.TextField(blank=True, null=True)
+
+    def __unicode__(self):
+        return "Calificacion manual para la campana {0} para el telefono " \
+               "{1} ".format(self.campana, self.telefono)
