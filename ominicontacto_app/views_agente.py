@@ -198,7 +198,7 @@ def logout_view(request):
         agente = request.user.get_agente_profile()
         variables = {
             'AGENTE': str(agente.sip_extension),
-            'AGENTNAME': request.user.get_full_name()
+            'AGENTNAME': "{0}_{1}".format(agente.id, request.user.get_full_name())
         }
         # Deslogueo el agente de asterisk via AMI
         try:
