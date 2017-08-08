@@ -169,7 +169,7 @@ class AgenteReporteListView(FormView):
                 agentes.append(agente)
         if grupo_id:
             grupo = Grupo.objects.get(pk=int(grupo_id))
-            agentes = grupo.agentes.all()
+            agentes = grupo.agentes.filter(is_inactive=False)
         #agentes = ["{0}_{1}".format(agente.id, agente.user.get_full_name())
          #          for agente in agentes]
         agente_service = EstadisticasService()
