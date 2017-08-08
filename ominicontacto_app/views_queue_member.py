@@ -33,7 +33,7 @@ class QueueMemberCreateView(FormView):
     def get_form(self):
         self.form_class = self.get_form_class()
         #agentes = AgenteProfile.objects.filter(reported_by=self.request.user)
-        agentes = AgenteProfile.objects.all()
+        agentes = AgenteProfile.objects.filter(is_inactive=False)
         return self.form_class(members=agentes, **self.get_form_kwargs())
 
     def form_valid(self, form):
@@ -88,7 +88,7 @@ class GrupoAgenteCreateView(FormView):
         grupo_id = form.cleaned_data.get('grupo')
         grupo = Grupo.objects.get(pk=grupo_id)
         #agentes = grupo.agentes.filter(reported_by=self.request.user)
-        agentes = grupo.agentes.all()
+        agentes = grupo.agentes.filter(is_inactive=False)
         # agrega los agentes a la campana siempre cuando no se encuentren agregados
         for agente in agentes:
             QueueMember.objects.get_or_create(
@@ -143,7 +143,7 @@ class QueueMemberCampanaView(TemplateView):
             )
 
         #agentes = AgenteProfile.objects.filter(reported_by=request.user)
-        agentes = AgenteProfile.objects.all()
+        agentes = AgenteProfile.objects.filter(is_inactive=False)
         queue_member_form = QueueMemberForm(data=self.request.GET or None,
                                             members=agentes)
         grupo_agente_form = GrupoAgenteForm(self.request.GET or None)

@@ -10,6 +10,8 @@ import datetime
 from django.views.generic import FormView, UpdateView, ListView
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from ominicontacto_app.models import (
     AgenteProfile, Contacto, CalificacionCliente, Grupo
 )
@@ -167,7 +169,7 @@ class AgenteReporteListView(FormView):
                 agentes.append(agente)
         if grupo_id:
             grupo = Grupo.objects.get(pk=int(grupo_id))
-            agentes = grupo.agentes.all()
+            agentes = grupo.agentes.filter(is_inactive=False)
         #agentes = ["{0}_{1}".format(agente.id, agente.user.get_full_name())
          #          for agente in agentes]
         agente_service = EstadisticasService()
@@ -262,3 +264,29 @@ def exporta_reporte_agente_llamada_view(request, tipo_reporte):
     service = service_csv = ReporteAgenteCSVService()
     url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
     return redirect(url)
+
+
+class DesactivarAgenteView(RedirectView):
+    """
+    Esta vista actualiza el agente desactivandolo
+    """
+
+    pattern_name = 'agente_list'
+
+    def get(self, request, *args, **kwargs):
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        agente.desactivar()
+        return HttpResponseRedirect(reverse('agente_list'))
+
+
+class ActivarAgenteView(RedirectView):
+    """
+    Esta vista actualiza el agente activandolo
+    """
+
+    pattern_name = 'agente_list'
+
+    def get(self, request, *args, **kwargs):
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        agente.activar()
+        return HttpResponseRedirect(reverse('agente_list'))

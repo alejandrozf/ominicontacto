@@ -276,7 +276,7 @@ class GrabacionBusquedaForm(forms.Form):
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         agente_choice = [(agente.sip_extension, agente.user.get_full_name())
-                        for agente in AgenteProfile.objects.all()]
+                        for agente in AgenteProfile.objects.filter(is_inactive=False)]
         agente_choice.insert(0, ('', '---------'))
         self.fields['sip_agente'].choices = agente_choice
         campana_choice.insert(0, ('', '---------'))
@@ -912,7 +912,7 @@ class ReporteAgenteForm(forms.Form):
         super(ReporteAgenteForm, self).__init__(*args, **kwargs)
 
         agente_choice = [(agente.pk, agente.user.get_full_name())
-                         for agente in AgenteProfile.objects.all()]
+                         for agente in AgenteProfile.objects.filter(is_inactive=False)]
         self.fields['agente'].choices = agente_choice
         grupo_choice = [(grupo.id, grupo.nombre)
                         for grupo in Grupo.objects.all()]

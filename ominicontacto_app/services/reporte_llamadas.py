@@ -35,7 +35,7 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 class EstadisticasService():
 
     def _obtener_agentes(self):
-        return AgenteProfile.objects.all()
+        return AgenteProfile.objects.filter(is_inactive=False)
 
     def calcular_tiempo_sesion(self, agentes, fecha_inferior, fecha_superior):
         """
