@@ -165,6 +165,14 @@ class AgenteProfile(models.Model):
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
 
+    def desactivar(self):
+        self.is_inactive = True
+        self.save()
+
+    def activar(self):
+        self.is_inactive = False
+        self.save()
+
 
 class SupervisorProfileManager(models.Manager):
 
