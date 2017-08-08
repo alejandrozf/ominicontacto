@@ -9,7 +9,8 @@ from ominicontacto_app import (
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
-    views_campana_dialer_template
+    views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
+    views_calificacion_manual
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -752,6 +753,69 @@ urlpatterns = [
         login_required(
             views_campana_dialer_template.TemplateDeleteView.as_view()),
         name="campana_dialer_template_elimina"),
+    # ==========================================================================
+    # Campana Manual
+    # ==========================================================================
+    url(r'^campana_manual/create/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualCreateView.as_view()),
+        name="campana_manual_create"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/update/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualUpdateView.as_view()),
+        name="campana_manual_update"),
+    url(r'^campana_manual/lista/$',
+        login_required(
+            views_campana_manual.CampanaManualListView.as_view()),
+        name="campana_manual_list"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<pk_agente>\d+)/create/(?P<telefono>\d+)/$',
+        login_required(
+            views_calificacion_manual.CalificacionManualCreateView.as_view()),
+        name="campana_manual_calificacion_create"),
+    url(r'^campana_manual/(?P<pk_calificacion>\d+)/calificacion/update/$',
+        login_required(
+            views_calificacion_manual.CalificacionManualUpdateView.as_view()),
+        name="campana_manual_calificacion_update"),
+    url(r'^campana_manual/(?P<pk_calificacion>\d+)/gestion/$',
+        login_required(
+            views_calificacion_manual.CalificacionManualGestion.as_view()),
+        name="campana_manual_calificacion_gestion"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_calificacion/$',
+        login_required(
+            views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
+        name="campana_manual_calificacion_reporte_calificacion"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/exporta_gestion/$',
+        login_required(
+            views_campana_manual.ExportaReporteFormularioGestionView.as_view()),
+        name="exporta_csv_gestion"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/exporta_calificacion/$',
+        login_required(
+            views_campana_manual.ExportaReporteCampanaManualView.as_view()),
+        name="exporta_csv_calificacon"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_grafico/$',
+        login_required(
+            views_campana_manual.CampanaManualReporteGrafico.as_view()),
+        name="campana_manual_reporte_grafico"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_agente/(?P<pk_agente>\d+)/$',
+        login_required(
+            views_campana_manual.AgenteCampanaManualReporteGrafico.as_view()),
+        name="campana_manual_reporte_agente"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/delete/$',
+        login_required(
+            views_campana_manual.CampanaManualDeleteView.as_view()),
+        name="campana_manual_delete"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/ocultar/$',
+        login_required(
+            views_campana_manual.OcultarCampanaManualView.as_view()),
+        name="campana_manual_ocultar"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/desocultar/$',
+        login_required(
+            views_campana_manual.DesOcultarCampanaManualView.as_view()),
+        name="campana_manual_desocultar"),
+    url(r'^campana_manual/mostrar_ocultas/$',
+        login_required(
+            views_campana_manual.mostrar_campanas_manual_borradas_ocultas_view),
+        name="campana_manual_mostrar_ocultas"),
 ]
 
 urlpatterns += patterns('',

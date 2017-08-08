@@ -650,6 +650,7 @@ $(function() {
 				headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
+				getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
 			}
 		} else {
       displayNumber.style.borderColor = "red";
@@ -670,6 +671,7 @@ $(function() {
 			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
+			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
 	  	makeCall();
 		} else {
 			$("#modalSelectCmp").modal("hide");
@@ -824,6 +826,11 @@ $(function() {
 		var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
   	$("#dataView").attr('src', url);
   }
+
+	function getFormManualCalls(idcamp, idagt, tel) {
+		var url = "/campana_manual/" + idcamp + "/calificacion/" + idagt + "/create/" + tel + "/";
+		$("#dataView").attr('src', url);
+	}
 
 	function getIframe(url) {
 		$("#dataView").attr('src', url);

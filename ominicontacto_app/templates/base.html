@@ -135,6 +135,12 @@
 						    	<li>
                             		<a href="{% url 'campana_dialer_create' %}">Crear nueva campaña dialer</a>
                         		</li>
+                                <li>
+                                    <a href="{% url 'campana_manual_list' %}">Listado de campañas Manuales</a>
+                                </li>
+						    	<li>
+                            		<a href="{% url 'campana_manual_create' %}">Crear nueva campaña Manual</a>
+                        		</li>
                                 {% if user.get_is_administrador %}
                                 <li>
                             		<a href="{% url 'regenerar_asterisk' %}">Regenerar asterisk</a>
