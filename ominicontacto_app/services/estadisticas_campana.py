@@ -60,7 +60,7 @@ class EstadisticasService():
             calificaciones_nombre.append(calificacion.nombre)
             calificaciones_cantidad.append(cant)
         cant_venta = len(calificaciones_query.filter(es_venta=True))
-        calificaciones_nombre.append('venta')
+        calificaciones_nombre.append(campana.gestion)
         calificaciones_cantidad.append(cant_venta)
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
