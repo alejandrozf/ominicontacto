@@ -68,6 +68,9 @@ class CalificacionManualCreateView(CreateView):
         else:
             self.object.es_gestion = False
             self.object.save()
+        message = 'Operación Exitosa!\
+                                Se llevó a cabo con éxito la calificacion del cliente'
+        messages.success(self.request, message)
         return super(CalificacionManualCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -94,6 +97,13 @@ class CalificacionManualUpdateView(UpdateView):
         return self.form_class(
             calificacion_choice=calificaciones, gestion=campana.gestion,
             **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        message = 'Operación Exitosa!\
+                                Se llevó a cabo con éxito la actualizacion' \
+                  'calificacion del cliente'
+        messages.success(self.request, message)
+        return super(CalificacionManualUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('view_blanco')
