@@ -477,6 +477,14 @@ urlpatterns = [
         views_agente.cambiar_estado_agente_view,
         name='agente_cambiar_estado',
         ),
+    url(r'^agente/(?P<pk_agente>\d+)/activar/$',
+        login_required(
+            views_agente.ActivarAgenteView.as_view()),
+        name="agente_activar"),
+    url(r'^agente/(?P<pk_agente>\d+)/desactivar/$',
+        login_required(
+            views_agente.DesactivarAgenteView.as_view()),
+        name="agente_desactivar"),
     # ==========================================================================
     # Supervision
     # ==========================================================================

@@ -150,6 +150,7 @@ class AgenteProfile(models.Model):
     grupo = models.ForeignKey(Grupo, related_name='agentes')
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
     reported_by = models.ForeignKey(User, related_name="reportedby")
+    is_inactive = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
@@ -163,6 +164,14 @@ class AgenteProfile(models.Model):
 
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
+
+    def desactivar(self):
+        self.is_inactive = True
+        self.save()
+
+    def activar(self):
+        self.is_inactive = False
+        self.save()
 
 
 class SupervisorProfileManager(models.Manager):
