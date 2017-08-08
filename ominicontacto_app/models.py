@@ -150,6 +150,7 @@ class AgenteProfile(models.Model):
     grupo = models.ForeignKey(Grupo, related_name='agentes')
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
     reported_by = models.ForeignKey(User, related_name="reportedby")
+    is_inactive = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
