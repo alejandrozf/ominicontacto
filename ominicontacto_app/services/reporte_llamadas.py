@@ -178,7 +178,7 @@ class EstadisticasService():
                             agente_nuevo._tiempo_pausa = resta
                     else:
                         agente_nuevo = AgenteTiemposReporte(
-                            agente, None, resta, None, 0, 0, None, None)
+                            agente, None, resta, None, 0, 0, 0, 0)
                         agentes_tiempo.append(agente_nuevo)
                     agente_nuevo = None
                     is_unpause = False
@@ -208,7 +208,7 @@ class EstadisticasService():
                             agente_nuevo._tiempo_sesion = resta
                     else:
                         agente_nuevo = AgenteTiemposReporte(
-                            agente, resta, None, None, 0, 0, None, None)
+                            agente, resta, None, None, 0, 0, 0, 0)
                         agentes_tiempo.append(agente_nuevo)
                     agente_nuevo = None
                     is_remove = False
@@ -219,74 +219,90 @@ class EstadisticasService():
 
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
-        for agente in agentes:
-            agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente.id)
-            lista_tiempo_llamada = [int(log.data2) for log in logs_time]
+        agentes_id = [agente.id for agente in agentes]
+        logs_time = Queuelog.objects.obtener_tiempo_llamadas_agente(
+            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
+
+        for log in logs_time:
+
+            agente = AgenteProfile.objects.get(pk=int(log[0]))
             agente_en_lista = filter(lambda x: x.agente == agente,
                                      agentes_tiempo)
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._tiempo_llamada = sum(lista_tiempo_llamada)
+                agente_nuevo._tiempo_llamada = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, sum(lista_tiempo_llamada), 0, 0, None, None)
+                    agente, None, None, int(log[1]), 0, 0, 0, 0)
+                agentes_tiempo.append(agente_nuevo)
+
+        logs_time = Queuelog.objects.obtener_count_evento_agente(
+            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
+
+        for log in logs_time:
+
+            agente = AgenteProfile.objects.get(pk=int(log[0]))
+            agente_en_lista = filter(lambda x: x.agente == agente,
+                                     agentes_tiempo)
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                agente_nuevo._cantidad_llamadas_procesadas = int(log[1])
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    agente, None, None, None, logs_time.count(),
+                    0, 0, 0)
                 agentes_tiempo.append(agente_nuevo)
 
         eventos_llamadas_perdidas = ['RINGNOANSWER']
 
-        for agente in agentes:
-            agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente.id)
-            logs_time_perdidas = Queuelog.objects.obtener_log_agente_pk_event_periodo(
-                eventos_llamadas_perdidas, fecha_inferior, fecha_superior, agente.id)
+        logs_time = Queuelog.objects.obtener_count_evento_agente(
+            eventos_llamadas_perdidas, fecha_inferior, fecha_superior, agentes_id)
 
+        for log in logs_time:
+
+            agente = AgenteProfile.objects.get(pk=int(log[0]))
             agente_en_lista = filter(lambda x: x.agente == agente,
                                      agentes_tiempo)
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_llamadas_procesadas = logs_time.count()
-                agente_nuevo._cantidad_llamadas_perdidas = logs_time_perdidas.count()
+                agente_nuevo._cantidad_llamadas_perdidas= int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, None, logs_time.count(),
-                    logs_time_perdidas.count(), None, None)
+                    agente, None, None, None, 0,
+                    int(log[1]), 0, 0)
                 agentes_tiempo.append(agente_nuevo)
 
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+        logs_time = Queuelog.objects.obtener_tiempo_llamadas_saliente_agente(
+            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
 
-        for agente in agentes:
-            agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente.id)
-            lista_tiempo_llamada = [int(log.data2) for log in logs_time]
-            logs_saliente = logs_time.filter(data4='saliente')
-            lista_tiempo_saliente = [int(log.data2) for log in logs_saliente]
-            cantidad_llamadas = logs_time.count()
-            cantidad_saliente = logs_saliente.count()
-            cantidad_asignadas = cantidad_llamadas - cantidad_saliente
-            tiempo_llamadas = sum(lista_tiempo_llamada)
-            tiempo_saliente = sum(lista_tiempo_saliente)
-            tiempo_asignadas = tiempo_llamadas - tiempo_saliente
-            media_asignadas = 0
-            if tiempo_asignadas > 0:
-                media_asignadas = tiempo_asignadas / cantidad_asignadas
-            media_salientes = 0
-            if tiempo_saliente > 0:
-                media_salientes = tiempo_saliente / cantidad_saliente
+        for log in logs_time:
+
+            agente = AgenteProfile.objects.get(pk=int(log[0]))
             agente_en_lista = filter(lambda x: x.agente == agente,
                                      agentes_tiempo)
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-
-                agente_nuevo._media_asignada = media_asignadas
-                agente_nuevo._media_saliente = media_salientes
+                agente_nuevo._tiempo_llamada_saliente = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, sum(lista_tiempo_llamada), 0, 0, media_asignadas,
-                    media_salientes)
+                    agente, None, None, None, 0, 0, int(log[1]), 0)
+                agentes_tiempo.append(agente_nuevo)
+
+        logs_time = Queuelog.objects.obtener_count_saliente_evento_agente(
+            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
+
+        for log in logs_time:
+
+            agente = AgenteProfile.objects.get(pk=int(log[0]))
+            agente_en_lista = filter(lambda x: x.agente == agente,
+                                     agentes_tiempo)
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                agente_nuevo._cantidad_llamadas_saliente = int(log[1])
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    agente, None, None, None, 0,
+                    0, 0, int(log[1]))
                 agentes_tiempo.append(agente_nuevo)
 
         return agentes_tiempo
