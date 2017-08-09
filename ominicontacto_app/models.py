@@ -2158,6 +2158,60 @@ class QueuelogManager(models.Manager):
         values = cursor.fetchall()
         return values
 
+    def obtener_tiempo_llamadas_saliente_agente(self, eventos, fecha_desde, fecha_hasta,
+                                                agentes):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+
+        cursor = connection.cursor()
+        sql = """select agent_id, SUM(data2::integer)
+                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
+                 and data4='saliente'
+                 GROUP BY agent_id order by agent_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
+    def obtener_count_saliente_evento_agente(self, eventos, fecha_desde, fecha_hasta,
+                                             agentes):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+
+        cursor = connection.cursor()
+        sql = """select agent_id, count(*)
+                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
+                 and data4='saliente'
+                 GROUP BY agent_id order by agent_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
 
 class Queuelog(models.Model):
 
