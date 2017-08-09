@@ -219,19 +219,21 @@ class EstadisticasService():
 
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
-        for agente in agentes:
-            agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente.id)
-            lista_tiempo_llamada = [int(log.data2) for log in logs_time]
+        agentes_id = [agente.id for agente in agentes]
+        logs_time = Queuelog.objects.obtener_tiempo_llamadas_agente(
+            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
+
+        for log in logs_time:
+
+            agente = AgenteProfile.objects.get(pk=int(log[0]))
             agente_en_lista = filter(lambda x: x.agente == agente,
                                      agentes_tiempo)
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._tiempo_llamada = sum(lista_tiempo_llamada)
+                agente_nuevo._tiempo_llamada = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, sum(lista_tiempo_llamada), 0, 0, None, None)
+                    agente, None, None, int(log[1]), 0, 0, None, None)
                 agentes_tiempo.append(agente_nuevo)
 
         eventos_llamadas_perdidas = ['RINGNOANSWER']
