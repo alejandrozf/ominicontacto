@@ -236,25 +236,40 @@ class EstadisticasService():
                     agente, None, None, int(log[1]), 0, 0, None, None)
                 agentes_tiempo.append(agente_nuevo)
 
-        eventos_llamadas_perdidas = ['RINGNOANSWER']
+        logs_time = Queuelog.objects.obtener_count_evento_agente(
+            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
 
-        for agente in agentes:
-            agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente.id)
-            logs_time_perdidas = Queuelog.objects.obtener_log_agente_pk_event_periodo(
-                eventos_llamadas_perdidas, fecha_inferior, fecha_superior, agente.id)
+        for log in logs_time:
 
+            agente = AgenteProfile.objects.get(pk=int(log[0]))
             agente_en_lista = filter(lambda x: x.agente == agente,
                                      agentes_tiempo)
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_llamadas_procesadas = logs_time.count()
-                agente_nuevo._cantidad_llamadas_perdidas = logs_time_perdidas.count()
+                agente_nuevo._cantidad_llamadas_procesadas = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
                     agente, None, None, None, logs_time.count(),
-                    logs_time_perdidas.count(), None, None)
+                    None, None, None)
+                agentes_tiempo.append(agente_nuevo)
+
+        eventos_llamadas_perdidas = ['RINGNOANSWER']
+
+        logs_time = Queuelog.objects.obtener_count_evento_agente(
+            eventos_llamadas_perdidas, fecha_inferior, fecha_superior, agentes_id)
+
+        for log in logs_time:
+
+            agente = AgenteProfile.objects.get(pk=int(log[0]))
+            agente_en_lista = filter(lambda x: x.agente == agente,
+                                     agentes_tiempo)
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                agente_nuevo._cantidad_llamadas_perdidas= int(log[1])
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    agente, None, None, None, None,
+                    int(log[1]), None, None)
                 agentes_tiempo.append(agente_nuevo)
 
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
