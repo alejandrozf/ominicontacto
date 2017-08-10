@@ -68,6 +68,7 @@ class EstadisticasService():
                                                            calificacion='')
         calificaciones_nombre.append("AGENTE NO CALIFICO")
         calificaciones_cantidad.append(campana_log_terminated.count())
+        total_asignados += campana_log_terminated.count()
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_agentes_campana(self, campana):
