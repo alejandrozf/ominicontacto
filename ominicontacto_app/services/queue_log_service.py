@@ -22,7 +22,7 @@ class AgenteTiemposReporte(object):
 
     def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada,
                  cantidad_llamadas_procesadas, cantidad_llamadas_perdidas,
-                 media_asignada, media_saliente):
+                 tiempo_llamada_saliente, cantidad_llamadas_saliente):
 
         self._agente = agente
         self._tiempo_sesion = tiempo_sesion
@@ -30,8 +30,8 @@ class AgenteTiemposReporte(object):
         self._tiempo_llamada = tiempo_llamada
         self._cantidad_llamadas_procesadas = cantidad_llamadas_procesadas
         self._cantidad_llamadas_perdidas = cantidad_llamadas_perdidas
-        self._media_asignada = media_asignada
-        self._media_saliente = media_saliente
+        self._tiempo_llamada_saliente = tiempo_llamada_saliente
+        self._cantidad_llamadas_saliente = cantidad_llamadas_saliente
 
 
     @property
@@ -59,12 +59,12 @@ class AgenteTiemposReporte(object):
         return self._cantidad_llamadas_perdidas
 
     @property
-    def media_asignada(self):
-        return self._media_asignada
+    def tiempo_llamada_saliente(self):
+        return self._tiempo_llamada_saliente
 
     @property
-    def media_saliente(self):
-        return self._media_saliente
+    def cantidad_llamadas_saliente(self):
+        return self._cantidad_llamadas_saliente
 
     @property
     def tiempo_porcentaje_llamada(self):
@@ -127,3 +127,19 @@ class AgenteTiemposReporte(object):
 
     def get_nombre_agente(self):
         return self.agente.user.get_full_name()
+
+    def get_media_asignada(self):
+        tiempo_asignadas = self.tiempo_llamada - self.tiempo_llamada_saliente
+        media_asignadas = 0
+        cantidad_asignadas = self._cantidad_llamadas_procesadas -\
+                             self._cantidad_llamadas_saliente
+        if tiempo_asignadas > 0:
+            media_asignadas = tiempo_asignadas / cantidad_asignadas
+        return media_asignadas
+
+    def get_media_salientes(self):
+        media_salientes = 0
+        if self.tiempo_llamada_saliente > 0:
+            media_salientes = self.tiempo_llamada_saliente /\
+                              self._cantidad_llamadas_saliente
+        return media_salientes

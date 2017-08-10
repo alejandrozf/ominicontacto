@@ -62,6 +62,13 @@ class EstadisticasService():
         cant_venta = len(calificaciones_query.filter(es_venta=True))
         calificaciones_nombre.append(campana.gestion)
         calificaciones_cantidad.append(cant_venta)
+        campana_log_wombat = campana.logswombat.filter(
+            fecha_hora__range=(fecha_desde, fecha_hasta))
+        campana_log_terminated = campana_log_wombat.filter(estado="TERMINATED",
+                                                           calificacion='')
+        calificaciones_nombre.append("AGENTE NO CALIFICO")
+        calificaciones_cantidad.append(campana_log_terminated.count())
+        total_asignados += campana_log_terminated.count()
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_agentes_campana(self, campana):
