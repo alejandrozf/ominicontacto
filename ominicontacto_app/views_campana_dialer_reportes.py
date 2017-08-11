@@ -19,6 +19,7 @@ from ominicontacto_app.services.reporte_campana_pdf import \
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.services.reporte_llamados_no_atendidos_csv import ReporteCampanaCSVService
 
 
 class CampanaDialerReporteCalificacionListView(ListView):
@@ -58,6 +59,9 @@ class CampanaDialerReporteGrafico(FormView):
         service = EstadisticasService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
+        # genera reporte de llamadas no atendidas
+        service_csv = ReporteCampanaCSVService()
+        service_csv.crea_reporte_csv(self.get_object(), hoy, hoy_ahora)
         # genera los reportes grafico de la campana
         graficos_estadisticas = service.general_campana(self.get_object(), hoy,
                                                         hoy_ahora)
@@ -80,7 +84,9 @@ class CampanaDialerReporteGrafico(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        # obtener_estadisticas_render_graficos_supervision()
+        # genera reporte de llamadas no atendidas
+        service_csv = ReporteCampanaCSVService()
+        service_csv.crea_reporte_csv(self.get_object(), fecha_desde, fecha_hasta)
         service = EstadisticasService()
         graficos_estadisticas = service.general_campana(
             self.get_object(), fecha_desde, fecha_hasta)
@@ -148,6 +154,7 @@ class AgenteCampanaDialerReporteGrafico(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
+
         # genera el reporte para el agente de esta campana
         service = EstadisticasAgenteService()
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
@@ -157,3 +164,22 @@ class AgenteCampanaDialerReporteGrafico(FormView):
                                                         fecha_hasta)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
+
+
+class ExportaReporteNoAtendidosView(UpdateView):
+    """
+    Esta vista invoca a generar un csv de reporte de la campana.
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        service_csv = ReporteCampanaCSVService()
+        url = service_csv.obtener_url_reporte_csv_descargar(self.object)
+
+        return redirect(url)
