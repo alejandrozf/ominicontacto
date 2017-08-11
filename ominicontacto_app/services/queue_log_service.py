@@ -129,17 +129,22 @@ class AgenteTiemposReporte(object):
         return self.agente.user.get_full_name()
 
     def get_media_asignada(self):
-        tiempo_asignadas = self.tiempo_llamada - self.tiempo_llamada_saliente
-        media_asignadas = 0
-        cantidad_asignadas = self._cantidad_llamadas_procesadas -\
-                             self._cantidad_llamadas_saliente
-        if tiempo_asignadas > 0:
-            media_asignadas = tiempo_asignadas / cantidad_asignadas
-        return media_asignadas
+        if self.tiempo_llamada and self.tiempo_llamada_saliente:
+
+            tiempo_asignadas = self.tiempo_llamada - self.tiempo_llamada_saliente
+            media_asignadas = 0
+            cantidad_asignadas = self._cantidad_llamadas_procesadas -\
+                                 self._cantidad_llamadas_saliente
+            if tiempo_asignadas > 0:
+                media_asignadas = tiempo_asignadas / cantidad_asignadas
+            return media_asignadas
+        return 0
 
     def get_media_salientes(self):
-        media_salientes = 0
-        if self.tiempo_llamada_saliente > 0:
-            media_salientes = self.tiempo_llamada_saliente /\
-                              self._cantidad_llamadas_saliente
-        return media_salientes
+        if self.tiempo_llamada_saliente:
+            media_salientes = 0
+            if self.tiempo_llamada_saliente > 0:
+                media_salientes = self.tiempo_llamada_saliente /\
+                                  self._cantidad_llamadas_saliente
+            return media_salientes
+        return 0
