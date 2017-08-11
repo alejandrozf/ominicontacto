@@ -43,18 +43,35 @@
         $("#id_agente").change(function() {
                 if( $("#id_agente").val() == null) {
                     $("#id_grupo_agente").removeAttr('disabled');
+                    $("#id_todos_agentes").removeAttr('disabled');
                 } else {
                     $("#id_grupo_agente").attr('disabled', true);
+                    $("#id_todos_agentes").attr('disabled', true);
                 }
             });
 
             $("#id_grupo_agente").change(function() {
                 if( $("#id_grupo_agente").val() == "") {
                     $("#id_agente").removeAttr('disabled');
+                    $("#id_todos_agentes").removeAttr('disabled');
                 } else {
                     $("#id_agente").attr('disabled', true);
+                    $("#id_todos_agentes").attr('disabled', true);
                 }
             });
+
+        $("#id_todos_agentes").change(function() {
+
+                if( $("#id_todos_agentes").prop("checked") ) {
+                    $("#id_agente").attr('disabled', true);
+                    $("#id_grupo_agente").attr('disabled', true);
+                } else {
+
+                    $("#id_agente").removeAttr('disabled');
+                    $("#id_grupo_agente").removeAttr('disabled');
+                }
+            });
+
 
 });
     </script>
@@ -86,6 +103,13 @@
             </div>
         </div>
         <div class="form-group row">
+        {{ form.todos_agentes.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.todos_agentes.id_for_label }}">Todos los agentes: </label>
+            <div class="col-sm-6">
+              {{ form.todos_agentes }}
+            </div>
+        </div>
+        <div class="form-group row">
         {{ form.grupo_agente.errors }}
             <label class="col-sm-3 control-label" for="{{ form.agente.id_for_label }}">Grupo de agentes: </label>
             <div class="col-sm-6">
@@ -101,7 +125,7 @@
     </form>
 </div>
 
-
+{% if graficos_estadisticas  %}
 
 <div class="col-md-12">
     <h4>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
@@ -279,4 +303,5 @@
     <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a></h5>
 
 </div>
+{% endif %}
 {% endblock %}
