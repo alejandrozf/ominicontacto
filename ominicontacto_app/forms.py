@@ -907,6 +907,7 @@ class ReporteAgenteForm(forms.Form):
     agente = forms.MultipleChoiceField(required=False, choices=())
     grupo_agente = forms.ChoiceField(required=False, choices=(), widget=forms.Select(
         attrs={'class': 'form-control'}))
+    todos_agentes = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(ReporteAgenteForm, self).__init__(*args, **kwargs)

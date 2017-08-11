@@ -145,16 +145,6 @@ class AgenteReporteListView(FormView):
     #     context['estadisticas'] = agente_service._calcular_estadisticas()
     #     return context
 
-    def get(self, request, *args, **kwargs):
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
-        agente_service = EstadisticasService()
-        agentes = []
-        graficos_estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes,
-                                                               request.user)
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas))
-
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')
@@ -162,6 +152,8 @@ class AgenteReporteListView(FormView):
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
         grupo_id = form.cleaned_data.get('grupo_agente')
         agentes_pk = form.cleaned_data.get('agente')
+        todos_agentes = form.cleaned_data.get('todos_agentes')
+
         agentes = []
         if agentes_pk:
             for agente_pk in agentes_pk:
@@ -170,8 +162,10 @@ class AgenteReporteListView(FormView):
         if grupo_id:
             grupo = Grupo.objects.get(pk=int(grupo_id))
             agentes = grupo.agentes.filter(is_inactive=False)
-        #agentes = ["{0}_{1}".format(agente.id, agente.user.get_full_name())
-         #          for agente in agentes]
+
+        if todos_agentes:
+            agentes = []
+
         agente_service = EstadisticasService()
         graficos_estadisticas = agente_service.general_campana(
             fecha_desde, fecha_hasta, agentes, self.request.user)
