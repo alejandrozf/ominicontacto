@@ -7,7 +7,15 @@
     <p> Base de datos <strong>{{ campana.bd_contacto}}</strong></p>
     <p> Calificaciones <strong>{{ campana.calificacion_campana}}</strong></p>
     <p> Gestion <strong>{{ campana.gestion}}</strong></p>
+</div>
 
-
+<div class="row">
+        <p> Resultados en discador</p>
+        <p> Llamadas efectuadas <strong>{{ efectuadas }}</strong></p>
+        <p> Llamadas Terminadas <strong>{{ terminadas }}</strong></p>
+        <p> Llamadas restantes estimadas <strong>{{ estimadas }}</strong></p>
+        {% for statu in status %}
+            <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
+        {% endfor %}
 </div>
 {% endblock %}
