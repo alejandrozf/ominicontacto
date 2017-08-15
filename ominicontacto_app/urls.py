@@ -620,6 +620,7 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.ActuacionVigenteCampanaDialerUpdateView.as_view()),
         name="campana_dialer_update_actuacion_vigente"),
+
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================
@@ -643,6 +644,11 @@ urlpatterns = [
         login_required(
             views_campana_dialer_reportes.ExportaReporteNoAtendidosView.as_view()),
         name='exporta_reporte_no_atendidos',
+        ),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/detalle/$',
+        login_required(
+            views_campana_dialer_reportes.CampanaDialerDetailView.as_view()),
+        name='campana_dialer_detalle',
         ),
     # ==========================================================================
     # Backlist

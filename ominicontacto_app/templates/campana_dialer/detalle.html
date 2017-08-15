@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="row">
+    <p>Nombre de la Campana <strong>{{ campana.nombre }}</strong></p>
+    <p> Estado <strong>{{ campana.get_estado_display}}</strong></p>
+    <p> Base de datos <strong>{{ campana.bd_contacto}}</strong></p>
+    <p> Calificaciones <strong>{{ campana.calificacion_campana}}</strong></p>
+    <p> Gestion <strong>{{ campana.gestion}}</strong></p>
+
+
+</div>
+{% endblock %}
