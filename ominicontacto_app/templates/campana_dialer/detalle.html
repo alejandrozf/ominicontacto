@@ -19,6 +19,10 @@
             <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
         {% endfor %}
 </div>
+{% else %}
+<div class="row">
+    <p>no se obtuvieron resultados del discador</p>
+</div>
 {% endif %}
 <div>
     <a class="btn-sm btn-success" href="{% url 'campana_dialer_list' %}">
