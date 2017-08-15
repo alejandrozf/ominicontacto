@@ -18,4 +18,9 @@
             <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
         {% endfor %}
 </div>
+<div>
+    <a class="btn-sm btn-success" href="{% url 'campana_dialer_list' %}">
+        volver a listado
+    </a>
+</div>
 {% endblock %}
