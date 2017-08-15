@@ -9,6 +9,7 @@
     <p> Gestion <strong>{{ campana.gestion}}</strong></p>
 </div>
 
+{% if resultado %}
 <div class="row">
         <p> Resultados en discador</p>
         <p> Llamadas efectuadas <strong>{{ efectuadas }}</strong></p>
@@ -18,6 +19,11 @@
             <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
         {% endfor %}
 </div>
+{% else %}
+<div class="row">
+    <p>no se obtuvieron resultados del discador</p>
+</div>
+{% endif %}
 <div>
     <a class="btn-sm btn-success" href="{% url 'campana_dialer_list' %}">
         volver a listado
