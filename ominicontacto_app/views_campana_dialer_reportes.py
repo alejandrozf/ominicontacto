@@ -202,12 +202,16 @@ class CampanaDialerDetailView(DetailView):
                                   Campana.ESTADO_FINALIZADA]
         if campana.estado in estados_running_wombat:
             dato_campana = campana_service.obtener_dato_campana_run(campana)
-            status = campana_service.obtener_status_campana_running(
-                dato_campana['hoppercampId'])
-            context['efectuadas'] = dato_campana['n_calls_attempted']
-            context['terminadas'] = dato_campana['n_calls_completed']
-            context['estimadas'] = dato_campana['n_est_remaining_calls']
-            context['status'] = status
+            if dato_campana:
+                status = campana_service.obtener_status_campana_running(
+                    dato_campana['hoppercampId'])
+                context['efectuadas'] = dato_campana['n_calls_attempted']
+                context['terminadas'] = dato_campana['n_calls_completed']
+                context['estimadas'] = dato_campana['n_est_remaining_calls']
+                context['status'] = status
+                context['resultado'] = True
+            else:
+                context['resultado'] = False
         return context
 
     def get_object(self, queryset=None):
