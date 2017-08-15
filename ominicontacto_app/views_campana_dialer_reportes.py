@@ -10,6 +10,7 @@ from django.shortcuts import redirect
 from ominicontacto_app.models import Campana, AgenteProfile
 from ominicontacto_app.forms import ReporteForm
 from django.views.generic import ListView, FormView, UpdateView
+from django.views.generic.detail import DetailView
 from ominicontacto_app.services.reporte_metadata_cliente import \
     ReporteMetadataClienteService
 from ominicontacto_app.services.reporte_campana_calificacion import \
@@ -183,3 +184,18 @@ class ExportaReporteNoAtendidosView(UpdateView):
         url = service_csv.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
+
+
+class CampanaDialerDetailView(DetailView):
+    """Detalle de una campana dialer"""
+    template_name = 'campana_dialer/detalle.html'
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            CampanaDialerDetailView, self).get_context_data(**kwargs)
+        return context
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
