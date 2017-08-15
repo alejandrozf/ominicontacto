@@ -21,6 +21,7 @@ from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_llamados_no_atendidos_csv import ReporteCampanaCSVService
+from ominicontacto_app.services.campana_service import CampanaService
 
 
 class CampanaDialerReporteCalificacionListView(ListView):
@@ -195,6 +196,18 @@ class CampanaDialerDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(
             CampanaDialerDetailView, self).get_context_data(**kwargs)
+        campana = self.get_object()
+        campana_service = CampanaService()
+        estados_running_wombat = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                                  Campana.ESTADO_FINALIZADA]
+        if campana.estado in estados_running_wombat:
+            dato_campana = campana_service.obtener_dato_campana_run(campana)
+            status = campana_service.obtener_status_campana_running(
+                dato_campana['hoppercampId'])
+            context['efectuadas'] = dato_campana['n_calls_attempted']
+            context['terminadas'] = dato_campana['n_calls_completed']
+            context['estimadas'] = dato_campana['n_est_remaining_calls']
+            context['status'] = status
         return context
 
     def get_object(self, queryset=None):
