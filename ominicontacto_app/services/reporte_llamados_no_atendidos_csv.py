@@ -130,7 +130,6 @@ class ReporteCampanaCSVService(object):
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         no_atendidos = self._obtener_listado_no_atendidos_fecha(campana, fecha_desde,
                                                                 fecha_hasta)
-        print no_atendidos
         contestador = self._obtener_listado_contestador_fecha(campana, fecha_desde,
                                                               fecha_hasta)
 
