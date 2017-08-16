@@ -122,7 +122,6 @@ class ArchivoDeReporteCsv(object):
 class ReporteCampanaCSVService(object):
 
     def crea_reporte_csv(self, campana, fecha_desde, fecha_hasta):
-        print "esty"
         # Reporte de distribucion campana
         archivo_de_reporte = ArchivoDeReporteCsv(campana)
         archivo_de_reporte.crear_archivo_en_directorio()
