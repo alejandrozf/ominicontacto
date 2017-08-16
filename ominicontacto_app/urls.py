@@ -650,6 +650,11 @@ urlpatterns = [
             views_campana_dialer_reportes.CampanaDialerDetailView.as_view()),
         name='campana_dialer_detalle',
         ),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/exporta_calificados/$',
+        login_required(
+            views_campana_dialer_reportes.ExportaReporteCalificadosView.as_view()),
+        name='exporta_reporte_calificados',
+        ),
     # ==========================================================================
     # Backlist
     # ==========================================================================

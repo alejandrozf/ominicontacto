@@ -24,7 +24,7 @@ class ArchivoDeReporteCsv(object):
     def __init__(self, campana):
         self._campana = campana
         self.nombre_del_directorio = 'reporte_campana'
-        self.prefijo_nombre_de_archivo = "{0}-reporte_llamadas".format(
+        self.prefijo_nombre_de_archivo = "{0}-reporte_llamadas_calificadas".format(
             self._campana.id)
         self.sufijo_nombre_de_archivo = ".csv"
         self.nombre_de_archivo = "{0}{1}".format(
@@ -50,14 +50,14 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, no_atendidos, contestador):
+    def escribir_archivo_csv(self, calificados, no_calificados):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []
 
             encabezado.append("Telefono")
-            encabezado.append("Estado")
+            encabezado.append("Gestionado")
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -68,46 +68,28 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for contacto in no_atendidos:
+            for calificacion in calificados:
                 lista_opciones = []
 
                 # --- Buscamos datos
-                estado = ""
-                valido = False
-                if contacto.estado == "RS_LOST" and contacto.calificacion == "":
-                    estado = "Agente no disponible"
-                    valido = True
-                elif contacto.estado == "RS_BUSY":
-                    estado = "Ocupado"
-                    valido = True
-                elif contacto.estado == "RS_NOANSWER":
-                    estado = "No contesta"
-                    valido = True
-                elif contacto.estado == "RS_NUMBER":
-                    estado = "Numero erroneo"
-                    valido = True
-                elif contacto.estado == "RS_ERROR":
-                    estado = "Error de sistema"
-                    valido = True
-                elif contacto.estado == "RS_REJECTED":
-                    estado = "Congestion"
-                    valido = True
-                if valido:
-                    lista_opciones.append(contacto.telefono)
-                    lista_opciones.append(estado)
+                lista_opciones.append(calificacion.contacto.telefono)
+                if calificacion.es_venta:
+                    lista_opciones.append(calificacion.campana.gestion)
+                else:
+                    lista_opciones.append(calificacion.calificacion)
 
                     # --- Finalmente, escribimos la linea
 
-                    lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                           for item in lista_opciones]
-                    csvwiter.writerow(lista_opciones_utf8)
+                lista_opciones_utf8 = [force_text(item).encode('utf-8')
+                                       for item in lista_opciones]
+                csvwiter.writerow(lista_opciones_utf8)
 
-            for contacto in contestador:
+            for contacto in no_calificados:
                 lista_opciones = []
 
                 # --- Buscamos datos
                 lista_opciones.append(contacto.telefono)
-                lista_opciones.append("Contestador Detectado")
+                lista_opciones.append("AGENTE NO CALIFICO")
 
                 # --- Finalmente, escribimos la linea
 
@@ -119,7 +101,7 @@ class ArchivoDeReporteCsv(object):
         return os.path.exists(self.ruta)
 
 
-class ReporteCampanaCSVService(object):
+class ReporteCampanaCalificadosCSV(object):
 
     def crea_reporte_csv(self, campana, fecha_desde, fecha_hasta):
         # Reporte de distribucion campana
@@ -127,12 +109,11 @@ class ReporteCampanaCSVService(object):
         archivo_de_reporte.crear_archivo_en_directorio()
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        no_atendidos = self._obtener_listado_no_atendidos_fecha(campana, fecha_desde,
-                                                                fecha_hasta)
-        contestador = self._obtener_listado_contestador_fecha(campana, fecha_desde,
-                                                              fecha_hasta)
-
-        archivo_de_reporte.escribir_archivo_csv(no_atendidos, contestador)
+        calificados = self._obtener_listado_calificados_fecha(
+            campana, fecha_desde, fecha_hasta)
+        no_calificados = self._obtener_listado_no_califico_fecha(
+            campana, fecha_desde, fecha_hasta)
+        archivo_de_reporte.escribir_archivo_csv(calificados, no_calificados)
 
     def obtener_url_reporte_csv_descargar(self, campana):
         #assert campana.estado == Campana.ESTADO_DEPURADA
@@ -146,10 +127,11 @@ class ReporteCampanaCSVService(object):
                      " CSV de descarga para la campana %s", nombre_reporte)
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
-    def _obtener_listado_no_atendidos_fecha(self, campana, fecha_desde, fecha_hasta):
-        return campana.logswombat.filter(
-            fecha_hora__range=(fecha_desde, fecha_hasta))
+    def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):
+        return campana.calificaconcliente.filter(
+            fecha__range=(fecha_desde, fecha_hasta))
 
-    def _obtener_listado_contestador_fecha(self, campana, fecha_desde, fecha_hasta):
-        return campana.logswombat.filter(fecha_hora__range=(fecha_desde, fecha_hasta),
-                                         estado="TERMINATED", calificacion='CONTESTADOR')
+    def _obtener_listado_no_califico_fecha(self, campana, fecha_desde, fecha_hasta):
+        return campana.logswombat.filter(
+            fecha_hora__range=(fecha_desde, fecha_hasta), estado="TERMINATED",
+            calificacion='')
