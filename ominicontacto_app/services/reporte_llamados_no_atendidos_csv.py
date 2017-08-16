@@ -149,7 +149,6 @@ class ReporteCampanaCSVService(object):
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
     def _obtener_listado_no_atendidos_fecha(self, campana, fecha_desde, fecha_hasta):
-        print "aca"
         return campana.logswombat.filter(
             fecha_hora__range=(fecha_desde, fecha_hasta))
 
