@@ -14,6 +14,7 @@
                 <th>modulos</th>
                 <th>grupo</th>
                 <th>campañas</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -29,10 +30,23 @@
                         {{ queue.queue_name.campana.nombre }}
                     {% endfor %}
                 </td>
+                <td>
+                     {% if agente.is_inactive %}
+                    Agente Inactivo
+                    <a type="button"  href="{% url 'agente_activar' agente.pk %}" >
+                        activar
+                    </a>
+                    {% else %}
+                    Agente Activo
+                    <a type="button" href="{% url 'agente_desactivar' agente.pk %}" >
+                        desactivar
+                    </a>
+                    {% endif %}
+                </td>
             </tr>
        {% empty %}
         <tr>
-            <td colspan="5">No existen agentes</td>
+            <td colspan="7">No existen agentes</td>
         </tr>
         {% endfor %}
         </tbody>

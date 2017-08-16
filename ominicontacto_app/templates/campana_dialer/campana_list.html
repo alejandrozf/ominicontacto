@@ -74,6 +74,9 @@
             <tr>
                 <td width="25%">
                     <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                    <a href="{% url 'campana_dialer_detalle' campana.pk %}">
+                        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                    </a>
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
@@ -135,6 +138,9 @@
             <tr>
                 <td width="25%">
                     <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                    <a href="{% url 'campana_dialer_detalle' campana.pk %}">
+                        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                    </a>
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
@@ -199,6 +205,9 @@
             <tr>
                 <td width="25%">
                     {{ campana.nombre }}
+                    <a href="{% url 'campana_dialer_detalle' campana.pk %}">
+                        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                    </a>
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
@@ -263,6 +272,9 @@
             <tr>
                 <td width="25%">
                     <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                    <a href="{% url 'campana_dialer_detalle' campana.pk %}">
+                        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                    </a>
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
@@ -321,7 +333,9 @@
         {% for campana in borradas %}
             <tr>
                 <td width="25%">
-                    {{ campana.nombre }}
+                    {{ campana.nombre }}<a href="{% url 'campana_dialer_detalle' campana.pk %}">
+                        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                    </a>
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>

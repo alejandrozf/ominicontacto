@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile
+    ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual
 )
 from ominicontacto_app.utiles import convertir_ascii_string
 
@@ -276,7 +276,7 @@ class GrabacionBusquedaForm(forms.Form):
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         agente_choice = [(agente.sip_extension, agente.user.get_full_name())
-                        for agente in AgenteProfile.objects.all()]
+                        for agente in AgenteProfile.objects.filter(is_inactive=False)]
         agente_choice.insert(0, ('', '---------'))
         self.fields['sip_agente'].choices = agente_choice
         campana_choice.insert(0, ('', '---------'))
@@ -907,14 +907,101 @@ class ReporteAgenteForm(forms.Form):
     agente = forms.MultipleChoiceField(required=False, choices=())
     grupo_agente = forms.ChoiceField(required=False, choices=(), widget=forms.Select(
         attrs={'class': 'form-control'}))
+    todos_agentes = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(ReporteAgenteForm, self).__init__(*args, **kwargs)
 
         agente_choice = [(agente.pk, agente.user.get_full_name())
-                         for agente in AgenteProfile.objects.all()]
+                         for agente in AgenteProfile.objects.filter(is_inactive=False)]
         self.fields['agente'].choices = agente_choice
         grupo_choice = [(grupo.id, grupo.nombre)
                         for grupo in Grupo.objects.all()]
         grupo_choice.insert(0, ('', '---------'))
         self.fields['grupo_agente'].choices = grupo_choice
+
+
+class CampanaManualForm(forms.ModelForm):
+    auto_grabacion = forms.BooleanField(required=False)
+    detectar_contestadores = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(CampanaManualForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Campana
+        fields = ('nombre', 'calificacion_campana', 'formulario', 'gestion',
+                  'sitio_externo', 'tipo_interaccion')
+
+        widgets = {
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            "tipo_interaccion": forms.RadioSelect(),
+        }
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if ' ' in nombre:
+            raise forms.ValidationError('el nombre no puede contener espacios')
+        return nombre
+
+
+class CalificacionManualForm(forms.ModelForm):
+
+    def __init__(self, calificacion_choice, gestion, *args, **kwargs):
+        super(CalificacionManualForm, self).__init__(*args, **kwargs)
+        self.fields['calificacion'].queryset = calificacion_choice
+        self.fields['calificacion'].empty_label = None
+        self.fields['calificacion'].empty_label = gestion
+
+    class Meta:
+        model = CalificacionManual
+        fields = ('campana', 'telefono', 'es_gestion', 'calificacion', 'agente',
+                  'observaciones')
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'es_gestion': forms.HiddenInput(),
+            'agente': forms.HiddenInput(),
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class FormularioManualGestionForm(forms.ModelForm):
+
+    def __init__(self, campos, *args, **kwargs):
+        super(FormularioManualGestionForm, self).__init__(*args, **kwargs)
+
+        for campo in campos:
+            if campo.tipo is FieldFormulario.TIPO_TEXTO:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_FECHA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'class-fecha form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_LISTA:
+                choices = [(option, option)
+                           for option in json.loads(campo.values_select)]
+                self.fields[campo.nombre_campo] = forms.ChoiceField(
+                    choices=choices,
+                    label=campo.nombre_campo, widget=forms.Select(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_TEXTO_AREA:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.Textarea(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+
+    class Meta:
+        model = CalificacionManual
+        fields = ('telefono',)
+
+        widgets = {
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+        }

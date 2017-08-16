@@ -10,6 +10,8 @@ import datetime
 from django.views.generic import FormView, UpdateView, ListView
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from ominicontacto_app.models import (
     AgenteProfile, Contacto, CalificacionCliente, Grupo
 )
@@ -56,8 +58,11 @@ class AgenteReporteCalificaciones(FormView):
         fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
         listado_calificaciones = agente.calificaciones.filter(fecha__range=(
             fecha_desde, fecha_hasta))
+        calificaciones_manuales = agente.calificacionesmanuales.filter(fecha__range=(
+            fecha_desde, fecha_hasta))
         return self.render_to_response(self.get_context_data(
-            listado_calificaciones=listado_calificaciones, agente=agente))
+            listado_calificaciones=listado_calificaciones, agente=agente,
+            calificaciones_manuales=calificaciones_manuales))
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
@@ -75,8 +80,11 @@ class AgenteReporteCalificaciones(FormView):
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         listado_calificaciones = agente.calificaciones.filter(fecha__range=(
             fecha_desde, fecha_hasta))
+        calificaciones_manuales = agente.calificacionesmanuales.filter(fecha__range=(
+            fecha_desde, fecha_hasta))
         return self.render_to_response(self.get_context_data(
-            listado_calificaciones=listado_calificaciones, agente=agente))
+            listado_calificaciones=listado_calificaciones, agente=agente,
+            calificaciones_manuales=calificaciones_manuales))
 
 
 class ExportaReporteFormularioVentaView(UpdateView):
@@ -137,16 +145,6 @@ class AgenteReporteListView(FormView):
     #     context['estadisticas'] = agente_service._calcular_estadisticas()
     #     return context
 
-    def get(self, request, *args, **kwargs):
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
-        agente_service = EstadisticasService()
-        agentes = []
-        graficos_estadisticas = agente_service.general_campana(hoy, hoy_ahora, agentes,
-                                                               request.user)
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas))
-
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')
@@ -154,6 +152,8 @@ class AgenteReporteListView(FormView):
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
         grupo_id = form.cleaned_data.get('grupo_agente')
         agentes_pk = form.cleaned_data.get('agente')
+        todos_agentes = form.cleaned_data.get('todos_agentes')
+
         agentes = []
         if agentes_pk:
             for agente_pk in agentes_pk:
@@ -161,9 +161,11 @@ class AgenteReporteListView(FormView):
                 agentes.append(agente)
         if grupo_id:
             grupo = Grupo.objects.get(pk=int(grupo_id))
-            agentes = grupo.agentes.all()
-        #agentes = ["{0}_{1}".format(agente.id, agente.user.get_full_name())
-         #          for agente in agentes]
+            agentes = grupo.agentes.filter(is_inactive=False)
+
+        if todos_agentes:
+            agentes = []
+
         agente_service = EstadisticasService()
         graficos_estadisticas = agente_service.general_campana(
             fecha_desde, fecha_hasta, agentes, self.request.user)
@@ -192,7 +194,7 @@ def logout_view(request):
         agente = request.user.get_agente_profile()
         variables = {
             'AGENTE': str(agente.sip_extension),
-            'AGENTNAME': request.user.get_full_name()
+            'AGENTNAME': "{0}_{1}".format(agente.id, request.user.get_full_name())
         }
         # Deslogueo el agente de asterisk via AMI
         try:
@@ -256,3 +258,29 @@ def exporta_reporte_agente_llamada_view(request, tipo_reporte):
     service = service_csv = ReporteAgenteCSVService()
     url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
     return redirect(url)
+
+
+class DesactivarAgenteView(RedirectView):
+    """
+    Esta vista actualiza el agente desactivandolo
+    """
+
+    pattern_name = 'agente_list'
+
+    def get(self, request, *args, **kwargs):
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        agente.desactivar()
+        return HttpResponseRedirect(reverse('agente_list'))
+
+
+class ActivarAgenteView(RedirectView):
+    """
+    Esta vista actualiza el agente activandolo
+    """
+
+    pattern_name = 'agente_list'
+
+    def get(self, request, *args, **kwargs):
+        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        agente.activar()
+        return HttpResponseRedirect(reverse('agente_list'))

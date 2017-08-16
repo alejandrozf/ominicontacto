@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+                <table class="table">
+                        <tbody>
+                            <tr class="fts-table-bg">
+                                <td width="45%">
+                                    <h3 class="text-primary">
+                                        {{ campana.nombre }}
+                                    </h3>
+                                </td>
+
+
+                                <td><h5><a href="{% url 'exporta_csv_calificacon' campana.pk %}">Exportar Calificacion(CSV)</a></h5></td>
+                                <td><h5><a href="{% url 'exporta_csv_gestion' campana.pk %}">Exportar Gestion: {{campana.gestion}}(CSV)</a></h5></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                <table class="table table-bordered">
+                    <thead>
+                      <tr class="fts-table-bg">
+                        <th>Telefono</th>
+                        <th>Gestionado como: {{campana.gestion}}</th>
+                        <th>Calificacion no gestion</th>
+                          <th>Observaciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for contacto in campana.calificacionmanual.all %}
+                            <tr>
+
+                                <td>
+                                    {{ contacto.telefono }}
+                                </td>
+                                <td>
+                                    {% if contacto.es_gestion %}
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                    {% else %}
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                {% if contacto.calificacion %}
+                                    {{ contacto.calificacion.nombre }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                                </td>
+                                <td>
+                                    {% if contacto.observaciones %}
+                                        {{contacto.observaciones}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="16">
+                                    <p class="text-center text-danger">
+                                        <em>No se encontraron Contactos para esta campaña.</em>
+                                    </p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+{% endblock %}
