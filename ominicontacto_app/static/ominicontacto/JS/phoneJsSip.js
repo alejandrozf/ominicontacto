@@ -138,43 +138,7 @@ $(function() {
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
       var callerOrCalled = "";
 
-			if(entrante && fromUser) { // INGRESA CUANDO CORTA UNA LLAMADA CON UN ABONADO o CLICK2CALL
-				callerOrCalled = fromUser;
-				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
-				$("#Resume").prop('disabled', objLastPause.LastBtnStatusResume);
-				$("#sipLogout").prop('disabled', objLastPause.LastBtnStatusSipLogout);
-				updateButton(modifyUserStat, objLastPause.LastStatusAgentClass, objLastPause.LastStatusAgent);
-				fromUser = "";
-				if($("#auto_unpause").val()) {
-					var timeoutACW = $("#auto_unpause").val();
-					timeoutACW = timeoutACW * 1000;
-					var toOnline = function() {
-						num = "0077UNPAUSE";
-						if($("#UserStatus").html() === "ACW") {
-							makeCall();
-							$("#Resume").trigger('click');
-						}
-					};
-					setTimeout(toOnline, timeoutACW);
-				}
-	    } else {
-			  if(num.substring(4,0) != '0077') { // INGRESA CUANDO CORTA LA LLAMADA CONTRA KAMAILIO, EJ 0077UNPAUSE
-					$("#Pause").prop('disabled',false);
-					$("#Resume").prop('disabled',true);
-					$("#sipLogout").prop('disabled',true);
-					updateButton(modifyUserStat, "label label-success", "Online");
-	        callerOrCalled =  num;
-	      }
-			}
-
-      parar3();
-      defaultCallState();
-
- 	    if(num.substring(4,0) == '0077') {
-        reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
-      }
-
-      if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
+			if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
 				if(originHeader == "CLICK2CALL") {
 
 				} else {
@@ -220,6 +184,42 @@ $(function() {
       	     updateButton(modifyUserStat, "label label-success", "Online");
       	   }
       	 }
+      }
+			
+			if(entrante && fromUser) { // INGRESA CUANDO CORTA UNA LLAMADA CON UN ABONADO o CLICK2CALL
+				callerOrCalled = fromUser;
+				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
+				$("#Resume").prop('disabled', objLastPause.LastBtnStatusResume);
+				$("#sipLogout").prop('disabled', objLastPause.LastBtnStatusSipLogout);
+				updateButton(modifyUserStat, objLastPause.LastStatusAgentClass, objLastPause.LastStatusAgent);
+				fromUser = "";
+				if($("#auto_unpause").val()) {
+					var timeoutACW = $("#auto_unpause").val();
+					timeoutACW = timeoutACW * 1000;
+					var toOnline = function() {
+						num = "0077UNPAUSE";
+						if($("#UserStatus").html() === "ACW") {
+							makeCall();
+							$("#Resume").trigger('click');
+						}
+					};
+					setTimeout(toOnline, timeoutACW);
+				}
+	    } else {
+			  if(num.substring(4,0) != '0077') { // INGRESA CUANDO CORTA LA LLAMADA CONTRA KAMAILIO, EJ 0077UNPAUSE
+					$("#Pause").prop('disabled',false);
+					$("#Resume").prop('disabled',true);
+					$("#sipLogout").prop('disabled',true);
+					updateButton(modifyUserStat, "label label-success", "Online");
+	        callerOrCalled =  num;
+	      }
+			}
+
+      parar3();
+      defaultCallState();
+
+ 	    if(num.substring(4,0) == '0077') {
+        reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
     });
     function saveCall(callerOrCalled) {
@@ -621,11 +621,13 @@ $(function() {
 		}
 	});
 
-  $("#redial").click(function () {
+  $("#redial").click(function () {// esto es para enviar un Invite/llamada
   	entrante = false;
   	num = lastDialedNumber;
-  	$("#modalSelectCmp").modal("show");
-    // esto es para enviar un Invite/llamada
+		if($("#campAssocManualCall").html() == "") {
+  	  $("#modalSelectCmp").modal("show");
+    }
+		makeCall();
   });
 
   $("#endCall").click(function() {
