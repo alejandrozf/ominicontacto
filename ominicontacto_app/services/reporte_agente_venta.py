@@ -51,7 +51,7 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, formularios):
+    def escribir_archivo_csv(self, formularios, calificaciones_manuales):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
@@ -89,6 +89,23 @@ class ArchivoDeReporteCsv(object):
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
+            for metadata in calificaciones_manuales:
+                lista_opciones = []
+
+                # --- Buscamos datos
+
+                lista_opciones.append(metadata.telefono)
+                if metadata.metadata:
+                    datos = json.loads(metadata.metadata)
+                    for clave, valor in datos.items():
+                        lista_opciones.append(valor)
+
+                # --- Finalmente, escribimos la linea
+
+                lista_opciones_utf8 = [force_text(item).encode('utf-8')
+                                       for item in lista_opciones]
+                csvwiter.writerow(lista_opciones_utf8)
+
     def ya_existe(self):
         return os.path.exists(self.ruta)
 
@@ -105,8 +122,10 @@ class ReporteFormularioVentaService(object):
         formularios = self._obtener_listado_formularios_fecha(agente,
                                                               fecha_desde,
                                                               fecha_hasta)
+        calificaciones_manuales = self._obtener_listado_calificaciones_manuales_fecha(
+            agente, fecha_desde, fecha_hasta)
 
-        archivo_de_reporte.escribir_archivo_csv(formularios)
+        archivo_de_reporte.escribir_archivo_csv(formularios, calificaciones_manuales)
 
     def obtener_url_reporte_csv_descargar(self, agente):
         #assert campana.estado == Campana.ESTADO_DEPURADA
@@ -125,3 +144,10 @@ class ReporteFormularioVentaService(object):
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         return agente.metadataagente.filter(fecha__range=(fecha_desde,
                                                              fecha_hasta))
+
+    def _obtener_listado_calificaciones_manuales_fecha(self, agente,fecha_desde,
+                                                       fecha_hasta):
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
+        return agente.calificacionesmanuales.filter(
+            fecha__range=(fecha_desde, fecha_hasta), es_gestion=True)

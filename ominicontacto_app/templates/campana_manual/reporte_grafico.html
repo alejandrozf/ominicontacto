@@ -52,18 +52,9 @@
 {% with graficos_estadisticas=graficos_estadisticas %}
 
 <h4>Campaña <strong>{{campana.nombre}}</strong></h4>
-<div class="col-md-3 pull-right">
 
-            <h5><a class="btn btn-info btn-sm" href="{% url 'campana_dialer_reporte_pdf' campana.pk %}" target="_blank">Exportar Reporte(PDF)</a></h5>
 
-    </div>
 
-<div class="col-md-12">
-    <div class="row">
-        <h5 class="col-md-3">Llamadas Pendientes <strong>{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</strong></h5>
-        <h5 class="col-md-3">Llamadas Realizadas <strong>{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</strong></h5>
-    </div>
-</div>
 
 <div class="col-md-6">
 
@@ -97,8 +88,6 @@
                             <tr class="fts-table-bg">
                                 <td colspan="2">
                                     <h4>Cantidad de calificacion por campana</h4>
-                                    <a class="btn btn-warning btn-sm" href="{% url 'exporta_reporte_calificados' campana.pk %}">Exportar Reporte llamadas calificadas(CSV)</a>
-
                                 </td>
                             </tr>
                         </thead>
@@ -139,53 +128,7 @@
                         </tbody>
                     </table>
 
-  <table class="table table-bordered">
-                        <thead>
-                            <tr class="fts-table-bg">
-                                <td colspan="2">
-                                    <h4>Cantidad de llamados no atendido</h4>
-                                        <a class="btn btn-warning btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">Exportar Reporte llamadas(CSV)</a>
 
-                                </td>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td width="50%">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th>Resultado</th>
-                                            <th>cantidad </th>
-
-
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for resultado_nombre, resultado_cantidad in graficos_estadisticas.dict_no_atendido_counter %}
-                                                <tr>
-                                                    <td><h5>{{ resultado_nombre }} </h5></td>
-                                                    <td><h5>{{ resultado_cantidad }} </h5></td>
-                                                </tr>
-                                            {% endfor %}
-                                                <tr>
-                                                    <td><strong>Total no atendidos</strong></td>
-                                                    <td><strong>{{graficos_estadisticas.total_no_atendidos}}</strong></td>
-                                                </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td width="50%" align="center">
-                                    <div class="graficos-avances">
-                                        <figure>
-                                            {{ graficos_estadisticas.barra_campana_no_atendido.render|safe }}
-                                        </figure>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 <div class="col-md-6">
 <table class="table table-bordered">
     <thead>
@@ -203,7 +146,7 @@
     <tbody>
         {% for agente in graficos_estadisticas.agentes_venta %}
             <tr>
-                <td><a href="{% url 'campana_dialer_reporte_agente' pk_campana agente.0.pk %}">{{agente.0}}</a></td>
+                <td><a href="{% url 'campana_manual_reporte_agente' pk_campana agente.0.pk %}">{{agente.0}}</a></td>
                 <td class="text-success"><strong>{{agente.3}}</strong></td>
 
                 {% for calificacion in graficos_estadisticas.calificaciones %}

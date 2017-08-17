@@ -150,6 +150,7 @@ class AgenteProfile(models.Model):
     grupo = models.ForeignKey(Grupo, related_name='agentes')
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
     reported_by = models.ForeignKey(User, related_name="reportedby")
+    is_inactive = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
@@ -163,6 +164,14 @@ class AgenteProfile(models.Model):
 
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
+
+    def desactivar(self):
+        self.is_inactive = True
+        self.save()
+
+    def activar(self):
+        self.is_inactive = False
+        self.save()
 
 
 class SupervisorProfileManager(models.Manager):
@@ -390,6 +399,12 @@ class CampanaManager(models.Manager):
         """
         return self.filter(type=Campana.TYPE_ENTRANTE)
 
+    def obtener_campanas_manuales(self):
+        """
+        Devuelve campañas de tipo dialer
+        """
+        return self.filter(type=Campana.TYPE_MANUAL)
+
     def obtener_campanas_vista_by_user(self, campanas, user):
         """
         devuelve las campanas filtradas por user
@@ -609,9 +624,13 @@ class Campana(models.Model):
     TYPE_DIALER = 2
     """La campaña está definida como de discador"""
 
+    TYPE_MANUAL = 3
+    """La campaña está definida como manual"""
+
     TYPES_CAMPANA = (
         (TYPE_ENTRANTE, 'Entrante'),
-        (TYPE_DIALER, 'Dialer')
+        (TYPE_DIALER, 'Dialer'),
+        (TYPE_MANUAL, 'Manual')
     )
 
     FORMULARIO = 1
@@ -2089,6 +2108,110 @@ class QueuelogManager(models.Manager):
         values = cursor.fetchall()
         return values
 
+    def obtener_tiempo_llamadas_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+
+        cursor = connection.cursor()
+        sql = """select agent_id, SUM(data2::integer)
+                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
+                 GROUP BY agent_id order by agent_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
+    def obtener_count_evento_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+
+        cursor = connection.cursor()
+        sql = """select agent_id, count(*)
+                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
+                 GROUP BY agent_id order by agent_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
+    def obtener_tiempo_llamadas_saliente_agente(self, eventos, fecha_desde, fecha_hasta,
+                                                agentes):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+
+        cursor = connection.cursor()
+        sql = """select agent_id, SUM(data2::integer)
+                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
+                 and data4='saliente'
+                 GROUP BY agent_id order by agent_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
+    def obtener_count_saliente_evento_agente(self, eventos, fecha_desde, fecha_hasta,
+                                             agentes):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+
+        cursor = connection.cursor()
+        sql = """select agent_id, count(*)
+                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
+                 and data4='saliente'
+                 GROUP BY agent_id order by agent_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
 
 class Queuelog(models.Model):
 
@@ -2516,3 +2639,22 @@ class UserApiCrm(models.Model):
 
     def __unicode__(self):
         return self.usuario
+
+
+class CalificacionManual(models.Model):
+
+    #objects = CalificacionClienteManager()
+
+    campana = models.ForeignKey(Campana, related_name="calificacionmanual")
+    telefono = models.CharField(max_length=128)
+    es_gestion = models.BooleanField(default=False)
+    calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
+    observaciones = models.TextField(blank=True, null=True)
+    agendado = models.BooleanField(default=False)
+    metadata = models.TextField(blank=True, null=True)
+
+    def __unicode__(self):
+        return "Calificacion manual para la campana {0} para el telefono " \
+               "{1} ".format(self.campana, self.telefono)

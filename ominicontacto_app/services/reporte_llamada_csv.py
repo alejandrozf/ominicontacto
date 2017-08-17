@@ -111,8 +111,8 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(porcentaje_wait)
                 lista_opciones.append(agente.cantidad_llamadas_procesadas)
                 lista_opciones.append(agente.cantidad_llamadas_perdidas)
-                lista_opciones.append(str(agente.media_asignada) + "s")
-                lista_opciones.append(str(agente.media_saliente) + "s")
+                lista_opciones.append(str(agente.get_media_asignada()) + "s")
+                lista_opciones.append(str(agente.get_media_salientes()) + "s")
 
                 # --- Finalmente, escribimos la linea
 

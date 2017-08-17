@@ -12,7 +12,7 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import CalificacionCliente, Queuelog
+from ominicontacto_app.models import CalificacionCliente, Queuelog, CalificacionManual
 from ominicontacto_app.services.campana_service import CampanaService
 
 import logging as _logging
@@ -50,7 +50,7 @@ class EstadisticasService():
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         calificaciones = campana.calificacion_campana.calificacion.all()
-        calificaciones_query = CalificacionCliente.objects.filter(
+        calificaciones_query = CalificacionManual.objects.filter(
             campana=campana, fecha__range=(fecha_desde, fecha_hasta))
         calificaciones_nombre = []
         calificaciones_cantidad = []
@@ -59,16 +59,9 @@ class EstadisticasService():
             cant = len(calificaciones_query.filter(calificacion=calificacion))
             calificaciones_nombre.append(calificacion.nombre)
             calificaciones_cantidad.append(cant)
-        cant_venta = len(calificaciones_query.filter(es_venta=True))
+        cant_venta = len(calificaciones_query.filter(es_gestion=True))
         calificaciones_nombre.append(campana.gestion)
         calificaciones_cantidad.append(cant_venta)
-        campana_log_wombat = campana.logswombat.filter(
-            fecha_hora__range=(fecha_desde, fecha_hasta))
-        campana_log_terminated = campana_log_wombat.filter(estado="TERMINATED",
-                                                           calificacion='')
-        calificaciones_nombre.append("AGENTE NO CALIFICO")
-        calificaciones_cantidad.append(campana_log_terminated.count())
-        total_asignados += campana_log_terminated.count()
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_agentes_campana(self, campana):
@@ -83,68 +76,6 @@ class EstadisticasService():
             members_campana.append(member.member)
 
         return members_campana
-
-    def obtener_cantidad_no_atendidos(self, campana, fecha_desde, fecha_hasta):
-        """
-        Obtiene los llamados no atendidos por campana
-        :param campana: campana a la cual se van obtener los llamados no atendidos
-        :param fecha_desde: fecha desde la cual se obtener los llamados no atendidos
-        :param fecha_hasta: fehca hasta la cual se va obtener los llamados no atendidos
-        :return: nombre del evento no atendidos, la cantidad por ese evento y el total
-        de  llamados no atendidos
-        """
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        campana_log_wombat = campana.logswombat.filter(
-            fecha_hora__range=(fecha_desde, fecha_hasta))
-        campana_log_terminated = campana_log_wombat.filter(estado="TERMINATED",
-                                                           calificacion='CONTESTADOR')
-        campana_log_wombat = campana_log_wombat.exclude(estado="TERMINATED")
-        campana_log_wombat = campana_log_wombat.values('estado',
-                                                       'calificacion').annotate(
-            Count('estado'))
-
-        resultado_nombre = []
-        resultado_cantidad = []
-        total_no_atendidos = 0
-        for resultado in campana_log_wombat:
-            estado = resultado['estado']
-            if estado == "RS_LOST" and resultado['calificacion'] == "":
-                estado = "Agente no disponible"
-            elif estado == "RS_BUSY":
-                estado = "Ocupado"
-            elif estado == "RS_NOANSWER":
-                estado = "No contesta"
-            elif estado == "RS_NUMBER":
-                estado = "Numero erroneo"
-            elif estado == "RS_ERROR":
-                estado = "Error de sistema"
-            elif estado == "RS_REJECTED":
-                estado = "Congestion"
-            resultado_nombre.append(estado)
-            resultado_cantidad.append(resultado['estado__count'])
-            total_no_atendidos += resultado['estado__count']
-        resultado_nombre.append("Contestador Detectado")
-        cantidad_constestador = campana_log_terminated.count()
-        resultado_cantidad.append(cantidad_constestador)
-        total_no_atendidos += cantidad_constestador
-        return resultado_nombre, resultado_cantidad, total_no_atendidos
-
-    def obtener_total_llamadas(self, campana):
-        """
-        Obtiene los totales de llamadas realizadas y pendiente por la campana
-        :param campana: campana la cual se obtiene los totales
-        :return: lso totales de llamadas realizadas y pendiente de la campana
-        """
-        campana_service = CampanaService()
-        dato_campana = campana_service.obtener_dato_campana_run(campana)
-        llamadas_pendientes = 0
-        if dato_campana and 'n_est_remaining_calls' in dato_campana.keys():
-            llamadas_pendientes = dato_campana['n_est_remaining_calls']
-        llamadas_realizadas = 0
-        if dato_campana and 'n_calls_attempted' in dato_campana.keys():
-            llamadas_realizadas = dato_campana['n_calls_attempted']
-        return llamadas_pendientes, llamadas_realizadas
 
     def obtener_total_calificacion_agente(self, campana, members_campana,
                                           fecha_desde, fecha_hasta):
@@ -173,7 +104,7 @@ class EstadisticasService():
         for agente in members_campana:
             dato_agente = []
             dato_agente.append(agente)
-            agente_calificaciones = agente.calificaciones.filter(
+            agente_calificaciones = agente.calificacionesmanuales.filter(
                 campana=campana, fecha__range=(fecha_desde, fecha_hasta))
             total_cal_agente = agente_calificaciones.count()
             dato_agente.append(total_cal_agente)
@@ -189,7 +120,7 @@ class EstadisticasService():
             dato_agente.append(dict_total)
 
             total_ven_agente = agente_calificaciones.filter(
-                es_venta=True).count()
+                es_gestion=True).count()
             dato_agente.append(total_ven_agente)
             total_ventas += total_ven_agente
             agentes_venta.append(dato_agente)
@@ -247,10 +178,6 @@ class EstadisticasService():
             self.obtener_cantidad_calificacion(campana, fecha_desde,
                                                fecha_hasta)
 
-        # obtiene detalle de llamados no atendidos
-        resultado_nombre, resultado_cantidad, total_no_atendidos = \
-            self.obtener_cantidad_no_atendidos(campana, fecha_desde,
-                                               fecha_hasta)
         # obtiene los agentes miembros a la campana
         members_campana = self.obtener_agentes_campana(campana)
 
@@ -263,9 +190,6 @@ class EstadisticasService():
         total_ventas = total_calificacion_agente[2]
         calificaciones = total_calificacion_agente[3]
 
-        # obtiene las llamadas pendientes y realizadas por campana
-        llamadas_pendientes, llamadas_realizadas = self.obtener_total_llamadas(
-            campana)
 
         # obtiene las cantidades totales por evento de las llamadas
         cantidad_llamadas = self.calcular_cantidad_llamadas(
@@ -278,11 +202,9 @@ class EstadisticasService():
             'calificaciones_nombre': calificaciones_nombre,
             'calificaciones_cantidad': calificaciones_cantidad,
             'total_calificados': total_calificados,
-            'resultado_nombre': resultado_nombre,
-            'resultado_cantidad': resultado_cantidad,
-            'total_no_atendidos': total_no_atendidos,
-            'llamadas_pendientes': llamadas_pendientes,
-            'llamadas_realizadas': llamadas_realizadas,
+            #'resultado_nombre': resultado_nombre,
+            #'resultado_cantidad': resultado_cantidad,
+
             'calificaciones': calificaciones,
             'cantidad_llamadas': cantidad_llamadas,
         }
@@ -309,18 +231,18 @@ class EstadisticasService():
             "reporte_campana", "barra_campana_calificacion.png"))
 
         # Barra: Total de llamados no atendidos en cada intento por campana.
-        barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
-            show_legend=False,
-            style=ESTILO_AZUL_ROJO_AMARILLO)
-        barra_campana_no_atendido.title = 'Cantidad de llamadas no atendidos '
-
-        barra_campana_no_atendido.x_labels = \
-            estadisticas['resultado_nombre']
-        barra_campana_no_atendido.add('cantidad',
-                                      estadisticas['resultado_cantidad'])
-        barra_campana_no_atendido.render_to_png(
-            os.path.join(settings.MEDIA_ROOT,
-                         "reporte_campana", "barra_campana_no_atendido.png"))
+        # barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
+        #     show_legend=False,
+        #     style=ESTILO_AZUL_ROJO_AMARILLO)
+        # barra_campana_no_atendido.title = 'Cantidad de llamadas no atendidos '
+        #
+        # barra_campana_no_atendido.x_labels = \
+        #     estadisticas['resultado_nombre']
+        # barra_campana_no_atendido.add('cantidad',
+        #                               estadisticas['resultado_cantidad'])
+        # barra_campana_no_atendido.render_to_png(
+        #     os.path.join(settings.MEDIA_ROOT,
+        #                  "reporte_campana", "barra_campana_no_atendido.png"))
 
         # Barra: Detalles de llamadas por evento de llamada.
         barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
@@ -343,10 +265,10 @@ class EstadisticasService():
             'agentes_venta': estadisticas['agentes_venta'],
             'total_calificados': estadisticas['total_calificados'],
             'total_ventas': estadisticas['total_ventas'],
-            'barra_campana_no_atendido': barra_campana_no_atendido,
-            'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
-                                            estadisticas['resultado_cantidad']),
-            'total_no_atendidos': estadisticas['total_no_atendidos'],
+            #'barra_campana_no_atendido': barra_campana_no_atendido,
+            #'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
+             #                               estadisticas['resultado_cantidad']),
+
             'calificaciones': estadisticas['calificaciones'],
             'barra_campana_llamadas': barra_campana_llamadas,
             'dict_llamadas_counter': zip(estadisticas['cantidad_llamadas'][0],

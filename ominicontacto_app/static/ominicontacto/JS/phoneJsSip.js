@@ -620,11 +620,13 @@ $(function() {
 		}
 	});
 
-  $("#redial").click(function () {
+  $("#redial").click(function () {// esto es para enviar un Invite/llamada
   	entrante = false;
   	num = lastDialedNumber;
-  	$("#modalSelectCmp").modal("show");
-    // esto es para enviar un Invite/llamada
+		if($("#campAssocManualCall").html() == "") {
+  	  $("#modalSelectCmp").modal("show");
+    }
+		makeCall();
   });
 
   $("#endCall").click(function() {
@@ -649,6 +651,7 @@ $(function() {
 				headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
+				getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
 			}
 		} else {
       displayNumber.style.borderColor = "red";
@@ -669,6 +672,7 @@ $(function() {
 			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
+			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
 	  	makeCall();
 		} else {
 			$("#modalSelectCmp").modal("hide");
@@ -823,6 +827,11 @@ $(function() {
 		var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
   	$("#dataView").attr('src', url);
   }
+
+	function getFormManualCalls(idcamp, idagt, tel) {
+		var url = "/campana_manual/" + idcamp + "/calificacion/" + idagt + "/create/" + tel + "/";
+		$("#dataView").attr('src', url);
+	}
 
 	function getIframe(url) {
 		$("#dataView").attr('src', url);

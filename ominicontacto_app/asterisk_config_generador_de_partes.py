@@ -317,7 +317,7 @@ class GeneradorParaCampanaDialerStart(GeneradorDePedazoDeCampanaDialer):
         return """
 
         ;----------------------------------------------------------------------
-        ; TEMPLATE_DIALPLAN_START_CAMPANA_DIALER-{oml_queue_name}
+        ; TEMPLATE_DIALPLAN_START_CAMPANA_{oml_tipo_campana}-{oml_queue_name}
         ;   Autogenerado {date}
         ;----------------------------------------------------------------------
 
