@@ -15,7 +15,8 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual
+    ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
+    AgendaManual
 )
 from ominicontacto_app.utiles import convertir_ascii_string
 
@@ -650,7 +651,8 @@ class AgendaContactoForm(forms.ModelForm):
 
     class Meta:
         model = AgendaContacto
-        fields = ('contacto', 'agente', 'tipo_agenda', 'fecha', 'hora', 'observaciones')
+        fields = ('contacto', 'agente', 'tipo_agenda', 'fecha', 'hora',
+                  'observaciones')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
@@ -1004,4 +1006,20 @@ class FormularioManualGestionForm(forms.ModelForm):
 
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class AgendaManualForm(forms.ModelForm):
+
+    class Meta:
+        model = AgendaManual
+        fields = ('telefono', 'agente', 'tipo_agenda', 'fecha', 'hora',
+                  'observaciones')
+        widgets = {
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+            'agente': forms.HiddenInput(),
+            'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
+            "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
+            "fecha": forms.TextInput(attrs={'class': 'form-control'}),
+            "hora": forms.TextInput(attrs={'class': 'form-control'}),
         }
