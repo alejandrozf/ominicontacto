@@ -961,12 +961,13 @@ class CalificacionManualForm(forms.ModelForm):
     class Meta:
         model = CalificacionManual
         fields = ('campana', 'telefono', 'es_gestion', 'calificacion', 'agente',
-                  'observaciones')
+                  'observaciones', 'agendado')
         widgets = {
             'campana': forms.HiddenInput(),
             'es_gestion': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+            'agendado': forms.HiddenInput(),
         }
 
 
