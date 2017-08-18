@@ -525,6 +525,10 @@ urlpatterns = [
         login_required(
             views_agenda_contacto.AgendaManualDetailView.as_view()),
         name="agenda_manual_detalle"),
+    url(r'^agenda_manual/eventos/$',
+        login_required(
+            views_agenda_contacto.AgenteManualListFormView.as_view()),
+        name="agenda_manual_listado"),
     # ==========================================================================
     # Campana Dialer
     # ==========================================================================

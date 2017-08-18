@@ -102,8 +102,8 @@ class AgenteContactoListFormView(FormView):
             fecha_desde = ''
             fecha_hasta = ''
         agente = self.request.user.get_agente_profile()
-        listado_de_eventos = agente.agendacontacto.eventos_filtro_fecha(fecha_desde,
-                                                                        fecha_hasta)
+        listado_de_eventos = agente.agendacontacto.eventos_filtro_fecha(
+            fecha_desde, fecha_hasta)
         return self.render_to_response(self.get_context_data(
             listado_de_eventos=listado_de_eventos, agente=agente))
 
@@ -137,3 +137,31 @@ class AgendaManualDetailView(DetailView):
         context = super(
             AgendaManualDetailView, self).get_context_data(**kwargs)
         return context
+
+
+class AgenteManualListFormView(FormView):
+    """Vista listado evento de agenda por agente para llamadas manuales"""
+    model = AgendaManual
+    template_name = 'agenda_contacto/agenda_agente_manual.html'
+    form_class = AgendaBusquedaForm
+
+    def get(self, request, *args, **kwargs):
+        agente = self.request.user.get_agente_profile()
+        listado_de_eventos = agente.agendamanual.eventos_filtro_fecha('', '')
+        return self.render_to_response(self.get_context_data(
+            listado_de_eventos=listado_de_eventos, agente=agente))
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        if fecha:
+            fecha_desde, fecha_hasta = fecha.split('-')
+            fecha_desde = convert_fecha_datetime(fecha_desde)
+            fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        else:
+            fecha_desde = ''
+            fecha_hasta = ''
+        agente = self.request.user.get_agente_profile()
+        listado_de_eventos = agente.agendamanual.eventos_filtro_fecha(
+            fecha_desde, fecha_hasta)
+        return self.render_to_response(self.get_context_data(
+            listado_de_eventos=listado_de_eventos, agente=agente))
