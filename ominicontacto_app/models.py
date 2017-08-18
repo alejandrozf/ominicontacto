@@ -2265,7 +2265,6 @@ class AgendaContacto(models.Model):
     TYPE_GLOBAL = 2
     """Tipo de agenda Global"""
 
-
     TYPE_AGENDA_CHOICES = (
         (TYPE_PERSONAL, 'PERSONAL'),
         (TYPE_GLOBAL, 'GLOBAL'),
@@ -2279,9 +2278,9 @@ class AgendaContacto(models.Model):
     observaciones = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
-        return "Agenda para el contacto {0} agendado por el agente {1} para la fecha " \
-               "{2} a la hora {3}hs ".format(self.contacto, self.agente, self.fecha,
-                                             self.hora)
+        return "Agenda para el contacto {0} agendado por el agente {1} " \
+               "para la fecha {2} a la hora {3}hs ".format(
+            self.contacto, self.agente, self.fecha, self.hora)
 
 
 #==============================================================================
