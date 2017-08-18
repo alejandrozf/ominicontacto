@@ -137,8 +137,8 @@ $(function() {
 
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
       var callerOrCalled = "";
-
-			if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
+			var autop = $("#auto_pause").val();
+      if(autop === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
 				if(originHeader == "CLICK2CALL") {
 
 				} else {
@@ -185,7 +185,6 @@ $(function() {
       	   }
       	 }
       }
-			
 			if(entrante && fromUser) { // INGRESA CUANDO CORTA UNA LLAMADA CON UN ABONADO o CLICK2CALL
 				callerOrCalled = fromUser;
 				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
