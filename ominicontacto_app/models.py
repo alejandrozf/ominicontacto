@@ -2657,3 +2657,50 @@ class CalificacionManual(models.Model):
     def __unicode__(self):
         return "Calificacion manual para la campana {0} para el telefono " \
                "{1} ".format(self.campana, self.telefono)
+
+
+class AgendaManualManager(models.Manager):
+
+    def eventos_fecha_hoy(self):
+        try:
+            return self.filter(fecha=datetime.datetime.today())
+        except AgendaContacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
+                                       "fecha"))
+
+    def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
+        eventos = self.filter(tipo_agenda=AgendaManual.TYPE_PERSONAL)
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime.datetime.combine(fecha_desde,
+                                                    datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(fecha_hasta,
+                                                    datetime.time.max)
+            eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
+        return eventos.order_by('-fecha')
+
+
+class AgendaManual(models.Model):
+    objects = AgendaManualManager()
+
+    TYPE_PERSONAL = 1
+    """Tipo de agenda Personal"""
+
+    TYPE_GLOBAL = 2
+    """Tipo de agenda Global"""
+
+    TYPE_AGENDA_CHOICES = (
+        (TYPE_PERSONAL, 'PERSONAL'),
+        (TYPE_GLOBAL, 'GLOBAL'),
+    )
+
+    agente = models.ForeignKey(AgenteProfile, related_name="agendamanual")
+    telefono = models.CharField(max_length=128)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
+    observaciones = models.TextField(blank=True, null=True)
+
+    def __unicode__(self):
+        return "Agenda para el telefono {0} agendado por el agente {1}" \
+               " para la fecha {2} a la hora {3}hs ".format(
+            self.telefono, self.agente, self.fecha, self.hora)
