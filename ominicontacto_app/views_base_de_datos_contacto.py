@@ -923,3 +923,31 @@ def mostrar_bases_datos_borradas_ocultas_view(request):
         'bases_datos_contacto': bases_datos_contacto,
     }
     return render(request, 'base_datos_contacto/base_datos_ocultas.html', data)
+
+
+@csrf_exempt
+def calificacion_cargar_base_datos_view(request):
+    """Servicio externo para cargar una base de datos via post"""
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        # tener en cuenta que se espera json con estas claves
+        data_esperada = ['datos', 'columnas', 'user_api', 'password_api']
+        for data in data_esperada:
+            if data not in received_json_data.keys():
+                return JsonResponse({'status': 'Error en falta {0}'.format(data)
+                                     })
+
+        try:
+            usuario = UserApiCrm.objects.get(
+                usuario=received_json_data['user_api'])
+
+            if usuario.password == received_json_data['password_api']:
+               pass
+            else:
+                return JsonResponse({'status': 'no coinciden usuario y/o password'})
+        except UserApiCrm.DoesNotExist:
+            return JsonResponse({'status': 'no existe este usuario {0}'.format(
+                received_json_data['user_api'])})
+        return JsonResponse({'status': 'OK'})
+    else:
+        return JsonResponse({'status': 'este es un metodo post'})
