@@ -71,6 +71,11 @@ class CalificacionManualCreateView(CreateView):
         message = 'Operación Exitosa!\
                                 Se llevó a cabo con éxito la calificacion del cliente'
         messages.success(self.request, message)
+        if self.object.agendado:
+            return HttpResponseRedirect(
+                reverse('agenda_manual_create',
+                        kwargs={"telefono": self.object.telefono,
+                                "id_agente": self.kwargs['pk_agente']}))
         return super(CalificacionManualCreateView, self).form_valid(form)
 
     def get_success_url(self):
