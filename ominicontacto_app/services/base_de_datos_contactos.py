@@ -588,6 +588,27 @@ class PredictorMetadataService(object):
         return columnas_con_telefonos
 
 
+class CreacionBaseDatosApiService(object):
+
+    def crear_base_datos_api(self, nombre_base_datos):
+        """
+            Primer paso de la creación de una BaseDatoContacto via api.
+
+            Crea la base de datos con el nombre pasado por parametro
+            omitiendo archivo_importacion y nombre_archivo_importacion
+            Retornado un objecto de BaseDatoContacto
+            :return base_datos
+        """
+        base_datos = BaseDatosContacto(
+            nombre=nombre_base_datos,
+            archivo_importacion="-",
+            nombre_archivo_importacion="-",
+            estado=BaseDatosContacto.ESTADO_EN_DEFINICION
+        )
+        base_datos.save()
+        return base_datos
+
+
 class BaseDatosService(object):
     """Servicio de base de datos usado para eliminar contactos duplicados
        se podria eliminar este servicio ya que el filtro se está haciendo por la pk

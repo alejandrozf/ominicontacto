@@ -853,6 +853,12 @@ urlpatterns = [
         login_required(
             views_campana_manual.mostrar_campanas_manual_borradas_ocultas_view),
         name="campana_manual_mostrar_ocultas"),
+    # ==========================================================================
+    # API para Base de Datos de Contactos
+    # ==========================================================================
+    url(r'^base_de_datos/cargar_nueva/$',
+        views_base_de_datos_contacto.cargar_base_datos_view,
+        name="cargar_base_datos_api"),
 ]
 
 urlpatterns += patterns('',

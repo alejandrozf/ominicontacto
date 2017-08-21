@@ -4,9 +4,12 @@
 
 from __future__ import unicode_literals
 
+import json
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
+from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView, FormView
@@ -20,15 +23,16 @@ from ominicontacto_app.errors import (
 from ominicontacto_app.forms import (
     BaseDatosContactoForm, DefineNombreColumnaForm, DefineColumnaTelefonoForm,
     DefineDatosExtrasForm, PrimerLineaEncabezadoForm, ExportaDialerForm)
-from ominicontacto_app.models import BaseDatosContacto
+from ominicontacto_app.models import BaseDatosContacto, UserApiCrm
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
     NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
-    ContactoExistenteError)
+    ContactoExistenteError, CreacionBaseDatosApiService)
 from ominicontacto_app.services.exportar_base_datos import \
     ExportarBaseDatosContactosService
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
+from django.views.decorators.csrf import csrf_exempt
 import logging as logging_
 
 
@@ -926,12 +930,13 @@ def mostrar_bases_datos_borradas_ocultas_view(request):
 
 
 @csrf_exempt
-def calificacion_cargar_base_datos_view(request):
+def cargar_base_datos_view(request):
     """Servicio externo para cargar una base de datos via post"""
     if request.method == 'POST':
         received_json_data = json.loads(request.body)
         # tener en cuenta que se espera json con estas claves
-        data_esperada = ['datos', 'columnas', 'user_api', 'password_api']
+        data_esperada = ['nombre', 'datos', 'columnas', 'user_api',
+                         'password_api']
         for data in data_esperada:
             if data not in received_json_data.keys():
                 return JsonResponse({'status': 'Error en falta {0}'.format(data)
@@ -942,7 +947,10 @@ def calificacion_cargar_base_datos_view(request):
                 usuario=received_json_data['user_api'])
 
             if usuario.password == received_json_data['password_api']:
-               pass
+               service = CreacionBaseDatosApiService()
+               base_datos = service.crear_base_datos_api(
+                   received_json_data['nombre'])
+               print base_datos
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:
