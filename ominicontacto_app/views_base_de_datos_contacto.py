@@ -967,6 +967,24 @@ def cargar_base_datos_view(request):
                metadata.primer_fila_es_encabezado = es_encabezado
                metadata.save()
                base_datos.save()
+
+               try:
+                   service.importa_contactos(base_datos,
+                                             received_json_data['datos'])
+                   base_datos.define()
+               except OmlParserCsvImportacionError as e:
+
+                   message = '<strong>Operación Errónea!</strong>\
+                             El archivo que seleccionó posee registros inválidos.<br>\
+                             <u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>\
+                             {1}<br><u>Contenido Inválido:</u> {2}'.format(
+                       e.numero_fila, e.fila, e.valor_celda)
+
+                   messages.add_message(
+                       self.request,
+                       messages.ERROR,
+                       message,
+                   )
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:

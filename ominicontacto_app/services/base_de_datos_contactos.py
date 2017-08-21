@@ -645,7 +645,11 @@ class CreacionBaseDatosApiService(object):
         return nombre
 
     def inferir_metadata_desde_lineas(self, primer_linea, otras_lineas):
-        """Infiere los metadatos desde las lineas pasadas por parametros.
+        """
+        Segundo paso de la creacion de una base de datos de contacto
+        a travez de la api
+
+        Infiere los metadatos desde las lineas pasadas por parametros.
 
         Devuelve instancias de MetadataBaseDatosContactoDTO.
         """
@@ -808,6 +812,41 @@ class CreacionBaseDatosApiService(object):
 
         logger.debug("columnas_con_telefonos: %s", columnas_con_telefonos)
         return columnas_con_telefonos
+
+    def importa_contactos(self, base_datos_contacto, lineas):
+        """
+        Tercer paso de la creación de una BaseDatosContacto.
+        Este método se encarga de generar los objectos Contacto por cada linea
+        especificado para la base de datos de contactos.
+        """
+        assert (base_datos_contacto.estado ==
+                BaseDatosContacto.ESTADO_EN_DEFINICION)
+
+        try:
+            cantidad_contactos = 0
+            if base_datos_contacto.cantidad_contactos:
+                cantidad_contactos = base_datos_contacto.cantidad_contactos
+            for lista_dato in lineas:
+                if len(lista_dato) > 2:
+                    datos = json.dumps(lista_dato[1:])
+                else:
+                    datos = ""
+                cantidad_contactos += 1
+                Contacto.objects.create(
+                    telefono=lista_dato[0],
+                    datos=datos,
+                    bd_contacto=base_datos_contacto,
+                )
+        except OmlParserMaxRowError:
+            base_datos_contacto.elimina_contactos()
+            raise
+
+        except OmlParserCsvImportacionError:
+            base_datos_contacto.elimina_contactos()
+            raise
+
+        base_datos_contacto.cantidad_contactos = cantidad_contactos
+        base_datos_contacto.save()
 
 
 class BaseDatosService(object):
