@@ -950,7 +950,24 @@ def cargar_base_datos_view(request):
                service = CreacionBaseDatosApiService()
                base_datos = service.crear_base_datos_api(
                    received_json_data['nombre'])
-               print base_datos
+               cantidad_columnas = len(received_json_data['columnas'])
+               predictor_metadata = service.inferir_metadata_desde_lineas(
+                   received_json_data['columnas'], received_json_data['datos'])
+               metadata = base_datos.get_metadata()
+               metadata.cantidad_de_columnas = cantidad_columnas
+
+               columnas_con_telefonos = service.inferir_columnas_telefono(
+                   received_json_data['datos'])
+               metadata.columnas_con_telefono = columnas_con_telefonos
+               metadata.nombres_de_columnas = [value
+                                               for value in
+                                               received_json_data['columnas']]
+
+               es_encabezado = False
+
+               metadata.primer_fila_es_encabezado = es_encabezado
+               metadata.save()
+               base_datos.save()
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:
