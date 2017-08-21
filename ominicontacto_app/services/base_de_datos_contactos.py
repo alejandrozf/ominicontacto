@@ -656,8 +656,7 @@ class CreacionBaseDatosApiService(object):
         # Primero chequeamos q' haya igual cant. de columnas
         cantidad_columnas = len(primer_linea)
         cantidad_contacto = len(otras_lineas[0])
-        print cantidad_columnas
-        print cantidad_contacto
+
         if cantidad_columnas != cantidad_contacto:
             logger.debug("Distintas cantidades "
                          "de columnas: %s", cantidad_columnas)
