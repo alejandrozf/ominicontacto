@@ -449,9 +449,19 @@
 		                        </li>
 		                    </ul>
 		                </li>
-                        <li>
-                            <a href="{% url 'agenda_contacto_listado' %}" target="crm">Agenda</a>
-                        </li>
+                        <li role="presentation" class="dropdown">
+		                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+		                        Agendas <span class="caret"></span>
+		                    </a>
+		                    <ul class="dropdown-menu" role="menu">
+		                        <li>
+		                            <a href="{% url 'agenda_contacto_listado' %}" target="crm">Agenda</a>
+		                        </li>
+		                        <li>
+		                            <a href="{% url 'agenda_manual_listado' %}" target="crm">Agenda de llamadas manuales</a>
+		                        </li>
+		                    </ul>
+		                </li>
                         <li>
                             <a href="{% url 'reporte_agente_calificaciones' user.get_agente_profile.pk %}" target="crm">Calificaciones</a>
                         </li>

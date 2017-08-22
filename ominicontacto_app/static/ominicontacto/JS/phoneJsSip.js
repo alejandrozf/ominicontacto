@@ -185,7 +185,6 @@ $(function() {
       	   }
       	 }
       }
-
 			if(entrante && fromUser) { // INGRESA CUANDO CORTA UNA LLAMADA CON UN ABONADO o CLICK2CALL
 				callerOrCalled = fromUser;
 				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
@@ -212,18 +211,6 @@ $(function() {
 					$("#sipLogout").prop('disabled',true);
 					updateButton(modifyUserStat, "label label-success", "Online");
 	        callerOrCalled =  num;
-					if($("#auto_unpause").val()) {
-						var timeoutACW = $("#auto_unpause").val();
-						timeoutACW = timeoutACW * 1000;
-						var toOnline = function() {
-							num = "0077UNPAUSE";
-							if($("#UserStatus").html() === "ACW") {
-								makeCall();
-								$("#Resume").trigger('click');
-							}
-						};
-						setTimeout(toOnline, timeoutACW);
-					}
 	      }
 			}
 
