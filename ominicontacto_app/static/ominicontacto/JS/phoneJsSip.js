@@ -137,8 +137,8 @@ $(function() {
 
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
       var callerOrCalled = "";
-			var autop = $("#auto_pause").val();
-      if(autop === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
+
+			if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
 				if(originHeader == "CLICK2CALL") {
 
 				} else {
@@ -153,7 +153,7 @@ $(function() {
     		  updateButton(modifyUserStat, "label label-danger", "ACW");
 	        parar1();
 	        inicio2();
-			  }
+				}
       } else if (num.substring(4,0) != "0077") {//Si el nro es distinto de 0077ABC (se evalua al finalizar una llamada saliente)
       	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
       	  if(lastPause != "Online") {
@@ -211,6 +211,18 @@ $(function() {
 					$("#sipLogout").prop('disabled',true);
 					updateButton(modifyUserStat, "label label-success", "Online");
 	        callerOrCalled =  num;
+					if($("#auto_unpause").val()) {
+						var timeoutACW = $("#auto_unpause").val();
+						timeoutACW = timeoutACW * 1000;
+						var toOnline = function() {
+							num = "0077UNPAUSE";
+							if($("#UserStatus").html() === "ACW") {
+								makeCall();
+								$("#Resume").trigger('click');
+							}
+						};
+						setTimeout(toOnline, timeoutACW);
+					}
 	      }
 			}
 
