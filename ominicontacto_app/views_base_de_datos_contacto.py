@@ -4,9 +4,12 @@
 
 from __future__ import unicode_literals
 
+import json
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
+from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView, FormView
@@ -20,15 +23,16 @@ from ominicontacto_app.errors import (
 from ominicontacto_app.forms import (
     BaseDatosContactoForm, DefineNombreColumnaForm, DefineColumnaTelefonoForm,
     DefineDatosExtrasForm, PrimerLineaEncabezadoForm, ExportaDialerForm)
-from ominicontacto_app.models import BaseDatosContacto
+from ominicontacto_app.models import BaseDatosContacto, UserApiCrm
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
     NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
-    ContactoExistenteError)
+    ContactoExistenteError, CreacionBaseDatosApiService)
 from ominicontacto_app.services.exportar_base_datos import \
     ExportarBaseDatosContactosService
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
+from django.views.decorators.csrf import csrf_exempt
 import logging as logging_
 
 
@@ -923,3 +927,69 @@ def mostrar_bases_datos_borradas_ocultas_view(request):
         'bases_datos_contacto': bases_datos_contacto,
     }
     return render(request, 'base_datos_contacto/base_datos_ocultas.html', data)
+
+
+@csrf_exempt
+def cargar_base_datos_view(request):
+    """Servicio externo para cargar una base de datos via post"""
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        # tener en cuenta que se espera json con estas claves
+        data_esperada = ['nombre', 'datos', 'columnas', 'user_api',
+                         'password_api']
+        for data in data_esperada:
+            if data not in received_json_data.keys():
+                return JsonResponse({'status': 'Error en falta {0}'.format(data)
+                                     })
+
+        try:
+            usuario = UserApiCrm.objects.get(
+                usuario=received_json_data['user_api'])
+
+            if usuario.password == received_json_data['password_api']:
+               service = CreacionBaseDatosApiService()
+               base_datos = service.crear_base_datos_api(
+                   received_json_data['nombre'])
+
+               predictor = service.inferir_metadata_desde_lineas(
+                   received_json_data['columnas'], received_json_data['datos'])
+
+               metadata = base_datos.get_metadata()
+               metadata.cantidad_de_columnas = predictor.cantidad_de_columnas
+
+               columnas_con_telefonos = service.inferir_columnas_telefono(
+                   received_json_data['datos'])
+               metadata.columnas_con_telefono = columnas_con_telefonos
+               metadata.nombres_de_columnas = predictor.nombres_de_columnas
+
+               es_encabezado = False
+
+               metadata.primer_fila_es_encabezado = es_encabezado
+               metadata.save()
+               base_datos.save()
+
+               try:
+                   service.importa_contactos(base_datos,
+                                             received_json_data['datos'])
+                   base_datos.define()
+               except OmlParserCsvImportacionError as e:
+
+                   message = '<strong>Operación Errónea!</strong>\
+                             El archivo que seleccionó posee registros inválidos.<br>\
+                             <u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>\
+                             {1}<br><u>Contenido Inválido:</u> {2}'.format(
+                       e.numero_fila, e.fila, e.valor_celda)
+
+                   messages.add_message(
+                       self.request,
+                       messages.ERROR,
+                       message,
+                   )
+            else:
+                return JsonResponse({'status': 'no coinciden usuario y/o password'})
+        except UserApiCrm.DoesNotExist:
+            return JsonResponse({'status': 'no existe este usuario {0}'.format(
+                received_json_data['user_api'])})
+        return JsonResponse({'status': 'OK'})
+    else:
+        return JsonResponse({'status': 'este es un metodo post'})
