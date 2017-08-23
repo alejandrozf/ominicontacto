@@ -14,7 +14,9 @@ import tempfile
 import traceback
 
 from django.conf import settings
-from ominicontacto_app.utiles import elimina_espacios
+from ominicontacto_app.utiles import (
+    elimina_espacios, remplace_espacio_por_guion
+)
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, Campana
 )
@@ -246,7 +248,7 @@ class SipConfigCreator(object):
         assert agente.sip_extension is not None, "agente.sip_extension  == None"
 
         partes = []
-        nombre_agente = elimina_espacios(agente.user.get_full_name())
+        nombre_agente = remplace_espacio_por_guion(agente.user.get_full_name())
         param_generales = {
                 'oml_agente_name': "{0}_{1}".format(agente.id, nombre_agente),
             'oml_agente_sip': agente.sip_extension,

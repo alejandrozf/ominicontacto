@@ -65,6 +65,14 @@ def elimina_espacios(cadena):
     assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
     return re.sub("\s?", "", cadena)
 
+def remplace_espacio_por_guion(cadena):
+    """
+    Remplaza espacio por guion en cadaena recibida por parametro
+    La cadena debe ser una instancia de unicode
+    """
+    assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
+    return re.sub("\s?", "_", cadena)
+
 
 def elimina_coma(cadena):
     """
