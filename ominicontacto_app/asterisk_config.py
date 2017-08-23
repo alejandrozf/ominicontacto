@@ -246,9 +246,9 @@ class SipConfigCreator(object):
         assert agente.sip_extension is not None, "agente.sip_extension  == None"
 
         partes = []
+        nombre_agente = elimina_espacios(agente.user.get_full_name())
         param_generales = {
-                'oml_agente_name': "{0}_{1}".format(agente.id,
-                                                    agente.user.get_full_name()),
+                'oml_agente_name': "{0}_{1}".format(agente.id, nombre_agente),
             'oml_agente_sip': agente.sip_extension,
             'oml_kamailio_ip': settings.OML_KAMAILIO_IP,
         }
