@@ -15,6 +15,7 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.utiles import (
     upload_to, crear_archivo_en_media_root, elimina_espacios_parentesis_guiones,
     elimina_espacios, remplace_espacio_por_guion, elimina_coma, elimina_comillas
+    , convert_string_in_boolean
 )
 from ominicontacto_app.errors import OmlError
 import os
@@ -122,3 +123,15 @@ class UtilesTest(OMLBaseTest):
     def test_elimina_comillas(self):
         cadena = elimina_comillas(' asdfg"32432 ñ(899) "781"')
         self.assertEqual(cadena, " asdfg32432 ñ(899) 781")
+
+    def test_convertir_string_false_in_boolean(self):
+        cadena = convert_string_in_boolean("false")
+        self.assertEqual(cadena, False)
+
+    def test_convertir_string_true_in_boolean(self):
+        cadena = convert_string_in_boolean("true")
+        self.assertEqual(cadena, True)
+
+    def test_convertir_string_default_in_boolean(self):
+        cadena = convert_string_in_boolean("fsdsf")
+        self.assertEqual(cadena, False)
