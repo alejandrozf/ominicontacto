@@ -12,7 +12,9 @@ import logging as _logging
 from django.conf import settings
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.utiles import upload_to
+from ominicontacto_app.utiles import (
+    upload_to, crear_archivo_en_media_root
+)
 from ominicontacto_app.errors import OmlError
 import os
 
@@ -57,3 +59,45 @@ class UtilesTest(OMLBaseTest):
 
         self.assertEqual(len(rest_of_filename), largo_filename_max)
         self.assertEqual(rest_of_filename, "x" * largo_filename_max)
+
+    def test_crear_archivo_en_media_root(self):
+        t_dirname = 'output-dir-name'
+        t_filename_prefix = 'reporte-agente-'
+
+        dirname, filename = crear_archivo_en_media_root(
+            t_dirname + '/algo', t_filename_prefix)
+        logger.debug("crear_archivo_en_media_root():")
+        logger.debug(" - %s", dirname)
+        logger.debug(" - %s", filename)
+
+        self.assertEqual(dirname, t_dirname + "/algo")
+        self.assertTrue(filename.find(t_filename_prefix) >= 0)
+
+        # ~~~ casi lo mismo, pero con 'suffix'
+        dirname, filename = crear_archivo_en_media_root(
+            t_dirname + '/algo', t_filename_prefix, suffix=".csv")
+
+        logger.debug("crear_archivo_en_media_root():")
+        logger.debug(" - %s", dirname)
+        logger.debug(" - %s", filename)
+
+        self.assertEqual(dirname, t_dirname + "/algo")
+        self.assertTrue(filename.find(t_filename_prefix) >= 0)
+        self.assertTrue(filename.endswith(".csv"))
+
+    def test_crear_archivo_en_media_root_falla(self):
+        dirname, filename = crear_archivo_en_media_root('algo', 'prefix')
+        self.assertTrue(os.path.exists(settings.MEDIA_ROOT + "/" +
+            dirname + "/" + filename))
+        self.assertTrue(os.path.isfile(settings.MEDIA_ROOT + "/" +
+            dirname + "/" + filename))
+        self.assertTrue(os.path.isdir(settings.MEDIA_ROOT + "/" + dirname))
+
+        with self.assertRaises(AssertionError):
+            crear_archivo_en_media_root('/algo', 'prefix')
+
+        with self.assertRaises(AssertionError):
+            crear_archivo_en_media_root('algo/', 'prefix')
+
+        with self.assertRaises(AssertionError):
+            crear_archivo_en_media_root('algo', 'prefix/algomas')
