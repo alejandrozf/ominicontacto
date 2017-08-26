@@ -29,3 +29,9 @@ class UtilesTest(OMLBaseTest):
         self.assertEqual(ua.get_agente_profile(), None)
         ap = self.crear_agente_profile(ua)
         self.assertEqual(ua.get_agente_profile(), ap)
+
+    def test_get_supervisor_profile(self):
+        ua = self.crear_user_supervisor()
+        self.assertEqual(ua.get_supervisor_profile(), None)
+        sp = self.crear_supervisor_profile(ua)
+        self.assertEqual(ua.get_supervisor_profile(), sp)

@@ -11,7 +11,7 @@ import random
 
 from django.test import TestCase
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo
+    User, AgenteProfile, Modulo, Grupo, SupervisorProfile
 )
 
 
@@ -61,6 +61,15 @@ class OMLTestUtilsMixin(object):
             is_agente=True
         )
 
+    def crear_user_supervisor(self):
+        """Crea un user"""
+        return User.objects.create_user(
+            username='user_test_supervisor',
+            email='user_supervisor@gmail.com',
+            password='admin123',
+            is_supervisor=True
+        )
+
     def crear_agente_profile(self, user):
         grupo = Grupo.objects.create(nombre="grupo_test", auto_unpause=0)
         return AgenteProfile.objects.create(
@@ -69,6 +78,14 @@ class OMLTestUtilsMixin(object):
             sip_password="sdsfhdfhfdhfd",
             grupo=grupo,
             reported_by=user
+        )
+
+    def crear_supervisor_profile(self, user):
+        return SupervisorProfile.objects.create(
+            user=user,
+            sip_extension=SupervisorProfile.objects.
+            obtener_ultimo_sip_extension(),
+            sip_password="sdsfhdfhfdhfd",
         )
 
 
