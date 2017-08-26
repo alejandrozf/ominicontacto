@@ -51,9 +51,24 @@ class UtilesTest(OMLBaseTest):
 
 class CampanaTest(OMLBaseTest):
 
-    def test_campanas_creadas(self):
+    def test_campanas_dialer_creadas(self):
         """
         - Campana creadas.
         """
         [self.crear_campana_dialer() for _ in range(0, 10)]
         self.assertEqual(Campana.objects.all().count(), 10)
+
+    def test_campanas_manual_creadas(self):
+        """
+        - Campana creadas.
+        """
+        [self.crear_campana_manual() for _ in range(0, 10)]
+        self.assertEqual(Campana.objects.all().count(), 10)
+
+    def test_campanas_entrante_creadas(self):
+        """
+        - Campana creadas.
+        """
+        [self.crear_campana_entrante() for _ in range(0, 10)]
+        self.assertEqual(Campana.objects.all().count(), 10)
+

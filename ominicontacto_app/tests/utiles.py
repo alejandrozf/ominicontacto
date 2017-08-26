@@ -266,6 +266,28 @@ class OMLTestUtilsMixin(object):
         campana.save()
         return campana
 
+    def crear_campana_manual(
+            self, cant_contactos=None, bd_contactos=None, columna_extra=None,
+            calificacion_campana=None, user=None, **kwargs):
+        """Crea una campana manual en su estado inicial
+        """
+
+        campana = self.crear_campana(
+            Campana.TYPE_MANUAL, cant_contactos, bd_contactos, columna_extra,
+            calificacion_campana, user)
+        return campana
+
+    def crear_campana_entrante(
+            self, cant_contactos=None, bd_contactos=None, columna_extra=None,
+            calificacion_campana=None, user=None, **kwargs):
+        """Crea una campana entrante en su estado inicial
+        """
+
+        campana = self.crear_campana(
+            Campana.TYPE_ENTRANTE, cant_contactos, bd_contactos, columna_extra,
+            calificacion_campana, user)
+        return campana
+
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
     """Clase base para tests"""
