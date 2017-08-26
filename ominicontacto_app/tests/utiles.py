@@ -10,6 +10,9 @@ import os
 import random
 
 from django.test import TestCase
+from ominicontacto_app.models import (
+    User, AgenteProfile, Modulo, Grupo
+)
 
 
 def rtel():
@@ -48,6 +51,25 @@ class OMLTestUtilsMixin(object):
         if not os.path.exists(new_path):
             shutil.copy(tmp, settings.MEDIA_ROOT)
         return new_path
+
+    def crear_user_agente(self):
+        """Crea un user"""
+        return User.objects.create_user(
+            username='user_test_agente',
+            email='user_agente@gmail.com',
+            password='admin123',
+            is_agente=True
+        )
+
+    def crear_agente_profile(self, user):
+        grupo = Grupo.objects.create(nombre="grupo_test", auto_unpause=0)
+        return AgenteProfile.objects.create(
+            user=user,
+            sip_extension=AgenteProfile.objects.obtener_ultimo_sip_extension(),
+            sip_password="sdsfhdfhfdhfd",
+            grupo=grupo,
+            reported_by=user
+        )
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
