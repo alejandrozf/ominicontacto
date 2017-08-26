@@ -11,7 +11,7 @@ import datetime
 import logging as _logging
 
 from django.conf import settings
-
+from unittest import skip
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.utiles import (
     upload_to, crear_archivo_en_media_root, elimina_espacios_parentesis_guiones,
@@ -142,6 +142,7 @@ class UtilesTest(OMLBaseTest):
         fecha_datetime = datetime.datetime(2017, 8, 25)
         self.assertEqual(fecha, fecha_datetime)
 
+    @skip("reediseñar convert_fecha_datetime en utiles")
     def test_convertir_fecha_datetime_falla(self):
         with self.assertRaises(AssertionError):
             convert_fecha_datetime("2017/08/25")
