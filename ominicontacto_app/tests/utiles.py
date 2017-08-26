@@ -8,11 +8,13 @@ from __future__ import unicode_literals
 
 import os
 import random
+import datetime
+import uuid
 
 from django.test import TestCase
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, SupervisorProfile, Contacto,
-    BaseDatosContacto
+    BaseDatosContacto, Calificacion, CalificacionCampana, Campana
 )
 
 
@@ -60,21 +62,27 @@ class OMLTestUtilsMixin(object):
 
     def crear_user_agente(self):
         """Crea un user"""
-        return User.objects.create_user(
+        user = User.objects.create_user(
             username='user_test_agente',
             email='user_agente@gmail.com',
             password='admin123',
             is_agente=True
         )
+        user.username = "user_test_agente" + str(user.id)
+        user.save()
+        return user
 
     def crear_user_supervisor(self):
         """Crea un user"""
-        return User.objects.create_user(
+        user = User.objects.create_user(
             username='user_test_supervisor',
             email='user_supervisor@gmail.com',
             password='admin123',
             is_supervisor=True
         )
+        user.username = "user_test_supervisor_" + str(user.id)
+        user.save()
+        return user
 
     def crear_agente_profile(self, user):
         grupo = Grupo.objects.create(nombre="grupo_test", auto_unpause=0)
@@ -168,9 +176,31 @@ class OMLTestUtilsMixin(object):
 
         return bd_contacto
 
-    def crear_campana(self, fecha_inicio=None, fecha_fin=None,
-        cant_contactos=None, bd_contactos=None, columna_extra=None,
-                      calificacion_campana=None, **kwargs):
+    def crea_calificaciones(self):
+        """Crea calificaciones"""
+        grupo_calificacion = []
+        c = Calificacion.objects.create(nombre="No interesado")
+        grupo_calificacion.append(c)
+        c = Calificacion.objects.create(nombre="llamar mas tarde")
+        grupo_calificacion.append(c)
+        c = Calificacion.objects.create(nombre="contestador")
+        grupo_calificacion.append(c)
+        c = Calificacion.objects.create(nombre="equivocado")
+        grupo_calificacion.append(c)
+        return grupo_calificacion
+
+    def crear_calificacion_campana(self):
+        calificacion_campana = CalificacionCampana(nombre="Calificacion prueba")
+        calificacion_campana.save()
+        calificaciones = self.crea_calificaciones()
+        for calificacion in calificaciones:
+            calificacion_campana.calificacion.add(calificacion)
+        return calificacion_campana
+
+    def crear_campana_dialer(
+            self, fecha_inicio=None, fecha_fin=None, cant_contactos=None,
+            bd_contactos=None, columna_extra=None, calificacion_campana=None,
+            user=None, **kwargs):
         """Crea una campana en su estado inicial
         - cant_contactos: cant. de contactos a crear para la campaña
             Si es None, se generara un nro. aleatorio de contactos
@@ -192,17 +222,27 @@ class OMLTestUtilsMixin(object):
             fecha_inicio = datetime.date.today()
             fecha_fin = fecha_inicio + datetime.timedelta(days=10)
 
+        if not calificacion_campana:
+            calificacion_campana = self.crear_calificacion_campana()
+
+        # creo usuario supervisor
+        if not user:
+            user = self.crear_user_supervisor()
+            self.crear_supervisor_profile(user)
+
         c = Campana(
             nombre="campaña-" + ru(),
-
             fecha_inicio=fecha_inicio,
             fecha_fin=fecha_fin,
-
             bd_contacto=bd_contactos,
-            # audio_original="test/audio/original.wav",
-            # audio_asterisk="test/audio/for-asterisk.wav",
+            calificacion_campana=calificacion_campana,
+            type=Campana.TYPE_DIALER,
+            reported_by=user,
+
         )
         c.save()
+
+        c.supervisors.add(user)
 
         c.nombre = "Campaña de PRUEBA - {0}".format(c.id)
         c.save()

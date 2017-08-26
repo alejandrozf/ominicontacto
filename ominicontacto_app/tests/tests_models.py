@@ -14,7 +14,7 @@ from django.conf import settings
 from unittest import skip
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import (
-    User
+    User, Campana
 )
 from ominicontacto_app.errors import OmlError
 import os
@@ -47,3 +47,13 @@ class UtilesTest(OMLBaseTest):
         # ahora activamos al agente
         ap.activar()
         self.assertFalse(ap.is_inactive)
+
+
+class CampanaTest(OMLBaseTest):
+
+    def test_campanas_creadas(self):
+        """
+        - Campana creadas.
+        """
+        [self.crear_campana_dialer() for _ in range(0, 10)]
+        self.assertEqual(Campana.objects.all().count(), 10)
