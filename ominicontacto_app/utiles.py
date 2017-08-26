@@ -216,7 +216,13 @@ def convert_string_in_boolean(cadena):
         return False
 
 
+# FIXME: realizar validacion en el caso que se reciba en otro formato
 def convert_fecha_datetime(fecha):
+    """
+    Metodo que convierte string fecha en un datatime
+    :param fecha: debe tener este formato dd/mm/aaaa
+    :return: fecha en datetime
+    """
     dia, mes, ano = fecha.split('/')
     fecha = datetime.datetime(int(ano), int(mes), int(dia))
     return fecha
