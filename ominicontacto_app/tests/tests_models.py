@@ -35,3 +35,15 @@ class UtilesTest(OMLBaseTest):
         self.assertEqual(ua.get_supervisor_profile(), None)
         sp = self.crear_supervisor_profile(ua)
         self.assertEqual(ua.get_supervisor_profile(), sp)
+
+    def test_agente_inactivo(self):
+        ua = self.crear_user_agente()
+        ap = self.crear_agente_profile(ua)
+        # primero chequeamos que sea un agente inactivo
+        self.assertFalse(ap.is_inactive)
+        # ahora inactivamos al agente
+        ap.desactivar()
+        self.assertTrue(ap.is_inactive)
+        # ahora activamos al agente
+        ap.activar()
+        self.assertFalse(ap.is_inactive)
