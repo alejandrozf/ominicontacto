@@ -197,10 +197,9 @@ class OMLTestUtilsMixin(object):
             calificacion_campana.calificacion.add(calificacion)
         return calificacion_campana
 
-    def crear_campana_dialer(
-            self, fecha_inicio=None, fecha_fin=None, cant_contactos=None,
-            bd_contactos=None, columna_extra=None, calificacion_campana=None,
-            user=None, **kwargs):
+    def crear_campana(
+            self, type, cant_contactos=None, bd_contactos=None,
+            columna_extra=None, calificacion_campana=None, user=None, **kwargs):
         """Crea una campana en su estado inicial
         - cant_contactos: cant. de contactos a crear para la campaña
             Si es None, se generara un nro. aleatorio de contactos
@@ -218,10 +217,6 @@ class OMLTestUtilsMixin(object):
                 bd_contactos = self.crear_base_datos_contacto(
                     cant_contactos=cant_contactos, columna_extra=columna_extra)
 
-        if not fecha_inicio or not fecha_fin:
-            fecha_inicio = datetime.date.today()
-            fecha_fin = fecha_inicio + datetime.timedelta(days=10)
-
         if not calificacion_campana:
             calificacion_campana = self.crear_calificacion_campana()
 
@@ -232,11 +227,9 @@ class OMLTestUtilsMixin(object):
 
         c = Campana(
             nombre="campaña-" + ru(),
-            fecha_inicio=fecha_inicio,
-            fecha_fin=fecha_fin,
             bd_contacto=bd_contactos,
             calificacion_campana=calificacion_campana,
-            type=Campana.TYPE_DIALER,
+            type=type,
             reported_by=user,
 
         )
@@ -250,6 +243,28 @@ class OMLTestUtilsMixin(object):
        # self.crea_audios_de_campana(c)
 
         return c
+
+    def crear_campana_dialer(
+            self, fecha_inicio=None, fecha_fin=None, cant_contactos=None,
+            bd_contactos=None, columna_extra=None, calificacion_campana=None,
+            user=None, **kwargs):
+        """Crea una campana dialer en su estado inicial
+        - fecha_inicio: fecha de inicio de la campaña. Si es None
+            utiliza una por default.
+        - fecha_fin: fecha de fin de la campaña. Si es None
+            utiliza una por default.
+        """
+        if not fecha_inicio or not fecha_fin:
+            fecha_inicio = datetime.date.today()
+            fecha_fin = fecha_inicio + datetime.timedelta(days=10)
+
+        campana = self.crear_campana(
+            Campana.TYPE_DIALER, cant_contactos, bd_contactos, columna_extra,
+            calificacion_campana, user)
+        campana.fecha_inicio = fecha_inicio
+        campana.fecha_fin = fecha_fin
+        campana.save()
+        return campana
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
