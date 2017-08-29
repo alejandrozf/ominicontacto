@@ -514,7 +514,7 @@ $(function() {
 					if(fromUser.substring(4,0) != "0077") {
 							if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
 								if(lastPause != "Online") {
-						      saveCall(callerOrCalled);
+						      //saveCall(callerOrCalled);
 						      num = '';
 						      $("#Pause").prop('disabled',true);
 						      $("#Resume").prop('disabled',false);
@@ -540,7 +540,7 @@ $(function() {
 					if(num.substring(4,0) != "0077") {
 						if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
 							if(lastPause != "Online") {
-								saveCall(callerOrCalled);
+								//saveCall(callerOrCalled);
 								num = '';
 								$("#Pause").prop('disabled',true);
 								$("#Resume").prop('disabled',false);
