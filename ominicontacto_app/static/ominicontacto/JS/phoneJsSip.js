@@ -138,6 +138,8 @@ $(function() {
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
       var callerOrCalled = "";
 
+			if(num.substring(4,0) != "0077") {
+
 			if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
 				if(originHeader == "CLICK2CALL") {
 
@@ -154,7 +156,7 @@ $(function() {
 	        parar1();
 	        inicio2();
 				}
-      } else if (num.substring(4,0) != "0077") {//Si el nro es distinto de 0077ABC (se evalua al finalizar una llamada saliente)
+      } 
       	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
       	  if(lastPause != "Online") {
           	saveCall(callerOrCalled);
@@ -185,7 +187,7 @@ $(function() {
       	     updateButton(modifyUserStat, "label label-success", "Online");
       	   }
       	 }
-      }
+
 			if(entrante && fromUser) { // INGRESA CUANDO CORTA UNA LLAMADA CON UN ABONADO o CLICK2CALL
 				callerOrCalled = fromUser;
 				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
@@ -233,6 +235,8 @@ $(function() {
  	    if(num.substring(4,0) == '0077') {
         reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
+
+		}
     });
     function saveCall(callerOrCalled) {
     	$.ajax({
