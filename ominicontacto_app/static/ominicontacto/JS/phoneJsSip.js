@@ -534,6 +534,8 @@ $(function() {
 								$("#Resume").prop('disabled',false);
 								$("#sipLogout").prop('disabled',false);
 								updateButton(modifyUserStat, "label label-danger", "ACW");
+								parar1();
+						    inicio2();
 							}
 						/*$("#Pause").prop('disabled',false);
 				    $("#Resume").prop('disabled',true);
@@ -560,7 +562,7 @@ $(function() {
 							updateButton(modifyUserStat, "label label-success", lastPause);
 						}
 						if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
-							changeStatus(3, $("#idagt").val());
+							/*changeStatus(3, $("#idagt").val());
 					    num = "0077ACW";
 					    makeCall();
 					    entrante = false;
@@ -569,7 +571,7 @@ $(function() {
 							$("#sipLogout").prop('disabled',false);
 							updateButton(modifyUserStat, "label label-danger", lastPause);
 							parar1();
-					    inicio2();
+					    inicio2();*/
 					  }
 					}
 			  }
