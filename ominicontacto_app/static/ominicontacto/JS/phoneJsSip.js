@@ -136,7 +136,12 @@ $(function() {
 	  var originHeader = "";
 
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
-      
+			$("#Pause").prop('disabled',true);
+	    $("#Resume").prop('disabled',false);
+	    $("#sipLogout").prop('disabled',false);
+			updateButton(modifyUserStat, "label label-danger", "Online");
+			parar1();
+	    inicio2();
     });
     function saveCall(callerOrCalled) {
     	$.ajax({
