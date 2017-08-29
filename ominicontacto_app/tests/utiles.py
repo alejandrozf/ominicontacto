@@ -279,6 +279,7 @@ class OMLTestUtilsMixin(object):
         campana = self.crear_campana(
             Campana.TYPE_MANUAL, cant_contactos, bd_contactos, columna_extra,
             calificacion_campana, user)
+        self.crear_queue_manual(campana)
         return campana
 
     def crear_campana_entrante(
@@ -341,6 +342,31 @@ class OMLTestUtilsMixin(object):
             ringinuse=True,
             setinterfacevar=True,
             queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+        )
+        queue.save()
+
+    def crear_queue_manual(self, campana):
+        """
+        Crear una cola para una campana manual
+        :param campana: campana para crear una cola
+        :return:
+        """
+        queue = Queue(
+            campana=campana,
+            name=campana.nombre,
+            maxlen=5,
+            wrapuptime=5,
+            servicelevel=30,
+            strategy='rrmemory',
+            eventmemberstatus=True,
+            eventwhencalled=True,
+            ringinuse=True,
+            setinterfacevar=True,
+            weight=0,
+            wait=120,
+            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+            auto_grabacion=True,
+            detectar_contestadores=True
         )
         queue.save()
 
