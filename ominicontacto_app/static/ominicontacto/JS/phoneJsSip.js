@@ -596,7 +596,6 @@ $(function() {
 								};
 								setTimeout(toOnline, timeoutACW);
 							}
-						}
 					  }
 					}
 			  }
