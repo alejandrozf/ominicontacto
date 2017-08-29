@@ -290,11 +290,12 @@ class OMLTestUtilsMixin(object):
         campana = self.crear_campana(
             Campana.TYPE_ENTRANTE, cant_contactos, bd_contactos, columna_extra,
             calificacion_campana, user)
+        self.crear_queue_entrante(campana)
         return campana
 
     def crear_queue_dialer(self, campana):
         """
-        Crear una cola para una campana
+        Crear una cola para una campana dialer
         :param campana: campana para crear una cola
         :return:
         """
@@ -309,6 +310,32 @@ class OMLTestUtilsMixin(object):
             wait=5,
             auto_grabacion=True,
             detectar_contestadores=True,
+            eventmemberstatus=True,
+            eventwhencalled=True,
+            ringinuse=True,
+            setinterfacevar=True,
+            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+        )
+        queue.save()
+
+    def crear_queue_entrante(self, campana):
+        """
+        Crear una cola para una campana entrante
+        :param campana: campana para crear una cola
+        :return:
+        """
+        queue = Queue(
+            campana=campana,
+            name=campana.nombre,
+            timeout=5,
+            retry=5,
+            maxlen=5,
+            wrapuptime=5,
+            servicelevel=5,
+            strategy=Queue.RRMEMORY,
+            weight=5,
+            wait=5,
+            auto_grabacion=True,
             eventmemberstatus=True,
             eventwhencalled=True,
             ringinuse=True,
