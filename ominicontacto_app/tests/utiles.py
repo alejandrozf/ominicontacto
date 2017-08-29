@@ -14,7 +14,7 @@ import uuid
 from django.test import TestCase
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, SupervisorProfile, Contacto,
-    BaseDatosContacto, Calificacion, CalificacionCampana, Campana
+    BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue
 )
 
 
@@ -264,6 +264,10 @@ class OMLTestUtilsMixin(object):
         campana.fecha_inicio = fecha_inicio
         campana.fecha_fin = fecha_fin
         campana.save()
+
+        #Crear cola de campana
+        self.crear_queue_dialer(campana)
+
         return campana
 
     def crear_campana_manual(
@@ -287,6 +291,31 @@ class OMLTestUtilsMixin(object):
             Campana.TYPE_ENTRANTE, cant_contactos, bd_contactos, columna_extra,
             calificacion_campana, user)
         return campana
+
+    def crear_queue_dialer(self, campana):
+        """
+        Crear una cola para una campana
+        :param campana: campana para crear una cola
+        :return:
+        """
+        queue = Queue(
+            campana=campana,
+            name=campana.nombre,
+            maxlen=5,
+            wrapuptime=5,
+            servicelevel=5,
+            strategy=Queue.RRMEMORY,
+            weight=5,
+            wait=5,
+            auto_grabacion=True,
+            detectar_contestadores=True,
+            eventmemberstatus=True,
+            eventwhencalled=True,
+            ringinuse=True,
+            setinterfacevar=True,
+            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+        )
+        queue.save()
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
