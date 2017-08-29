@@ -138,8 +138,6 @@ $(function() {
     e.session.on("ended",function() {               // Cuando Finaliza la llamada
       var callerOrCalled = "";
 
-			if(fromUser.substring(4,0) != "0077") {
-
 			if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
 				if(originHeader == "CLICK2CALL") {
 
@@ -235,7 +233,6 @@ $(function() {
  	    if(num.substring(4,0) == '0077') {
         reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
       }
-		}
     });
     function saveCall(callerOrCalled) {
     	$.ajax({
