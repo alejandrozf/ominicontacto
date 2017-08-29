@@ -135,14 +135,6 @@ $(function() {
 		objLastPause.LastBtnStatusSipLogout = $("#sipLogout").prop('disabled');
 	  var originHeader = "";
 
-    e.session.on("ended",function() {               // Cuando Finaliza la llamada
-			$("#Pause").prop('disabled',true);
-	    $("#Resume").prop('disabled',false);
-	    $("#sipLogout").prop('disabled',false);
-			updateButton(modifyUserStat, "label label-success", "Online");
-			parar1();
-	    inicio2();
-    });
     function saveCall(callerOrCalled) {
     	$.ajax({
           type: "get",
@@ -515,6 +507,29 @@ $(function() {
     function transferir(objRTCsession) {
       objRTCsession.session.sendDTMF(displayNumber.value);
     }
+
+		e.session.on("ended",function() {               // Cuando Finaliza la llamada
+			if(fromUser) {
+				if(fromUser.substring(4,0) != "0077") {
+					$("#Pause").prop('disabled',true);
+			    $("#Resume").prop('disabled',false);
+			    $("#sipLogout").prop('disabled',false);
+					updateButton(modifyUserStat, "label label-success", "Online");
+					parar1();
+			    inicio2();
+				}
+			} else if (num) {
+				if(num.substring(4,0) != "0077") {
+					$("#Pause").prop('disabled',true);
+			    $("#Resume").prop('disabled',false);
+			    $("#sipLogout").prop('disabled',false);
+					updateButton(modifyUserStat, "label label-success", "Online");
+					parar1();
+			    inicio2();
+				}
+			}
+    });
+
   });
 
 	$("#numberToCall").bind("keypress", function(event) {
