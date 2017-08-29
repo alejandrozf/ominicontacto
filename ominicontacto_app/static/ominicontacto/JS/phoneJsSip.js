@@ -511,8 +511,8 @@ $(function() {
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
 			if(fromUser) {
 				if(fromUser.substring(4,0) != "0077") {
-					$("#Pause").prop('disabled',true);
-			    $("#Resume").prop('disabled',false);
+					$("#Pause").prop('disabled',false);
+			    $("#Resume").prop('disabled',true);
 			    $("#sipLogout").prop('disabled',false);
 					updateButton(modifyUserStat, "label label-success", "Online");
 					parar1();
@@ -520,8 +520,8 @@ $(function() {
 				}
 			} else if (num) {
 				if(num.substring(4,0) != "0077") {
-					$("#Pause").prop('disabled',true);
-			    $("#Resume").prop('disabled',false);
+					$("#Pause").prop('disabled',false);
+			    $("#Resume").prop('disabled',true);
 			    $("#sipLogout").prop('disabled',false);
 					updateButton(modifyUserStat, "label label-success", "Online");
 					parar1();
