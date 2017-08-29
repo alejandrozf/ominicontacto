@@ -526,10 +526,14 @@ $(function() {
 					}
 					if(fromUser.substring(4,0) != "0077") {
 							if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
+								changeStatus(3, $("#idagt").val());
+						    num = "0077ACW";
+						    makeCall();
+						    entrante = false;
 								$("#Pause").prop('disabled',true);
 								$("#Resume").prop('disabled',false);
 								$("#sipLogout").prop('disabled',false);
-								updateButton(modifyUserStat, "label label-danger", lastPause);
+								updateButton(modifyUserStat, "label label-danger", "ACW");
 							}
 						/*$("#Pause").prop('disabled',false);
 				    $("#Resume").prop('disabled',true);
@@ -556,6 +560,10 @@ $(function() {
 							updateButton(modifyUserStat, "label label-success", lastPause);
 						}
 						if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
+							changeStatus(3, $("#idagt").val());
+					    num = "0077ACW";
+					    makeCall();
+					    entrante = false;
 							$("#Pause").prop('disabled',true);
 							$("#Resume").prop('disabled',false);
 							$("#sipLogout").prop('disabled',false);
