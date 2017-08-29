@@ -536,22 +536,26 @@ $(function() {
 					}
 				}
 			} else {
-				if(num) { // num para salientes
-					if(num.substring(4,0) != "0077") {
+				if (num) { // num para salientes
+					if (num.substring(4,0) != "0077") {
+						if (lastPause != "Online") {
+							//saveCall(callerOrCalled);
+							num = '';
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", lastPause);
+						} else {
+							$("#Pause").prop('disabled',false);
+							$("#Resume").prop('disabled',true);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-success", lastPause);
+						}
 						if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
-							if(lastPause != "Online") {
-								//saveCall(callerOrCalled);
-								num = '';
-								$("#Pause").prop('disabled',true);
-								$("#Resume").prop('disabled',false);
-								$("#sipLogout").prop('disabled',false);
-								updateButton(modifyUserStat, "label label-danger", lastPause);
-							} else {
-								$("#Pause").prop('disabled',false);
-								$("#Resume").prop('disabled',true);
-								$("#sipLogout").prop('disabled',false);
-								updateButton(modifyUserStat, "label label-success", lastPause);
-							}
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", lastPause);
 					  }
 					}
 			  }
