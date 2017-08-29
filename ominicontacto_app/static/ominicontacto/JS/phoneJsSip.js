@@ -511,21 +511,25 @@ $(function() {
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
 			if(entrante) {
 				if(fromUser) { // fromUser es para entrantes
+					if(lastPause != "Online") {
+						//saveCall(callerOrCalled);
+						num = '';
+						$("#Pause").prop('disabled',true);
+						$("#Resume").prop('disabled',false);
+						$("#sipLogout").prop('disabled',false);
+						updateButton(modifyUserStat, "label label-danger", lastPause);
+					} else {
+						$("#Pause").prop('disabled',false);
+						$("#Resume").prop('disabled',true);
+						$("#sipLogout").prop('disabled',false);
+						updateButton(modifyUserStat, "label label-success", lastPause);
+					}
 					if(fromUser.substring(4,0) != "0077") {
 							if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
-								if(lastPause != "Online") {
-						      //saveCall(callerOrCalled);
-						      num = '';
-						      $("#Pause").prop('disabled',true);
-						      $("#Resume").prop('disabled',false);
-						      $("#sipLogout").prop('disabled',false);
-						      updateButton(modifyUserStat, "label label-danger", lastPause);
-						    } else {
-						      $("#Pause").prop('disabled',false);
-						      $("#Resume").prop('disabled',true);
-						      $("#sipLogout").prop('disabled',false);
-						      updateButton(modifyUserStat, "label label-success", lastPause);
-						    }
+								$("#Pause").prop('disabled',true);
+								$("#Resume").prop('disabled',false);
+								$("#sipLogout").prop('disabled',false);
+								updateButton(modifyUserStat, "label label-danger", lastPause);
 							}
 						/*$("#Pause").prop('disabled',false);
 				    $("#Resume").prop('disabled',true);
