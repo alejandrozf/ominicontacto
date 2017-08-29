@@ -177,6 +177,7 @@ $(function() {
       	     $("#sipLogout").prop('disabled',false);
       	     $("#Pause").prop('disabled',true);
       	     updateButton(modifyUserStat, "label label-danger", lastPause);
+						 return;
       	   } else {
       	     $("#Resume").prop('disabled',true);
       	     $("#sipLogout").prop('disabled',false);
