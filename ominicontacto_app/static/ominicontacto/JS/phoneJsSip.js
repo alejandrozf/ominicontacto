@@ -139,7 +139,7 @@ $(function() {
 			$("#Pause").prop('disabled',true);
 	    $("#Resume").prop('disabled',false);
 	    $("#sipLogout").prop('disabled',false);
-			updateButton(modifyUserStat, "label label-danger", "Online");
+			updateButton(modifyUserStat, "label label-success", "Online");
 			parar1();
 	    inicio2();
     });
