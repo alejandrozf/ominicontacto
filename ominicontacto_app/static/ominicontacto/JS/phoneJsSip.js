@@ -568,6 +568,8 @@ $(function() {
 							$("#Resume").prop('disabled',false);
 							$("#sipLogout").prop('disabled',false);
 							updateButton(modifyUserStat, "label label-danger", lastPause);
+							parar1();
+					    inicio2();
 					  }
 					}
 			  }
