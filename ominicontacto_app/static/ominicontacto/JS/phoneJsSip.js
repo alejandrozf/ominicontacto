@@ -581,9 +581,22 @@ $(function() {
 							$("#Pause").prop('disabled',true);
 							$("#Resume").prop('disabled',false);
 							$("#sipLogout").prop('disabled',false);
-							updateButton(modifyUserStat, "label label-danger", lastPause);
+							updateButton(modifyUserStat, "label label-danger", "ACW");
 							parar1();
 					    inicio2();
+							if($("#auto_unpause").val() != 0) {
+								var timeoutACW = $("#auto_unpause").val();
+								timeoutACW = timeoutACW * 1000;
+								var toOnline = function() {
+									num = "0077UNPAUSE";
+									if($("#UserStatus").html() === "ACW") {
+										makeCall();
+										$("#Resume").trigger('click');
+									}
+								};
+								setTimeout(toOnline, timeoutACW);
+							}
+						}
 					  }
 					}
 			  }
