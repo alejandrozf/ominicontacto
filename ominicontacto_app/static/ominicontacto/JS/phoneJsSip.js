@@ -536,7 +536,7 @@ $(function() {
 								updateButton(modifyUserStat, "label label-danger", "ACW");
 								parar1();
 						    inicio2();
-								if($("#auto_unpause").val()) {
+								if($("#auto_unpause").val() != 0) {
 							    var timeoutACW = $("#auto_unpause").val();
 							    timeoutACW = timeoutACW * 1000;
 							    var toOnline = function() {
