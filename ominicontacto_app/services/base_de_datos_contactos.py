@@ -84,14 +84,16 @@ class CreacionBaseDatosService(object):
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
             encoding = parser.detectar_encoding_csv(estructura_archivo)
             cantidad_contactos = 0
+
             if base_datos_contacto.cantidad_contactos:
                 cantidad_contactos = base_datos_contacto.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
-                if len(lista_dato) > 2:
+                if len(lista_dato) > 1:
                     item = [value.decode(encoding) for value in lista_dato[1:]]
                     datos = json.dumps(item)
                 else:
-                    datos = ""
+                    item = ['']
+                    datos = json.dumps(item)
                 cantidad_contactos += 1
                 Contacto.objects.create(
                     telefono=lista_dato[0],
