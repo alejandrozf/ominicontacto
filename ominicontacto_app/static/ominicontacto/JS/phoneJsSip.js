@@ -705,7 +705,11 @@ $(function() {
                     local.src = window.URL.createObjectURL(sesion.connection.getLocalStreams()[0]);
                     },
       'addstream':  function(e) {
-                    setCallState("Connected", "orange");
+										if(num.substring(4,0) != "0077"){
+											setCallState("Connected to " + num, "orange");
+										} else {
+											setCallState("Connected", "orange");
+										}
                     var stream = e.stream;
                     // Attach remote stream to remoteView
                     remoto.src = window.URL.createObjectURL(stream);
