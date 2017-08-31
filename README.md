@@ -101,6 +101,7 @@ SESSION_COOKIE_AGE = 600
 # 'OML_ASTERISK_REMOTEPATH': path del server donde se guardara. Asterisk debe estar configurado
 # 'OML_SIP_FILENAME': donde se genera la config de los sip de los agentes. Asterisk debe estar configurado
 # 'OML_QUEUES_FILENAME': donde se genera la config de queues. Asterisk debe estar configurado
+# 'OML_GLOBALS_VARIABLES_FILENAME': donde se genera las variables para usar en asterik como por ejemplo sip agente con pk agente
 #  para hacer un include de este archivo
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 OML_QUEUE_FILENAME = "/home/freetech/extensions_fts_queues.conf"
@@ -109,6 +110,7 @@ OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
 OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
 OML_QUEUES_FILENAME = "/home/freetech/queues_fts.conf"
 OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
+OML_GLOBALS_VARIABLES_FILENAME = "/home/freetech/extensions_fts_globals.conf"
 
 # parametros de conexion con base de datos mysql de asterisk
 # modificar esto parametros con la conexion de base de datos correcta para que no tire error la ejecucion
