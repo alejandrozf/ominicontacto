@@ -448,7 +448,7 @@ $(function() {
         atiendoSi.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           session_incoming.answer(options);
-          setCallState("Connected", "orange");
+          setCallState("Connected to " +fromUser , "orange");
           Sounds("","stop");
         };
 
