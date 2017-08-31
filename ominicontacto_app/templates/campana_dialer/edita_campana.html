@@ -15,56 +15,56 @@
                 <li class="disabled"><a>Cola</a></li>
             </ul>
             <br>
-<div class="col-md-6">
+<div class="col-md-10">
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-group row">
         {{ form.nombre.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
-        <div class="col-sm-6">
+        <label class="col-sm-5 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
+        <div class="col-sm-5">
               {{ form.nombre }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.fecha_inicio.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>
+        <label class="col-sm-5 control-label" for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>
         <div class="col-sm-3">
               {{ form.fecha_inicio }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.fecha_fin.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
+        <label class="col-sm-5 control-label" for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
         <div class="col-sm-3">
               {{ form.fecha_fin }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.calificacion_campana.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.calificacion_campana.id_for_label }}">Calificacion campana: </label>
-        <div class="col-sm-6">
+        <label class="col-sm-5 control-label" for="{{ form.calificacion_campana.id_for_label }}">Calificacion campana: </label>
+        <div class="col-sm-5">
               {{ form.calificacion_campana }}
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-3 control-label">Base de Datos de Contactos: </label>
-        <div class="col-sm-6">
+        <label class="col-sm-5 control-label">Base de Datos de Contactos: </label>
+        <div class="col-sm-5">
               {{ campana.bd_contacto }}
         </div>
     </div>
     {% if campana.tipo_interaccion == 1 %}
     <div class="form-group row">
-        <label class="col-sm-3 control-label">Formulario: </label>
-        <div class="col-sm-6">
+        <label class="col-sm-5 control-label">Formulario: </label>
+        <div class="col-sm-5">
               {{ campana.formulario }}
         </div>
     </div>
     {% endif %}
     {% if campana.tipo_interaccion == 2 %}
     <div class="form-group row">
-        <label class="col-sm-3 control-label">Sitio externo: </label>
-        <div class="col-sm-6">
+        <label class="col-sm-5 control-label">Sitio externo: </label>
+        <div class="col-sm-5">
               {{ campana.sitio_externo }}
         </div>
     </div>
