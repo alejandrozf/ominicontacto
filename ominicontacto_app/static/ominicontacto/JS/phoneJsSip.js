@@ -575,16 +575,39 @@ $(function() {
 						}
 						if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
 							changeStatus(3, $("#idagt").val());
-					    num = "0077ACW";
-					    makeCall();
-					    entrante = false;
+					        num = "0077ACW";
+					        makeCall();
+					        entrante = false;
 							$("#Pause").prop('disabled',true);
 							$("#Resume").prop('disabled',false);
 							$("#sipLogout").prop('disabled',false);
 							updateButton(modifyUserStat, "label label-danger", "ACW");
 							parar1();
-					    inicio2();
+					        inicio2();
 							if($("#auto_unpause").val() != 0) {
+								var timeoutACW = $("#auto_unpause").val();
+								timeoutACW = timeoutACW * 1000;
+								var toOnline = function() {
+									num = "0077UNPAUSE";
+									if($("#UserStatus").html() === "ACW") {
+										makeCall();
+										$("#Resume").trigger('click');
+									}
+								};
+								setTimeout(toOnline, timeoutACW);
+							}
+					  } else if($("#auto_pause").val() == "True") {
+                        changeStatus(3, $("#idagt").val());
+					        num = "0077ACW";
+					        makeCall();
+					        entrante = false;
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", "ACW");
+							parar1();
+					        inicio2();
+					        if($("#auto_unpause").val() != 0) {
 								var timeoutACW = $("#auto_unpause").val();
 								timeoutACW = timeoutACW * 1000;
 								var toOnline = function() {
