@@ -443,12 +443,12 @@ $(function() {
 
         var options = {'mediaConstraints': {'audio': true, 'video': false}};
         calltypeId = originToId(originHeader);
-        processOrigin(originHeader, options);
+        processOrigin(originHeader, options, fromUser);
 
         atiendoSi.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           session_incoming.answer(options);
-          setCallState("Connected", "orange");
+          setCallState("Connected to " +fromUser , "orange");
           Sounds("","stop");
         };
 
@@ -461,7 +461,7 @@ $(function() {
           defaultCallState();
         };
 
-        function processOrigin(origin, opt) {
+        function processOrigin(origin, opt, from) {
 			  	var options = opt;
 					var origin = origin;
 					if(origin) {
@@ -475,7 +475,7 @@ $(function() {
   						if(dialerTag.value === "True") {
   							$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
-          			setCallState("Connected", "orange");
+          			setCallState("Connected to " + from, "orange");
           			Sounds("","stop");
   						}
   		  			break;
@@ -484,7 +484,7 @@ $(function() {
   		  			if(inboundTag.value === "True") {
   		  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
-          			setCallState("Connected", "orange");
+          			setCallState("Connected to " + from, "orange");
           			Sounds("","stop");
   						}
   		  			break;
@@ -493,14 +493,14 @@ $(function() {
   						if(icsTag.value === "True") {
 			  				$("#modalReceiveCalls").modal('hide');
   			  			session_incoming.answer(options);
-          			setCallState("Connected", "orange");
+          			setCallState("Connected to " + from, "orange");
           			Sounds("","stop");
   						}
   		  			break;
 						case "CLICK2CALL":
 						  $("#modalReceiveCalls").modal('hide');
 							session_incoming.answer(options);
-							setCallState("Connected", "orange");
+							setCallState("Connected to " + from, "orange");
 							Sounds("","stop");
 						  break;
   				}
@@ -705,7 +705,11 @@ $(function() {
                     local.src = window.URL.createObjectURL(sesion.connection.getLocalStreams()[0]);
                     },
       'addstream':  function(e) {
-                    setCallState("Connected", "orange");
+										if(num.substring(4,0) != "0077"){
+											setCallState("Connected to " + num, "orange");
+										} else {
+											setCallState("Connected", "orange");
+										}
                     var stream = e.stream;
                     // Attach remote stream to remoteView
                     remoto.src = window.URL.createObjectURL(stream);
