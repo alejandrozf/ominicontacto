@@ -135,104 +135,6 @@ $(function() {
 		objLastPause.LastBtnStatusSipLogout = $("#sipLogout").prop('disabled');
 	  var originHeader = "";
 
-    e.session.on("ended",function() {               // Cuando Finaliza la llamada
-      var callerOrCalled = "";
-
-			if($("#auto_pause").val() === "True" && originHeader !== "") { //Si esta en auto pausa y viene un OriginHeader
-				if(originHeader == "CLICK2CALL") {
-
-				} else {
-				  changeStatus(3, $("#idagt").val());
-          num = "0077ACW";
-    		  makeCall();
-    		  entrante = false;
-    		  // cod que se repite en main.js.. se deberia mejorar esto
-    		  $("#Pause").prop('disabled',true);
-    		  $("#Resume").prop('disabled',false);
-    		  $("#sipLogout").prop('disabled',false);
-    		  updateButton(modifyUserStat, "label label-danger", "ACW");
-	        parar1();
-	        inicio2();
-				}
-      } else if (num.substring(4,0) != "0077") {//Si el nro es distinto de 0077ABC (se evalua al finalizar una llamada saliente)
-      	if ($("#auto_attend_DIALER").val() == "True" && $("#auto_pause").val() == "True") {//Si es un agente predictivo
-      	  if(lastPause != "Online") {
-          	saveCall(callerOrCalled);
-            num = '';
-      	  	$("#Pause").prop('disabled',true);
-            $("#Resume").prop('disabled',false);
-            $("#sipLogout").prop('disabled',false);
-          	updateButton(modifyUserStat, "label label-danger", lastPause);
-          } else {
-          	$("#Pause").prop('disabled',false);
-            $("#Resume").prop('disabled',true);
-            $("#sipLogout").prop('disabled',false);
-          	updateButton(modifyUserStat, "label label-success", lastPause);
-          }
-        } else {
-      	 	saveCall(callerOrCalled);
-      	   num = '';
-      	   if(lastPause != "Online") {
-      	   	 $("#Resume").prop('disabled',false);
-      	     $("#sipLogout").prop('disabled',false);
-      	     $("#Pause").prop('disabled',true);
-      	     updateButton(modifyUserStat, "label label-danger", lastPause);
-      	   } else {
-      	     $("#Resume").prop('disabled',true);
-      	     $("#sipLogout").prop('disabled',false);
-      	     $("#Pause").prop('disabled',false);
-      	     updateButton(modifyUserStat, "label label-success", "Online");
-      	   }
-      	 }
-      }
-			if(entrante && fromUser) { // INGRESA CUANDO CORTA UNA LLAMADA CON UN ABONADO o CLICK2CALL
-				callerOrCalled = fromUser;
-				$("#Pause").prop('disabled', objLastPause.LastBtnStatusPause);
-				$("#Resume").prop('disabled', objLastPause.LastBtnStatusResume);
-				$("#sipLogout").prop('disabled', objLastPause.LastBtnStatusSipLogout);
-				updateButton(modifyUserStat, objLastPause.LastStatusAgentClass, objLastPause.LastStatusAgent);
-				fromUser = "";
-				if($("#auto_unpause").val()) {
-					var timeoutACW = $("#auto_unpause").val();
-					timeoutACW = timeoutACW * 1000;
-					var toOnline = function() {
-						num = "0077UNPAUSE";
-						if($("#UserStatus").html() === "ACW") {
-							makeCall();
-							$("#Resume").trigger('click');
-						}
-					};
-					setTimeout(toOnline, timeoutACW);
-				}
-	    } else {
-			  if(num.substring(4,0) != '0077') { // INGRESA CUANDO CORTA LA LLAMADA CONTRA KAMAILIO, EJ 0077UNPAUSE
-					$("#Pause").prop('disabled',false);
-					$("#Resume").prop('disabled',true);
-					$("#sipLogout").prop('disabled',true);
-					updateButton(modifyUserStat, "label label-success", "Online");
-	        callerOrCalled =  num;
-					if($("#auto_unpause").val()) {
-						var timeoutACW = $("#auto_unpause").val();
-						timeoutACW = timeoutACW * 1000;
-						var toOnline = function() {
-							num = "0077UNPAUSE";
-							if($("#UserStatus").html() === "ACW") {
-								makeCall();
-								$("#Resume").trigger('click');
-							}
-						};
-						setTimeout(toOnline, timeoutACW);
-					}
-	      }
-			}
-
-      parar3();
-      defaultCallState();
-
- 	    if(num.substring(4,0) == '0077') {
-        reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
-      }
-    });
     function saveCall(callerOrCalled) {
     	$.ajax({
           type: "get",
@@ -605,6 +507,100 @@ $(function() {
     function transferir(objRTCsession) {
       objRTCsession.session.sendDTMF(displayNumber.value);
     }
+
+		e.session.on("ended",function() {               // Cuando Finaliza la llamada
+			if(entrante) {
+				if(fromUser) { // fromUser es para entrantes
+					if(lastPause != "Online") {
+						num = '';
+						$("#Pause").prop('disabled',true);
+						$("#Resume").prop('disabled',false);
+						$("#sipLogout").prop('disabled',false);
+						updateButton(modifyUserStat, "label label-danger", lastPause);
+					} else {
+						$("#Pause").prop('disabled',false);
+						$("#Resume").prop('disabled',true);
+						$("#sipLogout").prop('disabled',false);
+						updateButton(modifyUserStat, "label label-success", "Online");
+					}
+					if(fromUser.substring(4,0) != "0077") {
+							if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
+								changeStatus(3, $("#idagt").val());
+						        num = "0077ACW";
+						        makeCall();
+						        entrante = false;
+								$("#Pause").prop('disabled',true);
+								$("#Resume").prop('disabled',false);
+								$("#sipLogout").prop('disabled',false);
+								updateButton(modifyUserStat, "label label-danger", "ACW");
+								parar1();
+						        inicio2();
+								if($("#auto_unpause").val() != 0) {
+							    var timeoutACW = $("#auto_unpause").val();
+							    timeoutACW = timeoutACW * 1000;
+							    var toOnline = function() {
+							      num = "0077UNPAUSE";
+							      if($("#UserStatus").html() === "ACW") {
+							        makeCall();
+							        $("#Resume").trigger('click');
+							      }
+							    };
+							    setTimeout(toOnline, timeoutACW);
+							  }
+							}
+					} else {
+					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+					}
+				}
+			} else {
+				if (num) { // num para salientes
+					if (num.substring(4,0) != "0077") {
+						saveCall(num);
+						if (lastPause != "Online") {
+							num = '';
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", lastPause);
+						} else {
+							$("#Pause").prop('disabled',false);
+							$("#Resume").prop('disabled',true);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-success", lastPause);
+						}
+						if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
+							changeStatus(3, $("#idagt").val());
+					        num = "0077ACW";
+					        makeCall();
+					        entrante = false;
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", "ACW");
+							parar1();
+					        inicio2();
+							if($("#auto_unpause").val() != 0) {
+								var timeoutACW = $("#auto_unpause").val();
+								timeoutACW = timeoutACW * 1000;
+								var toOnline = function() {
+									num = "0077UNPAUSE";
+									if($("#UserStatus").html() === "ACW") {
+										makeCall();
+										$("#Resume").trigger('click');
+									}
+								};
+								setTimeout(toOnline, timeoutACW);
+							}
+					    }
+					} else {
+					   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+					}
+			    }
+		    }
+		parar3();
+		defaultCallState();
+    });
+
   });
 
 	$("#numberToCall").bind("keypress", function(event) {
