@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ominicontacto_app',
     'crispy_forms',
+    'django_extensions',
 ]
 
 MIDDLEWARE_CLASSES = [
