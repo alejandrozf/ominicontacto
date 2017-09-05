@@ -262,30 +262,84 @@ class GraficoService():
         eventos_llamadas_atendidas = ['CONNECT']
         eventos_llamadas_abandonadas = ['ABANDON']
         eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
-        campanas = [campana.id for campana in campanas]
-        ingresadas = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(campana_id__in=campanas)
-        atendidas = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(campana_id__in=campanas)
-        abandonadas = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(campana_id__in=campanas)
-        expiradas = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(campana_id__in=campanas)
-        count_llamadas_ingresadas = ingresadas.count()
-        count_llamadas_atendidas = atendidas.count()
-        count_llamadas_abandonadas = abandonadas.count()
-        count_llamadas_expiradas = expiradas.count()
-        count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
-        count_manuales_atendidas = atendidas.filter(data4='saliente').count()
-        count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
+        campanas_entrantes = campanas.filter(
+            type=Campana.TYPE_ENTRANTE).values_list('id', flat=True)
+        campanas_dialer = campanas.filter(
+            type=Campana.TYPE_DIALER).values_list('id', flat=True)
+        campanas_manuales = campanas.filter(
+            type=Campana.TYPE_ENTRANTE).values_list('id', flat=True)
+
+        ingresadas_dialer = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
+                campana_id__in=campanas_dialer)
+        atendidas_dialer = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
+                campana_id__in=campanas_dialer)
+        abandonadas_dialer = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
+                campana_id__in=campanas_dialer)
+        expiradas_dialer = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(
+                campana_id__in=campanas_dialer)
+
+        ingresadas_entrantes = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
+            campana_id__in=campanas_entrantes)
+        atendidas_entrantes = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
+            campana_id__in=campanas_entrantes)
+        abandonadas_entrantes = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
+            campana_id__in=campanas_entrantes)
+        expiradas_entrantes = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(
+            campana_id__in=campanas_entrantes)
+
+        llamadas_ingresadas_manuales = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
+            campana_id__in=campanas_manuales)
+        llamadas_atendidas_manuales = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
+            campana_id__in=campanas_manuales)
+        llamadas_abandonadas_manuales = Queuelog.objects.obtener_log_event_periodo(
+            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
+            campana_id__in=campanas_manuales)
+
+        count_llamadas_ingresadas_dialer = ingresadas_dialer.count()
+        count_llamadas_gestionadas_dialer = atendidas_dialer.count()
+        count_llamadas_abandonadas_dialer = abandonadas_dialer.count()
+        count_llamadas_expiradas_dialer = expiradas_dialer.count()
+        count_llamadas_perdidas_dialer = count_llamadas_abandonadas_dialer + \
+            count_llamadas_expiradas_dialer
+
+        count_llamadas_ingresadas_entrantes = ingresadas_entrantes.count()
+        count_llamadas_atendidas_entrantes = atendidas_entrantes.count()
+        count_llamadas_abandonadas_entrantes = abandonadas_entrantes.count()
+        count_llamadas_expiradas_entrantes = expiradas_entrantes.count()
+
+        count_llamadas_ingresadas_manuales = llamadas_ingresadas_manuales.count()
+        count_llamadas_atendidas_manuales = llamadas_atendidas_manuales.count()
+        count_llamadas_abandonadas_manuales = llamadas_abandonadas_manuales.count()
+
+        total_llamadas_ingresadas = count_llamadas_ingresadas_entrantes + \
+            count_llamadas_ingresadas_dialer + \
+            count_llamadas_ingresadas_manuales
+
         cantidad_campana = []
-        cantidad_campana.append(count_llamadas_ingresadas)
-        cantidad_campana.append(count_llamadas_atendidas)
-        cantidad_campana.append(count_llamadas_expiradas)
-        cantidad_campana.append(count_llamadas_abandonadas)
-        cantidad_campana.append(count_llamadas_manuales)
-        cantidad_campana.append(count_manuales_atendidas)
-        cantidad_campana.append(count_manuales_abandonadas)
+        cantidad_campana.append(total_llamadas_ingresadas)
+
+        cantidad_campana.append(count_llamadas_ingresadas_dialer)
+        cantidad_campana.append(count_llamadas_gestionadas_dialer)
+        cantidad_campana.append(count_llamadas_perdidas_dialer)
+
+        cantidad_campana.append(count_llamadas_ingresadas_entrantes)
+        cantidad_campana.append(count_llamadas_atendidas_entrantes)
+        cantidad_campana.append(count_llamadas_abandonadas_entrantes)
+        cantidad_campana.append(count_llamadas_expiradas_entrantes)
+
+        cantidad_campana.append(count_llamadas_ingresadas_manuales)
+        cantidad_campana.append(count_llamadas_atendidas_manuales)
+        cantidad_campana.append(count_llamadas_abandonadas_manuales)
 
         return cantidad_campana
 
