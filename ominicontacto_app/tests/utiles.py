@@ -14,7 +14,8 @@ import uuid
 from django.test import TestCase
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, SupervisorProfile, Contacto,
-    BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue
+    BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue,
+    ActuacionVigente
 )
 
 
@@ -369,6 +370,31 @@ class OMLTestUtilsMixin(object):
             detectar_contestadores=True
         )
         queue.save()
+
+    def crear_actuacion_vigente(self, campana, hora_desde, hora_hasta,
+                                domingo=False, lunes=False, martes=False,
+                                miercoles=False, jueves=False, viernes=False,
+                                sabado=False,):
+        """
+        Crear una actuacion vigente para una campana dialer
+        :param campana: campana para crear una actuacion
+        :param dias_semana:
+        :return:
+        """
+        actuacion = ActuacionVigente(
+            campana=campana,
+            domingo=domingo,
+            lunes=lunes,
+            martes=martes,
+            miercoles=miercoles,
+            jueves=jueves,
+            viernes=viernes,
+            sabado=sabado,
+            hora_desde=hora_desde,
+            hora_hasta=hora_hasta
+        )
+        actuacion.save()
+
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):

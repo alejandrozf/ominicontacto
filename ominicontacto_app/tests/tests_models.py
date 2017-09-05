@@ -72,3 +72,14 @@ class CampanaTest(OMLBaseTest):
         [self.crear_campana_entrante() for _ in range(0, 10)]
         self.assertEqual(Campana.objects.all().count(), 10)
 
+    def test_crea_actuacion_vigente(self):
+        """
+        test crea actuacion vigente a campana dialer
+        :return:
+        """
+
+        campana = self.crear_campana_dialer()
+        hora_desde = datetime.time(9, 00)
+        hora_hasta = datetime.time(10, 00)
+        self.crear_actuacion_vigente(campana, hora_desde=hora_desde,
+                                     hora_hasta=hora_hasta)
