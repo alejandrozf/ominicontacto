@@ -89,40 +89,56 @@
 <div class="col-md-9">
 <table class="table table-bordered">
     <tr>
-        <td colspan="2"><strong>Total llamadas</strong></td>
+      <td><strong>Total llamadas procesadas por OmniLeads</strong></td>
+      <td>{{graficos_estadisticas.estadisticas.total_llamadas.0}}</td>
     <tr>
+</table>
+<table class="table table-bordered">
     <tr>
-        <td>Numero de llamadas recibidas</td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.0}}</td>
-    <tr>
-    <tr>
-        <td>Numero de llamadas atendidas</td>
+        <td><strong>Total de llamadas Salientes Discador</strong></td>
         <td>{{graficos_estadisticas.estadisticas.total_llamadas.1}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas expiradas</td>
+        <td>Cantidad de llamadas gestionadas</td>
         <td>{{graficos_estadisticas.estadisticas.total_llamadas.2}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas abandonadas</td>
+        <td>Cantidad de llamadas perdidas</td>
         <td>{{graficos_estadisticas.estadisticas.total_llamadas.3}}</td>
     <tr>
     <tr>
-    <td colspan="2"><strong>Llamadas salientes</strong></td>
+</table>
+<table class="table table-bordered">
     <tr>
-    <tr>
-        <td>Numero de llamadas salientes</td>
+        <td><strong>Total llamadas Entrantes</strong></td>
         <td>{{graficos_estadisticas.estadisticas.total_llamadas.4}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas atendidas</td>
+        <td>Cantidad de llamadas atendidas</td>
         <td>{{graficos_estadisticas.estadisticas.total_llamadas.5}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas abandonadas</td>
+        <td>Cantidad de llamadas expiradas</td>
         <td>{{graficos_estadisticas.estadisticas.total_llamadas.6}}</td>
     <tr>
-
+    <tr>
+        <td>Cantidad de llamadas abandonadas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.7}}</td>
+    <tr>
+</table>
+<table class="table table-bordered">
+    <tr>
+        <td><strong>Total llamadas Salientes Manuales</strong></td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.8}}</td>
+    <tr>
+    <tr>
+        <td>Cantidad de llamadas atendidas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.9}}</td>
+    <tr>
+    <tr>
+        <td>Cantidad de llamadas abandonadas</td>
+        <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
+    <tr>
 </table>
     <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='total_llamadas' %}">Exportar totales llamadas(CSV)</a></h5>
 
