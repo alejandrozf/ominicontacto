@@ -83,3 +83,6 @@ class CampanaTest(OMLBaseTest):
         hora_hasta = datetime.time(10, 00)
         self.crear_actuacion_vigente(campana, hora_desde=hora_desde,
                                      hora_hasta=hora_hasta)
+
+        self.assertEqual(campana.actuacionvigente.hora_desde, hora_desde)
+        self.assertEqual(campana.actuacionvigente.hora_hasta, hora_hasta)
