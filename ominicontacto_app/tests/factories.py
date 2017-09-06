@@ -50,14 +50,14 @@ class CalificacionFactory(DjangoModelFactory):
     class Meta:
         model = Calificacion
 
-    nombre = lazy_attribute(lambda a: "calificacion_{0}".format(faker.text(50)))
+    nombre = lazy_attribute(lambda a: "calificacion_{0}".format(faker.text(10)))
 
 
 class CalificacionCampanaFactory(DjangoModelFactory):
     class Meta:
         model = CalificacionCampana
 
-    nombre = lazy_attribute(lambda a: "calificacion_campana_{0}".format(faker.text(50)))
+    nombre = lazy_attribute(lambda a: "calificacion_campana_{0}".format(faker.text(10)))
 
     @post_generation
     def calificacion(self, create, extracted, **kwargs):
