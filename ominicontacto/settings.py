@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ominicontacto_app',
     'crispy_forms',
-    'django_extensions',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -280,6 +279,9 @@ Ejemplo:
 
 try:
     from oml_settings_local import *
+    # definir LOCAL_APPS en oml_settings_local, para insertar plugins de django que
+    #  sólo serán usados en ambientes de desarrollo y de testing
+    INSTALLED_APPS += LOCAL_APPS
 except ImportError as e:
     print "# "
     print "# ERROR"
