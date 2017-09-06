@@ -15,7 +15,7 @@ from django.test import TestCase
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, SupervisorProfile, Contacto,
     BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue,
-    ActuacionVigente
+    ActuacionVigente, ReglasIncidencia
 )
 
 
@@ -395,6 +395,14 @@ class OMLTestUtilsMixin(object):
         )
         actuacion.save()
 
+    def crear_regla_incidencia(self, campana, estado):
+        regla = ReglasIncidencia(
+            campana=campana,
+            estado=estado,
+            intento_max=3,
+            reintentar_tarde=150
+        )
+        regla.save()
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):

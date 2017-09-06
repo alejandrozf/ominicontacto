@@ -14,7 +14,7 @@ from django.conf import settings
 from unittest import skip
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import (
-    User, Campana
+    User, Campana, ReglasIncidencia
 )
 from ominicontacto_app.errors import OmlError
 import os
@@ -86,3 +86,17 @@ class CampanaTest(OMLBaseTest):
 
         self.assertEqual(campana.actuacionvigente.hora_desde, hora_desde)
         self.assertEqual(campana.actuacionvigente.hora_hasta, hora_hasta)
+
+    def test_crea_regla_incidencia(self):
+        """
+        test crea regla de incidencia para campana dialer
+        :return:
+        """
+        campana = self.crear_campana_dialer()
+        estados = [ReglasIncidencia.RS_BUSY, ReglasIncidencia.RS_NOANSWER,
+                  ReglasIncidencia.RS_REJECTED, ReglasIncidencia.RS_TIMEOUT,
+                  ReglasIncidencia.TERMINATED]
+        for estado in estados:
+            self.crear_regla_incidencia(campana, estado)
+
+        self.assertEqual(campana.reglas_incidencia.all().count(), 5)
