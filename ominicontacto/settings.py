@@ -280,8 +280,14 @@ Ejemplo:
 try:
     from oml_settings_local import *
     # definir LOCAL_APPS en oml_settings_local, para insertar plugins de django que
-    #  sólo serán usados en ambientes de desarrollo y de testing
+    # sólo serán usados en ambientes de desarrollo y de testing, si no se tienen plugins
+    # dejar LOCAL_APPS = []
     INSTALLED_APPS += LOCAL_APPS
+
+    if DEBUG == True:
+        MIDDLEWARE_CLASSES += [
+            'debug_toolbar.middleware.DebugToolbarMiddleware',
+        ]
 except ImportError as e:
     print "# "
     print "# ERROR"

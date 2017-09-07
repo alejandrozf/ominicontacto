@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.conf.urls import url, patterns
+from django.conf.urls import url, patterns, include
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
@@ -867,8 +867,13 @@ urlpatterns += patterns('',
                          )
                         )
 
-# if settings.DEBUG:
+if settings.DEBUG:
 #     # static files (images, css, javascript, etc.)
 #     urlpatterns += patterns('',
 #         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
 #             'document_root': settings.MEDIA_ROOT}))
+
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
