@@ -119,6 +119,48 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()
 
 
+    """def test_auto_attend_dialer(self):
+        self.driver.find_element_by_id("auto_attend_DIALER")
+        time.sleep(5)
+        for _ in range(10):
+            if self.driver.find_element_by_id("UserStatus").text == "Online":
+                break
+            time.sleep(1)
+        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
+        self.driver.close()"""
+
+
+    """def test_auto_attend_inbound(self):
+        self.driver.find_element_by_id("auto_attend_IN")
+        time.sleep(5)
+        for _ in range(10):
+            if self.driver.find_element_by_id("UserStatus").text == "Online":
+                break
+            time.sleep(1)
+        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
+        self.driver.close()"""
+
+
+    """def test_auto_pause(self):
+        time.sleep(5)
+        for _ in range(10):
+            if self.driver.find_element_by_id("UserStatus").text == "Online":
+                break
+            time.sleep(1)
+        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
+        self.driver.close()"""
+
+
+    """def test_auto_unpause(self):
+        time.sleep(5)
+        for _ in range(10):
+            if self.driver.find_element_by_id("UserStatus").text == "Online":
+                break
+            time.sleep(1)
+        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
+        self.driver.close()"""
+
+
     def test_abrir_modal_pausa(self):
         for _ in range(10):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
@@ -339,8 +381,8 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()
 
 
-    def test_dial_status_busy(self):
-    """ for _ in range(9):
+    """def test_dial_status_busy(self):
+     for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
@@ -382,8 +424,8 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()"""
 
 
-    def test_dial_status_rejected(self):
-    """ for _ in range(9):
+    """def test_dial_status_rejected(self):
+        for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
@@ -425,8 +467,8 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()"""    
 
 
-        def test_dial_status_unavailable(self):
-    """ for _ in range(9):
+    """def test_dial_status_unavailable(self):
+        for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
@@ -468,8 +510,8 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()"""
 
 
-        def test_dial_status_error(self):
-    """ for _ in range(9):
+    """def test_dial_status_error(self):
+        for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
@@ -511,8 +553,8 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()"""
 
 
-        def test_dial_status_autherror(self):
-    """ for _ in range(9):
+    """def test_dial_status_autherror(self):
+        for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
@@ -554,8 +596,8 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()"""
 
 
-        def test_dial_status_missingsdp(self):
-    """ for _ in range(9):
+    """def test_dial_status_missingsdp(self):
+        for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
@@ -596,8 +638,8 @@ class SimpleSeleniumTest(TestCase):
         self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
         self.driver.close()"""
 
-        def test_dial_status_addressincomplete(self):
-    """ for _ in range(9):
+    """def test_dial_status_addressincomplete(self):
+        for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
@@ -639,8 +681,8 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()"""
 
 
-        def test_dial_status_jssipfailure(self):
-    """ for _ in range(9):
+    """def test_dial_status_jssipfailure(self):
+        for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
