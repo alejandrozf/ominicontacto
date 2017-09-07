@@ -17,7 +17,9 @@ faker = faker.Factory.create()
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
-    last_session_key = lazy_attribute(lambda a: faker.text(15))
+
+    username = lazy_attribute(lambda a: faker.name())
+    last_session_key = Sequence(lambda n: "session_{0}.dat".format(n))
 
 
 class SitioExternoFactory(DjangoModelFactory):
@@ -72,6 +74,7 @@ class CampanaFactory(DjangoModelFactory):
     class Meta:
         model = Campana
 
+    nombre = Sequence(lambda n: "campana_{0}".format(n))
     estado = lazy_attribute(lambda a: faker.random_digit_not_null())
     fecha_inicio = lazy_attribute(lambda a: timezone.now())
     fecha_fin = lazy_attribute(lambda a: a.fecha_inicio)
@@ -103,10 +106,3 @@ class QueuelogFactory(DjangoModelFactory):
     queuename = lazy_attribute(lambda a: faker.text(32))
     campana_id = lazy_attribute(lambda a: faker.random_number(7))
     agent = lazy_attribute(lambda a: faker.text(32))
-    campaign_id_wombat = lazy_attribute(lambda a: faker.random_number(7))
-    event = lazy_attribute(lambda a: faker.text(128))
-    data1 = lazy_attribute(lambda a: faker.text(128))
-    data2 = lazy_attribute(lambda a: faker.text(128))
-    data3 = lazy_attribute(lambda a: faker.text(128))
-    data4 = lazy_attribute(lambda a: faker.text(128))
-    data5 = lazy_attribute(lambda a: faker.text(128))
