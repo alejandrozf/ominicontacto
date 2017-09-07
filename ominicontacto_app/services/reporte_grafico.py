@@ -267,7 +267,7 @@ class GraficoService():
         campanas_dialer = campanas.filter(
             type=Campana.TYPE_DIALER).values_list('id', flat=True)
         campanas_manuales = campanas.filter(
-            type=Campana.TYPE_ENTRANTE).values_list('id', flat=True)
+            type=Campana.TYPE_MANUAL).values_list('id', flat=True)
 
         ingresadas_dialer = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
