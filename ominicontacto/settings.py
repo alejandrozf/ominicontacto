@@ -284,7 +284,7 @@ try:
     # dejar LOCAL_APPS = []
     INSTALLED_APPS += LOCAL_APPS
 
-    if DEBUG == True:
+    if DJANGO_DEBUG_TOOLBAR:
         MIDDLEWARE_CLASSES += [
             'debug_toolbar.middleware.DebugToolbarMiddleware',
         ]

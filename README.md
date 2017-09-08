@@ -210,6 +210,12 @@ LOGGING = {
 
 LOCAL_APPS = []
 
+DJANGO_DEBUG_TOOLBAR = False    # poner a True una vez esté instalada en el sistema
+
+if DJANGO_DEBUG_TOOLBAR:
+    INTERNAL_IPS = ['127.0.0.1']
+    LOCAL_APPS += ['debug_toolbar']
+
 ```
 
 Crear usuario y BD de Postgresql:
