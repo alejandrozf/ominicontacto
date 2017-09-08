@@ -334,8 +334,8 @@ class GraficoService():
 
         cantidad_campana.append(count_llamadas_ingresadas_entrantes)
         cantidad_campana.append(count_llamadas_atendidas_entrantes)
-        cantidad_campana.append(count_llamadas_abandonadas_entrantes)
         cantidad_campana.append(count_llamadas_expiradas_entrantes)
+        cantidad_campana.append(count_llamadas_abandonadas_entrantes)
 
         cantidad_campana.append(count_llamadas_ingresadas_manuales)
         cantidad_campana.append(count_llamadas_atendidas_manuales)
