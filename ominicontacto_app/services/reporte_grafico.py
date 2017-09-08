@@ -8,6 +8,8 @@ import pygal
 import datetime
 from pygal.style import Style, RedBlueStyle
 
+from django.db.models import Q
+
 from ominicontacto_app.models import Grabacion, AgenteProfile, Queuelog, Campana
 import logging as _logging
 
@@ -271,39 +273,39 @@ class GraficoService():
 
         ingresadas_dialer = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
-                campana_id__in=campanas_dialer)
+                Q(campana_id__in=campanas_dialer), ~Q(data4='saliente'))
         atendidas_dialer = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
-                campana_id__in=campanas_dialer)
+                Q(campana_id__in=campanas_dialer), ~Q(data4='saliente'))
         abandonadas_dialer = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
-                campana_id__in=campanas_dialer)
+                Q(campana_id__in=campanas_dialer), ~Q(data4='saliente'))
         expiradas_dialer = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(
                 campana_id__in=campanas_dialer)
 
         ingresadas_entrantes = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas_entrantes)
+                Q(campana_id__in=campanas_entrantes),  ~Q(data4='saliente'))
         atendidas_entrantes = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas_entrantes)
+                Q(campana_id__in=campanas_entrantes),  ~Q(data4='saliente'))
         abandonadas_entrantes = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas_entrantes)
+                Q(campana_id__in=campanas_entrantes),  ~Q(data4='saliente'))
         expiradas_entrantes = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas_entrantes)
+                Q(campana_id__in=campanas_entrantes),  ~Q(data4='saliente'))
 
         llamadas_ingresadas_manuales = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas_manuales)
+            data4='saliente')
         llamadas_atendidas_manuales = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas_manuales)
+            data4='saliente')
         llamadas_abandonadas_manuales = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas_manuales)
+            data4='saliente')
 
         count_llamadas_ingresadas_dialer = ingresadas_dialer.count()
         count_llamadas_gestionadas_dialer = atendidas_dialer.count()
