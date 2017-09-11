@@ -714,12 +714,11 @@ class CampanaDialerUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
+        fields = ('fecha_inicio', 'fecha_fin', 'calificacion_campana',
                   'gestion')
 
         widgets = {
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
-            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
