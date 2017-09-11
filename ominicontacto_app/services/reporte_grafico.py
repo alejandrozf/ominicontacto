@@ -6,11 +6,11 @@ Servicio para generar reporte de las grabaciones de las llamadas
 
 import pygal
 import datetime
-from pygal.style import Style, RedBlueStyle
+from pygal.style import Style
 
 from django.db.models import Q
 
-from ominicontacto_app.models import Grabacion, AgenteProfile, Queuelog, Campana
+from ominicontacto_app.models import Grabacion, Queuelog, Campana
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -171,12 +171,11 @@ class GraficoService():
         list_campana = []
         list_cantidad = []
         for campana_counter in dict_campana:
-             list_campana.append(campana_counter['campana__nombre'])
-             list_cantidad.append(campana_counter['cantidad'])
+            list_campana.append(campana_counter['campana__nombre'])
+            list_cantidad.append(campana_counter['cantidad'])
         return list_campana, list_cantidad
 
-    def _obtener_total_llamadas_agente_inbound(self, fecha_inferior,
-                                                fecha_superior):
+    def _obtener_total_llamadas_agente_inbound(self, fecha_inferior, fecha_superior):
         # lista de dict con la cantidad de cada agente
         dict_agentes = Grabacion.objects.obtener_count_agente().filter(
             fecha__range=(fecha_inferior, fecha_superior)).filter(
@@ -268,8 +267,6 @@ class GraficoService():
             type=Campana.TYPE_ENTRANTE).values_list('id', flat=True)
         campanas_dialer = campanas.filter(
             type=Campana.TYPE_DIALER).values_list('id', flat=True)
-        campanas_manuales = campanas.filter(
-            type=Campana.TYPE_MANUAL).values_list('id', flat=True)
 
         ingresadas_dialer = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
@@ -286,16 +283,16 @@ class GraficoService():
 
         ingresadas_entrantes = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_entrantes),  ~Q(data4='saliente'))
+                Q(campana_id__in=campanas_entrantes), ~Q(data4='saliente'))
         atendidas_entrantes = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_entrantes),  ~Q(data4='saliente'))
+                Q(campana_id__in=campanas_entrantes), ~Q(data4='saliente'))
         abandonadas_entrantes = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_entrantes),  ~Q(data4='saliente'))
+                Q(campana_id__in=campanas_entrantes), ~Q(data4='saliente'))
         expiradas_entrantes = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_entrantes),  ~Q(data4='saliente'))
+                Q(campana_id__in=campanas_entrantes), ~Q(data4='saliente'))
 
         llamadas_ingresadas_manuales = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
@@ -369,13 +366,13 @@ class GraficoService():
         porcentaje_manual = 0.0
         if total_grabaciones > 0:
             porcentaje_dialer = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_DIALER]) /
-                float(total_grabaciones))
+                                 float(total_grabaciones))
             porcentaje_ics = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_ICS]) /
-                float(total_grabaciones))
+                              float(total_grabaciones))
             porcentaje_inbound = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_INBOUND]) /
-                float(total_grabaciones))
+                                  float(total_grabaciones))
             porcentaje_manual = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_MANUAL]) /
-                float(total_grabaciones))
+                                 float(total_grabaciones))
 
         total_dialer = counter_tipo_llamada[Grabacion.TYPE_DIALER]
         total_ics = counter_tipo_llamada[Grabacion.TYPE_ICS]
@@ -392,13 +389,13 @@ class GraficoService():
             fecha_inferior, fecha_superior, campanas)
         total_campana = self._obtener_total_campana_grabacion(dict_campana, campana)
         total_grabacion_ics = self._obtener_total_ics_grabacion(dict_campana,
-                                                              campana)
+                                                                campana)
         total_grabacion_dialer = self._obtener_total_dialer_grabacion(dict_campana,
-                                                              campana)
+                                                                      campana)
         total_grabacion_inbound = self._obtener_total_inbound_grabacion(dict_campana,
-                                                              campana)
+                                                                        campana)
         total_grabacion_manual = self._obtener_total_manual_grabacion(dict_campana,
-                                                              campana)
+                                                                      campana)
 
         dic_estadisticas = {
             'porcentaje_dialer': porcentaje_dialer,
@@ -434,16 +431,16 @@ class GraficoService():
             logger.info("Generando grafico para grabaciones de llamadas ")
 
         no_data_text = "No hay llamadas para ese periodo"
-        torta_grabaciones = pygal.Pie(# @UndefinedVariable
-                style=ESTILO_AZUL_ROJO_AMARILLO,
-                no_data_text=no_data_text,
-                no_data_font_size=32,
-                legend_font_size=25,
-                truncate_legend=10,
-                tooltip_font_size=50,
-            )
+        torta_grabaciones = pygal.Pie(  # @UndefinedVariable
+            style=ESTILO_AZUL_ROJO_AMARILLO,
+            no_data_text=no_data_text,
+            no_data_font_size=32,
+            legend_font_size=25,
+            truncate_legend=10,
+            tooltip_font_size=50,
+        )
 
-        #torta_grabaciones.title = "Resultado de las llamadas"
+        # torta_grabaciones.title = "Resultado de las llamadas"
         torta_grabaciones.add('Dialer', estadisticas['porcentaje_dialer'])
         torta_grabaciones.add('Inbound', estadisticas['porcentaje_ics'])
         torta_grabaciones.add('Ics', estadisticas['porcentaje_inbound'])
@@ -469,7 +466,7 @@ class GraficoService():
         barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
-        #barra_campana_llamadas.title = 'Distribucion por campana'
+        # barra_campana_llamadas.title = 'Distribucion por campana'
 
         barra_campana_llamadas.x_labels = \
             estadisticas['totales_grafico']['nombres_queues']
