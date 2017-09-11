@@ -31,7 +31,7 @@ class SimpleSeleniumTest(TestCase):
     #    def test_logout_agente_ok(self):
 
     def test_webphone_abierto_al_inicio(self):
-        for _ in Registrationnge(10):
+        for _ in range(10):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
@@ -381,8 +381,8 @@ class SimpleSeleniumTest(TestCase):
         self.driver.close()
 
 
-    """def test_dial_status_busy(self):
-     for _ in range(9):
+        """def test_dial_status_busy(self):
+        for _ in range(9):
             if self.driver.find_element_by_id("modalWebCall").is_displayed():
                 break
             time.sleep(1)
