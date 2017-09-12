@@ -154,30 +154,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td  width="50%">
-                                    <table class="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td><h5>Cantidad Total Dialer</h5></td>
-                                                <td align="right"><h5><span class="label label-primary">{{ graficos_estadisticas.estadisticas.total_dialer }}</span></h5></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td><h5>Cantidad Total Ics</h5></td>
-                                                <td align="right"><h5><span class="label label-primary">{{ graficos_estadisticas.estadisticas.total_ics }}</span></h5></td>
-                                            </tr>
-                                            <tr>
-                                                <td><h5>Cantidad Total Inbound </h5></td>
-                                                <td align="right"><h5><span class="label label-primary">{{ graficos_estadisticas.estadisticas.total_inbound }}</span></h5></td>
-                                            </tr>
-                                            <tr>
-                                                <td><h5>Cantidad Total Manual</h5></td>
-                                                <td align="right"><h5><span class="label label-primary">{{ graficos_estadisticas.estadisticas.total_manual }}</span></h5></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    </td>
+                          <tr>
+                                <td width="50%" align="center">
+                                    <div class="graficos-avances">
+                                        <figure>
+                                            {{ graficos_estadisticas.barras_llamadas_campanas.render|safe }}
+                                        </figure>
+                                    </div>
+                                </td>
                                 <td width="50%" align="center">
                                     <div class="graficos-avances">
                                         <figure>

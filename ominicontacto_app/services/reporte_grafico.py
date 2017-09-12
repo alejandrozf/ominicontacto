@@ -432,6 +432,28 @@ class GraficoService():
             tooltip_font_size=50,
         )
 
+        # Barras: muestran la desagregación de todas las llamadas por campañas
+        barras_llamadas_campanas = pygal.Bar(  # @UndefinedVariable
+            show_legend=True,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+
+        barras_llamadas_campanas.x_labels = ["Dialer", "Entrantes", "Manuales"]
+        barras_llamadas_campanas.add(
+            'Ingresadas', [estadisticas['total_llamadas_dict']['llamadas_ingresadas_dialer'],
+                           estadisticas['total_llamadas_dict']['llamadas_ingresadas_entrantes'],
+                           estadisticas['total_llamadas_dict']['llamadas_ingresadas_manuales']])
+        barras_llamadas_campanas.add(
+            'Atendidas', [estadisticas['total_llamadas_dict']['llamadas_gestionadas_dialer'],
+                          estadisticas['total_llamadas_dict']['llamadas_atendidas_entrantes'],
+                          estadisticas['total_llamadas_dict']['llamadas_atendidas_manuales']])
+        perdidas_entrantes = estadisticas['total_llamadas_dict']['llamadas_expiradas_entrantes'] + \
+            estadisticas['total_llamadas_dict']['llamadas_abandonadas_entrantes']
+        barras_llamadas_campanas.add(
+            'Perdidas',
+            [estadisticas['total_llamadas_dict']['llamadas_perdidas_dialer'],
+             perdidas_entrantes,
+             estadisticas['total_llamadas_dict']['llamadas_abandonadas_manuales']])
+
         # torta_grabaciones.title = "Resultado de las llamadas"
         torta_grabaciones.add('Dialer', estadisticas['porcentaje_dialer'])
         torta_grabaciones.add('Entrantes', estadisticas['porcentaje_entrantes'])
@@ -470,6 +492,7 @@ class GraficoService():
 
         return {
             'estadisticas': estadisticas,
+            'barras_llamadas_campanas': barras_llamadas_campanas,
             'torta_grabaciones': torta_grabaciones,
             'dict_campana_counter': zip(estadisticas['campana_nombre'],
                                         estadisticas['total_campana'],
