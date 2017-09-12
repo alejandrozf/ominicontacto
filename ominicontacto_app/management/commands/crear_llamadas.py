@@ -32,7 +32,6 @@ class Command(BaseCommand):
         """
         Crea registros Queuelog aleatorios para simular las distintas situaciones por la que puede
         """
-        evento = randint(0, 2)
         campana = randint(0, 2)
 
         campana_id = campanas_ids[campana]
@@ -41,6 +40,7 @@ class Command(BaseCommand):
             evento = randint(0, 1)
         else:
             data4 = ''
+            evento = randint(0, 2)
         callid = QueuelogFactory.create(
             event='ENTERQUEUE', campana_id=campana_id, data4=data4).callid
         QueuelogFactory.create(
