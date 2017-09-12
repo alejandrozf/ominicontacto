@@ -367,6 +367,8 @@ class QueueDialerUpdateView(UpdateView):
             return super(QueueDialerUpdateView, self).dispatch(*args, **kwargs)
 
     def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
@@ -382,7 +384,7 @@ class QueueDialerUpdateView(UpdateView):
         campana_service = CampanaService()
         queue = self.get_object()
         print queue.maxlen
-        campana_service.update_endpoint(queue.campana)
+        campana_service.update_endpoint(self.object.campana)
         return super(QueueDialerUpdateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
