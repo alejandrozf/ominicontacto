@@ -296,13 +296,13 @@ class GraficoService():
 
         llamadas_ingresadas_manuales = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
-            data4='saliente')
+            campana_id__in=campanas, data4='saliente')
         llamadas_atendidas_manuales = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
-            data4='saliente')
+            campana_id__in=campanas, data4='saliente')
         llamadas_abandonadas_manuales = Queuelog.objects.obtener_log_event_periodo(
             eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
-            data4='saliente')
+            campana_id__in=campanas, data4='saliente')
 
         count_llamadas_ingresadas_dialer = ingresadas_dialer.count()
         count_llamadas_gestionadas_dialer = atendidas_dialer.count()
