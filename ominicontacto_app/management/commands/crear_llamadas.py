@@ -34,13 +34,13 @@ class Command(BaseCommand):
         evento = randint(0, 2)
         campana = randint(0, 2)
 
-        callid = QueuelogFactory.create(event='ENTERQUEUE').callid
         campana_id = campanas_ids[campana]
-        if campana == Campana.TYPE_MANUAL:
+        if campana + 1 == Campana.TYPE_MANUAL:
             data4 = 'saliente'
         else:
             data4 = ''
-        print campana_id
+        callid = QueuelogFactory.create(
+            event='ENTERQUEUE', campana_id=campana_id, data4=data4).callid
         QueuelogFactory.create(
             event=self.EVENTOS[evento], callid=callid, campana_id=campana_id, data4=data4)
 
