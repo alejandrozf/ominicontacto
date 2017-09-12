@@ -30,7 +30,8 @@ class Command(BaseCommand):
 
     def llamada_aleatoria(self, campanas_ids):
         """
-        Crea registros Queuelog aleatorios para simular las distintas situaciones por la que puede
+        Crea registros Queuelog aleatorios para simular las distintas situaciones por las que puede
+        transcurrir una llamada
         """
         campana = randint(0, 2)
 
