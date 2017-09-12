@@ -379,6 +379,9 @@ class QueueDialerUpdateView(UpdateView):
                 messages.ERROR,
                 message,
             )
+        campana_service = CampanaService()
+        queue = self.get_object()
+        campana_service.update_endpoint(queue.campana)
         return super(QueueDialerUpdateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
