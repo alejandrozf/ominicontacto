@@ -72,13 +72,13 @@ class ReportesTests(OMLBaseTest):
 
         self.queues_campanas_manuales_ingresadas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_MANUALES_INGRESADAS, campana_id=self.campanas_manuales[0].pk,
-            event=self.evento_llamadas_ingresadas)
+            event=self.evento_llamadas_ingresadas, data4='saliente')
         self.queues_campanas_manuales_atendidas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_MANUALES_ATENDIDAS, campana_id=self.campanas_manuales[1].pk,
-            event=self.evento_llamadas_atendidas)
+            event=self.evento_llamadas_atendidas, data4='saliente')
         self.queues_campanas_manuales_abandonadas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_MANUALES_ABANDONADAS, campana_id=self.campanas_manuales[2].pk,
-            event=self.evento_llamadas_abandonadas)
+            event=self.evento_llamadas_abandonadas, data4='saliente')
 
     def _get_llamadas_list_counts_dia_hoy_todas_las_campanas(self):
         fecha_inicio = fecha_fin = timezone.now()
