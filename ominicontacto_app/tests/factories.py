@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 import faker
 
+from uuid import uuid4
+
 from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, post_generation
 
 from django.utils import timezone
@@ -74,7 +76,7 @@ class CampanaFactory(DjangoModelFactory):
     class Meta:
         model = Campana
 
-    nombre = Sequence(lambda n: "campana_{0}".format(n))
+    nombre = lazy_attribute(lambda a: "campana_{0}".format(uuid4()))
     estado = lazy_attribute(lambda a: faker.random_digit_not_null())
     fecha_inicio = lazy_attribute(lambda a: timezone.now())
     fecha_fin = lazy_attribute(lambda a: a.fecha_inicio)
