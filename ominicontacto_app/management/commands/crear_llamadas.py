@@ -21,11 +21,12 @@ class Command(BaseCommand):
         parser.add_argument('nro_llamadas', nargs=1, type=int)
 
     def crear_campanas(self):
-        id_campana_entrante = CampanaFactory.create(type=Campana.TYPE_ENTRANTE).pk
-        id_campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER).pk
-        id_campana_manual = CampanaFactory.create(type=Campana.TYPE_MANUAL).pk
+        estado = Campana.ESTADO_ACTIVA
+        id_campana_entrante = CampanaFactory.create(type=Campana.TYPE_ENTRANTE, estado=estado).pk
+        id_campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER, estado=estado).pk
+        id_campana_manual = CampanaFactory.create(type=Campana.TYPE_MANUAL, estado=estado).pk
 
-        return [id_campana_dialer, id_campana_entrante, id_campana_manual]
+        return [id_campana_entrante, id_campana_dialer, id_campana_manual]
 
     def llamada_aleatoria(self, campanas_ids):
         """
@@ -37,6 +38,7 @@ class Command(BaseCommand):
         campana_id = campanas_ids[campana]
         if campana + 1 == Campana.TYPE_MANUAL:
             data4 = 'saliente'
+            evento = randint(0, 1)
         else:
             data4 = ''
         callid = QueuelogFactory.create(
