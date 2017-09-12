@@ -354,38 +354,29 @@ class GraficoService():
         if not user.get_is_administrador():
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
-        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo(
-            fecha_inferior, fecha_superior).filter(campana__in=campanas)
-
         # obtiene el total de llamadas por tipo de llamadas
-        counter_tipo_llamada = self._obtener_total_llamdas_tipo(grabaciones)
+        total_llamadas_dict = self.obtener_total_llamadas(fecha_inferior, fecha_superior,
+                                                          campanas)
+        total_llamadas_ingresadas = total_llamadas_dict['total_llamadas_ingresadas']
 
-        total_grabaciones = len(grabaciones)
         # calculo el porcentaje de las llamadas por tipo de llamadas
         porcentaje_dialer = 0.0
-        porcentaje_ics = 0.0
-        porcentaje_inbound = 0.0
+        porcentaje_entrantes = 0.0
         porcentaje_manual = 0.0
-        if total_grabaciones > 0:
-            porcentaje_dialer = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_DIALER]) /
-                                 float(total_grabaciones))
-            porcentaje_ics = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_ICS]) /
-                              float(total_grabaciones))
-            porcentaje_inbound = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_INBOUND]) /
-                                  float(total_grabaciones))
-            porcentaje_manual = (100.0 * float(counter_tipo_llamada[Grabacion.TYPE_MANUAL]) /
-                                 float(total_grabaciones))
-
-        total_dialer = counter_tipo_llamada[Grabacion.TYPE_DIALER]
-        total_ics = counter_tipo_llamada[Grabacion.TYPE_ICS]
-        total_inbound = counter_tipo_llamada[Grabacion.TYPE_INBOUND]
-        total_manual = counter_tipo_llamada[Grabacion.TYPE_MANUAL]
+        total_dialer = total_llamadas_dict['llamadas_ingresadas_dialer']
+        total_entrantes = total_llamadas_dict['llamadas_ingresadas_entrantes']
+        total_manual = total_llamadas_dict['llamadas_ingresadas_manuales']
+        if total_llamadas_ingresadas > 0:
+            porcentaje_dialer = (100.0 * float(total_dialer) /
+                                 float(total_llamadas_ingresadas))
+            porcentaje_entrantes = (100.0 * float(total_entrantes) /
+                                    float(total_llamadas_ingresadas))
+            porcentaje_manual = (100.0 * float(total_manual) /
+                                 float(total_llamadas_ingresadas))
 
         queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
             campanas, fecha_inferior, fecha_superior)
 
-        total_llamadas_dict = self.obtener_total_llamadas(fecha_inferior, fecha_superior,
-                                                          campanas)
         total_llamadas = total_llamadas_dict.values()
 
         dict_campana, campana, campana_nombre = self._obtener_campana_grabacion(
@@ -402,13 +393,11 @@ class GraficoService():
 
         dic_estadisticas = {
             'porcentaje_dialer': porcentaje_dialer,
-            'porcentaje_ics': porcentaje_ics,
-            'porcentaje_inbound': porcentaje_inbound,
+            'porcentaje_entrantes': porcentaje_entrantes,
             'porcentaje_manual': porcentaje_manual,
-            'total_grabaciones': total_grabaciones,
+            'total_grabaciones': total_llamadas_ingresadas,
             'total_dialer': total_dialer,
-            'total_ics': total_ics,
-            'total_inbound': total_inbound,
+            'total_inbound': total_entrantes,
             'total_manual': total_manual,
             'campana_nombre': campana_nombre,
             'campana': campana,
@@ -421,8 +410,8 @@ class GraficoService():
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
             'total_llamadas': total_llamadas,
+            'total_llamadas_dict': total_llamadas_dict,
             'totales_grafico': totales_grafico,
-
         }
         return dic_estadisticas
 
@@ -445,8 +434,7 @@ class GraficoService():
 
         # torta_grabaciones.title = "Resultado de las llamadas"
         torta_grabaciones.add('Dialer', estadisticas['porcentaje_dialer'])
-        torta_grabaciones.add('Inbound', estadisticas['porcentaje_ics'])
-        torta_grabaciones.add('Ics', estadisticas['porcentaje_inbound'])
+        torta_grabaciones.add('Entrantes', estadisticas['porcentaje_entrantes'])
         torta_grabaciones.add('Manual', estadisticas['porcentaje_manual'])
 
         # Barra: Cantidad de llamadas de las campana por tipo de llamadas

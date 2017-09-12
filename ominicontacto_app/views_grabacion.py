@@ -9,8 +9,7 @@ import datetime
 
 from django.conf import settings
 from django.shortcuts import redirect
-from django.views.generic.detail import DetailView
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView
 from django.core import paginator as django_paginator
 from ominicontacto_app.forms import (
     GrabacionBusquedaForm, GrabacionReporteForm
@@ -38,7 +37,7 @@ class BusquedaGrabacionFormView(FormView):
             listado_de_grabaciones = context['listado_de_grabaciones']
 
         qs = listado_de_grabaciones
-         # ----- <Paginate> -----
+        # ----- <Paginate> -----
         page = self.kwargs['pagina']
         if context['pagina']:
             page = context['pagina']
@@ -64,7 +63,7 @@ class BusquedaGrabacionFormView(FormView):
         return self.render_to_response(
             self.get_context_data(
                 listado_de_grabaciones=Grabacion.objects.
-                    grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas),
+                grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas),
                 pagina=self.kwargs['pagina']))
 
     def get_form(self):
@@ -97,7 +96,7 @@ class BusquedaGrabacionFormView(FormView):
         pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, sip_agente, campana,
-        campanas)
+            campanas)
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
 
@@ -116,8 +115,8 @@ class GrabacionReporteFormView(FormView):
         hoy = hoy_ahora.date()
         graficos_estadisticas = service.general_llamadas_hoy(
             hoy, hoy_ahora, request.user, False)
-        service_csv = ReporteCampanaCSVService()
-        service_csv.crea_reporte_csv(graficos_estadisticas)
+        # service_csv = ReporteCampanaCSVService()
+        # service_csv.crea_reporte_csv(graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
 
@@ -131,8 +130,8 @@ class GrabacionReporteFormView(FormView):
         service = GraficoService()
         graficos_estadisticas = service.general_llamadas_hoy(
             fecha_desde, fecha_hasta, self.request.user, finalizadas)
-        service_csv = ReporteCampanaCSVService()
-        service_csv.crea_reporte_csv(graficos_estadisticas)
+        # service_csv = ReporteCampanaCSVService()
+        # service_csv.crea_reporte_csv(graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
 
@@ -141,6 +140,6 @@ def exporta_reporte_grabacion_llamada_view(request, tipo_reporte):
     """
     Esta vista invoca a generar un csv de reporte de la campana.
     """
-    service = service_csv = ReporteCampanaCSVService()
+    service = ReporteCampanaCSVService()
     url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
     return redirect(url)
