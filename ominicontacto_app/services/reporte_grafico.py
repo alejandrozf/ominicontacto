@@ -6,6 +6,8 @@ Servicio para generar reporte de las grabaciones de las llamadas
 
 import pygal
 import datetime
+
+from collections import OrderedDict
 from pygal.style import Style
 
 from django.db.models import Q
@@ -324,21 +326,21 @@ class GraficoService():
             count_llamadas_ingresadas_dialer + \
             count_llamadas_ingresadas_manuales
 
-        cantidad_campana = []
-        cantidad_campana.append(total_llamadas_ingresadas)
+        cantidad_campana = OrderedDict()
+        cantidad_campana['total_llamadas_ingresadas'] = total_llamadas_ingresadas
 
-        cantidad_campana.append(count_llamadas_ingresadas_dialer)
-        cantidad_campana.append(count_llamadas_gestionadas_dialer)
-        cantidad_campana.append(count_llamadas_perdidas_dialer)
+        cantidad_campana['llamadas_ingresadas_dialer'] = count_llamadas_ingresadas_dialer
+        cantidad_campana['llamadas_gestionadas_dialer'] = count_llamadas_gestionadas_dialer
+        cantidad_campana['llamadas_perdidas_dialer'] = count_llamadas_perdidas_dialer
 
-        cantidad_campana.append(count_llamadas_ingresadas_entrantes)
-        cantidad_campana.append(count_llamadas_atendidas_entrantes)
-        cantidad_campana.append(count_llamadas_expiradas_entrantes)
-        cantidad_campana.append(count_llamadas_abandonadas_entrantes)
+        cantidad_campana['llamadas_ingresadas_entrantes'] = count_llamadas_ingresadas_entrantes
+        cantidad_campana['llamadas_atendidas_entrantes'] = count_llamadas_atendidas_entrantes
+        cantidad_campana['llamadas_expiradas_entrantes'] = count_llamadas_expiradas_entrantes
+        cantidad_campana['llamadas_abandonadas_entrantes'] = count_llamadas_abandonadas_entrantes
 
-        cantidad_campana.append(count_llamadas_ingresadas_manuales)
-        cantidad_campana.append(count_llamadas_atendidas_manuales)
-        cantidad_campana.append(count_llamadas_abandonadas_manuales)
+        cantidad_campana['llamadas_ingresadas_manuales'] = count_llamadas_ingresadas_manuales
+        cantidad_campana['llamadas_atendidas_manuales'] = count_llamadas_atendidas_manuales
+        cantidad_campana['llamadas_abandonadas_manuales'] = count_llamadas_abandonadas_manuales
 
         return cantidad_campana
 
@@ -382,8 +384,9 @@ class GraficoService():
         queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
             campanas, fecha_inferior, fecha_superior)
 
-        total_llamadas = self.obtener_total_llamadas(fecha_inferior, fecha_superior,
-                                                     campanas)
+        total_llamadas_dict = self.obtener_total_llamadas(fecha_inferior, fecha_superior,
+                                                          campanas)
+        total_llamadas = total_llamadas_dict.values()
 
         dict_campana, campana, campana_nombre = self._obtener_campana_grabacion(
             fecha_inferior, fecha_superior, campanas)

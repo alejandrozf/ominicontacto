@@ -84,7 +84,7 @@ class ReportesTests(OMLBaseTest):
         fecha_inicio = fecha_fin = timezone.now()
         campanas = Campana.objects.all()
         llamadas_list_counts = GraficoService().obtener_total_llamadas(
-            fecha_inicio, fecha_fin, campanas)
+            fecha_inicio, fecha_fin, campanas).values()
         return llamadas_list_counts
 
     def test_total_llamadas_ingresadas_igual_suma_todos_los_tipos_de_llamadas_existentes(self):
