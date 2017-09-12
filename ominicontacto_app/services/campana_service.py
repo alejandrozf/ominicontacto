@@ -416,8 +416,8 @@ class CampanaService():
         """
 
         # elimina el end point de la campana en wombat
-        print self.desasociacion_endpoint_campana_wombat(campana)
+        self.desasociacion_endpoint_campana_wombat(campana)
         # crea endpoint en wombat
-        print self.crear_endpoint_campana_wombat(campana)
+        self.crear_endpoint_campana_wombat(campana)
         # asocio endpoint a la campana en wombat
-        print self.crear_endpoint_asociacion_campana_wombat(campana)
+        self.crear_endpoint_asociacion_campana_wombat(campana)

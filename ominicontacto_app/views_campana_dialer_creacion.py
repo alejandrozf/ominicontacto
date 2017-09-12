@@ -382,8 +382,6 @@ class QueueDialerUpdateView(UpdateView):
                 message,
             )
         campana_service = CampanaService()
-        queue = self.get_object()
-        print queue.maxlen
         campana_service.update_endpoint(self.object.campana)
         return super(QueueDialerUpdateView, self).form_valid(form)
 
