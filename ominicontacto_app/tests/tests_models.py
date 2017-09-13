@@ -100,3 +100,32 @@ class CampanaTest(OMLBaseTest):
             self.crear_regla_incidencia(campana, estado)
 
         self.assertEqual(campana.reglas_incidencia.all().count(), 5)
+
+    def test_campana_activar(self):
+        """
+        - Campana.activar()
+        - Campana.objects.obtener_activas()
+        - actualiar y poner los assert de manera correcta
+        """
+
+        campanas = [self.crear_campana_dialer() for _ in range(0, 10)]
+        campanas[0].activar()
+        campanas[1].activar()
+
+        # Testeamos que no se active una activa.
+        #self.assertRaises(AssertionError, campanas[0].activar)
+
+        campanas[0].pausar()
+        # Testeamos que no se active una pausada.
+        #self.assertRaises(AssertionError, campanas[0].activar)
+
+        campanas[1].finalizar()
+        # Testeamos que no se active una finalizada.
+        #self.assertRaises(AssertionError, campanas[1].activar)
+
+        # Testeamos que obtener_activas me devuelva las 2 activas solo.
+        campanas[2].activar()
+        campanas[3].activar()
+        campanas_activas = Campana.objects.obtener_activas()
+        for c in campanas[2:3]:
+            self.assertIn(c, campanas_activas)
