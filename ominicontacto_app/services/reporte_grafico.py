@@ -104,79 +104,6 @@ class GraficoService():
             total_campana.append(count)
         return total_campana
 
-    # def _obtener_total_llamadas_dialer(self, dict_campana, campanas_ids_tipos):
-    #     """
-    #     Obtiene el total de llamadas asociadas a campañas de DIALER por campaña en una lista
-    #     :return: lista con el total de llamadas DIALER por campana
-    #     """
-    #     total_dialer = []
-
-    #     for campana_id, campana_tipo in campanas_ids_tipos.items():
-    #         if campana.
-
-    #         total_dialer.append(cantidad)
-
-    #     return total_dialer
-
-    def _obtener_total_inbound_grabacion(self, dict_campana, campana):
-        """
-        Obtiene el total grabaciones INBOUND por campana en una lista
-        :return: lista con el total de llamadas INBOUND por campana
-        """
-        total_inbound = []
-        for campana_id in campana:
-            cantidad = 0
-            result = dict_campana.filter(tipo_llamada=Grabacion.TYPE_INBOUND).\
-                filter(campana=campana_id)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_inbound.append(cantidad)
-        return total_inbound
-
-    def _obtener_total_manual_grabacion(self, dict_campana, campana):
-        """
-        Obtiene el total grabaciones MANUAL por campana en una lista
-        :return: lista con el total de llamadas MANUAL por campana
-        """
-        total_manual = []
-
-        for campana_id in campana:
-            cantidad = 0
-            result = dict_campana.filter(tipo_llamada=Grabacion.TYPE_MANUAL).\
-                filter(campana=campana_id)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_manual.append(cantidad)
-
-        return total_manual
-
-    def _obtener_total_llamadas_campana_inbound(self, fecha_inferior,
-                                                fecha_superior):
-        # lista de dict con la cantidad de cada campana
-        dict_campana = Grabacion.objects.obtener_count_campana().filter(
-            fecha__range=(fecha_inferior, fecha_superior)).filter(
-            tipo_llamada=3)
-        list_campana = []
-        list_cantidad = []
-        for campana_counter in dict_campana:
-            list_campana.append(campana_counter['campana__nombre'])
-            list_cantidad.append(campana_counter['cantidad'])
-        return list_campana, list_cantidad
-
-    def _obtener_total_llamadas_agente_inbound(self, fecha_inferior, fecha_superior):
-        # lista de dict con la cantidad de cada agente
-        dict_agentes = Grabacion.objects.obtener_count_agente().filter(
-            fecha__range=(fecha_inferior, fecha_superior)).filter(
-            tipo_llamada=3)
-        list_agente = []
-        list_cantidad = []
-        for agente_counter in dict_agentes:
-            list_agente.append(agente_counter['sip_agente'])
-            list_cantidad.append(agente_counter['cantidad'])
-        return list_agente, list_cantidad
-
     def calcular_cantidad_llamadas(self, campanas, fecha_inferior, fecha_superior):
         """
         Calcula la cantidad de llamadas ingresadas, atendidas, abandondas, expiradas
@@ -367,18 +294,9 @@ class GraficoService():
 
         total_llamadas = total_llamadas_dict.values()
 
-        # ----
         dict_campana, campanas, campanas_nombre, tipos_campana = self._obtener_campana_llamada(
             fecha_inferior, fecha_superior, campanas)
         total_campana = self._obtener_total_campana_llamadas(dict_campana, campanas)
-
-        # total_grabacion_dialer = self._obtener_total_llamadas_dialer(
-        #     dict_campana, campanas)
-        # total_grabacion_entrantes = self._obtener_total_llamadas_entrantes(
-        #     dict_campana, campanas)
-        # total_grabacion_manual = self._obtener_total_llamdas_manuales(
-        #     dict_campana, campanas)
-        # -----
 
         dic_estadisticas = {
             'porcentaje_dialer': porcentaje_dialer,
@@ -392,9 +310,6 @@ class GraficoService():
             'campana': campanas,
             'total_campana': total_campana,
             'tipos_campana': tipos_campana,
-            # 'total_grabacion_dialer': total_grabacion_dialer,
-            # 'total_grabacion_entrantes': total_grabacion_entrantes,
-            # 'total_grabacion_manual': total_grabacion_manual,
             'queues_llamadas': queues_llamadas,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
@@ -448,21 +363,14 @@ class GraficoService():
         torta_grabaciones.add('Entrantes', estadisticas['porcentaje_entrantes'])
         torta_grabaciones.add('Manual', estadisticas['porcentaje_manual'])
 
-        # # Barra: Cantidad de llamadas de las campana por tipo de llamadas
-        # barra_campana_total = pygal.Bar(  # @UndefinedVariable
-        #     show_legend=False,
-        #     style=ESTILO_AZUL_ROJO_AMARILLO)
-        # barra_campana_total.title = 'Cantidad de llamadas de las campana por tipo de llamadas'
+        # Barra: Cantidad de llamadas de las campana por tipo de llamadas
+        barra_campana_total = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        barra_campana_total.title = u'Cantidad de llamadas de las campañas'
 
-        # barra_campana_total.x_labels = estadisticas['campana_nombre']
-        # barra_campana_total.add('ICS',
-        #                         estadisticas['total_grabacion_ics'])
-        # barra_campana_total.add('DIALER',
-        #                         estadisticas['total_grabacion_dialer'])
-        # barra_campana_total.add('INBOUND',
-        #                         estadisticas['total_grabacion_inbound'])
-        # barra_campana_total.add('MANUAL',
-        #                         estadisticas['total_grabacion_manual'])
+        barra_campana_total.x_labels = estadisticas['campana_nombre']
+        barra_campana_total.add('Total', estadisticas['total_campana'])
 
         # # Barra: Cantidad de llamadas por campana
         # barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
@@ -486,6 +394,6 @@ class GraficoService():
             'dict_campana_counter': zip(estadisticas['campana_nombre'],
                                         estadisticas['total_campana'],
                                         estadisticas['tipos_campana']),
-            # 'barra_campana_total': barra_campana_total,
+            'barra_campana_total': barra_campana_total,
             # 'barra_campana_llamadas': barra_campana_llamadas,
         }
