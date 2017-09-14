@@ -187,14 +187,16 @@
                 <tr>
                   <th>Campaña</th>
                   <th>Total </th>
+                  <th>Manuales </th>
                   <th>Tipo</th>
                 </tr>
               </thead>
               <tbody>
-                {% for campana_nombre, total_campana, tipo_campana in graficos_estadisticas.dict_campana_counter %}
+                {% for campana_nombre, total_campana, total_manuales, tipo_campana in graficos_estadisticas.dict_campana_counter %}
                 <tr>
                   <td><h5>{{ campana_nombre }} </h5></td>
                   <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
+                  <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manuales }}</span></h5></td>
                   <td><h5>{{ tipo_campana }}</h5></td>
                 </tr>
                 {% endfor %}

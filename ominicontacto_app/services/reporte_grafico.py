@@ -59,8 +59,8 @@ class GraficoService():
     def _obtener_campana_llamada(self, fecha_inferior, fecha_superior, campanas):
         """
         Obtiene el totales de llamadas por campanas
-        :param fecha_inferior: fecha desde cual se obtendran las grabaciones
-        :param fecha_superior: fecha hasta el cual se obtendran las grabaciones
+        :param fecha_inferior: fecha desde cual se obtendran las llamadas
+        :param fecha_superior: fecha hasta el cual se obtendran las llamadas
         :return: queryset con las cantidades totales por campana
         """
         # lista de dict con la cantidad por  cada campana
@@ -89,20 +89,28 @@ class GraficoService():
 
         return result
 
-    def _obtener_total_campana_llamadas(self, dict_campana, campanas):
+    def _obtener_total_campana_llamadas(self, dict_campana, campanas, fecha_inferior,
+                                        fecha_superior):
         """
         Obtiene los totales de llamadas por campana a partir de una lista de campañas
         """
 
         total_campana = []
+        total_manuales = []
         for campana_id in campanas:
-            count = 0
+            campana_count = 0
+            campana_manuales_count = Queuelog.objects.filter(
+                ~Q(event='ENTERQUEUE'),
+                data4='saliente',
+                time__range=(fecha_inferior, fecha_superior),
+                campana_id=campana_id).count()
             try:
-                count = dict_campana.get(campana_id=campana_id)['cantidad']
+                campana_count = dict_campana.get(campana_id=campana_id)['cantidad']
             except Queuelog.DoesNotExist:
                 pass
-            total_campana.append(count)
-        return total_campana
+            total_campana.append(campana_count)
+            total_manuales.append(campana_manuales_count)
+        return total_campana, total_manuales
 
     def calcular_cantidad_llamadas(self, campanas, fecha_inferior, fecha_superior):
         """
@@ -301,7 +309,8 @@ class GraficoService():
 
         dict_campana, campanas, campanas_nombre, tipos_campana = self._obtener_campana_llamada(
             fecha_inferior, fecha_superior, campanas)
-        total_campana = self._obtener_total_campana_llamadas(dict_campana, campanas)
+        total_campana, total_manuales = self._obtener_total_campana_llamadas(
+            dict_campana, campanas, fecha_inferior, fecha_superior,)
 
         dic_estadisticas = {
             'porcentaje_dialer': porcentaje_dialer,
@@ -314,6 +323,7 @@ class GraficoService():
             'campana_nombre': campanas_nombre,
             'campana': campanas,
             'total_campana': total_campana,
+            'total_manuales': total_manuales,
             'tipos_campana': tipos_campana,
             'totales_grafico': totales_grafico,
             'queues_llamadas_dialer': queues_llamadas_dialer,
@@ -381,6 +391,7 @@ class GraficoService():
 
         barra_campana_total.x_labels = estadisticas['campana_nombre']
         barra_campana_total.add('Total', estadisticas['total_campana'])
+        barra_campana_total.add('Manuales', estadisticas['total_manuales'])
 
         # # Barra: Cantidad de llamadas por campañas dialer
         barra_campana_llamadas_dialer = pygal.Bar(  # @UndefinedVariable
@@ -433,6 +444,7 @@ class GraficoService():
             'torta_grabaciones': torta_grabaciones,
             'dict_campana_counter': zip(estadisticas['campana_nombre'],
                                         estadisticas['total_campana'],
+                                        estadisticas['total_manuales'],
                                         estadisticas['tipos_campana']),
             'barra_campana_total': barra_campana_total,
             'barra_campana_llamadas_dialer': barra_campana_llamadas_dialer,
