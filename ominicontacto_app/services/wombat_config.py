@@ -256,6 +256,33 @@ class CampanaDeleteListCreator(object):
         self._campana_list_config_file.write(config_chunk)
 
 
+class CampanaEndPointDelete(object):
+
+    def __init__(self):
+        self._campana_endpoint_config_file = CampanaDeleteEndPointConfigFile()
+
+    def _generar_json(self, campana):
+        """Genera json.
+        :returns: str -- json para la campana
+        """
+
+        dict_trunk = {
+            "epId": {
+                "epId": campana.queue_campana.ep_id_wombat
+            }
+        }
+
+        return json.dumps(dict_trunk)
+
+    def create_json(self, campana):
+        """Crea el archivo de json para endpoint de campana
+        """
+        logger.info("Creando json para asociacion campana %s endpoint",
+                    campana.nombre)
+        config_chunk = self._generar_json(campana)
+        self._campana_endpoint_config_file.write(config_chunk)
+
+
 class ConfigFile(object):
     def __init__(self, filename):
         self._filename = filename
@@ -344,3 +371,11 @@ class CampanaDesListConfigFile(ConfigFile):
                                 "deletecampaign_list.json ")
         filename = filename.strip()
         super(CampanaDesListConfigFile, self).__init__(filename)
+
+
+class CampanaDeleteEndPointConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+                                "deletecampaign_ep.json")
+        filename = filename.strip()
+        super(CampanaDeleteEndPointConfigFile, self).__init__(filename)

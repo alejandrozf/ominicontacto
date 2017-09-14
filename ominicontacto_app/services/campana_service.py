@@ -13,7 +13,8 @@ from ominicontacto_app.utiles import elimina_coma, elimina_comillas, elimina_esp
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
-    CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator
+    CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator,
+    CampanaEndPointDelete
 )
 from ominicontacto_app.services.exportar_base_datos import\
     SincronizarBaseDatosContactosService
@@ -390,3 +391,33 @@ class CampanaService():
                 if restantes == 0 and not campana.es_manual:
                     self.remove_campana_wombat(campana)
                     campana.finalizar()
+
+    def desasociacion_endpoint_campana_wombat(self, campana):
+        """
+        Desasocia endpoint de campana wombat
+        :param campana: campana a la caul se desaciociara el endpoint
+        """
+        service_wombat = WombatService()
+
+        # crear json para eliminar lista de la campana en wombat
+        service_wombat_config = CampanaEndPointDelete()
+        service_wombat_config.create_json(campana)
+        url_edit = "api/edit/campaign/ep/?mode=D&parent={0}".format(
+            campana.campaign_id_wombat)
+        # elimina lista de la campana en wombat
+        salida = service_wombat.update_config_wombat(
+            "deletecampaign_ep.json", url_edit)
+
+    def update_endpoint(self, campana):
+        """
+        Cambiar endpoint cuando se actualiza una queue
+        :param campana: campana a la cual desea cambiar el endpoint
+
+        """
+
+        # elimina el end point de la campana en wombat
+        self.desasociacion_endpoint_campana_wombat(campana)
+        # crea endpoint en wombat
+        self.crear_endpoint_campana_wombat(campana)
+        # asocio endpoint a la campana en wombat
+        self.crear_endpoint_asociacion_campana_wombat(campana)
