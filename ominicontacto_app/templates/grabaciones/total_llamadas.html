@@ -54,216 +54,260 @@
 
 
 
-<div class="col-md-6">
+    <div class="col-md-6">
 
-    <form role="form" method="post" enctype="multipart/form-data" >
+      <form role="form" method="post" enctype="multipart/form-data" >
         {% csrf_token %}
         <table class="table">
-           <tr>
-               <td>
-                   <div class="input-group date pull-right active" id="">
-                       {{form.fecha}}
-                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
-                        </span>
-                    </div>
-                   <div>
-                       Incluir campañas finalizadas {{form.finalizadas}}
-                   </div>
-               </td>
-               <td>
-                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                        Filtrar por esa fecha
-                </button>
-               </td>
-           </tr>
+          <tr>
+            <td>
+              <div class="input-group date pull-right active" id="">
+                {{form.fecha}}
+                <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
+                </span>
+              </div>
+              <div>
+                Incluir campañas finalizadas {{form.finalizadas}}
+              </div>
+            </td>
+            <td>
+              <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Filtrar por esa fecha
+              </button>
+            </td>
+          </tr>
         </table>
 
-    </form>
-</div>
+      </form>
+    </div>
 
-<div class="col-md-12">
+    <div class="col-md-12">
 
-    <h4>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
-</div>
-{% if user.get_is_administrador %}
-<div class="col-md-9">
-<table class="table table-bordered">
-    <tr>
-      <td><strong>Total llamadas procesadas por OmniLeads</strong></td>
-      <td>{{graficos_estadisticas.estadisticas.total_llamadas.0}}</td>
-    <tr>
-</table>
-<table class="table table-bordered">
-    <tr>
-        <td><strong>Total de llamadas Salientes Discador</strong></td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.1}}</td>
-    <tr>
-    <tr>
-        <td>Cantidad de llamadas gestionadas</td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.2}}</td>
-    <tr>
-    <tr>
-        <td>Cantidad de llamadas perdidas</td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.3}}</td>
-    <tr>
-    <tr>
-</table>
-<table class="table table-bordered">
-    <tr>
-        <td><strong>Total llamadas Entrantes</strong></td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.4}}</td>
-    <tr>
-    <tr>
-        <td>Cantidad de llamadas atendidas</td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.5}}</td>
-    <tr>
-    <tr>
-        <td>Cantidad de llamadas expiradas</td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.6}}</td>
-    <tr>
-    <tr>
-        <td>Cantidad de llamadas abandonadas</td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.7}}</td>
-    <tr>
-</table>
-<table class="table table-bordered">
-    <tr>
-        <td><strong>Total llamadas Salientes Manuales</strong></td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.8}}</td>
-    <tr>
-    <tr>
-        <td>Cantidad de llamadas atendidas</td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.9}}</td>
-    <tr>
-    <tr>
-        <td>Cantidad de llamadas abandonadas</td>
-        <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
-    <tr>
-</table>
-    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='total_llamadas' %}">Exportar totales llamadas(CSV)</a></h5>
-
-</div>
- {% endif %}
-
-<table class="table table-bordered">
-                        <thead>
-                            <tr >
-                                <td colspan="2">
-                                    <h4>Totales llamadas.</h4>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                                <td width="50%" align="center">
-                                    <div class="graficos-avances">
-                                        <figure>
-                                            {{ graficos_estadisticas.barras_llamadas_campanas.render|safe }}
-                                        </figure>
-                                    </div>
-                                </td>
-                                <td width="50%" align="center">
-                                    <div class="graficos-avances">
-                                        <figure>
-                                            {{ graficos_estadisticas.torta_grabaciones.render|safe }}
-                                        </figure>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-            <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_tipo' %}">Exportar totales llamadas por tipor de llamada(CSV)</a></h5>
-
-
-                <table class="table table-bordered">
-                        <thead>
-                            <tr class="fts-table-bg">
-                                <td colspan="2">
-                                    <h4>Cantidad de llamadas por campana</h4>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td width="50%">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th>Campana</th>
-                                            <th>Total </th>
-                                            <th>Tipo</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for campana_nombre, total_campana, tipo_campana in graficos_estadisticas.dict_campana_counter %}
-                                                <tr>
-                                                    <td><h5>{{ campana_nombre }} </h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
-                                                    <td><h5>{{ tipo_campana }}</h5></td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td width="50%" align="center">
-                                    <div class="graficos-avances">
-                                        <figure>
-                                            {{ graficos_estadisticas.barra_campana_total.render|safe }}
-                                        </figure>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-            <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_campana' %}">Exportar reporte de llamadas por campana(CSV)</a></h5>
-
-
-
-<div class="col-md-12">
-    <h4>Distribucion por campaña</h4>
-<table class="table table-bordered">
-    <thead>
+      <h4>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
+    </div>
+    {% if user.get_is_administrador %}
+    <div class="col-md-9">
+      <table class="table table-bordered">
         <tr>
+          <td><strong>Total llamadas procesadas por OmniLeads</strong></td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.0}}</td>
+        <tr>
+      </table>
+      <table class="table table-bordered">
+        <tr>
+          <td><strong>Total de llamadas Salientes Discador</strong></td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.1}}</td>
+        <tr>
+        <tr>
+          <td>Cantidad de llamadas gestionadas</td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.2}}</td>
+        <tr>
+        <tr>
+          <td>Cantidad de llamadas perdidas</td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.3}}</td>
+        <tr>
+        <tr>
+      </table>
+      <table class="table table-bordered">
+        <tr>
+          <td><strong>Total llamadas Entrantes</strong></td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.4}}</td>
+        <tr>
+        <tr>
+          <td>Cantidad de llamadas atendidas</td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.5}}</td>
+        <tr>
+        <tr>
+          <td>Cantidad de llamadas expiradas</td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.6}}</td>
+        <tr>
+        <tr>
+          <td>Cantidad de llamadas abandonadas</td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.7}}</td>
+        <tr>
+      </table>
+      <table class="table table-bordered">
+        <tr>
+          <td><strong>Total llamadas Salientes Manuales</strong></td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.8}}</td>
+        <tr>
+        <tr>
+          <td>Cantidad de llamadas atendidas</td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.9}}</td>
+        <tr>
+        <tr>
+          <td>Cantidad de llamadas abandonadas</td>
+          <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
+        <tr>
+      </table>
+      <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='total_llamadas' %}">Exportar totales llamadas(CSV)</a></h5>
+
+    </div>
+    {% endif %}
+
+    <table class="table table-bordered">
+      <thead>
+        <tr >
+          <td colspan="2">
+            <h4>Totales llamadas.</h4>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="50%" align="center">
+            <div class="graficos-avances">
+              <figure>
+                {{ graficos_estadisticas.barras_llamadas_campanas.render|safe }}
+              </figure>
+            </div>
+          </td>
+          <td width="50%" align="center">
+            <div class="graficos-avances">
+              <figure>
+                {{ graficos_estadisticas.torta_grabaciones.render|safe }}
+              </figure>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_tipo' %}">Exportar totales llamadas por tipor de llamada(CSV)</a></h5>
+
+
+    <table class="table table-bordered">
+      <thead>
+        <tr class="fts-table-bg">
+          <td colspan="2">
+            <h4>Cantidad de llamadas por campana</h4>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="50%">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Campana</th>
+                  <th>Total </th>
+                  <th>Tipo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for campana_nombre, total_campana, tipo_campana in graficos_estadisticas.dict_campana_counter %}
+                <tr>
+                  <td><h5>{{ campana_nombre }} </h5></td>
+                  <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
+                  <td><h5>{{ tipo_campana }}</h5></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </td>
+          <td width="50%" align="center">
+            <div class="graficos-avances">
+              <figure>
+                {{ graficos_estadisticas.barra_campana_total.render|safe }}
+              </figure>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_campana' %}">Exportar reporte de llamadas por campana(CSV)</a></h5>
+    <div class="col-md-12">
+      <h4>Distribucion de tipos de llamadas en campañas salientes discador </h4>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
             <th>Campana</th>
             <th>Recibidas</th>
             <th>Atendidas</th>
             <th>Expiradas</th>
             <th>Abandonadas</th>
-            <th>Manuales</th>
-            <th>Manuales atendidas</th>
-            <th>Manuales no atendidas</th>
-
-
-        </tr>
-    </thead>
-    {% for campana in graficos_estadisticas.estadisticas.queues_llamadas %}
+          </tr>
+        </thead>
+        {% for campana in graficos_estadisticas.estadisticas.queues_llamadas_dialer %}
         <tr>
-            <td>{{campana.0}}</td>
-            <td>{{campana.1}}</td>
-            <td>{{campana.2}}</td>
-            <td>{{campana.3}}</td>
-            <td>{{campana.4}}</td>
-            <td>{{campana.5}}</td>
-            <td>{{campana.6}}</td>
-            <td>{{campana.7}}</td>
+          <td>{{campana.0}}</td>
+          <td>{{campana.1}}</td>
+          <td>{{campana.2}}</td>
+          <td>{{campana.3}}</td>
+          <td>{{campana.4}}</td>
         </tr>
-    {% endfor %}
-    <tr>
-        <td colspan="8" width="50%" align="center">
-             <div class="graficos-avances">
-                                        <figure>
-                                            {{ graficos_estadisticas.barra_campana_llamadas.render|safe }}
-                                        </figure>
-                                    </div>
-        </td>
-    </tr>
-    <tbody>
-
-    </tbody>
-</table>
-    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='distribucion_campana' %}">Exportar reporte por distribucion en campana(CSV)</a></h5>
-
-
-</div>
+        {% endfor %}
+        <tr>
+          <td colspan="8" width="50%" align="center">
+            <div class="graficos-avances">
+              <figure>
+                {{ graficos_estadisticas.barra_campana_llamadas_dialer.render|safe }}
+              </figure>
+            </div>
+          </td>
+        </tr>
+      </table>
+      <h4>Distribucion de tipos de llamadas en campañas entrantes </h4>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Campana</th>
+            <th>Recibidas</th>
+            <th>Atendidas</th>
+            <th>Expiradas</th>
+            <th>Abandonadas</th>
+          </tr>
+        </thead>
+        {% for campana in graficos_estadisticas.estadisticas.queues_llamadas_entrantes %}
+        <tr>
+          <td>{{campana.0}}</td>
+          <td>{{campana.1}}</td>
+          <td>{{campana.2}}</td>
+          <td>{{campana.3}}</td>
+          <td>{{campana.4}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="8" width="50%" align="center">
+            <div class="graficos-avances">
+              <figure>
+                {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
+              </figure>
+            </div>
+          </td>
+        </tr>
+      </table>
+      <h4>Distribucion de tipos de llamadas en campañas manuales </h4>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Campana</th>
+            <th>Recibidas</th>
+            <th>Atendidas</th>
+            <th>Expiradas</th>
+            <th>Abandonadas</th>
+          </tr>
+        </thead>
+        {% for campana in graficos_estadisticas.estadisticas.queues_llamadas_manuales %}
+        <tr>
+          <td>{{campana.0}}</td>
+          <td>{{campana.1}}</td>
+          <td>{{campana.2}}</td>
+          <td>{{campana.3}}</td>
+          <td>{{campana.4}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="8" width="50%" align="center">
+            <div class="graficos-avances">
+              <figure>
+                {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
+              </figure>
+            </div>
+          </td>
+        </tr>
+      </table>
+      <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='distribucion_campana' %}">Exportar reporte por distribucion en campana(CSV)</a></h5>
+    </div>
 {% endwith %}
 {% endblock %}

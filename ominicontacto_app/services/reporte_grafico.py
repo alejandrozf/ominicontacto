@@ -140,18 +140,13 @@ class GraficoService():
             count_llamadas_atendidas = atendidas.count()
             count_llamadas_abandonadas = abandonadas.count()
             count_llamadas_expiradas = expiradas.count()
-            count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
-            count_manuales_atendidas = atendidas.filter(data4='saliente').count()
-            count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
+
             cantidad_campana = []
             cantidad_campana.append(campana.nombre)
             cantidad_campana.append(count_llamadas_ingresadas)
             cantidad_campana.append(count_llamadas_atendidas)
             cantidad_campana.append(count_llamadas_expiradas)
             cantidad_campana.append(count_llamadas_abandonadas)
-            cantidad_campana.append(count_llamadas_manuales)
-            cantidad_campana.append(count_manuales_atendidas)
-            cantidad_campana.append(count_manuales_abandonadas)
 
             queues_tiempo.append(cantidad_campana)
 
@@ -289,8 +284,18 @@ class GraficoService():
             porcentaje_manual = (100.0 * float(total_manual) /
                                  float(total_llamadas_ingresadas))
 
-        queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
+        campanas_dialer = campanas.filter(type=Campana.TYPE_DIALER)
+        campanas_entrantes = campanas.filter(type=Campana.TYPE_ENTRANTE)
+        campanas_manuales = campanas.filter(type=Campana.TYPE_MANUAL)
+
+        _, totales_grafico = self.calcular_cantidad_llamadas(
             campanas, fecha_inferior, fecha_superior)
+        queues_llamadas_dialer, totales_grafico_dialer = self.calcular_cantidad_llamadas(
+            campanas_dialer, fecha_inferior, fecha_superior)
+        queues_llamadas_entrantes, totales_grafico_entrantes = self.calcular_cantidad_llamadas(
+            campanas_entrantes, fecha_inferior, fecha_superior)
+        queues_llamadas_manuales, totales_grafico_manuales = self.calcular_cantidad_llamadas(
+            campanas_manuales, fecha_inferior, fecha_superior)
 
         total_llamadas = total_llamadas_dict.values()
 
@@ -310,12 +315,17 @@ class GraficoService():
             'campana': campanas,
             'total_campana': total_campana,
             'tipos_campana': tipos_campana,
-            'queues_llamadas': queues_llamadas,
+            'totales_grafico': totales_grafico,
+            'queues_llamadas_dialer': queues_llamadas_dialer,
+            'totales_grafico_dialer': totales_grafico_dialer,
+            'queues_llamadas_entrantes': queues_llamadas_entrantes,
+            'totales_grafico_entrantes': totales_grafico_entrantes,
+            'queues_llamadas_manuales': queues_llamadas_manuales,
+            'totales_grafico_manuales': totales_grafico_manuales,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
             'total_llamadas': total_llamadas,
             'total_llamadas_dict': total_llamadas_dict,
-            'totales_grafico': totales_grafico,
         }
         return dic_estadisticas
 
@@ -372,20 +382,20 @@ class GraficoService():
         barra_campana_total.x_labels = estadisticas['campana_nombre']
         barra_campana_total.add('Total', estadisticas['total_campana'])
 
-        # # Barra: Cantidad de llamadas por campana
-        # barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
-        #     show_legend=False,
-        #     style=ESTILO_AZUL_ROJO_AMARILLO)
-        # # barra_campana_llamadas.title = 'Distribucion por campana'
+        # # Barra: Cantidad de llamadas por campañas dialer
+        barra_campana_llamadas_dialer = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        # barra_campana_llamadas.title = 'Distribucion por campana'
 
-        # barra_campana_llamadas.x_labels = \
-        #     estadisticas['totales_grafico']['nombres_queues']
-        # barra_campana_llamadas.add('atendidas',
-        #                            estadisticas['totales_grafico']['total_atendidas'])
-        # barra_campana_llamadas.add('abandonadas ',
-        #                            estadisticas['totales_grafico']['total_abandonadas'])
-        # barra_campana_llamadas.add('expiradas',
-        #                            estadisticas['totales_grafico']['total_expiradas'])
+        barra_campana_llamadas_dialer.x_labels = \
+            estadisticas['totales_grafico_dialer']['nombres_queues']
+        barra_campana_llamadas_dialer.add(
+            'atendidas', estadisticas['totales_grafico_dialer']['total_atendidas'])
+        barra_campana_llamadas_dialer.add(
+            'abandonadas ', estadisticas['totales_grafico_dialer']['total_abandonadas'])
+        barra_campana_llamadas_dialer.add(
+            'expiradas', estadisticas['totales_grafico_dialer']['total_expiradas'])
 
         return {
             'estadisticas': estadisticas,
@@ -395,5 +405,7 @@ class GraficoService():
                                         estadisticas['total_campana'],
                                         estadisticas['tipos_campana']),
             'barra_campana_total': barra_campana_total,
-            # 'barra_campana_llamadas': barra_campana_llamadas,
+            'barra_campana_llamadas': barra_campana_llamadas_dialer,
+            # 'barra_campana_llamadas': barra_campana_llamadas_entrantes,
+            # 'barra_campana_llamadas': barra_campana_llamadas_manuales,
         }
