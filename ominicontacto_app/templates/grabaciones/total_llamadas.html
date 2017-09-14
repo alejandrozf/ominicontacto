@@ -78,7 +78,6 @@
     </div>
 
     <div class="col-md-12">
-
       <h4>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
     </div>
     {% if user.get_is_administrador %}
@@ -137,7 +136,6 @@
         <tr>
       </table>
       <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='total_llamadas' %}">Exportar totales llamadas(CSV)</a></h5>
-
     </div>
     {% endif %}
 
@@ -170,7 +168,6 @@
     </table>
     <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_tipo' %}">Exportar totales llamadas por tipor de llamada(CSV)</a></h5>
 
-
     <table class="table table-bordered">
       <thead>
         <tr class="fts-table-bg">
@@ -182,26 +179,28 @@
       <tbody>
         <tr>
           <td width="50%">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Campaña</th>
-                  <th>Total </th>
-                  <th>Manuales </th>
-                  <th>Tipo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for campana_nombre, total_campana, total_manuales, tipo_campana in graficos_estadisticas.dict_campana_counter %}
-                <tr>
-                  <td><h5>{{ campana_nombre }} </h5></td>
-                  <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
-                  <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manuales }}</span></h5></td>
-                  <td><h5>{{ tipo_campana }}</h5></td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+            <div style="overflow: auto; height: 500px">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Campaña</th>
+                    <th>Total </th>
+                    <th>Manuales </th>
+                    <th>Tipo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for campana_nombre, total_campana, total_manuales, tipo_campana in graficos_estadisticas.dict_campana_counter %}
+                  <tr>
+                    <td><h5>{{ campana_nombre }} </h5></td>
+                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
+                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manuales }}</span></h5></td>
+                    <td><h5>{{ tipo_campana }}</h5></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </td>
           <td width="50%" align="center">
             <div class="graficos-avances">
@@ -214,8 +213,12 @@
       </tbody>
     </table>
     <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_campana' %}">Exportar reporte de llamadas por campaña(CSV)</a></h5>
+    <br/>
+
     <div class="col-md-12">
-      <h4>Distribucion de tipos de llamadas en campañas salientes discador </h4>
+      <div id="seccion-llamadas-dialer" style="border:1px solid #cecece;">
+        <h4>Distribucion de tipos de llamadas en campañas salientes discador </h4>
+      <div style="overflow: auto; height: 200px">
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -235,17 +238,20 @@
           <td>{{campana.4}}</td>
         </tr>
         {% endfor %}
-        <tr>
-          <td colspan="8" width="50%" align="center">
-            <div class="graficos-avances">
-              <figure>
-                {{ graficos_estadisticas.barra_campana_llamadas_dialer.render|safe }}
-              </figure>
-            </div>
-          </td>
-        </tr>
       </table>
-      <h4>Distribucion de tipos de llamadas en campañas entrantes </h4>
+      </div>
+      <div class="graficos-avances">
+        <figure>
+          {{ graficos_estadisticas.barra_campana_llamadas_dialer.render|safe }}
+        </figure>
+        <h5><a class="btn btn-info btn-sm" target="_blank" href="#">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+      </div>
+      </div>
+      <br/>
+
+      <div id="seccion-llamadas-entrantes" style="border:1px solid #cecece;">
+        <h4>Distribucion de tipos de llamadas en campañas entrantes </h4>
+      <div style="overflow: auto; height: 200px">
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -265,17 +271,20 @@
           <td>{{campana.4}}</td>
         </tr>
         {% endfor %}
-        <tr>
-          <td colspan="8" width="50%" align="center">
-            <div class="graficos-avances">
-              <figure>
-                {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
-              </figure>
-            </div>
-          </td>
-        </tr>
       </table>
-      <h4>Distribucion de tipos de llamadas en campañas manuales </h4>
+      </div>
+      <div class="graficos-avances">
+        <figure>
+          {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
+        </figure>
+        <h5><a class="btn btn-info btn-sm" target="_blank" href="#">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+      </div>
+      </div>
+      <br/>
+
+      <div id="seccion-llamadas-manuales" style="border:1px solid #cecece;">
+        <h4>Distribucion de tipos de llamadas en campañas manuales </h4>
+      <div style="overflow: auto; height: 200px">
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -295,17 +304,15 @@
           <td>{{campana.4}}</td>
         </tr>
         {% endfor %}
-        <tr>
-          <td colspan="8" width="50%" align="center">
-            <div class="graficos-avances">
-              <figure>
-                {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
-              </figure>
-            </div>
-          </td>
-        </tr>
       </table>
-      <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='distribucion_campana' %}">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+      </div>
+      <div class="graficos-avances">
+        <figure>
+          {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
+        </figure>
+        <h5><a class="btn btn-info btn-sm" target="_blank" href="#">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+      </div>
+      </div>
     </div>
 {% endwith %}
 {% endblock %}
