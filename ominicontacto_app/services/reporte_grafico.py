@@ -397,6 +397,36 @@ class GraficoService():
         barra_campana_llamadas_dialer.add(
             'expiradas', estadisticas['totales_grafico_dialer']['total_expiradas'])
 
+        # # Barra: Cantidad de llamadas por campañas entrantes
+        barra_campana_llamadas_entrantes = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        # barra_campana_llamadas.title = 'Distribucion por campana'
+
+        barra_campana_llamadas_entrantes.x_labels = \
+            estadisticas['totales_grafico_entrantes']['nombres_queues']
+        barra_campana_llamadas_entrantes.add(
+            'atendidas', estadisticas['totales_grafico_entrantes']['total_atendidas'])
+        barra_campana_llamadas_entrantes.add(
+            'abandonadas ', estadisticas['totales_grafico_entrantes']['total_abandonadas'])
+        barra_campana_llamadas_entrantes.add(
+            'expiradas', estadisticas['totales_grafico_entrantes']['total_expiradas'])
+
+        # # Barra: Cantidad de llamadas por campañas manuales
+        barra_campana_llamadas_manuales = pygal.Bar(  # @UndefinedVariable
+            show_legend=False,
+            style=ESTILO_AZUL_ROJO_AMARILLO)
+        # barra_campana_llamadas.title = 'Distribucion por campana'
+
+        barra_campana_llamadas_manuales.x_labels = \
+            estadisticas['totales_grafico_manuales']['nombres_queues']
+        barra_campana_llamadas_manuales.add(
+            'atendidas', estadisticas['totales_grafico_manuales']['total_atendidas'])
+        barra_campana_llamadas_manuales.add(
+            'abandonadas ', estadisticas['totales_grafico_manuales']['total_abandonadas'])
+        barra_campana_llamadas_manuales.add(
+            'expiradas', estadisticas['totales_grafico_manuales']['total_expiradas'])
+
         return {
             'estadisticas': estadisticas,
             'barras_llamadas_campanas': barras_llamadas_campanas,
@@ -405,7 +435,7 @@ class GraficoService():
                                         estadisticas['total_campana'],
                                         estadisticas['tipos_campana']),
             'barra_campana_total': barra_campana_total,
-            'barra_campana_llamadas': barra_campana_llamadas_dialer,
-            # 'barra_campana_llamadas': barra_campana_llamadas_entrantes,
-            # 'barra_campana_llamadas': barra_campana_llamadas_manuales,
+            'barra_campana_llamadas_dialer': barra_campana_llamadas_dialer,
+            'barra_campana_llamadas_entrantes': barra_campana_llamadas_entrantes,
+            'barra_campana_llamadas_manuales': barra_campana_llamadas_manuales,
         }
