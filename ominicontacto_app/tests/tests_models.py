@@ -105,7 +105,7 @@ class CampanaTest(OMLBaseTest):
         """
         - Campana.activar()
         - Campana.objects.obtener_activas()
-        - actualiar y poner los assert de manera correcta
+        - actualizar y poner los assert de manera correcta
         """
 
         campanas = [self.crear_campana_dialer() for _ in range(0, 10)]
@@ -129,3 +129,35 @@ class CampanaTest(OMLBaseTest):
         campanas_activas = Campana.objects.obtener_activas()
         for c in campanas[2:3]:
             self.assertIn(c, campanas_activas)
+
+    def test_campana_pausar(self):
+        """
+        - Campana.pausar()
+        - Campana.objects.obtener_pausadas()
+        - actualizar y poner los assert de manera correcta
+        """
+
+        campanas = [self.crear_campana_dialer() for _ in range(0, 10)]
+        campanas[0].activar()
+        campanas[1].activar()
+        campanas[2].activar()
+        campanas[0].pausar()
+        campanas[1].pausar()
+
+        # Testeamos que no se pause una pausada.
+        #self.assertRaises(AssertionError, campanas[0].pausar)
+
+        # Testeamos que no se active con el activar() una pausada.
+        #self.assertRaises(AssertionError, campanas[0].activar)
+
+        campanas[2].finalizar()
+        # Testeamos que no se pause una finalizada.
+        #self.assertRaises(AssertionError, campanas[2].pausar)
+
+        # Testeamos que no se pause una que no esta activa.
+        #self.assertRaises(AssertionError, campanas[9].pausar)
+
+        # Testeamos que obtener_pausadas me devuelva las 2 pausadas solo.
+        campanas_pausadas = Campana.objects.obtener_pausadas()
+        for c in campanas[:2]:
+            self.assertIn(c, campanas_pausadas)
