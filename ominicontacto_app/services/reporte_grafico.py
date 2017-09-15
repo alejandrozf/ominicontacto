@@ -100,7 +100,7 @@ class GraficoService():
         for campana_id in campanas:
             campana_count = 0
             campana_manuales_count = Queuelog.objects.filter(
-                ~Q(event='ENTERQUEUE'),
+                event__in=('CONNECT', 'ABANDON', 'EXITWITHTIMEOUT'),
                 data4='saliente',
                 time__range=(fecha_inferior, fecha_superior),
                 campana_id=campana_id).count()
