@@ -310,7 +310,7 @@ class GraficoService():
         dict_campana, campanas, campanas_nombre, tipos_campana = self._obtener_campana_llamada(
             fecha_inferior, fecha_superior, campanas)
         total_campana, total_manuales = self._obtener_total_campana_llamadas(
-            dict_campana, campanas, fecha_inferior, fecha_superior,)
+            dict_campana, campanas, fecha_inferior, fecha_superior)
 
         dic_estadisticas = {
             'porcentaje_dialer': porcentaje_dialer,

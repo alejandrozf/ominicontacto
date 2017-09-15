@@ -124,7 +124,7 @@ class GrabacionReporteFormView(FormView):
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
-        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta, final_dia=True)
         finalizadas = form.cleaned_data.get('finalizadas')
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
