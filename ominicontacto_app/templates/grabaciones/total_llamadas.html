@@ -6,6 +6,7 @@
                 var start = moment();
                 var end = moment();
                 function cb(start, end) {
+                    debugger;
                     $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                 }
 
@@ -308,7 +309,7 @@
       </div>
       <div class="graficos-avances">
         <figure>
-          {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
+          {{ graficos_estadisticas.barra_campana_llamadas_manuales.render|safe }}
         </figure>
         <h5><a class="btn btn-info btn-sm" target="_blank" href="#">Exportar reporte por distribucion en campaña(CSV)</a></h5>
       </div>
