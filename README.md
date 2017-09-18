@@ -208,7 +208,7 @@ LOGGING = {
     }
 }
 
-LOCAL_APPS = []
+LOCAL_APPS = []                 # insertar aquí cada una de las aplicaciones locales a instalar
 
 DJANGO_DEBUG_TOOLBAR = False    # poner a True una vez esté instalada en el sistema
 
