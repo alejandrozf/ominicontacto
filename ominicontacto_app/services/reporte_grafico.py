@@ -161,8 +161,8 @@ class GraficoService():
             # para reportes
             nombres_queues.append(campana.nombre)
             total_atendidas.append(count_llamadas_atendidas)
-            total_abandonadas.append(count_llamadas_expiradas)
-            total_expiradas.append(count_llamadas_abandonadas)
+            total_abandonadas.append(count_llamadas_abandonadas)
+            total_expiradas.append(count_llamadas_expiradas)
 
         totales_grafico = {
             'nombres_queues': nombres_queues,
