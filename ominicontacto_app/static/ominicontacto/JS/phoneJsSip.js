@@ -512,6 +512,7 @@ $(function() {
 			if(entrante) {
 				if(fromUser) { // fromUser es para entrantes
 					if(lastPause != "Online") {
+						saveCall(fromUser);
 						num = '';
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
@@ -547,12 +548,12 @@ $(function() {
 							    };
 							    setTimeout(toOnline, timeoutACW);
 							  }
-							}
+							} // si no es agente predictivo....
 					} else {
 					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
 				}
-			} else {
+			} else { // si NO es una llamada entrante
 				if (num) { // num para salientes
 					if (num.substring(4,0) != "0077") {
 						saveCall(num);
