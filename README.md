@@ -208,12 +208,20 @@ LOGGING = {
     }
 }
 
+LOCAL_APPS = []                 # insertar aquí cada una de las aplicaciones locales a instalar
+
+DJANGO_DEBUG_TOOLBAR = False    # poner a True una vez esté instalada en el sistema
+
+if DJANGO_DEBUG_TOOLBAR:
+    INTERNAL_IPS = ['127.0.0.1']
+    LOCAL_APPS += ['debug_toolbar']
+
 ```
 
 Crear usuario y BD de Postgresql:
 
     Nos logueamos con usuario postgres(sudo -u postgres -i)
-    createuser -P --superuser kamailio (password kamailiorw) 
+    createuser -P --superuser kamailio (password kamailiorw)
     createuser -P --superuser kamailioro (password kamailioro)
     createdb -O kamailio kamailio
     sudo cp docs/kamailio_2709-2.sql /var/lib/postgresql/
@@ -247,7 +255,7 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out
 
 En el servidor 172.16.20.241
 
-reiniciar el uwsgi: echo r > /tmp/.ominicontacto-uwsgi-fifo 
+reiniciar el uwsgi: echo r > /tmp/.ominicontacto-uwsgi-fifo
 
 El proyecto se encuentra: /home/freetech/ominicontacto
 

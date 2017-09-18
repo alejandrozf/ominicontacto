@@ -26,7 +26,7 @@ SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 def _upload_to(prefix, max_length, instance, filename):
     filename = SUBSITUTE_REGEX.sub('', filename)
     return "{0}/%Y/%m/{1}-{2}".format(prefix,
-        str(uuid.uuid4()), filename)[:max_length]
+                                      str(uuid.uuid4()), filename)[:max_length]
 
 
 def upload_to(prefix, max_length):
@@ -114,8 +114,8 @@ def crear_archivo_en_media_root(dirname_template, prefix, suffix=""):
     assert prefix.find('/') == -1
 
     # relative_filename = resolve_strftime(dirname_template)
-    #output_directory_rel, tempfile_prefix = os.path.split(relative_filename)
-    #output_directory_abs = os.path.join(
+    # output_directory_rel, tempfile_prefix = os.path.split(relative_filename)
+    # output_directory_abs = os.path.join(
     #    settings.MEDIA_ROOT, output_directory_rel)
 
     relative_dirname = resolve_strftime(dirname_template)
@@ -127,7 +127,7 @@ def crear_archivo_en_media_root(dirname_template, prefix, suffix=""):
         os.makedirs(abs_output_dir, mode=0755)
 
     fd, output_filename = tempfile.mkstemp(dir=abs_output_dir, prefix=prefix,
-        suffix=suffix)
+                                           suffix=suffix)
 
     # Cerramos FD
     os.close(fd)
@@ -178,6 +178,7 @@ def get_class(full_name):
 
     return clazz
 
+
 get_class_or_func = get_class
 
 
@@ -217,14 +218,19 @@ def convert_string_in_boolean(cadena):
 
 
 # FIXME: realizar validacion en el caso que se reciba en otro formato
-def convert_fecha_datetime(fecha):
+def convert_fecha_datetime(fecha, final_dia=False):
     """
     Metodo que convierte string fecha en un datatime
     :param fecha: debe tener este formato dd/mm/aaaa
     :return: fecha en datetime
     """
     dia, mes, ano = fecha.split('/')
-    fecha = datetime.datetime(int(ano), int(mes), int(dia))
+    hora = 0
+    minuto = 0
+    if final_dia:
+        hora = 23
+        minuto = 59
+    fecha = datetime.datetime(int(ano), int(mes), int(dia), hora, minuto)
     return fecha
 
 
