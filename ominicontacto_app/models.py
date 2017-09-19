@@ -10,12 +10,10 @@ import datetime
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
-from django.core.exceptions import SuspiciousOperation
 from django.db import models, connection
 from django.db.models import Max, Q, Count
 from django.core.exceptions import ValidationError, SuspiciousOperation
-from ominicontacto_app.utiles import log_timing,\
-    ValidadorDeNombreDeCampoExtra
+from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 
 logger = logging.getLogger(__name__)
 
@@ -526,7 +524,7 @@ class CampanaManager(models.Manager):
 
     def replicar_campana_queue(self, campana):
         """
-        En este metodo vamos a crear una nueva cola y se la vamos a reasginar a la 
+        En este metodo vamos a crear una nueva cola y se la vamos a reasginar a la
         campana para eso vamos a crear un objecto Queue con los datos de actuales
         y vamos a eliminar la quueue de la campana asignada y vamos asiganar esta nueva
         creado
@@ -674,6 +672,7 @@ class Campana(models.Model):
     es_template = models.BooleanField(default=False)
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
     es_manual = models.BooleanField(default=False)
+    objetivo = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
             return self.nombre
@@ -685,35 +684,35 @@ class Campana(models.Model):
     def play(self):
         """Setea la campaña como ESTADO_ACTIVA"""
         logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
-        #assert self.estado == Campana.ESTADO_ACTIVA
+        # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_ACTIVA
         self.save()
 
     def pausar(self):
         """Setea la campaña como ESTADO_PAUSADA"""
         logger.info("Seteando campana %s como ESTADO_PAUSADA", self.id)
-        #assert self.estado == Campana.ESTADO_ACTIVA
+        # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_PAUSADA
         self.save()
 
     def activar(self):
         """Setea la campaña como ESTADO_ACTIVA"""
         logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
-        #assert self.estado == Campana.ESTADO_ACTIVA
+        # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_ACTIVA
         self.save()
 
     def remover(self):
         """Setea la campaña como ESTADO_BORRADA"""
         logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
-        #assert self.estado == Campana.ESTADO_ACTIVA
+        # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_BORRADA
         self.save()
 
     def finalizar(self):
         """Setea la campaña como ESTADO_FINALIZADA"""
         logger.info("Seteando campana %s como ESTADO_FINALIZADA", self.id)
-        #assert self.estado == Campana.ESTADO_ACTIVA
+        # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_FINALIZADA
         self.save()
 
@@ -905,7 +904,7 @@ class QueueMember(models.Model):
 
     """Considero opciones solo del 0 a 9"""
     (CERO, UNO, DOS, TRES, CUATRO,
-    CINCO, SEIS, SIETE, OCHO, NUEVE) = range(0, 10)
+     CINCO, SEIS, SIETE, OCHO, NUEVE) = range(0, 10)
     DIGITO_CHOICES = (
         (CERO, '0'),
         (UNO, '1'),
@@ -933,8 +932,6 @@ class QueueMember(models.Model):
         return "agente: {0} para la campana {1} ".format(
             self.member.user.get_full_name(), self.queue_name)
 
-
-
     class Meta:
         db_table = 'queue_member_table'
         unique_together = ('queue_name', 'member',)
@@ -947,9 +944,9 @@ class Pausa(models.Model):
         return self.nombre
 
 
-#==============================================================================
+# ==============================================================================
 # Base Datos Contactos
-#==============================================================================
+# ==============================================================================
 class BaseDatosContactoManager(models.Manager):
     """Manager para BaseDatosContacto"""
 
@@ -989,7 +986,7 @@ class BaseDatosContactoManager(models.Manager):
         En caso de no encontarse, lanza SuspiciousOperation
         """
         definicion = [BaseDatosContacto.ESTADO_EN_DEFINICION,
-                     BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA]
+                      BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA]
         try:
             return self.filter(
                 estado__in=definicion).get(pk=base_datos_contacto_id)
@@ -1039,7 +1036,7 @@ class MetadataBaseDatosContactoDTO(object):
     @cantidad_de_columnas.setter
     def cantidad_de_columnas(self, cant):
         assert isinstance(cant, int), ("'cantidad_de_columnas' "
-        "debe ser int. Se encontro: {0}".format(type(cant)))
+                                       "debe ser int. Se encontro: {0}".format(type(cant)))
 
         assert cant > 0, ("'cantidad_de_columnas' "
                           "debe ser > 0. Se especifico {0}".format(cant))
@@ -1059,9 +1056,9 @@ class MetadataBaseDatosContactoDTO(object):
     def columna_con_telefono(self, columna):
         columna = int(columna)
         assert columna < self.cantidad_de_columnas, ("No se puede setear "
-            "'columna_con_telefono' = {0} porque  la BD solo "
-            "posee {1} columnas"
-            "".format(columna, self.cantidad_de_columnas))
+                                                     "'columna_con_telefono' = {0} porque  la BD "
+                                                     "solo posee {1} columnas"
+                                                     "".format(columna, self.cantidad_de_columnas))
         self._metadata['col_telefono'] = columna
 
     # -----
@@ -1080,15 +1077,17 @@ class MetadataBaseDatosContactoDTO(object):
         - columnas: Lista de enteros que indican las columnas con telefonos.
         """
         assert isinstance(columnas, (list, tuple)), ("'columnas_con_telefono' "
-            "recibe listas o tuplas. Se recibio: {0}".format(type(columnas)))
+                                                     "recibe listas o tuplas. "
+                                                     "Se recibio: {0}".format(type(columnas)))
         for col in columnas:
             assert isinstance(col, int), ("Los elementos de "
-            "'columnas_con_telefono' deben ser int. Se encontro: {0}".format(
-                type(col)))
+                                          "'columnas_con_telefono' deben ser int. "
+                                          "Se encontro: {0}".format(
+                                              type(col)))
             assert col < self.cantidad_de_columnas, ("No se puede setear "
-                "'columnas_con_telefono' = {0} porque  la BD solo "
-                "posee {1} columnas"
-                "".format(col, self.cantidad_de_columnas))
+                                                     "'columnas_con_telefono' = {0} porque  la BD "
+                                                     "solo posee {1} columnas"
+                                                     "".format(col, self.cantidad_de_columnas))
 
         self._metadata['cols_telefono'] = columnas
 
@@ -1108,15 +1107,16 @@ class MetadataBaseDatosContactoDTO(object):
         - columnas: Lista de enteros que indican las columnas con fechas.
         """
         assert isinstance(columnas, (list, tuple)), ("'columnas_con_fecha' "
-            "recibe listas o tuplas. Se recibio: {0}".format(type(columnas)))
+                                                     "recibe listas o tuplas."
+                                                     " Se recibio: {0}".format(type(columnas)))
         for col in columnas:
             assert isinstance(col, int), ("Los elementos de "
-            "'columnas_con_fecha' deben ser int. Se encontro: {0}".format(
-                type(col)))
+                                          "'columnas_con_fecha' deben ser int. "
+                                          "Se encontro: {0}".format(type(col)))
             assert col < self.cantidad_de_columnas, ("No se puede setear "
-                "'columnas_con_fecha' = {0} porque  la BD solo "
-                "posee {1} columnas"
-                "".format(col, self.cantidad_de_columnas))
+                                                     "'columnas_con_fecha' = {0} porque  la BD"
+                                                     " solo posee {1} columnas"
+                                                     "".format(col, self.cantidad_de_columnas))
 
         self._metadata['cols_fecha'] = columnas
 
@@ -1136,15 +1136,16 @@ class MetadataBaseDatosContactoDTO(object):
         - columnas: Lista de enteros que indican las columnas con horas.
         """
         assert isinstance(columnas, (list, tuple)), ("'columnas_con_hora' "
-            "recibe listas o tuplas. Se recibio: {0}".format(type(columnas)))
+                                                     "recibe listas o tuplas. "
+                                                     "Se recibio: {0}".format(type(columnas)))
         for col in columnas:
             assert isinstance(col, int), ("Los elementos de "
-            "'columnas_con_hora' deben ser int. Se encontro: {0}".format(
-                type(col)))
+                                          "'columnas_con_hora' deben ser int. "
+                                          "Se encontro: {0}".format(type(col)))
             assert col < self.cantidad_de_columnas, ("No se puede setear "
-                "'columnas_con_hora' = {0} porque  la BD solo "
-                "posee {1} columnas"
-                "".format(col, self.cantidad_de_columnas))
+                                                     "'columnas_con_hora' = {0} porque  la BD solo "
+                                                     "posee {1} columnas"
+                                                     "".format(col, self.cantidad_de_columnas))
 
         self._metadata['cols_hora'] = columnas
 
@@ -1165,10 +1166,13 @@ class MetadataBaseDatosContactoDTO(object):
                     columnas.
         """
         assert isinstance(columnas, (list, tuple)), ("'nombres_de_columnas' "
-            "recibe listas o tuplas. Se recibio: {0}".format(type(columnas)))
+                                                     "recibe listas o tuplas. "
+                                                     "Se recibio: {0}".format(type(columnas)))
         assert len(columnas) == self.cantidad_de_columnas, ("Se intentaron "
-            "setear {0} nombres de columnas, pero la BD posee {1} columnas"
-            "".format(len(columnas), self.cantidad_de_columnas))
+                                                            "setear {0} nombres de columnas, pero"
+                                                            " la BD posee {1} columnas"
+                                                            "".format(len(columnas),
+                                                                      self.cantidad_de_columnas))
 
         self._metadata['nombres_de_columnas'] = columnas
 
@@ -1242,13 +1246,15 @@ class MetadataBaseDatosContactoDTO(object):
 
         for index_columna in self.columnas_con_fecha:
             assert index_columna >= 0, "columnas_con_fecha: index_columna < 0"
-            assert index_columna < self.cantidad_de_columnas, (""
+            assert index_columna < self.cantidad_de_columnas, (
+                ""
                 "columnas_con_fecha: "
                 "index_columna >= cantidad_de_columnas")
 
         for index_columna in self.columnas_con_hora:
             assert index_columna >= 0, "columnas_con_hora: index_columna < 0"
-            assert index_columna < self.cantidad_de_columnas, (""
+            assert index_columna < self.cantidad_de_columnas, (
+                ""
                 "columnas_con_hora: "
                 "index_columna >= cantidad_de_columnas")
 
@@ -1322,12 +1328,9 @@ class MetadataBaseDatosContactoDTO(object):
         """
         index = self.nombres_de_columnas.index(nombre_de_columna)
         return not (
-                    index in self.columnas_con_hora
-                    or
-                    index in self.columnas_con_fecha
-                    or
-                    index == self.columna_con_telefono
-                    )
+            index in self.columnas_con_hora or
+            index in self.columnas_con_fecha or
+            index == self.columna_con_telefono)
 
 
 class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
@@ -2280,12 +2283,12 @@ class AgendaContacto(models.Model):
     def __unicode__(self):
         return "Agenda para el contacto {0} agendado por el agente {1} " \
                "para la fecha {2} a la hora {3}hs ".format(
-            self.contacto, self.agente, self.fecha, self.hora)
+                   self.contacto, self.agente, self.fecha, self.hora)
 
 
-#==============================================================================
+# ==============================================================================
 # Actuaciones
-#==============================================================================
+# ==============================================================================
 
 
 class AbstractActuacion(models.Model):
@@ -2530,9 +2533,8 @@ class ContactoBacklist(models.Model):
     """
 
     telefono = models.CharField(max_length=128)
-    back_list = models.ForeignKey(Backlist,
-        related_name='contactosbacklist', blank=True, null=True
-    )
+    back_list = models.ForeignKey(
+        Backlist, related_name='contactosbacklist', blank=True, null=True)
 
     def __unicode__(self):
         return "Telefono no llame {0}  ".format(self.telefono)
@@ -2642,7 +2644,7 @@ class UserApiCrm(models.Model):
 
 class CalificacionManual(models.Model):
 
-    #objects = CalificacionClienteManager()
+    # objects = CalificacionClienteManager()
 
     campana = models.ForeignKey(Campana, related_name="calificacionmanual")
     telefono = models.CharField(max_length=128)
@@ -2703,4 +2705,4 @@ class AgendaManual(models.Model):
     def __unicode__(self):
         return "Agenda para el telefono {0} agendado por el agente {1}" \
                " para la fecha {2} a la hora {3}hs ".format(
-            self.telefono, self.agente, self.fecha, self.hora)
+                   self.telefono, self.agente, self.fecha, self.hora)

@@ -9,8 +9,7 @@ from django.contrib.auth.forms import (
     UserCreationForm
 )
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Field, Layout, Div, MultiField, HTML
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from crispy_forms.layout import Field, Layout, MultiField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
@@ -39,8 +38,8 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = (
-        'username', 'first_name', 'last_name', 'email', 'is_agente',
-        'is_customer', 'is_supervisor')
+            'username', 'first_name', 'last_name', 'email', 'is_agente',
+            'is_customer', 'is_supervisor')
 
 
 class UserChangeForm(forms.ModelForm):
@@ -57,11 +56,13 @@ class UserChangeForm(forms.ModelForm):
                                 widget=forms.PasswordInput(),
                                 label='Contrasena')
 
-    password2 = forms.CharField(max_length=20,
-                            required=False,  # will be overwritten by __init__()
-                            help_text='Ingrese la nueva contraseña (sólo si desea cambiarla)',  # will be overwritten by __init__()
-                            widget=forms.PasswordInput(),
-                            label='Contrasena (otra vez)')
+    password2 = forms.CharField(
+        max_length=20,
+        required=False,  # will be overwritten by __init__()
+        # will be overwritten by __init__()
+        help_text='Ingrese la nueva contraseña (sólo si desea cambiarla)',
+        widget=forms.PasswordInput(),
+        label='Contrasena (otra vez)')
 
     def clean(self):
         password1 = self.cleaned_data.get('password1')
@@ -264,7 +265,7 @@ class GrabacionBusquedaForm(forms.Form):
     El form para la busqueda de grabaciones
     """
     fecha = forms.CharField(required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+                            widget=forms.TextInput(attrs={'class': 'form-control'}))
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, ('', '---------'))
     tipo_llamada = forms.ChoiceField(required=False,
@@ -277,7 +278,7 @@ class GrabacionBusquedaForm(forms.Form):
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         agente_choice = [(agente.sip_extension, agente.user.get_full_name())
-                        for agente in AgenteProfile.objects.filter(is_inactive=False)]
+                         for agente in AgenteProfile.objects.filter(is_inactive=False)]
         agente_choice.insert(0, ('', '---------'))
         self.fields['sip_agente'].choices = agente_choice
         campana_choice.insert(0, ('', '---------'))
@@ -294,7 +295,7 @@ class CampanaForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'formulario',
-                  'gestion', 'sitio_externo', 'tipo_interaccion')
+                  'gestion', 'sitio_externo', 'tipo_interaccion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -303,9 +304,10 @@ class CampanaForm(forms.ModelForm):
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
-            "tipo_interaccion": forms.RadioSelect(),
+            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tipo_interaccion': forms.RadioSelect(),
         }
 
     def clean_nombre(self):
@@ -325,15 +327,16 @@ class CampanaUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'gestion')
+        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'gestion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
         widgets = {
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
+            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def clean_nombre(self):
@@ -538,7 +541,8 @@ class FormularioContactoCalificacion(forms.ModelForm):
     def __init__(self, campos, *args, **kwargs):
         super(FormularioContactoCalificacion, self).__init__(*args, **kwargs)
         for campo in campos:
-            self.fields[convertir_ascii_string(campo)] = forms.CharField(required=False,
+            self.fields[convertir_ascii_string(campo)] = forms.CharField(
+                required=False,
                 label=campo, widget=forms.TextInput(
                     attrs={'class': 'form-control'}))
 
@@ -681,7 +685,7 @@ class CampanaDialerForm(forms.ModelForm):
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
                   'bd_contacto', 'formulario', 'gestion', 'sitio_externo',
-                  'tipo_interaccion')
+                  'tipo_interaccion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -692,7 +696,8 @@ class CampanaDialerForm(forms.ModelForm):
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
-            "tipo_interaccion": forms.RadioSelect(),
+            'tipo_interaccion': forms.RadioSelect(),
+            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def clean_nombre(self):
@@ -715,11 +720,12 @@ class CampanaDialerUpdateForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'gestion')
+                  'gestion', 'objetivo')
 
         widgets = {
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
+            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def clean_nombre(self):
@@ -742,7 +748,7 @@ class ActuacionVigenteForm(forms.ModelForm):
         jueves = self.cleaned_data.get('jueves')
         viernes = self.cleaned_data.get('viernes')
         sabado = self.cleaned_data.get('sabado')
-        if domingo==lunes==martes==miercoles==jueves==viernes==sabado==False:
+        if domingo == lunes == martes == miercoles == jueves == viernes == sabado is False:
             raise forms.ValidationError('debe seleccionar algun día')
 
         return self.cleaned_data
@@ -932,14 +938,15 @@ class CampanaManualForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'calificacion_campana', 'formulario', 'gestion',
-                  'sitio_externo', 'tipo_interaccion')
+                  'sitio_externo', 'tipo_interaccion', 'objetivo')
 
         widgets = {
             'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
+            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
-            "tipo_interaccion": forms.RadioSelect(),
+            'tipo_interaccion': forms.RadioSelect(),
+            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def clean_nombre(self):

@@ -135,7 +135,7 @@
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
         <tr>
       </table>
-      <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='total_llamadas' %}">Exportar totales llamadas(CSV)</a></h5>
+      <h5><a class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</a></h5>
     </div>
     {% endif %}
 
@@ -170,7 +170,7 @@
         </tr>
       </tbody>
     </table>
-    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_tipo' %}">Exportar totales llamadas por tipor de llamada(CSV)</a></h5>
+    <h5><a class="btn btn-info btn-sm">Exportar totales llamadas por tipor de llamada(CSV)</a></h5>
 
     <table class="table table-bordered">
       <thead>
@@ -216,7 +216,7 @@
         </tr>
       </tbody>
     </table>
-    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'llamadas_exporta' tipo_reporte='llamadas_campana' %}">Exportar reporte de llamadas por campaña(CSV)</a></h5>
+    <h5><a class="btn btn-info btn-sm">Exportar reporte de llamadas por campaña(CSV)</a></h5>
     <br/>
 
     <div class="col-md-12">
@@ -248,7 +248,7 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_dialer.render|safe }}
         </figure>
-        <h5><a class="btn btn-info btn-sm" target="_blank" href="#">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+        <h5><a class="btn btn-info btn-sm">Exportar reporte por distribucion en campaña(CSV)</a></h5>
       </div>
       </div>
       <br/>
@@ -281,7 +281,7 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
         </figure>
-        <h5><a class="btn btn-info btn-sm" target="_blank" href="#">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+        <h5><a class="btn btn-info btn-sm">Exportar reporte por distribucion en campaña(CSV)</a></h5>
       </div>
       </div>
       <br/>
@@ -314,7 +314,7 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_manuales.render|safe }}
         </figure>
-        <h5><a class="btn btn-info btn-sm" target="_blank" href="#">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+        <h5><a class="btn btn-info btn-sm">Exportar reporte por distribucion en campaña(CSV)</a></h5>
       </div>
       </div>
     </div>
