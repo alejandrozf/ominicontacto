@@ -423,6 +423,12 @@ class CampanaService():
         self.crear_endpoint_asociacion_campana_wombat(campana)
 
     def translate_state_wombat(self, status):
+        """
+        traduce salida de status del wombat
+        :param status: dicionarios con todos los counts los estado de la
+        llamada
+        :return: devuelve status
+        """
         for resultado in status:
             estado = resultado['gbState']
             if resultado['gbState'] == "RS_LOST" and \
