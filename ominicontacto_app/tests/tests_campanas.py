@@ -15,4 +15,4 @@ class CampanasTests(OMLBaseTest):
         self.campana = CampanaFactory()
 
     def test_campana_contiene_atributo_entero_positivo_llamado_objetivo(self):
-        self.assertEqual(self.campana.objetivo >= 0)
+        self.assertTrue(self.campana.objetivo >= 0)
