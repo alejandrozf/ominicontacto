@@ -12,7 +12,7 @@ from pygal.style import Style
 
 from django.db.models import Q, Count
 
-from ominicontacto_app.models import Grabacion, Queuelog, Campana
+from ominicontacto_app.models import Queuelog, Campana
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -33,28 +33,6 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 
 
 class GraficoService():
-
-    def _obtener_total_llamdas_tipo(self, listado_grabaciones):
-        """
-        Obtiene el total de llamadas por tipo de origen de llamadas
-        :param listado_grabaciones: listados de las grabaciones de las llamadas
-        :return: dicionario con los totales por tipo de llamadas
-        """
-        counter_por_tipo = {
-            Grabacion.TYPE_DIALER: 0,
-            Grabacion.TYPE_ICS: 0,
-            Grabacion.TYPE_INBOUND: 0,
-            Grabacion.TYPE_MANUAL: 0,
-        }
-
-        tipos_llamadass = (Grabacion.TYPE_DIALER, Grabacion.TYPE_INBOUND,
-                           Grabacion.TYPE_ICS, Grabacion.TYPE_MANUAL)
-
-        for grabacion in listado_grabaciones:
-            if grabacion.tipo_llamada in tipos_llamadass:
-                counter_por_tipo[grabacion.tipo_llamada] += 1
-
-        return counter_por_tipo
 
     def _obtener_campana_llamada(self, fecha_inferior, fecha_superior, campanas):
         """
