@@ -61,16 +61,26 @@ class GraficoService():
             event='ENTERQUEUE',
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas_ids).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_dict = {campana['campana_id']: campana['cantidad']
                          for campana in qs_campanas}
 
-        result = (campanas_dict, campanas_ids, campanas_ids_nombres.values(), campanas_tipos)
+        qs_campanas_manuales = Queuelog.objects.filter(
+            data4='saliente',
+            event__in=('CONNECT', 'ABANDON', 'EXITWITHTIMEOUT'),
+            time__range=(fecha_inferior, fecha_superior),
+            campana_id__in=campanas_ids).values(
+                'campana_id').annotate(cantidad=Count('campana_id'))
+        campanas_manuales_dict = {campana['campana_id']: campana['cantidad']
+                                  for campana in qs_campanas_manuales}
+
+        result = (campanas_dict, campanas_manuales_dict, campanas_ids,
+                  campanas_ids_nombres.values(), campanas_tipos)
 
         return result
 
-    def _obtener_total_campana_llamadas(self, campanas_dict, campanas, fecha_inferior,
-                                        fecha_superior):
+    def _obtener_total_campana_llamadas(self, campanas_dict, campanas_manuales_dict, campanas,
+                                        fecha_inferior, fecha_superior):
         """
         Obtiene los totales de llamadas por campana a partir de una lista de campañas
         """
@@ -78,11 +88,7 @@ class GraficoService():
         total_campana = []
         total_manuales = []
         for campana_id in campanas:
-            campana_manuales_count = Queuelog.objects.filter(
-                event__in=('CONNECT', 'ABANDON', 'EXITWITHTIMEOUT'),
-                data4='saliente',
-                time__range=(fecha_inferior, fecha_superior),
-                campana_id=campana_id).count()
+            campana_manuales_count = campanas_manuales_dict.get(campana_id, 0)
             campana_count = campanas_dict.get(campana_id, 0)
             total_campana.append(campana_count)
             total_manuales.append(campana_manuales_count)
@@ -179,6 +185,7 @@ class GraficoService():
         eventos_llamadas_atendidas = ['CONNECT']
         eventos_llamadas_abandonadas = ['ABANDON']
         eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
+
         campanas_entrantes = campanas.filter(
             type=Campana.TYPE_ENTRANTE).values_list('id', flat=True)
         campanas_dialer = campanas.filter(
@@ -303,10 +310,11 @@ class GraficoService():
 
         total_llamadas = total_llamadas_dict.values()
 
-        dict_campana, campanas, campanas_nombre, tipos_campana = self._obtener_campana_llamada(
-            fecha_inferior, fecha_superior, campanas)
+        (dict_campana, dict_campana_manuales, campanas, campanas_nombre,
+         tipos_campana) = self._obtener_campana_llamada(fecha_inferior, fecha_superior, campanas)
+
         total_campana, total_manuales = self._obtener_total_campana_llamadas(
-            dict_campana, campanas, fecha_inferior, fecha_superior)
+            dict_campana, dict_campana_manuales, campanas, fecha_inferior, fecha_superior)
 
         dic_estadisticas = {
             'porcentaje_dialer': porcentaje_dialer,
