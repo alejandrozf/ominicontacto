@@ -510,7 +510,7 @@ $(function() {
 
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
 			if(entrante) {
-				if(fromUser) { // fromUser es para entrantes
+				if(fromUser && fromUser.substring(4,0) != "0077") { // fromUser es para entrantes
 					if(lastPause != "Online") {
 						saveCall(fromUser);
 						num = '';
