@@ -124,6 +124,38 @@ class GraficoService():
         eventos_llamadas_abandonadas = ['ABANDON']
         eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
 
+        qs_campanas_ingresadas = Queuelog.objects.filter(
+            event__in=eventos_llamadas_ingresadas,
+            time__range=(fecha_inferior, fecha_superior),
+            campana_id__in=campanas).values(
+                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+        campanas_ingresadas_dict = {campana['campana_id']: campana['cantidad']
+                                    for campana in qs_campanas_ingresadas}
+
+        qs_campanas_atendidas = Queuelog.objects.filter(
+            event__in=eventos_llamadas_atendidas,
+            time__range=(fecha_inferior, fecha_superior),
+            campana_id__in=campanas).values(
+                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+        campanas_atendidas_dict = {campana['campana_id']: campana['cantidad']
+                                   for campana in qs_campanas_atendidas}
+
+        qs_campanas_abandonadas = Queuelog.objects.filter(
+            event__in=eventos_llamadas_abandonadas,
+            time__range=(fecha_inferior, fecha_superior),
+            campana_id__in=campanas).values(
+                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+        campanas_abandonadas_dict = {campana['campana_id']: campana['cantidad']
+                                     for campana in qs_campanas_abandonadas}
+
+        qs_campanas_expiradas = Queuelog.objects.filter(
+            event__in=eventos_llamadas_expiradas,
+            time__range=(fecha_inferior, fecha_superior),
+            campana_id__in=campanas).values(
+                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+        campanas_expiradas_dict = {campana['campana_id']: campana['cantidad']
+                                   for campana in qs_campanas_expiradas}
+
         nombres_queues = []
         total_atendidas = []
         total_abandonadas = []
@@ -132,22 +164,10 @@ class GraficoService():
         queues_tiempo = []
 
         for campana in campanas:
-            ingresadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-                eventos_llamadas_ingresadas, fecha_inferior, fecha_superior,
-                campana.id)
-            atendidas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-                eventos_llamadas_atendidas, fecha_inferior, fecha_superior,
-                campana.id)
-            abandonadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-                eventos_llamadas_abandonadas, fecha_inferior, fecha_superior,
-                campana.id)
-            expiradas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-                eventos_llamadas_expiradas, fecha_inferior, fecha_superior,
-                campana.id)
-            count_llamadas_ingresadas = ingresadas.count()
-            count_llamadas_atendidas = atendidas.count()
-            count_llamadas_abandonadas = abandonadas.count()
-            count_llamadas_expiradas = expiradas.count()
+            count_llamadas_ingresadas = campanas_ingresadas_dict.get(campana.pk, 0)
+            count_llamadas_atendidas = campanas_atendidas_dict.get(campana.pk, 0)
+            count_llamadas_abandonadas = campanas_abandonadas_dict.get(campana.pk, 0)
+            count_llamadas_expiradas = campanas_expiradas_dict.get(campana.pk, 0)
 
             cantidad_campana = []
             cantidad_campana.append(campana.nombre)
