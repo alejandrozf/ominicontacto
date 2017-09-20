@@ -431,8 +431,7 @@ class CampanaService():
         """
         for resultado in status:
             estado = resultado['gbState']
-            if resultado['gbState'] == "RS_LOST" and \
-                    resultado['gbStateExt'] == "":
+            if resultado['gbState'] == "RS_LOST":
                 resultado['gbState'] = "Agente no disponible"
             elif estado == "RS_BUSY":
                 resultado['gbState'] = "Ocupado"
