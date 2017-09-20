@@ -79,17 +79,19 @@ class GraficoService():
 
         campanas_ids = campanas_ids_nombres.keys()
 
-        dict_campana = Queuelog.objects.filter(
+        qs_campanas = Queuelog.objects.filter(
             event='ENTERQUEUE',
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas_ids).values(
                 'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+        campanas_dict = {campana['campana_id']: campana['cantidad']
+                         for campana in qs_campanas}
 
-        result = (dict_campana, campanas_ids, campanas_ids_nombres.values(), campanas_tipos)
+        result = (campanas_dict, campanas_ids, campanas_ids_nombres.values(), campanas_tipos)
 
         return result
 
-    def _obtener_total_campana_llamadas(self, dict_campana, campanas, fecha_inferior,
+    def _obtener_total_campana_llamadas(self, campanas_dict, campanas, fecha_inferior,
                                         fecha_superior):
         """
         Obtiene los totales de llamadas por campana a partir de una lista de campañas
@@ -98,16 +100,12 @@ class GraficoService():
         total_campana = []
         total_manuales = []
         for campana_id in campanas:
-            campana_count = 0
             campana_manuales_count = Queuelog.objects.filter(
                 event__in=('CONNECT', 'ABANDON', 'EXITWITHTIMEOUT'),
                 data4='saliente',
                 time__range=(fecha_inferior, fecha_superior),
                 campana_id=campana_id).count()
-            try:
-                campana_count = dict_campana.get(campana_id=campana_id)['cantidad']
-            except Queuelog.DoesNotExist:
-                pass
+            campana_count = campanas_dict.get(campana_id, 0)
             total_campana.append(campana_count)
             total_manuales.append(campana_manuales_count)
         return total_campana, total_manuales
