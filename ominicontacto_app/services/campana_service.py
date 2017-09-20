@@ -376,7 +376,7 @@ class CampanaService():
         url_edit = "api/reports/stats/?id={0}".format(hopper_camp_id)
         salida = service_wombat.list_config_wombat(url_edit)
         result = salida['result']
-        status = result['statsOut']
+        status = self.translate_state_wombat(result['statsOut'])
         return status
 
     def chequear_campanas_finalizada_eliminarlas(self, campanas):
@@ -421,3 +421,29 @@ class CampanaService():
         self.crear_endpoint_campana_wombat(campana)
         # asocio endpoint a la campana en wombat
         self.crear_endpoint_asociacion_campana_wombat(campana)
+
+    def translate_state_wombat(self, status):
+        """
+        traduce salida de status del wombat
+        :param status: dicionarios con todos los counts los estado de la
+        llamada
+        :return: devuelve status
+        """
+        for resultado in status:
+            estado = resultado['gbState']
+            if resultado['gbState'] == "RS_LOST" and \
+                    resultado['gbStateExt'] == "":
+                resultado['gbState'] = "Agente no disponible"
+            elif estado == "RS_BUSY":
+                resultado['gbState'] = "Ocupado"
+            elif resultado['gbState'] == "RS_NOANSWER":
+                resultado['gbState'] = "No contesta"
+            elif resultado['gbState'] == "RS_NUMBER":
+                resultado['gbState'] = "Numero erroneo"
+            elif resultado['gbState'] == "RS_ERROR":
+                resultado['gbState'] = "Error de sistema"
+            elif resultado['gbState'] == "RS_REJECTED":
+                resultado['gbState'] = "Congestion"
+            elif resultado['gbState'] == "TERMINATED":
+                resultado['gbState'] = "Finalizada"
+        return status
