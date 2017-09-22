@@ -514,11 +514,13 @@ $(function() {
 					if(lastPause === "Online" && fromUser.substring(4,0) != "0077") {
 						saveCall(fromUser);
 						num = '';
+						fromUser = "";
 						$("#Pause").prop('disabled',false);
 						$("#Resume").prop('disabled',true);
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-success", "Online");
 					} else {
+						fromUser = "";
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
 						$("#sipLogout").prop('disabled',false);
