@@ -511,19 +511,18 @@ $(function() {
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
 			if(entrante) {
 				if(fromUser) { // fromUser es para entrantes
-					if(lastPause != "Online" && fromUser.substring(4,0) != "0077") {
+					if(lastPause = "Online" && fromUser.substring(4,0) != "0077") {
 						saveCall(fromUser);
-						fromUser = "";
 						num = '';
-						$("#Pause").prop('disabled',true); 
+						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
 						$("#sipLogout").prop('disabled',false);
-						updateButton(modifyUserStat, "label label-danger", lastPause);
+						updateButton(modifyUserStat, "label label-danger", "Online");
 					} else {
 						$("#Pause").prop('disabled',false);
 						$("#Resume").prop('disabled',true);
 						$("#sipLogout").prop('disabled',false);
-						updateButton(modifyUserStat, "label label-success", "Online");
+						updateButton(modifyUserStat, "label label-success", lastPause);
 					}
 					if(fromUser.substring(4,0) != "0077") {
 							if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
