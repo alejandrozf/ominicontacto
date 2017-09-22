@@ -515,7 +515,7 @@ $(function() {
 						saveCall(fromUser);
 						fromUser = "";
 						num = '';
-						$("#Pause").prop('disabled',true);
+						$("#Pause").prop('disabled',true); 
 						$("#Resume").prop('disabled',false);
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-danger", lastPause);
