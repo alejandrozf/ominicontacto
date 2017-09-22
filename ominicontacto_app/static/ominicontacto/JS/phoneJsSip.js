@@ -430,6 +430,7 @@ $(function() {
 				if(fromUser) {
 					inicio3();
 				}
+				fromUser = "";
       });
 
   	var clickHold = document.getElementById("onHold");
@@ -510,8 +511,8 @@ $(function() {
 
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
 			if(entrante) {
-				if(fromUser && fromUser.substring(4,0) != "0077") { // fromUser es para entrantes
-					if(lastPause != "Online") {
+				if(fromUser) { // fromUser es para entrantes
+					if(lastPause != "Online" && fromUser.substring(4,0) != "0077") {
 						saveCall(fromUser);
 						num = '';
 						$("#Pause").prop('disabled',true);
