@@ -430,7 +430,6 @@ $(function() {
 				if(fromUser) {
 					inicio3();
 				}
-				fromUser = "";
       });
 
   	var clickHold = document.getElementById("onHold");
@@ -514,6 +513,7 @@ $(function() {
 				if(fromUser) { // fromUser es para entrantes
 					if(lastPause != "Online" && fromUser.substring(4,0) != "0077") {
 						saveCall(fromUser);
+						fromUser = "";
 						num = '';
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
