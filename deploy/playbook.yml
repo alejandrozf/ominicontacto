@@ -1,0 +1,8 @@
+---
+- hosts: freetech
+  # Siempre 'gather_facts' ya q' lo usaoms en varios 'when'
+  # gather_facts: '{{ lookup("env","DO_CHECKS") }}'
+  roles:
+    - oml_server
+  remote_user: fretech
+
