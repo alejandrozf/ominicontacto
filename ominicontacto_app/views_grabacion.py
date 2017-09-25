@@ -10,7 +10,7 @@ import json
 
 from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import redirect
+
 from django.views.generic import FormView
 from django.core import paginator as django_paginator
 from ominicontacto_app.forms import (
@@ -21,8 +21,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.reporte_grafico import GraficoService
 from utiles import convert_fecha_datetime, UnicodeWriter
-from ominicontacto_app.services.reporte_campana_csv import (ReporteCampanaCSVService,
-                                                            obtener_datos_total_llamadas_csv,
+from ominicontacto_app.services.reporte_campana_csv import (obtener_datos_total_llamadas_csv,
                                                             obtener_llamadas_campanas)
 
 
@@ -134,15 +133,6 @@ class GrabacionReporteFormView(FormView):
             fecha_desde, fecha_hasta, self.request.user, finalizadas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
-
-
-def exporta_reporte_grabacion_llamada_view(request, tipo_reporte):
-    """
-    Esta vista invoca a generar un csv de reporte de la campana.
-    """
-    service = ReporteCampanaCSVService()
-    url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
-    return redirect(url)
 
 
 def obtener_filas_reporte(tipo_reporte, datos_reporte):
