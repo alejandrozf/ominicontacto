@@ -119,8 +119,6 @@ class GrabacionReporteFormView(FormView):
         hoy = hoy_ahora.date()
         graficos_estadisticas = service.general_llamadas_hoy(
             hoy, hoy_ahora, request.user, False)
-        # service_csv = ReporteCampanaCSVService()
-        # service_csv.crea_reporte_csv(graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
 
@@ -134,8 +132,6 @@ class GrabacionReporteFormView(FormView):
         service = GraficoService()
         graficos_estadisticas = service.general_llamadas_hoy(
             fecha_desde, fecha_hasta, self.request.user, finalizadas)
-        # service_csv = ReporteCampanaCSVService()
-        # service_csv.crea_reporte_csv(graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
 
