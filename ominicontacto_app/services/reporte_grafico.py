@@ -450,14 +450,18 @@ class GraficoService():
         barra_campana_llamadas_manuales.add(
             'expiradas', estadisticas['totales_grafico_manuales']['total_expiradas'])
 
+        dict_campana_counter = zip(estadisticas['campana_nombre'],
+                                   estadisticas['total_campana'],
+                                   estadisticas['total_manuales'],
+                                   estadisticas['tipos_campana'])
+        dict_campana_counter_json = json.dumps({'filas_datos': dict_campana_counter})
+
         return {
             'estadisticas': estadisticas,
             'barras_llamadas_campanas': barras_llamadas_campanas,
             'torta_grabaciones': torta_grabaciones,
-            'dict_campana_counter': zip(estadisticas['campana_nombre'],
-                                        estadisticas['total_campana'],
-                                        estadisticas['total_manuales'],
-                                        estadisticas['tipos_campana']),
+            'dict_campana_counter': dict_campana_counter,
+            'dict_campana_counter_json': dict_campana_counter_json,
             'barra_campana_total': barra_campana_total,
             'barra_campana_llamadas_dialer': barra_campana_llamadas_dialer,
             'barra_campana_llamadas_entrantes': barra_campana_llamadas_entrantes,
