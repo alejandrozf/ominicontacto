@@ -135,7 +135,11 @@
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
         <tr>
       </table>
-      <h5><a class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</a></h5>
+      <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+          {% csrf_token %}
+          <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
+          <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+      </form>
     </div>
     {% endif %}
 
@@ -170,53 +174,61 @@
         </tr>
       </tbody>
     </table>
-    <h5><a class="btn btn-info btn-sm">Exportar totales llamadas por tipor de llamada(CSV)</a></h5>
+    <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+        {% csrf_token %}
+        <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
+        <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+    </form>
 
     <table class="table table-bordered">
-      <thead>
-        <tr class="fts-table-bg">
-          <td colspan="2">
-            <h4>Cantidad de llamadas por campaña</h4>
-          </td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td width="50%">
-            <div style="overflow: auto; height: 500px">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Campaña</th>
-                    <th>Total </th>
-                    <th>Manuales </th>
-                    <th>Tipo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for campana_nombre, total_campana, total_manuales, tipo_campana in graficos_estadisticas.dict_campana_counter %}
-                  <tr>
-                    <td><h5>{{ campana_nombre }} </h5></td>
-                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
-                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manuales }}</span></h5></td>
-                    <td><h5>{{ tipo_campana }}</h5></td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </td>
-          <td width="50%" align="center">
-            <div class="graficos-avances">
-              <figure>
-                {{ graficos_estadisticas.barra_campana_total.render|safe }}
-              </figure>
-            </div>
-          </td>
-        </tr>
-      </tbody>
+        <thead>
+            <tr class="fts-table-bg">
+                <td colspan="2">
+                    <h4>Cantidad de llamadas por campaña</h4>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td width="50%">
+                    <div style="overflow: auto; height: 500px">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Campaña</th>
+                                    <th>Total </th>
+                                    <th>Manuales </th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for campana_nombre, total_campana, total_manuales, tipo_campana in graficos_estadisticas.dict_campana_counter %}
+                                    <tr>
+                                        <td><h5>{{ campana_nombre }} </h5></td>
+                                        <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
+                                        <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manuales }}</span></h5></td>
+                                        <td><h5>{{ tipo_campana }}</h5></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+                <td width="50%" align="center">
+                    <div class="graficos-avances">
+                        <figure>
+                            {{ graficos_estadisticas.barra_campana_total.render|safe }}
+                        </figure>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
     </table>
-    <h5><a class="btn btn-info btn-sm">Exportar reporte de llamadas por campaña(CSV)</a></h5>
+    <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+        {% csrf_token %}
+        <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
+        <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+    </form>
     <br/>
 
     <div class="col-md-12">
@@ -248,7 +260,11 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_dialer.render|safe }}
         </figure>
-        <h5><a class="btn btn-info btn-sm">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+        <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+            {% csrf_token %}
+            <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
+            <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+        </form>
       </div>
       </div>
       <br/>
@@ -281,7 +297,11 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
         </figure>
-        <h5><a class="btn btn-info btn-sm">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+        <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+            {% csrf_token %}
+            <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
+            <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+        </form>
       </div>
       </div>
       <br/>
@@ -314,7 +334,11 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_manuales.render|safe }}
         </figure>
-        <h5><a class="btn btn-info btn-sm">Exportar reporte por distribucion en campaña(CSV)</a></h5>
+        <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+            {% csrf_token %}
+            <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
+            <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+        </form>
       </div>
       </div>
     </div>
