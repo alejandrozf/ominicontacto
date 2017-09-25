@@ -66,6 +66,25 @@ def obtener_datos_total_llamadas_csv(datos_reporte):
     return filas
 
 
+def obtener_llamadas_campanas(datos_reporte):
+    """
+    Devuelve el contenido del reporte a csv de una de las tablas de cantidad de llamadas
+    de cada campaña por tipo de campaña
+    """
+    # obtenemos encabezado
+    encabezado = [["Campana", "Recibidas", "Atendidas", "Expiradas", "Abandonadas"]]
+
+    # obtenemos resto de las filas
+    datos_reporte_text = []
+
+    for fila_datos in datos_reporte['filas_datos']:
+        datos_reporte_text.append([force_text(item) for item in fila_datos])
+
+    filas_csv = encabezado + datos_reporte_text
+
+    return filas_csv
+
+
 class ArchivoDeReporteCsv(object):
     def __init__(self, nombre_reporte):
         self._nombre_reporte = nombre_reporte
@@ -97,50 +116,6 @@ class ArchivoDeReporteCsv(object):
             self.nombre_del_directorio,
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
-
-    def escribir_archivo_distribucion_campana_csv(self, estadisticas):
-
-        with open(self.ruta, 'wb') as csvfile:
-            # Creamos encabezado
-            encabezado = []
-
-            encabezado.append("Campana")
-            encabezado.append("Recibidas")
-            encabezado.append("Atendidas")
-            encabezado.append("Expiradas")
-            encabezado.append("Abandonadas")
-            encabezado.append("Manuales")
-            encabezado.append("Manuales atendidas")
-            encabezado.append("Manuales no atendidas")
-
-            # Creamos csvwriter
-            csvwiter = csv.writer(csvfile)
-
-            # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
-            csvwiter.writerow(lista_encabezados_utf8)
-
-            # Iteramos cada uno de las metadata de la gestion del formulario
-            for campana in estadisticas["estadisticas"]["queues_llamadas"]:
-                lista_opciones = []
-
-                # --- Buscamos datos
-
-                lista_opciones.append(campana[0])
-                lista_opciones.append(campana[1])
-                lista_opciones.append(campana[2])
-                lista_opciones.append(campana[3])
-                lista_opciones.append(campana[4])
-                lista_opciones.append(campana[5])
-                lista_opciones.append(campana[6])
-                lista_opciones.append(campana[7])
-
-                # --- Finalmente, escribimos la linea
-
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
-                csvwiter.writerow(lista_opciones_utf8)
 
     def escribir_archivo_llamadas_tipo_csv(self, estadisticas):
 
