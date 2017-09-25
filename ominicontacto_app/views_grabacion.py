@@ -148,19 +148,25 @@ def exporta_reporte_grabacion_llamada_view(request, tipo_reporte):
     return redirect(url)
 
 
-def exportar_total_llamadas(request):
+def obtener_filas_reporte(tipo_reporte, datos_reporte):
+    filas_csv = []
+    if tipo_reporte == 'total_llamadas':
+        filas_csv = obtener_datos_total_llamadas_csv(datos_reporte)
+    return filas_csv
+
+
+def exportar_total_llamadas(request, tipo_reporte):
     """
-    Realiza el reporte a formato .csv de los totales de llamadas realizadas
-    por tipo
+    Realiza el reporte a formato .csv del reporte recibido como parámetro
     """
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="total_llamadas.csv"'
+    response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(tipo_reporte)
     writer = UnicodeWriter(response)
-    datos_json = request.POST.get('reporte_total_llamadas', False)
+    datos_json = request.POST.get(tipo_reporte, False)
 
     if datos_json:
         datos_reporte = json.loads(datos_json)
-        filas_csv = obtener_datos_total_llamadas_csv(datos_reporte)
+        filas_csv = obtener_filas_reporte(tipo_reporte, datos_reporte)
         writer.writerows(filas_csv)
     else:
         writer.writerow(['No hay datos disponibles para este reporte'])
