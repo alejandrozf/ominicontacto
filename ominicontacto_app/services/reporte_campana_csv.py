@@ -116,55 +116,6 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_llamadas_tipo_csv(self, estadisticas):
-
-        with open(self.ruta, 'wb') as csvfile:
-            # Creamos encabezado
-            encabezado = []
-
-            encabezado.append("Cantidades Tipo")
-            encabezado.append("Totales")
-
-            # Creamos csvwriter
-            csvwiter = csv.writer(csvfile)
-
-            # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
-            csvwiter.writerow(lista_encabezados_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Cantidad Total Dialer")
-            lista_opciones.append(estadisticas["estadisticas"]["total_dialer"])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                   for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Cantidad Total Ics")
-            lista_opciones.append(estadisticas["estadisticas"]["total_ics"])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                   for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Cantidad Total Inbound")
-            lista_opciones.append(estadisticas["estadisticas"]["total_inbound"])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                   for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Cantidad Total Manual")
-            lista_opciones.append(estadisticas["estadisticas"]["total_manual"])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                   for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
     def escribir_archivo_llamadas_campana_csv(self, estadisticas):
 
         with open(self.ruta, 'wb') as csvfile:
