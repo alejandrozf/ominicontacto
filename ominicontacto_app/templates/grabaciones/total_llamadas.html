@@ -135,8 +135,7 @@
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
         <tr>
       </table>
-      <form action="{% url 'exportar_llamadas' tipo_reporte
-='total_llamadas' %}" method="POST">
+      <form action="{% url 'exportar_llamadas' tipo_reporte='total_llamadas' %}" method="POST">
           {% csrf_token %}
           <input class="hidden" name="total_llamadas" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas_json }}"/>
           <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
@@ -222,7 +221,7 @@
     </table>
     <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas' %}" method="POST">
         {% csrf_token %}
-        <input class="hidden" name="" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas }}"/>
+        <input class="hidden" name="llamadas_campanas" type="text" value="{{ graficos_estadisticas.dict_campana_counter_json }}"/>
         <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
     </form>
     <br/>
