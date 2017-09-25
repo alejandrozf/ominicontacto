@@ -356,6 +356,8 @@ urlpatterns = [
         ),
     url(r'^reportes/llamadas_exporta/(?P<tipo_reporte>[\w\-]+)/$',
         views_grabacion.exporta_reporte_grabacion_llamada_view, name='llamadas_exporta'),
+    url(r'^reportes/exportar_total_llamadas/$',
+        views_grabacion.exportar_total_llamadas, name='exportar_total_llamadas'),
     # ==========================================================================
     # Calificacion
     # ==========================================================================
@@ -438,17 +440,17 @@ urlpatterns = [
         r'^formulario/(?P<pk_campana>\d+)/venta/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
         login_required(views_calificacion_formulario.FormularioCreateFormView.as_view()),
         name='formulario_venta',
-        ),
+    ),
     url(
         r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
         login_required(views_calificacion_formulario.CalificacionClienteCreateView.as_view()),
         name='calificacion_formulario_create',
-        ),
+    ),
     url(
         r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
         login_required(views_calificacion_formulario.CalificacionClienteUpdateView.as_view()),
         name='calificacion_formulario_update',
-        ),
+    ),
     url(r'^formulario/(?P<pk>\d+)/detalle/$',
         login_required(
             views_calificacion_formulario.FormularioDetailView.as_view()),
@@ -868,10 +870,10 @@ urlpatterns += patterns('',
                         )
 
 if settings.DJANGO_DEBUG_TOOLBAR:
-#     # static files (images, css, javascript, etc.)
-#     urlpatterns += patterns('',
-#         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-#             'document_root': settings.MEDIA_ROOT}))
+    #     # static files (images, css, javascript, etc.)
+    #     urlpatterns += patterns('',
+    #         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+    #             'document_root': settings.MEDIA_ROOT}))
 
     import debug_toolbar
     urlpatterns += [

@@ -6,8 +6,10 @@ ya que el insert lo hace kamailio/asterisk(hablar con fabian como hace el insert
 """
 
 import datetime
+import json
 
 from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.core import paginator as django_paginator
@@ -18,8 +20,9 @@ from ominicontacto_app.models import (
     Grabacion, Campana
 )
 from ominicontacto_app.services.reporte_grafico import GraficoService
-from utiles import convert_fecha_datetime
-from ominicontacto_app.services.reporte_campana_csv import ReporteCampanaCSVService
+from utiles import convert_fecha_datetime, UnicodeWriter
+from ominicontacto_app.services.reporte_campana_csv import (ReporteCampanaCSVService,
+                                                            obtener_datos_total_llamadas_csv)
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -143,3 +146,23 @@ def exporta_reporte_grabacion_llamada_view(request, tipo_reporte):
     service = ReporteCampanaCSVService()
     url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
     return redirect(url)
+
+
+def exportar_total_llamadas(request):
+    """
+    Realiza el reporte a formato .csv de los totales de llamadas realizadas
+    por tipo
+    """
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="total_llamadas.csv"'
+    writer = UnicodeWriter(response)
+    datos_json = request.POST.get('reporte_total_llamadas', False)
+
+    if datos_json:
+        datos_reporte = json.loads(datos_json)
+        filas_csv = obtener_datos_total_llamadas_csv(datos_reporte)
+        writer.writerows(filas_csv)
+    else:
+        writer.writerow(['No hay datos disponibles para este reporte'])
+
+    return response
