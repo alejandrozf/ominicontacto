@@ -357,7 +357,7 @@ urlpatterns = [
     url(r'^reportes/llamadas_exporta/(?P<tipo_reporte>[\w\-]+)/$',
         views_grabacion.exporta_reporte_grabacion_llamada_view, name='llamadas_exporta'),
     url(r'^reportes/exportar/(?P<tipo_reporte>[\w\-]+)/$',
-        views_grabacion.exportar_total_llamadas, name='exportar_total_llamadas'),
+        views_grabacion.exportar_llamadas, name='exportar_llamadas'),
     # ==========================================================================
     # Calificacion
     # ==========================================================================
