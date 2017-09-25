@@ -22,7 +22,8 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.reporte_grafico import GraficoService
 from utiles import convert_fecha_datetime, UnicodeWriter
 from ominicontacto_app.services.reporte_campana_csv import (ReporteCampanaCSVService,
-                                                            obtener_datos_total_llamadas_csv)
+                                                            obtener_datos_total_llamadas_csv,
+                                                            obtener_llamadas_campanas)
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -149,13 +150,14 @@ def exporta_reporte_grabacion_llamada_view(request, tipo_reporte):
 
 
 def obtener_filas_reporte(tipo_reporte, datos_reporte):
-    filas_csv = []
     if tipo_reporte == 'total_llamadas':
-        filas_csv = obtener_datos_total_llamadas_csv(datos_reporte)
-    return filas_csv
+        return obtener_datos_total_llamadas_csv(datos_reporte)
+    if tipo_reporte in ['llamadas_campanas_entrantes', 'llamadas_campanas_dialer',
+                        'llamadas_campanas_manuales']:
+        return obtener_llamadas_campanas(datos_reporte)
 
 
-def exportar_total_llamadas(request, tipo_reporte):
+def exportar_llamadas(request, tipo_reporte):
     """
     Realiza el reporte a formato .csv del reporte recibido como parámetro
     """
