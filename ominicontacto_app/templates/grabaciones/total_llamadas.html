@@ -135,7 +135,8 @@
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
         <tr>
       </table>
-      <form action="{% url 'exportar_total_llamadas' tipo_reporte='total_llamadas' %}" method="POST">
+      <form action="{% url 'exportar_llamadas' tipo_reporte
+='total_llamadas' %}" method="POST">
           {% csrf_token %}
           <input class="hidden" name="total_llamadas" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas_json }}"/>
           <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
@@ -260,10 +261,10 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_dialer.render|safe }}
         </figure>
-        <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+        <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas_dialer' %}" method="POST">
             {% csrf_token %}
-            <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
-            <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+            <input class="hidden" name="llamadas_campanas_dialer" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_dialer_json }}"/>
+            <h5><button class="btn btn-info btn-sm">Exportar llamadas campañas dialer</button></h5>
         </form>
       </div>
       </div>
@@ -297,10 +298,10 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_entrantes.render|safe }}
         </figure>
-        <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+        <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas_entrantes' %}" method="POST">
             {% csrf_token %}
-            <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
-            <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+            <input class="hidden" name="llamadas_campanas_entrantes" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_entrantes_json }}"/>
+            <h5><button class="btn btn-info btn-sm">Exportar llamadas campañas entrantes</button></h5>
         </form>
       </div>
       </div>
@@ -334,10 +335,10 @@
         <figure>
           {{ graficos_estadisticas.barra_campana_llamadas_manuales.render|safe }}
         </figure>
-        <form action="{#% url 'exportar_total_llamadas' %#}" method="POST">
+        <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas_manuales' %}" method="POST">
             {% csrf_token %}
-            <input class="hidden" name="" type="text" value="{{ estadisticas.total_llamadas }}"/>
-            <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+            <input class="hidden" name="llamadas_campanas_manuales" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_manuales_json }}"/>
+            <h5><button class="btn btn-info btn-sm">Exportar llamadas campañas manuales</button></h5>
         </form>
       </div>
       </div>
