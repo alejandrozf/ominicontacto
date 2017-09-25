@@ -6,23 +6,18 @@ Servicio para generar reporte csv de las reportes de los agentes
 
 from __future__ import unicode_literals
 
-import csv
-import logging
 import os
 import datetime
+import logging
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
 
-
 logger = logging.getLogger(__name__)
 
 
-def obtener_datos_total_llamadas_csv(datos_reporte):
-
-    # Obtenemos encabezado
-    encabezado = [["Total llamadas", "Cantidad"]]
+def obtener_datos_total_llamadas_csv(encabezado, datos_reporte):
 
     # Obtenemos datos del resto de las filas
     datos = []
@@ -61,18 +56,16 @@ def obtener_datos_total_llamadas_csv(datos_reporte):
     datos.append(["Cantidad de llamadas abandonadas",
                   force_text(datos_reporte['llamadas_abandonadas_manuales'])])
 
-    filas = encabezado + datos
+    filas = [encabezado] + datos
 
     return filas
 
 
-def obtener_llamadas_campanas(datos_reporte):
+def obtener_llamadas_campanas(encabezado, datos_reporte):
     """
     Devuelve el contenido del reporte a csv de una de las tablas de cantidad de llamadas
     de cada campaña por tipo de campaña
     """
-    # obtenemos encabezado
-    encabezado = [["Campana", "Recibidas", "Atendidas", "Expiradas", "Abandonadas"]]
 
     # obtenemos resto de las filas
     datos_reporte_text = []
@@ -80,7 +73,7 @@ def obtener_llamadas_campanas(datos_reporte):
     for fila_datos in datos_reporte['filas_datos']:
         datos_reporte_text.append([force_text(item) for item in fila_datos])
 
-    filas_csv = encabezado + datos_reporte_text
+    filas_csv = [encabezado] + datos_reporte_text
 
     return filas_csv
 
@@ -115,47 +108,6 @@ class ArchivoDeReporteCsv(object):
             self.nombre_del_directorio,
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
-
-    def escribir_archivo_llamadas_campana_csv(self, estadisticas):
-
-        with open(self.ruta, 'wb') as csvfile:
-            # Creamos encabezado
-            encabezado = []
-
-            encabezado.append("Campana")
-            encabezado.append("Total")
-            encabezado.append("ICS")
-            encabezado.append("DIALER")
-            encabezado.append("INBOUND")
-            encabezado.append("MANUAL")
-
-            # Creamos csvwriter
-            csvwiter = csv.writer(csvfile)
-
-            # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
-            csvwiter.writerow(lista_encabezados_utf8)
-
-            # Iteramos cada uno de las metadata de la gestion del formulario
-            for (campana, total_campana, total_ics, total_dialer, total_inbound,
-                 total_manual) in estadisticas["dict_campana_counter"]:
-                lista_opciones = []
-
-                # --- Buscamos datos
-
-                lista_opciones.append(campana)
-                lista_opciones.append(total_campana)
-                lista_opciones.append(total_ics)
-                lista_opciones.append(total_dialer)
-                lista_opciones.append(total_inbound)
-                lista_opciones.append(total_manual)
-
-                # --- Finalmente, escribimos la linea
-
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
-                csvwiter.writerow(lista_opciones_utf8)
 
     def ya_existe(self):
         return os.path.exists(self.ruta)
