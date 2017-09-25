@@ -90,7 +90,6 @@ class ArchivoDeReporteCsv(object):
         self._nombre_reporte = nombre_reporte
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        hoy
         self.nombre_del_directorio = 'reporte_campana'
         self.prefijo_nombre_de_archivo = "{0}-{1}".format(hoy, nombre_reporte)
         self.sufijo_nombre_de_archivo = ".csv"
