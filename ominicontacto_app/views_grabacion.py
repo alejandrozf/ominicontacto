@@ -147,14 +147,14 @@ def exporta_reporte_grabacion_llamada_view(request, tipo_reporte):
 
 def obtener_filas_reporte(tipo_reporte, datos_reporte):
     if tipo_reporte == 'total_llamadas':
-        encabezado = ["Total llamadas", "Cantidad"]
+        encabezado = [u"Total llamadas", u"Cantidad"]
         return obtener_datos_total_llamadas_csv(encabezado, datos_reporte)
     if tipo_reporte in ['llamadas_campanas_entrantes', 'llamadas_campanas_dialer',
                         'llamadas_campanas_manuales']:
-        encabezado = ["Campana", "Recibidas", "Atendidas", "Expiradas", "Abandonadas"]
+        encabezado = [u"Campana", u"Recibidas", u"Atendidas", u"Expiradas", u"Abandonadas"]
         return obtener_llamadas_campanas(encabezado, datos_reporte)
     if tipo_reporte == "llamadas_campanas":
-        encabezado = ["Total llamadas", "Cantidad", "Tipo de campaña"]
+        encabezado = [u"Total llamadas", u"Cantidad", u"Tipo de campaña"]
         return obtener_llamadas_campanas(encabezado, datos_reporte)
 
 
