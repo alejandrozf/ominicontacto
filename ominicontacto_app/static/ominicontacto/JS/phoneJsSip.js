@@ -519,6 +519,14 @@ $(function() {
 						$("#Resume").prop('disabled',true);
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-success", "Online");
+					} else if(lastPause === "OnCall") {
+						saveCall(fromUser);
+						num = '';
+						fromUser = "";
+						$("#Pause").prop('disabled',false);
+						$("#Resume").prop('disabled',true);
+						$("#sipLogout").prop('disabled',false);
+						updateButton(modifyUserStat, "label label-success", "Online");
 					} else {
 						fromUser = "";
 						$("#Pause").prop('disabled',true);
