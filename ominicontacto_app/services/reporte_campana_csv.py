@@ -9,7 +9,6 @@ from __future__ import unicode_literals
 import csv
 import logging
 import os
-import json
 import datetime
 
 from django.conf import settings
@@ -18,6 +17,53 @@ from django.utils.encoding import force_text
 
 
 logger = logging.getLogger(__name__)
+
+
+def obtener_datos_total_llamadas_csv(datos_reporte):
+
+    # Obtenemos encabezado
+    encabezado = [["Total llamadas", "Cantidad"]]
+
+    # Obtenemos datos del resto de las filas
+    datos = []
+
+    datos.append("")
+
+    datos.append(["Total llamadas procesadas por OmniLeads",
+                  force_text(datos_reporte['total_llamadas_ingresadas'])])
+
+    datos.append("")
+
+    datos.append(["Total de llamadas Salientes Discador",
+                  force_text(datos_reporte['llamadas_ingresadas_dialer'])])
+    datos.append(["Cantidad de llamadas gestionadas",
+                  force_text(datos_reporte['llamadas_gestionadas_dialer'])])
+    datos.append(["Cantidad de llamadas perdidas",
+                  force_text(datos_reporte['llamadas_perdidas_dialer'])])
+
+    datos.append("")
+
+    datos.append(["Total llamadas Entrantes",
+                  force_text(datos_reporte['llamadas_ingresadas_entrantes'])])
+    datos.append(["Cantidad de llamadas atendidas",
+                  force_text(datos_reporte['llamadas_atendidas_entrantes'])])
+    datos.append(["Cantidad de llamadas expiradas",
+                  force_text(datos_reporte['llamadas_expiradas_entrantes'])])
+    datos.append(["Cantidad de llamadas abandonadas",
+                  force_text(datos_reporte['llamadas_abandonadas_entrantes'])])
+
+    datos.append("")
+
+    datos.append(["Total llamadas Salientes Manuales",
+                  force_text(datos_reporte['llamadas_ingresadas_manuales'])])
+    datos.append(["Cantidad de llamadas atendidas",
+                  force_text(datos_reporte['llamadas_atendidas_manuales'])])
+    datos.append(["Cantidad de llamadas abandonadas",
+                  force_text(datos_reporte['llamadas_abandonadas_manuales'])])
+
+    filas = encabezado + datos
+
+    return filas
 
 
 class ArchivoDeReporteCsv(object):
@@ -67,7 +113,6 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Manuales atendidas")
             encabezado.append("Manuales no atendidas")
 
-
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
 
@@ -97,80 +142,6 @@ class ArchivoDeReporteCsv(object):
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
-    def escribir_archivo_total_llamadas_csv(self, estadisticas):
-
-        with open(self.ruta, 'wb') as csvfile:
-            # Creamos encabezado
-            encabezado = []
-
-            encabezado.append("Total llamadas")
-            encabezado.append("Cantidad")
-
-            # Creamos csvwriter
-            csvwiter = csv.writer(csvfile)
-
-            # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
-            csvwiter.writerow(lista_encabezados_utf8)
-
-
-            lista_opciones = []
-            lista_opciones.append("Numero de llamadas recibidas")
-            lista_opciones.append(estadisticas["estadisticas"]["total_llamadas"][0])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Numero de llamadas atendidas")
-            lista_opciones.append(estadisticas["estadisticas"]["total_llamadas"][1])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Numero de llamadas expiradas")
-            lista_opciones.append(estadisticas["estadisticas"]["total_llamadas"][2])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Numero de llamadas abandonadas")
-            lista_opciones.append(estadisticas["estadisticas"]["total_llamadas"][3])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Numero de llamadas salientes")
-            lista_opciones.append(estadisticas["estadisticas"]["total_llamadas"][4])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Numero de llamadas salients atendidas")
-            lista_opciones.append(estadisticas["estadisticas"]["total_llamadas"][5])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
-            lista_opciones = []
-            lista_opciones.append("Numero de llamadas salientes abandonadas")
-            lista_opciones.append(estadisticas["estadisticas"]["total_llamadas"][6])
-
-            lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
-            csvwiter.writerow(lista_opciones_utf8)
-
     def escribir_archivo_llamadas_tipo_csv(self, estadisticas):
 
         with open(self.ruta, 'wb') as csvfile:
@@ -193,7 +164,7 @@ class ArchivoDeReporteCsv(object):
             lista_opciones.append(estadisticas["estadisticas"]["total_dialer"])
 
             lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
+                                   for item in lista_opciones]
             csvwiter.writerow(lista_opciones_utf8)
 
             lista_opciones = []
@@ -201,7 +172,7 @@ class ArchivoDeReporteCsv(object):
             lista_opciones.append(estadisticas["estadisticas"]["total_ics"])
 
             lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
+                                   for item in lista_opciones]
             csvwiter.writerow(lista_opciones_utf8)
 
             lista_opciones = []
@@ -209,7 +180,7 @@ class ArchivoDeReporteCsv(object):
             lista_opciones.append(estadisticas["estadisticas"]["total_inbound"])
 
             lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
+                                   for item in lista_opciones]
             csvwiter.writerow(lista_opciones_utf8)
 
             lista_opciones = []
@@ -217,7 +188,7 @@ class ArchivoDeReporteCsv(object):
             lista_opciones.append(estadisticas["estadisticas"]["total_manual"])
 
             lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                    for item in lista_opciones]
+                                   for item in lista_opciones]
             csvwiter.writerow(lista_opciones_utf8)
 
     def escribir_archivo_llamadas_campana_csv(self, estadisticas):
@@ -242,7 +213,8 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for campana, total_campana, total_ics, total_dialer, total_inbound, total_manual in estadisticas["dict_campana_counter"]:
+            for (campana, total_campana, total_ics, total_dialer, total_inbound,
+                 total_manual) in estadisticas["dict_campana_counter"]:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -289,7 +261,7 @@ class ReporteCampanaCSVService(object):
         archivo_de_reporte.escribir_archivo_llamadas_campana_csv(estadisticas)
 
     def obtener_url_reporte_csv_descargar(self, nombre_reporte):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
+        # assert campana.estado == Campana.ESTADO_DEPURADA
 
         archivo_de_reporte = ArchivoDeReporteCsv(nombre_reporte)
         if archivo_de_reporte.ya_existe():
