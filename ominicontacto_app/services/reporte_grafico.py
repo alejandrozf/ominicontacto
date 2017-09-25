@@ -4,8 +4,9 @@
 Servicio para generar reporte de las grabaciones de las llamadas
 """
 
-import pygal
+import json
 import datetime
+import pygal
 
 from collections import OrderedDict
 from pygal.style import Style
@@ -340,6 +341,7 @@ class GraficoService():
             'fecha_hasta': fecha_superior,
             'total_llamadas': total_llamadas,
             'total_llamadas_dict': total_llamadas_dict,
+            'total_llamadas_json': json.dumps(total_llamadas_dict),
         }
         return dic_estadisticas
 
