@@ -304,10 +304,13 @@ class GraficoService():
             campanas, fecha_inferior, fecha_superior)
         queues_llamadas_dialer, totales_grafico_dialer = self.calcular_cantidad_llamadas(
             campanas_dialer, fecha_inferior, fecha_superior)
+        queues_llamadas_dialer_json = json.dumps({'filas_datos': queues_llamadas_dialer})
         queues_llamadas_entrantes, totales_grafico_entrantes = self.calcular_cantidad_llamadas(
             campanas_entrantes, fecha_inferior, fecha_superior)
+        queues_llamadas_entrantes_json = json.dumps({'filas_datos': queues_llamadas_entrantes})
         queues_llamadas_manuales, totales_grafico_manuales = self.calcular_cantidad_llamadas(
             campanas_manuales, fecha_inferior, fecha_superior)
+        queues_llamadas_manuales_json = json.dumps({'filas_datos': queues_llamadas_manuales})
 
         total_llamadas = total_llamadas_dict.values()
 
@@ -332,10 +335,13 @@ class GraficoService():
             'tipos_campana': tipos_campana,
             'totales_grafico': totales_grafico,
             'queues_llamadas_dialer': queues_llamadas_dialer,
+            'queues_llamadas_dialer_json': queues_llamadas_dialer_json,
             'totales_grafico_dialer': totales_grafico_dialer,
             'queues_llamadas_entrantes': queues_llamadas_entrantes,
+            'queues_llamadas_entrantes_json': queues_llamadas_entrantes_json,
             'totales_grafico_entrantes': totales_grafico_entrantes,
             'queues_llamadas_manuales': queues_llamadas_manuales,
+            'queues_llamadas_manuales_json': queues_llamadas_manuales_json,
             'totales_grafico_manuales': totales_grafico_manuales,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
