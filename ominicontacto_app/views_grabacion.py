@@ -165,3 +165,11 @@ def exportar_llamadas(request, tipo_reporte):
         writer.writerow(['No hay datos disponibles para este reporte'])
 
     return response
+
+
+def exportar_zip_reportes(request):
+    """
+    Realiza la exportación de todos los reportes de llamadas a .csv y los devuelve
+    comprimidos dentro de un zip
+    """
+    pass

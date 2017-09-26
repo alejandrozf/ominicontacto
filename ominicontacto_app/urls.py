@@ -354,6 +354,8 @@ urlpatterns = [
             views_grabacion.GrabacionReporteFormView.as_view()),
         name='reporte_llamadas',
         ),
+    url(r'^reportes/exportar/todos/$',
+        views_grabacion.exportar_zip_reportes, name='exportar_zip_reportes'),
     url(r'^reportes/exportar/(?P<tipo_reporte>[\w\-]+)/$',
         views_grabacion.exportar_llamadas, name='exportar_llamadas'),
     # ==========================================================================
