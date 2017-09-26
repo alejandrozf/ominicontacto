@@ -86,22 +86,21 @@
         <tr>
           <td><strong>Total llamadas procesadas por OmniLeads</strong></td>
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.0}}</td>
-        <tr>
+        </tr>
       </table>
       <table class="table table-bordered">
         <tr>
           <td><strong>Total de llamadas Salientes Discador</strong></td>
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.1}}</td>
-        <tr>
+        </tr>
         <tr>
           <td>Cantidad de llamadas gestionadas</td>
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.2}}</td>
-        <tr>
+        </tr>
         <tr>
           <td>Cantidad de llamadas perdidas</td>
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.3}}</td>
-        <tr>
-        <tr>
+        </tr>
       </table>
       <table class="table table-bordered">
         <tr>
@@ -125,15 +124,15 @@
         <tr>
           <td><strong>Total llamadas Salientes Manuales</strong></td>
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.8}}</td>
-        <tr>
+        </tr>
         <tr>
           <td>Cantidad de llamadas atendidas</td>
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.9}}</td>
-        <tr>
+        </tr>
         <tr>
           <td>Cantidad de llamadas abandonadas</td>
           <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
-        <tr>
+        </tr>
       </table>
       <form action="{% url 'exportar_llamadas' tipo_reporte='total_llamadas' %}" method="POST">
           {% csrf_token %}
