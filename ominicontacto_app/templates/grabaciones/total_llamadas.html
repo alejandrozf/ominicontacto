@@ -140,6 +140,17 @@
           <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
       </form>
     </div>
+    <div class="col-md-3">
+        <form action="{% url 'exportar_zip_reportes' %}" method="POST">
+            {% csrf_token %}
+            <input class="hidden" name="total_llamadas" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas_json }}"/>
+            <input class="hidden" name="llamadas_campanas" type="text" value="{{ graficos_estadisticas.dict_campana_counter_json }}"/>
+            <input class="hidden" name="llamadas_campanas_dialer" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_dialer_json }}"/>
+            <input class="hidden" name="llamadas_campanas_entrantes" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_entrantes_json }}"/>
+            <input class="hidden" name="llamadas_campanas_manuales" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_manuales_json }}"/>
+            <h5><button class="btn btn-info btn-sm">Exportar a CSV todos los reportes</button></h5>
+        </form>
+    </div>
     {% endif %}
 
     <table class="table table-bordered">
