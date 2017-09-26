@@ -8,6 +8,9 @@ ya que el insert lo hace kamailio/asterisk(hablar con fabian como hace el insert
 import datetime
 import json
 
+from StringIO import StringIO
+from zipfile import ZipFile
+
 from django.conf import settings
 from django.http import HttpResponse
 
@@ -23,6 +26,8 @@ from ominicontacto_app.services.reporte_grafico import GraficoService
 from utiles import convert_fecha_datetime, UnicodeWriter
 from ominicontacto_app.services.reporte_campana_csv import (obtener_datos_total_llamadas_csv,
                                                             obtener_llamadas_campanas)
+
+REPORTE_SIN_DATOS = ['No hay datos disponibles para este reporte']
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -162,9 +167,53 @@ def exportar_llamadas(request, tipo_reporte):
         filas_csv = obtener_filas_reporte(tipo_reporte, datos_reporte)
         writer.writerows(filas_csv)
     else:
-        writer.writerow(['No hay datos disponibles para este reporte'])
+        writer.writerow(REPORTE_SIN_DATOS)
 
     return response
+
+
+def obtener_datos_reporte_general(request):
+    """
+    Devuelve los datos para el reporte general a través de
+    """
+    datos_reporte_total_llamadas = request.POST.get('total_llamadas', False)
+    if datos_reporte_total_llamadas:
+        filas_reporte_total_llamadas = obtener_filas_reporte(
+            'total_llamadas', json.loads(datos_reporte_total_llamadas))
+    else:
+        filas_reporte_total_llamadas = REPORTE_SIN_DATOS
+
+    datos_reporte_llamadas_campanas = request.POST.get('llamadas_campanas', False)
+    if datos_reporte_llamadas_campanas:
+        filas_reporte_llamadas_campanas = obtener_filas_reporte(
+            'llamadas_campanas', json.loads(datos_reporte_llamadas_campanas))
+    else:
+        filas_reporte_llamadas_campanas = REPORTE_SIN_DATOS
+
+    datos_reporte_campanas_dialer = request.POST.get('llamadas_campanas_dialer', False)
+    if datos_reporte_campanas_dialer:
+        filas_reporte_campanas_dialer = obtener_filas_reporte(
+            'llamadas_campanas_dialer', json.loads(datos_reporte_campanas_dialer))
+    else:
+        filas_reporte_campanas_dialer = REPORTE_SIN_DATOS
+
+    datos_reporte_campanas_entrantes = request.POST.get('llamadas_campanas_entrantes', False)
+    if datos_reporte_campanas_entrantes:
+        filas_reporte_campanas_entrantes = obtener_filas_reporte(
+            'llamadas_campanas_entrantes', json.loads(datos_reporte_campanas_entrantes))
+    else:
+        filas_reporte_campanas_entrantes = REPORTE_SIN_DATOS
+
+    datos_reporte_campanas_manuales = request.POST.get('llamadas_campanas_manuales', False)
+    if datos_reporte_campanas_manuales:
+        filas_reporte_campanas_manuales = obtener_filas_reporte(
+            'llamadas_campanas_manuales', json.loads(datos_reporte_campanas_manuales))
+    else:
+        filas_reporte_campanas_manuales = REPORTE_SIN_DATOS
+
+    return (filas_reporte_total_llamadas, filas_reporte_llamadas_campanas,
+            filas_reporte_campanas_dialer, filas_reporte_campanas_entrantes,
+            filas_reporte_campanas_manuales)
 
 
 def exportar_zip_reportes(request):
@@ -172,4 +221,49 @@ def exportar_zip_reportes(request):
     Realiza la exportación de todos los reportes de llamadas a .csv y los devuelve
     comprimidos dentro de un zip
     """
-    pass
+    (filas_reporte_total_llamadas, filas_reporte_llamadas_campanas,
+     filas_reporte_campanas_dialer, filas_reporte_campanas_entrantes,
+     filas_reporte_campanas_manuales) = obtener_datos_reporte_general(request)
+
+    in_memory = StringIO()
+
+    zip = ZipFile(in_memory, "a")
+
+    total_llamadas_file = StringIO()
+    total_llamadas_writer = UnicodeWriter(total_llamadas_file)
+    total_llamadas_writer.writerows(filas_reporte_total_llamadas)
+
+    llamadas_campanas_file = StringIO()
+    llamadas_campanas_writer = UnicodeWriter(llamadas_campanas_file)
+    llamadas_campanas_writer.writerows(filas_reporte_llamadas_campanas)
+
+    campanas_dialer_file = StringIO()
+    campanas_dialer_writer = UnicodeWriter(campanas_dialer_file)
+    campanas_dialer_writer.writerows(filas_reporte_campanas_dialer)
+
+    campanas_entrantes_file = StringIO()
+    campanas_entrantes_writer = UnicodeWriter(campanas_entrantes_file)
+    campanas_entrantes_writer.writerows(filas_reporte_campanas_entrantes)
+
+    campanas_manuales_file = StringIO()
+    campanas_manuales_writer = UnicodeWriter(campanas_manuales_file)
+    campanas_manuales_writer.writerows(filas_reporte_campanas_manuales)
+
+    zip.writestr("total_llamadas.csv", total_llamadas_file.getvalue())
+    zip.writestr("llamadas_campanas.csv", llamadas_campanas_file.getvalue())
+    zip.writestr("llamadas_campanas_dialer.csv", campanas_dialer_file.getvalue())
+    zip.writestr("llamadas_campanas_entrantes.csv", campanas_entrantes_file.getvalue())
+    zip.writestr("llamadas_campanas_manuales.csv", campanas_manuales_file.getvalue())
+
+    # fix for Linux zip files read in Windows
+    for file in zip.filelist:
+        file.create_system = 0
+    zip.close()
+
+    response = HttpResponse(content_type="application/zip")
+    response["Content-Disposition"] = "attachment; filename=reporte-general.zip"
+
+    in_memory.seek(0)
+    response.write(in_memory.read())
+
+    return response
