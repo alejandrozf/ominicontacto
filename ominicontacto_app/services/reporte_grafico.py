@@ -111,7 +111,7 @@ class GraficoService():
             event__in=eventos_llamadas_ingresadas,
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_ingresadas_dict = {campana['campana_id']: campana['cantidad']
                                     for campana in qs_campanas_ingresadas}
 
@@ -119,7 +119,7 @@ class GraficoService():
             event__in=eventos_llamadas_atendidas,
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_atendidas_dict = {campana['campana_id']: campana['cantidad']
                                    for campana in qs_campanas_atendidas}
 
@@ -127,7 +127,7 @@ class GraficoService():
             event__in=eventos_llamadas_abandonadas,
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_abandonadas_dict = {campana['campana_id']: campana['cantidad']
                                      for campana in qs_campanas_abandonadas}
 
@@ -135,7 +135,7 @@ class GraficoService():
             event__in=eventos_llamadas_expiradas,
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_expiradas_dict = {campana['campana_id']: campana['cantidad']
                                    for campana in qs_campanas_expiradas}
 
