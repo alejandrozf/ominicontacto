@@ -276,7 +276,7 @@ $(function() {
       e.session.on("failed",function(e) {  // cuando falla el establecimiento de la llamada
         $("#aTransfer").prop('disabled', true);
         $("#bTransfer").prop('disabled', true);
-        $("#onHold").prop('disabled', true);
+        $("#onHold").prop('disabled', false);
         $("#modalReceiveCalls").modal('hide');
         Sounds("","stop");
       });
@@ -792,7 +792,7 @@ $(function() {
     callStatus.appendChild(callSipStatus);
     $("#aTransfer").prop('disabled', true);
     $("#bTransfer").prop('disabled', true);
-    $("#onHold").prop('disabled', true);
+    $("#onHold").prop('disabled', false);
   }
 
   function setSipStatus(img, state, elem) {
