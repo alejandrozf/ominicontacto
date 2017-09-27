@@ -435,7 +435,7 @@ $(function() {
 		$("#onHold").click(function() {
 			if(flagHold) {
   	 		flagHold = false;
-  	 	  var ag = e.session.hold(false);
+  	 	  var ag = e.session.hold();
 				console.log("Hold clicked: " +ag);
   	 	} else {
   	 	  flagHold = true;
