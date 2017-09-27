@@ -677,6 +677,10 @@ class Campana(models.Model):
     def __unicode__(self):
             return self.nombre
 
+    def save(self, *args, **kwargs):
+        self.nombre = ''.join([i if ord(i) < 128 else '_' for i in self.nombre])
+        super(Campana, self).save(*args, **kwargs)
+
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
         self.save()
