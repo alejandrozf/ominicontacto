@@ -435,10 +435,12 @@ $(function() {
 		$("#onHold").click(function() {
 			if(flagHold) {
   	 		flagHold = false;
-  	 	  e.session.hold();
+  	 	  var ag = e.session.hold();
+				console.log("Hold clicked: " +ag);
   	 	} else {
   	 	  flagHold = true;
-  	 	  e.session.unhold();
+  	 	  var af = e.session.unhold();
+				console.log("UnHold clicked: " +af);
   	 	}
 		});
 
