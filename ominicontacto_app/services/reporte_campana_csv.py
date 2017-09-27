@@ -78,7 +78,7 @@ def obtener_llamadas_campanas(encabezado, datos_reporte):
     return filas_csv
 
 
-class ArchivoDeReporteCsv(object):
+class ArchivoDeReporteCsv(object):  # TODO: revisar si deprecar o eliminar esta clase
     def __init__(self, nombre_reporte):
         self._nombre_reporte = nombre_reporte
         hoy_ahora = datetime.datetime.today()
@@ -113,7 +113,7 @@ class ArchivoDeReporteCsv(object):
         return os.path.exists(self.ruta)
 
 
-class ReporteCampanaCSVService(object):
+class ReporteCampanaCSVService(object):  # TODO: revisar si deprecar o eliminar esta clase
 
     def crea_reporte_csv(self, estadisticas):
 
