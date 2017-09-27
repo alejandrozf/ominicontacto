@@ -6,8 +6,10 @@ Servicio para generar reporte csv de las reportes de los agentes
 
 from __future__ import unicode_literals
 
-import os
+
 import datetime
+import json
+import os
 import logging
 
 from django.conf import settings
@@ -16,6 +18,65 @@ from django.utils.encoding import force_text
 
 logger = logging.getLogger(__name__)
 
+REPORTE_SIN_DATOS = ['No hay datos disponibles para este reporte']
+
+
+def obtener_filas_reporte(tipo_reporte, datos_reporte):
+    if tipo_reporte == 'total_llamadas':
+        encabezado = [u"Total llamadas", u"Cantidad"]
+        return obtener_datos_total_llamadas_csv(encabezado, datos_reporte)
+    if tipo_reporte in ['llamadas_campanas_entrantes', 'llamadas_campanas_dialer',
+                        'llamadas_campanas_manuales']:
+        encabezado = [u"Campana", u"Recibidas", u"Atendidas", u"Expiradas", u"Abandonadas"]
+        return obtener_llamadas_campanas(encabezado, datos_reporte)
+    if tipo_reporte == "llamadas_campanas":
+        encabezado = [u"Total llamadas", u"Cantidad", u"Tipo de campaña"]
+        return obtener_llamadas_campanas(encabezado, datos_reporte)
+
+
+def obtener_datos_reporte_general(request):
+    """
+    Devuelve los datos para el reporte general a través de
+    """
+    datos_reporte_total_llamadas = request.POST.get('total_llamadas', False)
+    if datos_reporte_total_llamadas:
+        filas_reporte_total_llamadas = obtener_filas_reporte(
+            'total_llamadas', json.loads(datos_reporte_total_llamadas))
+    else:
+        filas_reporte_total_llamadas = REPORTE_SIN_DATOS
+
+    datos_reporte_llamadas_campanas = request.POST.get('llamadas_campanas', False)
+    if datos_reporte_llamadas_campanas:
+        filas_reporte_llamadas_campanas = obtener_filas_reporte(
+            'llamadas_campanas', json.loads(datos_reporte_llamadas_campanas))
+    else:
+        filas_reporte_llamadas_campanas = REPORTE_SIN_DATOS
+
+    datos_reporte_campanas_dialer = request.POST.get('llamadas_campanas_dialer', False)
+    if datos_reporte_campanas_dialer:
+        filas_reporte_campanas_dialer = obtener_filas_reporte(
+            'llamadas_campanas_dialer', json.loads(datos_reporte_campanas_dialer))
+    else:
+        filas_reporte_campanas_dialer = REPORTE_SIN_DATOS
+
+    datos_reporte_campanas_entrantes = request.POST.get('llamadas_campanas_entrantes', False)
+    if datos_reporte_campanas_entrantes:
+        filas_reporte_campanas_entrantes = obtener_filas_reporte(
+            'llamadas_campanas_entrantes', json.loads(datos_reporte_campanas_entrantes))
+    else:
+        filas_reporte_campanas_entrantes = REPORTE_SIN_DATOS
+
+    datos_reporte_campanas_manuales = request.POST.get('llamadas_campanas_manuales', False)
+    if datos_reporte_campanas_manuales:
+        filas_reporte_campanas_manuales = obtener_filas_reporte(
+            'llamadas_campanas_manuales', json.loads(datos_reporte_campanas_manuales))
+    else:
+        filas_reporte_campanas_manuales = REPORTE_SIN_DATOS
+
+    return (filas_reporte_total_llamadas, filas_reporte_llamadas_campanas,
+            filas_reporte_campanas_dialer, filas_reporte_campanas_entrantes,
+            filas_reporte_campanas_manuales)
+
 
 def obtener_datos_total_llamadas_csv(encabezado, datos_reporte):
 
@@ -23,12 +84,10 @@ def obtener_datos_total_llamadas_csv(encabezado, datos_reporte):
     datos = []
 
     datos.append("")
-
     datos.append(["Total llamadas procesadas por OmniLeads",
                   force_text(datos_reporte['total_llamadas_ingresadas'])])
 
     datos.append("")
-
     datos.append(["Total de llamadas Salientes Discador",
                   force_text(datos_reporte['llamadas_ingresadas_dialer'])])
     datos.append(["Cantidad de llamadas gestionadas",
@@ -37,7 +96,6 @@ def obtener_datos_total_llamadas_csv(encabezado, datos_reporte):
                   force_text(datos_reporte['llamadas_perdidas_dialer'])])
 
     datos.append("")
-
     datos.append(["Total llamadas Entrantes",
                   force_text(datos_reporte['llamadas_ingresadas_entrantes'])])
     datos.append(["Cantidad de llamadas atendidas",
@@ -48,7 +106,6 @@ def obtener_datos_total_llamadas_csv(encabezado, datos_reporte):
                   force_text(datos_reporte['llamadas_abandonadas_entrantes'])])
 
     datos.append("")
-
     datos.append(["Total llamadas Salientes Manuales",
                   force_text(datos_reporte['llamadas_ingresadas_manuales'])])
     datos.append(["Cantidad de llamadas atendidas",

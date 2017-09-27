@@ -24,10 +24,9 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.reporte_grafico import GraficoService
 from utiles import convert_fecha_datetime, UnicodeWriter
-from ominicontacto_app.services.reporte_campana_csv import (obtener_datos_total_llamadas_csv,
-                                                            obtener_llamadas_campanas)
-
-REPORTE_SIN_DATOS = ['No hay datos disponibles para este reporte']
+from ominicontacto_app.services.reporte_campana_csv import (obtener_filas_reporte,
+                                                            obtener_datos_reporte_general,
+                                                            REPORTE_SIN_DATOS)
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -140,20 +139,7 @@ class GrabacionReporteFormView(FormView):
             graficos_estadisticas=graficos_estadisticas))
 
 
-def obtener_filas_reporte(tipo_reporte, datos_reporte):
-    if tipo_reporte == 'total_llamadas':
-        encabezado = [u"Total llamadas", u"Cantidad"]
-        return obtener_datos_total_llamadas_csv(encabezado, datos_reporte)
-    if tipo_reporte in ['llamadas_campanas_entrantes', 'llamadas_campanas_dialer',
-                        'llamadas_campanas_manuales']:
-        encabezado = [u"Campana", u"Recibidas", u"Atendidas", u"Expiradas", u"Abandonadas"]
-        return obtener_llamadas_campanas(encabezado, datos_reporte)
-    if tipo_reporte == "llamadas_campanas":
-        encabezado = [u"Total llamadas", u"Cantidad", u"Tipo de campaña"]
-        return obtener_llamadas_campanas(encabezado, datos_reporte)
-
-
-def exportar_llamadas(request, tipo_reporte):
+def exportar_llamadas_view(request, tipo_reporte):
     """
     Realiza el reporte a formato .csv del reporte recibido como parámetro
     """
@@ -172,51 +158,7 @@ def exportar_llamadas(request, tipo_reporte):
     return response
 
 
-def obtener_datos_reporte_general(request):
-    """
-    Devuelve los datos para el reporte general a través de
-    """
-    datos_reporte_total_llamadas = request.POST.get('total_llamadas', False)
-    if datos_reporte_total_llamadas:
-        filas_reporte_total_llamadas = obtener_filas_reporte(
-            'total_llamadas', json.loads(datos_reporte_total_llamadas))
-    else:
-        filas_reporte_total_llamadas = REPORTE_SIN_DATOS
-
-    datos_reporte_llamadas_campanas = request.POST.get('llamadas_campanas', False)
-    if datos_reporte_llamadas_campanas:
-        filas_reporte_llamadas_campanas = obtener_filas_reporte(
-            'llamadas_campanas', json.loads(datos_reporte_llamadas_campanas))
-    else:
-        filas_reporte_llamadas_campanas = REPORTE_SIN_DATOS
-
-    datos_reporte_campanas_dialer = request.POST.get('llamadas_campanas_dialer', False)
-    if datos_reporte_campanas_dialer:
-        filas_reporte_campanas_dialer = obtener_filas_reporte(
-            'llamadas_campanas_dialer', json.loads(datos_reporte_campanas_dialer))
-    else:
-        filas_reporte_campanas_dialer = REPORTE_SIN_DATOS
-
-    datos_reporte_campanas_entrantes = request.POST.get('llamadas_campanas_entrantes', False)
-    if datos_reporte_campanas_entrantes:
-        filas_reporte_campanas_entrantes = obtener_filas_reporte(
-            'llamadas_campanas_entrantes', json.loads(datos_reporte_campanas_entrantes))
-    else:
-        filas_reporte_campanas_entrantes = REPORTE_SIN_DATOS
-
-    datos_reporte_campanas_manuales = request.POST.get('llamadas_campanas_manuales', False)
-    if datos_reporte_campanas_manuales:
-        filas_reporte_campanas_manuales = obtener_filas_reporte(
-            'llamadas_campanas_manuales', json.loads(datos_reporte_campanas_manuales))
-    else:
-        filas_reporte_campanas_manuales = REPORTE_SIN_DATOS
-
-    return (filas_reporte_total_llamadas, filas_reporte_llamadas_campanas,
-            filas_reporte_campanas_dialer, filas_reporte_campanas_entrantes,
-            filas_reporte_campanas_manuales)
-
-
-def exportar_zip_reportes(request):
+def exportar_zip_reportes_view(request):
     """
     Realiza la exportación de todos los reportes de llamadas a .csv y los devuelve
     comprimidos dentro de un zip
