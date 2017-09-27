@@ -432,16 +432,15 @@ $(function() {
 				}
       });
 
-  	var clickHold = document.getElementById("onHold");
-  	clickHold.onclick = function () {
-  	 	if(flagHold) {
+		$("#onHold").click(function() {
+			if(flagHold) {
   	 		flagHold = false;
   	 	  e.session.hold();
   	 	} else {
   	 	  flagHold = true;
   	 	  e.session.unhold();
   	 	}
-  	};
+		});
 
 		var one = document.getElementById("1");
 		one.onclick = function() {
