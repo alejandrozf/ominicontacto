@@ -1811,6 +1811,18 @@ class Grabacion(models.Model):
         return self.sip_agente
 
 
+class GrabacionMarca(models.Model):
+    """
+    Contiene todos los atributos de
+    """
+    grabacion = models.OneToOneField(Grabacion, on_delete=models.CASCADE, primary_key=True)
+    uid = models.CharField(max_length=255, unique=True)
+    descripcion = models.TextField()
+
+    class Meta:
+        db_table = 'ominicontacto_app_grabacion_marca'
+
+
 class AgendaManager(models.Manager):
 
     def eventos_fecha_hoy(self):
