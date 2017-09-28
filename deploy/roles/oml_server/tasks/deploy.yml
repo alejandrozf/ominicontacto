@@ -39,6 +39,14 @@
   tags:
     - deploy
 
+- name: Setup virtualenv
+  pip: >
+    requirements=/home/freetech/ominicontacto/requeriments.txt
+    virtualenv=/home/ftsender/ominicontacto/virtualenv
+
+  tags:
+    - virtualenv
+
 - name: Run Django migrations
   django_manage: >
       command=migrate
