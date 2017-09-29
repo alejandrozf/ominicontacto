@@ -1813,7 +1813,7 @@ class Grabacion(models.Model):
 
 class GrabacionMarca(models.Model):
     """
-    Contiene todos los atributos de
+    Contiene los atributos de una grabación marcada
     """
     grabacion = models.OneToOneField(Grabacion, on_delete=models.CASCADE, primary_key=True)
     uid = models.CharField(max_length=255, unique=True)
