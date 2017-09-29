@@ -45,14 +45,12 @@ $(function() {
 	 });
 
 	 $("#SaveSignedCall").click(function () {
-	 	 var campid = $("#idCamp").val();// camp ID
-	 	 var idagt = $("#idagt").val();// agent ID
 	 	 var desc = $("#SignDescription").html();// sign subject
 	 	 $.ajax({
 	 	   url: '//',
 	 	   type: 'GET',
        contentType: 'application/json',
-       data: "CampId="+campid+"&AgentId="+idagt+"&SignDesc="+desc+"&phone=",
+       data: "uid="+uid+"&SignDesc="+desc,
        succes: function (msg) {
          console.log(JSON.parse(msg));
 	     },
@@ -295,6 +293,9 @@ $(function() {
       		var CampIdHeader = e.request.headers.Idcamp[0].raw;
       		$("#idCamp").val(CampIdHeader);
       	}
+				if(e.request.headers.Uid) {
+					var uid = e.request.headers.Uid[0].raw;
+				}
         fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
@@ -567,7 +568,7 @@ $(function() {
 							  }
 							} // si no es agente predictivo....
 					} else {
-					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));//llevar a cero el conometro embebido en el webphone
 					}
 				}
 			} else { // si NO es una llamada entrante
