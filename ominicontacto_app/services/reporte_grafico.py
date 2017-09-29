@@ -4,8 +4,9 @@
 Servicio para generar reporte de las grabaciones de las llamadas
 """
 
-import pygal
+import json
 import datetime
+import pygal
 
 from collections import OrderedDict
 from pygal.style import Style
@@ -110,7 +111,7 @@ class GraficoService():
             event__in=eventos_llamadas_ingresadas,
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_ingresadas_dict = {campana['campana_id']: campana['cantidad']
                                     for campana in qs_campanas_ingresadas}
 
@@ -118,7 +119,7 @@ class GraficoService():
             event__in=eventos_llamadas_atendidas,
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_atendidas_dict = {campana['campana_id']: campana['cantidad']
                                    for campana in qs_campanas_atendidas}
 
@@ -126,7 +127,7 @@ class GraficoService():
             event__in=eventos_llamadas_abandonadas,
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_abandonadas_dict = {campana['campana_id']: campana['cantidad']
                                      for campana in qs_campanas_abandonadas}
 
@@ -134,7 +135,7 @@ class GraficoService():
             event__in=eventos_llamadas_expiradas,
             time__range=(fecha_inferior, fecha_superior),
             campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id')).order_by('campana_id')
+                'campana_id').annotate(cantidad=Count('campana_id'))
         campanas_expiradas_dict = {campana['campana_id']: campana['cantidad']
                                    for campana in qs_campanas_expiradas}
 
@@ -303,10 +304,13 @@ class GraficoService():
             campanas, fecha_inferior, fecha_superior)
         queues_llamadas_dialer, totales_grafico_dialer = self.calcular_cantidad_llamadas(
             campanas_dialer, fecha_inferior, fecha_superior)
+        queues_llamadas_dialer_json = json.dumps({'filas_datos': queues_llamadas_dialer})
         queues_llamadas_entrantes, totales_grafico_entrantes = self.calcular_cantidad_llamadas(
             campanas_entrantes, fecha_inferior, fecha_superior)
+        queues_llamadas_entrantes_json = json.dumps({'filas_datos': queues_llamadas_entrantes})
         queues_llamadas_manuales, totales_grafico_manuales = self.calcular_cantidad_llamadas(
             campanas_manuales, fecha_inferior, fecha_superior)
+        queues_llamadas_manuales_json = json.dumps({'filas_datos': queues_llamadas_manuales})
 
         total_llamadas = total_llamadas_dict.values()
 
@@ -331,15 +335,19 @@ class GraficoService():
             'tipos_campana': tipos_campana,
             'totales_grafico': totales_grafico,
             'queues_llamadas_dialer': queues_llamadas_dialer,
+            'queues_llamadas_dialer_json': queues_llamadas_dialer_json,
             'totales_grafico_dialer': totales_grafico_dialer,
             'queues_llamadas_entrantes': queues_llamadas_entrantes,
+            'queues_llamadas_entrantes_json': queues_llamadas_entrantes_json,
             'totales_grafico_entrantes': totales_grafico_entrantes,
             'queues_llamadas_manuales': queues_llamadas_manuales,
+            'queues_llamadas_manuales_json': queues_llamadas_manuales_json,
             'totales_grafico_manuales': totales_grafico_manuales,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
             'total_llamadas': total_llamadas,
             'total_llamadas_dict': total_llamadas_dict,
+            'total_llamadas_json': json.dumps(total_llamadas_dict),
         }
         return dic_estadisticas
 
@@ -442,14 +450,18 @@ class GraficoService():
         barra_campana_llamadas_manuales.add(
             'expiradas', estadisticas['totales_grafico_manuales']['total_expiradas'])
 
+        dict_campana_counter = zip(estadisticas['campana_nombre'],
+                                   estadisticas['total_campana'],
+                                   estadisticas['total_manuales'],
+                                   estadisticas['tipos_campana'])
+        dict_campana_counter_json = json.dumps({'filas_datos': dict_campana_counter})
+
         return {
             'estadisticas': estadisticas,
             'barras_llamadas_campanas': barras_llamadas_campanas,
             'torta_grabaciones': torta_grabaciones,
-            'dict_campana_counter': zip(estadisticas['campana_nombre'],
-                                        estadisticas['total_campana'],
-                                        estadisticas['total_manuales'],
-                                        estadisticas['tipos_campana']),
+            'dict_campana_counter': dict_campana_counter,
+            'dict_campana_counter_json': dict_campana_counter_json,
             'barra_campana_total': barra_campana_total,
             'barra_campana_llamadas_dialer': barra_campana_llamadas_dialer,
             'barra_campana_llamadas_entrantes': barra_campana_llamadas_entrantes,
