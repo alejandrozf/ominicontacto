@@ -1,34 +1,7 @@
-# Deploy a maquina virtual de FreeTech - ambiente de produccion
+# Deploy a maquina virtual de Freetech - ambiente de desarrollo
 
-[ftsender]
+[freetech]
 
-192.168.99.221
+172.16.20.90
 
-[ftsender:vars]
-
-OPEN_BR='{'
-CLOSE_BR='}'
-
-fts_distribution=centos6
-
-os_timezone=/usr/share/zoneinfo/America/Argentina/Buenos_Aires
-
-db_password=OcPownokyig0roothGi1Rec
-
-dj_sett_SECRET_KEY='6graHovyIpsezyitgen38quirWouRecOfWir8AvOpAvWeek9'
-dj_sett_ASTERISK_USERNAME=asterisk_ftsender
-dj_sett_ASTERISK_PASSWORD=asterftspass123
-# TODO: usar 'ASTERISK_AMI_HTTP_PORT' en vez de 7088
-dj_sett_ASTERISK_HTTP_AMI_URL=http://127.0.0.1:7088
-dj_sett_ASTERISK_DIAL_URL="${{OPEN_BR}}TECH{{CLOSE_BR}}/${{OPEN_BR}}OBJETO{{CLOSE_BR}}/${NumberToCall}"
-
-dj_sett_FTS_FAST_AGI_DAEMON_PROXY_URL='http://127.0.0.1:{{ NGINX_HTTP_PORT }}'
-dj_sett_FTS_DIALPLAN_FILENAME='/etc/ftsender/asterisk/extensions.conf'
-dj_sett_FTS_QUEUE_FILENAME='/etc/ftsender/asterisk/queues_fts.conf'
-dj_sett_FTS_RELOAD_CMD='["sudo", "-u", "asterisk", "/opt/asterisk-11/sbin/asterisk", "-x", "dialplan reload"]'
-
-dj_sett_TMPL_FTS_AUDIO_CONVERSOR='["sox", "-t", "wav", "<INPUT_FILE>", "-r", "8k", "-c", "1", "-e", "signed-integer", "-t", "wav", "<OUTPUT_FILE>"]'
-dj_sett_TMPL_FTS_AUDIO_CONVERSOR_EXTENSION='.wav'
-
-dj_sett_FTS_BASE_DATO_CONTACTO_DUMP_PATH='/home/ftsender/deploy/dumps_bd_contacto/'
-
+[freetech:vars]
