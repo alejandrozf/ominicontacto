@@ -8,7 +8,7 @@
 
 
 if [ -z "$VIRTUAL_ENV" ] ; then
-	. ~/ominicontacto/virtualenv/bin/activate
+	. ~/proyectos/ominicontacto/virtualenv/bin/activate
 fi
 
 if [ -z "$1" ] ; then
