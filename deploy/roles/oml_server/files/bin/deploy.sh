@@ -44,7 +44,7 @@ echo "Presione ENTER para iniciar deploy..."
 read
 echo ""
 
-cd ~/ominicontacto
+cd ~/proyectos/ominicontacto
 
 #git clean -fdx
 
