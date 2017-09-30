@@ -1,0 +1,7 @@
+# Deploy a maquina virtual de Freetech - ambiente de desarrollo
+
+[freetech]
+
+172.16.20.90
+
+[freetech:vars]

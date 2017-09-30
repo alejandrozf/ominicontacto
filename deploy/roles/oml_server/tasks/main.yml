@@ -1,0 +1,12 @@
+
+#----------------------------------------------------------------------
+# Deploy de la app
+#
+# Tags mas utiles:
+#  - virtualenv: setup de virtualenv & requirements
+#  - deploy: deploy de la APP (EXCEPTUANDO cambios en otros
+#       compoenentes)
+
+#----------------------------------------------------------------------
+
+- include: deploy.yml
