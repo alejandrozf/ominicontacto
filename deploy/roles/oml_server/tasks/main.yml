@@ -11,4 +11,4 @@
 #----------------------------------------------------------------------
 
 tasks:
-- import_tasks: deploy.yml
+  - import_tasks: deploy.yml
