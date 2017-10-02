@@ -427,7 +427,7 @@ $(function() {
 	       	$("#sipLogout").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
-		    }
+		    } 
       });
 
   	var clickHold = document.getElementById("onHold");
