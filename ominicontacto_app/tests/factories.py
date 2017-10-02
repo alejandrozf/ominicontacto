@@ -11,7 +11,8 @@ from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, po
 from django.utils import timezone
 
 from ominicontacto_app.models import (BaseDatosContacto, Campana, CalificacionCampana, Calificacion,
-                                      Formulario, Queuelog, SitioExterno, User)
+                                      Formulario, Grabacion, GrabacionMarca, Queuelog, SitioExterno,
+                                      User)
 
 faker = faker.Factory.create()
 
@@ -108,3 +109,25 @@ class QueuelogFactory(DjangoModelFactory):
     queuename = lazy_attribute(lambda a: faker.text(32))
     campana_id = lazy_attribute(lambda a: faker.random_number(7))
     agent = lazy_attribute(lambda a: faker.text(32))
+
+
+class GrabacionFactory(DjangoModelFactory):
+    class Meta:
+        model = Grabacion
+
+    fecha = lazy_attribute(lambda a: timezone.now())
+    tipo_llamada = lazy_attribute(lambda a: faker.random_int(1, 3))
+    id_cliente = lazy_attribute(lambda a: faker.text(5))
+    tel_cliente = lazy_attribute(lambda a: str(faker.random_number(7)))
+    grabacion = lazy_attribute(lambda a: faker.text(max_nb_chars=5))
+    sip_agente = lazy_attribute(lambda a: faker.random_number(5))
+    campana = SubFactory(CampanaFactory)
+
+
+class GrabacionMarcaFactory(DjangoModelFactory):
+    class Meta:
+        model = GrabacionMarca
+
+    grabacion = SubFactory(GrabacionFactory)
+    uid = lazy_attribute(lambda a: "uid_{0}".format(uuid4()))
+    descripcion = lazy_attribute(lambda a: faker.text(5))
