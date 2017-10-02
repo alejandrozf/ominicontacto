@@ -421,15 +421,13 @@ $(function() {
         $("#onHold").prop('disabled', false);
 
         if(num.substring(4,0) != "0077") {
+					inicio3();
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
 	       	$("#sipLogout").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
 		    }
-				if(fromUser.substring(4,0) != "0077") {
-					inicio3();
-				}
       });
 
   	var clickHold = document.getElementById("onHold");
