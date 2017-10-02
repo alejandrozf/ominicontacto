@@ -528,6 +528,7 @@ $(function() {
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-success", "Online");
 					} else {
+						reinicio3();
 						fromUser = "";
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
@@ -537,15 +538,16 @@ $(function() {
 					if(fromUser.substring(4,0) != "0077") {
 							if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
 								changeStatus(3, $("#idagt").val());
-						        num = "0077ACW";
-						        makeCall();
-						        entrante = false;
+						    num = "0077ACW";
+						    makeCall();
+						    entrante = false;
 								$("#Pause").prop('disabled',true);
 								$("#Resume").prop('disabled',false);
 								$("#sipLogout").prop('disabled',false);
 								updateButton(modifyUserStat, "label label-danger", "ACW");
 								parar1();
-						        inicio2();
+						    inicio2();
+								parar3();
 								if($("#auto_unpause").val() != 0) {
 							    var timeoutACW = $("#auto_unpause").val();
 							    timeoutACW = timeoutACW * 1000;
