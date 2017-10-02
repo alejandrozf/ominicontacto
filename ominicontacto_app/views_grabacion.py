@@ -12,10 +12,10 @@ from StringIO import StringIO
 from zipfile import ZipFile
 
 from django.conf import settings
-
+from django.shortcuts import redirect
 from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 
 from ominicontacto_app.forms import (
     GrabacionBusquedaForm, GrabacionReporteForm
@@ -106,6 +106,7 @@ class BusquedaGrabacionFormView(FormView):
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, sip_agente, campana, campanas,
             marcadas)
+
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
 
