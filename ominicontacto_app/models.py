@@ -1799,6 +1799,7 @@ class Grabacion(models.Model):
     grabacion = models.CharField(max_length=255)
     sip_agente = models.IntegerField()
     campana = models.ForeignKey(Campana, related_name='grabaciones')
+    uid = models.CharField(max_length=45, blank=True, null=True)
 
     def __unicode__(self):
         return "grabacion del agente con el sip {0} con el cliente {1}".format(
@@ -1815,9 +1816,12 @@ class GrabacionMarca(models.Model):
     """
     Contiene los atributos de una grabación marcada
     """
-    grabacion = models.OneToOneField(Grabacion, on_delete=models.CASCADE, primary_key=True)
-    uid = models.CharField(max_length=255, unique=True)
+    uid = models.CharField(max_length=45)
     descripcion = models.TextField()
+
+    def __unicode__(self):
+        return "Grabacion con uid={0} marcada con descripcion={1}".format(
+            self.uid, self.descripcion)
 
     class Meta:
         db_table = 'ominicontacto_app_grabacion_marca'
