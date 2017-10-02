@@ -427,7 +427,7 @@ $(function() {
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
 		    }
-				if(fromUser) {
+				if(fromUser.substring(4,0) != "0077") {
 					inicio3();
 				}
       });
