@@ -610,7 +610,6 @@ $(function() {
 					}
 			    }
 		    }
-		parar3();
 		defaultCallState();
     });
 
