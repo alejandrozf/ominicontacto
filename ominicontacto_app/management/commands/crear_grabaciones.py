@@ -24,9 +24,7 @@ class Command(BaseCommand):
         crear_grabacion_marcada = bool(randint(0, 1))
 
         if crear_grabacion_marcada:
-            grabacion_marca = GrabacionMarcaFactory.create()
-            grabacion.grabacionmarca = grabacion_marca
-            grabacion.save()
+            GrabacionMarcaFactory.create(uid=grabacion.uid)
 
     def handle(self, *args, **options):
         nro_grabaciones = options['nro_llamadas'][0]

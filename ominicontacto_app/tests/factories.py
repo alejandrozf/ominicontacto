@@ -122,12 +122,12 @@ class GrabacionFactory(DjangoModelFactory):
     grabacion = lazy_attribute(lambda a: faker.text(max_nb_chars=5))
     sip_agente = lazy_attribute(lambda a: faker.random_number(5))
     campana = SubFactory(CampanaFactory)
+    uid = lazy_attribute(lambda a: "uid_{0}".format(uuid4()))
 
 
 class GrabacionMarcaFactory(DjangoModelFactory):
     class Meta:
         model = GrabacionMarca
 
-    grabacion = SubFactory(GrabacionFactory)
     uid = lazy_attribute(lambda a: "uid_{0}".format(uuid4()))
     descripcion = lazy_attribute(lambda a: faker.text(5))
