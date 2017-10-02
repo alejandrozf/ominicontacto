@@ -72,8 +72,8 @@ $(function () {
 	 $("#webChat").click(function () {
 	     $("#modalwebChat").modal('show');
 	 });
-	 inicio1();
-	 inicio3();
+	// inicio1();
+	 //inicio3();
 	// como informo a un servidro de presencia que mi endpoint camibia de status
 	 //$("#modalWebCall").modal('show');
 	 $("#webCall").click(function () {
@@ -91,8 +91,8 @@ $(function () {
 	 	 $("#Resume").prop('disabled', false);
      $("#modalPause").modal('hide');
      updateButton(modifyUserStat, "label label-danger", $("#pauseType").val());
-     parar1();
-     inicio2();
+  //   parar1();
+//     inicio2();
    });
 	 $("#logout").click(function () {
 		 changeStatus(3, $("#idagt").val());
@@ -102,8 +102,8 @@ $(function () {
 		 changeStatus(1, $("#idagt").val());
    	  $("#Pause").prop('disabled', false);
 	 	  $("#Resume").prop('disabled', true);
-  	  inicio1();
-	    parar2();
+  	//  inicio1();
+	  //  parar2();
 	    //updateButton(pauseButton, "btn btn-warning btn-sm", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
 	    var containerTag = document.getElementById("timers");
@@ -196,7 +196,7 @@ $(function () {
 	          containerTag.appendChild(statusTag);
 	        }
 	      }
-	      reinicio($("#horaP"), $("#minsP"), $("#segsP"));
+	   //   reinicio($("#horaP"), $("#minsP"), $("#segsP"));
 	  });
 
 	 $("#Pause").click(function () {
@@ -415,7 +415,4 @@ $(function () {
 	     horaDOM.html("00");
 	 }
 
-	 function inicio() {
-	     control = setInterval(cronometro1, 1000);
-	 }
 });

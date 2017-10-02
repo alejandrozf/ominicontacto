@@ -142,7 +142,7 @@ $(function() {
 	   	    contentType: "text/html",
 	   	    data : "duracion=" + $("#horaC").html() + $("#minsC").html() + $("#segsC").html() + "&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
-	   	 	    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+	   //	 	    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 	   	 	    $("#call_list").html(msg);
 	   	    },
 	   	    error: function (jqXHR, textStatus, errorThrown) {
@@ -234,15 +234,6 @@ $(function() {
 	    }
 	  }
 	 //****************************CRONOMETRO DE LLAMADA***********************************
-	 function reinicio3(horaDOM, minDOM, segDOM) { // Cronometro embebido en el webphone
-	    clearInterval(control);
-	    centesimasC = 0;
-	    segundosC = 0;
-	    minutosC = 0;
-	    segDOM.html(":00");
-	    minDOM.html(":00");
-	    horaDOM.html("00");
-  	}
 	 function cronometro3() { // Cronometro embebido en el webphone
 	     if (centesimasC < 59) {
 	         centesimasC++;
@@ -272,14 +263,24 @@ $(function() {
 	         $("#horaC").html("" + minutosC);
 	     }
 	 }
-	 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      e.session.on("failed",function(e) {  // cuando falla el establecimiento de la llamada
-        $("#aTransfer").prop('disabled', true);
-        $("#bTransfer").prop('disabled', true);
-        $("#onHold").prop('disabled', true);
-        $("#modalReceiveCalls").modal('hide');
-        Sounds("","stop");
-      });
+
+	 function reinicio3(horaDOM, minDOM, segDOM) { // Cronometro embebido en el webphone
+	   clearInterval(control);
+	   centesimasC = 0;
+	   segundosC = 0;
+	   minutosC = 0;
+	   segDOM.html(":00");
+	   minDOM.html(":00");
+	   horaDOM.html("00");
+   }
+	 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    e.session.on("failed",function(e) {  // cuando falla el establecimiento de la llamada
+      $("#aTransfer").prop('disabled', true);
+      $("#bTransfer").prop('disabled', true);
+      $("#onHold").prop('disabled', true);
+      $("#modalReceiveCalls").modal('hide');
+      Sounds("","stop");
+    });
       if(e.originator=="remote") {         // Origen de llamada Remoto
       	entrante = true;
       	if(e.request.headers.Wombatid) {
@@ -421,13 +422,13 @@ $(function() {
         $("#onHold").prop('disabled', false);
 
         if(num.substring(4,0) != "0077") {
-					inicio3();
+			//		inicio3();
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
 	       	$("#sipLogout").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
-		    } 
+		    }
       });
 
   	var clickHold = document.getElementById("onHold");
@@ -526,7 +527,7 @@ $(function() {
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-success", "Online");
 					} else {
-						reinicio3();
+						//reinicio3();
 						fromUser = "";
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
@@ -543,9 +544,9 @@ $(function() {
 								$("#Resume").prop('disabled',false);
 								$("#sipLogout").prop('disabled',false);
 								updateButton(modifyUserStat, "label label-danger", "ACW");
-								parar1();
-						    inicio2();
-								parar3();
+				//				parar1();
+			//			    inicio2();
+					//			parar3();
 								if($("#auto_unpause").val() != 0) {
 							    var timeoutACW = $("#auto_unpause").val();
 							    timeoutACW = timeoutACW * 1000;
@@ -560,7 +561,7 @@ $(function() {
 							  }
 							} // si no es agente predictivo....
 					} else {
-					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+//					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
 				}
 			} else { // si NO es una llamada entrante
@@ -588,8 +589,8 @@ $(function() {
 							$("#Resume").prop('disabled',false);
 							$("#sipLogout").prop('disabled',false);
 							updateButton(modifyUserStat, "label label-danger", "ACW");
-							parar1();
-					        inicio2();
+			//				parar1();
+		//			        inicio2();
 							if($("#auto_unpause").val() != 0) {
 								var timeoutACW = $("#auto_unpause").val();
 								timeoutACW = timeoutACW * 1000;
@@ -604,7 +605,7 @@ $(function() {
 							}
 					    }
 					} else {
-					   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+			//		   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
 			    }
 		    }
