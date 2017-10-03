@@ -218,10 +218,10 @@ class MarcarGrabacionView(View):
     Crea o modifica la descripción de una grabacion existente
     """
     def post(self, *args, **kwargs):
-        uid = kwargs.get('uid', False)
-        descripcion = kwargs.get('descripcion', '')
+        uid = self.request.POST.get('uid', False)
+        descripcion = self.request.POST.get('descripcion', '')
         try:
-            grabacion_marca = GrabacionMarca.object.get_or_create(uid=uid)
+            grabacion_marca, _ = GrabacionMarca.objects.get_or_create(uid=uid)
         except Exception as e:
             return JsonResponse({'result': 'failed by {0}'.format(e.message)})
         else:
