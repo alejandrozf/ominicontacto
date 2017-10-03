@@ -438,7 +438,7 @@ $(function() {
 	  	 		flagHold = false;
 					e.session.sendDTMF("*");
 		      e.session.sendDTMF("2");
-		      setTimeout(transferirHold(e), 500);
+		      setTimeout(transferirHold(e), 1000);
 	  	 	} else {
 	  	 	  flagHold = true;
 					e.session.sendDTMF("*");
