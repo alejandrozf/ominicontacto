@@ -293,9 +293,10 @@ $(function() {
       		var CampIdHeader = e.request.headers.Idcamp[0].raw;
       		$("#idCamp").val(CampIdHeader);
       	}
-				if(e.request.headers.Uid) {
-					var uid = e.request.headers.Uid[0].raw;
-				}
+var uid;
+if(e.request.headers.Uid) {
+	uid = e.request.headers.Uid[0].raw;
+}
         fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
