@@ -47,10 +47,10 @@ $(function() {
 	 $("#SaveSignedCall").click(function () {
 	 	 var desc = $("#SignDescription").html();// sign subject
 	 	 $.ajax({
-	 	   url: '//',
-	 	   type: 'GET',
+	 	   url: '/grabacion/marcar/',
+	 	   type: 'POST',
        contentType: 'application/json',
-       data: "uid="+uid+"&SignDesc="+desc,
+       data: {"uid": uid, "SignDesc": desc, CSRF: getCSRFTokenValue()},
        succes: function (msg) {
          console.log(JSON.parse(msg));
 	     },
