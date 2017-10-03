@@ -445,7 +445,7 @@ $(function() {
 		      e.session.sendDTMF("1");
 	  	 	}
 			};
-			
+
 		var one = document.getElementById("1");
 		one.onclick = function() {
 			e.session.sendDTMF('1');
