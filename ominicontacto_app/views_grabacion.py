@@ -97,13 +97,15 @@ class BusquedaGrabacionFormView(FormView):
         tel_cliente = form.cleaned_data.get('tel_cliente')
         sip_agente = form.cleaned_data.get('sip_agente')
         campana = form.cleaned_data.get('campana')
+        marcadas = form.cleaned_data.get('marcadas', False)
         campanas = Campana.objects.all()
         if self.request.user.get_is_supervisor_customer():
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
         pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
-            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, sip_agente, campana, campanas)
+            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, sip_agente, campana, campanas,
+            marcadas)
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
 

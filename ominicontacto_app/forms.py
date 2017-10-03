@@ -274,6 +274,7 @@ class GrabacionBusquedaForm(forms.Form):
     sip_agente = forms.ChoiceField(required=False, label='Agente', choices=())
     campana = forms.ChoiceField(required=False, choices=())
     pagina = forms.CharField(required=False, widget=forms.HiddenInput())
+    marcadas = forms.BooleanField(required=False)
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
