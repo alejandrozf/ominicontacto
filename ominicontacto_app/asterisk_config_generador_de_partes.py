@@ -193,7 +193,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,Gosub(hangup-fts,llamante_handler,1)
         same => n,Set(__MONITOR_FILENAME=/var/spool/asterisk/monitor/q-${{EXTEN}}-${{STRFTIME(${{EPOCH}},,%Y%m%d-%H%M%S)}}-${{UNIQUEID}})
         same => n,MixMonitor(${{MONITOR_FILENAME}}.wav)
-        same => n,SIPAddHeader(uidGrabacion:${UNIQUEID})
+        same => n,SIPAddHeader(uidGrabacion:${{UNIQUEID}})
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
@@ -351,7 +351,7 @@ class GeneradorParaCampanaDialerGrabacion(GeneradorDePedazoDeCampanaDialer):
         same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{{UNIQUEID}} ^{{MIXMONITOR_FILENAME}})
         same => n,Set(__TIPOLLAMADA=DIALER)
         same => n,MixMonitor(${{MONITOR_FILENAME}}.wav,b)
-        same => n,SIPAddHeader(uidGrabacion:${UNIQUEID})
+        same => n,SIPAddHeader(uidGrabacion:${{UNIQUEID}})
         """
 
     def get_parametros(self):
