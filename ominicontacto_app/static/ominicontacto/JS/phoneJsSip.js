@@ -293,7 +293,7 @@ $(function() {
       		var CampIdHeader = e.request.headers.Idcamp[0].raw;
       		$("#idCamp").val(CampIdHeader);
       	}
-var uid;
+var uid = "";
 if(e.request.headers.Uid) {
 	uid = e.request.headers.Uid[0].raw;
 }
