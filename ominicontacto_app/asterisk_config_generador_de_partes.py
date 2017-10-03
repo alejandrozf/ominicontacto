@@ -6,12 +6,9 @@ Genera archivos de configuración para Asterisk: dialplan y queues.
 
 from __future__ import unicode_literals
 
-import os
 import pprint
 
-from django.conf import settings
 from ominicontacto_app.errors import OmlError
-from ominicontacto_app.models import Queue
 import logging as _logging
 
 
@@ -51,9 +48,9 @@ class GeneradorDePedazo(object):
             raise
 
 
-#==============================================================================
+# ==============================================================================
 # Failed
-#==============================================================================
+# ==============================================================================
 
 
 class GeneradorDePedazoDeDialplanParaFailed(GeneradorDePedazo):
@@ -145,9 +142,9 @@ class GeneradorDePedazoDeCampanaDialerFactory(object):
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
 
-#==============================================================================
+# ==============================================================================
 # Queue
-#==============================================================================
+# ==============================================================================
 
 
 class GeneradorDePedazoDeQueue(GeneradorDePedazo):
@@ -196,6 +193,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,Gosub(hangup-fts,llamante_handler,1)
         same => n,Set(__MONITOR_FILENAME=/var/spool/asterisk/monitor/q-${{EXTEN}}-${{STRFTIME(${{EPOCH}},,%Y%m%d-%H%M%S)}}-${{UNIQUEID}})
         same => n,MixMonitor(${{MONITOR_FILENAME}}.wav)
+        same => n,SIPAddHeader(uidGrabacion:${UNIQUEID})
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
@@ -250,9 +248,9 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         return self._parametros
 
 
-#==============================================================================
+# ==============================================================================
 # Agente SIP
-#==============================================================================
+# ==============================================================================
 
 
 class GeneradorDePedazoDeAgenteSip(GeneradorDePedazo):
@@ -297,9 +295,9 @@ class GeneradorParaAgenteGlobal(GeneradorDePedazoDeAgenteSip):
     def get_parametros(self):
         return self._parametros
 
-#==============================================================================
+# ==============================================================================
 # Campana Dialer
-#==============================================================================
+# ==============================================================================
 
 
 class GeneradorDePedazoDeCampanaDialer(GeneradorDePedazo):
@@ -353,6 +351,7 @@ class GeneradorParaCampanaDialerGrabacion(GeneradorDePedazoDeCampanaDialer):
         same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{{UNIQUEID}} ^{{MIXMONITOR_FILENAME}})
         same => n,Set(__TIPOLLAMADA=DIALER)
         same => n,MixMonitor(${{MONITOR_FILENAME}}.wav,b)
+        same => n,SIPAddHeader(uidGrabacion:${UNIQUEID})
         """
 
     def get_parametros(self):
