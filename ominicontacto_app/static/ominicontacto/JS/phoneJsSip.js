@@ -432,18 +432,22 @@ $(function() {
 				}
       });
 
-		$("#onHold").click(function() {
-			if(flagHold) {
-  	 		flagHold = false;
-				e.session.sendDTMF("*");
-	      e.session.sendDTMF("2");
-	      setTimeout(transferirHold(e), 500);
-  	 	} else {
-  	 	  flagHold = true;
-				e.session.sendDTMF("*");
-	      e.session.sendDTMF("1");
-  	 	}
-		});
+			var clickHold = document.getElementById("onHold");
+	  	clickHold.onclick = function () {
+				if(flagHold) {
+	  	 		flagHold = false;
+					e.session.sendDTMF("*");
+		      e.session.sendDTMF("2");
+		      setTimeout(transferirHold(e), 500);
+	  	 	} else {
+	  	 	  flagHold = true;
+					e.session.sendDTMF("*");
+		      e.session.sendDTMF("1");
+	  	 	}
+			};
+		/*$("#onHold").click(function() {
+
+		});*/
 
 		var one = document.getElementById("1");
 		one.onclick = function() {
