@@ -515,7 +515,7 @@ $(function() {
     }
 
 		function transferirHold(objRTCsession) {
-      objRTCsession.session.sendDTMF('HOLD');
+      objRTCsession.session.sendDTMF('*098');
     }
 
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
