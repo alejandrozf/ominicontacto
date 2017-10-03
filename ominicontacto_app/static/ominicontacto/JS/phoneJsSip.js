@@ -445,10 +445,7 @@ $(function() {
 		      e.session.sendDTMF("1");
 	  	 	}
 			};
-		/*$("#onHold").click(function() {
-
-		});*/
-
+			
 		var one = document.getElementById("1");
 		one.onclick = function() {
 			e.session.sendDTMF('1');
