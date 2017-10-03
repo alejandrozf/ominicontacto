@@ -393,13 +393,13 @@ class CampanaManager(models.Manager):
 
     def obtener_campanas_entrantes(self):
         """
-        Devuelve campañas de tipo dialer
+        Devuelve campañas de tipo entrantes
         """
         return self.filter(type=Campana.TYPE_ENTRANTE)
 
     def obtener_campanas_manuales(self):
         """
-        Devuelve campañas de tipo dialer
+        Devuelve campañas de tipo manuales
         """
         return self.filter(type=Campana.TYPE_MANUAL)
 
