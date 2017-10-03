@@ -435,12 +435,13 @@ $(function() {
 		$("#onHold").click(function() {
 			if(flagHold) {
   	 		flagHold = false;
-  	 	  var ag = e.session.hold();
-				console.log("Hold clicked: " +ag);
+				e.session.sendDTMF("*");
+	      e.session.sendDTMF("2");
+	      setTimeout(transferirHold(e), 500);
   	 	} else {
   	 	  flagHold = true;
-  	 	  var af = e.session.unhold();
-				console.log("UnHold clicked: " +af);
+				e.session.sendDTMF("*");
+	      e.session.sendDTMF("1");
   	 	}
 		});
 
@@ -507,6 +508,10 @@ $(function() {
 
     function transferir(objRTCsession) {
       objRTCsession.session.sendDTMF(displayNumber.value);
+    }
+
+		function transferirHold(objRTCsession) {
+      objRTCsession.session.sendDTMF(098);
     }
 
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
