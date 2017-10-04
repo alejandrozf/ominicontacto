@@ -63,7 +63,7 @@ $(function() {
 	 	   url: '/grabacion/marcar/',
 	 	   type: 'POST',
        contentType: 'application/json',
-       data: {"uid": uid, "SignDesc": desc, CSRF: getCSRFTokenValue()},
+       data: {"uid": uid, "SignDesc": desc},
        succes: function (msg) {
          console.log(JSON.parse(msg));
 	     },
