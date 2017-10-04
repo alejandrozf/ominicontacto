@@ -47,9 +47,9 @@ $(function() {
 
 	 $("#SaveSignedCall").click(function () {
 	 	 var desc = $("#SignDescription").val();// sign subject
-
+		 var URl = "https://172.16.20.90/grabacion/marcar/";
 	 	 $.ajax({
-	 	   url: 'grabacion/marcar/',
+	 	   url: URl,
 	 	   type: 'POST',
        contentType: 'application/json',
        data: {"uid": uid, "descripcion": desc},
