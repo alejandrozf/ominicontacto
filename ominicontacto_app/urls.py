@@ -110,7 +110,7 @@ urlpatterns = [
     url(r'^blanco/$',
         login_required(views.blanco_view),
         name='view_blanco'),
-    url(r'^node/grabacion/marcar/$',
+    url(r'^grabacion/marcar/$',
         login_required(views_grabacion.MarcarGrabacionView.as_view()),
         name='grabacion_marcar',
         ),

@@ -49,7 +49,7 @@ $(function() {
 	 	 var desc = $("#SignDescription").val();// sign subject
 
 	 	 $.ajax({
-	 	   url: '/grabacion/marcar/',
+	 	   url: 'https://localhost/grabacion/marcar/',
 	 	   type: 'POST',
        contentType: 'application/json',
        data: {"uid": uid, "SignDesc": desc},
