@@ -10,9 +10,9 @@ from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, po
 
 from django.utils import timezone
 
-from ominicontacto_app.models import (BaseDatosContacto, Campana, CalificacionCampana, Calificacion,
-                                      Formulario, Grabacion, GrabacionMarca, Queuelog, SitioExterno,
-                                      User)
+from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo,
+                                      CalificacionCampana, Calificacion, Formulario, Grabacion,
+                                      GrabacionMarca, Queuelog, SitioExterno, User)
 
 faker = faker.Factory.create()
 
@@ -31,6 +31,25 @@ class SitioExternoFactory(DjangoModelFactory):
 
     nombre = lazy_attribute(lambda a: faker.text(15))
     url = lazy_attribute(lambda a: "http://{0}.com".format(a.nombre.replace(" ", "_")))
+
+
+class GrupoFactory(DjangoModelFactory):
+    class Meta:
+        model = Grupo
+    nombre = Sequence(lambda n: "grupo_{0}.dat".format(n))
+    auto_unpause = lazy_attribute(lambda a: faker.random_number(2))
+
+
+class AgenteProfileFactory(DjangoModelFactory):
+    class Meta:
+        model = AgenteProfile
+
+    user = SubFactory(UserFactory)
+    sip_extension = lazy_attribute(lambda a: faker.ean8())
+    grupo = SubFactory(GrupoFactory)
+    estado = lazy_attribute(lambda a: faker.random_int(1, 3))
+    reported_by = SubFactory(UserFactory)
+    #  TODO: hacer atributos: 'modulos', 'sip_password'
 
 
 class BaseDatosContactoFactory(DjangoModelFactory):
