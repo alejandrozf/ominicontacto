@@ -3,7 +3,8 @@
 from random import randint
 
 from django.core.management.base import BaseCommand, CommandError
-from ominicontacto_app.tests.factories import GrabacionFactory, GrabacionMarcaFactory
+from ominicontacto_app.tests.factories import (GrabacionFactory, GrabacionMarcaFactory,
+                                               AgenteProfileFactory)
 
 
 class Command(BaseCommand):
@@ -16,11 +17,11 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('nro_llamadas', nargs=1, type=int)
 
-    def grabacion_marcada_aleatoria(self):
+    def grabacion_marcada_aleatoria(self, sip_agente):
         """
         Crea un marca de grabación
         """
-        grabacion = GrabacionFactory.create()
+        grabacion = GrabacionFactory.create(sip_agente=sip_agente)
         crear_grabacion_marcada = bool(randint(0, 1))
 
         if crear_grabacion_marcada:
@@ -28,9 +29,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         nro_grabaciones = options['nro_llamadas'][0]
+        agente = AgenteProfileFactory.create()
         for i in range(nro_grabaciones):
             try:
-                self.grabacion_marcada_aleatoria()
+                self.grabacion_marcada_aleatoria(agente.sip_extension)
             except Exception as e:
                 raise CommandError('Fallo del comando: {0}'.format(e.message))
         self.stdout.write(
