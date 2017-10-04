@@ -41,3 +41,13 @@ class GrabacionesTests(OMLBaseTest):
 
         self.assertTrue(GrabacionMarca.objects.filter(
             uid=self.grabacion3.uid, descripcion=descripcion).exists())
+
+    def test_usuarios_no_logueados_no_acceden_a_vista_creacion_grabaciones_marcadas(self):
+        self.client.logout()
+        url = reverse('grabacion_marcar')
+        descripcion = 'descripcion de prueba'
+        post_data = {'uid': self.grabacion3.uid,
+                     'descripcion': descripcion}
+        self.client.post(url, post_data)
+        self.assertFalse(GrabacionMarca.objects.filter(
+            uid=self.grabacion3.uid, descripcion=descripcion).exists())
