@@ -14,6 +14,7 @@ function updateButton(btn,clsnm,inht) {
 }
 
 $(function() {
+
 	$("#modalWebCall").modal('show');
 	/*
 	ESTADO_OFFLINE = 1    """Agente en estado offline"""
@@ -44,8 +45,20 @@ $(function() {
 	   $("#modalSignCall").modal('show');
 	 });
 
+	 function csrfSafeMethod(method) {
+     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	 }
+
 	 $("#SaveSignedCall").click(function () {
 	 	 var desc = $("#SignDescription").html();// sign subject
+		 $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+       }
+		 });
+
 	 	 $.ajax({
 	 	   url: '/grabacion/marcar/',
 	 	   type: 'POST',
