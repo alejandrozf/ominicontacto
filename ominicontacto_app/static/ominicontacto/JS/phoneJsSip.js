@@ -46,7 +46,7 @@ $(function() {
 	 });
 
 	 $("#SaveSignedCall").click(function () {
-	 	 var desc = $("#SignDescription").html();// sign subject
+	 	 var desc = $("#SignDescription").val();// sign subject
 
 	 	 $.ajax({
 	 	   url: '/grabacion/marcar/',
