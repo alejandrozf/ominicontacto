@@ -1,5 +1,5 @@
 //***************************************************
-var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause;
+var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
 function suma(a, b) {
@@ -293,10 +293,10 @@ $(function() {
       		var CampIdHeader = e.request.headers.Idcamp[0].raw;
       		$("#idCamp").val(CampIdHeader);
       	}
-var uid = "";
-if(e.request.headers.Uidgrabacion) {
-	uid = e.request.headers.Uidgrabacion[0].raw;
-}
+
+        if(e.request.headers.Uidgrabacion) {
+	        uid = e.request.headers.Uidgrabacion[0].raw;
+        }
         fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
