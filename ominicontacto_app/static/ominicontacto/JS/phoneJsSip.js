@@ -45,19 +45,8 @@ $(function() {
 	   $("#modalSignCall").modal('show');
 	 });
 
-	 function csrfSafeMethod(method) {
-     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-	 }
-
 	 $("#SaveSignedCall").click(function () {
 	 	 var desc = $("#SignDescription").html();// sign subject
-		 $.ajaxSetup({
-       beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-       }
-		 });
 
 	 	 $.ajax({
 	 	   url: '/grabacion/marcar/',
