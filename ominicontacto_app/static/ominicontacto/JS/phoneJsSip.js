@@ -294,8 +294,8 @@ $(function() {
       		$("#idCamp").val(CampIdHeader);
       	}
 var uid = "";
-if(e.request.headers.uidGrabacion) {
-	uid = e.request.headers.uidGrabacion[0].raw;
+if(e.request.headers.Uidgrabacion) {
+	uid = e.request.headers.Uidgrabacion[0].raw;
 }
         fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
