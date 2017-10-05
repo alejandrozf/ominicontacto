@@ -12,10 +12,9 @@ from StringIO import StringIO
 from zipfile import ZipFile
 
 from django.conf import settings
-from django.shortcuts import redirect
 from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 
 from ominicontacto_app.forms import (
     GrabacionBusquedaForm, GrabacionReporteForm
