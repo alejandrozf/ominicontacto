@@ -47,14 +47,15 @@ $(function() {
 
 	 $("#SaveSignedCall").click(function () {
 	 	 var desc = $("#SignDescription").val();// sign subject
-		 var URl = "https://172.16.20.90/grabacion/marcar/";
+		 var URl = "grabacion/marcar/";
+		 var data2 =  {"uid": uid, "descripcion": desc};
 	 	 $.ajax({
 	 	   url: URl,
 	 	   type: 'POST',
        dataType: 'application/json',
-       data: {"uid": uid, "descripcion": desc},
+       data: data2,
        succes: function (msg) {
-         console.log(JSON.parse(msg));
+         
 	     },
     	 error: function (jqXHR, textStatus, errorThrown) {
          console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
