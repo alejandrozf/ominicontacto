@@ -51,7 +51,7 @@ $(function() {
 	 	 $.ajax({
 	 	   url: URl,
 	 	   type: 'POST',
-       contentType: 'application/json',
+       dataType: 'application/json',
        data: {"uid": uid, "descripcion": desc},
        succes: function (msg) {
          console.log(JSON.parse(msg));
