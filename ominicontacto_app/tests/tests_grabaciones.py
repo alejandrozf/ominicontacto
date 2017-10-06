@@ -3,6 +3,12 @@
 """
 Tests relacionados con las grabaciones
 """
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
+import json
+
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.models import Grabacion, GrabacionMarca
@@ -51,3 +57,21 @@ class GrabacionesTests(OMLBaseTest):
         self.client.post(url, post_data)
         self.assertFalse(GrabacionMarca.objects.filter(
             uid=self.grabacion3.uid, descripcion=descripcion).exists())
+
+    def test_usuarios_no_logueados_no_acceden_a_obtener_descripciones_grabaciones(self):
+        self.client.logout()
+        url = reverse('grabacion_descripcion', kwargs={'uid': self.grabacion1.uid})
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.template_name, 'registration/login.html')
+
+    def test_respuesta_api_descripciones_grabaciones_marcadas(self):
+        url = reverse('grabacion_descripcion', kwargs={'uid': self.grabacion2.uid})
+        response = self.client.get(url, follow=True)
+        data_response = json.loads(response.content)
+        self.assertEqual(data_response['result'], 'Descripción')
+
+    def test_respuesta_api_descripciones_grabaciones_no_marcadas(self):
+        url = reverse('grabacion_descripcion', kwargs={'uid': self.grabacion3.uid})
+        response = self.client.get(url, follow=True)
+        data_response = json.loads(response.content)
+        self.assertEqual(data_response['result'], 'No encontrada')
