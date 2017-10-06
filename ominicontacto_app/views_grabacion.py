@@ -217,6 +217,7 @@ class MarcarGrabacionView(View):
     """
     Crea o modifica la descripción de una grabacion existente
     """
+
     def post(self, *args, **kwargs):
         uid = self.request.POST.get('uid', False)
         descripcion = self.request.POST.get('descripcion', '')
@@ -228,3 +229,20 @@ class MarcarGrabacionView(View):
             grabacion_marca.descripcion = descripcion
             grabacion_marca.save()
             return JsonResponse({'result': 'OK'})
+
+
+class GrabacionDescripcionView(View):
+    """
+    Obtiene la descripción de una grabación si está marcada
+    """
+
+    def get(self, *args, **kwargs):
+        uid = kwargs.get('uid', False)
+        try:
+            grabacion_marca = GrabacionMarca.objects.get(uid=uid)
+        except GrabacionMarca.DoesNotExist:
+            response = {'result': 'Not found',
+                        'descripcion': 'La grabación no tiene descripción asociada'}
+        else:
+            response = {'result': 'OK', 'descripcion': grabacion_marca.descripcion}
+        return JsonResponse(response)
