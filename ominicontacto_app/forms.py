@@ -17,7 +17,7 @@ from ominicontacto_app.models import (
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
     AgendaManual
 )
-from ominicontacto_app.utiles import convertir_ascii_string
+from ominicontacto_app.utiles import convertir_ascii_string, validar_nombres_campanas
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -313,11 +313,7 @@ class CampanaForm(forms.ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
-        if ' ' in nombre:
-            raise forms.ValidationError(u'el nombre no puede contener espacios')
-        if any([(ord(i) >= 128) for i in nombre]):
-            raise forms.ValidationError(u'el nombre no puede contener ñ-es, tildes ni caracteres no'
-                                        u' ASCII')
+        validar_nombres_campanas(nombre)
         return nombre
 
 
@@ -345,11 +341,7 @@ class CampanaUpdateForm(forms.ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
-        if ' ' in nombre:
-            raise forms.ValidationError(u'el nombre no puede contener espacios')
-        if any([(ord(i) >= 128) for i in nombre]):
-            raise forms.ValidationError(u'el nombre no puede contener ñ-es, tildes ni caracteres no'
-                                        u' ASCII')
+        validar_nombres_campanas(nombre)
         return nombre
 
 
@@ -603,11 +595,7 @@ class PausaForm(forms.ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
-        if ' ' in nombre:
-            raise forms.ValidationError(u'el nombre no puede contener espacios')
-        if any([(ord(i) >= 128) for i in nombre]):
-            raise forms.ValidationError(u'el nombre no puede contener ñ-es, tildes ni caracteres no'
-                                        u' ASCII')
+        validar_nombres_campanas(nombre)
         return nombre
 
 
@@ -712,11 +700,7 @@ class CampanaDialerForm(forms.ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
-        if ' ' in nombre:
-            raise forms.ValidationError(u'el nombre no puede contener espacios')
-        if any([(ord(i) >= 128) for i in nombre]):
-            raise forms.ValidationError(u'el nombre no puede contener ñ-es, tildes ni caracteres no'
-                                        u' ASCII')
+        validar_nombres_campanas(nombre)
         return nombre
 
 
@@ -743,11 +727,7 @@ class CampanaDialerUpdateForm(forms.ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
-        if ' ' in nombre:
-            raise forms.ValidationError(u'el nombre no puede contener espacios')
-        if any([(ord(i) >= 128) for i in nombre]):
-            raise forms.ValidationError(u'el nombre no puede contener ñ-es, tildes ni caracteres no'
-                                        u' ASCII')
+        validar_nombres_campanas(nombre)
         return nombre
 
 
@@ -967,11 +947,7 @@ class CampanaManualForm(forms.ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
-        if ' ' in nombre:
-            raise forms.ValidationError(u'el nombre no puede contener espacios')
-        if any([(ord(i) >= 128) for i in nombre]):
-            raise forms.ValidationError(u'el nombre no puede contener ñ-es, tildes ni caracteres no'
-                                        u' ASCII')
+        validar_nombres_campanas(nombre)
         return nombre
 
 
