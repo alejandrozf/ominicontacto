@@ -144,7 +144,7 @@ function filtrar_pagina(pagina) {
     <script>
      $('#descripcionModal').on('show.bs.modal', function (event) {
        var button = $(event.relatedTarget)
-       var uid_val = button.data('uid')
+       var uid_val = button.data('uid');
        var modal = $(this);
        var URL = "/grabacion/descripcion/" + uid_val + "/";
        $.get( URL, function( data ) {
@@ -152,9 +152,11 @@ function filtrar_pagina(pagina) {
          $('#descripcion-text').text(data.descripcion);
          console.log(data);
        })
-        .fail(function(){
-          console.log("Ha ocurrido un error al intentar conectarse")
+        .fail(function( data ){
+          $('#descripcionModalLabel').text("Error");
+          $('#descripcion-text').text("Ha ocurrido un error al intentar conectarse");
+          console.log(data);
         });
-     });
+       });
     </script>
 {% endblock %}
