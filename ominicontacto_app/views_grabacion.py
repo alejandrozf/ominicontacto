@@ -241,8 +241,8 @@ class GrabacionDescripcionView(View):
         try:
             grabacion_marca = GrabacionMarca.objects.get(uid=uid)
         except GrabacionMarca.DoesNotExist:
-            response = {'result': 'Not found',
-                        'descripcion': 'La grabación no tiene descripción asociada'}
+            response = {u'result': u'No encontrada',
+                        u'descripcion': u'La grabación no tiene descripción asociada'}
         else:
-            response = {'result': 'OK', 'descripcion': grabacion_marca.descripcion}
+            response = {u'result': u'Descripción', u'descripcion': grabacion_marca.descripcion}
         return JsonResponse(response)
