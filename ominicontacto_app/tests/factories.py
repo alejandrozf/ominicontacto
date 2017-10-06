@@ -141,6 +141,7 @@ class GrabacionFactory(DjangoModelFactory):
     grabacion = lazy_attribute(lambda a: faker.text(max_nb_chars=5))
     sip_agente = lazy_attribute(lambda a: faker.random_number(5))
     campana = SubFactory(CampanaFactory)
+    # TODO: crear uid en el formato generado de asterisk manteniendo la unicidad
     uid = lazy_attribute(lambda a: "uid_{0}".format(uuid4()))
 
 
