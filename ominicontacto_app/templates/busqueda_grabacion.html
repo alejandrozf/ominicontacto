@@ -46,13 +46,13 @@
 function filtrar_pagina(pagina) {
             $("#id_pagina").val(pagina);
              $("#form-buscar-grabacion").submit();
-        }
-        ;
-    </script>
+        };
+
+</script>
 {% endblock %}
 {% block content %}
 
-<div class="col-md-4">
+<div class="col-md-3">
 
     <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
         {% csrf_token %}
@@ -64,7 +64,7 @@ function filtrar_pagina(pagina) {
         </button>
     </form>
 </div>
-<div class="col-md-8">
+<div class="col-md-9">
     <table class="table table-stripped">
         <thead>
             <tr>
@@ -74,6 +74,7 @@ function filtrar_pagina(pagina) {
                 <th>Agente</th>
                 <th>Campaña</th>
                 <th>Grabación</th>
+                <th>Descripción</th>
             </tr>
         </thead>
         <tbody>
@@ -93,6 +94,8 @@ function filtrar_pagina(pagina) {
                         <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="Descargar"></span>
                     </a>
                 </td>
+                <td><button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#descripcionModal" data-uid="{{ grabacion.uid }}">Ver descripción</button></td>
             </tr>
        {% empty %}
         <tr>
@@ -115,6 +118,43 @@ function filtrar_pagina(pagina) {
     {% endif %}
  </ul>
 
-
+ <div class="modal fade" id="descripcionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+     <div class="modal-dialog" role="document">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                 <h4 class="modal-title" id="exampleModalLabel">Descripción</h4>
+             </div>
+             <div class="modal-body">
+                 <form>
+                     <div class="form-group">
+                         <label for="message-text" class="control-label">Message:</label>
+                         <textarea class="form-control" id="message-text"></textarea>
+                     </div>
+                 </form>
+             </div>
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+             </div>
+         </div>
+     </div>
+ </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+     $('#descripcionModal').on('show.bs.modal', function (event) {
+       var button = $(event.relatedTarget)
+       var uid_val = button.data('uid')
+       var modal = $(this);
+       var URL = "/grabacion/descripcion/" + uid_val + "/";
+       $.get( URL, function( data ) {
+         console.log(data);
+       })
+        .fail(function(){
+          console.log("Ha ocurrido un error al intentar conectarse")
+        });
+     });
+    </script>
 {% endblock %}
