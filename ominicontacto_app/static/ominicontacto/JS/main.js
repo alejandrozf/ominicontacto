@@ -72,7 +72,6 @@ $(function () {
 	 $("#webChat").click(function () {
 	     $("#modalwebChat").modal('show');
 	 });
-	// inicio1();
 	// como informo a un servidro de presencia que mi endpoint camibia de status
 	 //$("#modalWebCall").modal('show');
 	 $("#webCall").click(function () {
@@ -90,7 +89,6 @@ $(function () {
 	 	 $("#Resume").prop('disabled', false);
      $("#modalPause").modal('hide');
      updateButton(modifyUserStat, "label label-danger", $("#pauseType").val());
-  //   parar1();
 //     inicio2();
    });
 	 $("#logout").click(function () {
@@ -101,7 +99,6 @@ $(function () {
 		 changeStatus(1, $("#idagt").val());
    	  $("#Pause").prop('disabled', false);
 	 	  $("#Resume").prop('disabled', true);
-  	//  inicio1();
 	  //  parar2();
 	    //updateButton(pauseButton, "btn btn-warning btn-sm", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
@@ -290,52 +287,10 @@ $(function () {
 	     });
 	   });
 
-	 function inicio1() {
-	     control1 = setInterval(cronometro1, 1000);
-	 }
-	 //*******************************CRONOMETRO DE OPERACION DE AGENTE----------------------------
-	 function cronometro1() {
-	     if (centesimasO < 59) {
-	         centesimasO++;
-	         if (centesimasO < 10) {
-	             centesimasO = "0" + centesimasO;
-	         }
-	         $("#segsO").html(":" + centesimasO);
-	     }
-	     if (centesimasO == 59) {
-	         centesimasO = -1;
-	     }
-	     if (centesimasO == 0) {
-	         segundosO++;
-	         if (segundosO < 10) {
-	             segundosO = "0" + segundosO;
-	         }
-	         $("#minsO").html(":" + segundosO);
-	     }
-	     if (segundosO == 59) {
-	         segundosO = -1;
-	     }
-	     if ((centesimasO == 0) && (segundosO == 0)) {
-	         minutosO++;
-	         if (minutosO < 10) {
-	             minutosO = "0" + minutosO;
-	         }
-	         $("#horaO").html("" + minutosO);
-	     }
-	 }
-	 $("#segsO").html(":00");
-	 $("#minsO").html(":00");
-	 $("#horaO").html("00");
 	 $("#segsP").html(":00");
 	 $("#minsP").html(":00");
 	 $("#horaP").html("00");
-	 $("#segsT").html(":00");
-	 $("#minsT").html(":00");
-	 $("#horaT").html("00");
 
-	 function parar1() {
-	     clearInterval(control1);
-	 }
 	 function parar2() {
 	     clearInterval(control2);
 	 }
