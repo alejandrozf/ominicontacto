@@ -73,7 +73,6 @@ $(function () {
 	     $("#modalwebChat").modal('show');
 	 });
 	// inicio1();
-	 inicio3();
 	// como informo a un servidro de presencia que mi endpoint camibia de status
 	 //$("#modalWebCall").modal('show');
 	 $("#webCall").click(function () {
@@ -343,9 +342,7 @@ $(function () {
 	 function inicio2() {
 	     control2 = setInterval(cronometro2, 1000);
 	 }
-	 function inicio3() {
-	     control3 = setInterval(cronometro3, 1000);
-	 }
+
 //************************************CRONOMETRO DE PAUSAS----------------------------
 	 function cronometro2() {
 	     if (centesimasP < 59) {
@@ -374,36 +371,6 @@ $(function () {
 	             minutosP = "0" + minutosP;
 	         }
 	         $("#horaP").html("" + minutosP);
-	     }
-	 }
-	 //*************************************** CRONOMETRO DE Tiempo TOTAL-------------------------------
-	 function cronometro3() {
-	     if (centesimasT < 59) {
-	         centesimasT++;
-	         if (centesimasT < 10) {
-	             centesimasT = "0" + centesimasT;
-	         }
-	         $("#segsT").html(":" + centesimasT);
-	     }
-	     if (centesimasT == 59) {
-	         centesimasT = -1;
-	     }
-	     if (centesimasT == 0) {
-	         segundosT++;
-	         if (segundosT < 10) {
-	             segundosT = "0" + segundosT;
-	         }
-	         $("#minsT").html(":" + segundosT);
-	     }
-	     if (segundosT == 59) {
-	         segundosT = -1;
-	     }
-	     if ((centesimasT == 0) && (segundosT == 0)) {
-	         minutosT++;
-	         if (minutosT < 10) {
-	             minutosT = "0" + minutosT;
-	         }
-	         $("#horaT").html("" + minutosT);
 	     }
 	 }
 
