@@ -73,7 +73,7 @@ $(function () {
 	     $("#modalwebChat").modal('show');
 	 });
 	// inicio1();
-	 //inicio3();
+	 inicio3();
 	// como informo a un servidro de presencia que mi endpoint camibia de status
 	 //$("#modalWebCall").modal('show');
 	 $("#webCall").click(function () {
@@ -294,6 +294,7 @@ $(function () {
 	 function inicio1() {
 	     control1 = setInterval(cronometro1, 1000);
 	 }
+	 //*******************************CRONOMETRO DE OPERACION DE AGENTE----------------------------
 	 function cronometro1() {
 	     if (centesimasO < 59) {
 	         centesimasO++;
@@ -345,7 +346,7 @@ $(function () {
 	 function inicio3() {
 	     control3 = setInterval(cronometro3, 1000);
 	 }
-
+//************************************CRONOMETRO DE PAUSAS----------------------------
 	 function cronometro2() {
 	     if (centesimasP < 59) {
 	         centesimasP++;
@@ -375,6 +376,7 @@ $(function () {
 	         $("#horaP").html("" + minutosP);
 	     }
 	 }
+	 //*************************************** CRONOMETRO DE Tiempo TOTAL-------------------------------
 	 function cronometro3() {
 	     if (centesimasT < 59) {
 	         centesimasT++;
