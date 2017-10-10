@@ -1614,6 +1614,8 @@ class Contacto(models.Model):
         related_name='contactos', blank=True, null=True
     )
 
+    contactantes_preview = models.ManyToManyField(AgenteProfile, through="AgenteEnContacto")
+
     def obtener_telefono_y_datos_extras(self, metadata):
         """Devuelve lista con (telefono, datos_extras) utilizando
         la informacion de metadata pasada por parametro.
@@ -2736,3 +2738,27 @@ class AgendaManual(models.Model):
         return "Agenda para el telefono {0} agendado por el agente {1}" \
                " para la fecha {2} a la hora {3}hs ".format(
                    self.telefono, self.agente, self.fecha, self.hora)
+
+
+class AgenteEnContacto(models.Model):
+    """
+    Relaciona a agentes que están en comunicación con contactos de la BD de una campaña
+    """
+
+    ESTADO_ENTREGADO = 1  # significa que un agente solicitó este contacto y le fue entregado
+
+    ESTADO_ATENDIENDO = 2  # significa que el agente está hablando con el contacto
+
+    ESTADO_FINALIZADO = 3  # significa que el agente culminó de forma satisfactoria la llamada
+
+    ESTADO_CHOICES = (
+        (ESTADO_ENTREGADO, 'ENTREGADO'),
+        (ESTADO_ATENDIENDO, 'ATENDIENDO'),
+        (ESTADO_FINALIZADO, 'FINALIZADO'),
+    )
+    agente = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
+    contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
+    estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
+
+    def __unicode__(self):
+        return "Agente {0} relacionado con contacto {1}".format(self.agente, self.contacto)
