@@ -188,10 +188,7 @@ $(function() {
 	    horaDOM.html("00");
   	}
     //dar solucion a la repeticion de codigo, esto ya existe en main.js
-    function parar1() {
-	    clearInterval(control1);
-	 	}
-	 	function parar2() {
+  	function parar2() {
 	 		clearInterval(control2);
 	 	}
 	 	function parar3() {
@@ -544,8 +541,7 @@ $(function() {
 								$("#Resume").prop('disabled',false);
 								$("#sipLogout").prop('disabled',false);
 								updateButton(modifyUserStat, "label label-danger", "ACW");
-				//				parar1();
-			//			    inicio2();
+								inicio2();
 					//			parar3();
 								if($("#auto_unpause").val() != 0) {
 							    var timeoutACW = $("#auto_unpause").val();
@@ -589,7 +585,6 @@ $(function() {
 							$("#Resume").prop('disabled',false);
 							$("#sipLogout").prop('disabled',false);
 							updateButton(modifyUserStat, "label label-danger", "ACW");
-			//				parar1();
 		//			        inicio2();
 							if($("#auto_unpause").val() != 0) {
 								var timeoutACW = $("#auto_unpause").val();
