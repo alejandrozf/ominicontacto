@@ -17,6 +17,7 @@ import unicodedata
 import datetime
 
 from django.conf import settings
+from django.forms import ValidationError
 from ominicontacto_app.errors import OmlError
 import logging as _logging
 
@@ -270,3 +271,14 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
     def writerows(self, rows):
         for row in rows:
             self.writerow(row)
+
+
+def validar_nombres_campanas(nombre):
+    """
+    Valida que no hayan espacios ni caracteres no ASCII en los nombres de campañas
+    """
+    error_ascii = 'el nombre no puede contener tildes ni caracteres no ASCII'
+    if ' ' in nombre:
+        raise ValidationError('el nombre no puede contener espacios')
+    if any([(ord(i) >= 128) for i in nombre]):
+        raise ValidationError(error_ascii)

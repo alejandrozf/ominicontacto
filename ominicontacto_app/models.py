@@ -393,13 +393,13 @@ class CampanaManager(models.Manager):
 
     def obtener_campanas_entrantes(self):
         """
-        Devuelve campañas de tipo dialer
+        Devuelve campañas de tipo entrantes
         """
         return self.filter(type=Campana.TYPE_ENTRANTE)
 
     def obtener_campanas_manuales(self):
         """
-        Devuelve campañas de tipo dialer
+        Devuelve campañas de tipo manuales
         """
         return self.filter(type=Campana.TYPE_MANUAL)
 
@@ -1728,7 +1728,7 @@ class GrabacionManager(models.Manager):
                                        "sip agente"))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, sip_agente, campana, campanas):
+                            tel_cliente, sip_agente, campana, campanas, marcadas):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -1738,17 +1738,17 @@ class GrabacionManager(models.Manager):
                                                     datetime.time.max)
             grabaciones = grabaciones.filter(fecha__range=(fecha_desde,
                                                            fecha_hasta))
-
         if tipo_llamada:
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
-
         if tel_cliente:
             grabaciones = grabaciones.filter(tel_cliente__contains=tel_cliente)
-
         if sip_agente:
             grabaciones = grabaciones.filter(sip_agente=sip_agente)
         if campana:
             grabaciones = grabaciones.filter(campana=campana)
+        if marcadas:
+            total_grabaciones_marcadas = Grabacion.objects.marcadas()
+            grabaciones = grabaciones & total_grabaciones_marcadas
 
         return grabaciones.order_by('-fecha')
 
@@ -1765,6 +1765,10 @@ class GrabacionManager(models.Manager):
                 cantidad=Count('sip_agente')).order_by('sip_agente')
         except Grabacion.DoesNotExist:
             raise (SuspiciousOperation("No se encontro grabaciones "))
+
+    def marcadas(self):
+        marcaciones = GrabacionMarca.objects.values_list('uid', flat=True)
+        return self.filter(uid__in=marcaciones)
 
 
 class Grabacion(models.Model):
@@ -1799,6 +1803,7 @@ class Grabacion(models.Model):
     grabacion = models.CharField(max_length=255)
     sip_agente = models.IntegerField()
     campana = models.ForeignKey(Campana, related_name='grabaciones')
+    uid = models.CharField(max_length=45, blank=True, null=True)
 
     def __unicode__(self):
         return "grabacion del agente con el sip {0} con el cliente {1}".format(
@@ -1809,6 +1814,21 @@ class Grabacion(models.Model):
         if agente:
             return agente.user.get_full_name()
         return self.sip_agente
+
+
+class GrabacionMarca(models.Model):
+    """
+    Contiene los atributos de una grabación marcada
+    """
+    uid = models.CharField(max_length=45)
+    descripcion = models.TextField()
+
+    def __unicode__(self):
+        return "Grabacion con uid={0} marcada con descripcion={1}".format(
+            self.uid, self.descripcion)
+
+    class Meta:
+        db_table = 'ominicontacto_app_grabacion_marca'
 
 
 class AgendaManager(models.Manager):

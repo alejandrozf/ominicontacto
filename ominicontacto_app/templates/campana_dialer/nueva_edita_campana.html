@@ -40,7 +40,7 @@
     <div class="form-group row">
         {{ form.nombre.errors }}
         <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
-        <div class="col-sm-6">
+        <div class="col-sm-6" data-toggle="tooltip" data-placement="top" title="Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos">
               {{ form.nombre }}
         </div>
     </div>

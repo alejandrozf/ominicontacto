@@ -12,15 +12,15 @@ from StringIO import StringIO
 from zipfile import ZipFile
 
 from django.conf import settings
-from django.http import HttpResponse
-
-from django.views.generic import FormView
+from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
+from django.http import HttpResponse, JsonResponse
+
 from ominicontacto_app.forms import (
     GrabacionBusquedaForm, GrabacionReporteForm
 )
 from ominicontacto_app.models import (
-    Grabacion, Campana
+    Grabacion, GrabacionMarca, Campana
 )
 from ominicontacto_app.services.reporte_grafico import GraficoService
 from utiles import convert_fecha_datetime, UnicodeWriter
@@ -96,14 +96,16 @@ class BusquedaGrabacionFormView(FormView):
         tel_cliente = form.cleaned_data.get('tel_cliente')
         sip_agente = form.cleaned_data.get('sip_agente')
         campana = form.cleaned_data.get('campana')
+        marcadas = form.cleaned_data.get('marcadas', False)
         campanas = Campana.objects.all()
         if self.request.user.get_is_supervisor_customer():
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
         pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
-            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, sip_agente, campana,
-            campanas)
+            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, sip_agente, campana, campanas,
+            marcadas)
+
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
 
@@ -209,3 +211,38 @@ def exportar_zip_reportes_view(request):
     response.write(in_memory.read())
 
     return response
+
+
+class MarcarGrabacionView(View):
+    """
+    Crea o modifica la descripción de una grabacion existente
+    """
+
+    def post(self, *args, **kwargs):
+        uid = self.request.POST.get('uid', False)
+        descripcion = self.request.POST.get('descripcion', '')
+        try:
+            grabacion_marca, _ = GrabacionMarca.objects.get_or_create(uid=uid)
+        except Exception as e:
+            return JsonResponse({'result': 'failed by {0}'.format(e.message)})
+        else:
+            grabacion_marca.descripcion = descripcion
+            grabacion_marca.save()
+            return JsonResponse({'result': 'OK'})
+
+
+class GrabacionDescripcionView(View):
+    """
+    Obtiene la descripción de una grabación si está marcada
+    """
+
+    def get(self, *args, **kwargs):
+        uid = kwargs.get('uid', False)
+        try:
+            grabacion_marca = GrabacionMarca.objects.get(uid=uid)
+        except GrabacionMarca.DoesNotExist:
+            response = {u'result': u'No encontrada',
+                        u'descripcion': u'La grabación no tiene descripción asociada'}
+        else:
+            response = {u'result': u'Descripción', u'descripcion': grabacion_marca.descripcion}
+        return JsonResponse(response)

@@ -1,5 +1,5 @@
 //***************************************************
-var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause;
+var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
 function suma(a, b) {
@@ -14,6 +14,7 @@ function updateButton(btn,clsnm,inht) {
 }
 
 $(function() {
+
 	$("#modalWebCall").modal('show');
 	/*
 	ESTADO_OFFLINE = 1    """Agente en estado offline"""
@@ -45,16 +46,16 @@ $(function() {
 	 });
 
 	 $("#SaveSignedCall").click(function () {
-	 	 var campid = $("#idCamp").val();// camp ID
-	 	 var idagt = $("#idagt").val();// agent ID
-	 	 var desc = $("#SignDescription").html();// sign subject
+	 	 var desc = $("#SignDescription").val();// sign subject
+		 var URl = "grabacion/marcar/";
+		 var data2 =  {"uid": uid, "descripcion": desc};
 	 	 $.ajax({
-	 	   url: '//',
-	 	   type: 'GET',
-       contentType: 'application/json',
-       data: "CampId="+campid+"&AgentId="+idagt+"&SignDesc="+desc+"&phone=",
+	 	   url: URl,
+	 	   type: 'POST',
+       dataType: 'application/json',
+       data: data2,
        succes: function (msg) {
-         console.log(JSON.parse(msg));
+         
 	     },
     	 error: function (jqXHR, textStatus, errorThrown) {
          console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
@@ -295,6 +296,10 @@ $(function() {
       		var CampIdHeader = e.request.headers.Idcamp[0].raw;
       		$("#idCamp").val(CampIdHeader);
       	}
+
+        if(e.request.headers.Uidgrabacion) {
+	        uid = e.request.headers.Uidgrabacion[0].raw;
+        }
         fromUser = e.request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
@@ -567,7 +572,7 @@ $(function() {
 							  }
 							} // si no es agente predictivo....
 					} else {
-					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));//llevar a cero el conometro embebido en el webphone
 					}
 				}
 			} else { // si NO es una llamada entrante
