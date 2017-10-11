@@ -33,5 +33,8 @@ class CampanasTests(OMLBaseTest):
         with self.assertRaisesMessage(ValidationError, "el nombre no puede contener espacios"):
             validar_nombres_campanas("nombre con espacios")
 
-    def test_adicion_de_tipo_preview_campanas(self):
+    def test_tipo_campanas_preview(self):
         self.assertEqual(Campana.TYPE_PREVIEW, 4)
+
+    def test_tiempo_desconexion_campanas_preview(self):
+        self.assertTrue(self.campana.tiempo_desconexion >= 0)
