@@ -5,6 +5,8 @@ Tests relacionados con las campañas
 """
 from __future__ import unicode_literals
 
+from ominicontacto_app.models import Campana
+
 from ominicontacto_app.tests.factories import CampanaFactory
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -30,3 +32,6 @@ class CampanasTests(OMLBaseTest):
     def test_validacion_nombres_de_campana_no_permite_espacios(self):
         with self.assertRaisesMessage(ValidationError, "el nombre no puede contener espacios"):
             validar_nombres_campanas("nombre con espacios")
+
+    def test_adicion_de_tipo_preview_campanas(self):
+        self.assertEqual(Campana.TYPE_PREVIEW, 4)
