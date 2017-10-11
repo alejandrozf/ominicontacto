@@ -625,10 +625,13 @@ class Campana(models.Model):
     TYPE_MANUAL = 3
     """La campaña está definida como manual"""
 
+    TYPE_PREVIEW = 4            # La campaña está definida como preview
+
     TYPES_CAMPANA = (
         (TYPE_ENTRANTE, 'Entrante'),
         (TYPE_DIALER, 'Dialer'),
-        (TYPE_MANUAL, 'Manual')
+        (TYPE_MANUAL, 'Manual'),
+        (TYPE_PREVIEW, 'Preview'),
     )
 
     FORMULARIO = 1
