@@ -676,9 +676,10 @@ class Campana(models.Model):
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
     es_manual = models.BooleanField(default=False)
     objetivo = models.PositiveIntegerField(default=0)
+    tiempo_desconexion = models.PositiveIntegerField(default=0)  # para uso en campañas preview
 
     def __unicode__(self):
-            return self.nombre
+        return self.nombre
 
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
