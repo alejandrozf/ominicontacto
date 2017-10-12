@@ -951,6 +951,32 @@ class CampanaManualForm(forms.ModelForm):
         return nombre
 
 
+class CampanaPreviewForm(CampanaManualForm):
+    def __init__(self, *args, **kwargs):
+        super(CampanaPreviewForm, self).__init__(*args, **kwargs)
+
+        self.fields['bd_contacto'].queryset =\
+            BaseDatosContacto.objects.obtener_definidas()
+        self.fields['bd_contacto'].required = True
+
+    class Meta:
+        model = Campana
+        fields = ('nombre', 'calificacion_campana', 'formulario', 'gestion',
+                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
+                  'tiempo_desconexion')
+
+        widgets = {
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            'tipo_interaccion': forms.RadioSelect(),
+            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
 class CalificacionManualForm(forms.ModelForm):
 
     def __init__(self, calificacion_choice, gestion, *args, **kwargs):
