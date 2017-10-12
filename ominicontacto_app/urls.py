@@ -10,7 +10,7 @@ from ominicontacto_app import (
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_calificacion_manual
+    views_calificacion_manual, views_campana_preview
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -871,6 +871,18 @@ urlpatterns = [
         login_required(
             views_campana_manual.CampanaManualSupervisorUpdateView.as_view()),
         name="campana_manual_supervisors"),
+    # ==========================================================================
+    # Campana Preview
+    # ==========================================================================
+    url(r'^campana_preview/lista/$',
+        login_required(
+            views_campana_preview.CampanaPreviewListView.as_view()),
+        name="campana_preview_list"),
+    url(r'^campana_preview/create/$',
+        login_required(
+            views_campana_preview.CampanaPreviewCreateView.as_view()),
+        name="campana_preview_create"),
+
     # ==========================================================================
     # API para Base de Datos de Contactos
     # ==========================================================================
