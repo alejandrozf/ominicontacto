@@ -7,7 +7,6 @@ Observacion se copiaron varias vistas del modulo views_campana
 
 from __future__ import unicode_literals
 
-import json
 import datetime
 
 from django.contrib import messages
@@ -45,10 +44,12 @@ class CampanaManualListView(ListView):
     context_object_name = 'campanas'
     model = Campana
 
+    def _get_campanas(self):
+        return Campana.objects.obtener_campanas_manuales()
+
     def get_context_data(self, **kwargs):
-        context = super(CampanaManualListView, self).get_context_data(
-           **kwargs)
-        campanas = Campana.objects.obtener_campanas_manuales()
+        context = super(CampanaManualListView, self).get_context_data(**kwargs)
+        campanas = self._get_campanas()
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
         if self.request.user.is_authenticated() and self.request.user and \
@@ -273,7 +274,7 @@ def mostrar_campanas_manual_borradas_ocultas_view(request):
     borradas = Campana.objects.obtener_borradas()
     if request.user.is_authenticated() and request.user and \
             not request.user.get_is_administrador():
-        user = self.request.user
+        user = request.user
         borradas = Campana.objects.obtener_campanas_vista_by_user(borradas, user)
     data = {
         'borradas': borradas.filter(type=Campana.TYPE_MANUAL),
