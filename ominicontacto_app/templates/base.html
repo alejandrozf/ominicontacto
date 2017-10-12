@@ -142,10 +142,10 @@
                             	    <a href="{% url 'campana_manual_create' %}">Crear nueva campaña Manual</a>
                         	</li>
                                 <li>
-                                    <a href="">Listado de campañas Preview</a>
+                                    <a href="{% url 'campana_preview_list' %}">Listado de campañas Preview</a>
                                 </li>
 				<li>
-                            	    <a href="">Crear nueva campaña Preview</a>
+                            	    <a href="{% url 'campana_preview_create' %}">Crear nueva campaña Preview</a>
                         	</li>
                                 {% if user.get_is_administrador %}
                                 <li>
