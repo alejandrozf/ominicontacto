@@ -912,6 +912,18 @@ urlpatterns = [
         name="campana_preview_dispatcher"),
 
     # ==========================================================================
+    # Campana Preview
+    # ==========================================================================
+    url(r'^campana_preview/lista/$',
+        login_required(
+            views_campana_preview.CampanaPreviewListView.as_view()),
+        name="campana_preview_list"),
+    url(r'^campana_preview/create/$',
+        login_required(
+            views_campana_preview.CampanaPreviewCreateView.as_view()),
+        name="campana_preview_create"),
+
+    # ==========================================================================
     # API para Base de Datos de Contactos
     # ==========================================================================
     url(r'^base_de_datos/cargar_nueva/$',
