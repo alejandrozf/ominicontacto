@@ -403,6 +403,12 @@ class CampanaManager(models.Manager):
         """
         return self.filter(type=Campana.TYPE_MANUAL)
 
+    def obtener_campanas_preview(self):
+        """
+        Devuelve campañas de tipo preview
+        """
+        return self.filter(type=Campana.TYPE_PREVIEW)
+
     def obtener_campanas_vista_by_user(self, campanas, user):
         """
         devuelve las campanas filtradas por user
