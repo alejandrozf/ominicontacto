@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_js %}
+    <script>
+     $(document).ready(function() {
+       $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
+       $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
+
+     });
+    </script>
+{% endblock %}
+{% block content %}
+    {% block title_campana %}{% endblock %}
+    <div class="col-md-6">
+        <form action="" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% if es_template %}
+                <div class="form-group row">
+                    {{ form.nombre_template.errors }}
+                    <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre template: </label>
+                    <div class="col-sm-6">
+                        {{ form.nombre_template }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group row">
+                    {{ form.nombre.errors }}
+                    <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
+                    <div class="col-sm-6" data-toggle="tooltip" data-placement="top" title="Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos">
+                        {{ form.nombre }}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="form-group row">
+                {{ form.calificacion_campana.errors }}
+                <label class="col-sm-3 control-label" for="{{ form.calificacion_campana.id_for_label }}">Calificacion campana: </label>
+                <div class="col-sm-6">
+                    {{ form.calificacion_campana }}
+                </div>
+            </div>
+            {% block bd_contactos %}{% endblock %}
+            {{ form.tipo_interaccion.errors }}
+            <div class="form-group row">
+                {{ form.formulario.errors }}
+                <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.0 }}</div></label>
+                <div class="col-sm-6">
+                    {{ form.formulario }}
+                </div>
+            </div>
+            <div class="form-group row">
+                {{ form.sitio_externo.errors }}
+                <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
+                <div class="col-sm-6">
+                    {{ form.sitio_externo }}
+                </div>
+            </div>
+            <div class="form-group row">
+                {{ form.gestion.errors }}
+                <label class="col-sm-3 control-label">Gestion: </label>
+                <div class="col-sm-6">
+                    {{ form.gestion }}
+                </div>
+            </div>
+            <div class="form-group row">
+                {{ form.auto_grabacion.errors }}
+                <label class="col-sm-3 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados: </label>
+                <div class="col-sm-6">
+                    {{ form.auto_grabacion }}
+                </div>
+            </div>
+            <div class="form-group row">
+                {{ form.detectar_contestadores.errors }}
+                <label class="col-sm-3 control-label" for="{{ form.detectar_contestadores.id_for_label }}">Detectar Contestadores: </label>
+                <div class="col-sm-6">
+                    {{ form.detectar_contestadores }}
+                </div>
+            </div>
+            <div class="form-group row">
+                {{ form.objetivo.errors }}
+                <label class="col-sm-3 control-label">Objetivo: </label>
+                <div class="col-sm-6">
+                    {{ form.objetivo }}
+                </div>
+            </div>
+            {% block tiempo_desconexion %}{% endblock %}
+    </br>
+    <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
+        Guardar
+    </button>
+
+        </form>
+    </div>
+
+{% endblock %}
