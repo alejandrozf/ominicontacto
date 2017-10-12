@@ -233,7 +233,9 @@ class LlamarContactoView(RedirectView):
             'IdCamp': str(campana_id),
             'codCli': str(contacto.pk),
             'CAMPANA': campana_nombre,
-            'origin': 'click2call'
+            'origin': 'click2call',
+            'FTSAGENTE': "{0}_{1}".format(agente.id,
+                                          request.user.get_full_name())
         }
         channel = "Local/{0}@click2call/n".format(agente.sip_extension)
         # Genero la llamada via originate por AMI
