@@ -88,7 +88,7 @@ class CampanaPreviewUpdateView(UpdateView):
     """
 
     model = Campana
-    template_name = 'campana_preview/campana_preview.html'
+    template_name = 'campana_preview/campana_preview_update.html'
     context_object_name = 'campana'
     form_class = CampanaPreviewForm
 
