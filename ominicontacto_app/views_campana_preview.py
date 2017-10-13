@@ -88,5 +88,5 @@ class CampanaPreviewListView(CampanaManualListView):
     """
     template_name = 'campana_preview/campana_list.html'
 
-    def _get_campanas(self):
+    def get_queryset(self):
         return Campana.objects.obtener_campanas_preview()
