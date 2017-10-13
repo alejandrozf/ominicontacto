@@ -5,7 +5,7 @@
     {% for campana in activas %}
         <tr>
             <td width="25%">
-                <a href="{#% url 'campana_preview_update' campana.pk %#}">{{ campana.nombre }}</a>
+                <a href="{% url 'campana_preview_update' campana.pk %}">{{ campana.nombre }}</a>
             </td>
             <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
 
@@ -40,7 +40,7 @@
     {% for campana in borradas %}
         <tr>
             <td width="25%">
-                <a href="{#% url 'campana_preview_update' campana.pk %#}">{{ campana.nombre }}</a>
+                <a href="{% url 'campana_preview_update' campana.pk %}">{{ campana.nombre }}</a>
             </td>
             <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
 
