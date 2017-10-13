@@ -10,7 +10,7 @@ from django.views.generic import CreateView
 
 from ominicontacto_app.models import BaseDatosContacto, Campana, Queue
 from ominicontacto_app.forms import CampanaPreviewForm
-from ominicontacto_app.views_campana_manual import CampanaManualListView
+from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
 
 logger = logging_.getLogger(__name__)
 
@@ -77,6 +77,17 @@ class CampanaPreviewCreateView(CreateView):
         )
         queue.save()
         return super(CampanaPreviewCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('campana_preview_list')
+
+
+class CampanaPreviewDeleteView(CampanaManualDeleteView):
+    """
+    Esta vista se encarga de la eliminación de una campana
+    """
+    model = Campana
+    template_name = 'campana_preview/delete_campana.html'
 
     def get_success_url(self):
         return reverse('campana_preview_list')
