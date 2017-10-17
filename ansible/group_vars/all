@@ -1,0 +1,56 @@
+---
+############# Repositorios #############
+#rtpengine
+rtpengine_repo: https://github.com/sipwise/rtpengine
+#kamailio
+kamailio_repo: git://git.kamailio.org/kamailio
+#omnileads-AIO
+omnileads_AIO: https://github.com/arcturuscba/omnileads-AIO
+
+############ Componentes del certificado del CA ###########
+serial: 01
+ca_country: AR
+ca_state: CBA
+ca_locality: CBA
+ca_organization: FTS
+ca_organizationalunit: Desarrollo
+ca_commonname: omnileads-voip.example.com
+
+########### URLS para descargar asterisk ###############
+dahdi_linux: http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-current.tar.gz
+libpri: http://downloads.asterisk.org/pub/telephony/libpri/libpri-current.tar.gz
+asterisk_v13: http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-13-current.tar.gz
+jansson: https://github.com/akheron/jansson/archive/v2.7.tar.gz
+
+########## Country Code Asterisk ################
+country_code: 54
+
+######## URL para descargar FreePBX y wombat #########
+freepbx: http://mirror.freepbx.org/modules/packages/freepbx/freepbx-13.0-latest.tgz
+wombat: http://downloads.loway.ch/beta/WombatDialer-16.06.9-157.tar.gz
+
+######## IP y FQDNS de servers ########
+omnivoip_ip: 192.168.95.31
+#omnivoip_ip: 192.168.16.31
+omnivoip_fqdn: omnileads-voip.example.com
+omniapp_ip: 192.168.95.30
+#omniapp_ip: 192.168.16.30
+omniapp_fqdn: omnileads-app.example.com
+red_deploy: 192.168.95.0/24
+
+####### URL para descargar Asternic ########
+asternic: http://download.asternic.net/asternic-stats-pro-2.2.0.tgz
+
+###### Variable para oml_settings_local.py ##########
+session_cookie_age: 600
+
+##### Componentes del certificado de nginx para omniapp #########
+#Nota: se usan los mismos del CA de Kamailio, solo cambia el hostname  
+
+##### Variables  de omni-app
+admin_user: admin
+admin_pass: Lotte199!
+django_dir: /home/freetech/ominicontacto
+
+#### COntraseña de mysql-wombat ####
+mysql_root_pass: 098098ZZZ

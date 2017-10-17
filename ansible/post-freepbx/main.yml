@@ -1,0 +1,8 @@
+---
+
+- name: Instalación y configuración de Omni-VoIP
+  hosts: omni-voip
+  
+  roles:
+          - asternic
+            #- prueba 

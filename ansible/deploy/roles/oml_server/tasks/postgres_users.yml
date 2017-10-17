@@ -1,0 +1,18 @@
+---
+
+- name: Create kamailio postgres user
+  become: yes
+  become_user: postgres
+  postgresql_user: name=kamailio password=kamailiorw role_attr_flags=SUPERUSER
+  tags:
+          - virtualenv
+
+- postgresql_user: name=kamailioro password=kamailioro role_attr_flags=SUPERUSER
+  become: yes
+  become_user: postgres
+  tags:
+          - virtualenv
+  notify: restart postgres
+
+
+
