@@ -12,7 +12,8 @@ from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
                                       CalificacionCampana, Calificacion, Formulario, Grabacion,
-                                      GrabacionMarca, Queuelog, SitioExterno, User, Contacto)
+                                      GrabacionMarca, Queuelog, SitioExterno, User, Contacto,
+                                      SupervisorProfile)
 
 faker = faker.Factory.create()
 
@@ -50,6 +51,15 @@ class AgenteProfileFactory(DjangoModelFactory):
     estado = lazy_attribute(lambda a: faker.random_int(1, 3))
     reported_by = SubFactory(UserFactory)
     #  TODO: hacer atributos: 'modulos', 'sip_password'
+
+
+class SupervisorProfileFactory(DjangoModelFactory):
+    class Meta:
+        model = SupervisorProfile
+
+    user = SubFactory(UserFactory)
+    sip_extension = lazy_attribute(lambda a: faker.ean8())
+    #  TODO: hacer atributo 'sip_password'
 
 
 class BaseDatosContactoFactory(DjangoModelFactory):
