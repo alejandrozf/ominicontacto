@@ -37,7 +37,7 @@ git archive --format=tar $(git rev-parse HEAD) | tar x -f - -C $TMP/ominicontact
 
 echo "Eliminando archivos innecesarios..."
 rm -rf $TMP/ominicontacto/docs
-rm -rf $TMP/ominicontacto/deploy
+rm -rf $TMP/ominicontacto/ansible
 rm -rf $TMP/ominicontacto/run_coverage_tests.sh
 rm -rf $TMP/ominicontacto/run_uwsgi.sh
 
