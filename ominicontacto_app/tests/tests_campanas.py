@@ -9,7 +9,8 @@ from django.core.urlresolvers import reverse
 
 from ominicontacto_app.models import Campana
 
-from ominicontacto_app.tests.factories import CampanaFactory, ContactoFactory, UserFactory
+from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
+                                               QueueFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
@@ -89,7 +90,7 @@ class CampanasTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_borrada.nombre)
 
-    def test_usuarios_logueados_pueden_crear_campanas_preview(self):
+    def test_usuario_logueado_puede_crear_campana_preview(self):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         post_data = {'nombre': nombre_campana,
@@ -104,3 +105,21 @@ class CampanasTests(OMLBaseTest):
                      'tiempo_desconexion': 10}
         self.client.post(url, post_data, follow=True)
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
+
+    def test_usuario_logueado_puede_modificar_campana_preview(self):
+        QueueFactory.create(campana=self.campana_activa)
+        url = reverse('campana_preview_update', args=[self.campana_activa.pk])
+        nombre_campana = 'campana_preview_actualizada'
+        post_data = {'nombre': nombre_campana,
+                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'bd_contacto': self.campana_activa.bd_contacto.pk,
+                     'tipo_interaccion': Campana.FORMULARIO,
+                     'formulario': self.campana.formulario.pk,
+                     'gestion': 'Venta',
+                     'detectar_contestadores': True,
+                     'auto_grabacion': True,
+                     'objetivo': 1,
+                     'tiempo_desconexion': 10}
+        self.assertNotEqual(Campana.objects.get(pk=self.campana_activa.pk).nombre, nombre_campana)
+        self.client.post(url, post_data, follow=True)
+        self.assertEqual(Campana.objects.get(pk=self.campana_activa.pk).nombre, nombre_campana)
