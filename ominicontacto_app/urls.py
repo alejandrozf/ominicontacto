@@ -890,6 +890,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewDeleteView.as_view()),
         name="campana_preview_delete"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/supervisors/$',
+        login_required(
+            views_campana_preview.CampanaPreviewSupervisorUpdateView.as_view()),
+        name="campana_preview_supervisors"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos
