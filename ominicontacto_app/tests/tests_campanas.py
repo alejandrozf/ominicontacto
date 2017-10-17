@@ -131,3 +131,19 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, follow=True)
         self.assertEqual(Campana.objects.get(
             pk=self.campana_activa.pk).estado, Campana.ESTADO_BORRADA)
+
+    def test_usuario_no_logueado_no_establece_supervisores_campana_preview(self):
+        self.client.logout()
+        url = reverse('campana_preview_supervisors', args=[self.campana_activa.pk])
+        response = self.client.post(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_usuario_logueado_establece_supervisores_campana_preview(self):
+        url = reverse('campana_preview_supervisors', args=[self.campana_activa.pk])
+        self.assertFalse(self.campana_activa.supervisors.all().exists())
+        supervisor = UserFactory.create()
+        self.campana_activa.supervisors.add(supervisor)
+        self.campana_activa.save()
+        post_data = {'supervisors': [supervisor.pk]}
+        self.client.post(url, post_data, follow=True)
+        self.assertTrue(self.campana_activa.supervisors.all().exists())
