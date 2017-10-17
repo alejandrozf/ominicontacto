@@ -42,8 +42,7 @@ echo "      Version: $VERSION"
 echo "   Inventario: $INVENTORY"
 echo ""
 
-cd /root/ominicontacto
-
+cd ~/ominicontacto
 #git clean -fdx
 
 #git fetch --prune --tags --force --all -v
@@ -55,7 +54,7 @@ git pull origin +$VERSION:$VERSION
 
 # git reset --hard origin/$VERSION
 
-cd /etc/ansible/deploy/roles/oml_server/files/bin
+
 
 ./build.sh -i $INVENTORY $*
 

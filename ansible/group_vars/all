@@ -30,13 +30,13 @@ freepbx: http://mirror.freepbx.org/modules/packages/freepbx/freepbx-13.0-latest.
 wombat: http://downloads.loway.ch/beta/WombatDialer-16.06.9-157.tar.gz
 
 ######## IP y FQDNS de servers ########
-omnivoip_ip: 192.168.95.31
+omnivoip_ip: 192.168.99.100
 #omnivoip_ip: 192.168.16.31
 omnivoip_fqdn: omnileads-voip.example.com
-omniapp_ip: 192.168.95.30
+omniapp_ip: 192.168.99.101
 #omniapp_ip: 192.168.16.30
 omniapp_fqdn: omnileads-app.example.com
-red_deploy: 192.168.95.0/24
+red_deploy: 192.168.99.0/24
 
 ####### URL para descargar Asternic ########
 asternic: http://download.asternic.net/asternic-stats-pro-2.2.0.tgz

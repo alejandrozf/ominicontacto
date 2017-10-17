@@ -2,4 +2,4 @@
 
 [freetech]
 
-servidor1 ansible_ssh_host=192.168.95.30 ansible_ssh_user=freetech
+servidor1 ansible_ssh_host=192.168.90.101 ansible_ssh_user=freetech
