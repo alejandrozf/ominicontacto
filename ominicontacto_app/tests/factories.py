@@ -10,7 +10,7 @@ from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, po
 
 from django.utils import timezone
 
-from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo,
+from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
                                       CalificacionCampana, Calificacion, Formulario, Grabacion,
                                       GrabacionMarca, Queuelog, SitioExterno, User, Contacto)
 
@@ -160,3 +160,22 @@ class ContactoFactory(DjangoModelFactory):
     telefono = lazy_attribute(lambda a: faker.random_number(10))
     datos = lazy_attribute(lambda a: faker.text())
     bd_contacto = SubFactory(BaseDatosContactoFactory)
+
+
+class QueueFactory(DjangoModelFactory):
+    class Meta:
+        model = Queue
+    campana = SubFactory(CampanaFactory)
+    name = lazy_attribute(lambda a: "queue_{0}".format(uuid4()))
+    maxlen = lazy_attribute(lambda a: faker.random_number(5))
+    wrapuptime = lazy_attribute(lambda a: faker.random_number(5))
+    servicelevel = lazy_attribute(lambda a: faker.random_number(5))
+    strategy = 'rrmemory'
+    eventmemberstatus = True
+    eventwhencalled = True
+    weight = lazy_attribute(lambda a: faker.random_number(5))
+    ringinuse = True
+    setinterfacevar = True
+
+    wait = lazy_attribute(lambda a: faker.random_number(5))
+    queue_asterisk = lazy_attribute(lambda a: faker.random_int(10))
