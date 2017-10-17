@@ -123,3 +123,11 @@ class CampanasTests(OMLBaseTest):
         self.assertNotEqual(Campana.objects.get(pk=self.campana_activa.pk).nombre, nombre_campana)
         self.client.post(url, post_data, follow=True)
         self.assertEqual(Campana.objects.get(pk=self.campana_activa.pk).nombre, nombre_campana)
+
+    def test_usuario_logueado_puede_eliminar_campana_preview(self):
+        url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
+        self.assertEqual(Campana.objects.get(
+            pk=self.campana_activa.pk).estado, Campana.ESTADO_ACTIVA)
+        self.client.post(url, follow=True)
+        self.assertEqual(Campana.objects.get(
+            pk=self.campana_activa.pk).estado, Campana.ESTADO_BORRADA)
