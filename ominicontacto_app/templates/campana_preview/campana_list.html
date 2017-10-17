@@ -17,7 +17,7 @@
                 <a href="{% url 'queue_member_campana' campana.pk %}">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
                 </a>
-                <a href="{% url 'campana_supervisors' campana.pk %}">
+                <a href="{% url 'campana_preview_supervisors' campana.pk %}">
                     <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
                 </a>
                 <a href="{% url 'campana_preview_delete' campana.pk %}">
@@ -47,7 +47,7 @@
             </td>
             <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
 
-            <td> {{campana.get_estado_display}}  </td>
+            <td> {{campana.get_estado_display}} </td>
             <td width="14%">
                 <a href="{% url 'campana_preview_update' campana.pk %}">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar campana"></span>
@@ -55,7 +55,7 @@
                 <a href="{% url 'queue_member_campana' campana.pk %}">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
                 </a>
-                <a href="{% url 'campana_supervisors' campana.pk %}">
+                <a href="{% url 'campana_preview_supervisors' campana.pk %}">
                     <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
                 </a>
                 <a href="{#% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %#}">
