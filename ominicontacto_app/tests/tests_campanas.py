@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 
 from ominicontacto_app.models import Campana
 
-from ominicontacto_app.tests.factories import CampanaFactory, UserFactory
+from ominicontacto_app.tests.factories import CampanaFactory, ContactoFactory, UserFactory
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
@@ -27,11 +27,13 @@ class CampanasTests(OMLBaseTest):
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
 
-        self.campana = CampanaFactory()
-        self.campana_activa = CampanaFactory(
+        self.campana = CampanaFactory.create()
+        self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW)
-        self.campana_borrada = CampanaFactory(
+        self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
+
+        self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
@@ -86,3 +88,19 @@ class CampanasTests(OMLBaseTest):
         url = reverse('campana_preview_list')
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_borrada.nombre)
+
+    def test_usuarios_logueados_pueden_crear_campanas_preview(self):
+        url = reverse('campana_preview_create')
+        nombre_campana = 'campana_preview_test'
+        post_data = {'nombre': nombre_campana,
+                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'bd_contacto': self.campana_activa.bd_contacto.pk,
+                     'tipo_interaccion': Campana.FORMULARIO,
+                     'formulario': self.campana.formulario.pk,
+                     'gestion': 'Venta',
+                     'detectar_contestadores': True,
+                     'auto_grabacion': True,
+                     'objetivo': 1,
+                     'tiempo_desconexion': 10}
+        self.client.post(url, post_data, follow=True)
+        self.assertTrue(Campana.objects.get(nombre=nombre_campana))
