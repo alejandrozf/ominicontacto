@@ -11,6 +11,7 @@ from django.views.generic import CreateView, UpdateView
 from ominicontacto_app.models import BaseDatosContacto, Campana, Queue
 from ominicontacto_app.forms import CampanaPreviewForm
 from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
+from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
 
 logger = logging_.getLogger(__name__)
 
@@ -156,3 +157,12 @@ class CampanaPreviewListView(CampanaManualListView):
 
     def get_queryset(self):
         return Campana.objects.obtener_campanas_preview()
+
+
+class CampanaPreviewSupervisorUpdateView(CampanaSupervisorUpdateView):
+    """
+    Esta vista agrega supervisores a una campana
+    """
+
+    def get_success_url(self):
+        return reverse('campana_preview_list')
