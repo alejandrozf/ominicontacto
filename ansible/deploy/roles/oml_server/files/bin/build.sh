@@ -60,3 +60,6 @@ export DO_CHECKS="${DO_CHECKS:-no}"
 echo "Ejecutando Ansible"
 ansible-playbook -s /etc/ansible/deploy/main.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
 
+echo "Ejecutando Ansible para copia de archivos entre servers"
+ansible-playbook -s /etc/ansible/deploy/omniapp_second/transfer.yml -u root -K
+
