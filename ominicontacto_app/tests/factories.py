@@ -12,7 +12,7 @@ from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo,
                                       CalificacionCampana, Calificacion, Formulario, Grabacion,
-                                      GrabacionMarca, Queuelog, SitioExterno, User)
+                                      GrabacionMarca, Queuelog, SitioExterno, User, Contacto)
 
 faker = faker.Factory.create()
 
@@ -56,10 +56,11 @@ class BaseDatosContactoFactory(DjangoModelFactory):
     class Meta:
         model = BaseDatosContacto
 
-    nombre = lazy_attribute(lambda a: faker.text(128))
+    nombre = lazy_attribute(lambda a: "BD_contacto_{0}".format(uuid4()))
 
     nombre_archivo_importacion = Sequence(lambda n: "file_{0}.dat".format(n))
     metadata = lazy_attribute(lambda a: faker.paragraph(7))
+    estado = BaseDatosContacto.ESTADO_DEFINIDA
 
 
 class FormularioFactory(DjangoModelFactory):
@@ -150,3 +151,12 @@ class GrabacionMarcaFactory(DjangoModelFactory):
 
     uid = lazy_attribute(lambda a: format(uuid4().int))
     descripcion = lazy_attribute(lambda a: faker.text(5))
+
+
+class ContactoFactory(DjangoModelFactory):
+    class Meta:
+        model = Contacto
+
+    telefono = lazy_attribute(lambda a: faker.random_number(10))
+    datos = lazy_attribute(lambda a: faker.text())
+    bd_contacto = SubFactory(BaseDatosContactoFactory)
