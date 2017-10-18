@@ -2,18 +2,18 @@
 
 - hosts: omni-app
   tasks:
+          - name: Add the repository key
+           #shell: "apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886"
+            apt_key: keyserver=keyserver.ubuntu.com state=present id=0xC2518248EEA14886
+           
           - name: Add wombat dialer repositories
-            apt_repository: "repo={{ item }} state=present filename=\"webupd8team-java.list\""
+            apt_repository: "repo={{ item }} state=present filename=webupd8team-java update_cache=yes codename=xenial"
             with_items:
                     - deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main
                     - deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main
 
-          - name: Add the repository key
-            #shell: "apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886"
-            apt_key: keyserver=hkp://keyserver.ubuntu.com:80 state=present id=EEA14886
-
-          - name: Update for repositories
-            apt: update_cache=yes cache_valid_time=12
+                      #- name: Update for repositories
+                      #apt: update_cache=yes cache_valid_time=12
 
           - name: Accept Java8 license
             debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
