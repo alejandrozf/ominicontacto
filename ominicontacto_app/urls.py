@@ -894,6 +894,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewSupervisorUpdateView.as_view()),
         name="campana_preview_supervisors"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_calificacion/$',
+        login_required(
+            views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
+        name="campana_preview_calificacion_reporte_calificacion"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos
