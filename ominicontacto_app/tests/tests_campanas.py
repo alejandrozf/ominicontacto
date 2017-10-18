@@ -7,10 +7,10 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import Campana, QueueMember
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
-                                               QueueFactory)
+                                               QueueFactory, AgenteProfileFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
@@ -153,3 +153,11 @@ class CampanasTests(OMLBaseTest):
         url = reverse('queue_member_add', args=[self.campana_activa.pk])
         response = self.client.post(url, follow=True)
         self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_usuario_logueado_agrega_agentes_a_campana(self):
+        agente_profile = AgenteProfileFactory.create()
+        url = reverse('queue_member_add', args=[self.campana_activa.pk])
+        self.assertFalse(QueueMember.objects.all().exists())
+        post_data = {'member': agente_profile.pk, 'penalty':1}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTrue(QueueMember.objects.all().exists())
