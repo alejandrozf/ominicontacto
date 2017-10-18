@@ -35,6 +35,7 @@ class CampanasTests(OMLBaseTest):
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
 
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
+        QueueFactory.create(campana=self.campana_activa)
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
@@ -107,7 +108,6 @@ class CampanasTests(OMLBaseTest):
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
     def test_usuario_logueado_puede_modificar_campana_preview(self):
-        QueueFactory.create(campana=self.campana_activa)
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
         nombre_campana = 'campana_preview_actualizada'
         post_data = {'nombre': nombre_campana,
@@ -147,3 +147,9 @@ class CampanasTests(OMLBaseTest):
         post_data = {'supervisors': [supervisor.pk]}
         self.client.post(url, post_data, follow=True)
         self.assertTrue(self.campana_activa.supervisors.all().exists())
+
+    def test_usuario_no_logueado_no_agrega_agentes_a_campana(self):
+        self.client.logout()
+        url = reverse('queue_member_add', args=[self.campana_activa.pk])
+        response = self.client.post(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
