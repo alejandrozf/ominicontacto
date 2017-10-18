@@ -5,6 +5,8 @@ Tests relacionados con las campañas
 """
 from __future__ import unicode_literals
 
+from mock import patch
+
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.models import Campana, QueueMember
@@ -15,6 +17,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 from ominicontacto_app.utiles import validar_nombres_campanas
+from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 
 from django.forms import ValidationError
 
@@ -154,10 +157,14 @@ class CampanasTests(OMLBaseTest):
         response = self.client.post(url, follow=True)
         self.assertTemplateUsed(response, u'registration/login.html')
 
-    def test_usuario_logueado_agrega_agentes_a_campana(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_agrega_agentes_a_campana_preview(
+            self, _generar_y_recargar_configuracion_asterisk):
+        # anulamos con mock la parte de regeneracion de asterisk pues no se esta
+        # comprobando en este test y ademas necesita conexión a un servidor externo
         agente_profile = AgenteProfileFactory.create()
         url = reverse('queue_member_add', args=[self.campana_activa.pk])
         self.assertFalse(QueueMember.objects.all().exists())
-        post_data = {'member': agente_profile.pk, 'penalty':1}
-        response = self.client.post(url, post_data, follow=True)
+        post_data = {'member': agente_profile.pk, 'penalty': 1}
+        self.client.post(url, post_data, follow=True)
         self.assertTrue(QueueMember.objects.all().exists())
