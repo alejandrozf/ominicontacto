@@ -3,8 +3,8 @@
 - hosts: omni-app
   tasks:
           - name: Add the repository key
-           #shell: "apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886"
-            apt_key: keyserver=keyserver.ubuntu.com state=present id=0xC2518248EEA14886
+            shell: "apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886"
+            #apt_key: keyserver=keyserver.ubuntu.com state=present id=0xC2518248EEA14886
            
           - name: Add wombat dialer repositories
             apt_repository: "repo={{ item }} state=present filename=webupd8team-java update_cache=yes codename=xenial"
@@ -19,7 +19,7 @@
             debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
           
           - name: Install oracle8 and tomcat8
-            apt: name={{ item }} state=present
+            apt: name={{ item }} state=present update_cache=yes
             with_items:
                     - oracle-java8-installer
                     - tomcat8
