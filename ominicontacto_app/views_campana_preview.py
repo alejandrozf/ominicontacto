@@ -161,6 +161,20 @@ class CampanaPreviewListView(CampanaManualListView):
     def get_context_data(self, **kwargs):
         context = super(CampanaPreviewListView, self).get_context_data(**kwargs)
         context['finalizadas'] = context['campanas'].filter(estado=Campana.ESTADO_FINALIZADA)
+        context['mostrar_ocultas_tipo'] = "mostrar_campanas_preview_ocultas()"
+        return context
+
+
+class CampanaPreviewBorradasListView(CampanaPreviewListView):
+    """
+    Vista que lista las campañas preview pero de incluyendo las borradas ocultas
+    """
+
+    template_name = 'campana_manual/campanas_borradas.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaPreviewBorradasListView, self).get_context_data(**kwargs)
+        context['borradas'] = context['campanas'].filter(estado=Campana.ESTADO_BORRADA)
         return context
 
 
