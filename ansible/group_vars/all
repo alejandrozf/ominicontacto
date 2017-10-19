@@ -1,4 +1,9 @@
 ---
+
+############ Setear a True esta variable cuando se quiera deployar el omni-app luego de haber instalado ###########
+post_inst: yes
+
+
 ############# Repositorios #############
 #rtpengine
 rtpengine_repo: https://github.com/sipwise/rtpengine

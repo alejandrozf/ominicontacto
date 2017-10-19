@@ -25,7 +25,6 @@
 omni-app
 omni-voip
 
-
 # Ex 2: A collection of hosts belonging to the 'webservers' group
 
 #[webservers]
