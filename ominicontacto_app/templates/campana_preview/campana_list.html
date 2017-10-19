@@ -1,6 +1,18 @@
 {% extends "campana_manual/campana_list_base.html" %}
 {% load static %}
 
+{% block head_js %}
+    <script type="text/javascript">
+     function mostrar_campanas_preview_ocultas() {
+       debugger;
+       $.get('{% url 'campana_preview_mostrar_ocultas' %}',
+             function (data) {
+               $('#t_body_borradas').html(data);
+             });
+     };
+    </script>
+{% endblock %}
+
 {% block campanas_activas %}
     {% for campana in activas %}
         <tr>
@@ -115,15 +127,9 @@
                 <a href="{#% url 'campana_preview_reporte_grafico' campana.pk %#}">
                     <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                 </a>
-                {% if campana.oculto %}
-                    <a type="button"  href="{% url 'campana_preview_desocultar' campana.pk %}">
-                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
-                    </a>
-                {% else %}
-                    <a type="button" href="{% url 'campana_preview_ocultar' campana.pk %}" >
-                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
-                    </a>
-                {% endif %}
+                <a type="button" data class="campana-mostrar-esconder" >
+                    <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
+                </a>
             </td>
         </tr>
     {% empty %}
