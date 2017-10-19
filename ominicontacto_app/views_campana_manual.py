@@ -270,7 +270,7 @@ class DesOcultarCampanaManualView(RedirectView):
 
 
 def mostrar_campanas_manual_borradas_ocultas_view(request):
-    """Vista para mostrar campanas dialer ocultas"""
+    """Vista para mostrar campanas manuales ocultas"""
     borradas = Campana.objects.obtener_borradas()
     if request.user.is_authenticated() and request.user and \
             not request.user.get_is_administrador():
