@@ -158,6 +158,11 @@ class CampanaPreviewListView(CampanaManualListView):
     def get_queryset(self):
         return Campana.objects.obtener_campanas_preview()
 
+    def get_context_data(self, **kwargs):
+        context = super(CampanaPreviewListView, self).get_context_data(**kwargs)
+        context['finalizadas'] = context['campanas'].filter(estado=Campana.ESTADO_FINALIZADA)
+        return context
+
 
 class CampanaPreviewSupervisorUpdateView(CampanaSupervisorUpdateView):
     """
