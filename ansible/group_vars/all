@@ -54,3 +54,5 @@ django_dir: /home/freetech/ominicontacto
 
 #### COntraseña de mysql-wombat ####
 mysql_root_pass: 098098ZZZ
+
+post_insta: yes
