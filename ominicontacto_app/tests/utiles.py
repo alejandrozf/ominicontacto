@@ -10,12 +10,13 @@ import os
 import random
 import datetime
 import uuid
+import json
 
 from django.test import TestCase
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, SupervisorProfile, Contacto,
     BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue,
-    ActuacionVigente, ReglasIncidencia
+    ActuacionVigente, ReglasIncidencia, AgendaContacto
 )
 
 
@@ -404,6 +405,17 @@ class OMLTestUtilsMixin(object):
         )
         regla.save()
 
+
+    def crear_agenda_contacto(self, agente, contacto, fecha, hora):
+        agente = AgendaContacto(
+            agente=agente,
+            contacto=contacto,
+            fecha=fecha,
+            hora=hora,
+            tipo_agenda=AgendaContacto.TYPE_PERSONAL,
+            observaciones="llamar en otro horario"
+        )
+        agente.save()
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
     """Clase base para tests"""
