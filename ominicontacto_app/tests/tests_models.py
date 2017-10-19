@@ -217,7 +217,8 @@ class CampanaTest(OMLBaseTest):
 
     def test_crear_agenda_contacto(self):
         """
-        Test crea agenda contacto
+        Test crea agenda contacto y verifica que en el listado no devuelva
+        agenda anteriores a la actual
         """
         user_agente = self.crear_user_agente()
         agente = self.crear_agente_profile(user_agente)
@@ -245,3 +246,35 @@ class CampanaTest(OMLBaseTest):
         self.assertEqual(
             len(agente.agendacontacto.eventos_filtro_fecha('', '')), 2)
 
+    def test_crear_agenda_contacto_manual(self):
+        """
+        Test crea agenda contacto manual y verifica que en el listado
+        no devuelva agenda anteriores a la actual
+        """
+        user_agente = self.crear_user_agente()
+        agente = self.crear_agente_profile(user_agente)
+        telefono = "3517025879"
+        hora = datetime.time(00, 00)
+        fecha_actual= datetime.date.today()
+
+        # crear agendacontactomanual para fecha anterior a la actual
+        fecha_anterior = fecha_actual - datetime.timedelta(days=2)
+        self.crear_agenda_contacto_manual(
+            agente, telefono, fecha_anterior, hora)
+
+        # chequear que no devuelva anteriores a la fecha actual
+        self.assertEqual(
+            len(agente.agendamanual.eventos_filtro_fecha('', '')), 0)
+
+        # crear agendacontactomanual para fecha posterior a la actual
+        fecha_posterior= fecha_actual + datetime.timedelta(days=2)
+        self.crear_agenda_contacto_manual(
+            agente, telefono, fecha_posterior, hora)
+        fecha_posterior= fecha_actual + datetime.timedelta(days=3)
+        self.crear_agenda_contacto_manual(
+            agente, telefono, fecha_posterior, hora)
+
+
+        # chequear que devuelva agendacontacto para fecha posterior a la actual
+        self.assertEqual(
+            len(agente.agendamanual.eventos_filtro_fecha('', '')), 2)
