@@ -1,29 +1,9 @@
 ---
-
-- hosts: omni-app
+- hosts: omni-app.yml
   tasks:
-          - name: Createlang of the database
-            shell: "createlang plpythonu kamailio"
-            become: yes
-            become_user: postgres 
-            ignore_errors: yes       
-
-          - name: Run Django migrations
-            django_manage: >
-                    command={{ item }}
-                    app_path={{ django_dir }}
-                    settings=ominicontacto.settings
-                    virtualenv={{ django_dir }}/virtualenv
-            with_items:
-                    - migrate
-                    - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
-            ignore_errors: yes
-            tags:
-                    - deploy
-
-          - name: Change password of superuser 
+          - name: Change password of superuser
             template: "src=templates/changepassword.sh.j2 dest={{ django_dir }}/changepassword.sh mode=0755"
-          
+
           - name: Change password
             shell: "./changepassword.sh chdir={{ django_dir }}"
             environment:
@@ -34,14 +14,14 @@
 
           - name: Change owner and group of ominicontacto
             file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
-            
+
           - name: Copy of the ominicontacto nginx configuration
             copy: "src={{ django_dir }}/nginx/ominicontacto.conf dest=/etc/nginx/conf.d/ remote_src=yes"
 
           - name: Creation of the nginx server certificate
             set_fact:
                     ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omniapp_fqdn }}"
-          
+
           - shell: "openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout server.key -out server.crt -subj \"{{ ca_subject }}\""
             args:
                     chdir: /home/freetech/ominicontacto/
@@ -65,11 +45,8 @@
             template: "src=templates/config.js.j2 dest={{ django_dir }}/ominicontacto_app/static/ominicontacto/JS/config.js owner=freetech group=freetech"
 
   handlers:
-
           - name: restart nginx
             service: name=nginx state=restarted enabled=yes
 
           - name: restart ominicontacto-daemon
             service: name=ominicontacto-daemon state=restarted enabled=yes
-            
-- import_playbook: wombat.yml

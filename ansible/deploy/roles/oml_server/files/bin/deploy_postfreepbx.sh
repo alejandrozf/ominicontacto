@@ -6,7 +6,7 @@
 # Autor: Federico Peker
 #
 echo "Ejecutando Ansible en omni-voip Post-Freepbx"
-ansible-playbook -s ~/ominicontacto/ansible/post-freepbx/main.yml -u freetech -K
+ansible-playbook -s /etc/ansible/post-freepbx/main.yml -u freetech -K
 
 if [ -z "$VIRTUAL_ENV" ] ; then
 	. ~/ominicontacto/virtualenv/bin/activate
@@ -20,11 +20,12 @@ fi
 VERSION=$1
 shift
 
+##### No es necesario pasar archivo de inventario pues lo lee del ansible.cfg #####
 #if [ -z "$1" ] ; then
 #	echo "ERROR: debe especificar el archivo de inventario"
 #	exit 1
 #fi
-
+#
 #if [ ! -e "$1" ] ; then
 #	echo "ERROR: el archivo de inventario no existe"
 #	exit 1
@@ -56,5 +57,5 @@ git pull origin +$VERSION:$VERSION
 
 
 
-./build.sh -i $INVENTORY $*
-
+#./build.sh -i $INVENTORY $*
+./build.sh

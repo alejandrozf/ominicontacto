@@ -10,5 +10,5 @@
                   - "/opt/kamailio/sbin/kamailio"
           ignore_errors: yes
 
-- import_playbook: omniapp_second/omniapp_second.yml
+
 

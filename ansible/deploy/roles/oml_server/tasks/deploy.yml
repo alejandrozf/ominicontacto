@@ -50,11 +50,8 @@
   tags:
           - deploy
 
-- name: Configure postgres to listen on any port
-  lineinfile: "dest=/etc/postgresql/9.4/main/postgresql.conf regexp=\"^#listen_\" line=\"listen_addresses='*'\""
-  
-- lineinfile: "dest=/etc/postgresql/9.4/main/pg_hba.conf line=\"host    all             all             {{ red_deploy }}            trust\""
 
 - include: postgres_users.yml
+  when: not post_install
 
 

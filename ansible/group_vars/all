@@ -1,4 +1,8 @@
 ---
+
+############# Setear esta variable yes si es una post-implementacion, setear en no si es primera instalacion
+post_install: yes
+
 ############# Repositorios #############
 #rtpengine
 rtpengine_repo: https://github.com/sipwise/rtpengine
@@ -55,4 +59,3 @@ django_dir: /home/freetech/ominicontacto
 #### COntraseña de mysql-wombat ####
 mysql_root_pass: 098098ZZZ
 
-post_insta: yes

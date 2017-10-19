@@ -6,8 +6,16 @@
           build_dir: "{{ BUILD_DIR }}" 
 
   roles:
-          - prerequisitos
+          - {role: prerequisitos, when: not post_install}
           - oml_server
-      #remote_user: fretech
 
 - import_playbook: create_kamailiodb.yml
+  when: not post_install
+
+- import_playbook: omniapp_second/django_migrations.yml
+
+- import_playbook: omniapp_second/omniapp_second.yml
+  when: not post_install
+
+- import_playbook: omniapp_second/wombat.yml
+  when: not post_install
