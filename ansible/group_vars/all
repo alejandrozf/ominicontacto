@@ -1,7 +1,7 @@
 ---
 
 ############# Setear esta variable yes si es una post-implementacion, setear en no si es primera instalacion
-post_install: yes
+post_install: no
 
 ############# Repositorios #############
 #rtpengine
