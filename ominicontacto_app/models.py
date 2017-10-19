@@ -2276,6 +2276,10 @@ class AgendaContactoManager(models.Manager):
             fecha_hasta = datetime.datetime.combine(fecha_hasta,
                                                     datetime.time.max)
             eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
+        else:
+            hoy_ahora = datetime.datetime.today()
+            hoy = hoy_ahora.date()
+            eventos = eventos.filter(fecha__gt=hoy)
         return eventos.order_by('-fecha')
 
 
@@ -2698,6 +2702,10 @@ class AgendaManualManager(models.Manager):
             fecha_hasta = datetime.datetime.combine(fecha_hasta,
                                                     datetime.time.max)
             eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
+        else:
+            hoy_ahora = datetime.datetime.today()
+            hoy = hoy_ahora.date()
+            eventos = eventos.filter(fecha__gt=hoy)
         return eventos.order_by('-fecha')
 
 
