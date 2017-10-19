@@ -2,11 +2,7 @@
 
 - name: Instalación y configuración de Omni-VoIP
   hosts: omni-voip
-  vars_prompt:
-      - name: post_inst
-        prompt: "Es una post-instalacion?"
-        default: "N"
+  
   roles:
-      - { role: asternic, when: post_inst == "Y" or post_inst == "y" }
-
- 
+          - asternic
+            #- prueba 
