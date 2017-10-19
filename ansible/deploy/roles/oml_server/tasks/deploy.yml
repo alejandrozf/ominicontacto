@@ -34,7 +34,7 @@
 
 - name: Upload built (rsync to /ominicontacto)
   # Copies xxx/app to /home/freetech/ominicontacto (/ominicontacto on dest is implicit)
-  synchronize: "src={{ build_dir }} dest={{ django_dir }} delete=yes checksum=yes times=no"
+  synchronize: "src={{ build_dir }} dest=/home/freetech delete=yes checksum=yes times=no"
   tags:
     - deploy
 
