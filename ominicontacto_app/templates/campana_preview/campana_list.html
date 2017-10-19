@@ -4,7 +4,6 @@
 {% block head_js %}
     <script type="text/javascript">
      function mostrar_campanas_preview_ocultas() {
-       debugger;
        $.get('{% url 'campana_preview_mostrar_ocultas' %}',
              function (data) {
                $('#t_body_borradas').html(data);
