@@ -380,15 +380,20 @@ class PausaDeleteView(DeleteView):
 def node_view(request):
     """Esta vista renderiza la pantalla del agente"""
     registro = []
-    if request.user.is_authenticated() and request.user.get_agente_profile():
+    preview_camp_activas = []
+    agente_profile = request.user.get_agente_profile()
+    if request.user.is_authenticated() and agente_profile:
         registro = DuracionDeLlamada.objects.filter(
             agente=request.user.get_agente_profile(),
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)
         ).order_by("-fecha_hora_llamada")[:10]
+        preview_camp_activas = agente_profile.get_campanas_activas_miembro()
+     #   import ipdb; ipdb.set_trace()
     context = {
         'pausas': Pausa.objects.all,
-        'registro': registro
+        'registro': registro,
+        'campanas_preview_activas': preview_camp_activas
     }
     return render_to_response('agente/base_agente.html', context,
                               context_instance=RequestContext(request))
