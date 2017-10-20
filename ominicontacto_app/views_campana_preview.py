@@ -6,6 +6,8 @@ import logging as logging_
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, UpdateView
 
 from ominicontacto_app.models import BaseDatosContacto, Campana, Queue
@@ -170,7 +172,7 @@ class CampanaPreviewBorradasListView(CampanaPreviewListView):
     Vista que lista las campañas preview pero de incluyendo las borradas ocultas
     """
 
-    template_name = 'campana_manual/campanas_borradas.html'
+    template_name = 'campana_preview/campanas_borradas.html'
 
     def get_context_data(self, **kwargs):
         context = super(CampanaPreviewBorradasListView, self).get_context_data(**kwargs)
@@ -185,3 +187,14 @@ class CampanaPreviewSupervisorUpdateView(CampanaSupervisorUpdateView):
 
     def get_success_url(self):
         return reverse('campana_preview_list')
+
+
+def campana_mostrar_ocultar_view(request, *args, **kwargs):
+    """
+    Cambia el atributo 'oculto' de la campaña hacia el valor opuesto (muestra/oculta)
+    """
+    pk = kwargs.get('pk_campana')
+    campana = get_object_or_404(Campana, pk=pk)
+    campana.oculto = not campana.oculto
+    campana.save()
+    return JsonResponse({'result': 'Ok'})
