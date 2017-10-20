@@ -179,6 +179,12 @@ class CampanaPreviewBorradasListView(CampanaPreviewListView):
         context['borradas'] = context['campanas'].filter(estado=Campana.ESTADO_BORRADA)
         return context
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return super(CampanaPreviewBorradasListView, self).get(request, *args, **kwargs)
+        else:
+            return JsonResponse({'result': 'desconectado'})
+
 
 class CampanaPreviewSupervisorUpdateView(CampanaSupervisorUpdateView):
     """

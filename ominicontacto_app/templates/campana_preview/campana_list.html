@@ -39,7 +39,14 @@
      function mostrar_campanas_preview_ocultas() {
        $.get('{% url 'campana_preview_mostrar_ocultas' %}',
              function (data) {
-               $('#t_body_borradas').html(data);
+               if (data.result == 'desconectado'){
+                 //mostramos modal informativo de que el usuario está desconectado
+                 $('#modal_desconectado').modal('show');
+               }
+               else {
+                 // mostramos las campanas borradas
+                 $('#t_body_borradas').html(data);
+               }
              });
      };
     </script>
@@ -177,4 +184,20 @@
             <td colspan="4">No existen campañas</td>
         </tr>
     {% endfor %}
+    <div class="modal fade" id="modal_desconectado" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Usuario desconectado</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Refresque la página y vuelva a ingresar para poder acceder a la funcionalidad deseada</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 {% endblock %}
