@@ -2,7 +2,40 @@
 {% load static %}
 
 {% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
     <script type="text/javascript">
+     $(document).ready(function() {
+       asociar_eventos_ocultar_campanas()
+     });
+
+     function asociar_eventos_ocultar_campanas(){
+       $('.campana-mostrar-esconder').each(function(i, value){
+         $(this).on('click', function() {
+           var $show_node = $(this);
+           var $show_state = $show_node.attr('data');
+           var campana_pk = $(this).find('input').attr('value');
+           $.post('/campana/mostrar_ocultar/' + campana_pk + '/')
+            .done(function() {
+              console.log('Done');
+              if ($show_state == 'ocultar') {
+                // eliminamos el nodo ocultando de esta manera la campaña
+                $show_node.parents('tr').remove();
+              }
+              else {
+                // cambiamos los atributos del nodo para mostrarlo como visible
+                $show_node.attr('data', 'ocultar');
+                var $show_node_span = $show_node.find('span');
+                $show_node_span.attr('title', 'ocultar');
+                $show_node_span.attr('class', 'glyphicon glyphicon-eye-close');
+              }
+            })
+            .fail(function(data) {
+              console.log('Error');
+            });
+         });
+       });
+     }
+
      function mostrar_campanas_preview_ocultas() {
        $.get('{% url 'campana_preview_mostrar_ocultas' %}',
              function (data) {
@@ -126,9 +159,17 @@
                 <a href="{#% url 'campana_preview_reporte_grafico' campana.pk %#}">
                     <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                 </a>
-                <a type="button" data class="campana-mostrar-esconder" >
+                {% if campana.oculto %}
+                <a type="button"  data="visible" class="campana-mostrar-esconder">
+                    <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
+                </a>
+                {% else %}
+                <a type="button"  data="ocultar" class="campana-mostrar-esconder">
+                    <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
                     <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
                 </a>
+                {% endif %}
             </td>
         </tr>
     {% empty %}
