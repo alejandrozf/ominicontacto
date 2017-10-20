@@ -9,10 +9,11 @@ from mock import patch
 
 from django.core.urlresolvers import reverse
 
-from ominicontacto_app.models import Campana, QueueMember
+from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
-                                               QueueFactory, AgenteProfileFactory)
+                                               QueueFactory, AgenteProfileFactory,
+                                               AgenteEnContactoFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
@@ -168,3 +169,9 @@ class CampanasTests(OMLBaseTest):
         post_data = {'member': agente_profile.pk, 'penalty': 1}
         self.client.post(url, post_data, follow=True)
         self.assertTrue(QueueMember.objects.all().exists())
+
+    def test_relacion_agente_contacto_campanas_preview(self):
+        # test que doocumenta la existencia del modelo que relaciona a agentes
+        # con contactos
+        agente_en_contacto = AgenteEnContactoFactory.create()
+        self.assertTrue(isinstance(agente_en_contacto, AgenteEnContacto))
