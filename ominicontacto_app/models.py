@@ -1614,8 +1614,6 @@ class Contacto(models.Model):
         related_name='contactos', blank=True, null=True
     )
 
-    contactantes_preview = models.ManyToManyField(AgenteProfile, through="AgenteEnContacto")
-
     def obtener_telefono_y_datos_extras(self, metadata):
         """Devuelve lista con (telefono, datos_extras) utilizando
         la informacion de metadata pasada por parametro.
@@ -2756,8 +2754,11 @@ class AgenteEnContacto(models.Model):
         (ESTADO_ATENDIENDO, 'ATENDIENDO'),
         (ESTADO_FINALIZADO, 'FINALIZADO'),
     )
-    agente = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
-    contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
+    agente_id = models.IntegerField()
+    contacto_id = models.IntegerField()
+    datos_contacto = models.TextField()
+    telefono_contacto = models.CharField(max_length=128)
+    campana_id = models.IntegerField()
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
 
     def __unicode__(self):
