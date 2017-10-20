@@ -902,6 +902,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewBorradasListView.as_view()),
         name="campana_preview_mostrar_ocultas"),
+    url(r'^campana/mostrar_ocultar/(?P<pk_campana>\d+)/$',
+        login_required(
+            views_campana_preview.campana_mostrar_ocultar_view),
+        name="campana_mostrar_ocultar"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos
