@@ -39,7 +39,7 @@
   tasks:
 
           - name: Copy the Kamailio CA certificate to omni-app
-            synchronize: src=/opt/kamailio/etc/certs/demoCA/cert.pem dest=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto/voip.cert times=yes
+            synchronize: src=/opt/kamailio-debian/etc/certs/demoCA/cert.pem dest=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto/voip.cert times=yes
             become: yes
             become_user: freetech            
             delegate_to: "{{ omnivoip_ip }}"

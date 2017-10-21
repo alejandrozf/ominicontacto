@@ -1,0 +1,10 @@
+---
+
+- name: Setup of postgresql
+  shell: "{{ item }}"
+  with_items:
+      - postgresql-setup initdb
+      - systemctl start postgresql
+      - systemctl enable postgresql
+      - systemctl start redis
+      - systemctl enable redis

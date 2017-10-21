@@ -1,0 +1,41 @@
+---
+
+- name: Clone of the RTPengine repo
+  git: repo={{ rtpengine_repo }} dest=/usr/src
+
+- name: Installation of RTPengine
+  shell: "make chdir=/usr/src/rtpengine/daemon"
+- copy: src=/usr/src/rtpengine/daemon/rtpengine dest=/usr/local/bin
+
+- name: Installation of RTPengine kernel module
+  shell: "{{ item }} chdir=/usr/src/rtpengine/kernel-module"
+  with_items:
+      - make
+      - insmod xt_RTPENGINE.ko
+
+- name: Installation of IPtables extensions
+  shell: "make chdir=/usr/src/rtpengine/iptables-extension"
+- copy: src=/usr/src/rtpengine/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables
+
+- name: Clone of repository with RTPengine init script
+  git: repo={{ rtpengine_init }} dest=/usr/src
+- copy: src=/usr/src/federated-sip/scripts/rtpengine.sysconfig dest=/etc/sysconfig/rtpengine
+
+- name: Modify of RTPengine sysconfig file
+  lineinfile: "src=/etc/sysconfig/rtpengine regexp=\"^OPTIONS=\" line=\"OPTIONS=\"-i {{ ip_publica }} -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=local1\"
+\""
+
+- name: Modify of /etc/rsyslog.conf
+  lineinfile: "src=/etc/rsyslog.conf line=\"local1.*                                                -/var/log/rtpengine.log
+\""
+
+- name: Last changes
+  shell: "{{ item }}"
+  with_items:
+      - touch /var/log/rtpengine.log
+      - systemctl restart rsyslog
+      - cp rtpengine.service /etc/systemd/system/
+      - systemctl enable rtpengine.service
+      - mkdir -p /var/spool/rtpengine
+      - systemctl start rtpengine
+

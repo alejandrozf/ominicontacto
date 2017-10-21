@@ -21,6 +21,9 @@
 #192.168.95.31	
 192.168.99.100
 
+[omni-freepbx]
+192.168.16.73
+
 [omni:children]
 omni-app
 omni-voip

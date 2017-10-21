@@ -1,15 +1,13 @@
 ---
 
-############# Setear esta variable yes si es una post-implementacion, setear en no si es primera instalacion
-post_install: no
+########################################### Global vars ####################################################
+#                                                                                                          #
+#-------------------------- Estas son las variables utilizadas en ambos deploys----------------------------#
+#                                                                                                          #
+############################################################################################################
 
-############# Repositorios #############
-#rtpengine
-rtpengine_repo: https://github.com/sipwise/rtpengine
-#kamailio
-kamailio_repo: git://git.kamailio.org/kamailio
-#omnileads-AIO
-omnileads_AIO: https://github.com/arcturuscba/omnileads-AIO
+# Setear esta variable yes si es una post-implementacion, setear en no si es primera instalacion
+post_install: no
 
 ############ Componentes del certificado del CA ###########
 serial: 01
@@ -19,6 +17,22 @@ ca_locality: CBA
 ca_organization: FTS
 ca_organizationalunit: Desarrollo
 ca_commonname: omnileads-voip.example.com
+
+############## Repositorios #######################
+#rtpengine
+rtpengine_repo: https://github.com/sipwise/rtpengine
+
+############################################# Global vars ##################################################
+#                                                                                                          #
+#---------------------- Estas son las variables utilizadas para el deploy en debian------------------------#
+#                                                                                                          #
+############################################################################################################
+
+############# Repositorios #############
+#kamailio
+kamailio_repo: git://git.kamailio.org/kamailio
+#omnileads-AIO
+omnileads_AIO: https://github.com/arcturuscba/omnileads-AIO
 
 ########### URLS para descargar asterisk ###############
 dahdi_linux: http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-current.tar.gz
@@ -59,3 +73,17 @@ django_dir: /home/freetech/ominicontacto
 #### COntraseña de mysql-wombat ####
 mysql_root_pass: 098098ZZZ
 
+
+############################################## Global vars #################################################
+#                                                                                                          #
+#-------------------- Estas son las variables utilizadas para el deploy en SangomaOS ----------------------#
+#                                                                                                          #
+############################################################################################################
+
+############ Repositorios ###########
+
+#rtpengine-init-script
+rtpengine_init: https://github.com/etamme/federated-sip
+
+#IP pública del server
+ip_publica: XXX.XXX.XXX.XXX

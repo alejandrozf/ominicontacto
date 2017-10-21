@@ -6,7 +6,7 @@
           build_dir: "{{ BUILD_DIR }}" 
 
   roles:
-          - {role: prerequisitos, when: not post_install}
+          - {role: prerequisitos-debian, when: not post_install}
           - oml_server
 
 - import_playbook: create_kamailiodb.yml

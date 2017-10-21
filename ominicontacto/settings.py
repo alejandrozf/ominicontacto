@@ -151,7 +151,7 @@ OML_DUMP_HTTP_AMI_RESPONSES = False
 #==============================================================================
 
 OML_OMNILEADS_IP = None
-"""IP donde se encuentra kamailio
+"""IP donde se encuentra kamailio-debian
 
 Ejemplo:
     OML_OMNILEADS_IP = "172.16.20.241"
@@ -217,7 +217,7 @@ ASTERISK = {
 #==============================================================================
 
 OML_KAMAILIO_IP = None
-"""IP donde se encuentra kamailio
+"""IP donde se encuentra kamailio-debian
 
 Ejemplo:
     OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"

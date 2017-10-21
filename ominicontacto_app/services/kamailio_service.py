@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Servicio para conexion base de datos de kamailio lo importante en este módulo es la 
+Servicio para conexion base de datos de kamailio-debian lo importante en este módulo es la
 inserción en subscriber de las cuentas sip
 """
 
@@ -14,11 +14,11 @@ class KamailioService():
 
     def _conectar_base_datos(self):
         """
-        Conexion con kamailio
+        Conexion con kamailio-debian
         Deberia sacarse ya que es la misma base de datos django
-        :return: returna el connection y el cursor de la base kamailio
+        :return: returna el connection y el cursor de la base kamailio-debian
         """
-        connection = psycopg2.connect(database='kamailio', user='kamailio',
+        connection = psycopg2.connect(database='kamailio-debian', user='kamailio-debian',
                                       password='kamailiorw', host='127.0.0.1',
                                       port='5432')
         cursor = connection.cursor()

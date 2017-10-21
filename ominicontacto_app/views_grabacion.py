@@ -2,7 +2,7 @@
 
 """
 Aca se encuentran las vistas relacionada con las grabaciones en cuanto a su busqueda
-ya que el insert lo hace kamailio/asterisk(hablar con fabian como hace el insert )
+ya que el insert lo hace kamailio-debian/asterisk(hablar con fabian como hace el insert )
 """
 
 import datetime

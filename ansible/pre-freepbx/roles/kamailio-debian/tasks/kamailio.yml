@@ -1,0 +1,49 @@
+---
+
+- name: Clonado de repositorio de Kamailio
+  shell: >
+          git clone --depth 1 --no-single-branch {{ item }} kamailio
+          chdir=/usr/src/
+  with_items:
+          - "{{ kamailio_repo }}"
+
+- name: Checkout del repositorio
+  command: "{{ item }} chdir=/usr/src/kamailio/"
+  with_items:
+          - git checkout -b 4.4 origin/4.4
+          - make PREFIX=/opt/kamailio cfg
+
+- name: Se añade los modulos al modules.lst
+  lineinfile:
+          dest: /usr/src/kamailio/modules.lst
+          regexp: '^include_modules='
+          insertafter: '^include_modules= '
+          line: 'include_modules= presence presence_xml app_python auth_ephemeral db_postgres ndb_redis presence tls uuid websocket'
+
+- name: make all y make install de kamailio
+  command: "{{ item }} chdir=/usr/src/kamailio/"
+  with_items:
+          - make all
+          - make install
+
+- name: Clonado de repositorio de omnileads-AIO
+  git:
+          repo: "{{ omnileads_AIO }}"
+          dest: /usr/src/omnileads-AIO
+
+- name: Copiado de los archivos de configuracion de kamailio
+  command: "{{ item }} chdir=/usr/src/omnileads-AIO/kamailio/"
+  with_items:
+          - cp kamailio-debian.cfg /opt/kamailio-debian/etc/kamailio-debian/
+          - cp kamctlrc /opt/kamailio-debian/etc/kamailio-debian/
+          - cp kamailio.service /etc/systemd/system/
+          - cp kamailio-debian-default /etc/default/kamailio-debian
+          - cp ngcp-rtpengine-daemon /etc/default/
+          - cp rtpengine.conf /etc/rtpengine/
+
+- name: Se añade los modulos al modules.lst
+  lineinfile:
+          dest: /etc/ssl/openssl.cnf
+          regexp: '= policy_match'
+          insertafter: '= policy_match'
+          line: 'policy          = policy_anything'

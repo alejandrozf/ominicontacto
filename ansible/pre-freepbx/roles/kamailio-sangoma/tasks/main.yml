@@ -1,0 +1,5 @@
+---
+
+- include: rtpengine.yml
+
+- include: roles/kamailio-debian/kamailio.yml
