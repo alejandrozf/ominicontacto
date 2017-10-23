@@ -46,11 +46,12 @@
      {{ form.tipo_interaccion.errors }}
     <div class="form-group row">
         {{ form.formulario.errors }}
-        <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.0 }}</div></label>
+        <label class="col-sm-3 control-label"><div class="myradio hidden">{{ form.tipo_interaccion.0 }}</div> Formulario: </label>
         <div class="col-sm-6">
               {{ form.formulario }}
         </div>
     </div>
+    {% comment %}
     <div class="form-group row">
         {{ form.sitio_externo.errors }}
         <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
@@ -58,6 +59,7 @@
               {{ form.sitio_externo }}
         </div>
     </div>
+    {% endcomment %}
     <div class="form-group row">
         {{ form.gestion.errors }}
         <label class="col-sm-3 control-label">Gestion: </label>
