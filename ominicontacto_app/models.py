@@ -160,6 +160,14 @@ class AgenteProfile(models.Model):
         campanas_member = self.campana_member.all()
         return campanas_member.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
 
+    def get_campanas_preview_activas_miembro(self):
+        campanas_member = self.campana_member.all()
+        campanas_preview_activas = campanas_member.filter(
+            queue_name__campana__estado=Campana.ESTADO_ACTIVA,
+            queue_name__campana__type=Campana.TYPE_PREVIEW)
+        return campanas_preview_activas.values_list(
+            'queue_name__campana', 'queue_name__campana__nombre')
+
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
 
