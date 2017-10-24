@@ -90,7 +90,7 @@ mysql_root_pass: 098098ZZZ
 rtpengine_init: https://github.com/etamme/federated-sip
 
 #IP pública del server
-omnifreepbx_ip: 192.168.16.19
+omnifreepbx_ip: 192.168.99.2
 
 #omni-voip repo
 omnivoip_repo: https://github.com/arcturuscba/oml-freepbx

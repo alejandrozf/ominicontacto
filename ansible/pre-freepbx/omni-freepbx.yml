@@ -1,5 +1,6 @@
 - name: Instalacion de Omnileads en SangomaFreePBX
   hosts: omni-freepbx
   roles:
-          - {role: prerequisitos-sangoma, when: ansible_os_family == "Sangoma" }
+          #- {role: prerequisitos-sangoma, when: ansible_os_family == "Sangoma" }
           - {role: kamailio-sangoma, when: ansible_os_family == "Sangoma" }
+          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "Sangoma" }

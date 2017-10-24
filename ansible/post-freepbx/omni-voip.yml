@@ -1,7 +1,7 @@
 ---
 
 - name: Instalación y configuración de Omni-VoIP
-  hosts: omni-voip
+  hosts: omni-freepbx
 
   #vars_prompt:
    #   - name: post_instalacion

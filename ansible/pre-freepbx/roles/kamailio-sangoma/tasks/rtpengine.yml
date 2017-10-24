@@ -9,7 +9,7 @@
 - copy: src=/usr/src/rtpengine/daemon/rtpengine dest=/usr/local/bin remote_src=yes
 
 - name: Modify of the RTPengine kernel module to let it know where is our kernel
-  lineinfile: "path=/usr/src/rtpengine/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= /usr/lib/modules/3.10.0-514.26.2.el7.x86_64\""
+  lineinfile: "path=/usr/src/rtpengine/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= /usr/src/kernels/$(shell uname -r)\""
 
 - name: Installation of RTPengine kernel module
   shell: "{{ item }} chdir=/usr/src/rtpengine/kernel-module"
@@ -19,27 +19,25 @@
 
 - name: Installation of IPtables extensions
   shell: "make chdir=/usr/src/rtpengine/iptables-extension"
-- copy: src=/usr/src/rtpengine/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables
+- copy: src=/usr/src/rtpengine/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
 
 - name: Copy of rptengine init script in sysconfig
   copy: src=/usr/src/oml-freepbx/kamailio-files/rtpengine_sysconfig dest=/etc/sysconfig/rtpengine remote_src=yes
 - copy: src=/usr/src/oml-freepbx/kamailio-files/rtpengine.service dest=/etc/systemd/system remote_src=yes
 
 - name: Modify of RTPengine sysconfig file
-  lineinfile: "path=/etc/sysconfig/rtpengine regexp=\"^OPTIONS=\" line=\"OPTIONS=\"-i {{ omnifreepbx_ip }} -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=local1\"
-\""
+  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/sysconfig/rtpengine
 
 - name: Modify of /etc/rsyslog.conf
-  lineinfile: "path=/etc/rsyslog.conf line=\"local1.*                                                -/var/log/rtpengine.log
-\""
+  template: src=templates/rsyslog.conf.j2 dest=/etc/rsyslog.conf
 
 - name: Last changes
-  shell: "{{ item }}"
+  shell: "{{ item }} chdir="
   with_items:
       - touch /var/log/rtpengine.log
       - systemctl restart rsyslog
-      - cp rtpengine.service /etc/systemd/system/
       - systemctl enable rtpengine.service
       - mkdir -p /var/spool/rtpengine
+      - chmod +x /usr/local/bin/rtpengine
       - systemctl start rtpengine
 

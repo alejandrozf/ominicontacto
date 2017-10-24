@@ -1,5 +1,11 @@
 ---
 
+- name: Exclude postgres in list of repositories
+  ini_file: "path=/etc/yum.repos.d/Sangoma-Base.repo section={{ item }} option=exclude no_extra_spaces=yes  value=postgres* state=present"
+  with_items:
+      - sng-base
+      - sng-updates
+
 - name: Update/upgrade of freepbx
   yum: name='*' state=latest update_cache=yes
 
@@ -57,17 +63,17 @@
       - python-devel
       - libuuid
       - libuuid-devel
+      - python-psycopg2.x86_64
 
-- name: Reboot server
-  command: /sbin/reboot
+- name: Reboot the server for kernel update
+  shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+  async: 1
+  poll: 0
+  become: true
+  ignore_errors: true
 
 - name: Wait for the server to finish rebooting
   become: yes
   become_user: root
-  local_action: wait_for host="{{ omnifreepbx_ip }}" search_regex=OpenSSH port={{ ssh_port }} timeout=300
+  local_action: wait_for host="{{ omnifreepbx_ip }}" delay=15 state=started port={{ ssh_port }} timeout=300
 
-- name: Exclude postgres in list of repositories
-  ini_file: "path=/etc/yum.repos.d/Sangoma-Base.repo section={{ item }} option=exclude no_extra_spaces=yes  value=postgres* state=present"
-  with_items:
-      - sng-base
-      - sng-updates

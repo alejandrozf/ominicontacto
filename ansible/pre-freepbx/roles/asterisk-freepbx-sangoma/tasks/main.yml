@@ -1,0 +1,21 @@
+---
+
+- name: Config of asterisk-freepbx for OML
+  shell: "{{ item }} chdir=/usr/src/oml-freepbx/asterisk-files"
+  with_items:
+      - cp *.conf /etc/asterisk/
+      - cp *.php /var/lib/asterisk/agi-bin
+      - chmod +x /var/lib/asterisk/agi-bin/omni*
+
+- name: Asterisk crontab modification
+  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * /var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
+
+- name: Create /usr/local/parselog
+  file: dest=/usr/local/parselog state=directory mode=0755
+
+- name: Set ownership to asterisk user
+  shell: "{{ item }} chdir=/usr/src/oml-freepbx/asterisk-files"
+  with_items:
+      - cp update_mix_mixmonitor.pl /usr/local/parselog
+      - chmod +x /usr/local/parselog/update_mix_mixmonitor.pl
+      - chown asterisk.asterisk -R /usr/local/parselog
