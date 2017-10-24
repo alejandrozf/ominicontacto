@@ -1,5 +1,4 @@
 ---
 
 - include: installations.yml
-- include: postgres-setup.yml
-- include: rtpengine.yml
+- include: postgres-installation.yml

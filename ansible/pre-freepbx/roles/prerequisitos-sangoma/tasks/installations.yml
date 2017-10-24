@@ -4,7 +4,7 @@
   yum: name='*' state=latest update_cache=yes
 
 - name: Install the necessary packages
-  yum: name={{ item }} state=present
+  yum: name={{ item }} state=latest
   with_items:
       - libevent*
       - json-*
@@ -58,5 +58,16 @@
       - libuuid
       - libuuid-devel
 
-- name: Install postgres
-  yum: name=postgres* state=present
+- name: Reboot server
+  command: /sbin/reboot
+
+- name: Wait for the server to finish rebooting
+  become: yes
+  become_user: root
+  local_action: wait_for host="{{ omnifreepbx_ip }}" search_regex=OpenSSH port={{ ssh_port }} timeout=300
+
+- name: Exclude postgres in list of repositories
+  ini_file: "path=/etc/yum.repos.d/Sangoma-Base.repo section={{ item }} option=exclude no_extra_spaces=yes  value=postgres* state=present"
+  with_items:
+      - sng-base
+      - sng-updates
