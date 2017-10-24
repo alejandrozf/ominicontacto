@@ -384,7 +384,7 @@ def node_view(request):
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)
         ).order_by("-fecha_hora_llamada")[:10]
-        campanas_preview_activas = agente_profile.get_campanas_preview_activas_miembro()
+        campanas_preview_activas = agente_profile.has_campanas_preview_activas_miembro()
     context = {
         'pausas': Pausa.objects.all,
         'registro': registro,

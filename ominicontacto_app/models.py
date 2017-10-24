@@ -160,9 +160,14 @@ class AgenteProfile(models.Model):
         campanas_member = self.campana_member.all()
         return campanas_member.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
 
+    def has_campanas_preview_activas_miembro(self):
+        campanas_preview_activas = self.campana_member.filter(
+            queue_name__campana__estado=Campana.ESTADO_ACTIVA,
+            queue_name__campana__type=Campana.TYPE_PREVIEW)
+        return campanas_preview_activas.exists()
+
     def get_campanas_preview_activas_miembro(self):
-        campanas_member = self.campana_member.all()
-        campanas_preview_activas = campanas_member.filter(
+        campanas_preview_activas = self.campana_member.filter(
             queue_name__campana__estado=Campana.ESTADO_ACTIVA,
             queue_name__campana__type=Campana.TYPE_PREVIEW)
         return campanas_preview_activas.values_list(
