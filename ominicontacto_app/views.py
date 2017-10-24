@@ -10,7 +10,6 @@ from __future__ import unicode_literals
 
 import json
 import logging
-import datetime
 
 from services.sms_services import SmsManager
 from django.conf import settings
@@ -19,7 +18,6 @@ from django.shortcuts import render_to_response, redirect
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.contrib import messages
-from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
@@ -28,20 +26,18 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, WombatLog, Campana, Contacto, SupervisorProfile
+    Chat, MensajeChat, WombatLog, Campana, Contacto,
 )
 from ominicontacto_app.forms import (
-    CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
-    AgenteProfileForm, AgendaBusquedaForm, PausaForm
+    CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
+    AgendaBusquedaForm, PausaForm
 )
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
-from services.sms_services import SmsManager
 from services.asterisk_service import ActivacionAgenteService,\
     RestablecerConfigSipError
 from services.regeneracion_asterisk import RegeneracionAsteriskService,\
     RestablecerDialplanError
-from django.views.decorators.csrf import csrf_protect
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
 from django.views.decorators.csrf import csrf_exempt
@@ -284,7 +280,7 @@ class AgenteListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AgenteListView, self).get_context_data(
-           **kwargs)
+            **kwargs)
         agentes = AgenteProfile.objects.all()
 
         # if self.request.user.is_authenticated() and self.request.user:
@@ -380,7 +376,7 @@ class PausaDeleteView(DeleteView):
 def node_view(request):
     """Esta vista renderiza la pantalla del agente"""
     registro = []
-    preview_camp_activas = []
+    campanas_preview_activas = []
     agente_profile = request.user.get_agente_profile()
     if request.user.is_authenticated() and agente_profile:
         registro = DuracionDeLlamada.objects.filter(
@@ -388,12 +384,11 @@ def node_view(request):
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)
         ).order_by("-fecha_hora_llamada")[:10]
-        preview_camp_activas = agente_profile.get_campanas_activas_miembro()
-     #   import ipdb; ipdb.set_trace()
+        campanas_preview_activas = agente_profile.get_campanas_preview_activas_miembro()
     context = {
         'pausas': Pausa.objects.all,
         'registro': registro,
-        'campanas_preview_activas': preview_camp_activas
+        'campanas_preview_activas': campanas_preview_activas,
     }
     return render_to_response('agente/base_agente.html', context,
                               context_instance=RequestContext(request))
@@ -602,7 +597,6 @@ def wombat_log_view(request):
                              estado=estado, calificacion=calificacion,
                              timeout=timeout, contacto=contacto,
                              metadata=json.dumps(metadata))
-    #import ipdb; ipdb.set_trace();
     response = JsonResponse({'status': 'OK'})
     return response
 
