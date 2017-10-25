@@ -50,13 +50,18 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, no_atendidos, contestador):
+    def escribir_archivo_csv(self, campana, no_atendidos, contestador):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []
 
             encabezado.append("Telefono")
+
+            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            for nombre in nombres:
+                encabezado.append(nombre)
+
             encabezado.append("Estado")
 
             # Creamos csvwriter
@@ -94,6 +99,9 @@ class ArchivoDeReporteCsv(object):
                     valido = True
                 if valido:
                     lista_opciones.append(contacto.telefono)
+                    datos = json.loads(contacto.contacto.datos)
+                    for dato in datos:
+                        lista_opciones.append(dato)
                     lista_opciones.append(estado)
 
                     # --- Finalmente, escribimos la linea
@@ -132,7 +140,7 @@ class ReporteCampanaCSVService(object):
         contestador = self._obtener_listado_contestador_fecha(campana, fecha_desde,
                                                               fecha_hasta)
 
-        archivo_de_reporte.escribir_archivo_csv(no_atendidos, contestador)
+        archivo_de_reporte.escribir_archivo_csv(campana, no_atendidos, contestador)
 
     def obtener_url_reporte_csv_descargar(self, campana):
         #assert campana.estado == Campana.ESTADO_DEPURADA
