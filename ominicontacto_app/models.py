@@ -761,6 +761,26 @@ class Campana(models.Model):
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
         self.save()
 
+    def establecer_valores_iniciales_agente_contacto(self):
+        """
+        Rellena con valores iniciales la tabla que informa el estado de los contactos
+        en relación con los agentes
+        """
+        # obtenemos todos los contactos de la campaña
+        campana_contactos = self.bd_contacto.contactos.all()
+
+        # creamos los objetos del modelo AgenteEnContacto a crear
+        agente_en_contacto_list = []
+        for contacto in campana_contactos:
+            agente_en_contacto = AgenteEnContacto(
+                agente_id=-1, contacto_id=contacto.pk, datos_contacto=contacto.datos,
+                telefono_contacto=contacto.telefono, campana_id=self.pk,
+                estado=AgenteEnContacto.ESTADO_INICIAL)
+            agente_en_contacto_list.append(agente_en_contacto)
+
+        # insertamos las instancias en la BD
+        AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
+
 
 class QueueManager(models.Manager):
 
@@ -2743,6 +2763,8 @@ class AgenteEnContacto(models.Model):
     Relaciona a agentes que están en comunicación con contactos de la BD de una campaña
     """
 
+    ESTADO_INICIAL = 0  # significa que el contacto aún no ha sido entregado a ningún agente
+
     ESTADO_ENTREGADO = 1  # significa que un agente solicitó este contacto y le fue entregado
 
     ESTADO_ATENDIENDO = 2  # significa que el agente está hablando con el contacto
@@ -2750,6 +2772,7 @@ class AgenteEnContacto(models.Model):
     ESTADO_FINALIZADO = 3  # significa que el agente culminó de forma satisfactoria la llamada
 
     ESTADO_CHOICES = (
+        (ESTADO_INICIAL, 'INICIAL'),
         (ESTADO_ENTREGADO, 'ENTREGADO'),
         (ESTADO_ATENDIENDO, 'ATENDIENDO'),
         (ESTADO_FINALIZADO, 'FINALIZADO'),
