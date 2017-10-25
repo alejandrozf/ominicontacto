@@ -39,6 +39,7 @@ class CampanasTests(OMLBaseTest):
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
 
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
+        self.campana_activa.bd_contacto.contactos.add(self.contacto)
         QueueFactory.create(campana=self.campana_activa)
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
@@ -175,3 +176,20 @@ class CampanasTests(OMLBaseTest):
         # con contactos
         agente_en_contacto = AgenteEnContactoFactory.create()
         self.assertTrue(isinstance(agente_en_contacto, AgenteEnContacto))
+
+    def test_creacion_campana_preview_inicializa_relacion_agente_contacto(self):
+        url = reverse('campana_preview_create')
+        nombre_campana = 'campana_preview_test'
+        post_data = {'nombre': nombre_campana,
+                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'bd_contacto': self.campana_activa.bd_contacto.pk,
+                     'tipo_interaccion': Campana.FORMULARIO,
+                     'formulario': self.campana.formulario.pk,
+                     'gestion': 'Venta',
+                     'detectar_contestadores': True,
+                     'auto_grabacion': True,
+                     'objetivo': 1,
+                     'tiempo_desconexion': 10}
+        self.assertFalse(AgenteEnContacto.objects.all().exists())
+        self.client.post(url, post_data, follow=True)
+        self.assertTrue(AgenteEnContacto.objects.all().exists())
