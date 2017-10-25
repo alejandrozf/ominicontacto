@@ -13,7 +13,7 @@ from django.utils import timezone
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
                                       CalificacionCampana, Calificacion, Formulario, Grabacion,
                                       GrabacionMarca, Queuelog, SitioExterno, User, Contacto,
-                                      SupervisorProfile, QueueMember, AgenteEnContacto)
+                                      SupervisorProfile, AgenteEnContacto, QueueMember)
 
 faker = faker.Factory.create()
 
