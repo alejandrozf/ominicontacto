@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}" >
+
+        <!-- JQuery & Datatables -->
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}" >
+        <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+        <script>
+         $(document).ready(function(){
+           $('#campanasPreviewTable').DataTable();
+         });
+        </script>
+    </head>
+    <body>
+        <div class="row" style="margin-top:5%; margin-left:5%;">
+            <div class="col-md-5">
+                <table id="campanasPreviewTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Campaña</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campana_pk, campana_nombre in campanas_preview_activas %}
+                            <tr>
+                                <td><button class="obtener_contacto" data-campana="{{ campana_pk }}"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Haga click para obtener un contacto de la campaña">{{ campana_nombre }}</button></td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">No existen contactos</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-5 col-md-offset-1">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        Panel content
+                    </div>
+                    <div class="panel-footer">Panel footer</div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

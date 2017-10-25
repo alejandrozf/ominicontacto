@@ -70,6 +70,10 @@ urlpatterns = [
         login_required(views.AgenteProfileUpdateView.as_view()),
         name='agenteprofile_update',
         ),
+    url(r'^agente/campanas_preview/activas/$',
+        login_required(
+            views_agente.AgenteCampanasPreviewActivasView.as_view()),
+        name="campana_preview_activas_miembro"),
     url(r'^grupo/nuevo/$',
         login_required(views.GrupoCreateView.as_view()), name='grupo_nuevo',
         ),
