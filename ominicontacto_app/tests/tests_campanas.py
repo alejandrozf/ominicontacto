@@ -133,6 +133,7 @@ class CampanasTests(OMLBaseTest):
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW)
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
+        self.agente_profile = AgenteProfileFactory.create(user=self.usuario_admin_supervisor)
 
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
@@ -260,10 +261,9 @@ class CampanasTests(OMLBaseTest):
             self, _generar_y_recargar_configuracion_asterisk):
         # anulamos con mock la parte de regeneracion de asterisk pues no se esta
         # comprobando en este test y ademas necesita conexión a un servidor externo
-        agente_profile = AgenteProfileFactory.create()
         url = reverse('queue_member_add', args=[self.campana_activa.pk])
         self.assertFalse(QueueMember.objects.all().exists())
-        post_data = {'member': agente_profile.pk, 'penalty': 1}
+        post_data = {'member': self.agente_profile.pk, 'penalty': 1}
         self.client.post(url, post_data, follow=True)
         self.assertTrue(QueueMember.objects.all().exists())
 
@@ -332,3 +332,25 @@ class CampanasTests(OMLBaseTest):
         self.assertEqual(data['agente_id'], agente.pk)
         self.assertEqual(data['telefono_contacto'], unicode(agente_en_contacto.telefono_contacto))
         self.assertEqual(data['estado'], AgenteEnContacto.ESTADO_ENTREGADO)
+    def test_usuario_no_logueado_no_accede_a_vista_campanas_preview_agente(self):
+        self.client.logout()
+        url = reverse('campana_preview_activas_miembro')
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_usuario_logueado_accede_a_vista_campanas_preview_agente(self):
+        url = reverse('campana_preview_activas_miembro')
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, 'agente/campanas_preview.html')
+
+    def test_campanas_preview_activas_muestra_las_asociadas_a_agente(self):
+        url = reverse('campana_preview_activas_miembro')
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
+        response = self.client.get(url, follow=True)
+        self.assertContains(response, self.campana_activa.nombre)
+
+    def test_campanas_preview_activas_no_muestra_las_no_asociadas_a_agente(self):
+        url = reverse('campana_preview_activas_miembro')
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
+        response = self.client.get(url, follow=True)
+        self.assertNotContains(response, self.campana_borrada.nombre)
