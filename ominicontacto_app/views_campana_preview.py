@@ -242,10 +242,10 @@ class ObtenerContactoView(View):
         campana_id = kwargs.get('pk_campana', False)
         try:
             qs_agentes_contactos = AgenteEnContacto.objects.select_for_update().filter(
-                agente_id=-1, campana_id=campana_id).values()
+                agente_id=-1, campana_id=campana_id)
         except DatabaseError:
             return JsonResponse({'result': 'Error',
                                  'code': 'error-concurrencia',
                                  'data': 'Contacto siendo accedido por más de un agente'})
         else:
-            return self._gestionar_contacto(qs_agentes_contactos)
+            return self._gestionar_contacto(request, qs_agentes_contactos)
