@@ -18,7 +18,7 @@ class KamailioService():
         Deberia sacarse ya que es la misma base de datos django
         :return: returna el connection y el cursor de la base kamailio-debian
         """
-        connection = psycopg2.connect(database='kamailio-debian', user='kamailio-debian',
+        connection = psycopg2.connect(database='kamailio', user='kamailio',
                                       password='kamailiorw', host='127.0.0.1',
                                       port='5432')
         cursor = connection.cursor()
