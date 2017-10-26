@@ -5,12 +5,16 @@ from __future__ import unicode_literals
 import logging as logging_
 
 from django.contrib import messages
+from django.core import serializers
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+from django.db.utils import DatabaseError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, View
 
-from ominicontacto_app.models import BaseDatosContacto, Campana, Queue
+
+from ominicontacto_app.models import BaseDatosContacto, Campana, Queue, AgenteEnContacto
 from ominicontacto_app.forms import CampanaPreviewForm
 from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
@@ -208,3 +212,37 @@ def campana_mostrar_ocultar_view(request, *args, **kwargs):
     campana.oculto = not campana.oculto
     campana.save()
     return JsonResponse({'result': 'Ok'})
+
+
+class ObtenerContactoView(View):
+    """
+    Devuelve un contacto de una campaña preview, y además lo marca como entregado
+    para evitar que sea entregado a más de un agente de forma simultánea
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.get_agente_profile():
+            return super(ObtenerContactoView, self).dispatch(request, *args, **kwargs)
+        raise PermissionDenied
+
+    def post(self, request, *args, **kwargs):
+        campana_id = kwargs.get('pk_campana', False)
+        try:
+            qs_agentes_contactos = AgenteEnContacto.objects.select_for_update().filter(
+                agente_id=-1, campana_id=campana_id).values()
+        except DatabaseError:
+            return JsonResponse({'result': 'Error',
+                                 'code': 'error-concurrencia',
+                                 'data': 'Contacto siendo accedido por más de un agente'})
+        else:
+            if qs_agentes_contactos.exists():
+                agente_en_contacto = qs_agentes_contactos.first()
+                agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
+                agente_en_contacto.agente_id = request.user.get_agente_profile().pk
+                agente_en_contacto.save()
+                data = serializers.serialize('json', [agente_en_contacto, ])
+                return JsonResponse({'result': 'Ok', 'data': data})
+            else:
+                return JsonResponse({'result': 'Error',
+                                     'code': 'error-no-contactos',
+                                     'data': 'No hay contactos para asignar en esta campaña'})
