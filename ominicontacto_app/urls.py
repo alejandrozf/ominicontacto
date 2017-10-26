@@ -899,12 +899,16 @@ urlpatterns = [
             views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
         name="campana_preview_calificacion_reporte_calificacion"),
     url(r'^campana_preview/mostrar_ocultas/$',
-            views_campana_preview.CampanaPreviewBorradasListView.as_view(),
+        views_campana_preview.CampanaPreviewBorradasListView.as_view(),
         name="campana_preview_mostrar_ocultas"),
     url(r'^campana/mostrar_ocultar/(?P<pk_campana>\d+)/$',
         login_required(
             views_campana_preview.campana_mostrar_ocultar_view),
         name="campana_mostrar_ocultar"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/contacto/obtener/$',
+        login_required(
+            views_campana_preview.ObtenerContactoView.as_view()),
+        name="campana_preview_dispatcher"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos
