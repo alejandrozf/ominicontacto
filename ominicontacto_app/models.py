@@ -2785,5 +2785,5 @@ class AgenteEnContacto(models.Model):
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
 
     def __unicode__(self):
-        return "Agente {0} relacionado con contacto {1} con el estado {2}".format(
-            self.agente, self.contacto, self.estado)
+        return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(
+            self.agente_id, self.contacto_id, self.estado)
