@@ -1,12 +1,12 @@
 ---
 
-- name: Agregar el usuario de kamailio-debian y levantar kamailio-debian como servicio
+- name: Agregar el usuario de kamailio-debian y levantar kamailio como servicio
   shell: "{{ item }}"
   with_items:
-          - "adduser --quiet --system --group --disabled-password --shell /bin/false --gecos \"Kamailio\" --home /var/run/kamailio-debian kamailio-debian"
+          - "adduser --quiet --system --group --disabled-password --shell /bin/false --gecos \"Kamailio\" --home /var/run/kamailio kamailio"
           - mkdir -p /var/run/kamailio
-          - chown kamailio-debian:kamailio-debian /var/run/kamailio-debian
-          - chown kamailio-debian:kamailio-debian -R /opt/kamailio-debian/etc/certs/
+          - chown kamailio:kamailio-debian /var/run/kamailio
+          - chown kamailio:kamailio-debian -R /opt/kamailio/etc/certs/
           - systemctl enable kamailio
           - systemctl daemon-reload
-          - chown kamailio-debian:kamailio-debian -R /opt/kamailio-debian
+          - chown kamailio-:kamailio-debian -R /opt/kamailio

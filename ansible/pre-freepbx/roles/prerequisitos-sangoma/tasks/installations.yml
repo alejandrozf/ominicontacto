@@ -1,7 +1,7 @@
 ---
 
 - name: Exclude postgres in list of repositories
-  ini_file: "path=/etc/yum.repos.d/Sangoma-Base.repo section={{ item }} option=exclude no_extra_spaces=yes  value=postgres* state=present"
+  ini_file: "path=/etc/yum.repos.d/Sangoma-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
   with_items:
       - sng-base
       - sng-updates
@@ -10,7 +10,7 @@
   yum: name='*' state=latest update_cache=yes
 
 - name: Install the necessary packages
-  yum: name={{ item }} state=latest
+  yum: name={{ item }} state=present
   with_items:
       - libevent*
       - json-*
@@ -63,7 +63,13 @@
       - python-devel
       - libuuid
       - libuuid-devel
-      - python-psycopg2.x86_64
+
+- name: Creation of freetech user and group
+  group: name=freetech state=present
+- user: name=freetech group=freetech home=/home/freetech state=present
+
+- name: Add freetech user to sudo privilege
+  lineinfile: "dest=/etc/sudoers line=\"freetech    ALL=(ALL)       ALL\""
 
 - name: Reboot the server for kernel update
   shell: sleep 2 && shutdown -r now "Ansible updates triggered"

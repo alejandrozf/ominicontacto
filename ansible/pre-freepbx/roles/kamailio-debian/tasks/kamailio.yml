@@ -34,10 +34,10 @@
 - name: Copiado de los archivos de configuracion de kamailio
   command: "{{ item }} chdir=/usr/src/omnileads-AIO/kamailio/"
   with_items:
-          - cp kamailio-debian.cfg /opt/kamailio-debian/etc/kamailio-debian/
-          - cp kamctlrc /opt/kamailio-debian/etc/kamailio-debian/
+          - cp kamailio.cfg /opt/kamailio/etc/kamailio/
+          - cp kamctlrc /opt/kamailio/etc/kamailio/
           - cp kamailio.service /etc/systemd/system/
-          - cp kamailio-debian-default /etc/default/kamailio-debian
+          - cp kamailio-default /etc/default/kamailio
           - cp ngcp-rtpengine-daemon /etc/default/
           - cp rtpengine.conf /etc/rtpengine/
 

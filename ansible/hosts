@@ -22,7 +22,7 @@
 192.168.99.100
 
 [omni-freepbx]
-ansible_port=22, ansible_host=192.168.99.2
+ansible_port=22, ansible_host=192.168.95.100
 
 [omni:children]
 omni-app

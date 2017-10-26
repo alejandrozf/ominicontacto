@@ -11,3 +11,6 @@
 #----------------------------------------------------------------------
 
 - include: deploy.yml
+
+- include: postgres_users.yml
+  when: not post_install or ansible_os_family == "Debian"

@@ -1,0 +1,9 @@
+---
+
+- include: django_migrations.yml
+
+- include: omniapp_second.yml
+  when: not post_install
+
+- include: wombat.yml
+  when: not post_install

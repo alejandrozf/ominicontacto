@@ -51,7 +51,5 @@
           - deploy
 
 
-- include: postgres_users.yml
-  when: not post_install
 
 

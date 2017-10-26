@@ -7,6 +7,36 @@
   yum: "name={{ postgresql_url }} state=present"
 - yum: name=postgresql96* state=present
 
+- name: Install of the other packages
+  yum: "name={{ item }} state=present"
+  with_items:
+      - python-psycopg2.x86_64
+      - python
+      - python-virtualenv
+      - python-devel
+      - mysql-connector-python
+      - mysql-devel
+      - nginx
+      - nginx-all-modules
+      - libjpeg-turbo-devel
+      - libffi-devel
+      - libffi
+      - cairo-devel
+      - pycairo
+      - pycairo-devel
+      - cairo
+      - python-pycha
+      - libxslt-devel
+      - libxslt-python
+      - libxslt
+      - python-lxml
+      - libxslt-python
+      - postgresql-plpython
+      - libsass-devel
+      - libsass
+      - libpqxx
+      - libpqxx-devel
+
 - name: Setup of postgresql
   shell: "{{ item }}"
   with_items:
