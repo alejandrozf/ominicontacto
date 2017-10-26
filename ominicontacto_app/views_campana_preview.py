@@ -225,6 +225,19 @@ class ObtenerContactoView(View):
             return super(ObtenerContactoView, self).dispatch(request, *args, **kwargs)
         raise PermissionDenied
 
+    def _gestionar_contacto(self, request, qs_agentes_contactos):
+        if qs_agentes_contactos.exists():
+            agente_en_contacto = qs_agentes_contactos.first()
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
+            agente_en_contacto.agente_id = request.user.get_agente_profile().pk
+            agente_en_contacto.save()
+            data = serializers.serialize('json', [agente_en_contacto, ])
+            return JsonResponse({'result': 'Ok', 'data': data})
+        else:
+            return JsonResponse({'result': 'Error',
+                                 'code': 'error-no-contactos',
+                                 'data': 'No hay contactos para asignar en esta campaña'})
+
     def post(self, request, *args, **kwargs):
         campana_id = kwargs.get('pk_campana', False)
         try:
@@ -235,14 +248,4 @@ class ObtenerContactoView(View):
                                  'code': 'error-concurrencia',
                                  'data': 'Contacto siendo accedido por más de un agente'})
         else:
-            if qs_agentes_contactos.exists():
-                agente_en_contacto = qs_agentes_contactos.first()
-                agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
-                agente_en_contacto.agente_id = request.user.get_agente_profile().pk
-                agente_en_contacto.save()
-                data = serializers.serialize('json', [agente_en_contacto, ])
-                return JsonResponse({'result': 'Ok', 'data': data})
-            else:
-                return JsonResponse({'result': 'Error',
-                                     'code': 'error-no-contactos',
-                                     'data': 'No hay contactos para asignar en esta campaña'})
+            return self._gestionar_contacto(qs_agentes_contactos)
