@@ -6,10 +6,13 @@ Tests relacionados con las campañas
 from __future__ import unicode_literals
 
 import json
+import threading
 
 from mock import patch
 
 from django.core.urlresolvers import reverse
+from django.db import connections
+from django.forms import ValidationError
 
 from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
 
@@ -17,12 +20,99 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory)
 
-from ominicontacto_app.tests.utiles import OMLBaseTest
+from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
 from ominicontacto_app.utiles import validar_nombres_campanas
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 
-from django.forms import ValidationError
+
+def test_concurrently(args_list):
+    """
+    Add this decorator to small pieces of code that you want to test
+    concurrently to make sure they don't raise exceptions when run at the
+    same time.  E.g., some Django views that do a SELECT and then a subsequent
+    INSERT might fail when the INSERT assumes that the data has not changed
+    since the SELECT.
+    (adapted from
+     https://www.caktusgroup.com/blog/2009/05/26/testing-django-views-for-concurrency-issues/)
+    """
+    def test_concurrently_decorator(test_func):
+        def wrapper(*args, **kwargs):
+            exceptions = []
+
+            def call_test_func(*args, **kwargs):
+                try:
+                    test_func(*args, **kwargs)
+                except Exception, e:
+                    exceptions.append(e)
+                    raise
+            threads = []
+            for arg in args_list:
+                threads.append(threading.Thread(target=call_test_func, args=[arg]))
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+            if exceptions:
+                raise Exception('test_concurrently intercepted %s exceptions: %s' %
+                                (len(exceptions), exceptions))
+        return wrapper
+    return test_concurrently_decorator
+
+
+class CampanasThreadsTests(OMLTransaccionBaseTest):
+
+    PWD = u'admin123'
+
+    def setUp(self):
+        self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
+        self.usuario_admin_supervisor.set_password(self.PWD)
+        self.usuario_admin_supervisor.save()
+
+        self.campana = CampanaFactory.create()
+        self.campana_activa = CampanaFactory.create(
+            estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW)
+        self.campana_borrada = CampanaFactory.create(
+            estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
+
+        self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
+        self.campana_activa.bd_contacto.contactos.add(self.contacto)
+        self.queue = QueueFactory.create(campana=self.campana_activa)
+
+        self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
+
+    def tearDown(self):
+        for conn in connections.all():
+            conn.close()
+
+    def test_no_se_devuelve_un_mismo_contacto_a_mas_de_un_agente_en_campanas_preview(self):
+        user1 = UserFactory(username='user1', is_agente=True)
+        user2 = UserFactory(username='user2', is_agente=True)
+        user1.set_password(self.PWD)
+        user2.set_password(self.PWD)
+        user1.save()
+        user2.save()
+        agente1 = AgenteProfileFactory.create(user=user1)
+        agente2 = AgenteProfileFactory.create(user=user2)
+        QueueMemberFactory.create(member=agente1, queue_name=self.queue)
+        QueueMemberFactory.create(member=agente2, queue_name=self.queue)
+        agente_en_contacto = AgenteEnContactoFactory.create(
+            campana_id=self.campana.pk, agente_id=-1)
+        url = reverse('campana_preview_dispatcher', args=[self.campana.pk])
+        responses_threads = {}
+
+        @test_concurrently([user1, user2])
+        def obtener_contacto(user):
+            self.client.login(username=user.username, password=self.PWD)
+            response = self.client.post(url, follow=True)
+            responses_threads[user.username] = json.loads(response.content)
+
+        obtener_contacto()
+
+        self.assertEqual(
+            responses_threads['user1']['telefono_contacto'],
+            unicode(agente_en_contacto.telefono_contacto))
+        self.assertEqual(responses_threads['user2']['code'], 'error-no-contactos')
 
 
 class CampanasTests(OMLBaseTest):
