@@ -13,7 +13,7 @@ from django.utils import timezone
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
                                       CalificacionCampana, Calificacion, Formulario, Grabacion,
                                       GrabacionMarca, Queuelog, SitioExterno, User, Contacto,
-                                      SupervisorProfile, AgenteEnContacto)
+                                      SupervisorProfile, QueueMember, AgenteEnContacto)
 
 faker = faker.Factory.create()
 
@@ -199,4 +199,17 @@ class AgenteEnContactoFactory(DjangoModelFactory):
     contacto_id = lazy_attribute(lambda a: faker.random_number(7))
     datos_contacto = lazy_attribute(lambda a: faker.random_number(10))
     telefono_contacto = lazy_attribute(lambda a: faker.random_number(10))
-    estado = AgenteEnContacto.ESTADO_ENTREGADO
+    estado = AgenteEnContacto.ESTADO_INICIAL
+
+
+class QueueMemberFactory(DjangoModelFactory):
+    class Meta:
+        model = QueueMember
+
+    member = SubFactory(AgenteProfileFactory)
+    queue_name = SubFactory(QueueFactory)
+    membername = Sequence(lambda n: "membername_{0}.dat".format(n))
+    interface = Sequence(lambda n: "interface_{0}.dat".format(n))
+    penalty = lazy_attribute(lambda a: faker.random_int(0, 9))
+    paused = lazy_attribute(lambda a: faker.random_number(2))
+    id_campana = lazy_attribute(lambda a: "{0}_campana".format(uuid4()))
