@@ -7,7 +7,6 @@ inserción en subscriber de las cuentas sip
 
 from __future__ import unicode_literals
 
-import psycopg2
 from django.db import connection
 
 
