@@ -5,14 +5,13 @@ from __future__ import unicode_literals
 import logging as logging_
 
 from django.contrib import messages
-from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.db.utils import DatabaseError
+from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, UpdateView, View
-
 
 from ominicontacto_app.models import BaseDatosContacto, Campana, Queue, AgenteEnContacto
 from ominicontacto_app.forms import CampanaPreviewForm
@@ -231,8 +230,8 @@ class ObtenerContactoView(View):
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
             agente_en_contacto.agente_id = request.user.get_agente_profile().pk
             agente_en_contacto.save()
-            data = serializers.serialize('json', [agente_en_contacto, ])
-            return JsonResponse({'result': 'Ok', 'data': data})
+            data = model_to_dict(agente_en_contacto)
+            return JsonResponse(data)
         else:
             return JsonResponse({'result': 'Error',
                                  'code': 'error-no-contactos',
