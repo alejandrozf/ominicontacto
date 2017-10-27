@@ -6,6 +6,7 @@
       - mkdir -p /opt/kamailio/run/kamailio
       - groupadd -g 5000 kamailio
       - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
+  ignore_errors: yes
 
 - name: Run kamailio as a service
   shell: "{{ item }}"

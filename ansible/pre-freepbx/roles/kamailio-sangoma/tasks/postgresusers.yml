@@ -3,6 +3,9 @@
 - name: Modify of pg_hba.conf file
   template: src=templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
 
+- name: Restart postgres service
+  service: name=postgresql-9.6 state=restarted enabled=yes
+
 - name: Create kamailio postgres user
   become: yes
   become_user: postgres
@@ -16,6 +19,7 @@
   shell: createdb -O kamailio kamailio
   become: yes
   become_user: postgres
+  ignore_errors: yes
 
 - name: Copy of oml-freepbx/kamailio-files to the desired destinations
   shell: "{{ item }} chdir=/usr/src/oml-freepbx"

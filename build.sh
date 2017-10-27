@@ -7,7 +7,7 @@
 # Colaborador: Felipe Macias
 #
 
-opcion=OPCION
+opcion=2
 
 if [ "$VIRTUAL_ENV" = "" ] ; then
         echo "ERROR: virtualenv (o alguno de la flia.) no encontrado"
@@ -63,7 +63,7 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS Post-Freepbx"
-    ansible-playbook -s /etc/ansible/post-freepbx/omni-freepbx.yml -u root
+    ansible-playbook -s /etc/ansible/deploy/omni-freepbx.yml -u root
     echo "Finalizó la instalación de Omnileads"
 
 else

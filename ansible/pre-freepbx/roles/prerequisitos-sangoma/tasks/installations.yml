@@ -63,6 +63,7 @@
       - python-devel
       - libuuid
       - libuuid-devel
+      - python2-pip.noarch
 
 - name: Creation of freetech user and group
   group: name=freetech state=present
