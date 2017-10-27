@@ -3,24 +3,16 @@
 - name: Creation of folder reporte_campana
   file: path=/home/freetech/media_root/reporte_campana state=directory owner=freetech group=freetech recurse=yes
 
-- name: Change owner and group of ominicontacto
-  file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
-
 - name: Change nginx default port
-  lineinfile: "dest=/etc/nginx/nginx.conf regexp=\"^listen       80\" line=\"        listen       1180 default_server;\""
-  lineinfile: "dest=/etc/nginx/nginx.conf regexp=\"^listen       [\" line=\"        listen       [::]:80 default_server;\""
+  template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
   when: ansible_os_family == "Sangoma"
 
 - name: Enable and restart nginx
-  shell: "{{ item }}"
-  with_items:
-      - systemctl enable nginx
-      - service restart nginx
+  shell: systemctl enable nginx
   when: ansible_os_family == "Sangoma"
 
 - name: Copy of the ominicontacto nginx configuration
   copy: "src={{ django_dir }}/nginx/ominicontacto.conf dest=/etc/nginx/conf.d/ remote_src=yes"
-  when: ansible_os_family == "Debian"
 
 - name: Creation of the nginx server certificate
   set_fact:
@@ -35,7 +27,6 @@
   shell: "{{ item }}"
   with_items:
       - sed -i 's/user freetech/user nginx/' /etc/nginx/nginx.conf
-      - systemctl restart nginx
   when: ansible_os_family == "Sangoma"
 
 - name: Create ominicontacto-daemon service
@@ -48,7 +39,7 @@
 - name: Start the ominicontacto-daemon service
   shell: "{{ item }}"
   with_items:
-          - "yum install '/lib/lsb/init-functions'"
+          - "yum install \'/lib/lsb/init-functions\' -y"
           - "service ominicontacto-daemon start"
           - "service ominicontacto-daemon stop"
           - "chkconfig ominicontacto-daemon on"
@@ -69,4 +60,9 @@
 
 - name: Change the FQDN in config.js
   template: "src=templates/config.js.j2 dest={{ django_dir }}/ominicontacto_app/static/ominicontacto/JS/config.js owner=freetech group=freetech"
+  when: ansible_os_family == "Debian"
+
+- name: Change the FQDN in config.js
+  template: "src=templates/config.js dest={{ django_dir }}/ominicontacto_app/static/ominicontacto/JS/config.js owner=freetech group=freetech"
+  when: ansible_os_family == "Sangoma"
 

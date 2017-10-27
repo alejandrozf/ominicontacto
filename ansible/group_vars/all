@@ -91,9 +91,13 @@ rtpengine_init: https://github.com/etamme/federated-sip
 
 #IP de omni-freepbx
 omnifreepbx_ip: 192.168.95.100
+localhost: 127.0.0.1
 
 #omni-voip repo
 omnivoip_repo: https://github.com/arcturuscba/oml-freepbx
 
 #Postgresql 9.6 url
 postgresql_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+
+#Freetech's password
+freetech_pass: 098098ZZZ

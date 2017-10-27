@@ -45,8 +45,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': '127.0.0.1',
         'PORT': 5432,
-        'NAME': 'kamailio-debian',
-        'USER': 'kamailio-debian',
+        'NAME': 'kamailio',
+        'USER': 'kamailio',
         'PASSWORD': 'kamailiorw',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
@@ -100,7 +100,7 @@ OML_GRABACIONES_URL = "http://{{ omnivoip_ip }}/grabaciones"
 OML_SUPERVISION_URL = "http://{{ omnivoip_ip }}:8090/Omnisup/index.php?page=Lista_Campanas&supervId="
 
 
-# 'OML_KAMAILIO_IP': ip donde se encuentra kamailio-debian
+# 'OML_KAMAILIO_IP': ip donde se encuentra kamailio
 # ejemplo "172.16.20.219/255.255.255.255"
 OML_KAMAILIO_IP = "{{ omnivoip_ip }}/255.255.255.255"
 

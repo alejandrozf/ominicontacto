@@ -5,6 +5,7 @@
   become: yes
   become_user: postgres
   when: not post_install
+  ignore_errors: yes
 
 - name: Run Django migrations
   django_manage: >
@@ -17,8 +18,9 @@
           - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
   ignore_errors: yes
   notify: restart ominicontacto-daemon
-  tags:
-          - deploy
+  become: yes
+  become_method: sudo
+  become_user: freetech
 
 - name: Change password of superuser
   template: "src=templates/changepassword.sh.j2 dest={{ django_dir }}/changepassword.sh mode=0755"

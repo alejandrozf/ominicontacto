@@ -64,10 +64,12 @@
       - libuuid
       - libuuid-devel
       - python2-pip.noarch
+      - expect.x86_64
+      - expect-devel.x86_64
 
 - name: Creation of freetech user and group
   group: name=freetech state=present
-- user: name=freetech group=freetech home=/home/freetech state=present
+- user: "name=freetech group=freetech password={{ freetech_pass }} home=/home/freetech state=present"
 
 - name: Add freetech user to sudo privilege
   lineinfile: "dest=/etc/sudoers line=\"freetech    ALL=(ALL)       ALL\""
