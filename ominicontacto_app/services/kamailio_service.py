@@ -17,9 +17,7 @@ class KamailioService():
         """
         insert agente en subscriber
         """
-        cursor = connection.cursor()
-
-        try:
+        with connection.cursor() as cursor:
             sql = """INSERT INTO subscriber (id, username, password)
             VALUES (%(id)s, %(name)s, %(kamailiopass)s)
             """
@@ -30,18 +28,12 @@ class KamailioService():
             }
             cursor.execute(sql, params)
 
-        except psycopg2.DatabaseError, e:
-            print "error base de datos"
-            print e
-            connection.close()
-
     def update_agente_kamailio(self, agente):
         """
         update subscriber 
         """
-        cursor = connection.cursor()
 
-        try:
+        with connection.cursor() as cursor:
             sql = """UPDATE subscriber SET username=%(name)s,
                   password=%(kamailiopass)s
                   WHERE id=%(id)s"""
@@ -51,26 +43,18 @@ class KamailioService():
                 'kamailiopass': agente.sip_password
             }
             cursor.execute(sql, params)
+            row = cursor.fetchone()
 
-        except psycopg2.DatabaseError, e:
-            print "error base de datos"
-            print e
-            connection.close()
+        return row
 
     def delete_agente_kamailio(self, agente):
         """
         delete registro en subscriber
         """
-        cursor = connection.cursor()
 
-        try:
+        with connection.cursor() as cursor:
             sql = """DELETE from subscriber WHERE username like %(username)s"""
             params = {
                 'username': str(agente.sip_extension)
             }
             cursor.execute(sql, params)
-
-        except psycopg2.DatabaseError, e:
-            print "error base de datos"
-            print e
-            connection.close()
