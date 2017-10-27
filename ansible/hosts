@@ -21,10 +21,12 @@
 #192.168.95.31	
 192.168.99.100
 
+[omni-freepbx]
+ansible_port=22, ansible_host=192.168.95.100
+
 [omni:children]
 omni-app
 omni-voip
-
 
 # Ex 2: A collection of hosts belonging to the 'webservers' group
 

@@ -34,7 +34,7 @@
 
 - name: Upload built (rsync to /ominicontacto)
   # Copies xxx/app to /home/freetech/ominicontacto (/ominicontacto on dest is implicit)
-  synchronize: "src={{ build_dir }} dest={{ django_dir }} delete=yes checksum=yes times=no"
+  synchronize: "src={{ build_dir }} dest=/home/freetech delete=yes checksum=yes times=no"
   tags:
     - deploy
 
@@ -50,11 +50,6 @@
   tags:
           - deploy
 
-- name: Configure postgres to listen on any port
-  lineinfile: "dest=/etc/postgresql/9.4/main/postgresql.conf regexp=\"^#listen_\" line=\"listen_addresses='*'\""
-  
-- lineinfile: "dest=/etc/postgresql/9.4/main/pg_hba.conf line=\"host    all             all             {{ red_deploy }}            trust\""
 
-- include: postgres_users.yml
 
 

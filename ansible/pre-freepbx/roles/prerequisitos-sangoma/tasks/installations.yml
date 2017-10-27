@@ -1,0 +1,86 @@
+---
+
+- name: Exclude postgres in list of repositories
+  ini_file: "path=/etc/yum.repos.d/Sangoma-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
+  with_items:
+      - sng-base
+      - sng-updates
+
+- name: Update/upgrade of freepbx
+  yum: name='*' state=latest update_cache=yes
+
+- name: Install the necessary packages
+  yum: name={{ item }} state=present
+  with_items:
+      - libevent*
+      - json-*
+      - libunistring-devel.x86_64
+      - webkitgtk3-devel.x86_64
+      - perl*
+      - librabbitmq*
+      - bison
+      - pcre-devel
+      - libpcap-devel
+      - flex
+      - git
+      - gcc
+      - gcc-c++
+      - bison-devel
+      - make
+      - expat
+      - expat-devel
+      - net-snmp-devel
+      - libxml2
+      - libxml2-devel
+      - openssl-devel
+      - xmlrpc-c-devel
+      - lynx
+      - pcre
+      - pcre-devel
+      - ncurses-devel
+      - ncurses-libs
+      - gdb
+      - unixODBC
+      - unixODBC-devel
+      - libtool-ltdl-devel
+      - xmlrpc-c-devel
+      - lynx
+      - pcre
+      - pcre-devel
+      - iptables-devel
+      - iptables-services
+      - xmlrpc-c-devel
+      - libpcap-devel
+      - glib2-devel
+      - json-glib-devel
+      - libevent-devel
+      - redis
+      - hiredis
+      - hiredis-devel
+      - kernel-devel
+      - kernel-headers
+      - xmlrpc-c-devel
+      - python-devel
+      - libuuid
+      - libuuid-devel
+      - python2-pip.noarch
+
+- name: Creation of freetech user and group
+  group: name=freetech state=present
+- user: name=freetech group=freetech home=/home/freetech state=present
+
+- name: Add freetech user to sudo privilege
+  lineinfile: "dest=/etc/sudoers line=\"freetech    ALL=(ALL)       ALL\""
+
+- name: Reboot the server for kernel update
+  shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+  async: 1
+  poll: 0
+  become: true
+  ignore_errors: true
+
+- name: Wait for the server to finish rebooting
+  become: yes
+  become_user: root
+  local_action: wait_for host="{{ omnifreepbx_ip }}" delay=15 state=started port={{ ssh_port }} timeout=300
+

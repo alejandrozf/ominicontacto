@@ -1,0 +1,43 @@
+---
+
+- name: Clone of the RTPengine repo
+  git: repo={{ rtpengine_repo }} dest=/usr/src/rtpengine
+  ignore_errors: yes
+
+- name: Installation of RTPengine
+  shell: "make chdir=/usr/src/rtpengine/daemon"
+- copy: src=/usr/src/rtpengine/daemon/rtpengine dest=/usr/local/bin remote_src=yes
+
+- name: Modify of the RTPengine kernel module to let it know where is our kernel
+  lineinfile: "path=/usr/src/rtpengine/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= /usr/src/kernels/$(shell uname -r)\""
+
+- name: Installation of RTPengine kernel module
+  shell: "{{ item }} chdir=/usr/src/rtpengine/kernel-module"
+  with_items:
+      - make
+      - insmod xt_RTPENGINE.ko
+
+- name: Installation of IPtables extensions
+  shell: "make chdir=/usr/src/rtpengine/iptables-extension"
+- copy: src=/usr/src/rtpengine/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
+
+- name: Copy of rptengine init script in sysconfig
+  copy: src=/usr/src/oml-freepbx/kamailio-files/rtpengine_sysconfig dest=/etc/sysconfig/rtpengine remote_src=yes
+- copy: src=/usr/src/oml-freepbx/kamailio-files/rtpengine.service dest=/etc/systemd/system remote_src=yes
+
+- name: Modify of RTPengine sysconfig file
+  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/sysconfig/rtpengine
+
+- name: Modify of /etc/rsyslog.conf
+  template: src=templates/rsyslog.conf.j2 dest=/etc/rsyslog.conf
+
+- name: Last changes
+  shell: "{{ item }} chdir="
+  with_items:
+      - touch /var/log/rtpengine.log
+      - systemctl restart rsyslog
+      - systemctl enable rtpengine.service
+      - mkdir -p /var/spool/rtpengine
+      - chmod +x /usr/local/bin/rtpengine
+      - systemctl start rtpengine
+

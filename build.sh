@@ -4,13 +4,10 @@
 # Script de build y deploy para Omnileads
 #
 # Autor: Federico Peker
-# Requiere: virtualenv activado
-#
-# Forma de uso:
-#
-#   ./build.sh -i deploy/hosts-virtual-pruebas
+# Colaborador: Felipe Macias
 #
 
+opcion=2
 
 if [ "$VIRTUAL_ENV" = "" ] ; then
         echo "ERROR: virtualenv (o alguno de la flia.) no encontrado"
@@ -57,9 +54,24 @@ echo "Creando archivo de version | Branch: $branch_name | Commit: $commit | Auto
 
 export DO_CHECKS="${DO_CHECKS:-no}"
 
-echo "Ejecutando Ansible"
-ansible-playbook -s /etc/ansible/deploy/main.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
+if [ $opcion -eq 1 ]; then
+    echo "Ejecutando Ansible en Debian omni-app"
+    ansible-playbook -s /etc/ansible/deploy/main.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
+    echo "Ejecutando Ansible para copia de archivos entre servers"
+    ansible-playbook -s /etc/ansible/deploy/omniapp_second/transfer.yml -u root -K
+    echo "Finalizó la instalación de Omnileads"
 
-echo "Ejecutando Ansible para copia de archivos entre servers"
-ansible-playbook -s /etc/ansible/deploy/omniapp_second/transfer.yml -u root -K
+elif [ $opcion -eq 2 ]; then
+    echo "Ejecutando Ansible en SangomaOS Post-Freepbx"
+    ansible-playbook -s /etc/ansible/deploy/omni-freepbx.yml -u root
+    echo "Finalizó la instalación de Omnileads"
+
+else
+    echo "Parámetro inválido ingrese de nuevo"
+    echo  ""
+fi
+
+echo "Ejecutando Ansible"
+
+
 

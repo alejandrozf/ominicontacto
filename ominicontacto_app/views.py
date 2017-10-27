@@ -186,7 +186,7 @@ class AgenteProfileCreateView(CreateView):
         self.object.sip_password = User.objects.make_random_password()
         self.object.reported_by = self.request.user
         self.object.save()
-        # insertar agente en kamailio
+        # insertar agente en kamailio-debian
         kamailio_service = KamailioService()
         kamailio_service.crear_agente_kamailio(self.object)
         # generar archivos sip en asterisk

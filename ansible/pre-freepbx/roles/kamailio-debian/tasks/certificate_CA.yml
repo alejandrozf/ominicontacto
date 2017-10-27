@@ -1,0 +1,40 @@
+---
+
+- name: Creacion de estructura de directorios de CA de Kamailio
+  command: "{{ item }} chdir=/opt/kamailio/etc/"
+  with_items:
+          - mkdir /opt/kamailio/etc/certs/
+          - chmod 0700 /opt/kamailio/etc/certs/
+          - mkdir /opt/kamailio/etc/certs/demoCA
+          - mkdir /opt/kamailio/etc/certs/demoCA/newcerts
+          - touch /opt/kamailio/etc/certs/demoCA/index.txt
+#crear path de serial
+- set_fact: serial_file_path=/opt/kamailio/etc/certs/demoCA/serial
+#crear el archivo serial
+- file: path={{ serial_file_path }} state=touch
+#crear el contenido de serial
+- set_fact: serial_content="01"
+#poner el contenido dentro del archivo
+- copy: content={{ serial_content }} dest={{ serial_file_path }}
+  become: true
+  become_method: su
+  become_user: root
+
+- name: Seteo de parametros del certificado de la CA
+  set_fact:
+          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ ca_commonname }}"
+
+- name: Generar la clave privada y crear los archivos del CA
+  shell: "openssl req -new -x509 -extensions v3_ca -keyout key.pem -out cert.pem -days 3650 -passout pass:toor123 -subj \"{{ ca_subject }}\""
+  args:
+          chdir: /opt/kamailio/etc/certs/demoCA/
+
+- name: Generar certificado de los nodos
+  shell: "openssl req -new -nodes -keyout key.pem -out req.pem -subj \"{{ ca_subject }}\""
+  args:
+          chdir: /opt/kamailio/etc/certs/
+
+- name: Firmar el certificado de los nodos con el del CA
+  shell: "openssl ca -batch -days 1460 -out cert.pem -keyfile demoCA/key.pem -cert demoCA/cert.pem -passin pass:toor123 -infiles req.pem"
+  args:
+          chdir: /opt/kamailio/etc/certs

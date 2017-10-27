@@ -26,9 +26,6 @@
         # following line enables the CGI configuration for this host only
         # after it has been globally disabled with "a2disconf".
         #Include conf-available/serve-cgi-bin.conf
-</VirtualHost>
-
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 
 Alias /grabaciones "/var/spool/asterisk/asternic"
 <Directory "/var/spool/asterisk/asternic">
@@ -38,3 +35,10 @@ Alias /grabaciones "/var/spool/asterisk/asternic"
 	Allow from all
 	Require all granted
 </Directory>
+
+
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+

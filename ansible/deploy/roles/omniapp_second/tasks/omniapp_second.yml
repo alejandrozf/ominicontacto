@@ -1,0 +1,72 @@
+---
+
+- name: Creation of folder reporte_campana
+  file: path=/home/freetech/media_root/reporte_campana state=directory owner=freetech group=freetech recurse=yes
+
+- name: Change owner and group of ominicontacto
+  file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
+
+- name: Change nginx default port
+  lineinfile: "dest=/etc/nginx/nginx.conf regexp=\"^listen       80\" line=\"        listen       1180 default_server;\""
+  lineinfile: "dest=/etc/nginx/nginx.conf regexp=\"^listen       [\" line=\"        listen       [::]:80 default_server;\""
+  when: ansible_os_family == "Sangoma"
+
+- name: Enable and restart nginx
+  shell: "{{ item }}"
+  with_items:
+      - systemctl enable nginx
+      - service restart nginx
+  when: ansible_os_family == "Sangoma"
+
+- name: Copy of the ominicontacto nginx configuration
+  copy: "src={{ django_dir }}/nginx/ominicontacto.conf dest=/etc/nginx/conf.d/ remote_src=yes"
+  when: ansible_os_family == "Debian"
+
+- name: Creation of the nginx server certificate
+  set_fact:
+          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omniapp_fqdn }}"
+
+- shell: "openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout server.key -out server.crt -subj \"{{ ca_subject }}\""
+  args:
+          chdir: /home/freetech/ominicontacto/
+  notify: restart nginx
+
+- name: Change user in nginx.conf
+  shell: "{{ item }}"
+  with_items:
+      - sed -i 's/user freetech/user nginx/' /etc/nginx/nginx.conf
+      - systemctl restart nginx
+  when: ansible_os_family == "Sangoma"
+
+- name: Create ominicontacto-daemon service
+  shell: "{{ item }}"
+  with_items:
+          - "cp /home/freetech/ominicontacto/ominicontacto-daemon /etc/init.d/"
+          - "chmod 755 /etc/init.d/ominicontacto-daemon"
+          - "chown root:root /etc/init.d/ominicontacto-daemon"
+
+- name: Start the ominicontacto-daemon service
+  shell: "{{ item }}"
+  with_items:
+          - "yum install '/lib/lsb/init-functions'"
+          - "service ominicontacto-daemon start"
+          - "service ominicontacto-daemon stop"
+          - "chkconfig ominicontacto-daemon on"
+  ignore_errors: yes
+  when: ansible_os_family == "Sangoma"
+
+- name: Create the ominicontacto-daemon service
+  shell: "{{ item }}"
+  with_items:
+          - "update-rc.d ominicontacto-daemon defaults"
+          - "update-rc.d ominicontacto-daemon enable 2"
+          - "update-rc.d ominicontacto-daemon enable 3"
+          - "update-rc.d ominicontacto-daemon enable 4"
+          - "update-rc.d ominicontacto-daemon enable 5"
+  ignore_errors: yes
+  notify: restart ominicontacto-daemon
+  when: ansible_os_family == "Debian"
+
+- name: Change the FQDN in config.js
+  template: "src=templates/config.js.j2 dest={{ django_dir }}/ominicontacto_app/static/ominicontacto/JS/config.js owner=freetech group=freetech"
+

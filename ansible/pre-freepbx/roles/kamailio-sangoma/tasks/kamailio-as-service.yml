@@ -1,0 +1,17 @@
+---
+
+- name: Creation of kamailio user and group
+  shell: "{{ item }}"
+  with_items:
+      - mkdir -p /opt/kamailio/run/kamailio
+      - groupadd -g 5000 kamailio
+      - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
+  ignore_errors: yes
+
+- name: Run kamailio as a service
+  shell: "{{ item }}"
+  with_items:
+      - systemctl enable kamailio
+      - systemctl daemon-reload
+      - chown kamailio:kamailio -R /opt/kamailio
+      - /opt/kamailio/sbin/kamdbctl restore /usr/src/oml-freepbx/kamailio-files/kamdb.sql

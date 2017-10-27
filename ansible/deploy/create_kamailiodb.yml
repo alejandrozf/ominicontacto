@@ -3,12 +3,12 @@
 - hosts: omni-voip
   tasks:
         
-        - name: Build the postgresql kamailio 
+        - name: Build the postgresql kamailio-debian
           shell: "{{ item }}"
           with_items:
-                  - "echo \"y\" | /opt/kamailio/sbin/kamdbctl create"
-                  - "/opt/kamailio/sbin/kamailio"
+                  - "echo \"y\" | /opt/kamailio-debian/sbin/kamdbctl create"
+                  - "/opt/kamailio-debian/sbin/kamailio-debian"
           ignore_errors: yes
 
-- import_playbook: omniapp_second/omniapp_second.yml
+
 

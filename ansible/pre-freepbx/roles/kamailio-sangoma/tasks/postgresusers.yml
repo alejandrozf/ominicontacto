@@ -1,0 +1,31 @@
+---
+
+- name: Modify of pg_hba.conf file
+  template: src=templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
+
+- name: Restart postgres service
+  service: name=postgresql-9.6 state=restarted enabled=yes
+
+- name: Create kamailio postgres user
+  become: yes
+  become_user: postgres
+  postgresql_user: name=kamailio password=kamailiorw role_attr_flags=SUPERUSER
+
+- postgresql_user: name=kamailioro password=kamailioro role_attr_flags=SUPERUSER
+  become: yes
+  become_user: postgres
+
+- name: Create kamailio database
+  shell: createdb -O kamailio kamailio
+  become: yes
+  become_user: postgres
+  ignore_errors: yes
+
+- name: Copy of oml-freepbx/kamailio-files to the desired destinations
+  shell: "{{ item }} chdir=/usr/src/oml-freepbx"
+  with_items:
+      - cp kamailio-files/kamailio.cfg /opt/kamailio/etc/kamailio/
+      - cp kamailio-files/kamctlrc /opt/kamailio/etc/kamailio/
+      - cp kamailio-files/kamailio.service /etc/systemd/system
+      - cp kamailio-files/kamailio /etc/default
+      - cp /usr/src/oml-freepbx/extra-files/openssl.cnf /etc/pki/tls/openssl.cnf

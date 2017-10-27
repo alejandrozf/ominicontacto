@@ -38,7 +38,7 @@ class SupervisorProfileCreateView(CreateView):
         self.object.sip_password = User.objects.make_random_password()
         self.object.save()
         kamailio_service = KamailioService()
-        # FIXME = Crear servicio para crer un supervisor en kamailio o renombrar el
+        # FIXME = Crear servicio para crer un supervisor en kamailio-debian o renombrar el
         # metodo
         kamailio_service.crear_agente_kamailio(self.object)
         asterisk_sip_service = ActivacionAgenteService()

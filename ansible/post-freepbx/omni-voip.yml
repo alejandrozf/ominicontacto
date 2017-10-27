@@ -1,0 +1,14 @@
+---
+
+- name: Instalación y configuración de Omni-VoIP
+  hosts: omni-freepbx
+
+  #vars_prompt:
+   #   - name: post_instalacion
+    #    prompt: "Es una pos-instalacion?"
+     #   default: "N"
+  roles:
+          #- {role: asternic, when: post_insta == "Y" or post_insta == "y" }
+          - {role: asternic, when: not post_install }
+
+

@@ -770,7 +770,7 @@ class QueueManager(models.Manager):
 
 class Queue(models.Model):
     """
-    Clase cola para el servidor de kamailio
+    Clase cola para el servidor de kamailio-debian
     """
     objects_default = models.Manager()
     # Por defecto django utiliza el primer manager instanciado. Se aplica al
