@@ -5,6 +5,8 @@ Tests relacionados con las campañas
 """
 from __future__ import unicode_literals
 
+import json
+
 from mock import patch
 
 from django.core.urlresolvers import reverse
@@ -13,7 +15,7 @@ from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
-                                               AgenteEnContactoFactory)
+                                               AgenteEnContactoFactory, QueueMemberFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
@@ -40,7 +42,7 @@ class CampanasTests(OMLBaseTest):
 
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
-        QueueFactory.create(campana=self.campana_activa)
+        self.queue = QueueFactory.create(campana=self.campana_activa)
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
@@ -172,7 +174,7 @@ class CampanasTests(OMLBaseTest):
         self.assertTrue(QueueMember.objects.all().exists())
 
     def test_relacion_agente_contacto_campanas_preview(self):
-        # test que doocumenta la existencia del modelo que relaciona a agentes
+        # test que documenta la existencia del modelo que relaciona a agentes
         # con contactos
         agente_en_contacto = AgenteEnContactoFactory.create()
         self.assertTrue(isinstance(agente_en_contacto, AgenteEnContacto))
@@ -193,3 +195,22 @@ class CampanasTests(OMLBaseTest):
         self.assertFalse(AgenteEnContacto.objects.all().exists())
         self.client.post(url, post_data, follow=True)
         self.assertTrue(AgenteEnContacto.objects.all().exists())
+
+    def test_agente_logueado_contacto_obtiene_contacto_campana_preview(self):
+        self.client.logout()
+        user = UserFactory(is_agente=True)
+        user.set_password(self.PWD)
+        user.save()
+        agente = AgenteProfileFactory.create(user=user)
+        QueueMemberFactory.create(member=agente, queue_name=self.queue)
+        agente_en_contacto = AgenteEnContactoFactory.create(
+            campana_id=self.campana.pk, agente_id=-1)
+
+        self.client.login(username=user.username, password=self.PWD)
+
+        url = reverse('campana_preview_dispatcher', args=[self.campana.pk])
+        response = self.client.post(url, follow=True)
+        data = json.loads(response.content)
+        self.assertEqual(data['agente_id'], agente.pk)
+        self.assertEqual(data['telefono_contacto'], unicode(agente_en_contacto.telefono_contacto))
+        self.assertEqual(data['estado'], AgenteEnContacto.ESTADO_ENTREGADO)
