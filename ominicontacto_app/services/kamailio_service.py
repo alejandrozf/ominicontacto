@@ -8,6 +8,7 @@ inserción en subscriber de las cuentas sip
 from __future__ import unicode_literals
 
 import psycopg2
+from django.db import connection
 
 
 class KamailioService():
@@ -28,7 +29,7 @@ class KamailioService():
         """
         insert agente en subscriber
         """
-        connection, cursor = self._conectar_base_datos()
+        cursor = connection.cursor()
 
         try:
             sql = """INSERT INTO subscriber (id, username, password)
@@ -40,8 +41,7 @@ class KamailioService():
                 'kamailiopass': agente.sip_password
             }
             cursor.execute(sql, params)
-            connection.commit()
-            connection.close()
+
         except psycopg2.DatabaseError, e:
             print "error base de datos"
             print e
@@ -51,7 +51,7 @@ class KamailioService():
         """
         update subscriber 
         """
-        connection, cursor = self._conectar_base_datos()
+        cursor = connection.cursor()
 
         try:
             sql = """UPDATE subscriber SET username=%(name)s,
@@ -63,8 +63,7 @@ class KamailioService():
                 'kamailiopass': agente.sip_password
             }
             cursor.execute(sql, params)
-            connection.commit()
-            connection.close()
+
         except psycopg2.DatabaseError, e:
             print "error base de datos"
             print e
@@ -74,7 +73,7 @@ class KamailioService():
         """
         delete registro en subscriber
         """
-        connection, cursor = self._conectar_base_datos()
+        cursor = connection.cursor()
 
         try:
             sql = """DELETE from subscriber WHERE username like %(username)s"""
@@ -82,8 +81,7 @@ class KamailioService():
                 'username': str(agente.sip_extension)
             }
             cursor.execute(sql, params)
-            connection.commit()
-            connection.close()
+
         except psycopg2.DatabaseError, e:
             print "error base de datos"
             print e
