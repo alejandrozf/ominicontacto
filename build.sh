@@ -63,7 +63,7 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS Post-Freepbx"
-    ansible-playbook -s /etc/ansible/deploy/omni-freepbx.yml -u root -K --extra-vars "BUILD_DIR=$TMP/ominicontacto"
+    ansible-playbook -s /etc/ansible/deploy/omni-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
     echo "Finalizó la instalación de Omnileads"
 
 else

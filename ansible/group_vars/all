@@ -17,14 +17,21 @@ ca_locality: CBA
 ca_organization: FTS
 ca_organizationalunit: Desarrollo
 ca_commonname: omnileads-voip.example.com
-
-########### SSH port ###########
-ssh_port: 22
-
-
+s
 ############## Repositorios #######################
 #rtpengine
 rtpengine_repo: https://github.com/sipwise/rtpengine
+
+###### Variable para oml_settings_local.py ##########
+session_cookie_age: 600
+
+##### Componentes del certificado de nginx para omniapp #########
+#Nota: se usan los mismos del CA de Kamailio, solo cambia el hostname
+
+##### Variables  de omni-app
+admin_user: admin
+admin_pass: Lotte199!
+django_dir: /home/freetech/ominicontacto
 
 ############################################# Global vars ##################################################
 #                                                                                                          #
@@ -63,18 +70,7 @@ red_deploy: 192.168.99.0/24
 ####### URL para descargar Asternic ########
 asternic: http://download.asternic.net/asternic-stats-pro-2.2.0.tgz
 
-###### Variable para oml_settings_local.py ##########
-session_cookie_age: 600
-
-##### Componentes del certificado de nginx para omniapp #########
-#Nota: se usan los mismos del CA de Kamailio, solo cambia el hostname  
-
-##### Variables  de omni-app
-admin_user: admin
-admin_pass: Lotte199!
-django_dir: /home/freetech/ominicontacto
-
-#### COntraseña de mysql-wombat ####
+#### Contraseña de mysql-wombat ####
 mysql_root_pass: 098098ZZZ
 
 
@@ -90,7 +86,7 @@ mysql_root_pass: 098098ZZZ
 rtpengine_init: https://github.com/etamme/federated-sip
 
 #IP de omni-freepbx
-omnifreepbx_ip: 192.168.95.100
+omnifreepbx_ip: 192.168.95.120
 localhost: 127.0.0.1
 
 #omni-voip repo
@@ -98,6 +94,3 @@ omnivoip_repo: https://github.com/arcturuscba/oml-freepbx
 
 #Postgresql 9.6 url
 postgresql_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
-
-#Freetech's password
-freetech_pass: 098098ZZZ

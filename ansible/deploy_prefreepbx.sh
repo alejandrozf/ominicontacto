@@ -9,7 +9,7 @@ echo ""
 
 if [ $opcion -eq 1 ]; then
     echo "Ejecutando Ansible en Debian omni-voip Pre-FreePBX"
-    ansible-playbook -s /etc/ansible/pre-freepbx/omni-voip.yml -u freetech -K
+    ansible-playbook -s /etc/ansible/pre-freepbx/omni-voip.yml -u root
     echo "Finalizó la instalación Pre-FreePBX, favor hacer las configuraciones en la GUI"
 
 elif [ $opcion -eq 2 ]; then

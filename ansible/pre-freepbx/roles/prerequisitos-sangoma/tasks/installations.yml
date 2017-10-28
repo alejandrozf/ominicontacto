@@ -69,7 +69,7 @@
 
 - name: Creation of freetech user and group
   group: name=freetech state=present
-- user: "name=freetech group=freetech password={{ freetech_pass }} home=/home/freetech state=present"
+- user: "name=freetech group=freetech home=/home/freetech state=present shell=/bin/bash"
 
 - name: Add freetech user to sudo privilege
   lineinfile: "dest=/etc/sudoers line=\"freetech    ALL=(ALL)       ALL\""

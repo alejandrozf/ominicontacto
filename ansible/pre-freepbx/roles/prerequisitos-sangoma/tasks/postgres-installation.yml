@@ -4,7 +4,7 @@
   git: repo={{ omnivoip_repo }} dest=/usr/src/oml-freepbx
 
 - name: Install of postgresql 9.6
-  yum: "name={{ postgresql_url }} state=present"
+  yum: "name={{ postgresql_url }} state=present validate_certs=no "
 - yum: name=postgresql96* state=present
 
 - name: Install of the other packages

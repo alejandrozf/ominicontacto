@@ -15,7 +15,7 @@ echo ""
 
 if [ $opcion -eq 1 ]; then
     echo "Ejecutando Ansible en Debian omni-voip Post-FreePBX"
-    aansible-playbook -s /etc/ansible/post-freepbx/main.yml -u freetech -K
+    aansible-playbook -s /etc/ansible/post-freepbx/main.yml -u root
     echo "Finalizó la instalación Post-FreePBX, se sigue con la instalacion de omni-app"
 
 elif [ $opcion -eq 2 ]; then
