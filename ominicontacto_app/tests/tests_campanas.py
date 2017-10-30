@@ -109,10 +109,17 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
 
         obtener_contacto()
 
-        self.assertEqual(
-            responses_threads['user1']['telefono_contacto'],
-            unicode(agente_en_contacto.telefono_contacto))
-        self.assertEqual(responses_threads['user2']['code'], 'error-no-contactos')
+        user1_data = responses_threads['user1'].get('telefono_contacto') == unicode(
+            agente_en_contacto.telefono_contacto)
+        user2_no_data = responses_threads['user2'].get('code') == 'error-no-contactos'
+
+        user1_no_data = responses_threads['user1'].get('code') == 'error-no-contactos'
+        user2_data = responses_threads['user2'].get('telefono_contacto') == unicode(
+            agente_en_contacto.telefono_contacto)
+
+        test_condition = (user1_data and user2_no_data) or (user1_no_data and user2_data)
+
+        self.assertTrue(test_condition)
 
 
 class CampanasTests(OMLBaseTest):
