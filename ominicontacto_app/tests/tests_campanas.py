@@ -81,10 +81,6 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
-    def tearDown(self):
-        for conn in connections.all():
-            conn.close()
-
     def test_no_se_devuelve_un_mismo_contacto_a_mas_de_un_agente_en_campanas_preview(self):
         user1 = UserFactory(username='user1', is_agente=True)
         user2 = UserFactory(username='user2', is_agente=True)
@@ -106,6 +102,7 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
             self.client.login(username=user.username, password=self.PWD)
             response = self.client.post(url, follow=True)
             responses_threads[user.username] = json.loads(response.content)
+            connections.close_all()
 
         obtener_contacto()
 
