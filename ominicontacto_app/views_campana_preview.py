@@ -220,7 +220,13 @@ class ObtenerContactoView(View):
     """
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.get_agente_profile():
+        pk_campana = kwargs.get('pk_campana')
+        agente_profile = request.user.get_agente_profile()
+        agente_in_campana_preview = False
+        if agente_profile:
+            agente_in_campana_preview = agente_profile.campana_member.filter(
+                queue_name__campana__pk=pk_campana).exists()
+        if agente_profile and agente_in_campana_preview:
             return super(ObtenerContactoView, self).dispatch(request, *args, **kwargs)
         raise PermissionDenied
 

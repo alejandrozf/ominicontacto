@@ -93,8 +93,8 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
         QueueMemberFactory.create(member=agente1, queue_name=self.queue)
         QueueMemberFactory.create(member=agente2, queue_name=self.queue)
         agente_en_contacto = AgenteEnContactoFactory.create(
-            campana_id=self.campana.pk, agente_id=-1)
-        url = reverse('campana_preview_dispatcher', args=[self.campana.pk])
+            campana_id=self.campana_activa.pk, agente_id=-1)
+        url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
         responses_threads = {}
 
         @test_concurrently([user1, user2])
@@ -292,12 +292,12 @@ class CampanasTests(OMLBaseTest):
 
     def test_usuario_no_logueado_no_obtiene_contacto_campana_preview(self):
         self.client.logout()
-        url = reverse('campana_preview_dispatcher', args=[self.campana.pk])
+        url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
         response = self.client.post(url, follow=True)
         self.assertTemplateUsed(response, u'registration/login.html')
 
     def test_usuario_no_agente_no_obtiene_contacto_campana_preview(self):
-        url = reverse('campana_preview_dispatcher', args=[self.campana.pk])
+        url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 403)
 
@@ -309,11 +309,11 @@ class CampanasTests(OMLBaseTest):
         agente = AgenteProfileFactory.create(user=user)
         QueueMemberFactory.create(member=agente, queue_name=self.queue)
         agente_en_contacto = AgenteEnContactoFactory.create(
-            campana_id=self.campana.pk, agente_id=-1)
+            campana_id=self.campana_activa.pk, agente_id=-1)
 
         self.client.login(username=user.username, password=self.PWD)
 
-        url = reverse('campana_preview_dispatcher', args=[self.campana.pk])
+        url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
         response = self.client.post(url, follow=True)
         data = json.loads(response.content)
         self.assertEqual(data['agente_id'], agente.pk)
