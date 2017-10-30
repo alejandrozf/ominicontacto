@@ -301,6 +301,19 @@ class CampanasTests(OMLBaseTest):
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 403)
 
+    def test_usuario_agente_no_asociado_campana_preview_no_obtiene_contacto(self):
+        self.client.logout()
+        user = UserFactory(is_agente=True)
+        user.set_password(self.PWD)
+        user.save()
+        AgenteProfileFactory.create(user=user)
+
+        self.client.login(username=user.username, password=self.PWD)
+
+        url = reverse('campana_preview_dispatcher', args=[self.campana_borrada.pk])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 403)
+
     def test_agente_logueado_contacto_obtiene_contacto_campana_preview(self):
         self.client.logout()
         user = UserFactory(is_agente=True)
