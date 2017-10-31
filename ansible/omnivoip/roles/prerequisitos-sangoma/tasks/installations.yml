@@ -5,9 +5,18 @@
   with_items:
       - sng-base
       - sng-updates
+  when: ansible_os_family == "Sangoma"
+
+- name: Exclude postgres in list of repositories
+  ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
+  with_items:
+      - base
+      - updates
+  when: ansible_os_family == "RedHat"
 
 - name: Update/upgrade of freepbx
   yum: name='*' state=latest update_cache=yes
+  when: ansible_os_family == "Sangoma"
 
 - name: Install the necessary packages
   yum: name={{ item }} state=present
@@ -71,6 +80,12 @@
   group: name=freetech state=present
 - user: "name=freetech group=freetech home=/home/freetech state=present shell=/bin/bash"
 
+- name: Creation of asterisk user and group
+  group: name=asterisk state=present
+  when: ansible_os_family == "RedHat"
+- user: "name=asterisk group=asterisk home=/home/asterisk state=present shell=/bin/bash"
+  when: ansible_os_family == "RedHat"
+
 - name: Add freetech user to sudo privilege
   lineinfile: "dest=/etc/sudoers line=\"freetech    ALL=(ALL)       ALL\""
 
@@ -84,5 +99,11 @@
 - name: Wait for the server to finish rebooting
   become: yes
   become_user: root
-  local_action: wait_for host="{{ omnifreepbx_ip }}" delay=15 state=started port={{ ssh_port }} timeout=300
+  local_action: wait_for host="{{ omnifreepbx_ip }}" delay=15 state=started port={{ sangoma_ssh_port }} timeout=300
+  when: ansible_os_family == "Sangoma"
 
+- name: Wait for the server to finish rebooting
+  become: yes
+  become_user: root
+  local_action: wait_for host="{{ omnicentos_ip }}" delay=15 state=started port={{ centos_ssh_port }} timeout=300
+  when: ansible_os_family == "RedHat"

@@ -4,4 +4,4 @@
           - {role: prerequisitos-debian, when: ansible_os_family == "Debian" }
           - {role: kamailio-debian, when: ansible_os_family == "Debian" }
           - {role: asterisk-freepbx, when: ansible_os_family == "Debian" }
-
+          - {role: asternic, when: ansible_os_family == "Debian" }

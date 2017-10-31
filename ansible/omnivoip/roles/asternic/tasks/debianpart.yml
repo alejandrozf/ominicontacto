@@ -33,5 +33,3 @@
 - name: Modificacion de conexion AMI para Wombat Dialer
   template: "src=templates/manager_custom.conf.j2 dest=/etc/asterisk/manager_custom.conf"
   #lineinfile: "dest=//etc/asterisk/manager_custom.conf regexp=\"172.16.20.0/255.255.255.0\" line=\"permit = {{ omniapp_ip  }}/255.255.255.255,127.0.0.1/255.255.255.255\""
-
-- include: rtpengine_final.yml

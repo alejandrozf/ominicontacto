@@ -14,19 +14,23 @@ echo -en "Opcion: ";read opcion
 echo ""
 
 if [ $opcion -eq 1 ]; then
-    echo "Ejecutando Ansible en Debian omni-voip Post-FreePBX"
-    aansible-playbook -s /etc/ansible/post-freepbx/main.yml -u root
-    echo "Finalizó la instalación Post-FreePBX, se sigue con la instalacion de omni-app"
+    echo "Ejecutando Ansible en Debian omni-voip Pre-FreePBX"
+    ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
+    echo "Finalizó la instalación omni-voip"
+    echo ""
 
 elif [ $opcion -eq 2 ]; then
-    echo "Ejecutando Ansible en SangomaOS Post-Freepbx"
-    ansible-playbook -s /etc/ansible/post-freepbx/omni-freepbx.yml -u root
-    echo "Finalizó la instalación Post-FreePBX, se sigue con el deploy de Omnileads"
+    echo "Ejecutando Ansible en SangomaOS Pre-Freepbx"
+    ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
+    echo "Finalizó la instalación omni-voip"
+    echo ""
 
 else
     echo "Parámetro inválido ingrese de nuevo"
     echo  ""
 fi
+
+echo "Pasando al deploy de OmniAPP"
 
 sed -i "s/OPCION/${opcion}/g" ~/ominicontacto/build.sh
 

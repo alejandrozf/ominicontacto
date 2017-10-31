@@ -17,7 +17,7 @@ ca_locality: CBA
 ca_organization: FTS
 ca_organizationalunit: Desarrollo
 ca_commonname: omnileads-voip.example.com
-s
+
 ############## Repositorios #######################
 #rtpengine
 rtpengine_repo: https://github.com/sipwise/rtpengine
@@ -55,7 +55,7 @@ jansson: https://github.com/akheron/jansson/archive/v2.7.tar.gz
 country_code: 54
 
 ######## URL para descargar FreePBX y wombat #########
-freepbx: http://mirror.freepbx.org/modules/packages/freepbx/freepbx-13.0-latest.tgz
+freepbx: http://mirror.freepbx.org/modules/packages/freepbx/freepbx-14.0-latest.tgz
 wombat: http://downloads.loway.ch/beta/WombatDialer-16.06.9-157.tar.gz
 
 ######## IP y FQDNS de servers ########
@@ -85,6 +85,8 @@ mysql_root_pass: 098098ZZZ
 #rtpengine-init-script
 rtpengine_init: https://github.com/etamme/federated-sip
 
+sangoma_ssh_port: 22
+
 #IP de omni-freepbx
 omnifreepbx_ip: 192.168.95.120
 localhost: 127.0.0.1
@@ -94,3 +96,16 @@ omnivoip_repo: https://github.com/arcturuscba/oml-freepbx
 
 #Postgresql 9.6 url
 postgresql_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+
+#OmniCentosIP
+omnicentos_ip: 172.16.20.12
+
+omnicentos_fqdn: oml-centos.example.com
+
+centos_ssh_port: 22
+
+#Asterisk para centos
+asterisk_centos: https://github.com/meduketto/iksemel/archive/master.zip
+
+#Mysql root pass
+mysql_root_password:

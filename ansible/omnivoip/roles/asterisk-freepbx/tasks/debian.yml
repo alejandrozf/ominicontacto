@@ -20,17 +20,14 @@
           - "{{ destino.results[2].dest }}"
           - "{{ destino.results[3].dest }}"
   register: nombres_tar
-  
+
 - name: Borrado de los tar
   file: "dest={{ item }} state=absent"
   with_items:
          - "{{ nombres_tar.results[0].src }}"
          - "{{ nombres_tar.results[1].src }}"
          - "{{ nombres_tar.results[2].src }}"
-         - "{{ nombres_tar.results[3].src }}" 
-  
-- action: shell ls /usr/src/
-  register: dirsrc
+         - "{{ nombres_tar.results[3].src }}"
 
 - name: Instalacion de Dahdi Linux
   shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[1] }}"
@@ -55,9 +52,10 @@
 
 - name: Seteo del countrycode para asterisk
   debconf: name='libvpb0' question='libvpb0/countrycode' value={{ country_code }} vtype='string'
+  when: ansible_os_family == "Debian"
 
 - name: Instalacion de asterisk
-  shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"       
+  shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
   with_items:
           - "contrib/scripts/get_mp3_source.sh"
           - "contrib/scripts/install_prereq install"
@@ -92,10 +90,3 @@
           - sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/apache2/apache2.conf
           - sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
   notify: restart apache2
-
-- include: freepbx.yml
-
-
-
-
-

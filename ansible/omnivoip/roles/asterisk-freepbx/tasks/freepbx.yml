@@ -25,6 +25,15 @@
   with_items:
           - ./start_asterisk start
           - ./install -n
+  when: ansible_os_family == "Debian"
+
+- name: Instalacion de freepbx
+  shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[3] }}"
+  with_items:
+          - ./start_asterisk start
+          - ./install -n
+  when: ansible_os_family == "RedHat"
+  ignore_errors: yes
 
 - name: Copiado de archivos de base de datos y archivos de FreePBX
   shell: "{{ item }} chdir=/usr/src"
@@ -32,31 +41,37 @@
           - cp omnileads-AIO/asterisk/odbcinst.ini /etc/
           - cp omnileads-AIO/asterisk/odbc.ini /etc/
           - cp omnileads-AIO/asterisk/freepbx.service /etc/systemd/system/
+  when: ansible_os_family == "Debian"
         
 - name: Habilitar FreePBX y modulo RewriteEngine de Apache2
   shell: "{{ item }}"
   with_items:
           - systemctl enable freepbx
           - a2enmod rewrite
+  when: ansible_os_family == "Debian"
 
 - name: Modificar puerto por default de Apache
   shell: sed -i 's/:80/:8090/' /etc/apache2/sites-enabled/000-default.conf
+  when: ansible_os_family == "Debian"
   notify: restart apache2
 
 - name: Instalacion de pip
   apt: name=python-pip state=present
+  when: ansible_os_family == "Debian"
 
 - name: Instalacion de mysqldb module
   pip: name=MySQL-python
+  when: ansible_os_family == "Debian"
 
 - name: Agregar usuario de mysql omnileads
   mysql_user: "name=omnileads host={{ omniapp_ip }} login_user=root password=admin123 priv=\"asterisk.*:ALL,GRANT\""
+  when: ansible_os_family == "Debian"
 
 - name: Modificacion de my.cnf para que acepte conexiones remotas
   lineinfile: "dest=/etc/mysql/my.cnf regexp=\"^bind-address\" insertafter=\"^bind-address\" line=\"bind-address            = 0.0.0.0\""
   notify: restart mysql
+  when: ansible_os_family == "Debian"
 
-- include: apache.yml
 
 
 

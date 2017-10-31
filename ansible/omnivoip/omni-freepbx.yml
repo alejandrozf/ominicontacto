@@ -4,3 +4,4 @@
           - {role: prerequisitos-sangoma, when: ansible_os_family == "Sangoma" }
           - {role: kamailio-sangoma, when: ansible_os_family == "Sangoma" }
           - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "Sangoma" }
+          - {role: asternic, when: ansible_os_family == "Sangoma" }

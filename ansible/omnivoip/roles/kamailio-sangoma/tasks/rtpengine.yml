@@ -16,6 +16,7 @@
   with_items:
       - make
       - insmod xt_RTPENGINE.ko
+  ignore_errors: yes
 
 - name: Installation of IPtables extensions
   shell: "make chdir=/usr/src/rtpengine/iptables-extension"
