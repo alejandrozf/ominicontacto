@@ -2279,7 +2279,7 @@ class AgendaContactoManager(models.Manager):
         else:
             hoy_ahora = datetime.datetime.today()
             hoy = hoy_ahora.date()
-            eventos = eventos.filter(fecha__gt=hoy)
+            eventos = eventos.filter(fecha__gte=hoy)
         return eventos.order_by('-fecha')
 
 
@@ -2705,7 +2705,7 @@ class AgendaManualManager(models.Manager):
         else:
             hoy_ahora = datetime.datetime.today()
             hoy = hoy_ahora.date()
-            eventos = eventos.filter(fecha__gt=hoy)
+            eventos = eventos.filter(fecha__gte=hoy)
         return eventos.order_by('-fecha')
 
 
