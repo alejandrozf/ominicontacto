@@ -240,6 +240,8 @@ class ObtenerContactoView(View):
             agente_en_contacto.save()
             data = model_to_dict(agente_en_contacto)
             data['datos_contacto'] = literal_eval(data['datos_contacto'])
+            data['result'] = 'OK'
+            data['code'] = 'contato-obtenido'
             return JsonResponse(data)
         else:
             return JsonResponse({'result': 'Error',
