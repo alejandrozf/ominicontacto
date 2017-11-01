@@ -89,6 +89,14 @@
 - name: Add freetech user to sudo privilege
   lineinfile: "dest=/etc/sudoers line=\"freetech    ALL=(ALL)       ALL\""
 
+- name: Create public key of root user
+  user: name=root generate_ssh_key=yes ssh_key_bits=2048
+
+- name: Transfer ssh key from freetech's omniapp user to root's omnivoip user
+  shell: cat /root/.ssh/id_rsa.pub
+  register: ssh_key
+- authorized_key: user=root key={{ ssh_key.stdout }} state=present
+
 - name: Reboot the server for kernel update
   shell: sleep 2 && shutdown -r now "Ansible updates triggered"
   async: 1

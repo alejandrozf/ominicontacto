@@ -32,6 +32,7 @@
       - python-lxml
       - libxslt-python
       - postgresql-plpython
+      - postgresql-devel
       - libsass-devel
       - libsass
       - libpqxx

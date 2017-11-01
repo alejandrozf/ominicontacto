@@ -7,7 +7,7 @@
 # Colaborador: Felipe Macias
 #
 
-opcion=2
+opcion=3
 
 if [ "$VIRTUAL_ENV" = "" ] ; then
         echo "ERROR: virtualenv (o alguno de la flia.) no encontrado"
@@ -62,9 +62,15 @@ if [ $opcion -eq 1 ]; then
     echo "Finalizó la instalación de Omnileads"
 
 elif [ $opcion -eq 2 ]; then
-    echo "Ejecutando Ansible en SangomaOS Post-Freepbx"
+    echo "Ejecutando Ansible en SangomaOS para deploy de OmniAPP"
     ansible-playbook -s /etc/ansible/deploy/omni-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
     echo "Finalizó la instalación de Omnileads"
+
+elif [ $opcion -eq 3 ]; then
+    echo "Ejecutando Ansible en Centos para deploy de OmniAPP"
+    ansible-playbook -s /etc/ansible/deploy/centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
+    echo "Finalizó la instalación omni-voip"
+    echo ""
 
 else
     echo "Parámetro inválido ingrese de nuevo"

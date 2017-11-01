@@ -67,6 +67,7 @@
           - contrib/scripts/install_prereq install
           - ./configure --libdir=/usr/lib64 --with-pjproject-bundled
           - contrib/scripts/get_mp3_source.sh
+          - make menuselect.makeopts
           - menuselect/menuselect --enable format_mp3
           - make
           - make install

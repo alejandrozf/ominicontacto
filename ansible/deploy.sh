@@ -9,19 +9,25 @@
 
 echo "Bienvenido al asistente de instalación de Omnileads"
 echo ""
-echo "Ingrese 1 si va instalar en Debian o 2 si va a instalar en SangomaOS"
+echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
 echo -en "Opcion: ";read opcion
 echo ""
 
 if [ $opcion -eq 1 ]; then
-    echo "Ejecutando Ansible en Debian omni-voip Pre-FreePBX"
+    echo "Ejecutando Ansible en Debian omni-voip"
     ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
     echo "Finalizó la instalación omni-voip"
     echo ""
 
 elif [ $opcion -eq 2 ]; then
-    echo "Ejecutando Ansible en SangomaOS Pre-Freepbx"
+    echo "Ejecutando Ansible en SangomaOS"
     ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
+    echo "Finalizó la instalación omni-voip"
+    echo ""
+
+elif [ $opcion -eq 3 ]; then
+    echo "Ejecutando Ansible en Centos"
+    #ansible-playbook -s /etc/ansible/omnivoip/centos.yml -u root
     echo "Finalizó la instalación omni-voip"
     echo ""
 
@@ -82,4 +88,4 @@ git pull origin +$VERSION:$VERSION
 # git reset --hard origin/$VERSION
 
 #./build.sh -i $INVENTORY $*
-./build.sh
+sh -x build.sh

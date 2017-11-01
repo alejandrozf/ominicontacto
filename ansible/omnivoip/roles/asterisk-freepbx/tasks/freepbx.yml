@@ -33,7 +33,6 @@
           - ./start_asterisk start
           - ./install -n
   when: ansible_os_family == "RedHat"
-  ignore_errors: yes
 
 - name: Copiado de archivos de base de datos y archivos de FreePBX
   shell: "{{ item }} chdir=/usr/src"

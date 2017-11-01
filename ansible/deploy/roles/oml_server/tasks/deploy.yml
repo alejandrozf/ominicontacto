@@ -41,11 +41,15 @@
 - name: Change owner and group of ominicontacto
   file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
 
-- name: Copy location of pg_config exceutable to /usr/sbin
-  copy: src=/usr/pgsql-9.6/bin/pg_config dest=/usr/sbin remote_src=yes
+#- name: Copy location of pg_config exceutable to /usr/sbin
+#  copy: src=/usr/pgsql-9.6/bin/pg_config dest=/usr/local/sbin/ remote_src=yes
+#  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 #- name: Change $PATH of freetech user to add pg_config location
 #  lineinfile: "dest=/home/freetech/.bashrc line=\"export PATH=$PATH:/usr/pgsql-9.6/bin/\""
-#  when: ansible_os_family == "Sangoma"
+# when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+#  become: yes
+#  become_method: su
+#  become_user: freetech
 
 - name: Setup virtualenv
   pip: >
@@ -55,14 +59,16 @@
 
 - name: Setup virtualenv
   pip:
-    requirements: "{{ django_dir }}/requeriments.txt"
-    virtualenv: "{{ django_dir }}/virtualenv"
+    requirements={{ django_dir }}/requeriments.txt
+    virtualenv={{ django_dir }}/virtualenv
     #extra_args: "--global-option='build_ext --pg_config /usr/pgsql-9.6/bin/'"
-  when: ansible_os_family == "Sangoma"
+  environment:
+      PATH: "$PATH:/usr/pgsql-9.6/bin/:/usr/bin"
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   become: yes
   become: su
   become_user: freetech
-  become_flags: '-s /bin/bash'
+
 
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local_debian.py dest={{ django_dir }}
@@ -76,11 +82,24 @@
   become: yes
   become_method: su
   become_user: freetech
+
 - shell: "mv oml_settings_local_sangoma.py oml_settings_local.py chdir={{ django_dir }}"
   when: ansible_os_family == "Sangoma"
   become: yes
   become_method: su
   become_user: freetech
 
+- name: Upload oml_settings_local.py
+  template: src=templates/oml_settings_local_centos.py dest={{ django_dir }}
+  when: ansible_os_family == "RedHat"
+  become: yes
+  become_method: su
+  become_user: freetech
+
+- shell: "mv oml_settings_local_centos.py oml_settings_local.py chdir={{ django_dir }}"
+  when: ansible_os_family == "RedHat"
+  become: yes
+  become_method: su
+  become_user: freetech
 
 
