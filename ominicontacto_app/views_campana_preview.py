@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 import logging as logging_
 
+from ast import literal_eval
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
@@ -237,6 +239,7 @@ class ObtenerContactoView(View):
             agente_en_contacto.agente_id = request.user.get_agente_profile().pk
             agente_en_contacto.save()
             data = model_to_dict(agente_en_contacto)
+            data['datos_contacto'] = literal_eval(data['datos_contacto'])
             return JsonResponse(data)
         else:
             return JsonResponse({'result': 'Error',
