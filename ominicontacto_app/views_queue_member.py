@@ -69,6 +69,12 @@ class QueueMemberCreateView(FormView):
             QueueMemberCreateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
+        if campana.type is Campana.TYPE_ENTRANTE:
+            context['url_finalizar'] = 'campana_list'
+        elif campana.type is Campana.TYPE_DIALER:
+            context['url_finalizar'] = 'campana_dialer_list'
+        elif campana.type is Campana.TYPE_MANUAL:
+            context['url_finalizar'] = 'campana_manual_list'
         return context
 
     def get_success_url(self):
@@ -110,6 +116,12 @@ class GrupoAgenteCreateView(FormView):
             GrupoAgenteCreateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
+        if campana.type is Campana.TYPE_ENTRANTE:
+            context['url_finalizar'] = 'campana_list'
+        elif campana.type is Campana.TYPE_DIALER:
+            context['url_finalizar'] = 'campana_dialer_list'
+        elif campana.type is Campana.TYPE_MANUAL:
+            context['url_finalizar'] = 'campana_manual_list'
         return context
 
     def get_success_url(self):
