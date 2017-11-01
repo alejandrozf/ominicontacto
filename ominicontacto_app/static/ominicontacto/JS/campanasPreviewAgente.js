@@ -28,8 +28,8 @@ $(document).ready(function(){
           $panelContacto.attr('class', 'col-md-4 col-md-offset-1');
           var contactoNombre = data['datos_contacto'][0] + ' ' + data['datos_contacto'][1];
           var contactoTelefono = data['telefono_contacto'];
-          $contactoNombre.text(contacto_nombre);
-          $contactoTelefono.text(contacto_telefono);
+          $contactoNombre.text(contactoNombre);
+          $contactoTelefono.text(contactoTelefono);
           console.log("Success: ", data);
         })
         .fail( function (data) {
