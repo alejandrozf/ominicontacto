@@ -39,8 +39,16 @@
             </div>
             <div id="panel-contacto" class="col-md-4 col-md-offset-1 hidden">
                 <div class="panel panel-default">
-                    <div class="panel-body">Nombre: <p id="panel-contacto-nombre"></p></div>
-                    <div class="panel-footer">Teléfono: <p id="panel-contacto-telefono"></p></div>
+                    <div class="panel-body">
+                        <span class="glyphicon glyphicon-earphone" aria-hidden="true" title="Teléfono:"></span>
+                        <a href="" id="contacto-telefono"
+                           data-toggle="tooltip" data-placement="top"
+                           title="Haga click para llamar al contacto"></a>
+                    </div>
+                    <div class="panel-footer">
+                        <p>Otros datos:</p>
+                        <div id="contacto-datos"></div>
+                    </div>
                 </div>
             </div>
         </div>

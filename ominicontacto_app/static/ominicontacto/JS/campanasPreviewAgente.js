@@ -16,8 +16,8 @@ $(document).ready(function(){
 
   // asocia el click en la campaña preview a obtener los datos de un contacto
   var $panelContacto = $('#panel-contacto');
-  var $contactoNombre = $panelContacto.find('#panel-contacto-nombre');
-  var $contactoTelefono = $panelContacto.find('#panel-contacto-telefono');
+  var $contactoTelefono = $panelContacto.find('#contacto-telefono');
+  var $contactoOtrosDatos = $panelContacto.find('#contacto-datos');
 
   function informarError(data) {
     alert(data['data']);
@@ -34,10 +34,18 @@ $(document).ready(function(){
           }
           else {                // se obtienen los datos del contacto
             $panelContacto.attr('class', 'col-md-4 col-md-offset-1');
-            var contactoNombre = data['datos_contacto'][0] + ' ' + data['datos_contacto'][1];
+            // actualizamos el teléfono del contacto
             var contactoTelefono = data['telefono_contacto'];
-            $contactoNombre.text(contactoNombre);
             $contactoTelefono.text(contactoTelefono);
+
+            // Limpiamos la información de algún contacto
+            $contactoOtrosDatos.html("");
+
+            // Actualizamos los datos del contacto obtenido
+            for (campo in data['datos_contacto']) {
+              var campoData = '<p>'+campo+': ' + data['datos_contacto'][campo] + '</p>';
+              $contactoOtrosDatos.append(campoData);
+            }
             console.log("Success: ", data);
           }
 
