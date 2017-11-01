@@ -924,7 +924,7 @@ class QueueMember(models.Model):
                                    related_name='queuemember')
     membername = models.CharField(max_length=128)
     interface = models.CharField(max_length=128)
-    penalty = models.IntegerField(choices=DIGITO_CHOICES,)
+    penalty = models.IntegerField(choices=DIGITO_CHOICES)
     paused = models.IntegerField()
     id_campana = models.CharField(max_length=128)
 
