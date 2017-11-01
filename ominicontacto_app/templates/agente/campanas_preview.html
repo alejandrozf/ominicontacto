@@ -10,51 +10,7 @@
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}" >
         <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
-        <script>
-         $(document).ready(function(){
-           $('#campanasPreviewTable').DataTable( {
-           // Convierte a datatable la tabla de campañas preview
-             language: {
-               search: "Buscar:",
-               paginate: {
-                 first: "Primero",
-                 previous: "Anterior",
-                 next: "Siguiente",
-                 last: "Último"
-               },
-               lengthMenu: "Mostrar _MENU_ entradas",
-               info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-             }
-           } );
-
-           // asocia el click en la campaña preview a obtener los datos de un contacto
-           var $panel_contacto = $('#panel-contacto');
-           var $contacto_nombre = $panel_contacto.find('#panel-contacto-nombre');
-           var $contacto_telefono = $panel_contacto.find('#panel-contacto-telefono');
-
-           $('.obtener-contacto').each(function() {
-             $(this).on('click', function(){
-               var id_campana = $(this).attr('data-campana');
-               var url = '/campana_preview/'+ id_campana +'/contacto/obtener/';
-               $.post(url)
-                .success(function (data) {
-                  $panel_contacto.attr('class', 'col-md-4 col-md-offset-1');
-                  var contacto_nombre = data['datos_contacto'][0] + ' ' + data['datos_contacto'][1];
-                  var contacto_telefono = data['telefono_contacto'];
-                  $contacto_nombre.text(contacto_nombre);
-                  $contacto_telefono.text(contacto_telefono);
-                  console.log("Success: ", data);
-                })
-                .fail( function (data) {
-                  console.log("Fail: ", data);
-                })
-                .error( function (data) {
-                  console.log("Error: ", data);
-                });
-             })
-           });
-         });
-        </script>
+        <script src="{% static 'ominicontacto/JS/campanasPreviewAgente.js' %}"></script>
     </head>
     <body>
         <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
