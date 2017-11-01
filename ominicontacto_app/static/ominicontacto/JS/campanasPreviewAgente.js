@@ -19,11 +19,7 @@ $(document).ready(function(){
   var $contactoNombre = $panelContacto.find('#panel-contacto-nombre');
   var $contactoTelefono = $panelContacto.find('#panel-contacto-telefono');
 
-  function informarNoContactos(data) {
-    alert(data['data']);
-  }
-
-  function informarErrorAccesoBD(data) {
+  function informarError(data) {
     alert(data['data']);
   }
 
@@ -33,11 +29,8 @@ $(document).ready(function(){
       var url = '/campana_preview/'+ idCampana +'/contacto/obtener/';
       $.post(url)
         .success(function (data) {
-          if (data['code'] == 'error-no-contactos') {
-            informarNoContactos(data);
-          }
-          else if (data['code'] == 'error-concurrencia') {
-            informarErrorAccesoBD(data);
+          if (data['result'] == 'Error') {
+            informarError(data);
           }
           else {                // se obtienen los datos del contacto
             $panelContacto.attr('class', 'col-md-4 col-md-offset-1');
@@ -55,6 +48,6 @@ $(document).ready(function(){
         .error( function (data) {
           console.log("Error: ", data);
         });
-    })
+    });
   });
 });
