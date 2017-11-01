@@ -19,18 +19,35 @@ $(document).ready(function(){
   var $contactoNombre = $panelContacto.find('#panel-contacto-nombre');
   var $contactoTelefono = $panelContacto.find('#panel-contacto-telefono');
 
+  function informarNoContactos(data) {
+    alert(data['data']);
+  }
+
+  function informarErrorAccesoBD(data) {
+    alert(data['data']);
+  }
+
   $('.obtener-contacto').each(function() {
     $(this).on('click', function(){
       var idCampana = $(this).attr('data-campana');
       var url = '/campana_preview/'+ idCampana +'/contacto/obtener/';
       $.post(url)
         .success(function (data) {
-          $panelContacto.attr('class', 'col-md-4 col-md-offset-1');
-          var contactoNombre = data['datos_contacto'][0] + ' ' + data['datos_contacto'][1];
-          var contactoTelefono = data['telefono_contacto'];
-          $contactoNombre.text(contactoNombre);
-          $contactoTelefono.text(contactoTelefono);
-          console.log("Success: ", data);
+          if (data['code'] == 'error-no-contactos') {
+            informarNoContactos(data);
+          }
+          else if (data['code'] == 'error-concurrencia') {
+            informarErrorAccesoBD(data);
+          }
+          else {                // se obtienen los datos del contacto
+            $panelContacto.attr('class', 'col-md-4 col-md-offset-1');
+            var contactoNombre = data['datos_contacto'][0] + ' ' + data['datos_contacto'][1];
+            var contactoTelefono = data['telefono_contacto'];
+            $contactoNombre.text(contactoNombre);
+            $contactoTelefono.text(contactoTelefono);
+            console.log("Success: ", data);
+          }
+
         })
         .fail( function (data) {
           console.log("Fail: ", data);
