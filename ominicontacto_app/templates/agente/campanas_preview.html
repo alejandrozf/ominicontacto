@@ -12,7 +12,7 @@
         <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
         <script>
          $(document).ready(function(){
-           $('#campanasPreviewTable').DataTable( {
+           // Convierte a datatable la tabla de campañas preview
              language: {
                search: "Buscar:",
                paginate: {
@@ -25,10 +25,38 @@
                info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
              }
            } );
+
+           // asocia el click en la campaña preview a obtener los datos de un contacto
+           var $panel_contacto = $('#panel-contacto');
+           var $contacto_nombre = $panel_contacto.find('#panel-contacto-nombre');
+           var $contacto_telefono = $panel_contacto.find('#panel-contacto-telefono');
+
+           $('.obtener-contacto').each(function() {
+             $(this).on('click', function(){
+               var id_campana = $(this).attr('data-campana');
+               var url = '/campana_preview/'+ id_campana +'/contacto/obtener/';
+               $.post(url)
+                .success(function (data) {
+                  $panel_contacto.attr('class', 'col-md-4 col-md-offset-1');
+                  var contacto_nombre = data['datos_contacto'][0] + ' ' + data['datos_contacto'][1];
+                  var contacto_telefono = data['telefono_contacto'];
+                  $contacto_nombre.text(contacto_nombre);
+                  $contacto_telefono.text(contacto_telefono);
+                  console.log("Success: ", data);
+                })
+                .fail( function (data) {
+                  console.log("Fail: ", data);
+                })
+                .error( function (data) {
+                  console.log("Error: ", data);
+                });
+             })
+           });
          });
         </script>
     </head>
     <body>
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
         <div class="row" style="margin-top:5%; margin-left:5%;">
             <div class="col-md-5">
                 <table id="campanasPreviewTable" class="table table-bordered">
@@ -40,22 +68,22 @@
                     <tbody>
                         {% for campana_pk, campana_nombre in campanas_preview_activas %}
                             <tr>
-                                <td><button class="obtener_contacto" data-campana="{{ campana_pk }}"
+                                <td><button class="obtener-contacto" data-campana="{{ campana_pk }}"
                                             data-toggle="tooltip" data-placement="top"
                                             title="Haga click para obtener un contacto de la campaña">{{ campana_nombre }}</button></td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="3">No existen contactos</td>
+                                <td colspan="3">No hay campañas</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-5 col-md-offset-1">
-                <div class="panel panel-default hidden">
-                    <div class="panel-body">Nombre:</div>
-                    <div class="panel-footer">Teléfono:</div>
+            <div id="panel-contacto" class="col-md-5 col-md-offset-1 hidden">
+                <div class="panel panel-default">
+                    <div class="panel-body">Nombre: <p id="panel-contacto-nombre"></p></div>
+                    <div class="panel-footer">Teléfono: <p id="panel-contacto-telefono"></p></div>
                 </div>
             </div>
         </div>
