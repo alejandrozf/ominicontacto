@@ -8,6 +8,8 @@ import uuid
 import re
 import datetime
 
+from ast import literal_eval
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
 from django.db import models, connection
@@ -781,12 +783,19 @@ class Campana(models.Model):
         """
         # obtenemos todos los contactos de la campaña
         campana_contactos = self.bd_contacto.contactos.all()
+        base_datos = self.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos_contacto = metadata.nombres_de_columnas
+        campos_contacto.remove('telefono')
+        campos_contacto.remove('id_cliente')
 
         # creamos los objetos del modelo AgenteEnContacto a crear
         agente_en_contacto_list = []
         for contacto in campana_contactos:
+            datos_contacto = dict(zip(campos_contacto, literal_eval(contacto.datos)))
+            datos_contacto_json = json.dumps(datos_contacto)
             agente_en_contacto = AgenteEnContacto(
-                agente_id=-1, contacto_id=contacto.pk, datos_contacto=contacto.datos,
+                agente_id=-1, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
                 telefono_contacto=contacto.telefono, campana_id=self.pk,
                 estado=AgenteEnContacto.ESTADO_INICIAL)
             agente_en_contacto_list.append(agente_en_contacto)
