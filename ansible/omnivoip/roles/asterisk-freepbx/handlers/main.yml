@@ -5,3 +5,6 @@
 
 - name: restart mysql
   service: name=mysql state=restarted enabled=yes
+
+- name: restart httpd
+  service: name=httpd state=restarted enabled=yes

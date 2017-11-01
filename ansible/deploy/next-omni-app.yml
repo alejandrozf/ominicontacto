@@ -1,3 +1,4 @@
 - hosts: omni-app
   roles:
       - omniapp_second
+      - deploy_supervision
