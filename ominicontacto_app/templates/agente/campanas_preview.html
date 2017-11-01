@@ -12,6 +12,7 @@
         <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
         <script>
          $(document).ready(function(){
+           $('#campanasPreviewTable').DataTable( {
            // Convierte a datatable la tabla de campañas preview
              language: {
                search: "Buscar:",
@@ -80,7 +81,7 @@
                     </tbody>
                 </table>
             </div>
-            <div id="panel-contacto" class="col-md-5 col-md-offset-1 hidden">
+            <div id="panel-contacto" class="col-md-4 col-md-offset-1 hidden">
                 <div class="panel panel-default">
                     <div class="panel-body">Nombre: <p id="panel-contacto-nombre"></p></div>
                     <div class="panel-footer">Teléfono: <p id="panel-contacto-telefono"></p></div>
