@@ -43,7 +43,9 @@ $(document).ready(function(){
 
             // Actualizamos los datos del contacto obtenido
             for (campo in data['datos_contacto']) {
-              var campoData = '<p>'+campo+': ' + data['datos_contacto'][campo] + '</p>';
+              capitalizedCampo = campo.charAt(0).toUpperCase() + campo.slice(1);
+              var campoData = '<p><span style="font-weight: bold;">'+capitalizedCampo+': </span>' +
+                  data['datos_contacto'][campo] + '</p>';
               $contactoOtrosDatos.append(campoData);
             }
             console.log("Success: ", data);
