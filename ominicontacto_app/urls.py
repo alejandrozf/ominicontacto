@@ -863,6 +863,10 @@ urlpatterns = [
         login_required(
             views_campana_manual.mostrar_campanas_manual_borradas_ocultas_view),
         name="campana_manual_mostrar_ocultas"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/supervisors/$',
+        login_required(
+            views_campana_manual.CampanaManualSupervisorUpdateView.as_view()),
+        name="campana_manual_supervisors"),
     # ==========================================================================
     # API para Base de Datos de Contactos
     # ==========================================================================
