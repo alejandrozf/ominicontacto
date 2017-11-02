@@ -19,18 +19,21 @@ $(document).ready(function(){
   var $contactoTelefono = $panelContacto.find('#contacto-telefono');
   var $contactoOtrosDatos = $panelContacto.find('#contacto-datos');
 
-  function informarError(data) {
-    alert(data['data']);
+  function informarError(data, $button) {
+    $button.addClass('disabled');
+    $button.attr('title', data['data']);
   }
 
   $('.obtener-contacto').each(function() {
-    $(this).on('click', function(){
-      var idCampana = $(this).attr('data-campana');
+    $(this).on('click', function() {
+      var $button = $(this);
+      var idCampana = $button.attr('data-campana');
       var url = '/campana_preview/'+ idCampana +'/contacto/obtener/';
       $.post(url)
         .success(function (data) {
           if (data['result'] == 'Error') {
-            informarError(data);
+            informarError(data, $button);
+
           }
           else {                // se obtienen los datos del contacto
             $panelContacto.attr('class', 'col-md-4 col-md-offset-1');
