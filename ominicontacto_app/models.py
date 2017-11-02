@@ -786,13 +786,16 @@ class Campana(models.Model):
         base_datos = self.bd_contacto
         metadata = base_datos.get_metadata()
         campos_contacto = metadata.nombres_de_columnas
-        campos_contacto.remove('telefono')
-        campos_contacto.remove('id_cliente')
+        try:
+            campos_contacto.remove('telefono')
+        except ValueError:
+            logger.warning("La BD no tiene campo 'telefono'")
 
         # creamos los objetos del modelo AgenteEnContacto a crear
         agente_en_contacto_list = []
         for contacto in campana_contactos:
-            datos_contacto = dict(zip(campos_contacto, literal_eval(contacto.datos)))
+            datos_contacto = literal_eval(contacto.datos)
+            datos_contacto = dict(zip(campos_contacto, datos_contacto))
             datos_contacto_json = json.dumps(datos_contacto)
             agente_en_contacto = AgenteEnContacto(
                 agente_id=-1, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
