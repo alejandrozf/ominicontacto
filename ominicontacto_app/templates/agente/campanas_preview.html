@@ -47,10 +47,17 @@
                         <h3 class="panel-title">Datos contacto</h3>
                     </div>
                     <div class="panel-body">
-                        <span class="glyphicon glyphicon-earphone" aria-hidden="true" title="Teléfono:"></span>
-                        <a href="" id="contacto-telefono"
-                           data-toggle="tooltip" data-placement="top"
-                           title="Haga click para llamar al contacto"></a>
+                        <form id="llamar_preview" action="{% url 'agente_llamar_contacto' %}" method="POST" role="form">
+                            {% csrf_token %}
+                            <input type="hidden" id="pk_agente" name="pk_agente">
+                            <input type="hidden" id="pk_contacto" name="pk_contacto">
+                            <button type="submit" id="contacto-telefono1"
+                                    data-toggle="tooltip" data-placement="top"
+                                     class="btn btn-info">
+                                <span id="contacto-telefono" class="glyphicon glyphicon-earphone" aria-hidden="true"
+                                      title="Haga click para llamar al contacto"></span>
+                            </button>
+                        </form>
                     </div>
                     <div class="panel-footer" id="contacto-datos">
                     </div>

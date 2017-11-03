@@ -18,6 +18,8 @@ $(document).ready(function(){
   var $panelContacto = $('#panel-contacto');
   var $contactoTelefono = $panelContacto.find('#contacto-telefono');
   var $contactoOtrosDatos = $panelContacto.find('#contacto-datos');
+  var $inputAgente = $('#pk_agente');
+  var $inputContacto = $('#pk_contacto');
 
   function informarError(data, $button) {
     $button.addClass('disabled');
@@ -40,6 +42,8 @@ $(document).ready(function(){
             // actualizamos el teléfono del contacto
             var contactoTelefono = data['telefono_contacto'];
             $contactoTelefono.text(contactoTelefono);
+            $inputAgente.attr('value', data['agente_id']);
+            $inputContacto.attr('value', data['contacto_id']);
 
             // Limpiamos la información de algún contacto
             $contactoOtrosDatos.html("");
