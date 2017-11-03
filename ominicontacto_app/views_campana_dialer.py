@@ -24,6 +24,7 @@ from ominicontacto_app.forms import (
     FormularioNuevoContacto, CampanaSupervisorUpdateForm
 )
 from ominicontacto_app.utiles import convertir_ascii_string
+from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
 
 import logging as logging_
 
@@ -471,27 +472,11 @@ class FormularioNuevoContactoFormView(FormView):
         reverse('view_blanco')
 
 
-class CampanaDialerSupervisorUpdateView(UpdateView):
+class CampanaDialerSupervisorUpdateView(CampanaSupervisorUpdateView):
     """
-    Esta vista agrega supervisores a una campana
-    vista copiada
+    Esta vista agrega supervisores a una campana dialer
+    logica copiado para campana_preview
     """
-
-    template_name = 'campana_dialer/campana_supervisors.html'
-    model = Campana
-    context_object_name = 'campana'
-    form_class = CampanaSupervisorUpdateForm
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        supervisores = SupervisorProfile.objects.all()
-        supervisors_choices = [(supervisor.user.pk, supervisor.user) for supervisor in
-                               supervisores]
-        return self.form_class(supervisors_choices=supervisors_choices,
-                               **self.get_form_kwargs())
 
     def get_success_url(self):
         return reverse('campana_dialer_list')

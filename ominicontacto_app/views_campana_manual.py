@@ -27,6 +27,7 @@ from ominicontacto_app.services.estadisticas_campana_manuales import Estadistica
 from ominicontacto_app.forms import ReporteForm
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_manual_agente import EstadisticasAgenteService
+from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
 
 
 import logging as logging_
@@ -279,3 +280,12 @@ def mostrar_campanas_manual_borradas_ocultas_view(request):
     }
     return render(request, 'campana_manual/campanas_borradas.html', data)
 
+
+class CampanaManualSupervisorUpdateView(CampanaSupervisorUpdateView):
+    """
+    Esta vista agrega supervisores a una campana manual
+    logica copiado para campana_preview
+    """
+
+    def get_success_url(self):
+        return reverse('campana_manual_list')
