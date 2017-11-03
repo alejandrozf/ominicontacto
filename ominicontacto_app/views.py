@@ -389,6 +389,7 @@ def node_view(request):
         'pausas': Pausa.objects.all,
         'registro': registro,
         'campanas_preview_activas': campanas_preview_activas,
+        'agente_profile': agente_profile,
     }
     return render_to_response('agente/base_agente.html', context,
                               context_instance=RequestContext(request))
