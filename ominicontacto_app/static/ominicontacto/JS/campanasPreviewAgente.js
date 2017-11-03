@@ -20,6 +20,8 @@ $(document).ready(function(){
   var $contactoOtrosDatos = $panelContacto.find('#contacto-datos');
   var $inputAgente = $('#pk_agente');
   var $inputContacto = $('#pk_contacto');
+  var $inputCampana = $('#pk_campana');
+  var $inputCampanaNombre = $('#campana_nombre');
 
   function informarError(data, $button) {
     $button.addClass('disabled');
@@ -29,6 +31,7 @@ $(document).ready(function(){
   $('.obtener-contacto').each(function() {
     $(this).on('click', function() {
       var $button = $(this);
+      var nombreCampana = $button.text();
       var idCampana = $button.attr('data-campana');
       var url = '/campana_preview/'+ idCampana +'/contacto/obtener/';
       $.post(url)
@@ -44,8 +47,10 @@ $(document).ready(function(){
             $contactoTelefono.text(contactoTelefono);
             $inputAgente.attr('value', data['agente_id']);
             $inputContacto.attr('value', data['contacto_id']);
+            $inputCampana.attr('value', idCampana);
+            $inputCampanaNombre.attr('value', nombreCampana);
 
-            // Limpiamos la información de algún contacto
+            // Limpiamos la información de algún contacto anterior
             $contactoOtrosDatos.html("");
 
             // Actualizamos los datos del contacto obtenido
