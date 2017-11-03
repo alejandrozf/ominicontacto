@@ -217,16 +217,7 @@ class LlamarContactoView(RedirectView):
 
     pattern_name = 'view_blanco'
 
-    def post(self, request, *args, **kwargs):
-        agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
-        contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
-        calificacion_cliente = CalificacionCliente.objects.filter(
-            contacto=contacto, agente=agente).order_by('-fecha')
-        campana_id = 0
-        campana_nombre = "None"
-        if calificacion_cliente.exists():
-            campana_id = calificacion_cliente[0].campana.pk
-            campana_nombre = calificacion_cliente[0].campana.nombre
+    def _call_originate(self, request, campana_id, campana_nombre, agente, contacto):
         variables = {
             'IdCamp': str(campana_id),
             'codCli': str(contacto.pk),
@@ -248,6 +239,20 @@ class LlamarContactoView(RedirectView):
 
         except:
             logger.exception("Originate failed - contacto: %s ", contacto.telefono)
+
+    def post(self, request, *args, **kwargs):
+        agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
+        contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
+        calificacion_cliente = CalificacionCliente.objects.filter(
+            contacto=contacto, agente=agente).order_by('-fecha')
+        if calificacion_cliente.exists():
+            campana_id = calificacion_cliente[0].campana.pk
+            campana_nombre = calificacion_cliente[0].campana.nombre
+        else:
+            # caso campanas preview
+            campana_id = request.POST['pk_campana']
+            campana_nombre = request.POST['campana_nombre']
+        self._call_originate(request, campana_id, campana_nombre, agente, contacto)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
 
 
