@@ -224,7 +224,7 @@ class LlamarContactoView(RedirectView):
             contacto=contacto, agente=agente).order_by('-fecha')
         campana_id = 0
         campana_nombre = "None"
-        if calificacion_cliente > 0:
+        if calificacion_cliente.exists():
             campana_id = calificacion_cliente[0].campana.pk
             campana_nombre = calificacion_cliente[0].campana.nombre
         variables = {
