@@ -15,7 +15,7 @@ echo ""
 
 if [ $opcion -eq 1 ]; then
     echo "Ejecutando Ansible en Debian omni-voip"
-    #ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
+    ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -31,7 +31,7 @@ elif [ $opcion -eq 2 ]; then
 
 elif [ $opcion -eq 3 ]; then
     echo "Ejecutando Ansible en Centos"
-    #ansible-playbook -s /etc/ansible/omnivoip/centos.yml -u root -vvvvvvvvvv
+    ansible-playbook -s /etc/ansible/omnivoip/centos.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -152,7 +152,7 @@ elif [ $opcion -eq 2 ]; then
 
 elif [ $opcion -eq 3 ]; then
     echo "Ejecutando Ansible en Centos para deploy de OmniAPP"
-    ansible-playbook -s /etc/ansible/deploy/centos.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
+    ansible-playbook -s /etc/ansible/deploy/centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
     echo "Finalizó la instalación Omnileads"
     echo ""
 

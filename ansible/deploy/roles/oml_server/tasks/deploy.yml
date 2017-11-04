@@ -11,9 +11,9 @@
           - /home/freetech
           - /home/freetech/.pip
           - /home/freetech/ominicontacto/
-  sudo: yes
-  tags:
-          - deploy
+  become: yes
+  become_method: su
+  become_user: freetech
 
 
 #----------------------------------------------------------------------
@@ -26,6 +26,9 @@
     section=install
     option='download-cache'
     value='/home/freetech/.pip/cache'
+  become: yes
+  become_method: su
+  become_user: freetech
 
 - name: Editar el sudoers para ejecutar rsync sin pedir password de sudo
   lineinfile: "dest=/etc/sudoers line=\"freetech ALL = NOPASSWD: /usr/bin/rsync\""
@@ -33,10 +36,9 @@
 - name: Upload built (rsync to /ominicontacto)
   # Copies xxx/app to /home/freetech/ominicontacto (/ominicontacto on dest is implicit)
   synchronize: "src={{ build_dir }} dest=/home/freetech delete=yes checksum=yes times=no"
-  become: yes
-  become_method: su
-  become_user: freetech
 
+- name: Change owner and group of ominicontacto
+  file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
 
 #- name: Copy location of pg_config exceutable to /usr/sbin
 #  copy: src=/usr/pgsql-9.6/bin/pg_config dest=/usr/local/sbin/ remote_src=yes
@@ -54,19 +56,18 @@
     virtualenv={{ django_dir }}/virtualenv
   when: ansible_os_family == "Debian"
 
-#- name: Setup virtualenv
-#  pip:
-#    requirements={{ django_dir }}/requeriments.txt
-#    virtualenv={{ django_dir }}/virtualenv
-#    virtualenv_command=/usr/bin/virtualenv-2.7
-#  environment:
-#      PATH: /usr/pgsql-9.6/bin/:{{ lookup('env', 'PATH') }}:/home/freetech/ominicontacto/virtualenv/bin
-      #PATH: "$PATH:/usr/pgsql-9.6/bin/:/home/freetech/virtualenv/bin"
-#  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
-
-
-- name: Change owner and group of ominicontacto
-  file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
+- name: Setup virtualenv
+  pip:
+    requirements={{ django_dir }}/requeriments.txt
+    virtualenv={{ django_dir }}/virtualenv
+    virtualenv_command=/usr/bin/virtualenv-2.7
+  environment:
+      #PATH: /usr/pgsql-9.6/bin/:{{ lookup('env', 'PATH') }}:/home/freetech/ominicontacto/virtualenv/bin
+      PATH: /home/freetech/ominicontacto/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  become: yes
+  become_method: su
+  become_user: freetech
 
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local_debian.py dest={{ django_dir }}
@@ -87,9 +88,9 @@
   template: src=templates/oml_settings_local_centos.py dest={{ django_dir }}
   when: ansible_os_family == "RedHat"
 
-
 - shell: "mv oml_settings_local_centos.py oml_settings_local.py chdir={{ django_dir }}"
   when: ansible_os_family == "RedHat"
 
-
+- name: Change owner and group of ominicontacto
+  file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
 

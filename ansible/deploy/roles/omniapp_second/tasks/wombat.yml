@@ -2,11 +2,11 @@
 
 - name: Get the wombat dialer repository
   shell: "wget -P /etc/yum.repos.d http://yum.loway.ch/loway.repo"
-  when: ansible_os_family == "Sangoma"
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
 - name: Install wombat dialer
   yum: name=wombat state=present
-  when: ansible_os_family == "Sangoma"
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
 
 - name: Add the repository key

@@ -1,5 +1,0 @@
-# Deploy a maquina virtual de Freetech - ambiente de desarrollo
-
-[freetech]
-
-servidor1 ansible_ssh_host=192.168.90.101 ansible_ssh_user=freetech

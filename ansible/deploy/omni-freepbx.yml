@@ -8,8 +8,8 @@
 
   roles:
           - oml_server
-          - omniapp_second
-          - deploy_supervision
+          - { role: omniapp_second, when: not post_install }
+          - { role: deploy_supervision, when: not post_install }
 
 
 

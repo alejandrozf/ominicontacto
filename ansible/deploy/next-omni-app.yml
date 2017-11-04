@@ -1,4 +1,7 @@
 - hosts: omni-app
   roles:
       - omniapp_second
+
+- hosts: omni-voip
+  roles:
       - deploy_supervision

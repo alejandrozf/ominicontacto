@@ -76,24 +76,29 @@
       - expect-devel.x86_64
       - MySQL-python.x86_64
 
+- name: Change /etc/hostname
+  template: src=templates/hostname dest=/etc/hostname
+
 - name: Creation of freetech user and group
   group: name=freetech state=present
-- user: "name=freetech group=freetech home=/home/freetech state=present shell=/bin/bash"
+  when: ansible_os_family == "Sangoma"
+- user: "name=freetech group=freetech state=present"
+  when: ansible_os_family == "Sangoma"
 
 - name: Creation of asterisk user and group
   group: name=asterisk state=present
   when: ansible_os_family == "RedHat"
-- user: "name=asterisk group=asterisk home=/home/asterisk state=present shell=/bin/bash"
+- user: "name=asterisk group=asterisk state=present"
   when: ansible_os_family == "RedHat"
 
 - name: Add freetech user to sudo privilege
   lineinfile: "dest=/etc/sudoers line=\"freetech    ALL=(ALL)       ALL\""
 
-- name: Create public key of root user
-  user: name=root generate_ssh_key=yes ssh_key_bits=2048
+- name: Create public key of freetech user
+  user: name=freetech generate_ssh_key=yes ssh_key_bits=2048
 
-- name: Transfer ssh key from freetech's omniapp user to root's omnivoip user
-  shell: cat /root/.ssh/id_rsa.pub
+- name: Transfer ssh key from freetech's user to root's user
+  shell: cat /home/freetech/.ssh/id_rsa.pub
   register: ssh_key
 - authorized_key: user=root key={{ ssh_key.stdout }} state=present
 

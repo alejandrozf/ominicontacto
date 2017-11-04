@@ -43,27 +43,8 @@
       - libsass
       - python2-pip.noarch
 
-- name: Install php 5.6
-  shell: "{{ item }}"
-  with_items:
-      - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-      - rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-  ignore_errors: yes
-
-- yum: name={{ item }} state=present
-  with_items:
-      - php56w
-      - php56w-pdo
-      - php56w-mysql
-      - php56w-mbstring
-      - php56w-pear
-      - php56w-process
-      - php56w-xml
-      - php56w-opcache
-      - php56w-ldap
-      - php56w-intl
-      - php56w-soap
-      - php56w-pgsql
+- name: install php56wpgsql
+  yum: name=php56w-pgsql state=present
 
 - name: Setup of postgresql
   shell: "{{ item }}"
