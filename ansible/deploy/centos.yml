@@ -7,6 +7,6 @@
           build_dir: "{{ BUILD_DIR }}"
 
   roles:
-          #- oml_server
-          # - omniapp_second
+          - oml_server
+          - omniapp_second
           - deploy_supervision

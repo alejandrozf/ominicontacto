@@ -11,6 +11,7 @@
   yum: "name={{ item }} state=present"
   with_items:
       - python-psycopg2.x86_64
+      - python2-psycogreen.noarch
       - python
       - python-virtualenv
       - python-devel
@@ -21,10 +22,14 @@
       - libjpeg-turbo-devel
       - libffi-devel
       - libffi
+      - libpqxx
+      - libpqxx-devel
       - cairo-devel
       - pycairo
       - pycairo-devel
       - cairo
+      - libpqxx
+      - libpqxx-devel
       - python-pycha
       - libxslt-devel
       - libxslt-python
@@ -32,11 +37,33 @@
       - python-lxml
       - libxslt-python
       - postgresql-plpython
+      - postgresql-libs
       - postgresql-devel
       - libsass-devel
       - libsass
-      - libpqxx
-      - libpqxx-devel
+      - python2-pip.noarch
+
+- name: Install php 5.6
+  shell: "{{ item }}"
+  with_items:
+      - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      - rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+  ignore_errors: yes
+
+- yum: name={{ item }} state=present
+  with_items:
+      - php56w
+      - php56w-pdo
+      - php56w-mysql
+      - php56w-mbstring
+      - php56w-pear
+      - php56w-process
+      - php56w-xml
+      - php56w-opcache
+      - php56w-ldap
+      - php56w-intl
+      - php56w-soap
+      - php56w-pgsql
 
 - name: Setup of postgresql
   shell: "{{ item }}"

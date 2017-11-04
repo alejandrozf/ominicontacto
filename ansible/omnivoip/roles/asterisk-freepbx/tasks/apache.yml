@@ -11,7 +11,7 @@
 
 - name: Seteo de parametros del certificado de la CA
   set_fact:
-          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ ca_commonname }}"
+          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omnivoip_fqdn }}"
 
 - name: Crear el certificado de apache SSL
   shell: "{{ item }}"

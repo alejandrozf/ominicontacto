@@ -1,4 +1,4 @@
-  ---
+---
 
 - name: Clonado de repositorio de RTPengine
   git:

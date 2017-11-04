@@ -94,7 +94,7 @@
       - sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/httpd/conf/httpd.conf
       - sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
 
-- lineinfile: "src=/etc/httpd/conf/httpd.conf regexp=\"^ErrorLog\" line=\"ErrorLog /dev/null\""
+- lineinfile: "dest=/etc/httpd/conf/httpd.conf regexp=\"^ErrorLog\" line=\"ErrorLog /dev/null\""
   notify: restart httpd
 
 

@@ -72,9 +72,9 @@
       - python-devel
       - libuuid
       - libuuid-devel
-      - python2-pip.noarch
       - expect.x86_64
       - expect-devel.x86_64
+      - MySQL-python.x86_64
 
 - name: Creation of freetech user and group
   group: name=freetech state=present

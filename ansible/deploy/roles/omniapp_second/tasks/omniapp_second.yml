@@ -12,7 +12,17 @@
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
 - name: Copy of the ominicontacto nginx configuration
-  copy: "src={{ django_dir }}/nginx/ominicontacto.conf dest=/etc/nginx/conf.d/ remote_src=yes"
+  copy: "src={{ django_dir }}/nginx/ominicontacto-twohosts.conf dest=/etc/nginx/conf.d/ remote_src=yes"
+  when: ansible_os_family == "Debian"
+- shell: "mv /etc/nginx/conf.d/ominicontacto-twohosts.conf /etc/nginx/conf.d/ominicontacto.conf"
+  when: ansible_os_family == "Debian"
+
+- name: Copy of the ominicontacto nginx configuration
+  copy: "src={{ django_dir }}/nginx/ominicontacto-onehost.conf dest=/etc/nginx/conf.d/ remote_src=yes"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+- shell: "mv /etc/nginx/conf.d/ominicontacto-onehost.conf /etc/nginx/conf.d/ominicontacto.conf"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
 
 - name: Creation of the nginx server certificate
   set_fact:
@@ -22,11 +32,7 @@
   args:
           chdir: /home/freetech/ominicontacto/
 
-- name: Change user in nginx.conf
-  shell: "{{ item }}"
-  with_items:
-      - sed -i 's/user freetech/user nginx/' /etc/nginx/nginx.conf
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+
 
 - name: Create ominicontacto-daemon service
   shell: "{{ item }}"
@@ -59,5 +65,9 @@
 
 - name: Change the FQDN in config.js
   template: "src=templates/config.js.j2 dest={{ django_dir }}/ominicontacto_app/static/ominicontacto/JS/config.js owner=freetech group=freetech"
+
+- name: Change phone.js default port on /static/JS/phoneJSsip.js
+  lineinfile: "dest=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto/JS/phoneJsSip.js regexp=\"^      ws_servers :\" line=\"      ws_servers : \"wss://\"+KamailioIp+\":443\",\""
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   notify: restart nginx
 

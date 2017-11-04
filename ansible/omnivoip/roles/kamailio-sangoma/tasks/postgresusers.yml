@@ -8,16 +8,19 @@
 
 - name: Create kamailio postgres user
   become: yes
+  become_method: su
   become_user: postgres
   postgresql_user: name=kamailio password=kamailiorw role_attr_flags=SUPERUSER
 
 - postgresql_user: name=kamailioro password=kamailioro role_attr_flags=SUPERUSER
   become: yes
+  become_method: su
   become_user: postgres
 
 - name: Create kamailio database
   shell: createdb -O kamailio kamailio
   become: yes
+  become_method: su
   become_user: postgres
   ignore_errors: yes
 

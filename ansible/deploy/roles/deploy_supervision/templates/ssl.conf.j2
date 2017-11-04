@@ -53,11 +53,11 @@ SSLCryptoDevice builtin
 ## SSL Virtual Host Context
 ##
 
-<VirtualHost _default_:12443>
+<VirtualHost _default_:443>
 
 # General setup for the virtual host, inherited from global configuration
-#DocumentRoot "/var/www/html"
-#ServerName www.{{ omnicentos_fqdn }}.com:12443
+DocumentRoot "/var/www/html"
+ServerName www.{{ omnicentos_fqdn }}.com:443
 
 # Use separate log files for the SSL virtual host; note that LogLevel
 # is not inherited from httpd.conf.

@@ -29,6 +29,9 @@
          - "{{ nombres_tar.results[2].src }}"
          - "{{ nombres_tar.results[3].src }}"
 
+- action: shell ls /usr/src/
+  register: dirsrc
+
 - name: Instalacion de Dahdi Linux
   shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[1] }}"
   with_items:
