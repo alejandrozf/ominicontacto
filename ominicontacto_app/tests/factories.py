@@ -69,7 +69,9 @@ class BaseDatosContactoFactory(DjangoModelFactory):
     nombre = lazy_attribute(lambda a: "BD_contacto_{0}".format(uuid4()))
 
     nombre_archivo_importacion = Sequence(lambda n: "file_{0}.dat".format(n))
-    metadata = lazy_attribute(lambda a: faker.paragraph(7))
+    metadata = '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": ["telefono",' + \
+               ' "nombre", "apellido", "dni", "telefono2", "telefono3"],' + \
+               ' "cols_telefono": [0, 4, 5]}'
     estado = BaseDatosContacto.ESTADO_DEFINIDA
 
 
@@ -168,7 +170,9 @@ class ContactoFactory(DjangoModelFactory):
         model = Contacto
 
     telefono = lazy_attribute(lambda a: faker.random_number(10))
-    datos = lazy_attribute(lambda a: faker.text())
+    datos = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
+        faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
+        faker.phone_number()))
     bd_contacto = SubFactory(BaseDatosContactoFactory)
 
 
