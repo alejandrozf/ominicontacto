@@ -43,7 +43,7 @@ class CampanaDialerListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CampanaDialerListView, self).get_context_data(
-           **kwargs)
+            **kwargs)
         campanas = Campana.objects.obtener_campanas_dialer()
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
@@ -63,8 +63,8 @@ class CampanaDialerListView(ListView):
         context['finalizadas'] = campanas.filter(estado=Campana.ESTADO_FINALIZADA)
         return context
 
-    #def get(self, request, *args, **kwargs):
-     #   return self.render_to_response(self.get_context_data())
+    # def get(self, request, *args, **kwargs):
+    #   return self.render_to_response(self.get_context_data())
 
 
 class PlayCampanaDialerView(RedirectView):
@@ -246,7 +246,7 @@ def mostrar_campanas_dialer_borradas_ocultas_view(request):
     borradas = Campana.objects.obtener_borradas()
     if request.user.is_authenticated() and request.user and \
             not request.user.get_is_administrador():
-        user = self.request.user
+        user = request.user
         borradas = Campana.objects.obtener_campanas_vista_by_user(borradas, user)
     data = {
         'borradas': borradas.filter(type=Campana.TYPE_DIALER),
@@ -291,7 +291,6 @@ class UpdateBaseDatosDialerView(FormView):
         self.form_class = self.get_form_class()
         self.object = self.get_object()
         metadata = self.object.bd_contacto.get_metadata()
-        columnas_telefono = metadata.columnas_con_telefono
         nombres_de_columnas = metadata.nombres_de_columnas
         nombres_de_columnas.remove('telefono')
         tts_choices = [(columna, columna) for columna in
@@ -461,6 +460,12 @@ class FormularioNuevoContactoFormView(FormView):
             telefono=telefono, datos=json.dumps(datos),
             bd_contacto=base_datos)
         agente = self.request.user.get_agente_profile()
+
+        if campana.type == Campana.TYPE_PREVIEW:
+            # inicializamos una nueva entrada en la tabla que relaciona agentes
+            # con contactos en campañas preview
+            campana.agregar_agente_contacto(contacto)
+
         return HttpResponseRedirect(
             reverse('calificacion_formulario_update',
                     kwargs={"pk_campana": self.kwargs['pk_campana'],

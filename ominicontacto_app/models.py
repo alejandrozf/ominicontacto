@@ -776,13 +776,7 @@ class Campana(models.Model):
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
         self.save()
 
-    def establecer_valores_iniciales_agente_contacto(self):
-        """
-        Rellena con valores iniciales la tabla que informa el estado de los contactos
-        en relación con los agentes
-        """
-        # obtenemos todos los contactos de la campaña
-        campana_contactos = self.bd_contacto.contactos.all()
+    def _obtener_campos_bd_contacto(self, contacto):
         base_datos = self.bd_contacto
         metadata = base_datos.get_metadata()
         campos_contacto = metadata.nombres_de_columnas
@@ -790,6 +784,31 @@ class Campana(models.Model):
             campos_contacto.remove('telefono')
         except ValueError:
             logger.warning("La BD no tiene campo 'telefono'")
+        return campos_contacto
+
+    def agregar_agente_contacto(self, contacto):
+        """
+        Inicializa una entrada en la tabla que relaciona agentes con contactos
+        en campañas preview
+        """
+        campos_contacto = self._obtener_campos_bd_contacto(contacto.bd_contacto)
+        datos_contacto = literal_eval(contacto.datos)
+        datos_contacto = dict(zip(campos_contacto, datos_contacto))
+        datos_contacto_json = json.dumps(datos_contacto)
+        AgenteEnContacto(agente_id=-1, contacto_id=contacto.pk, campana_id=self.pk,
+                         estado=AgenteEnContacto.ESTADO_INICIAL, datos_contacto=datos_contacto_json,
+                         telefono_contacto=contacto.telefono).save()
+
+    def establecer_valores_iniciales_agente_contacto(self):
+        """
+        Rellena con valores iniciales la tabla que informa el estado de los contactos
+        en relación con los agentes
+        """
+        # obtenemos todos los contactos de la campaña
+        campana_contactos = self.bd_contacto.contactos.all()
+
+        # obtenemos los campos de la BD del contacto
+        campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
 
         # creamos los objetos del modelo AgenteEnContacto a crear
         agente_en_contacto_list = []
