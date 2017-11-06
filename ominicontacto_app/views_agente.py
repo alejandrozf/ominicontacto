@@ -250,8 +250,8 @@ class LlamarContactoView(RedirectView):
             campana_nombre = calificacion_cliente[0].campana.nombre
         else:
             # caso campanas preview
-            campana_id = request.POST['pk_campana']
-            campana_nombre = request.POST['campana_nombre']
+            campana_id = request.POST.get('pk_campana', 0)
+            campana_nombre = request.POST.get('campana_nombre', "None")
         self._call_originate(request, campana_id, campana_nombre, agente, contacto)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
 
