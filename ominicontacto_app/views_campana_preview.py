@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, UpdateView, View
 
 from ominicontacto_app.models import BaseDatosContacto, Campana, Queue, AgenteEnContacto
-from ominicontacto_app.forms import CampanaPreviewForm
+from ominicontacto_app.forms import CampanaPreviewForm, CampanaPreviewUpdateForm
 from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
 
@@ -102,7 +102,7 @@ class CampanaPreviewUpdateView(UpdateView):
     model = Campana
     template_name = 'campana_preview/campana_preview_update.html'
     context_object_name = 'campana'
-    form_class = CampanaPreviewForm
+    form_class = CampanaPreviewUpdateForm
 
     def get_initial(self):
         initial = super(CampanaPreviewUpdateView, self).get_initial()

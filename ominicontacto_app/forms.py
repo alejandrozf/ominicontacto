@@ -977,6 +977,21 @@ class CampanaPreviewForm(CampanaManualForm):
         }
 
 
+class CampanaPreviewUpdateForm(CampanaPreviewForm):
+    def __init__(self, *args, **kwargs):
+        super(CampanaPreviewUpdateForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['bd_contacto'].widget.attrs['disabled'] = True
+
+    def clean_bd_contacto(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.bd_contacto
+        else:
+            return self.cleaned_data['bd_contacto']
+
+
 class CalificacionManualForm(forms.ModelForm):
 
     def __init__(self, calificacion_choice, gestion, *args, **kwargs):
