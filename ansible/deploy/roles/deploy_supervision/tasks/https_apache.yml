@@ -5,6 +5,14 @@
   with_items:
       - mod_ssl
       - openssl
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+- name: Install modssl and openssl
+  apt: name={{ item }} state=present
+  with_items:
+      - mod_ssl
+      - openssl
+  when: ansible_os_family == "Debian"
 
 - name: Generate openssl keys
   shell: "{{ item }} chdir=/root/"
