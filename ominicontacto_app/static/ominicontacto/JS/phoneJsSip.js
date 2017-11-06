@@ -854,13 +854,7 @@ $(function() {
   }
 
   function getData(campid, leadid,agentid, wombatId) {
-    var tipoGestion = "/update/";
-    if ($("#campanaType").length > 0) {
-      // comprobamos si la campaña es preview, y en ese caso renderizamos directamente
-      // el formulario de creación de calificación en vez del de creación
-      tipoGestion = "/create/";
-    }
-    var url = "/formulario/"+campid+"/calificacion/"+leadid+tipoGestion+agentid+"/"+wombatId+"/";
+    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
     $("#dataView").attr('src', url);
   }
 
