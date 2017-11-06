@@ -314,7 +314,7 @@ $(function() {
 						} else if (originHeader === "DIALER-JSON") {
 
 						} else if (originHeader === "CLICK2CALL") {
-                                                  if (click2callPreview == true) {
+                                                  if (click2callPreview == "true") {
                                                     getDataCreate(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
                                                   }
                                                   else {
