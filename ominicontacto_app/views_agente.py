@@ -217,14 +217,18 @@ class LlamarContactoView(RedirectView):
 
     pattern_name = 'view_blanco'
 
-    def _call_originate(self, request, campana_id, campana_nombre, agente, contacto):
+    def _call_originate(self, request, campana_id, campana_nombre, agente, contacto,
+                        click2call_preview):
         variables = {
             'IdCamp': str(campana_id),
             'codCli': str(contacto.pk),
             'CAMPANA': campana_nombre,
             'origin': 'click2call',
             'FTSAGENTE': "{0}_{1}".format(agente.id,
-                                          request.user.get_full_name())
+                                          request.user.get_full_name()),
+            # la posibilidad de que sea una llamada generada por un click
+            # en un contacto de campaña preview
+            'click2callPreview': bool(click2call_preview)
         }
         channel = "Local/{0}@click2call/n".format(agente.sip_extension)
         # Genero la llamada via originate por AMI
@@ -243,6 +247,7 @@ class LlamarContactoView(RedirectView):
     def post(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
+        click2call_preview = request.POST.get('click2call_preview', False)
         calificacion_cliente = CalificacionCliente.objects.filter(
             contacto=contacto, agente=agente).order_by('-fecha')
         if calificacion_cliente.exists():
@@ -252,7 +257,8 @@ class LlamarContactoView(RedirectView):
             # caso campanas preview
             campana_id = request.POST.get('pk_campana', 0)
             campana_nombre = request.POST.get('campana_nombre', "None")
-        self._call_originate(request, campana_id, campana_nombre, agente, contacto)
+        self._call_originate(
+            request, campana_id, campana_nombre, agente, contacto, click2call_preview)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
 
 

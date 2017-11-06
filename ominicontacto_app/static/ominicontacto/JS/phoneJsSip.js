@@ -280,7 +280,8 @@ $(function() {
       Sounds("","stop");
     });
       if(e.originator=="remote") {         // Origen de llamada Remoto
-      	entrante = true;
+        var click2callPreview = e.request.headers.click2callPreview;
+        entrante = true;
       	if(e.request.headers.Wombatid) {
       		wId = e.request.headers.Wombatid[0].raw;
       	}
@@ -313,7 +314,12 @@ $(function() {
 						} else if (originHeader === "DIALER-JSON") {
 
 						} else if (originHeader === "CLICK2CALL") {
-						  getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                  if (click2callPreview == true) {
+                                                    getDataCreate(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                  }
+                                                  else {
+                                                    getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                  }
 						}
         	} else {
         		if(fromUser !== "Unknown") {
@@ -853,7 +859,13 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
 
-  function getData(campid, leadid,agentid, wombatId) {
+  function getDataCreate(campid, leadid, agentid, wombatId) {
+    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/create/"+agentid+"/"+wombatId+"/";
+    $("#dataView").attr('src', url);
+  }
+
+
+  function getData(campid, leadid, agentid, wombatId) {
     var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
     $("#dataView").attr('src', url);
   }
