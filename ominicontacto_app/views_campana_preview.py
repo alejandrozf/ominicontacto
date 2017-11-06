@@ -88,7 +88,6 @@ class CampanaPreviewCreateView(CreateView):
         # rellenar la tabla que relación agentes y contactos con los valores iniciales
         form.instance.establecer_valores_iniciales_agente_contacto()
         return super(CampanaPreviewCreateView, self).form_valid(form)
-        return super(CampanaPreviewCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('campana_preview_list')
