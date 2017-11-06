@@ -314,12 +314,10 @@ $(function() {
 						} else if (originHeader === "DIALER-JSON") {
 
 						} else if (originHeader === "CLICK2CALL") {
-                                                  if (click2callPreview == "true") {
-                                                    getDataCreate(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
-                                                  }
-                                                  else {
                                                     getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
-                                                  }
+                                                }
+                                                 else if (originHeader === "CLICK2CALLPREVIEW") {
+                                                   getDataCreate(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
         		if(fromUser !== "Unknown") {
