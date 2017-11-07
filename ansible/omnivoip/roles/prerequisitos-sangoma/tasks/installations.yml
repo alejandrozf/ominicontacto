@@ -77,7 +77,7 @@
       - MySQL-python.x86_64
 
 - name: Change /etc/hostname
-  template: src=templates/hostname dest=/etc/hostname
+  template: src=templates/hostname.j2 dest=/etc/hostname
 
 - name: Creation of freetech user and group
   group: name=freetech state=present

@@ -2,10 +2,10 @@
 var KamailioIp = "{{ omnivoip_fqdn }}";
 var socketIoIp = "";
 {% elif ansible_os_family == "RedHat" %}
-var KamailioIp = "{{ omnifreepbx_ip }}";
+var KamailioIp = "{{ omnicentos_ip }}";
 var socketIoIp = "";
 {% elif ansible_os_family == "SangomaOS" %}
-var KamailioIp = "{{ omnicentos_ip }}";
+var KamailioIp = "{{ omnifreepbx_ip }}";
 var socketIoIp = "";
 {% endif %}
 
