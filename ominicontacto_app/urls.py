@@ -147,6 +147,10 @@ urlpatterns = [
     url(r'^supervision_externa/$',
         login_required(views.supervision_url_externa), name='supervision_externa_url',
         ),
+    url(r'^acerca/$',
+        login_required(views.AcercaTemplateView.as_view()),
+        name='acerca',
+        ),
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
