@@ -132,7 +132,25 @@ else
     author="$(id -un)@$(hostname -f)"
 
     echo "Creando archivo de version | Branch: $branch_name | Commit: $commit | Autor: $author"
-    #cat > $TMP/ominicontacto/version.py <<EOF
+    cat > $TMP/ominicontacto/version.py <<EOF
+
+    #
+    # Archivo autogenerado
+    #
+
+    OML_BRANCH="${branch_name}"
+    OML_COMMIT="${commit}"
+    OML_BUILD_DATE="$(env LC_ALL=C LC_TIME=C date)"
+    OML_AUTHOR="${author}"
+
+    if name == '__main__':
+        print OML_COMMIT
+
+
+    EOF
+
+    echo "Validando version.py - Commit:"
+    python $TMP/ominicontacto/ominicontacto_app/version.py
 
     # ----------
     export DO_CHECKS="${DO_CHECKS:-no}"

@@ -4,4 +4,4 @@
 
 - hosts: omni-voip
   roles:
-      - deploy_supervision
+      - { role: deploy_supervision, when: not post_install }
