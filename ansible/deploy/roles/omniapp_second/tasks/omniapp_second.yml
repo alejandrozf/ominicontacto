@@ -32,7 +32,7 @@
 
 - shell: "openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout server.key -out server.crt -subj \"{{ ca_subject }}\""
   args:
-          chdir: /home/freetech/ominicontacto/
+          chdir: /home/freetech/nginx_certs/
   notify: restart nginx
 
 - name: Create ominicontacto-daemon service

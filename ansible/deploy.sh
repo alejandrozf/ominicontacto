@@ -15,7 +15,7 @@ echo ""
 
 if [ $opcion -eq 1 ]; then
     echo "Ejecutando Ansible en Debian omni-voip"
-    #ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
+    ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -147,7 +147,7 @@ else
         print OML_COMMIT
 
 
-    EOF
+EOF
 
     echo "Validando version.py - Commit:"
     python $TMP/ominicontacto/ominicontacto_app/version.py
