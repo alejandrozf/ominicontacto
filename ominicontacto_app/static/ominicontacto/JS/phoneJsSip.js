@@ -370,49 +370,50 @@ $(function() {
         };
 
         function processOrigin(origin, opt, from) {
-			  	var options = opt;
-					var origin = origin;
-					if(origin) {
-						if(origin.search("DIALER") === 0) {
-							origin = "DIALER";
-						}
-					}
-  				switch(origin) {
-  					case "DIALER":
-  						var dialerTag = document.getElementById("auto_attend_DIALER");
-  						if(dialerTag.value === "True") {
-  							$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-  					case "IN":
-  		  			var inboundTag = document.getElementById("auto_attend_IN");
-  		  			if(inboundTag.value === "True") {
-  		  				$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-			  		case "ICS":
-  						var icsTag = document.getElementById("auto_attend_ICS");
-  						if(icsTag.value === "True") {
-			  				$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-				                case "CLICK2CALL", "CLICK2CALLPREVIEW":
-						  $("#modalReceiveCalls").modal('hide');
-							session_incoming.answer(options);
-							setCallState("Connected to " + from, "orange");
-							Sounds("","stop");
-						  break;
-                                }
-  			}
+	  var options = opt;
+	  var origin = origin;
+	  if(origin) {
+	    if(origin.search("DIALER") === 0) {
+	      origin = "DIALER";
+	    }
+	  }
+  	  switch(origin) {
+  	  case "DIALER":
+  	    var dialerTag = document.getElementById("auto_attend_DIALER");
+  	    if(dialerTag.value === "True") {
+  	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+  	  case "IN":
+  	    var inboundTag = document.getElementById("auto_attend_IN");
+  	    if(inboundTag.value === "True") {
+  	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+	  case "ICS":
+  	    var icsTag = document.getElementById("auto_attend_ICS");
+  	    if(icsTag.value === "True") {
+	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+	  case "CLICK2CALL":
+          case"CLICK2CALLPREVIEW":
+	    $("#modalReceiveCalls").modal('hide');
+	    session_incoming.answer(options);
+	    setCallState("Connected to " + from, "orange");
+	    Sounds("","stop");
+	    break;
+          }
+  	}
 
       } else {
       	calltypeId = originToId(null);
