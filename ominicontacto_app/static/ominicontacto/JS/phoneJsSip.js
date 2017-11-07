@@ -405,13 +405,13 @@ $(function() {
           			Sounds("","stop");
   						}
   		  			break;
-						case "CLICK2CALL":
+				                case "CLICK2CALL", "CLICK2CALLPREVIEW":
 						  $("#modalReceiveCalls").modal('hide');
 							session_incoming.answer(options);
 							setCallState("Connected to " + from, "orange");
 							Sounds("","stop");
 						  break;
-  				}
+                                }
   			}
 
       } else {
