@@ -45,6 +45,9 @@ from django.views.decorators.csrf import csrf_protect
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
+from ominicontacto_app import version
+
 
 logger = logging.getLogger(__name__)
 
@@ -612,3 +615,26 @@ def supervision_url_externa(request):
     message = "Supervision: Funcion valida para usuario tipo supervisor!!!"
     messages.warning(request, message)
     return HttpResponseRedirect(reverse('index'))
+
+
+# =============================================================================
+# Acerca
+# =============================================================================
+
+
+class AcercaTemplateView(TemplateView):
+    """
+    Esta vista es para generar el Acerca de la app.
+    """
+
+    template_name = 'acerca/acerca.html'
+    context_object_name = 'acerca'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AcercaTemplateView, self).get_context_data(**kwargs)
+
+        context['branch'] = version.OML_BRANCH
+        context['commit'] = version.OML_COMMIT
+        context['fecha_deploy'] = version.OML_BUILD_DATE
+        return context
