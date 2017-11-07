@@ -825,6 +825,28 @@ class Campana(models.Model):
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
 
+    def finalizar_agente_contacto(self, agente, contacto):
+        """
+        Marca como finalizada la relación entre un agente y un contacto de una campaña
+        preview
+        """
+        agente_en_contacto = AgenteEnContacto.objects.get(
+            agente_id=agente.pk, contacto_id=contacto.pk, campana_id=self.pk)
+        agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
+        agente_en_contacto.save()
+
+        # si todos los contactos de la campaña han sido calificados
+        # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
+        # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
+        # y se marca la campaña como finalizada
+        contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
+        n_contactos_campana = contactos_campana.count()
+        n_contactos_atendidos = contactos_campana.filter(estado=AgenteEnContacto.ESTADO_FINALIZADO)
+        if n_contactos_campana == n_contactos_atendidos:
+            contactos_campana.delete()
+            self.estado = Campana.ESTADO_FINALIZADA
+            self.save()
+
 
 class QueueManager(models.Manager):
 
