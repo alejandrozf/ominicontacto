@@ -280,7 +280,6 @@ $(function() {
       Sounds("","stop");
     });
       if(e.originator=="remote") {         // Origen de llamada Remoto
-        var click2callPreview = e.request.headers.click2callPreview;
         entrante = true;
       	if(e.request.headers.Wombatid) {
       		wId = e.request.headers.Wombatid[0].raw;
