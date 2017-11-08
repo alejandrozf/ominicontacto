@@ -132,7 +132,7 @@ else
     author="$(id -un)@$(hostname -f)"
 
     echo "Creando archivo de version | Branch: $branch_name | Commit: $commit | Autor: $author"
-    cat > $TMP/ominicontacto/version.py <<EOF
+    cat > $TMP/ominicontacto/ominicontacto_app/version.py <<EOF
 
     #
     # Archivo autogenerado
