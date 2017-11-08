@@ -16,6 +16,9 @@
   with_items:
           - migrate
           - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
+          - collectstatic
+  environment:
+    PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   ignore_errors: yes
   notify: restart ominicontacto-daemon
   become: yes

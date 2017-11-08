@@ -5,7 +5,7 @@
 #----------------------------------------------------------------------
 
 - name: Create the required directories
-  file: "dest={{ item }} state=directory owner=freetech mode=0755"
+  file: "dest={{ item }} state=directory owner=freetech mode=0755 recurse=yes"
     # /home/freetech es incluido xq el permiso por default (0700) hace que
   with_items:
           - /home/freetech
@@ -13,6 +13,9 @@
           - /home/freetech/ominicontacto/
           - /home/freetech/local
           - /home/freetech/nginx_certs
+          - /home/freetech/media_root/reporte_campana
+          - /home/freetech/static_root
+          - /home/freetech/log
   become: yes
   become_method: su
   become_user: freetech
@@ -70,18 +73,28 @@
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local_sangoma.py dest=/home/freetech/local
   when: ansible_os_family == "Sangoma"
-
+  become: yes
+  become_user: freetech
+  become_method: su
 
 - shell: "mv oml_settings_local_sangoma.py oml_settings_local.py chdir=/home/freetech/local"
   when: ansible_os_family == "Sangoma"
-
+  become: yes
+  become_user: freetech
+  become_method: su
 
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local_centos.py dest=/home/freetech/local
   when: ansible_os_family == "RedHat"
+  become: yes
+  become_user: freetech
+  become_method: su
 
 - shell: "mv oml_settings_local_centos.py oml_settings_local.py chdir=/home/freetech/local"
   when: ansible_os_family == "RedHat"
+  become: yes
+  become_user: freetech
+  become_method: su
 
 - name: Change owner and group of ominicontacto
   file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"

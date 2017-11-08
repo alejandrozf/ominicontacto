@@ -34,7 +34,7 @@
   with_items:
       - "localhost"
       - "127.0.0.1"
-  when: ansible_os_family == "Sangoma"
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
 - name: Stop freepbx firewall
   shell: "{{ item }}"

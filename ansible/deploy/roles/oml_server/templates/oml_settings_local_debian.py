@@ -53,7 +53,7 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "/home/freetech/static_root")
 MEDIA_ROOT = os.path.join(BASE_DIR, '/home/freetech/media_root')
 
 OML_OMNILEADS_IP = "{{ omniapp_ip }}"
@@ -152,7 +152,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': '/home/freetech/ominicontacto/{0}'.format(_logging_output_file),
+            'filename': '/home/freetech/log/{0}'.format(_logging_output_file),
             'formatter': 'verbose'
         },
     },

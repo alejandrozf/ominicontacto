@@ -23,7 +23,7 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
+    #ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -31,7 +31,7 @@ elif [ $opcion -eq 2 ]; then
 
 elif [ $opcion -eq 3 ]; then
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s /etc/ansible/omnivoip/centos.yml -u root
+    #ansible-playbook -s /etc/ansible/omnivoip/centos.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -138,13 +138,13 @@ else
     # Archivo autogenerado
     #
 
-    OML_BRANCH="${branch_name}"
-    OML_COMMIT="${commit}"
-    OML_BUILD_DATE="$(env LC_ALL=C LC_TIME=C date)"
-    OML_AUTHOR="${author}"
+OML_BRANCH="${branch_name}"
+OML_COMMIT="${commit}"
+OML_BUILD_DATE="$(env LC_ALL=C LC_TIME=C date)"
+OML_AUTHOR="${author}"
 
-    if name == '__main__':
-        print OML_COMMIT
+if __name__ == '__main__':
+    print OML_COMMIT
 
 
 EOF
