@@ -1,0 +1,23 @@
+{% extends "campana_manual/campana_manual_base.html" %}
+{% load static %}
+{% block title_campana %}
+    <h4 class="inline">Campaña Preview: Datos Básicos</h4><br>
+{% endblock %}
+{% block bd_contactos %}
+    <div class="form-group row">
+        {{ form.bd_contacto.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
+        <div class="col-sm-6">
+            {{ form.bd_contacto }}
+        </div>
+    </div>
+{% endblock %}
+{% block tiempo_desconexion %}
+    <div class="form-group row">
+        {{ form.tiempo_desconexion.errors }}
+        <label class="col-sm-3 control-label">Tiempo de desconexión: </label>
+        <div class="col-sm-6">
+            {{ form.tiempo_desconexion }}
+        </div>
+    </div>
+{% endblock %}

@@ -7,7 +7,7 @@ Vista relacionada al Agente
 from __future__ import unicode_literals
 
 import datetime
-from django.views.generic import FormView, UpdateView, ListView
+from django.views.generic import FormView, UpdateView, TemplateView
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
@@ -101,7 +101,6 @@ class ExportaReporteFormularioVentaView(UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         service = ReporteFormularioVentaService()
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
@@ -121,7 +120,6 @@ class ExportaReporteCalificacionView(UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         service = ReporteAgenteService()
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
@@ -219,23 +217,18 @@ class LlamarContactoView(RedirectView):
 
     pattern_name = 'view_blanco'
 
-    def post(self, request, *args, **kwargs):
-        agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
-        contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
-        calificacion_cliente = CalificacionCliente.objects.filter(
-            contacto=contacto, agente=agente).order_by('-fecha')
-        campana_id = 0
-        campana_nombre = "None"
-        if calificacion_cliente > 0:
-            campana_id = calificacion_cliente[0].campana.pk
-            campana_nombre = calificacion_cliente[0].campana.nombre
+    def _call_originate(self, request, campana_id, campana_nombre, agente, contacto,
+                        click2call_preview):
         variables = {
             'IdCamp': str(campana_id),
             'codCli': str(contacto.pk),
             'CAMPANA': campana_nombre,
             'origin': 'click2call',
             'FTSAGENTE': "{0}_{1}".format(agente.id,
-                                          request.user.get_full_name())
+                                          request.user.get_full_name()),
+            # la posibilidad de que sea una llamada generada por un click
+            # en un contacto de campaña preview
+            'click2callPreview': click2call_preview
         }
         channel = "Local/{0}@click2call/n".format(agente.sip_extension)
         # Genero la llamada via originate por AMI
@@ -250,6 +243,22 @@ class LlamarContactoView(RedirectView):
 
         except:
             logger.exception("Originate failed - contacto: %s ", contacto.telefono)
+
+    def post(self, request, *args, **kwargs):
+        agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
+        contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
+        click2call_preview = request.POST.get('click2call_preview', "false")
+        calificacion_cliente = CalificacionCliente.objects.filter(
+            contacto=contacto, agente=agente).order_by('-fecha')
+        if calificacion_cliente.exists():
+            campana_id = calificacion_cliente[0].campana.pk
+            campana_nombre = calificacion_cliente[0].campana.nombre
+        else:
+            # caso campanas preview
+            campana_id = request.POST.get('pk_campana', 0)
+            campana_nombre = request.POST.get('campana_nombre', "None")
+        self._call_originate(
+            request, campana_id, campana_nombre, agente, contacto, click2call_preview)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
 
 
@@ -257,7 +266,7 @@ def exporta_reporte_agente_llamada_view(request, tipo_reporte):
     """
     Esta vista invoca a generar un csv de reporte de la campana.
     """
-    service = service_csv = ReporteAgenteCSVService()
+    service = ReporteAgenteCSVService()
     url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
     return redirect(url)
 
@@ -286,3 +295,18 @@ class ActivarAgenteView(RedirectView):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         agente.activar()
         return HttpResponseRedirect(reverse('agente_list'))
+
+
+class AgenteCampanasPreviewActivasView(TemplateView):
+    """
+    Devuelve un JSON con información de las campañas previews activas de las cuales es miembro
+    un agente
+    """
+    template_name = 'agente/campanas_preview.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgenteCampanasPreviewActivasView, self).get_context_data(*args, **kwargs)
+        agente_profile = self.request.user.get_agente_profile()
+        campanas_preview_activas = agente_profile.get_campanas_preview_activas_miembro()
+        context['campanas_preview_activas'] = campanas_preview_activas
+        return context

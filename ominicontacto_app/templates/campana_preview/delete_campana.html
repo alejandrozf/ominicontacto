@@ -1,0 +1,6 @@
+{% extends "campana_manual/delete_campana.html" %}
+{% load static %}
+
+{% block redireccion_cancelar %}
+    <a href="{% url 'campana_preview_list' %}">Cancelar</a>
+{% endblock %}
