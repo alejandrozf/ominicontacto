@@ -356,7 +356,8 @@ class CampanasTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertNotContains(response, self.campana_borrada.nombre)
 
-    def test_agregar_contacto_campana_preview_crea_entrada_agente_agente_contacto(self):
+    @patch('requests.post')
+    def test_agregar_contacto_campana_preview_crea_entrada_agente_agente_contacto(self, post):
         url = reverse('nuevo_contacto_campana_dialer',
                       kwargs={'pk_campana': self.campana_activa.pk})
         telefono = '23534534'
