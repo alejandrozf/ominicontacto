@@ -16,10 +16,6 @@
           - /home/freetech/media_root/reporte_campana
           - /home/freetech/static_root
           - /home/freetech/log
-  become: yes
-  become_method: su
-  become_user: freetech
-
 
 #----------------------------------------------------------------------
 # pip / virtualenv
@@ -45,6 +41,31 @@
 - name: Change owner and group of ominicontacto
   file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
 
+- name: Upgrade of python setuptools
+  pip:
+    name=setuptools
+    virtualenv={{ django_dir }}/virtualenv
+    virtualenv_command=/usr/bin/virtualenv-2.7
+    extra_args=--upgrade
+  environment:
+    PATH: /home/freetech/ominicontacto/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+    PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  become: yes
+  become_method: su
+  become_user: freetech
+
+- name: Upgrade of python setuptools
+  pip:
+    name=setuptools
+    virtualenv={{ django_dir }}/virtualenv
+    virtualenv_command=/usr/bin/virtualenv
+    extra_args=--upgrade
+  environment:
+    PATH: /home/freetech/ominicontacto/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+    PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
+  when: ansible_os_family == "Debian"
+
 - name: Setup virtualenv
   pip: >
     requirements={{ django_dir }}/requeriments.txt
@@ -59,6 +80,7 @@
   environment:
       #PATH: /usr/pgsql-9.6/bin/:{{ lookup('env', 'PATH') }}:/home/freetech/ominicontacto/virtualenv/bin
       PATH: /home/freetech/ominicontacto/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+      PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   become: yes
   become_method: su

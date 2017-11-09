@@ -52,7 +52,7 @@ omnivoip_fqdn: omnileads-voip.example.com
 omniapp_ip: 192.168.70.63
 omniapp_fqdn: omnileads-app.example.com
 red_deploy: 192.168.70.0/24
-omnifreepbx_ip: 192.168.99.15
+omnifreepbx_ip: 192.168.95.120
 localhost: 127.0.0.1
 omnicentos_ip: 172.16.20.12
 omnicentos_fqdn: oml-centos.example.com
