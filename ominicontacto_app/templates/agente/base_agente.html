@@ -458,8 +458,13 @@
                     </ul>
                 </li>
                     <li>
-                        <a href="{% url 'reporte_agente_calificaciones' user.get_agente_profile.pk %}" target="crm">Calificaciones</a>
+                        <a href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
                     </li>
+                    {% if campanas_preview_activas %}
+                        <li>
+                            <a href="{% url 'campana_preview_activas_miembro' %}" target="crm">Campañas preview</a>
+                        </li>
+                    {% endif %}
                   </ul>
         </div>
         <ul class="nav navbar-nav">
@@ -493,18 +498,18 @@
         </ul>
     </div>
 </div>
-	          <input type="hidden" value="{{ user.get_agente_profile.id }}" id="idagt"/>
-            <input type="hidden" value="{{ user.get_agente_profile.sip_extension }}" id="sipExt"/>
-            <input value="{{ user.get_agente_profile.sip_password}}" id="sipSec" type="hidden"/>
+	          <input type="hidden" value="{{ agente_profile.id }}" id="idagt"/>
+                  <input type="hidden" value="{{ agente_profile.sip_extension }}" id="sipExt"/>
+                  <input value="{{ agente_profile.sip_password}}" id="sipSec" type="hidden"/>
   <br><br><br><br>
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="col-md-12">&nbsp;
-                <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
-                <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
-                <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_attend_ics }}" id="auto_attend_ICS"/>
-                <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_pause }}" id="auto_pause"/>
-                <input type="hidden" value="{{ user.get_agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
+                <input type="hidden" value="{{ agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
+                <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
+                <input type="hidden" value="{{ agente_profile.grupo.auto_attend_ics }}" id="auto_attend_ICS"/>
+                <input type="hidden" value="{{ agente_profile.grupo.auto_pause }}" id="auto_pause"/>
+                <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
                 <iframe src="{% url 'agenda_agente_list' %}" id="dataView" class="crm" name="crm">
                 </iframe>
               </div>

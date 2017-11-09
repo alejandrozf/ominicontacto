@@ -10,9 +10,10 @@ from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, po
 
 from django.utils import timezone
 
-from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo,
+from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
                                       CalificacionCampana, Calificacion, Formulario, Grabacion,
-                                      GrabacionMarca, Queuelog, SitioExterno, User)
+                                      GrabacionMarca, Queuelog, SitioExterno, User, Contacto,
+                                      SupervisorProfile, AgenteEnContacto, QueueMember)
 
 faker = faker.Factory.create()
 
@@ -52,14 +53,26 @@ class AgenteProfileFactory(DjangoModelFactory):
     #  TODO: hacer atributos: 'modulos', 'sip_password'
 
 
+class SupervisorProfileFactory(DjangoModelFactory):
+    class Meta:
+        model = SupervisorProfile
+
+    user = SubFactory(UserFactory)
+    sip_extension = lazy_attribute(lambda a: faker.ean8())
+    #  TODO: hacer atributo 'sip_password'
+
+
 class BaseDatosContactoFactory(DjangoModelFactory):
     class Meta:
         model = BaseDatosContacto
 
-    nombre = lazy_attribute(lambda a: faker.text(128))
+    nombre = lazy_attribute(lambda a: "BD_contacto_{0}".format(uuid4()))
 
     nombre_archivo_importacion = Sequence(lambda n: "file_{0}.dat".format(n))
-    metadata = lazy_attribute(lambda a: faker.paragraph(7))
+    metadata = '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": ["telefono",' + \
+               ' "nombre", "apellido", "dni", "telefono2", "telefono3"],' + \
+               ' "cols_telefono": [0, 4, 5]}'
+    estado = BaseDatosContacto.ESTADO_DEFINIDA
 
 
 class FormularioFactory(DjangoModelFactory):
@@ -150,3 +163,57 @@ class GrabacionMarcaFactory(DjangoModelFactory):
 
     uid = lazy_attribute(lambda a: format(uuid4().int))
     descripcion = lazy_attribute(lambda a: faker.text(5))
+
+
+class ContactoFactory(DjangoModelFactory):
+    class Meta:
+        model = Contacto
+
+    telefono = lazy_attribute(lambda a: faker.random_number(10))
+    datos = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
+        faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
+        faker.phone_number()))
+    bd_contacto = SubFactory(BaseDatosContactoFactory)
+
+
+class QueueFactory(DjangoModelFactory):
+    class Meta:
+        model = Queue
+    campana = SubFactory(CampanaFactory)
+    name = lazy_attribute(lambda a: "queue_{0}".format(uuid4()))
+    maxlen = lazy_attribute(lambda a: faker.random_number(5))
+    wrapuptime = lazy_attribute(lambda a: faker.random_number(5))
+    servicelevel = lazy_attribute(lambda a: faker.random_number(5))
+    strategy = 'rrmemory'
+    eventmemberstatus = True
+    eventwhencalled = True
+    weight = lazy_attribute(lambda a: faker.random_number(5))
+    ringinuse = True
+    setinterfacevar = True
+
+    wait = lazy_attribute(lambda a: faker.random_number(5))
+    queue_asterisk = lazy_attribute(lambda a: faker.random_int(10))
+
+
+class AgenteEnContactoFactory(DjangoModelFactory):
+    class Meta:
+        model = AgenteEnContacto
+    agente_id = lazy_attribute(lambda a: faker.random_number(7))
+    campana_id = lazy_attribute(lambda a: faker.random_number(7))
+    contacto_id = lazy_attribute(lambda a: faker.random_number(7))
+    datos_contacto = lazy_attribute(lambda a: faker.random_number(10))
+    telefono_contacto = lazy_attribute(lambda a: faker.random_number(10))
+    estado = AgenteEnContacto.ESTADO_INICIAL
+
+
+class QueueMemberFactory(DjangoModelFactory):
+    class Meta:
+        model = QueueMember
+
+    member = SubFactory(AgenteProfileFactory)
+    queue_name = SubFactory(QueueFactory)
+    membername = Sequence(lambda n: "membername_{0}.dat".format(n))
+    interface = Sequence(lambda n: "interface_{0}.dat".format(n))
+    penalty = lazy_attribute(lambda a: faker.random_int(0, 9))
+    paused = lazy_attribute(lambda a: faker.random_number(2))
+    id_campana = lazy_attribute(lambda a: "{0}_campana".format(uuid4()))

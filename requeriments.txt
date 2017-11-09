@@ -13,6 +13,7 @@ ipython==5.1.0
 ipython-genutils==0.1.0
 lxml==3.6.4
 MySQL-python==1.2.5
+mock==2.0.0
 olefile==0.44
 pathlib2==2.1.0
 pexpect==4.2.1

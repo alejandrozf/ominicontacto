@@ -280,7 +280,7 @@ $(function() {
       Sounds("","stop");
     });
       if(e.originator=="remote") {         // Origen de llamada Remoto
-      	entrante = true;
+        entrante = true;
       	if(e.request.headers.Wombatid) {
       		wId = e.request.headers.Wombatid[0].raw;
       	}
@@ -313,7 +313,10 @@ $(function() {
 						} else if (originHeader === "DIALER-JSON") {
 
 						} else if (originHeader === "CLICK2CALL") {
-						  getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                    getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                }
+                                                 else if (originHeader === "CLICK2CALLPREVIEW") {
+                                                   getDataCreate(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
         		if(fromUser !== "Unknown") {
@@ -367,49 +370,50 @@ $(function() {
         };
 
         function processOrigin(origin, opt, from) {
-			  	var options = opt;
-					var origin = origin;
-					if(origin) {
-						if(origin.search("DIALER") === 0) {
-							origin = "DIALER";
-						}
-					}
-  				switch(origin) {
-  					case "DIALER":
-  						var dialerTag = document.getElementById("auto_attend_DIALER");
-  						if(dialerTag.value === "True") {
-  							$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-  					case "IN":
-  		  			var inboundTag = document.getElementById("auto_attend_IN");
-  		  			if(inboundTag.value === "True") {
-  		  				$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-			  		case "ICS":
-  						var icsTag = document.getElementById("auto_attend_ICS");
-  						if(icsTag.value === "True") {
-			  				$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-						case "CLICK2CALL":
-						  $("#modalReceiveCalls").modal('hide');
-							session_incoming.answer(options);
-							setCallState("Connected to " + from, "orange");
-							Sounds("","stop");
-						  break;
-  				}
-  			}
+	  var options = opt;
+	  var origin = origin;
+	  if(origin) {
+	    if(origin.search("DIALER") === 0) {
+	      origin = "DIALER";
+	    }
+	  }
+  	  switch(origin) {
+  	  case "DIALER":
+  	    var dialerTag = document.getElementById("auto_attend_DIALER");
+  	    if(dialerTag.value === "True") {
+  	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+  	  case "IN":
+  	    var inboundTag = document.getElementById("auto_attend_IN");
+  	    if(inboundTag.value === "True") {
+  	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+	  case "ICS":
+  	    var icsTag = document.getElementById("auto_attend_ICS");
+  	    if(icsTag.value === "True") {
+	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+	  case "CLICK2CALL":
+          case"CLICK2CALLPREVIEW":
+	    $("#modalReceiveCalls").modal('hide');
+	    session_incoming.answer(options);
+	    setCallState("Connected to " + from, "orange");
+	    Sounds("","stop");
+	    break;
+          }
+  	}
 
       } else {
       	calltypeId = originToId(null);
@@ -853,9 +857,15 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
 
-  function getData(campid, leadid,agentid, wombatId) {
-		var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
-  	$("#dataView").attr('src', url);
+  function getDataCreate(campid, leadid, agentid, wombatId) {
+    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/create/"+agentid+"/"+wombatId+"/";
+    $("#dataView").attr('src', url);
+  }
+
+
+  function getData(campid, leadid, agentid, wombatId) {
+    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
+    $("#dataView").attr('src', url);
   }
 
 	function getFormManualCalls(idcamp, idagt, tel) {

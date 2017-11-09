@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_js %}
+    <script type="text/javascript">
+     $(function(){
+       $(".btn-submit").click(function (){
+         var campana_id = $(this).attr("id");
+         var action = $(this).attr("name");
+         submit_form(campana_id, action);
+       })
+
+       function submit_form(campana_id, action){
+         $("#campana_id").val(campana_id);
+         $("#form_estados_campanas").attr("action", action);
+         $("#form_estados_campanas").submit();
+       }
+     });
+
+
+     function mostrar_campanas_ocultas() {
+
+       $.get('{% url  'campana_manual_mostrar_ocultas' %}',
+             function (data) {
+               $('#t_body_borradas').html(data);
+
+             });
+     }
+     ;
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-10 col-md-offset-1">
+        <form id="form_estados_campanas" role="form" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="campana_id" name="campana_id">
+            <h4><b>Campañas Activas</b></h4>
+            <table class="table table-stripped table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Número</th>
+                        <th>Estado</th>
+                        <th>Acciones&nbsp;&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% block campanas_activas %}{% endblock %}
+                </tbody>
+            </table>
+            <br>
+
+            {% block campanas_finalizadas %}{% endblock %}
+
+            <h4><b>Campañas Eliminadas</b></h4>
+            <table class="table table-stripped table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Número</th>
+                        <th>Estado</th>
+                        <th>Acciones
+                            <a  href="#" style="color: black; text-decoration: none;" onclick="{{ mostrar_ocultas_tipo|default:"mostrar_campanas_ocultas()" }}" >
+                                <span class="glyphicon glyphicon-resize-small" aria-hidden="true" title="Mostrar ocultas"></span>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="t_body_borradas">
+                    {% block campanas_borradas %}{% endblock %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <div class="modal fade" id="myMapModal">
+        <div class="modal-dialog" id="modal_ventana">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 id="address" class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div id="map-canvas" class=""></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <style type="text/css">
+     p {
+       margin: 4px 10px 10px;
+     }
+    </style>
+
+{% endblock %}
