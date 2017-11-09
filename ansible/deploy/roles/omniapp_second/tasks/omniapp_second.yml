@@ -67,4 +67,5 @@
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
 - name: Copy of the Kamailio cert in /static_root/
+  copy: src=/opt/kamailio/etc/certs/demoCA/cert.pem dest=/home/freetech/static_root/ominicontacto remote_src=yes owner=freetech group=freetech
 
