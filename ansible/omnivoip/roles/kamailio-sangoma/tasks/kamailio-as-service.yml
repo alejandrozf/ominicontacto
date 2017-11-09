@@ -18,5 +18,15 @@
 
 - name: Change network parameters in kamailio.cfg
   lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_IP_ADDR!\" line=\"#!substdef \"!MY_IP_ADDR!{{ omnicentos_ip }}!g\"\""
+  when: ansible_os_family == "RedHat"
 - lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_ASTERISK!\" line=\"#!substdef \"!MY_ASTERISK!{{ omnicentos_ip }}!g\"\""
+  when: ansible_os_family == "RedHat"
+- name: Change network parameters in kamailio.cfg
+  lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_IP_ADDR!\" line=\"#!substdef \"!MY_IP_ADDR!{{ omnifreepbx_ip }}!g\"\""
+  when: ansible_os_family == "Sangoma"
+- lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_ASTERISK!\" line=\"#!substdef \"!MY_ASTERISK!{{ omnifreepbx_ip }}!g\"\""
+  when: ansible_os_family == "Sangoma"
 - lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"^alias=\" line=\"alias=\"{{ omnicentos_fqdn }}\"\""
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+

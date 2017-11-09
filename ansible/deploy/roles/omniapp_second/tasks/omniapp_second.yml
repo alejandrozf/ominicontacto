@@ -66,3 +66,5 @@
   lineinfile: "dest=/home/freetech/static_root/ominicontacto/JS/phoneJsSip.js regexp=\"^      ws_servers :\" line=\"      ws_servers : \"wss://\"+KamailioIp+\":14443\",\""
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
+- name: Copy of the Kamailio cert in /static_root/
+

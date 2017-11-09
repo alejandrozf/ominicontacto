@@ -20,7 +20,6 @@
   environment:
     PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   ignore_errors: yes
-  notify: restart ominicontacto-daemon
   become: yes
   become_method: sudo
   become_user: freetech
@@ -32,3 +31,6 @@
   shell: "./changepassword.sh chdir={{ django_dir }}"
   environment:
           DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
+          PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
+
+

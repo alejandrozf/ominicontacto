@@ -7,7 +7,7 @@
 ############################################################################################################
 
 # Setear esta variable yes si es una post-implementacion, setear en no si es primera instalacion
-post_install: yes
+post_install: no
 
 ############ Componentes del certificado del CA ###########
 serial: 01
@@ -76,8 +76,8 @@ country_code: 54
 
 ########## Contraseñas MySQL ###############
 
-#Contraseña de mysql-wombat
+#Contraseña de mysql en debian
 mysql_root_pass: 098098ZZZ
-#Mysql root pass
+#Contraseña de mysql en centos-sangoma
 mysql_root_password:
 
