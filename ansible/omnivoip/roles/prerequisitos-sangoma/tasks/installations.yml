@@ -100,7 +100,7 @@
 - name: Transfer ssh key from freetech's user to root's user
   shell: cat /home/freetech/.ssh/id_rsa.pub
   register: ssh_key
-- authorized_key: user=root key={{ ssh_key.stdout }} state=present
+- authorized_key: user=root key={{ ssh_key.stdout }} state=present manage_dir=yes
 
 - name: Reboot the server for kernel update
   shell: sleep 2 && shutdown -r now "Ansible updates triggered"
