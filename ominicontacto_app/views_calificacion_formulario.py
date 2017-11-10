@@ -113,6 +113,8 @@ class CalificacionClienteCreateView(CreateView):
         self.object = self.get_object()
         form = self.get_form()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        agente_pk = self.kwargs.get('pk_agente')
+        contacto_pk = self.kwargs.get('pk_contacto')
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
@@ -121,6 +123,8 @@ class CalificacionClienteCreateView(CreateView):
 
         if form.is_valid():
             if calificacion_form.is_valid():
+                if campana.type == Campana.TYPE_PREVIEW:
+                    campana.finalizar_relacion_agente_contacto(agente_pk, contacto_pk)
                 return self.form_valid(form, calificacion_form)
             else:
                 return self.form_invalid(form, calificacion_form)
@@ -133,8 +137,6 @@ class CalificacionClienteCreateView(CreateView):
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
         nombres = metadata.nombres_de_columnas
-        campana = calificacion_form.instance.campana
-        agente = calificacion_form.instance.agente
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
@@ -148,9 +150,6 @@ class CalificacionClienteCreateView(CreateView):
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
-        if campana.type == Campana.TYPE_PREVIEW:
-            campana.finalizar_relacion_agente_contacto(agente, calificacion_form.contacto)
-
         if calificacion is None:
             self.object_calificacion[0].es_venta = True
             self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
