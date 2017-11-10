@@ -841,7 +841,8 @@ class Campana(models.Model):
         # y se marca la campaña como finalizada
         contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
         n_contactos_campana = contactos_campana.count()
-        n_contactos_atendidos = contactos_campana.filter(estado=AgenteEnContacto.ESTADO_FINALIZADO)
+        n_contactos_atendidos = contactos_campana.filter(
+            estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
         if n_contactos_campana == n_contactos_atendidos:
             contactos_campana.delete()
             self.estado = Campana.ESTADO_FINALIZADA
