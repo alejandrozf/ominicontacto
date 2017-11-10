@@ -369,7 +369,6 @@ class CampanasTests(OMLBaseTest):
 
     @patch('requests.post')
     def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
-        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         values = {
             'contacto_id': self.contacto.pk,
             'telefono_contacto': self.contacto.telefono,
@@ -400,7 +399,7 @@ class CampanasTests(OMLBaseTest):
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(self.contacto.datos)
         for nombre, dato in zip(nombres, datos):
-            post_data.update({convertir_ascii_string(nombre): dato})
+            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
         self.client.post(url, post_data, follow=True)
         values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
         self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
