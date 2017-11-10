@@ -13,9 +13,10 @@ echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si
 echo -en "Opcion: ";read opcion
 echo ""
 
+
 if [ $opcion -eq 1 ]; then
     echo "Ejecutando Ansible en Debian omni-voip"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
+    #ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -23,7 +24,7 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
+    #ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -33,11 +34,11 @@ elif [ $opcion -eq 3 ]; then
     echo "Ejecutando Ansible en Centos"
     ansible-playbook -s /etc/ansible/omnivoip/centos.yml -u root
     ResultadoAnsible=`echo $?`
-
     echo "Finalizó la instalación omni-voip"
     echo ""
 
 else
+
     echo "Parámetro inválido ingrese de nuevo"
     echo  ""
 fi
@@ -134,9 +135,9 @@ else
     echo "Creando archivo de version | Branch: $branch_name | Commit: $commit | Autor: $author"
     cat > $TMP/ominicontacto/ominicontacto_app/version.py <<EOF
 
-    #
-    # Archivo autogenerado
-    #
+#
+# Archivo autogenerado
+#
 
 OML_BRANCH="${branch_name}"
 OML_COMMIT="${commit}"
@@ -155,6 +156,7 @@ EOF
     # ----------
     export DO_CHECKS="${DO_CHECKS:-no}"
 fi
+
 
 if [ $opcion -eq 1 ]; then
     echo "Ejecutando Ansible en Debian omni-app"
