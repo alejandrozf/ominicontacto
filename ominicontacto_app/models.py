@@ -825,13 +825,13 @@ class Campana(models.Model):
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
 
-    def finalizar_relacion_agente_contacto(self, agente, contacto):
+    def finalizar_relacion_agente_contacto(self, agente_pk, contacto_pk):
         """
         Marca como finalizada la relación entre un agente y un contacto de una campaña
         preview
         """
         agente_en_contacto = AgenteEnContacto.objects.get(
-            agente_id=agente.pk, contacto_id=contacto.pk, campana_id=self.pk)
+            agente_id=agente_pk, contacto_id=contacto_pk, campana_id=self.pk)
         agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
         agente_en_contacto.save()
 
