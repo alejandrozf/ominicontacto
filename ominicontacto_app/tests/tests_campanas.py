@@ -22,7 +22,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
-from ominicontacto_app.utiles import validar_nombres_campanas
+from ominicontacto_app.utiles import validar_nombres_campanas, convertir_ascii_string
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 
 
@@ -366,3 +366,41 @@ class CampanasTests(OMLBaseTest):
                      'telefono': '23534534'}
         self.client.post(url, post_data, follow=True)
         self.assertTrue(AgenteEnContacto.objects.filter(telefono_contacto=telefono).exists())
+
+    @patch('requests.post')
+    def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
+        values = {
+            'contacto_id': self.contacto.pk,
+            'telefono_contacto': self.contacto.telefono,
+            'datos_contacto': self.contacto.datos,
+            'agente_id': self.agente_profile.pk,
+            'estado': AgenteEnContacto.ESTADO_ENTREGADO,
+            'campana_id': self.campana_activa.pk,
+        }
+        AgenteEnContactoFactory.create(**values)
+        kwargs = {'pk_contacto': self.contacto.pk,
+                  'pk_campana': self.campana_activa.pk,
+                  'id_agente': self.agente_profile.pk,
+                  'wombat_id': 0}
+        url = reverse('calificacion_formulario_create', kwargs=kwargs)
+        post_data = {'calificacioncliente_set-0-es_venta': ['False'],
+                     'calificacioncliente_set-0-calificacion': [''],
+                     'calificacioncliente_set-0-agente': [self.agente_profile.pk],
+                     'calificacioncliente_set-MAX_NUM_FORMS': ['1', '1'],
+                     'calificacioncliente_set-MIN_NUM_FORMS': ['0', '0'],
+                     'calificacioncliente_set-INITIAL_FORMS': ['0', '0'],
+                     'calificacioncliente_set-0-observaciones': [''],
+                     'calificacioncliente_set-0-agendado': ['False'],
+                     'calificacioncliente_set-0-campana': [self.campana_activa.pk],
+                     'calificacioncliente_set-0-contacto': [self.contacto.pk],
+                     'calificacioncliente_set-TOTAL_FORMS': ['1', '1'],
+                     'calificacioncliente_set-0-id': ['']}
+        base_datos = self.contacto.bd_contacto
+        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+        datos = json.loads(self.contacto.datos)
+        for nombre, dato in zip(nombres, datos):
+            post_data.update({convertir_ascii_string(nombre): dato})
+        self.client.post(url, post_data, follow=True)
+        values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
+        self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
