@@ -367,8 +367,7 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertTrue(AgenteEnContacto.objects.filter(telefono_contacto=telefono).exists())
 
-    @patch('requests.post')
-    def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
+    def _inicializar_valores_formulario_cliente(self):
         values = {
             'contacto_id': self.contacto.pk,
             'telefono_contacto': self.contacto.telefono,
@@ -395,6 +394,12 @@ class CampanasTests(OMLBaseTest):
                      'calificacioncliente_set-0-contacto': [self.contacto.pk],
                      'calificacioncliente_set-TOTAL_FORMS': ['1', '1'],
                      'calificacioncliente_set-0-id': ['']}
+        return values, url, post_data
+
+    @patch('requests.post')
+    def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
+        AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
+        values, url, post_data = self._inicializar_valores_formulario_cliente()
         base_datos = self.contacto.bd_contacto
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
         datos = json.loads(self.contacto.datos)
@@ -403,3 +408,15 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
         self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
+
+    @patch('requests.post')
+    def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(self, post):
+        values, url, post_data = self._inicializar_valores_formulario_cliente()
+        base_datos = self.contacto.bd_contacto
+        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+        datos = json.loads(self.contacto.datos)
+        for nombre, dato in zip(nombres, datos):
+            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
+        self.client.post(url, post_data, follow=True)
+        self.campana_activa.refresh_from_db()
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_FINALIZADA)
