@@ -113,7 +113,7 @@ class CalificacionClienteCreateView(CreateView):
         self.object = self.get_object()
         form = self.get_form()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        agente_pk = self.kwargs.get('pk_agente')
+        agente_pk = self.kwargs.get('id_agente')
         contacto_pk = self.kwargs.get('pk_contacto')
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
