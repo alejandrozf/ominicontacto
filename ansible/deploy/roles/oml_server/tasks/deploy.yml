@@ -16,6 +16,7 @@
           - /home/freetech/media_root/reporte_campana
           - /home/freetech/static_root
           - /home/freetech/log
+          - /home/freetech/kamailio_cert
 
 
 #----------------------------------------------------------------------
