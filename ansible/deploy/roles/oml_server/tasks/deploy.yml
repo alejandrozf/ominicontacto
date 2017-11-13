@@ -5,7 +5,7 @@
 #----------------------------------------------------------------------
 
 - name: Create the required directories
-  file: "dest={{ item }} state=directory owner=freetech mode=0755 recurse=yes"
+  file: "dest={{ item }} state=directory owner=freetech group=freetech mode=0755 recurse=yes"
     # /home/freetech es incluido xq el permiso por default (0700) hace que
   with_items:
           - /home/freetech
@@ -16,6 +16,7 @@
           - /home/freetech/media_root/reporte_campana
           - /home/freetech/static_root
           - /home/freetech/log
+
 
 #----------------------------------------------------------------------
 # pip / virtualenv
@@ -48,7 +49,7 @@
     virtualenv_command=/usr/bin/virtualenv-2.7
     extra_args=--upgrade
   environment:
-    PATH: /home/freetech/ominicontacto/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+    PATH: /home/freetech//virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
     PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   become: yes
@@ -62,24 +63,24 @@
     virtualenv_command=/usr/bin/virtualenv
     extra_args=--upgrade
   environment:
-    PATH: /home/freetech/ominicontacto/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+    PATH: /home/freetech/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
     PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   when: ansible_os_family == "Debian"
 
 - name: Setup virtualenv
   pip: >
     requirements={{ django_dir }}/requeriments.txt
-    virtualenv={{ django_dir }}/virtualenv
+    virtualenv=/home/freetech/virtualenv
   when: ansible_os_family == "Debian"
 
 - name: Setup virtualenv
   pip:
     requirements={{ django_dir }}/requeriments.txt
-    virtualenv={{ django_dir }}/virtualenv
+    virtualenv=/home/freetech/virtualenv
     virtualenv_command=/usr/bin/virtualenv-2.7
   environment:
       #PATH: /usr/pgsql-9.6/bin/:{{ lookup('env', 'PATH') }}:/home/freetech/ominicontacto/virtualenv/bin
-      PATH: /home/freetech/ominicontacto/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+      PATH: /home/freetech/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
       PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   become: yes
@@ -119,5 +120,8 @@
   become_method: su
 
 - name: Change owner and group of ominicontacto
-  file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
+  file: "path={{ item }} owner=freetech group=freetech recurse=yes"
+  with_items:
+    - {{ django_dir }}
+    - /home/freetech
 
