@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import logging as logging_
 
 from ast import literal_eval
+from random import choice
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -233,7 +234,7 @@ class ObtenerContactoView(View):
 
     def _gestionar_contacto(self, request, qs_agentes_contactos):
         if qs_agentes_contactos.exists():
-            agente_en_contacto = qs_agentes_contactos.first()
+            agente_en_contacto = choice(qs_agentes_contactos)
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
             agente_en_contacto.agente_id = request.user.get_agente_profile().pk
             agente_en_contacto.save()
