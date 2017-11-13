@@ -1,9 +1,0 @@
----
-
-- name: Create public key of freetech user
-  user: name=freetech generate_ssh_key=yes ssh_key_bits=2048
-
-- name: Transfer ssh key from freetech's user to root's user
-  shell: cat /home/freetech/.ssh/id_rsa.pub
-  register: ssh_key
-- authorized_key: user=root key={{ ssh_key.stdout }} state=present manage_dir=yes

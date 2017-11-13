@@ -79,11 +79,8 @@
 - name: Change /etc/hostname
   template: src=templates/hostname.j2 dest=/etc/hostname
 
-- name: Creation of freetech user and group
-  group: name=freetech state=present
-  when: ansible_os_family == "Sangoma"
-- user: "name=freetech group=freetech state=present"
-  when: ansible_os_family == "Sangoma"
+
+
 
 - name: Creation of asterisk user and group
   group: name=asterisk state=present

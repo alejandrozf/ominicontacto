@@ -12,7 +12,7 @@
           command={{ item }}
           app_path={{ django_dir }}
           settings=ominicontacto.settings
-          virtualenv={{ django_dir }}/virtualenv
+          virtualenv=/home/freetech/virtualenv
   with_items:
           - migrate
           - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
@@ -32,5 +32,6 @@
   environment:
           DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
           PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
+
 
 

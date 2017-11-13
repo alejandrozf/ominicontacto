@@ -4,6 +4,20 @@
 # Directorios básicos
 #----------------------------------------------------------------------
 
+- name: Creation of freetech group
+  group: name=freetech state=present
+
+- name: Create freetech user and public key
+  user: name=freetech generate_ssh_key=yes group=freetech ssh_key_bits=2048 state=present
+
+- name: Transfer ssh key from freetech's user to root's user
+  shell: cat /home/freetech/.ssh/id_rsa.pub
+  register: ssh_key
+- authorized_key: user=root key={{ ssh_key.stdout }} state=present manage_dir=yes
+
+- name: Change key permission
+  file: src=/home/freetech/.ssh/id_rsa.pub state=file owner=freetech group=freetech mode=0700
+
 - name: Create the required directories
   file: "dest={{ item }} state=directory owner=freetech group=freetech mode=0755 recurse=yes"
     # /home/freetech es incluido xq el permiso por default (0700) hace que
@@ -46,11 +60,11 @@
 - name: Upgrade of python setuptools
   pip:
     name=setuptools
-    virtualenv={{ django_dir }}/virtualenv
+    virtualenv=/home/freetech/virtualenv
     virtualenv_command=/usr/bin/virtualenv-2.7
     extra_args=--upgrade
   environment:
-    PATH: /home/freetech//virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+    PATH: /home/freetech/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
     PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   become: yes
@@ -60,7 +74,7 @@
 - name: Upgrade of python setuptools
   pip:
     name=setuptools
-    virtualenv={{ django_dir }}/virtualenv
+    virtualenv=/home/freetech/virtualenv
     virtualenv_command=/usr/bin/virtualenv
     extra_args=--upgrade
   environment:
