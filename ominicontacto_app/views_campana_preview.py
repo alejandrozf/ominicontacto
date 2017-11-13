@@ -232,11 +232,26 @@ class ObtenerContactoView(View):
             return super(ObtenerContactoView, self).dispatch(request, *args, **kwargs)
         raise PermissionDenied
 
-    def _gestionar_contacto(self, request, qs_agentes_contactos):
+    def _liberar_contacto(self, agente_id, campana_id):
+        qs_agente_entregado = AgenteEnContacto.objects.filter(
+            estado=AgenteEnContacto.ESTADO_ENTREGADO, agente_id=agente_id, campana_id=campana_id)
+        if qs_agente_entregado.exists():
+            agente_en_contacto = qs_agente_entregado.first()
+            agente_en_contacto.agente_id = -1
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_INICIAL
+            agente_en_contacto.save()
+
+    def _gestionar_contacto(self, request, qs_agentes_contactos, campana_id):
         if qs_agentes_contactos.exists():
+            agente_id = request.user.get_agente_profile().pk
+            # si el agente tiene algún contacto asignado previamente se libera para
+            # que pueda ser entregado a otros agentes de la campaña
+            self._liberar_contacto(agente_id, campana_id)
+            # encuentra y devuelve de forma aleatoria los datos de uno de los
+            # contactos disponibles para el agente
             agente_en_contacto = choice(qs_agentes_contactos)
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
-            agente_en_contacto.agente_id = request.user.get_agente_profile().pk
+            agente_en_contacto.agente_id = agente_id
             agente_en_contacto.save()
             data = model_to_dict(agente_en_contacto)
             data['datos_contacto'] = literal_eval(data['datos_contacto'])
@@ -258,4 +273,4 @@ class ObtenerContactoView(View):
                                  'code': 'error-concurrencia',
                                  'data': 'Contacto siendo accedido por más de un agente'})
         else:
-            return self._gestionar_contacto(request, qs_agentes_contactos)
+            return self._gestionar_contacto(request, qs_agentes_contactos, campana_id)
