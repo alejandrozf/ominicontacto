@@ -420,3 +420,15 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.campana_activa.refresh_from_db()
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_FINALIZADA)
+
+    def test_solo_un_contacto_se_mantiene_asignado_a_un_agente(self):
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
+        AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk, agente_id=-1)
+        agente_en_contacto = AgenteEnContactoFactory.create(
+            campana_id=self.campana_activa.pk, agente_id=self.agente_profile.pk,
+            estado=AgenteEnContacto.ESTADO_ENTREGADO)
+        url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
+        self.client.post(url, follow=True)
+        agente_en_contacto.refresh_from_db()
+        self.assertEqual(AgenteEnContacto.objects.filter(
+            estado=AgenteEnContacto.ESTADO_ENTREGADO).count(), 1)
