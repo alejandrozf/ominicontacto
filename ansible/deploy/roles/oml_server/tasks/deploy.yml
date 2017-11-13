@@ -123,6 +123,6 @@
 - name: Change owner and group of ominicontacto
   file: "path={{ item }} owner=freetech group=freetech recurse=yes"
   with_items:
-    - {{ django_dir }}
-    - /home/freetech
+    - "{{ django_dir }}"
+    - "/home/freetech"
 
