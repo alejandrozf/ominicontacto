@@ -830,23 +830,29 @@ class Campana(models.Model):
         Marca como finalizada la relación entre un agente y un contacto de una campaña
         preview
         """
-        agente_en_contacto = AgenteEnContacto.objects.get(
-            agente_id=agente_pk, contacto_id=contacto_pk, campana_id=self.pk)
-        agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
-        agente_en_contacto.save()
+        try:
+            agente_en_contacto = AgenteEnContacto.objects.get(
+                agente_id=agente_pk, contacto_id=contacto_pk, campana_id=self.pk)
+        except AgenteEnContacto.DoesNotExist:
+            # para el caso cuando se llama al procedimiento luego de añadir un
+            # nuevo contacto desde la consola de agentes
+            pass
+        else:
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
+            agente_en_contacto.save()
 
-        # si todos los contactos de la campaña han sido calificados
-        # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
-        # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
-        # y se marca la campaña como finalizada
-        contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
-        n_contactos_campana = contactos_campana.count()
-        n_contactos_atendidos = contactos_campana.filter(
-            estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
-        if n_contactos_campana == n_contactos_atendidos:
-            contactos_campana.delete()
-            self.estado = Campana.ESTADO_FINALIZADA
-            self.save()
+            # si todos los contactos de la campaña han sido calificados
+            # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
+            # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
+            # y se marca la campaña como finalizada
+            contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
+            n_contactos_campana = contactos_campana.count()
+            n_contactos_atendidos = contactos_campana.filter(
+                estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
+            if n_contactos_campana == n_contactos_atendidos:
+                contactos_campana.delete()
+                self.estado = Campana.ESTADO_FINALIZADA
+                self.save()
 
 
 class QueueManager(models.Manager):
