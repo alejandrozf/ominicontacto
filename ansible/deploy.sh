@@ -24,7 +24,7 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
+    #ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
