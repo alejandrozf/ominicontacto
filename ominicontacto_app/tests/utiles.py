@@ -10,13 +10,15 @@ import os
 import random
 import datetime
 import uuid
+import shutil
 import json
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
+from django.conf import settings
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, SupervisorProfile, Contacto,
+    User, AgenteProfile, Grupo, SupervisorProfile, Contacto,
     BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue,
-    ActuacionVigente, ReglasIncidencia, AgendaContacto, AgendaManual
+    ActuacionVigente, ReglasIncidencia
 )
 
 
@@ -42,7 +44,7 @@ class OMLTestUtilsMixin(object):
             return resource1
 
         self.fail("Resource {0} no existe en ningulo "
-            "de los directorios buscados".format(resource))
+                  "de los directorios buscados".format(resource))
 
     def read_test_resource(self, resource):
         """Devuelve el contenido de un archivo del directorio test/"""
@@ -110,7 +112,7 @@ class OMLTestUtilsMixin(object):
         Lo que devuelve emula los datos extras de un contacto,
         luego de haber sido parseados desde string json.
         """
-        return [ u'nombre extraño', '15/01/1988', '19:41']
+        return [u'nombre extraño', '15/01/1988', '19:41']
 
     def crear_contacto(self, bd_contacto, nro_telefonico=None):
         """Crea un contacto asociado a la base de datos de
@@ -128,7 +130,7 @@ class OMLTestUtilsMixin(object):
         )
 
     def crear_base_datos_contacto(self, cant_contactos=None,
-        numeros_telefonicos=None, columna_extra=None):
+                                  numeros_telefonicos=None, columna_extra=None):
         """Crea base datos contacto
         - cant_contactos: cantidad de contactos a crear.
             Si no se especifica, se genera una cantidad
@@ -242,7 +244,7 @@ class OMLTestUtilsMixin(object):
         c.nombre = "Campaña de PRUEBA - {0}".format(c.id)
         c.save()
 
-       # self.crea_audios_de_campana(c)
+        # self.crea_audios_de_campana(c)
 
         return c
 
@@ -267,7 +269,7 @@ class OMLTestUtilsMixin(object):
         campana.fecha_fin = fecha_fin
         campana.save()
 
-        #Crear cola de campana
+        # Crear cola de campana
         self.crear_queue_dialer(campana)
 
         return campana
@@ -406,30 +408,12 @@ class OMLTestUtilsMixin(object):
         regla.save()
 
 
-    def crear_agenda_contacto(self, agente, contacto, fecha, hora):
-        agenda = AgendaContacto(
-            agente=agente,
-            contacto=contacto,
-            fecha=fecha,
-            hora=hora,
-            tipo_agenda=AgendaContacto.TYPE_PERSONAL,
-            observaciones="llamar en otro horario"
-        )
-        agenda.save()
-
-    def crear_agenda_contacto_manual(self, agente, telefono, fecha, hora):
-        agenda = AgendaManual(
-            agente=agente,
-            telefono=telefono,
-            fecha=fecha,
-            hora=hora,
-            tipo_agenda=AgendaContacto.TYPE_PERSONAL,
-            observaciones="llamar en otro horario"
-        )
-        agenda.save()
-
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
     """Clase base para tests"""
+
+
+class OMLTransaccionBaseTest(TransactionTestCase, OMLTestUtilsMixin):
+    """Clase base para tests que involucran transacciones en distintos hilos"""
 
 
 def default_db_is_postgresql():

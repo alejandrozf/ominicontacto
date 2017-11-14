@@ -1,0 +1,72 @@
+---
+
+- name: Change nginx default port
+  template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+
+- name: Enable nginx
+  shell: systemctl enable nginx
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+
+- name: Copy of the ominicontacto nginx configuration
+  copy: "src={{ django_dir }}/nginx/ominicontacto-twohosts.conf dest=/etc/nginx/conf.d/ remote_src=yes"
+  when: ansible_os_family == "Debian"
+- shell: "mv /etc/nginx/conf.d/ominicontacto-twohosts.conf /etc/nginx/conf.d/ominicontacto.conf"
+  when: ansible_os_family == "Debian"
+
+- name: Copy of the ominicontacto nginx configuration
+  copy: "src={{ django_dir }}/nginx/ominicontacto-onehost.conf dest=/etc/nginx/conf.d/ remote_src=yes"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+- shell: "mv /etc/nginx/conf.d/ominicontacto-onehost.conf /etc/nginx/conf.d/ominicontacto.conf"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+
+- name: Creation of the nginx server certificate
+  set_fact:
+          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omniapp_fqdn }}"
+
+- shell: "openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout server.key -out server.crt -subj \"{{ ca_subject }}\""
+  args:
+          chdir: /home/freetech/nginx_certs/
+  notify: restart nginx
+
+- name: Create ominicontacto-daemon service
+  shell: "{{ item }}"
+  with_items:
+          - "cp /home/freetech/ominicontacto/ominicontacto-daemon /etc/init.d/"
+          - "chmod 755 /etc/init.d/ominicontacto-daemon"
+          - "chown root:root /etc/init.d/ominicontacto-daemon"
+
+- name: Start the ominicontacto-daemon service
+  shell: "{{ item }}"
+  with_items:
+          - "yum install \'/lib/lsb/init-functions\' -y"
+          - "service ominicontacto-daemon start"
+          - "service ominicontacto-daemon stop"
+          - "chkconfig ominicontacto-daemon on"
+  ignore_errors: yes
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+
+- name: Create the ominicontacto-daemon service
+  shell: "{{ item }}"
+  with_items:
+          - "update-rc.d ominicontacto-daemon defaults"
+          - "update-rc.d ominicontacto-daemon enable 2"
+          - "update-rc.d ominicontacto-daemon enable 3"
+          - "update-rc.d ominicontacto-daemon enable 4"
+          - "update-rc.d ominicontacto-daemon enable 5"
+  ignore_errors: yes
+  notify: restart ominicontacto-daemon
+  when: ansible_os_family == "Debian"
+
+- name: Change the FQDN in config.js
+  template: "src=templates/config.js.j2 dest=/home/freetech/static_root/ominicontacto/JS/config.js owner=freetech group=freetech"
+
+- name: Change phone.js default port on /static/JS/phoneJSsip.js
+  lineinfile: "dest=/home/freetech/static_root/ominicontacto/JS/phoneJsSip.js regexp=\"^      ws_servers :\" line=\"      ws_servers : \"wss://\"+KamailioIp+\":14443\",\""
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+
+- name: Copy of the Kamailio cert in /static_root/
+  copy: src=/opt/kamailio/etc/certs/demoCA/cert.pem dest=/home/freetech/kamailio_cert/voip.cert remote_src=yes owner=freetech group=freetech
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+

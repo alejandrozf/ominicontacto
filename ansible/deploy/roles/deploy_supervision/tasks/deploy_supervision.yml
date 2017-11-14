@@ -1,0 +1,21 @@
+---
+
+- name: Clone of Omnisup repository
+  git: repo={{ omnisup_repo }} dest=/usr/src/Omnisup
+
+- set_fact: omnisup_dir=/var/www/html/Omnisup
+
+- name: Move Omnisup to /var/www/html
+  command: "{{ item }}"
+  with_items:
+      - mv /usr/src/Omnisup /var/www/html
+      - chown asterisk.asterisk -R {{ omnisup_dir }}
+
+- name: Copy config.php from /doc to /Omnisup
+  shell: "mv {{ omnisup_dir }}/doc/config_ex.php {{ omnisup_dir }}/doc/config.php"
+- copy: "src={{ omnisup_dir }}/doc/config.php dest={{ omnisup_dir }} remote_src=yes"
+#- template: "src=templates/config.php.j2 dest={{ omnisup_dir }}/config.php"
+
+- name: Modify of config.js in /static/Js
+  shell: "mv {{ omnisup_dir}}/static/Js/config_ex.js {{ omnisup_dir}}/static/Js/config.js"
+- template: "src=templates/config.js.j2 dest={{ omnisup_dir}}/static/Js/config.js"

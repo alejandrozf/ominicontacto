@@ -72,8 +72,6 @@ $(function () {
 	 $("#webChat").click(function () {
 	     $("#modalwebChat").modal('show');
 	 });
-	 inicio1();
-	 inicio3();
 	// como informo a un servidro de presencia que mi endpoint camibia de status
 	 //$("#modalWebCall").modal('show');
 	 $("#webCall").click(function () {
@@ -91,8 +89,7 @@ $(function () {
 	 	 $("#Resume").prop('disabled', false);
      $("#modalPause").modal('hide');
      updateButton(modifyUserStat, "label label-danger", $("#pauseType").val());
-     parar1();
-     inicio2();
+//     inicio2();
    });
 	 $("#logout").click(function () {
 		 changeStatus(3, $("#idagt").val());
@@ -102,8 +99,7 @@ $(function () {
 		 changeStatus(1, $("#idagt").val());
    	  $("#Pause").prop('disabled', false);
 	 	  $("#Resume").prop('disabled', true);
-  	  inicio1();
-	    parar2();
+	  //  parar2();
 	    //updateButton(pauseButton, "btn btn-warning btn-sm", "Pause");
 	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
 	    var containerTag = document.getElementById("timers");
@@ -196,7 +192,7 @@ $(function () {
 	          containerTag.appendChild(statusTag);
 	        }
 	      }
-	      reinicio($("#horaP"), $("#minsP"), $("#segsP"));
+	   //   reinicio($("#horaP"), $("#minsP"), $("#segsP"));
 	  });
 
 	 $("#Pause").click(function () {
@@ -291,61 +287,18 @@ $(function () {
 	     });
 	   });
 
-	 function inicio1() {
-	     control1 = setInterval(cronometro1, 1000);
-	 }
-	 function cronometro1() {
-	     if (centesimasO < 59) {
-	         centesimasO++;
-	         if (centesimasO < 10) {
-	             centesimasO = "0" + centesimasO;
-	         }
-	         $("#segsO").html(":" + centesimasO);
-	     }
-	     if (centesimasO == 59) {
-	         centesimasO = -1;
-	     }
-	     if (centesimasO == 0) {
-	         segundosO++;
-	         if (segundosO < 10) {
-	             segundosO = "0" + segundosO;
-	         }
-	         $("#minsO").html(":" + segundosO);
-	     }
-	     if (segundosO == 59) {
-	         segundosO = -1;
-	     }
-	     if ((centesimasO == 0) && (segundosO == 0)) {
-	         minutosO++;
-	         if (minutosO < 10) {
-	             minutosO = "0" + minutosO;
-	         }
-	         $("#horaO").html("" + minutosO);
-	     }
-	 }
-	 $("#segsO").html(":00");
-	 $("#minsO").html(":00");
-	 $("#horaO").html("00");
 	 $("#segsP").html(":00");
 	 $("#minsP").html(":00");
 	 $("#horaP").html("00");
-	 $("#segsT").html(":00");
-	 $("#minsT").html(":00");
-	 $("#horaT").html("00");
 
-	 function parar1() {
-	     clearInterval(control1);
-	 }
 	 function parar2() {
 	     clearInterval(control2);
 	 }
 	 function inicio2() {
 	     control2 = setInterval(cronometro2, 1000);
 	 }
-	 function inicio3() {
-	     control3 = setInterval(cronometro3, 1000);
-	 }
 
+//************************************CRONOMETRO DE PAUSAS----------------------------
 	 function cronometro2() {
 	     if (centesimasP < 59) {
 	         centesimasP++;
@@ -375,35 +328,6 @@ $(function () {
 	         $("#horaP").html("" + minutosP);
 	     }
 	 }
-	 function cronometro3() {
-	     if (centesimasT < 59) {
-	         centesimasT++;
-	         if (centesimasT < 10) {
-	             centesimasT = "0" + centesimasT;
-	         }
-	         $("#segsT").html(":" + centesimasT);
-	     }
-	     if (centesimasT == 59) {
-	         centesimasT = -1;
-	     }
-	     if (centesimasT == 0) {
-	         segundosT++;
-	         if (segundosT < 10) {
-	             segundosT = "0" + segundosT;
-	         }
-	         $("#minsT").html(":" + segundosT);
-	     }
-	     if (segundosT == 59) {
-	         segundosT = -1;
-	     }
-	     if ((centesimasT == 0) && (segundosT == 0)) {
-	         minutosT++;
-	         if (minutosT < 10) {
-	             minutosT = "0" + minutosT;
-	         }
-	         $("#horaT").html("" + minutosT);
-	     }
-	 }
 
 	 function reinicio(horaDOM, minDOM, segDOM) {
 	     clearInterval(control);
@@ -415,7 +339,4 @@ $(function () {
 	     horaDOM.html("00");
 	 }
 
-	 function inicio() {
-	     control = setInterval(cronometro1, 1000);
-	 }
 });

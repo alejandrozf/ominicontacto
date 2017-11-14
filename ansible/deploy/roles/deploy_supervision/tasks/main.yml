@@ -1,0 +1,7 @@
+---
+
+- include: deploy_supervision.yml
+  when: not post_install
+
+- include: https_apache.yml
+  when: not post_install or ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"

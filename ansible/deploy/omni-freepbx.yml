@@ -1,0 +1,15 @@
+---
+- name: Instalacion de Omnileads en SangomaOS
+  hosts: omni-freepbx
+  # Siempre 'gather_facts' ya q' lo usaoms en varios 'when'
+  # gather_facts: '{{ lookup("env","DO_CHECKS") }}'
+  vars:
+          build_dir: "{{ BUILD_DIR }}"
+
+  roles:
+          - oml_server
+          - omniapp_second
+          - { role: deploy_supervision, when: not post_install }
+
+
+

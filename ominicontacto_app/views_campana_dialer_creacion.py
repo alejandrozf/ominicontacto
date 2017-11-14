@@ -194,7 +194,7 @@ class SincronizaDialerView(FormView):
         self.object.estado = Campana.ESTADO_INACTIVA
         self.object.save()
         message = 'Operación Exitosa!\
-                Se llevó a cabo con éxito la exportación del reporte.'
+                Se llevó a cabo con éxito la creación de campana dialer.'
 
         messages.add_message(
             self.request,

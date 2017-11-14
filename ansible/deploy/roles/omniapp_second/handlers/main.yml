@@ -1,0 +1,9 @@
+---
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+
+- name: restart ominicontacto-daemon
+  service: name=ominicontacto-daemon state=restarted enabled=yes
+
+- name: restart tomcat8
+  service: name=tomcat8 state=restarted enabled=yes

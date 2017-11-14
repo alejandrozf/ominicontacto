@@ -1,0 +1,13 @@
+---
+
+- include: centos_prerequisitos.yml
+  when: ansible_os_family == "RedHat"
+
+- include: installations.yml
+
+- include: freetech_user.yml
+
+- include: setup_mariadb.yml
+  when: ansible_os_family == "RedHat"
+
+- include: postgres-installation.yml

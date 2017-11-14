@@ -1,0 +1,58 @@
+#
+# This should be changed to whatever you set DocumentRoot to.
+#
+<Directory "/var/www/html">
+
+#
+# Possible values for the Options directive are "None", "All",
+# or any combination of:
+#   Indexes Includes FollowSymLinks SymLinksifOwnerMatch ExecCGI MultiViews
+#
+# Note that "MultiViews" must be named *explicitly* --- "Options All"
+# doesn't give it to you.
+#
+# The Options directive is both complicated and important.  Please see
+# http://httpd.apache.org/docs/2.2/mod/core.html#options
+# for more information.
+#
+    Options Indexes FollowSymLinks
+
+    ExpiresActive on
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType css/text "access plus 1 year"
+
+#
+# AllowOverride controls what directives may be placed in .htaccess files.
+# It can be "All", "None", or any combination of the keywords:
+#   Options FileInfo AuthConfig Limit
+#
+    AllowOverride All
+
+#
+# Controls who can get stuff from this server.
+#
+
+# Apache 2.2
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Allow from all
+</IfModule>
+
+# Apache 2.4
+<IfModule mod_authz_core.c>
+	Require all granted
+</IfModule>
+</Directory>
+
+<VirtualHost *:80>
+Alias /grabaciones "/var/spool/asterisk/asternic"
+<Directory "/var/spool/asterisk/asternic">
+	Options Indexes FollowSymLinks
+	AllowOverride None
+	Order allow,deny
+	Allow from all
+	Require all granted
+</Directory>
+</VirtualHost>

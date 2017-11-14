@@ -1,0 +1,7 @@
+- hosts: omni-app
+  roles:
+      - omniapp_second
+
+- hosts: omni-voip
+  roles:
+      - { role: deploy_supervision, when: not post_install }

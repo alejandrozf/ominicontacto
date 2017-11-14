@@ -8,6 +8,8 @@ import uuid
 import re
 import datetime
 
+from ast import literal_eval
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
 from django.db import models, connection
@@ -159,6 +161,19 @@ class AgenteProfile(models.Model):
     def get_campanas_activas_miembro(self):
         campanas_member = self.campana_member.all()
         return campanas_member.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
+
+    def has_campanas_preview_activas_miembro(self):
+        campanas_preview_activas = self.campana_member.filter(
+            queue_name__campana__estado=Campana.ESTADO_ACTIVA,
+            queue_name__campana__type=Campana.TYPE_PREVIEW)
+        return campanas_preview_activas.exists()
+
+    def get_campanas_preview_activas_miembro(self):
+        campanas_preview_activas = self.campana_member.filter(
+            queue_name__campana__estado=Campana.ESTADO_ACTIVA,
+            queue_name__campana__type=Campana.TYPE_PREVIEW)
+        return campanas_preview_activas.values_list(
+            'queue_name__campana', 'queue_name__campana__nombre')
 
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
@@ -403,6 +418,12 @@ class CampanaManager(models.Manager):
         """
         return self.filter(type=Campana.TYPE_MANUAL)
 
+    def obtener_campanas_preview(self):
+        """
+        Devuelve campañas de tipo preview
+        """
+        return self.filter(type=Campana.TYPE_PREVIEW)
+
     def obtener_campanas_vista_by_user(self, campanas, user):
         """
         devuelve las campanas filtradas por user
@@ -625,10 +646,13 @@ class Campana(models.Model):
     TYPE_MANUAL = 3
     """La campaña está definida como manual"""
 
+    TYPE_PREVIEW = 4            # La campaña está definida como preview
+
     TYPES_CAMPANA = (
         (TYPE_ENTRANTE, 'Entrante'),
         (TYPE_DIALER, 'Dialer'),
-        (TYPE_MANUAL, 'Manual')
+        (TYPE_MANUAL, 'Manual'),
+        (TYPE_PREVIEW, 'Preview'),
     )
 
     FORMULARIO = 1
@@ -673,9 +697,10 @@ class Campana(models.Model):
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
     es_manual = models.BooleanField(default=False)
     objetivo = models.PositiveIntegerField(default=0)
+    tiempo_desconexion = models.PositiveIntegerField(default=0)  # para uso en campañas preview
 
     def __unicode__(self):
-            return self.nombre
+        return self.nombre
 
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
@@ -751,6 +776,55 @@ class Campana(models.Model):
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
         self.save()
 
+    def _obtener_campos_bd_contacto(self, contacto):
+        base_datos = self.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos_contacto = metadata.nombres_de_columnas
+        try:
+            campos_contacto.remove('telefono')
+        except ValueError:
+            logger.warning("La BD no tiene campo 'telefono'")
+        return campos_contacto
+
+    def agregar_agente_contacto(self, contacto):
+        """
+        Inicializa una entrada en la tabla que relaciona agentes con contactos
+        en campañas preview
+        """
+        campos_contacto = self._obtener_campos_bd_contacto(contacto.bd_contacto)
+        datos_contacto = literal_eval(contacto.datos)
+        datos_contacto = dict(zip(campos_contacto, datos_contacto))
+        datos_contacto_json = json.dumps(datos_contacto)
+        AgenteEnContacto(agente_id=-1, contacto_id=contacto.pk, campana_id=self.pk,
+                         estado=AgenteEnContacto.ESTADO_INICIAL, datos_contacto=datos_contacto_json,
+                         telefono_contacto=contacto.telefono).save()
+
+    def establecer_valores_iniciales_agente_contacto(self):
+        """
+        Rellena con valores iniciales la tabla que informa el estado de los contactos
+        en relación con los agentes
+        """
+        # obtenemos todos los contactos de la campaña
+        campana_contactos = self.bd_contacto.contactos.all()
+
+        # obtenemos los campos de la BD del contacto
+        campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
+
+        # creamos los objetos del modelo AgenteEnContacto a crear
+        agente_en_contacto_list = []
+        for contacto in campana_contactos:
+            datos_contacto = literal_eval(contacto.datos)
+            datos_contacto = dict(zip(campos_contacto, datos_contacto))
+            datos_contacto_json = json.dumps(datos_contacto)
+            agente_en_contacto = AgenteEnContacto(
+                agente_id=-1, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
+                telefono_contacto=contacto.telefono, campana_id=self.pk,
+                estado=AgenteEnContacto.ESTADO_INICIAL)
+            agente_en_contacto_list.append(agente_en_contacto)
+
+        # insertamos las instancias en la BD
+        AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
+
 
 class QueueManager(models.Manager):
 
@@ -770,7 +844,7 @@ class QueueManager(models.Manager):
 
 class Queue(models.Model):
     """
-    Clase cola para el servidor de kamailio
+    Clase cola para el servidor de kamailio-debian
     """
     objects_default = models.Manager()
     # Por defecto django utiliza el primer manager instanciado. Se aplica al
@@ -924,7 +998,7 @@ class QueueMember(models.Model):
                                    related_name='queuemember')
     membername = models.CharField(max_length=128)
     interface = models.CharField(max_length=128)
-    penalty = models.IntegerField(choices=DIGITO_CHOICES,)
+    penalty = models.IntegerField(choices=DIGITO_CHOICES)
     paused = models.IntegerField()
     id_campana = models.CharField(max_length=128)
 
@@ -2734,3 +2808,34 @@ class AgendaManual(models.Model):
         return "Agenda para el telefono {0} agendado por el agente {1}" \
                " para la fecha {2} a la hora {3}hs ".format(
                    self.telefono, self.agente, self.fecha, self.hora)
+
+
+class AgenteEnContacto(models.Model):
+    """
+    Relaciona a agentes que están en comunicación con contactos de la BD de una campaña
+    """
+
+    ESTADO_INICIAL = 0  # significa que el contacto aún no ha sido entregado a ningún agente
+
+    ESTADO_ENTREGADO = 1  # significa que un agente solicitó este contacto y le fue entregado
+
+    ESTADO_ATENDIENDO = 2  # significa que el agente está hablando con el contacto
+
+    ESTADO_FINALIZADO = 3  # significa que el agente culminó de forma satisfactoria la llamada
+
+    ESTADO_CHOICES = (
+        (ESTADO_INICIAL, 'INICIAL'),
+        (ESTADO_ENTREGADO, 'ENTREGADO'),
+        (ESTADO_ATENDIENDO, 'ATENDIENDO'),
+        (ESTADO_FINALIZADO, 'FINALIZADO'),
+    )
+    agente_id = models.IntegerField()
+    contacto_id = models.IntegerField()
+    datos_contacto = models.TextField()
+    telefono_contacto = models.CharField(max_length=128)
+    campana_id = models.IntegerField()
+    estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
+
+    def __unicode__(self):
+        return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(
+            self.agente_id, self.contacto_id, self.estado)

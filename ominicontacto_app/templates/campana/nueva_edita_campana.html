@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 {% block head_js %}
-<script>
-    $(document).ready(function() {
-            $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
-        $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
+    <script>
+     $(document).ready(function() {
+       $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
+       $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
 
-        });
+     });
     </script>
 {% endblock %}
 {% block content %}
@@ -45,18 +45,20 @@
      {{ form.tipo_interaccion.errors }}
     <div class="form-group row">
         {{ form.formulario.errors }}
-        <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.0 }}</div></label>
+        <label class="col-sm-3 control-label"><div class="myradio hidden">{{ form.tipo_interaccion.0 }}</div> Formulario: </label>
         <div class="col-sm-6">
               {{ form.formulario }}
         </div>
     </div>
-    <div class="form-group row">
-        {{ form.sitio_externo.errors }}
-        <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
-        <div class="col-sm-6">
-              {{ form.sitio_externo }}
+    {% comment %}
+        <div class="form-group row">
+            {{ form.sitio_externo.errors }}
+            <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
+            <div class="col-sm-6">
+                {{ form.sitio_externo }}
+            </div>
         </div>
-    </div>
+    {% endcomment %}
     <div class="form-group row">
         {{ form.gestion.errors }}
         <label class="col-sm-3 control-label">Gestion: </label>
@@ -76,7 +78,7 @@
         Siguiente
     </button>
 
-</form>
-</div>
+        </form>
+    </div>
 
 {% endblock %}
