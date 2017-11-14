@@ -16,7 +16,16 @@
 - authorized_key: user=root key={{ ssh_key.stdout }} state=present manage_dir=yes
 
 - name: Change key permission
-  file: path=/home/freetech/.ssh/ state=directory owner=freetech group=freetech mode=600 recurse=yes
+  shell: "{{ item }}"
+  with_items:
+    - "chown -R freetech.freetech /home/freetech/.ssh"
+    - "chmod -R 600 /home/freetech/.ssh"
+  become: yes
+  become_user: freetech
+  become_method: su
+
+#- name: Change key permission
+#  file: path=/home/freetech/.ssh/ state=directory owner=freetech group=freetech mode=600 recurse=yes
 
 - name: Create the required directories
   file: "dest={{ item }} state=directory owner=freetech group=freetech mode=0755 recurse=yes"
