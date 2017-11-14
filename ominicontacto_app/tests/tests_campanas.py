@@ -188,7 +188,7 @@ class CampanasTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_activa.nombre)
 
-    def test_usuarios_logueados_pueden_ver_lista_de_campanas_preview_borras(self):
+    def test_usuarios_logueados_pueden_ver_lista_de_campanas_preview_borradas(self):
         url = reverse('campana_preview_list')
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_borrada.nombre)
@@ -355,17 +355,6 @@ class CampanasTests(OMLBaseTest):
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         response = self.client.get(url, follow=True)
         self.assertNotContains(response, self.campana_borrada.nombre)
-
-    @patch('requests.post')
-    def test_agregar_contacto_campana_preview_crea_entrada_agente_agente_contacto(self, post):
-        url = reverse('nuevo_contacto_campana_dialer',
-                      kwargs={'pk_campana': self.campana_activa.pk})
-        telefono = '23534534'
-        post_data = {'apellido': 'apellido-test', 'telefono3': '1322434573',
-                     'telefono2': '1242355345', 'dni': '1233242', 'nombre': 'nombre-test',
-                     'telefono': '23534534'}
-        self.client.post(url, post_data, follow=True)
-        self.assertTrue(AgenteEnContacto.objects.filter(telefono_contacto=telefono).exists())
 
     def _inicializar_valores_formulario_cliente(self):
         values = {

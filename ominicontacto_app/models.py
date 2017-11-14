@@ -786,19 +786,6 @@ class Campana(models.Model):
             logger.warning("La BD no tiene campo 'telefono'")
         return campos_contacto
 
-    def agregar_agente_contacto(self, contacto):
-        """
-        Inicializa una entrada en la tabla que relaciona agentes con contactos
-        en campañas preview
-        """
-        campos_contacto = self._obtener_campos_bd_contacto(contacto.bd_contacto)
-        datos_contacto = literal_eval(contacto.datos)
-        datos_contacto = dict(zip(campos_contacto, datos_contacto))
-        datos_contacto_json = json.dumps(datos_contacto)
-        AgenteEnContacto(agente_id=-1, contacto_id=contacto.pk, campana_id=self.pk,
-                         estado=AgenteEnContacto.ESTADO_INICIAL, datos_contacto=datos_contacto_json,
-                         telefono_contacto=contacto.telefono).save()
-
     def establecer_valores_iniciales_agente_contacto(self):
         """
         Rellena con valores iniciales la tabla que informa el estado de los contactos
