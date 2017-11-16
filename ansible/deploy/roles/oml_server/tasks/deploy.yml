@@ -4,26 +4,6 @@
 # Directorios básicos
 #----------------------------------------------------------------------
 
-- name: Creation of freetech group
-  group: name=freetech state=present
-
-- name: Create freetech user and public key
-  user: name=freetech generate_ssh_key=yes group=freetech ssh_key_bits=2048 state=present
-
-- name: Transfer ssh key from freetech's user to root's user
-  shell: cat /home/freetech/.ssh/id_rsa.pub
-  register: ssh_key
-- authorized_key: user=root key={{ ssh_key.stdout }} state=present manage_dir=yes
-
-- name: Change key permission
-  shell: "{{ item }}"
-  with_items:
-    - "chown -R freetech.freetech /home/freetech/.ssh"
-    - "chmod -R 600 /home/freetech/.ssh"
-  become: yes
-  become_user: freetech
-  become_method: su
-
 #- name: Change key permission
 #  file: path=/home/freetech/.ssh/ state=directory owner=freetech group=freetech mode=600 recurse=yes
 
@@ -39,7 +19,6 @@
           - /home/freetech/media_root/reporte_campana
           - /home/freetech/static_root
           - /home/freetech/log
-          - /home/freetech/kamailio_cert
 
 
 #----------------------------------------------------------------------
