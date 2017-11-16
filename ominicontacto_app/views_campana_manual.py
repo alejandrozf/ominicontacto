@@ -11,7 +11,7 @@ import datetime
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from ominicontacto_app.models import Campana, AgenteProfile
 from django.views.generic import (
@@ -57,6 +57,7 @@ class CampanaManualListView(ListView):
                 not self.request.user.get_is_administrador():
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+            context['campanas'] = campanas
 
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
@@ -290,3 +291,22 @@ class CampanaManualSupervisorUpdateView(CampanaSupervisorUpdateView):
 
     def get_success_url(self):
         return reverse('campana_manual_list')
+
+
+class CampanaManualBorradasListView(CampanaManualListView):
+    """
+    Vista que lista las campañas manual pero de incluyendo las borradas ocultas
+    """
+
+    template_name = 'campana_manual/campanas_borradas.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaManualBorradasListView, self).get_context_data(**kwargs)
+        context['borradas'] = context['campanas'].filter(estado=Campana.ESTADO_BORRADA)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return super(CampanaManualBorradasListView, self).get(request, *args, **kwargs)
+        else:
+            return JsonResponse({'result': 'desconectado'})
