@@ -1,0 +1,35 @@
+---
+
+- name: Instalacion de Asternic
+  get_url: "url={{ asternic }} dest=/usr/src/"
+  register: destino
+
+- name: Descompresion de todos los paquetes
+  unarchive: "src={{ item }} dest=/usr/src/ remote_src=yes"
+  with_items:
+          - "{{ destino.dest }}"
+  register: nombres_tar
+
+- name: Borrado de los tar
+  file: "dest={{ item }} state=absent"
+  with_items:
+          - "{{ nombres_tar.results[0].src }}"
+
+- action: shell ls /usr/src/
+  register: dirsrc
+
+- name: Make de Asternic
+  shell: "make chdir=/usr/src/{{ dirsrc.stdout_lines[1] }}"
+
+- name: Modificacion del update_mix_mixmonitor
+  lineinfile: "dest=/usr/local/parselog/update_mix_mixmonitor.pl regexp=\"config{\'move_recording\'}\" line=\"$config{\'move_recording\'} = true;\""
+
+- lineinfile: "dest=/usr/local/parselog/update_mix_mixmonitor.pl regexp=\"config{'convertmp3'}\" line=\"$config{'convertmp3'} = true;\""
+
+- name: Modificacion de 000-default.conf
+  template: "src=templates/000-default.conf.j2 dest=/etc/apache2/sites-enabled/000-default.conf"
+  notify: restart apache2
+
+- name: Modificacion de conexion AMI para Wombat Dialer
+  template: "src=templates/manager_custom.conf.j2 dest=/etc/asterisk/manager_custom.conf"
+  #lineinfile: "dest=//etc/asterisk/manager_custom.conf regexp=\"172.16.20.0/255.255.255.0\" line=\"permit = {{ omniapp_ip  }}/255.255.255.255,127.0.0.1/255.255.255.255\""

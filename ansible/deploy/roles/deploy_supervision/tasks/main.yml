@@ -1,0 +1,4 @@
+---
+
+- include: deploy_supervision.yml
+  when: not post_install

@@ -55,7 +55,7 @@ $(function() {
        dataType: 'application/json',
        data: data2,
        succes: function (msg) {
-         
+
 	     },
     	 error: function (jqXHR, textStatus, errorThrown) {
          console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
@@ -143,7 +143,7 @@ $(function() {
 	   	    contentType: "text/html",
 	   	    data : "duracion=" + $("#horaC").html() + $("#minsC").html() + $("#segsC").html() + "&agente="+$("#idagt").val()+"&numero_telefono="+callerOrCalled+"&tipo_llamada="+calltypeId,
 	   	    success: function (msg) {
-	   	 	    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+	   //	 	    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 	   	 	    $("#call_list").html(msg);
 	   	    },
 	   	    error: function (jqXHR, textStatus, errorThrown) {
@@ -189,10 +189,7 @@ $(function() {
 	    horaDOM.html("00");
   	}
     //dar solucion a la repeticion de codigo, esto ya existe en main.js
-    function parar1() {
-	    clearInterval(control1);
-	 	}
-	 	function parar2() {
+  	function parar2() {
 	 		clearInterval(control2);
 	 	}
 	 	function parar3() {
@@ -235,15 +232,6 @@ $(function() {
 	    }
 	  }
 	 //****************************CRONOMETRO DE LLAMADA***********************************
-	 function reinicio3(horaDOM, minDOM, segDOM) { // Cronometro embebido en el webphone
-	    clearInterval(control);
-	    centesimasC = 0;
-	    segundosC = 0;
-	    minutosC = 0;
-	    segDOM.html(":00");
-	    minDOM.html(":00");
-	    horaDOM.html("00");
-  	}
 	 function cronometro3() { // Cronometro embebido en el webphone
 	     if (centesimasC < 59) {
 	         centesimasC++;
@@ -273,16 +261,26 @@ $(function() {
 	         $("#horaC").html("" + minutosC);
 	     }
 	 }
-	 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      e.session.on("failed",function(e) {  // cuando falla el establecimiento de la llamada
-        $("#aTransfer").prop('disabled', true);
-        $("#bTransfer").prop('disabled', true);
-        $("#onHold").prop('disabled', false);
-        $("#modalReceiveCalls").modal('hide');
-        Sounds("","stop");
-      });
+
+	 function reinicio3(horaDOM, minDOM, segDOM) { // Cronometro embebido en el webphone
+	   clearInterval(control);
+	   centesimasC = 0;
+	   segundosC = 0;
+	   minutosC = 0;
+	   segDOM.html(":00");
+	   minDOM.html(":00");
+	   horaDOM.html("00");
+   }
+	 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    e.session.on("failed",function(e) {  // cuando falla el establecimiento de la llamada
+      $("#aTransfer").prop('disabled', true);
+      $("#bTransfer").prop('disabled', true);
+      $("#onHold").prop('disabled', true);
+      $("#modalReceiveCalls").modal('hide');
+      Sounds("","stop");
+    });
       if(e.originator=="remote") {         // Origen de llamada Remoto
-      	entrante = true;
+        entrante = true;
       	if(e.request.headers.Wombatid) {
       		wId = e.request.headers.Wombatid[0].raw;
       	}
@@ -315,7 +313,10 @@ $(function() {
 						} else if (originHeader === "DIALER-JSON") {
 
 						} else if (originHeader === "CLICK2CALL") {
-						  getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                    getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                }
+                                                 else if (originHeader === "CLICK2CALLPREVIEW") {
+                                                   getDataCreate(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
         		if(fromUser !== "Unknown") {
@@ -369,49 +370,50 @@ $(function() {
         };
 
         function processOrigin(origin, opt, from) {
-			  	var options = opt;
-					var origin = origin;
-					if(origin) {
-						if(origin.search("DIALER") === 0) {
-							origin = "DIALER";
-						}
-					}
-  				switch(origin) {
-  					case "DIALER":
-  						var dialerTag = document.getElementById("auto_attend_DIALER");
-  						if(dialerTag.value === "True") {
-  							$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-  					case "IN":
-  		  			var inboundTag = document.getElementById("auto_attend_IN");
-  		  			if(inboundTag.value === "True") {
-  		  				$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-			  		case "ICS":
-  						var icsTag = document.getElementById("auto_attend_ICS");
-  						if(icsTag.value === "True") {
-			  				$("#modalReceiveCalls").modal('hide');
-  			  			session_incoming.answer(options);
-          			setCallState("Connected to " + from, "orange");
-          			Sounds("","stop");
-  						}
-  		  			break;
-						case "CLICK2CALL":
-						  $("#modalReceiveCalls").modal('hide');
-							session_incoming.answer(options);
-							setCallState("Connected to " + from, "orange");
-							Sounds("","stop");
-						  break;
-  				}
-  			}
+	  var options = opt;
+	  var origin = origin;
+	  if(origin) {
+	    if(origin.search("DIALER") === 0) {
+	      origin = "DIALER";
+	    }
+	  }
+  	  switch(origin) {
+  	  case "DIALER":
+  	    var dialerTag = document.getElementById("auto_attend_DIALER");
+  	    if(dialerTag.value === "True") {
+  	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+  	  case "IN":
+  	    var inboundTag = document.getElementById("auto_attend_IN");
+  	    if(inboundTag.value === "True") {
+  	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+	  case "ICS":
+  	    var icsTag = document.getElementById("auto_attend_ICS");
+  	    if(icsTag.value === "True") {
+	      $("#modalReceiveCalls").modal('hide');
+  	      session_incoming.answer(options);
+              setCallState("Connected to " + from, "orange");
+              Sounds("","stop");
+  	    }
+  	    break;
+	  case "CLICK2CALL":
+          case"CLICK2CALLPREVIEW":
+	    $("#modalReceiveCalls").modal('hide');
+	    session_incoming.answer(options);
+	    setCallState("Connected to " + from, "orange");
+	    Sounds("","stop");
+	    break;
+          }
+  	}
 
       } else {
       	calltypeId = originToId(null);
@@ -426,15 +428,13 @@ $(function() {
         $("#onHold").prop('disabled', false);
 
         if(num.substring(4,0) != "0077") {
+			//		inicio3();
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
 	       	$("#sipLogout").prop('disabled',true);
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
 		    }
-				if(fromUser) {
-					inicio3();
-				}
       });
 
 			var clickHold = document.getElementById("onHold");
@@ -540,6 +540,7 @@ $(function() {
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-success", "Online");
 					} else {
+						//reinicio3();
 						fromUser = "";
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
@@ -549,15 +550,15 @@ $(function() {
 					if(fromUser.substring(4,0) != "0077") {
 							if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
 								changeStatus(3, $("#idagt").val());
-						        num = "0077ACW";
-						        makeCall();
-						        entrante = false;
+						    num = "0077ACW";
+						    makeCall();
+						    entrante = false;
 								$("#Pause").prop('disabled',true);
 								$("#Resume").prop('disabled',false);
 								$("#sipLogout").prop('disabled',false);
 								updateButton(modifyUserStat, "label label-danger", "ACW");
-								parar1();
-						        inicio2();
+								inicio2();
+					//			parar3();
 								if($("#auto_unpause").val() != 0) {
 							    var timeoutACW = $("#auto_unpause").val();
 							    timeoutACW = timeoutACW * 1000;
@@ -572,7 +573,7 @@ $(function() {
 							  }
 							} // si no es agente predictivo....
 					} else {
-					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));//llevar a cero el conometro embebido en el webphone
+//					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
 				}
 			} else { // si NO es una llamada entrante
@@ -600,8 +601,7 @@ $(function() {
 							$("#Resume").prop('disabled',false);
 							$("#sipLogout").prop('disabled',false);
 							updateButton(modifyUserStat, "label label-danger", "ACW");
-							parar1();
-					        inicio2();
+		//			        inicio2();
 							if($("#auto_unpause").val() != 0) {
 								var timeoutACW = $("#auto_unpause").val();
 								timeoutACW = timeoutACW * 1000;
@@ -616,11 +616,10 @@ $(function() {
 							}
 					    }
 					} else {
-					   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+			//		   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
 			    }
 		    }
-		parar3();
 		defaultCallState();
     });
 
@@ -858,9 +857,15 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
 
-  function getData(campid, leadid,agentid, wombatId) {
-		var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
-  	$("#dataView").attr('src', url);
+  function getDataCreate(campid, leadid, agentid, wombatId) {
+    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/create/"+agentid+"/"+wombatId+"/";
+    $("#dataView").attr('src', url);
+  }
+
+
+  function getData(campid, leadid, agentid, wombatId) {
+    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
+    $("#dataView").attr('src', url);
   }
 
 	function getFormManualCalls(idcamp, idagt, tel) {

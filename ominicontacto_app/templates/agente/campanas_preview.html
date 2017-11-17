@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}" >
+
+        <!-- JQuery & Datatables -->
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}" >
+        <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/campanasPreviewAgente.js' %}"></script>
+    </head>
+    <body>
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+        <div class="row" style="margin-top:5%; margin-left:5%;">
+            <div class="col-md-5">
+                <table id="campanasPreviewTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Campaña</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campana_pk, campana_nombre in campanas_preview_activas %}
+                            <tr>
+                                <td>
+                                    <button class="obtener-contacto btn btn-primary" data-campana="{{ campana_pk }}"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Haga click para obtener un contacto de la campaña">{{ campana_nombre }}</button>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">No hay campañas</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div id="panel-contacto" class="col-md-4 col-md-offset-1 hidden">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos contacto</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form id="llamar_preview" action="{% url 'agente_llamar_contacto' %}" method="POST" role="form">
+                            {% csrf_token %}
+                            <input type="hidden" id="pk_agente" name="pk_agente">
+                            <input type="hidden" id="pk_contacto" name="pk_contacto">
+                            <input type="hidden" id="pk_campana" name="pk_campana">
+                            <input type="hidden" id="campana_nombre" name="campana_nombre">
+                            <input type="hidden" id="click2call_preview" name="click2call_preview" value="true">
+                            <button type="submit" class="btn btn-info">
+                                <span id="contacto-telefono" class="glyphicon glyphicon-earphone"
+                                      aria-hidden="true" title="Haga click para llamar al contacto"></span>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="panel-footer" id="contacto-datos">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </body>
+</html>

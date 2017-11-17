@@ -10,7 +10,6 @@ from __future__ import unicode_literals
 
 import json
 import logging
-import datetime
 
 from services.sms_services import SmsManager
 from django.conf import settings
@@ -19,7 +18,6 @@ from django.shortcuts import render_to_response, redirect
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.contrib import messages
-from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
@@ -28,23 +26,24 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, WombatLog, Campana, Contacto, SupervisorProfile
+    Chat, MensajeChat, WombatLog, Campana, Contacto,
 )
 from ominicontacto_app.forms import (
-    CustomUserCreationForm, CustomUserChangeForm, UserChangeForm,
-    AgenteProfileForm, AgendaBusquedaForm, PausaForm
+    CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
+    AgendaBusquedaForm, PausaForm
 )
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
-from services.sms_services import SmsManager
 from services.asterisk_service import ActivacionAgenteService,\
     RestablecerConfigSipError
 from services.regeneracion_asterisk import RegeneracionAsteriskService,\
     RestablecerDialplanError
-from django.views.decorators.csrf import csrf_protect
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
+from ominicontacto_app import version
+
 
 logger = logging.getLogger(__name__)
 
@@ -281,7 +280,7 @@ class AgenteListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AgenteListView, self).get_context_data(
-           **kwargs)
+            **kwargs)
         agentes = AgenteProfile.objects.all()
 
         # if self.request.user.is_authenticated() and self.request.user:
@@ -377,15 +376,20 @@ class PausaDeleteView(DeleteView):
 def node_view(request):
     """Esta vista renderiza la pantalla del agente"""
     registro = []
-    if request.user.is_authenticated() and request.user.get_agente_profile():
+    campanas_preview_activas = []
+    agente_profile = request.user.get_agente_profile()
+    if request.user.is_authenticated() and agente_profile:
         registro = DuracionDeLlamada.objects.filter(
             agente=request.user.get_agente_profile(),
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)
         ).order_by("-fecha_hora_llamada")[:10]
+        campanas_preview_activas = agente_profile.has_campanas_preview_activas_miembro()
     context = {
         'pausas': Pausa.objects.all,
-        'registro': registro
+        'registro': registro,
+        'campanas_preview_activas': campanas_preview_activas,
+        'agente_profile': agente_profile,
     }
     return render_to_response('agente/base_agente.html', context,
                               context_instance=RequestContext(request))
@@ -594,7 +598,6 @@ def wombat_log_view(request):
                              estado=estado, calificacion=calificacion,
                              timeout=timeout, contacto=contacto,
                              metadata=json.dumps(metadata))
-    #import ipdb; ipdb.set_trace();
     response = JsonResponse({'status': 'OK'})
     return response
 
@@ -612,3 +615,26 @@ def supervision_url_externa(request):
     message = "Supervision: Funcion valida para usuario tipo supervisor!!!"
     messages.warning(request, message)
     return HttpResponseRedirect(reverse('index'))
+
+
+# =============================================================================
+# Acerca
+# =============================================================================
+
+
+class AcercaTemplateView(TemplateView):
+    """
+    Esta vista es para generar el Acerca de la app.
+    """
+
+    template_name = 'acerca/acerca.html'
+    context_object_name = 'acerca'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AcercaTemplateView, self).get_context_data(**kwargs)
+
+        context['branch'] = version.OML_BRANCH
+        context['commit'] = version.OML_COMMIT
+        context['fecha_deploy'] = version.OML_BUILD_DATE
+        return context

@@ -1,0 +1,10 @@
+---
+
+- name: Instalacion de Omnileads en Centos
+  hosts: omni-centos
+  roles:
+          - {role: prerequisitos-sangoma, when: ansible_os_family == "RedHat" }
+          - {role: asterisk-freepbx, when: ansible_os_family == "RedHat" }
+          - {role: kamailio-sangoma, when: ansible_os_family == "RedHat" }
+          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "RedHat" }
+          - {role: asternic, when: ansible_os_family == "RedHat" }

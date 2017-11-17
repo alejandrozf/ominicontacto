@@ -11,11 +11,11 @@
 RETVAL=0
 USER=freetech
 GROUP=freetech
-CMD=/home/freetech/ominicontacto/virtualenv/bin/uwsgi
+CMD=/home/freetech/virtualenv/bin/uwsgi
 
 export PYTHONPATH=/home/freetech/ominicontacto
 
-. /home/freetech/ominicontacto/virtualenv/bin/activate
+. /home/freetech/virtualenv/bin/activate
 
 # See how we were called.
 case "$1" in

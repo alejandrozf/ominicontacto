@@ -10,7 +10,7 @@ from ominicontacto_app import (
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_calificacion_manual
+    views_calificacion_manual, views_campana_preview
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -70,6 +70,10 @@ urlpatterns = [
         login_required(views.AgenteProfileUpdateView.as_view()),
         name='agenteprofile_update',
         ),
+    url(r'^agente/campanas_preview/activas/$',
+        login_required(
+            views_agente.AgenteCampanasPreviewActivasView.as_view()),
+        name="campana_preview_activas_miembro"),
     url(r'^grupo/nuevo/$',
         login_required(views.GrupoCreateView.as_view()), name='grupo_nuevo',
         ),
@@ -146,6 +150,10 @@ urlpatterns = [
         ),
     url(r'^supervision_externa/$',
         login_required(views.supervision_url_externa), name='supervision_externa_url',
+        ),
+    url(r'^acerca/$',
+        login_required(views.AcercaTemplateView.as_view()),
+        name='acerca',
         ),
     # ==========================================================================
     # Base Datos Contacto
@@ -863,6 +871,49 @@ urlpatterns = [
         login_required(
             views_campana_manual.mostrar_campanas_manual_borradas_ocultas_view),
         name="campana_manual_mostrar_ocultas"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/supervisors/$',
+        login_required(
+            views_campana_manual.CampanaManualSupervisorUpdateView.as_view()),
+        name="campana_manual_supervisors"),
+    # ==========================================================================
+    # Campana Preview
+    # ==========================================================================
+    url(r'^campana_preview/lista/$',
+        login_required(
+            views_campana_preview.CampanaPreviewListView.as_view()),
+        name="campana_preview_list"),
+    url(r'^campana_preview/create/$',
+        login_required(
+            views_campana_preview.CampanaPreviewCreateView.as_view()),
+        name="campana_preview_create"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/update/$',
+        login_required(
+            views_campana_preview.CampanaPreviewUpdateView.as_view()),
+        name="campana_preview_update"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/delete/$',
+        login_required(
+            views_campana_preview.CampanaPreviewDeleteView.as_view()),
+        name="campana_preview_delete"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/supervisors/$',
+        login_required(
+            views_campana_preview.CampanaPreviewSupervisorUpdateView.as_view()),
+        name="campana_preview_supervisors"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_calificacion/$',
+        login_required(
+            views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
+        name="campana_preview_calificacion_reporte_calificacion"),
+    url(r'^campana_preview/mostrar_ocultas/$',
+        views_campana_preview.CampanaPreviewBorradasListView.as_view(),
+        name="campana_preview_mostrar_ocultas"),
+    url(r'^campana/mostrar_ocultar/(?P<pk_campana>\d+)/$',
+        login_required(
+            views_campana_preview.campana_mostrar_ocultar_view),
+        name="campana_mostrar_ocultar"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/contacto/obtener/$',
+        login_required(
+            views_campana_preview.ObtenerContactoView.as_view()),
+        name="campana_preview_dispatcher"),
+
     # ==========================================================================
     # API para Base de Datos de Contactos
     # ==========================================================================
