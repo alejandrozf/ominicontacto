@@ -141,12 +141,6 @@
 				<li>
                             	    <a href="{% url 'campana_manual_create' %}">Crear nueva campaña Manual</a>
                         	</li>
-                                <li>
-                                    <a href="{% url 'campana_preview_list' %}">Listado de campañas Preview</a>
-                                </li>
-				<li>
-                            	    <a href="{% url 'campana_preview_create' %}">Crear nueva campaña Preview</a>
-                        	</li>
                                 {% if user.get_is_administrador %}
                                 <li>
                             		<a href="{% url 'regenerar_asterisk' %}">Regenerar asterisk</a>

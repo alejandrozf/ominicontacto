@@ -1,21 +1,41 @@
 ---
+- name: Install of php56-fpm
+  yum: name=php56w-fpm.x86_64 state=present
+
+- name: Modify of php.ini
+  lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
 
 - name: Clone of Omnisup repository
-  git: repo={{ omnisup_repo }} dest=/usr/src/Omnisup
+  git: repo={{ omnisup_repo }} dest=/home/freetech/Omnisup
+  become: yes
+  become_user: freetech
+  become_method: su
 
-- set_fact: omnisup_dir=/var/www/html/Omnisup
-
-- name: Move Omnisup to /var/www/html
-  command: "{{ item }}"
+- name: Enable and start of php-fpm service
+  shell: "{{ item }}"
   with_items:
-      - mv /usr/src/Omnisup /var/www/html
-      - chown asterisk.asterisk -R {{ omnisup_dir }}
+      - systemctl start php-fpm
+      - systemctl enable php-fpm
+
+- name: Creation of /etc/nginx/conf.d/supervision.conf
+  template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
+
+- name: Set permissions of required to freetech's user
+  file: "dest: {{ item }} state=file owner=freetech group=freetech recurse=yes"
+  with_items:
+      - /var/run/php-fpm/php-fpm.sock
+      - /home/freetech/Omnisup
 
 - name: Copy config.php from /doc to /Omnisup
-  shell: "mv {{ omnisup_dir }}/doc/config_ex.php {{ omnisup_dir }}/doc/config.php"
+  shell: "mv /home/freetech/Omnisup/doc/config_ex.php /home/freetech/Omnisup/doc/config.php"
 - copy: "src={{ omnisup_dir }}/doc/config.php dest={{ omnisup_dir }} remote_src=yes"
-#- template: "src=templates/config.php.j2 dest={{ omnisup_dir }}/config.php"
+  become: yes
+  become_user: freetech
+  become_method: su
 
 - name: Modify of config.js in /static/Js
-  shell: "mv {{ omnisup_dir}}/static/Js/config_ex.js {{ omnisup_dir}}/static/Js/config.js"
+  shell: "mv /home/freetech/Omnisup/static/Js/config_ex.js /home/freetech/Omnisup/static/Js/config.js"
 - template: "src=templates/config.js.j2 dest={{ omnisup_dir}}/static/Js/config.js"
+  become: yes
+  become_user: freetech
+  become_method: su

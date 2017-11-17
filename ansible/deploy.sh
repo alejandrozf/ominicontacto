@@ -50,9 +50,9 @@ if [ ${ResultadoAnsible} -ne 0 ];then
 else
     echo "Pasando al deploy de OmniAPP"
 
-    if [ -z "$VIRTUAL_ENV" ] ; then
-        . ~/ominicontacto/virtualenv/bin/activate
-    fi
+    #if [ -z "$VIRTUAL_ENV" ] ; then
+    #    . ~/ominicontacto/virtualenv/bin/activate
+    #fi
 
     if [ -z "$1" ] ; then
         echo "ERROR: debe especificar la version (branch, tag o commit)"
@@ -97,10 +97,10 @@ else
 
     ################### Build.sh #####################
 
-    if [ "$VIRTUAL_ENV" = "" ] ; then
-            echo "ERROR: virtualenv (o alguno de la flia.) no encontrado"
-            exit 1
-    fi
+    #if [ "$VIRTUAL_ENV" = "" ] ; then
+    #        echo "ERROR: virtualenv (o alguno de la flia.) no encontrado"
+    #        exit 1
+    #fi
 
     set -e
 
