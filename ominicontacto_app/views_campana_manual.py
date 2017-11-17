@@ -7,7 +7,6 @@ Observacion se copiaron varias vistas del modulo views_campana
 
 from __future__ import unicode_literals
 
-import json
 import datetime
 
 from django.contrib import messages
@@ -27,6 +26,7 @@ from ominicontacto_app.services.estadisticas_campana_manuales import Estadistica
 from ominicontacto_app.forms import ReporteForm
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_manual_agente import EstadisticasAgenteService
+from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
 
 
 import logging as logging_
@@ -44,10 +44,13 @@ class CampanaManualListView(ListView):
     context_object_name = 'campanas'
     model = Campana
 
+    def get_queryset(self):
+        queryset = super(CampanaManualListView, self).get_queryset()
+        return queryset.filter(type=Campana.TYPE_MANUAL)
+
     def get_context_data(self, **kwargs):
-        context = super(CampanaManualListView, self).get_context_data(
-           **kwargs)
-        campanas = Campana.objects.obtener_campanas_manuales()
+        context = super(CampanaManualListView, self).get_context_data(**kwargs)
+        campanas = context['campanas']
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
         if self.request.user.is_authenticated() and self.request.user and \
@@ -58,7 +61,6 @@ class CampanaManualListView(ListView):
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
                                               oculto=False)
-
         return context
 
 
@@ -268,14 +270,23 @@ class DesOcultarCampanaManualView(RedirectView):
 
 
 def mostrar_campanas_manual_borradas_ocultas_view(request):
-    """Vista para mostrar campanas dialer ocultas"""
+    """Vista para mostrar campanas manuales ocultas"""
     borradas = Campana.objects.obtener_borradas()
     if request.user.is_authenticated() and request.user and \
             not request.user.get_is_administrador():
-        user = self.request.user
+        user = request.user
         borradas = Campana.objects.obtener_campanas_vista_by_user(borradas, user)
     data = {
         'borradas': borradas.filter(type=Campana.TYPE_MANUAL),
     }
     return render(request, 'campana_manual/campanas_borradas.html', data)
 
+
+class CampanaManualSupervisorUpdateView(CampanaSupervisorUpdateView):
+    """
+    Esta vista agrega supervisores a una campana manual
+    logica copiado para campana_preview
+    """
+
+    def get_success_url(self):
+        return reverse('campana_manual_list')

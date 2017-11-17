@@ -1,0 +1,14 @@
+---
+
+- name: Modify of /etc/httpd/conf.d/freepbx.conf
+  template: src=roles/asternic/templates/freepbx-conf.j2 dest=/etc/httpd/conf.d/freepbx.conf
+
+- name: restart httpd
+  service: name=httpd state=restarted enabled=yes
+
+- name: Freepbx init script as service
+  shell: "{{ item }}"
+  with_items:
+      - cp /usr/src/oml-freepbx/centos7-files/freepbx.service /etc/systemd/system/
+      - systemctl enable freepbx.service
+  when: ansible_os_family == "RedHat"

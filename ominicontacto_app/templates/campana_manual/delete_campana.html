@@ -13,7 +13,9 @@
             <span class="glyphicon glyphicon-remove"></span> Eliminar
         </button>
 
-        <a href="{% url 'campana_manual_list' %}">Cancelar</a>
+        {% block redireccion_cancelar %}
+            <a href="{% url 'campana_manual_list' %}">Cancelar</a>
+        {% endblock %}
 
     </form>
 </div>

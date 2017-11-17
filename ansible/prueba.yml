@@ -1,0 +1,11 @@
+---
+- name: prueba
+  hosts: omni-freepbx
+  tasks:
+      - name: Modify of tomcat server.xml configuration
+        blockinfile:
+            dest: /usr/local/queuemetrics/tomcat/conf/server.xml
+            insertafter: Connector port="8080"
+            marker: ""
+            block: |
+                     maxPostSize="-1"

@@ -14,15 +14,18 @@
 #blue.example.com
 #192.168.100.1
 #192.168.100.10
+
 [omni-app]
-#192.168.95.30
-192.168.99.101
+192.168.70.63
+
 [omni-voip]
-#192.168.95.31	
-192.168.99.100
+192.168.70.62
 
 [omni-freepbx]
-ansible_port=22, ansible_host=192.168.95.100
+192.168.99.2
+
+[omni-centos]
+172.16.20.12
 
 [omni:children]
 omni-app

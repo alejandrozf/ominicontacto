@@ -45,6 +45,21 @@ class CalificacionClienteCreateView(CreateView):
     model = CalificacionCliente
     form_class = FormularioContactoCalificacion
 
+    def dispatch(self, *args, **kwargs):
+        try:
+            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+            contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        except Contacto.DoesNotExist:
+            return HttpResponseRedirect(reverse('campana_dialer_busqueda_contacto',
+                                                kwargs={"pk_campana":
+                                                        self.kwargs['pk_campana']}))
+        qs = CalificacionCliente.objects.filter(contacto=contacto, campana=campana)
+        if qs.exists():
+            # lo redireccionamos a la vista que modifica los datos del formulario existente
+            return HttpResponseRedirect(
+                reverse('calificacion_formulario_update', kwargs=kwargs))
+        return super(CalificacionClienteCreateView, self).dispatch(*args, **kwargs)
+
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
@@ -227,19 +242,11 @@ class CalificacionClienteUpdateView(UpdateView):
         except Contacto.DoesNotExist:
             return HttpResponseRedirect(reverse('campana_dialer_busqueda_contacto',
                                                 kwargs={"pk_campana":
-                                                self.kwargs['pk_campana']}))
-        try:
-            CalificacionCliente.objects.get(contacto=contacto, campana=campana)
-        except CalificacionCliente.DoesNotExist:
-            return HttpResponseRedirect(reverse('calificacion_formulario_create',
-                kwargs={"pk_campana": self.kwargs['pk_campana'],
-                        "pk_contacto": self.kwargs['pk_contacto'],
-                        "id_agente": self.kwargs['id_agente'],
-                        "wombat_id": self.kwargs['wombat_id'],
-                        }))
-
-        return super(CalificacionClienteUpdateView, self).dispatch(*args,
-                                                                  **kwargs)
+                                                        self.kwargs['pk_campana']}))
+        calificacion_qs = CalificacionCliente.objects.filter(contacto=contacto, campana=campana)
+        if not calificacion_qs.exists():
+            return HttpResponseRedirect(reverse('calificacion_formulario_create', kwargs=kwargs))
+        return super(CalificacionClienteUpdateView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])

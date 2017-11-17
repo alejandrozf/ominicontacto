@@ -126,25 +126,25 @@
                                 <li>
                                     <a href="{% url 'campana_list' %}">Listado de campañas entrantes</a>
                                 </li>
-						    	<li>
-                            		<a href="{% url 'campana_nuevo' %}">Crear nueva campaña entrante</a>
-                        		</li>
+				<li>
+                            	    <a href="{% url 'campana_nuevo' %}">Crear nueva campaña entrante</a>
+                        	</li>
                                 <li>
                                     <a href="{% url 'campana_dialer_list' %}">Listado de campañas dialer</a>
                                 </li>
-						    	<li>
-                            		<a href="{% url 'campana_dialer_create' %}">Crear nueva campaña dialer</a>
-                        		</li>
+				<li>
+                            	    <a href="{% url 'campana_dialer_create' %}">Crear nueva campaña dialer</a>
+                        	</li>
                                 <li>
                                     <a href="{% url 'campana_manual_list' %}">Listado de campañas Manuales</a>
                                 </li>
-						    	<li>
-                            		<a href="{% url 'campana_manual_create' %}">Crear nueva campaña Manual</a>
-                        		</li>
+				<li>
+                            	    <a href="{% url 'campana_manual_create' %}">Crear nueva campaña Manual</a>
+                        	</li>
                                 {% if user.get_is_administrador %}
                                 <li>
                             		<a href="{% url 'regenerar_asterisk' %}">Regenerar asterisk</a>
-                        		</li>
+                        	</li>
                                 {% endif %}
                                 <li class="divider"></li>
                                 <li>
@@ -235,7 +235,7 @@
                                 </li>
                                 {% endif %}
                                 <li>
-                                    <a href="#"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span> IM</a>
+                                    {# <a href="#"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span> IM</a> #}
                         		</li>
 						    </ul>
 						</li>
@@ -250,6 +250,9 @@
                                 </li>
 						    </ul>
 						</li>
+                        <li>
+                            <a href="{% url 'acerca' %}">Acerca</a>
+                        </li>
                     </ul>
                 </div>
             </div>

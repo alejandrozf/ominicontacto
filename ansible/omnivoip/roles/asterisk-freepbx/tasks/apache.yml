@@ -1,0 +1,41 @@
+---
+
+- name: Habilitar Apache SSL
+  shell: "{{ item }}"
+  with_items:
+          - a2enmod ssl
+          - a2ensite default-ssl
+
+- name: Crear el directorio 
+  file: "path=/etc/apache2/ssl state=directory mode=600"
+
+- name: Seteo de parametros del certificado de la CA
+  set_fact:
+          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omnivoip_fqdn }}"
+
+- name: Crear el certificado de apache SSL
+  shell: "{{ item }}"
+  with_items:
+          - "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt -subj \"{{ ca_subject }}\""
+          - "chmod 600 /etc/apache2/ssl/*"
+  args:
+          chdir: /etc/apache2/ssl 
+
+- name: Modificacion de default-ssl.conf
+  template: "src=templates/default-ssl.conf.j2 dest=/etc/apache2/sites-enabled/default-ssl.conf "
+
+- name: Modificacion de default-ssl.conf
+  template: "src=templates/ports.conf.j2 dest=/etc/apache2/ports.conf"
+  notify: restart apache2
+
+- name: Copia de los archivos de asterisk
+  shell: "{{ item }} chdir=/usr/src/omnileads-AIO/asterisk/"
+  with_items:
+          - "cp *.conf /etc/asterisk/"
+          - "cp omni-grabaciones.php /var/lib/asterisk/agi-bin/"
+          - "sed -i 's/host=192.168.1.83/host={{ omniapp_fqdn }}/' /var/lib/asterisk/agi-bin/omni-grabaciones.php"
+          - "cp omni-asterisk-logout.php /var/lib/asterisk/agi-bin/"
+
+- name: Modificacion del crontab de asterisk
+  lineinfile: "dest=/var/spool/cron/crontabs/asterisk line=\"*/5 * * * * /var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
+ 
