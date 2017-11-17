@@ -2,13 +2,17 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import json
 import logging
-import uuid
+import os
 import re
-import datetime
+import sys
+import uuid
 
 from ast import literal_eval
+
+from crontab import CronTab
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
@@ -702,6 +706,33 @@ class Campana(models.Model):
     def __unicode__(self):
         return self.nombre
 
+    def crear_tarea_actualizacion(self):
+        """
+        Adiciona una tarea que llama al procedimiento de actualización de cada
+        asignación de agente a contacto para la campaña preview actual
+        """
+        # conectar con cron
+        crontab = CronTab(user=os.getlogin())
+        ruta_actualizador = os.path.join(os.getcwd(), 'actualizador_campanas_preview.py')
+        # adicionar nuevo cron job
+        job = crontab.new(
+            command='{0} {1} {2}'.format(sys.executable, ruta_actualizador, self.pk),
+            comment=str(self.pk))
+        # adicionar tiempo de desconexión al cron job
+        tiempo_desconexion = self.tiempo_desconexion
+        if tiempo_desconexion > 0:
+            job.minute.every(tiempo_desconexion)
+        crontab.write_to_user(user=os.getlogin())
+
+    def eliminar_tarea_actualizacion(self):
+        """
+        Elimina la tarea que llama al procedimiento de actualización de cada
+        asignación de agente a contacto para la campaña preview actual
+        """
+        crontab = CronTab(user=os.getlogin())
+        crontab.remove_all(comment=str(self.pk))
+        crontab.write_to_user(user=os.getlogin())
+
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
         self.save()
@@ -730,6 +761,11 @@ class Campana(models.Model):
     def remover(self):
         """Setea la campaña como ESTADO_BORRADA"""
         logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
+        if self.type == Campana.TYPE_PREVIEW:
+            # eliminamos el proceso que actualiza las conexiones de agentes a contactos
+            self.eliminar_tarea_actualizacion()
+            # eliminamos todos las entradas de AgenteEnContacto relativas a la campaña
+            AgenteEnContacto.objects.filter(campana_id=self.pk).delete()
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_BORRADA
         self.save()
@@ -840,6 +876,9 @@ class Campana(models.Model):
                 contactos_campana.delete()
                 self.estado = Campana.ESTADO_FINALIZADA
                 self.save()
+                # eliminamos la planificación de actualización de relaciones de agentes con
+                # contactos de la campaña
+                self.eliminar_tarea_actualizacion()
 
 
 class QueueManager(models.Manager):
