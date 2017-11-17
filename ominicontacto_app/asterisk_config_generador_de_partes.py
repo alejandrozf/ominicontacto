@@ -347,7 +347,7 @@ class GeneradorParaCampanaDialerGrabacion(GeneradorDePedazoDeCampanaDialer):
 
     def get_template(self):
         return """
-        same => n,Set(__MONITOR_FILENAME=q-${{STRFTIME(${{EPOCH}},,%Y%m%d%H%M%S)}}-${{CAMPANA}}-${{NUMMARCADO}}-${{UNIQUEID}})
+        same => n,Set(__MONITOR_FILENAME=q-${{STRFTIME(${{EPOCH}},,%Y%m%d%H%M%S)}}-${{ID_CAMPANA}}-${{NUMMARCADO}}-${{UNIQUEID}})
         same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{{UNIQUEID}} ^{{MIXMONITOR_FILENAME}})
         same => n,Set(__TIPOLLAMADA=DIALER)
         same => n,MixMonitor(${{MONITOR_FILENAME}}.wav,b)
