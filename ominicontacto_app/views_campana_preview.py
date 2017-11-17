@@ -88,6 +88,9 @@ class CampanaPreviewCreateView(CreateView):
 
         # rellenar la tabla que relación agentes y contactos con los valores iniciales
         form.instance.establecer_valores_iniciales_agente_contacto()
+        # crear(sobreescribir) archivo de crontab con la configuración de llamadas al procedimiento
+        # de actualización de las asignaciones de agente a contactos
+        form.instance.crear_tarea_actualizacion()
         return super(CampanaPreviewCreateView, self).form_valid(form)
 
     def get_success_url(self):
