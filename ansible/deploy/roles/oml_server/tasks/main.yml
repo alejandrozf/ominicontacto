@@ -16,3 +16,8 @@
   when:
       - not post_install
       - ansible_os_family == "Debian"
+
+- include: sshkey_transfer.yml
+  when:
+      - not post_install
+      - ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
