@@ -41,8 +41,6 @@
             <tr>
                 <th>Nombre</th>
                 <th>Número</th>
-                <th>Fecha Ini</th>
-                <th>Fecha Fin</th>
                 <th>Base de datos</th>
                 <th>Estado</th>
                 <th>Acciones&nbsp;&nbsp;</th>
@@ -56,10 +54,6 @@
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
-                <td>
                     {{ campana.bd_contacto }}
                 </td>
                 <td> {{campana.get_estado_display}}  </td>
@@ -86,7 +80,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="7">No existen campañas</td>
+            <td colspan="5">No existen campañas</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -98,8 +92,6 @@
             <tr>
                 <th>Nombre</th>
                 <th>Número</th>
-                <th>Fecha Ini</th>
-                <th>Fecha Fin</th>
                 <th>Base de datos</th>
                 <th>Estado</th>
                 <th>Acciones&nbsp;&nbsp;</th>
@@ -113,10 +105,6 @@
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
-                <td>
                     {{ campana.bd_contacto }}
                 </td>
                 <td> {{campana.get_estado_display}}  </td>
@@ -143,7 +131,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="7">No existen campañas</td>
+            <td colspan="5">No existen campañas</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -155,8 +143,6 @@
             <tr>
                 <th>Nombre</th>
                 <th>Número</th>
-                <th>Fecha Ini</th>
-                <th>Fecha Fin</th>
                 <th>Base de datos</th>
                 <th>Estado</th>
                 <th>Acciones&nbsp;&nbsp;</th>
@@ -170,10 +156,6 @@
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
-                <td>
                     {{ campana.bd_contacto }}
                 </td>
                 <td> {{campana.get_estado_display}}  </td>
@@ -200,7 +182,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="7">No existen campañas</td>
+            <td colspan="5">No existen campañas</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -212,8 +194,6 @@
             <tr>
                 <th>Nombre</th>
                 <th>Número</th>
-                <th>Fecha Ini</th>
-                <th>Fecha Fin</th>
                 <th>Base de datos</th>
                 <th>Estado</th>
                 <th>Acciones
@@ -230,10 +210,6 @@
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
-                <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
                 <td>
                     {{ campana.bd_contacto }}
                 </td>
@@ -270,7 +246,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="7">No existen campañas</td>
+            <td colspan="5">No existen campañas</td>
         </tr>
         {% endfor %}
         </tbody>
