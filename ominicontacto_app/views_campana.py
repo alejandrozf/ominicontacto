@@ -523,7 +523,7 @@ class CampanaSupervisorUpdateView(UpdateView):
 
 class CampanaBorradasListView(CampanaListView):
     """
-    Vista que lista las campañas manual pero de incluyendo las borradas ocultas
+    Vista que lista las campañas entrantes pero de incluyendo las borradas ocultas
     """
 
     template_name = 'campana/campanas_borradas.html'
