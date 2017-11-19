@@ -321,6 +321,9 @@ urlpatterns = [
         login_required(
             views_campana.CampanaSupervisorUpdateView.as_view()),
         name="campana_supervisors"),
+    url(r'^campana/mostrar_ocultas/$',
+        views_campana.CampanaBorradasListView.as_view(),
+        name="mostrar_campanas_ocultas"),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================

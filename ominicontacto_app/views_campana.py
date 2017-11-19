@@ -62,6 +62,7 @@ class CampanaListView(ListView):
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
+        context['campanas'] = campanas
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
@@ -518,3 +519,22 @@ class CampanaSupervisorUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('campana_list')
+
+
+class CampanaBorradasListView(CampanaListView):
+    """
+    Vista que lista las campañas manual pero de incluyendo las borradas ocultas
+    """
+
+    template_name = 'campana/campanas_borradas.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaBorradasListView, self).get_context_data(**kwargs)
+        context['borradas'] = context['campanas'].filter(estado=Campana.ESTADO_BORRADA)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return super(CampanaBorradasListView, self).get(request, *args, **kwargs)
+        else:
+            return JsonResponse({'result': 'desconectado'})
