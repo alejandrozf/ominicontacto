@@ -647,7 +647,9 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.ActuacionVigenteCampanaDialerUpdateView.as_view()),
         name="campana_dialer_update_actuacion_vigente"),
-
+    url(r'^campana_dialer/mostrar_ocultas/$',
+        views_campana_dialer.CampanaDialerBorradasListView.as_view(),
+        name="campana_dialer_mostrar_ocultas"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================

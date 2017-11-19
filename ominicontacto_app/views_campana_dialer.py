@@ -11,7 +11,7 @@ import json
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from ominicontacto_app.models import Contacto, Campana, SupervisorProfile
 from django.views.generic import (
@@ -55,6 +55,7 @@ class CampanaDialerListView(ListView):
         campana_service = CampanaService()
         campana_service.chequear_campanas_finalizada_eliminarlas(
             campanas.filter(estado=Campana.ESTADO_ACTIVA))
+        context['campanas'] = campanas
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
@@ -472,3 +473,22 @@ class CampanaDialerSupervisorUpdateView(CampanaSupervisorUpdateView):
 
     def get_success_url(self):
         return reverse('campana_dialer_list')
+
+
+class CampanaDialerBorradasListView(CampanaDialerListView):
+    """
+    Vista que lista las campañas dialer pero de incluyendo las borradas ocultas
+    """
+
+    template_name = 'campana_dialer/campanas_borradas.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaDialerBorradasListView, self).get_context_data(**kwargs)
+        context['borradas'] = context['campanas'].filter(estado=Campana.ESTADO_BORRADA)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return super(CampanaDialerBorradasListView, self).get(request, *args, **kwargs)
+        else:
+            return JsonResponse({'result': 'desconectado'})
