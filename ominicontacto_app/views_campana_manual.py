@@ -270,19 +270,6 @@ class DesOcultarCampanaManualView(RedirectView):
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
 
-def mostrar_campanas_manual_borradas_ocultas_view(request):
-    """Vista para mostrar campanas manuales ocultas"""
-    borradas = Campana.objects.obtener_borradas()
-    if request.user.is_authenticated() and request.user and \
-            not request.user.get_is_administrador():
-        user = request.user
-        borradas = Campana.objects.obtener_campanas_vista_by_user(borradas, user)
-    data = {
-        'borradas': borradas.filter(type=Campana.TYPE_MANUAL),
-    }
-    return render(request, 'campana_manual/campanas_borradas.html', data)
-
-
 class CampanaManualSupervisorUpdateView(CampanaSupervisorUpdateView):
     """
     Esta vista agrega supervisores a una campana manual
