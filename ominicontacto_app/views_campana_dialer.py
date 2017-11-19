@@ -241,19 +241,6 @@ class DesOcultarCampanaDialerView(RedirectView):
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
-def mostrar_campanas_dialer_borradas_ocultas_view(request):
-    """Vista para mostrar campanas dialer ocultas"""
-    borradas = Campana.objects.obtener_borradas()
-    if request.user.is_authenticated() and request.user and \
-            not request.user.get_is_administrador():
-        user = request.user
-        borradas = Campana.objects.obtener_campanas_vista_by_user(borradas, user)
-    data = {
-        'borradas': borradas.filter(type=Campana.TYPE_DIALER),
-    }
-    return render(request, 'campana_dialer/campanas_borradas.html', data)
-
-
 def detalle_campana_dialer_view(request):
     """Vista que muestrar el detalle de campana en wombat"""
     pk_campana = int(request.GET['pk_campana'])
