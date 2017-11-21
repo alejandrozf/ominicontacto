@@ -983,6 +983,7 @@ class CampanaPreviewUpdateForm(CampanaPreviewForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['bd_contacto'].disabled = True
+            self.fields['tiempo_desconexion'].disabled = True
 
 
 class CalificacionManualForm(forms.ModelForm):
