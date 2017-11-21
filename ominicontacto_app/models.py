@@ -764,6 +764,7 @@ class Campana(models.Model):
         logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
         if self.type == Campana.TYPE_PREVIEW:
             # eliminamos el proceso que actualiza las conexiones de agentes a contactos
+            # en la campaña
             self.eliminar_tarea_actualizacion()
             # eliminamos todos las entradas de AgenteEnContacto relativas a la campaña
             AgenteEnContacto.objects.filter(campana_id=self.pk).delete()
