@@ -713,10 +713,11 @@ class Campana(models.Model):
         """
         # conectar con cron
         crontab = CronTab(user=os.getlogin())
-        ruta_actualizador = os.path.join(os.getcwd(), 'actualizador_campanas_preview.py')
+        ruta_manage_py = os.path.join(os.getcwd(), 'manage.py')
         # adicionar nuevo cron job
         job = crontab.new(
-            command='{0} {1} {2}'.format(sys.executable, ruta_actualizador, self.pk),
+            command='{0} {1} actualizar_campanas_preview {2}'.format(
+                sys.executable, ruta_manage_py, self.pk),
             comment=str(self.pk))
         # adicionar tiempo de desconexión al cron job
         tiempo_desconexion = self.tiempo_desconexion
