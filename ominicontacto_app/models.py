@@ -19,6 +19,7 @@ from django.contrib.sessions.models import Session
 from django.db import models, connection
 from django.db.models import Max, Q, Count
 from django.core.exceptions import ValidationError, SuspiciousOperation
+
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 
 logger = logging.getLogger(__name__)
@@ -716,8 +717,8 @@ class Campana(models.Model):
         ruta_manage_py = os.path.join(os.getcwd(), 'manage.py')
         # adicionar nuevo cron job
         job = crontab.new(
-            command='{0} {1} actualizar_campanas_preview {2}'.format(
-                sys.executable, ruta_manage_py, self.pk),
+            command='{0} {1} actualizar_campanas_preview {2} {3}'.format(
+                sys.executable, ruta_manage_py, self.pk, self.tiempo_desconexion),
             comment=str(self.pk))
         # adicionar tiempo de desconexión al cron job
         tiempo_desconexion = self.tiempo_desconexion
@@ -2892,6 +2893,7 @@ class AgenteEnContacto(models.Model):
     telefono_contacto = models.CharField(max_length=128)
     campana_id = models.IntegerField()
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
+    modificado = models.DateTimeField(auto_now=True, null=True)
 
     def __unicode__(self):
         return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(
