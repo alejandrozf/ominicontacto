@@ -8,7 +8,6 @@ import json
 import logging
 import os
 import re
-import sys
 import uuid
 
 from ast import literal_eval
@@ -19,6 +18,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
 from django.db import models, connection
 from django.db.models import Max, Q, Count
+from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
@@ -715,11 +715,12 @@ class Campana(models.Model):
         """
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
-        ruta_manage_py = os.path.join(os.getcwd(), 'manage.py')
+        ruta_python_virtualenv = os.path.join(os.environ['VIRTUAL_ENV'], 'bin/python')
+        ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
         # adicionar nuevo cron job
         job = crontab.new(
             command='{0} {1} actualizar_campanas_preview {2} {3}'.format(
-                sys.executable, ruta_manage_py, self.pk, self.tiempo_desconexion),
+                ruta_python_virtualenv, ruta_manage_py, self.pk, self.tiempo_desconexion),
             comment=str(self.pk))
         # adicionar tiempo de desconexión al cron job
         tiempo_desconexion = self.tiempo_desconexion
