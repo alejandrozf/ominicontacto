@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import getpass
 import json
 import logging
 import os
@@ -713,7 +714,7 @@ class Campana(models.Model):
         asignación de agente a contacto para la campaña preview actual
         """
         # conectar con cron
-        crontab = CronTab(user=os.getlogin())
+        crontab = CronTab(user=getpass.getuser())
         ruta_manage_py = os.path.join(os.getcwd(), 'manage.py')
         # adicionar nuevo cron job
         job = crontab.new(
@@ -724,16 +725,16 @@ class Campana(models.Model):
         tiempo_desconexion = self.tiempo_desconexion
         if tiempo_desconexion > 0:
             job.minute.every(tiempo_desconexion)
-        crontab.write_to_user(user=os.getlogin())
+        crontab.write_to_user(user=getpass.getuser())
 
     def eliminar_tarea_actualizacion(self):
         """
         Elimina la tarea que llama al procedimiento de actualización de cada
         asignación de agente a contacto para la campaña preview actual
         """
-        crontab = CronTab(user=os.getlogin())
+        crontab = CronTab(user=getpass.getuser())
         crontab.remove_all(comment=str(self.pk))
-        crontab.write_to_user(user=os.getlogin())
+        crontab.write_to_user(user=getpass.getuser())
 
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
