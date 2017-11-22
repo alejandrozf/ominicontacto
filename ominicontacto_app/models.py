@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import re
+import sys
 import uuid
 
 from ast import literal_eval
@@ -715,7 +716,7 @@ class Campana(models.Model):
         """
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
-        ruta_python_virtualenv = os.path.join(os.environ['VIRTUAL_ENV'], 'bin/python')
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
         ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
         # adicionar nuevo cron job
         job = crontab.new(
