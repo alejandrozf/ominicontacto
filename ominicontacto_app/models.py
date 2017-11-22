@@ -778,6 +778,10 @@ class Campana(models.Model):
         logger.info("Seteando campana %s como ESTADO_FINALIZADA", self.id)
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_FINALIZADA
+        if self.type == Campana.TYPE_PREVIEW:
+            # eliminamos la planificación de actualización de relaciones de agentes con contactos
+            # de la campaña
+            self.eliminar_tarea_actualizacion()
         self.save()
 
     def ocultar(self):
@@ -877,11 +881,7 @@ class Campana(models.Model):
                 estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
             if n_contactos_campana == n_contactos_atendidos:
                 contactos_campana.delete()
-                self.estado = Campana.ESTADO_FINALIZADA
-                self.save()
-                # eliminamos la planificación de actualización de relaciones de agentes con
-                # contactos de la campaña
-                self.eliminar_tarea_actualizacion()
+                self.finalizar()
 
 
 class QueueManager(models.Manager):
