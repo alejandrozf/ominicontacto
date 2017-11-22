@@ -5,9 +5,11 @@ Tests relacionados con las campañas
 """
 from __future__ import unicode_literals
 
+import os
 import json
 import threading
 
+from crontab import CronTab
 from mock import patch
 
 from django.core.urlresolvers import reverse
@@ -124,13 +126,16 @@ class CampanasTests(OMLBaseTest):
     PWD = u'admin123'
 
     def setUp(self):
+        self.tiempo_desconexion = 2
+
         self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
 
         self.campana = CampanaFactory.create()
         self.campana_activa = CampanaFactory.create(
-            estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW)
+            estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW,
+            tiempo_desconexion=self.tiempo_desconexion)
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
         self.agente_profile = AgenteProfileFactory.create(user=self.usuario_admin_supervisor)
@@ -449,3 +454,43 @@ class CampanasTests(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         dict_response = json.loads(response.content)
         self.assertTrue(dict_response['contacto_asignado'])
+
+    def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(self):
+        url = reverse('campana_preview_create')
+        nombre_campana = 'campana_preview_test'
+        post_data = {'nombre': nombre_campana,
+                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'bd_contacto': self.campana_activa.bd_contacto.pk,
+                     'tipo_interaccion': Campana.FORMULARIO,
+                     'formulario': self.campana.formulario.pk,
+                     'gestion': 'Venta',
+                     'detectar_contestadores': True,
+                     'auto_grabacion': True,
+                     'objetivo': 1,
+                     'tiempo_desconexion': 10}
+        self.client.post(url, post_data, follow=True)
+        crontab = CronTab(user=os.getlogin())
+        campana = Campana.objects.get(nombre=nombre_campana)
+        jobs_generator = crontab.find_comment(str(campana.pk))
+        job = list(jobs_generator)[0]
+        self.assertTrue(job.is_enabled())
+        self.assertTrue(job.is_valid())
+        # eliminamos la tarea generada
+        crontab.remove(job)
+
+    def test_borrar_campana_preview_elimina_tarea_programada_actualizacion_contactos(self):
+        self.campana_activa.crear_tarea_actualizacion()
+        url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
+        self.client.post(url, follow=True)
+        crontab = CronTab(user=os.getlogin())
+        jobs_generator = crontab.find_comment(str(self.campana_activa.pk))
+        jobs = list(jobs_generator)
+        self.assertEqual(jobs, [])
+
+    def test_finalizar_campana_preview_elimina_tarea_programada_actualizacion_contactos(self):
+        self.campana_activa.crear_tarea_actualizacion()
+        self.campana_activa.finalizar()
+        crontab = CronTab(user=os.getlogin())
+        jobs_generator = crontab.find_comment(str(self.campana_activa.pk))
+        jobs = list(jobs_generator)
+        self.assertEqual(jobs, [])
