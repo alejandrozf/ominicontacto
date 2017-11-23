@@ -66,3 +66,6 @@
   lineinfile: "dest=/home/freetech/static_root/ominicontacto/JS/phoneJsSip.js regexp=\"^      ws_servers :\" line=\"      ws_servers : \"wss://\"+KamailioIp+\":14443\",\""
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
+- name: Add parameters in server.xml of Catalina
+  template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
