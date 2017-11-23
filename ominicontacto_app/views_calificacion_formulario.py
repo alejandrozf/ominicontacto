@@ -137,8 +137,6 @@ class CalificacionClienteCreateView(CreateView):
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
         nombres = metadata.nombres_de_columnas
-        campana = calificacion_form.instance.campana
-        agente = calificacion_form.instance.agente
         datos = []
         nombres.remove('telefono')
         for nombre in nombres:
