@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from ominicontacto_app.models import AgenteProfile, User, Modulo
+from ominicontacto_app.models import AgenteProfile, User, Modulo, AgenteEnContacto
 from ominicontacto_app.forms import (
     CustomUserChangeForm,
     CustomUserCreationForm
 )
 
 
-
-# Heredamos del UserAdmin original para usar nuestros formularios customizados
+#  Heredamos del UserAdmin original para usar nuestros formularios customizados
 class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
@@ -28,7 +27,7 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(User)
 class UserAdmin(CustomUserAdmin):
-    list_display =  (
+    list_display = (
         'id',
         'username',
         'password',
@@ -55,8 +54,24 @@ class AgenteAdmin(admin.ModelAdmin):
 
 
 @admin.register(Modulo)
-class AgenteAdmin(admin.ModelAdmin):
+class ModuloAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'nombre'
+    )
+
+
+@admin.register(AgenteEnContacto)
+class AgenteEnContactoAdmin(admin.ModelAdmin):
+    list_display = (
+        'contacto_id',
+        'agente_id',
+        'campana_id',
+        'datos_contacto',
+        'estado'
+    )
+
+    list_filter = (
+        'agente_id',
+        'campana_id',
     )
