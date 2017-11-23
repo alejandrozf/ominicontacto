@@ -402,7 +402,7 @@ class FormularioSeleccionCampanaDialerFormView(FormView):
                         for queue in agente.get_campanas_activas_miembro()]
 
         campana_choice = [(campana.id, campana.nombre) for campana in
-                          campanas]
+                          campanas if campana.type is Campana.TYPE_DIALER]
         return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
 
     def form_valid(self, form):
