@@ -304,9 +304,6 @@ urlpatterns = [
     url(r'^campana/(?P<pk_campana>\d+)/desocultar/$',
         login_required(views_campana.DesOcultarCampanaView.as_view()),
         name='desoculta_campana', ),
-    url(r'^mostrar/campanas_ocultas/$',
-        login_required(views_campana.mostrar_campanas_borradas_ocultas_view),
-        name='mostrar_campanas_ocultas', ),
     url(r'^campana/(?P<pk_campana>\d+)/exporta_pdf/$',
         login_required(
             views_campana.ExportaReportePDFView.as_view()),
@@ -324,6 +321,9 @@ urlpatterns = [
         login_required(
             views_campana.CampanaSupervisorUpdateView.as_view()),
         name="campana_supervisors"),
+    url(r'^campana/mostrar_ocultas/$',
+        views_campana.CampanaBorradasListView.as_view(),
+        name="mostrar_campanas_ocultas"),
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
@@ -591,10 +591,6 @@ urlpatterns = [
         login_required(
             views_campana_dialer.DesOcultarCampanaDialerView.as_view()),
         name="campana_dialer_desocultar"),
-    url(r'^campana_dialer/mostrar_ocultas/$',
-        login_required(
-            views_campana_dialer.mostrar_campanas_dialer_borradas_ocultas_view),
-        name="campana_dialer_mostrar_ocultas"),
     url(r'^campana_dialer/detalle_wombat/$',
         login_required(
             views_campana_dialer.detalle_campana_dialer_view),
@@ -651,7 +647,9 @@ urlpatterns = [
         login_required(
             views_campana_dialer_creacion.ActuacionVigenteCampanaDialerUpdateView.as_view()),
         name="campana_dialer_update_actuacion_vigente"),
-
+    url(r'^campana_dialer/mostrar_ocultas/$',
+        views_campana_dialer.CampanaDialerBorradasListView.as_view(),
+        name="campana_dialer_mostrar_ocultas"),
     # ==========================================================================
     # Campana Dialer Reportes
     # ==========================================================================
@@ -867,14 +865,13 @@ urlpatterns = [
         login_required(
             views_campana_manual.DesOcultarCampanaManualView.as_view()),
         name="campana_manual_desocultar"),
-    url(r'^campana_manual/mostrar_ocultas/$',
-        login_required(
-            views_campana_manual.mostrar_campanas_manual_borradas_ocultas_view),
-        name="campana_manual_mostrar_ocultas"),
     url(r'^campana_manual/(?P<pk_campana>\d+)/supervisors/$',
         login_required(
             views_campana_manual.CampanaManualSupervisorUpdateView.as_view()),
         name="campana_manual_supervisors"),
+    url(r'^campana_manual/mostrar_ocultas/$',
+        views_campana_manual.CampanaManualBorradasListView.as_view(),
+        name="campana_manual_mostrar_ocultas"),
     # ==========================================================================
     # Campana Preview
     # ==========================================================================
