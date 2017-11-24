@@ -1,4 +1,7 @@
 $(document).ready(function(){
+
+  var $errorAsignacionContacto = $('#errorAsignacionContacto');
+
   $('#campanasPreviewTable').DataTable( {
     // Convierte a datatable la tabla de campañas preview
     language: {
@@ -28,6 +31,29 @@ $(document).ready(function(){
     $button.attr('title', data['data']);
   }
 
+  $('#validar_contacto').on('click', function(){
+    var url = "/campana_preview/validar_contacto_asignado/";
+    var data = {
+      'pk_agente': $inputAgente.val(),
+      'pk_campana': $inputCampana.val(),
+      'pk_contacto': $inputContacto.val(),
+    };
+    $.post(url, data).success(function(data) {
+      // comprobamos si el contacto todavía sigue asignado al agente
+      // antes de llamar
+      if (data['contacto_asignado'] == true) {
+        // hacemos click en el botón del form para iniciar la
+        // llamada
+        $('#llamar_contacto').trigger('click');
+      }
+      else {
+        // se muestra modal con mensaje de error
+        var errorMessage = "Ha sido desconectado del contacto asignado, pruebe obtener otro"
+        $errorAsignacionContacto.html(errorMessage);
+      }
+    });
+  });
+
   $('.obtener-contacto').each(function() {
     $(this).on('click', function() {
       var $button = $(this);
@@ -49,6 +75,7 @@ $(document).ready(function(){
             $inputContacto.attr('value', data['contacto_id']);
             $inputCampana.attr('value', idCampana);
             $inputCampanaNombre.attr('value', nombreCampana);
+            $errorAsignacionContacto.html('');
 
             // Limpiamos la información de algún contacto anterior
             $contactoOtrosDatos.html("");
