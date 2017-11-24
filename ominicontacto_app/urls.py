@@ -910,6 +910,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.ObtenerContactoView.as_view()),
         name="campana_preview_dispatcher"),
+    url(r'^campana_preview/validar_contacto_asignado/$',
+        login_required(
+            views_campana_preview.campana_validar_contacto_asignado_view),
+        name="validar_contacto_asignado"),
 
     # ==========================================================================
     # Campana Preview

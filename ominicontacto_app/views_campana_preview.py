@@ -215,6 +215,20 @@ def campana_mostrar_ocultar_view(request, *args, **kwargs):
     return JsonResponse({'result': 'Ok'})
 
 
+def campana_validar_contacto_asignado_view(request, *args, **kwargs):
+    """
+    Cambia el atributo 'oculto' de la campaña hacia el valor opuesto (muestra/oculta)
+    """
+    campana_id = request.POST.get('pk_campana')
+    agente_id = request.POST.get('pk_agente')
+    contacto_id = request.POST.get('pk_contacto')
+
+    agente_en_contacto = get_object_or_404(
+        AgenteEnContacto, campana_id=campana_id, contacto_id=contacto_id)
+    asignado = agente_en_contacto.agente_id == int(agente_id)
+    return JsonResponse({'contacto_asignado': asignado})
+
+
 class ObtenerContactoView(View):
     """
     Devuelve un contacto de una campaña preview, y además lo marca como entregado
