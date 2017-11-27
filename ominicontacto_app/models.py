@@ -2146,6 +2146,9 @@ class WombatLog(models.Model):
 
 class QueuelogManager(models.Manager):
 
+    def llamadas_iniciadas(self):
+        return Queuelog.objects.filter(event='ENTERQUEUE')
+
     def obtener_log_agente_event_periodo_all(
             self, eventos, fecha_desde, fecha_hasta, agente):
         if fecha_desde and fecha_hasta:
