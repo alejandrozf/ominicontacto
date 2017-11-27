@@ -300,5 +300,5 @@ class CampanaPreviewDetailView(DetailView):
             campana_id=campana.pk).count()
         context['terminadas'] = relaciones_campana.filter(
             estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
-        context['estimadas'] = context['efectuadas'] - context['terminadas']
+        context['estimadas'] = relaciones_campana.count() - context['terminadas']
         return context
