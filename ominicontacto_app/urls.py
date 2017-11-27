@@ -914,18 +914,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.campana_validar_contacto_asignado_view),
         name="validar_contacto_asignado"),
-
-    # ==========================================================================
-    # Campana Preview
-    # ==========================================================================
-    url(r'^campana_preview/lista/$',
+    url(r'^campana_preview/(?P<pk_campana>\d+)/detalle/$',
         login_required(
-            views_campana_preview.CampanaPreviewListView.as_view()),
-        name="campana_preview_list"),
-    url(r'^campana_preview/create/$',
-        login_required(
-            views_campana_preview.CampanaPreviewCreateView.as_view()),
-        name="campana_preview_create"),
+            views_campana_preview.CampanaPreviewDetailView.as_view()),
+        name="campana_preview_detalle"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos

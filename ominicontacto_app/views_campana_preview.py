@@ -20,6 +20,7 @@ from ominicontacto_app.models import BaseDatosContacto, Campana, Queue, AgenteEn
 from ominicontacto_app.forms import CampanaPreviewForm, CampanaPreviewUpdateForm
 from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
+from ominicontacto_app.views_campana_dialer_reportes import CampanaDialerDetailView
 
 logger = logging_.getLogger(__name__)
 
@@ -285,3 +286,7 @@ class ObtenerContactoView(View):
                                  'data': 'Contacto siendo accedido por más de un agente'})
         else:
             return self._gestionar_contacto(request, qs_agentes_contactos, campana_id)
+
+
+class CampanaPreviewDetailView(CampanaDialerDetailView):
+    template_name = 'campana_preview/detalle.html'
