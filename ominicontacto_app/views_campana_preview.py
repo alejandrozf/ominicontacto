@@ -14,13 +14,12 @@ from django.db.utils import DatabaseError
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import CreateView, UpdateView, View
+from django.views.generic import CreateView, UpdateView, View, DetailView
 
-from ominicontacto_app.models import BaseDatosContacto, Campana, Queue, AgenteEnContacto
+from ominicontacto_app.models import BaseDatosContacto, Campana, Queue, Queuelog, AgenteEnContacto
 from ominicontacto_app.forms import CampanaPreviewForm, CampanaPreviewUpdateForm
 from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
-from ominicontacto_app.views_campana_dialer_reportes import CampanaDialerDetailView
 
 logger = logging_.getLogger(__name__)
 
@@ -288,5 +287,18 @@ class ObtenerContactoView(View):
             return self._gestionar_contacto(request, qs_agentes_contactos, campana_id)
 
 
-class CampanaPreviewDetailView(CampanaDialerDetailView):
+class CampanaPreviewDetailView(DetailView):
     template_name = 'campana_preview/detalle.html'
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaPreviewDetailView, self).get_context_data(**kwargs)
+        campana = self.get_object()
+        relaciones_campana = AgenteEnContacto.objects.filter(campana_id=campana.pk)
+        context['efectuadas'] = Queuelog.objects.llamadas_iniciadas().filter(
+            campana_id=campana.pk).count()
+        context['terminadas'] = relaciones_campana.filter(
+            estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
+        context['estimadas'] = context['efectuadas'] - context['terminadas']
+        return context
