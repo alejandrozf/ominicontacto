@@ -9,21 +9,13 @@
         <p> Gestion <strong>{{ campana.gestion}}</strong></p>
     </div>
 
-    {% if resultado %}
-        <div class="row">
-            <p> Resultados en discador</p>
-            <p> Llamadas efectuadas <strong>{{ efectuadas }}</strong></p>
-            <p> Llamadas Terminadas <strong>{{ terminadas }}</strong></p>
-            <p> Llamadas restantes estimadas <strong>{{ estimadas }}</strong></p>
-            {% for statu in status %}
-                <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="row">
-            <p>no se obtuvieron resultados del discador</p>
-        </div>
-    {% endif %}
+    <div class="row">
+        <p class="text-primary"> Resultados de las llamadas de la campaña</p>
+        <p> Llamadas efectuadas <strong>{{ efectuadas }}</strong></p>
+        <p> Llamadas Terminadas <strong>{{ terminadas }}</strong></p>
+        <p> Llamadas restantes estimadas <strong>{{ estimadas }}</strong></p>
+    </div>
+
     <div>
         <a class="btn-sm btn-success" href="{% url 'campana_preview_list' %}">
             volver a listado
