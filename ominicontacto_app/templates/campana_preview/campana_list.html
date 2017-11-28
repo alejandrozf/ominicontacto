@@ -49,6 +49,16 @@
                }
              });
      };
+
+     function mostrar_detalle_campana(pk_campana) {
+       var $reporteModal = $('#reporteModal');
+       var $modalContent = $reporteModal.find(".modal-body");
+       $.get('/campana_preview/' + pk_campana + '/detalle_express/',
+             function (data) {
+               $modalContent.html(data);
+               $reporteModal.modal('show');
+             });
+     };
     </script>
 {% endblock %}
 
@@ -57,7 +67,7 @@
         <tr>
             <tr>
                 <td width="25%">
-                    <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                    <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                     <a href="{% url 'campana_preview_detalle' campana.pk %}">
                         <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
                     </a>
@@ -108,7 +118,7 @@
             {% for campana in finalizadas %}
                 <tr>
                     <td width="25%">
-                        <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                        <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                         <a href="{% url 'campana_preview_detalle' campana.pk %}">
                             <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
                         </a>
@@ -193,6 +203,7 @@
             <td colspan="4">No existen campañas</td>
         </tr>
     {% endfor %}
+
     <div class="modal fade" id="modal_desconectado" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -204,39 +215,26 @@
                     <p>Refresque la página y vuelva a ingresar para poder acceder a la funcionalidad deseada</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
 
-    <div class="modal fade" id="myMapModal">
-        <div class="modal-dialog" id="modal_ventana">
+    <div class="modal" id="reporteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 id="address" class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Estadísticas campaña</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div id="map-canvas" class=""></div>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
     </div>
-
-    <style type="text/css">
-     p {
-       margin: 4px 10px 10px;
-     }
-    </style>
 
 {% endblock %}
