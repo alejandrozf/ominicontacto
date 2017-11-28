@@ -290,7 +290,6 @@ class ObtenerContactoView(View):
 class CampanaPreviewDetailView(DetailView):
     template_name = 'campana_preview/detalle.html'
     model = Campana
-    context_object_name = 'campana'
 
     def get_context_data(self, **kwargs):
         context = super(CampanaPreviewDetailView, self).get_context_data(**kwargs)
@@ -302,3 +301,7 @@ class CampanaPreviewDetailView(DetailView):
             estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
         context['estimadas'] = relaciones_campana.count() - context['terminadas']
         return context
+
+
+class CampanaPreviewExpressView(CampanaPreviewDetailView):
+    template_name = 'campana_preview/detalle_express.html'

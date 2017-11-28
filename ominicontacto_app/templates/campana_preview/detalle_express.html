@@ -1,0 +1,20 @@
+<div class="row">
+     <p>Nombre de la Campana <strong>{{ campana.nombre }}</strong></p>
+     <p> Estado <strong>{{ campana.get_estado_display}}</strong></p>
+     <p> Base de datos <strong>{{ campana.bd_contacto}}</strong></p>
+     <p> Calificaciones <strong>{{ campana.calificacion_campana}}</strong></p>
+     <p> Gestion <strong>{{ campana.gestion}}</strong></p>
+</div>
+
+<div class="row">
+     <p class="text-primary"> Resultados de las llamadas de la campaña</p>
+     <p> Llamadas efectuadas <strong>{{ efectuadas }}</strong></p>
+     <p> Llamadas Terminadas <strong>{{ terminadas }}</strong></p>
+     <p> Llamadas restantes estimadas <strong>{{ estimadas }}</strong></p>
+</div>
+
+<div>
+     <a class="btn-sm btn-success" href="{% url 'campana_preview_list' %}">
+        volver a listado
+     </a>
+</div>

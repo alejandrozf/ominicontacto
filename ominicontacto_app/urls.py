@@ -918,6 +918,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewDetailView.as_view()),
         name="campana_preview_detalle"),
+    url(r'^campana_preview/(?P<pk>\d+)/detalle_express/$',
+        login_required(
+            views_campana_preview.CampanaPreviewExpressView.as_view()),
+        name="campana_preview_detalle_express"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos
