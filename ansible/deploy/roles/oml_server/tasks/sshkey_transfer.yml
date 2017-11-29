@@ -1,9 +1,6 @@
 ---
 
-- name: Creation of freetech group
-  group: name=freetech state=present
-
-- name: Create freetech user and public key
+- name: Create freetech public key
   user: name=freetech generate_ssh_key=yes group=freetech ssh_key_bits=2048 state=present
 
 - name: Transfer ssh key from freetech's user to root's user

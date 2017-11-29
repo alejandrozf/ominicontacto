@@ -7,6 +7,12 @@
 #- name: Change key permission
 #  file: path=/home/freetech/.ssh/ state=directory owner=freetech group=freetech mode=600 recurse=yes
 
+- name: Creation of freetech group
+  group: name=freetech state=present
+
+- name: Create freetech user
+  user: name=freetech group=freetech state=present
+
 - name: Create the required directories
   file: "dest={{ item }} state=directory owner=freetech group=freetech mode=0755 recurse=yes"
     # /home/freetech es incluido xq el permiso por default (0700) hace que
