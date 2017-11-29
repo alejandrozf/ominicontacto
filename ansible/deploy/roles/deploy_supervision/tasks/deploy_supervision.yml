@@ -33,8 +33,8 @@
   become_user: freetech
   become_method: su
 
-- name: Change phone.js default port on /static/JS/phoneJSsip.js
-  lineinfile: "dest=/var/www/html/Omnisup/static/Js/phonejs.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
+- name: Change phone.js default port on /static/JS/phone.js
+  lineinfile: "dest=/var/www/html/Omnisup/static/Js/phone.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
   become: yes
   become_user: freetech
   become_method: su
