@@ -15,5 +15,4 @@
 - include: postgres_users.yml
   when: not post_install
 
-- include: sshkey_transfer.yml
-  when: not post_install
+

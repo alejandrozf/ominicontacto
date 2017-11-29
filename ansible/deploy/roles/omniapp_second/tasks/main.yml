@@ -1,5 +1,8 @@
 ---
 
+- include: sshkey_transfer.yml
+  when: not post_install
+
 - include: django_migrations.yml
 
 - include: omniapp_second.yml

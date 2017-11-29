@@ -11,7 +11,7 @@
   group: name=freetech state=present
 
 - name: Create freetech user
-  user: name=freetech group=freetech state=present
+  user: name=freetech group=freetech shell=/bin/bash state=present
 
 - name: Create the required directories
   file: "dest={{ item }} state=directory owner=freetech group=freetech mode=0755 recurse=yes"
