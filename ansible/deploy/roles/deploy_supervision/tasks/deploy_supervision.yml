@@ -34,11 +34,12 @@
   become_user: freetech
   become_method: su
 
+- name: Restart php-fpm service
+  service: name=php-fpm state=restarted enabled=yes
+
 - name: Set permissions of required to freetech's user
-  file: "dest: {{ item }} state=file owner=freetech group=freetech recurse=yes"
-  with_items:
-      - /var/run/php-fpm/php-fpm.sock
-      - /home/freetech/Omnisup
+  file: dest=/var/run/php-fpm/php-fpm.sock state=file owner=freetech group=freetech
+- file: dest=/home/freetech/Omnisup state=directory owner=freetech group=freetech recurse=yes
 
 - name: Creation of /etc/nginx/conf.d/supervision.conf
   template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
