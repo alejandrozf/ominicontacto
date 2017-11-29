@@ -15,21 +15,26 @@
       - systemctl enable php-fpm
 
 - name: Clone of Omnisup repository
-  git: repo={{ omnisup_repo }} dest=/home/freetech/Omnisup
+  git: repo={{ omnisup_repo }} dest=/var/www/html/Omnisup
   become: yes
   become_user: freetech
   become_method: su
 
-- name: Copy config.php from /doc to /Omnisup
-  shell: "mv /home/freetech/Omnisup/doc/config_ex.php /home/freetech/Omnisup/doc/config.php"
-- copy: "src=/home/freetech/Omnisup/doc/config.php dest=/home/freetech/Omnisup remote_src=yes"
+- name: Creation of config.php
+  template: src=templates/config.php dest=/var/www/html/Omnisup/config.php
   become: yes
   become_user: freetech
   become_method: su
 
 - name: Modify of config.js in /static/Js
-  shell: "mv /home/freetech/Omnisup/static/Js/config_ex.js /home/freetech/Omnisup/static/Js/config.js"
+  shell: "mv //var/www/html/Omnisup/static/Js/config_ex.js /home/freetech/Omnisup/static/Js/config.js"
 - template: "src=templates/config.js.j2 dest=/home/freetech/Omnisup/static/Js/config.js"
+  become: yes
+  become_user: freetech
+  become_method: su
+
+- name: Change phone.js default port on /static/JS/phoneJSsip.js
+  lineinfile: "dest=/var/www/html/Omnisup/static/Js/phonejs.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
   become: yes
   become_user: freetech
   become_method: su
