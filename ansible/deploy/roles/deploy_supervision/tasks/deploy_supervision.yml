@@ -16,9 +16,6 @@
 
 - name: Clone of Omnisup repository
   git: repo={{ omnisup_repo }} dest=/var/www/html/Omnisup
-  become: yes
-  become_user: freetech
-  become_method: su
 
 - name: Creation of config.php
   template: src=templates/config.php dest=/var/www/html/Omnisup/config.php
