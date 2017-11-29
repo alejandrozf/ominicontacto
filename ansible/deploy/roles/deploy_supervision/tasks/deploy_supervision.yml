@@ -5,11 +5,8 @@
 - name: Modify of php.ini
   lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
 
-- name: Clone of Omnisup repository
-  git: repo={{ omnisup_repo }} dest=/home/freetech/Omnisup
-  become: yes
-  become_user: freetech
-  become_method: su
+- name: Modify of /php-fpm.d/php-fpm.sock
+  template: src=templates/www.conf.j2 dest=/etc/php-fpm.d/www.conf
 
 - name: Enable and start of php-fpm service
   shell: "{{ item }}"
@@ -17,14 +14,11 @@
       - systemctl start php-fpm
       - systemctl enable php-fpm
 
-- name: Creation of /etc/nginx/conf.d/supervision.conf
-  template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
-
-- name: Set permissions of required to freetech's user
-  file: "dest: {{ item }} state=file owner=freetech group=freetech recurse=yes"
-  with_items:
-      - /var/run/php-fpm/php-fpm.sock
-      - /home/freetech/Omnisup
+- name: Clone of Omnisup repository
+  git: repo={{ omnisup_repo }} dest=/home/freetech/Omnisup
+  become: yes
+  become_user: freetech
+  become_method: su
 
 - name: Copy config.php from /doc to /Omnisup
   shell: "mv /home/freetech/Omnisup/doc/config_ex.php /home/freetech/Omnisup/doc/config.php"
@@ -39,3 +33,16 @@
   become: yes
   become_user: freetech
   become_method: su
+
+- name: Set permissions of required to freetech's user
+  file: "dest: {{ item }} state=file owner=freetech group=freetech recurse=yes"
+  with_items:
+      - /var/run/php-fpm/php-fpm.sock
+      - /home/freetech/Omnisup
+
+- name: Creation of /etc/nginx/conf.d/supervision.conf
+  template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
+
+
+
+
