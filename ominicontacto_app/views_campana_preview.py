@@ -5,18 +5,21 @@ from __future__ import unicode_literals
 import logging as logging_
 
 from ast import literal_eval
+from collections import defaultdict
 from random import choice
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count
 from django.db.utils import DatabaseError
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import CreateView, UpdateView, View, DetailView
 
-from ominicontacto_app.models import BaseDatosContacto, Campana, Queue, Queuelog, AgenteEnContacto
+from ominicontacto_app.models import (BaseDatosContacto, Campana, Queue, AgenteEnContacto,
+                                      CalificacionCliente)
 from ominicontacto_app.forms import CampanaPreviewForm, CampanaPreviewUpdateForm
 from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
@@ -291,15 +294,40 @@ class CampanaPreviewDetailView(DetailView):
     template_name = 'campana_preview/detalle.html'
     model = Campana
 
+    def _crear_dict_categorias(self, count_ventas, finalizadas_categorias_count_dict):
+        counts_categorias = defaultdict()
+
+        for cat_data in finalizadas_categorias_count_dict:
+            cat_count = cat_data['calificacion__nombre__count']
+            cat_name = cat_data['calificacion__nombre']
+            if cat_count > 0:
+                counts_categorias[cat_name] = cat_count
+
+                # se contabilizan juntas las calificaciones con la etiqueta 'Ventas
+        # y las que tienen el atributo 'is_venta' igual a True, pero no poseen etiqueta
+        counts_categorias['Venta'] += count_ventas
+
+        return dict(counts_categorias)
+
     def get_context_data(self, **kwargs):
         context = super(CampanaPreviewDetailView, self).get_context_data(**kwargs)
         campana = self.get_object()
-        relaciones_campana = AgenteEnContacto.objects.filter(campana_id=campana.pk)
-        context['efectuadas'] = Queuelog.objects.llamadas_iniciadas().filter(
-            campana_id=campana.pk).count()
-        context['terminadas'] = relaciones_campana.filter(
-            estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
-        context['estimadas'] = relaciones_campana.count() - context['terminadas']
+        qs_campana_calificaciones = CalificacionCliente.objects.filter(campana_id=campana.pk)
+
+        context['terminadas'] = qs_campana_calificaciones.count()
+        context['estimadas'] = campana.bd_contacto.contactos.count() - context['terminadas']
+
+        if context['terminadas']:
+            qs_finalizadas_ventas = qs_campana_calificaciones.filter(es_venta=True)
+            qs_finalizadas_otras_categorias = qs_campana_calificaciones.exclude(es_venta=True)
+
+            finalizadas_ventas_count = qs_finalizadas_ventas.count()
+            finalizadas_otras_categorias_count_dict = qs_finalizadas_otras_categorias.values(
+                'calificacion__nombre').annotate(Count('calificacion__nombre'))
+            cats_dict = self._crear_dict_categorias(
+                finalizadas_ventas_count, finalizadas_otras_categorias_count_dict)
+            context['categorias'] = cats_dict
+
         return context
 
 
