@@ -22,14 +22,14 @@
 
 - name: Copy config.php from /doc to /Omnisup
   shell: "mv /home/freetech/Omnisup/doc/config_ex.php /home/freetech/Omnisup/doc/config.php"
-- copy: "src={{ omnisup_dir }}/doc/config.php dest={{ omnisup_dir }} remote_src=yes"
+- copy: "src=/home/freetech/Omnisup/doc/config.php dest=/home/freetech/Omnisup remote_src=yes"
   become: yes
   become_user: freetech
   become_method: su
 
 - name: Modify of config.js in /static/Js
   shell: "mv /home/freetech/Omnisup/static/Js/config_ex.js /home/freetech/Omnisup/static/Js/config.js"
-- template: "src=templates/config.js.j2 dest={{ omnisup_dir}}/static/Js/config.js"
+- template: "src=templates/config.js.j2 dest=/home/freetech/Omnisup/static/Js/config.js"
   become: yes
   become_user: freetech
   become_method: su
