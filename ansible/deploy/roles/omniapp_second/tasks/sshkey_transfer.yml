@@ -1,6 +1,6 @@
 ---
 
-- name: Create freetech public key
+- name: Create freetech user and public key
   user: name=freetech generate_ssh_key=yes group=freetech ssh_key_bits=2048 state=present
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
