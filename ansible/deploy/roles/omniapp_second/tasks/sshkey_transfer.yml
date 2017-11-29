@@ -9,3 +9,7 @@
   register: ssh_key
 - authorized_key: user=root key={{ ssh_key.stdout }} state=present manage_dir=yes
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+- name: Change permissions on id_rsa
+  shell: "chmod 700 /home/freetech/.ssh/id_rsa"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
