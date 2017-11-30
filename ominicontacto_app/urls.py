@@ -899,6 +899,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer_reportes.CampanaDialerReporteCalificacionListView.as_view()),
         name="campana_preview_calificacion_reporte_calificacion"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_grafico/$',
+        login_required(
+            views_campana_preview.CampanaPreviewReporteGrafico.as_view()),
+        name="campana_preview_reporte_grafico"),
     url(r'^campana_preview/mostrar_ocultas/$',
         views_campana_preview.CampanaPreviewBorradasListView.as_view(),
         name="campana_preview_mostrar_ocultas"),

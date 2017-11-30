@@ -22,6 +22,7 @@ from ominicontacto_app.models import (BaseDatosContacto, Campana, Queue, AgenteE
                                       CalificacionCliente)
 from ominicontacto_app.forms import CampanaPreviewForm, CampanaPreviewUpdateForm
 from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
+from ominicontacto_app.views_campana_dialer_reportes import CampanaDialerReporteGrafico
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
 
 logger = logging_.getLogger(__name__)
@@ -333,3 +334,16 @@ class CampanaPreviewDetailView(DetailView):
 
 class CampanaPreviewExpressView(CampanaPreviewDetailView):
     template_name = 'campana_preview/detalle_express.html'
+
+
+class CampanaPreviewReporteGrafico(CampanaDialerReporteGrafico):
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaPreviewReporteGrafico, self).get_context_data(**kwargs)
+        dict_llamadas_counter = context['graficos_estadisticas']['dict_llamadas_counter']
+        # eliminamos la información de las llamadas recibidas pues no tiene sentido para
+        # las campañas preview
+        context['graficos_estadisticas']['dict_llamadas_counter'] = [
+            (name, count) for name, count in dict_llamadas_counter
+            if name != 'Recibidas']
+        return context
