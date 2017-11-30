@@ -346,4 +346,11 @@ class CampanaPreviewReporteGrafico(CampanaDialerReporteGrafico):
         context['graficos_estadisticas']['dict_llamadas_counter'] = [
             (name, count) for name, count in dict_llamadas_counter
             if name != 'Recibidas']
+        barra_campana_llamadas = context['graficos_estadisticas']['barra_campana_llamadas']
+        index_recibidas = barra_campana_llamadas.x_labels.index('Recibidas')
+        try:
+            del barra_campana_llamadas.x_labels[index_recibidas]
+            del barra_campana_llamadas.y_labels[index_recibidas]
+        except AttributeError:
+            pass                # significa que el gráfico estaría vacío
         return context
