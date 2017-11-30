@@ -295,7 +295,7 @@ class CampanaPreviewDetailView(DetailView):
     model = Campana
 
     def _crear_dict_categorias(self, count_ventas, finalizadas_categorias_count_dict):
-        counts_categorias = defaultdict()
+        counts_categorias = defaultdict(int)
 
         for cat_data in finalizadas_categorias_count_dict:
             cat_count = cat_data['calificacion__nombre__count']
