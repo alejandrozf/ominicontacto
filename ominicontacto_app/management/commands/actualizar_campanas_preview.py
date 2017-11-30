@@ -34,10 +34,13 @@ class Command(BaseCommand):
         """
         tiempo_actual = timezone.now()
         delta_tiempo_desconexion = timedelta(minutes=tiempo_desconexion)
-        AgenteEnContacto.objects.filter(
+        qs_agentes_demorados = AgenteEnContacto.objects.filter(
             campana_id=campana_id, estado=AgenteEnContacto.ESTADO_ENTREGADO,
-            modificado__lte=tiempo_actual - delta_tiempo_desconexion).update(
-                agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
+            modificado__lte=tiempo_actual - delta_tiempo_desconexion)
+        logging.info(
+            "Actualizando {0} asignaciones de contactos a agentes en campaña {1}".format(
+                qs_agentes_demorados.count(), campana_id))
+        qs_agentes_demorados.update(agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
 
     def handle(self, *args, **options):
         campana_id = args[0]
@@ -46,7 +49,3 @@ class Command(BaseCommand):
             self._actualizar_relacion_agente_contacto(campana_id, tiempo_desconexion)
         except Exception as e:
             logging.error('Fallo del comando: {0}'.format(e.message))
-        else:
-            logging.info(
-                "Actualizando asignaciones de contactos a agentes en campaña {0}".format(
-                    campana_id))
