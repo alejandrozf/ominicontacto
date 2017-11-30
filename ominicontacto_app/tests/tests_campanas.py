@@ -20,7 +20,8 @@ from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
-                                               AgenteEnContactoFactory, QueueMemberFactory)
+                                               AgenteEnContactoFactory, QueueMemberFactory,
+                                               CalificacionClienteFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -520,3 +521,40 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertFalse(Campana.objects.filter(
             nombre=nombre_campana, tiempo_desconexion=tiempo_desconexion).exists())
+
+    def test_usuario_no_logueado_no_accede_a_vista_detalle_campana_preview(self):
+        self.client.logout()
+        url = reverse('campana_preview_detalle', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_usuario_no_logueado_no_accede_a_vista_detalle_express_campana_preview(self):
+        self.client.logout()
+        url = reverse('campana_preview_detalle_express', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def _crear_datos_vistas_detalles_campana_preview(self):
+        # ya existe otro contacto para la BD de la campaña creado en el setUp
+        # acá creamos otro
+        ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
+        CalificacionClienteFactory.create(
+            campana=self.campana_activa, agente=self.agente_profile, es_venta=True)
+        return CalificacionClienteFactory.create(
+            campana=self.campana_activa, agente=self.agente_profile, es_venta=False)
+
+    def test_usuario_logueado_accede_a_datos_vista_detalle_campana_preview(self):
+        calif_no_venta = self._crear_datos_vistas_detalles_campana_preview()
+        url = reverse('campana_preview_detalle', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'campana_preview/detalle.html')
+        self.assertEqual(response.context_data['categorias']['Venta'], 1)
+        self.assertEqual(response.context['categorias'][calif_no_venta.calificacion.nombre], 1)
+
+    def test_usuario_logueado_accede_a_datos_vista_detalle_express_campana_preview(self):
+        calif_no_venta = self._crear_datos_vistas_detalles_campana_preview()
+        url = reverse('campana_preview_detalle_express', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'campana_preview/detalle_express.html')
+        self.assertEqual(response.context_data['categorias']['Venta'], 1)
+        self.assertEqual(response.context['categorias'][calif_no_venta.calificacion.nombre], 1)
