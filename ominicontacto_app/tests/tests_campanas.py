@@ -558,3 +558,18 @@ class CampanasTests(OMLBaseTest):
         self.assertTemplateUsed(response, u'campana_preview/detalle_express.html')
         self.assertEqual(response.context_data['categorias']['Venta'], 1)
         self.assertEqual(response.context['categorias'][calif_no_venta.calificacion.nombre], 1)
+
+    def test_usuario_logueado_no_accede_a_reporte_grafico_campana_preview(self):
+        self.client.logout()
+        url = reverse('campana_preview_reporte_grafico', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_reporte_grafico_campana_preview_no_muestra_llamadas_recibidas(self):
+        url = reverse('campana_preview_reporte_grafico', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        graficos_estadisticas = response.context_data['graficos_estadisticas']
+        categorias_llamadas = [nombre for nombre, count in
+                               graficos_estadisticas['dict_llamadas_counter']]
+        categoria_recibidas = 'Recibidas'
+        self.assertFalse(categoria_recibidas in categorias_llamadas)
