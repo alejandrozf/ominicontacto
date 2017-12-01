@@ -126,7 +126,7 @@ class CampanasTests(OMLBaseTest):
     PWD = u'admin123'
 
     def setUp(self):
-        self.tiempo_desconexion = 2
+        self.tiempo_desconexion = 3
 
         self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
         self.usuario_admin_supervisor.set_password(self.PWD)
@@ -494,3 +494,21 @@ class CampanasTests(OMLBaseTest):
         jobs_generator = crontab.find_comment(str(self.campana_activa.pk))
         jobs = list(jobs_generator)
         self.assertEqual(jobs, [])
+
+    def test_campanas_preview_minimo_tiempo_de_desconexion(self):
+        url = reverse('campana_preview_create')
+        nombre_campana = 'campana_preview_test'
+        tiempo_desconexion = 2
+        post_data = {'nombre': nombre_campana,
+                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'bd_contacto': self.campana_activa.bd_contacto.pk,
+                     'tipo_interaccion': Campana.FORMULARIO,
+                     'formulario': self.campana.formulario.pk,
+                     'gestion': 'Venta',
+                     'detectar_contestadores': True,
+                     'auto_grabacion': True,
+                     'objetivo': 1,
+                     'tiempo_desconexion': 2}
+        self.client.post(url, post_data, follow=True)
+        self.assertFalse(Campana.objects.filter(
+            nombre=nombre_campana, tiempo_desconexion=tiempo_desconexion).exists())
