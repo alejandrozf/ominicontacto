@@ -981,7 +981,8 @@ class CampanaPreviewForm(CampanaManualForm):
     def clean_tiempo_desconexion(self):
         tiempo_desconexion = self.cleaned_data['tiempo_desconexion']
         if tiempo_desconexion < TIEMPO_MINIMO_DESCONEXION:
-            raise forms.ValidationError('Debe ingresar un minimo de 3 minutos')
+            msg = 'Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION)
+            raise forms.ValidationError(msg)
         return tiempo_desconexion
 
 
