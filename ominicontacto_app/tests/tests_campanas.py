@@ -498,7 +498,7 @@ class CampanasTests(OMLBaseTest):
     def test_campanas_preview_minimo_tiempo_de_desconexion(self):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
-        tiempo_desconexion = 2
+        tiempo_desconexion = 1
         post_data = {'nombre': nombre_campana,
                      'calificacion_campana': self.campana.calificacion_campana.pk,
                      'bd_contacto': self.campana_activa.bd_contacto.pk,
@@ -508,7 +508,7 @@ class CampanasTests(OMLBaseTest):
                      'detectar_contestadores': True,
                      'auto_grabacion': True,
                      'objetivo': 1,
-                     'tiempo_desconexion': 2}
+                     'tiempo_desconexion': tiempo_desconexion}
         self.client.post(url, post_data, follow=True)
         self.assertFalse(Campana.objects.filter(
             nombre=nombre_campana, tiempo_desconexion=tiempo_desconexion).exists())

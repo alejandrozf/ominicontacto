@@ -19,7 +19,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.utiles import convertir_ascii_string, validar_nombres_campanas
 
-TIEMPO_MINIMO_DESCONEXION = 3
+TIEMPO_MINIMO_DESCONEXION = 2
 
 
 class CustomUserChangeForm(UserChangeForm):
