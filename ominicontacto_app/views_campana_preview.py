@@ -13,7 +13,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.utils import DatabaseError
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import CreateView, UpdateView, View
 
 from ominicontacto_app.models import BaseDatosContacto, Campana, Queue, AgenteEnContacto
@@ -41,17 +41,14 @@ class CampanaPreviewCreateView(CreateView):
             messages.warning(self.request, message)
         return super(CampanaPreviewCreateView, self).dispatch(request, *args, **kwargs)
 
-    def form_invalid(self, form, error=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                . {0}'.format(error)
-
+    def form_invalid(self, form, error=''):
+        message = 'Operación Errónea! {0}'.format(error)
         messages.add_message(
             self.request,
             messages.WARNING,
             message,
         )
-        return self.render_to_response(self.get_context_data())
+        return render(self.request, 'campana_preview/campana_preview.html', {'form': form })
 
     def form_valid(self, form):
         tipo_interaccion = form.instance.tipo_interaccion
@@ -136,17 +133,14 @@ class CampanaPreviewUpdateView(UpdateView):
         queue.save()
         return super(CampanaPreviewUpdateView, self).form_valid(form)
 
-    def form_invalid(self, form, error=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                . {0}'.format(error)
-
+    def form_invalid(self, form, error=''):
+        message = 'Operación Errónea! {0}'.format(error)
         messages.add_message(
             self.request,
             messages.WARNING,
             message,
         )
-        return self.render_to_response(self.get_context_data())
+        return render(self.request, 'campana_preview/campana_preview.html', {'form': form })
 
     def get_success_url(self):
         return reverse('campana_preview_list')
