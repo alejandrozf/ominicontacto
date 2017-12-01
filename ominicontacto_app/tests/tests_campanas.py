@@ -83,6 +83,10 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
+    def tearDown(self):
+        self.campana_activa.eliminar_tarea_actualizacion()
+        self.campana_borrada.eliminar_tarea_actualizacion()
+
     def test_no_se_devuelve_un_mismo_contacto_a_mas_de_un_agente_en_campanas_preview(self):
         user1 = UserFactory(username='user1', is_agente=True)
         user2 = UserFactory(username='user2', is_agente=True)
@@ -145,6 +149,10 @@ class CampanasTests(OMLBaseTest):
         self.queue = QueueFactory.create(campana=self.campana_activa)
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
+
+    def tearDown(self):
+        for camp_prev in Campana.objects.obtener_campanas_preview():
+            camp_prev.eliminar_tarea_actualizacion()
 
     def test_campana_contiene_atributo_entero_positivo_llamado_objetivo(self):
         self.assertTrue(self.campana.objetivo >= 0)
