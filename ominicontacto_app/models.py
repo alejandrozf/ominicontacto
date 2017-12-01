@@ -673,6 +673,8 @@ class Campana(models.Model):
         (SITIO_EXTERNO, "Url externa")
     )
 
+    TIEMPO_ACTUALIZACION_CONTACTOS = 1
+
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
@@ -723,10 +725,8 @@ class Campana(models.Model):
             command='{0} {1} actualizar_campanas_preview {2} {3}'.format(
                 ruta_python_virtualenv, ruta_manage_py, self.pk, self.tiempo_desconexion),
             comment=str(self.pk))
-        # adicionar tiempo de desconexión al cron job
-        tiempo_desconexion = self.tiempo_desconexion
-        if tiempo_desconexion > 0:
-            job.minute.every(tiempo_desconexion)
+        # adicionar tiempo de periodicidad al cron job
+        job.minute.every(self.TIEMPO_ACTUALIZACION_CONTACTOS)
         crontab.write_to_user(user=getpass.getuser())
 
     def eliminar_tarea_actualizacion(self):
