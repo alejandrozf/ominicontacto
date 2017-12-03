@@ -8,5 +8,7 @@
 - include: omniapp_second.yml
   when: not post_install
 
+- include: static.yml
+
 - include: wombat.yml
   when: not post_install

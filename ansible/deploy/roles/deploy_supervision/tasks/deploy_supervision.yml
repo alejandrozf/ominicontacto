@@ -21,7 +21,7 @@
   shell: "chmod 777 -R /var/www/html/Omnisup"
 
 - name: Creation of config.php
-  template: src=templates/config.php dest=/var/www/html/Omnisup/config.php
+  template: src=templates/config.php.j2 dest=/var/www/html/Omnisup/config.php
   become: yes
   become_user: freetech
   become_method: su

@@ -23,7 +23,11 @@
       - cp /usr/src/oml-freepbx/extra-files/odbc.ini /etc/
 
 - name: Add web enabled in /etc/asterisk/manager.conf
-  ini_file: "path=/etc/asterisk/manager.conf section=general option=webnenabled value=yes state=present"
+  ini_file: "path=/etc/asterisk/manager.conf section=general option=webenabled no_extra_spaces=yes value=yes state=present"
+
+- name: Add web nocolor=yes in /etc/asterisk/asterisk.conf
+  ini_file: "path=/etc/asterisk/asterisk.conf section=options option=nocolor no_extra_spaces=yes value=yes state=present"
+
 
 - name: Install Mysql-python DB module
   pip: name=MySQL-python
