@@ -914,7 +914,7 @@ urlpatterns = [
         login_required(
             views_campana_preview.campana_validar_contacto_asignado_view),
         name="validar_contacto_asignado"),
-    url(r'^campana_preview/(?P<pk_campana>\d+)/detalle/$',
+    url(r'^campana_preview/(?P<pk>\d+)/detalle/$',
         login_required(
             views_campana_preview.CampanaPreviewDetailView.as_view()),
         name="campana_preview_detalle"),
