@@ -62,7 +62,7 @@ $(document).ready(function(){
       var url = '/campana_preview/'+ idCampana +'/contacto/obtener/';
       $.post(url)
         .success(function (data) {
-          if (data['result'] == 'Error') {
+          if (data['result'] != 'OK') {
             informarError(data, $button);
 
           }
@@ -78,7 +78,7 @@ $(document).ready(function(){
             $errorAsignacionContacto.html('');
 
             // Limpiamos la información de algún contacto anterior
-            $contactoOtrosDatos.html("");
+            $contactoOtrosDatos.html('');
 
             // Actualizamos los datos del contacto obtenido
             for (campo in data['datos_contacto']) {
