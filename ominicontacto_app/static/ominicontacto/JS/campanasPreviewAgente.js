@@ -64,7 +64,6 @@ $(document).ready(function(){
         .success(function (data) {
           if (data['result'] != 'OK') {
             informarError(data, $button);
-
           }
           else {                // se obtienen los datos del contacto
             $panelContacto.attr('class', 'col-md-4 col-md-offset-1');
