@@ -52,7 +52,7 @@ class CampanaPreviewCreateView(CreateView):
             messages.WARNING,
             message,
         )
-        return render(self.request, 'campana_preview/campana_preview.html', {'form': form })
+        return render(self.request, 'campana_preview/campana_preview.html', {'form': form})
 
     def form_valid(self, form):
         tipo_interaccion = form.instance.tipo_interaccion
@@ -144,7 +144,7 @@ class CampanaPreviewUpdateView(UpdateView):
             messages.WARNING,
             message,
         )
-        return render(self.request, 'campana_preview/campana_preview.html', {'form': form })
+        return render(self.request, 'campana_preview/campana_preview.html', {'form': form})
 
     def get_success_url(self):
         return reverse('campana_preview_list')
