@@ -91,9 +91,11 @@ $(document).ready(function(){
 
         })
         .fail( function (data) {
+          informarError(data, $button);
           console.log("Fail: ", data);
         })
         .error( function (data) {
+          informarError(data, $button);
           console.log("Error: ", data);
         });
     });
