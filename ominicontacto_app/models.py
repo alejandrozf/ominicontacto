@@ -2883,14 +2883,11 @@ class AgenteEnContacto(models.Model):
 
     ESTADO_ENTREGADO = 1  # significa que un agente solicitó este contacto y le fue entregado
 
-    ESTADO_ATENDIENDO = 2  # significa que el agente está hablando con el contacto
-
-    ESTADO_FINALIZADO = 3  # significa que el agente culminó de forma satisfactoria la llamada
+    ESTADO_FINALIZADO = 2  # significa que el agente culminó de forma satisfactoria la llamada
 
     ESTADO_CHOICES = (
         (ESTADO_INICIAL, 'INICIAL'),
         (ESTADO_ENTREGADO, 'ENTREGADO'),
-        (ESTADO_ATENDIENDO, 'ATENDIENDO'),
         (ESTADO_FINALIZADO, 'FINALIZADO'),
     )
     agente_id = models.IntegerField()
