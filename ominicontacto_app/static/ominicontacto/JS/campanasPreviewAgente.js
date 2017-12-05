@@ -48,7 +48,8 @@ $(document).ready(function(){
       }
       else {
         // se muestra modal con mensaje de error
-        var errorMessage = "Ha sido desconectado del contacto asignado, pruebe obtener otro"
+        var errorMessage = "OPS, se venció el tiempo de asignación de este contacto.\
+Por favor intente solicitar uno nuevo";
         $errorAsignacionContacto.html(errorMessage);
       }
     });
