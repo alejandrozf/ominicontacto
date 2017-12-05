@@ -167,6 +167,7 @@ class GeneradorParaQueueSinGrabacion(GeneradorDePedazoDeQueue):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Answer()
         same => n,Gosub(hangup-fts,llamante_handler,1)
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
@@ -190,6 +191,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Answer()
         same => n,Gosub(hangup-fts,llamante_handler,1)
         same => n,Set(__MONITOR_FILENAME=/var/spool/asterisk/monitor/q-${{EXTEN}}-${{STRFTIME(${{EPOCH}},,%Y%m%d-%H%M%S)}}-${{UNIQUEID}})
         same => n,MixMonitor(${{MONITOR_FILENAME}}.wav)
