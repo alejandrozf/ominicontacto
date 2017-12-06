@@ -17,6 +17,8 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.utiles import elimina_espacios
+from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
+    AsteriskHttpQueueRemoveError
 
 
 import logging as logging_
@@ -191,7 +193,23 @@ class QueueMemberCampanaView(TemplateView):
 def queue_member_delete_view(request, pk_queuemember, pk_campana):
     """Elimina agente asignado en la campana"""
     queue_member = QueueMember.objects.get(pk=pk_queuemember)
+    agente = queue_member.member
     queue_member.delete()
+    campana = Campana.objects.get(pk=pk_campana)
+    # ahora vamos a remover el agente de la cola de asterisk
+
+    queue = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
+    interface = "SIP/{o}".format(sip_extension)
+
+    try:
+        client = AsteriskHttpClient()
+        client.login()
+        client.queue_remove(queue, interface)
+
+    except AsteriskHttpQueueRemoveError:
+        logger.exception("QueueRemove failed - agente: %s de la campana: %s ", agente,
+                         campana)
+
     return HttpResponseRedirect(
         reverse('queue_member_campana',
                 kwargs={"pk_campana": pk_campana}
