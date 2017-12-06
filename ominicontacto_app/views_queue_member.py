@@ -199,7 +199,7 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     # ahora vamos a remover el agente de la cola de asterisk
 
     queue = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
-    interface = "SIP/{o}".format(agente.sip_extension)
+    interface = "SIP/{0}".format(agente.sip_extension)
 
     try:
         client = AsteriskHttpClient()
