@@ -1,4 +1,6 @@
 {% load static %}
+{% load compress %}
+
 <!DOCTYPE html>
 <html lang='es'>
     <head>
@@ -538,6 +540,7 @@
       </div>
     </div>
     <!-- Main Index -->
+    {% compress js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/Timers.js' %}" ></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/main.js' %}"></script>
     <!-- JsSIP -->
@@ -560,5 +563,6 @@
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/Calendar.js' %}"></script>
+    {% endcompress %}
     </body>
 </html>
