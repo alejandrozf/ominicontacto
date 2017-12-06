@@ -8,7 +8,7 @@
 
   roles:
           - {role: prerequisitos, when: not post_install}
-          - oml_server
+          - {role: oml_server, when: not post_install}
 
 - import_playbook: create_kamailiodb.yml
   when: not post_install

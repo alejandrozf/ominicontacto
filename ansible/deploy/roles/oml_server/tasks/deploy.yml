@@ -23,7 +23,7 @@
           - /home/freetech/local
           - /home/freetech/nginx_certs
           - /home/freetech/media_root/reporte_campana
-          - /home/freetech/static_root
+          - /home/freetech/static
           - /home/freetech/log
 
 
