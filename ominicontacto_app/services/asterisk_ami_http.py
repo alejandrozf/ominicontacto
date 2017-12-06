@@ -316,6 +316,18 @@ class AsteriskXmlParserForStatus(AsteriskXmlParser):
             raise
 
 
+class AsteriskXmlParserForQueueRemove(AsteriskXmlParser):
+    """Parses the XML returned by Asterisk when
+    requesting `/mxml?action=QueueRemove`
+    """
+
+    def parse(self, xml):
+        """Parsea XML."""
+        self._parse_and_check(xml,
+                              exception_for_error=AsteriskHttpQueueRemoveError,
+                              check_success=True)
+
+
 #==============================================================================
 # Asterisk Http Ami Client
 #==============================================================================
@@ -484,6 +496,15 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
+    def queue_remove(self, queue, interface):
+        response_body, _ = self._request("/mxml", {
+            'action': 'QueueRemove',
+            'queue': queue,
+            'interface': interface,
+        })
+        parser = AsteriskXmlParserForQueueRemove()
+        parser.parse(response_body)
+        return parser
 
 #==============================================================================
 # AmiStatusTracker
@@ -653,3 +674,7 @@ class AsteriskHttpPingError(AsteriskHttpAmiError):
 
 class AsteriskHttpOriginateError(AsteriskHttpAmiError):
     """The originate command failed"""
+
+
+class AsteriskHttpQueueRemoveError(AsteriskHttpAmiError):
+    """The queueremove command failed"""

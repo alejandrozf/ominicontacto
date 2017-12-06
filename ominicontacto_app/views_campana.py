@@ -62,6 +62,7 @@ class CampanaListView(ListView):
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
+        context['campanas'] = campanas
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
@@ -442,19 +443,6 @@ class DesOcultarCampanaView(RedirectView):
         return HttpResponseRedirect(reverse('campana_list'))
 
 
-def mostrar_campanas_borradas_ocultas_view(request):
-    """Vista para mostrar las campanas ocultas"""
-    borradas = Campana.objects.obtener_borradas()
-    if request.user.is_authenticated() and request.user and \
-            not request.user.get_is_administrador():
-        user = self.request.user
-        borradas = Campana.objects.obtener_campanas_vista_by_user(borradas, user)
-    data = {
-        'borradas': borradas.filter(type=Campana.TYPE_ENTRANTE),
-    }
-    return render(request, 'campana/campanas_borradas.html', data)
-
-
 class CampanaReporteQueueListView(FormView):
     """
     Esta vista lista los tiempo de llamadas de las campanas
@@ -531,3 +519,22 @@ class CampanaSupervisorUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('campana_list')
+
+
+class CampanaBorradasListView(CampanaListView):
+    """
+    Vista que lista las campañas entrantes pero de incluyendo las borradas ocultas
+    """
+
+    template_name = 'campana/campanas_borradas.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaBorradasListView, self).get_context_data(**kwargs)
+        context['borradas'] = context['campanas'].filter(estado=Campana.ESTADO_BORRADA)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return super(CampanaBorradasListView, self).get(request, *args, **kwargs)
+        else:
+            return JsonResponse({'result': 'desconectado'})
