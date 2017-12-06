@@ -9,14 +9,25 @@
 
 echo "Bienvenido al asistente de instalación de Omnileads"
 echo ""
+echo "Ingrese 1 si es post-install o 2 si es un fresh install"
+echo -en "Opcion: "; read type_install
 echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
 echo -en "Opcion: ";read opcion
 echo ""
 
+if [ $type_install -eq 1 ]; then
+    sed -i 's/\(^post_install:\).*/\post_install: yes/' /etc/ansible/group_vars/all
+elif [ $type_install -eq 2 ]; then
+    sed -i 's/\(^post_install:\).*/\post_install: no/' /etc/ansible/group_vars/all
+else
+    echo "Parámetro inválido ingrese de nuevo"
+    echo  ""
+fi
+
 
 if [ $opcion -eq 1 ]; then
     echo "Ejecutando Ansible en Debian omni-voip"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-voip.yml -u root
+    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-debian.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -24,7 +35,7 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-freepbx.yml -u root
+    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-freepbx.yml -u root
     ResultadoAnsible=`echo $?`
 
     echo "Finalizó la instalación omni-voip"
@@ -32,7 +43,7 @@ elif [ $opcion -eq 2 ]; then
 
 elif [ $opcion -eq 3 ]; then
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s /etc/ansible/omnivoip/centos.yml -u root
+    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-centos.yml -u root
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omni-voip"
     echo ""
