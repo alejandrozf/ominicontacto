@@ -171,19 +171,19 @@ fi
 
 if [ $opcion -eq 1 ]; then
     echo "Ejecutando Ansible en Debian omni-app"
-    ansible-playbook -s /etc/ansible/deploy/omni-app.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
+    ansible-playbook -s /etc/ansible/deploy/omni-app-debian.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
     echo "Ejecutando Ansible para copia de archivos entre servers"
     ansible-playbook -s /etc/ansible/deploy/omniapp_second/transfer.yml -u root -K
     echo "Finalizó la instalación de Omnileads"
 
 elif [ $opcion -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS para deploy de OmniAPP"
-    ansible-playbook -s /etc/ansible/deploy/omni-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
+    ansible-playbook -s /etc/ansible/deploy/omni-app-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
     echo "Finalizó la instalación de Omnileads"
 
 elif [ $opcion -eq 3 ]; then
     echo "Ejecutando Ansible en Centos para deploy de OmniAPP"
-    ansible-playbook -s /etc/ansible/deploy/centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
+    ansible-playbook -s /etc/ansible/deploy/omni-app-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
     echo "Finalizó la instalación Omnileads"
     echo ""
 
