@@ -1,4 +1,6 @@
 {% load static %}
+{% load compress %}
+
 <!DOCTYPE html>
 <html lang='es'>
     <head>
@@ -12,7 +14,9 @@
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/phone.css' %}"></link>
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/webchat.css' %}"></link>
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
+        {% compress js %}
         <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
+        {% endcompress %}
         <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
         <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -23,7 +27,9 @@
     </head>
     <body>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        {% compress js %}
         <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+        {% endcompress %}
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
         <div class="container-fluid">
@@ -538,6 +544,7 @@
       </div>
     </div>
     <!-- Main Index -->
+    {% compress js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/Timers.js' %}" ></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/main.js' %}"></script>
     <!-- JsSIP -->
@@ -560,5 +567,6 @@
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/Calendar.js' %}"></script>
+    {% endcompress %}
     </body>
 </html>

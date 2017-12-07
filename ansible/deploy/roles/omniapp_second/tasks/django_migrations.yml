@@ -16,6 +16,7 @@
   with_items:
           - migrate
           - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
+          - compress
           - collectstatic
   environment:
     PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
