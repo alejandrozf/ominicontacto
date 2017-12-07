@@ -1,7 +1,11 @@
 - name: Instalación y configuración de Omni-VoIP
   hosts: omni-voip
   roles:
+          # Instalación de paquetes y dependencias de omnivoip y setup inicial del server
           - {role: prerequisitos-debian, when: ansible_os_family == "Debian" }
+          # Instalación y configuración de Kamailio
           - {role: kamailio-debian, when: ansible_os_family == "Debian" }
+          # Instalación y configuración de asterisk y freepbx para funcionar con Omnileads
           - {role: asterisk-freepbx, when: ansible_os_family == "Debian" }
+          # Seteo de asternic
           - {role: asternic, when: ansible_os_family == "Debian" }

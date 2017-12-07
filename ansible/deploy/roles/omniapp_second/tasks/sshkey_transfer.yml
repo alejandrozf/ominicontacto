@@ -1,0 +1,15 @@
+---
+
+- name: Create freetech user and public key
+  user: name=freetech generate_ssh_key=yes group=freetech ssh_key_bits=2048 state=present
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+- name: Transfer ssh key from freetech's user to root's user
+  shell: cat /home/freetech/.ssh/id_rsa.pub
+  register: ssh_key
+- authorized_key: user=root key={{ ssh_key.stdout }} state=present manage_dir=yes
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+- name: Change permissions on id_rsa
+  shell: "chmod 700 /home/freetech/.ssh/id_rsa"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"

@@ -5,11 +5,8 @@
 - name: Modify of php.ini
   lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
 
-- name: Clone of Omnisup repository
-  git: repo={{ omnisup_repo }} dest=/home/freetech/Omnisup
-  become: yes
-  become_user: freetech
-  become_method: su
+- name: Modify of /php-fpm.d/php-fpm.sock
+  template: src=templates/www.conf.j2 dest=/etc/php-fpm.d/www.conf
 
 - name: Enable and start of php-fpm service
   shell: "{{ item }}"
@@ -17,25 +14,43 @@
       - systemctl start php-fpm
       - systemctl enable php-fpm
 
-- name: Creation of /etc/nginx/conf.d/supervision.conf
-  template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
+- name: Clone of Omnisup repository
+  git: repo={{ omnisup_repo }} dest=/var/www/html/Omnisup
 
-- name: Set permissions of required to freetech's user
-  file: "dest: {{ item }} state=file owner=freetech group=freetech recurse=yes"
-  with_items:
-      - /var/run/php-fpm/php-fpm.sock
-      - /home/freetech/Omnisup
+- name: Change of Omnisup permissions
+  shell: "chmod 777 -R /var/www/html/Omnisup"
 
-- name: Copy config.php from /doc to /Omnisup
-  shell: "mv /home/freetech/Omnisup/doc/config_ex.php /home/freetech/Omnisup/doc/config.php"
-- copy: "src={{ omnisup_dir }}/doc/config.php dest={{ omnisup_dir }} remote_src=yes"
+- name: Creation of config.php
+  template: src=templates/config.php.j2 dest=/var/www/html/Omnisup/config.php
   become: yes
   become_user: freetech
   become_method: su
 
 - name: Modify of config.js in /static/Js
-  shell: "mv /home/freetech/Omnisup/static/Js/config_ex.js /home/freetech/Omnisup/static/Js/config.js"
-- template: "src=templates/config.js.j2 dest={{ omnisup_dir}}/static/Js/config.js"
+  shell: "mv /var/www/html/Omnisup/static/Js/config_ex.js /home/freetech/Omnisup/static/Js/config.js"
+- template: "src=templates/config.js.j2 dest=/home/freetech/Omnisup/static/Js/config.js"
   become: yes
   become_user: freetech
   become_method: su
+
+- name: Change phone.js default port on /static/JS/phone.js
+  lineinfile: "dest=/var/www/html/Omnisup/static/Js/phone.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
+  become: yes
+  become_user: freetech
+  become_method: su
+
+- name: Restart php-fpm service
+  service: name=php-fpm state=restarted enabled=yes
+
+- name: Set permissions of required to freetech's user
+  shell: "{{ item }}"
+  with_items:
+      - "chown freetech:freetech -R /var/run/php-fpm/php-fpm.sock"
+      - "chown freetech:freetech -R /home/freetech/Omnisup"
+
+- name: Creation of /etc/nginx/conf.d/supervision.conf
+  template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
+
+
+
+
