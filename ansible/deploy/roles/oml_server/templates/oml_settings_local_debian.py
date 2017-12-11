@@ -53,7 +53,7 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, "/home/freetech/static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "/home/freetech/static")
 MEDIA_ROOT = os.path.join(BASE_DIR, '/home/freetech/media_root')
 
 OML_OMNILEADS_IP = "{{ omniapp_ip }}"
