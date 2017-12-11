@@ -27,8 +27,8 @@
   become_method: su
 
 - name: Modify of config.js in /static/Js
-  shell: "mv /var/www/html/Omnisup/static/Js/config_ex.js /home/freetech/Omnisup/static/Js/config.js"
-- template: "src=templates/config.js.j2 dest=/home/freetech/Omnisup/static/Js/config.js"
+  shell: "mv /var/www/html/Omnisup/static/Js/config_ex.js /var/www/html/Omnisup/static/Js/config.js"
+- template: "src=templates/config.js.j2 dest=/var/www/html/Omnisup/static/Js/config.js"
   become: yes
   become_user: freetech
   become_method: su
