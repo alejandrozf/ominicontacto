@@ -5,10 +5,10 @@
 
 - include: static.yml
 
+- include: django_migrations.yml
+
 - include: omniapp_second.yml
   when: not post_install
-
-- include: django_migrations.yml
 
 - include: wombat.yml
   when: not post_install
