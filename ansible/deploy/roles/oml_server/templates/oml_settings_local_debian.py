@@ -97,7 +97,7 @@ OML_GRABACIONES_URL = "http://{{ omnivoip_ip }}/grabaciones"
 # 'OML_SUPERVISION_URL': url donde se encuentra las grabaciones en elastix
 # ejemplo "http://172.16.20.222:8090/Omnisup/index.php"
 
-OML_SUPERVISION_URL = "http://{{ omnivoip_ip }}:8090/Omnisup/index.php?page=Lista_Campanas&supervId="
+OML_SUPERVISION_URL = "https://{{ omnivoip_ip }}:8443/Omnisup/index.php?page=Lista_Campanas&supervId="
 
 
 # 'OML_KAMAILIO_IP': ip donde se encuentra kamailio
