@@ -385,14 +385,15 @@ def node_view(request):
                               DuracionDeLlamada.TYPE_MANUAL)
         ).order_by("-fecha_hora_llamada")[:10]
         campanas_preview_activas = agente_profile.has_campanas_preview_activas_miembro()
-    context = {
-        'pausas': Pausa.objects.all,
-        'registro': registro,
-        'campanas_preview_activas': campanas_preview_activas,
-        'agente_profile': agente_profile,
-    }
-    return render_to_response('agente/base_agente.html', context,
+        context = {
+            'pausas': Pausa.objects.all,
+            'registro': registro,
+            'campanas_preview_activas': campanas_preview_activas,
+            'agente_profile': agente_profile,
+            }
+        return render_to_response('agente/base_agente.html', context,
                               context_instance=RequestContext(request))
+    return HttpResponseRedirect(reverse('login'))
 
 
 def mensajes_recibidos_enviado_remitente_view(request):
