@@ -313,7 +313,7 @@
         {% endif %}
 
     {% endfor %}
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user.get_tiene_permiso_administracion %}
         {% block content %}
         {% endblock %}
 
