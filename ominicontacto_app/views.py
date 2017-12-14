@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""En este modulo se encuentran las vistas basicas para inicializar el sistema, usuarios
-modulos, grupos, pausas
+"""En este modulo se encuentran las vistas basicas para inicializar el sistema,
+usuarios, modulos, grupos, pausas
 
 DT:Mover la creacion de agente a otra vista
 """
@@ -62,7 +62,8 @@ def index_view(request):
 
 def login_view(request):
     """
-    Vista login, si el user es un agente lo redirijo a la vista del agente(view_node)
+    Vista login, si el user es un agente lo redirijo a la vista del
+    agente(view_node)
     """
     if request.method == "POST":
         username = request.POST['username']
@@ -133,10 +134,12 @@ class UserDeleteView(DeleteView):
         self.object = self.get_object()
         if self.object.is_agente and self.object.get_agente_profile():
             kamailio_service = KamailioService()
-            kamailio_service.delete_agente_kamailio(self.object.get_agente_profile())
+            kamailio_service.delete_agente_kamailio(
+                self.object.get_agente_profile())
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             kamailio_service = KamailioService()
-            kamailio_service.delete_agente_kamailio(self.object.get_supervisor_profile())
+            kamailio_service.delete_agente_kamailio(
+                self.object.get_supervisor_profile())
         return super(UserDeleteView, self).delete(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -169,8 +172,9 @@ class AgenteProfileCreateView(CreateView):
                        "agente")
             messages.warning(self.request, message)
         if not grupo:
-            message = ("Debe cargar un grupo antes de crear un perfil de agente"
-                       )
+            message = (
+                "Debe cargar un grupo antes de crear un perfil de agente"
+            )
             messages.warning(self.request, message)
         return super(AgenteProfileCreateView, self).dispatch(request, *args,
                                                              **kwargs)
@@ -384,15 +388,19 @@ def node_view(request):
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)
         ).order_by("-fecha_hora_llamada")[:10]
-        campanas_preview_activas = agente_profile.has_campanas_preview_activas_miembro()
+        campanas_preview_activas = \
+            agente_profile.has_campanas_preview_activas_miembro()
         context = {
             'pausas': Pausa.objects.all,
             'registro': registro,
             'campanas_preview_activas': campanas_preview_activas,
             'agente_profile': agente_profile,
             }
-        return render_to_response('agente/base_agente.html', context,
-                              context_instance=RequestContext(request))
+        return render_to_response(
+            'agente/base_agente.html',
+            context,
+            context_instance=RequestContext(request)
+        )
     return HttpResponseRedirect(reverse('login'))
 
 
@@ -409,9 +417,9 @@ def mensajes_recibidos_enviado_remitente_view(request):
 def mensajes_recibidos_view(request):
     service_sms = SmsManager()
     mensajes = service_sms.obtener_mensajes_recibidos_por_remitente()
-    response = JsonResponse(service_sms.
-                            armar_json_mensajes_recibidos_por_remitente(mensajes),
-                            safe=False)
+    response = JsonResponse(
+        service_sms.armar_json_mensajes_recibidos_por_remitente(mensajes),
+        safe=False)
     return response
 
 
@@ -542,7 +550,8 @@ def mensaje_chat_view(request):
     chat = Chat.objects.get(pk=int(chat))
     sender = User.objects.get(pk=int(sender))
     to = User.objects.get(pk=int(to))
-    MensajeChat.objects.create(sender=sender, to=to, mensaje=mensaje, chat=chat)
+    MensajeChat.objects.create(
+        sender=sender, to=to, mensaje=mensaje, chat=chat)
     response = JsonResponse({'status': 'OK'})
     return response
 
@@ -560,7 +569,9 @@ def crear_chat_view(request):
 
 @csrf_exempt
 def wombat_log_view(request):
-    """Log de wombat insertar los log q devuelve los log de las campana de wombat"""
+    """
+    Log de wombat insertar los log q devuelve los log de las campana de wombat
+    """
     print request.POST
     dict_post = request.POST
 
@@ -605,7 +616,8 @@ def wombat_log_view(request):
 
 def supervision_url_externa(request):
     """Vista que redirect a la supervision externa de marce"""
-    if request.user.is_authenticated() and request.user.get_supervisor_profile():
+    if request.user.is_authenticated() and \
+            request.user.get_supervisor_profile():
         supervisor = request.user.get_supervisor_profile()
         url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
         if supervisor.is_administrador:
