@@ -36,7 +36,7 @@
 
 </head>
 <body>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user.get_tiene_permiso_administracion %}
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container-fluid col-lg-12">
                 <div class="navbar-header col-lg-2">
@@ -61,8 +61,8 @@
                     </ul>
 
                     <ul class="nav navbar-nav">
-                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
-                        <li role="presentation" class="dropdown">
+                        {% if user.get_is_supervisor_normal or user.get_is_administrador %}
+                        <li role="presentation"  class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Usuarios <span class="caret"></span>
 						    </a>
@@ -120,7 +120,7 @@
 						    </ul>
 						</li>
                         {% endif %}
-                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
+                        {% if user.get_is_supervisor_normal or user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Campaña <span class="caret"></span>
@@ -232,7 +232,7 @@
                                     <a href="{% url 'reporte_llamadas' %}"><span class=" glyphicon glyphicon-earphone" aria-hidden="true"></span> Llamadas</a>
                                 </li>
                                  {% endif %}
-                                 {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
+                                 {% if user.get_is_supervisor_normal or user.get_is_administrador %}
                                 <li>
                                     <a href="{% url 'agente_tiempos' %}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Agentes</a>
                                 </li>

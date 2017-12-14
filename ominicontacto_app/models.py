@@ -52,6 +52,25 @@ class User(AbstractUser):
         if self.get_supervisor_profile() and \
                 self.get_supervisor_profile().is_customer:
             return True
+        return False
+
+    def get_is_supervisor_normal(self):
+        if self.get_supervisor_profile() and \
+                not self.get_supervisor_profile().is_customer and \
+                not self.get_supervisor_profile().is_administrador:
+            return True
+        return False
+
+    def get_tiene_permiso_administracion(self):
+        """Funcion devuelve true si tiene permiso de acceso a la pagina
+        de adminstracion del sistema"""
+        if self.get_is_administrador():
+            return True
+        elif self.get_is_supervisor_normal():
+            return True
+        elif self.get_is_supervisor_customer():
+            return True
+        return False
 
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
