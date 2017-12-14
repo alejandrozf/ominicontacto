@@ -45,3 +45,6 @@
   with_items:
       - systemctl stop firewalld
       - systemctl disable firewalld
+
+- name: Start asterisk with fwconsole
+  shell: "fwconsole start"
