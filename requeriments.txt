@@ -24,6 +24,7 @@ Pillow==4.0.0
 prompt-toolkit==1.0.7
 psycopg2==2.6.1
 ptyprocess==0.5.1
+py2-ipaddress==3.4.1
 pycparser==2.17
 pygal==2.3.0
 python-crontab==2.2.7
