@@ -32,8 +32,7 @@
   become_method: su
 
 - name: Modify of config.js in /static/Js
-  shell: "mv {{ omnisup_dir }}/Omnisup/static/Js/config_ex.js {{ omnisup_dir }}/Omnisup/static/Js/config.js"
-- template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/Omnisup/static/Js/config.js"
+  template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/Omnisup/static/Js/config.js"
   become: yes
   become_user: freetech
   become_method: su
@@ -43,6 +42,7 @@
   become: yes
   become_user: freetech
   become_method: su
+  when: ansible_os_family == "Redhat" or ansible_os_family == "Sangoma"
 
 - name: Restart php-fpm service
   service: name=php-fpm state=restarted enabled=yes
@@ -55,6 +55,10 @@
 
 - name: Creation of /etc/nginx/conf.d/supervision.conf
   template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
+
+- name: Restart of nginx
+  service: name=nginx state=restarted enabled=yes
+
 
 
 
