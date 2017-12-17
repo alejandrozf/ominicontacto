@@ -106,14 +106,12 @@ class EstadisticasService():
 
         for agente in agentes:
 
-            #logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
-             #   eventos_pausa, fecha_inferior, fecha_superior, agente.id)
             is_unpause = False
             time_actual = None
             tiempos_pausa = {}
             log_agente = self._filter_query_por_agente(logs_time, agente.id)
-            # iterar los log teniendo en cuenta que si encuentra un evento UNPAUSEALL
-            # y luego un PAUSEALL calcula el tiempo de session
+            # iterar los log teniendo en cuenta que si encuentra un evento
+            # UNPAUSEALL y luego un PAUSEALL calcula el tiempo de session
             for logs in log_agente:
                 if is_unpause and logs[2] == 'PAUSEALL':
                     resta = time_actual - logs[1]
@@ -291,7 +289,7 @@ class EstadisticasService():
                                      agentes_tiempo)
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_llamadas_perdidas= int(log[1])
+                agente_nuevo._cantidad_llamadas_perdidas = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
                     agente, None, None, None, 0,
@@ -483,36 +481,39 @@ class EstadisticasService():
 
     ############################################################################
 
-    def _calcular_estadisticas(self, fecha_inferior, fecha_superior, agentes, user):
+    def _calcular_estadisticas(self,
+                               fecha_inferior, fecha_superior, agentes, user):
         if not agentes:
             agentes = self._obtener_agentes()
-        #agentes_tiempo = self.calcular_tiempo_sesion(agentes, fecha_inferior,
-         #                                            fecha_superior)
+
         agentes_pausa = self.calcular_tiempo_pausa(agentes, fecha_inferior,
                                                    fecha_superior)
-        #agentes_llamadas = self.calcular_tiempo_llamada(agentes,
-         #                                               fecha_inferior, fecha_superior)
-        agentes_tiempos = self.calcular_tiempos_agentes(agentes, fecha_inferior,
-                                                        fecha_superior)
+
+        agentes_tiempos = self.calcular_tiempos_agentes(
+            agentes, fecha_inferior, fecha_superior)
         count_llamada_campana = self.obtener_count_llamadas_campana(
             agentes, fecha_inferior, fecha_superior, user)
 
         # Copiado del modulo reporte_grafico
-        dict_agentes, agentes_nombre, agentes = self._obtener_agente_grabacion(agentes,
-            fecha_inferior, fecha_superior)
+        dict_agentes, agentes_nombre, agentes = self._obtener_agente_grabacion(
+            agentes, fecha_inferior, fecha_superior)
 
-        total_agentes = self._obtener_total_agente_grabacion(dict_agentes, agentes)
-        total_agente_ics = self._obtener_total_ics_agente(dict_agentes, agentes)
-        total_agente_dialer = self._obtener_total_dialer_agente(dict_agentes, agentes)
-        total_agente_inbound = self._obtener_total_inbound_agente(dict_agentes, agentes)
-        total_agente_manual = self._obtener_total_manual_agente(dict_agentes, agentes)
+        total_agentes = self._obtener_total_agente_grabacion(
+            dict_agentes, agentes)
+        total_agente_ics = self._obtener_total_ics_agente(
+            dict_agentes, agentes)
+        total_agente_dialer = self._obtener_total_dialer_agente(
+            dict_agentes, agentes)
+        total_agente_inbound = self._obtener_total_inbound_agente(
+            dict_agentes, agentes)
+        total_agente_manual = self._obtener_total_manual_agente(
+            dict_agentes, agentes)
 
         dic_estadisticas = {
             'agentes_tiempos': agentes_tiempos,
             'fecha_desde': fecha_inferior,
             'fecha_hasta': fecha_superior,
             'agentes_pausa': agentes_pausa,
-            #'agentes_llamadas': agentes_llamadas,
             'count_llamada_campana': count_llamada_campana,
             'agentes': agentes,
             'agentes_nombre': agentes_nombre,
@@ -526,8 +527,8 @@ class EstadisticasService():
         return dic_estadisticas
 
     def general_campana(self, fecha_inferior, fecha_superior, agentes, user):
-        estadisticas = self._calcular_estadisticas(fecha_inferior,
-                                                   fecha_superior, agentes, user)
+        estadisticas = self._calcular_estadisticas(
+            fecha_inferior, fecha_superior, agentes, user)
 
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")
@@ -540,14 +541,10 @@ class EstadisticasService():
         barra_agente_total.title = 'Cantidad de llamadas de los agentes por tipo de llamadas'
 
         barra_agente_total.x_labels = estadisticas['agentes_nombre']
-        barra_agente_total.add('ICS',
-                                estadisticas['total_agente_ics'])
-        barra_agente_total.add('DIALER',
-                                estadisticas['total_agente_dialer'])
-        barra_agente_total.add('INBOUND',
-                                estadisticas['total_agente_inbound'])
-        barra_agente_total.add('MANUAL',
-                                estadisticas['total_agente_manual'])
+        barra_agente_total.add('ICS', estadisticas['total_agente_ics'])
+        barra_agente_total.add('DIALER', estadisticas['total_agente_dialer'])
+        barra_agente_total.add('INBOUND', estadisticas['total_agente_inbound'])
+        barra_agente_total.add('MANUAL', estadisticas['total_agente_manual'])
 
         return {
             'estadisticas': estadisticas,
