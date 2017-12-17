@@ -37,6 +37,13 @@ class EstadisticasService():
     def _obtener_agentes(self):
         return AgenteProfile.objects.filter(is_inactive=False)
 
+    def _filter_query_por_agente(self, query_agentes, agente_pk):
+        resultado = []
+        for item in query_agentes:
+            if item[0] == agente_pk:
+                resultado.append(item)
+        return resultado
+
     def calcular_tiempo_sesion(self, agentes, fecha_inferior, fecha_superior):
         """
         Calcula el tiempo de session de los agentes en el periodo evaluado
@@ -89,28 +96,35 @@ class EstadisticasService():
         eventos_pausa = ['PAUSEALL', 'UNPAUSEALL']
 
         agentes_tiempo = []
-
         # iterar por agente evaluando los eventos de pausa
+        agentes_id = [agente.id for agente in agentes]
+        logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
+            eventos_pausa,
+            fecha_inferior,
+            fecha_superior,
+            agentes_id)
+
         for agente in agentes:
 
-            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
-                eventos_pausa, fecha_inferior, fecha_superior, agente.id)
+            #logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
+             #   eventos_pausa, fecha_inferior, fecha_superior, agente.id)
             is_unpause = False
             time_actual = None
             tiempos_pausa = {}
+            log_agente = self._filter_query_por_agente(logs_time, agente.id)
             # iterar los log teniendo en cuenta que si encuentra un evento UNPAUSEALL
             # y luego un PAUSEALL calcula el tiempo de session
-            for logs in logs_time:
-                if is_unpause and logs.event == 'PAUSEALL':
-                    resta = time_actual - logs.time
-                    if logs.data1 in tiempos_pausa.keys():
-                        tiempos_pausa[logs.data1] += resta
+            for logs in log_agente:
+                if is_unpause and logs[2] == 'PAUSEALL':
+                    resta = time_actual - logs[1]
+                    if logs[3] in tiempos_pausa.keys():
+                        tiempos_pausa[logs[3]] += resta
                     else:
-                        tiempos_pausa.update({logs.data1: resta})
+                        tiempos_pausa.update({logs[3]: resta})
                     is_unpause = False
                     time_actual = None
-                if logs.event == 'UNPAUSEALL':
-                    time_actual = logs.time
+                if logs[2] == 'UNPAUSEALL':
+                    time_actual = logs[1]
                     is_unpause = True
             for tiempo_pausa in tiempos_pausa:
                 tiempo_agente = []
@@ -158,16 +172,23 @@ class EstadisticasService():
     def calcular_tiempos_agentes(self, agentes, fecha_inferior, fecha_superior):
         eventos_pausa = ['PAUSEALL', 'UNPAUSEALL']
         agentes_tiempo = []
+        agentes_id = [agente.id for agente in agentes]
+        logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
+            eventos_pausa,
+            fecha_inferior,
+            fecha_superior,
+            agentes_id)
 
         for agente in agentes:
             agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
-                eventos_pausa, fecha_inferior, fecha_superior, agente.id)
             is_unpause = False
             time_actual = None
-            for logs in logs_time:
-                if is_unpause and logs.event == 'PAUSEALL':
-                    resta = time_actual - logs.time
+
+            log_agente = self._filter_query_por_agente(logs_time, agente.id)
+
+            for logs in log_agente:
+                if is_unpause and logs[2] == 'PAUSEALL':
+                    resta = time_actual - logs[1]
                     agente_en_lista = filter(lambda x: x.agente == agente,
                                              agentes_tiempo)
                     if agente_en_lista:
@@ -183,21 +204,26 @@ class EstadisticasService():
                     agente_nuevo = None
                     is_unpause = False
                     time_actual = None
-                if logs.event == 'UNPAUSEALL':
-                    time_actual = logs.time
+                if logs[2] == 'UNPAUSEALL':
+                    time_actual = logs[1]
                     is_unpause = True
 
         eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
 
+        logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
+            eventos_sesion,
+            fecha_inferior,
+            fecha_superior,
+            agentes_id)
+
         for agente in agentes:
             agente_nuevo = None
-            logs_time = Queuelog.objects.obtener_log_agente_pk_event_periodo_all(
-                eventos_sesion, fecha_inferior, fecha_superior, agente.id)
             is_remove = False
             time_actual = None
-            for logs in logs_time:
-                if is_remove and logs.event == 'ADDMEMBER':
-                    resta = time_actual - logs.time
+            log_agente = self._filter_query_por_agente(logs_time, agente.id)
+            for logs in log_agente:
+                if is_remove and logs[2] == 'ADDMEMBER':
+                    resta = time_actual - logs[1]
                     agente_en_lista = filter(lambda x: x.agente == agente,
                                              agentes_tiempo)
                     if agente_en_lista:
@@ -213,8 +239,8 @@ class EstadisticasService():
                     agente_nuevo = None
                     is_remove = False
                     time_actual = None
-                if logs.event == 'REMOVEMEMBER':
-                    time_actual = logs.time
+                if logs[2] == 'REMOVEMEMBER':
+                    time_actual = logs[1]
                     is_remove = True
 
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
