@@ -10,7 +10,9 @@ from pygal.style import Style, RedBlueStyle
 
 from django.conf import settings
 from django.db.models import Count
-from ominicontacto_app.models import AgenteProfile, Queuelog, Campana, Grabacion
+from ominicontacto_app.models import (
+    AgenteProfile, Queuelog, Campana, Grabacion
+)
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
 import logging as _logging
@@ -236,7 +238,8 @@ class EstadisticasService():
         eventos_llamadas_perdidas = ['RINGNOANSWER']
 
         logs_time = Queuelog.objects.obtener_count_evento_agente(
-            eventos_llamadas_perdidas, fecha_inferior, fecha_superior, agentes_id)
+            eventos_llamadas_perdidas, fecha_inferior, fecha_superior,
+            agentes_id)
 
         for log in logs_time:
 
@@ -287,18 +290,20 @@ class EstadisticasService():
 
         return agentes_tiempo
 
-    def obtener_count_llamadas_campana(self, agentes, fecha_inferior, fecha_superior,
-                                       user):
+    def obtener_count_llamadas_campana(self, agentes, fecha_inferior,
+                                       fecha_superior, user):
         eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
         campanas = Campana.objects.obtener_all_dialplan_asterisk()
         if not user.get_is_administrador():
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+            campanas = Campana.objects.obtener_campanas_vista_by_user(
+                campanas, user)
 
         agentes_tiempo = []
         agentes = [agente.id for agente in agentes]
         logs_time = Queuelog.objects.obtener_agentes_campanas_total(
-            eventos_llamadas, fecha_inferior, fecha_superior, agentes, campanas)
+            eventos_llamadas, fecha_inferior, fecha_superior, agentes,
+            campanas)
 
         for log in logs_time:
             campana = log[1].split('_')
@@ -336,14 +341,16 @@ class EstadisticasService():
                                                    datetime.time.max)
         agentes = [agente.sip_extension for agente in agentes]
         dict_agentes = Grabacion.objects.obtener_count_agente().filter(
-            fecha__range=(fecha_inferior, fecha_superior), sip_agente__in=agentes)
+            fecha__range=(fecha_inferior, fecha_superior),
+            sip_agente__in=agentes)
         agentes = []
         sip_agentes = []
 
         for sip_agente in dict_agentes:
             sip_agentes.append(sip_agente['sip_agente'])
             try:
-                agente = AgenteProfile.objects.get(sip_extension=sip_agente['sip_agente'])
+                agente = AgenteProfile.objects.get(
+                    sip_extension=sip_agente['sip_agente'])
                 agentes.append(agente.user.get_full_name())
             except AgenteProfile.DoesNotExist:
                 agentes.append(sip_agente['sip_agente'])
@@ -409,7 +416,7 @@ class EstadisticasService():
         total_inbound = []
         for agente in agentes:
             cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_INBOUND). \
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_INBOUND).\
                 filter(sip_agente=agente)
             if result:
                 cantidad = result[0]['cantidad']
@@ -435,7 +442,7 @@ class EstadisticasService():
 
         return total_manual
 
-    ############################################################################
+    ##########################################################################
 
     def _calcular_estadisticas(self,
                                fecha_inferior, fecha_superior, agentes, user):
@@ -487,14 +494,15 @@ class EstadisticasService():
             fecha_inferior, fecha_superior, agentes, user)
 
         if estadisticas:
-            logger.info("Generando grafico calificaciones de campana por cliente ")
+            logger.info("Generando grafico Cantidad de llamadas por agente ")
 
         # copiado de reporte_grafico
         # Barra: Cantidad de llamadas de los agentes por tipo de llamadas.
         barra_agente_total = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
-        barra_agente_total.title = 'Cantidad de llamadas de los agentes por tipo de llamadas'
+        barra_agente_total.title = 'Cantidad de llamadas de los agentes por ' \
+                                   'tipo de llamadas'
 
         barra_agente_total.x_labels = estadisticas['agentes_nombre']
         barra_agente_total.add('ICS', estadisticas['total_agente_ics'])
