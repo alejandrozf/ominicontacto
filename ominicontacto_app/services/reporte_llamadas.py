@@ -44,50 +44,6 @@ class EstadisticasService():
                 resultado.append(item)
         return resultado
 
-    def calcular_tiempo_sesion(self, agentes, fecha_inferior, fecha_superior):
-        """
-        Calcula el tiempo de session de los agentes en el periodo evaluado
-        :return: un listado de agentes con el tiempo de session
-        """
-        eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
-
-        if fecha_inferior and fecha_superior:
-            fecha_desde = datetime.datetime.combine(fecha_inferior,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_superior,
-                                                    datetime.time.max)
-
-        logs_queue = Queuelog.objects.filter(
-            queuename='ALL',
-            event__in=eventos_sesion,
-            time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-
-        agentes_tiempo = []
-
-        # iterar por agente evaluando los eventos de session
-        for agente in agentes:
-            tiempo_agente = []
-            logs_time = logs_queue.filter(agent=agente)
-            is_remove = False
-            time_actual = None
-            # iterar los log teniendo en cuenta que si encuentra un evento REMOVEMEMBER
-            # y luego un ADDMEMBER calcula el tiempo de session
-            for logs in logs_time:
-                if is_remove and logs.event == 'ADDMEMBER':
-                    resta = time_actual - logs.time
-                    tiempo_agente.append(agente)
-                    tiempo_agente.append(logs.time.strftime('%Y-%m-%d'))
-                    tiempo_string = str(resta) + "hs"
-                    tiempo_agente.append(str(tiempo_string))
-                    agentes_tiempo.append(tiempo_agente)
-                    tiempo_agente = []
-                    is_remove = False
-                    time_actual = None
-                if logs.event == 'REMOVEMEMBER':
-                    time_actual = logs.time
-                    is_remove = True
-        return agentes_tiempo
-
     def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
         """
         Calcula el tiempo de pausa de los agentes en el periodo evaluado
