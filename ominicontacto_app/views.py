@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""En este modulo se encuentran las vistas basicas para inicializar el
-sistema, usuarios, modulos, grupos, pausas
+"""En este modulo se encuentran las vistas basicas para inicializar el sistema,
+usuarios, modulos, grupos, pausas
 
 DT:Mover la creacion de agente a otra vista
 """
