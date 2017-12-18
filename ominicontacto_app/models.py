@@ -2,19 +2,26 @@
 
 from __future__ import unicode_literals
 
+import datetime
+import getpass
 import json
 import logging
-import uuid
+import os
 import re
-import datetime
+import sys
+import uuid
 
 from ast import literal_eval
+
+from crontab import CronTab
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
 from django.db import models, connection
 from django.db.models import Max, Q, Count
+from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
+
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 
 logger = logging.getLogger(__name__)
@@ -666,6 +673,8 @@ class Campana(models.Model):
         (SITIO_EXTERNO, "Url externa")
     )
 
+    TIEMPO_ACTUALIZACION_CONTACTOS = 1
+
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
@@ -702,6 +711,33 @@ class Campana(models.Model):
     def __unicode__(self):
         return self.nombre
 
+    def crear_tarea_actualizacion(self):
+        """
+        Adiciona una tarea que llama al procedimiento de actualización de cada
+        asignación de agente a contacto para la campaña preview actual
+        """
+        # conectar con cron
+        crontab = CronTab(user=getpass.getuser())
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
+        ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
+        # adicionar nuevo cron job
+        job = crontab.new(
+            command='{0} {1} actualizar_campanas_preview {2} {3}'.format(
+                ruta_python_virtualenv, ruta_manage_py, self.pk, self.tiempo_desconexion),
+            comment=str(self.pk))
+        # adicionar tiempo de periodicidad al cron job
+        job.minute.every(self.TIEMPO_ACTUALIZACION_CONTACTOS)
+        crontab.write_to_user(user=getpass.getuser())
+
+    def eliminar_tarea_actualizacion(self):
+        """
+        Elimina la tarea que llama al procedimiento de actualización de cada
+        asignación de agente a contacto para la campaña preview actual
+        """
+        crontab = CronTab(user=getpass.getuser())
+        crontab.remove_all(comment=str(self.pk))
+        crontab.write_to_user(user=getpass.getuser())
+
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
         self.save()
@@ -730,6 +766,12 @@ class Campana(models.Model):
     def remover(self):
         """Setea la campaña como ESTADO_BORRADA"""
         logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
+        if self.type == Campana.TYPE_PREVIEW:
+            # eliminamos el proceso que actualiza las conexiones de agentes a contactos
+            # en la campaña
+            self.eliminar_tarea_actualizacion()
+            # eliminamos todos las entradas de AgenteEnContacto relativas a la campaña
+            AgenteEnContacto.objects.filter(campana_id=self.pk).delete()
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_BORRADA
         self.save()
@@ -739,6 +781,10 @@ class Campana(models.Model):
         logger.info("Seteando campana %s como ESTADO_FINALIZADA", self.id)
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_FINALIZADA
+        if self.type == Campana.TYPE_PREVIEW:
+            # eliminamos la planificación de actualización de relaciones de agentes con contactos
+            # de la campaña
+            self.eliminar_tarea_actualizacion()
         self.save()
 
     def ocultar(self):
@@ -786,19 +832,6 @@ class Campana(models.Model):
             logger.warning("La BD no tiene campo 'telefono'")
         return campos_contacto
 
-    def agregar_agente_contacto(self, contacto):
-        """
-        Inicializa una entrada en la tabla que relaciona agentes con contactos
-        en campañas preview
-        """
-        campos_contacto = self._obtener_campos_bd_contacto(contacto.bd_contacto)
-        datos_contacto = literal_eval(contacto.datos)
-        datos_contacto = dict(zip(campos_contacto, datos_contacto))
-        datos_contacto_json = json.dumps(datos_contacto)
-        AgenteEnContacto(agente_id=-1, contacto_id=contacto.pk, campana_id=self.pk,
-                         estado=AgenteEnContacto.ESTADO_INICIAL, datos_contacto=datos_contacto_json,
-                         telefono_contacto=contacto.telefono).save()
-
     def establecer_valores_iniciales_agente_contacto(self):
         """
         Rellena con valores iniciales la tabla que informa el estado de los contactos
@@ -824,6 +857,34 @@ class Campana(models.Model):
 
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
+
+    def finalizar_relacion_agente_contacto(self, contacto_pk):
+        """
+        Marca como finalizada la relación entre un agente y un contacto de una campaña
+        preview
+        """
+        try:
+            agente_en_contacto = AgenteEnContacto.objects.get(
+                contacto_id=contacto_pk, campana_id=self.pk)
+        except AgenteEnContacto.DoesNotExist:
+            # para el caso cuando se llama al procedimiento luego de añadir un
+            # nuevo contacto desde la consola de agentes
+            pass
+        else:
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
+            agente_en_contacto.save()
+
+            # si todos los contactos de la campaña han sido calificados
+            # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
+            # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
+            # y se marca la campaña como finalizada
+            contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
+            n_contactos_campana = contactos_campana.count()
+            n_contactos_atendidos = contactos_campana.filter(
+                estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
+            if n_contactos_campana == n_contactos_atendidos:
+                contactos_campana.delete()
+                self.finalizar()
 
 
 class QueueManager(models.Manager):
@@ -2085,6 +2146,9 @@ class WombatLog(models.Model):
 
 class QueuelogManager(models.Manager):
 
+    def llamadas_iniciadas(self):
+        return Queuelog.objects.filter(event='ENTERQUEUE')
+
     def obtener_log_agente_event_periodo_all(
             self, eventos, fecha_desde, fecha_hasta, agente):
         if fecha_desde and fecha_hasta:
@@ -2819,14 +2883,11 @@ class AgenteEnContacto(models.Model):
 
     ESTADO_ENTREGADO = 1  # significa que un agente solicitó este contacto y le fue entregado
 
-    ESTADO_ATENDIENDO = 2  # significa que el agente está hablando con el contacto
-
-    ESTADO_FINALIZADO = 3  # significa que el agente culminó de forma satisfactoria la llamada
+    ESTADO_FINALIZADO = 2  # significa que el agente culminó de forma satisfactoria la llamada
 
     ESTADO_CHOICES = (
         (ESTADO_INICIAL, 'INICIAL'),
         (ESTADO_ENTREGADO, 'ENTREGADO'),
-        (ESTADO_ATENDIENDO, 'ATENDIENDO'),
         (ESTADO_FINALIZADO, 'FINALIZADO'),
     )
     agente_id = models.IntegerField()
@@ -2835,6 +2896,7 @@ class AgenteEnContacto(models.Model):
     telefono_contacto = models.CharField(max_length=128)
     campana_id = models.IntegerField()
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
+    modificado = models.DateTimeField(auto_now=True, null=True)
 
     def __unicode__(self):
         return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(

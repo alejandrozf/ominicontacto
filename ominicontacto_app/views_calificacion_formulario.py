@@ -13,20 +13,14 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.core.exceptions import SuspiciousOperation
 from django.conf import settings
-from django.views.generic.edit import (
-    CreateView, UpdateView, DeleteView, FormView
-)
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
-    WombatLog, Calificacion, UserApiCrm
-)
-from ominicontacto_app.forms import (
-    FormularioCRMForm, CalificacionClienteForm, FormularioCalificacionFormSet,
-    FormularioContactoCalificacion, FormularioVentaFormSet
-)
+    WombatLog, Calificacion, UserApiCrm)
+from ominicontacto_app.forms import (FormularioCalificacionFormSet, FormularioContactoCalificacion,
+                                     FormularioVentaFormSet)
 from django.views.decorators.csrf import csrf_exempt
 from ominicontacto_app.utiles import convertir_ascii_string
 
@@ -75,7 +69,6 @@ class CalificacionClienteCreateView(CreateView):
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
@@ -98,7 +91,7 @@ class CalificacionClienteCreateView(CreateView):
         # actualiza el estado de wombat a travez de un post
         url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
                                       'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
-        r = requests.post(
+        requests.post(
             url_wombat_agente.format(self.kwargs['wombat_id'],
                                      self.kwargs['id_agente']))
         return self.render_to_response(self.get_context_data(
@@ -120,6 +113,7 @@ class CalificacionClienteCreateView(CreateView):
         self.object = self.get_object()
         form = self.get_form()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contacto_pk = self.kwargs.get('pk_contacto')
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
@@ -128,6 +122,8 @@ class CalificacionClienteCreateView(CreateView):
 
         if form.is_valid():
             if calificacion_form.is_valid():
+                if campana.type == Campana.TYPE_PREVIEW:
+                    campana.finalizar_relacion_agente_contacto(contacto_pk)
                 return self.form_valid(form, calificacion_form)
             else:
                 return self.form_invalid(form, calificacion_form)
@@ -139,7 +135,6 @@ class CalificacionClienteCreateView(CreateView):
         contacto = self.get_object()
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
         nombres = metadata.nombres_de_columnas
         datos = []
         nombres.remove('telefono')
@@ -148,7 +143,7 @@ class CalificacionClienteCreateView(CreateView):
             datos.append(campo)
         self.object.datos = json.dumps(datos)
         self.object.save()
-        self.object_calificacion =calificacion_form.save(commit=False)
+        self.object_calificacion = calificacion_form.save(commit=False)
         cleaned_data_calificacion = calificacion_form.cleaned_data
         calificacion = cleaned_data_calificacion[0]['calificacion']
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
@@ -160,7 +155,7 @@ class CalificacionClienteCreateView(CreateView):
             self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
             self.object_calificacion[0].save()
             # actualiza la calificacion en wombat
-            r = requests.post(
+            requests.post(
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
                 self.object_calificacion[0].contacto)
@@ -177,7 +172,7 @@ class CalificacionClienteCreateView(CreateView):
             self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
             self.object_calificacion[0].save()
             # actualiza la calificacion en wombat
-            r = requests.post(
+            requests.post(
                 url_wombat.format(self.kwargs['wombat_id'],
                                   self.object_calificacion[0].calificacion.nombre))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
@@ -265,7 +260,7 @@ class CalificacionClienteUpdateView(UpdateView):
         url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
                                       'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
         # actualiza el estado de la llamada en wombat
-        r = requests.post(
+        requests.post(
             url_wombat_agente.format(self.kwargs['wombat_id'],
                                      self.kwargs['id_agente']))
         return self.render_to_response(self.get_context_data(
@@ -283,8 +278,6 @@ class CalificacionClienteUpdateView(UpdateView):
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        calificaciones = campana.calificacion_campana.calificacion.all()
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
@@ -328,7 +321,6 @@ class CalificacionClienteUpdateView(UpdateView):
         contacto = self.get_object()
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
         nombres = metadata.nombres_de_columnas
         datos = []
         nombres.remove('telefono')
@@ -353,7 +345,7 @@ class CalificacionClienteUpdateView(UpdateView):
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
             # actualiza la calificacion en wombat
-            r = requests.post(
+            requests.post(
                 url_wombat.format(self.kwargs['wombat_id'], "venta"))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
                 self.object_calificacion.contacto)
@@ -370,7 +362,7 @@ class CalificacionClienteUpdateView(UpdateView):
             self.object_calificacion.es_venta = False
             self.object_calificacion.save()
             # actualiza la calificacion en wombat
-            r = requests.post(
+            requests.post(
                 url_wombat.format(self.kwargs['wombat_id'],
                                   self.object_calificacion.calificacion.nombre))
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
@@ -441,7 +433,6 @@ class FormularioCreateFormView(CreateView):
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
@@ -457,7 +448,7 @@ class FormularioCreateFormView(CreateView):
             {'campana': campana.id,
              'contacto': self.object.id,
              'agente': agente.id}],
-            form_kwargs={'campos':campana.formulario.campos.all()}
+            form_kwargs={'campos': campana.formulario.campos.all()}
         )
 
         return self.render_to_response(self.get_context_data(
@@ -486,7 +477,6 @@ class FormularioCreateFormView(CreateView):
         contacto = self.get_object()
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
         nombres = metadata.nombres_de_columnas
         datos = []
         nombres.remove('telefono')
@@ -520,8 +510,8 @@ class FormularioCreateFormView(CreateView):
         form = self.get_form()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         venta_form = FormularioVentaFormSet(
-            self.request.POST, form_kwargs={'campos':campana.formulario.campos.all()},
-        instance=self.object)
+            self.request.POST, form_kwargs={'campos': campana.formulario.campos.all()},
+            instance=self.object)
 
         if form.is_valid():
             if venta_form.is_valid():
@@ -603,7 +593,6 @@ class FormularioUpdateFormView(UpdateView):
     def get_form(self):
         self.form_class = self.get_form_class()
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
-        campana = metadata.campana
         self.object = self.get_object()
         base_datos = self.object.bd_contacto
         metadata = base_datos.get_metadata()
@@ -652,7 +641,6 @@ class FormularioUpdateFormView(UpdateView):
         contacto = self.get_object()
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
         nombres = metadata.nombres_de_columnas
         datos = []
         nombres.remove('telefono')
@@ -688,8 +676,8 @@ class FormularioUpdateFormView(UpdateView):
         metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
         campana = metadata.campana
         venta_form = FormularioVentaFormSet(
-            self.request.POST, form_kwargs={'campos':campana.formulario.campos.all()},
-        instance=self.object)
+            self.request.POST, form_kwargs={'campos': campana.formulario.campos.all()},
+            instance=self.object)
 
         if form.is_valid():
             if venta_form.is_valid():
@@ -728,13 +716,6 @@ class CalificacionUpdateView(UpdateView):
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
     form_class = FormularioContactoCalificacion
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        campana = self.get_object().campana
-        calificaciones = campana.calificacion_campana.calificacion.all()
-        return self.form_class(calificacion_choice=calificaciones,
-                               **self.get_form_kwargs())
 
     def get_initial(self):
         initial = super(CalificacionUpdateView, self).get_initial()
@@ -800,7 +781,7 @@ class CalificacionUpdateView(UpdateView):
         calificacion_form = FormularioCalificacionFormSet(
             self.request.POST, form_kwargs={'calificacion_choice': calificaciones,
                                             'gestion': campana.gestion},
-            instance= self.object)
+            instance=self.object)
 
         if form.is_valid():
             if calificacion_form.is_valid():
@@ -815,7 +796,6 @@ class CalificacionUpdateView(UpdateView):
         contacto = self.get_object()
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
         nombres = metadata.nombres_de_columnas
         datos = []
         nombres.remove('telefono')
@@ -838,7 +818,7 @@ class CalificacionUpdateView(UpdateView):
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
             # actualiza la calficacion de wombat
-            r = requests.post(
+            requests.post(
                 url_wombat.format(self.object_calificacion.wombat_id, "venta"))
             return redirect(self.get_success_url())
 
@@ -846,7 +826,7 @@ class CalificacionUpdateView(UpdateView):
             self.object_calificacion.es_venta = False
             self.object_calificacion.save()
             # actualizar la calificacion de wombat
-            r = requests.post(
+            requests.post(
                 url_wombat.format(self.object_calificacion.wombat_id,
                                   self.object_calificacion.calificacion.nombre))
             message = 'Operación Exitosa!\
@@ -854,9 +834,9 @@ class CalificacionUpdateView(UpdateView):
             messages.success(self.request, message)
             if self.object_calificacion.agendado:
                 return redirect(self.get_success_url_agenda())
-            return HttpResponseRedirect(reverse('reporte_agente_calificaciones',
-                           kwargs={
-                                   "pk_agente": self.object_calificacion.agente.pk}))
+            return HttpResponseRedirect(
+                reverse('reporte_agente_calificaciones',
+                        kwargs={"pk_agente": self.object_calificacion.agente.pk}))
 
     def form_invalid(self, form, calificacion_form):
         """
@@ -871,16 +851,16 @@ class CalificacionUpdateView(UpdateView):
         return reverse('formulario_venta',
                        kwargs={
                            "pk_campana": calificacion.campana.pk,
-                            "pk_contacto": calificacion.contacto.pk,
-                            "id_agente": calificacion.agente.pk})
+                           "pk_contacto": calificacion.contacto.pk,
+                           "id_agente": calificacion.agente.pk})
 
     def get_success_url_agenda(self):
         calificacion = CalificacionCliente.objects.get(pk=self.kwargs['pk_calificacion'])
         return reverse('agenda_contacto_create',
                        kwargs={
                            "pk_campana": calificacion.campana.pk,
-                            "pk_contacto": calificacion.contacto.pk,
-                            "id_agente": calificacion.agente.pk})
+                           "pk_contacto": calificacion.contacto.pk,
+                           "id_agente": calificacion.agente.pk})
 
 
 @csrf_exempt

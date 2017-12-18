@@ -463,10 +463,15 @@
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
+                </li>
+                {% if campanas_preview_activas %}
                     <li>
-                        <a href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
+                        <a href="{% url 'campana_preview_activas_miembro' %}" target="crm">Campañas preview</a>
                     </li>
-                  </ul>
+                {% endif %}
+            </ul>
         </div>
         <ul class="nav navbar-nav">
           <li>

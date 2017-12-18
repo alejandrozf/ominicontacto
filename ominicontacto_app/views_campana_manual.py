@@ -44,13 +44,12 @@ class CampanaManualListView(ListView):
     context_object_name = 'campanas'
     model = Campana
 
-    def get_queryset(self):
-        queryset = super(CampanaManualListView, self).get_queryset()
-        return queryset.filter(type=Campana.TYPE_MANUAL)
+    def _get_campanas(self):
+        return Campana.objects.obtener_campanas_manuales()
 
     def get_context_data(self, **kwargs):
         context = super(CampanaManualListView, self).get_context_data(**kwargs)
-        campanas = context['campanas']
+        campanas = self._get_campanas()
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
         if self.request.user.is_authenticated() and self.request.user and \
@@ -62,6 +61,7 @@ class CampanaManualListView(ListView):
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
                                               oculto=False)
+        context['campanas'] = campanas
         return context
 
 

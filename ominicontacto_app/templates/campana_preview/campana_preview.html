@@ -16,7 +16,8 @@
     <div class="form-group row">
         {{ form.tiempo_desconexion.errors }}
         <label class="col-sm-3 control-label">Tiempo de desconexión: </label>
-        <div class="col-sm-6">
+        <div class="col-sm-6" data-toggle="tooltip" data-placement="top"
+             title="A partir de este tiempo en minutos, un agente será desconectado de cualquier contacto que tenga asignado y no haya atendido">
             {{ form.tiempo_desconexion }}
         </div>
     </div>
