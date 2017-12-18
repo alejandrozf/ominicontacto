@@ -1,0 +1,2 @@
+Cambios que se hicieron en esta version de Supervision, especial para OrgCentro
+1. añade un |grep SIP y se deletea el |grep 'from' del comando de asterisk en la linea

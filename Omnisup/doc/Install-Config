@@ -1,0 +1,16 @@
+1- editar el archivo /etc/apache2/sites-enabled/default-ssl.conf y editar el virtual host para que quede como:
+
+ErrorLog /dev/null
+CustomLog /dev/null combined
+
+2- copiar el config.php ubicado en Omnisup/doc/ a Omnisup/
+3- crear o revisar usuario de Asterisk Manager (/etc/asterisk/manager_custom.conf) para configurar en config.php junto con direccion ip.
+   Como ejemplo se usara el usuario Lol0, clave l0l012345 e ip 192.168.9.2. Debe quedar de la siguiente manera:
+   define('AMI_USERNAME','Lol0');
+   define('AMI_PASWORD','l0l012345');
+   define('AMI_HOST','192.168.9.2');
+
+   Idem para PG_HOST, PG_USER, PG_PASSWORD, WD_API_USER y WD_API_PASS.
+4- crear y revisar usuario de postgreSQL para configurar en config.php junto con direccion ip.
+5- copiar (en el mismo directorio, pero como config.js) el archivo config_ex.php ubicado en Omnisup/static/Js/.
+   Asignar a la variable KamailioIp dentro de config.js, la direccion ip de kamailio webrtc server.
