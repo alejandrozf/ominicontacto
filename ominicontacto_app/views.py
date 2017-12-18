@@ -172,6 +172,14 @@ class AgenteProfileCreateView(CreateView):
             message = ("Debe cargar un grupo antes de crear un perfil de agente"
                        )
             messages.warning(self.request, message)
+        usuario = User.objects.get(pk=self.kwargs['pk_user'])
+        if usuario.get_supervisor_profile():
+            message = (
+                "No puede crear un perfil de agente a un supervisor"
+            )
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(
+                reverse('user_list', kwargs={"page": 1}))
         return super(AgenteProfileCreateView, self).dispatch(request, *args,
                                                              **kwargs)
 
