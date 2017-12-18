@@ -27,6 +27,7 @@ from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
 from ominicontacto_app.utiles import validar_nombres_campanas, convertir_ascii_string
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
+from ominicontacto_app.services.wombat_service import WombatService
 
 
 def test_concurrently(args_list):
@@ -565,7 +566,9 @@ class CampanasTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, u'registration/login.html')
 
-    def test_reporte_grafico_campana_preview_no_muestra_llamadas_recibidas(self):
+    @patch.object(WombatService, 'list_config_wombat')
+    def test_reporte_grafico_campana_preview_no_muestra_llamadas_recibidas(
+            self, list_config_wombat):
         url = reverse('campana_preview_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         graficos_estadisticas = response.context_data['graficos_estadisticas']
