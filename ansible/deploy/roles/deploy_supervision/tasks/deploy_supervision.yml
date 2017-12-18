@@ -19,8 +19,8 @@
       - systemctl start php-fpm
       - systemctl enable php-fpm
 
-- name: Clone of Omnisup repository
-  git: repo={{ omnisup_repo }} dest={{ omnisup_dir }}/Omnisup
+- name: Move Omnisup directory
+  shell: mv {{ omnisup_dir }}/ominicontacto/Omnisup {{ omnisup_dir }}
 
 - name: Change of Omnisup permissions
   shell: "chmod 755 -R {{ omnisup_dir }}/Omnisup"
