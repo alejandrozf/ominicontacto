@@ -897,8 +897,12 @@ urlpatterns = [
         name="campana_preview_supervisors"),
     url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_calificacion/$',
         login_required(
-            views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
+            views_campana_dialer_reportes.CampanaDialerReporteCalificacionListView.as_view()),
         name="campana_preview_calificacion_reporte_calificacion"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_grafico/$',
+        login_required(
+            views_campana_preview.CampanaPreviewReporteGrafico.as_view()),
+        name="campana_preview_reporte_grafico"),
     url(r'^campana_preview/mostrar_ocultas/$',
         views_campana_preview.CampanaPreviewBorradasListView.as_view(),
         name="campana_preview_mostrar_ocultas"),
@@ -910,6 +914,18 @@ urlpatterns = [
         login_required(
             views_campana_preview.ObtenerContactoView.as_view()),
         name="campana_preview_dispatcher"),
+    url(r'^campana_preview/validar_contacto_asignado/$',
+        login_required(
+            views_campana_preview.campana_validar_contacto_asignado_view),
+        name="validar_contacto_asignado"),
+    url(r'^campana_preview/(?P<pk>\d+)/detalle/$',
+        login_required(
+            views_campana_preview.CampanaPreviewDetailView.as_view()),
+        name="campana_preview_detalle"),
+    url(r'^campana_preview/(?P<pk>\d+)/detalle_express/$',
+        login_required(
+            views_campana_preview.CampanaPreviewExpressView.as_view()),
+        name="campana_preview_detalle_express"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos

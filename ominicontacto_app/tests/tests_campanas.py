@@ -5,9 +5,11 @@ Tests relacionados con las campañas
 """
 from __future__ import unicode_literals
 
+import os
 import json
 import threading
 
+from crontab import CronTab
 from mock import patch
 
 from django.core.urlresolvers import reverse
@@ -18,12 +20,14 @@ from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
-                                               AgenteEnContactoFactory, QueueMemberFactory)
+                                               AgenteEnContactoFactory, QueueMemberFactory,
+                                               CalificacionClienteFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
-from ominicontacto_app.utiles import validar_nombres_campanas
+from ominicontacto_app.utiles import validar_nombres_campanas, convertir_ascii_string
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
+from ominicontacto_app.services.wombat_service import WombatService
 
 
 def test_concurrently(args_list):
@@ -81,6 +85,10 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
+    def tearDown(self):
+        self.campana_activa.eliminar_tarea_actualizacion()
+        self.campana_borrada.eliminar_tarea_actualizacion()
+
     def test_no_se_devuelve_un_mismo_contacto_a_mas_de_un_agente_en_campanas_preview(self):
         user1 = UserFactory(username='user1', is_agente=True)
         user2 = UserFactory(username='user2', is_agente=True)
@@ -124,13 +132,16 @@ class CampanasTests(OMLBaseTest):
     PWD = u'admin123'
 
     def setUp(self):
+        self.tiempo_desconexion = 3
+
         self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
 
         self.campana = CampanaFactory.create()
         self.campana_activa = CampanaFactory.create(
-            estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW)
+            estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW,
+            tiempo_desconexion=self.tiempo_desconexion)
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
         self.agente_profile = AgenteProfileFactory.create(user=self.usuario_admin_supervisor)
@@ -140,6 +151,10 @@ class CampanasTests(OMLBaseTest):
         self.queue = QueueFactory.create(campana=self.campana_activa)
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
+
+    def tearDown(self):
+        for camp_prev in Campana.objects.obtener_campanas_preview():
+            camp_prev.eliminar_tarea_actualizacion()
 
     def test_campana_contiene_atributo_entero_positivo_llamado_objetivo(self):
         self.assertTrue(self.campana.objetivo >= 0)
@@ -188,7 +203,7 @@ class CampanasTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_activa.nombre)
 
-    def test_usuarios_logueados_pueden_ver_lista_de_campanas_preview_borras(self):
+    def test_usuarios_logueados_pueden_ver_lista_de_campanas_preview_borradas(self):
         url = reverse('campana_preview_list')
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_borrada.nombre)
@@ -356,13 +371,208 @@ class CampanasTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertNotContains(response, self.campana_borrada.nombre)
 
+    def _inicializar_valores_formulario_cliente(self):
+        values = {
+            'contacto_id': self.contacto.pk,
+            'telefono_contacto': self.contacto.telefono,
+            'datos_contacto': self.contacto.datos,
+            'agente_id': self.agente_profile.pk,
+            'estado': AgenteEnContacto.ESTADO_ENTREGADO,
+            'campana_id': self.campana_activa.pk,
+        }
+        AgenteEnContactoFactory.create(**values)
+        kwargs = {'pk_contacto': self.contacto.pk,
+                  'pk_campana': self.campana_activa.pk,
+                  'id_agente': self.agente_profile.pk,
+                  'wombat_id': 0}
+        url = reverse('calificacion_formulario_create', kwargs=kwargs)
+        post_data = {'calificacioncliente_set-0-es_venta': ['False'],
+                     'calificacioncliente_set-0-calificacion': [''],
+                     'calificacioncliente_set-0-agente': [self.agente_profile.pk],
+                     'calificacioncliente_set-MAX_NUM_FORMS': ['1', '1'],
+                     'calificacioncliente_set-MIN_NUM_FORMS': ['0', '0'],
+                     'calificacioncliente_set-INITIAL_FORMS': ['0', '0'],
+                     'calificacioncliente_set-0-observaciones': [''],
+                     'calificacioncliente_set-0-agendado': ['False'],
+                     'calificacioncliente_set-0-campana': [self.campana_activa.pk],
+                     'calificacioncliente_set-0-contacto': [self.contacto.pk],
+                     'calificacioncliente_set-TOTAL_FORMS': ['1', '1'],
+                     'calificacioncliente_set-0-id': ['']}
+        return values, url, post_data
+
     @patch('requests.post')
-    def test_agregar_contacto_campana_preview_crea_entrada_agente_agente_contacto(self, post):
-        url = reverse('nuevo_contacto_campana_dialer',
-                      kwargs={'pk_campana': self.campana_activa.pk})
-        telefono = '23534534'
-        post_data = {'apellido': 'apellido-test', 'telefono3': '1322434573',
-                     'telefono2': '1242355345', 'dni': '1233242', 'nombre': 'nombre-test',
-                     'telefono': '23534534'}
+    def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
+        AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
+        values, url, post_data = self._inicializar_valores_formulario_cliente()
+        base_datos = self.contacto.bd_contacto
+        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+        datos = json.loads(self.contacto.datos)
+        for nombre, dato in zip(nombres, datos):
+            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
         self.client.post(url, post_data, follow=True)
-        self.assertTrue(AgenteEnContacto.objects.filter(telefono_contacto=telefono).exists())
+        values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
+        self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
+
+    @patch('requests.post')
+    def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(self, post):
+        values, url, post_data = self._inicializar_valores_formulario_cliente()
+        base_datos = self.contacto.bd_contacto
+        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+        datos = json.loads(self.contacto.datos)
+        for nombre, dato in zip(nombres, datos):
+            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
+        self.client.post(url, post_data, follow=True)
+        self.campana_activa.refresh_from_db()
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_FINALIZADA)
+
+    def test_solo_un_contacto_se_mantiene_asignado_a_un_agente(self):
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
+        AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk, agente_id=-1)
+        agente_en_contacto = AgenteEnContactoFactory.create(
+            campana_id=self.campana_activa.pk, agente_id=self.agente_profile.pk,
+            estado=AgenteEnContacto.ESTADO_ENTREGADO)
+        url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
+        self.client.post(url, follow=True)
+        agente_en_contacto.refresh_from_db()
+        self.assertEqual(AgenteEnContacto.objects.filter(
+            estado=AgenteEnContacto.ESTADO_ENTREGADO).count(), 1)
+
+    def test_usuario_no_logueado_no_valida_asignacion_agente_contacto(self):
+        self.client.logout()
+        AgenteEnContactoFactory.create(
+            campana_id=self.campana_activa.pk, contacto_id=self.contacto.pk,
+            agente_id=self.agente_profile.pk, estado=AgenteEnContacto.ESTADO_ENTREGADO)
+        url = reverse('validar_contacto_asignado')
+        post_data = {
+            'pk_agente': self.agente_profile.pk,
+            'pk_campana': self.campana_activa.pk,
+            'pk_contacto': self.contacto.pk
+        }
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_vista_validacion_asignacion_contacto_a_agente(self):
+        AgenteEnContactoFactory.create(
+            campana_id=self.campana_activa.pk, contacto_id=self.contacto.pk,
+            agente_id=self.agente_profile.pk, estado=AgenteEnContacto.ESTADO_ENTREGADO)
+        url = reverse('validar_contacto_asignado')
+        post_data = {
+            'pk_agente': self.agente_profile.pk,
+            'pk_campana': self.campana_activa.pk,
+            'pk_contacto': self.contacto.pk
+        }
+        response = self.client.post(url, post_data, follow=True)
+        dict_response = json.loads(response.content)
+        self.assertTrue(dict_response['contacto_asignado'])
+
+    def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(self):
+        url = reverse('campana_preview_create')
+        nombre_campana = 'campana_preview_test'
+        post_data = {'nombre': nombre_campana,
+                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'bd_contacto': self.campana_activa.bd_contacto.pk,
+                     'tipo_interaccion': Campana.FORMULARIO,
+                     'formulario': self.campana.formulario.pk,
+                     'gestion': 'Venta',
+                     'detectar_contestadores': True,
+                     'auto_grabacion': True,
+                     'objetivo': 1,
+                     'tiempo_desconexion': 10}
+        self.client.post(url, post_data, follow=True)
+        crontab = CronTab(user=os.getlogin())
+        campana = Campana.objects.get(nombre=nombre_campana)
+        jobs_generator = crontab.find_comment(str(campana.pk))
+        job = list(jobs_generator)[0]
+        self.assertTrue(job.is_enabled())
+        self.assertTrue(job.is_valid())
+        # eliminamos la tarea generada
+        crontab.remove(job)
+
+    def test_borrar_campana_preview_elimina_tarea_programada_actualizacion_contactos(self):
+        self.campana_activa.crear_tarea_actualizacion()
+        url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
+        self.client.post(url, follow=True)
+        crontab = CronTab(user=os.getlogin())
+        jobs_generator = crontab.find_comment(str(self.campana_activa.pk))
+        jobs = list(jobs_generator)
+        self.assertEqual(jobs, [])
+
+    def test_finalizar_campana_preview_elimina_tarea_programada_actualizacion_contactos(self):
+        self.campana_activa.crear_tarea_actualizacion()
+        self.campana_activa.finalizar()
+        crontab = CronTab(user=os.getlogin())
+        jobs_generator = crontab.find_comment(str(self.campana_activa.pk))
+        jobs = list(jobs_generator)
+        self.assertEqual(jobs, [])
+
+    def test_campanas_preview_minimo_tiempo_de_desconexion(self):
+        url = reverse('campana_preview_create')
+        nombre_campana = 'campana_preview_test'
+        tiempo_desconexion = 1
+        post_data = {'nombre': nombre_campana,
+                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'bd_contacto': self.campana_activa.bd_contacto.pk,
+                     'tipo_interaccion': Campana.FORMULARIO,
+                     'formulario': self.campana.formulario.pk,
+                     'gestion': 'Venta',
+                     'detectar_contestadores': True,
+                     'auto_grabacion': True,
+                     'objetivo': 1,
+                     'tiempo_desconexion': tiempo_desconexion}
+        self.client.post(url, post_data, follow=True)
+        self.assertFalse(Campana.objects.filter(
+            nombre=nombre_campana, tiempo_desconexion=tiempo_desconexion).exists())
+
+    def test_usuario_no_logueado_no_accede_a_vista_detalle_campana_preview(self):
+        self.client.logout()
+        url = reverse('campana_preview_detalle', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_usuario_no_logueado_no_accede_a_vista_detalle_express_campana_preview(self):
+        self.client.logout()
+        url = reverse('campana_preview_detalle_express', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def _crear_datos_vistas_detalles_campana_preview(self):
+        # ya existe otro contacto para la BD de la campaña creado en el setUp
+        # acá creamos otro
+        ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
+        CalificacionClienteFactory.create(
+            campana=self.campana_activa, agente=self.agente_profile, es_venta=True)
+        return CalificacionClienteFactory.create(
+            campana=self.campana_activa, agente=self.agente_profile, es_venta=False)
+
+    def test_usuario_logueado_accede_a_datos_vista_detalle_campana_preview(self):
+        calif_no_venta = self._crear_datos_vistas_detalles_campana_preview()
+        url = reverse('campana_preview_detalle', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'campana_preview/detalle.html')
+        self.assertEqual(response.context_data['categorias']['Venta'], 1)
+        self.assertEqual(response.context['categorias'][calif_no_venta.calificacion.nombre], 1)
+
+    def test_usuario_logueado_accede_a_datos_vista_detalle_express_campana_preview(self):
+        calif_no_venta = self._crear_datos_vistas_detalles_campana_preview()
+        url = reverse('campana_preview_detalle_express', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'campana_preview/detalle_express.html')
+        self.assertEqual(response.context_data['categorias']['Venta'], 1)
+        self.assertEqual(response.context['categorias'][calif_no_venta.calificacion.nombre], 1)
+
+    def test_usuario_logueado_no_accede_a_reporte_grafico_campana_preview(self):
+        self.client.logout()
+        url = reverse('campana_preview_reporte_grafico', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    @patch.object(WombatService, 'list_config_wombat')
+    def test_reporte_grafico_campana_preview_no_muestra_llamadas_recibidas(
+            self, list_config_wombat):
+        url = reverse('campana_preview_reporte_grafico', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        graficos_estadisticas = response.context_data['graficos_estadisticas']
+        categorias_llamadas = [nombre for nombre, count in
+                               graficos_estadisticas['dict_llamadas_counter']]
+        categoria_recibidas = 'Recibidas'
+        self.assertFalse(categoria_recibidas in categorias_llamadas)

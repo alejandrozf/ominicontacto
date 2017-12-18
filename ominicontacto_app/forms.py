@@ -19,6 +19,8 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.utiles import convertir_ascii_string, validar_nombres_campanas
 
+TIEMPO_MINIMO_DESCONEXION = 2
+
 
 class CustomUserChangeForm(UserChangeForm):
 
@@ -976,6 +978,13 @@ class CampanaPreviewForm(CampanaManualForm):
             'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
+    def clean_tiempo_desconexion(self):
+        tiempo_desconexion = self.cleaned_data['tiempo_desconexion']
+        if tiempo_desconexion < TIEMPO_MINIMO_DESCONEXION:
+            msg = 'Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION)
+            raise forms.ValidationError(msg)
+        return tiempo_desconexion
+
 
 class CampanaPreviewUpdateForm(CampanaPreviewForm):
     def __init__(self, *args, **kwargs):
@@ -983,6 +992,7 @@ class CampanaPreviewUpdateForm(CampanaPreviewForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['bd_contacto'].disabled = True
+            self.fields['tiempo_desconexion'].disabled = True
 
 
 class CalificacionManualForm(forms.ModelForm):
