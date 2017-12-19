@@ -28,6 +28,19 @@ class SupervisorProfileCreateView(CreateView):
     template_name = 'base_create_update_form.html'
     form_class = SupervisorProfileForm
 
+    def dispatch(self, request, *args, **kwargs):
+
+        usuario = User.objects.get(pk=self.kwargs['pk_user'])
+        if usuario.get_agente_profile():
+            message = (
+                "No puede crear un perfil de supervisor a un agente"
+            )
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(
+                reverse('user_list', kwargs={"page": 1}))
+        return super(SupervisorProfileCreateView, self).dispatch(
+            request, *args, **kwargs)
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         usuario = User.objects.get(pk=self.kwargs['pk_user'])
@@ -38,8 +51,8 @@ class SupervisorProfileCreateView(CreateView):
         self.object.sip_password = User.objects.make_random_password()
         self.object.save()
         kamailio_service = KamailioService()
-        # FIXME = Crear servicio para crer un supervisor en kamailio-debian o renombrar el
-        # metodo
+        # FIXME = Crear servicio para crer un supervisor en kamailio-debian o
+        # renombrar el metodo
         kamailio_service.crear_agente_kamailio(self.object)
         asterisk_sip_service = ActivacionAgenteService()
         try:
