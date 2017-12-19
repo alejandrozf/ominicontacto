@@ -31,7 +31,9 @@
                     {% if usuario.is_agente %}
                         <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
                         {%  if not usuario.get_agente_profile %}
-                            <a href="{% url 'agenteprofile_nuevo' usuario.id %}">Crear perfil</a>
+                            {%  if not usuario.get_supervisor_profile %}
+                                <a href="{% url 'agenteprofile_nuevo' usuario.id %}">Crear perfil</a>
+                            {% endif %}
                         {% else %}
                             <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">Modificar perfil</a>
                         {% endif %}
@@ -44,7 +46,9 @@
                     {% if usuario.is_supervisor %}
                         <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
                     {%  if not usuario.get_supervisor_profile %}
-                            <a href="{% url 'supervisor_create' usuario.id %}">Crear perfil</a>
+                            {%  if not usuario.get_agente_profile %}
+                                <a href="{% url 'supervisor_create' usuario.id %}">Crear perfil</a>
+                            {% endif %}
                         {% else %}
                             <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">Modificar perfil</a>
                         {% endif %}

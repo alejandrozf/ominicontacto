@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""En este modulo se encuentran las vistas basicas para inicializar el sistema, usuarios
-modulos, grupos, pausas
+"""En este modulo se encuentran las vistas basicas para inicializar el sistema,
+usuarios, modulos, grupos, pausas
 
 DT:Mover la creacion de agente a otra vista
 """
@@ -51,7 +51,8 @@ logger = logging.getLogger(__name__)
 #
 #     service_sms = SmsManager()
 #     mensajes = service_sms.obtener_ultimo_mensaje_por_numero()
-#     response = JsonResponse(service_sms.armar_json_mensajes_recibidos(mensajes))
+#     response = JsonResponse(service_sms.armar_json_mensajes_recibidos(
+# mensajes))
 #     return response
 
 
@@ -62,7 +63,8 @@ def index_view(request):
 
 def login_view(request):
     """
-    Vista login, si el user es un agente lo redirijo a la vista del agente(view_node)
+    Vista login, si el user es un agente lo redirijo a la vista del
+    agente(view_node)
     """
     if request.method == "POST":
         username = request.POST['username']
@@ -133,10 +135,12 @@ class UserDeleteView(DeleteView):
         self.object = self.get_object()
         if self.object.is_agente and self.object.get_agente_profile():
             kamailio_service = KamailioService()
-            kamailio_service.delete_agente_kamailio(self.object.get_agente_profile())
+            kamailio_service.delete_agente_kamailio(
+                self.object.get_agente_profile())
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             kamailio_service = KamailioService()
-            kamailio_service.delete_agente_kamailio(self.object.get_supervisor_profile())
+            kamailio_service.delete_agente_kamailio(
+                self.object.get_supervisor_profile())
         return super(UserDeleteView, self).delete(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -169,9 +173,18 @@ class AgenteProfileCreateView(CreateView):
                        "agente")
             messages.warning(self.request, message)
         if not grupo:
-            message = ("Debe cargar un grupo antes de crear un perfil de agente"
-                       )
+            message = (
+                "Debe cargar un grupo antes de crear un perfil de agente"
+            )
             messages.warning(self.request, message)
+        usuario = User.objects.get(pk=self.kwargs['pk_user'])
+        if usuario.get_supervisor_profile():
+            message = (
+                "No puede crear un perfil de agente a un supervisor"
+            )
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(
+                reverse('user_list', kwargs={"page": 1}))
         return super(AgenteProfileCreateView, self).dispatch(request, *args,
                                                              **kwargs)
 
@@ -408,9 +421,10 @@ def mensajes_recibidos_enviado_remitente_view(request):
 def mensajes_recibidos_view(request):
     service_sms = SmsManager()
     mensajes = service_sms.obtener_mensajes_recibidos_por_remitente()
-    response = JsonResponse(service_sms.
-                            armar_json_mensajes_recibidos_por_remitente(mensajes),
-                            safe=False)
+    response = JsonResponse(
+        service_sms.armar_json_mensajes_recibidos_por_remitente(mensajes),
+        safe=False
+    )
     return response
 
 
@@ -541,7 +555,8 @@ def mensaje_chat_view(request):
     chat = Chat.objects.get(pk=int(chat))
     sender = User.objects.get(pk=int(sender))
     to = User.objects.get(pk=int(to))
-    MensajeChat.objects.create(sender=sender, to=to, mensaje=mensaje, chat=chat)
+    MensajeChat.objects.create(
+        sender=sender, to=to, mensaje=mensaje, chat=chat)
     response = JsonResponse({'status': 'OK'})
     return response
 
@@ -559,7 +574,10 @@ def crear_chat_view(request):
 
 @csrf_exempt
 def wombat_log_view(request):
-    """Log de wombat insertar los log q devuelve los log de las campana de wombat"""
+    """
+    Log de wombat insertar los log q devuelve los log de las campana
+    de wombat
+    """
     print request.POST
     dict_post = request.POST
 
