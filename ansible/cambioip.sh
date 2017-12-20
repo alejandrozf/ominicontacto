@@ -42,5 +42,18 @@ echo "Cambiando IP en /static/JS/config.js"
 cd /home/freetech/Omnisup/static/Js
 echo "Cambiando IP en supervision"
     sed -i "s/\(^var KamailioIp\).*/var KamailioIp = \"$nueva_ip\";/" config.js
+echo "Restarteando servicios"
+echo "Parando kamailio"
+service kamailio stop
+echo "Comenzando kamailio"
+service kamailio stop
+echo "Parando rtpengine"
+service rtpengine stop
+echo "Comenzando rtpengine"
+service rtpengine start
+echo "Parando ominicontacto-daemon"
+service ominicontacto-daemon stop
+echo "Comenzando ominicontacto-daemon"
+service ominicontacto-daemon start
 fi
 
