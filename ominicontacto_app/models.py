@@ -182,6 +182,12 @@ class AgenteProfile(models.Model):
         return campanas_preview_activas.values_list(
             'queue_name__campana', 'queue_name__campana__nombre')
 
+    def get_contactos_de_campanas_miembro(self):
+        queues_con_contactos = self.queue_set.filter(campana__bd_contacto__isnull=False)
+        bds_contacto = queues_con_contactos.values_list('campana__bd_contacto', flat=True)
+        bds_contacto = bds_contacto.distinct()
+        return Contacto.objects.contactos_by_bds_contacto(bds_contacto).order_by('pk')
+
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
 
@@ -1714,6 +1720,13 @@ class ContactoManager(models.Manager):
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "base de datos de contactos"))
+
+    def contactos_by_bds_contacto(self, bds_contacto):
+        try:
+            return self.filter(bd_contacto__in=bds_contacto)
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontraron contactos con esas "
+                                       "bases de datos de contactos"))
 
     # def contactos_by_bd_contacto_sin_duplicar(self, bd_contacto):
     #     try:
