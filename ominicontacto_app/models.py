@@ -186,7 +186,7 @@ class AgenteProfile(models.Model):
         queues_con_contactos = self.queue_set.filter(campana__bd_contacto__isnull=False)
         bds_contacto = queues_con_contactos.values_list('campana__bd_contacto', flat=True)
         bds_contacto = bds_contacto.distinct()
-        return Contacto.objects.contactos_by_bds_contacto(bds_contacto).order_by('pk')
+        return Contacto.objects.contactos_by_bds_contacto(bds_contacto)
 
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
