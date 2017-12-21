@@ -4,13 +4,6 @@
 echo "Ingrese la IP actual"
 echo -en "IP: "; read ip_actual
 
-cd /etc/sysconfig/network-scripts/
-
-mi_ip=`grep --color=never "$ip_actual" * | awk -F "=" '{print $2}'`
-if [ "$ip_actual" != "$mi_ip" ]; then
-   echo "La IP que ingresaste no coincide con la IP actual, vuelve a correr el script"
-else
-
 echo "Ingrese la nueva IP"
 echo -en "IP: "; read nueva_ip
 echo "Cambiando IP en /etc/sysconfig/rtpengine"
@@ -55,5 +48,7 @@ echo "Parando ominicontacto-daemon"
 service ominicontacto-daemon stop
 echo "Comenzando ominicontacto-daemon"
 service ominicontacto-daemon start
-fi
-
+echo "Parando httpd"
+service httpd stop
+echo "Empezando httpd"
+service httpd start
