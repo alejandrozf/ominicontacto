@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.conf.urls import url, patterns, include
+from django.conf.urls.static import static
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
@@ -935,11 +936,7 @@ urlpatterns = [
         name="cargar_base_datos_api"),
 ]
 
-urlpatterns += patterns('',
-                        (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-                         {'document_root': settings.MEDIA_ROOT}
-                         )
-                        )
+urlpatterns += static('/media/', document_root=settings.MEDIA_ROOT)
 
 if settings.DJANGO_DEBUG_TOOLBAR:
     #     # static files (images, css, javascript, etc.)
