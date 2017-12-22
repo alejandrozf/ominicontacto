@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<br/>
+<div class="col-md-8 col-md-offset-2">
+
+    <table class="table table-stripped">
+        <thead>
+            <tr>
+                <th>Descripcion</th>
+                <th></th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for audio in audios %}
+            <tr>
+                <td>{{ audio.descripcion }}</td>
+                <td></td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="2">No se encontraron Audios</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{% endblock %}
