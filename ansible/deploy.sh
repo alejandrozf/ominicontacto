@@ -25,9 +25,8 @@ git config --global user.name "freetech"
 git config --global user.email "desarrollo@freetechsolutions.com.ar"
 git fetch
 git checkout develop
-rm -rf /etc/ansible
 echo "Copiando la carpeta ansible a /etc/"
-cp -r ~/ominicontacto/ansible /etc/
+cp -a ~/ominicontacto/ansible /etc/
 
 echo "Ingrese 1 si es post-install o 2 si es un fresh install"
 echo -en "Opcion: "; read type_install
