@@ -167,13 +167,15 @@ class GeneradorParaQueueSinGrabacion(GeneradorDePedazoDeQueue):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Set(CHANNEL(hangup_handler_push)=canal-llamado,s,1)
         same => n,Answer()
         same => n,Gosub(hangup-fts,llamante_handler,1)
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
-        same => n,Set(TIPOLLAMADA=IN)
-        same => n,Queue({oml_queue_name},tT,,,{oml_queue_wait})
+        same => n,Set(__TIPOLLAMADA=IN)
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,Queue({oml_queue_name},tTc,,,{oml_queue_wait},,,queuelogSub)
         """
 
     def get_parametros(self):
@@ -191,6 +193,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Set(CHANNEL(hangup_handler_push)=canal-llamado,s,1)
         same => n,Answer()
         same => n,Gosub(hangup-fts,llamante_handler,1)
         same => n,Set(__MONITOR_FILENAME=/var/spool/asterisk/monitor/q-${{EXTEN}}-${{STRFTIME(${{EPOCH}},,%Y%m%d-%H%M%S)}}-${{UNIQUEID}})
@@ -199,8 +202,9 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
-        same => n,Set(TIPOLLAMADA=IN)
-        same => n,Queue({oml_queue_name},tT,,,{oml_queue_wait})
+        same => n,Set(__TIPOLLAMADA=IN)
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,Queue({oml_queue_name},tTc,,,{oml_queue_wait},,,queuelogSub)
         """
 
     def get_parametros(self):
@@ -322,6 +326,7 @@ class GeneradorParaCampanaDialerStart(GeneradorDePedazoDeCampanaDialer):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Set(CHANNEL(hangup_handler_push)=canal-llamado,s,1)
         same => n,Set(CAMPANA={oml_queue_name})
         same => n,Set(AUX=${{CUT(CHANNEL,@,1)}})
         same => n,Set(NUMMARCADO=${{CUT(AUX,/,2)}})
@@ -369,8 +374,8 @@ class GeneradorParaCampanaDialerFormulario(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(IDCliente:${{ID_CLIENTE}})
         same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
-        same => n,Gosub(hangup-fts,llamado_handler,1)
-        same => n,Queue({oml_queue_name},tTc,,,120)
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,Queue({oml_queue_name},tTc,,,120,,,queuelogSub)
         same => n,Hangup()
         """
 
@@ -388,8 +393,8 @@ class GeneradorParaCampanaDialerSitioExterno(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(IDCliente:${{ID_CLIENTE}})
         same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
-        same => n,Gosub(hangup-fts,llamado_handler,1)
-        same => n,Queue({oml_queue_name},tTc,,,120)
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,Queue({oml_queue_name},tTc,,,120,,,queuelogSub)
         same => n,Hangup()
         """
 
