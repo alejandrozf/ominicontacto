@@ -940,6 +940,10 @@ urlpatterns = [
         login_required(views_archivo_de_audio.ArchivoAudioListView.as_view()),
         name='lista_archivo_audio',
         ),
+    url(r'^audios/create/$',
+        login_required(views_archivo_de_audio.ArchivoAudioCreateView.as_view()),
+        name='create_archivo_audio',
+        ),
 ]
 
 urlpatterns += patterns('',

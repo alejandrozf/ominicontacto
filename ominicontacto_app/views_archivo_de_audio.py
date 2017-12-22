@@ -10,7 +10,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 #from fts_daemon.audio_conversor import ConversorDeAudioService
 from ominicontacto_app.errors import OmlAudioConversionError
-#from fts_web.forms import ArchivoAudioForm
+from ominicontacto_app.forms import ArchivoDeAudioForm
 from ominicontacto_app.models import ArchivoDeAudio
 import logging as logging_
 
@@ -28,5 +28,55 @@ class ArchivoAudioListView(ListView):
     model = ArchivoDeAudio
     queryset = ArchivoDeAudio.objects.all()
 
+
+class ArchivoAudioCreateView(CreateView):
+    """
+    Esta vista crea un objeto ArchivoDeAudio.
+    """
+
+    template_name = 'archivo_audio/nuevo_edita_archivo_audio.html'
+    model = ArchivoDeAudio
+    form_class = ArchivoDeAudioForm
+
+    # def form_valid(self, form):
+    #     self.object = form.save()
+    #
+    #     try:
+    #         conversor_audio = ConversorDeAudioService()
+    #         conversor_audio.convertir_audio_de_archivo_de_audio_globales(
+    #             self.object)
+    #         return redirect(self.get_success_url())
+    #
+    #     except OmlAudioConversionError:
+    #         self.object.audio_original = None
+    #         self.object.save()
+    #
+    #         message = '<strong>Operación Errónea!</strong> \
+    #             Hubo un inconveniente en la conversión del audio. Por favor \
+    #             verifique que el archivo subido sea el indicado.'
+    #         messages.add_message(
+    #             self.request,
+    #             messages.ERROR,
+    #             message,
+    #         )
+    #         return self.form_invalid(form)
+    #     except Exception, e:
+    #         self.object.audio_original = None
+    #         self.object.save()
+    #
+    #         logger.warn("convertir_audio_de_archivo_de_audio_globales(): "
+    #                     "produjo un error inesperado. Detalle: %s", e)
+    #
+    #         message = '<strong>Operación Errónea!</strong> \
+    #             Se produjo un error inesperado en la conversión del audio.'
+    #         messages.add_message(
+    #             self.request,
+    #             messages.ERROR,
+    #             message,
+    #         )
+    #         return self.form_invalid(form)
+
+    def get_success_url(self):
+        return reverse('lista_archivo_audio')
 
 
