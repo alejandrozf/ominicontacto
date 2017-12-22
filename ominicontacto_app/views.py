@@ -177,11 +177,13 @@ class AgenteProfileCreateView(CreateView):
                 "Debe cargar un grupo antes de crear un perfil de agente"
             )
             messages.warning(self.request, message)
+
         usuario = User.objects.get(pk=self.kwargs['pk_user'])
         if usuario.get_supervisor_profile():
             message = (
                 "No puede crear un perfil de agente a un supervisor"
             )
+
             messages.warning(self.request, message)
             return HttpResponseRedirect(
                 reverse('user_list', kwargs={"page": 1}))
@@ -397,15 +399,20 @@ def node_view(request):
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)
         ).order_by("-fecha_hora_llamada")[:10]
-        campanas_preview_activas = agente_profile.has_campanas_preview_activas_miembro()
-    context = {
-        'pausas': Pausa.objects.all,
-        'registro': registro,
-        'campanas_preview_activas': campanas_preview_activas,
-        'agente_profile': agente_profile,
-    }
-    return render_to_response('agente/base_agente.html', context,
-                              context_instance=RequestContext(request))
+        campanas_preview_activas = \
+            agente_profile.has_campanas_preview_activas_miembro()
+        context = {
+            'pausas': Pausa.objects.all,
+            'registro': registro,
+            'campanas_preview_activas': campanas_preview_activas,
+            'agente_profile': agente_profile,
+            }
+        return render_to_response(
+            'agente/base_agente.html',
+            context,
+            context_instance=RequestContext(request)
+        )
+    return HttpResponseRedirect(reverse('login'))
 
 
 def mensajes_recibidos_enviado_remitente_view(request):
@@ -425,6 +432,7 @@ def mensajes_recibidos_view(request):
         service_sms.armar_json_mensajes_recibidos_por_remitente(mensajes),
         safe=False
     )
+
     return response
 
 
@@ -575,8 +583,7 @@ def crear_chat_view(request):
 @csrf_exempt
 def wombat_log_view(request):
     """
-    Log de wombat insertar los log q devuelve los log de las campana
-    de wombat
+    Log de wombat insertar los log q devuelve los log de las campana de wombat
     """
     print request.POST
     dict_post = request.POST
@@ -622,7 +629,8 @@ def wombat_log_view(request):
 
 def supervision_url_externa(request):
     """Vista que redirect a la supervision externa de marce"""
-    if request.user.is_authenticated() and request.user.get_supervisor_profile():
+    if request.user.is_authenticated() and \
+            request.user.get_supervisor_profile():
         supervisor = request.user.get_supervisor_profile()
         url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
         if supervisor.is_administrador:
