@@ -8,7 +8,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-#from fts_daemon.audio_conversor import ConversorDeAudioService
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from ominicontacto_app.errors import OmlAudioConversionError
 from ominicontacto_app.forms import ArchivoDeAudioForm
 from ominicontacto_app.models import ArchivoDeAudio

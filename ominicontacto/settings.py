@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import subprocess
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -223,6 +224,32 @@ ASTERISK = {
     #    "http://1.2.3.4:7088"
 }
 
+TMPL_OML_AUDIO_CONVERSOR = None
+"""Comando para convertir audios (wav a gsm)
+
+Ejemplos:
+
+.. code-block:: python
+
+    TMPL_OML_AUDIO_CONVERSOR = ["sox", "<INPUT_FILE>", "<OUTPUT_FILE>"]
+
+Para transformar WAV (cualquier formato) -> WAV (compatible con Asterisk):
+
+.. code-block:: python
+
+    TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
+        "-r", "8k", "-c", "1", "-e", "signed-integer",
+        "-t", "wav", "<OUTPUT_FILE>"
+    ]
+
+"""
+
+TMPL_OML_AUDIO_CONVERSOR_EXTENSION = None
+"""Extension a usar para archivo generado por `TMPL_OML_AUDIO_CONVERSOR`
+
+Ejemplo: `.wav` (con el . incluido):  el archivo `<OUTPUT_FILE>`
+tendra la extension `.wav`
+"""
 
 # ==============================================================================
 # DEPLOY -> KAMAILIO
@@ -411,3 +438,29 @@ assert OML_BACKLIST_REMOTEPATH is not None, \
 
 assert OML_GLOBALS_VARIABLES_FILENAME is not None, \
     "Falta definir setting para OML_GLOBALS_VARIABLES_FILENAME"
+
+# ~~~~~ Check TMPL_OML_AUDIO_CONVERSOR
+
+assert TMPL_OML_AUDIO_CONVERSOR is not None, \
+    "Falta definir setting para TMPL_OML_AUDIO_CONVERSOR"
+
+assert "<INPUT_FILE>" in TMPL_OML_AUDIO_CONVERSOR, \
+    "Falta definir <INPUT_FILE> en TMPL_OML_AUDIO_CONVERSOR"
+
+assert "<OUTPUT_FILE>" in TMPL_OML_AUDIO_CONVERSOR, \
+    "Falta definir <OUTPUT_FILE> en TMPL_OML_AUDIO_CONVERSOR"
+
+# 3 elementos como minimo: (1) comando (2/3) INPUT/OUTPUT
+assert len(TMPL_OML_AUDIO_CONVERSOR) >= 3, \
+    "TMPL_OML_AUDIO_CONVERSOR debe tener al menos 3 elementos"
+
+ret = subprocess.call('which {0} > /dev/null 2> /dev/null'.format(
+    TMPL_OML_AUDIO_CONVERSOR[0]), shell=True)
+
+assert ret == 0, "No se ha encontrado el ejecutable configurado " +\
+    "en TMPL_OML_AUDIO_CONVERSOR: '{0}'".format(TMPL_OML_AUDIO_CONVERSOR[0])
+
+# ~~~~~ Check TMPL_OML_AUDIO_CONVERSOR
+
+assert TMPL_OML_AUDIO_CONVERSOR_EXTENSION is not None, \
+    "Falta definir setting para TMPL_OML_AUDIO_CONVERSOR"
