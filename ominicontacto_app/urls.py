@@ -944,6 +944,11 @@ urlpatterns = [
         login_required(views_archivo_de_audio.ArchivoAudioCreateView.as_view()),
         name='create_archivo_audio',
         ),
+    url(r'^audios/(?P<pk>\d+)/update/$',
+        login_required(
+            views_archivo_de_audio.ArchivoAudioUpdateView.as_view()),
+        name='edita_archivo_audio',
+        ),
 ]
 
 urlpatterns += patterns('',

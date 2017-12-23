@@ -16,7 +16,7 @@
         <tbody>
         {% for audio in audios %}
             <tr>
-                <td>{{ audio.descripcion }}</td>
+                <td><a href="{% url 'edita_archivo_audio' audio.id %}">{{ audio.descripcion }}</a></td>
                 <td></td>
             </tr>
        {% empty %}

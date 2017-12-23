@@ -22,6 +22,12 @@
             {{ form.audio_original.help_text }}
         </div>
     </div>
+    {% if object.audio_original %}
+    <div>
+        <h4>Archivo de Audio</h4>
+        <audio src="{{ object.audio_original.url }}" controls></audio>
+    </div>
+    {% endif %}
 
     </br>
     <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
