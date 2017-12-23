@@ -132,3 +132,31 @@ class ArchivoAudioUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('lista_archivo_audio')
+
+
+class ArchivoAudioDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto ArchivoDeAudio seleccionado.
+    """
+
+    model = ArchivoDeAudio
+    template_name = 'archivo_audio/elimina_archivo_audio.html'
+    #queryset = ArchivoDeAudio.objects.all()
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.borrar()
+
+        message = '<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación del Archivo de Audio.'
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('lista_archivo_audio')

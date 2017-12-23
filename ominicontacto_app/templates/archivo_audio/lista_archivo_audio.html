@@ -17,7 +17,12 @@
         {% for audio in audios %}
             <tr>
                 <td><a href="{% url 'edita_archivo_audio' audio.id %}">{{ audio.descripcion }}</a></td>
-                <td></td>
+                <td>
+                    <a href="{% url 'eliminar_archivo_audio' audio.pk %}" class="btn btn-danger btn-sm">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Eliminar
+                    </a>
+                </td>
             </tr>
        {% empty %}
         <tr>

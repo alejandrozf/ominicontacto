@@ -949,6 +949,11 @@ urlpatterns = [
             views_archivo_de_audio.ArchivoAudioUpdateView.as_view()),
         name='edita_archivo_audio',
         ),
+    url(r'^audios/(?P<pk>\d+)/eliminar/$',
+        login_required(
+            views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
+        name='eliminar_archivo_audio',
+        ),
 ]
 
 urlpatterns += patterns('',
