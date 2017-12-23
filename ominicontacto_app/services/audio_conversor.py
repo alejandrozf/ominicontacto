@@ -42,8 +42,8 @@ class ConversorDeAudioService(object):
     2. {1} para el sufijo del nombre del archivo (ej: '.wav')
     """
 
-    REGEX_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = re.compile("^" +
-        DIR_AUDIO_PREDEFINIDO + os.path.sep +
+    REGEX_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = re.compile(
+        "^" + DIR_AUDIO_PREDEFINIDO + os.path.sep +
         TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO.format(
             "(\\d+)", settings.TMPL_OML_AUDIO_CONVERSOR_EXTENSION) +
         "$")
@@ -107,16 +107,12 @@ class ConversorDeAudioService(object):
             raise OmlAudioConversionError("El archivo de entrada no existe")
 
         if not os.path.abspath(input_file_abs):
-            logger.error("El archivo de entrada no es un path absoluto: %s",
-                input_file_abs)
-            raise OmlAudioConversionError("El archivo de entrada no es "
-                "un path absoluto")
+            logger.error("El archivo de entrada no es un path absoluto: %s", input_file_abs)
+            raise OmlAudioConversionError("El archivo de entrada no es un path absoluto")
 
         if not os.path.abspath(output_filename_abs):
-            logger.error("El archivo de salida no es un path absoluto: %s",
-                output_filename_abs)
-            raise OmlAudioConversionError("El archivo de salida no es "
-                "un path absoluto")
+            logger.error("El archivo de salida no es un path absoluto: %s", output_filename_abs)
+            raise OmlAudioConversionError("El archivo de salida no es un path absoluto")
 
         stdout_file = tempfile.TemporaryFile()
         stderr_file = tempfile.TemporaryFile()
@@ -135,10 +131,8 @@ class ConversorDeAudioService(object):
 
         # ejecutamos comando...
         try:
-            logger.info("Iniciando conversion de audio de %s -> %s",
-                input_file_abs, output_filename_abs)
-            subprocess.check_call(FTS_AUDIO_CONVERSOR,
-                stdout=stdout_file, stderr=stderr_file)
+            logger.info("Iniciando conversion de audio de %s -> %s", input_file_abs, output_filename_abs)
+            subprocess.check_call(FTS_AUDIO_CONVERSOR, stdout=stdout_file, stderr=stderr_file)
             logger.info("Conversion de audio finalizada exitosamente")
 
         except subprocess.CalledProcessError as e:
@@ -156,8 +150,7 @@ class ConversorDeAudioService(object):
                     if line:
                         logger.warn(" STDERR> %s", line)
             except:
-                logger.exception("Error al intentar reporter STDERR y STDOUT "
-                    "(lo ignoramos)")
+                logger.exception("Error al intentar reporter STDERR y STDOUT (lo ignoramos)")
 
             raise OmlAudioConversionError("Error detectado al ejecutar "
                                           "conversor", cause=e)
@@ -188,11 +181,11 @@ class ConversorDeAudioService(object):
         _template = ConversorDeAudioService.\
             TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO
         filename = _template.format(archivo_de_audio.id,
-            settings.TMPL_OML_AUDIO_CONVERSOR_EXTENSION)
+                                    settings.TMPL_OML_AUDIO_CONVERSOR_EXTENSION)
 
         # Creamos directorios si no existen
         abs_output_dir = os.path.join(settings.MEDIA_ROOT,
-            ConversorDeAudioService.DIR_AUDIO_PREDEFINIDO)
+                                      ConversorDeAudioService.DIR_AUDIO_PREDEFINIDO)
 
         self._crear_directorios(abs_output_dir)
 
@@ -227,9 +220,3 @@ class ConversorDeAudioService(object):
             return None
         archivo_id = match_obj.group(1)
         return int(archivo_id)
-
-
-
-
-
-
