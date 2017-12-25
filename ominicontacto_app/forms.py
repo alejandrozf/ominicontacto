@@ -133,6 +133,14 @@ class QueueForm(forms.ModelForm):
         widgets = {
             'campana': forms.HiddenInput(),
             'name': forms.HiddenInput(),
+            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
+            "retry": forms.TextInput(attrs={'class': 'form-control'}),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 
@@ -169,6 +177,18 @@ class QueueUpdateForm(forms.ModelForm):
 
         help_texts = {
             'timeout': """En segundos """,
+        }
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'name': forms.HiddenInput(),
+            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
+            "retry": forms.TextInput(attrs={'class': 'form-control'}),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def clean(self):

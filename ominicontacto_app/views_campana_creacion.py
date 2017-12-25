@@ -156,7 +156,7 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     """Vista para la creacion de una Cola"""
     model = Queue
     form_class = QueueForm
-    template_name = 'queue/create_update_queue.html'
+    template_name = 'campana/create_update_queue.html'
 
     def get_initial(self):
         initial = super(QueueCreateView, self).get_initial()
@@ -203,7 +203,7 @@ class QueueUpdateView(UpdateView):
     """Vista actualiza una Queue(Cola)"""
     model = Queue
     form_class = QueueUpdateForm
-    template_name = 'queue/create_update_queue.html'
+    template_name = 'campana/create_update_queue.html'
 
     def get_object(self, queryset=None):
          campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
