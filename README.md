@@ -112,6 +112,13 @@ OML_QUEUES_FILENAME = "/home/freetech/queues_fts.conf"
 OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
 OML_GLOBALS_VARIABLES_FILENAME = "/home/freetech/extensions_fts_globals.conf"
 
+# Ubuntu (wav -> wav)
+TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
+    "-r", "8k", "-c", "1", "-e", "signed-integer",
+    "-t", "wav", "<OUTPUT_FILE>"]
+
+TMPL_OML_AUDIO_CONVERSOR_EXTENSION = ".wav"
+
 # parametros de conexion con base de datos mysql de asterisk
 # modificar esto parametros con la conexion de base de datos correcta para que no tire error la ejecucion
 DATABASE_MYSQL_ASTERISK = {
