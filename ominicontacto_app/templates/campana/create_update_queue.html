@@ -8,10 +8,10 @@
                 <li class="active"><a>Cola</a></li>
             </ul>
             <br>
-    <div class="col-md-8 col-md-offset-1">
-                {% if object.name %}
-                    <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
-                {% endif %}
+<div class="col-md-8 col-md-offset-1">
+    {% if object.name %}
+        <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
+    {% endif %}
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
@@ -36,13 +36,6 @@
         <label class="col-sm-4 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
         <div class="col-sm-2">
               {{ form.maxlen }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.wrapuptime.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.wrapuptime.id_for_label }}">Tiempo de descanso entre llamadas:</label>
-        <div class="col-sm-2">
-              {{ form.wrapuptime }}
         </div>
     </div>
     <div class="form-group row">
@@ -86,7 +79,7 @@
     </button>
 
 </form>
-
+</div>
 
 
 {% endblock %}

@@ -170,6 +170,7 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         self.object.eventwhencalled = True
         self.object.ringinuse = True
         self.object.setinterfacevar = True
+        self.object.wrapuptime = 0
         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
         self.object.save()
         servicio_asterisk = AsteriskService()

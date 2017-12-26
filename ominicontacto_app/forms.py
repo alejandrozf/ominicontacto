@@ -123,9 +123,8 @@ class QueueForm(forms.ModelForm):
 
     class Meta:
         model = Queue
-        fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'campana')
+        fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
+                  'strategy', 'weight', 'wait', 'auto_grabacion', 'campana')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -136,7 +135,6 @@ class QueueForm(forms.ModelForm):
             "timeout": forms.TextInput(attrs={'class': 'form-control'}),
             "retry": forms.TextInput(attrs={'class': 'form-control'}),
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
             "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
@@ -171,9 +169,8 @@ class QueueUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Queue
-        fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion')
+        fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
+                  'weight', 'wait', 'auto_grabacion')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -184,7 +181,6 @@ class QueueUpdateForm(forms.ModelForm):
             "timeout": forms.TextInput(attrs={'class': 'form-control'}),
             "retry": forms.TextInput(attrs={'class': 'form-control'}),
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
             "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
