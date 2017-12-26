@@ -378,7 +378,7 @@ class QueuesCreator(object):
             'oml_queue_name': "{0}_{1}".format(campana.id,
                                                elimina_espacios(campana.nombre)),
             'oml_strategy': campana.queue_campana.strategy,
-            'oml_timeout': campana.queue_campana.wait,
+            'oml_timeout': campana.queue_campana.timeout,
             'oml_servicelevel': campana.queue_campana.servicelevel,
             'oml_weight': campana.queue_campana.weight,
             'oml_wrapuptime': campana.queue_campana.wrapuptime,
