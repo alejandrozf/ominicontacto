@@ -30,7 +30,7 @@ def adicionar_tipo_campana_queuelog(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0133_auto_20171205_0952'),
+        ('ominicontacto_app', '0135_auto_20171222_1726'),
     ]
 
     operations = [
