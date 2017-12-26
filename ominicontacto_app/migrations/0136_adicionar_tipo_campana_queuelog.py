@@ -20,11 +20,10 @@ def adicionar_tipo_campana_queuelog(apps, schema_editor):
         campana_type_dict[campana.pk] = campana.type
 
     # copiamos la info del tipo de campaña en las entradas del modelo Queuelog
-    for queue_log in Queuelog.objects.all():
+    for queue_log in Queuelog.objects.filter(campana_id__isnull=False).exclude(campana_id=-1):
         campana_id = queue_log.campana_id
-        if campana_id != -1:
-            queue_log.data5 = campana_type_dict[campana_id]
-            queue_log.save()
+        queue_log.data5 = campana_type_dict[campana_id]
+        queue_log.save()
 
 
 class Migration(migrations.Migration):
