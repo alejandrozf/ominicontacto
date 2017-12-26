@@ -1956,11 +1956,15 @@ class Grabacion(models.Model):
     TYPE_MANUAL = 4
     """Tipo de llamada manual"""
 
+    TYPE_PREVIEW = 5
+    # tipo de llamada preview
+
     TYPE_LLAMADA_CHOICES = (
         (TYPE_ICS, 'ICS'),
         (TYPE_DIALER, 'DIALER'),
         (TYPE_INBOUND, 'INBOUND'),
         (TYPE_MANUAL, 'MANUAL'),
+        (TYPE_PREVIEW, 'PREVIEW'),
     )
     fecha = models.DateTimeField()
     tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
