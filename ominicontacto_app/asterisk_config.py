@@ -496,7 +496,10 @@ class GlobalsVariableConfigCreator(object):
             agentes = [agente]
         else:
             agentes = self._obtener_todas_para_generar_config_sip()
-        sip = []
+
+        # se adiciona la información del format serán generadas las grabaciones de las llamadas
+        monitor_format_line = "\nMONITORFORMAT = {0}\n".format(settings.MONITORFORMAT)
+        sip = [monitor_format_line]
         for agente in agentes:
             logger.info("Creando config sip para agente %s", agente.user.
                         get_full_name())
