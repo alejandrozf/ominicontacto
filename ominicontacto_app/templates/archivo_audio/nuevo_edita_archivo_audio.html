@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-6">
+<form action="" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-group row">
+        {{ form.descripcion.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.descripcion.id_for_label }}">Descripcion: </label>
+        <div class="col-sm-6">
+              {{ form.descripcion }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.audio_original.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.audio_original.id_for_label }}">Audio: </label>
+        <div class="col-sm-9">
+              {{ form.audio_original }}
+            {{ form.audio_original.help_text }}
+        </div>
+    </div>
+    {% if object.audio_original %}
+    <div>
+        <h4>Archivo de Audio</h4>
+        <audio src="{{ object.audio_original.url }}" controls></audio>
+    </div>
+    {% endif %}
+
+    </br>
+    <button type="submit" id="id_guardar" class="btn btn-success btn-sm">
+        Guardar
+    </button>
+    <a href="{% url 'lista_archivo_audio' %}" class="btn btn-warning btn-sm">
+        volver
+    </a>
+
+</form>
+</div>
+
+{% endblock %}

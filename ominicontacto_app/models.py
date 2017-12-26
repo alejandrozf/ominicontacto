@@ -345,6 +345,72 @@ class FieldFormulario(models.Model):
                                               orden__gt=self.orden).first()
 
 
+# aplica lo que está en la doc
+# https://docs.djangoproject.com/en/1.11/topics/migrations/#serializing-values
+def upload_to_audio_original(instance, filename):
+    filename = SUBSITUTE_REGEX.sub('', filename)
+    return "audios_reproduccion/%Y/%m/{0}-{1}".format(
+        str(uuid.uuid4()), filename)[:95]
+
+
+def upload_to_audio_asterisk(instance, filename):
+    filename = SUBSITUTE_REGEX.sub('', filename)
+    return "audios_asterisk/%Y/%m/{0}-{1}".format(
+        str(uuid.uuid4()), filename)[:95]
+
+
+class ArchivoDeAudioManager(models.Manager):
+    """Manager para ArchivoDeAudio"""
+
+    def get_queryset(self):
+        return super(ArchivoDeAudioManager, self).get_queryset().exclude(
+            borrado=True)
+
+
+class ArchivoDeAudio(models.Model):
+    """
+    Representa una ArchivoDeAudio
+    """
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = ArchivoDeAudioManager()
+
+    descripcion = models.CharField(
+        max_length=100,
+    )
+    audio_original = models.FileField(
+        upload_to=upload_to_audio_original,
+        max_length=100,
+        null=True, blank=True,
+    )
+    audio_asterisk = models.FileField(
+        upload_to=upload_to_audio_asterisk,
+        max_length=100,
+        null=True, blank=True,
+    )
+    borrado = models.BooleanField(
+        default=False,
+        editable=False,
+    )
+
+    def __unicode__(self):
+        if self.borrado:
+            return '(ELiminado) {0}'.format(self.descripcion)
+        return self.descripcion
+
+    def borrar(self):
+        """
+        Setea la ArchivoDeAudio como BORRADO.
+        """
+        logger.info("Seteando ArchivoDeAudio %s como BORRADO", self.id)
+
+        self.borrado = True
+        self.save()
+
+
 class CampanaManager(models.Manager):
 
     def obtener_en_definicion_para_editar(self, campana_id):

@@ -10,7 +10,7 @@ from ominicontacto_app import (
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_calificacion_manual, views_campana_preview
+    views_calificacion_manual, views_campana_preview, views_archivo_de_audio
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -933,6 +933,27 @@ urlpatterns = [
     url(r'^base_de_datos/cargar_nueva/$',
         views_base_de_datos_contacto.cargar_base_datos_view,
         name="cargar_base_datos_api"),
+    # ==========================================================================
+    # Archivo de Audio
+    # ==========================================================================
+    url(r'^audios/$',
+        login_required(views_archivo_de_audio.ArchivoAudioListView.as_view()),
+        name='lista_archivo_audio',
+        ),
+    url(r'^audios/create/$',
+        login_required(views_archivo_de_audio.ArchivoAudioCreateView.as_view()),
+        name='create_archivo_audio',
+        ),
+    url(r'^audios/(?P<pk>\d+)/update/$',
+        login_required(
+            views_archivo_de_audio.ArchivoAudioUpdateView.as_view()),
+        name='edita_archivo_audio',
+        ),
+    url(r'^audios/(?P<pk>\d+)/eliminar/$',
+        login_required(
+            views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
+        name='eliminar_archivo_audio',
+        ),
 ]
 
 urlpatterns += patterns('',

@@ -15,7 +15,7 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual
+    AgendaManual, ArchivoDeAudio
 )
 from ominicontacto_app.utiles import convertir_ascii_string, validar_nombres_campanas
 
@@ -1068,4 +1068,20 @@ class AgendaManualForm(forms.ModelForm):
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
             "hora": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ArchivoDeAudioForm(forms.ModelForm):
+
+    class Meta:
+        model = ArchivoDeAudio
+        fields = ('descripcion', 'audio_original')
+        widgets = {
+            "descripcion": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_original": forms.FileInput(attrs={'class': 'form-control'}),
+        }
+        help_texts = {
+            'audio_original': """Seleccione el archivo de audio que desea para
+            la Campaña. Si ya existe uno y guarda otro, el audio será
+            reemplazado.""",
         }
