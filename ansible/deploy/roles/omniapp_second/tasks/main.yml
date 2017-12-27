@@ -7,6 +7,8 @@
 
 - include: django_migrations.yml
 
+- include: queuelog_trigger.yml
+
 - include: omniapp_second.yml
   when: not post_install
 
