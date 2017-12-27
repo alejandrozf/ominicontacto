@@ -149,7 +149,6 @@ class QueueForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            'audios': forms.Select(attrs={'class': 'form-datos-extras'}),
             "announce_frequency": forms.TextInput(
                 attrs={'class': 'form-control'}),
         }
@@ -175,15 +174,24 @@ class QueueUpdateForm(forms.ModelForm):
     El form para actualizar la cola para las llamadas
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, audios_choices,  *args, **kwargs):
         super(QueueUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
+        self.fields['announce_frequency'].required = True
+        audios_choices = [(audio.id, audio.descripcion)
+                          for audio in audios_choices]
+        audios_choices.insert(0, ('', '---------'))
+        self.fields['audios'] = forms.ChoiceField(
+            choices=audios_choices,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+            required=True
+        )
 
     class Meta:
         model = Queue
         fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion')
+                  'weight', 'wait', 'auto_grabacion', 'announce_frequency')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -198,6 +206,8 @@ class QueueUpdateForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(
+                attrs={'class': 'form-control'}),
         }
 
     def clean(self):
