@@ -14,7 +14,9 @@ from django.views.generic import (
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueUpdateForm, CampanaUpdateForm, SincronizaDialerForm
 )
-from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
+from ominicontacto_app.models import (
+    Campana, Queue, BaseDatosContacto, ArchivoDeAudio
+)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
@@ -163,6 +165,11 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         initial.update({'campana': self.campana.id,
                         'name': self.campana.nombre})
         return initial
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        audios = ArchivoDeAudio.objects.all()
+        return self.form_class(audios_choices=audios, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

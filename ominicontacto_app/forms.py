@@ -113,18 +113,28 @@ class AgenteProfileForm(forms.ModelForm):
 
 class QueueForm(forms.ModelForm):
     """
-    El form de cola para las llamadas
+    El form de cola para las colas
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, audios_choices,  *args, **kwargs):
         super(QueueForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
+        self.fields['announce_frequency'].required = True
+        audios_choices = [(audio.id, audio.descripcion)
+                          for audio in audios_choices]
+        audios_choices.insert(0, ('', '---------'))
+        self.fields['audios'] = forms.ChoiceField(
+            choices=audios_choices,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+            required=True
+        )
 
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
-                  'strategy', 'weight', 'wait', 'auto_grabacion', 'campana')
+                  'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
+                  'announce_frequency')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -139,6 +149,9 @@ class QueueForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            'audios': forms.Select(attrs={'class': 'form-datos-extras'}),
+            "announce_frequency": forms.TextInput(
+                attrs={'class': 'form-control'}),
         }
 
 
