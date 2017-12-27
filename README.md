@@ -215,6 +215,9 @@ LOGGING = {
     }
 }
 
+MONITORFORMAT = 'mp3'           # insertar acá el formato en el cual serán generadas las grabaciones de
+                                # las llamadas
+
 LOCAL_APPS = []                 # insertar aquí cada una de las aplicaciones locales a instalar
 
 DJANGO_DEBUG_TOOLBAR = False    # poner a True una vez esté instalada en el sistema
