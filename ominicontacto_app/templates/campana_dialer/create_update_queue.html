@@ -1,6 +1,24 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head_js %}
+<script type="text/javascript">
+    $(function() {
+        $('#id_detectar_contestadores').change(actualizarEstadoDeSelectorDeAudios);
+        actualizarEstadoDeSelectorDeAudios();
+    });
+
+    function actualizarEstadoDeSelectorDeAudios(){
+        var detectar = $('#id_detectar_contestadores').prop("checked");
+        if (!detectar){
+            $('#id_audio_para_contestadores').val('');
+        }
+        $('#id_audio_para_contestadores').prop("disabled", !detectar);
+    };
+
+</script>
+{% endblock %}
+
 {% block content %}
 
             <ul class="nav nav-tabs">
@@ -75,6 +93,13 @@
         <label class="col-sm-4 control-label" for="{{ form.detectar_contestadores.id_for_label }}">Detectar contestadores:</label>
         <div class="col-sm-1">
               {{ form.detectar_contestadores }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.audio_para_contestadores.errors }}
+        <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Audio para contestadores:</label>
+        <div class="col-sm-1">
+              {{ form.audio_para_contestadores }}
         </div>
     </div>
     </br>
