@@ -26,6 +26,17 @@ def adicionar_tipo_campana_queuelog(apps, schema_editor):
         queue_log.save()
 
 
+def rollback(apps, schema_editor):
+    """
+    Vuelve hacia la atrás los cambios de la migración de datos especificada en la función
+    'adicionar_tipo_campana_queuelog'
+    """
+    Queuelog = apps.get_model("ominicontacto_app", "queuelog")
+    qs_queuelog_modificados = Queuelog.objects.filter(
+        campana_id__isnull=False).exclude(campana_id=-1)
+    qs_queuelog_modificados.update(data5='')
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -33,5 +44,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(adicionar_tipo_campana_queuelog),
+        migrations.RunPython(adicionar_tipo_campana_queuelog, rollback),
     ]
