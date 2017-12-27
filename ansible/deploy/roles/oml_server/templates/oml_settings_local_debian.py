@@ -168,6 +168,15 @@ LOGGING = {
     },
 }
 
+# Ubuntu (wav -> wav)
+TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
+    "-r", "8k", "-c", "1", "-e", "signed-integer",
+    "-t", "wav", "<OUTPUT_FILE>"]
+
+TMPL_OML_AUDIO_CONVERSOR_EXTENSION = ".wav"
+
+MONITORFORMAT = 'ogg'
+
 LOCAL_APPS = []
 
 DJANGO_DEBUG_TOOLBAR = False
