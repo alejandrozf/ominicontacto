@@ -124,8 +124,14 @@ class QueueDialplanConfigCreator(object):
 
         # Generador para contestadores para end
         if campana.queue_campana.detectar_contestadores:
-            generador_queue = self._generador_dialer_factory. \
-                crear_generador_para_campana_dialer_contestadores_end(param_generales)
+            if campana.queue_campana.audio_para_contestadores:
+                filepath = campana.queue_campana.audio_para_contestadores.audio_asterisk.path
+                param_generales['filename_audio_contestadores'] = os.path.basename(filepath)
+                generador_queue = self._generador_dialer_factory. \
+                    crear_generador_para_campana_dialer_contestadores_end_con_audio(param_generales)
+            else:
+                generador_queue = self._generador_dialer_factory. \
+                    crear_generador_para_campana_dialer_contestadores_end(param_generales)
             partes.append(generador_queue.generar_pedazo())
         return ''.join(partes)
 
