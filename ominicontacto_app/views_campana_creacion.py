@@ -235,7 +235,13 @@ class QueueUpdateView(UpdateView):
         else:
             return super(QueueUpdateView, self).dispatch(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        audio_pk = form.cleaned_data['audios']
+        audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
+        self.object.announce = audio.audio_asterisk
+        self.object.save()
+
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
@@ -248,7 +254,7 @@ class QueueUpdateView(UpdateView):
                 messages.ERROR,
                 message,
             )
-        return super(QueueUpdateView, self).post(request, *args, **kwargs)
+        return super(QueueUpdateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(QueueUpdateView, self).get_context_data(**kwargs)
