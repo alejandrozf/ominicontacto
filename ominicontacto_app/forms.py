@@ -844,7 +844,8 @@ class QueueDialerForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
-                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores')
+                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
+                  'audio_para_contestadores')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -855,6 +856,7 @@ class QueueDialerForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -866,7 +868,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'detectar_contestadores')
+                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores')
         widgets = {
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
@@ -874,6 +876,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):

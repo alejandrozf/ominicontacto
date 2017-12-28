@@ -142,6 +142,9 @@ class GeneradorDePedazoDeCampanaDialerFactory(object):
     def crear_generador_para_campana_dialer_contestadores_end(self, parametros):
         return GeneradorParaCampanaDialerContestadoresEnd(parametros)
 
+    def crear_generador_para_campana_dialer_contestadores_end_con_audio(self, parametros):
+        return GeneradorParaCampanaDialerContestadoresEndConAudio(parametros)
+
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
 
@@ -459,6 +462,22 @@ class GeneradorParaCampanaDialerContestadoresEnd(GeneradorDePedazoDeCampanaDiale
         same => n(amd_machine),NoOp(es una maquina)
         same => n,UserEvent(CALLSTATUS,Uniqueid:${{UNIQUEID}},V:CONTESTADOR)
         same => n,SET(CDR(userfield)=CONTESTADOR)
+        same => n,Hangup()
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaCampanaDialerContestadoresEndConAudio(GeneradorDePedazoDeCampanaDialer):
+
+    def get_template(self):
+        return """
+        same => n(amd_machine),NoOp(es una maquina)
+        same => n,UserEvent(CALLSTATUS,Uniqueid:${{UNIQUEID}},V:CONTESTADOR)
+        same => n,SET(CDR(userfield)=CONTESTADOR)
+        same => n,Playback(oml/{filename_audio_contestadores})
+        same => n,Playback(oml/{filename_audio_contestadores})
         same => n,Hangup()
         """
 
