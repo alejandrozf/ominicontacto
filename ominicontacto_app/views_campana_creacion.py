@@ -14,13 +14,16 @@ from django.views.generic import (
 from ominicontacto_app.forms import (
     CampanaForm, QueueForm, QueueUpdateForm, CampanaUpdateForm, SincronizaDialerForm
 )
-from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
+from ominicontacto_app.models import (
+    Campana, Queue, BaseDatosContacto, ArchivoDeAudio
+)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import\
     SincronizarBaseDatosContactosService
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
 
 import logging as logging_
@@ -156,7 +159,7 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     """Vista para la creacion de una Cola"""
     model = Queue
     form_class = QueueForm
-    template_name = 'queue/create_update_queue.html'
+    template_name = 'campana/create_update_queue.html'
 
     def get_initial(self):
         initial = super(QueueCreateView, self).get_initial()
@@ -164,13 +167,22 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
                         'name': self.campana.nombre})
         return initial
 
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        audios = ArchivoDeAudio.objects.all()
+        return self.form_class(audios_choices=audios, **self.get_form_kwargs())
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        audio_pk = form.cleaned_data['audios']
+        audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
         self.object.eventmemberstatus = True
         self.object.eventwhencalled = True
         self.object.ringinuse = True
         self.object.setinterfacevar = True
+        self.object.wrapuptime = 0
         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
+        self.object.announce = audio.audio_asterisk
         self.object.save()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(self.object)
@@ -203,7 +215,16 @@ class QueueUpdateView(UpdateView):
     """Vista actualiza una Queue(Cola)"""
     model = Queue
     form_class = QueueUpdateForm
-    template_name = 'queue/create_update_queue.html'
+    template_name = 'campana/create_update_queue.html'
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        audios = ArchivoDeAudio.objects.all()
+        conversor_audio = ConversorDeAudioService()
+        id_audio = conversor_audio.obtener_id_archivo_de_audio_desde_path(
+            self.get_object().announce)
+        return self.form_class(
+            audios_choices=audios, id_audio=id_audio, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
          campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -219,7 +240,13 @@ class QueueUpdateView(UpdateView):
         else:
             return super(QueueUpdateView, self).dispatch(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        audio_pk = form.cleaned_data['audios']
+        audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
+        self.object.announce = audio.audio_asterisk
+        self.object.save()
+
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
@@ -232,7 +259,7 @@ class QueueUpdateView(UpdateView):
                 messages.ERROR,
                 message,
             )
-        return super(QueueUpdateView, self).post(request, *args, **kwargs)
+        return super(QueueUpdateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(QueueUpdateView, self).get_context_data(**kwargs)

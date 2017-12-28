@@ -1062,9 +1062,12 @@ class Queue(models.Model):
     detectar_contestadores = models.BooleanField(default=False)
     ep_id_wombat = models.IntegerField(null=True, blank=True)
 
+    # announcements
+    announce = models.CharField(max_length=128, blank=True, null=True)
+    announce_frequency = models.BigIntegerField(blank=True, null=True)
+
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
-    announce = models.CharField(max_length=128, blank=True, null=True)
     context = models.CharField(max_length=128, blank=True, null=True)
     monitor_join = models.NullBooleanField(blank=True, null=True)
     monitor_format = models.CharField(max_length=128, blank=True, null=True)
@@ -1077,7 +1080,6 @@ class Queue(models.Model):
     queue_lessthan = models.CharField(max_length=128, blank=True, null=True)
     queue_thankyou = models.CharField(max_length=128, blank=True, null=True)
     queue_reporthold = models.CharField(max_length=128, blank=True, null=True)
-    announce_frequency = models.BigIntegerField(blank=True, null=True)
     announce_round_seconds = models.BigIntegerField(blank=True, null=True)
     announce_holdtime = models.CharField(max_length=128, blank=True, null=True)
     joinempty = models.CharField(max_length=128, blank=True, null=True)
