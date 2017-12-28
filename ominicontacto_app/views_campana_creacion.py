@@ -23,6 +23,7 @@ from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import\
     SincronizarBaseDatosContactosService
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
 
 import logging as logging_
@@ -219,7 +220,11 @@ class QueueUpdateView(UpdateView):
     def get_form(self):
         self.form_class = self.get_form_class()
         audios = ArchivoDeAudio.objects.all()
-        return self.form_class(audios_choices=audios, **self.get_form_kwargs())
+        conversor_audio = ConversorDeAudioService()
+        id_audio = conversor_audio.obtener_id_archivo_de_audio_desde_path(
+            self.get_object().announce)
+        return self.form_class(
+            audios_choices=audios, id_audio=id_audio, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
          campana = Campana.objects.get(pk=self.kwargs['pk_campana'])

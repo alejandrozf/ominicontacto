@@ -174,7 +174,7 @@ class QueueUpdateForm(forms.ModelForm):
     El form para actualizar la cola para las llamadas
     """
 
-    def __init__(self, audios_choices,  *args, **kwargs):
+    def __init__(self, audios_choices, id_audio,  *args, **kwargs):
         super(QueueUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
@@ -185,6 +185,7 @@ class QueueUpdateForm(forms.ModelForm):
         self.fields['audios'] = forms.ChoiceField(
             choices=audios_choices,
             widget=forms.Select(attrs={'class': 'form-control'}),
+            initial=id_audio,
             required=True
         )
 
