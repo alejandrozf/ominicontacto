@@ -648,3 +648,14 @@ class GlobalsConfigFile(ConfigFile):
         hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
         super(GlobalsConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class AudioConfigFile(object):
+    def __init__(self, filename):
+        self._filename = filename
+        self._hostname = settings.OML_ASTERISK_HOSTNAME
+        self._remote_path = settings.OML_AUDIO_PATH_ASTERISK
+
+    def copy_asterisk(self):
+        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
+                                                          self._remote_path])])
