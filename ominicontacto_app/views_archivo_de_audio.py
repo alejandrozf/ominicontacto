@@ -46,7 +46,8 @@ class ArchivoAudioCreateView(CreateView):
             conversor_audio = ConversorDeAudioService()
             conversor_audio.convertir_audio_de_archivo_de_audio_globales(
                 self.object)
-            audio_asterisk = self.object.audio_asterisk
+            audio_asterisk = self.object.audio_asterisk.name
+
             if audio_asterisk:
                 audio_file_asterisk = AudioConfigFile(audio_asterisk)
                 audio_file_asterisk.copy_asterisk()

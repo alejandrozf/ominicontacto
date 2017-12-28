@@ -652,7 +652,7 @@ class GlobalsConfigFile(ConfigFile):
 
 class AudioConfigFile(object):
     def __init__(self, filename):
-        self._filename = filename
+        self._filename = os.path.join(settings.MEDIA_ROOT, filename)
         self._hostname = settings.OML_ASTERISK_HOSTNAME
         self._remote_path = settings.OML_AUDIO_PATH_ASTERISK
 
