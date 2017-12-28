@@ -856,6 +856,7 @@ class QueueDialerForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -875,6 +876,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):
