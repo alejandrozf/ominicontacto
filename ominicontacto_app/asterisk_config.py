@@ -410,8 +410,10 @@ class QueuesCreator(object):
         audio_asterisk = campana.queue_campana.announce
         if audio_asterisk:
             audio_split = audio_asterisk.split("/")
+            audio_name = audio_split[1]
+            audio_name = audio_name.split(".")
             periodic_announce = os.path.join(
-                settings.OML_AUDIO_PATH_ASTERISK, audio_split[1])
+                "oml/", audio_name[0])
         else:
             periodic_announce = ""
         partes = []
