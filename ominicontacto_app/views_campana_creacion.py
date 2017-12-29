@@ -221,8 +221,11 @@ class QueueUpdateView(UpdateView):
         self.form_class = self.get_form_class()
         audios = ArchivoDeAudio.objects.all()
         conversor_audio = ConversorDeAudioService()
-        id_audio = conversor_audio.obtener_id_archivo_de_audio_desde_path(
-            self.get_object().announce)
+        if self.get_object().announce:
+            id_audio = conversor_audio.obtener_id_archivo_de_audio_desde_path(
+                self.get_object().announce)
+        else:
+            id_audio = 0
         return self.form_class(
             audios_choices=audios, id_audio=id_audio, **self.get_form_kwargs())
 
