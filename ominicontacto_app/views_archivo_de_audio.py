@@ -12,6 +12,7 @@ from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from ominicontacto_app.errors import OmlAudioConversionError
 from ominicontacto_app.forms import ArchivoDeAudioForm
 from ominicontacto_app.models import ArchivoDeAudio
+from ominicontacto_app.asterisk_config import AudioConfigFile
 import logging as logging_
 
 
@@ -45,6 +46,11 @@ class ArchivoAudioCreateView(CreateView):
             conversor_audio = ConversorDeAudioService()
             conversor_audio.convertir_audio_de_archivo_de_audio_globales(
                 self.object)
+            audio_asterisk = self.object.audio_asterisk.name
+
+            if audio_asterisk:
+                audio_file_asterisk = AudioConfigFile(audio_asterisk)
+                audio_file_asterisk.copy_asterisk()
             return redirect(self.get_success_url())
 
         except OmlAudioConversionError:
@@ -97,6 +103,12 @@ class ArchivoAudioUpdateView(UpdateView):
                 conversor_audio = ConversorDeAudioService()
                 conversor_audio.convertir_audio_de_archivo_de_audio_globales(
                     self.object)
+
+                audio_asterisk = self.object.audio_asterisk.name
+
+                if audio_asterisk:
+                    audio_file_asterisk = AudioConfigFile(audio_asterisk)
+                    audio_file_asterisk.copy_asterisk()
                 return redirect(self.get_success_url())
             except OmlAudioConversionError:
                 self.object.audio_original = None

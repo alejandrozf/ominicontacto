@@ -251,6 +251,13 @@ Ejemplo: `.wav` (con el . incluido):  el archivo `<OUTPUT_FILE>`
 tendra la extension `.wav`
 """
 
+OML_AUDIO_PATH_ASTERISK = None
+"""Directory donde se guardan los audios de asterisk en el server de asterisk
+
+Ejemplo:
+    OML_WOMBAT_FILENAME = "/var/lib/asterisk/sounds/oml/"
+"""
+
 # ==============================================================================
 # DEPLOY -> KAMAILIO
 # ==============================================================================
@@ -464,3 +471,8 @@ assert ret == 0, "No se ha encontrado el ejecutable configurado " +\
 
 assert TMPL_OML_AUDIO_CONVERSOR_EXTENSION is not None, \
     "Falta definir setting para TMPL_OML_AUDIO_CONVERSOR"
+
+# ~~~~~ Check OML_AUDIO_PATH_ASTERISK
+
+assert OML_AUDIO_PATH_ASTERISK is not None, \
+    "Falta definir setting para OML_AUDIO_PATH_ASTERISK"

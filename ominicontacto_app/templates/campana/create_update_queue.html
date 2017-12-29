@@ -1,56 +1,41 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head_js %}
-<script type="text/javascript">
-    $(function() {
-        $('#id_detectar_contestadores').change(actualizarEstadoDeSelectorDeAudios);
-        actualizarEstadoDeSelectorDeAudios();
-    });
-
-    function actualizarEstadoDeSelectorDeAudios(){
-        var detectar = $('#id_detectar_contestadores').prop("checked");
-        if (!detectar){
-            $('#id_audio_para_contestadores').val('');
-        }
-        $('#id_audio_para_contestadores').prop("disabled", !detectar);
-    };
-
-</script>
-{% endblock %}
-
 {% block content %}
 
             <ul class="nav nav-tabs">
-                <li><a href="{% url 'campana_dialer_update' campana.pk %}" >Campaña</a></li>
+                <li><a href="{% url 'campana_update' campana.pk %}" >Campaña</a></li>
                 <li class="active"><a>Cola</a></li>
-                {% if create %}
-                <li class="disabled"><a>Actuacion</a></li>
-                 <li class="disabled"><a>Reglas Incidencias</a></li>
-                <li class="disabled"><a>Sincronizar</a></li>
-                {% endif %}
             </ul>
             <br>
-    <div class="col-md-8 col-md-offset-1">
-                {% if object.name %}
-                    <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
-                {% endif %}
+<div class="col-md-8 col-md-offset-1">
+    {% if object.name %}
+        <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
+    {% endif %}
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
     {{ form.campana }} {{form.name }}
+        <div class="form-group row">
+        {{ form.timeout.errors }}
+        <label class="col-sm-4 control-label" for="{{ form.timeout.id_for_label }}">Tiempo de Ring: </label>
+        <div class="col-sm-2">
+              {{ form.timeout }}
+              {{ form.timeout.help_text }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.retry.errors }}
+        <label class="col-sm-4 control-label" for="{{ form.retry.id_for_label }}">Tiempo de Reintento::</label>
+        <div class="col-sm-2">
+              {{ form.retry }}
+        </div>
+    </div>
     <div class="form-group row">
         {{ form.maxlen.errors }}
         <label class="col-sm-4 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
         <div class="col-sm-2">
               {{ form.maxlen }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.wrapuptime.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.wrapuptime.id_for_label }}">Tiempo de descanso entre llamadas:</label>
-        <div class="col-sm-2">
-              {{ form.wrapuptime }}
         </div>
     </div>
     <div class="form-group row">
@@ -63,7 +48,7 @@
     <div class="form-group row">
         {{ form.strategy.errors }}
         <label class="col-sm-4 control-label" for="{{ form.strategy.id_for_label }}">Estrategia de distribucion:</label>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
               {{ form.strategy }}
         </div>
     </div>
@@ -89,17 +74,17 @@
         </div>
     </div>
     <div class="form-group row">
-        {{ form.detectar_contestadores.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.detectar_contestadores.id_for_label }}">Detectar contestadores:</label>
-        <div class="col-sm-1">
-              {{ form.detectar_contestadores }}
+        {{ form.audios.errors }}
+        <label class="col-sm-4 control-label" for="{{ form.audios.id_for_label }}">Anuncio periódico:</label>
+        <div class="col-sm-3">
+              {{ form.audios }}
         </div>
     </div>
     <div class="form-group row">
-        {{ form.audio_para_contestadores.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Audio para contestadores:</label>
+        {{ form.announce_frequency.errors }}
+        <label class="col-sm-4 control-label" for="{{ form.announce_frequency.id_for_label }}">Frecuencia del anuncio: </label>
         <div class="col-sm-2">
-              {{ form.audio_para_contestadores }}
+              {{ form.announce_frequency }}
         </div>
     </div>
     </br>
@@ -108,7 +93,7 @@
     </button>
 
 </form>
-
+</div>
 
 
 {% endblock %}

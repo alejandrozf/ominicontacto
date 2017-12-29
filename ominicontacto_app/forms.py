@@ -113,19 +113,28 @@ class AgenteProfileForm(forms.ModelForm):
 
 class QueueForm(forms.ModelForm):
     """
-    El form de cola para las llamadas
+    El form de cola para las colas
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, audios_choices,  *args, **kwargs):
         super(QueueForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
+        self.fields['announce_frequency'].required = True
+        audios_choices = [(audio.id, audio.descripcion)
+                          for audio in audios_choices]
+        audios_choices.insert(0, ('', '---------'))
+        self.fields['audios'] = forms.ChoiceField(
+            choices=audios_choices,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+            required=True
+        )
 
     class Meta:
         model = Queue
-        fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'campana')
+        fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
+                  'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
+                  'announce_frequency')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -133,6 +142,15 @@ class QueueForm(forms.ModelForm):
         widgets = {
             'campana': forms.HiddenInput(),
             'name': forms.HiddenInput(),
+            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
+            "retry": forms.TextInput(attrs={'class': 'form-control'}),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(
+                attrs={'class': 'form-control'}),
         }
 
 
@@ -156,19 +174,41 @@ class QueueUpdateForm(forms.ModelForm):
     El form para actualizar la cola para las llamadas
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, audios_choices, id_audio,  *args, **kwargs):
         super(QueueUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
+        self.fields['announce_frequency'].required = True
+        audios_choices = [(audio.id, audio.descripcion)
+                          for audio in audios_choices]
+        audios_choices.insert(0, ('', '---------'))
+        self.fields['audios'] = forms.ChoiceField(
+            choices=audios_choices,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+            initial=id_audio,
+            required=True
+        )
 
     class Meta:
         model = Queue
-        fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion')
+        fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
+                  'weight', 'wait', 'auto_grabacion', 'announce_frequency')
 
         help_texts = {
             'timeout': """En segundos """,
+        }
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'name': forms.HiddenInput(),
+            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
+            "retry": forms.TextInput(attrs={'class': 'form-control'}),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(
+                attrs={'class': 'form-control'}),
         }
 
     def clean(self):
@@ -804,7 +844,8 @@ class QueueDialerForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
-                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores')
+                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
+                  'audio_para_contestadores')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -815,6 +856,7 @@ class QueueDialerForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -826,7 +868,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'detectar_contestadores')
+                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores')
         widgets = {
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
@@ -834,6 +876,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):

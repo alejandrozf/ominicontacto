@@ -119,6 +119,9 @@ TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
 
 TMPL_OML_AUDIO_CONVERSOR_EXTENSION = ".wav"
 
+# 'OML_AUDIO_PATH_ASTERISK': path del server donde se guardara los audios de asterisk. Donde Asterisk debe estar configurado
+OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
+
 # parametros de conexion con base de datos mysql de asterisk
 # modificar esto parametros con la conexion de base de datos correcta para que no tire error la ejecucion
 DATABASE_MYSQL_ASTERISK = {

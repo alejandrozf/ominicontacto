@@ -102,6 +102,9 @@ class GeneradorDePedazoDeQueueFactory(object):
     def crear_generador_para_queue(self, parametros):
         return GeneradorParaQueue(parametros)
 
+    def crear_generador_para_queue_entrante(self, parametros):
+        return GeneradorParaQueueEntrante(parametros)
+
 
 # Factory para los Agentes.
 
@@ -138,6 +141,9 @@ class GeneradorDePedazoDeCampanaDialerFactory(object):
 
     def crear_generador_para_campana_dialer_contestadores_end(self, parametros):
         return GeneradorParaCampanaDialerContestadoresEnd(parametros)
+
+    def crear_generador_para_campana_dialer_contestadores_end_con_audio(self, parametros):
+        return GeneradorParaCampanaDialerContestadoresEndConAudio(parametros)
 
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
@@ -252,6 +258,53 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
 
     def get_parametros(self):
         return self._parametros
+
+
+class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
+
+    def get_template(self):
+        return """
+
+        [{oml_queue_name}]
+        announce=beep
+        announce-frequency=0
+        announce-holdtime=no
+        announce-position=no
+        autofill=yes
+        eventmemberstatus=yes
+        eventwhencalled=yes
+        joinempty=yes
+        leavewhenempty=no
+        memberdelay=0
+        penaltymemberslimit=0
+        periodic-announce={oml_periodic-announce}
+        periodic-announce-frequency={oml_periodic-announce-frequency}
+        queue-callswaiting=silence/1
+        queue-thereare=silence/1
+        queue-youarenext=silence/1
+        reportholdtime=no
+        ringinuse=no
+        timeoutpriority=app
+        timeoutrestart=no
+        setinterfacevar=yes
+        setqueueentryvar=yes
+        setqueuevar=yes
+        updatecdr=yes
+        shared_lastcall=yes
+        strategy={oml_strategy}
+        timeout={oml_timeout}
+        servicelevel={oml_servicelevel}
+        weight={oml_weight}
+        wrapuptime={oml_wrapuptime}
+        maxlen={oml_maxlen}
+        retry={oml_retry}
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+
 
 
 # ==============================================================================
@@ -409,6 +462,22 @@ class GeneradorParaCampanaDialerContestadoresEnd(GeneradorDePedazoDeCampanaDiale
         same => n(amd_machine),NoOp(es una maquina)
         same => n,UserEvent(CALLSTATUS,Uniqueid:${{UNIQUEID}},V:CONTESTADOR)
         same => n,SET(CDR(userfield)=CONTESTADOR)
+        same => n,Hangup()
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+class GeneradorParaCampanaDialerContestadoresEndConAudio(GeneradorDePedazoDeCampanaDialer):
+
+    def get_template(self):
+        return """
+        same => n(amd_machine),NoOp(es una maquina)
+        same => n,UserEvent(CALLSTATUS,Uniqueid:${{UNIQUEID}},V:CONTESTADOR)
+        same => n,SET(CDR(userfield)=CONTESTADOR)
+        same => n,Playback(oml/{filename_audio_contestadores})
+        same => n,Playback(oml/{filename_audio_contestadores})
         same => n,Hangup()
         """
 
