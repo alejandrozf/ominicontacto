@@ -129,12 +129,13 @@ class QueueEntranteForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-control'}),
             required=True
         )
+        self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
-                  'announce_frequency')
+                  'announce_frequency', 'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -151,6 +152,7 @@ class QueueEntranteForm(forms.ModelForm):
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "announce_frequency": forms.TextInput(
                 attrs={'class': 'form-control'}),
+            'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -188,11 +190,12 @@ class QueueEntranteUpdateForm(forms.ModelForm):
             initial=id_audio,
             required=True
         )
+        self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
         fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion', 'announce_frequency')
+                  'weight', 'wait', 'auto_grabacion', 'announce_frequency', 'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -209,6 +212,7 @@ class QueueEntranteUpdateForm(forms.ModelForm):
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "announce_frequency": forms.TextInput(
                 attrs={'class': 'form-control'}),
+            'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):
@@ -859,7 +863,7 @@ class QueueDialerForm(forms.ModelForm):
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, args, *kwargs):
+    def __init__(self, *args, **kwargs):
         super(QueueDialerForm, self).__init__(*args, **kwargs)
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
 
@@ -883,7 +887,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, args, *kwargs):
+    def __init__(self, *args, **kwargs):
         super(QueueDialerUpdateForm, self).__init__(*args, **kwargs)
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
 
