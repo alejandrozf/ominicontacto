@@ -51,9 +51,9 @@ class GraficoService():
         campanas_ids_nombres = OrderedDict()
         campanas_tipos = []
 
-        for pk_nombre_tipo in campanas.values('pk', 'nombre', 'type').order_by('pk'):
-            campanas_ids_nombres[pk_nombre_tipo['pk']] = pk_nombre_tipo['nombre']
-            campana_tipo = Campana.TYPES_CAMPANA[pk_nombre_tipo['type'] - 1][1]
+        for campana in campanas.order_by('pk'):
+            campanas_ids_nombres[campana.pk] = campana.nombre
+            campana_tipo = campana.get_type_display()
             campanas_tipos.append(campana_tipo)
 
         campanas_ids = campanas_ids_nombres.keys()
