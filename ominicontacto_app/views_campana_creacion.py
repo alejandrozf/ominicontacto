@@ -129,8 +129,10 @@ class CampanaUpdateView(UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         campana_service = CampanaService()
-        error = campana_service.validar_modificacion_bd_contacto(
-            self.get_object(), self.object.bd_contacto)
+        error = None
+        if self.object.bd_contacto:
+            error = campana_service.validar_modificacion_bd_contacto(
+                self.get_object(), self.object.bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
         return super(CampanaUpdateView, self).form_valid(form)
