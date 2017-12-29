@@ -49,6 +49,7 @@ sed -i "s/\(^session_\).*/session_cookie_age: $session_cookie/" /etc/ansible/gro
 echo -en "Ingrese la contraseña de superuser de Omnileads: "; read admin_pass
 sed -i "s/\(^admin_pass\).*/admin_pass: $admin_pass/" /etc/ansible/group_vars/all
 
+
 if [ $opcion -eq 1 ]; then
     echo -en "Ingrese IP  de omni-voip: "; read omnivoip_ip
     sed -i "s/\(^omnivoip_ip:\).*/omnivoip_ip: $omnivoip_ip/" /etc/ansible/group_vars/all
@@ -72,6 +73,10 @@ if [ $opcion -eq 1 ]; then
     echo ""
 
 elif [ $opcion -eq 2 ]; then
+
+    echo -en "Ingrese el formato de audio en el que quiere las grabaciones: "; read audio
+    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local_sangoma.py
+
     echo -en "Ingrese IP  de omni-freepbx: "; read omnifreepbx_ip
     sed -i "s/\(^omnifreepbx_ip:\).*/omnifreepbx_ip: $omnifreepbx_ip/" /etc/ansible/group_vars/all
     sed -i "s/\(^192.168.99.2\).*/$omnifreepbx_ip/" /etc/ansible/hosts
@@ -90,6 +95,10 @@ elif [ $opcion -eq 2 ]; then
     echo ""
 
 elif [ $opcion -eq 3 ]; then
+
+    echo -en "Ingrese el formato de audio en el que quiere las grabaciones: "; read audio
+    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local_centos.py
+
     echo -en "Ingrese IP  de omni-centos: "; read omnicentos_ip
     sed -i "s/\(^omnicentos_ip:\).*/omnicentos_ip: $omnicentos_ip/" /etc/ansible/group_vars/all
     sed -i "s/\(^172.16.20.12\).*/$omnicentos_ip/" /etc/ansible/hosts

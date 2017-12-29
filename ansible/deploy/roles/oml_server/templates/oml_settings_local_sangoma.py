@@ -177,6 +177,8 @@ TMPL_OML_AUDIO_CONVERSOR_EXTENSION = ".wav"
 
 MONITORFORMAT = 'ogg'
 
+OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
+
 LOCAL_APPS = []
 
 DJANGO_DEBUG_TOOLBAR = False
