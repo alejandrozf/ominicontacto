@@ -111,13 +111,13 @@ class AgenteProfileForm(forms.ModelForm):
         fields = ('modulos', 'grupo')
 
 
-class QueueForm(forms.ModelForm):
+class QueueEntranteForm(forms.ModelForm):
     """
     El form de cola para las colas
     """
 
     def __init__(self, audios_choices,  *args, **kwargs):
-        super(QueueForm, self).__init__(*args, **kwargs)
+        super(QueueEntranteForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = True
@@ -169,13 +169,13 @@ class QueueMemberForm(forms.ModelForm):
         fields = ('member', 'penalty')
 
 
-class QueueUpdateForm(forms.ModelForm):
+class QueueEntranteUpdateForm(forms.ModelForm):
     """
     El form para actualizar la cola para las llamadas
     """
 
     def __init__(self, audios_choices, id_audio,  *args, **kwargs):
-        super(QueueUpdateForm, self).__init__(*args, **kwargs)
+        super(QueueEntranteUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = True
