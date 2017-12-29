@@ -859,6 +859,10 @@ class QueueDialerForm(forms.ModelForm):
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, args, *kwargs):
+        super(QueueDialerForm, self).__init__(*args, **kwargs)
+        self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
+
 
 class QueueDialerUpdateForm(forms.ModelForm):
     """
@@ -878,6 +882,10 @@ class QueueDialerUpdateForm(forms.ModelForm):
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, args, *kwargs):
+        super(QueueDialerUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
 
     def clean(self):
         maxlen = self.cleaned_data.get('maxlen')
