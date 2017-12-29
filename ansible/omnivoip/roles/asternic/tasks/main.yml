@@ -1,8 +1,5 @@
 ---
 
-- include: debianpart.yml
-  when: ansible_os_family == "Debian"
-
 - include: freepbxpart.yml
   when: (ansible_os_family == "Sangoma") or (ansible_os_family == "RedHat")
 
