@@ -58,6 +58,13 @@ class QueueDialplanConfigCreator(object):
         }
 
         # QUEUE: Creamos la porción inicial del Queue.
+        filepath = 'silence/1'
+        if campana.queue_campana.audio_de_ingreso:
+            local_filepath = campana.queue_campana.audio_de_ingreso.audio_asterisk.path
+            filename = os.path.splitext(os.path.basename(local_filepath))[0]
+            filepath = os.path.join('olc', filename)
+        param_generales['filepath_audio_ingreso'] = filepath
+
         if campana.queue_campana.auto_grabacion:
             generador_queue = self._generador_factory.\
                 crear_generador_para_queue_grabacion(param_generales)
