@@ -21,12 +21,12 @@ echo "Clonando el repositorio de git de ominicontacto en ~ (no olvidar poner la 
 cd ~
 git clone git@bitbucket.org:freetechdesarrollo/ominicontacto.git
 cd ominicontacto
-git config --global user.name "freetech"
-git config --global user.email "desarrollo@freetechsolutions.com.ar"
+git config --global user.name "lionite"
+git config --global user.email "felipe.macias@freetechsolutions.com.ar"
 git fetch
 git checkout develop
-echo "Copiando la carpeta ansible a /etc/"
-cp -a ~/ominicontacto/ansible /etc/
+#echo "Copiando la carpeta ansible a /etc/"
+#cp -a ~/ominicontacto/ansible /etc/
 
 echo "Ingrese 1 si es post-install o 2 si es un fresh install"
 echo -en "Opcion: "; read type_install
@@ -91,13 +91,13 @@ elif [ $opcion -eq 2 ]; then
 
 elif [ $opcion -eq 3 ]; then
     echo -en "Ingrese IP  de omni-centos: "; read omnicentos_ip
-    sed -i "s/\(^omnifcentos_ip:\).*/omnicentos_ip: $omnicentos_ip/" /etc/ansible/group_vars/all
+    sed -i "s/\(^omnicentos_ip:\).*/omnicentos_ip: $omnicentos_ip/" /etc/ansible/group_vars/all
     sed -i "s/\(^172.16.20.12\).*/$omnicentos_ip/" /etc/ansible/hosts
 
-    echo -en "Ingrese fqdn  de omni-freepbx: "; read omnicentos_fqdn
+    echo -en "Ingrese fqdn  de omni-centos: "; read omnicentos_fqdn
     sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" /etc/ansible/group_vars/all
 
-    echo "Transifiendo llave publica a usuario root de SangomaOS"
+    echo "Transifiendo llave publica a usuario root de Centos"
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnicentos_ip
 
     echo "Ejecutando Ansible en Centos"
