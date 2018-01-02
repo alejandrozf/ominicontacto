@@ -1172,10 +1172,17 @@ class QueueMember(models.Model):
 
 
 class Pausa(models.Model):
+    TIPO_PRODUCTIVA = 'P'
+    TIPO_RECREATIVA = 'R'
+    TIPO_CHOICES = ((TIPO_PRODUCTIVA, 'Productiva'), (TIPO_RECREATIVA, 'Recreativa'))
     nombre = models.CharField(max_length=20)
+    tipo = models.CharField(max_length=1, choices=TIPO_CHOICES, default=TIPO_PRODUCTIVA)
 
     def __unicode__(self):
         return self.nombre
+
+    def es_productiva(self):
+        return self.tipo == TIPO_PRODUCTIVA
 
 
 # ==============================================================================
