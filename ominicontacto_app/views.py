@@ -105,6 +105,11 @@ class CustomerUserUpdateView(UpdateView):
     form_class = UserChangeForm
     template_name = 'user/user_create_update_form.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(CustomerUserUpdateView, self).get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
     def form_valid(self, form):
         ret = super(CustomerUserUpdateView, self).form_valid(form)
 
@@ -130,6 +135,11 @@ class UserDeleteView(DeleteView):
     """
     model = User
     template_name = 'user/delete_user.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(UserDeleteView, self).get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
