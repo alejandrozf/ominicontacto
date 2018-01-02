@@ -2147,7 +2147,7 @@ class CalificacionCliente(models.Model):
     campana = models.ForeignKey(Campana, related_name="calificaconcliente")
     contacto = models.ForeignKey(Contacto)
     es_venta = models.BooleanField(default=False)
-    calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
+    calificacion = models.ForeignKey(Calificacion, blank=False, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
     observaciones = models.TextField(blank=True, null=True)
