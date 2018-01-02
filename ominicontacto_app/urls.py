@@ -238,22 +238,22 @@ urlpatterns = [
                        mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
     # ==========================================================================
-    # Campana
+    # Campana Entrante
     # ==========================================================================
     url(r'^campana/nuevo/$',
-        login_required(views_campana_creacion.CampanaCreateView.as_view()),
+        login_required(views_campana_creacion.CampanaEntranteCreateView.as_view()),
         name='campana_nuevo',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/update/$',
-        login_required(views_campana_creacion.CampanaUpdateView.as_view()),
+        login_required(views_campana_creacion.CampanaEntranteUpdateView.as_view()),
         name='campana_update',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/cola/$',
-        login_required(views_campana_creacion.QueueCreateView.as_view()),
+        login_required(views_campana_creacion.QueueEntranteCreateView.as_view()),
         name='queue_nuevo',
         ),
     url(r'^campana/update/(?P<pk_campana>\d+)/cola/$',
-        login_required(views_campana_creacion.QueueUpdateView.as_view()),
+        login_required(views_campana_creacion.QueueEntranteUpdateView.as_view()),
         name='queue_update',
         ),
     url(r'campana/list/$',

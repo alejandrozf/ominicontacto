@@ -32,6 +32,13 @@
         </div>
     </div>
     <div class="form-group row">
+        {{ form.audio_de_ingreso.errors }}
+        <label class="col-sm-4 control-label" for="{{ form.audio_de_ingreso.id_for_label }}">Audio de ingreso:</label>
+        <div class="col-sm-3">
+              {{ form.audio_de_ingreso }}
+        </div>
+    </div>
+    <div class="form-group row">
         {{ form.maxlen.errors }}
         <label class="col-sm-4 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
         <div class="col-sm-2">

@@ -111,13 +111,13 @@ class AgenteProfileForm(forms.ModelForm):
         fields = ('modulos', 'grupo')
 
 
-class QueueForm(forms.ModelForm):
+class QueueEntranteForm(forms.ModelForm):
     """
     El form de cola para las colas
     """
 
     def __init__(self, audios_choices,  *args, **kwargs):
-        super(QueueForm, self).__init__(*args, **kwargs)
+        super(QueueEntranteForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = True
@@ -129,12 +129,13 @@ class QueueForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-control'}),
             required=True
         )
+        self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
-                  'announce_frequency')
+                  'announce_frequency', 'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -151,6 +152,7 @@ class QueueForm(forms.ModelForm):
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "announce_frequency": forms.TextInput(
                 attrs={'class': 'form-control'}),
+            'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -169,13 +171,13 @@ class QueueMemberForm(forms.ModelForm):
         fields = ('member', 'penalty')
 
 
-class QueueUpdateForm(forms.ModelForm):
+class QueueEntranteUpdateForm(forms.ModelForm):
     """
     El form para actualizar la cola para las llamadas
     """
 
     def __init__(self, audios_choices, id_audio,  *args, **kwargs):
-        super(QueueUpdateForm, self).__init__(*args, **kwargs)
+        super(QueueEntranteUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = True
@@ -188,11 +190,12 @@ class QueueUpdateForm(forms.ModelForm):
             initial=id_audio,
             required=True
         )
+        self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
         fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion', 'announce_frequency')
+                  'weight', 'wait', 'auto_grabacion', 'announce_frequency', 'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -209,6 +212,7 @@ class QueueUpdateForm(forms.ModelForm):
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "announce_frequency": forms.TextInput(
                 attrs={'class': 'form-control'}),
+            'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):
@@ -859,6 +863,10 @@ class QueueDialerForm(forms.ModelForm):
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(QueueDialerForm, self).__init__(*args, **kwargs)
+        self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
+
 
 class QueueDialerUpdateForm(forms.ModelForm):
     """
@@ -878,6 +886,10 @@ class QueueDialerUpdateForm(forms.ModelForm):
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(QueueDialerUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
 
     def clean(self):
         maxlen = self.cleaned_data.get('maxlen')

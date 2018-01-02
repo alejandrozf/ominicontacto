@@ -1067,7 +1067,11 @@ class Queue(models.Model):
     announce_frequency = models.BigIntegerField(blank=True, null=True)
 
     audio_para_contestadores = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
-                                                 on_delete=models.SET_NULL)
+                                                 on_delete=models.SET_NULL,
+                                                 related_name='queues_contestadores')
+    audio_de_ingreso = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
+                                         on_delete=models.SET_NULL,
+                                         related_name='queues_ingreso')
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
