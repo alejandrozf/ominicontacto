@@ -550,7 +550,7 @@ $(function() {
 					if(fromUser.substring(4,0) != "0077") {
 							if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
 								changeStatus(3, $("#idagt").val());
-						    num = "0077ACW";
+						    num = "00770";
 						    makeCall();
 						    entrante = false;
 								$("#Pause").prop('disabled',true);
@@ -594,7 +594,7 @@ $(function() {
 						}
 						if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
 							changeStatus(3, $("#idagt").val());
-					        num = "0077ACW";
+					        num = "00770";
 					        makeCall();
 					        entrante = false;
 							$("#Pause").prop('disabled',true);
