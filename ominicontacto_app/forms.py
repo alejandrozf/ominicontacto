@@ -640,7 +640,6 @@ class PausaForm(forms.ModelForm):
             'tipo': forms.Select(attrs={'class': 'form-control'}),
         }
 
-
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)

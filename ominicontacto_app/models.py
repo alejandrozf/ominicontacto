@@ -1171,19 +1171,29 @@ class QueueMember(models.Model):
         unique_together = ('queue_name', 'member',)
 
 
+class PausaManager(models.Manager):
+    def activas(self):
+        return self.filter(eliminada=False)
+
+    def eliminadas(self):
+        return self.filter(eliminada=True)
+
+
 class Pausa(models.Model):
+    objects = PausaManager()
+
     TIPO_PRODUCTIVA = 'P'
     TIPO_RECREATIVA = 'R'
     TIPO_CHOICES = ((TIPO_PRODUCTIVA, 'Productiva'), (TIPO_RECREATIVA, 'Recreativa'))
-    nombre = models.CharField(max_length=20)
+    nombre = models.CharField(max_length=20, unique=True)
     tipo = models.CharField(max_length=1, choices=TIPO_CHOICES, default=TIPO_PRODUCTIVA)
+    eliminada = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.nombre
 
     def es_productiva(self):
-        return self.tipo == TIPO_PRODUCTIVA
-
+        return self.tipo == self.TIPO_PRODUCTIVA
 
 # ==============================================================================
 # Base Datos Contactos

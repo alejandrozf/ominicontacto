@@ -380,22 +380,41 @@ class PausaUpdateView(UpdateView):
         return reverse('pausa_list')
 
 
-class PausaListView(ListView):
+class PausaListView(TemplateView):
     """Vista para listar pausa"""
     model = Pausa
     template_name = 'pausa_list.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(PausaListView, self).get_context_data(**kwargs)
+        context['pausas_activas'] = Pausa.objects.activas()
+        context['pausas_eliminadas'] = Pausa.objects.eliminadas()
+        return context
 
-class PausaDeleteView(DeleteView):
+
+class PausaToggleDeleteView(TemplateView):
     """
-    Esta vista se encarga de la eliminación del
+    Esta vista se encarga de la eliminación/activación del
     objeto pausa
     """
-    model = Pausa
     template_name = 'delete_pausa.html'
 
-    def get_success_url(self):
-        return reverse('pausa_list')
+    def get(self, request, pk):
+        try:
+            pausa = Pausa.objects.get(pk=pk)
+        except Pausa.DoesNotExist:
+            return redirect('pausa_list')
+        return self.render_to_response({'object': pausa})
+
+    def post(self, request, pk):
+        try:
+            pausa = Pausa.objects.get(pk=pk)
+        except Pausa.DoesNotExist:
+            return redirect('pausa_list')
+        pausa.eliminada = not pausa.eliminada
+        pausa.save()
+        return redirect('pausa_list')
+
 
 
 def node_view(request):
@@ -412,7 +431,7 @@ def node_view(request):
         campanas_preview_activas = \
             agente_profile.has_campanas_preview_activas_miembro()
         context = {
-            'pausas': Pausa.objects.all,
+            'pausas': Pausa.objects.activas,
             'registro': registro,
             'campanas_preview_activas': campanas_preview_activas,
             'agente_profile': agente_profile,
