@@ -151,7 +151,7 @@ class CalificacionClienteCreateView(CreateView):
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
 
-        if calificacion is campana.gestion:
+        if calificacion.nombre == campana.gestion:
             self.object_calificacion[0].es_venta = True
             self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
             self.object_calificacion[0].save()
@@ -335,7 +335,7 @@ class CalificacionClienteUpdateView(UpdateView):
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
 
-        if calificacion is campana.gestion:
+        if calificacion.nombre == campana.gestion:
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
             # actualiza la calificacion en wombat
