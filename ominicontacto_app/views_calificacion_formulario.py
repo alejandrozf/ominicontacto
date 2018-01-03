@@ -144,13 +144,14 @@ class CalificacionClienteCreateView(CreateView):
         self.object.datos = json.dumps(datos)
         self.object.save()
         self.object_calificacion = calificacion_form.save(commit=False)
+        campana = self.object_calificacion[0].campana
         cleaned_data_calificacion = calificacion_form.cleaned_data
         calificacion = cleaned_data_calificacion[0]['calificacion']
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
 
-        if calificacion is None:
+        if calificacion is campana.gestion:
             self.object_calificacion[0].es_venta = True
             self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
             self.object_calificacion[0].save()
@@ -331,6 +332,7 @@ class CalificacionClienteUpdateView(UpdateView):
         self.object.save()
         self.object_calificacion = calificacion_form.save(commit=False)
 
+        campana = self.object_calificacion[0].campana
         if not self.object_calificacion:
             self.object_calificacion = calificacion_form.cleaned_data[0]['id']
         else:
@@ -341,7 +343,7 @@ class CalificacionClienteUpdateView(UpdateView):
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
 
-        if calificacion is None:
+        if calificacion is campana.gestion:
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
             # actualiza la calificacion en wombat
