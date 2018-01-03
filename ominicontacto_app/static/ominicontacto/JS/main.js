@@ -88,7 +88,7 @@ $(function () {
 	 	 $("#Pause").prop('disabled', true);
 	 	 $("#Resume").prop('disabled', false);
      $("#modalPause").modal('hide');
-     updateButton(modifyUserStat, "label label-danger", $("#pauseType").prop('nombre_pausa'));
+     updateButton(modifyUserStat, "label label-danger", $("#pauseType option:selected").text());
 //     inicio2();
    });
 	 $("#logout").click(function () {
