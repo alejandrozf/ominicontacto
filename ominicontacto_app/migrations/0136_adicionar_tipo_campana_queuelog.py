@@ -13,17 +13,9 @@ def adicionar_tipo_campana_queuelog(apps, schema_editor):
     Queuelog = apps.get_model("ominicontacto_app", "queuelog")
     Campana = apps.get_model("ominicontacto_app", "campana")
 
-    # Creamos un diccionario con los ids de las campañas y su tipo
-    # para optimizar queries
-    campana_type_dict = {}
-    for campana in Campana.objects_default.all():
-        campana_type_dict[campana.pk] = campana.type
-
     # copiamos la info del tipo de campaña en las entradas del modelo Queuelog
-    for queue_log in Queuelog.objects.filter(campana_id__isnull=False).exclude(campana_id=-1):
-        campana_id = queue_log.campana_id
-        queue_log.data5 = campana_type_dict[campana_id]
-        queue_log.save()
+    for campana in Campana.objects_default.all():
+        Queuelog.objects.filter(campana_id=campana.pk).update(data5=campana.type)
 
 
 def rollback(apps, schema_editor):
