@@ -190,16 +190,8 @@ class CalificacionClienteCreateView(CreateView):
             messages.success(self.request, message)
             if self.object_calificacion[0].agendado:
                 return redirect(self.get_success_url_agenda())
-            return HttpResponseRedirect(reverse('calificacion_formulario_update',
-                                                kwargs={
-                                                    "pk_campana": self.kwargs[
-                                                        'pk_campana'],
-                                                    "pk_contacto": self.kwargs[
-                                                        'pk_contacto'],
-                                                    "wombat_id": self.kwargs[
-                                                        'wombat_id'],
-                                                    "id_agente": self.kwargs[
-                                                        'id_agente']}))
+            return redirect(
+                'reporte_agente_calificaciones', pk_agente=self.kwargs['id_agente'])
 
     def form_invalid(self, form, calificacion_form):
         """
@@ -381,17 +373,8 @@ class CalificacionClienteUpdateView(UpdateView):
             messages.success(self.request, message)
             if self.object_calificacion.agendado:
                 return redirect(self.get_success_url_agenda())
-            return HttpResponseRedirect(
-                reverse('calificacion_formulario_update',
-                        kwargs={
-                            "pk_campana": self.kwargs[
-                                'pk_campana'],
-                            "pk_contacto": self.kwargs[
-                                'pk_contacto'],
-                            "wombat_id": self.kwargs[
-                                'wombat_id'],
-                            "id_agente": self.kwargs[
-                                'id_agente']}))
+            return redirect(
+                'reporte_agente_calificaciones', pk_agente=self.kwargs['id_agente'])
 
     def form_invalid(self, form, calificacion_form):
         """
