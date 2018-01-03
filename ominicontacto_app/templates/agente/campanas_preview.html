@@ -1,4 +1,6 @@
 {% load static %}
+{% load compress %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,9 +10,11 @@
 
         <!-- JQuery & Datatables -->
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}" >
+        {% compress js %}
         <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/campanasPreviewAgente.js' %}"></script>
+        {% endcompress %}
     </head>
     <body>
         <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
@@ -52,11 +56,13 @@
                             <input type="hidden" id="pk_campana" name="pk_campana">
                             <input type="hidden" id="campana_nombre" name="campana_nombre">
                             <input type="hidden" id="click2call_preview" name="click2call_preview" value="true">
-                            <button type="submit" class="btn btn-info">
-                                <span id="contacto-telefono" class="glyphicon glyphicon-earphone"
-                                      aria-hidden="true" title="Haga click para llamar al contacto"></span>
-                            </button>
+                            <button id="llamar_contacto" type="submit" class="hidden"></button>
                         </form>
+                        <button id="validar_contacto" class="btn btn-info">
+                            <span id="contacto-telefono" class="glyphicon glyphicon-earphone"
+                                  aria-hidden="true" title="Haga click para llamar al contacto"></span>
+                        </button>
+                        <p class="text-danger" id="errorAsignacionContacto"></p>
                     </div>
                     <div class="panel-footer" id="contacto-datos">
                     </div>

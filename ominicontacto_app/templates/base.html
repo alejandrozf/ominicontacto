@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load compress %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,18 +23,20 @@
     </style>
 
     <!-- jquery UI -->
+    {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'bootstrap-3.3.6/js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/djangoStyle.js' %}"></script>
+    {% endcompress %}
     {% block head_js %}
     {% endblock %}
 
 </head>
 <body>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user.get_tiene_permiso_administracion %}
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container-fluid col-lg-12">
                 <div class="navbar-header col-lg-2">
@@ -58,8 +61,8 @@
                     </ul>
 
                     <ul class="nav navbar-nav">
-                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
-                        <li role="presentation" class="dropdown">
+                        {% if user.get_is_supervisor_normal or user.get_is_administrador %}
+                        <li role="presentation"  class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Usuarios <span class="caret"></span>
 						    </a>
@@ -116,8 +119,21 @@
 
 						    </ul>
 						</li>
+                        <li role="presentation" class="dropdown">
+						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+						      Audios <span class="caret"></span>
+						    </a>
+						    <ul class="dropdown-menu" role="menu">
+						    	<li>
+                            		<a href="{% url 'lista_archivo_audio' %}">Lista de Audios</a>
+                        		</li>
+                        		<li>
+                            		<a href="{% url 'create_archivo_audio' %}">Cargar nuevo audio</a>
+                        		</li>
+						    </ul>
+						</li>
                         {% endif %}
-                        {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
+                        {% if user.get_is_supervisor_normal or user.get_is_administrador %}
                         <li role="presentation" class="dropdown">
 						    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
 						      Campaña <span class="caret"></span>
@@ -141,6 +157,12 @@
 				<li>
                             	    <a href="{% url 'campana_manual_create' %}">Crear nueva campaña Manual</a>
                         	</li>
+                                <li>
+                                    <a href="{% url 'campana_preview_list' %}">Listado de campañas Preview</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_preview_create' %}">Crear nueva campaña Preview</a>
+                                </li>
                                 {% if user.get_is_administrador %}
                                 <li>
                             		<a href="{% url 'regenerar_asterisk' %}">Regenerar asterisk</a>
@@ -229,7 +251,7 @@
                                     <a href="{% url 'reporte_llamadas' %}"><span class=" glyphicon glyphicon-earphone" aria-hidden="true"></span> Llamadas</a>
                                 </li>
                                  {% endif %}
-                                 {% if not user.get_is_supervisor_customer or user.get_is_administrador %}
+                                 {% if user.get_is_supervisor_normal or user.get_is_administrador %}
                                 <li>
                                     <a href="{% url 'agente_tiempos' %}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Agentes</a>
                                 </li>
@@ -310,9 +332,16 @@
         {% endif %}
 
     {% endfor %}
-    {% if user.is_authenticated %}
-        {% block content %}
-        {% endblock %}
+    {% if user.is_authenticated  %}
+        {% if user.get_tiene_permiso_administracion  %}
+            {% block content %}
+            {% endblock %}
+        {% else %}
+            <div class="alert alert-warning">
+                <h1>Permiso denegado</h1>
+                <p>Ud. no posee los permisos requeridos para acceder a esta pagina.</p>
+            </div>
+        {% endif %}
 
     {% else %}
         {% block logueo %}

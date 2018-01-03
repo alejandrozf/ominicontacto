@@ -13,15 +13,13 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
-from ominicontacto_app.models import Contacto, Campana, SupervisorProfile
-from django.views.generic import (
-    ListView, DeleteView, FormView, UpdateView
-)
+from ominicontacto_app.models import Contacto, Campana
+from django.views.generic import ListView, DeleteView, FormView
 from django.views.generic.base import RedirectView
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.forms import (
     UpdateBaseDatosForm, BusquedaContactoForm, FormularioCampanaContacto,
-    FormularioNuevoContacto, CampanaSupervisorUpdateForm
+    FormularioNuevoContacto
 )
 from ominicontacto_app.utiles import convertir_ascii_string
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
@@ -448,11 +446,6 @@ class FormularioNuevoContactoFormView(FormView):
             telefono=telefono, datos=json.dumps(datos),
             bd_contacto=base_datos)
         agente = self.request.user.get_agente_profile()
-
-        if campana.type == Campana.TYPE_PREVIEW:
-            # inicializamos una nueva entrada en la tabla que relaciona agentes
-            # con contactos en campañas preview
-            campana.agregar_agente_contacto(contacto)
 
         return HttpResponseRedirect(
             reverse('calificacion_formulario_update',

@@ -21,9 +21,18 @@
       - chown asterisk.asterisk -R /usr/local/parselog
       - cp /usr/src/oml-freepbx/extra-files/odbcinst.ini /etc/
       - cp /usr/src/oml-freepbx/extra-files/odbc.ini /etc/
+      - mkdir /var/lib/asterisk/sounds/es
+      - mkdir /var/lib/asterisk/sounds/en
+      - tar xzvf es-oml.tgz -C /var/lib/asterisk/sounds/es/
+      - tar xzvf en-oml.tgz -C /var/lib/asterisk/sounds/en/
+  ignore_errors: yes
 
 - name: Add web enabled in /etc/asterisk/manager.conf
-  ini_file: "path=/etc/asterisk/manager.conf section=general option=webnenabled value=yes state=present"
+  ini_file: "path=/etc/asterisk/manager.conf section=general option=webenabled no_extra_spaces=yes value=yes state=present"
+
+- name: Add web nocolor=yes in /etc/asterisk/asterisk.conf
+  ini_file: "path=/etc/asterisk/asterisk.conf section=options option=nocolor no_extra_spaces=yes value=yes state=present"
+
 
 - name: Install Mysql-python DB module
   pip: name=MySQL-python
@@ -41,3 +50,6 @@
   with_items:
       - systemctl stop firewalld
       - systemctl disable firewalld
+
+- name: Start asterisk with fwconsole
+  shell: "fwconsole start"

@@ -248,15 +248,19 @@ class LlamarContactoView(RedirectView):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
         click2call_preview = request.POST.get('click2call_preview', "false")
-        calificacion_cliente = CalificacionCliente.objects.filter(
-            contacto=contacto, agente=agente).order_by('-fecha')
-        if calificacion_cliente.exists():
-            campana_id = calificacion_cliente[0].campana.pk
-            campana_nombre = calificacion_cliente[0].campana.nombre
-        else:
-            # caso campanas preview
+        if click2call_preview == "true":
+            # caso campañas preview
             campana_id = request.POST.get('pk_campana', 0)
             campana_nombre = request.POST.get('campana_nombre', "None")
+        else:
+            # otros tipos de campañas
+            campana_id = 0
+            campana_nombre = "None"
+            calificacion_cliente = CalificacionCliente.objects.filter(
+                contacto=contacto, agente=agente).order_by('-fecha')
+            if calificacion_cliente.exists():
+                campana_id = calificacion_cliente[0].campana.pk
+                campana_nombre = calificacion_cliente[0].campana.nombre
         self._call_originate(
             request, campana_id, campana_nombre, agente, contacto, click2call_preview)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)

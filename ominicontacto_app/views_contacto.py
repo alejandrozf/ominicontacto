@@ -48,6 +48,10 @@ class ContactoListView(ListView):
     model = Contacto
     template_name = 'agente/contacto_list.html'
 
+    def get_queryset(self, **kwargs):
+        agente = self.request.user.get_agente_profile()
+        return agente.get_contactos_de_campanas_miembro()
+
     def get_context_data(self, **kwargs):
         context = super(ContactoListView, self).get_context_data(
             **kwargs)

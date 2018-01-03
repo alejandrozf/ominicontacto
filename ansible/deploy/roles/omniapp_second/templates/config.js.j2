@@ -1,12 +1,12 @@
 {% if ansible_os_family == "Debian" %}
-var KamailioIp = "{{ omnivoip_fqdn }}";
-var socketIoIp = "";
+var KamailioIp = "{{ omnivoip_ip }}";
+var socketIoIp = "443";
 {% elif ansible_os_family == "RedHat" %}
 var KamailioIp = "{{ omnicentos_ip }}";
-var socketIoIp = "";
+var socketIoIp = "14443";
 {% elif ansible_os_family == "Sangoma" %}
 var KamailioIp = "{{ omnifreepbx_ip }}";
-var socketIoIp = "";
+var socketIoIp = "14443";
 {% endif %}
 
 

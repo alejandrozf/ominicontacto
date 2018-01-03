@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import subprocess
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ominicontacto_app',
     'crispy_forms',
+    'compressor',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -52,6 +54,17 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+# django-compressor settings
+COMPRESS_OFFLINE = True
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
 
 ROOT_URLCONF = 'ominicontacto.urls'
 
@@ -91,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 600
 SESSION_SAVE_EVERY_REQUEST = True
 # Internationalization
@@ -115,9 +128,9 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
-#STATICFILES_DIRS = [
- #   os.path.join(BASE_DIR, "static"),
-#]
+# STATICFILES_DIRS = [
+#   os.path.join(BASE_DIR, "static"),
+# ]
 
 AUTH_USER_MODEL = 'ominicontacto_app.User'
 
@@ -140,15 +153,15 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 OML_DUMP_HTTP_AMI_RESPONSES = False
 
-#==============================================================================
+# ==============================================================================
 # Settings de DEPLOY (para ser customizados en distintos deploys)
 #     Nota: Los settings que siguen, pueden (y algunos DEBEN) ser modificados
 #        en los distintos ambientes / deploys
-#==============================================================================
+# ==============================================================================
 
-#==============================================================================
+# ==============================================================================
 # DEPLOY -> IP OMNILEADS
-#==============================================================================
+# ==============================================================================
 
 OML_OMNILEADS_IP = None
 """IP donde se encuentra kamailio-debian
@@ -157,9 +170,9 @@ Ejemplo:
     OML_OMNILEADS_IP = "172.16.20.241"
 """
 
-#==============================================================================
+# ==============================================================================
 # DEPLOY -> Asterisk
-#==============================================================================
+# ==============================================================================
 
 # parametros de conexion con base de datos mysql de asterisk
 DATABASE_MYSQL_ASTERISK = {
@@ -174,8 +187,8 @@ OML_ASTERISK_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
-OML_BACKLIST_REMOTEPATH  = None
-OML_GLOBALS_VARIABLES_FILENAME  = None
+OML_BACKLIST_REMOTEPATH = None
+OML_GLOBALS_VARIABLES_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
@@ -207,14 +220,47 @@ ASTERISK = {
     'PASSWORD': None,  # Password para usuario para AMI
     'HTTP_AMI_URL': None,
     # URL usado por Daemon p/acceder a Asterisk AMI via HTTP
-        # Ej:
-        #    "http://1.2.3.4:7088"
+    # Ej:
+    #    "http://1.2.3.4:7088"
 }
 
+TMPL_OML_AUDIO_CONVERSOR = None
+"""Comando para convertir audios (wav a gsm)
 
-#==============================================================================
+Ejemplos:
+
+.. code-block:: python
+
+    TMPL_OML_AUDIO_CONVERSOR = ["sox", "<INPUT_FILE>", "<OUTPUT_FILE>"]
+
+Para transformar WAV (cualquier formato) -> WAV (compatible con Asterisk):
+
+.. code-block:: python
+
+    TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
+        "-r", "8k", "-c", "1", "-e", "signed-integer",
+        "-t", "wav", "<OUTPUT_FILE>"
+    ]
+
+"""
+
+TMPL_OML_AUDIO_CONVERSOR_EXTENSION = None
+"""Extension a usar para archivo generado por `TMPL_OML_AUDIO_CONVERSOR`
+
+Ejemplo: `.wav` (con el . incluido):  el archivo `<OUTPUT_FILE>`
+tendra la extension `.wav`
+"""
+
+OML_AUDIO_PATH_ASTERISK = None
+"""Directory donde se guardan los audios de asterisk en el server de asterisk
+
+Ejemplo:
+    OML_WOMBAT_FILENAME = "/var/lib/asterisk/sounds/oml/"
+"""
+
+# ==============================================================================
 # DEPLOY -> KAMAILIO
-#==============================================================================
+# ==============================================================================
 
 OML_KAMAILIO_IP = None
 """IP donde se encuentra kamailio-debian
@@ -223,9 +269,9 @@ Ejemplo:
     OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
 """
 
-#==============================================================================
+# ==============================================================================
 # URL DE GRABACIONES DE ELASTIX
-#==============================================================================
+# ==============================================================================
 
 OML_GRABACIONES_URL = None
 """Url de donde buscar las grabaciones de las llamadas
@@ -234,9 +280,9 @@ Ejemplo:
     OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
 """
 
-#==============================================================================
+# ==============================================================================
 # URL DE SUPERVISION
-#==============================================================================
+# ==============================================================================
 
 OML_SUPERVISION_URL = None
 """Url de donde se encuentra la supervision
@@ -245,9 +291,9 @@ Ejemplo:
     OML_SUPERVISION_URL = "http://172.16.20.222:8090/Omnisup/index.php"
 """
 
-#==============================================================================
+# ==============================================================================
 # WOMBAT Config
-#==============================================================================
+# ==============================================================================
 
 OML_WOMBAT_URL = None
 """Url de discador de Wombat
@@ -273,9 +319,9 @@ Ejemplo:
     OML_WOMBAT_PASSWORD = "user123"
 """
 
-#==============================================================================
+# ==============================================================================
 # Import de `oml_settings_local`
-#==============================================================================
+# ==============================================================================
 
 try:
     from oml_settings_local import *
@@ -327,18 +373,18 @@ assert OML_QUEUES_FILENAME is not None, \
 for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
     assert key in DATABASE_MYSQL_ASTERISK, \
         "Falta key '{0}' en configuracion de la base de datos de ASTERISK".\
-            format(key)
+        format(key)
     assert DATABASE_MYSQL_ASTERISK[key] is not None, \
         "Falta key '{0}' en configuracion de la base de datos ASTERISK".\
-            format(key)
+        format(key)
 
 for key in ('USERNAME', 'PASSWORD', 'HTTP_AMI_URL'):
     assert key in ASTERISK, \
         "Falta key '{0}' en configuracion de ASTERISK".\
-            format(key)
+        format(key)
     assert ASTERISK[key] is not None, \
         "Falta key '{0}' en configuracion de ASTERISK".\
-            format(key)
+        format(key)
 
 # ~~~~~ Check OML_RELOAD_CMD
 
@@ -399,3 +445,34 @@ assert OML_BACKLIST_REMOTEPATH is not None, \
 
 assert OML_GLOBALS_VARIABLES_FILENAME is not None, \
     "Falta definir setting para OML_GLOBALS_VARIABLES_FILENAME"
+
+# ~~~~~ Check TMPL_OML_AUDIO_CONVERSOR
+
+assert TMPL_OML_AUDIO_CONVERSOR is not None, \
+    "Falta definir setting para TMPL_OML_AUDIO_CONVERSOR"
+
+assert "<INPUT_FILE>" in TMPL_OML_AUDIO_CONVERSOR, \
+    "Falta definir <INPUT_FILE> en TMPL_OML_AUDIO_CONVERSOR"
+
+assert "<OUTPUT_FILE>" in TMPL_OML_AUDIO_CONVERSOR, \
+    "Falta definir <OUTPUT_FILE> en TMPL_OML_AUDIO_CONVERSOR"
+
+# 3 elementos como minimo: (1) comando (2/3) INPUT/OUTPUT
+assert len(TMPL_OML_AUDIO_CONVERSOR) >= 3, \
+    "TMPL_OML_AUDIO_CONVERSOR debe tener al menos 3 elementos"
+
+ret = subprocess.call('which {0} > /dev/null 2> /dev/null'.format(
+    TMPL_OML_AUDIO_CONVERSOR[0]), shell=True)
+
+assert ret == 0, "No se ha encontrado el ejecutable configurado " +\
+    "en TMPL_OML_AUDIO_CONVERSOR: '{0}'".format(TMPL_OML_AUDIO_CONVERSOR[0])
+
+# ~~~~~ Check TMPL_OML_AUDIO_CONVERSOR
+
+assert TMPL_OML_AUDIO_CONVERSOR_EXTENSION is not None, \
+    "Falta definir setting para TMPL_OML_AUDIO_CONVERSOR"
+
+# ~~~~~ Check OML_AUDIO_PATH_ASTERISK
+
+assert OML_AUDIO_PATH_ASTERISK is not None, \
+    "Falta definir setting para OML_AUDIO_PATH_ASTERISK"

@@ -1,0 +1,15 @@
+---
+
+- name: Instalacion de Omnileads en Centos
+  hosts: omni-centos
+  roles:
+          # Instalación de paquetes y dependencias de omnivoip y setup inicial del server
+          - {role: prerequisitos-sangoma, when: ansible_os_family == "RedHat" }
+          # Instalación de asterisk y freepbx
+          - {role: asterisk-freepbx, when: ansible_os_family == "RedHat" }
+          # Instalación y configuración de Kamailio
+          - {role: kamailio-sangoma, when: ansible_os_family == "RedHat" }
+          # Configuración de asterisk/freepbx para funcionar con Omnileads
+          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "RedHat" }
+          # Seteo de asternic
+          - {role: asternic, when: ansible_os_family == "RedHat" }

@@ -53,7 +53,7 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, "/home/freetech/static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "/home/freetech/static")
 MEDIA_ROOT = os.path.join(BASE_DIR, '/home/freetech/media_root')
 
 OML_OMNILEADS_IP = "{{ omnifreepbx_ip }}"
@@ -97,8 +97,7 @@ OML_GRABACIONES_URL = "http://{{ omnifreepbx_ip }}/grabaciones"
 # 'OML_SUPERVISION_URL': url donde se encuentra las grabaciones en elastix
 # ejemplo "http://172.16.20.222:8090/Omnisup/index.php"
 
-OML_SUPERVISION_URL = "http://{{ omnifreepbx_ip }}:8090/Omnisup/index.php?page=Lista_Campanas&supervId="
-
+OML_SUPERVISION_URL = "https://{{ omnifreepbx_ip }}:10443/Omnisup/index.php?page=Lista_Campanas&supervId="
 
 # 'OML_KAMAILIO_IP': ip donde se encuentra kamailio
 # ejemplo "172.16.20.219/255.255.255.255"
@@ -168,6 +167,17 @@ LOGGING = {
         'propagate': False,
     },
 }
+
+# Ubuntu (wav -> wav)
+TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
+    "-r", "8k", "-c", "1", "-e", "signed-integer",
+    "-t", "wav", "<OUTPUT_FILE>"]
+
+TMPL_OML_AUDIO_CONVERSOR_EXTENSION = ".wav"
+
+MONITORFORMAT = 'ogg'
+
+OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
 
 LOCAL_APPS = []
 

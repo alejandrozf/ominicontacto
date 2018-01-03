@@ -2,19 +2,26 @@
 
 from __future__ import unicode_literals
 
+import datetime
+import getpass
 import json
 import logging
-import uuid
+import os
 import re
-import datetime
+import sys
+import uuid
 
 from ast import literal_eval
+
+from crontab import CronTab
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
 from django.db import models, connection
 from django.db.models import Max, Q, Count
+from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
+
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 
 logger = logging.getLogger(__name__)
@@ -41,17 +48,35 @@ class User(AbstractUser):
         return supervisor_profile
 
     def get_is_administrador(self):
-        if self.get_supervisor_profile() and \
-                self.get_supervisor_profile().is_administrador:
+        supervisor = self.get_supervisor_profile()
+        if supervisor and supervisor.is_administrador:
             return True
         elif self.is_staff:
             return True
         return False
 
     def get_is_supervisor_customer(self):
-        if self.get_supervisor_profile() and \
-                self.get_supervisor_profile().is_customer:
+        supervisor = self.get_supervisor_profile()
+        if supervisor and supervisor.is_customer:
             return True
+        return False
+
+    def get_is_supervisor_normal(self):
+        supervisor = self.get_supervisor_profile()
+        if supervisor and not supervisor.is_customer and not supervisor.is_administrador:
+            return True
+        return False
+
+    def get_tiene_permiso_administracion(self):
+        """Funcion devuelve true si tiene permiso de acceso a la pagina
+        de adminstracion del sistema"""
+        if self.get_is_administrador():
+            return True
+        elif self.get_is_supervisor_normal():
+            return True
+        elif self.get_is_supervisor_customer():
+            return True
+        return False
 
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
@@ -174,6 +199,12 @@ class AgenteProfile(models.Model):
             queue_name__campana__type=Campana.TYPE_PREVIEW)
         return campanas_preview_activas.values_list(
             'queue_name__campana', 'queue_name__campana__nombre')
+
+    def get_contactos_de_campanas_miembro(self):
+        queues_con_contactos = self.queue_set.filter(campana__bd_contacto__isnull=False)
+        bds_contacto = queues_con_contactos.values_list('campana__bd_contacto', flat=True)
+        bds_contacto = bds_contacto.distinct()
+        return Contacto.objects.contactos_by_bds_contacto(bds_contacto)
 
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
@@ -312,6 +343,72 @@ class FieldFormulario(models.Model):
         """
         return FieldFormulario.objects.filter(formulario=self.formulario,
                                               orden__gt=self.orden).first()
+
+
+# aplica lo que está en la doc
+# https://docs.djangoproject.com/en/1.11/topics/migrations/#serializing-values
+def upload_to_audio_original(instance, filename):
+    filename = SUBSITUTE_REGEX.sub('', filename)
+    return "audios_reproduccion/%Y/%m/{0}-{1}".format(
+        str(uuid.uuid4()), filename)[:95]
+
+
+def upload_to_audio_asterisk(instance, filename):
+    filename = SUBSITUTE_REGEX.sub('', filename)
+    return "audios_asterisk/%Y/%m/{0}-{1}".format(
+        str(uuid.uuid4()), filename)[:95]
+
+
+class ArchivoDeAudioManager(models.Manager):
+    """Manager para ArchivoDeAudio"""
+
+    def get_queryset(self):
+        return super(ArchivoDeAudioManager, self).get_queryset().exclude(
+            borrado=True)
+
+
+class ArchivoDeAudio(models.Model):
+    """
+    Representa una ArchivoDeAudio
+    """
+    objects_default = models.Manager()
+    # Por defecto django utiliza el primer manager instanciado. Se aplica al
+    # admin de django, y no aplica las customizaciones del resto de los
+    # managers que se creen.
+
+    objects = ArchivoDeAudioManager()
+
+    descripcion = models.CharField(
+        max_length=100,
+    )
+    audio_original = models.FileField(
+        upload_to=upload_to_audio_original,
+        max_length=100,
+        null=True, blank=True,
+    )
+    audio_asterisk = models.FileField(
+        upload_to=upload_to_audio_asterisk,
+        max_length=100,
+        null=True, blank=True,
+    )
+    borrado = models.BooleanField(
+        default=False,
+        editable=False,
+    )
+
+    def __unicode__(self):
+        if self.borrado:
+            return '(ELiminado) {0}'.format(self.descripcion)
+        return self.descripcion
+
+    def borrar(self):
+        """
+        Setea la ArchivoDeAudio como BORRADO.
+        """
+        logger.info("Seteando ArchivoDeAudio %s como BORRADO", self.id)
+
+        self.borrado = True
+        self.save()
 
 
 class CampanaManager(models.Manager):
@@ -666,6 +763,8 @@ class Campana(models.Model):
         (SITIO_EXTERNO, "Url externa")
     )
 
+    TIEMPO_ACTUALIZACION_CONTACTOS = 1
+
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_EN_DEFINICION,
@@ -702,6 +801,33 @@ class Campana(models.Model):
     def __unicode__(self):
         return self.nombre
 
+    def crear_tarea_actualizacion(self):
+        """
+        Adiciona una tarea que llama al procedimiento de actualización de cada
+        asignación de agente a contacto para la campaña preview actual
+        """
+        # conectar con cron
+        crontab = CronTab(user=getpass.getuser())
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
+        ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
+        # adicionar nuevo cron job
+        job = crontab.new(
+            command='{0} {1} actualizar_campanas_preview {2} {3}'.format(
+                ruta_python_virtualenv, ruta_manage_py, self.pk, self.tiempo_desconexion),
+            comment=str(self.pk))
+        # adicionar tiempo de periodicidad al cron job
+        job.minute.every(self.TIEMPO_ACTUALIZACION_CONTACTOS)
+        crontab.write_to_user(user=getpass.getuser())
+
+    def eliminar_tarea_actualizacion(self):
+        """
+        Elimina la tarea que llama al procedimiento de actualización de cada
+        asignación de agente a contacto para la campaña preview actual
+        """
+        crontab = CronTab(user=getpass.getuser())
+        crontab.remove_all(comment=str(self.pk))
+        crontab.write_to_user(user=getpass.getuser())
+
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
         self.save()
@@ -730,6 +856,12 @@ class Campana(models.Model):
     def remover(self):
         """Setea la campaña como ESTADO_BORRADA"""
         logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
+        if self.type == Campana.TYPE_PREVIEW:
+            # eliminamos el proceso que actualiza las conexiones de agentes a contactos
+            # en la campaña
+            self.eliminar_tarea_actualizacion()
+            # eliminamos todos las entradas de AgenteEnContacto relativas a la campaña
+            AgenteEnContacto.objects.filter(campana_id=self.pk).delete()
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_BORRADA
         self.save()
@@ -739,6 +871,10 @@ class Campana(models.Model):
         logger.info("Seteando campana %s como ESTADO_FINALIZADA", self.id)
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_FINALIZADA
+        if self.type == Campana.TYPE_PREVIEW:
+            # eliminamos la planificación de actualización de relaciones de agentes con contactos
+            # de la campaña
+            self.eliminar_tarea_actualizacion()
         self.save()
 
     def ocultar(self):
@@ -786,19 +922,6 @@ class Campana(models.Model):
             logger.warning("La BD no tiene campo 'telefono'")
         return campos_contacto
 
-    def agregar_agente_contacto(self, contacto):
-        """
-        Inicializa una entrada en la tabla que relaciona agentes con contactos
-        en campañas preview
-        """
-        campos_contacto = self._obtener_campos_bd_contacto(contacto.bd_contacto)
-        datos_contacto = literal_eval(contacto.datos)
-        datos_contacto = dict(zip(campos_contacto, datos_contacto))
-        datos_contacto_json = json.dumps(datos_contacto)
-        AgenteEnContacto(agente_id=-1, contacto_id=contacto.pk, campana_id=self.pk,
-                         estado=AgenteEnContacto.ESTADO_INICIAL, datos_contacto=datos_contacto_json,
-                         telefono_contacto=contacto.telefono).save()
-
     def establecer_valores_iniciales_agente_contacto(self):
         """
         Rellena con valores iniciales la tabla que informa el estado de los contactos
@@ -824,6 +947,34 @@ class Campana(models.Model):
 
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
+
+    def finalizar_relacion_agente_contacto(self, contacto_pk):
+        """
+        Marca como finalizada la relación entre un agente y un contacto de una campaña
+        preview
+        """
+        try:
+            agente_en_contacto = AgenteEnContacto.objects.get(
+                contacto_id=contacto_pk, campana_id=self.pk)
+        except AgenteEnContacto.DoesNotExist:
+            # para el caso cuando se llama al procedimiento luego de añadir un
+            # nuevo contacto desde la consola de agentes
+            pass
+        else:
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
+            agente_en_contacto.save()
+
+            # si todos los contactos de la campaña han sido calificados
+            # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
+            # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
+            # y se marca la campaña como finalizada
+            contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
+            n_contactos_campana = contactos_campana.count()
+            n_contactos_atendidos = contactos_campana.filter(
+                estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
+            if n_contactos_campana == n_contactos_atendidos:
+                contactos_campana.delete()
+                self.finalizar()
 
 
 class QueueManager(models.Manager):
@@ -911,9 +1062,19 @@ class Queue(models.Model):
     detectar_contestadores = models.BooleanField(default=False)
     ep_id_wombat = models.IntegerField(null=True, blank=True)
 
+    # announcements
+    announce = models.CharField(max_length=128, blank=True, null=True)
+    announce_frequency = models.BigIntegerField(blank=True, null=True)
+
+    audio_para_contestadores = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
+                                                 on_delete=models.SET_NULL,
+                                                 related_name='queues_contestadores')
+    audio_de_ingreso = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
+                                         on_delete=models.SET_NULL,
+                                         related_name='queues_ingreso')
+
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
-    announce = models.CharField(max_length=128, blank=True, null=True)
     context = models.CharField(max_length=128, blank=True, null=True)
     monitor_join = models.NullBooleanField(blank=True, null=True)
     monitor_format = models.CharField(max_length=128, blank=True, null=True)
@@ -926,7 +1087,6 @@ class Queue(models.Model):
     queue_lessthan = models.CharField(max_length=128, blank=True, null=True)
     queue_thankyou = models.CharField(max_length=128, blank=True, null=True)
     queue_reporthold = models.CharField(max_length=128, blank=True, null=True)
-    announce_frequency = models.BigIntegerField(blank=True, null=True)
     announce_round_seconds = models.BigIntegerField(blank=True, null=True)
     announce_holdtime = models.CharField(max_length=128, blank=True, null=True)
     joinempty = models.CharField(max_length=128, blank=True, null=True)
@@ -1654,6 +1814,13 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "base de datos de contactos"))
 
+    def contactos_by_bds_contacto(self, bds_contacto):
+        try:
+            return self.filter(bd_contacto__in=bds_contacto)
+        except Contacto.DoesNotExist:
+            raise (SuspiciousOperation("No se encontraron contactos con esas "
+                                       "bases de datos de contactos"))
+
     # def contactos_by_bd_contacto_sin_duplicar(self, bd_contacto):
     #     try:
     #         return self.values('telefono', 'id_cliente', 'datos').\
@@ -1864,11 +2031,15 @@ class Grabacion(models.Model):
     TYPE_MANUAL = 4
     """Tipo de llamada manual"""
 
+    TYPE_PREVIEW = 5
+    # tipo de llamada preview
+
     TYPE_LLAMADA_CHOICES = (
         (TYPE_ICS, 'ICS'),
         (TYPE_DIALER, 'DIALER'),
         (TYPE_INBOUND, 'INBOUND'),
         (TYPE_MANUAL, 'MANUAL'),
+        (TYPE_PREVIEW, 'PREVIEW'),
     )
     fecha = models.DateTimeField()
     tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
@@ -2084,6 +2255,9 @@ class WombatLog(models.Model):
 
 
 class QueuelogManager(models.Manager):
+
+    def llamadas_iniciadas(self):
+        return Queuelog.objects.filter(event='ENTERQUEUE')
 
     def obtener_log_agente_event_periodo_all(
             self, eventos, fecha_desde, fecha_hasta, agente):
@@ -2847,14 +3021,11 @@ class AgenteEnContacto(models.Model):
 
     ESTADO_ENTREGADO = 1  # significa que un agente solicitó este contacto y le fue entregado
 
-    ESTADO_ATENDIENDO = 2  # significa que el agente está hablando con el contacto
-
-    ESTADO_FINALIZADO = 3  # significa que el agente culminó de forma satisfactoria la llamada
+    ESTADO_FINALIZADO = 2  # significa que el agente culminó de forma satisfactoria la llamada
 
     ESTADO_CHOICES = (
         (ESTADO_INICIAL, 'INICIAL'),
         (ESTADO_ENTREGADO, 'ENTREGADO'),
-        (ESTADO_ATENDIENDO, 'ATENDIENDO'),
         (ESTADO_FINALIZADO, 'FINALIZADO'),
     )
     agente_id = models.IntegerField()
@@ -2863,6 +3034,7 @@ class AgenteEnContacto(models.Model):
     telefono_contacto = models.CharField(max_length=128)
     campana_id = models.IntegerField()
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
+    modificado = models.DateTimeField(auto_now=True, null=True)
 
     def __unicode__(self):
         return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(

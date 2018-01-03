@@ -49,15 +49,29 @@
                }
              });
      };
+
+     function mostrar_detalle_campana(pk_campana) {
+       var $reporteModal = $('#reporteModal');
+       var $modalContent = $reporteModal.find(".modal-body");
+       $.get('/campana_preview/' + pk_campana + '/detalle_express/',
+             function (data) {
+               $modalContent.html(data);
+               $reporteModal.modal('show');
+             });
+     };
     </script>
 {% endblock %}
 
 {% block campanas_activas %}
     {% for campana in activas %}
         <tr>
-            <td width="25%">
-                <a href="">{{ campana.nombre }}</a>
-            </td>
+            <tr>
+                <td width="25%">
+                    <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                    <a href="{% url 'campana_preview_detalle' campana.pk %}">
+                        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                    </a>
+                </td>
             <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
 
             <td> {{campana.get_estado_display}}  </td>
@@ -77,7 +91,7 @@
                 <a href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
                     <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
                 </a>
-                <a href="{#% url 'campana_preview_reporte_grafico' campana.pk %#}">
+                <a href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
                     <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                 </a>
             </td>
@@ -104,18 +118,15 @@
             {% for campana in finalizadas %}
                 <tr>
                     <td width="25%">
-                        <a href="">{{ campana.nombre }}</a>
+                        <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
+                        <a href="{% url 'campana_preview_detalle' campana.pk %}">
+                            <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                        </a>
                     </td>
                     <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
 
                     <td> {{campana.get_estado_display}}  </td>
                     <td width="14%">
-                        <a href="{#% url 'campana_preview_detalle' campana.pk %#}">
-                            <span class="glyphicon  glyphicon-zoom-in" aria-hidden="true" title="ver detalle"></span>
-                        </a>
-                        <a href="{% url 'queue_member_campana' campana.pk %}">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
-                        </a>
                         <a href="{% url 'campana_preview_supervisors' campana.pk %}">
                             <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
                         </a>
@@ -125,7 +136,7 @@
                         <a href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
                             <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
                         </a>
-                        <a href="{#% url 'campana_preview_reporte_grafico' campana.pk %#}">
+                        <a href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
                             <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                         </a>
                     </td>
@@ -145,25 +156,21 @@
     {% for campana in borradas %}
         <tr>
             <td width="25%">
-                <a href="">{{ campana.nombre }}</a>
+                {{ campana.nombre }}<a href="{% url 'campana_preview_detalle' campana.pk %}">
+                <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                </a>
             </td>
             <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
 
             <td> {{campana.get_estado_display}} </td>
             <td width="14%">
-                <a href="{% url 'campana_preview_update' campana.pk %}">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar campana"></span>
-                </a>
-                <a href="{% url 'queue_member_campana' campana.pk %}">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
-                </a>
                 <a href="{% url 'campana_preview_supervisors' campana.pk %}">
                     <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
                 </a>
                 <a href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
                     <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
                 </a>
-                <a href="{#% url 'campana_preview_reporte_grafico' campana.pk %#}">
+                <a href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
                     <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
                 </a>
                 {% if campana.oculto %}
@@ -184,6 +191,7 @@
             <td colspan="4">No existen campañas</td>
         </tr>
     {% endfor %}
+
     <div class="modal fade" id="modal_desconectado" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -195,9 +203,26 @@
                     <p>Refresque la página y vuelva a ingresar para poder acceder a la funcionalidad deseada</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
+
+    <div class="modal" id="reporteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Estadísticas campaña</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
 {% endblock %}

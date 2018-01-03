@@ -8,19 +8,18 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
+from django.views.generic import CreateView, UpdateView
 from ominicontacto_app.forms import (
-    CampanaForm, QueueForm, QueueUpdateForm, CampanaUpdateForm, SincronizaDialerForm
+    CampanaForm, QueueEntranteForm, QueueEntranteUpdateForm, CampanaUpdateForm
 )
-from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
+from ominicontacto_app.models import (
+    Campana, Queue, BaseDatosContacto, ArchivoDeAudio
+)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.services.exportar_base_datos import\
-    SincronizarBaseDatosContactosService
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
 
 import logging as logging_
@@ -56,7 +55,7 @@ class CampanaEnDefinicionMixin(object):
             self.kwargs['pk_campana'])
 
 
-class CampanaCreateView(CreateView):
+class CampanaEntranteCreateView(CreateView):
     """
     Esta vista crea un objeto Campana.
     Por defecto su estado es EN_DEFICNICION,
@@ -75,7 +74,7 @@ class CampanaCreateView(CreateView):
             message = ("Debe cargar una base de datos antes de comenzar a "
                        "configurar una campana")
             messages.warning(self.request, message)
-        return super(CampanaCreateView, self).dispatch(request, *args, **kwargs)
+        return super(CampanaEntranteCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form, error=None):
 
@@ -92,17 +91,17 @@ class CampanaCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if self.object.tipo_interaccion is Campana.FORMULARIO and \
-            not self.object.formulario:
+                not self.object.formulario:
             error = "Debe seleccionar un formulario"
             return self.form_invalid(form, error=error)
         elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-            not self.object.sitio_externo:
+                not self.object.sitio_externo:
             error = "Debe seleccionar un sitio externo"
             return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_ENTRANTE
         self.object.reported_by = self.request.user
         self.object.save()
-        return super(CampanaCreateView, self).form_valid(form)
+        return super(CampanaEntranteCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(
@@ -110,7 +109,7 @@ class CampanaCreateView(CreateView):
             kwargs={"pk_campana": self.object.pk})
 
 
-class CampanaUpdateView(UpdateView):
+class CampanaEntranteUpdateView(UpdateView):
     """
     Esta vista actualiza un objeto Campana.
     """
@@ -132,7 +131,7 @@ class CampanaUpdateView(UpdateView):
                 self.get_object(), self.object.bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
-        return super(CampanaUpdateView, self).form_valid(form)
+        return super(CampanaEntranteUpdateView, self).form_valid(form)
 
     def form_invalid(self, form, error=None):
 
@@ -153,26 +152,35 @@ class CampanaUpdateView(UpdateView):
             kwargs={"pk_campana": self.object.pk})
 
 
-class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
-                      CreateView):
+class QueueEntranteCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
+                              CreateView):
     """Vista para la creacion de una Cola"""
     model = Queue
-    form_class = QueueForm
-    template_name = 'queue/create_update_queue.html'
+    form_class = QueueEntranteForm
+    template_name = 'campana/create_update_queue.html'
 
     def get_initial(self):
-        initial = super(QueueCreateView, self).get_initial()
+        initial = super(QueueEntranteCreateView, self).get_initial()
         initial.update({'campana': self.campana.id,
                         'name': self.campana.nombre})
         return initial
 
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        audios = ArchivoDeAudio.objects.all()
+        return self.form_class(audios_choices=audios, **self.get_form_kwargs())
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        audio_pk = form.cleaned_data['audios']
+        audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
         self.object.eventmemberstatus = True
         self.object.eventwhencalled = True
         self.object.ringinuse = True
         self.object.setinterfacevar = True
+        self.object.wrapuptime = 0
         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
+        self.object.announce = audio.audio_asterisk
         self.object.save()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(self.object)
@@ -190,10 +198,10 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
                 messages.ERROR,
                 message,
             )
-        return super(QueueCreateView, self).form_valid(form)
+        return super(QueueEntranteCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
-        context = super(QueueCreateView, self).get_context_data(**kwargs)
+        context = super(QueueEntranteCreateView, self).get_context_data(**kwargs)
         context['campana'] = self.campana
         return context
 
@@ -201,15 +209,27 @@ class QueueCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
         return reverse('campana_list')
 
 
-class QueueUpdateView(UpdateView):
+class QueueEntranteUpdateView(UpdateView):
     """Vista actualiza una Queue(Cola)"""
     model = Queue
-    form_class = QueueUpdateForm
-    template_name = 'queue/create_update_queue.html'
+    form_class = QueueEntranteUpdateForm
+    template_name = 'campana/create_update_queue.html'
+
+    def get_form(self):
+        self.form_class = self.get_form_class()
+        audios = ArchivoDeAudio.objects.all()
+        conversor_audio = ConversorDeAudioService()
+        if self.get_object().announce:
+            id_audio = conversor_audio.obtener_id_archivo_de_audio_desde_path(
+                self.get_object().announce)
+        else:
+            id_audio = 0
+        return self.form_class(
+            audios_choices=audios, id_audio=id_audio, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
-         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-         return campana.queue_campana
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return campana.queue_campana
 
     def dispatch(self, *args, **kwargs):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -219,9 +239,15 @@ class QueueUpdateView(UpdateView):
             return HttpResponseRedirect("/campana/" + self.kwargs['pk_campana']
                                         + "/cola/")
         else:
-            return super(QueueUpdateView, self).dispatch(*args, **kwargs)
+            return super(QueueEntranteUpdateView, self).dispatch(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        audio_pk = form.cleaned_data['audios']
+        audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
+        self.object.announce = audio.audio_asterisk
+        self.object.save()
+
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
@@ -234,10 +260,10 @@ class QueueUpdateView(UpdateView):
                 messages.ERROR,
                 message,
             )
-        return super(QueueUpdateView, self).post(request, *args, **kwargs)
+        return super(QueueEntranteUpdateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
-        context = super(QueueUpdateView, self).get_context_data(**kwargs)
+        context = super(QueueEntranteUpdateView, self).get_context_data(**kwargs)
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         context['campana'] = campana
         return context

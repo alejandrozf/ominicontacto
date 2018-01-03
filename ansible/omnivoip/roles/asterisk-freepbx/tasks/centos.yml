@@ -61,11 +61,20 @@
           - "make"
           - "make install"
 
+- name: Creacion de carpeta /tmp/downloads
+  file: path=/tmp/downloads state=directory mode=755
+
+- name: Descarga de pjsip-project
+  shell: "{{ item }} chdir=/tmp/downloads"
+  with_items:
+          - "wget -O /tmp/downloads/pjproject-2.6.tar.bz2 http://www.pjsip.org/release/2.6/pjproject-2.6.tar.bz2"
+          - "wget -O /tmp/downloads/pjproject-2.6.md5 http://www.pjsip.org/release/2.6/MD5SUM.txt"
+
 - name: Instalacion de asterisk
   shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
   with_items:
           - contrib/scripts/install_prereq install
-          - ./configure --libdir=/usr/lib64 --with-pjproject-bundled
+          - ./configure --libdir=/usr/lib64 --with-externals-cache=/tmp/downloads
           - contrib/scripts/get_mp3_source.sh
           - make menuselect.makeopts
           - menuselect/menuselect --enable format_mp3

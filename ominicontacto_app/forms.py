@@ -15,9 +15,11 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual
+    AgendaManual, ArchivoDeAudio
 )
 from ominicontacto_app.utiles import convertir_ascii_string, validar_nombres_campanas
+
+TIEMPO_MINIMO_DESCONEXION = 2
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -109,21 +111,31 @@ class AgenteProfileForm(forms.ModelForm):
         fields = ('modulos', 'grupo')
 
 
-class QueueForm(forms.ModelForm):
+class QueueEntranteForm(forms.ModelForm):
     """
-    El form de cola para las llamadas
+    El form de cola para las colas
     """
 
-    def __init__(self, *args, **kwargs):
-        super(QueueForm, self).__init__(*args, **kwargs)
+    def __init__(self, audios_choices,  *args, **kwargs):
+        super(QueueEntranteForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
+        self.fields['announce_frequency'].required = True
+        audios_choices = [(audio.id, audio.descripcion)
+                          for audio in audios_choices]
+        audios_choices.insert(0, ('', '---------'))
+        self.fields['audios'] = forms.ChoiceField(
+            choices=audios_choices,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+            required=True
+        )
+        self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
-        fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'campana')
+        fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
+                  'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
+                  'announce_frequency', 'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -131,6 +143,16 @@ class QueueForm(forms.ModelForm):
         widgets = {
             'campana': forms.HiddenInput(),
             'name': forms.HiddenInput(),
+            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
+            "retry": forms.TextInput(attrs={'class': 'form-control'}),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(
+                attrs={'class': 'form-control'}),
+            'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -149,24 +171,48 @@ class QueueMemberForm(forms.ModelForm):
         fields = ('member', 'penalty')
 
 
-class QueueUpdateForm(forms.ModelForm):
+class QueueEntranteUpdateForm(forms.ModelForm):
     """
     El form para actualizar la cola para las llamadas
     """
 
-    def __init__(self, *args, **kwargs):
-        super(QueueUpdateForm, self).__init__(*args, **kwargs)
+    def __init__(self, audios_choices, id_audio,  *args, **kwargs):
+        super(QueueEntranteUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
+        self.fields['announce_frequency'].required = True
+        audios_choices = [(audio.id, audio.descripcion)
+                          for audio in audios_choices]
+        audios_choices.insert(0, ('', '---------'))
+        self.fields['audios'] = forms.ChoiceField(
+            choices=audios_choices,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+            initial=id_audio,
+            required=True
+        )
+        self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
-        fields = ('timeout', 'retry', 'maxlen', 'wrapuptime',
-                  'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion')
+        fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
+                  'weight', 'wait', 'auto_grabacion', 'announce_frequency', 'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
+        }
+        widgets = {
+            'campana': forms.HiddenInput(),
+            'name': forms.HiddenInput(),
+            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
+            "retry": forms.TextInput(attrs={'class': 'form-control'}),
+            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
+            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'strategy': forms.Select(attrs={'class': 'form-control'}),
+            "weight": forms.TextInput(attrs={'class': 'form-control'}),
+            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(
+                attrs={'class': 'form-control'}),
+            'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):
@@ -802,7 +848,8 @@ class QueueDialerForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
-                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores')
+                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
+                  'audio_para_contestadores')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -813,7 +860,12 @@ class QueueDialerForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(QueueDialerForm, self).__init__(*args, **kwargs)
+        self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
 
 
 class QueueDialerUpdateForm(forms.ModelForm):
@@ -824,7 +876,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'detectar_contestadores')
+                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores')
         widgets = {
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
@@ -832,7 +884,12 @@ class QueueDialerUpdateForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(QueueDialerUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
 
     def clean(self):
         maxlen = self.cleaned_data.get('maxlen')
@@ -976,6 +1033,13 @@ class CampanaPreviewForm(CampanaManualForm):
             'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
+    def clean_tiempo_desconexion(self):
+        tiempo_desconexion = self.cleaned_data['tiempo_desconexion']
+        if tiempo_desconexion < TIEMPO_MINIMO_DESCONEXION:
+            msg = 'Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION)
+            raise forms.ValidationError(msg)
+        return tiempo_desconexion
+
 
 class CampanaPreviewUpdateForm(CampanaPreviewForm):
     def __init__(self, *args, **kwargs):
@@ -983,6 +1047,7 @@ class CampanaPreviewUpdateForm(CampanaPreviewForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['bd_contacto'].disabled = True
+            self.fields['tiempo_desconexion'].disabled = True
 
 
 class CalificacionManualForm(forms.ModelForm):
@@ -1058,4 +1123,20 @@ class AgendaManualForm(forms.ModelForm):
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
             "hora": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ArchivoDeAudioForm(forms.ModelForm):
+
+    class Meta:
+        model = ArchivoDeAudio
+        fields = ('descripcion', 'audio_original')
+        widgets = {
+            "descripcion": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_original": forms.FileInput(attrs={'class': 'form-control'}),
+        }
+        help_texts = {
+            'audio_original': """Seleccione el archivo de audio que desea para
+            la Campaña. Si ya existe uno y guarda otro, el audio será
+            reemplazado.""",
         }

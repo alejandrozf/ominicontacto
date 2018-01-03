@@ -1,4 +1,4 @@
-//***************************************************
+1//***************************************************
 var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
 var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
 
@@ -82,7 +82,7 @@ $(function() {
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
-      ws_servers : "wss://"+KamailioIp+":443",
+      ws_servers : "wss://"+KamailioIp+":"+ socketIoIp,
       password : $("#sipSec").val(),
       hack_ip_in_contact: true,
       session_timers: false,

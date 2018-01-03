@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.conf.urls import url, patterns, include
+from django.views.static import serve
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
@@ -10,7 +11,7 @@ from ominicontacto_app import (
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_calificacion_manual, views_campana_preview
+    views_calificacion_manual, views_campana_preview, views_archivo_de_audio
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -237,22 +238,22 @@ urlpatterns = [
                        mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
     # ==========================================================================
-    # Campana
+    # Campana Entrante
     # ==========================================================================
     url(r'^campana/nuevo/$',
-        login_required(views_campana_creacion.CampanaCreateView.as_view()),
+        login_required(views_campana_creacion.CampanaEntranteCreateView.as_view()),
         name='campana_nuevo',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/update/$',
-        login_required(views_campana_creacion.CampanaUpdateView.as_view()),
+        login_required(views_campana_creacion.CampanaEntranteUpdateView.as_view()),
         name='campana_update',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/cola/$',
-        login_required(views_campana_creacion.QueueCreateView.as_view()),
+        login_required(views_campana_creacion.QueueEntranteCreateView.as_view()),
         name='queue_nuevo',
         ),
     url(r'^campana/update/(?P<pk_campana>\d+)/cola/$',
-        login_required(views_campana_creacion.QueueUpdateView.as_view()),
+        login_required(views_campana_creacion.QueueEntranteUpdateView.as_view()),
         name='queue_update',
         ),
     url(r'campana/list/$',
@@ -897,8 +898,12 @@ urlpatterns = [
         name="campana_preview_supervisors"),
     url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_calificacion/$',
         login_required(
-            views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
+            views_campana_dialer_reportes.CampanaDialerReporteCalificacionListView.as_view()),
         name="campana_preview_calificacion_reporte_calificacion"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_grafico/$',
+        login_required(
+            views_campana_preview.CampanaPreviewReporteGrafico.as_view()),
+        name="campana_preview_reporte_grafico"),
     url(r'^campana_preview/mostrar_ocultas/$',
         views_campana_preview.CampanaPreviewBorradasListView.as_view(),
         name="campana_preview_mostrar_ocultas"),
@@ -910,6 +915,18 @@ urlpatterns = [
         login_required(
             views_campana_preview.ObtenerContactoView.as_view()),
         name="campana_preview_dispatcher"),
+    url(r'^campana_preview/validar_contacto_asignado/$',
+        login_required(
+            views_campana_preview.campana_validar_contacto_asignado_view),
+        name="validar_contacto_asignado"),
+    url(r'^campana_preview/(?P<pk>\d+)/detalle/$',
+        login_required(
+            views_campana_preview.CampanaPreviewDetailView.as_view()),
+        name="campana_preview_detalle"),
+    url(r'^campana_preview/(?P<pk>\d+)/detalle_express/$',
+        login_required(
+            views_campana_preview.CampanaPreviewExpressView.as_view()),
+        name="campana_preview_detalle_express"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos
@@ -917,13 +934,30 @@ urlpatterns = [
     url(r'^base_de_datos/cargar_nueva/$',
         views_base_de_datos_contacto.cargar_base_datos_view,
         name="cargar_base_datos_api"),
+    # ==========================================================================
+    # Archivo de Audio
+    # ==========================================================================
+    url(r'^audios/$',
+        login_required(views_archivo_de_audio.ArchivoAudioListView.as_view()),
+        name='lista_archivo_audio',
+        ),
+    url(r'^audios/create/$',
+        login_required(views_archivo_de_audio.ArchivoAudioCreateView.as_view()),
+        name='create_archivo_audio',
+        ),
+    url(r'^audios/(?P<pk>\d+)/update/$',
+        login_required(
+            views_archivo_de_audio.ArchivoAudioUpdateView.as_view()),
+        name='edita_archivo_audio',
+        ),
+    url(r'^audios/(?P<pk>\d+)/eliminar/$',
+        login_required(
+            views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
+        name='eliminar_archivo_audio',
+        ),
 ]
 
-urlpatterns += patterns('',
-                        (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-                         {'document_root': settings.MEDIA_ROOT}
-                         )
-                        )
+urlpatterns += [url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}), ]
 
 if settings.DJANGO_DEBUG_TOOLBAR:
     #     # static files (images, css, javascript, etc.)

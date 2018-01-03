@@ -5,11 +5,12 @@ Tests del los reportes que realiza el sistema
 """
 
 from django.core.urlresolvers import reverse
+from django.db import connection
 from django.utils import timezone
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import CampanaFactory, QueuelogFactory, UserFactory
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import Campana, Queuelog
 from ominicontacto_app.services.reporte_grafico import GraficoService
 
 
@@ -175,3 +176,35 @@ class ReportesTests(OMLBaseTest):
             self.NRO_QUEUES_MANUALES_ABANDONADAS
         self.assertEqual(llamadas_list_counts[8], total_llamadas_campanas_manuales)
         self.assertEqual(llamadas_list_counts[8], self.NRO_QUEUES_MANUALES_INGRESADAS)
+
+    def _aplicar_sql_query(self, tipo_campana, queuename):
+        fields = "(time, callid, queuename, agent, event, data1, data2, data3, data4, data5)"
+        values = ('2017-12-22 03:45:00.0000', '2312312.233', queuename, 'agente_test', 'CONNECT',
+                  'data1', 'data2', 'data3', tipo_campana, '')
+        sql_query = "insert into queue_log {0} values {1};".format(fields, str(values))
+        with connection.cursor() as c:
+            c.execute(sql_query)
+
+    def test_adicion_info_tipo_campana_entrantes(self):
+        queuename = "1_cp1"
+        self._aplicar_sql_query('IN', queuename)
+        queuelog = Queuelog.objects.get(queuename=queuename)
+        self.assertEqual(queuelog.data5, str(Campana.TYPE_ENTRANTE))
+
+    def test_adicion_info_tipo_campana_dialer(self):
+        queuename = "1_cp1"
+        self._aplicar_sql_query('DIALER', queuename)
+        queuelog = Queuelog.objects.get(queuename=queuename)
+        self.assertEqual(queuelog.data5, str(Campana.TYPE_DIALER))
+
+    def test_adicion_info_tipo_campana_manual(self):
+        queuename = "1_cp1"
+        self._aplicar_sql_query('saliente', queuename)
+        queuelog = Queuelog.objects.get(queuename=queuename)
+        self.assertEqual(queuelog.data5, str(Campana.TYPE_MANUAL))
+
+    def test_adicion_info_tipo_campana_pre(self):
+        queuename = "1_cp1"
+        self._aplicar_sql_query('preview', queuename)
+        queuelog = Queuelog.objects.get(queuename=queuename)
+        self.assertEqual(queuelog.data5, str(Campana.TYPE_PREVIEW))
