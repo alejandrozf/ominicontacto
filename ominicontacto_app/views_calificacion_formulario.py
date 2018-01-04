@@ -144,13 +144,14 @@ class CalificacionClienteCreateView(CreateView):
         self.object.datos = json.dumps(datos)
         self.object.save()
         self.object_calificacion = calificacion_form.save(commit=False)
+        campana = self.object_calificacion[0].campana
         cleaned_data_calificacion = calificacion_form.cleaned_data
         calificacion = cleaned_data_calificacion[0]['calificacion']
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
 
-        if calificacion is None:
+        if calificacion.nombre == campana.gestion:
             self.object_calificacion[0].es_venta = True
             self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
             self.object_calificacion[0].save()
@@ -331,6 +332,7 @@ class CalificacionClienteUpdateView(UpdateView):
         self.object.save()
         self.object_calificacion = calificacion_form.save(commit=False)
 
+        campana = self.object_calificacion[0].campana
         if not self.object_calificacion:
             self.object_calificacion = calificacion_form.cleaned_data[0]['id']
         else:
@@ -341,7 +343,7 @@ class CalificacionClienteUpdateView(UpdateView):
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
 
-        if calificacion is None:
+        if calificacion.nombre == campana.gestion:
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
             # actualiza la calificacion en wombat
@@ -379,17 +381,16 @@ class CalificacionClienteUpdateView(UpdateView):
             messages.success(self.request, message)
             if self.object_calificacion.agendado:
                 return redirect(self.get_success_url_agenda())
-            return HttpResponseRedirect(
-                reverse('calificacion_formulario_update',
-                        kwargs={
-                            "pk_campana": self.kwargs[
-                                'pk_campana'],
-                            "pk_contacto": self.kwargs[
-                                'pk_contacto'],
-                            "wombat_id": self.kwargs[
-                                'wombat_id'],
-                            "id_agente": self.kwargs[
-                                'id_agente']}))
+            return HttpResponseRedirect(reverse('calificacion_formulario_update',
+                                                kwargs={
+                                                    "pk_campana": self.kwargs[
+                                                        'pk_campana'],
+                                                    "pk_contacto": self.kwargs[
+                                                        'pk_contacto'],
+                                                    "wombat_id": self.kwargs[
+                                                        'wombat_id'],
+                                                    "id_agente": self.kwargs[
+                                                        'id_agente']}))
 
     def form_invalid(self, form, calificacion_form):
         """
@@ -809,12 +810,13 @@ class CalificacionUpdateView(UpdateView):
             self.object_calificacion = calificacion_form.cleaned_data[0]['id']
         else:
             self.object_calificacion = self.object_calificacion[0]
+        campana = self.object_calificacion.campana
         calificacion = calificacion_form.cleaned_data[0]['calificacion']
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
 
-        if calificacion is None:
+        if calificacion.nombre == campana.gestion:
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
             # actualiza la calficacion de wombat
