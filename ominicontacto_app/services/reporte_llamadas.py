@@ -4,14 +4,11 @@
 
 import pygal
 import datetime
-import os
 
-from pygal.style import Style, RedBlueStyle
+from pygal.style import Style
 
-from django.conf import settings
-from django.db.models import Count
 from ominicontacto_app.models import (
-    AgenteProfile, Queuelog, Campana, Grabacion
+    AgenteProfile, Queuelog, Campana, Grabacion, Pausa
 )
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
@@ -46,6 +43,24 @@ class EstadisticasService():
                 resultado.append(item)
         return resultado
 
+    def _obtener_datos_de_pausa(self, id_pausa):
+        datos = {'nombre': 'n/d', 'tipo': 'n/d'}
+        if id_pausa == '0':
+            datos['nombre'] = 'ACW'
+            datos['tipo'] = Pausa.CHOICE_PRODUCTIVA
+        else:
+            try:
+                pausa = Pausa.objects.get(id=id_pausa)
+            except ValueError:
+                datos['nombre'] = '%s*' % (id_pausa, )
+            except Pausa.DoesNotExist:
+                datos['nombre'] = '%s*' % (id_pausa, )
+            else:
+                datos['nombre'] = pausa.nombre
+                datos['tipo'] = pausa.get_tipo()
+
+        return datos
+
     def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
         """
         Calcula el tiempo de pausa de los agentes en el periodo evaluado
@@ -70,26 +85,29 @@ class EstadisticasService():
             log_agente = self._filter_query_por_agente(logs_time, agente.id)
             # iterar los log teniendo en cuenta que si encuentra un evento
             # UNPAUSEALL y luego un PAUSEALL calcula el tiempo de session
+            # logs = [id_agent, time, event, data1]
             for logs in log_agente:
                 if is_unpause and logs[2] == 'PAUSEALL':
                     resta = time_actual - logs[1]
-                    if logs[3] in tiempos_pausa.keys():
-                        tiempos_pausa[logs[3]] += resta
+                    id_pausa = logs[3]
+                    if id_pausa in tiempos_pausa.keys():
+                        tiempos_pausa[id_pausa] += resta
                     else:
-                        tiempos_pausa.update({logs[3]: resta})
+                        tiempos_pausa.update({id_pausa: resta})
                     is_unpause = False
                     time_actual = None
                 if logs[2] == 'UNPAUSEALL':
                     time_actual = logs[1]
                     is_unpause = True
-            for tiempo_pausa in tiempos_pausa:
-                tiempo_agente = []
-
-                tiempo_agente.append(agente.user.get_full_name())
-                tiempo_agente.append(tiempo_pausa)
-                tiempos_pausa[tiempo_pausa] = str(datetime.timedelta(
-                    seconds=tiempos_pausa[tiempo_pausa].seconds))
-                tiempo_agente.append(tiempos_pausa[tiempo_pausa])
+            for id_pausa in tiempos_pausa:
+                datos_de_pausa = self._obtener_datos_de_pausa(id_pausa)
+                tiempo = str(datetime.timedelta(seconds=tiempos_pausa[id_pausa].seconds))
+                tiempo_agente = {
+                    'nombre_agente': agente.user.get_full_name(),
+                    'pausa': datos_de_pausa['nombre'],
+                    'tipo_de_pausa': datos_de_pausa['tipo'],
+                    'tiempo': tiempo,
+                }
                 agentes_tiempo.append(tiempo_agente)
 
         return agentes_tiempo

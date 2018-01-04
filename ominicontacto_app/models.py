@@ -1183,8 +1183,10 @@ class Pausa(models.Model):
     objects = PausaManager()
 
     TIPO_PRODUCTIVA = 'P'
+    CHOICE_PRODUCTIVA = 'Productiva'
     TIPO_RECREATIVA = 'R'
-    TIPO_CHOICES = ((TIPO_PRODUCTIVA, 'Productiva'), (TIPO_RECREATIVA, 'Recreativa'))
+    CHOICE_RECREATIVA = 'Recreativa'
+    TIPO_CHOICES = ((TIPO_PRODUCTIVA, CHOICE_PRODUCTIVA), (TIPO_RECREATIVA, CHOICE_RECREATIVA))
     nombre = models.CharField(max_length=20, unique=True)
     tipo = models.CharField(max_length=1, choices=TIPO_CHOICES, default=TIPO_PRODUCTIVA)
     eliminada = models.BooleanField(default=False)
@@ -1194,6 +1196,11 @@ class Pausa(models.Model):
 
     def es_productiva(self):
         return self.tipo == self.TIPO_PRODUCTIVA
+
+    def get_tipo(self):
+        if self.es_productiva():
+            return self.CHOICE_PRODUCTIVA
+        return self.CHOICE_RECREATIVA
 
 # ==============================================================================
 # Base Datos Contactos

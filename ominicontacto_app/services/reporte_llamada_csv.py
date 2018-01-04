@@ -127,6 +127,7 @@ class ArchivoDeReporteCsv(object):
             encabezado = []
 
             encabezado.append("Agente")
+            encabezado.append("Pausa")
             encabezado.append("Tipo de pausa")
             encabezado.append("Tiempo de pausa")
 
@@ -144,9 +145,10 @@ class ArchivoDeReporteCsv(object):
 
                 # --- Buscamos datos
 
-                lista_opciones.append(agente[0])
-                lista_opciones.append(agente[1])
-                lista_opciones.append(agente[2] + "hs")
+                lista_opciones.append(agente['nombre_agente'])
+                lista_opciones.append(agente['pausa'])
+                lista_opciones.append(agente['tipo_de_pausa'])
+                lista_opciones.append(agente['tiempo'] + "hs")
 
                 # --- Finalmente, escribimos la linea
 
