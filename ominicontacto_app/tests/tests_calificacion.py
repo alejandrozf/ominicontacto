@@ -92,35 +92,6 @@ class CalificacionTests(OMLBaseTest):
         calificacion_form = response.context.get('calificacion_form')
         self.assertFalse(calificacion_form.is_valid())
 
-    def test_calificacion_cliente_no_gestion_redirecciona_lista_calificaciones(self):
-        nombre_calificacion = self.campana.gestion + "extra"
-        calificacion_no_gestion = CalificacionFactory.create(nombre=nombre_calificacion)
-        self.campana.calificacion_campana.calificacion.add(calificacion_no_gestion)
-        url = reverse('calificacion_formulario_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
-                              'pk_contacto': self.contacto.pk,
-                              'wombat_id': 0})
-        post_data = {
-            'telefono': self.contacto.telefono,
-            'calificacioncliente_set-TOTAL_FORMS': 1,
-            'calificacioncliente_set-INITIAL_FORMS': 0,
-            'calificacioncliente_set-MIN_NUM_FORMS': 0,
-            'calificacioncliente_set-MAX_NUM_FORMS': 1,
-            'calificacioncliente_set-TOTAL_FORMS': 1,
-            'calificacioncliente_set-INITIAL_FORMS': 0,
-            'calificacioncliente_set-MIN_NUM_FORMS': 0,
-            'calificacioncliente_set-MAX_NUM_FORMS': 1,
-            'calificacioncliente_set-0-calificacion': calificacion_no_gestion.pk,
-            'calificacioncliente_set-0-campana': self.campana.pk,
-            'calificacioncliente_set-0-contacto': self.contacto.pk,
-            'calificacioncliente_set-0-es_venta': False,
-            'calificacioncliente_set-0-agente': self.agente_profile.pk,
-            'calificacioncliente_set-0-agendado': False,
-            'calificacioncliente_set-0-id': ''}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'agente/reporte_agente_calificaciones.html')
-
     def test_calificacion_cliente_gestion_redirecciona_formulario_gestion(self):
         url = reverse('calificacion_formulario_create',
                       kwargs={'id_agente': self.agente_profile.pk,
