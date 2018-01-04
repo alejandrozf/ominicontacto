@@ -980,11 +980,7 @@ def cargar_base_datos_view(request):
                              {1}<br><u>Contenido Inválido:</u> {2}'.format(
                        e.numero_fila, e.fila, e.valor_celda)
 
-                   messages.add_message(
-                       request,
-                       messages.ERROR,
-                       message,
-                   )
+                   logger.error(message)
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:
