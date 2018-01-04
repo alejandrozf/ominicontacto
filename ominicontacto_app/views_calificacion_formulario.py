@@ -794,12 +794,13 @@ class CalificacionUpdateView(UpdateView):
             self.object_calificacion = calificacion_form.cleaned_data[0]['id']
         else:
             self.object_calificacion = self.object_calificacion[0]
+        campana = self.object_calificacion.campana
         calificacion = calificacion_form.cleaned_data[0]['calificacion']
         url_wombat = '/'.join([settings.OML_WOMBAT_URL,
                                'api/calls/?op=extstatus&wombatid={0}&status={1}'
                                ])
 
-        if calificacion is None:
+        if calificacion.nombre == campana.gestion:
             self.object_calificacion.es_venta = True
             self.object_calificacion.save()
             # actualiza la calficacion de wombat
