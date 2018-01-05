@@ -21,7 +21,7 @@ from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,
-                                               CalificacionClienteFactory)
+                                               CalificacionClienteFactory, CalificacionFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -138,10 +138,14 @@ class CampanasTests(OMLBaseTest):
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
 
+        self.calificacion = CalificacionFactory.create()
+
         self.campana = CampanaFactory.create()
+
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW,
             tiempo_desconexion=self.tiempo_desconexion)
+        self.campana_activa.calificacion_campana.calificacion.add(self.calificacion)
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
         self.agente_profile = AgenteProfileFactory.create(user=self.usuario_admin_supervisor)
@@ -387,7 +391,7 @@ class CampanasTests(OMLBaseTest):
                   'wombat_id': 0}
         url = reverse('calificacion_formulario_create', kwargs=kwargs)
         post_data = {'calificacioncliente_set-0-es_venta': ['False'],
-                     'calificacioncliente_set-0-calificacion': [''],
+                     'calificacioncliente_set-0-calificacion': [self.calificacion.pk],
                      'calificacioncliente_set-0-agente': [self.agente_profile.pk],
                      'calificacioncliente_set-MAX_NUM_FORMS': ['1', '1'],
                      'calificacioncliente_set-MIN_NUM_FORMS': ['0', '0'],
