@@ -66,7 +66,7 @@ class EstadisticasService():
         Calcula el tiempo de pausa de los agentes en el periodo evaluado
         :return: un listado de agentes con el tiempo de pausa
         """
-        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL']
+        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
 
         agentes_tiempo = []
         # iterar por agente evaluando los eventos de pausa
@@ -84,7 +84,7 @@ class EstadisticasService():
             tiempos_pausa = {}
             log_agente = self._filter_query_por_agente(logs_time, agente.id)
             # iterar los log teniendo en cuenta que si encuentra un evento
-            # UNPAUSEALL y luego un PAUSEALL calcula el tiempo de session
+            # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
             # logs = [id_agent, time, event, data1]
             for logs in log_agente:
                 if is_unpause and logs[2] == 'PAUSEALL':
@@ -96,7 +96,7 @@ class EstadisticasService():
                         tiempos_pausa.update({id_pausa: resta})
                     is_unpause = False
                     time_actual = None
-                if logs[2] == 'UNPAUSEALL':
+                if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
                     time_actual = logs[1]
                     is_unpause = True
             for id_pausa in tiempos_pausa:
@@ -144,7 +144,7 @@ class EstadisticasService():
         return agentes_tiempo
 
     def calcular_tiempos_agentes(self, agentes, fecha_inferior, fecha_superior):
-        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL']
+        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
         agentes_tiempo = []
         agentes_id = [agente.id for agente in agentes]
         logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
@@ -178,7 +178,7 @@ class EstadisticasService():
                     agente_nuevo = None
                     is_unpause = False
                     time_actual = None
-                if logs[2] == 'UNPAUSEALL':
+                if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
                     time_actual = logs[1]
                     is_unpause = True
 

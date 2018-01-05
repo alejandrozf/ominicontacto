@@ -36,7 +36,7 @@ def cambiar_ids_a_nombres_de_pausas(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0139_auto_20180103_1445'),
+        ('ominicontacto_app', '0140_auto_20180103_1445'),
     ]
 
     operations = [
