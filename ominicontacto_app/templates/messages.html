@@ -1,39 +1,49 @@
 {% for message in messages %}
     {% if "error" in message.tags %}
-        <div class="alert alert-danger">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+        <div class="alert alertdanger">
+            <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Error!</h4>
             {{ message }}
         </div>
+
     {% elif "warning" in message.tags %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+        <div class="alert alertwarning">
+            <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Atencion!</h4>
             {{ message }}
         </div>
+
     {% elif "success" in message.tags %}
-        <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+        <div class="alert alertsuccess">
+            <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Finalizado:</h4>
             {{ message }}
         </div>
+
     {% elif "info" in message.tags %}
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+        <div class="alert alertinfo">
+            <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Informacion:</h4>
             {{ message }}
         </div>
+
     {% elif "debug" in message.tags %} {# the same as "INFO" #}
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <div class="alert alertinfo">
+            <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Informacion:</h4>
             {{ message }}
         </div>
+
     {% else %} {# the same as "INFO" #}
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <div class="alert alertinfo">
+            <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Informacion:</h4>
             {{ message }}
         </div>
+
     {% endif %}
 {% endfor %}
