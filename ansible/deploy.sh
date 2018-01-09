@@ -17,14 +17,12 @@ echo "Instalando ansible 2.4.0"
 pip install 'ansible==2.4.0.0'
 echo "Generando llaves públicas de usuario actual"
 ssh-keygen
-echo "Clonando el repositorio de git de ominicontacto en ~ (no olvidar poner la llave publica en bitbucket"
-cd ~
-git clone git@bitbucket.org:freetechdesarrollo/ominicontacto.git
-cd ominicontacto
+cd
+cd ~/ominicontacto
 git config --global user.name "lionite"
 git config --global user.email "felipe.macias@freetechsolutions.com.ar"
-git fetch
-git checkout develop
+#git fetch
+#git checkout develop
 #echo "Copiando la carpeta ansible a /etc/"
 #cp -a ~/ominicontacto/ansible /etc/
 
@@ -53,11 +51,11 @@ sed -i "s/\(^admin_pass\).*/admin_pass: $admin_pass/" /etc/ansible/group_vars/al
 if [ $opcion -eq 1 ]; then
     echo -en "Ingrese IP  de omni-voip: "; read omnivoip_ip
     sed -i "s/\(^omnivoip_ip:\).*/omnivoip_ip: $omnivoip_ip/" /etc/ansible/group_vars/all
-    sed -i "s/\(^192.168.70.62\).*/$omnivoip_ip/" /etc/ansible/hosts
+    sed -i "s/\(^192.168.70.62\).*/$omnivoip_ip/" /etc/ansible/hosts.yml
 
     echo -en "Ingrese IP  de omni-app: "; read omniapp_ip
     sed -i "s/\(^omniapp_ip:\).*/omniapp_ip: $omniapp_ip/" /etc/ansible/group_vars/all
-    sed -i "s/\(^192.168.70.63\).*/$omniapp_ip/" /etc/ansible/hosts
+    sed -i "s/\(^192.168.70.63\).*/$omniapp_ip/" /etc/ansible/hosts.yml
 
     echo -en "Ingrese fqdn  de omni-voip: "; read omnivoip_fqdn
     sed -i "s/\(^omnivoip_fqdn:\).*/omnivoip_ip: $omnivoip_fqdn/" /etc/ansible/group_vars/all
@@ -79,7 +77,7 @@ elif [ $opcion -eq 2 ]; then
 
     echo -en "Ingrese IP  de omni-freepbx: "; read omnifreepbx_ip
     sed -i "s/\(^omnifreepbx_ip:\).*/omnifreepbx_ip: $omnifreepbx_ip/" /etc/ansible/group_vars/all
-    sed -i "s/\(^192.168.99.2\).*/$omnifreepbx_ip/" /etc/ansible/hosts
+    sed -i "23s/.*/$omnifreepbx_ip/" /etc/ansible/hosts
 
     echo -en "Ingrese fqdn  de omni-freepbx: "; read omnifreepbx_fqdn
     sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnifreepbx_fqdn/" /etc/ansible/group_vars/all
@@ -87,10 +85,11 @@ elif [ $opcion -eq 2 ]; then
     echo "Transifiendo llave publica a usuario root de SangomaOS"
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnifreepbx_ip
 
+if [ $type_install -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS"
     ansible-playbook -s /etc/ansible/omnivoip/omni-voip-freepbx.yml -u root
+fi
     ResultadoAnsible=`echo $?`
-
     echo "Finalizó la instalación omni-voip"
     echo ""
 
@@ -101,7 +100,7 @@ elif [ $opcion -eq 3 ]; then
 
     echo -en "Ingrese IP  de omni-centos: "; read omnicentos_ip
     sed -i "s/\(^omnicentos_ip:\).*/omnicentos_ip: $omnicentos_ip/" /etc/ansible/group_vars/all
-    sed -i "s/\(^172.16.20.12\).*/$omnicentos_ip/" /etc/ansible/hosts
+    sed -i "21s/.*/$omnicentos_ip/" /etc/ansible/hosts
 
     echo -en "Ingrese fqdn  de omni-centos: "; read omnicentos_fqdn
     sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" /etc/ansible/group_vars/all
@@ -109,18 +108,18 @@ elif [ $opcion -eq 3 ]; then
     echo "Transifiendo llave publica a usuario root de Centos"
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnicentos_ip
 
+if [ $type_install -eq 1 ]; then
     echo "Ejecutando Ansible en Centos"
     ansible-playbook -s /etc/ansible/omnivoip/omni-voip-centos.yml -u root
+fi
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omni-voip"
     echo ""
 
 else
-
     echo "Parámetro inválido ingrese de nuevo"
     echo  ""
 fi
-
 
 if [ ${ResultadoAnsible} -ne 0 ];then
     echo "Falló la ejecucion de Ansible, favor volver a correr el script"
@@ -208,7 +207,7 @@ else
     branch_name=${branch_name:-HEAD}
 
     commit="$(git rev-parse HEAD)"
-    author="$(id -un)@$(hostname -f)"
+    author="$(id -un)@$(hostname)"
 
     echo "Creando archivo de version | Branch: $branch_name | Commit: $commit | Autor: $author"
     cat > $TMP/ominicontacto/ominicontacto_app/version.py <<EOF

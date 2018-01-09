@@ -30,6 +30,11 @@
           chdir: /home/freetech/nginx_certs/
   notify: restart nginx
 
+#- name: Sign nginx certificate with kamalio's CA certificate
+#  shell: "openssl ca -batch -days 1460 -out cert.pem -keyfile /opt/kamailio/etc/certs/demoCA/key.pem -cert /opt/kamailio/etc/certs/demoCA/cert.pem -passin pass:toor123 -infiles server.crt"
+#  args:
+#          chdir: /home/freetech/nginx_certs/
+
 - name: Create ominicontacto-daemon service
   shell: "{{ item }}"
   with_items:

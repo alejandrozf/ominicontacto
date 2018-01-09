@@ -69,6 +69,7 @@
   with_items:
           - "wget -O /tmp/downloads/pjproject-2.6.tar.bz2 http://www.pjsip.org/release/2.6/pjproject-2.6.tar.bz2"
           - "wget -O /tmp/downloads/pjproject-2.6.md5 http://www.pjsip.org/release/2.6/MD5SUM.txt"
+  ignore_errors: yes
 
 - name: Instalacion de asterisk
   shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
