@@ -251,8 +251,21 @@ class SupervisorProfile(models.Model):
 #     name = models.CharField(max_length=64)
 
 
+class CalificacionManager(models.Manager):
+    def usuarios(self):
+        """
+        Devuelve todas las calificaciones excepto la restringida de sistema
+        para agenda
+        """
+        return self.exclude(nombre=settings.CALIFICACION_REAGENDA)
+
+
 class Calificacion(models.Model):
     nombre = models.CharField(max_length=50)
+    objects = CalificacionManager()
+
+    def es_reservada(self):
+        return self.nombre == settings.CALIFICACION_REAGENDA
 
     def __unicode__(self):
         return self.nombre
@@ -800,6 +813,14 @@ class Campana(models.Model):
 
     def __unicode__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            # se está creando una nueva campaña
+            calificacion_reagenda, _ = Calificacion.objects.get_or_create(
+                nombre=settings.CALIFICACION_REAGENDA)
+            self.calificacion_campana.calificacion.add(calificacion_reagenda)
+        super(Campana, self).save(*args, **kwargs)
 
     def crear_tarea_actualizacion(self):
         """
