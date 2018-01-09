@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Aca se encuentra las vista relacionada con la creacion de una agenda en el caso que el 
+Aca se encuentra las vista relacionada con la creacion de una agenda en el caso que el
 agente de desee agendar un llamado. Al modulo de agenda le esta faltando algun demonio
-o algo por el estilo para que lance una llamada agenda,etc 
+o algo por el estilo para que lance una llamada agenda,etc
 """
 
 from __future__ import unicode_literals
@@ -11,11 +11,8 @@ from __future__ import unicode_literals
 import requests
 
 from django.conf import settings
-from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView
-)
+from django.views.generic import CreateView, FormView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
     AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual
@@ -23,8 +20,7 @@ from ominicontacto_app.models import (
 from ominicontacto_app.forms import (
     AgendaContactoForm, AgendaBusquedaForm, AgendaManualForm
 )
-from ominicontacto_app.utiles import convert_string_in_boolean,\
-    convert_fecha_datetime
+from ominicontacto_app.utiles import convert_fecha_datetime
 
 
 class AgendaContactoCreateView(CreateView):
@@ -50,14 +46,15 @@ class AgendaContactoCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL:
-            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL and \
+           campana.type == Campana.TYPE_DIALER:
             url_wombat = '/'.join(
                 [settings.OML_WOMBAT_URL,
-                 'api/calls/?op=addcall&campaign={0}&number={1}&schedule={2}&attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'
-                                   ])
+                 'api/calls/?op=addcall&campaign={0}&number={1}&schedule={2}&attrs=ID_CAMPANA:{3},'
+                 'ID_CLIENTE:{4},CAMPANA:{0}'])
             fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
-            r = requests.post(
+            requests.post(
                 url_wombat.format(
                     campana.nombre, self.object.contacto.telefono, fecha_hora,
                     campana.pk, self.object.contacto.pk))
