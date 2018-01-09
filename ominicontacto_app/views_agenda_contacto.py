@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, FormView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
-    AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual
+    AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual, CalificacionCliente
 )
 from ominicontacto_app.forms import (
     AgendaContactoForm, AgendaBusquedaForm, AgendaManualForm
@@ -59,6 +59,10 @@ class AgendaContactoCreateView(CreateView):
                     campana.nombre, self.object.contacto.telefono, fecha_hora,
                     campana.pk, self.object.contacto.pk))
         self.object.save()
+        # Después de agendado el contacto se marca como agendado en la calificación
+        CalificacionCliente.objects.filter(
+            campana=campana, contacto__pk=self.kwargs['pk_contacto'],
+            agente__pk=self.kwargs['id_agente']).update(agendado=True)
         return super(AgendaContactoCreateView, self).form_valid(form)
 
     def get_success_url(self):
