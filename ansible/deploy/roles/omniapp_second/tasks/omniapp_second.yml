@@ -45,7 +45,7 @@
 - name: Start the ominicontacto-daemon service
   shell: "{{ item }}"
   with_items:
-          - "yum install \'/lib/lsb/init-functions\' -y"
+          - yum install \'/lib/lsb/init-functions\' -y
           - "service ominicontacto-daemon start"
           - "service ominicontacto-daemon stop"
           - "chkconfig ominicontacto-daemon on"
