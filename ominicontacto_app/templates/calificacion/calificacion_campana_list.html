@@ -19,7 +19,7 @@
             <tr>
                 <td>{{ calificacion.nombre }}</td>
                 <td>
-                    {% for calificacion_nombre in calificacion.calificacion.all %}
+                    {% for calificacion_nombre in calificacion.calificacion.usuarios %}
                         - {{calificacion_nombre.nombre}}<br/>
                     {% endfor %}
                 </td>
