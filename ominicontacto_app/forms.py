@@ -3,11 +3,14 @@
 
 import json
 from django import forms
+from django.conf import settings
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
+from django.utils.translation import ugettext as _
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
 from ominicontacto_app.models import (
@@ -15,7 +18,7 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio
+    AgendaManual, ArchivoDeAudio, Calificacion, CalificacionCampana
 )
 from ominicontacto_app.utiles import convertir_ascii_string, validar_nombres_campanas
 
@@ -116,7 +119,7 @@ class QueueEntranteForm(forms.ModelForm):
     El form de cola para las colas
     """
 
-    def __init__(self, audios_choices,  *args, **kwargs):
+    def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
@@ -176,7 +179,7 @@ class QueueEntranteUpdateForm(forms.ModelForm):
     El form para actualizar la cola para las llamadas
     """
 
-    def __init__(self, audios_choices, id_audio,  *args, **kwargs):
+    def __init__(self, audios_choices, id_audio, *args, **kwargs):
         super(QueueEntranteUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
@@ -1109,6 +1112,29 @@ class FormularioManualGestionForm(forms.ModelForm):
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class CalificacionForm(forms.ModelForm):
+    class Meta:
+        model = Calificacion
+        fields = ('nombre',)
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if nombre == settings.CALIFICACION_REAGENDA:
+            message = _('This calification name is reserved for the system')
+            raise forms.ValidationError(message, code='invalid')
+        return nombre
+
+
+class CalificacionCampanaForm(forms.ModelForm):
+    class Meta:
+        model = CalificacionCampana
+        fields = ('nombre', 'calificacion')
+
+    def __init__(self, *args, **kwargs):
+        super(CalificacionCampanaForm, self).__init__(*args, **kwargs)
+        self.fields['calificacion'].queryset = Calificacion.objects.usuarios()
 
 
 class AgendaManualForm(forms.ModelForm):
