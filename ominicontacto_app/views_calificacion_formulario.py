@@ -188,7 +188,7 @@ class CalificacionClienteCreateView(CreateView):
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
-            if self.calificacion.es_reservada():
+            if calificacion.es_reservada():
                 return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(reverse('calificacion_formulario_update',
                                                 kwargs={
@@ -379,7 +379,7 @@ class CalificacionClienteUpdateView(UpdateView):
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
-            if self.calificacion.es_reservada():
+            if calificacion.es_reservada():
                 return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(reverse('calificacion_formulario_update',
                                                 kwargs={
@@ -834,7 +834,7 @@ class CalificacionUpdateView(UpdateView):
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
-            if self.calificacion.es_reservada():
+            if calificacion.es_reservada():
                 return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(
                 reverse('reporte_agente_calificaciones',
