@@ -4,13 +4,13 @@
   hosts: omni-centos
   roles:
           # Instalación de paquetes y dependencias de omnivoip y setup inicial del server
-          - {role: prerequisitos-sangoma, when: ansible_os_family == "RedHat" }
+          - {role: prerequisitos-sangoma, when: ansible_os_family == "RedHat", tags: ['omnivoip','pre-centos'] }
           # Instalación de asterisk y freepbx
-          - {role: asterisk-freepbx, when: ansible_os_family == "RedHat" }
+          - {role: asterisk-freepbx, when: ansible_os_family == "RedHat", tags: ['omnivoip','asterisk-install'] }
           # Instalación y configuración de Kamailio
-          - {role: kamailio-sangoma, when: ansible_os_family == "RedHat" }
+          - {role: kamailio-sangoma, when: ansible_os_family == "RedHat", tags: ['omnivoip','kamailio'] }
           # Configuración de asterisk/freepbx para funcionar con Omnileads
-          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "RedHat" }
+          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "RedHat", tags: ['omnivoip','asterisk-config'] }
           # Seteo de asternic
-          - {role: asternic, when: ansible_os_family == "RedHat" }
+          - {role: asternic, when: ansible_os_family == "RedHat", tags: ['omnivoip','asternic'] }
 

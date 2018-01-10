@@ -11,8 +11,13 @@
 #----------------------------------------------------------------------
 
 - include: deploy.yml
+  tags:
+    - omniapp
+    - postinstall
+    - deploy
 
 - include: postgres_users.yml
-  when: not post_install
-
+  tags:
+    - omniapp
+    - postgresusers
 

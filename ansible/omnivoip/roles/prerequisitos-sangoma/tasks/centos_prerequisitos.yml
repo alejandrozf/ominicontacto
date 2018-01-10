@@ -1,7 +1,7 @@
 ---
 
 - name: Disable Selinux
-  shell: "{{ item }}"
+  command: "{{ item }}"
   with_items:
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
@@ -10,7 +10,7 @@
   yum: name='*' state=latest update_cache=yes
 
 - name: Install Development tools
-  shell: "yum -y groupinstall core base \"Development Tools\""
+  command: "yum -y groupinstall core base \"Development Tools\""
 
 - name: Install of dependencies
   yum: name={{ item }} state=present
@@ -46,11 +46,12 @@
        - texinfo
 
 - name: Install php 5.6
-  shell: "{{ item }}"
+  command: "{{ item }}"
   with_items:
       - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
       - rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-  ignore_errors: yes
+  register: command_result
+  failed_when: \'transferencia fallida\' in command_result.stderr
 - meta: clear_host_errors
 
 - yum: name={{ item }} state=present

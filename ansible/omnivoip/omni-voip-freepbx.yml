@@ -2,11 +2,11 @@
   hosts: omni-freepbx
   roles:
           # Instalación de paquetes y dependencias de omnivoip y setup inicial del server
-          - {role: prerequisitos-sangoma, when: ansible_os_family == "Sangoma" }
+          - {role: prerequisitos-sangoma, when: ansible_os_family == "Sangoma", tags: ['omnivoip','pre-sangoma']}
           # Instalación y configuración de Kamailio
-          - {role: kamailio-sangoma, when: ansible_os_family == "Sangoma" }
+          - {role: kamailio-sangoma, when: ansible_os_family == "Sangoma", tags: ['omnivoip','kamailio']}
           # Configuración de asterisk/freepbx para funcionar con Omnileads
-          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "Sangoma" }
+          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "Sangoma", tags: ['omnivoip','asterisk-config']}
           # Seteo de asternic
-          - {role: asternic, when: ansible_os_family == "Sangoma" }
+          - {role: asternic, when: ansible_os_family == "Sangoma", tags: ['omnivoip','asternic']}
 

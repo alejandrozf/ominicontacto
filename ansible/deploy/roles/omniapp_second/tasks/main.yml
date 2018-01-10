@@ -1,16 +1,35 @@
 ---
 
 - include: sshkey_transfer.yml
-  when: not post_install
+  tags:
+    - omniapp
+    - sshkey-transfer
 
 - include: static.yml
+  tags:
+    - omniapp
+    - static
+    - postinstall
 
 - include: django_migrations.yml
+  tags:
+    - omniapp
+    - django-migrations
+    - postinstall
 
 - include: queuelog_trigger.yml
+  tags:
+    - omniapp
+    - queuelog-trigger
+    - postinstall
 
 - include: omniapp_second.yml
-  when: not post_install
+  tags:
+    - omniapp
+    - nginx
+
 
 - include: wombat.yml
-  when: not post_install
+  tags:
+    - omniapp
+    - wombat

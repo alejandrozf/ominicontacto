@@ -6,9 +6,6 @@
 #                                                                                                          #
 ############################################################################################################
 
-# Setear esta variable yes si es una post-implementacion, setear en no si es primera instalacion
-post_install: no
-
 ############ Componentes del certificado del CA ###########
 serial: 01
 ca_country: AR

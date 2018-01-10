@@ -6,6 +6,39 @@
 # Autor: Andres Felipe Macias
 # Colaborador:  Federico Peker
 #
+PIP=`which pip`
+VERSION=$1
+TAG=$2
+USAGE="Se debe ingresar el tag de ansible para que se ejecuten playbooks especificos \n
+       Tags disponibles: \n
+       all: ejecuta todos los procesos \n
+       omnivoip: ejecuta toda la instalacion de omnivoip \n
+       omniapp: ejecuta toda la instalacion de omniapp \n
+       pre-centos: ejecuta los prerequisitos de centos (instalacion de paquetes tambien) \n
+       asterisk-install: compila e instala asterisk \n
+       kamailio: compila e instala kamailio y rtpengine \n
+       asterisk-config: realiza tareas de configuracion de asterisk con OML \n
+       asternic: instala y configura asternic y scripts de grabaciones \n
+       postinstall: ejecuta tareas necesarias para un post-deploy \n
+       deploy: instala la aplicación, setea el virtualenv y el entorno de OML \n
+       postgresusers: crea la base de datos y usuarios postgres \n
+       sshkey-transfer: realiza la transferencia de la llave publica ssh entre usuarios freetech y root \n
+       static: modifica los archivos estaticos \n
+       django-migrations: realiza todas las migraciones de django (uso de python manage.py) \n
+       queuelog-trigger: ejecuta el trigger de queuelog \n
+       nginx: configuraciones de nginx \n
+       wombat: instala y configura wombat \n
+       supervision: deploya la supervision \n "
+
+if [ -z "$1" ]  ; then
+    echo "ERROR: debe especificar la version (branch, tag o commit)"
+    exit 1
+
+elif [ -z "$2" ] ; then
+    echo "ERROR: debe especificar el tag, modo de uso:"
+    echo -e $USAGE
+    exit 1
+fi
 
 echo "Bienvenido al asistente de instalación de Omnileads"
 echo ""
@@ -15,9 +48,14 @@ apt-get -y install python-pip git virtualenv
 echo ""
 echo "Instalando ansible 2.4.0"
 pip install 'ansible==2.4.0.0'
-echo "Generando llaves públicas de usuario actual"
-ssh-keygen
-cd
+
+if [ -f ~/.ssh/id_rsa.pub ]; then
+    echo "Ya se han generado llaves para este usuario"
+else
+    echo "Generando llaves públicas de usuario actual"
+    ssh-keygen
+fi
+
 cd ~/ominicontacto
 git config --global user.name "lionite"
 git config --global user.email "felipe.macias@freetechsolutions.com.ar"
@@ -26,20 +64,9 @@ git config --global user.email "felipe.macias@freetechsolutions.com.ar"
 #echo "Copiando la carpeta ansible a /etc/"
 #cp -a ~/ominicontacto/ansible /etc/
 
-echo "Ingrese 1 si es post-install o 2 si es un fresh install"
-echo -en "Opcion: "; read type_install
 echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
 echo -en "Opcion: ";read opcion
 echo ""
-
-if [ $type_install -eq 1 ]; then
-    sed -i 's/\(^post_install:\).*/\post_install: yes/' /etc/ansible/group_vars/all
-elif [ $type_install -eq 2 ]; then
-    sed -i 's/\(^post_install:\).*/\post_install: no/' /etc/ansible/group_vars/all
-else
-    echo "Parámetro inválido ingrese de nuevo"
-    echo  ""
-fi
 
 echo "Parámetros de la aplicación"
 echo -en "Ingrese valor de variable session_cookie_age: "; read session_cookie
@@ -85,10 +112,8 @@ elif [ $opcion -eq 2 ]; then
     echo "Transifiendo llave publica a usuario root de SangomaOS"
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnifreepbx_ip
 
-if [ $type_install -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-freepbx.yml -u root
-fi
+    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-freepbx.yml -u root --tags "$2" --check
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omni-voip"
     echo ""
@@ -108,10 +133,8 @@ elif [ $opcion -eq 3 ]; then
     echo "Transifiendo llave publica a usuario root de Centos"
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnicentos_ip
 
-if [ $type_install -eq 1 ]; then
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-centos.yml -u root
-fi
+    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-centos.yml -u root --tags "$2"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omni-voip"
     echo ""
@@ -131,13 +154,6 @@ else
     #    . ~/ominicontacto/virtualenv/bin/activate
     #fi
 
-    if [ -z "$1" ] ; then
-        echo "ERROR: debe especificar la version (branch, tag o commit)"
-        exit 1
-    fi
-
-    VERSION=$1
-    shift
 
     ##### No es necesario pasar archivo de inventario pues lo lee del ansible.cfg #####
     #if [ -z "$1" ] ; then
@@ -244,12 +260,12 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
     echo "Ejecutando Ansible en SangomaOS para deploy de OmniAPP"
-    ansible-playbook -s /etc/ansible/deploy/omni-app-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
+    ansible-playbook -s /etc/ansible/deploy/omni-app-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$2" --check
     echo "Finalizó la instalación de Omnileads"
 
 elif [ $opcion -eq 3 ]; then
     echo "Ejecutando Ansible en Centos para deploy de OmniAPP"
-    ansible-playbook -s /etc/ansible/deploy/omni-app-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto"
+    ansible-playbook -s /etc/ansible/deploy/omni-app-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$2"
     echo "Finalizó la instalación Omnileads"
     echo ""
 
