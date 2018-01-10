@@ -7,17 +7,16 @@ y gestion con el agente en campañas manuales
 from __future__ import unicode_literals
 
 import json
+import logging as logging_
 
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.http.response import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.views.generic.edit import (
-    CreateView, UpdateView, DeleteView,
-)
+from django.views.generic.edit import CreateView, UpdateView
+
 from ominicontacto_app.models import CalificacionManual, Campana, AgenteProfile
 from ominicontacto_app.forms import CalificacionManualForm, FormularioManualGestionForm
-import logging as logging_
 
 
 logger = logging_.getLogger(__name__)
@@ -59,7 +58,8 @@ class CalificacionManualCreateView(CreateView):
         self.object = form.save(commit=False)
         cleaned_data = form.cleaned_data
         calificacion = cleaned_data['calificacion']
-        if calificacion is None:
+        campana = cleaned_data['campana']
+        if calificacion.nombre == campana.gestion:
             self.object.es_gestion = True
             self.object.save()
             return HttpResponseRedirect(
@@ -68,10 +68,10 @@ class CalificacionManualCreateView(CreateView):
         else:
             self.object.es_gestion = False
             self.object.save()
-        message = 'Operación Exitosa!\
-                                Se llevó a cabo con éxito la calificacion del cliente'
+        message = 'Operación Exitosa! Se llevó a cabo con éxito la actualizacion de la ' \
+                  'calificacion del cliente'
         messages.success(self.request, message)
-        if self.object.agendado:
+        if calificacion.es_reservada():
             return HttpResponseRedirect(
                 reverse('agenda_manual_create',
                         kwargs={"telefono": self.object.telefono,
@@ -104,14 +104,14 @@ class CalificacionManualUpdateView(UpdateView):
             **self.get_form_kwargs())
 
     def form_valid(self, form):
-        message = 'Operación Exitosa!\
-                                Se llevó a cabo con éxito la actualizacion' \
+        message = 'Operación Exitosa! Se llevó a cabo con éxito la actualizacion de la ' \
                   'calificacion del cliente'
         messages.success(self.request, message)
         return super(CalificacionManualUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('view_blanco')
+        return reverse('campana_manual_calificacion_update',
+                       kwargs={'pk_calificacion': self.object.pk})
 
 
 class CalificacionManualGestion(UpdateView):
