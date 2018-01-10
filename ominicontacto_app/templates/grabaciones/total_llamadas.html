@@ -82,58 +82,60 @@
     </div>
     {% if user.get_is_administrador %}
     <div class="col-md-9">
+      {% with total_llamadas=graficos_estadisticas.estadisticas.total_llamadas_dict %}
       <table class="table table-bordered">
         <tr>
           <td><strong>Total llamadas procesadas por OmniLeads</strong></td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.0}}</td>
+          <td>{{total_llamadas.total_llamadas_ingresadas}}</td>
         </tr>
       </table>
       <table class="table table-bordered">
         <tr>
           <td><strong>Total de llamadas Salientes Discador</strong></td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.1}}</td>
+          <td>{{total_llamadas.llamadas_ingresadas_dialer}}</td>
         </tr>
         <tr>
           <td>Cantidad de llamadas gestionadas</td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.2}}</td>
+          <td>{{total_llamadas.llamadas_gestionadas_dialer}}</td>
         </tr>
         <tr>
           <td>Cantidad de llamadas perdidas</td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.3}}</td>
+          <td>{{total_llamadas.llamadas_perdidas_dialer}}</td>
         </tr>
       </table>
       <table class="table table-bordered">
         <tr>
           <td><strong>Total llamadas Entrantes</strong></td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.4}}</td>
+          <td>{{total_llamadas.llamadas_ingresadas_entrantes}}</td>
         <tr>
         <tr>
           <td>Cantidad de llamadas atendidas</td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.5}}</td>
+          <td>{{total_llamadas.llamadas_atendidas_entrantes}}</td>
         <tr>
         <tr>
           <td>Cantidad de llamadas expiradas</td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.6}}</td>
+          <td>{{total_llamadas.llamadas_expiradas_entrantes}}</td>
         <tr>
         <tr>
           <td>Cantidad de llamadas abandonadas</td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.7}}</td>
+          <td>{{total_llamadas.llamadas_abandonadas_entrantes}}</td>
         <tr>
       </table>
       <table class="table table-bordered">
         <tr>
           <td><strong>Total llamadas Salientes Manuales</strong></td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.8}}</td>
+          <td>{{total_llamadas.llamadas_ingresadas_manuales}}</td>
         </tr>
         <tr>
           <td>Cantidad de llamadas atendidas</td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.9}}</td>
+          <td>{{total_llamadas.llamadas_atendidas_manuales}}</td>
         </tr>
         <tr>
           <td>Cantidad de llamadas abandonadas</td>
-          <td>{{graficos_estadisticas.estadisticas.total_llamadas.10}}</td>
+          <td>{{total_llamadas.llamadas_abandonadas_manuales}}</td>
         </tr>
       </table>
+      {% endwith %}
       <form action="{% url 'exportar_llamadas' tipo_reporte='total_llamadas' %}" method="POST">
           {% csrf_token %}
           <input class="hidden" name="total_llamadas" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas_json }}"/>
@@ -170,14 +172,14 @@
           <td width="50%" align="center">
             <div class="graficos-avances">
               <figure>
-                {{ graficos_estadisticas.barras_llamadas_campanas.render|safe }}
+                {{ graficos_estadisticas.barras_llamadas_por_tipo.render|safe }}
               </figure>
             </div>
           </td>
           <td width="50%" align="center">
             <div class="graficos-avances">
               <figure>
-                {{ graficos_estadisticas.torta_grabaciones.render|safe }}
+                {{ graficos_estadisticas.torta_porcentajes_por_tipo.render|safe }}
               </figure>
             </div>
           </td>
@@ -222,7 +224,7 @@
                 <td width="50%" align="center">
                     <div class="graficos-avances">
                         <figure>
-                            {{ graficos_estadisticas.barra_campana_total.render|safe }}
+                            {{ graficos_estadisticas.barra_llamada_por_campana.render|safe }}
                         </figure>
                     </div>
                 </td>
@@ -232,7 +234,7 @@
     <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas' %}" method="POST">
         {% csrf_token %}
         <input class="hidden" name="llamadas_campanas" type="text" value="{{ graficos_estadisticas.dict_campana_counter_json }}"/>
-        <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+        <h5><button class="btn btn-info btn-sm">Exportar llamadas por campaña (CSV)</button></h5>
     </form>
     <br/>
 
