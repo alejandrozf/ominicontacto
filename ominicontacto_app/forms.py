@@ -1059,8 +1059,6 @@ class CalificacionManualForm(forms.ModelForm):
     def __init__(self, calificacion_choice, gestion, *args, **kwargs):
         super(CalificacionManualForm, self).__init__(*args, **kwargs)
         self.fields['calificacion'].queryset = calificacion_choice
-        self.fields['calificacion'].empty_label = None
-        self.fields['calificacion'].empty_label = gestion
 
     class Meta:
         model = CalificacionManual
