@@ -22,13 +22,49 @@ from ominicontacto_app.forms import CalificacionManualForm, FormularioManualGest
 logger = logging_.getLogger(__name__)
 
 
-class CalificacionManualCreateView(CreateView):
+class CalificacionManualMixin(object):
     """
-    En esta vista se crea la calificacion del contacto de una campana manual
+    Encapsula comportamiento similar en vistas de calificación
+    de campañas manuales
     """
+
     template_name = 'campana_manual/calificacion_create_update.html'
     model = CalificacionManual
     form_class = CalificacionManualForm
+
+    def get_success_url(self):
+        return reverse('campana_manual_calificacion_update',
+                       kwargs={'pk_calificacion': self.object.pk})
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        cleaned_data = form.cleaned_data
+        calificacion = cleaned_data['calificacion']
+        campana = cleaned_data['campana']
+        if calificacion.nombre == campana.gestion:
+            self.object.es_gestion = True
+            self.object.save()
+            return HttpResponseRedirect(
+                reverse('campana_manual_calificacion_gestion',
+                        kwargs={'pk_calificacion': self.object.pk}))
+        else:
+            self.object.es_gestion = False
+            self.object.save()
+        message = 'Operación Exitosa! Se llevó a cabo con éxito la actualizacion de la ' \
+                  'calificacion del cliente'
+        messages.success(self.request, message)
+        if calificacion.es_reservada():
+            return HttpResponseRedirect(
+                reverse('agenda_manual_create',
+                        kwargs={"telefono": self.object.telefono,
+                                "id_agente": self.object.agente.pk}))
+        return super(CalificacionManualMixin, self).form_valid(form)
+
+
+class CalificacionManualCreateView(CalificacionManualMixin, CreateView):
+    """
+    En esta vista se crea la calificacion del contacto de una campana manual
+    """
 
     def get_initial(self):
         initial = super(CalificacionManualCreateView, self).get_initial()
@@ -54,42 +90,15 @@ class CalificacionManualCreateView(CreateView):
         context['pk_agente'] = self.kwargs['pk_agente']
         return context
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        cleaned_data = form.cleaned_data
-        calificacion = cleaned_data['calificacion']
-        campana = cleaned_data['campana']
-        if calificacion.nombre == campana.gestion:
-            self.object.es_gestion = True
-            self.object.save()
-            return HttpResponseRedirect(
-                reverse('campana_manual_calificacion_gestion',
-                        kwargs={'pk_calificacion': self.object.pk}))
-        else:
-            self.object.es_gestion = False
-            self.object.save()
-        message = 'Operación Exitosa! Se llevó a cabo con éxito la actualizacion de la ' \
-                  'calificacion del cliente'
-        messages.success(self.request, message)
-        if calificacion.es_reservada():
-            return HttpResponseRedirect(
-                reverse('agenda_manual_create',
-                        kwargs={"telefono": self.object.telefono,
-                                "id_agente": self.kwargs['pk_agente']}))
-        return super(CalificacionManualCreateView, self).form_valid(form)
-
     def get_success_url(self):
         return reverse('campana_manual_calificacion_update',
                        kwargs={'pk_calificacion': self.object.pk})
 
 
-class CalificacionManualUpdateView(UpdateView):
+class CalificacionManualUpdateView(CalificacionManualMixin, UpdateView):
     """
     En esta vista se actualiza la calificacion del contacto de una campana manual
     """
-    template_name = 'campana_manual/calificacion_create_update.html'
-    model = CalificacionManual
-    form_class = CalificacionManualForm
 
     def get_object(self, queryset=None):
         return CalificacionManual.objects.get(pk=self.kwargs['pk_calificacion'])
@@ -102,16 +111,6 @@ class CalificacionManualUpdateView(UpdateView):
         return self.form_class(
             calificacion_choice=calificaciones, gestion=campana.gestion,
             **self.get_form_kwargs())
-
-    def form_valid(self, form):
-        message = 'Operación Exitosa! Se llevó a cabo con éxito la actualizacion de la ' \
-                  'calificacion del cliente'
-        messages.success(self.request, message)
-        return super(CalificacionManualUpdateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse('campana_manual_calificacion_update',
-                       kwargs={'pk_calificacion': self.object.pk})
 
 
 class CalificacionManualGestion(UpdateView):
