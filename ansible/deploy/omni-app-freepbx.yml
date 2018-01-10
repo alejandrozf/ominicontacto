@@ -7,6 +7,7 @@
           build_dir: "{{ BUILD_DIR }}"
 
   roles:
+          - {role: prerequisitos-sangoma, when: ansible_os_family == "Sangoma", tags: ['pre-sangoma']}
           - oml_server
           - omniapp_second
           - deploy_supervision

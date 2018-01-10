@@ -2,7 +2,8 @@
 
 - name: Clone of the RTPengine repo
   git: repo={{ rtpengine_repo }} dest=/usr/src/rtpengine
-  ignore_errors: yes
+  register: command_result
+  failed_when: "'Local modifications' not in command_result.msg"
 
 - name: Installation of RTPengine
   shell: "make chdir=/usr/src/rtpengine/daemon"
@@ -12,11 +13,10 @@
   lineinfile: "path=/usr/src/rtpengine/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= /usr/src/kernels/$(shell uname -r)\""
 
 - name: Installation of RTPengine kernel module
-  shell: "{{ item }} chdir=/usr/src/rtpengine/kernel-module"
-  with_items:
-      - make
-      - insmod xt_RTPENGINE.ko
-  ignore_errors: yes
+  shell: "make chdir=/usr/src/rtpengine/kernel-module"
+- shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/rtpengine/kernel-module"
+  register: command_result
+  failed_when: "'File exists' not in command_result.stderr"
 
 - name: Installation of IPtables extensions
   shell: "make chdir=/usr/src/rtpengine/iptables-extension"

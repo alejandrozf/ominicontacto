@@ -9,6 +9,9 @@
 #          - mkdir /opt/kamailio/etc/certs/demoCA/newcerts
 #          - touch /opt/kamailio/etc/certs/demoCA/index.txt
 
+- name: Modificacion del /etc/pki/tls/openssl.cnf
+  template: src=templates/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
+
 - name: Creacion de /opt/kamailio/etc/certs
   file: path=/opt/kamailio/etc/certs state=directory mode=0700
 
@@ -34,6 +37,17 @@
 - name: Seteo de parametros del certificado de la CA
   set_fact:
           ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omnivoip_fqdn }}"
+  when: ansible_os_family == "Debian"
+
+- name: Seteo de parametros del certificado de la CA
+  set_fact:
+          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omnicentos_ip }}"
+  when: ansible_os_family == "RedHat"
+
+- name: Seteo de parametros del certificado de la CA
+  set_fact:
+          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omnifreepbx_ip }}"
+  when: ansible_os_family == "Sangoma"
 
 - name: Generar la clave privada y crear los archivos del CA
   shell: "openssl req -new -x509 -extensions v3_ca -keyout key.pem -out cert.pem -days 3650 -passout pass:toor123 -subj \"{{ ca_subject }}\""
@@ -49,3 +63,5 @@
   shell: "openssl ca -batch -days 1460 -out cert.pem -keyfile demoCA/key.pem -cert demoCA/cert.pem -passin pass:toor123 -infiles req.pem"
   args:
           chdir: /opt/kamailio/etc/certs
+  register: command_result
+  failed_when: "'already been issued' not in command_result.stderr"

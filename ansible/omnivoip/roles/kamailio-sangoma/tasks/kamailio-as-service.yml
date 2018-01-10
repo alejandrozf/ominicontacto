@@ -20,7 +20,7 @@
       - systemctl enable kamailio
       - systemctl daemon-reload
       - chown kamailio:kamailio -R /opt/kamailio
-      - /opt/kamailio/sbin/kamdbctl restore /usr/src/oml-freepbx/kamailio-files/kamdb.sql
+      - /opt/kamailio/sbin/kamdbctl restore /home/freetech/ominicontacto_voip/kamailio-files/kamdb.sql
 
 - name: Change network parameters in kamailio.cfg
   lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_IP_ADDR!\" line=\"#!substdef \"!MY_IP_ADDR!{{ omnicentos_ip }}!g\"\""

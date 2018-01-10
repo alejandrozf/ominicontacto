@@ -28,10 +28,12 @@
   when: ansible_os_family == "Debian"
 
 - name: Instalacion de freepbx
-  shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[3] }}"
-  with_items:
-          - ./start_asterisk start
-          - ./install -n
+  shell: "./start_asterisk start chdir=/usr/src/{{ dirsrc.stdout_lines[3] }}"
+  when: ansible_os_family == "RedHat"
+
+- shell: "./install -n chdir=/usr/src/{{ dirsrc.stdout_lines[3] }}"
+  register: command_result
+  failed_when: "'freepbx.conf file detected' not in command_result.stderr"
   when: ansible_os_family == "RedHat"
 - meta: clear_host_errors
 

@@ -49,11 +49,13 @@
 - meta: clear_host_errors
 
 - name: Setup of postgresql
-  shell: "{{ item }}"
+  command: "/usr/pgsql-9.6/bin/postgresql96-setup initdb"
+  register: command_result
+  failed_when: "'is not empty' not in command_result.stdout"
+- shell: "{{ item }}"
   with_items:
-      - /usr/pgsql-9.6/bin/postgresql96-setup initdb
       - systemctl enable postgresql-9.6.service
       - systemctl start postgresql-9.6.service
       - systemctl start redis
       - systemctl enable redis
-  ignore_errors: yes
+

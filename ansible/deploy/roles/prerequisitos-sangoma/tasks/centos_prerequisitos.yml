@@ -71,7 +71,6 @@
 
 - name: Install of NodeJS
   shell: "curl -sL https://rpm.nodesource.com/setup_8.x | bash -"
-  ignore_errors: yes
 - yum: name=nodejs state=present
 
 - name: Install Console_Getopt
