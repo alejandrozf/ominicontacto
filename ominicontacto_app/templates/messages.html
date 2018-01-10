@@ -3,7 +3,7 @@
 {% for message in messages %}
     {% if "error" in message.tags %}
 
-        <div class="alert alertdanger">
+        <div class="alert alert-danger">
             <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Error!</h4>
             {{ message }}
@@ -11,7 +11,7 @@
 
     {% elif "warning" in message.tags %}
 
-        <div class="alert alertwarning">
+        <div class="alert alert-warning">
             <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Atencion!</h4>
             {{ message }}
@@ -19,7 +19,7 @@
 
     {% elif "success" in message.tags %}
 
-        <div class="alert alertsuccess">
+        <div class="alert alert-success">
             <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Finalizado:</h4>
             {{ message }}
@@ -27,21 +27,21 @@
 
     {% elif "info" in message.tags %}
 
-        <div class="alert alertinfo">
+        <div class="alert alert-info">
             <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Informacion:</h4>
             {{ message }}
         </div>
 
     {% elif "debug" in message.tags %} {# the same as "INFO" #}
-        <div class="alert alertinfo">
+        <div class="alert alert-info">
             <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Informacion:</h4>
             {{ message }}
         </div>
 
     {% else %} {# the same as "INFO" #}
-        <div class="alert alertinfo">
+        <div class="alert alert-info">
             <button type="button" class="close" datadismiss="alert">&times;</button>
             <h4>Informacion:</h4>
             {{ message }}
