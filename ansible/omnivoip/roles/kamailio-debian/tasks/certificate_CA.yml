@@ -1,13 +1,24 @@
 ---
 
-- name: Creacion de estructura de directorios de CA de Kamailio
-  command: "{{ item }} chdir=/opt/kamailio/etc/"
+#- name: Creacion de estructura de directorios de CA de Kamailio
+#  command: "{{ item }} chdir=/opt/kamailio/etc/"
+#  with_items:
+#          - mkdir /opt/kamailio/etc/certs/
+#          - chmod 0700 /opt/kamailio/etc/certs/
+#          - mkdir /opt/kamailio/etc/certs/demoCA
+#          - mkdir /opt/kamailio/etc/certs/demoCA/newcerts
+#          - touch /opt/kamailio/etc/certs/demoCA/index.txt
+
+- name: Creacion de /opt/kamailio/etc/certs
+  file: path=/opt/kamailio/etc/certs state=directory mode=0700
+
+- name: Creacion de /opt/kamailio/etc/certs/demoCA y /newcerts
+  file: "path={{ item }} state=directory mode=0700"
   with_items:
-          - mkdir /opt/kamailio/etc/certs/
-          - chmod 0700 /opt/kamailio/etc/certs/
-          - mkdir /opt/kamailio/etc/certs/demoCA
-          - mkdir /opt/kamailio/etc/certs/demoCA/newcerts
-          - touch /opt/kamailio/etc/certs/demoCA/index.txt
+      - /opt/kamailio/etc/certs/demoCA
+      - /opt/kamailio/etc/certs/demoCA/newcerts
+- file: path=/opt/kamailio/etc/certs/demoCA/index.txt state=touch mode=0755
+
 #crear path de serial
 - set_fact: serial_file_path=/opt/kamailio/etc/certs/demoCA/serial
 #crear el archivo serial

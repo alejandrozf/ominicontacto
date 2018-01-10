@@ -1,12 +1,18 @@
 ---
 
+- name: Creation of kamamailio run directories
+  file: "path={{ item }} state=directory mode=0755"
+  with_items:
+      - /opt/kamailio/run/
+      - /opt/kamailio/run/kamailio/
+
 - name: Creation of kamailio user and group
   shell: "{{ item }}"
   with_items:
-      - mkdir -p /opt/kamailio/run/kamailio
+      #- mkdir -p /opt/kamailio/run/kamailio
       - groupadd -g 5000 kamailio
       - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
-  ignore_errors: yes
+#  ignore_errors: yes
 
 - name: Run kamailio as a service
   shell: "{{ item }}"

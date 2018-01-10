@@ -85,6 +85,7 @@
           - ldconfig
           - chkconfig asterisk off
   ignore_errors: yes
+- meta: clear_host_errors
 
 - name: Set up permissiond and raise up service
   shell: "{{ item }}"

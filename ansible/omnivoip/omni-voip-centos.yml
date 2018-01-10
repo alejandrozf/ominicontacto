@@ -13,3 +13,4 @@
           - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "RedHat" }
           # Seteo de asternic
           - {role: asternic, when: ansible_os_family == "RedHat" }
+

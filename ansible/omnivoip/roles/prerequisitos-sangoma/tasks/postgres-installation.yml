@@ -42,9 +42,11 @@
       - libsass-devel
       - libsass
       - python2-pip.noarch
+- meta: clear_host_errors
 
 - name: install php56wpgsql
   yum: name=php56w-pgsql state=present
+- meta: clear_host_errors
 
 - name: Setup of postgresql
   shell: "{{ item }}"

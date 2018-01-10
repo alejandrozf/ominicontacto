@@ -75,6 +75,7 @@
       - expect.x86_64
       - expect-devel.x86_64
       - MySQL-python.x86_64
+- meta: clear_host_errors
 
 - name: Change /etc/hostname
   template: src=templates/hostname.j2 dest=/etc/hostname

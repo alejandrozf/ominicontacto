@@ -9,3 +9,4 @@
           - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "Sangoma" }
           # Seteo de asternic
           - {role: asternic, when: ansible_os_family == "Sangoma" }
+

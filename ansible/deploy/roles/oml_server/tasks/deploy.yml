@@ -95,6 +95,7 @@
   become: yes
   become_method: su
   become_user: freetech
+- meta: clear_host_errors
 
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local_debian.py dest=/home/freetech/local

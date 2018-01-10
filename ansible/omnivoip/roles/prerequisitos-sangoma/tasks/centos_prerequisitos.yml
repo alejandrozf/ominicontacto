@@ -51,6 +51,7 @@
       - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
       - rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
   ignore_errors: yes
+- meta: clear_host_errors
 
 - yum: name={{ item }} state=present
   with_items:
@@ -65,6 +66,7 @@
       - php56w-ldap
       - php56w-intl
       - php56w-soap
+- meta: clear_host_errors
 
 - name: Install of NodeJS
   shell: "curl -sL https://rpm.nodesource.com/setup_8.x | bash -"
@@ -73,5 +75,6 @@
 
 - name: Install Console_Getopt
   pear: name=Console_Getopt state=present
+- meta: clear_host_errors
 
 
