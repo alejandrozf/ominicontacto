@@ -15,7 +15,8 @@ def adicionar_calificacion_especial_campanas(apps, schema_editor):
     Campana = apps.get_model("ominicontacto_app", "campana")
     Calificacion = apps.get_model("ominicontacto_app", "calificacion")
 
-    calificacion_agenda = Calificacion.objects.get_or_create(nombre=settings.CALIFICACION_REAGENDA)
+    calificacion_agenda, _ = Calificacion.objects.get_or_create(
+        nombre=settings.CALIFICACION_REAGENDA)
 
     for campana in Campana.objects_default.all():
         campana.calificacion_campana.calificacion.add(calificacion_agenda)
@@ -33,7 +34,7 @@ def rollback(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0140_auto_20180109_1806'),
+        ('ominicontacto_app', '0139_auto_20171229_1222'),
     ]
 
     operations = [
