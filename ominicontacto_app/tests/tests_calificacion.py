@@ -17,7 +17,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                QueueMemberFactory, CalificacionClienteFactory,
                                                CalificacionFactory, CalificacionManualFactory)
 
-from ominicontacto_app.models import AgendaContacto, Calificacion
+from ominicontacto_app.models import AgendaContacto, Calificacion, Campana
 
 
 class CalificacionTests(OMLBaseTest):
@@ -201,3 +201,46 @@ class CalificacionTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         calificacion_cliente.refresh_from_db()
         self.assertTrue(calificacion_cliente.agendado)
+
+    def _obtener_post_data_agenda(self):
+        observaciones = 'test_schedule'
+        siguiente_dia = timezone.now() + timezone.timedelta(days=1)
+        fecha = str(siguiente_dia.date())
+        hora = str(siguiente_dia.time())
+        post_data = {'contacto': self.contacto.pk,
+                     'agente': self.agente_profile.pk,
+                     'fecha': fecha,
+                     'hora': hora,
+                     'tipo_agenda': AgendaContacto.TYPE_GLOBAL,
+                     'observaciones': observaciones}
+        return post_data
+
+    @patch('requests.post')
+    def test_no_se_programan_en_wombat_agendas_globales_calificaciones_campanas_no_dialer(
+            self, post):
+        self.campana.type = Campana.TYPE_PREVIEW
+        self.campana.save()
+        CalificacionClienteFactory.create(
+            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        url = reverse('agenda_contacto_create',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        post_data = self._obtener_post_data_agenda()
+        self.client.post(url, post_data, follow=True)
+        self.assertEqual(post.call_count, 0)
+
+    @patch('requests.post')
+    def test_se_programan_en_wombat_agendas_globales_calificaciones_campanas_dialer(
+            self, post):
+        self.campana.type = Campana.TYPE_DIALER
+        self.campana.save()
+        CalificacionClienteFactory.create(
+            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        url = reverse('agenda_contacto_create',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        post_data = self._obtener_post_data_agenda()
+        self.client.post(url, post_data, follow=True)
+        self.assertEqual(post.call_count, 1)
