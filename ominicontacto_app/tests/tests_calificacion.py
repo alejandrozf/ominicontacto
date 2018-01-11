@@ -6,6 +6,7 @@ Tests sobre los procesos realicionados con la calificaciones de los contactos de
 
 from mock import patch
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -13,6 +14,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                ContactoFactory, AgenteProfileFactory,
                                                QueueMemberFactory, CalificacionClienteFactory,
                                                CalificacionFactory)
+
+from ominicontacto_app.models import Calificacion
 
 
 class CalificacionTests(OMLBaseTest):
@@ -105,3 +108,6 @@ class CalificacionTests(OMLBaseTest):
         post_data['calificacioncliente_set-INITIAL_FORMS'] = 1
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/formulario_create.html')
+
+    def test_existe_calificacion_especial_agenda(self):
+        self.assertTrue(Calificacion.objects.filter(nombre=settings.CALIFICACION_REAGENDA))
