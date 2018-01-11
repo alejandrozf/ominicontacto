@@ -4,6 +4,8 @@
 Tests sobre los procesos realicionados con la calificaciones de los contactos de las campañas
 """
 
+from mock import patch
+
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -92,7 +94,8 @@ class CalificacionTests(OMLBaseTest):
         calificacion_form = response.context.get('calificacion_form')
         self.assertFalse(calificacion_form.is_valid())
 
-    def test_calificacion_cliente_gestion_redirecciona_formulario_gestion(self):
+    @patch('requests.post')
+    def test_calificacion_cliente_gestion_redirecciona_formulario_gestion(self, post):
         url = reverse('calificacion_formulario_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
