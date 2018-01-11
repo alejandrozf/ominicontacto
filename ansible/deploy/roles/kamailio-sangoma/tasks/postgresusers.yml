@@ -25,7 +25,7 @@
   ignore_errors: yes
 
 - name: Copy of oml-freepbx/kamailio-files to the desired destinations
-  shell: "{{ item }} chdir=/home/freetech/ominicontacto_voip"
+  shell: "{{ item }} chdir=/home/freetech/ominicontacto/ominicontacto_voip"
   with_items:
       - cp kamailio-files/kamailio.cfg /opt/kamailio/etc/kamailio/
       - cp kamailio-files/kamctlrc /opt/kamailio/etc/kamailio/

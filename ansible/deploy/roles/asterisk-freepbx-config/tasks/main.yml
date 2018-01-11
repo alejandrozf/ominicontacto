@@ -1,7 +1,7 @@
 ---
 
 - name: Config of asterisk-freepbx for OML
-  shell: "{{ item }} chdir=/home/freetech/ominicontacto_voip/asterisk-files"
+  shell: "{{ item }} chdir=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files"
   with_items:
       - cp *.conf /etc/asterisk/
       - cp *.php /var/lib/asterisk/agi-bin
@@ -14,13 +14,13 @@
   file: dest=/usr/local/parselog state=directory mode=0755
 
 - name: Set ownership to asterisk user
-  shell: "{{ item }} chdir=/home/freetech/ominicontacto_voip/asterisk-files"
+  shell: "{{ item }} chdir=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files"
   with_items:
       - cp update_mix_mixmonitor.pl /usr/local/parselog
       - chmod +x /usr/local/parselog/update_mix_mixmonitor.pl
       - chown asterisk.asterisk -R /usr/local/parselog
-      - cp /home/freetech/ominicontacto_voip/extra-files/odbcinst.ini /etc/
-      - cp /home/freetech/ominicontacto_voip/extra-files/odbc.ini /etc/
+      - cp /home/freetech/ominicontacto/ominicontacto_voip/extra-files/odbcinst.ini /etc/
+      - cp /home/freetech/ominicontacto/ominicontacto_voip/extra-files/odbc.ini /etc/
       - mkdir /var/lib/asterisk/sounds/es
       - mkdir /var/lib/asterisk/sounds/en
       - tar xzvf es-oml.tgz -C /var/lib/asterisk/sounds/es/
