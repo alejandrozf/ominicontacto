@@ -13,7 +13,7 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
                                                ContactoFactory, AgenteProfileFactory,
                                                QueueMemberFactory, CalificacionClienteFactory,
-                                               CalificacionFactory)
+                                               CalificacionFactory, CalificacionManualFactory)
 
 from ominicontacto_app.models import Calificacion
 
@@ -28,6 +28,7 @@ class CalificacionTests(OMLBaseTest):
 
         self.campana = CampanaFactory.create()
         self.calificacion_gestion = CalificacionFactory.create(nombre=self.campana.gestion)
+        self.calificacion_agenda = Calificacion.objects.get(nombre=settings.CALIFICACION_REAGENDA)
         self.campana.calificacion_campana.calificacion.add(self.calificacion_gestion)
 
         self.contacto = ContactoFactory.create()
@@ -35,6 +36,9 @@ class CalificacionTests(OMLBaseTest):
 
         self.queue = QueueFactory.create(campana=self.campana)
         self.agente_profile = AgenteProfileFactory.create(user=UserFactory(is_agente=True))
+
+        self.calificacion_cliente_manual = CalificacionManualFactory(
+            campana=self.campana, agente=self.agente_profile)
 
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
 
@@ -111,3 +115,39 @@ class CalificacionTests(OMLBaseTest):
 
     def test_existe_calificacion_especial_agenda(self):
         self.assertTrue(Calificacion.objects.filter(nombre=settings.CALIFICACION_REAGENDA))
+
+    def _obtener_post_data_calificacion_manual(self):
+        post_data = {
+            'agente': self.agente_profile.pk,
+            'calificacion': '',
+            'observaciones': 'test',
+            'es_gestion': False,
+            'campana': self.campana.pk,
+            'agendado': False,
+            'telefono': self.contacto.pk
+        }
+        return post_data
+
+    def test_no_se_admite_tipo_calificacion_manual_vacia_en_creacion_calificacion(self):
+        url = reverse('campana_manual_calificacion_create',
+                      kwargs={'pk_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'telefono': self.contacto.pk})
+        post_data = self._obtener_post_data_calificacion_manual()
+        response = self.client.post(url, post_data, follow=True)
+        self.assertFalse(response.context_data['form'].is_valid())
+
+    def test_no_se_admite_tipo_calificacion_manual_vacia_en_modificacion_calificacion(self):
+        url = reverse('campana_manual_calificacion_update',
+                      kwargs={'pk_calificacion': self.calificacion_cliente_manual.pk})
+        post_data = self._obtener_post_data_calificacion_manual()
+        response = self.client.post(url, post_data, follow=True)
+        self.assertFalse(response.context_data['form'].is_valid())
+
+    def test_escoger_calificacion_agenda_llamada_manual_redirecciona_formulario_agenda(self):
+        url = reverse('campana_manual_calificacion_update',
+                      kwargs={'pk_calificacion': self.calificacion_cliente_manual.pk})
+        post_data = self._obtener_post_data_calificacion_manual()
+        post_data['calificacion'] = self.calificacion_agenda.pk
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_manual.html')
