@@ -9,13 +9,15 @@ from mock import patch
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
+from django.utils import timezone
+
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
                                                ContactoFactory, AgenteProfileFactory,
                                                QueueMemberFactory, CalificacionClienteFactory,
                                                CalificacionFactory, CalificacionManualFactory)
 
-from ominicontacto_app.models import Calificacion
+from ominicontacto_app.models import AgendaContacto, Calificacion
 
 
 class CalificacionTests(OMLBaseTest):
@@ -151,3 +153,51 @@ class CalificacionTests(OMLBaseTest):
         post_data['calificacion'] = self.calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_manual.html')
+
+    def test_escoger_calificacion_gestion_llamada_manual_redirecciona_formulario_gestion(self):
+        url = reverse('campana_manual_calificacion_create',
+                      kwargs={'pk_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'telefono': self.contacto.pk})
+        post_data = self._obtener_post_data_calificacion_manual()
+        post_data['calificacion'] = self.calificacion_gestion.pk
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'campana_manual/calificacion_create_update.html')
+
+    @patch('requests.post')
+    def test_escoger_calificacion_agenda_redirecciona_formulario_agenda(self, post):
+        calificacion_cliente = CalificacionClienteFactory.create(
+            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        url = reverse('calificacion_formulario_update',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk,
+                              'wombat_id': 0})
+        post_data = self._obtener_post_data_calificacion_cliente()
+        post_data['calificacioncliente_set-0-id'] = calificacion_cliente.pk
+        post_data['calificacioncliente_set-0-calificacion'] = self.calificacion_agenda.pk
+        post_data['calificacioncliente_set-INITIAL_FORMS'] = 1
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_contacto.html')
+
+    def test_calificacion_cliente_marcada_agendado_cuando_se_salva_agenda(self):
+        calificacion_cliente = CalificacionClienteFactory.create(
+            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        url = reverse('agenda_contacto_create',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        observaciones = 'test_schedule'
+        siguiente_dia = timezone.now() + timezone.timedelta(days=1)
+        fecha = str(siguiente_dia.date())
+        hora = str(siguiente_dia.time())
+        post_data = {'contacto': self.contacto.pk,
+                     'agente': self.agente_profile.pk,
+                     'fecha': fecha,
+                     'hora': hora,
+                     'tipo_agenda': AgendaContacto.TYPE_PERSONAL,
+                     'observaciones': observaciones}
+        self.assertFalse(calificacion_cliente.agendado)
+        self.client.post(url, post_data, follow=True)
+        calificacion_cliente.refresh_from_db()
+        self.assertTrue(calificacion_cliente.agendado)
