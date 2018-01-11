@@ -238,5 +238,5 @@ class CalificacionManualFactory(DjangoModelFactory):
     campana = SubFactory(CampanaFactory)
     telefono = lazy_attribute(lambda a: faker.random_number(10))
     calificacion = SubFactory(CalificacionFactory)
-    fecha_inicio = lazy_attribute(lambda a: timezone.now())
+    fecha = lazy_attribute(lambda a: timezone.now())
     agente = SubFactory(AgenteProfileFactory)
