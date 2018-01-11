@@ -3,7 +3,8 @@
 - name: Clone of the RTPengine repo
   git: repo={{ rtpengine_repo }} dest=/usr/src/rtpengine
   register: command_result
-  failed_when: "'Local modifications' not in command_result.msg"
+  failed_when: "'Local' not in command_result.msg"
+  changed_when: False
 
 - name: Installation of RTPengine
   shell: "make chdir=/usr/src/rtpengine/daemon"
@@ -17,6 +18,7 @@
 - shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/rtpengine/kernel-module"
   register: command_result
   failed_when: "'File exists' not in command_result.stderr"
+  changed_when: False
 
 - name: Installation of IPtables extensions
   shell: "make chdir=/usr/src/rtpengine/iptables-extension"

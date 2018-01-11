@@ -8,6 +8,7 @@
           - "{{ kamailio_repo }}"
   register: command_result
   failed_when: "'already exists' not in command_result.stderr"
+  changed_when: False
 
 - name: Checkout del repositorio
   command: "{{ item }} chdir=/usr/src/kamailio/"
@@ -15,6 +16,7 @@
           - git checkout -b 4.4 origin/4.4
   register: command_result
   failed_when: "'already exists' not in command_result.stderr"
+  changed_when: False
 
 - name: Make Prefix kamailio.cfg
   shell: "make PREFIX=/opt/kamailio cfg chdir=/usr/src/kamailio"

@@ -34,6 +34,7 @@
 - shell: "./install -n chdir=/usr/src/{{ dirsrc.stdout_lines[3] }}"
   register: command_result
   failed_when: "'freepbx.conf file detected' not in command_result.stderr"
+  changed_when: False
   when: ansible_os_family == "RedHat"
 - meta: clear_host_errors
 

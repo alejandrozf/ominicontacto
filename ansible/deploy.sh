@@ -191,11 +191,11 @@ if [ $opcion -eq 1 ]; then
     echo -en "Ingrese fqdn  de omni-app: "; read omniapp_fqdn
     sed -i "s/\(^omniapp_fqdn:\).*/omniapp_fqdn: $omniapp_fqdn/" /etc/ansible/group_vars/all
 
-    echo "Ejecutando Ansible en Debian omni-voip"
+    echo "Ejecutando Ansible en Debian"
     ansible-playbook -s /etc/ansible/omnivoip/omni-voip-debian.yml -u root
     ResultadoAnsible=`echo $?`
 
-    echo "Finalizó la instalación omni-voip"
+    echo "Finalizó la instalación omnileads"
     echo ""
 
 elif [ $opcion -eq 2 ]; then
@@ -214,9 +214,9 @@ elif [ $opcion -eq 2 ]; then
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnifreepbx_ip
 
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/deploy/omni-app-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$2"
+    ansible-playbook -s /etc/ansible/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$2"
     ResultadoAnsible=`echo $?`
-    echo "Finalizó la instalación omni-app"
+    echo "Finalizó la instalación omnileads"
     echo ""
 
 elif [ $opcion -eq 3 ]; then
@@ -235,9 +235,9 @@ elif [ $opcion -eq 3 ]; then
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnicentos_ip
 
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s /etc/ansible/deploy/omni-app-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$2"
+    ansible-playbook -s /etc/ansible/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$2"
     ResultadoAnsible=`echo $?`
-    echo "Finalizó la instalación omni-app"
+    echo "Finalizó la instalación omnileads"
     echo ""
 
 else
@@ -248,28 +248,13 @@ fi
 if [ ${ResultadoAnsible} -ne 0 ];then
     echo "Falló la ejecucion de Ansible, favor volver a correr el script"
     exit 0
-else
+#else
 
-if [ $opcion -eq 1 ]; then
-    echo "Ejecutando Ansible en Debian omni-app"
-    ansible-playbook -s /etc/ansible/deploy/omni-app-debian.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
-    echo "Ejecutando Ansible para copia de archivos entre servers"
-    ansible-playbook -s /etc/ansible/deploy/omniapp_second/transfer.yml -u root -K
-    echo "Finalizó la instalación de Omnileads"
+#if [ $opcion -eq 1 ]; then
+#    echo "Ejecutando Ansible en Debian omni-app"
+#    ansible-playbook -s /etc/ansible/deploy/omni-app-debian.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
+#    echo "Ejecutando Ansible para copia de archivos entre servers"
+#    ansible-playbook -s /etc/ansible/deploy/omniapp_second/transfer.yml -u root -K
+#    echo "Finalizó la instalación de Omnileads"
 
-elif [ $opcion -eq 2 ]; then
-    echo "Ejecutando Ansible en SangomaOS para deploy de OmniVOIP"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-freepbx.yml -u root --tags "$2"
-    echo "Finalizó la instalación de Omnileads"
-
-elif [ $opcion -eq 3 ]; then
-    echo "Ejecutando Ansible en Centos para deploy de OmniVOIP"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-centos.yml -u root --tags "$2"
-    echo "Finalizó la instalación Omnileads"
-    echo ""
-
-else
-    echo "Parámetro inválido ingrese de nuevo"
-    echo  ""
-fi
 fi

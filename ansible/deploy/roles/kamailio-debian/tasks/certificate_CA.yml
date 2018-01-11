@@ -65,3 +65,10 @@
           chdir: /opt/kamailio/etc/certs
   register: command_result
   failed_when: "'already been issued' not in command_result.stderr"
+  changed_when: False
+
+- set_fact: static_route=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto
+
+- name: Copy of the Kamailio cert in /static/
+  copy: src=/opt/kamailio/etc/certs/cert.pem dest={{ static_route }}/voip.cert remote_src=yes owner=freetech group=freetech
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"

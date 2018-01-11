@@ -20,7 +20,8 @@
       - systemctl enable php-fpm
 
 - name: Move Omnisup directory
-  shell: "cp -a {{ omnisup_dir }}/ominicontacto/Omnisup {{ omnisup_dir }}"
+  shell: "cp -a {{ omnisup_dirq
+   :}}/ominicontacto/Omnisup {{ omnisup_dir }}"
 
 - name: Change of Omnisup permissions
   shell: "chmod 755 -R {{ omnisup_dir }}/Omnisup"

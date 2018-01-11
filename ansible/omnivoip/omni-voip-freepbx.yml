@@ -3,9 +3,4 @@
   roles:
           # Instalación de paquetes y dependencias de omnivoip y setup inicial del server
           # Instalación y configuración de Kamailio
-          - {role: kamailio-sangoma, when: ansible_os_family == "Sangoma", tags: ['omnivoip','kamailio']}
-          # Configuración de asterisk/freepbx para funcionar con Omnileads
-          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "Sangoma", tags: ['omnivoip','asterisk-config']}
-          # Seteo de asternic
-          - {role: asternic, when: ansible_os_family == "Sangoma", tags: ['omnivoip','asternic']}
 

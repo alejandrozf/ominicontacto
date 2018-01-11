@@ -69,6 +69,7 @@
 - shell: "wget -O /tmp/downloads/pjproject-2.6.md5 http://www.pjsip.org/release/2.6/MD5SUM.txt chdir=/tmp/downloads"
   register: command_result
   failed_when: "'ERROR 404: Not Found' not in command_result.stderr"
+  changed_when: False
 
 - name: Instalacion de asterisk
   shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
@@ -79,6 +80,7 @@
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
   register: command_result
   failed_when: "'ERROR 404: Not Found' not in command_result.stderr"
+  changed_when: False
 
 - shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
   with_items:
@@ -89,7 +91,6 @@
           - make config
           - ldconfig
           - chkconfig asterisk off
-  ignore_errors: yes
 - meta: clear_host_errors
 
 - name: Set up permissiond and raise up service

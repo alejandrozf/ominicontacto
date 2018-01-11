@@ -1,8 +1,5 @@
 ---
 
-- name: Clone of omni-voip repository
-  git: repo={{ omnivoip_repo }} dest=/usr/src/oml-freepbx
-
 - name: Install of postgresql 9.6
   yum: "name={{ postgresql_url }} state=present validate_certs=no "
 - yum: name=postgresql96* state=present
