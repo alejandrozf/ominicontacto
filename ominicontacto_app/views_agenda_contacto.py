@@ -15,7 +15,8 @@ from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, FormView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
-    AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual, CalificacionCliente
+    AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual, CalificacionCliente,
+    CalificacionManual
 )
 from ominicontacto_app.forms import (
     AgendaContactoForm, AgendaBusquedaForm, AgendaManualForm
@@ -123,6 +124,14 @@ class AgendaManualCreateView(CreateView):
         initial.update({'telefono': telefono,
                         'agente': agente})
         return initial
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        agente = cleaned_data.get('agente')
+        telefono = cleaned_data.get('telefono')
+        CalificacionManual.objects.filter(
+            agente=agente, telefono=telefono).update(agendado=True)
+        return super(AgendaManualCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(
