@@ -34,15 +34,6 @@
     - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')
   changed_when: False
 
-- name: Remove test database and access to it
-  command: 'mysql -ne "{{ item }}"'
-  with_items:
-    - DROP DATABASE test
-    #- DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'
-  changed_when: False
-  register: command_result
-  failed_when: "'ERROR 1008' not in command_result.stderr"
-
 - name: Reload privilege tables
   command: 'mysql -ne "{{ item }}"'
   with_items:

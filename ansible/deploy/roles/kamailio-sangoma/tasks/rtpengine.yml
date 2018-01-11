@@ -3,8 +3,7 @@
 - name: Clone of the RTPengine repo
   git: repo={{ rtpengine_repo }} dest=/usr/src/rtpengine
   register: command_result
-  failed_when: "'Local' not in command_result.msg"
-  changed_when: False
+  ignore_errors: yes
 
 - name: Installation of RTPengine
   shell: "make chdir=/usr/src/rtpengine/daemon"
@@ -17,16 +16,17 @@
   shell: "make chdir=/usr/src/rtpengine/kernel-module"
 - shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/rtpengine/kernel-module"
   register: command_result
-  failed_when: "'File exists' not in command_result.stderr"
-  changed_when: False
+  failed_when:
+    - "'File exists' not in command_result.stderr"
+    - "command_result.rc != 0"
 
 - name: Installation of IPtables extensions
   shell: "make chdir=/usr/src/rtpengine/iptables-extension"
 - copy: src=/usr/src/rtpengine/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
 
 - name: Copy of rptengine init script in sysconfig
-  copy: src=/usr/src/oml-freepbx/kamailio-files/rtpengine_sysconfig dest=/etc/sysconfig/rtpengine remote_src=yes
-- copy: src=/usr/src/oml-freepbx/kamailio-files/rtpengine.service dest=/etc/systemd/system remote_src=yes
+  copy: src=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/rtpengine_sysconfig dest=/etc/sysconfig/rtpengine remote_src=yes
+- copy: src=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/rtpengine.service dest=/etc/systemd/system remote_src=yes
 
 - name: Modify of RTPengine sysconfig file
   template: src=templates/sysconfig_rtpengine.j2 dest=/etc/sysconfig/rtpengine

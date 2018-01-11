@@ -8,10 +8,10 @@
 
   roles:
           - {role: prerequisitos-sangoma, when: ansible_os_family == "Sangoma", tags: ['pre-sangoma']}
-          - oml_server
+          - {role: oml_server, tags: ['omniapp_second']}
           - {role: kamailio-sangoma, when: ansible_os_family == "Sangoma", tags: ['omnivoip','kamailio']}
           - omniapp_second
-          - {role: asterisk-freepbx-sangoma, when: ansible_os_family == "Sangoma", tags: ['omnivoip','asterisk-config']}
+          - {role: asterisk-freepbx-config, when: ansible_os_family == "Sangoma", tags: ['omnivoip','asterisk-config']}
           - {role: asternic, when: ansible_os_family == "Sangoma", tags: ['omnivoip','asternic']}
           - deploy_supervision
 

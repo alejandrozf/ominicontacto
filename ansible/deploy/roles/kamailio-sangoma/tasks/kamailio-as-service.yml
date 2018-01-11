@@ -13,6 +13,10 @@
       - groupadd -g 5000 kamailio
       - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
 #  ignore_errors: yes
+  register: command_result
+  failed_when:
+    - "'already exists' not in command_result.stderr"
+    - "command_result.rc != 0"
 
 - name: Run kamailio as a service
   shell: "{{ item }}"
@@ -20,7 +24,7 @@
       - systemctl enable kamailio
       - systemctl daemon-reload
       - chown kamailio:kamailio -R /opt/kamailio
-      - /opt/kamailio/sbin/kamdbctl restore /home/freetech/ominicontacto_voip/kamailio-files/kamdb.sql
+      - /opt/kamailio/sbin/kamdbctl restore /home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamdb.sql
 
 - name: Change network parameters in kamailio.cfg
   lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_IP_ADDR!\" line=\"#!substdef \"!MY_IP_ADDR!{{ omnicentos_ip }}!g\"\""

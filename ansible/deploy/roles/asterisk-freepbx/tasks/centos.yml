@@ -48,7 +48,7 @@
         - "make config"
 
 - name: Instalacion de libpri
-  shell: "{{ item }} chdir=/usr/src/{{dirsrc.stdout_lines[6] }}"
+  shell: "{{ item }} chdir=/usr/src/{{dirsrc.stdout_lines[7] }}"
   with_items:
           - "make"
           - "make install"
@@ -68,8 +68,9 @@
   shell: "wget -O /tmp/downloads/pjproject-2.6.tar.bz2 http://www.pjsip.org/release/2.6/pjproject-2.6.tar.bz2 chdir=/tmp/downloads"
 - shell: "wget -O /tmp/downloads/pjproject-2.6.md5 http://www.pjsip.org/release/2.6/MD5SUM.txt chdir=/tmp/downloads"
   register: command_result
-  failed_when: "'ERROR 404: Not Found' not in command_result.stderr"
-  changed_when: False
+  failed_when:
+    - "'ERROR 404: Not Found' not in command_result.stderr"
+    - "command_result.rc != 0"
 
 - name: Instalacion de asterisk
   shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
@@ -79,8 +80,7 @@
 
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
   register: command_result
-  failed_when: "'ERROR 404: Not Found' not in command_result.stderr"
-  changed_when: False
+  ignore_errors: yes
 
 - shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[0] }}"
   with_items:
