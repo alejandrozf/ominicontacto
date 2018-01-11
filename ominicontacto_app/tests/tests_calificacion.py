@@ -44,10 +44,6 @@ class CalificacionTests(OMLBaseTest):
             'calificacioncliente_set-INITIAL_FORMS': 0,
             'calificacioncliente_set-MIN_NUM_FORMS': 0,
             'calificacioncliente_set-MAX_NUM_FORMS': 1,
-            'calificacioncliente_set-TOTAL_FORMS': 1,
-            'calificacioncliente_set-INITIAL_FORMS': 0,
-            'calificacioncliente_set-MIN_NUM_FORMS': 0,
-            'calificacioncliente_set-MAX_NUM_FORMS': 1,
             'calificacioncliente_set-0-calificacion': '',
             'calificacioncliente_set-0-campana': self.campana.pk,
             'calificacioncliente_set-0-contacto': self.contacto.pk,
@@ -103,24 +99,9 @@ class CalificacionTests(OMLBaseTest):
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
                               'wombat_id': 0})
-        post_data = {
-            'telefono': self.contacto.telefono,
-            'calificacioncliente_set-TOTAL_FORMS': 1,
-            'calificacioncliente_set-INITIAL_FORMS': 1,
-            'calificacioncliente_set-MIN_NUM_FORMS': 0,
-            'calificacioncliente_set-MAX_NUM_FORMS': 1,
-            'calificacioncliente_set-TOTAL_FORMS': 1,
-            'calificacioncliente_set-INITIAL_FORMS': 1,
-            'calificacioncliente_set-MIN_NUM_FORMS': 0,
-            'calificacioncliente_set-MAX_NUM_FORMS': 1,
-            'calificacioncliente_set-0-calificacion': self.calificacion_gestion.pk,
-            'calificacioncliente_set-0-observaciones': 'sadasdas',
-            'calificacioncliente_set-0-campana': self.campana.pk,
-            'calificacioncliente_set-0-contacto': self.contacto.pk,
-            'calificacioncliente_set-0-es_venta': False,
-            'calificacioncliente_set-0-agente': self.agente_profile.pk,
-            'calificacioncliente_set-0-agendado': False,
-            'calificacioncliente_set-0-id': calificacion_cliente.pk,
-        }
+        post_data = self._obtener_post_data_calificacion_cliente()
+        post_data['calificacioncliente_set-0-id'] = calificacion_cliente.pk
+        post_data['calificacioncliente_set-0-calificacion'] = self.calificacion_gestion.pk
+        post_data['calificacioncliente_set-INITIAL_FORMS'] = 1
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/formulario_create.html')
