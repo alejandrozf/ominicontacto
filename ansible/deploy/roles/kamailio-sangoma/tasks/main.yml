@@ -7,5 +7,6 @@
 - include: postgresusers.yml
 
 - include: roles/kamailio-debian/tasks/certificate_CA.yml
+  tags: kamailio-cert
 
 - include: kamailio-as-service.yml

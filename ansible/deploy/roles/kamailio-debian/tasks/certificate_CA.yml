@@ -71,4 +71,5 @@
 
 - name: Copy of the Kamailio cert in /static/
   copy: src=/opt/kamailio/etc/certs/cert.pem dest={{ static_route }}/voip.cert remote_src=yes owner=freetech group=freetech
+  tags: test
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
