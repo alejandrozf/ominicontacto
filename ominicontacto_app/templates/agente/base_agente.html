@@ -100,7 +100,8 @@
                        											<div class="col-md-10">
                          												<select class="form-control" id="cmpList">
                          														{% for queue_member in user.get_agente_profile.get_campanas_activas_miembro %}
-                																		<option value = "{{ queue_member.queue_name.campana.pk }}"> {{ queue_member.queue_name.campana.nombre }} </option>
+                																		<option value = "{{ queue_member.queue_name.campana.pk }}"
+                                                    campana_type="{{ queue_member.queue_name.campana.type }}"> {{ queue_member.queue_name.campana.nombre }} </option>
                 				 														{% endfor %}
                          												</select>
                        											</div>
@@ -559,15 +560,15 @@
     <!-- JsSip Debug -->
     <!--<script>JsSIP.debug.enable('JsSIP:*');</script>-->
     <!-- webChat -->
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/JQueryWebChat.js' %}"></script>
+    <!--script type="text/javascript" src="{% static 'ominicontacto/JS/JQueryWebChat.js' %}"></script-->
     <!-- autobahn -->
     <!-- <script type="text/javascript" src="{% static 'ominicontacto/JS/autobahn.min.js' %}"></script> -->
     <!-- smschat -->
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/textMessages.js' %}"></script>
+    <!--script type="text/javascript" src="{% static 'ominicontacto/JS/textMessages.js' %}"></script-->
     <!-- Socket.IO -->
     <script type="text/javascript" src="{% static 'ominicontacto/JS/socket.io.js' %}"></script>
     <!-- FacebookMessenger -->
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/facebookMessenger.js' %}"></script>
+    <!--script type="text/javascript" src="{% static 'ominicontacto/JS/facebookMessenger.js' %}"></script-->
     <!-- Calendar -->
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
