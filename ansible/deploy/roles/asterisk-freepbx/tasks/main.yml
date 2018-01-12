@@ -5,7 +5,7 @@
 
 - include: freepbx.yml
   when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
-  tags: test
+  tags: freepbx
 
 
 
