@@ -119,12 +119,6 @@ class CalificacionTests(OMLBaseTest):
     def test_existe_calificacion_especial_agenda(self):
         self.assertTrue(Calificacion.objects.filter(nombre=settings.CALIFICACION_REAGENDA))
 
-    def test_al_crear_un_grupo_de_calificaciones_se_asigna_calificacion_especial_agenda(self):
-        calif_campana = CalificacionCampanaFactory.create()
-        tiene_calificacion_agenda = calif_campana.calificacion.filter(
-            nombre=settings.CALIFICACION_REAGENDA).exists()
-        self.assertTrue(tiene_calificacion_agenda)
-
     def _obtener_post_data_calificacion_manual(self):
         post_data = {
             'agente': self.agente_profile.pk,
