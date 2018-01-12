@@ -1120,7 +1120,7 @@ class CalificacionForm(forms.ModelForm):
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
         if nombre == settings.CALIFICACION_REAGENDA:
-            message = _('This calification name is reserved for the system')
+            message = _('Esta calificación está reservada para el sistema')
             raise forms.ValidationError(message, code='invalid')
         return nombre
 
