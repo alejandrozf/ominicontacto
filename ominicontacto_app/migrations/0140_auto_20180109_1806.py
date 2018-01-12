@@ -12,14 +12,15 @@ def adicionar_calificacion_especial_campanas(apps, schema_editor):
     de un contacto en una calificación a cada una de las calificaciones
     asociadas a una campaña
     """
-    Campana = apps.get_model("ominicontacto_app", "campana")
+    CalificacionCampana = apps.get_model("ominicontacto_app", "calificacioncampana")
     Calificacion = apps.get_model("ominicontacto_app", "calificacion")
 
     calificacion_agenda, _ = Calificacion.objects.get_or_create(
         nombre=settings.CALIFICACION_REAGENDA)
 
-    for campana in Campana.objects_default.all():
-        campana.calificacion_campana.calificacion.add(calificacion_agenda)
+    for calificacion_campana in CalificacionCampana.objects.all():
+        if calificacion_campana.calificacion.filter(nombre=settings.CALIFICACION_REAGENDA):
+            calificacion_campana.calificacion.add(calificacion_agenda)
 
 
 def rollback(apps, schema_editor):
