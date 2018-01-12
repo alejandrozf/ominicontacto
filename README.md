@@ -218,6 +218,8 @@ LOGGING = {
     }
 }
 
+CALIFICACION_REAGENDA = 'Reagenda' # Nombre de la calificación especial del sistema para agendar a un contacto
+
 MONITORFORMAT = 'mp3'           # insertar acá el formato en el cual serán generadas las grabaciones de
                                 # las llamadas
 
