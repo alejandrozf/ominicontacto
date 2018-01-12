@@ -33,6 +33,7 @@ class CalificacionTests(OMLBaseTest):
         self.calificacion_gestion = CalificacionFactory.create(nombre=self.campana.gestion)
         self.calificacion_agenda = Calificacion.objects.get(nombre=settings.CALIFICACION_REAGENDA)
         self.campana.calificacion_campana.calificacion.add(self.calificacion_gestion)
+        self.campana.calificacion_campana.calificacion.add(self.calificacion_agenda)
 
         self.contacto = ContactoFactory.create()
         self.campana.bd_contacto.contactos.add(self.contacto)
@@ -118,6 +119,9 @@ class CalificacionTests(OMLBaseTest):
 
     def test_existe_calificacion_especial_agenda(self):
         self.assertTrue(Calificacion.objects.filter(nombre=settings.CALIFICACION_REAGENDA))
+
+    def test_al_crear_un_grupo_de_calificaciones_se_asigna_calificacion_especial_agenda(self):
+        pass
 
     def _obtener_post_data_calificacion_manual(self):
         post_data = {
