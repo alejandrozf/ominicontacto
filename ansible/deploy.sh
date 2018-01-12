@@ -13,7 +13,7 @@ USAGE="Se debe ingresar el tag de ansible para que se ejecuten playbooks especif
        Tags disponibles: \n
        all: ejecuta todos los procesos \n
        omnivoip: ejecuta toda la instalacion de omnivoip \n
-       omniapp: ejecuta toda la instalacion de omniapp \n
+       omniapp: ejecuta toda la instalacion de omniapp (abarca deploy de django de OML y nginx) \n
        pre-centos: ejecuta los prerequisitos de centos (instalacion de paquetes tambien) \n
        asterisk-install: compila e instala asterisk \n
        kamailio: compila e instala kamailio y rtpengine \n
@@ -27,6 +27,8 @@ USAGE="Se debe ingresar el tag de ansible para que se ejecuten playbooks especif
        django-migrations: realiza todas las migraciones de django (uso de python manage.py) \n
        queuelog-trigger: ejecuta el trigger de queuelog \n
        nginx: configuraciones de nginx \n
+       freepbx: realiza la instalación de freepbx \n
+       kamailio-cert: realiza el seteo y creacion de certificados usados por kamailio y nginx \n
        wombat: instala y configura wombat \n
        supervision: deploya la supervision \n "
 
