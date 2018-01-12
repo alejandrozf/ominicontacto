@@ -277,6 +277,15 @@ class CalificacionCampana(models.Model):
     nombre = models.CharField(max_length=50)
     calificacion = models.ManyToManyField(Calificacion)
 
+    def save(self, *args, **kwargs):
+        nuevo = self.pk is None
+        super(CalificacionCampana, self).save(*args, **kwargs)
+        if nuevo:
+            # se creó un nuevo grupo de calificaciones
+            calificacion_reagenda, _ = Calificacion.objects.get_or_create(
+                nombre=settings.CALIFICACION_REAGENDA)
+            self.calificacion.add(calificacion_reagenda)
+
     def __unicode__(self):
         return self.nombre
 
@@ -813,14 +822,6 @@ class Campana(models.Model):
 
     def __unicode__(self):
         return self.nombre
-
-    def save(self, *args, **kwargs):
-        if self.pk is None:
-            # se está creando una nueva campaña
-            calificacion_reagenda, _ = Calificacion.objects.get_or_create(
-                nombre=settings.CALIFICACION_REAGENDA)
-            self.calificacion_campana.calificacion.add(calificacion_reagenda)
-        super(Campana, self).save(*args, **kwargs)
 
     def crear_tarea_actualizacion(self):
         """
