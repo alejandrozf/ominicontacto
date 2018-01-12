@@ -19,7 +19,8 @@ def adicionar_calificacion_especial_campanas(apps, schema_editor):
         nombre=settings.CALIFICACION_REAGENDA)
 
     for calificacion_campana in CalificacionCampana.objects.all():
-        if calificacion_campana.calificacion.filter(nombre=settings.CALIFICACION_REAGENDA):
+        if not calificacion_campana.calificacion.filter(
+                nombre=settings.CALIFICACION_REAGENDA).exists():
             calificacion_campana.calificacion.add(calificacion_agenda)
 
 
