@@ -59,7 +59,15 @@ class CalificacionListView(ListView):
     queryset = Calificacion.objects.exclude(nombre=settings.CALIFICACION_REAGENDA)
 
 
-class CalificacionCampanaCreateView(CreateView):
+class CalificacionCampanaMixin(object):
+
+    def form_valid(self, form):
+        form.cleaned_data['calificacion'] |= Calificacion.objects.filter(
+            nombre=settings.CALIFICACION_REAGENDA)
+        return super(CalificacionCampanaMixin, self).form_valid(form)
+
+
+class CalificacionCampanaCreateView(CalificacionCampanaMixin, CreateView):
     """Vista para crear un un grupo de calificacion
     DT: remover fields de la vista y crear un formulario"""
     model = CalificacionCampana
@@ -80,7 +88,7 @@ class CalificacionCampanaCreateView(CreateView):
         return reverse('calificacion_campana_list')
 
 
-class CalificacionCampanaUpdateView(UpdateView):
+class CalificacionCampanaUpdateView(CalificacionCampanaMixin, UpdateView):
     """Vista para crear un grupo de calificacion
     DT: remover fields de la vista y crear un formulario"""
     model = CalificacionCampana
