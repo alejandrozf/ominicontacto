@@ -11,9 +11,9 @@
           - {role: oml_server, tags: ['omniapp_second','omniapp']}
           - {role: kamailio-sangoma, when: ansible_os_family == "RedHat"}
           - {role: omniapp_second, tags: ['omniapp_second','omniapp']}
-          - {role: asterisk-freepbx, when: ansible_os_family == "RedHat", tags: ['asterisk-install'] }
-          - {role: asterisk-freepbx-config, when: ansible_os_family == "RedHat", tags: ['asterisk-config'] }
-          - {role: asternic, when: ansible_os_family == "RedHat", tags: ['asternic'] }
+          - {role: asterisk-freepbx, when: ansible_os_family == "RedHat", tags: ['omnivoip','asterisk-install'] }
+          - {role: asterisk-freepbx-config, when: ansible_os_family == "RedHat", tags: ['omnivoip','asterisk-config'] }
+          - {role: asternic, when: ansible_os_family == "RedHat", tags: ['omnivoip','asternic'] }
           - deploy_supervision
 
 
