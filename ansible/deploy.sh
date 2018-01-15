@@ -6,7 +6,10 @@
 # Autor: Andres Felipe Macias
 # Colaborador:  Federico Peker
 #
+ANSIBLE=`which ansible`
 PIP=`which pip`
+
+
 VERSION=$1
 TAG=$2
 USAGE="Se debe ingresar el tag de ansible para que se ejecuten playbooks especificos \n
@@ -145,12 +148,13 @@ EOF
 
 echo "Bienvenido al asistente de instalación de Omnileads"
 echo ""
-echo "Pasos preliminares:"
-echo "Instalando pip, virtualenv y git"
-apt-get -y install python-pip git virtualenv
-echo ""
 echo "Instalando ansible 2.4.0"
-pip install 'ansible==2.4.0.0'
+
+if [ -z $ANSIBLE ]; then
+    $PIP install 'ansible==2.4.0.0'
+else
+    echo "Ya tiene instalado ansible"
+fi
 
 if [ -f ~/.ssh/id_rsa.pub ]; then
     echo "Ya se han generado llaves para este usuario"
@@ -162,6 +166,7 @@ fi
 cd ~/ominicontacto
 git config --global user.name "lionite"
 git config --global user.email "felipe.macias@freetechsolutions.com.ar"
+git pull origin $1
 #git fetch
 #git checkout develop
 #echo "Copiando la carpeta ansible a /etc/"
