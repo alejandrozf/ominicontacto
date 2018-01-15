@@ -36,7 +36,7 @@ def rollback(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0139_auto_20171229_1222'),
+        ('ominicontacto_app', '0141_queuelog_nombres_a_ids_de_pausas_20180104'),
     ]
 
     operations = [
