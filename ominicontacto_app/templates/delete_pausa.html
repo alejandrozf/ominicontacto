@@ -4,10 +4,18 @@
 {% block content %}
 <div class="col-md-3">
     <form method="post">{% csrf_token %}
-        <h4>Pausa<strong>{{ object.nombre}}</strong></h4>
-        <h4>¿Esta seguro que desea eliminar esta Pausa? </h4>
+        <h4>Pausa <strong>{{ object.nombre}}</strong></h4>
+        {% if object.eliminada %}
+          <h4>¿Desea reactivar esta Pausa? </h4>
+        {% else %}
+          <h4>¿Está seguro que desea eliminar esta Pausa? </h4>
+        {% endif %}
         <button type="submit" class="btn btn-danger btn-sm">
-            <span class="glyphicon glyphicon-remove"></span> Eliminar
+        {% if object.eliminada %}
+            <span class="glyphicon glyphicon-remove"></span> Reactivar
+        {% else %}
+            <span class="glyphicon glyphicon-ok"></span> Eliminar
+        {% endif %}
         </button>
         <a href="{% url 'pausa_list' %}">Cancelar</a>
     </form>

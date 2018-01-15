@@ -635,7 +635,10 @@ class PausaForm(forms.ModelForm):
 
     class Meta:
         model = Pausa
-        fields = ('nombre', )
+        fields = ('nombre', 'tipo')
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
+        }
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']

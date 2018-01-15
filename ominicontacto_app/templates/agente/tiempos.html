@@ -205,6 +205,7 @@
     <thead>
         <tr>
             <th>Agente</th>
+            <th>Pausa</th>
             <th>Tipo de pausa</th>
             <th>Tiempo de pausa</th>
 
@@ -212,9 +213,10 @@
     </thead>
     {% for agente in graficos_estadisticas.estadisticas.agentes_pausa %}
         <tr>
-            <td>{{agente.0}}</td>
-            <td>{{agente.1}}</td>
-            <td>{{agente.2}}hs</td>
+            <td>{{agente.nombre_agente}}</td>
+            <td>{{agente.pausa}}</td>
+            <td>{{agente.tipo_de_pausa}}</td>
+            <td>{{agente.tiempo}}hs</td>
         </tr>
     {% endfor %}
     <tbody>

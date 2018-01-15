@@ -102,7 +102,7 @@ urlpatterns = [
         name='pausa_list',
         ),
     url(r'^pausa/delete/(?P<pk>\d+)/$',
-        login_required(views.PausaDeleteView.as_view()),
+        login_required(views.PausaToggleDeleteView.as_view()),
         name='pausa_delete',
         ),
     url(r'^node/$', login_required(views.node_view), name='view_node'),
