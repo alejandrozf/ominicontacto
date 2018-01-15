@@ -104,27 +104,8 @@
   when: ansible_os_family == "Debian"
 
 - name: Upload oml_settings_local.py
-  template: src=templates/oml_settings_local_sangoma.py dest=/home/freetech/local
-  when: ansible_os_family == "Sangoma"
-  become: yes
-  become_user: freetech
-  become_method: su
-
-- shell: "mv oml_settings_local_sangoma.py oml_settings_local.py chdir=/home/freetech/local"
-  when: ansible_os_family == "Sangoma"
-  become: yes
-  become_user: freetech
-  become_method: su
-
-- name: Upload oml_settings_local.py
-  template: src=templates/oml_settings_local_centos.py dest=/home/freetech/local
-  when: ansible_os_family == "RedHat"
-  become: yes
-  become_user: freetech
-  become_method: su
-
-- shell: "mv oml_settings_local_centos.py oml_settings_local.py chdir=/home/freetech/local"
-  when: ansible_os_family == "RedHat"
+  template: src=templates/oml_settings_local.py dest=/home/freetech/local
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   become: yes
   become_user: freetech
   become_method: su

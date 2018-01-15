@@ -20,4 +20,4 @@
 [omni-centos]
 172.16.20.12
 [omni-freepbx]
-192.168.99.2
+192.168.99.2 ansible_ssh_port=22

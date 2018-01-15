@@ -211,8 +211,7 @@ elif [ $opcion -eq 2 ]; then
     sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local_sangoma.py
 
     echo -en "Ingrese IP  de omni-freepbx: "; read omnifreepbx_ip
-    sed -i "s/\(^omnifreepbx_ip:\).*/omnifreepbx_ip: $omnifreepbx_ip/" /etc/ansible/group_vars/all
-    sed -i "23s/.*/$omnifreepbx_ip/" /etc/ansible/hosts
+    sed -i "23s/.*/$omnifreepbx_ip ansible_ssh_port=22/" /etc/ansible/hosts
 
     echo -en "Ingrese fqdn  de omni-freepbx: "; read omnifreepbx_fqdn
     sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnifreepbx_fqdn/" /etc/ansible/group_vars/all
@@ -232,8 +231,7 @@ elif [ $opcion -eq 3 ]; then
     sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local_centos.py
 
     echo -en "Ingrese IP  de omni-centos: "; read omnicentos_ip
-    sed -i "s/\(^omnicentos_ip:\).*/omnicentos_ip: $omnicentos_ip/" /etc/ansible/group_vars/all
-    sed -i "21s/.*/$omnicentos_ip/" /etc/ansible/hosts
+    sed -i "21s/.*/$omnicentos_ip ansible_ssh_port=22/" /etc/ansible/hosts
 
     echo -en "Ingrese fqdn  de omni-centos: "; read omnicentos_fqdn
     sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" /etc/ansible/group_vars/all

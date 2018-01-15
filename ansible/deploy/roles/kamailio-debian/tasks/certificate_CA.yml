@@ -41,13 +41,8 @@
 
 - name: Seteo de parametros del certificado de la CA
   set_fact:
-          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omnicentos_ip }}"
-  when: ansible_os_family == "RedHat"
-
-- name: Seteo de parametros del certificado de la CA
-  set_fact:
-          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omnifreepbx_ip }}"
-  when: ansible_os_family == "Sangoma"
+          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omni_ip }}"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
 - name: Generar la clave privada y crear los archivos del CA
   shell: "openssl req -new -x509 -extensions v3_ca -keyout key.pem -out cert.pem -days 3650 -passout pass:toor123 -subj \"{{ ca_subject }}\""

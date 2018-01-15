@@ -239,14 +239,10 @@ DNS.2 = {{ omnicentos_fqdn }}
 DNS.3 = omnileads-voip.example.net
 {% if ansible_os_family == "Debian" %}
 IP.1 = {{ omnivoip_fqdn }}
-{% elif ansible_os_family == "RedHat" %}
-IP.1 = {{ omnicentos_ip }}
-{% elif ansible_os_family == "Sangoma" %}
-IP.1 = {{ omnifreepbx_ip }}
 {% endif %}
+IP.1 = {{ omni_ip }}
 
 [ v3_ca ]
-
 
 # Extensions for a typical CA
 
