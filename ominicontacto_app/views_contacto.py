@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Vista para el modelo de Contacto de la base de datos
+Vistas para el modelo de Contacto de la base de datos
 """
 
 from __future__ import unicode_literals
@@ -15,7 +15,7 @@ from ominicontacto_app.models import Contacto, BaseDatosContacto
 from django.core import paginator as django_paginator
 from django.core.urlresolvers import reverse
 from ominicontacto_app.forms import (
-    BusquedaContactoForm, ContactoForm, FormularioNuevoContacto
+    BusquedaContactoForm, ContactoForm, FormularioNuevoContacto, EscogerCampanaForm
 )
 from ominicontacto_app.utiles import convertir_ascii_string
 
@@ -55,15 +55,23 @@ class ContactoListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ContactoListView, self).get_context_data(
             **kwargs)
+        agente = self.request.user.get_agente_profile()
+        campanas_queues = agente.get_campanas_no_preview_activas_miembro()
+        ids_campanas = [id_nombre.split('_')
+                        for id_nombre in campanas_queues.values_list('id_campana', flat=True)]
+        ids_campanas.insert(0, ('', '---------'))
+        campanas_form = EscogerCampanaForm({'campanas': ids_campanas, 'campana': ''})
+        context['form'] = campanas_form
         qs = self.get_queryset()
-         # ----- <Paginate> -----
+        # ----- <Paginate> -----
         page = self.kwargs['pagina']
         result_paginator = django_paginator.Paginator(qs, 20)
         try:
             qs = result_paginator.page(page)
         except django_paginator.PageNotAnInteger:  # If page is not an integer, deliver first page.
             qs = result_paginator.page(1)
-        except django_paginator.EmptyPage:  # If page is out of range (e.g. 9999), deliver last page of results.
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        except django_paginator.EmptyPage:
             qs = result_paginator.page(result_paginator.num_pages)
         # ----- </Paginate> -----
 
@@ -190,7 +198,6 @@ class ContactoBDContactoUpdateView(UpdateView):
         contacto = self.get_object()
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
         nombres = metadata.nombres_de_columnas
         datos = []
         nombres.remove('telefono')
