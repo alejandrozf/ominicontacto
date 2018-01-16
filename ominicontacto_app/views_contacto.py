@@ -48,6 +48,19 @@ class ContactoListView(ListView):
     model = Contacto
     template_name = 'agente/contacto_list.html'
 
+    def _paginate_queryset(self):
+        qs = self.get_queryset()
+        page = self.kwargs['pagina']
+        result_paginator = django_paginator.Paginator(qs, 20)
+        try:
+            qs = result_paginator.page(page)
+        except django_paginator.PageNotAnInteger:  # If page is not an integer, deliver first page.
+            qs = result_paginator.page(1)
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        except django_paginator.EmptyPage:
+            qs = result_paginator.page(result_paginator.num_pages)
+        return qs
+
     def get_queryset(self, **kwargs):
         agente = self.request.user.get_agente_profile()
         return agente.get_contactos_de_campanas_miembro()
@@ -62,22 +75,9 @@ class ContactoListView(ListView):
         ids_campanas.insert(0, ('', '---------'))
         campanas_form = EscogerCampanaForm({'campanas': ids_campanas, 'campana': ''})
         context['form'] = campanas_form
-        qs = self.get_queryset()
-        # ----- <Paginate> -----
-        page = self.kwargs['pagina']
-        result_paginator = django_paginator.Paginator(qs, 20)
-        try:
-            qs = result_paginator.page(page)
-        except django_paginator.PageNotAnInteger:  # If page is not an integer, deliver first page.
-            qs = result_paginator.page(1)
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        except django_paginator.EmptyPage:
-            qs = result_paginator.page(result_paginator.num_pages)
-        # ----- </Paginate> -----
-
+        qs = self._paginate_queryset()
         context['contactos'] = qs
         context['url_paginator'] = 'contacto_list'
-
         return context
 
 
