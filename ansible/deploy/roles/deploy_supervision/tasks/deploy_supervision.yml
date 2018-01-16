@@ -43,6 +43,7 @@
   with_items:
       - "chown freetech:freetech -R /var/run/php-fpm/php-fpm.sock"
       - "chown freetech:freetech -R {{ omnisup_dir }}/Omnisup"
+      - "chown freetech:freetech -R /var/lib/nginx/"
 
 - name: Creation of /etc/nginx/conf.d/supervision.conf
   template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
