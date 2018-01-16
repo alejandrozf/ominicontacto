@@ -251,8 +251,21 @@ class SupervisorProfile(models.Model):
 #     name = models.CharField(max_length=64)
 
 
+class CalificacionManager(models.Manager):
+    def usuarios(self):
+        """
+        Devuelve todas las calificaciones excepto la restringida de sistema
+        para agenda
+        """
+        return self.exclude(nombre=settings.CALIFICACION_REAGENDA)
+
+
 class Calificacion(models.Model):
     nombre = models.CharField(max_length=50)
+    objects = CalificacionManager()
+
+    def es_reservada(self):
+        return self.nombre == settings.CALIFICACION_REAGENDA
 
     def __unicode__(self):
         return self.nombre
@@ -2973,7 +2986,7 @@ class CalificacionManual(models.Model):
     campana = models.ForeignKey(Campana, related_name="calificacionmanual")
     telefono = models.CharField(max_length=128)
     es_gestion = models.BooleanField(default=False)
-    calificacion = models.ForeignKey(Calificacion, blank=True, null=True)
+    calificacion = models.ForeignKey(Calificacion, blank=False, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
     observaciones = models.TextField(blank=True, null=True)

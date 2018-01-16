@@ -168,6 +168,8 @@ LOGGING = {
     },
 }
 
+CALIFICACION_REAGENDA = 'Agenda'
+
 # Ubuntu (wav -> wav)
 TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
     "-r", "8k", "-c", "1", "-e", "signed-integer",
