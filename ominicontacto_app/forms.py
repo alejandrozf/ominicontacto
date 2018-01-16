@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 
 import json
 from django import forms
@@ -13,6 +14,7 @@ from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
+
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
@@ -1165,3 +1167,14 @@ class ArchivoDeAudioForm(forms.ModelForm):
             la Campaña. Si ya existe uno y guarda otro, el audio será
             reemplazado.""",
         }
+
+
+class EscogerCampanaForm(forms.Form):
+    campana = forms.ChoiceField(
+        label=_("Escoja una campaña"), choices=(),
+        widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(EscogerCampanaForm, self).__init__(*args, **kwargs)
+        choices = [(pk, nombre) for pk, nombre in self.data['campanas']]
+        self.fields['campana'].choices = choices
