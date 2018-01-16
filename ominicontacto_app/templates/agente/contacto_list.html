@@ -1,86 +1,93 @@
+{% load staticfiles %}
 {% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <form action="" method="post">{% csrf_token %}
-                    <table class="table" data-toggle="tooltip" data-placement="bottom"
-                           title="{% trans 'No se muestran las campañas de tipo preview a las cuales Ud. está asignado' %}">
-                        {{ form }}
-                    </table>
-                    <button type="submit" class="btn btn-primary">{% trans "Mostrar contactos" %}</button>
-                </form>
-            </div>
-            <div class="col-md-9">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID de Contacto</th>
-                            <th>Telefono</th>
-                            <th>Acciones</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for contacto in contactos %}
-                            <tr>
-                                <td>{{ contacto.pk }}</td>
-                                <td>{{ contacto.telefono }}</td>
-                                <td><a href="{% url 'contacto_update' contacto.pk %}" >
-                                    <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Modificar"></span></a>
-                                    <a href="" >
-                                        <span class=" glyphicon glyphicon-earphone" aria-hidden="true" title="Llamar"></span></a>
-                                    <a href="" >
-                                        <span class=" glyphicon glyphicon-envelope" aria-hidden="true" title="Email"></span></a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="3">No existen contactos</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <!-- pagination -->
-            <nav>
-                <ul class="pagination pagination-lg">
-                    <li class="{% if not contactos.has_previous %} disabled {% endif %}">
-                        {% if contactos.has_previous %}
-                            <a  href="{% url url_paginator pagina=contactos.previous_page_number%}">
-                                &laquo;
-                            </a>
-                        {% else %}
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/agente-contactos.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div id="contactos">
+                    <div class="col-md-3">
+                        <div class="well well-sm">
+                            <form action="" method="post">{% csrf_token %}
+                                <table class="table" data-toggle="tooltip" data-placement="bottom"
+                                       title="{% trans 'No se muestran las campañas de tipo preview a las cuales Ud. está asignado' %}">
+                                    {{ form }}
+                                </table>
+                                <button type="submit" class="btn btn-primary">{% trans "Mostrar contactos" %}</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <h4>{% trans 'Se muestran los contactos de la campaña: ' %} {{ campana_escogida }}</h4>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID de Contacto</th>
+                                    <th>Telefono</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for contacto in contactos %}
+                                    <tr>
+                                        <td>{{ contacto.pk }}</td>
+                                        <td>{{ contacto.telefono }}</td>
+                                        <td><a href="{% url 'contacto_update' contacto.pk %}" >
+                                            <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Modificar"></span></a>
+                                            <a href="" >
+                                                <span class=" glyphicon glyphicon-earphone" aria-hidden="true" title="Llamar"></span></a>
+                                            <a href="" >
+                                                <span class=" glyphicon glyphicon-envelope" aria-hidden="true" title="Email"></span></a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3">No existen contactos</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- pagination -->
+                <nav>
+                    <ul class="pagination pagination-lg">
+                        <li class="{% if not contactos.has_previous %} disabled {% endif %}">
+                            {% if contactos.has_previous %}
+                                <a  href="{% url url_paginator pagina=contactos.previous_page_number%}">
+                                    &laquo;
+                                </a>
+                            {% else %}
+                                <a href="javascript:void(0);">
+                                    &laquo;
+                                </a>
+                            {% endif %}
+                        </li>
+                        <li>
                             <a href="javascript:void(0);">
-                                &laquo;
+                                Página {{ contactos.number }} de {{ contactos.paginator.num_pages }}
                             </a>
-                        {% endif %}
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            Página {{ contactos.number }} de {{ contactos.paginator.num_pages }}
-                        </a>
-                    </li>
-                    <li class="{% if not contactos.has_next %} disabled {% endif %}">
-                        {% if contactos.has_next %}
-                            <a href="{% url url_paginator pagina=contactos.next_page_number %}">
-                                &raquo;
-                            </a>
-                        {% else %}
-                            <a href="javascript:void(0);">
-                                &raquo;
-                            </a>
-                        {% endif %}
-                    </li>
-                </ul>
-            </nav>
+                        </li>
+                        <li class="{% if not contactos.has_next %} disabled {% endif %}">
+                            {% if contactos.has_next %}
+                                <a href="{% url url_paginator pagina=contactos.next_page_number %}">
+                                    &raquo;
+                                </a>
+                            {% else %}
+                                <a href="javascript:void(0);">
+                                    &raquo;
+                                </a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-    </div>
-</body>
+    </body>
 </html>
