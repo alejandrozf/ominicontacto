@@ -181,6 +181,8 @@ MONITORFORMAT = 'ogg'
 
 OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
 
+CALIFICACION_REAGENDA = 'Agendado'
+
 LOCAL_APPS = []
 
 DJANGO_DEBUG_TOOLBAR = False
