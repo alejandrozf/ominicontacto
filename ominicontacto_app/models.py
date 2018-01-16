@@ -197,8 +197,13 @@ class AgenteProfile(models.Model):
         campanas_preview_activas = self.campana_member.filter(
             queue_name__campana__estado=Campana.ESTADO_ACTIVA,
             queue_name__campana__type=Campana.TYPE_PREVIEW)
-        return campanas_preview_activas.values_list(
-            'queue_name__campana', 'queue_name__campana__nombre')
+        return campanas_preview_activas
+
+    def get_campanas_no_preview_activas_miembro(self):
+        campanas_no_preview_activas = self.campana_member.filter(
+            queue_name__campana__estado=Campana.ESTADO_ACTIVA).exclude(
+                queue_name__campana__type=Campana.TYPE_PREVIEW)
+        return campanas_no_preview_activas
 
     def get_contactos_de_campanas_miembro(self):
         queues_con_contactos = self.queue_set.filter(campana__bd_contacto__isnull=False)
@@ -1218,6 +1223,8 @@ class Pausa(models.Model):
 # ==============================================================================
 # Base Datos Contactos
 # ==============================================================================
+
+
 class BaseDatosContactoManager(models.Manager):
     """Manager para BaseDatosContacto"""
 

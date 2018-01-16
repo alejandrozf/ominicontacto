@@ -312,5 +312,6 @@ class AgenteCampanasPreviewActivasView(TemplateView):
         context = super(AgenteCampanasPreviewActivasView, self).get_context_data(*args, **kwargs)
         agente_profile = self.request.user.get_agente_profile()
         campanas_preview_activas = agente_profile.get_campanas_preview_activas_miembro()
-        context['campanas_preview_activas'] = campanas_preview_activas
+        context['campanas_preview_activas'] = campanas_preview_activas.values_list(
+            'queue_name__campana', 'queue_name__campana__nombre')
         return context
