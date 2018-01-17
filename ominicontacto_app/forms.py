@@ -1172,9 +1172,10 @@ class ArchivoDeAudioForm(forms.ModelForm):
 class EscogerCampanaForm(forms.Form):
     campana = forms.ChoiceField(
         label=_("Escoja una campaña"), choices=(),
-        widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+        widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
+        campanas = kwargs.pop('campanas', None)
         super(EscogerCampanaForm, self).__init__(*args, **kwargs)
-        choices = [(pk, nombre) for pk, nombre in self.data['campanas']]
+        choices = [(pk, nombre) for pk, nombre in campanas]
         self.fields['campana'].choices = choices
