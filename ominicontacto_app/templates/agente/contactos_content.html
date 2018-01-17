@@ -23,7 +23,7 @@
                 <button id="lista_llamar_contacto" type="submit" class="hidden"></button>
             </form>
             <h4> {% trans 'Se muestran los contactos de la campaña' %}: {{ campana.nombre }}</h4>
-            <table class="table table-bordered" id="agenteContactosTable">
+            <table id="agenteContactosTable">
                 <thead>
                     <tr>
                         <th>ID de Contacto</th>
@@ -38,7 +38,7 @@
                             <td>{{ contacto.telefono }}</td>
                             <td><a href="{% url 'contacto_update' contacto.pk %}" >
                                 <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Modificar"></span></a>
-                                <button class="contacto-lista" data-contacto="{{ contacto.pk }}">
+                                <button type="button" class="contacto-lista btn btn-link" data-contacto="{{ contacto.pk }}">
                                     <span class=" glyphicon glyphicon-earphone" aria-hidden="true" title="Llamar"></span></button>
                                 <a href="" >
                                     <span class=" glyphicon glyphicon-envelope" aria-hidden="true" title="Email"></span></a>
