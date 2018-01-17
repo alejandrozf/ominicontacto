@@ -15,7 +15,7 @@
     <div class="col-md-9">
         {% if contactos %}
             <h4> {% trans 'Se muestran los contactos de la campaña' %}: {{ campana.nombre }}</h4>
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="agenteContactosTable">
                 <thead>
                     <tr>
                         <th>ID de Contacto</th>
@@ -44,37 +44,6 @@
                 </tbody>
             </table>
             <nav>
-                <ul class="pagination pagination-lg">
-                    <li class="{% if not contactos.has_previous %} disabled {% endif %}">
-                        {% if contactos.has_previous %}
-                            <a  href="{% url url_paginator pagina=contactos.previous_page_number%}">
-                                &laquo;
-                            </a>
-                        {% else %}
-                            <a href="javascript:void(0);">
-                                &laquo;
-                            </a>
-                        {% endif %}
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            Página {{ contactos.number }} de {{ contactos.paginator.num_pages }}
-                        </a>
-                    </li>
-                    <li class="{% if not contactos.has_next %} disabled {% endif %}">
-                        {% if contactos.has_next %}
-                            <a href="{% url url_paginator pagina=contactos.next_page_number %}">
-                                &raquo;
-                            </a>
-                        {% else %}
-                            <a href="javascript:void(0);">
-                                &raquo;
-                            </a>
-                        {% endif %}
-                    </li>
-                </ul>
-            </nav>
-
         {% endif %}
     </div>
 </div>

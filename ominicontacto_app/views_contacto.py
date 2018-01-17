@@ -12,7 +12,6 @@ from django.http import HttpResponseRedirect
 from django.views.generic import DeleteView
 from django.views.generic import ListView, CreateView, UpdateView, FormView
 from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
-from django.core import paginator as django_paginator
 from django.core.urlresolvers import reverse
 from ominicontacto_app.forms import (
     BusquedaContactoForm, ContactoForm, FormularioNuevoContacto, EscogerCampanaForm
@@ -66,18 +65,6 @@ class ContactoListView(FormView):
         kwargs['campanas'] = ids_campanas
         return kwargs
 
-    def _paginate_queryset(self, qs):
-        page = self.kwargs['pagina']
-        result_paginator = django_paginator.Paginator(qs, 20)
-        try:
-            qs = result_paginator.page(page)
-        except django_paginator.PageNotAnInteger:  # If page is not an integer, deliver first page.
-            qs = result_paginator.page(1)
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        except django_paginator.EmptyPage:
-            qs = result_paginator.page(result_paginator.num_pages)
-        return qs
-
     def get_context_data(self, **kwargs):
         context = super(ContactoListView, self).get_context_data(
             **kwargs)
@@ -90,9 +77,8 @@ class ContactoListView(FormView):
         campana_pk = form.cleaned_data.get('campana')
         campana = Campana.objects.get(pk=campana_pk)
         qs_contactos = campana.bd_contacto.contactos.all()
-        qs_contactos_paginados = self._paginate_queryset(qs_contactos)
         return self.render_to_response(self.get_context_data(
-            form=form, contactos=qs_contactos_paginados, campana=campana))
+            form=form, contactos=qs_contactos, campana=campana))
 
 
 class BusquedaContactoFormView(FormView):
