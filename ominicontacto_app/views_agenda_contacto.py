@@ -52,8 +52,8 @@ class AgendaContactoCreateView(CreateView):
            campana.type == Campana.TYPE_DIALER:
             url_wombat = '/'.join(
                 [settings.OML_WOMBAT_URL,
-                 'api/calls/?op=addcall&campaign={0}&number={1}&schedule={2}&attrs=ID_CAMPANA:{3},'
-                 'ID_CLIENTE:{4},CAMPANA:{0}'])
+                 'api/calls/?op=addcall&campaign={3}_{0}&number={1}&schedule={2}&'
+                 'attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'])
             fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
             requests.post(
                 url_wombat.format(
