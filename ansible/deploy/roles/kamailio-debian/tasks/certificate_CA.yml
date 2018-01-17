@@ -55,7 +55,7 @@
           chdir: /opt/kamailio/etc/certs/
 
 - name: Firmar el certificado de los nodos con el del CA
-  shell: "openssl ca -batch -days 1460 -out cert.pem -keyfile demoCA/key.pem -cert demoCA/cert.pem -passin pass:toor123 -infiles req.pem"
+  shell: "openssl ca -extensions v3_req  -batch -days 1460 -out cert.pem -keyfile demoCA/key.pem -cert demoCA/cert.pem -passin pass:toor123 -infiles req.pem"
   args:
           chdir: /opt/kamailio/etc/certs
   register: command_result

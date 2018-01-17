@@ -9,10 +9,18 @@
 ANSIBLE=`which ansible`
 PIP=`which pip`
 
-
-VERSION=$1
-TAG=$2
-USAGE="Se debe ingresar el tag de ansible para que se ejecuten playbooks especificos \n
+Help() {
+USAGE="
+       Opciones a ingresar: \n
+            -h: ayuda \n
+            -r: rama a deployar (ej: -r develop) \n
+            -i: ingresar ip, fqdn, formato de grabaciones, pass de OML, etc \n
+            -t: tags de ansible (TAREAS A EJECUTAR y no ejecutar) \n
+        \n
+       EJEMPLOS: \n
+       - ./deploy.sh -r develop -t all -> deployará la rama develop, ejecutara todas las tareas \n
+       - ./deploy.sh -r release-0.4 -i -t kamailio,kamailiocert -> deploya la rama release-0.4, pide datos del server, ejecuta las tareas de instalación de kamailio
+       exceptuando la creacion de certificados (tiene que estar separado por coma) \n
        Tags disponibles: \n
        all: ejecuta todos los procesos \n
        omnivoip: ejecuta toda la instalacion de omnivoip \n
@@ -34,17 +42,21 @@ USAGE="Se debe ingresar el tag de ansible para que se ejecuten playbooks especif
        kamailio-cert: realiza el seteo y creacion de certificados usados por kamailio y nginx \n
        wombat: instala y configura wombat \n
        supervision: deploya la supervision \n "
+       echo -e $USAGE
+       exit 1
+}
+#if [ "$1" == "-h" ] ; then
+#    echo "ERROR: debe especificar la version (branch, tag o commit) (usar opcion -h para ver ayuda)"
+#    exit 1
+#elif [ -z "$2" ] ; then
+#    echo "ERROR: debe especificar el tag, modo de uso: (usar opcion -h para ver ayuda)"
+#    exit 1
+#elif [ -z "$1" ]; then
+#    echo -e $USAGE
+#    exit 1
+#fi
 
-if [ -z "$1" ]  ; then
-    echo "ERROR: debe especificar la version (branch, tag o commit)"
-    exit 1
-
-elif [ -z "$2" ] ; then
-    echo "ERROR: debe especificar el tag, modo de uso:"
-    echo -e $USAGE
-    exit 1
-fi
-
+Rama() {
     echo "Pasando al deploy de OmniAPP"
 
     #if [ -z "$VIRTUAL_ENV" ] ; then
@@ -70,7 +82,7 @@ fi
     echo ""
     echo "Se iniciará deploy:"
     echo ""
-    echo "      Version: $VERSION"
+    echo "      Version: $1"
     #echo "   Inventario: $INVENTORY"
     echo ""
 
@@ -80,8 +92,8 @@ fi
     #git checkout master
     #git pull origin +master:master
 
-    git checkout $VERSION
-    git pull origin +$VERSION:$VERSION
+    git checkout $1
+ #   git pull origin +$1:$1
 
     # git reset --hard origin/$VERSION
 
@@ -145,6 +157,9 @@ EOF
 
     # ----------
     export DO_CHECKS="${DO_CHECKS:-no}"
+}
+
+Preliminar() {
 
 echo "Bienvenido al asistente de instalación de Omnileads"
 echo ""
@@ -172,16 +187,29 @@ git pull origin $1
 #echo "Copiando la carpeta ansible a /etc/"
 #cp -a ~/ominicontacto/ansible /etc/
 
-echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
-echo -en "Opcion: ";read opcion
-echo ""
-
 echo "Parámetros de la aplicación"
 echo -en "Ingrese valor de variable session_cookie_age: "; read session_cookie
 sed -i "s/\(^session_\).*/session_cookie_age: $session_cookie/" /etc/ansible/group_vars/all
 echo -en "Ingrese la contraseña de superuser de Omnileads: "; read admin_pass
 sed -i "s/\(^admin_pass\).*/admin_pass: $admin_pass/" /etc/ansible/group_vars/all
 
+}
+
+IngresarIP(){
+
+    echo -en "Ingrese el formato de audio en el que quiere las grabaciones: "; read audio
+    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local_centos.py
+    echo -en "Ingrese fqdn  de maquina a deployar: "; read omnicentos_fqdn
+    sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" /etc/ansible/group_vars/all
+    echo "Transifiendo llave publica a usuario root de Centos"
+    ssh-copy-id -i ~/.ssh/id_rsa.pub root@$ip
+
+}
+
+Tag() {
+echo -en "Ingrese IP  de maquina a deployar: "; read ip
+echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
+echo -en "Opcion: ";read opcion
 
 if [ $opcion -eq 1 ]; then
     echo -en "Ingrese IP  de omni-voip: "; read omnivoip_ip
@@ -207,40 +235,18 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
 
-    echo -en "Ingrese el formato de audio en el que quiere las grabaciones: "; read audio
-    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local_sangoma.py
-
-    echo -en "Ingrese IP  de omni-freepbx: "; read omnifreepbx_ip
-    sed -i "23s/.*/$omnifreepbx_ip ansible_ssh_port=22/" /etc/ansible/hosts
-
-    echo -en "Ingrese fqdn  de omni-freepbx: "; read omnifreepbx_fqdn
-    sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnifreepbx_fqdn/" /etc/ansible/group_vars/all
-
-    echo "Transifiendo llave publica a usuario root de SangomaOS"
-    ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnifreepbx_ip
-
+    sed -i "23s/.*/$ip ansible_ssh_port=22/" /etc/ansible/hosts
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$2"
+    ansible-playbook -s /etc/ansible/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$1" --skip-tags "$2"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
 
 elif [ $opcion -eq 3 ]; then
 
-    echo -en "Ingrese el formato de audio en el que quiere las grabaciones: "; read audio
-    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local_centos.py
-
-    echo -en "Ingrese IP  de omni-centos: "; read omnicentos_ip
-    sed -i "21s/.*/$omnicentos_ip ansible_ssh_port=22/" /etc/ansible/hosts
-
-    echo -en "Ingrese fqdn  de omni-centos: "; read omnicentos_fqdn
-    sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" /etc/ansible/group_vars/all
-
-    echo "Transifiendo llave publica a usuario root de Centos"
-    ssh-copy-id -i ~/.ssh/id_rsa.pub root@$omnicentos_ip
-
+    sed -i "21s/.*/$ip ansible_ssh_port=22/" /etc/ansible/hosts
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s /etc/ansible/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$2"
+    ansible-playbook -s /etc/ansible/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]}" --skip-tags "${array[1]}"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
@@ -263,3 +269,29 @@ if [ ${ResultadoAnsible} -ne 0 ];then
 #    echo "Finalizó la instalación de Omnileads"
 
 fi
+
+}
+
+while getopts "r::t:ih" OPTION;do
+	case "${OPTION}" in
+		r) # Rama a deployar
+            Rama $OPTARG
+		;;
+		i) #Realizar pasos y agregar opciones preliminares
+		    Preliminar
+		    IngresarIP
+		;;
+		t) #Tag
+		    set -f # disable glob
+            IFS=',' # split on space characters
+            array=($OPTARG) # use the split+glob operator
+   		    Tag $array
+		;;
+		h) # Print the help option
+			Help
+		;;
+
+	esac
+done
+if [ $# -eq 0  ]; then Help; fi
+

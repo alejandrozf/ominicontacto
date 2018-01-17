@@ -54,13 +54,11 @@
 - meta: clear_host_errors
 
 - get_url: url=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm dest=/root/ validate_certs=no
-  tags: php
 - shell: "rpm -Uvh webtatic-release.rpm chdir=/root"
   register: command_result
   failed_when:
     - "'ya está instalado' not in command_result.stderr"
     - "command_result.rc != 0"
-  tags: php
 
 - yum: name={{ item }} state=present
   with_items:
