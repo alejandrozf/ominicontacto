@@ -11,7 +11,7 @@ import json
 from django.http import HttpResponseRedirect
 from django.views.generic import DeleteView
 from django.views.generic import ListView, CreateView, UpdateView, FormView
-from ominicontacto_app.models import Contacto, BaseDatosContacto
+from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
 from django.core import paginator as django_paginator
 from django.core.urlresolvers import reverse
 from ominicontacto_app.forms import (
@@ -43,13 +43,30 @@ class ContactoUpdateView(UpdateView):
         return reverse('view_blanco')
 
 
-class ContactoListView(ListView):
+class ContactoListView(FormView):
     """Vista que lista los contactos"""
     model = Contacto
     template_name = 'agente/contacto_list.html'
 
-    def _paginate_queryset(self):
-        qs = self.get_queryset()
+    form_class = EscogerCampanaForm
+
+    def _obtener_campanas(self):
+        agente = self.request.user.get_agente_profile()
+        campanas_queues = agente.get_campanas_activas_miembro().exclude(
+            queue_name__campana__type__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW])
+        ids_campanas = [id_nombre.split('_')
+                        for id_nombre in campanas_queues.values_list('id_campana', flat=True)]
+        return ids_campanas
+
+    def get_form_kwargs(self):
+        kwargs = super(ContactoListView, self).get_form_kwargs()
+        ids_campanas = self._obtener_campanas()
+        if ids_campanas:
+            ids_campanas.insert(0, ('', '---------'))
+        kwargs['campanas'] = ids_campanas
+        return kwargs
+
+    def _paginate_queryset(self, qs):
         page = self.kwargs['pagina']
         result_paginator = django_paginator.Paginator(qs, 20)
         try:
@@ -61,24 +78,21 @@ class ContactoListView(ListView):
             qs = result_paginator.page(result_paginator.num_pages)
         return qs
 
-    def get_queryset(self, **kwargs):
-        agente = self.request.user.get_agente_profile()
-        return agente.get_contactos_de_campanas_miembro()
-
     def get_context_data(self, **kwargs):
         context = super(ContactoListView, self).get_context_data(
             **kwargs)
-        agente = self.request.user.get_agente_profile()
-        campanas_queues = agente.get_campanas_no_preview_activas_miembro()
-        ids_campanas = [id_nombre.split('_')
-                        for id_nombre in campanas_queues.values_list('id_campana', flat=True)]
-        ids_campanas.insert(0, ('', '---------'))
-        campanas_form = EscogerCampanaForm({'campanas': ids_campanas, 'campana': ''})
-        context['form'] = campanas_form
-        qs = self._paginate_queryset()
-        context['contactos'] = qs
-        context['url_paginator'] = 'contacto_list'
+        context['campanas'] = self._obtener_campanas()
+        if not context.get('campana_nombre', False):
+            context['form'] = self.get_form()
         return context
+
+    def form_valid(self, form):
+        campana_pk = form.cleaned_data.get('campana')
+        campana = Campana.objects.get(pk=campana_pk)
+        qs_contactos = campana.bd_contacto.contactos.all()
+        qs_contactos_paginados = self._paginate_queryset(qs_contactos)
+        return self.render_to_response(self.get_context_data(
+            form=form, contactos=qs_contactos_paginados, campana=campana))
 
 
 class BusquedaContactoFormView(FormView):
