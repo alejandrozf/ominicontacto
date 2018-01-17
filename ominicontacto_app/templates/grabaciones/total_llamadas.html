@@ -135,6 +135,20 @@
           <td>{{total_llamadas.llamadas_abandonadas_manuales}}</td>
         </tr>
       </table>
+      <table class="table table-bordered">
+        <tr>
+          <td><strong>Total llamadas Salientes Preview</strong></td>
+          <td>{{total_llamadas.llamadas_ingresadas_preview}}</td>
+        </tr>
+        <tr>
+          <td>Cantidad de llamadas atendidas</td>
+          <td>{{total_llamadas.llamadas_atendidas_preview}}</td>
+        </tr>
+        <tr>
+          <td>Cantidad de llamadas abandonadas</td>
+          <td>{{total_llamadas.llamadas_abandonadas_preview}}</td>
+        </tr>
+      </table>
       {% endwith %}
       <form action="{% url 'exportar_llamadas' tipo_reporte='total_llamadas' %}" method="POST">
           {% csrf_token %}
@@ -348,6 +362,44 @@
         </form>
       </div>
       </div>
+      <br/>
+
+      <div id="seccion-llamadas-preview" style="border:1px solid #cecece;">
+        <h4>Distribucion de tipos de llamadas en campañas Preview </h4>
+      <div style="overflow: auto; height: 200px">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Campaña</th>
+            <th>Recibidas</th>
+            <th>Atendidas</th>
+            <th>Expiradas</th>
+            <th>Abandonadas</th>
+          </tr>
+        </thead>
+        {% for campana in graficos_estadisticas.estadisticas.queues_llamadas_preview %}
+        <tr>
+          <td>{{campana.0}}</td>
+          <td>{{campana.1}}</td>
+          <td>{{campana.2}}</td>
+          <td>{{campana.3}}</td>
+          <td>{{campana.4}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      </div>
+      <div class="graficos-avances">
+        <figure>
+          {{ graficos_estadisticas.barra_campana_llamadas_preview.render|safe }}
+        </figure>
+        <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas_preview' %}" method="POST">
+            {% csrf_token %}
+            <input class="hidden" name="llamadas_campanas_preview" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_preview_json }}"/>
+            <h5><button class="btn btn-info btn-sm">Exportar llamadas campañas Preview</button></h5>
+        </form>
+      </div>
+      </div>
+
     </div>
 {% endwith %}
 {% endblock %}
