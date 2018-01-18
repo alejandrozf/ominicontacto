@@ -45,40 +45,10 @@ USAGE="
        echo -e $USAGE
        exit 1
 }
-#if [ "$1" == "-h" ] ; then
-#    echo "ERROR: debe especificar la version (branch, tag o commit) (usar opcion -h para ver ayuda)"
-#    exit 1
-#elif [ -z "$2" ] ; then
-#    echo "ERROR: debe especificar el tag, modo de uso: (usar opcion -h para ver ayuda)"
-#    exit 1
-#elif [ -z "$1" ]; then
-#    echo -e $USAGE
-#    exit 1
-#fi
 
 Rama() {
     echo "Pasando al deploy de OmniAPP"
-
-    #if [ -z "$VIRTUAL_ENV" ] ; then
-    #    . ~/ominicontacto/virtualenv/bin/activate
-    #fi
-
-
-    ##### No es necesario pasar archivo de inventario pues lo lee del ansible.cfg #####
-    #if [ -z "$1" ] ; then
-    #	echo "ERROR: debe especificar el archivo de inventario"
-    #	exit 1
-    #fi
-    #
-    #if [ ! -e "$1" ] ; then
-    #	echo "ERROR: el archivo de inventario no existe"
-    #	exit 1
-    #fi
-    #INVENTORY=$1
-    #shift
-
     set -e
-
     echo ""
     echo "Se iniciará deploy:"
     echo ""
@@ -87,15 +57,8 @@ Rama() {
     echo ""
 
     cd ~/ominicontacto
-    #git clean -fdx
-    #git fetch --prune --tags --force --all -v
-    #git checkout master
-    #git pull origin +master:master
-
     git checkout $1
- #   git pull origin +$1:$1
-
-    # git reset --hard origin/$VERSION
+    git pull origin +$1:$1
 
     ################### Build.sh #####################
 
@@ -105,18 +68,13 @@ Rama() {
     #fi
 
     set -e
-
     cd $(dirname $0)
-
-    TMP=/dev/shm/ominicontacto-build
-
+    TMP=/tmp/ominicontacto-build
     if [ -e $TMP ] ; then
         rm -rf $TMP
     fi
-
     mkdir -p $TMP/ominicontacto
     echo "Usando directorio temporal: $TMP/ominicontacto..."
-
     echo "Creando bundle usando git-archive..."
     git archive --format=tar $(git rev-parse HEAD) | tar x -f - -C $TMP/ominicontacto
 
@@ -161,37 +119,37 @@ EOF
 
 Preliminar() {
 
-echo "Bienvenido al asistente de instalación de Omnileads"
-echo ""
-echo "Instalando ansible 2.4.0"
+    echo "Bienvenido al asistente de instalación de Omnileads"
+    echo ""
+    echo "Instalando ansible 2.4.0"
 
-if [ -z $ANSIBLE ]; then
-    $PIP install 'ansible==2.4.0.0'
-else
-    echo "Ya tiene instalado ansible"
-fi
+    if [ -z $ANSIBLE ]; then
+        $PIP install 'ansible==2.4.0.0'
+    else
+        echo "Ya tiene instalado ansible"
+    fi
 
-if [ -f ~/.ssh/id_rsa.pub ]; then
-    echo "Ya se han generado llaves para este usuario"
-else
-    echo "Generando llaves públicas de usuario actual"
-    ssh-keygen
-fi
+    if [ -f ~/.ssh/id_rsa.pub ]; then
+        echo "Ya se han generado llaves para este usuario"
+    else
+        echo "Generando llaves públicas de usuario actual"
+        ssh-keygen
+    fi
 
-cd ~/ominicontacto
-git config --global user.name "lionite"
-git config --global user.email "felipe.macias@freetechsolutions.com.ar"
-git pull origin $1
-#git fetch
-#git checkout develop
-#echo "Copiando la carpeta ansible a /etc/"
-#cp -a ~/ominicontacto/ansible /etc/
+    cd ~/ominicontacto
+    git config --global user.name "lionite"
+    git config --global user.email "felipe.macias@freetechsolutions.com.ar"
+    git pull origin $1
+    #git fetch
+    #git checkout develop
+    #echo "Copiando la carpeta ansible a /etc/"
+    #cp -a ~/ominicontacto/ansible /etc/
 
-echo "Parámetros de la aplicación"
-echo -en "Ingrese valor de variable session_cookie_age: "; read session_cookie
-sed -i "s/\(^session_\).*/session_cookie_age: $session_cookie/" /etc/ansible/group_vars/all
-echo -en "Ingrese la contraseña de superuser de Omnileads: "; read admin_pass
-sed -i "s/\(^admin_pass\).*/admin_pass: $admin_pass/" /etc/ansible/group_vars/all
+    echo "Parámetros de la aplicación"
+    echo -en "Ingrese valor de variable session_cookie_age: "; read session_cookie
+    sed -i "s/\(^session_\).*/session_cookie_age: $session_cookie/" /etc/ansible/group_vars/all
+    echo -en "Ingrese la contraseña de superuser de Omnileads: "; read admin_pass
+    sed -i "s/\(^admin_pass\).*/admin_pass: $admin_pass/" /etc/ansible/group_vars/all
 
 }
 
@@ -202,14 +160,13 @@ IngresarIP(){
     echo -en "Ingrese fqdn  de maquina a deployar: "; read omnicentos_fqdn
     sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" /etc/ansible/group_vars/all
     echo "Transifiendo llave publica a usuario root de Centos"
-    ssh-copy-id -i ~/.ssh/id_rsa.pub root@$ip
-
 }
 
 Tag() {
-echo -en "Ingrese IP  de maquina a deployar: "; read ip
-echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
-echo -en "Opcion: ";read opcion
+    echo -en "Ingrese IP  de maquina a deployar: "; read ip
+    ssh-copy-id -i ~/.ssh/id_rsa.pub root@$ip
+    echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
+    echo -en "Opcion: ";read opcion
 
 if [ $opcion -eq 1 ]; then
     echo -en "Ingrese IP  de omni-voip: "; read omnivoip_ip

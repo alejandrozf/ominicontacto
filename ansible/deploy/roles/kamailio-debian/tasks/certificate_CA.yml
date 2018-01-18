@@ -69,3 +69,7 @@
   copy: src=/opt/kamailio/etc/certs/demoCA/cert.pem dest={{ static_route }}/voip.cert remote_src=yes owner=freetech group=freetech
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
+- name: Set permission to /opt/kamailio/etc/certs
+  shell: "chown kamailio:kamailio -R /opt/kamailio/etc/certs/"
+
+

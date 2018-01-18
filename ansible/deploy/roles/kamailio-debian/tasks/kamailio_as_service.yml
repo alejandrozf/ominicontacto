@@ -6,7 +6,6 @@
           - "adduser --quiet --system --group --disabled-password --shell /bin/false --gecos \"Kamailio\" --home /var/run/kamailio kamailio"
           - mkdir -p /var/run/kamailio
           - chown kamailio:kamailio /var/run/kamailio
-          - chown kamailio:kamailio -R /opt/kamailio/etc/certs/
           - systemctl enable kamailio
           - systemctl daemon-reload
           - chown kamailio:kamailio -R /opt/kamailio
