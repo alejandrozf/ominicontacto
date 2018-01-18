@@ -228,15 +228,13 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = example.com
 {% if ansible_os_family == "Debian" %}
-DNS.2 = {{ omnivoip_fqdn }}
+DNS.1 = {{ omnivoip_fqdn }}
 {% elif ansible_os_family == "RedHat" %}
-DNS.2 = {{ omnicentos_fqdn }}
+DNS.1 = {{ omnicentos_fqdn }}
 {% elif ansible_os_family == "Sangoma" %}
-DNS.2 = {{ omnicentos_fqdn }}
+DNS.1 = {{ omnicentos_fqdn }}
 {% endif %}
-DNS.3 = omnileads-voip.example.net
 {% if ansible_os_family == "Debian" %}
 IP.1 = {{ omnivoip_fqdn }}
 {% endif %}
