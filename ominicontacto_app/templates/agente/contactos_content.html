@@ -20,6 +20,7 @@
                 <input type="hidden" id="pk_contacto" name="pk_contacto">
                 <input type="hidden" id="pk_campana" name="pk_campana" value="{{ campana.pk }}">
                 <input type="hidden" id="campana_nombre" name="campana_nombre" value="{{ campana.nombre }}">
+                <input type="hidden" id="click2call_lista_contactos" name="click2call_lista_contactos" value="true">
                 <button id="lista_llamar_contacto" type="submit" class="hidden"></button>
             </form>
             <h4> {% trans 'Se muestran los contactos de la campaña' %}: {{ campana.nombre }}</h4>
