@@ -28,6 +28,7 @@
   with_items:
       - cert.pem
       - key.pem
+  tags: kamailio-cert
   notify: restart nginx
 
 - name: Create ominicontacto-daemon service
@@ -44,6 +45,7 @@
           - "service ominicontacto-daemon start"
           - "service ominicontacto-daemon stop"
           - "chkconfig ominicontacto-daemon on"
+          - "service ominicontacto-daemon start"
   ignore_errors: yes
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
@@ -55,8 +57,8 @@
           - "update-rc.d ominicontacto-daemon enable 3"
           - "update-rc.d ominicontacto-daemon enable 4"
           - "update-rc.d ominicontacto-daemon enable 5"
+          - "service ominicontacto-daemon start"
   ignore_errors: yes
-  notify: restart ominicontacto-daemon
   when: ansible_os_family == "Debian"
 
 

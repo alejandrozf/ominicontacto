@@ -14,8 +14,8 @@ USAGE="
        Opciones a ingresar: \n
             -h: ayuda \n
             -r: rama a deployar (ej: -r develop) \n
-            -i: ingresar ip, fqdn, formato de grabaciones, pass de OML, etc \n
-            -t: tags de ansible (TAREAS A EJECUTAR y no ejecutar) \n
+            -i: ingresar fqdn, formato de grabaciones, pass de OML, etc \n
+            -t: ingresar ip, opcion de SO, tags de ansible (TAREAS A EJECUTAR y no ejecutar) \n
         \n
        EJEMPLOS: \n
        - ./deploy.sh -r develop -t all -> deployará la rama develop, ejecutara todas las tareas \n
@@ -194,7 +194,7 @@ elif [ $opcion -eq 2 ]; then
 
     sed -i "23s/.*/$ip ansible_ssh_port=22/" /etc/ansible/hosts
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "$1" --skip-tags "$2"
+    ansible-playbook -s /etc/ansible/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
@@ -203,7 +203,7 @@ elif [ $opcion -eq 3 ]; then
 
     sed -i "21s/.*/$ip ansible_ssh_port=22/" /etc/ansible/hosts
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s /etc/ansible/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]}" --skip-tags "${array[1]}"
+    ansible-playbook -s /etc/ansible/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
