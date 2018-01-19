@@ -95,7 +95,7 @@ class API_ObtenerContactosCampanaView(View):
         start = int(request.GET['start'])
         length = int(request.GET['length'])
         draw = int(request.GET['draw'])
-        data = [[pk, telefono] for pk, telefono
+        data = [[pk, telefono, ''] for pk, telefono
                 in contactos_filtrados.values_list('pk', 'telefono')]
         result_dict = {
             'draw': draw,
