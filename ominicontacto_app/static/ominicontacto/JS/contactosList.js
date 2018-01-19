@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
   var $inputContacto = $('#pk_contacto');
+  var pk_campana = $('#pk_campana').attr('value');
 
   function conectar_contactos_llamadas() {
     $('.contacto-lista').each(function() {
@@ -17,6 +18,11 @@ $(document).ready(function(){
     .on( 'draw.dt', function () { conectar_contactos_llamadas();})
     .DataTable( {
       // Convierte a datatable la tabla de contactos
+      serverSide: true,
+      processing: true,
+      ajax: '/api/campana/' + pk_campana + '/contactos/',
+      ordering: false,
+      paging: true,
       language: {
         search: "Buscar: ",
         paginate: {
