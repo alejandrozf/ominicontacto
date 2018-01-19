@@ -3,24 +3,12 @@ $(document).ready(function(){
   var $inputContacto = $('#pk_contacto');
   var pk_campana = $('#pk_campana').attr('value');
 
-  function conectar_contactos_llamadas() {
-    $('.contacto-lista').each(function() {
-      $(this).on('click', function() {
-        var $button = $(this);
-        var pk_contacto = $button.data('contacto');
-        $inputContacto.attr('value', pk_contacto);
-        $('#lista_llamar_contacto').trigger('click');
-      });
-    });
-  }
-
   function create_node (type, attrs) {
     var $node = $("<" + type + "/>", attrs);
     return $node;
   }
 
   $('#agenteContactosTable')
-    .on( 'draw.dt', function () { conectar_contactos_llamadas();})
     .DataTable( {
       // Convierte a datatable la tabla de contactos
       "createdRow": function ( row, data, index ) {
