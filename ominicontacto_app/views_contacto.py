@@ -8,9 +8,9 @@ from __future__ import unicode_literals
 
 import json
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import DeleteView
-from django.views.generic import ListView, CreateView, UpdateView, FormView
+from django.views.generic import View, ListView, CreateView, UpdateView, FormView
 from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
 from django.core.urlresolvers import reverse
 from ominicontacto_app.forms import (
@@ -76,9 +76,41 @@ class ContactoListView(FormView):
     def form_valid(self, form):
         campana_pk = form.cleaned_data.get('campana')
         campana = Campana.objects.get(pk=campana_pk)
-        qs_contactos = campana.bd_contacto.contactos.all()
         return self.render_to_response(self.get_context_data(
-            form=form, contactos=qs_contactos, campana=campana))
+            form=form, campana=campana))
+
+
+class API_ObtenerContactosCampanaView(View):
+    def _procesar_api(self, request, campana):
+        search = request.GET['search[value]']
+        contactos = campana.bd_contacto.contactos.all()
+        if search != '':
+            contactos = campana.bd_contacto.contactos.filter(
+                telefono__iregex=search)
+        return contactos
+
+    def _procesar_contactos_salida(self, request, campana, contactos_filtrados):
+        total_contactos = campana.bd_contacto.contactos.count()
+        total_contactos_filtrados = contactos_filtrados.count()
+        start = int(request.GET['start'])
+        length = int(request.GET['length'])
+        draw = int(request.GET['draw'])
+        data = [[pk, telefono] for pk, telefono
+                in contactos_filtrados.values_list('pk', 'telefono')]
+        result_dict = {
+            'draw': draw,
+            'recordsTotal': total_contactos,
+            'recordsFiltered': total_contactos_filtrados,
+            'data': data[start:start + length],
+        }
+        return result_dict
+
+    def get(self, request, *args, **kwargs):
+        pk_campana = kwargs.get('pk_campana')
+        campana = Campana.objects.get(pk=pk_campana)
+        contactos = self._procesar_api(request, campana)
+        result_dict = self._procesar_contactos_salida(request, campana, contactos)
+        return JsonResponse(result_dict)
 
 
 class BusquedaContactoFormView(FormView):
