@@ -3,7 +3,7 @@
 <div id="contactos">
     <div class="col-md-3">
         <div class="well well-sm">
-            <form action="{% url 'contacto_list' 1 %}" method="post">{% csrf_token %}
+            <form action="{% url 'contacto_list' %}" method="post">{% csrf_token %}
                 <table class="table" data-toggle="tooltip" data-placement="bottom"
                        title="{% trans 'No se muestran las campañas de tipo preview a las cuales Ud. está asignado' %}">
                     {{ form }}

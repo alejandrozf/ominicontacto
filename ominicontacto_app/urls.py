@@ -202,7 +202,7 @@ urlpatterns = [
         login_required(views_contacto.ContactoCreateView.as_view()),
         name='contacto_nuevo',
         ),
-    url(r'^contacto/list/(?P<pagina>\d+)/$',
+    url(r'^contacto/list/$',
         login_required(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
         ),
