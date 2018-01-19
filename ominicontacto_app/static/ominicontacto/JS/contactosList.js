@@ -25,6 +25,7 @@ $(document).ready(function(){
       paging: true,
       language: {
         search: "Buscar: ",
+        infoFiltered:"(filtrando de un total de _MAX_ contactos)",
         paginate: {
           first: "Primero ",
           previous: "Anterior ",
