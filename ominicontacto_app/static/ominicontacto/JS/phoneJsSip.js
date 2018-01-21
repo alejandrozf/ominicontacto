@@ -6,7 +6,6 @@ var local = document.getElementById('localAudio');
 var remoto = document.getElementById('remoteAudio');
 var displayNumber = document.getElementById("numberToCall");
 var pauseButton = document.getElementById("Pause");
-var idTipoCamp = $("#campana_type").val();
 
 function suma(a, b) {
 	return a+b;
@@ -21,6 +20,7 @@ function updateButton(btn,clsnm,inht) {
 
 $(function() {
 
+	var idTipoCamp = $("#cmpList option:selected").attr('campana_type');
 	$("#modalWebCall").modal('show');
 	/*
 	ESTADO_OFFLINE = 1    """Agente en estado offline"""
