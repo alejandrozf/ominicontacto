@@ -1,6 +1,12 @@
 1//***************************************************
 var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
-var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
+var sipStatus = document.getElementById('SipStatus');
+var callStatus = document.getElementById('CallStatus');
+var local = document.getElementById('localAudio');
+var remoto = document.getElementById('remoteAudio');
+var displayNumber = document.getElementById("numberToCall");
+var pauseButton = document.getElementById("Pause");
+var idTipoCamp = $("#campana_type").val();
 
 function suma(a, b) {
 	return a+b;
@@ -641,7 +647,7 @@ $(function() {
 					var nombrecamp = $("#cmpList option:selected").html();
 					nombrecamp = nombrecamp.substring(1);
 			  	headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
-			    $("#redial").prop('disabled',false);
+			    $("#redial").prop('disabled', false);
 			  	makeCall();
 				}
 			} else {
@@ -700,6 +706,7 @@ $(function() {
 			var nombrecamp = $("#cmpList option:selected").html();
 			nombrecamp = nombrecamp.substring(1);
 			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
+			var idTipoCamp = $("#campana_type").val();
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
 			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
@@ -711,7 +718,7 @@ $(function() {
 			var nombrecamp = $("#cmpList option:selected").html();
 			nombrecamp = nombrecamp.substring(1);
 			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
-	    $("#redial").prop('disabled',false);
+	    $("#redial").prop('disabled', false);
 			$("#campAssocManualCall").html(headerNomCamp);
 		}
   });
@@ -768,7 +775,7 @@ $(function() {
                 'audio': true,
                 'video': false
               },
-      'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp],
+      'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp, 'Tipocamp:'+idTipoCamp],
 			pcConfig: {rtcpMuxPolicy: 'negotiate'}
     };
     //Mando el invite/llamada
