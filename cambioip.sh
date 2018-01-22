@@ -39,7 +39,7 @@ echo "Restarteando servicios"
 echo "Parando kamailio"
 service kamailio stop
 echo "Comenzando kamailio"
-service kamailio stop
+service kamailio start
 echo "Parando rtpengine"
 service rtpengine stop
 echo "Comenzando rtpengine"

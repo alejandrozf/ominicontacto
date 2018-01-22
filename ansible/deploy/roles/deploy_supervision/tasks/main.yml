@@ -4,3 +4,6 @@
   tags:
     - supervision
     - omniapp
+
+- include: reboot.yml
+  tags: reboot

@@ -19,8 +19,8 @@ USAGE="
         \n
        EJEMPLOS: \n
        - ./deploy.sh -r develop -t all -> deployará la rama develop, ejecutara todas las tareas \n
-       - ./deploy.sh -r release-0.4 -i -t kamailio,kamailiocert -> deploya la rama release-0.4, pide datos del server, ejecuta las tareas de instalación de kamailio
-       exceptuando la creacion de certificados (tiene que estar separado por coma) \n
+       - ./deploy.sh -r release-0.4 -i -t kamailio,nginx,kamailio-cert -> deploya la rama release-0.4, pide datos del server, ejecuta las tareas de instalación de kamailio y de nginx  exceptuando la creacion de certificados (tiene que estar separado por coma) \n
+       - ./deploy.sh -r release-0.4 -i -t asterisk,,kamailio-cert -> igual al anterior, solamente ejecutará tareas de instalación de asterisk exceptuando la creacion de certificados \n
        Tags disponibles: \n
        all: ejecuta todos los procesos \n
        omnivoip: ejecuta toda la instalacion de omnivoip \n
