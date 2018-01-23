@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} Omnileads {% endblock %}</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /	>
     <!-- Bootstrap's  -->
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}" >
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap-theme.min.css' %}">
@@ -19,6 +19,9 @@
       body {
         padding-top: 60px;
         padding-bottom: 40px;
+      }
+      .navbar-header {
+	position: absolute;
       }
     </style>
 
