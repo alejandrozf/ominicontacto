@@ -66,12 +66,6 @@
 
 #- set_fact: static_route=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto
 
-- name: Copy of the Kamailio cert in /static/
-  template: src=/etc/ansible/deploy/roles/kamailio-sangoma/templates/concatenate.sh dest=/root/ mode=755
-  tags: test
-- shell: "bash concatenate.sh chdir=/root/"
-  tags: test
-
 - name: Set permission to /opt/kamailio/etc/certs
   shell: "chown kamailio:kamailio -R /opt/kamailio/etc/certs/"
 

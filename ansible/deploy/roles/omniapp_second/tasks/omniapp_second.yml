@@ -61,6 +61,11 @@
   ignore_errors: yes
   when: ansible_os_family == "Debian"
 
+- name: Copy of the Kamailio cert in voip.cert
+  template: src=templates/concatenate.sh dest=/root/ mode=755
+  tags: static
+- shell: "bash concatenate.sh chdir=/root/"
+  tags: static
 
 
 

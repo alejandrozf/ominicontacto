@@ -21,27 +21,28 @@ USAGE="
        - ./deploy.sh -r develop -t all -> deployará la rama develop, ejecutara todas las tareas \n
        - ./deploy.sh -r release-0.4 -i -t kamailio,nginx,kamailio-cert -> deploya la rama release-0.4, pide datos del server, ejecuta las tareas de instalación de kamailio y de nginx  exceptuando la creacion de certificados (tiene que estar separado por coma) \n
        - ./deploy.sh -r release-0.4 -i -t asterisk,,kamailio-cert -> igual al anterior, solamente ejecutará tareas de instalación de asterisk exceptuando la creacion de certificados \n
+       \n
        Tags disponibles: \n
        all: ejecuta todos los procesos \n
+       asterisk-install: compila e instala asterisk \n
+       asterisk-config: realiza tareas de configuracion de asterisk con OML \n
+       asternic: instala y configura asternic y scripts de grabaciones \n
+       deploy: instala la aplicación, setea el virtualenv y el entorno de OML \n
+       django-migrations: realiza todas las migraciones de django (uso de python manage.py) \n
+       freepbx: realiza la instalación de freepbx \n
+       kamailio: compila e instala kamailio y rtpengine \n
+       kamailio-cert: realiza el seteo y creacion de certificados usados por kamailio y nginx \n
+       nginx: configuraciones de nginx \n
        omnivoip: ejecuta toda la instalacion de omnivoip \n
        omniapp: ejecuta toda la instalacion de omniapp (abarca deploy de django de OML y nginx) \n
        pre-centos: ejecuta los prerequisitos de centos (instalacion de paquetes tambien) \n
-       asterisk-install: compila e instala asterisk \n
-       kamailio: compila e instala kamailio y rtpengine \n
-       asterisk-config: realiza tareas de configuracion de asterisk con OML \n
-       asternic: instala y configura asternic y scripts de grabaciones \n
-       postinstall: ejecuta tareas necesarias para un post-deploy \n
-       deploy: instala la aplicación, setea el virtualenv y el entorno de OML \n
        postgresusers: crea la base de datos y usuarios postgres \n
-       sshkey-transfer: realiza la transferencia de la llave publica ssh entre usuarios freetech y root \n
-       static: modifica los archivos estaticos \n
-       django-migrations: realiza todas las migraciones de django (uso de python manage.py) \n
+       postinstall: ejecuta tareas necesarias para un post-deploy \n
        queuelog-trigger: ejecuta el trigger de queuelog \n
-       nginx: configuraciones de nginx \n
-       freepbx: realiza la instalación de freepbx \n
-       kamailio-cert: realiza el seteo y creacion de certificados usados por kamailio y nginx \n
-       wombat: instala y configura wombat \n
+       sshkey-transfer: realiza la transferencia de la llave publica ssh entre usuarios freetech y root \n
        supervision: deploya la supervision \n "
+       static: crea el archivo voip.cert \n
+       wombat: instala y configura wombat \n
        echo -e $USAGE
        exit 1
 }

@@ -5,12 +5,6 @@
     - omniapp
     - sshkey-transfer
 
-- include: static.yml
-  tags:
-    - omniapp
-    - static
-    - postinstall
-
 - include: django_migrations.yml
   tags:
     - omniapp

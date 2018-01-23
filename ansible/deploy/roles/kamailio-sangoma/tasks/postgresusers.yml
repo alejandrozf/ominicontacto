@@ -24,7 +24,7 @@
   become_user: postgres
   register: command_result
   failed_when:
-    - "'ya existe' not in command_result.stderr"
+    - "'already exists' not in command_result.stderr"
     - "command_result.rc != 0"
 
 - name: Copy of oml-freepbx/kamailio-files to the desired destinations

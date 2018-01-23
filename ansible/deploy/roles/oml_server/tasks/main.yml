@@ -12,12 +12,10 @@
 
 - include: deploy.yml
   tags:
-    - omniapp
     - postinstall
     - deploy
 
 - include: postgres_users.yml
   tags:
-    - omniapp
     - postgresusers
 

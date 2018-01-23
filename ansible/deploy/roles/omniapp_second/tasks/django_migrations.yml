@@ -1,5 +1,10 @@
 ---
 
+- set_fact: static_route=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto
+
+- name: Change the FQDN in config.js
+  template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner=freetech group=freetech"
+
 - name: Createlang of the database
   shell: "createlang plpythonu kamailio"
   become: yes
