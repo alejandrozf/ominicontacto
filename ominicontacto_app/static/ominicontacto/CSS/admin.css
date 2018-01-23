@@ -11,3 +11,7 @@ css para la parte administrativa de omnileads
     background: #c3c3c3 !important;
     color: #222;
 }
+
+.content {
+    margin-top: 100px;
+}

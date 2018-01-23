@@ -281,21 +281,23 @@
         </div>
     {% endif %}
     <div class="container">
-    {% include 'messages.html' %}
-    {% if user.is_authenticated  %}
-        {% if user.get_tiene_permiso_administracion  %}
-            {% block content %}
-            {% endblock %}
-        {% else %}
-            <div class="alert alert-warning">
-                <h1>Permiso denegado</h1>
-                <p>Ud. no posee los permisos requeridos para acceder a esta pagina.</p>
-            </div>
-        {% endif %}
-    {% else %}
-        {% block logueo %}
-        {% endblock %}
-    {% endif %}
+        <div class="content">
+            {% include 'messages.html' %}
+            {% if user.is_authenticated  %}
+                {% if user.get_tiene_permiso_administracion  %}
+                    {% block content %}
+                    {% endblock %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        <h1>Permiso denegado</h1>
+                        <p>Ud. no posee los permisos requeridos para acceder a esta pagina.</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% block logueo %}
+                {% endblock %}
+            {% endif %}
+        </div>
     </div>
 {% block extra_js %}{% endblock %}
 </body>
