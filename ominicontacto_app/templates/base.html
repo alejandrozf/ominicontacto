@@ -287,10 +287,8 @@
         {% include 'messages.html' %}
             {% if user.is_authenticated  %}
                 {% if user.get_tiene_permiso_administracion  %}
-                    <div class="content">
-                        {% block content %}
-                        {% endblock %}
-                    </div>
+                   {% block content %}
+                   {% endblock %}
                 {% else %}
                     <div class="alert alert-warning">
                         <h1>Permiso denegado</h1>
