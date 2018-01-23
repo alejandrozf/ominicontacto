@@ -319,6 +319,8 @@ Ejemplo:
     OML_WOMBAT_PASSWORD = "user123"
 """
 
+CALIFICACION_REAGENDA = None
+
 # ==============================================================================
 # Import de `oml_settings_local`
 # ==============================================================================
@@ -476,3 +478,8 @@ assert TMPL_OML_AUDIO_CONVERSOR_EXTENSION is not None, \
 
 assert OML_AUDIO_PATH_ASTERISK is not None, \
     "Falta definir setting para OML_AUDIO_PATH_ASTERISK"
+
+# ~~~~~ Check CALIFICACION_REAGENDA
+
+assert CALIFICACION_REAGENDA is not None, \
+    "Falta definir setting para CALIFICACION_REAGENDA"
