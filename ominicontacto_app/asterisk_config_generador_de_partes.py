@@ -181,7 +181,7 @@ class GeneradorParaQueueSinGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
         same => n,Set(__TIPOLLAMADA=IN)
-        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,{oml_queue_wait},,,queuelogSub)
         """
 
@@ -211,7 +211,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
         same => n,Set(__TIPOLLAMADA=IN)
-        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,{oml_queue_wait},,,queuelogSub)
         """
 
@@ -429,7 +429,7 @@ class GeneradorParaCampanaDialerFormulario(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(IDCliente:${{ID_CLIENTE}})
         same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
-        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,120,,,queuelogSub)
         same => n,Hangup()
         """
@@ -448,7 +448,7 @@ class GeneradorParaCampanaDialerSitioExterno(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(IDCliente:${{ID_CLIENTE}})
         same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
-        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,120,,,queuelogSub)
         same => n,Hangup()
         """
