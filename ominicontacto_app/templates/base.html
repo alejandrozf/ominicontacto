@@ -281,12 +281,13 @@
         </div>
     {% endif %}
     <div class="container">
-        <div class="content">
-            {% include 'messages.html' %}
+        {% include 'messages.html' %}
             {% if user.is_authenticated  %}
                 {% if user.get_tiene_permiso_administracion  %}
-                    {% block content %}
-                    {% endblock %}
+                    <div class="content">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
                 {% else %}
                     <div class="alert alert-warning">
                         <h1>Permiso denegado</h1>
@@ -297,7 +298,6 @@
                 {% block logueo %}
                 {% endblock %}
             {% endif %}
-        </div>
     </div>
 {% block extra_js %}{% endblock %}
 </body>
