@@ -24,13 +24,20 @@
                     </div>
                 </div>
             {% else %}
-                <div class="form-group row">
+                  <div class="form-group row">
+                {% if object %}
+                    <label class="col-sm-3 control-label">Nombre: </label>
+                    <div class="col-sm-6" data-toggle="tooltip" data-placement="top">
+                        {{ object.nombre }}
+                    </div>
+                {% else %}
                     {{ form.nombre.errors }}
                     <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
                     <div class="col-sm-6" data-toggle="tooltip" data-placement="top" title="Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos">
                         {{ form.nombre }}
                     </div>
-                </div>
+                {% endif %}
+                  </div>
             {% endif %}
             <div class="form-group row">
                 {{ form.calificacion_campana.errors }}

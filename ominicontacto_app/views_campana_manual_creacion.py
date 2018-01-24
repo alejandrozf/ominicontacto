@@ -11,9 +11,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
-from ominicontacto_app.forms import (
-    CampanaManualForm, QueueDialerForm, QueueDialerUpdateForm, SincronizaDialerForm
-)
+from ominicontacto_app.forms import CampanaManualForm, CampanaManualUpdateForm
 from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -138,7 +136,7 @@ class CampanaManualUpdateView(UpdateView):
     template_name = 'campana_manual/nueva_edita_campana.html'
     model = Campana
     context_object_name = 'campana'
-    form_class = CampanaManualForm
+    form_class = CampanaManualUpdateForm
 
     def get_initial(self):
         initial = super(CampanaManualUpdateView, self).get_initial()

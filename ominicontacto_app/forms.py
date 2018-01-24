@@ -378,7 +378,7 @@ class CampanaUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'gestion', 'objetivo')
+        fields = ('calificacion_campana', 'bd_contacto', 'gestion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1012,6 +1012,11 @@ class CampanaManualForm(forms.ModelForm):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)
         return nombre
+
+
+class CampanaManualUpdateForm(CampanaManualForm):
+    class Meta(CampanaManualForm.Meta):
+        exclude = ('nombre', )
 
 
 class CampanaPreviewForm(CampanaManualForm):
