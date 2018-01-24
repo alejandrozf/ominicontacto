@@ -229,7 +229,8 @@ class LlamarContactoView(RedirectView):
                                           request.user.get_full_name()),
             # la posibilidad de que sea una llamada generada por un click
             # en un contacto de campaña preview
-            'click2callPreview': click2call_preview
+            'click2callPreview': click2call_preview,
+            'click2callListaContactos': click2call_lista_contactos
         }
         channel = "Local/{0}@click2call/n".format(agente.sip_extension)
         # Genero la llamada via originate por AMI
@@ -250,7 +251,7 @@ class LlamarContactoView(RedirectView):
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
         click2call_preview = request.POST.get('click2call_preview', 'false')
         click2call_lista_contactos = request.POST.get('click2call_lista_contactos', 'false')
-        tipo_campana = request.POST.get('tipo_campana')
+        tipo_campana = request.POST.get('tipo_campana', 'false')
         if click2call_preview == 'true' or click2call_lista_contactos == 'true':
             # caso campañas preview o click2call desde la lista de contactos
             campana_id = request.POST.get('pk_campana', 0)
