@@ -66,13 +66,20 @@ class AgentesContactosTests(OMLBaseTest):
         set_ids_campanas_devueltas = set([int(pk) for pk, _ in response.context_data['campanas']])
         self.assertEqual(set_ids_campanas_esperadas, set_ids_campanas_devueltas)
 
-    def test_contacto_list_no_muestra_campanas_manuales_preview_agente(self):
+    def test_contacto_list_no_muestra_campanas_manuales_agente(self):
         self.client.login(username=self.usuario_agente.username, password=self.PWD)
         url = reverse('contacto_list')
         response = self.client.get(url, follow=True)
-        set_ids_campanas_esperadas = set([self.campana_preview.pk, self.campana_manual.pk])
-        set_ids_campanas_devueltas = set([int(pk) for pk, _ in response.context_data['campanas']])
-        self.assertNotEqual(set_ids_campanas_esperadas, set_ids_campanas_devueltas)
+        ids_campanas_devueltas = set([int(pk) for pk, _ in response.context_data['campanas']])
+        self.assertFalse(self.campana_manual.pk in ids_campanas_devueltas)
+
+    def test_contacto_list_no_muestra_campanas_preview_agente(self):
+        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        url = reverse('contacto_list')
+        response = self.client.get(url, follow=True)
+        ids_campanas_devueltas = set([int(pk) for pk, _ in response.context_data['campanas']])
+        self.assertFalse(self.campana_preview.pk in ids_campanas_devueltas)
+
 
     def test_api_contacto_list_devuelve_datos_campana_agente(self):
         self.client.login(username=self.usuario_agente.username, password=self.PWD)
