@@ -257,7 +257,7 @@ class LlamarContactoView(RedirectView):
             campana_id = request.POST.get('pk_campana', 0)
             campana_nombre = request.POST.get('campana_nombre', 'None')
         else:
-            # otros tipos de campañas
+            # otros tipos de click2calls
             campana_id = 0
             campana_nombre = 'None'
             calificacion_cliente = CalificacionCliente.objects.filter(
