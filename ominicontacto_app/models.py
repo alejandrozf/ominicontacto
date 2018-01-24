@@ -1123,6 +1123,11 @@ class Queue(models.Model):
     def get_string_queue_asterisk(self):
         return '0077' + str(self.queue_asterisk)
 
+    def get_string_initial_predictive_model(self):
+        if self.initial_predictive_model:
+            return "ON"
+        return "OFF"
+
     class Meta:
         db_table = 'queue_table'
 
