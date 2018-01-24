@@ -18,6 +18,7 @@
             <input type="hidden" id="pk_agente" name="pk_agente" value="{{ user.get_agente_profile.pk }}">
             <input type="hidden" id="pk_contacto" name="pk_contacto">
             <input type="hidden" id="pk_campana" name="pk_campana" value="{{ campana.pk }}">
+            <input type="hidden" id="tipo_campana" name="tipo_campana" value="{{ campana.type }}">
             <input type="hidden" id="campana_nombre" name="campana_nombre" value="{{ campana.nombre }}">
             <input type="hidden" id="click2call_lista_contactos" name="click2call_lista_contactos" value="true">
             <button id="lista_llamar_contacto" type="submit" class="hidden"></button>
