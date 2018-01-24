@@ -117,34 +117,6 @@ class API_ObtenerContactosCampanaView(View):
         return JsonResponse(result_dict)
 
 
-class BusquedaContactoFormView(FormView):
-    """Vista para buscar un contacto de la ventana del agente"""
-    form_class = BusquedaContactoForm
-    template_name = 'agente/busqueda_contacto.html'
-
-    def get(self, request, *args, **kwargs):
-        listado_de_contacto = Contacto.objects.all()
-        return self.render_to_response(self.get_context_data(
-            listado_de_contacto=listado_de_contacto))
-
-    def form_valid(self, form):
-        filtro = form.cleaned_data.get('buscar')
-        try:
-            listado_de_contacto = Contacto.objects.contactos_by_filtro(filtro)
-        except Contacto.DoesNotExist:
-            listado_de_contacto = Contacto.objects.all()
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-
-        if listado_de_contacto:
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-        else:
-            listado_de_contacto = Contacto.objects.all()
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-
-
 class ContactoBDContactoCreateView(CreateView):
     """Vista para agregar un contacto a una base de datos ya existente"""
     model = Contacto
