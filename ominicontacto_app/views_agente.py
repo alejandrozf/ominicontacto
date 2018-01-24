@@ -247,15 +247,16 @@ class LlamarContactoView(RedirectView):
     def post(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
-        click2call_preview = request.POST.get('click2call_preview', "false")
-        if click2call_preview == "true":
-            # caso campañas preview
+        click2call_preview = request.POST.get('click2call_preview', 'false')
+        click2call_lista_contactos = request.POST.get('click2call_lista_contactos', 'false')
+        if click2call_preview == 'true' or click2call_lista_contactos == 'true':
+            # caso campañas preview o click2call desde la lista de contactos
             campana_id = request.POST.get('pk_campana', 0)
-            campana_nombre = request.POST.get('campana_nombre', "None")
+            campana_nombre = request.POST.get('campana_nombre', 'None')
         else:
             # otros tipos de campañas
             campana_id = 0
-            campana_nombre = "None"
+            campana_nombre = 'None'
             calificacion_cliente = CalificacionCliente.objects.filter(
                 contacto=contacto, agente=agente).order_by('-fecha')
             if calificacion_cliente.exists():
@@ -312,5 +313,6 @@ class AgenteCampanasPreviewActivasView(TemplateView):
         context = super(AgenteCampanasPreviewActivasView, self).get_context_data(*args, **kwargs)
         agente_profile = self.request.user.get_agente_profile()
         campanas_preview_activas = agente_profile.get_campanas_preview_activas_miembro()
-        context['campanas_preview_activas'] = campanas_preview_activas
+        context['campanas_preview_activas'] = campanas_preview_activas.values_list(
+            'queue_name__campana', 'queue_name__campana__nombre')
         return context

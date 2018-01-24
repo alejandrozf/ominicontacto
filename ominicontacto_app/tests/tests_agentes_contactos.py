@@ -5,12 +5,15 @@ Tests relacionados con la lista de contactos de los Agentes
 """
 from __future__ import unicode_literals
 
+import json
+
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                QueueMemberFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest
+from ominicontacto_app.models import Campana
 
 
 class AgentesContactosTests(OMLBaseTest):
@@ -21,18 +24,26 @@ class AgentesContactosTests(OMLBaseTest):
         """
         Creo dos agentes con una campaña con un contacto cada una.
         """
-        self.usuario_agente, self.campana_propia, self.contacto_propio = \
-            self._crear_agente_con_campana_y_contacto()
+        self.usuario_agente = self._crear_agente()
+        self.campana_dialer, self.contacto_camp_dialer = \
+            self._agregar_campana_y_contacto(
+                self.usuario_agente, Campana.TYPE_DIALER)
+        self.campana_entrante, self.contacto_camp_entrante = \
+            self._agregar_campana_y_contacto(
+                self.usuario_agente, Campana.TYPE_ENTRANTE)
+        self.campana_manual, self.contacto_camp_entrante = \
+            self._agregar_campana_y_contacto(
+                self.usuario_agente, Campana.TYPE_MANUAL)
+        self.campana_preview, self.contacto_camp_entrante = \
+            self._agregar_campana_y_contacto(
+                self.usuario_agente, Campana.TYPE_PREVIEW)
 
-        self.usuario_agente_2, self.campana_ajena, self.contacto_ajeno = \
-            self._crear_agente_con_campana_y_contacto()
-
-    def _crear_agente_con_campana_y_contacto(self):
-        usuario = self._crear_agente()
-        campana = CampanaFactory.create(tiempo_desconexion=3)
-        self._hacer_miembro(usuario, campana)
+    def _agregar_campana_y_contacto(self, agente_profile, tipo_campana):
+        campana = CampanaFactory.create(
+            type=tipo_campana, tiempo_desconexion=3, estado=Campana.ESTADO_ACTIVA)
+        self._hacer_miembro(agente_profile, campana)
         contacto = ContactoFactory.create(bd_contacto=campana.bd_contacto)
-        return usuario, campana, contacto
+        return campana, contacto
 
     def _crear_agente(self):
         usuario_agente = UserFactory(is_staff=False, is_supervisor=False)
@@ -44,19 +55,40 @@ class AgentesContactosTests(OMLBaseTest):
     def _hacer_miembro(self, usuario_agente, campana):
         agente = usuario_agente.get_agente_profile()
         queue = QueueFactory.create(campana=campana)
-        QueueMemberFactory.create(member=agente, queue_name=queue)
+        QueueMemberFactory.create(
+            member=agente, queue_name=queue, id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
 
-    def test_agente_profile_contactos_de_campanas_de_las_que_es_miembro(self):
-        agente_profile = self.usuario_agente.get_agente_profile()
-        contactos = agente_profile.get_contactos_de_campanas_miembro()
-
-        self.assertEqual(contactos.count(), 1)
-        self.assertEqual(self.contacto_propio, contactos[0])
-
-    def test_contacto_list_muestra_solo_contactos_de_campanas_de_las_que_es_miembro(self):
+    def test_contacto_list_muestra_campanas_dialer_entrantes_agente(self):
         self.client.login(username=self.usuario_agente.username, password=self.PWD)
-        url = reverse('contacto_list', args=[1])
+        url = reverse('contacto_list')
         response = self.client.get(url, follow=True)
+        set_ids_campanas_esperadas = set([self.campana_dialer.pk, self.campana_entrante.pk])
+        set_ids_campanas_devueltas = set([int(pk) for pk, _ in response.context_data['campanas']])
+        self.assertEqual(set_ids_campanas_esperadas, set_ids_campanas_devueltas)
 
-        self.assertContains(response, self.contacto_propio.telefono)
-        self.assertNotContains(response, self.contacto_ajeno.telefono)
+    def test_contacto_list_no_muestra_campanas_manuales_agente(self):
+        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        url = reverse('contacto_list')
+        response = self.client.get(url, follow=True)
+        ids_campanas_devueltas = set([int(pk) for pk, _ in response.context_data['campanas']])
+        self.assertFalse(self.campana_manual.pk in ids_campanas_devueltas)
+
+    def test_contacto_list_no_muestra_campanas_preview_agente(self):
+        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        url = reverse('contacto_list')
+        response = self.client.get(url, follow=True)
+        ids_campanas_devueltas = set([int(pk) for pk, _ in response.context_data['campanas']])
+        self.assertFalse(self.campana_preview.pk in ids_campanas_devueltas)
+
+
+    def test_api_contacto_list_devuelve_datos_campana_agente(self):
+        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        url = reverse(
+            'api_contactos_campana',
+            kwargs={'pk_campana': self.campana_dialer.pk})
+        response = self.client.get(url, {'start': 0, 'length': 1, 'draw': 1, 'search[value]': ''})
+        json_content = json.loads(response.content)
+        self.assertEqual(json_content['draw'], 1)
+        self.assertEqual(json_content['recordsTotal'], 1)
+        self.assertEqual(json_content['recordsFiltered'], 1)
+        self.assertEqual(json_content['data'][0][1], unicode(self.contacto_camp_dialer.telefono))

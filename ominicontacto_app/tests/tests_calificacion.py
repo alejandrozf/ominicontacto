@@ -185,7 +185,8 @@ class CalificacionTests(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_contacto.html')
 
-    def test_calificacion_cliente_marcada_agendado_cuando_se_salva_agenda(self):
+    @patch('requests.post')
+    def test_calificacion_cliente_marcada_agendado_cuando_se_salva_agenda(self, post):
         calificacion_cliente = CalificacionClienteFactory.create(
             campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
         url = reverse('agenda_contacto_create',
