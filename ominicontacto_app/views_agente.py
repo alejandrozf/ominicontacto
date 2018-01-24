@@ -228,7 +228,8 @@ class LlamarContactoView(RedirectView):
             'FTSAGENTE': "{0}_{1}".format(agente.id,
                                           request.user.get_full_name()),
             # la posibilidad de que sea una llamada generada por un click
-            # en un contacto de campaña preview
+            # en un contacto de campaña preview o desde la lista de contactos se pasa
+            # como info adicional (TODO: esto se debería poner en un sólo parámetro)
             'click2callPreview': click2call_preview,
             'click2callListaContactos': click2call_lista_contactos
         }
