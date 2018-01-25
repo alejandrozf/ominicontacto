@@ -71,14 +71,18 @@
        var action = $(this).attr("name");
        var pk_contacto = $(this).attr("pk_contacto");
        var pk_agente = $(this).attr("agente");
-       var tipoCampana = $(this).attr('tipo_campana');
-       submit_form(pk_contacto, pk_agente, action, tipoCampana);
+       var tipo_campana = $(this).attr("tipo_campana");
+       var campana_nombre = $(this).attr("campana_nombre");
+       var pk_campana = $(this).attr("pk_campana");
+       submit_form(pk_contacto, pk_agente, action, tipo_campana);
      })
 
-     function submit_form(pk_contacto, pk_agente, action, tipoCampana){
+     function submit_form(pk_contacto, pk_agente, action, tipo_campana){
        $("#pk_contacto").val(pk_contacto);
        $("#pk_agente").val(pk_agente);
-       $("#tipo_campana").val(tipoCampana);
+       $("#tipo_campana").val(tipo_campana);
+       $("#pk_campana").val(pk_campana);
+       $("#campana_nombre").val(campana_nombre);
        $("#form_llamar").attr("action", action);
        $("#form_llamar").submit();
      }
@@ -130,8 +134,10 @@
         {% csrf_token %}
      <input type="hidden" id="pk_agente" name="pk_agente">
      <input type="hidden" id="pk_contacto" name="pk_contacto">
+     <input type="hidden" id="pk_campana" name="pk_campana">
+     <input type="hidden" id="campana_nombre" name="campana_nombre">
+     <input type="hidden" id="click2call_type" name="click2call_type" value="calificaciones">
      <input type="hidden" id="tipo_campana" name="tipo_campana">
-     <input type="hidden" id="click2call_type" name="click2call_type" value="calificiones">
                 <table class="table table-bordered">
                     <thead>
                       <tr class="fts-table-bg">
@@ -146,9 +152,12 @@
                     <tbody>
                         {% for calificacion_cliente in listado_calificaciones %}
                             <tr>
-
                                 <td>
-                                    <a type="button" pk_contacto="{{ calificacion_cliente.contacto.pk }}" tipo_campana="{{ calificacion_cliente.campana.type }}" agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}" class="btn-submit">{{ calificacion_cliente.contacto.telefono }}</a>
+                                    <a type="button" pk_contacto="{{ calificacion_cliente.contacto.pk }}"
+                                       tipo_campana="{{ calificacion_cliente.campana.type }}"
+                                       campana_nombre="{{ calificacion_cliente.campana.nombre }}"
+                                       pk_campana="{{ calificacion_cliente.campana.pk }}"
+                                       agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}" class="btn-submit">{{ calificacion_cliente.contacto.telefono }}</a>
                                 </td>
                                 <td>
                                     {{ calificacion_cliente.contacto.datos}}

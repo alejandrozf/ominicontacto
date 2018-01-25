@@ -1,4 +1,6 @@
 {% load staticfiles %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,18 +50,24 @@
         cb(start, end);
 
         $(".btn-submit").click(function (){
-                var action = $(this).attr("name");
-                var pk_contacto = $(this).attr("id");
-                var pk_agente = $(this).attr("agente");
-                submit_form(pk_contacto, pk_agente, action);
-            })
+          var action = $(this).attr("name");
+          var pk_contacto = $(this).attr("pk_contacto");
+          var pk_agente = $(this).attr("agente");
+          var tipo_campana = $(this).attr("tipo_campana");
+          var campana_nombre = $(this).attr("campana_nombre");
+          var pk_campana = $(this).attr("pk_campana");
+          submit_form(pk_contacto, pk_agente, action, tipo_campana);
+        })
 
-         function submit_form(pk_contacto, pk_agente, action){
-         $("#pk_contacto").val(pk_contacto);
-         $("#pk_agente").val(pk_agente);
-                $("#form_llamar").attr("action", action);
-                $("#form_llamar").submit();
-            }
+         function submit_form(pk_contacto, pk_agente, action, tipo_campana){
+           $("#pk_contacto").val(pk_contacto);
+           $("#pk_agente").val(pk_agente);
+           $("#tipo_campana").val(tipo_campana);
+           $("#pk_campana").val(pk_campana);
+           $("#campana_nombre").val(campana_nombre);
+           $("#form_llamar").attr("action", action);
+           $("#form_llamar").submit();
+         }
 
 });
     </script>
@@ -93,6 +101,10 @@
         {% csrf_token %}
      <input type="hidden" id="pk_agente" name="pk_agente">
      <input type="hidden" id="pk_contacto" name="pk_contacto">
+     <input type="hidden" id="pk_campana" name="pk_campana">
+     <input type="hidden" id="campana_nombre" name="campana_nombre">
+     <input type="hidden" id="click2call_type" name="click2call_type" value="agendas">
+     <input type="hidden" id="tipo_campana" name="tipo_campana">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -104,19 +116,24 @@
             </tr>
         </thead>
         <tbody>
-        {% for evento in listado_de_eventos %}
+        {% for agenda in listado_de_eventos %}
             <tr>
                 <td>telefono de contacto
-                    <a type="button" id="{{evento.contacto.pk}}" agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}" class="btn-submit">{{ evento.contacto.telefono }}</a>
+                    <a type="button" pk_contacto="{{agenda.contacto.pk}}"
+                       tipo_campana="{{ agenda.campana.type }}" agente="{{agente.pk}}"
+                       campana_nombre="{{ agenda.campana.nombre }}" pk_campana="{{ agenda.campana.pk }}"
+                       name="{% url 'agente_llamar_contacto' %}"
+                       class="btn-submit">{{ agenda.contacto.telefono }}
+                    </a>
                 </td>
-                <td>{{ evento.fecha }}</td>
-                <td>{{ evento.hora}}</td>
-                <td>{{ evento.get_tipo_agenda_display }}</td>
-                <td>{{ evento.observaciones }}</td>
+                <td>{{ agenda.fecha }}</td>
+                <td>{{ agenda.hora}}</td>
+                <td>{{ agenda.get_tipo_agenda_display }}</td>
+                <td>{{ agenda.observaciones }}</td>
             </tr>
        {% empty %}
         <tr>
-            <td colspan="5">No existen eventos para el día de hoy</td>
+            <td colspan="5">{% trans 'No existen eventos agendados para el día de hoy' %}</td>
         </tr>
         {% endfor %}
         </tbody>
