@@ -1475,10 +1475,10 @@ class MetadataBaseDatosContactoDTO(object):
         col_telefono = self._metadata['col_telefono']
         try:
             datos = json.loads(datos_json)
-        except:
-            logger.exception("Excepcion detectada al desserializar "
-                             "datos extras. Datos extras: '{0}'"
-                             "".format(datos_json))
+        except Exception as e:
+            logger.exception("Error: {0} detectada al desserializar "
+                             "datos extras. Datos extras: '{1}'"
+                             "".format(e.message, datos_json))
             raise
 
         assert len(datos) == self.cantidad_de_columnas
@@ -1496,10 +1496,10 @@ class MetadataBaseDatosContactoDTO(object):
         # Decodificamos JSON
         try:
             datos = json.loads(datos_json)
-        except:
-            logger.exception("Excepcion detectada al desserializar "
-                             "datos extras. Datos extras: '{0}'"
-                             "".format(datos_json))
+        except Exception as e:
+            logger.exception("Error: {0} detectada al desserializar "
+                             "datos extras. Datos extras: '{1}'"
+                             "".format(e.message, datos_json))
             raise
 
         assert len(datos) == self.cantidad_de_columnas
@@ -1618,9 +1618,9 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
         if bd.metadata is not None and bd.metadata != '':
             try:
                 self._metadata = json.loads(bd.metadata)
-            except:
-                logger.exception("Excepcion detectada al desserializar "
-                                 "metadata de la bd {0}".format(bd.id))
+            except Exception as e:
+                logger.exception("Error: {0} detectada al desserializar "
+                                 "metadata de la bd {1}".format(e.message, bd.id))
                 raise
 
     # -----
@@ -1634,9 +1634,9 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
         # Ahora guardamos
         try:
             self.bd.metadata = json.dumps(self._metadata)
-        except:
-            logger.exception("Excepcion detectada al serializar "
-                             "metadata de la bd {0}".format(self.bd.id))
+        except Exception as e:
+            logger.exception("Error: {0} detectada al serializar "
+                             "metadata de la bd {1}".format(e.message, self.bd.id))
             raise
 
 
@@ -2621,6 +2621,7 @@ class AgendaContacto(models.Model):
     hora = models.TimeField()
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
+    campana = models.ForeignKey(Campana, related_name='agendas')
 
     def __unicode__(self):
         return "Agenda para el contacto {0} agendado por el agente {1} " \
@@ -3047,6 +3048,7 @@ class AgendaManual(models.Model):
     hora = models.TimeField()
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
+    campana = models.ForeignKey(Campana, related_name="agendas_manuales")
 
     def __unicode__(self):
         return "Agenda para el telefono {0} agendado por el agente {1}" \
