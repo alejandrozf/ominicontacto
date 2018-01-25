@@ -246,10 +246,10 @@ class LlamarContactoView(RedirectView):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
         click2call_type = request.POST.get('click2call_type', 'false')
-        tipo_campana = request.POST.get('tipo_campana', 'false')
-        campana_id = request.POST.get('pk_campana', 0)
-        campana_nombre = request.POST.get('campana_nombre', 'None')
-        if tipo_campana == 'false':
+        tipo_campana = request.POST.get('tipo_campana')
+        campana_id = request.POST.get('pk_campana')
+        campana_nombre = request.POST.get('campana_nombre')
+        if campana_id == '':
             calificacion_cliente = CalificacionCliente.objects.filter(
                 contacto=contacto, agente=agente).order_by('-fecha')
             if calificacion_cliente.exists():
