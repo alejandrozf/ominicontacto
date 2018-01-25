@@ -25,7 +25,9 @@
   register: command_result
   failed_when:
     - "'already exists' not in command_result.stderr"
+    - "'ya existe' not in command_result.stderr"
     - "command_result.rc != 0"
+  tags: test
 
 - name: Copy of oml-freepbx/kamailio-files to the desired destinations
   shell: "{{ item }} chdir=/home/freetech/ominicontacto/ominicontacto_voip"
