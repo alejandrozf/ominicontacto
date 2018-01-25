@@ -218,7 +218,7 @@ class LlamarContactoView(RedirectView):
     pattern_name = 'view_blanco'
 
     def _call_originate(self, request, campana_id, campana_nombre, agente, contacto,
-                        click2call_preview, click2call_lista_contactos, tipo_campana):
+                        click2call_type, tipo_campana):
         variables = {
             'IdCamp': str(campana_id),
             'codCli': str(contacto.pk),
@@ -230,8 +230,7 @@ class LlamarContactoView(RedirectView):
             # la posibilidad de que sea una llamada generada por un click
             # en un contacto de campaña preview o desde la lista de contactos se pasa
             # como info adicional (TODO: esto se debería poner en un sólo parámetro)
-            'click2callPreview': click2call_preview,
-            'click2callListaContactos': click2call_lista_contactos
+            'click2callType': click2call_type,
         }
         channel = "Local/{0}@click2call/n".format(agente.sip_extension)
         # Genero la llamada via originate por AMI
@@ -250,25 +249,20 @@ class LlamarContactoView(RedirectView):
     def post(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
-        click2call_preview = request.POST.get('click2call_preview', 'false')
-        click2call_lista_contactos = request.POST.get('click2call_lista_contactos', 'false')
+        click2call_type = request.POST.get('click2call_type', 'false')
         tipo_campana = request.POST.get('tipo_campana', 'false')
-        if click2call_preview == 'true' or click2call_lista_contactos == 'true':
-            # caso campañas preview o click2call desde la lista de contactos
-            campana_id = request.POST.get('pk_campana', 0)
-            campana_nombre = request.POST.get('campana_nombre', 'None')
-        else:
-            # otros tipos de click2calls
-            campana_id = 0
-            campana_nombre = 'None'
+        campana_id = request.POST.get('pk_campana', 0)
+        campana_nombre = request.POST.get('campana_nombre', 'None')
+        if tipo_campana == 'false':
             calificacion_cliente = CalificacionCliente.objects.filter(
                 contacto=contacto, agente=agente).order_by('-fecha')
             if calificacion_cliente.exists():
-                campana_id = calificacion_cliente[0].campana.pk
-                campana_nombre = calificacion_cliente[0].campana.nombre
+                campana = calificacion_cliente[0].campana
+                campana_id = str(campana.pk)
+                campana_nombre = campana.nombre
+                tipo_campana = str(campana.type)
         self._call_originate(
-            request, campana_id, campana_nombre, agente, contacto, click2call_preview,
-            click2call_lista_contactos, tipo_campana)
+            request, campana_id, campana_nombre, agente, contacto, click2call_type, tipo_campana)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
 
 
