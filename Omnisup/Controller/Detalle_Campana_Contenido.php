@@ -124,7 +124,11 @@ function mostrarEstadoCanalesWombat($camp) {
   $jsonString .= '[';
   foreach ($resul as $value) {
       $ns = $value;
-      $jsonString .= '{"estado": "' . $ns->getState() . '", "numero": "' . $ns->getNumber() . '"},';
+      if ($ns->getState() == "DIALLING") {
+          $jsonString .= '{"estado": "DIALING", "numero": "' . $ns->getNumber() . '"},';
+      } else {
+          $jsonString .= '{"estado": "' . $ns->getState() . '", "numero": "' . $ns->getNumber() . '"},';
+      }
   }
   $jsonString = substr($jsonString, 0, -1);
   $jsonString .= "]";
