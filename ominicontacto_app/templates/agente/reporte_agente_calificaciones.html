@@ -74,10 +74,10 @@
        var tipo_campana = $(this).attr("tipo_campana");
        var campana_nombre = $(this).attr("campana_nombre");
        var pk_campana = $(this).attr("pk_campana");
-       submit_form(pk_contacto, pk_agente, action, tipo_campana);
+       submit_form(pk_contacto, pk_agente, action, tipo_campana, campana_nombre, pk_campana);
      })
 
-     function submit_form(pk_contacto, pk_agente, action, tipo_campana){
+     function submit_form(pk_contacto, pk_agente, action, tipo_campana, campana_nombre, pk_campana){
        $("#pk_contacto").val(pk_contacto);
        $("#pk_agente").val(pk_agente);
        $("#tipo_campana").val(tipo_campana);
