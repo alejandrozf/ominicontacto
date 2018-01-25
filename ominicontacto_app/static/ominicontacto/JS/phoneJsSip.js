@@ -769,6 +769,7 @@ $(function() {
                   }
                 }
     };
+		idTipoCamp = $("#cmpList option:selected").attr('campana_type');
     opciones = {
       'eventHandlers': eventHandlers,
       'mediaConstraints': {
@@ -787,6 +788,7 @@ $(function() {
        setCallState("Calling.... "+num, "yellowgreen");
        displayNumber.value = "";
      }
+		 idTipoCamp = null;
   }
 
   function setCallState(estado, color) {
