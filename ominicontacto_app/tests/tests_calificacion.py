@@ -15,8 +15,7 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
                                                ContactoFactory, AgenteProfileFactory,
                                                QueueMemberFactory, CalificacionClienteFactory,
-                                               CalificacionFactory, CalificacionManualFactory,
-                                               CalificacionCampanaFactory)
+                                               CalificacionFactory, CalificacionManualFactory)
 
 from ominicontacto_app.models import AgendaContacto, Calificacion, Campana
 
@@ -205,6 +204,7 @@ class CalificacionTests(OMLBaseTest):
         fecha = str(siguiente_dia.date())
         hora = str(siguiente_dia.time())
         post_data = {'contacto': self.contacto.pk,
+                     'campana': self.campana.pk,
                      'agente': self.agente_profile.pk,
                      'fecha': fecha,
                      'telefono': self.contacto.telefono,
@@ -216,7 +216,8 @@ class CalificacionTests(OMLBaseTest):
     def test_calificacion_manual_marcada_agendada_cuando_se_salva_agenda(self):
         url = reverse('agenda_manual_create',
                       kwargs={'id_agente': self.agente_profile.pk,
-                              'telefono': self.contacto.telefono})
+                              'telefono': self.contacto.telefono,
+                              'pk_campana': self.campana.pk})
         post_data = self._obtener_post_data_agenda()
         self.assertFalse(self.calificacion_cliente_manual.agendado)
         self.client.post(url, post_data, follow=True)
