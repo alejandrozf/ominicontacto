@@ -2621,7 +2621,7 @@ class AgendaContacto(models.Model):
     hora = models.TimeField()
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
-    campana = models.ForeignKey(Campana, related_name='agendas')
+    campana = models.ForeignKey(Campana, related_name='agendas', null=True)
 
     def __unicode__(self):
         return "Agenda para el contacto {0} agendado por el agente {1} " \
@@ -3048,7 +3048,7 @@ class AgendaManual(models.Model):
     hora = models.TimeField()
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
-    campana = models.ForeignKey(Campana, related_name="agendas_manuales")
+    campana = models.ForeignKey(Campana, related_name="agendas_manuales", null=True)
 
     def __unicode__(self):
         return "Agenda para el telefono {0} agendado por el agente {1}" \
