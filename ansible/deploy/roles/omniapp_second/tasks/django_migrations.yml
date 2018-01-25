@@ -12,6 +12,7 @@
   register: command_result
   failed_when:
     - "'ya está instalado' not in command_result.stderr"
+    - "'already installed' not in command_result.stderr"
     - "command_result.rc != 0"
 
 

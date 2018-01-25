@@ -16,6 +16,7 @@
   register: command_result
   failed_when:
     - "'ya existe' not in command_result.stderr"
+    - "'already exists' not in command_result.stderr"
     - "command_result.rc != 0"
 
 - name: Run kamailio as a service

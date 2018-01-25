@@ -50,7 +50,9 @@
   with_items:
       - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   register: command_result
-  failed_when: "'transferencia fallida' in command_result.stderr"
+  failed_when:
+    - "'transferencia fallida' in command_result.stderr"
+    - "'failed' in command_result.stderr"
 - meta: clear_host_errors
 
 - get_url: url=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm dest=/root/ validate_certs=no
@@ -58,6 +60,7 @@
   register: command_result
   failed_when:
     - "'ya está instalado' not in command_result.stderr"
+    - "'already installed' not in command_result.stderr"
     - "command_result.rc != 0"
 
 - yum: name={{ item }} state=present

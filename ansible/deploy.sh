@@ -157,7 +157,7 @@ Preliminar() {
 IngresarIP(){
 
     echo -en "Ingrese el formato de audio en el que quiere las grabaciones: "; read audio
-    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local_centos.py
+    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local.py
     echo -en "Ingrese fqdn  de maquina a deployar: "; read omnicentos_fqdn
     sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" /etc/ansible/group_vars/all
     echo "Transifiendo llave publica a usuario root de Centos"
