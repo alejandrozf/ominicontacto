@@ -17,7 +17,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                QueueMemberFactory, CalificacionClienteFactory,
                                                CalificacionFactory, CalificacionManualFactory)
 
-from ominicontacto_app.models import AgendaContacto, Calificacion, Campana
+from ominicontacto_app.models import AgendaContacto, AgendaManual, Calificacion, Campana
 
 
 class CalificacionTests(OMLBaseTest):
@@ -253,3 +253,29 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_agenda()
         self.client.post(url, post_data, follow=True)
         self.assertEqual(post.call_count, 1)
+
+    @patch('requests.post')
+    def test_creacion_agenda_contacto_adiciona_campo_campana(self, post):
+        CalificacionClienteFactory.create(
+            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        url = reverse('agenda_contacto_create',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        post_data = self._obtener_post_data_agenda()
+        self.client.post(url, post_data, follow=True)
+        agenda_contacto = AgendaContacto.objects.first()
+        self.assertEqual(agenda_contacto.campana.pk, self.campana.pk)
+
+    @patch('requests.post')
+    def test_creacion_agenda_manual_adiciona_campo_campana(self, post):
+        CalificacionClienteFactory.create(
+            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        url = reverse('agenda_manual_create',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'telefono': self.contacto.telefono,
+                              'pk_campana': self.campana.pk})
+        post_data = self._obtener_post_data_agenda()
+        self.client.post(url, post_data, follow=True)
+        agenda_manual = AgendaManual.objects.first()
+        self.assertEqual(agenda_manual.campana.pk, self.campana.pk)
