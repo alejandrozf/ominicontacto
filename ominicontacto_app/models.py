@@ -1125,7 +1125,7 @@ class Queue(models.Model):
 
     def get_string_initial_predictive_model(self):
         if self.initial_predictive_model:
-            return "ON"
+            return "ADAPTIVE"
         return "OFF"
 
     class Meta:
