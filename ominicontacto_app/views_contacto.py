@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 
 """
-Vista para el modelo de Contacto de la base de datos
+Vistas para el modelo de Contacto de la base de datos
 """
 
 from __future__ import unicode_literals
 
 import json
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import DeleteView
-from django.views.generic import ListView, CreateView, UpdateView, FormView
-from ominicontacto_app.models import Contacto, BaseDatosContacto
-from django.core import paginator as django_paginator
+from django.views.generic import View, ListView, CreateView, UpdateView, FormView
+from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
 from django.core.urlresolvers import reverse
 from ominicontacto_app.forms import (
-    BusquedaContactoForm, ContactoForm, FormularioNuevoContacto
+    BusquedaContactoForm, ContactoForm, FormularioNuevoContacto, EscogerCampanaForm
 )
 from ominicontacto_app.utiles import convertir_ascii_string
 
@@ -43,62 +42,79 @@ class ContactoUpdateView(UpdateView):
         return reverse('view_blanco')
 
 
-class ContactoListView(ListView):
+class ContactoListView(FormView):
     """Vista que lista los contactos"""
     model = Contacto
     template_name = 'agente/contacto_list.html'
 
-    def get_queryset(self, **kwargs):
+    form_class = EscogerCampanaForm
+
+    def _obtener_campanas(self):
         agente = self.request.user.get_agente_profile()
-        return agente.get_contactos_de_campanas_miembro()
+        campanas_queues = agente.get_campanas_activas_miembro().exclude(
+            queue_name__campana__type__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW])
+        ids_campanas = []
+        for id_nombre in campanas_queues.values_list('id_campana', flat=True):
+            split_id_nombre = id_nombre.split('_')
+            id_campana = split_id_nombre[0]
+            nombre_campana = '_'.join(split_id_nombre[1:])
+            ids_campanas.append((id_campana, nombre_campana))
+        return ids_campanas
+
+    def get_form_kwargs(self):
+        kwargs = super(ContactoListView, self).get_form_kwargs()
+        ids_campanas = self._obtener_campanas()
+        if ids_campanas:
+            ids_campanas.insert(0, ('', '---------'))
+        kwargs['campanas'] = ids_campanas
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(ContactoListView, self).get_context_data(
             **kwargs)
-        qs = self.get_queryset()
-         # ----- <Paginate> -----
-        page = self.kwargs['pagina']
-        result_paginator = django_paginator.Paginator(qs, 20)
-        try:
-            qs = result_paginator.page(page)
-        except django_paginator.PageNotAnInteger:  # If page is not an integer, deliver first page.
-            qs = result_paginator.page(1)
-        except django_paginator.EmptyPage:  # If page is out of range (e.g. 9999), deliver last page of results.
-            qs = result_paginator.page(result_paginator.num_pages)
-        # ----- </Paginate> -----
-
-        context['contactos'] = qs
-        context['url_paginator'] = 'contacto_list'
-
+        context['campanas'] = self._obtener_campanas()
+        if not context.get('campana_nombre', False):
+            context['form'] = self.get_form()
         return context
 
+    def form_valid(self, form):
+        campana_pk = form.cleaned_data.get('campana')
+        campana = Campana.objects.get(pk=campana_pk)
+        return self.render_to_response(self.get_context_data(
+            form=form, campana=campana))
 
-class BusquedaContactoFormView(FormView):
-    """Vista para buscar un contacto de la ventana del agente"""
-    form_class = BusquedaContactoForm
-    template_name = 'agente/busqueda_contacto.html'
+
+class API_ObtenerContactosCampanaView(View):
+    def _procesar_api(self, request, campana):
+        search = request.GET['search[value]']
+        contactos = campana.bd_contacto.contactos.all()
+        if search != '':
+            contactos = campana.bd_contacto.contactos.filter(
+                telefono__iregex=search)
+        return contactos
+
+    def _procesar_contactos_salida(self, request, campana, contactos_filtrados):
+        total_contactos = campana.bd_contacto.contactos.count()
+        total_contactos_filtrados = contactos_filtrados.count()
+        start = int(request.GET['start'])
+        length = int(request.GET['length'])
+        draw = int(request.GET['draw'])
+        data = [[pk, telefono, ''] for pk, telefono
+                in contactos_filtrados.values_list('pk', 'telefono')]
+        result_dict = {
+            'draw': draw,
+            'recordsTotal': total_contactos,
+            'recordsFiltered': total_contactos_filtrados,
+            'data': data[start:start + length],
+        }
+        return result_dict
 
     def get(self, request, *args, **kwargs):
-        listado_de_contacto = Contacto.objects.all()
-        return self.render_to_response(self.get_context_data(
-            listado_de_contacto=listado_de_contacto))
-
-    def form_valid(self, form):
-        filtro = form.cleaned_data.get('buscar')
-        try:
-            listado_de_contacto = Contacto.objects.contactos_by_filtro(filtro)
-        except Contacto.DoesNotExist:
-            listado_de_contacto = Contacto.objects.all()
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-
-        if listado_de_contacto:
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-        else:
-            listado_de_contacto = Contacto.objects.all()
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
+        pk_campana = kwargs.get('pk_campana')
+        campana = Campana.objects.get(pk=pk_campana)
+        contactos = self._procesar_api(request, campana)
+        result_dict = self._procesar_contactos_salida(request, campana, contactos)
+        return JsonResponse(result_dict)
 
 
 class ContactoBDContactoCreateView(CreateView):
@@ -190,7 +206,6 @@ class ContactoBDContactoUpdateView(UpdateView):
         contacto = self.get_object()
         base_datos = contacto.bd_contacto
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
         nombres = metadata.nombres_de_columnas
         datos = []
         nombres.remove('telefono')

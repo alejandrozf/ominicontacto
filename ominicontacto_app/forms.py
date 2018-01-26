@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 
 import json
 from django import forms
@@ -13,6 +14,7 @@ from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
+
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
@@ -376,7 +378,7 @@ class CampanaUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'gestion', 'objetivo')
+        fields = ('calificacion_campana', 'bd_contacto', 'gestion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1038,6 +1040,11 @@ class CampanaManualForm(forms.ModelForm):
         return nombre
 
 
+class CampanaManualUpdateForm(CampanaManualForm):
+    class Meta(CampanaManualForm.Meta):
+        exclude = ('nombre', )
+
+
 class CampanaPreviewForm(CampanaManualForm):
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
@@ -1191,3 +1198,15 @@ class ArchivoDeAudioForm(forms.ModelForm):
             la Campaña. Si ya existe uno y guarda otro, el audio será
             reemplazado.""",
         }
+
+
+class EscogerCampanaForm(forms.Form):
+    campana = forms.ChoiceField(
+        label=_("Escoja una campaña"), choices=(),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        campanas = kwargs.pop('campanas', None)
+        super(EscogerCampanaForm, self).__init__(*args, **kwargs)
+        choices = [(pk, nombre) for pk, nombre in campanas]
+        self.fields['campana'].choices = choices

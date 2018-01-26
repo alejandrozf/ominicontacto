@@ -1,0 +1,40 @@
+{% load i18n %}
+
+<div id="contactos">
+    <div class="col-md-3">
+        <div class="well well-sm">
+            <form action="{% url 'contacto_list' %}" method="post">{% csrf_token %}
+                <table class="table" data-toggle="tooltip" data-placement="bottom"
+                       title="{% trans 'No se muestran las campañas de tipo preview a las cuales Ud. está asignado' %}">
+                    {{ form }}
+                </table>
+                <button type="submit" class="btn btn-primary">{% trans "Mostrar contactos" %}</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <form action="{% url 'agente_llamar_contacto' %}" method="POST" role="form">
+            {% csrf_token %}
+            <input type="hidden" id="pk_agente" name="pk_agente" value="{{ user.get_agente_profile.pk }}">
+            <input type="hidden" id="pk_contacto" name="pk_contacto">
+            <input type="hidden" id="pk_campana" name="pk_campana" value="{{ campana.pk }}">
+            <input type="hidden" id="campana_nombre" name="campana_nombre" value="{{ campana.nombre }}">
+            <input type="hidden" id="click2call_lista_contactos" name="click2call_lista_contactos" value="true">
+            <button id="lista_llamar_contacto" type="submit" class="hidden"></button>
+        </form>
+        {% if campana %}
+            <h4> {% trans 'Se muestran los contactos de la campaña' %}: {{ campana.nombre }}</h4>
+            <table id="agenteContactosTable">
+                <thead>
+                    <tr>
+                        <th>ID de Contacto</th>
+                        <th>Telefono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        {% endif %}
+    </div>
+</div>
+<!-- pagination -->
+</div>
