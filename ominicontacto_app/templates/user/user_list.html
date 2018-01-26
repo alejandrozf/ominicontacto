@@ -58,7 +58,9 @@
                     {% endif %}
                 </td>
                 <td><a href="{% url 'user_update' usuario.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar Usuario"></span></a>
+                    {% if usuario.id != 1 %}
                     <a href="{% url 'user_delete' usuario.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Usuario"></span></a>
+                      {% endif %}
                 </td>
                 {% endif %}
             </tr>
