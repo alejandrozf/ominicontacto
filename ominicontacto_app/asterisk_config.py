@@ -76,7 +76,7 @@ class QueueDialplanConfigCreator(object):
 
         return ''.join(partes)
 
-    def _generar_dialplan_campana_dialer_manual(self, campana):
+    def _generar_dialplan_campana_dialer(self, campana):
         """Genera el dialplan para una queue.
 
         :param campana: Campana para la cual hay crear el dialplan
@@ -86,19 +86,12 @@ class QueueDialplanConfigCreator(object):
 
         assert campana.queue_campana is not None, "campana.queue_campana == None"
 
-        tipo_campana = campana.type
-        if campana.type is Campana.TYPE_DIALER:
-            tipo_campana = "DIALER"
-        elif campana.type is Campana.TYPE_MANUAL:
-            tipo_campana = "MANUAL"
-
         partes = []
         param_generales = {
             'oml_queue_name': "{0}_{1}".format(campana.id,
                                                elimina_espacios(campana.nombre)),
             'oml_queue_id_asterisk': '0077' + str(campana.queue_campana.queue_asterisk),
             'date': str(datetime.datetime.now()),
-            'oml_tipo_campana': tipo_campana
         }
 
         # Generador inicial para campana dialer
@@ -151,14 +144,12 @@ class QueueDialplanConfigCreator(object):
         return Campana.objects.obtener_all_dialplan_asterisk().filter(
             type=Campana.TYPE_ENTRANTE)
 
-    def _obtener_todas_dialer_manuales_para_generar_dialplan(self):
+    def _obtener_todas_dialer_para_generar_dialplan(self):
         """Devuelve las queues para crear el dialplan.
         """
         # Ver de obtener activa ya que en este momemento no estamos manejando
         # estados
-        tipos = [Campana.TYPE_MANUAL, Campana.TYPE_DIALER]
-        return Campana.objects.obtener_all_dialplan_asterisk().filter(
-            type__in=tipos)
+        return Campana.objects.obtener_all_dialplan_asterisk().filter(type=Campana.TYPE_DIALER)
 
     def create_dialplan(self, campana=None, campanas=None):
         """Crea el archivo de dialplan para queue existentes
@@ -206,12 +197,12 @@ class QueueDialplanConfigCreator(object):
 
             dialplan.append(config_chunk)
 
-        campanas = self._obtener_todas_dialer_manuales_para_generar_dialplan()
+        campanas = self._obtener_todas_dialer_para_generar_dialplan()
 
         for campana in campanas:
             logger.info("Creando dialplan para queue %s", campana.nombre)
             try:
-                config_chunk = self._generar_dialplan_campana_dialer_manual(campana)
+                config_chunk = self._generar_dialplan_campana_dialer(campana)
                 logger.info("Dialplan generado OK para queue %s",
                             campana.nombre)
             except:
