@@ -1079,6 +1079,11 @@ class Queue(models.Model):
                                          on_delete=models.SET_NULL,
                                          related_name='queues_ingreso')
 
+    # Predictiva
+    initial_predictive_model = models.BooleanField(default=False)
+    initial_boost_factor = models.DecimalField(
+        default=1.0, max_digits=3, decimal_places=1, blank=True, null=True)
+
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
     context = models.CharField(max_length=128, blank=True, null=True)
@@ -1110,6 +1115,11 @@ class Queue(models.Model):
 
     def get_string_queue_asterisk(self):
         return '0077' + str(self.queue_asterisk)
+
+    def get_string_initial_predictive_model(self):
+        if self.initial_predictive_model:
+            return "ADAPTIVE"
+        return "OFF"
 
     class Meta:
         db_table = 'queue_table'

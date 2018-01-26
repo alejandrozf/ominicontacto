@@ -330,6 +330,8 @@ class QueueDialerCreateView(CheckEstadoCampanaDialerMixin,
         self.object.ringinuse = True
         self.object.setinterfacevar = True
         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
+        if self.object.initial_boost_factor is None:
+            self.object.initial_boost_factor = 1.0
         self.object.save()
         return super(QueueDialerCreateView, self).form_valid(form)
 
@@ -368,6 +370,8 @@ class QueueDialerUpdateView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        if self.object.initial_boost_factor is None:
+            self.object.initial_boost_factor = 1.0
         self.object.save()
         activacion_queue_service = ActivacionQueueService()
         try:

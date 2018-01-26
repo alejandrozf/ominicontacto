@@ -53,8 +53,8 @@ class CampanaCreator(object):
             "autopause": False,
             "campaignVars": "",
 
-            "initialPredictiveModel": "OFF",
-            "initialBoostFactor": 1.0,
+            "initialPredictiveModel": campana.queue_campana.get_string_initial_predictive_model(),
+            "initialBoostFactor":  float(campana.queue_campana.initial_boost_factor),
             "amdTracking": "OFF",
             "amdParams": "AMD_MODE & AMD_EXTRA",
             "amdAudioFile": "AMD_FILE",

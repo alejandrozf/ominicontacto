@@ -855,7 +855,7 @@ class QueueDialerForm(forms.ModelForm):
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
                   'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
-                  'audio_para_contestadores')
+                  'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -867,7 +867,21 @@ class QueueDialerForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
+            "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+    def clean(self):
+        initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
+        if initial_boost_factor and initial_boost_factor < 1.0:
+            raise forms.ValidationError('El factor boost inicial no debe ser'
+                                        ' menor a 1.0')
+
+        initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
+        if initial_predictive_model and not initial_boost_factor:
+            raise forms.ValidationError('El factor boost inicial no deber ser'
+                                        ' none si la predicitvidad está activa')
+
+        return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
         super(QueueDialerForm, self).__init__(*args, **kwargs)
@@ -882,7 +896,8 @@ class QueueDialerUpdateForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores')
+                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores',
+                  'initial_predictive_model', 'initial_boost_factor')
         widgets = {
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
@@ -891,6 +906,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
+            "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -902,6 +918,16 @@ class QueueDialerUpdateForm(forms.ModelForm):
         if not maxlen > 0:
             raise forms.ValidationError('Cantidad Max de llamadas debe ser'
                                         ' mayor a cero')
+
+        initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
+        if initial_boost_factor and initial_boost_factor < 1.0:
+            raise forms.ValidationError('El factor boost inicial no debe ser'
+                                        ' menor a 1.0')
+
+        initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
+        if initial_predictive_model and not initial_boost_factor:
+            raise forms.ValidationError('El factor boost inicial no deber ser'
+                                        ' none si la predicitvidad está activa')
 
         return self.cleaned_data
 
