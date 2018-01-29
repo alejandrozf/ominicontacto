@@ -121,26 +121,24 @@ class QueueEntranteForm(forms.ModelForm):
     El form de cola para las colas
     """
 
+    audios = forms.ChoiceField(choices=[], required=False)
+
     def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
-        self.fields['announce_frequency'].required = True
+        self.fields['announce_frequency'].required = False
         audios_choices = [(audio.id, audio.descripcion)
                           for audio in audios_choices]
         audios_choices.insert(0, ('', '---------'))
-        self.fields['audios'] = forms.ChoiceField(
-            choices=audios_choices,
-            widget=forms.Select(attrs={'class': 'form-control'}),
-            required=True
-        )
+        self.fields['audios'].choices = audios_choices
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
-                  'announce_frequency', 'audio_de_ingreso')
+                  'audios', 'announce_frequency', 'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -155,10 +153,18 @@ class QueueEntranteForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "announce_frequency": forms.TextInput(
-                attrs={'class': 'form-control'}),
+            'audios': forms.Select(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def clean_announce_frequency(self):
+        audio = self.cleaned_data.get('audio', None)
+        frequency = self.cleaned_data.get('announce_frequency', None)
+        if audio and not (frequency > 0):
+            raise forms.ValidationError(
+                _('Debe definir una frecuencia para el Anuncio Periódico'))
+        return frequency
 
 
 class QueueMemberForm(forms.ModelForm):
@@ -181,26 +187,24 @@ class QueueEntranteUpdateForm(forms.ModelForm):
     El form para actualizar la cola para las llamadas
     """
 
+    audios = forms.ChoiceField(choices=[], required=False)
+
     def __init__(self, audios_choices, id_audio, *args, **kwargs):
         super(QueueEntranteUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
-        self.fields['announce_frequency'].required = True
+        self.fields['announce_frequency'].required = False
         audios_choices = [(audio.id, audio.descripcion)
                           for audio in audios_choices]
         audios_choices.insert(0, ('', '---------'))
-        self.fields['audios'] = forms.ChoiceField(
-            choices=audios_choices,
-            widget=forms.Select(attrs={'class': 'form-control'}),
-            initial=id_audio,
-            required=True
-        )
+        self.fields['audios'].choices = audios_choices
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
         fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion', 'announce_frequency', 'audio_de_ingreso')
+                  'weight', 'wait', 'auto_grabacion', 'audios', 'announce_frequency',
+                  'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -215,8 +219,8 @@ class QueueEntranteUpdateForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "announce_frequency": forms.TextInput(
-                attrs={'class': 'form-control'}),
+            "audios": forms.Select(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
@@ -227,6 +231,14 @@ class QueueEntranteUpdateForm(forms.ModelForm):
                                         ' mayor a cero')
 
         return self.cleaned_data
+
+    def clean_announce_frequency(self):
+        audio = self.cleaned_data.get('audios', None)
+        frequency = self.cleaned_data.get('announce_frequency', None)
+        if audio and not (frequency > 0):
+            raise forms.ValidationError(
+                _('Debe definir una frecuencia para el Anuncio Periódico'))
+        return frequency
 
 
 class BaseDatosContactoForm(forms.ModelForm):
