@@ -53,7 +53,7 @@ class QueueDialplanConfigCreator(object):
             'oml_queue_name': "{0}_{1}".format(campana.id,
                                                elimina_espacios(campana.nombre)),
             'oml_queue_type': campana.type,
-            'oml_queue_id_asterisk': '0077' + str(campana.queue_campana.queue_asterisk),
+            'oml_queue_id_asterisk': campana.get_string_queue_asterisk(),
             'oml_queue_wait': campana.queue_campana.wait,
             'oml_campana_id': campana.id,
             'date': str(datetime.datetime.now())
@@ -93,19 +93,19 @@ class QueueDialplanConfigCreator(object):
             'oml_queue_name': "{0}_{1}".format(campana.id,
                                                elimina_espacios(campana.nombre)),
             'oml_queue_type': campana.type,
-            'oml_queue_id_asterisk': '0077' + str(campana.queue_campana.queue_asterisk),
+            'oml_queue_id_asterisk': campana.get_string_queue_asterisk(),
             'date': str(datetime.datetime.now()),
         }
 
         # Generador inicial para campana dialer
-        generador_queue = self._generador_dialer_factory.\
+        generador_queue = self._generador_dialer_factory. \
             crear_generador_para_campana_dialer_start(param_generales)
         partes.append(generador_queue.generar_pedazo())
 
-        #Generador para contestadores
+        # Generador para contestadores
         if campana.queue_campana.detectar_contestadores:
             generador_queue = self._generador_dialer_factory. \
-            crear_generador_para_campana_dialer_contestadores(param_generales)
+                crear_generador_para_campana_dialer_contestadores(param_generales)
             partes.append(generador_queue.generar_pedazo())
 
         # Generador para grabacion
@@ -250,7 +250,7 @@ class SipConfigCreator(object):
         :returns: str -- config sip para los agentes
         """
 
-        #assert agente is not None, "AgenteProfile == None"
+        # assert agente is not None, "AgenteProfile == None"
         assert agente.user.get_full_name() is not None,\
             "agente.user.get_full_name() == None"
         assert agente.sip_extension is not None, "agente.sip_extension  == None"
@@ -258,12 +258,12 @@ class SipConfigCreator(object):
         partes = []
         nombre_agente = remplace_espacio_por_guion(agente.user.get_full_name())
         param_generales = {
-                'oml_agente_name': "{0}_{1}".format(agente.id, nombre_agente),
+            'oml_agente_name': "{0}_{1}".format(agente.id, nombre_agente),
             'oml_agente_sip': agente.sip_extension,
             'oml_kamailio_ip': settings.OML_KAMAILIO_IP,
         }
 
-        generador_agente= self._generador_factory.crear_generador_para_agente(
+        generador_agente = self._generador_factory.crear_generador_para_agente(
             param_generales)
         partes.append(generador_agente.generar_pedazo())
 
@@ -321,7 +321,6 @@ class SipConfigCreator(object):
                     self._generador_factory.crear_generador_para_failed(
                         param_failed)
                 config_chunk = generador_failed.generar_pedazo()
-
 
             sip.append(config_chunk)
 
@@ -396,7 +395,7 @@ class QueuesCreator(object):
         }
 
         # QUEUE: Creamos la porción inicial del Queue.
-        generador_queue = self._generador_factory.\
+        generador_queue = self._generador_factory. \
             crear_generador_para_queue(param_generales)
         partes.append(generador_queue.generar_pedazo())
 
@@ -442,7 +441,7 @@ class QueuesCreator(object):
         }
 
         # QUEUE: Creamos la porción inicial del Queue.
-        generador_queue = self._generador_factory.\
+        generador_queue = self._generador_factory. \
             crear_generador_para_queue_entrante(param_generales)
         partes.append(generador_queue.generar_pedazo())
 
