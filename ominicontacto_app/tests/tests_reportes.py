@@ -19,6 +19,8 @@ class ReportesTests(OMLBaseTest):
 
     def setUp(self):
 
+        self.fecha_inicio = timezone.now()
+
         self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
@@ -47,47 +49,47 @@ class ReportesTests(OMLBaseTest):
         self.NRO_QUEUES_MANUALES_ABANDONADAS = 25
 
         self.campanas_dialer = CampanaFactory.create_batch(
-            self.NRO_CAMPANAS_DIALER, type=Campana.TYPE_DIALER)
+            self.NRO_CAMPANAS_DIALER, type=Campana.TYPE_DIALER, estado=Campana.ESTADO_ACTIVA)
         self.campanas_entrantes = CampanaFactory.create_batch(
-            self.NRO_CAMPANAS_ENTRANTES, type=Campana.TYPE_ENTRANTE)
+            self.NRO_CAMPANAS_ENTRANTES, type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
         self.campanas_manuales = CampanaFactory.create_batch(
-            self.NRO_CAMPANAS_MANUALES, type=Campana.TYPE_MANUAL)
+            self.NRO_CAMPANAS_MANUALES, type=Campana.TYPE_MANUAL, estado=Campana.ESTADO_ACTIVA)
 
         self.queues_campanas_dialer_ingresadas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_DIALER_INGRESADAS, campana_id=self.campanas_dialer[0].pk,
-            event=self.evento_llamadas_ingresadas)
+            event=self.evento_llamadas_ingresadas, data5=Campana.TYPE_DIALER)
         self.queues_campanas_dialer_atendidas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_DIALER_ATENDIDAS, campana_id=self.campanas_dialer[1].pk,
-            event=self.evento_llamadas_atendidas)
+            event=self.evento_llamadas_atendidas, data5=Campana.TYPE_DIALER)
         self.queues_campanas_dialer_abandonadas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_DIALER_ABANDONADAS, campana_id=self.campanas_dialer[2].pk,
-            event=self.evento_llamadas_abandonadas)
+            event=self.evento_llamadas_abandonadas, data5=Campana.TYPE_DIALER)
         self.queues_campanas_dialer_expiradas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_DIALER_EXPIRADAS, campana_id=self.campanas_dialer[3].pk,
-            event=self.evento_llamadas_expiradas)
+            event=self.evento_llamadas_expiradas, data5=Campana.TYPE_DIALER)
 
         self.queues_campanas_entrantes_ingresadas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_ENTRANTES_INGRESADAS, campana_id=self.campanas_entrantes[0].pk,
-            event=self.evento_llamadas_ingresadas)
+            event=self.evento_llamadas_ingresadas, data5=Campana.TYPE_ENTRANTE)
         self.queues_campanas_entrantes_atendidas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_ENTRANTES_ATENDIDAS, campana_id=self.campanas_entrantes[1].pk,
-            event=self.evento_llamadas_atendidas)
+            event=self.evento_llamadas_atendidas, data5=Campana.TYPE_ENTRANTE)
         self.queues_campanas_entrantes_abandonadas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_ENTRANTES_ABANDONADAS, campana_id=self.campanas_entrantes[2].pk,
-            event=self.evento_llamadas_abandonadas)
+            event=self.evento_llamadas_abandonadas, data5=Campana.TYPE_ENTRANTE)
         self.queues_campanas_entrantes_expiradas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_ENTRANTES_EXPIRADAS, campana_id=self.campanas_entrantes[3].pk,
-            event=self.evento_llamadas_expiradas)
+            event=self.evento_llamadas_expiradas, data5=Campana.TYPE_ENTRANTE)
 
         self.queues_campanas_manuales_ingresadas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_MANUALES_INGRESADAS, campana_id=self.campanas_manuales[0].pk,
-            event=self.evento_llamadas_ingresadas, data4='saliente')
+            event=self.evento_llamadas_ingresadas, data4='saliente', data5=Campana.TYPE_MANUAL)
         self.queues_campanas_manuales_atendidas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_MANUALES_ATENDIDAS, campana_id=self.campanas_manuales[1].pk,
-            event=self.evento_llamadas_atendidas, data4='saliente')
+            event=self.evento_llamadas_atendidas, data4='saliente', data5=Campana.TYPE_MANUAL)
         self.queues_campanas_manuales_abandonadas = QueuelogFactory.create_batch(
             self.NRO_QUEUES_MANUALES_ABANDONADAS, campana_id=self.campanas_manuales[2].pk,
-            event=self.evento_llamadas_abandonadas, data4='saliente')
+            event=self.evento_llamadas_abandonadas, data4='saliente', data5=Campana.TYPE_MANUAL)
 
         self.client.login(username=self.usuario_admin_supervisor.username,
                           password=self.PWD)
@@ -142,11 +144,18 @@ class ReportesTests(OMLBaseTest):
         self.assertContains(response_csv, 'Total llamadas Entrantes')
         self.assertContains(response_csv, 'Total llamadas Salientes Manuales')
 
+    def _obtener_total_llamadas(self, fecha_inicio, fecha_fin, campanas):
+        service = GraficoService()
+        estadisticas = service._calcular_estadisticas(fecha_inicio, fecha_fin,
+                                                      self.usuario_admin_supervisor,
+                                                      True)
+        return estadisticas['total_llamadas_dict']
+
     def _get_llamadas_list_counts_dia_hoy_todas_las_campanas(self):
-        fecha_inicio = fecha_fin = timezone.now()
+        fecha_fin = timezone.now()
         campanas = Campana.objects.all()
-        llamadas_list_counts = GraficoService().obtener_total_llamadas(
-            fecha_inicio, fecha_fin, campanas).values()
+        llamadas_list_counts = self._obtener_total_llamadas(
+            self.fecha_inicio, fecha_fin, campanas).values()
         return llamadas_list_counts
 
     def test_total_llamadas_ingresadas_igual_suma_todos_los_tipos_de_llamadas_existentes(self):
@@ -177,6 +186,9 @@ class ReportesTests(OMLBaseTest):
         self.assertEqual(llamadas_list_counts[8], total_llamadas_campanas_manuales)
         self.assertEqual(llamadas_list_counts[8], self.NRO_QUEUES_MANUALES_INGRESADAS)
 
+    # Modificar una vez que se cambien los datos que se guarden desde Asterisk en 'queue_log'.
+    # En 'data4' vendrá "saliente" si es manual y en 'data5' el tipo de la campaña [1:4]
+    # Debe cambiarse el trigger también.
     def _aplicar_sql_query(self, tipo_campana, queuename):
         fields = "(time, callid, queuename, agent, event, data1, data2, data3, data4, data5)"
         values = ('2017-12-22 03:45:00.0000', '2312312.233', queuename, 'agente_test', 'CONNECT',

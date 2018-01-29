@@ -14,7 +14,7 @@ import tempfile
 import time
 import uuid
 import unicodedata
-import datetime
+from django.utils import timezone
 
 from django.conf import settings
 from django.forms import ValidationError
@@ -234,7 +234,8 @@ def convert_fecha_datetime(fecha, final_dia=False):
     if final_dia:
         hora = 23
         minuto = 59
-    fecha = datetime.datetime(int(ano), int(mes), int(dia), hora, minuto)
+    fecha = timezone.datetime(int(ano), int(mes), int(dia), hora, minuto,
+                              tzinfo=timezone.get_current_timezone())
     return fecha
 
 

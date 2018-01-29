@@ -5,13 +5,12 @@ Servicio para generar reporte de las grabaciones de las llamadas
 """
 
 import json
-import datetime
 import pygal
 
 from collections import OrderedDict
 from pygal.style import Style
 
-from django.db.models import Q, Count
+from django.db.models import Count
 
 from ominicontacto_app.models import Queuelog, Campana
 import logging as _logging
@@ -35,19 +34,56 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 
 class GraficoService():
 
-    def _obtener_campana_llamada(self, fecha_inferior, fecha_superior, campanas):
-        """
-        Obtiene el totales de llamadas por campanas
-        :param fecha_inferior: fecha desde cual se obtendran las llamadas
-        :param fecha_superior: fecha hasta el cual se obtendran las llamadas
-        :return: queryset con las cantidades totales por campana
-        """
-        # lista de dict con la cantidad por  cada campana
-        fecha_inferior = datetime.datetime.combine(fecha_inferior,
-                                                   datetime.time.min)
-        fecha_superior = datetime.datetime.combine(fecha_superior,
-                                                   datetime.time.max)
+    def _campanas_implicadas(self, user, finalizadas):
+        if finalizadas:
+            campanas = Campana.objects.obtener_all_activas_finalizadas()
+        else:
+            campanas = Campana.objects.obtener_all_dialplan_asterisk()
 
+        if not user.get_is_administrador():
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+
+        return campanas
+
+    def _computar_totales_por_tipo(self, estadisticas):
+        total_llamadas_dict = OrderedDict()
+
+        total_llamadas_dict['total_llamadas_ingresadas'] = 0
+
+        total_llamadas_dict['llamadas_ingresadas_dialer'] = \
+            estadisticas[Campana.TYPE_DIALER]['no_manuales']['ENTERQUEUE']
+        total_llamadas_dict['llamadas_gestionadas_dialer'] = \
+            estadisticas[Campana.TYPE_DIALER]['no_manuales']['CONNECT']
+        total_llamadas_dict['llamadas_perdidas_dialer'] = \
+            estadisticas[Campana.TYPE_DIALER]['no_manuales']['ABANDON'] + \
+            estadisticas[Campana.TYPE_DIALER]['no_manuales']['EXITWITHTIMEOUT'] + \
+            estadisticas[Campana.TYPE_DIALER]['manuales']['EXITWITHTIMEOUT']
+
+        total_llamadas_dict['llamadas_ingresadas_entrantes'] = \
+            estadisticas[Campana.TYPE_ENTRANTE]['no_manuales']['ENTERQUEUE']
+        total_llamadas_dict['llamadas_atendidas_entrantes'] = \
+            estadisticas[Campana.TYPE_ENTRANTE]['no_manuales']['CONNECT']
+        total_llamadas_dict['llamadas_expiradas_entrantes'] = \
+            estadisticas[Campana.TYPE_ENTRANTE]['no_manuales']['EXITWITHTIMEOUT']
+        total_llamadas_dict['llamadas_abandonadas_entrantes'] = \
+            estadisticas[Campana.TYPE_ENTRANTE]['no_manuales']['ABANDON']
+
+        total_llamadas_dict['llamadas_ingresadas_manuales'] = \
+            estadisticas['manuales']['ENTERQUEUE']
+        total_llamadas_dict['llamadas_atendidas_manuales'] = \
+            estadisticas['manuales']['CONNECT']
+        total_llamadas_dict['llamadas_abandonadas_manuales'] = \
+            estadisticas['manuales']['ABANDON']
+
+        total_llamadas_ingresadas = \
+            total_llamadas_dict['llamadas_ingresadas_dialer'] + \
+            total_llamadas_dict['llamadas_ingresadas_entrantes'] + \
+            total_llamadas_dict['llamadas_ingresadas_manuales']
+        total_llamadas_dict['total_llamadas_ingresadas'] = total_llamadas_ingresadas
+
+        return total_llamadas_dict
+
+    def _computar_llamadas_por_campana(self, estadisticas, campanas, tipos_campana):
         campanas_ids_nombres = OrderedDict()
         campanas_tipos = []
 
@@ -58,34 +94,34 @@ class GraficoService():
 
         campanas_ids = campanas_ids_nombres.keys()
 
-        qs_campanas = Queuelog.objects.filter(
-            event='ENTERQUEUE',
-            time__range=(fecha_inferior, fecha_superior),
-            campana_id__in=campanas_ids).values(
-                'campana_id').annotate(cantidad=Count('campana_id'))
-        campanas_dict = {campana['campana_id']: campana['cantidad']
-                         for campana in qs_campanas}
+        campanas_dict = {}
+        for tipo in tipos_campana:
+            for campana_id in estadisticas[tipo]['por_campana']:
+                datos_campana = estadisticas[tipo]['por_campana'][campana_id]
+                cantidad = (datos_campana['manuales']['ENTERQUEUE'] +
+                            datos_campana['no_manuales']['ENTERQUEUE'])
+                campanas_dict[campana_id] = cantidad
 
-        qs_campanas_manuales = Queuelog.objects.filter(
-            data4='saliente',
-            event__in=('CONNECT', 'ABANDON', 'EXITWITHTIMEOUT'),
-            time__range=(fecha_inferior, fecha_superior),
-            campana_id__in=campanas_ids).values(
-                'campana_id').annotate(cantidad=Count('campana_id'))
-        campanas_manuales_dict = {campana['campana_id']: campana['cantidad']
-                                  for campana in qs_campanas_manuales}
+        campanas_manuales_dict = {}
+        for tipo in tipos_campana:
+            for campana_id in estadisticas[tipo]['por_campana']:
+                cantidad = \
+                    estadisticas[tipo]['por_campana'][campana_id]['manuales']['CONNECT']
+                cantidad += \
+                    estadisticas[tipo]['por_campana'][campana_id]['manuales']['ABANDON']
+                cantidad += \
+                    estadisticas[tipo]['por_campana'][campana_id]['manuales']['EXITWITHTIMEOUT']
+                campanas_manuales_dict[campana_id] = cantidad
 
         result = (campanas_dict, campanas_manuales_dict, campanas_ids,
                   campanas_ids_nombres.values(), campanas_tipos)
 
         return result
 
-    def _obtener_total_campana_llamadas(self, campanas_dict, campanas_manuales_dict, campanas,
-                                        fecha_inferior, fecha_superior):
+    def _computar_totales_por_campana(self, campanas_dict, campanas_manuales_dict, campanas):
         """
         Obtiene los totales de llamadas por campana a partir de una lista de campañas
         """
-
         total_campana = []
         total_manuales = []
         for campana_id in campanas:
@@ -95,77 +131,34 @@ class GraficoService():
             total_manuales.append(campana_manuales_count)
         return total_campana, total_manuales
 
-    def calcular_cantidad_llamadas(self, campanas, fecha_inferior, fecha_superior):
-        """
-        Calcula la cantidad de llamadas ingresadas, atendidas, abandondas, expiradas
-        por campana
-        :return: en un dicionaros los totales por campana y los totales para hacer el
-        grafico
-        """
-        eventos_llamadas_ingresadas = ['ENTERQUEUE']
-        eventos_llamadas_atendidas = ['CONNECT']
-        eventos_llamadas_abandonadas = ['ABANDON']
-        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
-
-        qs_campanas_ingresadas = Queuelog.objects.filter(
-            event__in=eventos_llamadas_ingresadas,
-            time__range=(fecha_inferior, fecha_superior),
-            campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id'))
-        campanas_ingresadas_dict = {campana['campana_id']: campana['cantidad']
-                                    for campana in qs_campanas_ingresadas}
-
-        qs_campanas_atendidas = Queuelog.objects.filter(
-            event__in=eventos_llamadas_atendidas,
-            time__range=(fecha_inferior, fecha_superior),
-            campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id'))
-        campanas_atendidas_dict = {campana['campana_id']: campana['cantidad']
-                                   for campana in qs_campanas_atendidas}
-
-        qs_campanas_abandonadas = Queuelog.objects.filter(
-            event__in=eventos_llamadas_abandonadas,
-            time__range=(fecha_inferior, fecha_superior),
-            campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id'))
-        campanas_abandonadas_dict = {campana['campana_id']: campana['cantidad']
-                                     for campana in qs_campanas_abandonadas}
-
-        qs_campanas_expiradas = Queuelog.objects.filter(
-            event__in=eventos_llamadas_expiradas,
-            time__range=(fecha_inferior, fecha_superior),
-            campana_id__in=campanas).values(
-                'campana_id').annotate(cantidad=Count('campana_id'))
-        campanas_expiradas_dict = {campana['campana_id']: campana['cantidad']
-                                   for campana in qs_campanas_expiradas}
-
+    def _computar_totales_por_campanas_de_tipo(self, estadisticas, tipo):
+        queues_tiempo = []
         nombres_queues = []
         total_atendidas = []
         total_abandonadas = []
         total_expiradas = []
 
-        queues_tiempo = []
-
-        for campana in campanas:
-            count_llamadas_ingresadas = campanas_ingresadas_dict.get(campana.pk, 0)
-            count_llamadas_atendidas = campanas_atendidas_dict.get(campana.pk, 0)
-            count_llamadas_abandonadas = campanas_abandonadas_dict.get(campana.pk, 0)
-            count_llamadas_expiradas = campanas_expiradas_dict.get(campana.pk, 0)
-
+        for campana_id in estadisticas[tipo]['por_campana']:
+            datos_campana = estadisticas[tipo]['por_campana'][campana_id]
             cantidad_campana = []
-            cantidad_campana.append(campana.nombre)
-            cantidad_campana.append(count_llamadas_ingresadas)
-            cantidad_campana.append(count_llamadas_atendidas)
-            cantidad_campana.append(count_llamadas_expiradas)
-            cantidad_campana.append(count_llamadas_abandonadas)
-
+            cantidad_campana.append(datos_campana['nombre'])
+            cantidad_campana.append(datos_campana['manuales']['ENTERQUEUE'] +
+                                    datos_campana['no_manuales']['ENTERQUEUE'])
+            cantidad_campana.append(datos_campana['manuales']['CONNECT'] +
+                                    datos_campana['no_manuales']['CONNECT'])
+            cantidad_campana.append(datos_campana['manuales']['EXITWITHTIMEOUT'] +
+                                    datos_campana['no_manuales']['EXITWITHTIMEOUT'])
+            cantidad_campana.append(datos_campana['manuales']['ABANDON'] +
+                                    datos_campana['no_manuales']['ABANDON'])
             queues_tiempo.append(cantidad_campana)
 
-            # para reportes
-            nombres_queues.append(campana.nombre)
-            total_atendidas.append(count_llamadas_atendidas)
-            total_abandonadas.append(count_llamadas_abandonadas)
-            total_expiradas.append(count_llamadas_expiradas)
+            nombres_queues.append(datos_campana['nombre'])
+            total_atendidas.append(datos_campana['manuales']['CONNECT'] +
+                                   datos_campana['no_manuales']['CONNECT'])
+            total_abandonadas.append(datos_campana['manuales']['ABANDON'] +
+                                     datos_campana['no_manuales']['ABANDON'])
+            total_expiradas.append(datos_campana['manuales']['EXITWITHTIMEOUT'] +
+                                   datos_campana['no_manuales']['EXITWITHTIMEOUT'])
 
         totales_grafico = {
             'nombres_queues': nombres_queues,
@@ -176,112 +169,147 @@ class GraficoService():
 
         return queues_tiempo, totales_grafico
 
-    def obtener_total_llamadas(self, fecha_inferior, fecha_superior, campanas):
-        """
-        Calcula la cantidad de llamadas ingresadas, atendidas, abandondas, expiradas
-        :return: los totales de llamadas por ingresadas, atendidas, abandonad y expiradas
-        """
+    def _formatear_estadisticas(self, estadisticas, campanas, tipos_campana):
 
-        eventos_llamadas_ingresadas = ['ENTERQUEUE']
-        eventos_llamadas_atendidas = ['CONNECT']
-        eventos_llamadas_abandonadas = ['ABANDON']
-        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
+        # Se organizan los datos precalculados para cargarlos al contexto y crear los graficos
 
-        campanas_entrantes = campanas.filter(
-            type=Campana.TYPE_ENTRANTE).values_list('id', flat=True)
-        campanas_dialer = campanas.filter(
-            type=Campana.TYPE_DIALER).values_list('id', flat=True)
+        total_llamadas_dict = self._computar_totales_por_tipo(estadisticas)
 
-        ingresadas_dialer = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_dialer), ~Q(data4='saliente'))
-        atendidas_dialer = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_dialer), ~Q(data4='saliente'))
-        abandonadas_dialer = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_dialer), ~Q(data4='saliente'))
-        expiradas_dialer = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(
-                campana_id__in=campanas_dialer)
+        queues_llamadas_dialer, totales_grafico_dialer = \
+            self._computar_totales_por_campanas_de_tipo(estadisticas, Campana.TYPE_DIALER)
+        queues_llamadas_dialer_json = json.dumps({'filas_datos': queues_llamadas_dialer})
+        queues_llamadas_entrantes, totales_grafico_entrantes = \
+            self._computar_totales_por_campanas_de_tipo(estadisticas, Campana.TYPE_ENTRANTE)
+        queues_llamadas_entrantes_json = json.dumps({'filas_datos': queues_llamadas_entrantes})
+        queues_llamadas_manuales, totales_grafico_manuales = \
+            self._computar_totales_por_campanas_de_tipo(estadisticas, Campana.TYPE_MANUAL)
+        queues_llamadas_manuales_json = json.dumps({'filas_datos': queues_llamadas_manuales})
 
-        ingresadas_entrantes = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_entrantes), ~Q(data4='saliente'))
-        atendidas_entrantes = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_entrantes), ~Q(data4='saliente'))
-        abandonadas_entrantes = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_entrantes), ~Q(data4='saliente'))
-        expiradas_entrantes = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_expiradas, fecha_inferior, fecha_superior).filter(
-                Q(campana_id__in=campanas_entrantes), ~Q(data4='saliente'))
+        (dict_campana, dict_campana_manuales, campanas, campanas_nombre,
+            tipos_campana) = self._computar_llamadas_por_campana(estadisticas,
+                                                                 campanas,
+                                                                 tipos_campana)
 
-        llamadas_ingresadas_manuales = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas, data4='saliente')
-        llamadas_atendidas_manuales = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_atendidas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas, data4='saliente')
-        llamadas_abandonadas_manuales = Queuelog.objects.obtener_log_event_periodo(
-            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior).filter(
-            campana_id__in=campanas, data4='saliente')
+        total_campana, total_manuales = self._computar_totales_por_campana(
+            dict_campana, dict_campana_manuales, campanas)
 
-        count_llamadas_ingresadas_dialer = ingresadas_dialer.count()
-        count_llamadas_gestionadas_dialer = atendidas_dialer.count()
-        count_llamadas_abandonadas_dialer = abandonadas_dialer.count()
-        count_llamadas_expiradas_dialer = expiradas_dialer.count()
-        count_llamadas_perdidas_dialer = count_llamadas_abandonadas_dialer + \
-            count_llamadas_expiradas_dialer
+        dic_estadisticas = {
+            'campana_nombre': campanas_nombre,
+            'campana': campanas,
+            'total_campana': total_campana,
+            'total_manuales': total_manuales,
+            'tipos_campana': tipos_campana,
+            'queues_llamadas_dialer': queues_llamadas_dialer,
+            'queues_llamadas_dialer_json': queues_llamadas_dialer_json,
+            'totales_grafico_dialer': totales_grafico_dialer,
+            'queues_llamadas_entrantes': queues_llamadas_entrantes,
+            'queues_llamadas_entrantes_json': queues_llamadas_entrantes_json,
+            'totales_grafico_entrantes': totales_grafico_entrantes,
+            'queues_llamadas_manuales': queues_llamadas_manuales,
+            'queues_llamadas_manuales_json': queues_llamadas_manuales_json,
+            'totales_grafico_manuales': totales_grafico_manuales,
+            'total_llamadas_dict': total_llamadas_dict,
+            'total_llamadas_json': json.dumps(total_llamadas_dict),
+        }
+        return dic_estadisticas
 
-        count_llamadas_ingresadas_entrantes = ingresadas_entrantes.count()
-        count_llamadas_atendidas_entrantes = atendidas_entrantes.count()
-        count_llamadas_abandonadas_entrantes = abandonadas_entrantes.count()
-        count_llamadas_expiradas_entrantes = expiradas_entrantes.count()
+    def _inicializar_conteo_de_estadisticas(self, campanas, tipos_campana):
+        estadisticas = {
+            'no_manuales': {
+                'ENTERQUEUE': 0,
+                'CONNECT': 0,
+                'ABANDON': 0,
+                'EXITWITHTIMEOUT': 0,
+            },
+            'manuales': {
+                'ENTERQUEUE': 0,
+                'CONNECT': 0,
+                'ABANDON': 0,
+                'EXITWITHTIMEOUT': 0,
+            },
+        }
+        for tipo_campana in tipos_campana:
+            estadisticas[tipo_campana] = {
+                'por_campana': {},
+                'manuales': {
+                    'ENTERQUEUE': 0,
+                    'CONNECT': 0,
+                    'ABANDON': 0,
+                    'EXITWITHTIMEOUT': 0,
+                },
+                'no_manuales': {
+                    'ENTERQUEUE': 0,
+                    'CONNECT': 0,
+                    'ABANDON': 0,
+                    'EXITWITHTIMEOUT': 0,
+                },
+            }
+        for campana in campanas:
+            estadisticas[campana.type]['por_campana'][campana.id] = {
+                'nombre': campana.nombre,
+                'manuales': {
+                    'ENTERQUEUE': 0,
+                    'CONNECT': 0,
+                    'ABANDON': 0,
+                    'EXITWITHTIMEOUT': 0,
+                },
+                'no_manuales': {
+                    'ENTERQUEUE': 0,
+                    'CONNECT': 0,
+                    'ABANDON': 0,
+                    'EXITWITHTIMEOUT': 0,
+                },
+            }
 
-        count_llamadas_ingresadas_manuales = llamadas_ingresadas_manuales.count()
-        count_llamadas_atendidas_manuales = llamadas_atendidas_manuales.count()
-        count_llamadas_abandonadas_manuales = llamadas_abandonadas_manuales.count()
+        return estadisticas
 
-        total_llamadas_ingresadas = count_llamadas_ingresadas_entrantes + \
-            count_llamadas_ingresadas_dialer + \
-            count_llamadas_ingresadas_manuales
+    def _contabilizar_en_estadisticas(self, estadisticas, cantidad_evento):
+        tipo = int(cantidad_evento['data5'])
+        evento = cantidad_evento['event']
+        campana_id = cantidad_evento['campana_id']
+        cantidad = cantidad_evento['cantidad']
 
-        cantidad_campana = OrderedDict()
-        cantidad_campana['total_llamadas_ingresadas'] = total_llamadas_ingresadas
-
-        cantidad_campana['llamadas_ingresadas_dialer'] = count_llamadas_ingresadas_dialer
-        cantidad_campana['llamadas_gestionadas_dialer'] = count_llamadas_gestionadas_dialer
-        cantidad_campana['llamadas_perdidas_dialer'] = count_llamadas_perdidas_dialer
-
-        cantidad_campana['llamadas_ingresadas_entrantes'] = count_llamadas_ingresadas_entrantes
-        cantidad_campana['llamadas_atendidas_entrantes'] = count_llamadas_atendidas_entrantes
-        cantidad_campana['llamadas_expiradas_entrantes'] = count_llamadas_expiradas_entrantes
-        cantidad_campana['llamadas_abandonadas_entrantes'] = count_llamadas_abandonadas_entrantes
-
-        cantidad_campana['llamadas_ingresadas_manuales'] = count_llamadas_ingresadas_manuales
-        cantidad_campana['llamadas_atendidas_manuales'] = count_llamadas_atendidas_manuales
-        cantidad_campana['llamadas_abandonadas_manuales'] = count_llamadas_abandonadas_manuales
-
-        return cantidad_campana
+        es_manual = cantidad_evento['data4'] == 'saliente'
+        if es_manual:
+            estadisticas['manuales'][evento] += cantidad
+            estadisticas[tipo]['manuales'][evento] += cantidad
+            estadisticas[tipo]['por_campana'][campana_id]['manuales'][evento] += cantidad
+        else:
+            estadisticas['no_manuales'][evento] += cantidad
+            estadisticas[tipo]['no_manuales'][evento] += cantidad
+            estadisticas[tipo]['por_campana'][campana_id]['no_manuales'][evento] += cantidad
 
     def _calcular_estadisticas(self, fecha_inferior, fecha_superior, user, finalizadas):
 
-        if finalizadas:
-            campanas = Campana.objects.obtener_all_activas_finalizadas()
-        else:
-            campanas = Campana.objects.obtener_all_dialplan_asterisk()
+        campanas = self._campanas_implicadas(user, finalizadas)
+        events = ['ENTERQUEUE', 'CONNECT', 'ABANDON', 'EXITWITHTIMEOUT']
+        tipos_campana = (Campana.TYPE_ENTRANTE,
+                         Campana.TYPE_DIALER,
+                         Campana.TYPE_MANUAL,
+                         Campana.TYPE_PREVIEW)
 
-        if not user.get_is_administrador():
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+        cantidades = Queuelog.objects.filter(event__in=events,
+                                             data5__in=tipos_campana,
+                                             campana_id__in=campanas,
+                                             time__range=(fecha_inferior, fecha_superior)
+                                             ).values('data4', 'data5', 'campana_id', 'event'
+                                                      ).annotate(cantidad=Count('campana_id'))
 
-        # obtiene el total de llamadas por tipo de llamadas
-        total_llamadas_dict = self.obtener_total_llamadas(fecha_inferior, fecha_superior,
-                                                          campanas)
+        estadisticas = self._inicializar_conteo_de_estadisticas(campanas, tipos_campana)
+
+        for cantidad in cantidades:
+            self._contabilizar_en_estadisticas(estadisticas, cantidad)
+
+        estadisticas_formato = self._formatear_estadisticas(estadisticas, campanas, tipos_campana)
+        estadisticas_formato['fecha_desde'] = fecha_inferior
+        estadisticas_formato['fecha_hasta'] = fecha_superior
+        return estadisticas_formato
+
+    def _generar_grafico_torta_porcentajes(self, total_llamadas_dict):
+
+        # Muestra los porcentajes del total de llamados de cada tipo de campaña
         total_llamadas_ingresadas = total_llamadas_dict['total_llamadas_ingresadas']
 
-        # calculo el porcentaje de las llamadas por tipo de llamadas
         porcentaje_dialer = 0.0
         porcentaje_entrantes = 0.0
         porcentaje_manual = 0.0
@@ -296,70 +324,9 @@ class GraficoService():
             porcentaje_manual = (100.0 * float(total_manual) /
                                  float(total_llamadas_ingresadas))
 
-        campanas_dialer = campanas.filter(type=Campana.TYPE_DIALER)
-        campanas_entrantes = campanas.filter(type=Campana.TYPE_ENTRANTE)
-        campanas_manuales = campanas.filter(type=Campana.TYPE_MANUAL)
-
-        _, totales_grafico = self.calcular_cantidad_llamadas(
-            campanas, fecha_inferior, fecha_superior)
-        queues_llamadas_dialer, totales_grafico_dialer = self.calcular_cantidad_llamadas(
-            campanas_dialer, fecha_inferior, fecha_superior)
-        queues_llamadas_dialer_json = json.dumps({'filas_datos': queues_llamadas_dialer})
-        queues_llamadas_entrantes, totales_grafico_entrantes = self.calcular_cantidad_llamadas(
-            campanas_entrantes, fecha_inferior, fecha_superior)
-        queues_llamadas_entrantes_json = json.dumps({'filas_datos': queues_llamadas_entrantes})
-        queues_llamadas_manuales, totales_grafico_manuales = self.calcular_cantidad_llamadas(
-            campanas_manuales, fecha_inferior, fecha_superior)
-        queues_llamadas_manuales_json = json.dumps({'filas_datos': queues_llamadas_manuales})
-
-        total_llamadas = total_llamadas_dict.values()
-
-        (dict_campana, dict_campana_manuales, campanas, campanas_nombre,
-         tipos_campana) = self._obtener_campana_llamada(fecha_inferior, fecha_superior, campanas)
-
-        total_campana, total_manuales = self._obtener_total_campana_llamadas(
-            dict_campana, dict_campana_manuales, campanas, fecha_inferior, fecha_superior)
-
-        dic_estadisticas = {
-            'porcentaje_dialer': porcentaje_dialer,
-            'porcentaje_entrantes': porcentaje_entrantes,
-            'porcentaje_manual': porcentaje_manual,
-            'total_grabaciones': total_llamadas_ingresadas,
-            'total_dialer': total_dialer,
-            'total_inbound': total_entrantes,
-            'total_manual': total_manual,
-            'campana_nombre': campanas_nombre,
-            'campana': campanas,
-            'total_campana': total_campana,
-            'total_manuales': total_manuales,
-            'tipos_campana': tipos_campana,
-            'totales_grafico': totales_grafico,
-            'queues_llamadas_dialer': queues_llamadas_dialer,
-            'queues_llamadas_dialer_json': queues_llamadas_dialer_json,
-            'totales_grafico_dialer': totales_grafico_dialer,
-            'queues_llamadas_entrantes': queues_llamadas_entrantes,
-            'queues_llamadas_entrantes_json': queues_llamadas_entrantes_json,
-            'totales_grafico_entrantes': totales_grafico_entrantes,
-            'queues_llamadas_manuales': queues_llamadas_manuales,
-            'queues_llamadas_manuales_json': queues_llamadas_manuales_json,
-            'totales_grafico_manuales': totales_grafico_manuales,
-            'fecha_desde': fecha_inferior,
-            'fecha_hasta': fecha_superior,
-            'total_llamadas': total_llamadas,
-            'total_llamadas_dict': total_llamadas_dict,
-            'total_llamadas_json': json.dumps(total_llamadas_dict),
-        }
-        return dic_estadisticas
-
-    def general_llamadas_hoy(self, fecha_inferior, fecha_superior, user, finalizadas):
-        estadisticas = self._calcular_estadisticas(
-            fecha_inferior, fecha_superior, user, finalizadas)
-
-        if estadisticas:
-            logger.info("Generando grafico para grabaciones de llamadas ")
-
         no_data_text = "No hay llamadas para ese periodo"
-        torta_grabaciones = pygal.Pie(  # @UndefinedVariable
+        # torta_porcentajes_por_tipo.title = "Resultado de las llamadas"
+        torta_porcentajes_por_tipo = pygal.Pie(  # @UndefinedVariable
             style=ESTILO_AZUL_ROJO_AMARILLO,
             no_data_text=no_data_text,
             no_data_font_size=32,
@@ -367,34 +334,41 @@ class GraficoService():
             truncate_legend=10,
             tooltip_font_size=50,
         )
+        torta_porcentajes_por_tipo.add('Dialer', porcentaje_dialer)
+        torta_porcentajes_por_tipo.add('Entrantes', porcentaje_entrantes)
+        torta_porcentajes_por_tipo.add('Manual', porcentaje_manual)
 
-        # Barras: muestran la desagregación de todas las llamadas por campañas
-        barras_llamadas_campanas = pygal.Bar(  # @UndefinedVariable
+        return torta_porcentajes_por_tipo
+
+    def _generar_grafico_barras_llamadas_por_tipo_de_campana(self, total_llamadas_dict):
+
+        # Barras: muestran la desagregación de las llamadas por tipo de campaña
+        barras_llamadas_por_tipo = pygal.Bar(  # @UndefinedVariable
             show_legend=True,
             style=ESTILO_AZUL_ROJO_AMARILLO)
 
-        barras_llamadas_campanas.x_labels = ["Dialer", "Entrantes", "Manuales"]
-        barras_llamadas_campanas.add(
-            'Ingresadas', [estadisticas['total_llamadas_dict']['llamadas_ingresadas_dialer'],
-                           estadisticas['total_llamadas_dict']['llamadas_ingresadas_entrantes'],
-                           estadisticas['total_llamadas_dict']['llamadas_ingresadas_manuales']])
-        barras_llamadas_campanas.add(
-            'Atendidas', [estadisticas['total_llamadas_dict']['llamadas_gestionadas_dialer'],
-                          estadisticas['total_llamadas_dict']['llamadas_atendidas_entrantes'],
-                          estadisticas['total_llamadas_dict']['llamadas_atendidas_manuales']])
-        perdidas_entrantes = estadisticas['total_llamadas_dict']['llamadas_expiradas_entrantes'] + \
-            estadisticas['total_llamadas_dict']['llamadas_abandonadas_entrantes']
-        barras_llamadas_campanas.add(
-            'Perdidas',
-            [estadisticas['total_llamadas_dict']['llamadas_perdidas_dialer'],
-             perdidas_entrantes,
-             estadisticas['total_llamadas_dict']['llamadas_abandonadas_manuales']])
+        barras_llamadas_por_tipo.x_labels = ["Dialer", "Entrantes", "Manuales"]
 
-        # torta_grabaciones.title = "Resultado de las llamadas"
-        torta_grabaciones.add('Dialer', estadisticas['porcentaje_dialer'])
-        torta_grabaciones.add('Entrantes', estadisticas['porcentaje_entrantes'])
-        torta_grabaciones.add('Manual', estadisticas['porcentaje_manual'])
+        barras_llamadas_por_tipo.add(
+            'Ingresadas', [total_llamadas_dict['llamadas_ingresadas_dialer'],
+                           total_llamadas_dict['llamadas_ingresadas_entrantes'],
+                           total_llamadas_dict['llamadas_ingresadas_manuales']])
 
+        barras_llamadas_por_tipo.add(
+            'Atendidas', [total_llamadas_dict['llamadas_gestionadas_dialer'],
+                          total_llamadas_dict['llamadas_atendidas_entrantes'],
+                          total_llamadas_dict['llamadas_atendidas_manuales']])
+
+        perdidas_entrantes = total_llamadas_dict['llamadas_expiradas_entrantes'] + \
+            total_llamadas_dict['llamadas_abandonadas_entrantes']
+        barras_llamadas_por_tipo.add(
+            'Perdidas', [total_llamadas_dict['llamadas_perdidas_dialer'],
+                         perdidas_entrantes,
+                         total_llamadas_dict['llamadas_abandonadas_manuales']])
+
+        return barras_llamadas_por_tipo
+
+    def _generar_grafico_barras_llamadas_por_campana(self, estadisticas):
         # Barra: Cantidad de llamadas de las campana por tipo de llamadas
         barra_campana_total = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
@@ -405,50 +379,42 @@ class GraficoService():
         barra_campana_total.add('Total', estadisticas['total_campana'])
         barra_campana_total.add('Manuales', estadisticas['total_manuales'])
 
-        # # Barra: Cantidad de llamadas por campañas dialer
-        barra_campana_llamadas_dialer = pygal.Bar(  # @UndefinedVariable
+        return barra_campana_total
+
+    def _generar_grafico_barras_llamadas_por_campanas_de_tipo(self, totales):
+        # # Barra: Cantidad de llamadas por campañas
+        grafico_barras = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=ESTILO_AZUL_ROJO_AMARILLO)
-        # barra_campana_llamadas.title = 'Distribucion por campana'
+        # grafico_barras.title = 'Distribucion por campana'
 
-        barra_campana_llamadas_dialer.x_labels = \
-            estadisticas['totales_grafico_dialer']['nombres_queues']
-        barra_campana_llamadas_dialer.add(
-            'atendidas', estadisticas['totales_grafico_dialer']['total_atendidas'])
-        barra_campana_llamadas_dialer.add(
-            'abandonadas ', estadisticas['totales_grafico_dialer']['total_abandonadas'])
-        barra_campana_llamadas_dialer.add(
-            'expiradas', estadisticas['totales_grafico_dialer']['total_expiradas'])
+        grafico_barras.x_labels = totales['nombres_queues']
+        grafico_barras.add('atendidas', totales['total_atendidas'])
+        grafico_barras.add('abandonadas ', totales['total_abandonadas'])
+        grafico_barras.add('expiradas', totales['total_expiradas'])
+        return grafico_barras
 
-        # # Barra: Cantidad de llamadas por campañas entrantes
-        barra_campana_llamadas_entrantes = pygal.Bar(  # @UndefinedVariable
-            show_legend=False,
-            style=ESTILO_AZUL_ROJO_AMARILLO)
-        # barra_campana_llamadas.title = 'Distribucion por campana'
+    def general_llamadas_hoy(self, fecha_inferior, fecha_superior, user, finalizadas):
+        estadisticas = self._calcular_estadisticas(
+            fecha_inferior, fecha_superior, user, finalizadas)
 
-        barra_campana_llamadas_entrantes.x_labels = \
-            estadisticas['totales_grafico_entrantes']['nombres_queues']
-        barra_campana_llamadas_entrantes.add(
-            'atendidas', estadisticas['totales_grafico_entrantes']['total_atendidas'])
-        barra_campana_llamadas_entrantes.add(
-            'abandonadas ', estadisticas['totales_grafico_entrantes']['total_abandonadas'])
-        barra_campana_llamadas_entrantes.add(
-            'expiradas', estadisticas['totales_grafico_entrantes']['total_expiradas'])
+        if estadisticas:
+            logger.info("Generando grafico para grabaciones de llamadas ")
 
-        # # Barra: Cantidad de llamadas por campañas manuales
-        barra_campana_llamadas_manuales = pygal.Bar(  # @UndefinedVariable
-            show_legend=False,
-            style=ESTILO_AZUL_ROJO_AMARILLO)
-        # barra_campana_llamadas.title = 'Distribucion por campana'
+        torta_porcentajes_por_tipo = self._generar_grafico_torta_porcentajes(
+            estadisticas['total_llamadas_dict'])
 
-        barra_campana_llamadas_manuales.x_labels = \
-            estadisticas['totales_grafico_manuales']['nombres_queues']
-        barra_campana_llamadas_manuales.add(
-            'atendidas', estadisticas['totales_grafico_manuales']['total_atendidas'])
-        barra_campana_llamadas_manuales.add(
-            'abandonadas ', estadisticas['totales_grafico_manuales']['total_abandonadas'])
-        barra_campana_llamadas_manuales.add(
-            'expiradas', estadisticas['totales_grafico_manuales']['total_expiradas'])
+        barras_llamadas_por_tipo = self._generar_grafico_barras_llamadas_por_tipo_de_campana(
+            estadisticas['total_llamadas_dict'])
+
+        barra_llamada_por_campana = self._generar_grafico_barras_llamadas_por_campana(estadisticas)
+
+        barra_llamadas_dialer = self._generar_grafico_barras_llamadas_por_campanas_de_tipo(
+            estadisticas['totales_grafico_dialer'])
+        barra_llamadas_entrantes = self._generar_grafico_barras_llamadas_por_campanas_de_tipo(
+            estadisticas['totales_grafico_entrantes'])
+        barra_llamadas_manuales = self._generar_grafico_barras_llamadas_por_campanas_de_tipo(
+            estadisticas['totales_grafico_manuales'])
 
         dict_campana_counter = zip(estadisticas['campana_nombre'],
                                    estadisticas['total_campana'],
@@ -458,12 +424,12 @@ class GraficoService():
 
         return {
             'estadisticas': estadisticas,
-            'barras_llamadas_campanas': barras_llamadas_campanas,
-            'torta_grabaciones': torta_grabaciones,
+            'barras_llamadas_por_tipo': barras_llamadas_por_tipo,
+            'torta_porcentajes_por_tipo': torta_porcentajes_por_tipo,
             'dict_campana_counter': dict_campana_counter,
             'dict_campana_counter_json': dict_campana_counter_json,
-            'barra_campana_total': barra_campana_total,
-            'barra_campana_llamadas_dialer': barra_campana_llamadas_dialer,
-            'barra_campana_llamadas_entrantes': barra_campana_llamadas_entrantes,
-            'barra_campana_llamadas_manuales': barra_campana_llamadas_manuales,
+            'barra_llamada_por_campana': barra_llamada_por_campana,
+            'barra_campana_llamadas_dialer': barra_llamadas_dialer,
+            'barra_campana_llamadas_entrantes': barra_llamadas_entrantes,
+            'barra_campana_llamadas_manuales': barra_llamadas_manuales,
         }

@@ -741,21 +741,19 @@ class Campana(models.Model):
     )
 
     TYPE_ENTRANTE = 1
-    """La campaña está definida como entrante"""
-
+    TYPE_ENTRANTE_DISPLAY = 'Entrante'
     TYPE_DIALER = 2
-    """La campaña está definida como de discador"""
-
+    TYPE_DIALER_DISPLAY = 'Dialer'
     TYPE_MANUAL = 3
-    """La campaña está definida como manual"""
-
-    TYPE_PREVIEW = 4            # La campaña está definida como preview
+    TYPE_MANUAL_DISPLAY = 'Manual'
+    TYPE_PREVIEW = 4
+    TYPE_PREVIEW_DISPLAY = 'Preview'
 
     TYPES_CAMPANA = (
-        (TYPE_ENTRANTE, 'Entrante'),
-        (TYPE_DIALER, 'Dialer'),
-        (TYPE_MANUAL, 'Manual'),
-        (TYPE_PREVIEW, 'Preview'),
+        (TYPE_ENTRANTE, TYPE_ENTRANTE_DISPLAY),
+        (TYPE_DIALER, TYPE_DIALER_DISPLAY),
+        (TYPE_MANUAL, TYPE_MANUAL_DISPLAY),
+        (TYPE_PREVIEW, TYPE_PREVIEW_DISPLAY),
     )
 
     FORMULARIO = 1
