@@ -58,7 +58,7 @@ $(function() {
 	 	 $.ajax({
 	 	   url: URl,
 	 	   type: 'POST',
-       dataType: 'application/json',
+       dataType: 'json',
        data: data2,
        succes: function (msg) {
 
