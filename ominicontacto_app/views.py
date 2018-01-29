@@ -136,6 +136,13 @@ class UserDeleteView(DeleteView):
     model = User
     template_name = 'user/delete_user.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        usuario = User.objects.get(pk=self.kwargs['pk'])
+        if usuario.id is 1:
+            return HttpResponseRedirect(
+                reverse('user_list', kwargs={"page": 1}))
+        return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(UserDeleteView, self).get_context_data(**kwargs)
         context['user'] = self.request.user
