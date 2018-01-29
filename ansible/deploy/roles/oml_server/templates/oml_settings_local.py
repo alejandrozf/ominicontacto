@@ -27,11 +27,8 @@ Y luego de eso, las customizaciones.
 
 import os
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-
 
 ALLOWED_HOSTS = [
     "*",
@@ -53,8 +50,8 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, "/home/freetech/static")
-MEDIA_ROOT = os.path.join(BASE_DIR, '/home/freetech/media_root')
+STATIC_ROOT = "/home/freetech/static"
+MEDIA_ROOT =    "/home/freetech/media_root"
 
 OML_OMNILEADS_IP = "{{ omni_ip }}"
 

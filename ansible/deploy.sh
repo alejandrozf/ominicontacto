@@ -14,7 +14,7 @@ USAGE="
        Opciones a ingresar: \n
             -h: ayuda \n
             -r: rama a deployar (ej: -r develop) \n
-            -i: ingresar fqdn, formato de grabaciones, pass de OML, etc \n
+            -i: instala ansible, transfiere llaves ssh a maquina a deployar, ingresar fqdn, formato de grabaciones, pass de OML \n
             -t: ingresar ip, opcion de SO, tags de ansible (TAREAS A EJECUTAR y no ejecutar) \n
         \n
        EJEMPLOS: \n
@@ -138,8 +138,8 @@ Preliminar() {
     fi
 
     cd ~/ominicontacto
-    git config --global user.name "lionite"
-    git config --global user.email "felipe.macias@freetechsolutions.com.ar"
+#    git config --global user.name "lionite"
+#    git config --global user.email "felipe.macias@freetechsolutions.com.ar"
     git pull origin $1
     #git fetch
     #git checkout develop
