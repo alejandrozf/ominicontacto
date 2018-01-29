@@ -718,7 +718,7 @@ class AgendaContactoForm(forms.ModelForm):
     class Meta:
         model = AgendaContacto
         fields = ('contacto', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones')
+                  'observaciones', 'campana')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
@@ -726,6 +726,7 @@ class AgendaContactoForm(forms.ModelForm):
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
             "hora": forms.TextInput(attrs={'class': 'form-control'}),
+            'campana': forms.HiddenInput(),
         }
 
 
@@ -1185,10 +1186,11 @@ class AgendaManualForm(forms.ModelForm):
     class Meta:
         model = AgendaManual
         fields = ('telefono', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones')
+                  'observaciones', 'campana')
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
             'agente': forms.HiddenInput(),
+            'campana': forms.HiddenInput(),
             'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
