@@ -120,6 +120,17 @@ class GeneradorDePedazoDeAgenteFactory(object):
         return GeneradorParaAgenteGlobal(parametros)
 
 
+# Factory para las Pausas
+
+class GeneradorDePedazoDePausaFactory(object):
+
+    def crear_generador_para_pausa_global(self, parametros):
+        return GeneradorParaPausaGlobal(parametros)
+
+    def crear_generador_para_failed(self, parametros):
+        return GeneradorParaFailed(parametros)
+
+
 # Factory para las Queue.
 
 class GeneradorDePedazoDeCampanaDialerFactory(object):
@@ -351,6 +362,23 @@ class GeneradorParaAgenteGlobal(GeneradorDePedazoDeAgenteSip):
     def get_template(self):
         return """
         SIP/{oml_agente_sip} = {oml_agente_pk}
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+# ==============================================================================
+# Pausa
+# ==============================================================================
+
+class GeneradorParaPausaGlobal(GeneradorDePedazo):
+
+    def __init__(self, parametros):
+        self._parametros = parametros
+
+    def get_template(self):
+        return """
+        PAUSA{oml_pausa_pk} = {oml_pausa_nombre}
         """
 
     def get_parametros(self):

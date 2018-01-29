@@ -18,12 +18,13 @@ from ominicontacto_app.utiles import (
     elimina_espacios, remplace_espacio_por_guion
 )
 from ominicontacto_app.models import (
-    AgenteProfile, SupervisorProfile, Campana
+    AgenteProfile, SupervisorProfile, Campana, Pausa
 )
 import logging as _logging
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
-    GeneradorDePedazoDeCampanaDialerFactory
+    GeneradorDePedazoDeCampanaDialerFactory,
+    GeneradorDePedazoDePausaFactory,
 )
 
 
@@ -545,7 +546,8 @@ class GlobalsVariableConfigCreator(object):
 
     def __init__(self):
         self._globals_config_file = GlobalsConfigFile()
-        self._generador_factory = GeneradorDePedazoDeAgenteFactory()
+        self._generador_sip_agente_factory = GeneradorDePedazoDeAgenteFactory()
+        self._generador_pausa_factory = GeneradorDePedazoDePausaFactory()
 
     def _generar_config_agente(self, agente):
         """Genera el dialplan para una queue.
@@ -555,7 +557,7 @@ class GlobalsVariableConfigCreator(object):
         :returns: str -- config sip para los agentes
         """
 
-        #assert agente is not None, "AgenteProfile == None"
+        # assert agente is not None, "AgenteProfile == None"
         assert agente.user.get_full_name() is not None,\
             "agente.user.get_full_name() == None"
         assert agente.sip_extension is not None, "agente.sip_extension  == None"
@@ -566,8 +568,8 @@ class GlobalsVariableConfigCreator(object):
             'oml_agente_pk': agente.id
         }
 
-        generador_agente= self._generador_factory.crear_generador_para_agente_global(
-            param_generales)
+        generador_agente = self._generador_sip_agente_factory. \
+            crear_generador_para_agente_global(param_generales)
         partes.append(generador_agente.generar_pedazo())
 
         return ''.join(partes)
@@ -577,22 +579,9 @@ class GlobalsVariableConfigCreator(object):
         """
         return AgenteProfile.objects.all()
 
-    def create_config_sip(self, agente=None, agentes=None):
-        """Crea el archivo de dialplan para queue existentes
-        (si `queue` es None). Si `queue` es pasada por parametro,
-        se genera solo para dicha queue.
-        """
-
-        if agentes:
-            pass
-        elif agente:
-            agentes = [agente]
-        else:
-            agentes = self._obtener_todas_para_generar_config_sip()
-
-        # se adiciona la información del format serán generadas las grabaciones de las llamadas
-        monitor_format_line = "\nMONITORFORMAT = {0}\n".format(settings.MONITORFORMAT)
-        sip = [monitor_format_line]
+    def _obtener_configuraciones_sip_agentes(self):
+        configuraciones = []
+        agentes = self._obtener_todas_para_generar_config_sip()
         for agente in agentes:
             logger.info("Creando config sip para agente %s", agente.user.
                         get_full_name())
@@ -619,13 +608,78 @@ class GlobalsVariableConfigCreator(object):
                                 'date': str(datetime.datetime.now()),
                                 'traceback_lines': traceback_lines}
                 generador_failed = \
-                    self._generador_factory.crear_generador_para_failed(
+                    self._generador_sip_agente_factory.crear_generador_para_failed(
                         param_failed)
                 config_chunk = generador_failed.generar_pedazo()
 
-            sip.append(config_chunk)
+            configuraciones.append(config_chunk)
+        return configuraciones
 
-        self._globals_config_file.write(sip)
+    def _generar_config_pausa(self, pausa):
+        """Genera configuracion de pausa.
+
+        :param pausa: Pausa
+        :type agente: ominicontacto_app.models.Pausa
+        :returns: str -- config sip para la pausa
+        """
+        assert pausa.nombre is not None, "pausa.nombre == None"
+        param_generales = {
+            'oml_pausa_nombre': pausa.nombre,
+            'oml_pausa_pk': pausa.id
+        }
+
+        generador_pausa = self._generador_pausa_factory. \
+            crear_generador_para_pausa_global(param_generales)
+        return generador_pausa.generar_pedazo()
+
+    def _obtener_configuraciones_pausas(self):
+        configuraciones = []
+        pausas = Pausa.objects.all()
+        for pausa in pausas:
+
+            logger.info("Creando config para pausa: %s", pausa.nombre)
+            try:
+                config_chunk = self._generar_config_pausa(pausa)
+                logger.info("Config global generado OK para pausa %s", pausa.nombre)
+            except:
+                logger.exception(
+                    "No se pudo generar configuracion de "
+                    "Asterisk para la quene {0}".format(pausa.nombre))
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except:
+                    traceback_lines = "Error al intentar generar traceback"
+                    logger.exception("Error al intentar generar traceback")
+
+                # FAILED: Creamos la porción para el fallo del config de pausa.
+                param_failed = {'oml_queue_name': pausa.nombre,
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_pausa_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+
+            configuraciones.append(config_chunk)
+        return configuraciones
+
+    def create_config_global(self):
+        """Crea el archivo de configuración global para Asterisk.
+        """
+
+        # se adiciona la información del format serán generadas las grabaciones de las llamadas
+        monitor_format_line = "\nMONITORFORMAT = {0}\n".format(settings.MONITORFORMAT)
+        configuracion = [monitor_format_line]
+
+        configs_sip_agentes = self._obtener_configuraciones_sip_agentes()
+        configuracion += configs_sip_agentes
+        configs_pausas = self._obtener_configuraciones_pausas()
+        configuracion += configs_pausas
+
+        self._globals_config_file.write(configuracion)
 
 
 class AsteriskConfigReloader(object):

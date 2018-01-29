@@ -367,24 +367,40 @@ class GrupoDeleteView(DeleteView):
         return reverse('grupo_list')
 
 
-class PausaCreateView(CreateView):
+class RegenerarAsteriskOnSuccessMixin(object):
+
+    def get_success_url(self):
+        activacion_queue_service = RegeneracionAsteriskService()
+        try:
+            activacion_queue_service.regenerar()
+        except RestablecerDialplanError, e:
+            message = ("Operación Errónea! "
+                       "No se realizo de manera correcta la regeneracion de los "
+                       "archivos de asterisk al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        messages.success(self.request,
+                         'La regeneracion de los archivos de configuracion de'
+                         ' asterisk y el reload se hizo de manera correcta')
+
+        return reverse('pausa_list')
+
+
+class PausaCreateView(RegenerarAsteriskOnSuccessMixin, CreateView):
     """Vista para crear pausa"""
     model = Pausa
     template_name = 'base_create_update_form.html'
     form_class = PausaForm
 
-    def get_success_url(self):
-        return reverse('pausa_list')
 
-
-class PausaUpdateView(UpdateView):
+class PausaUpdateView(RegenerarAsteriskOnSuccessMixin, UpdateView):
     """Vista para modificar pausa"""
     model = Pausa
     template_name = 'base_create_update_form.html'
     form_class = PausaForm
-
-    def get_success_url(self):
-        return reverse('pausa_list')
 
 
 class PausaListView(TemplateView):
