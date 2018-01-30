@@ -784,8 +784,8 @@ class Campana(models.Model):
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
     calificacion_campana = models.ForeignKey(CalificacionCampana,
-                                             related_name="calificacioncampana"
-                                             )
+                                             related_name="calificacioncampana",
+                                             null=True)
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
         null=True, blank=True,
