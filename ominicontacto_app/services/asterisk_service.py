@@ -45,7 +45,7 @@ class AsteriskService():
                   (%(description)s, %(destdial)s)"""
             params = {
                 'description': queue.name,
-                'destdial': '0077' + str(queue.queue_asterisk)
+                'destdial': queue.get_string_queue_asterisk(),
             }
             cursor.execute(sql, params)
             connection.commit()

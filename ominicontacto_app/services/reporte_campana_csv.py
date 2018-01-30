@@ -30,7 +30,7 @@ def obtener_filas_reporte(tipo_reporte, datos_reporte):
         encabezado = [u"Campana", u"Recibidas", u"Atendidas", u"Expiradas", u"Abandonadas"]
         return obtener_llamadas_campanas(encabezado, datos_reporte)
     if tipo_reporte == "llamadas_campanas":
-        encabezado = [u"Total llamadas", u"Cantidad", u"Tipo de campaña"]
+        encabezado = [u'Campaña', u"Total llamadas", u"Cantidad", u"Tipo de campaña"]
         return obtener_llamadas_campanas(encabezado, datos_reporte)
 
 
