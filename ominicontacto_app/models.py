@@ -980,6 +980,10 @@ class Campana(models.Model):
                 contactos_campana.delete()
                 self.finalizar()
 
+    def get_string_queue_asterisk(self):
+        if self.queue_campana:
+            return self.queue_campana.get_string_queue_asterisk()
+
 
 class QueueManager(models.Manager):
 
@@ -1112,7 +1116,7 @@ class Queue(models.Model):
         self.save()
 
     def get_string_queue_asterisk(self):
-        return '0077' + str(self.queue_asterisk)
+        return '0078' + str(self.queue_asterisk)
 
     def get_string_initial_predictive_model(self):
         if self.initial_predictive_model:
