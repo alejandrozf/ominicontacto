@@ -29,5 +29,9 @@ try:
 except ValueError:
     agente_id = -1
 
-plpy.execute(plan, [fecha, callid, queuename, agent, event, data1, data2, data3, data4, data5, campana_id, agente_id])
+# Filtro queuelogs automaticos de Asterisk (duplican logs)
+if not (data4 == '' and event in ['CONNECT', 'ENTERQUEUE']):
+    plpy.execute(plan, [fecha, callid, queuename, agent, event, data1, data2, data3, data4, data5, campana_id, agente_id])
+
 $$ language plpythonu;
+

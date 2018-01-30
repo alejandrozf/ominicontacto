@@ -75,10 +75,20 @@ class GraficoService():
         total_llamadas_dict['llamadas_abandonadas_manuales'] = \
             estadisticas['manuales']['ABANDON']
 
+        total_llamadas_dict['llamadas_ingresadas_preview'] = \
+            estadisticas[Campana.TYPE_PREVIEW]['no_manuales']['ENTERQUEUE']
+        total_llamadas_dict['llamadas_atendidas_preview'] = \
+            estadisticas[Campana.TYPE_PREVIEW]['no_manuales']['CONNECT']
+        total_llamadas_dict['llamadas_expiradas_preview'] = \
+            estadisticas[Campana.TYPE_PREVIEW]['no_manuales']['EXITWITHTIMEOUT']
+        total_llamadas_dict['llamadas_abandonadas_preview'] = \
+            estadisticas[Campana.TYPE_PREVIEW]['no_manuales']['ABANDON']
+
         total_llamadas_ingresadas = \
             total_llamadas_dict['llamadas_ingresadas_dialer'] + \
             total_llamadas_dict['llamadas_ingresadas_entrantes'] + \
-            total_llamadas_dict['llamadas_ingresadas_manuales']
+            total_llamadas_dict['llamadas_ingresadas_manuales'] + \
+            total_llamadas_dict['llamadas_ingresadas_preview']
         total_llamadas_dict['total_llamadas_ingresadas'] = total_llamadas_ingresadas
 
         return total_llamadas_dict
@@ -184,6 +194,9 @@ class GraficoService():
         queues_llamadas_manuales, totales_grafico_manuales = \
             self._computar_totales_por_campanas_de_tipo(estadisticas, Campana.TYPE_MANUAL)
         queues_llamadas_manuales_json = json.dumps({'filas_datos': queues_llamadas_manuales})
+        queues_llamadas_preview, totales_grafico_preview = \
+            self._computar_totales_por_campanas_de_tipo(estadisticas, Campana.TYPE_PREVIEW)
+        queues_llamadas_preview_json = json.dumps({'filas_datos': queues_llamadas_preview})
 
         (dict_campana, dict_campana_manuales, campanas, campanas_nombre,
             tipos_campana) = self._computar_llamadas_por_campana(estadisticas,
@@ -208,6 +221,9 @@ class GraficoService():
             'queues_llamadas_manuales': queues_llamadas_manuales,
             'queues_llamadas_manuales_json': queues_llamadas_manuales_json,
             'totales_grafico_manuales': totales_grafico_manuales,
+            'queues_llamadas_preview': queues_llamadas_preview,
+            'queues_llamadas_preview_json': queues_llamadas_preview_json,
+            'totales_grafico_preview': totales_grafico_preview,
             'total_llamadas_dict': total_llamadas_dict,
             'total_llamadas_json': json.dumps(total_llamadas_dict),
         }
@@ -313,9 +329,11 @@ class GraficoService():
         porcentaje_dialer = 0.0
         porcentaje_entrantes = 0.0
         porcentaje_manual = 0.0
+        porcentaje_preview = 0.0
         total_dialer = total_llamadas_dict['llamadas_ingresadas_dialer']
         total_entrantes = total_llamadas_dict['llamadas_ingresadas_entrantes']
         total_manual = total_llamadas_dict['llamadas_ingresadas_manuales']
+        total_preview = total_llamadas_dict['llamadas_ingresadas_preview']
         if total_llamadas_ingresadas > 0:
             porcentaje_dialer = (100.0 * float(total_dialer) /
                                  float(total_llamadas_ingresadas))
@@ -323,6 +341,8 @@ class GraficoService():
                                     float(total_llamadas_ingresadas))
             porcentaje_manual = (100.0 * float(total_manual) /
                                  float(total_llamadas_ingresadas))
+            porcentaje_preview = (100.0 * float(total_preview) /
+                                  float(total_llamadas_ingresadas))
 
         no_data_text = "No hay llamadas para ese periodo"
         # torta_porcentajes_por_tipo.title = "Resultado de las llamadas"
@@ -337,6 +357,7 @@ class GraficoService():
         torta_porcentajes_por_tipo.add('Dialer', porcentaje_dialer)
         torta_porcentajes_por_tipo.add('Entrantes', porcentaje_entrantes)
         torta_porcentajes_por_tipo.add('Manual', porcentaje_manual)
+        torta_porcentajes_por_tipo.add('Preview', porcentaje_preview)
 
         return torta_porcentajes_por_tipo
 
@@ -352,19 +373,22 @@ class GraficoService():
         barras_llamadas_por_tipo.add(
             'Ingresadas', [total_llamadas_dict['llamadas_ingresadas_dialer'],
                            total_llamadas_dict['llamadas_ingresadas_entrantes'],
-                           total_llamadas_dict['llamadas_ingresadas_manuales']])
+                           total_llamadas_dict['llamadas_ingresadas_manuales'],
+                           total_llamadas_dict['llamadas_ingresadas_preview']])
 
         barras_llamadas_por_tipo.add(
             'Atendidas', [total_llamadas_dict['llamadas_gestionadas_dialer'],
                           total_llamadas_dict['llamadas_atendidas_entrantes'],
-                          total_llamadas_dict['llamadas_atendidas_manuales']])
+                          total_llamadas_dict['llamadas_atendidas_manuales'],
+                          total_llamadas_dict['llamadas_atendidas_preview']])
 
         perdidas_entrantes = total_llamadas_dict['llamadas_expiradas_entrantes'] + \
             total_llamadas_dict['llamadas_abandonadas_entrantes']
         barras_llamadas_por_tipo.add(
             'Perdidas', [total_llamadas_dict['llamadas_perdidas_dialer'],
                          perdidas_entrantes,
-                         total_llamadas_dict['llamadas_abandonadas_manuales']])
+                         total_llamadas_dict['llamadas_abandonadas_manuales'],
+                         total_llamadas_dict['llamadas_abandonadas_preview']])
 
         return barras_llamadas_por_tipo
 
@@ -415,6 +439,8 @@ class GraficoService():
             estadisticas['totales_grafico_entrantes'])
         barra_llamadas_manuales = self._generar_grafico_barras_llamadas_por_campanas_de_tipo(
             estadisticas['totales_grafico_manuales'])
+        barra_llamadas_preview = self._generar_grafico_barras_llamadas_por_campanas_de_tipo(
+            estadisticas['totales_grafico_preview'])
 
         dict_campana_counter = zip(estadisticas['campana_nombre'],
                                    estadisticas['total_campana'],
@@ -432,4 +458,5 @@ class GraficoService():
             'barra_campana_llamadas_dialer': barra_llamadas_dialer,
             'barra_campana_llamadas_entrantes': barra_llamadas_entrantes,
             'barra_campana_llamadas_manuales': barra_llamadas_manuales,
+            'barra_campana_llamadas_preview': barra_llamadas_preview,
         }

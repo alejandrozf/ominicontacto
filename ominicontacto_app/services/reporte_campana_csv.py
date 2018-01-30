@@ -26,7 +26,7 @@ def obtener_filas_reporte(tipo_reporte, datos_reporte):
         encabezado = [u"Total llamadas", u"Cantidad"]
         return obtener_datos_total_llamadas_csv(encabezado, datos_reporte)
     if tipo_reporte in ['llamadas_campanas_entrantes', 'llamadas_campanas_dialer',
-                        'llamadas_campanas_manuales']:
+                        'llamadas_campanas_manuales', 'llamadas_campanas_preview']:
         encabezado = [u"Campana", u"Recibidas", u"Atendidas", u"Expiradas", u"Abandonadas"]
         return obtener_llamadas_campanas(encabezado, datos_reporte)
     if tipo_reporte == "llamadas_campanas":
@@ -112,6 +112,14 @@ def obtener_datos_total_llamadas_csv(encabezado, datos_reporte):
                   force_text(datos_reporte['llamadas_atendidas_manuales'])])
     datos.append(["Cantidad de llamadas abandonadas",
                   force_text(datos_reporte['llamadas_abandonadas_manuales'])])
+
+    datos.append("")
+    datos.append(["Total llamadas Salientes Preview",
+                  force_text(datos_reporte['llamadas_ingresadas_preview'])])
+    datos.append(["Cantidad de llamadas atendidas",
+                  force_text(datos_reporte['llamadas_atendidas_preview'])])
+    datos.append(["Cantidad de llamadas abandonadas",
+                  force_text(datos_reporte['llamadas_abandonadas_preview'])])
 
     filas = [encabezado] + datos
 
