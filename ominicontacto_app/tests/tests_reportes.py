@@ -271,13 +271,10 @@ class AccesoReportesTests(BaseReportesTests):
 
 class TriggerQueuelogTest(OMLBaseTest):
 
-    # Modificar una vez que se cambien los datos que se guarden desde Asterisk en 'queue_log'.
-    # En 'data4' vendrá "saliente" si es manual y en 'data5' el tipo de la campaña [1:4]
-    # Debe cambiarse el trigger también.
-    def _aplicar_sql_query(self, tipo_campana, queuename):
+    def _aplicar_sql_query(self, str_tipo_campana, tipo_campana, queuename, event = 'CONNECT'):
         fields = "(time, callid, queuename, agent, event, data1, data2, data3, data4, data5)"
-        values = ('2017-12-22 03:45:00.0000', '2312312.233', queuename, 'agente_test', 'CONNECT',
-                  'data1', 'data2', 'data3', tipo_campana, '')
+        values = ('2017-12-22 03:45:00.0000', '2312312.233', queuename, 'agente_test', event,
+                  'data1', 'data2', 'data3', str_tipo_campana, tipo_campana)
         sql_query = "insert into queue_log {0} values {1};".format(fields, str(values))
         with connection.cursor() as c:
             c.execute(sql_query)
@@ -286,7 +283,7 @@ class TriggerQueuelogTest(OMLBaseTest):
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_tipo_campana_entrantes(self):
         queuename = "1_cp1"
-        self._aplicar_sql_query('IN', queuename)
+        self._aplicar_sql_query('IN', Campana.TYPE_ENTRANTE, queuename)
         queuelog = Queuelog.objects.get(queuename=queuename)
         self.assertEqual(queuelog.data5, str(Campana.TYPE_ENTRANTE))
 
@@ -294,7 +291,7 @@ class TriggerQueuelogTest(OMLBaseTest):
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_tipo_campana_dialer(self):
         queuename = "1_cp1"
-        self._aplicar_sql_query('DIALER', queuename)
+        self._aplicar_sql_query('DIALER', Campana.TYPE_DIALER, queuename)
         queuelog = Queuelog.objects.get(queuename=queuename)
         self.assertEqual(queuelog.data5, str(Campana.TYPE_DIALER))
 
@@ -302,7 +299,7 @@ class TriggerQueuelogTest(OMLBaseTest):
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_tipo_campana_manual(self):
         queuename = "1_cp1"
-        self._aplicar_sql_query('saliente', queuename)
+        self._aplicar_sql_query('saliente', Campana.TYPE_MANUAL, queuename)
         queuelog = Queuelog.objects.get(queuename=queuename)
         self.assertEqual(queuelog.data5, str(Campana.TYPE_MANUAL))
 
@@ -310,6 +307,18 @@ class TriggerQueuelogTest(OMLBaseTest):
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_tipo_campana_pre(self):
         queuename = "1_cp1"
-        self._aplicar_sql_query('preview', queuename)
+        self._aplicar_sql_query('preview', Campana.TYPE_PREVIEW, queuename)
         queuelog = Queuelog.objects.get(queuename=queuename)
         self.assertEqual(queuelog.data5, str(Campana.TYPE_PREVIEW))
+
+    @skipIf(settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
+            'Sin migraciones no existe la tabla ´queue_log´')
+    def test_filtro_de_duplicados_en_trigger_queue_log(self):
+        queuename = "1_cp1"
+        cant_inicial = Queuelog.objects.count()
+        # Pruebo que no agrege con un evento CONNECT sin nada en data4
+        self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'CONNECT')
+        self.assertEqual(cant_inicial, Queuelog.objects.count())
+        # Pruebo que no agrege con un evento ENTERQUEUE sin nada en data4
+        self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'ENTERQUEUE')
+        self.assertEqual(cant_inicial, Queuelog.objects.count())
