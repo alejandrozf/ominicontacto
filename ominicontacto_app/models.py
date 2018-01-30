@@ -21,6 +21,7 @@ from django.db import models, connection
 from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra, datetime_hora_minima_dia, \
     datetime_hora_maxima_dia
@@ -786,6 +787,8 @@ class Campana(models.Model):
     calificacion_campana = models.ForeignKey(CalificacionCampana,
                                              related_name="calificacioncampana",
                                              null=True)
+    calificaciones_campana = models.ManyToManyField(
+        Calificacion, related_name="campanas", through='OpcionCalificacion',)
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
         null=True, blank=True,
@@ -1010,6 +1013,26 @@ class QueueManager(models.Manager):
         Devuelve queue excluyendo las campanas borradas
         """
         return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
+
+
+class OpcionCalificacion(models.Model):
+    """
+    Especifica el tipo de formulario al cual será redireccionada
+    la gestión de un contacto en una campaña de acuerdo a la
+    calificacion escogida
+    """
+    # no se redireccionara a ningún formulario, solo se salvará la calificación
+    NO_ACCION = 0
+
+    # será le dará tratamiento usando el formulario de gestioń
+    GESTION = 1
+
+    FORMULARIO_CHOICES = (
+        (GESTION, _('Gestión')),
+    )
+    campana = models.ForeignKey(Campana, on_delete=models.CASCADE)
+    calificacion = models.ForeignKey(Calificacion, on_delete=models.CASCADE)
+    opcion = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
 
 
 class Queue(models.Model):
