@@ -57,7 +57,8 @@ class CalificacionManualMixin(object):
             return HttpResponseRedirect(
                 reverse('agenda_manual_create',
                         kwargs={"telefono": self.object.telefono,
-                                "id_agente": self.object.agente.pk}))
+                                "id_agente": self.object.agente.pk,
+                                "pk_campana": campana.pk}))
         return super(CalificacionManualMixin, self).form_valid(form)
 
 

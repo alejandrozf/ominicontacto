@@ -7,17 +7,16 @@ Tests del metodo 'ominicontacto_app.utiles'
 from __future__ import unicode_literals
 
 import uuid
-import datetime
 import logging as _logging
 
 from django.conf import settings
+from django.utils import timezone
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.utiles import (
     upload_to, crear_archivo_en_media_root, elimina_espacios_parentesis_guiones,
-    elimina_espacios, remplace_espacio_por_guion, elimina_coma, elimina_comillas
-    , convert_string_in_boolean, convert_fecha_datetime, convertir_ascii_string
+    elimina_espacios, remplace_espacio_por_guion, elimina_coma, elimina_comillas,
+    convert_string_in_boolean, convert_fecha_datetime, convertir_ascii_string
 )
-from ominicontacto_app.errors import OmlError
 import os
 
 logger = _logging.getLogger(__name__)
@@ -40,7 +39,7 @@ class UtilesTest(OMLBaseTest):
         # ~~~~~ cliente.txt
         output = upload_to_archivo_importacion(None, "cliente.txt")
         self.assertEqual(self.assertAndSplit(output, "archivo_importacion"),
-            'cliente.txt')
+                         'cliente.txt')
 
         # ~~~~~ ''
         output = upload_to_archivo_importacion(None, "")
@@ -49,7 +48,7 @@ class UtilesTest(OMLBaseTest):
         # ~~~~~ 'archivo con espacios#ext'
         output = upload_to_archivo_importacion(None, "archivo con espacios#ext")
         self.assertEqual(self.assertAndSplit(output, "archivo_importacion"),
-            'archivoconespaciosext')
+                         'archivoconespaciosext')
 
         # ~~~~~ file.extensionmuylarga
         len_sin_filename = len(upload_to_archivo_importacion(None, ""))
@@ -90,9 +89,9 @@ class UtilesTest(OMLBaseTest):
     def test_crear_archivo_en_media_root_falla(self):
         dirname, filename = crear_archivo_en_media_root('algo', 'prefix')
         self.assertTrue(os.path.exists(settings.MEDIA_ROOT + "/" +
-            dirname + "/" + filename))
+                        dirname + "/" + filename))
         self.assertTrue(os.path.isfile(settings.MEDIA_ROOT + "/" +
-            dirname + "/" + filename))
+                        dirname + "/" + filename))
         self.assertTrue(os.path.isdir(settings.MEDIA_ROOT + "/" + dirname))
 
         with self.assertRaises(AssertionError):
@@ -138,7 +137,7 @@ class UtilesTest(OMLBaseTest):
 
     def test_convertir_fecha_datetime(self):
         fecha = convert_fecha_datetime("25/08/2017")
-        fecha_datetime = datetime.datetime(2017, 8, 25)
+        fecha_datetime = timezone.datetime(2017, 8, 25, tzinfo=timezone.get_current_timezone())
         self.assertEqual(fecha, fecha_datetime)
 
     def test_convertir_fecha_datetime_falla(self):

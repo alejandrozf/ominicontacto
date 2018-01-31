@@ -204,8 +204,8 @@ def logout_view(request):
         except AsteriskHttpOriginateError:
             logger.exception("Originate failed - agente: %s ", agente)
 
-        except:
-            logger.exception("Originate failed - agente: %s ", agente)
+        except Exception as e:
+            logger.exception("Originate failed {0} - agente: {1}".format(e, agente))
     logout(request)
     return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
 
@@ -218,17 +218,15 @@ class LlamarContactoView(RedirectView):
     pattern_name = 'view_blanco'
 
     def _call_originate(self, request, campana_id, campana_nombre, agente, contacto,
-                        click2call_preview):
+                        click2call_type, tipo_campana):
         variables = {
             'IdCamp': str(campana_id),
             'codCli': str(contacto.pk),
             'CAMPANA': campana_nombre,
-            'origin': 'click2call',
+            'origin': click2call_type,
+            'Tipocamp': tipo_campana,
             'FTSAGENTE': "{0}_{1}".format(agente.id,
-                                          request.user.get_full_name()),
-            # la posibilidad de que sea una llamada generada por un click
-            # en un contacto de campaña preview
-            'click2callPreview': click2call_preview
+                                          request.user.get_full_name())
         }
         channel = "Local/{0}@click2call/n".format(agente.sip_extension)
         # Genero la llamada via originate por AMI
@@ -241,29 +239,26 @@ class LlamarContactoView(RedirectView):
         except AsteriskHttpOriginateError:
             logger.exception("Originate failed - contacto: %s ", contacto.telefono)
 
-        except:
-            logger.exception("Originate failed - contacto: %s ", contacto.telefono)
+        except Exception as e:
+            logger.exception("Originate failed by {0} - contacto: {1}".format(e, contacto.telefono))
 
     def post(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
-        click2call_preview = request.POST.get('click2call_preview', 'false')
-        click2call_lista_contactos = request.POST.get('click2call_lista_contactos', 'false')
-        if click2call_preview == 'true' or click2call_lista_contactos == 'true':
-            # caso campañas preview o click2call desde la lista de contactos
-            campana_id = request.POST.get('pk_campana', 0)
-            campana_nombre = request.POST.get('campana_nombre', 'None')
-        else:
-            # otros tipos de campañas
-            campana_id = 0
-            campana_nombre = 'None'
+        click2call_type = request.POST.get('click2call_type', 'false')
+        tipo_campana = request.POST.get('tipo_campana')
+        campana_id = request.POST.get('pk_campana')
+        campana_nombre = request.POST.get('campana_nombre')
+        if campana_id == '':
             calificacion_cliente = CalificacionCliente.objects.filter(
                 contacto=contacto, agente=agente).order_by('-fecha')
             if calificacion_cliente.exists():
-                campana_id = calificacion_cliente[0].campana.pk
-                campana_nombre = calificacion_cliente[0].campana.nombre
+                campana = calificacion_cliente[0].campana
+                campana_id = str(campana.pk)
+                campana_nombre = campana.nombre
+                tipo_campana = str(campana.type)
         self._call_originate(
-            request, campana_id, campana_nombre, agente, contacto, click2call_preview)
+            request, campana_id, campana_nombre, agente, contacto, click2call_type, tipo_campana)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
 
 

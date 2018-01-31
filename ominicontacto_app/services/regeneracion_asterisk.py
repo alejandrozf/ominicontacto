@@ -70,14 +70,14 @@ class RegeneracionAsteriskService(object):
                               "configuracion del config sip de Asterisk. ")
 
         try:
-            self.globals_config_creator.create_config_sip()
+            self.globals_config_creator.create_config_global()
         except:
             logger.exception("ActivacionAgenteService: error al "
-                             "intentar create_config_sip()")
+                             "intentar create_config_global()")
 
             proceso_ok = False
             mensaje_error += ("Hubo un inconveniente al crear el archivo de "
-                              "configuracion del config sip de Asterisk. ")
+                              "configuracion global de Asterisk. ")
 
         if not proceso_ok:
             raise(RestablecerDialplanError(mensaje_error))

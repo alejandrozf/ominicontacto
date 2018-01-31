@@ -5,12 +5,15 @@
   with_items:
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
+  tags: issabel
 
 - name: Update/upgrade of centos
   yum: name='*' state=latest update_cache=yes
+  tags: issabel
 
 - name: Install Development tools
   command: "yum -y groupinstall core base \"Development Tools\""
+  tags: issabel
 
 - name: Install of dependencies
   yum: name={{ item }} state=present
@@ -44,6 +47,7 @@
        - gnutls-devel
        - python-devel
        - texinfo
+  tags: issabel
 
 - name: Install php 5.6
   command: "{{ item }}"
@@ -53,6 +57,7 @@
   failed_when:
     - "'transferencia fallida' in command_result.stderr"
     - "'failed' in command_result.stderr"
+  tags: issabel
 - meta: clear_host_errors
 
 - get_url: url=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm dest=/root/ validate_certs=no
@@ -78,12 +83,29 @@
       - php56w-soap
 - meta: clear_host_errors
 
+- yum: name={{ item }} state=present
+  with_items:
+      - php
+      - php-pdo
+      - php-mysql
+      - php-mbstring
+      - php-pear
+      - php-process
+      - php-xml
+      - php-opcache
+      - php-ldap
+      - php-intl
+      - php-soap
+- meta: clear_host_errors
+  tags: issabel
+
 - name: Install of NodeJS
   shell: "curl -sL https://rpm.nodesource.com/setup_8.x | bash -"
 - yum: name=nodejs state=present
+  tags: issabel
 
 - name: Install Console_Getopt
   pear: name=Console_Getopt state=present
 - meta: clear_host_errors
-
+  tags: issabel
 

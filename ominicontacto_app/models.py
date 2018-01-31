@@ -741,21 +741,19 @@ class Campana(models.Model):
     )
 
     TYPE_ENTRANTE = 1
-    """La campaña está definida como entrante"""
-
+    TYPE_ENTRANTE_DISPLAY = 'Entrante'
     TYPE_DIALER = 2
-    """La campaña está definida como de discador"""
-
+    TYPE_DIALER_DISPLAY = 'Dialer'
     TYPE_MANUAL = 3
-    """La campaña está definida como manual"""
-
-    TYPE_PREVIEW = 4            # La campaña está definida como preview
+    TYPE_MANUAL_DISPLAY = 'Manual'
+    TYPE_PREVIEW = 4
+    TYPE_PREVIEW_DISPLAY = 'Preview'
 
     TYPES_CAMPANA = (
-        (TYPE_ENTRANTE, 'Entrante'),
-        (TYPE_DIALER, 'Dialer'),
-        (TYPE_MANUAL, 'Manual'),
-        (TYPE_PREVIEW, 'Preview'),
+        (TYPE_ENTRANTE, TYPE_ENTRANTE_DISPLAY),
+        (TYPE_DIALER, TYPE_DIALER_DISPLAY),
+        (TYPE_MANUAL, TYPE_MANUAL_DISPLAY),
+        (TYPE_PREVIEW, TYPE_PREVIEW_DISPLAY),
     )
 
     FORMULARIO = 1
@@ -982,6 +980,10 @@ class Campana(models.Model):
                 contactos_campana.delete()
                 self.finalizar()
 
+    def get_string_queue_asterisk(self):
+        if self.queue_campana:
+            return self.queue_campana.get_string_queue_asterisk()
+
 
 class QueueManager(models.Manager):
 
@@ -1114,7 +1116,7 @@ class Queue(models.Model):
         self.save()
 
     def get_string_queue_asterisk(self):
-        return '0077' + str(self.queue_asterisk)
+        return '0078' + str(self.queue_asterisk)
 
     def get_string_initial_predictive_model(self):
         if self.initial_predictive_model:
@@ -1475,10 +1477,10 @@ class MetadataBaseDatosContactoDTO(object):
         col_telefono = self._metadata['col_telefono']
         try:
             datos = json.loads(datos_json)
-        except:
-            logger.exception("Excepcion detectada al desserializar "
-                             "datos extras. Datos extras: '{0}'"
-                             "".format(datos_json))
+        except Exception as e:
+            logger.exception("Error: {0} detectada al desserializar "
+                             "datos extras. Datos extras: '{1}'"
+                             "".format(e.message, datos_json))
             raise
 
         assert len(datos) == self.cantidad_de_columnas
@@ -1496,10 +1498,10 @@ class MetadataBaseDatosContactoDTO(object):
         # Decodificamos JSON
         try:
             datos = json.loads(datos_json)
-        except:
-            logger.exception("Excepcion detectada al desserializar "
-                             "datos extras. Datos extras: '{0}'"
-                             "".format(datos_json))
+        except Exception as e:
+            logger.exception("Error: {0} detectada al desserializar "
+                             "datos extras. Datos extras: '{1}'"
+                             "".format(e.message, datos_json))
             raise
 
         assert len(datos) == self.cantidad_de_columnas
@@ -1618,9 +1620,9 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
         if bd.metadata is not None and bd.metadata != '':
             try:
                 self._metadata = json.loads(bd.metadata)
-            except:
-                logger.exception("Excepcion detectada al desserializar "
-                                 "metadata de la bd {0}".format(bd.id))
+            except Exception as e:
+                logger.exception("Error: {0} detectada al desserializar "
+                                 "metadata de la bd {1}".format(e.message, bd.id))
                 raise
 
     # -----
@@ -1634,9 +1636,9 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
         # Ahora guardamos
         try:
             self.bd.metadata = json.dumps(self._metadata)
-        except:
-            logger.exception("Excepcion detectada al serializar "
-                             "metadata de la bd {0}".format(self.bd.id))
+        except Exception as e:
+            logger.exception("Error: {0} detectada al serializar "
+                             "metadata de la bd {1}".format(e.message, self.bd.id))
             raise
 
 
@@ -2621,6 +2623,7 @@ class AgendaContacto(models.Model):
     hora = models.TimeField()
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
+    campana = models.ForeignKey(Campana, related_name='agendas', null=True)
 
     def __unicode__(self):
         return "Agenda para el contacto {0} agendado por el agente {1} " \
@@ -3047,6 +3050,7 @@ class AgendaManual(models.Model):
     hora = models.TimeField()
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
+    campana = models.ForeignKey(Campana, related_name="agendas_manuales", null=True)
 
     def __unicode__(self):
         return "Agenda para el telefono {0} agendado por el agente {1}" \

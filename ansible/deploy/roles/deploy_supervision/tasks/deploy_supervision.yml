@@ -1,42 +1,59 @@
 ---
 - set_fact: omnisup_dir=/home/freetech
+  tags: issabel
 
 - name: Install of php56-fpm
   yum: name=php56w-fpm.x86_64 state=present
+  failed_when:
+    - "'issabel' not in command_result.msg"
+    - "command_result.rc != 0"
+- name: Install of php-fpm
+  yum: name=php-fpm.x86_64 state=present
+  tags: issabel
 
 - name: Modify of php.ini
   lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
+  tags: issabel
 
 - name: Edit sudoers to permit apache users to run asterisk commands
   lineinfile: "dest=/etc/sudoers line=\"apache ALL = NOPASSWD: /usr/sbin/asterisk\""
+  tags: issabel
 
 - name: Modify of /php-fpm.d/php-fpm.sock
   template: src=templates/www.conf.j2 dest=/etc/php-fpm.d/www.conf
+  tags: issabel
 
 - name: Enable and start of php-fpm service
   shell: "{{ item }}"
   with_items:
       - systemctl start php-fpm
       - systemctl enable php-fpm
+  tags: issabel
 
 - name: Move Omnisup directory
   shell: "cp -a {{ omnisup_dir }}/ominicontacto/Omnisup {{ omnisup_dir }}"
+  tags: issabel
 
 - name: Change of Omnisup permissions
   shell: "chmod 755 -R {{ omnisup_dir }}/Omnisup"
+  tags: issabel
 
 - name: Creation of config.php
   template: src=templates/config.php.j2 dest={{ omnisup_dir }}/Omnisup/config.php
+  tags: issabel
 
 - name: Modify of config.js in /static/Js
   template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/Omnisup/static/Js/config.js"
+  tags: issabel
 
 - name: Change phone.js default port on /static/JS/phone.js
   lineinfile: "dest={{ omnisup_dir }}/Omnisup/static/Js/phone.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
   when: ansible_os_family == "Redhat" or ansible_os_family == "Sangoma"
+  tags: issabel
 
 - name: Restart php-fpm service
   service: name=php-fpm state=restarted enabled=yes
+  tags: issabel
 
 - name: Set permissions of required to freetech's user
   shell: "{{ item }}"
@@ -44,13 +61,15 @@
       - "chown freetech:freetech -R /var/run/php-fpm/php-fpm.sock"
       - "chown freetech:freetech -R {{ omnisup_dir }}/Omnisup"
       - "chown freetech:freetech -R /var/lib/nginx/"
+  tags: issabel
 
 - name: Creation of /etc/nginx/conf.d/supervision.conf
   template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
+  tags: issabel
 
 - name: Restart of nginx
   service: name=nginx state=restarted enabled=yes
-
+  tags: issabel
 
 
 

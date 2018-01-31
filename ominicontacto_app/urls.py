@@ -536,7 +536,7 @@ urlpatterns = [
         login_required(views_agenda_contacto.AgenteContactoListFormView.as_view()),
         name="agenda_contacto_listado"),
     url(
-        r'^agenda_manual/(?P<telefono>\d+)/create/(?P<id_agente>\d+)/$',
+        r'^agenda_manual/(?P<telefono>\d+)/create/(?P<id_agente>\d+)/(?P<pk_campana>\d+)/$',
         login_required(
             views_agenda_contacto.AgendaManualCreateView.as_view()),
         name="agenda_manual_create"),

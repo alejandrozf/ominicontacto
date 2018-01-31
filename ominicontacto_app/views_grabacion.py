@@ -5,7 +5,7 @@ Aca se encuentran las vistas relacionada con las grabaciones en cuanto a su busq
 ya que el insert lo hace kamailio-debian/asterisk(hablar con fabian como hace el insert )
 """
 
-import datetime
+from django.utils import timezone
 import json
 
 from StringIO import StringIO
@@ -61,7 +61,7 @@ class BusquedaGrabacionFormView(FormView):
         return context
 
     def get(self, request, *args, **kwargs):
-        hoy_ahora = datetime.datetime.today()
+        hoy_ahora = timezone.now()
         hoy = hoy_ahora.date()
         campanas = Campana.objects.all()
         if self.request.user.get_is_supervisor_customer():
@@ -120,10 +120,11 @@ class GrabacionReporteFormView(FormView):
     def get(self, request, *args, **kwargs):
         # obtener_estadisticas_render_graficos_supervision()
         service = GraficoService()
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
+        hoy_ahora = timezone.now()
+        hoy_inicio = timezone.datetime(hoy_ahora.year, hoy_ahora.month, hoy_ahora.day,
+                                       tzinfo=timezone.get_current_timezone())
         graficos_estadisticas = service.general_llamadas_hoy(
-            hoy, hoy_ahora, request.user, False)
+            hoy_inicio, hoy_ahora, request.user, False)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
 

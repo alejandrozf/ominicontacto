@@ -3,6 +3,7 @@
 - name: Install of postgresql 9.6
   yum: "name={{ postgresql_url }} state=present validate_certs=no "
 - yum: name=postgresql96* state=present
+  tags: issabel
 
 - name: Install of the other packages
   yum: "name={{ item }} state=present"
@@ -39,11 +40,17 @@
       - libsass-devel
       - libsass
       - python2-pip.noarch
+  tags: issabel
 - meta: clear_host_errors
 
 - name: install php56wpgsql
   yum: name=php56w-pgsql state=present
 - meta: clear_host_errors
+
+- name: install phppgsql
+  yum: name=php56w-pgsql state=present
+- meta: clear_host_errors
+  tags: issabel
 
 - name: Setup of postgresql
   command: "/usr/pgsql-9.6/bin/postgresql96-setup initdb"
@@ -51,6 +58,8 @@
   failed_when:
     - "'is not empty' not in command_result.stdout"
     - "command_result.rc != 0"
+  tags: issabel
+
 
 - shell: "{{ item }}"
   with_items:
@@ -58,4 +67,5 @@
       - systemctl start postgresql-9.6.service
       - systemctl start redis
       - systemctl enable redis
+  tags: issabel
 
