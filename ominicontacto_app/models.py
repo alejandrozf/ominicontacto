@@ -241,16 +241,6 @@ class NombreCalificacion(models.Model):
         return self.nombre
 
 
-class CalificacionCampana(models.Model):
-    """Clase Version
-    Atributos: Calificacion, nombre. """
-    nombre = models.CharField(max_length=50)
-    calificacion = models.ManyToManyField(NombreCalificacion)
-
-    def __unicode__(self):
-        return self.nombre
-
-
 class Formulario(models.Model):
     nombre = models.CharField(max_length=64)
     descripcion = models.TextField()
@@ -784,9 +774,6 @@ class Campana(models.Model):
     nombre = models.CharField(max_length=128, unique=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
-    calificacion_campana = models.ForeignKey(CalificacionCampana,
-                                             related_name="calificacioncampana",
-                                             null=True)
     calificaciones_campana = models.ManyToManyField(
         Calificacion, related_name="campanas", through='OpcionCalificacion',)
     bd_contacto = models.ForeignKey(
