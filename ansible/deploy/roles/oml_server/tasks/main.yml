@@ -11,8 +11,11 @@
 #----------------------------------------------------------------------
 
 - include: deploy.yml
+  tags:
+    - postinstall
+    - deploy
 
 - include: postgres_users.yml
-  when: not post_install
-
+  tags:
+    - postgresusers
 

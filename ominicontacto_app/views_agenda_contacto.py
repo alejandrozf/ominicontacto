@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Aca se encuentra las vista relacionada con la creacion de una agenda en el caso que el 
+Aca se encuentra las vista relacionada con la creacion de una agenda en el caso que el
 agente de desee agendar un llamado. Al modulo de agenda le esta faltando algun demonio
-o algo por el estilo para que lance una llamada agenda,etc 
+o algo por el estilo para que lance una llamada agenda,etc
 """
 
 from __future__ import unicode_literals
@@ -11,20 +11,17 @@ from __future__ import unicode_literals
 import requests
 
 from django.conf import settings
-from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView
-)
+from django.views.generic import CreateView, FormView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
-    AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual
+    AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual, CalificacionCliente,
+    CalificacionManual
 )
 from ominicontacto_app.forms import (
     AgendaContactoForm, AgendaBusquedaForm, AgendaManualForm
 )
-from ominicontacto_app.utiles import convert_string_in_boolean,\
-    convert_fecha_datetime
+from ominicontacto_app.utiles import convert_fecha_datetime
 
 
 class AgendaContactoCreateView(CreateView):
@@ -38,8 +35,10 @@ class AgendaContactoCreateView(CreateView):
         initial = super(AgendaContactoCreateView, self).get_initial()
         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         initial.update({'contacto': contacto,
-                        'agente': agente})
+                        'agente': agente,
+                        'campana': campana})
         return initial
 
     def get_context_data(self, **kwargs):
@@ -50,18 +49,23 @@ class AgendaContactoCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL:
-            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = form.instance.campana
+        if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL and \
+           campana.type == Campana.TYPE_DIALER:
             url_wombat = '/'.join(
                 [settings.OML_WOMBAT_URL,
-                 'api/calls/?op=addcall&campaign={0}&number={1}&schedule={2}&attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'
-                                   ])
+                 'api/calls/?op=addcall&campaign={3}_{0}&number={1}&schedule={2}&'
+                 'attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'])
             fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
-            r = requests.post(
+            requests.post(
                 url_wombat.format(
                     campana.nombre, self.object.contacto.telefono, fecha_hora,
                     campana.pk, self.object.contacto.pk))
         self.object.save()
+        # Después de agendado el contacto se marca como agendado en la calificación
+        CalificacionCliente.objects.filter(
+            campana=campana, contacto__pk=self.kwargs['pk_contacto'],
+            agente__pk=self.kwargs['id_agente']).update(agendado=True)
         return super(AgendaContactoCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -119,9 +123,20 @@ class AgendaManualCreateView(CreateView):
         initial = super(AgendaManualCreateView, self).get_initial()
         telefono = self.kwargs['telefono']
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         initial.update({'telefono': telefono,
-                        'agente': agente})
+                        'agente': agente,
+                        'campana': campana})
         return initial
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        agente = cleaned_data.get('agente')
+        telefono = cleaned_data.get('telefono')
+        campana = form.instance.campana
+        CalificacionManual.objects.filter(
+            agente=agente, campana=campana, telefono=telefono).update(agendado=True)
+        return super(AgendaManualCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(

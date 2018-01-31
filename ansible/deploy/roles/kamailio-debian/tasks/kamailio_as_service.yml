@@ -1,0 +1,11 @@
+---
+
+- name: Agregar el usuario de kamailio y levantar kamailio como servicio
+  shell: "{{ item }}"
+  with_items:
+          - "adduser --quiet --system --group --disabled-password --shell /bin/false --gecos \"Kamailio\" --home /var/run/kamailio kamailio"
+          - mkdir -p /var/run/kamailio
+          - chown kamailio:kamailio /var/run/kamailio
+          - systemctl enable kamailio
+          - systemctl daemon-reload
+          - chown kamailio:kamailio -R /opt/kamailio

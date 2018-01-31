@@ -102,6 +102,20 @@
               {{ form.audio_para_contestadores }}
         </div>
     </div>
+    <div class="form-group row">
+        {{ form.initial_predictive_model.errors }}
+        <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Activar predictividad:</label>
+        <div class="col-sm-2">
+              {{ form.initial_predictive_model }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.initial_boost_factor.errors }}
+        <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Factor de boost inicial:</label>
+        <div class="col-sm-2">
+              {{ form.initial_boost_factor }}
+        </div>
+    </div>
     </br>
     <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
         Siguiente

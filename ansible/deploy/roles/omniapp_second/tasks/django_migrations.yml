@@ -1,11 +1,20 @@
 ---
 
+- set_fact: static_route=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto
+
+- name: Change the FQDN in config.js
+  template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner=freetech group=freetech"
+
 - name: Createlang of the database
   shell: "createlang plpythonu kamailio"
   become: yes
   become_user: postgres
-  when: not post_install
-  ignore_errors: yes
+  register: command_result
+  failed_when:
+    - "'ya está instalado' not in command_result.stderr"
+    - "'already installed' not in command_result.stderr"
+    - "command_result.rc != 0"
+
 
 - name: Run Django migrations
   django_manage: >

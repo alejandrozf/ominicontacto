@@ -1,0 +1,1 @@
+*/5 * * * * root /var/lib/asterisk/agi-bin/omni-asterisk-logout.php

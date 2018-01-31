@@ -172,15 +172,18 @@ class QueueEntranteCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        audio_pk = form.cleaned_data['audios']
-        audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
         self.object.eventmemberstatus = True
         self.object.eventwhencalled = True
         self.object.ringinuse = True
         self.object.setinterfacevar = True
         self.object.wrapuptime = 0
         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
-        self.object.announce = audio.audio_asterisk
+        audio_pk = form.cleaned_data['audios']
+        if audio_pk:
+            audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
+            self.object.announce = audio.audio_asterisk
+        else:
+            self.object.announce = None
         self.object.save()
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(self.object)
@@ -244,8 +247,11 @@ class QueueEntranteUpdateView(UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         audio_pk = form.cleaned_data['audios']
-        audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
-        self.object.announce = audio.audio_asterisk
+        if audio_pk:
+            audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
+            self.object.announce = audio.audio_asterisk
+        else:
+            self.object.announce = None
         self.object.save()
 
         activacion_queue_service = ActivacionQueueService()

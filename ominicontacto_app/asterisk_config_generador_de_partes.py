@@ -120,6 +120,17 @@ class GeneradorDePedazoDeAgenteFactory(object):
         return GeneradorParaAgenteGlobal(parametros)
 
 
+# Factory para las Pausas
+
+class GeneradorDePedazoDePausaFactory(object):
+
+    def crear_generador_para_pausa_global(self, parametros):
+        return GeneradorParaPausaGlobal(parametros)
+
+    def crear_generador_para_failed(self, parametros):
+        return GeneradorParaFailed(parametros)
+
+
 # Factory para las Queue.
 
 class GeneradorDePedazoDeCampanaDialerFactory(object):
@@ -181,7 +192,7 @@ class GeneradorParaQueueSinGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
         same => n,Set(__TIPOLLAMADA=IN)
-        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,{oml_queue_wait},,,queuelogSub)
         """
 
@@ -211,7 +222,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
         same => n,Set(__TIPOLLAMADA=IN)
-        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,{oml_queue_wait},,,queuelogSub)
         """
 
@@ -357,6 +368,23 @@ class GeneradorParaAgenteGlobal(GeneradorDePedazoDeAgenteSip):
         return self._parametros
 
 # ==============================================================================
+# Pausa
+# ==============================================================================
+
+class GeneradorParaPausaGlobal(GeneradorDePedazo):
+
+    def __init__(self, parametros):
+        self._parametros = parametros
+
+    def get_template(self):
+        return """
+        PAUSA{oml_pausa_pk} = {oml_pausa_nombre}
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+# ==============================================================================
 # Campana Dialer
 # ==============================================================================
 
@@ -376,7 +404,7 @@ class GeneradorParaCampanaDialerStart(GeneradorDePedazoDeCampanaDialer):
         return """
 
         ;----------------------------------------------------------------------
-        ; TEMPLATE_DIALPLAN_START_CAMPANA_{oml_tipo_campana}-{oml_queue_name}
+        ; TEMPLATE_DIALPLAN_START_CAMPANA_DIALER-{oml_queue_name}
         ;   Autogenerado {date}
         ;----------------------------------------------------------------------
 
@@ -385,6 +413,7 @@ class GeneradorParaCampanaDialerStart(GeneradorDePedazoDeCampanaDialer):
         same => n,Set(CAMPANA={oml_queue_name})
         same => n,Set(AUX=${{CUT(CHANNEL,@,1)}})
         same => n,Set(NUMMARCADO=${{CUT(AUX,/,2)}})
+        same => n,Set(__TIPOLLAMADA=DIALER)
         """
 
     def get_parametros(self):
@@ -411,7 +440,6 @@ class GeneradorParaCampanaDialerGrabacion(GeneradorDePedazoDeCampanaDialer):
         return """
         same => n,Set(__MONITOR_FILENAME=q-${{STRFTIME(${{EPOCH}},,%Y%m%d%H%M%S)}}-${{ID_CAMPANA}}-${{NUMMARCADO}}-${{UNIQUEID}})
         same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{{UNIQUEID}} ^{{MIXMONITOR_FILENAME}})
-        same => n,Set(__TIPOLLAMADA=DIALER)
         same => n,MixMonitor(${{MONITOR_FILENAME}}.wav,b)
         same => n,SIPAddHeader(uidGrabacion:${{UNIQUEID}})
         """
@@ -429,7 +457,7 @@ class GeneradorParaCampanaDialerFormulario(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(IDCliente:${{ID_CLIENTE}})
         same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
-        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,120,,,queuelogSub)
         same => n,Hangup()
         """
@@ -448,7 +476,7 @@ class GeneradorParaCampanaDialerSitioExterno(GeneradorDePedazoDeCampanaDialer):
         same => n,SIPAddHeader(IDCliente:${{ID_CLIENTE}})
         same => n,SIPAddHeader(IDCamp:${{ID_CAMPANA}})
         same => n,Set(CALLERID(num)=${{NUMMARCADO}})
-        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}})
+        same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,120,,,queuelogSub)
         same => n,Hangup()
         """

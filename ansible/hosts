@@ -7,9 +7,7 @@
 #   - Groups of hosts are delimited by [header] elements
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
-
 # Ex 1: Ungrouped hosts, specify before any group headers.
-
 #green.example.com
 #blue.example.com
 #192.168.100.1
@@ -17,44 +15,9 @@
 
 [omni-app]
 192.168.70.63
-
 [omni-voip]
 192.168.70.62
-
-[omni-freepbx]
-192.168.99.2
-
 [omni-centos]
 172.16.20.12
-
-[omni:children]
-omni-app
-omni-voip
-
-# Ex 2: A collection of hosts belonging to the 'webservers' group
-
-#[webservers]
-#alpha.example.org
-#beta.example.org
-#192.168.1.100
-#192.168.1.110
-
-# If you have multiple hosts following a pattern you can specify
-# them like this:
-
-#www[001:006].example.com
-
-# Ex 3: A collection of database servers in the 'dbservers' group
-
-#[dbservers]
-#
-#db01.intranet.mydomain.net
-#db02.intranet.mydomain.net
-#10.25.1.56
-#10.25.1.57
-
-# Here's another example of host ranges, this time there are no
-# leading 0s:
-
-#db-[99:101]-node.example.com
-
+[omni-freepbx]
+192.168.99.2 ansible_ssh_port=22

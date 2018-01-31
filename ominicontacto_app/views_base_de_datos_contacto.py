@@ -960,7 +960,7 @@ def cargar_base_datos_view(request):
                columnas_con_telefonos = service.inferir_columnas_telefono(
                    received_json_data['datos'])
                metadata.columnas_con_telefono = columnas_con_telefonos
-               metadata.nombres_de_columnas = predictor.nombres_de_columnas
+               metadata.nombres_de_columnas = received_json_data['columnas']
 
                es_encabezado = False
 
@@ -980,11 +980,7 @@ def cargar_base_datos_view(request):
                              {1}<br><u>Contenido Inválido:</u> {2}'.format(
                        e.numero_fila, e.fila, e.valor_celda)
 
-                   messages.add_message(
-                       self.request,
-                       messages.ERROR,
-                       message,
-                   )
+                   logger.error(message)
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:

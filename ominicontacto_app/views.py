@@ -136,6 +136,13 @@ class UserDeleteView(DeleteView):
     model = User
     template_name = 'user/delete_user.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        usuario = User.objects.get(pk=self.kwargs['pk'])
+        if usuario.id is 1:
+            return HttpResponseRedirect(
+                reverse('user_list', kwargs={"page": 1}))
+        return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(UserDeleteView, self).get_context_data(**kwargs)
         context['user'] = self.request.user
@@ -360,42 +367,77 @@ class GrupoDeleteView(DeleteView):
         return reverse('grupo_list')
 
 
-class PausaCreateView(CreateView):
+class RegenerarAsteriskOnSuccessMixin(object):
+
+    def get_success_url(self):
+        activacion_queue_service = RegeneracionAsteriskService()
+        try:
+            activacion_queue_service.regenerar()
+        except RestablecerDialplanError, e:
+            message = ("Operación Errónea! "
+                       "No se realizo de manera correcta la regeneracion de los "
+                       "archivos de asterisk al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        messages.success(self.request,
+                         'La regeneracion de los archivos de configuracion de'
+                         ' asterisk y el reload se hizo de manera correcta')
+
+        return reverse('pausa_list')
+
+
+class PausaCreateView(RegenerarAsteriskOnSuccessMixin, CreateView):
     """Vista para crear pausa"""
     model = Pausa
     template_name = 'base_create_update_form.html'
     form_class = PausaForm
 
-    def get_success_url(self):
-        return reverse('pausa_list')
 
-
-class PausaUpdateView(UpdateView):
+class PausaUpdateView(RegenerarAsteriskOnSuccessMixin, UpdateView):
     """Vista para modificar pausa"""
     model = Pausa
     template_name = 'base_create_update_form.html'
     form_class = PausaForm
 
-    def get_success_url(self):
-        return reverse('pausa_list')
 
-
-class PausaListView(ListView):
+class PausaListView(TemplateView):
     """Vista para listar pausa"""
     model = Pausa
     template_name = 'pausa_list.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(PausaListView, self).get_context_data(**kwargs)
+        context['pausas_activas'] = Pausa.objects.activas()
+        context['pausas_eliminadas'] = Pausa.objects.eliminadas()
+        return context
 
-class PausaDeleteView(DeleteView):
+
+class PausaToggleDeleteView(TemplateView):
     """
-    Esta vista se encarga de la eliminación del
+    Esta vista se encarga de la eliminación/activación del
     objeto pausa
     """
-    model = Pausa
     template_name = 'delete_pausa.html'
 
-    def get_success_url(self):
-        return reverse('pausa_list')
+    def get(self, request, pk):
+        try:
+            pausa = Pausa.objects.get(pk=pk)
+        except Pausa.DoesNotExist:
+            return redirect('pausa_list')
+        return self.render_to_response({'object': pausa})
+
+    def post(self, request, pk):
+        try:
+            pausa = Pausa.objects.get(pk=pk)
+        except Pausa.DoesNotExist:
+            return redirect('pausa_list')
+        pausa.eliminada = not pausa.eliminada
+        pausa.save()
+        return redirect('pausa_list')
+
 
 
 def node_view(request):
@@ -412,7 +454,7 @@ def node_view(request):
         campanas_preview_activas = \
             agente_profile.has_campanas_preview_activas_miembro()
         context = {
-            'pausas': Pausa.objects.all,
+            'pausas': Pausa.objects.activas,
             'registro': registro,
             'campanas_preview_activas': campanas_preview_activas,
             'agente_profile': agente_profile,

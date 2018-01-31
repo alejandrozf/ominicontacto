@@ -8,26 +8,27 @@
   shell: systemctl enable nginx
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
-- name: Copy of the ominicontacto nginx configuration
-  copy: "src={{ django_dir }}/nginx/ominicontacto-twohosts.conf dest=/etc/nginx/conf.d/ remote_src=yes"
-  when: ansible_os_family == "Debian"
-- shell: "mv /etc/nginx/conf.d/ominicontacto-twohosts.conf /etc/nginx/conf.d/ominicontacto.conf"
-  when: ansible_os_family == "Debian"
+#- name: Copy of the ominicontacto nginx configuration
+#  copy: "src={{ django_dir }}/nginx/ominicontacto-twohosts.conf dest=/etc/nginx/conf.d/ remote_src=yes"
+#  when: ansible_os_family == "Debian"
+#- shell: "mv /etc/nginx/conf.d/ominicontacto-twohosts.conf /etc/nginx/conf.d/ominicontacto.conf"
+#  when: ansible_os_family == "Debian"
 
-- name: Copy of the ominicontacto nginx configuration
-  copy: "src={{ django_dir }}/nginx/ominicontacto-onehost.conf dest=/etc/nginx/conf.d/ remote_src=yes"
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-- shell: "mv /etc/nginx/conf.d/ominicontacto-onehost.conf /etc/nginx/conf.d/ominicontacto.conf"
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+#- name: Copy of the ominicontacto nginx configuration
+#  copy: "src={{ django_dir }}/nginx/ominicontacto-onehost.conf dest=/etc/nginx/conf.d/ remote_src=yes"
+#  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+#- shell: "mv /etc/nginx/conf.d/ominicontacto-onehost.conf /etc/nginx/conf.d/ominicontacto.conf"
+#  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
+- name: Create of ominicontacto.conf
+  template: src=templates/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf
 
-- name: Creation of the nginx server certificate
-  set_fact:
-          ca_subject: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omniapp_fqdn }}"
-
-- shell: "openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout server.key -out server.crt -subj \"{{ ca_subject }}\""
-  args:
-          chdir: /home/freetech/nginx_certs/
+- name: Copy of the certificates in nginx
+  copy: "src=/opt/kamailio/etc/certs/{{ item }} dest=/home/freetech/nginx_certs/ remote_src=yes"
+  with_items:
+      - cert.pem
+      - key.pem
+  tags: kamailio-cert
   notify: restart nginx
 
 - name: Create ominicontacto-daemon service
@@ -38,12 +39,13 @@
           - "chown root:root /etc/init.d/ominicontacto-daemon"
 
 - name: Start the ominicontacto-daemon service
-  shell: "{{ item }}"
+  command: "{{ item }}"
   with_items:
-          - "yum install \'/lib/lsb/init-functions\' -y"
+          - yum install '/lib/lsb/init-functions' -y
           - "service ominicontacto-daemon start"
           - "service ominicontacto-daemon stop"
           - "chkconfig ominicontacto-daemon on"
+          - "service ominicontacto-daemon start"
   ignore_errors: yes
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
@@ -55,10 +57,15 @@
           - "update-rc.d ominicontacto-daemon enable 3"
           - "update-rc.d ominicontacto-daemon enable 4"
           - "update-rc.d ominicontacto-daemon enable 5"
+          - "service ominicontacto-daemon start"
   ignore_errors: yes
-  notify: restart ominicontacto-daemon
   when: ansible_os_family == "Debian"
 
+- name: Copy of the Kamailio cert in voip.cert
+  template: src=templates/concatenate.sh dest=/root/ mode=755
+  tags: static
+- shell: "bash concatenate.sh chdir=/root/"
+  tags: static
 
 
 

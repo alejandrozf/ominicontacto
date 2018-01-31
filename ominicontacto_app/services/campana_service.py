@@ -26,7 +26,7 @@ class CampanaService():
 
     def validar_modificacion_bd_contacto(self, campana, base_datos_modificar):
         """
-        
+
         :param campana: campana la cual se le va cambiar la base de datos
         :param base_datos_modificar: base de datos a la cual se desea cambiar
         :return: error=None lo cual el nombre de sus columnas coinciden.
@@ -35,12 +35,15 @@ class CampanaService():
         """
         error = None
         base_datos_actual = campana.bd_contacto
+        if base_datos_actual is None:
+            return error
+
         metadata_actual = base_datos_actual.get_metadata()
-        metadata_modidicar = base_datos_modificar.get_metadata()
+        metadata_modificar = base_datos_modificar.get_metadata()
 
         for columna_base, columna_modificar in zip(
                 metadata_actual.nombres_de_columnas,
-                metadata_modidicar.nombres_de_columnas):
+                metadata_modificar.nombres_de_columnas):
             if columna_base != columna_modificar:
                 error = "Los nombres de las columnas no coinciden"
 

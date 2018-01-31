@@ -78,7 +78,8 @@
         <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
-             {{ form.agente}}
+            {{ form.agente}}
+            {{ form.campana}}
     <div class="form-group row">
         {{ form.telefono.errors }}
         <label class="col-sm-3 control-label" for="{{ form.telefono.id_for_label }}">Telefono: </label>

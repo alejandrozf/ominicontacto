@@ -6,6 +6,7 @@ no interesado,etc y luego la agrupacion de la misma en un grupo lo cual se va ut
 
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import (
@@ -14,14 +15,15 @@ from django.views.generic import (
 from ominicontacto_app.models import (
     Calificacion, CalificacionCampana
 )
+from ominicontacto_app.forms import CalificacionForm, CalificacionCampanaForm
 
 
 class CalificacionCreateView(CreateView):
     """Vista para crear una calificacion
     DT: remover fields de la vista y crear un formulario"""
     model = Calificacion
+    form_class = CalificacionForm
     template_name = 'base_create_update_form.html'
-    fields = ('nombre',)
 
     def get_success_url(self):
         return reverse('calificacion_list')
@@ -32,7 +34,7 @@ class CalificacionUpdateView(UpdateView):
     DT: remover fields de la vista y crear un formulario"""
     model = Calificacion
     template_name = 'base_create_update_form.html'
-    fields = ('nombre',)
+    form_class = CalificacionForm
 
     def get_success_url(self):
         return reverse('calificacion_list')
@@ -54,14 +56,23 @@ class CalificacionListView(ListView):
     """Lista las calificaciones"""
     model = Calificacion
     template_name = 'calificacion/calificacion_list.html'
+    queryset = Calificacion.objects.exclude(nombre=settings.CALIFICACION_REAGENDA)
 
 
-class CalificacionCampanaCreateView(CreateView):
+class CalificacionCampanaMixin(object):
+
+    def form_valid(self, form):
+        form.cleaned_data['calificacion'] |= Calificacion.objects.filter(
+            nombre=settings.CALIFICACION_REAGENDA)
+        return super(CalificacionCampanaMixin, self).form_valid(form)
+
+
+class CalificacionCampanaCreateView(CalificacionCampanaMixin, CreateView):
     """Vista para crear un un grupo de calificacion
     DT: remover fields de la vista y crear un formulario"""
     model = CalificacionCampana
+    form_class = CalificacionCampanaForm
     template_name = 'base_create_update_form.html'
-    fields = ('nombre', 'calificacion')
 
     def dispatch(self, request, *args, **kwargs):
         calfificacion = Calificacion.objects.all()
@@ -70,19 +81,19 @@ class CalificacionCampanaCreateView(CreateView):
                        "calificacion de campana")
             messages.warning(self.request, message)
 
-        return super(CalificacionCampanaCreateView, self).dispatch(request,
-            *args, **kwargs)
+        return super(CalificacionCampanaCreateView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('calificacion_campana_list')
 
 
-class CalificacionCampanaUpdateView(UpdateView):
+class CalificacionCampanaUpdateView(CalificacionCampanaMixin, UpdateView):
     """Vista para crear un grupo de calificacion
     DT: remover fields de la vista y crear un formulario"""
     model = CalificacionCampana
+    form_class = CalificacionCampanaForm
     template_name = 'base_create_update_form.html'
-    fields = ('nombre', 'calificacion')
 
     def dispatch(self, request, *args, **kwargs):
         calfificacion = Calificacion.objects.all()
@@ -91,8 +102,8 @@ class CalificacionCampanaUpdateView(UpdateView):
                        "calificacion de campana")
             messages.warning(self.request, message)
 
-        return super(CalificacionCampanaUpdateView, self).dispatch(request,
-            *args, **kwargs)
+        return super(CalificacionCampanaUpdateView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('calificacion_campana_list')

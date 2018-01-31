@@ -7,6 +7,7 @@
 - name: Install wombat dialer
   yum: name=wombat state=present
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+- meta: clear_host_errors
 
 - name: Add parameters in server.xml of Catalina
   template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml

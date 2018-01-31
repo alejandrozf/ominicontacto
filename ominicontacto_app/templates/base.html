@@ -6,11 +6,11 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} Omnileads {% endblock %}</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /	>
     <!-- Bootstrap's  -->
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}" >
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap-theme.min.css' %}">
-	<link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}" >
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}"></link>
@@ -19,6 +19,9 @@
       body {
         padding-top: 60px;
         padding-bottom: 40px;
+      }
+      .navbar-header {
+	position: absolute;
       }
     </style>
 
@@ -280,74 +283,23 @@
             </div>
         </div>
     {% endif %}
-<div class="container">
-   {% for message in messages %}
-
-        {% if "error" in message.tags %}
-
-        <div class="alert alert-danger">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Error!</h4>
-            {{ message }}
-        </div>
-
-        {% elif "warning" in message.tags %}
-
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Atencion!</h4>
-            {{ message }}
-        </div>
-
-        {% elif "success" in message.tags %}
-
-        <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Finalizado:</h4>
-            {{ message }}
-        </div>
-
-        {% elif "info" in message.tags %}
-
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
-            {{ message }}
-        </div>
-
-        {% elif "debug" in message.tags %} {# the same as "INFO" #}
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
-            {{ message }}
-        </div>
-
-        {% else %} {# the same as "INFO" #}
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
-            {{ message }}
-        </div>
-
-        {% endif %}
-
-    {% endfor %}
-    {% if user.is_authenticated  %}
-        {% if user.get_tiene_permiso_administracion  %}
-            {% block content %}
-            {% endblock %}
-        {% else %}
-            <div class="alert alert-warning">
-                <h1>Permiso denegado</h1>
-                <p>Ud. no posee los permisos requeridos para acceder a esta pagina.</p>
-            </div>
-        {% endif %}
-
-    {% else %}
-        {% block logueo %}
-        {% endblock %}
-    {% endif %}
-</div>
+    <div class="container">
+        {% include 'messages.html' %}
+            {% if user.is_authenticated  %}
+                {% if user.get_tiene_permiso_administracion  %}
+                   {% block content %}
+                   {% endblock %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        <h1>Permiso denegado</h1>
+                        <p>Ud. no posee los permisos requeridos para acceder a esta pagina.</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% block logueo %}
+                {% endblock %}
+            {% endif %}
+    </div>
 {% block extra_js %}{% endblock %}
 </body>
 </html>

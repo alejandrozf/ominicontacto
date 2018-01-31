@@ -1,21 +1,26 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 
 import json
 from django import forms
+from django.conf import settings
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
+from django.utils.translation import ugettext as _
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
+
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio
+    AgendaManual, ArchivoDeAudio, Calificacion, CalificacionCampana
 )
 from ominicontacto_app.utiles import convertir_ascii_string, validar_nombres_campanas
 
@@ -116,26 +121,24 @@ class QueueEntranteForm(forms.ModelForm):
     El form de cola para las colas
     """
 
-    def __init__(self, audios_choices,  *args, **kwargs):
+    audios = forms.ChoiceField(choices=[], required=False)
+
+    def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
-        self.fields['announce_frequency'].required = True
+        self.fields['announce_frequency'].required = False
         audios_choices = [(audio.id, audio.descripcion)
                           for audio in audios_choices]
         audios_choices.insert(0, ('', '---------'))
-        self.fields['audios'] = forms.ChoiceField(
-            choices=audios_choices,
-            widget=forms.Select(attrs={'class': 'form-control'}),
-            required=True
-        )
+        self.fields['audios'].choices = audios_choices
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
-                  'announce_frequency', 'audio_de_ingreso')
+                  'audios', 'announce_frequency', 'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -150,10 +153,18 @@ class QueueEntranteForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "announce_frequency": forms.TextInput(
-                attrs={'class': 'form-control'}),
+            'audios': forms.Select(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def clean_announce_frequency(self):
+        audio = self.cleaned_data.get('audio', None)
+        frequency = self.cleaned_data.get('announce_frequency', None)
+        if audio and not (frequency > 0):
+            raise forms.ValidationError(
+                _('Debe definir una frecuencia para el Anuncio Periódico'))
+        return frequency
 
 
 class QueueMemberForm(forms.ModelForm):
@@ -176,26 +187,24 @@ class QueueEntranteUpdateForm(forms.ModelForm):
     El form para actualizar la cola para las llamadas
     """
 
-    def __init__(self, audios_choices, id_audio,  *args, **kwargs):
+    audios = forms.ChoiceField(choices=[], required=False)
+
+    def __init__(self, audios_choices, id_audio, *args, **kwargs):
         super(QueueEntranteUpdateForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
-        self.fields['announce_frequency'].required = True
+        self.fields['announce_frequency'].required = False
         audios_choices = [(audio.id, audio.descripcion)
                           for audio in audios_choices]
         audios_choices.insert(0, ('', '---------'))
-        self.fields['audios'] = forms.ChoiceField(
-            choices=audios_choices,
-            widget=forms.Select(attrs={'class': 'form-control'}),
-            initial=id_audio,
-            required=True
-        )
+        self.fields['audios'].choices = audios_choices
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
         model = Queue
         fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion', 'announce_frequency', 'audio_de_ingreso')
+                  'weight', 'wait', 'auto_grabacion', 'audios', 'announce_frequency',
+                  'audio_de_ingreso')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -210,8 +219,8 @@ class QueueEntranteUpdateForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "announce_frequency": forms.TextInput(
-                attrs={'class': 'form-control'}),
+            "audios": forms.Select(attrs={'class': 'form-control'}),
+            "announce_frequency": forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
@@ -222,6 +231,14 @@ class QueueEntranteUpdateForm(forms.ModelForm):
                                         ' mayor a cero')
 
         return self.cleaned_data
+
+    def clean_announce_frequency(self):
+        audio = self.cleaned_data.get('audios', None)
+        frequency = self.cleaned_data.get('announce_frequency', None)
+        if audio and not (frequency > 0):
+            raise forms.ValidationError(
+                _('Debe definir una frecuencia para el Anuncio Periódico'))
+        return frequency
 
 
 class BaseDatosContactoForm(forms.ModelForm):
@@ -373,7 +390,7 @@ class CampanaUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'gestion', 'objetivo')
+        fields = ('calificacion_campana', 'bd_contacto', 'gestion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -426,8 +443,6 @@ class CalificacionClienteForm(forms.ModelForm):
     def __init__(self, calificacion_choice, gestion, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
         self.fields['calificacion'].queryset = calificacion_choice
-        self.fields['calificacion'].empty_label = None
-        self.fields['calificacion'].empty_label = gestion
 
     class Meta:
         model = CalificacionCliente
@@ -637,7 +652,10 @@ class PausaForm(forms.ModelForm):
 
     class Meta:
         model = Pausa
-        fields = ('nombre', )
+        fields = ('nombre', 'tipo')
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
+        }
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
@@ -700,7 +718,7 @@ class AgendaContactoForm(forms.ModelForm):
     class Meta:
         model = AgendaContacto
         fields = ('contacto', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones')
+                  'observaciones', 'campana')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
@@ -708,6 +726,7 @@ class AgendaContactoForm(forms.ModelForm):
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
             "hora": forms.TextInput(attrs={'class': 'form-control'}),
+            'campana': forms.HiddenInput(),
         }
 
 
@@ -849,7 +868,7 @@ class QueueDialerForm(forms.ModelForm):
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
                   'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
-                  'audio_para_contestadores')
+                  'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -861,7 +880,21 @@ class QueueDialerForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
+            "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+    def clean(self):
+        initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
+        if initial_boost_factor and initial_boost_factor < 1.0:
+            raise forms.ValidationError('El factor boost inicial no debe ser'
+                                        ' menor a 1.0')
+
+        initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
+        if initial_predictive_model and not initial_boost_factor:
+            raise forms.ValidationError('El factor boost inicial no deber ser'
+                                        ' none si la predicitvidad está activa')
+
+        return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
         super(QueueDialerForm, self).__init__(*args, **kwargs)
@@ -876,7 +909,8 @@ class QueueDialerUpdateForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores')
+                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores',
+                  'initial_predictive_model', 'initial_boost_factor')
         widgets = {
             "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
@@ -885,6 +919,7 @@ class QueueDialerUpdateForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
+            "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -896,6 +931,16 @@ class QueueDialerUpdateForm(forms.ModelForm):
         if not maxlen > 0:
             raise forms.ValidationError('Cantidad Max de llamadas debe ser'
                                         ' mayor a cero')
+
+        initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
+        if initial_boost_factor and initial_boost_factor < 1.0:
+            raise forms.ValidationError('El factor boost inicial no debe ser'
+                                        ' menor a 1.0')
+
+        initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
+        if initial_predictive_model and not initial_boost_factor:
+            raise forms.ValidationError('El factor boost inicial no deber ser'
+                                        ' none si la predicitvidad está activa')
 
         return self.cleaned_data
 
@@ -1008,6 +1053,11 @@ class CampanaManualForm(forms.ModelForm):
         return nombre
 
 
+class CampanaManualUpdateForm(CampanaManualForm):
+    class Meta(CampanaManualForm.Meta):
+        exclude = ('nombre', )
+
+
 class CampanaPreviewForm(CampanaManualForm):
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
@@ -1055,8 +1105,6 @@ class CalificacionManualForm(forms.ModelForm):
     def __init__(self, calificacion_choice, gestion, *args, **kwargs):
         super(CalificacionManualForm, self).__init__(*args, **kwargs)
         self.fields['calificacion'].queryset = calificacion_choice
-        self.fields['calificacion'].empty_label = None
-        self.fields['calificacion'].empty_label = gestion
 
     class Meta:
         model = CalificacionManual
@@ -1110,15 +1158,39 @@ class FormularioManualGestionForm(forms.ModelForm):
         }
 
 
+class CalificacionForm(forms.ModelForm):
+    class Meta:
+        model = Calificacion
+        fields = ('nombre',)
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        if nombre == settings.CALIFICACION_REAGENDA:
+            message = _('Esta calificación está reservada para el sistema')
+            raise forms.ValidationError(message, code='invalid')
+        return nombre
+
+
+class CalificacionCampanaForm(forms.ModelForm):
+    class Meta:
+        model = CalificacionCampana
+        fields = ('nombre', 'calificacion')
+
+    def __init__(self, *args, **kwargs):
+        super(CalificacionCampanaForm, self).__init__(*args, **kwargs)
+        self.fields['calificacion'].queryset = Calificacion.objects.usuarios()
+
+
 class AgendaManualForm(forms.ModelForm):
 
     class Meta:
         model = AgendaManual
         fields = ('telefono', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones')
+                  'observaciones', 'campana')
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
             'agente': forms.HiddenInput(),
+            'campana': forms.HiddenInput(),
             'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
@@ -1140,3 +1212,15 @@ class ArchivoDeAudioForm(forms.ModelForm):
             la Campaña. Si ya existe uno y guarda otro, el audio será
             reemplazado.""",
         }
+
+
+class EscogerCampanaForm(forms.Form):
+    campana = forms.ChoiceField(
+        label=_("Escoja una campaña"), choices=(),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        campanas = kwargs.pop('campanas', None)
+        super(EscogerCampanaForm, self).__init__(*args, **kwargs)
+        choices = [(pk, nombre) for pk, nombre in campanas]
+        self.fields['campana'].choices = choices

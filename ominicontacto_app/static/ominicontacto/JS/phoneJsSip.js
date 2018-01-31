@@ -1,6 +1,11 @@
 1//***************************************************
 var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
-var sipStatus = document.getElementById('SipStatus');var callStatus = document.getElementById('CallStatus');var local = document.getElementById('localAudio');var remoto = document.getElementById('remoteAudio');var displayNumber = document.getElementById("numberToCall"); var pauseButton = document.getElementById("Pause");
+var sipStatus = document.getElementById('SipStatus');
+var callStatus = document.getElementById('CallStatus');
+var local = document.getElementById('localAudio');
+var remoto = document.getElementById('remoteAudio');
+var displayNumber = document.getElementById("numberToCall");
+var pauseButton = document.getElementById("Pause");
 
 function suma(a, b) {
 	return a+b;
@@ -15,6 +20,7 @@ function updateButton(btn,clsnm,inht) {
 
 $(function() {
 
+	var idTipoCamp = $("#cmpList option:selected").attr('campana_type');
 	$("#modalWebCall").modal('show');
 	/*
 	ESTADO_OFFLINE = 1    """Agente en estado offline"""
@@ -52,7 +58,7 @@ $(function() {
 	 	 $.ajax({
 	 	   url: URl,
 	 	   type: 'POST',
-       dataType: 'application/json',
+       dataType: 'json',
        data: data2,
        succes: function (msg) {
 
@@ -550,7 +556,7 @@ $(function() {
 					if(fromUser.substring(4,0) != "0077") {
 							if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
 								changeStatus(3, $("#idagt").val());
-						    num = "0077ACW";
+						    num = "00770";
 						    makeCall();
 						    entrante = false;
 								$("#Pause").prop('disabled',true);
@@ -594,7 +600,7 @@ $(function() {
 						}
 						if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
 							changeStatus(3, $("#idagt").val());
-					        num = "0077ACW";
+					        num = "00770";
 					        makeCall();
 					        entrante = false;
 							$("#Pause").prop('disabled',true);
@@ -641,7 +647,7 @@ $(function() {
 					var nombrecamp = $("#cmpList option:selected").html();
 					nombrecamp = nombrecamp.substring(1);
 			  	headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
-			    $("#redial").prop('disabled',false);
+			    $("#redial").prop('disabled', false);
 			  	makeCall();
 				}
 			} else {
@@ -700,6 +706,7 @@ $(function() {
 			var nombrecamp = $("#cmpList option:selected").html();
 			nombrecamp = nombrecamp.substring(1);
 			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
+			var idTipoCamp = $("#campana_type").val();
 	    $("#redial").prop('disabled',false);
 			$("#campAssocManualCall").html(headerNomCamp);
 			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
@@ -711,7 +718,7 @@ $(function() {
 			var nombrecamp = $("#cmpList option:selected").html();
 			nombrecamp = nombrecamp.substring(1);
 			headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
-	    $("#redial").prop('disabled',false);
+	    $("#redial").prop('disabled', false);
 			$("#campAssocManualCall").html(headerNomCamp);
 		}
   });
@@ -762,13 +769,14 @@ $(function() {
                   }
                 }
     };
+		idTipoCamp = $("#cmpList option:selected").attr('campana_type');
     opciones = {
       'eventHandlers': eventHandlers,
       'mediaConstraints': {
                 'audio': true,
                 'video': false
               },
-      'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp],
+      'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp, 'Tipocamp:'+idTipoCamp],
 			pcConfig: {rtcpMuxPolicy: 'negotiate'}
     };
     //Mando el invite/llamada
@@ -780,6 +788,7 @@ $(function() {
        setCallState("Calling.... "+num, "yellowgreen");
        displayNumber.value = "";
      }
+		 idTipoCamp = null;
   }
 
   function setCallState(estado, color) {

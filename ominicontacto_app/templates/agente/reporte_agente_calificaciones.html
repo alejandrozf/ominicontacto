@@ -29,61 +29,67 @@
 </head>
 
 
-<script type="text/javascript">
+<script type="text/javascript">/* TODO: este código debería estar en un archivo separado  */
    $(function() {
-                var start = moment();
-                var end = moment();
-                function cb(start, end) {
-                    $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-                }
+     var start = moment();
+     var end = moment();
+     function cb(start, end) {
+       $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+     }
 
- $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
+     $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+       $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+     });
 
-  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-});
+     $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+       $(this).val('.calificacionContacto');
+     });
 
-            // Init daterange plugin
-            $('#id_fecha').daterangepicker(
-                {
-                locale: {
-                    format: 'DD/MM/YYYY'
-                 },
+     // Init daterange plugin
+     $('#id_fecha').daterangepicker(
+       {
+         locale: {
+           format: 'DD/MM/YYYY'
+         },
 
-                startDate: start,
-                endDate: end,
-                ranges: {
-                    'Hoy': [moment(), moment()],
-                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
+         startDate: start,
+         endDate: end,
+         ranges: {
+           'Hoy': [moment(), moment()],
+           'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+           'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+           'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+           'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+         },
 
-        }, cb);
+       }, cb);
 
-        cb(start, end);
+     cb(start, end);
 
-        $(".btn-submit").click(function (){
-                var action = $(this).attr("name");
-                var pk_contacto = $(this).attr("id");
-                var pk_agente = $(this).attr("agente");
-                submit_form(pk_contacto, pk_agente, action);
-            })
+     $(".btn-submit").click(function (){
+       var action = $(this).attr("name");
+       var pk_contacto = $(this).attr("pk_contacto");
+       var pk_agente = $(this).attr("agente");
+       var tipo_campana = $(this).attr("tipo_campana");
+       var campana_nombre = $(this).attr("campana_nombre");
+       var pk_campana = $(this).attr("pk_campana");
+       submit_form(pk_contacto, pk_agente, action, tipo_campana, campana_nombre, pk_campana);
+     })
 
-         function submit_form(pk_contacto, pk_agente, action){
-         $("#pk_contacto").val(pk_contacto);
-         $("#pk_agente").val(pk_agente);
-                $("#form_llamar").attr("action", action);
-                $("#form_llamar").submit();
-            }
-
+     function submit_form(pk_contacto, pk_agente, action, tipo_campana, campana_nombre, pk_campana){
+       $("#pk_contacto").val(pk_contacto);
+       $("#pk_agente").val(pk_agente);
+       $("#tipo_campana").val(tipo_campana);
+       $("#pk_campana").val(pk_campana);
+       $("#campana_nombre").val(campana_nombre);
+       $("#form_llamar").attr("action", action);
+       $("#form_llamar").submit();
+     }
 });
     </script>
 <body>
+{% include 'messages.html' %}
 <div class="row">
     <div class="col-md-4">
         <h3>
@@ -128,6 +134,10 @@
         {% csrf_token %}
      <input type="hidden" id="pk_agente" name="pk_agente">
      <input type="hidden" id="pk_contacto" name="pk_contacto">
+     <input type="hidden" id="pk_campana" name="pk_campana">
+     <input type="hidden" id="campana_nombre" name="campana_nombre">
+     <input type="hidden" id="click2call_type" name="click2call_type" value="calificaciones">
+     <input type="hidden" id="tipo_campana" name="tipo_campana">
                 <table class="table table-bordered">
                     <thead>
                       <tr class="fts-table-bg">
@@ -140,79 +150,77 @@
                       </tr>
                     </thead>
                     <tbody>
-                        {% for contacto in listado_calificaciones %}
+                        {% for calificacion_cliente in listado_calificaciones %}
                             <tr>
-
                                 <td>
-
-                                    <a type="button" id="{{contacto.contacto.pk}}" agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}" class="btn-submit">{{ contacto.contacto.telefono }}</a>
-
+                                    <a type="button" pk_contacto="{{ calificacion_cliente.contacto.pk }}"
+                                       tipo_campana="{{ calificacion_cliente.campana.type }}"
+                                       campana_nombre="{{ calificacion_cliente.campana.nombre }}"
+                                       pk_campana="{{ calificacion_cliente.campana.pk }}"
+                                       agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}" class="btn-submit">{{ calificacion_cliente.contacto.telefono }}</a>
                                 </td>
                                 <td>
-                                    {{ contacto.contacto.datos}}
+                                    {{ calificacion_cliente.contacto.datos}}
                                 </td>
                                 <td>
-                                    {% if contacto.es_venta %}
+                                    {% if calificacion_cliente.es_venta %}
                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     {% else %}
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                {% if contacto.calificacion %}
-                                    {{ contacto.calificacion.nombre }}
+                                {% if calificacion_cliente.calificacion %}
+                                    {{ calificacion_cliente.calificacion.nombre }}
                                 {% else %}
                                     N/A
                                 {% endif %}
                                 </td>
                                 <td>
-                                    {% if contacto.observaciones %}
-                                        {{contacto.observaciones}}
+                                    {% if calificacion_cliente.observaciones %}
+                                        {{ calificacion_cliente.observaciones }}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'formulario_califiacion_actualiza' contacto.pk %}">editar calificacion</a>
-                                    {% if contacto.get_venta %}
-                                    <a href="{% url 'formulario_venta_update' contacto.get_venta.pk %}">editar gestion</a>
+                                    <a href="{% url 'formulario_califiacion_actualiza' calificacion_cliente.pk %}">editar calificacion</a>
+                                    {% if calificacion_cliente.get_venta %}
+                                        <a href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">editar gestion</a>
                                     {% endif %}
                                 </td>
                             </tr>
 
                         {% endfor %}
-                        {% for contacto in calificaciones_manuales %}
+                        {% for calificacion_manual in calificaciones_manuales %}
                             <tr>
-
                                 <td>
-
-                                    {{contacto.telefono}}
-
+                                    {{ calificacion_manual.telefono }}
                                 </td>
                                 <td>
                                     no aplica
                                 </td>
                                 <td>
-                                    {% if contacto.es_gestion %}
+                                    {% if calificacion_manual.es_gestion %}
                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     {% else %}
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                {% if contacto.calificacion %}
-                                    {{ contacto.calificacion.nombre }}
+                                {% if calificacion_manual.calificacion %}
+                                    {{ calificacion_manual.calificacion.nombre }}
                                 {% else %}
                                     N/A
                                 {% endif %}
                                 </td>
                                 <td>
-                                    {% if contacto.observaciones %}
-                                        {{contacto.observaciones}}
+                                    {% if calificacion_manual.observaciones %}
+                                        {{calificacion_manual.observaciones}}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'campana_manual_calificacion_update' contacto.pk %}">editar calificacion</a>
-                                    {% if contacto.es_gestion  %}
-                                        <a href="{% url 'campana_manual_calificacion_gestion' contacto.pk %}">editar gestion</a>
+                                    <a href="{% url 'campana_manual_calificacion_update' calificacion_manual.pk %}">editar calificacion</a>
+                                    {% if calificacion_manual.es_gestion  %}
+                                        <a href="{% url 'campana_manual_calificacion_gestion' calificacion_manual.pk %}">editar gestion</a>
                                     {% endif %}
                                 </td>
                             </tr>
