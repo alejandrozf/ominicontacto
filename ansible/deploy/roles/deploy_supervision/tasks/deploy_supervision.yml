@@ -4,12 +4,12 @@
 
 - name: Install of php56-fpm
   yum: name=php56w-fpm.x86_64 state=present
-  failed_when:
-    - "'issabel' not in command_result.msg"
-    - "command_result.rc != 0"
+  ignore_errors: yes
+
 - name: Install of php-fpm
   yum: name=php-fpm.x86_64 state=present
   tags: issabel
+  ignore_errors: yes
 
 - name: Modify of php.ini
   lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
