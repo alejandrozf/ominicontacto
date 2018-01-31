@@ -154,7 +154,7 @@ class EndPointCreator(object):
             "idx": "",
             "campaignId": "",
             "maxChannels": campana.queue_campana.maxlen,
-            "extension": '0077' + str(campana.queue_campana.queue_asterisk),
+            "extension": campana.get_string_queue_asterisk(),
             "context": "from-queue-fts",
             "boostFactor": 1,
             "maxWaitingCalls": 2,

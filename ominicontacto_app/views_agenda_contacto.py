@@ -35,8 +35,10 @@ class AgendaContactoCreateView(CreateView):
         initial = super(AgendaContactoCreateView, self).get_initial()
         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         initial.update({'contacto': contacto,
-                        'agente': agente})
+                        'agente': agente,
+                        'campana': campana})
         return initial
 
     def get_context_data(self, **kwargs):
@@ -47,7 +49,7 @@ class AgendaContactoCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        campana = form.instance.campana
         if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL and \
            campana.type == Campana.TYPE_DIALER:
             url_wombat = '/'.join(
@@ -121,16 +123,19 @@ class AgendaManualCreateView(CreateView):
         initial = super(AgendaManualCreateView, self).get_initial()
         telefono = self.kwargs['telefono']
         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         initial.update({'telefono': telefono,
-                        'agente': agente})
+                        'agente': agente,
+                        'campana': campana})
         return initial
 
     def form_valid(self, form):
         cleaned_data = form.cleaned_data
         agente = cleaned_data.get('agente')
         telefono = cleaned_data.get('telefono')
+        campana = form.instance.campana
         CalificacionManual.objects.filter(
-            agente=agente, telefono=telefono).update(agendado=True)
+            agente=agente, campana=campana, telefono=telefono).update(agendado=True)
         return super(AgendaManualCreateView, self).form_valid(form)
 
     def get_success_url(self):

@@ -8,13 +8,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0144_auto_20180124_1450'),
+        ('ominicontacto_app', '0145_auto_20180125_0958'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='queue',
             name='initial_boost_factor',
-            field=models.DecimalField(blank=True, decimal_places=1, default=1.0, max_digits=3, null=True),
+            field=models.DecimalField(
+                blank=True, decimal_places=1, default=1.0, max_digits=3, null=True),
         ),
     ]

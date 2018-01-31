@@ -7,26 +7,16 @@ from django.db import migrations
 
 def adicionar_tipo_campana_queuelog(apps, schema_editor):
     """
-    Adiciona información sobre el tipo de campaña en las entradas del modelo
-    Queuelog
+    Esta migración queda reemplazada por la nueva migración 0144
     """
-    Queuelog = apps.get_model("ominicontacto_app", "queuelog")
-    Campana = apps.get_model("ominicontacto_app", "campana")
-
-    # copiamos la info del tipo de campaña en las entradas del modelo Queuelog
-    for campana in Campana.objects_default.all():
-        Queuelog.objects.filter(campana_id=campana.pk).update(data5=campana.type)
+    pass
 
 
 def rollback(apps, schema_editor):
     """
-    Vuelve hacia la atrás los cambios de la migración de datos especificada en la función
-    'adicionar_tipo_campana_queuelog'
+    Esta migración queda reemplazada por la nueva migración 0144
     """
-    Queuelog = apps.get_model("ominicontacto_app", "queuelog")
-    qs_queuelog_modificados = Queuelog.objects.filter(
-        campana_id__isnull=False).exclude(campana_id=-1)
-    qs_queuelog_modificados.update(data5='')
+    pass
 
 
 class Migration(migrations.Migration):

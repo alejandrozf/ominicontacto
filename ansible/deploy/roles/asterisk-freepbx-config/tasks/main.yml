@@ -6,12 +6,15 @@
       - cp *.conf /etc/asterisk/
       - cp *.php /var/lib/asterisk/agi-bin
       - chmod +x /var/lib/asterisk/agi-bin/omni*
+  tags: issabel
 
 - name: Asterisk crontab modification
   lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * /var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
+  tags: issabel
 
 - name: Create /usr/local/parselog
   file: dest=/usr/local/parselog state=directory mode=0755
+  tags: issabel
 
 - name: Set ownership to asterisk user
   shell: "{{ item }} chdir=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files"
@@ -26,29 +29,35 @@
       - tar xzvf es-oml.tgz -C /var/lib/asterisk/sounds/es/
       - tar xzvf en-oml.tgz -C /var/lib/asterisk/sounds/en/
   ignore_errors: yes
+  tags: issabel
 
 - name: Add web enabled in /etc/asterisk/manager.conf
   ini_file: "path=/etc/asterisk/manager.conf section=general option=webenabled no_extra_spaces=yes value=yes state=present"
+  tags: issabel
 
 - name: Add web nocolor=yes in /etc/asterisk/asterisk.conf
   ini_file: "path=/etc/asterisk/asterisk.conf section=options option=nocolor no_extra_spaces=yes value=yes state=present"
+  tags: issabel
 
 - name: Install Mysql-python DB module
   pip: name=MySQL-python
   when: ansible_os_family == "Sangoma"
+  tags: issabel
 
 - name: Add user of MySQL omnileads
-  mysql_user: "name=omnileads host={{ item }} login_user=root password=admin123 priv=\"asterisk.*:ALL,GRANT\""
+  mysql_user: "name=omnileads host={{ item }} login_user=root login_password={{ mysql_root_password }} password=admin123 priv=\"asterisk.*:ALL,GRANT\""
   with_items:
       - "localhost"
       - "127.0.0.1"
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  tags: issabel
 
 - name: Stop freepbx firewall
   shell: "{{ item }}"
   with_items:
       - systemctl stop firewalld
       - systemctl disable firewalld
+  tags: issabel
 
 - name: Start asterisk with fwconsole
   shell: "fwconsole start"
