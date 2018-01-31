@@ -6,7 +6,9 @@
       - cp *.conf /etc/asterisk/
       - cp *.php /var/lib/asterisk/agi-bin
       - chmod +x /var/lib/asterisk/agi-bin/omni*
-  tags: issabel
+  tags:
+    - issabel
+    - postinstall
 
 - name: Asterisk crontab modification
   lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * /var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
