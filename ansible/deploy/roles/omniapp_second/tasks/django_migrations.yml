@@ -43,6 +43,8 @@
           DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
           PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
 
-
+- name: Change permissions on id_rsa
+  shell: "chmod 700 /home/freetech/.ssh/id_rsa"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
 
