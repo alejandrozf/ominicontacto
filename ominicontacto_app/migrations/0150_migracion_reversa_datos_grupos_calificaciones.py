@@ -24,7 +24,7 @@ def restaurar_grupos_calificaciones_campanas(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0149_auto_20180130_1854'),
+        ('ominicontacto_app', '0149_migracion_datos_opcion_calificacion'),
     ]
 
     operations = [
