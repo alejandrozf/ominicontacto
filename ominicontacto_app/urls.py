@@ -380,26 +380,26 @@ urlpatterns = [
         login_required(views_calificacion.CalificacionDeleteView.as_view()),
         name='calificacion_delete',
         ),
-    url(r'^calificacion_campana/nuevo/$',
-        login_required(
-            views_calificacion.CalificacionCampanaCreateView.as_view()),
-        name='calificacion_campana_nuevo',
-        ),
-    url(r'^calificacion_campana/update/(?P<pk>\d+)/$',
-        login_required(
-            views_calificacion.CalificacionCampanaUpdateView.as_view()),
-        name='calificacion_campana_update',
-        ),
-    url(r'^calificacion_campana/lista/$',
-        login_required(
-            views_calificacion.CalificacionCampanaListView.as_view()),
-        name='calificacion_campana_list',
-        ),
-    url(r'^calificacion_campana/delete/(?P<pk>\d+)/$',
-        login_required(
-            views_calificacion.CalificacionCampanaDeleteView.as_view()),
-        name='calificacion_campana_delete',
-        ),
+    # url(r'^calificacion_campana/nuevo/$',
+    #     login_required(
+    #         views_calificacion.CalificacionCampanaCreateView.as_view()),
+    #     name='calificacion_campana_nuevo',
+    #     ),
+    # url(r'^calificacion_campana/update/(?P<pk>\d+)/$',
+    #     login_required(
+    #         views_calificacion.CalificacionCampanaUpdateView.as_view()),
+    #     name='calificacion_campana_update',
+    #     ),
+    # url(r'^calificacion_campana/lista/$',
+    #     login_required(
+    #         views_calificacion.CalificacionCampanaListView.as_view()),
+    #     name='calificacion_campana_list',
+    #     ),
+    # url(r'^calificacion_campana/delete/(?P<pk>\d+)/$',
+    #     login_required(
+    #         views_calificacion.CalificacionCampanaDeleteView.as_view()),
+    #     name='calificacion_campana_delete',
+    #     ),
     # ==========================================================================
     # Formulario
     # ==========================================================================
