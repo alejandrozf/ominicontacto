@@ -22,7 +22,9 @@ from ominicontacto_app.models import (
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
     AgendaManual, ArchivoDeAudio, Calificacion, CalificacionCampana
 )
-from ominicontacto_app.utiles import convertir_ascii_string, validar_nombres_campanas
+
+from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
+                                      validar_gestion_campanas)
 
 TIEMPO_MINIMO_DESCONEXION = 2
 
@@ -374,6 +376,10 @@ class CampanaForm(forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
         }
 
+    def clean_gestion(self):
+        nombre = validar_gestion_campanas(self)
+        return nombre
+
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)
@@ -401,6 +407,9 @@ class CampanaUpdateForm(forms.ModelForm):
             'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+    def clean_gestion(self):
+        return validar_gestion_campanas(self)
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
@@ -768,6 +777,9 @@ class CampanaDialerForm(forms.ModelForm):
         validar_nombres_campanas(nombre)
         return nombre
 
+    def clean_gestion(self):
+        return validar_gestion_campanas(self)
+
 
 class CampanaDialerUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -794,6 +806,9 @@ class CampanaDialerUpdateForm(forms.ModelForm):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)
         return nombre
+
+    def clean_gestion(self):
+        return validar_gestion_campanas(self)
 
 
 class ActuacionVigenteForm(forms.ModelForm):
@@ -1051,6 +1066,9 @@ class CampanaManualForm(forms.ModelForm):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)
         return nombre
+
+    def clean_gestion(self):
+        return validar_gestion_campanas(self)
 
 
 class CampanaManualUpdateForm(CampanaManualForm):

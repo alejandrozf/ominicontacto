@@ -9,8 +9,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
+from django.views.generic import CreateView, UpdateView, FormView
 from ominicontacto_app.forms import (
     QueueDialerForm, QueueDialerUpdateForm, CampanaDialerUpdateForm,
     SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm, CampanaDialerForm
@@ -46,7 +45,7 @@ class CheckEstadoCampanaDialerMixin(object):
                 self.kwargs['pk_campana'])
 
         return super(CheckEstadoCampanaDialerMixin, self).dispatch(request, *args,
-                                                             **kwargs)
+                                                                   **kwargs)
 
 
 class CampanaDialerEnDefinicionMixin(object):
@@ -90,16 +89,18 @@ class CampanaDialerCreateView(CreateView):
             messages.WARNING,
             message,
         )
-        return self.render_to_response(self.get_context_data())
+        context_data = self.get_context_data()
+        context_data['form'] = form
+        return self.render_to_response(context_data)
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        if self.object.tipo_interaccion is Campana.FORMULARIO and \
-            not self.object.formulario:
+        tipo_interaccion = self.object.tipo_interaccion
+        if tipo_interaccion is Campana.FORMULARIO and \
+           not self.object.formulario:
             error = "Debe seleccionar un formulario"
             return self.form_invalid(form, error=error)
-        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-            not self.object.sitio_externo:
+        elif tipo_interaccion is Campana.SITIO_EXTERNO and not self.object.sitio_externo:
             error = "Debe seleccionar un sitio externo"
             return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_DIALER
@@ -180,7 +181,7 @@ class SincronizaDialerView(FormView):
         for regla in self.object.reglas_incidencia.all():
             parametros = [regla.get_estado_wombat(), regla.estado_personalizado,
                           regla.intento_max, regla.reintentar_tarde,
-                          regla.get_en_modo_wombat( )]
+                          regla.get_en_modo_wombat()]
             campana_service.crear_reschedule_campana_wombat(self.object, parametros)
         # crea endpoint en wombat
         campana_service.crear_endpoint_campana_wombat(self.object)
@@ -355,16 +356,15 @@ class QueueDialerUpdateView(UpdateView):
     template_name = 'campana_dialer/create_update_queue.html'
 
     def get_object(self, queryset=None):
-         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-         return campana.queue_campana
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return campana.queue_campana
 
     def dispatch(self, *args, **kwargs):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         try:
             Queue.objects.get(campana=campana)
         except Queue.DoesNotExist:
-            return HttpResponseRedirect("/campana_dialer/" + self.kwargs['pk_campana']
-                                        + "/cola/")
+            return HttpResponseRedirect("/campana_dialer/" + self.kwargs['pk_campana'] + "/cola/")
         else:
             return super(QueueDialerUpdateView, self).dispatch(*args, **kwargs)
 
@@ -432,12 +432,11 @@ class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        if self.object.tipo_interaccion is Campana.FORMULARIO and \
-            not self.object.formulario:
+        tipo_interaccion = self.object.tipo_interaccion
+        if tipo_interaccion is Campana.FORMULARIO and not self.object.formulario:
             error = "Debe seleccionar un formulario"
             return self.form_invalid(form, error=error)
-        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-            not self.object.sitio_externo:
+        elif tipo_interaccion is Campana.SITIO_EXTERNO and not self.object.sitio_externo:
             error = "Debe seleccionar un sitio externo"
             return self.form_invalid(form, error=error)
         self.object.reported_by = self.request.user
@@ -467,8 +466,7 @@ class QueueDialerReplicarView(CheckEstadoCampanaDialerMixin,
         try:
             Queue.objects.get(campana=campana)
         except Queue.DoesNotExist:
-            return HttpResponseRedirect("/campana_dialer/" + self.kwargs['pk_campana']
-                                        + "/cola/")
+            return HttpResponseRedirect("/campana_dialer/" + self.kwargs['pk_campana'] + "/cola/")
         else:
             return super(QueueDialerReplicarView, self).dispatch(*args, **kwargs)
 
