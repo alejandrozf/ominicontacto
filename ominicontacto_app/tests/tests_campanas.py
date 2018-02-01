@@ -15,6 +15,7 @@ from mock import patch
 from django.core.urlresolvers import reverse
 from django.db import connections
 from django.forms import ValidationError
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
 
@@ -25,7 +26,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
-from ominicontacto_app.utiles import validar_nombres_campanas, convertir_ascii_string
+from ominicontacto_app.utiles import (validar_nombres_campanas, convertir_ascii_string,
+                                      validar_gestion_campanas_aux)
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.wombat_service import WombatService
 
@@ -76,6 +78,7 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
         self.campana = CampanaFactory.create()
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW)
+
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
 
@@ -129,7 +132,9 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
 
 class CampanasTests(OMLBaseTest):
 
-    PWD = u'admin123'
+    PWD = 'admin123'
+
+    GESTION = 'Venta'
 
     def setUp(self):
         self.tiempo_desconexion = 3
@@ -140,14 +145,21 @@ class CampanasTests(OMLBaseTest):
 
         self.calificacion = CalificacionFactory.create()
 
+        calificacion_gestion = CalificacionFactory.create(nombre=self.GESTION)
+
         self.campana = CampanaFactory.create()
 
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW,
-            tiempo_desconexion=self.tiempo_desconexion)
+            tiempo_desconexion=self.tiempo_desconexion, gestion=self.GESTION)
         self.campana_activa.calificacion_campana.calificacion.add(self.calificacion)
+        self.campana_activa.calificacion_campana.calificacion.add(calificacion_gestion)
+
         self.campana_borrada = CampanaFactory.create(
-            estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
+            estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW,
+            gestion=self.GESTION)
+        self.campana_borrada.calificacion_campana.calificacion.add(calificacion_gestion)
+
         self.agente_profile = AgenteProfileFactory.create(user=self.usuario_admin_supervisor)
 
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
@@ -171,6 +183,13 @@ class CampanasTests(OMLBaseTest):
     def test_validacion_nombres_de_campana_no_permite_espacios(self):
         with self.assertRaisesMessage(ValidationError, "el nombre no puede contener espacios"):
             validar_nombres_campanas("nombre con espacios")
+
+    def test_validacion_campana_gestion_coincide_con_alguna_calificacion_campana(self):
+        msg = _('Este valor debe coincidir con el nombre de alguna de '
+                'las calificaciones asociadas')
+        with self.assertRaisesMessage(ValidationError, msg):
+            gestion = self.GESTION + '---'
+            validar_gestion_campanas_aux(gestion, self.campana_activa.calificacion_campana)
 
     def test_tipo_campanas_preview(self):
         self.assertEqual(Campana.TYPE_PREVIEW, 4)
@@ -216,7 +235,7 @@ class CampanasTests(OMLBaseTest):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'calificacion_campana': self.campana_activa.calificacion_campana.pk,
                      'bd_contacto': self.campana_activa.bd_contacto.pk,
                      'tipo_interaccion': Campana.FORMULARIO,
                      'formulario': self.campana.formulario.pk,
@@ -232,7 +251,7 @@ class CampanasTests(OMLBaseTest):
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
         nombre_campana = 'campana_preview_actualizada'
         post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'calificacion_campana': self.campana_activa.calificacion_campana.pk,
                      'bd_contacto': self.campana_activa.bd_contacto.pk,
                      'tipo_interaccion': Campana.FORMULARIO,
                      'formulario': self.campana.formulario.pk,
@@ -296,7 +315,7 @@ class CampanasTests(OMLBaseTest):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'calificacion_campana': self.campana_activa.calificacion_campana.pk,
                      'bd_contacto': self.campana_activa.bd_contacto.pk,
                      'tipo_interaccion': Campana.FORMULARIO,
                      'formulario': self.campana.formulario.pk,
@@ -473,7 +492,7 @@ class CampanasTests(OMLBaseTest):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana.calificacion_campana.pk,
+                     'calificacion_campana': self.campana_activa.calificacion_campana.pk,
                      'bd_contacto': self.campana_activa.bd_contacto.pk,
                      'tipo_interaccion': Campana.FORMULARIO,
                      'formulario': self.campana.formulario.pk,

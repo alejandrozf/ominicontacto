@@ -18,6 +18,8 @@ from django.utils import timezone
 
 from django.conf import settings
 from django.forms import ValidationError
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.errors import OmlError
 import logging as _logging
 
@@ -283,3 +285,21 @@ def validar_nombres_campanas(nombre):
         raise ValidationError('el nombre no puede contener espacios')
     if any([(ord(i) >= 128) for i in nombre]):
         raise ValidationError(error_ascii)
+
+
+def validar_gestion_campanas_aux(gestion, calificacion_campana):
+    if not calificacion_campana.calificacion.filter(nombre=gestion).exists():
+        msg = _('Este valor debe coincidir con el nombre de alguna de '
+                'las calificaciones asociadas')
+        raise ValidationError(msg)
+    return gestion
+
+
+def validar_gestion_campanas(campana_form):
+    """
+    Valida que el nombre de gestión coincide con el de alguna calificación asociada a
+    la campaña
+    """
+    gestion = campana_form.cleaned_data['gestion']
+    calificacion_campana = campana_form.cleaned_data['calificacion_campana']
+    return validar_gestion_campanas_aux(gestion, calificacion_campana)
