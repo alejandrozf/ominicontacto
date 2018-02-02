@@ -11,9 +11,9 @@ from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, po
 from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
-                                      CalificacionCampana, NombreCalificacion, Formulario, Grabacion,
-                                      GrabacionMarca, Queuelog, SitioExterno, User, Contacto,
-                                      SupervisorProfile, AgenteEnContacto, QueueMember,
+                                      NombreCalificacion, Formulario,
+                                      Grabacion, GrabacionMarca, Queuelog, SitioExterno, User,
+                                      Contacto, SupervisorProfile, AgenteEnContacto, QueueMember,
                                       CalificacionCliente, CalificacionManual)
 
 faker = faker.Factory.create()
@@ -91,21 +91,6 @@ class NombreCalificacionFactory(DjangoModelFactory):
     nombre = lazy_attribute(lambda a: "nombre_calificacion_{0}".format(faker.text(10)))
 
 
-class CalificacionCampanaFactory(DjangoModelFactory):
-    class Meta:
-        model = CalificacionCampana
-
-    nombre = lazy_attribute(lambda a: "calificacion_campana_{0}".format(faker.text(10)))
-
-    @post_generation
-    def calificacion(self, create, extracted, **kwargs):
-        if not create:
-            return
-        if extracted:
-            for _calification in extracted:
-                self.calification.add(_calification)
-
-
 class CampanaFactory(DjangoModelFactory):
     class Meta:
         model = Campana
@@ -114,8 +99,6 @@ class CampanaFactory(DjangoModelFactory):
     estado = lazy_attribute(lambda a: faker.random_digit_not_null())
     fecha_inicio = lazy_attribute(lambda a: timezone.now())
     fecha_fin = lazy_attribute(lambda a: a.fecha_inicio)
-
-    calificacion_campana = SubFactory(CalificacionCampanaFactory)
     bd_contacto = SubFactory(BaseDatosContactoFactory)
     formulario = SubFactory(FormularioFactory)
     campaign_id_wombat = lazy_attribute(lambda a: faker.random_number(7))
