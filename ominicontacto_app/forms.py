@@ -1240,16 +1240,6 @@ class CalificacionForm(forms.ModelForm):
         return nombre
 
 
-# class CalificacionCampanaForm(forms.ModelForm):
-#     class Meta:
-#         model = CalificacionCampana
-#         fields = ('nombre', 'calificacion')
-
-#     def __init__(self, *args, **kwargs):
-#         super(CalificacionCampanaForm, self).__init__(*args, **kwargs)
-#         self.fields['calificacion'].queryset = NombreCalificacion.objects.usuarios()
-
-
 class AgendaManualForm(forms.ModelForm):
 
     class Meta:
