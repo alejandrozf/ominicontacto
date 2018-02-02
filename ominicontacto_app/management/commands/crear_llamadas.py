@@ -8,6 +8,7 @@ from ominicontacto_app.models import Campana
 
 
 class Command(BaseCommand):
+    # TODO: actualizar este command con la nueva estructura del modelo Queuelog
     """
     Crea tantas llamadas como se especifique en el parametro, son asociadas aleatoriamente a
     distintos tipos de campañas
