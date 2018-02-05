@@ -84,11 +84,11 @@ class FormularioFactory(DjangoModelFactory):
     descripcion = lazy_attribute(lambda a: faker.paragraph(10))
 
 
-class CalificacionFactory(DjangoModelFactory):
+class NombreCalificacionFactory(DjangoModelFactory):
     class Meta:
         model = NombreCalificacion
 
-    nombre = lazy_attribute(lambda a: "calificacion_{0}".format(faker.text(10)))
+    nombre = lazy_attribute(lambda a: "nombre_calificacion_{0}".format(faker.text(10)))
 
 
 class CalificacionCampanaFactory(DjangoModelFactory):
@@ -226,7 +226,7 @@ class CalificacionClienteFactory(DjangoModelFactory):
 
     campana = SubFactory(CampanaFactory)
     contacto = SubFactory(ContactoFactory)
-    calificacion = SubFactory(CalificacionFactory)
+    calificacion = SubFactory(NombreCalificacionFactory)
     agente = SubFactory(AgenteProfileFactory)
     wombat_id = Sequence(lambda n: n)
 
@@ -237,6 +237,6 @@ class CalificacionManualFactory(DjangoModelFactory):
 
     campana = SubFactory(CampanaFactory)
     telefono = lazy_attribute(lambda a: faker.random_number(10))
-    calificacion = SubFactory(CalificacionFactory)
+    calificacion = SubFactory(NombreCalificacionFactory)
     fecha = lazy_attribute(lambda a: timezone.now())
     agente = SubFactory(AgenteProfileFactory)

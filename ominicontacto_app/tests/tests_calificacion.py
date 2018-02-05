@@ -15,9 +15,10 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
                                                ContactoFactory, AgenteProfileFactory,
                                                QueueMemberFactory, CalificacionClienteFactory,
-                                               CalificacionFactory, CalificacionManualFactory)
+                                               NombreCalificacionFactory, CalificacionManualFactory)
 
-from ominicontacto_app.models import AgendaContacto, AgendaManual, Calificacion, Campana, WombatLog
+from ominicontacto_app.models import (AgendaContacto, AgendaManual, NombreCalificacion, Campana,
+                                      WombatLog)
 
 
 class CalificacionTests(OMLBaseTest):
@@ -30,8 +31,9 @@ class CalificacionTests(OMLBaseTest):
         self.usuario_agente.save()
 
         self.campana = CampanaFactory.create()
-        self.calificacion_gestion = CalificacionFactory.create(nombre=self.campana.gestion)
-        self.calificacion_agenda = Calificacion.objects.get(nombre=settings.CALIFICACION_REAGENDA)
+        self.calificacion_gestion = NombreCalificacionFactory.create(nombre=self.campana.gestion)
+        self.calificacion_agenda = NombreCalificacion.objects.get(
+            nombre=settings.CALIFICACION_REAGENDA)
         self.campana.calificacion_campana.calificacion.add(self.calificacion_gestion)
         self.campana.calificacion_campana.calificacion.add(self.calificacion_agenda)
 
@@ -125,7 +127,7 @@ class CalificacionTests(OMLBaseTest):
         self.assertTemplateUsed(response, 'formulario/formulario_create.html')
 
     def test_existe_calificacion_especial_agenda(self):
-        self.assertTrue(Calificacion.objects.filter(nombre=settings.CALIFICACION_REAGENDA))
+        self.assertTrue(NombreCalificacion.objects.filter(nombre=settings.CALIFICACION_REAGENDA))
 
     def test_al_crear_un_grupo_de_calificaciones_se_asigna_calificacion_especial_agenda(self):
         pass

@@ -22,7 +22,8 @@ from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,
-                                               CalificacionClienteFactory, CalificacionFactory)
+                                               NombreCalificacionFactory,
+                                               CalificacionClienteFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -143,9 +144,9 @@ class CampanasTests(OMLBaseTest):
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
 
-        self.calificacion = CalificacionFactory.create()
+        self.calificacion = NombreCalificacionFactory.create()
 
-        calificacion_gestion = CalificacionFactory.create(nombre=self.GESTION)
+        calificacion_gestion = NombreCalificacionFactory.create(nombre=self.GESTION)
 
         self.campana = CampanaFactory.create()
 
