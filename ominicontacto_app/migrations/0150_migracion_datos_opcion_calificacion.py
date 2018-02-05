@@ -27,7 +27,7 @@ def adicionar_calificaciones_campana(apps, schema_editor):
             if calificacion.nombre != campana.gestion]
         calificacion_gestion, _ = Calificacion.objects.get_or_create(nombre=campana.gestion)
         opciones_clasificacion.append(OpcionCalificacion(
-            campana=campana, calificacion=calificacion_gestion, opcion=GESTION))
+            campana=campana, calificacion=calificacion_gestion, tipo=GESTION))
         OpcionCalificacion.objects.bulk_create(opciones_clasificacion)
 
 

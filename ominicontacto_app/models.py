@@ -1011,15 +1011,19 @@ class OpcionCalificacion(models.Model):
     # no se redireccionara a ningún formulario, solo se salvará la calificación
     NO_ACCION = 0
 
-    # será le dará tratamiento usando el formulario de gestioń
+    # será le dará tratamiento usando el formulario de gestión
     GESTION = 1
+
+    # será le dará tratamiento usando el formulario de agenda cuando se elija la calificación
+    # reservada para el sistema, no elegible por el usuario)
+    AGENDA = 2
 
     FORMULARIO_CHOICES = (
         (GESTION, _('Gestión')),
     )
     campana = models.ForeignKey(Campana, on_delete=models.CASCADE)
     calificacion = models.ForeignKey(Calificacion, on_delete=models.CASCADE)
-    opcion = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
+    tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
 
 
 class Queue(models.Model):
