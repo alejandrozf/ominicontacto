@@ -220,7 +220,7 @@ class SupervisorProfile(models.Model):
 #     name = models.CharField(max_length=64)
 
 
-class CalificacionManager(models.Manager):
+class NombreCalificacionManager(models.Manager):
     def usuarios(self):
         """
         Devuelve todas las calificaciones excepto la restringida de sistema
@@ -229,9 +229,9 @@ class CalificacionManager(models.Manager):
         return self.exclude(nombre=settings.CALIFICACION_REAGENDA)
 
 
-class Calificacion(models.Model):
+class NombreCalificacion(models.Model):
     nombre = models.CharField(max_length=50)
-    objects = CalificacionManager()
+    objects = NombreCalificacionManager()
 
     def es_reservada(self):
         return self.nombre == settings.CALIFICACION_REAGENDA
@@ -244,7 +244,7 @@ class CalificacionCampana(models.Model):
     """Clase Version
     Atributos: Calificacion, nombre. """
     nombre = models.CharField(max_length=50)
-    calificacion = models.ManyToManyField(Calificacion)
+    calificacion = models.ManyToManyField(NombreCalificacion)
 
     def __unicode__(self):
         return self.nombre
@@ -2224,7 +2224,7 @@ class CalificacionCliente(models.Model):
     campana = models.ForeignKey(Campana, related_name="calificaconcliente")
     contacto = models.ForeignKey(Contacto)
     es_venta = models.BooleanField(default=False)
-    calificacion = models.ForeignKey(Calificacion, blank=False, null=True)
+    calificacion = models.ForeignKey(NombreCalificacion, blank=False, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
     observaciones = models.TextField(blank=True, null=True)
@@ -3040,7 +3040,7 @@ class CalificacionManual(models.Model):
     campana = models.ForeignKey(Campana, related_name="calificacionmanual")
     telefono = models.CharField(max_length=128)
     es_gestion = models.BooleanField(default=False)
-    calificacion = models.ForeignKey(Calificacion, blank=False, null=True)
+    calificacion = models.ForeignKey(NombreCalificacion, blank=False, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
     observaciones = models.TextField(blank=True, null=True)
