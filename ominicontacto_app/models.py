@@ -550,7 +550,6 @@ class CampanaManager(models.Manager):
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=base_datos_sugerida,
-            opciones_calificacion=campana.opciones_calificacion,
             gestion=campana.gestion,
             type=campana.type,
             formulario=campana.formulario,
@@ -559,6 +558,16 @@ class CampanaManager(models.Manager):
             reported_by=campana.reported_by,
             objetivo=campana.objetivo,
         )
+
+        opciones_calificacion = []
+        for calificacion in campana.calificaciones_campana.all():
+            opcion_calificacion = OpcionCalificacion(
+                campana=campana_replicada,
+                calificacion=calificacion, opcion=OpcionCalificacion.GESTION)
+            if calificacion.nombre == campana.gestion:
+                opcion_calificacion.opcion = OpcionCalificacion.GESTION
+            opciones_calificacion.append(opcion_calificacion)
+        OpcionCalificacion.objects.bulk_create(opciones_calificacion)
 
         # Replica Cola
         Queue.objects.create(

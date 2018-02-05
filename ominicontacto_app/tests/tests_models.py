@@ -177,7 +177,6 @@ class CampanaTest(OMLBaseTest):
 
         campana_creada = campana
 
-        #
         # actualizo campana como template de campana
         # crear util para crear un template de campana dialer
 
@@ -189,8 +188,9 @@ class CampanaTest(OMLBaseTest):
         campana_clonada = Campana.objects.crea_campana_de_template(campana)
 
         # assert para chequear que se haya creado la misma campana
-        self.assertEqual(campana_creada.calificacion_campana,
-                         campana_clonada.calificacion_campana)
+        self.assertEqual(
+            set(campana_creada.calificaciones_campana.values_list('nombre', flat=True)),
+            set(campana_clonada.calificaciones_campana.values_list('nombre', flat=True)))
         self.assertEqual(campana_creada.gestion,
                          campana_clonada.gestion)
         self.assertEqual(campana_creada.formulario,

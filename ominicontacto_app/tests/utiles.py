@@ -17,7 +17,7 @@ from django.test import TestCase, TransactionTestCase
 from django.conf import settings
 from ominicontacto_app.models import (
     User, AgenteProfile, Grupo, SupervisorProfile, Contacto,
-    BaseDatosContacto, NombreCalificacion, CalificacionCampana, Campana, Queue,
+    BaseDatosContacto, NombreCalificacion, Campana, Queue, OpcionCalificacion,
     ActuacionVigente, ReglasIncidencia, CalificacionCliente, WombatLog
 )
 from ominicontacto_app.tests.factories import CalificacionFactory
@@ -195,17 +195,17 @@ class OMLTestUtilsMixin(object):
         grupo_calificacion.append(c)
         return grupo_calificacion
 
-    def crear_calificacion_campana(self):
-        calificacion_campana = CalificacionCampana(nombre="Calificacion prueba")
-        calificacion_campana.save()
+    def crear_calificacion_campana(self, campana):
         calificaciones = self.crea_calificaciones()
+        opciones_calificacion = []
         for calificacion in calificaciones:
-            calificacion_campana.calificacion.add(calificacion)
-        return calificacion_campana
+            opciones_calificacion.append(OpcionCalificacion(
+                campana=campana, calificacion=calificacion))
+        OpcionCalificacion.objects.bulk_create(opciones_calificacion)
 
     def crear_campana(
             self, type, cant_contactos=None, bd_contactos=None,
-            columna_extra=None, calificacion_campana=None, user=None, **kwargs):
+            columna_extra=None, user=None, **kwargs):
         """Crea una campana en su estado inicial
         - cant_contactos: cant. de contactos a crear para la campaña
             Si es None, se generara un nro. aleatorio de contactos
@@ -223,9 +223,6 @@ class OMLTestUtilsMixin(object):
                 bd_contactos = self.crear_base_datos_contacto(
                     cant_contactos=cant_contactos, columna_extra=columna_extra)
 
-        if not calificacion_campana:
-            calificacion_campana = self.crear_calificacion_campana()
-
         # creo usuario supervisor
         if not user:
             user = self.crear_user_supervisor()
@@ -234,12 +231,14 @@ class OMLTestUtilsMixin(object):
         c = Campana(
             nombre="campaña-" + ru(),
             bd_contacto=bd_contactos,
-            calificacion_campana=calificacion_campana,
             type=type,
             reported_by=user,
 
         )
+
         c.save()
+
+        self.crear_calificacion_campana(c)
 
         c.supervisors.add(user)
 
@@ -252,7 +251,7 @@ class OMLTestUtilsMixin(object):
 
     def crear_campana_dialer(
             self, fecha_inicio=None, fecha_fin=None, cant_contactos=None,
-            bd_contactos=None, columna_extra=None, calificacion_campana=None,
+            bd_contactos=None, columna_extra=None,
             user=None, **kwargs):
         """Crea una campana dialer en su estado inicial
         - fecha_inicio: fecha de inicio de la campaña. Si es None
@@ -265,8 +264,7 @@ class OMLTestUtilsMixin(object):
             fecha_fin = fecha_inicio + datetime.timedelta(days=10)
 
         campana = self.crear_campana(
-            Campana.TYPE_DIALER, cant_contactos, bd_contactos, columna_extra,
-            calificacion_campana, user)
+            Campana.TYPE_DIALER, cant_contactos, bd_contactos, columna_extra, user)
         campana.fecha_inicio = fecha_inicio
         campana.fecha_fin = fecha_fin
         campana.save()
@@ -278,25 +276,24 @@ class OMLTestUtilsMixin(object):
 
     def crear_campana_manual(
             self, cant_contactos=None, bd_contactos=None, columna_extra=None,
-            calificacion_campana=None, user=None, **kwargs):
+            user=None, **kwargs):
         """Crea una campana manual en su estado inicial
         """
 
         campana = self.crear_campana(
-            Campana.TYPE_MANUAL, cant_contactos, bd_contactos, columna_extra,
-            calificacion_campana, user)
+            Campana.TYPE_MANUAL, cant_contactos, bd_contactos, columna_extra, user)
         self.crear_queue_manual(campana)
         return campana
 
     def crear_campana_entrante(
             self, cant_contactos=None, bd_contactos=None, columna_extra=None,
-            calificacion_campana=None, user=None, **kwargs):
+            user=None, **kwargs):
         """Crea una campana entrante en su estado inicial
         """
 
         campana = self.crear_campana(
             Campana.TYPE_ENTRANTE, cant_contactos, bd_contactos, columna_extra,
-            calificacion_campana, user)
+            user)
         self.crear_queue_entrante(campana)
         return campana
 
