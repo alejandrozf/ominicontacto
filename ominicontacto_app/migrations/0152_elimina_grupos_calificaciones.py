@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0150_migracion_reversa_datos_grupos_calificaciones'),
+        ('ominicontacto_app', '0151_migracion_reversa_datos_grupos_calificaciones'),
     ]
 
     operations = [

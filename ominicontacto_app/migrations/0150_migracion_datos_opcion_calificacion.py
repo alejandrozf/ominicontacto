@@ -34,7 +34,7 @@ def adicionar_calificaciones_campana(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0148_modelo_intermedio_campanas_calificaciones'),
+        ('ominicontacto_app', '0149_modelo_intermedio_campanas_calificaciones'),
     ]
 
     operations = [
