@@ -13,7 +13,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView,
 )
 from ominicontacto_app.models import (
-    Calificacion, CalificacionCampana
+    NombreCalificacion, CalificacionCampana
 )
 from ominicontacto_app.forms import CalificacionForm, CalificacionCampanaForm
 
@@ -21,7 +21,7 @@ from ominicontacto_app.forms import CalificacionForm, CalificacionCampanaForm
 class CalificacionCreateView(CreateView):
     """Vista para crear una calificacion
     DT: remover fields de la vista y crear un formulario"""
-    model = Calificacion
+    model = NombreCalificacion
     form_class = CalificacionForm
     template_name = 'base_create_update_form.html'
 
@@ -32,7 +32,7 @@ class CalificacionCreateView(CreateView):
 class CalificacionUpdateView(UpdateView):
     """Vista para modificar una calificacion
     DT: remover fields de la vista y crear un formulario"""
-    model = Calificacion
+    model = NombreCalificacion
     template_name = 'base_create_update_form.html'
     form_class = CalificacionForm
 
@@ -45,7 +45,7 @@ class CalificacionDeleteView(DeleteView):
     Esta vista se encarga de la eliminación del
     objeto calificacion
     """
-    model = Calificacion
+    model = NombreCalificacion
     template_name = 'calificacion/delete_calificacion.html'
 
     def get_success_url(self):
@@ -54,15 +54,15 @@ class CalificacionDeleteView(DeleteView):
 
 class CalificacionListView(ListView):
     """Lista las calificaciones"""
-    model = Calificacion
+    model = NombreCalificacion
     template_name = 'calificacion/calificacion_list.html'
-    queryset = Calificacion.objects.exclude(nombre=settings.CALIFICACION_REAGENDA)
+    queryset = NombreCalificacion.objects.exclude(nombre=settings.CALIFICACION_REAGENDA)
 
 
 class CalificacionCampanaMixin(object):
 
     def form_valid(self, form):
-        form.cleaned_data['calificacion'] |= Calificacion.objects.filter(
+        form.cleaned_data['calificacion'] |= NombreCalificacion.objects.filter(
             nombre=settings.CALIFICACION_REAGENDA)
         return super(CalificacionCampanaMixin, self).form_valid(form)
 
@@ -75,7 +75,7 @@ class CalificacionCampanaCreateView(CalificacionCampanaMixin, CreateView):
     template_name = 'base_create_update_form.html'
 
     def dispatch(self, request, *args, **kwargs):
-        calfificacion = Calificacion.objects.all()
+        calfificacion = NombreCalificacion.objects.all()
         if not calfificacion:
             message = ("Debe cargar una calificacion antes de cargar una "
                        "calificacion de campana")
@@ -96,7 +96,7 @@ class CalificacionCampanaUpdateView(CalificacionCampanaMixin, UpdateView):
     template_name = 'base_create_update_form.html'
 
     def dispatch(self, request, *args, **kwargs):
-        calfificacion = Calificacion.objects.all()
+        calfificacion = NombreCalificacion.objects.all()
         if not calfificacion:
             message = ("Debe cargar una calificacion antes de cargar una "
                        "calificacion de campana")

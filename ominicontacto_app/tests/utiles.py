@@ -17,7 +17,7 @@ from django.test import TestCase, TransactionTestCase
 from django.conf import settings
 from ominicontacto_app.models import (
     User, AgenteProfile, Grupo, SupervisorProfile, Contacto,
-    BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue,
+    BaseDatosContacto, NombreCalificacion, CalificacionCampana, Campana, Queue,
     ActuacionVigente, ReglasIncidencia, CalificacionCliente, WombatLog
 )
 from ominicontacto_app.tests.factories import CalificacionFactory
@@ -183,15 +183,15 @@ class OMLTestUtilsMixin(object):
     def crea_calificaciones(self):
         """Crea calificaciones"""
         grupo_calificacion = []
-        c = Calificacion.objects.create(nombre="No interesado")
+        c = NombreCalificacion.objects.create(nombre="No interesado")
         grupo_calificacion.append(c)
-        c = Calificacion.objects.create(nombre="llamar mas tarde")
+        c = NombreCalificacion.objects.create(nombre="llamar mas tarde")
         grupo_calificacion.append(c)
-        c = Calificacion.objects.create(nombre="contestador")
+        c = NombreCalificacion.objects.create(nombre="contestador")
         grupo_calificacion.append(c)
-        c = Calificacion.objects.create(nombre="equivocado")
+        c = NombreCalificacion.objects.create(nombre="equivocado")
         grupo_calificacion.append(c)
-        c = Calificacion.objects.create(nombre="Venta")
+        c = NombreCalificacion.objects.create(nombre="Venta")
         grupo_calificacion.append(c)
         return grupo_calificacion
 

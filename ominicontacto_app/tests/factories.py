@@ -11,7 +11,7 @@ from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, po
 from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
-                                      CalificacionCampana, Calificacion, Formulario, Grabacion,
+                                      CalificacionCampana, NombreCalificacion, Formulario, Grabacion,
                                       GrabacionMarca, Queuelog, SitioExterno, User, Contacto,
                                       SupervisorProfile, AgenteEnContacto, QueueMember,
                                       CalificacionCliente, CalificacionManual)
@@ -86,7 +86,7 @@ class FormularioFactory(DjangoModelFactory):
 
 class CalificacionFactory(DjangoModelFactory):
     class Meta:
-        model = Calificacion
+        model = NombreCalificacion
 
     nombre = lazy_attribute(lambda a: "calificacion_{0}".format(faker.text(10)))
 

@@ -20,7 +20,7 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio, Calificacion, CalificacionCampana, ParametroExtraParaWebform
+    AgendaManual, ArchivoDeAudio, NombreCalificacion, CalificacionCampana, ParametroExtraParaWebform
 )
 
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -1236,7 +1236,7 @@ class FormularioManualGestionForm(forms.ModelForm):
 
 class CalificacionForm(forms.ModelForm):
     class Meta:
-        model = Calificacion
+        model = NombreCalificacion
         fields = ('nombre',)
 
     def clean_nombre(self):
@@ -1254,7 +1254,7 @@ class CalificacionCampanaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CalificacionCampanaForm, self).__init__(*args, **kwargs)
-        self.fields['calificacion'].queryset = Calificacion.objects.usuarios()
+        self.fields['calificacion'].queryset = NombreCalificacion.objects.usuarios()
 
 
 class AgendaManualForm(forms.ModelForm):
