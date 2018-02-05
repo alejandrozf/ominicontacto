@@ -563,7 +563,7 @@ class CampanaManager(models.Manager):
         for calificacion in campana.calificaciones_campana.all():
             opcion_calificacion = OpcionCalificacion(
                 campana=campana_replicada,
-                calificacion=calificacion, opcion=OpcionCalificacion.GESTION)
+                calificacion=calificacion, tipo=OpcionCalificacion.GESTION)
             if calificacion.nombre == campana.gestion:
                 opcion_calificacion.opcion = OpcionCalificacion.GESTION
             opciones_calificacion.append(opcion_calificacion)
