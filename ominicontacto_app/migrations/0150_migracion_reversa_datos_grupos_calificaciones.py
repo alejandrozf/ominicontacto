@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
+from django.utils.translation import ugettext as _
 
 
 def restaurar_grupos_calificaciones_campanas(apps, schema_editor):
@@ -13,10 +14,16 @@ def restaurar_grupos_calificaciones_campanas(apps, schema_editor):
 
     Campana = apps.get_model("ominicontacto_app", "campana")
     CalificacionCampana = apps.get_model('ominicontacto_app', 'calificacioncampana')
+    NombreCalificacion = apps.get_model('ominicontacto_app', 'nombrecalificacion')
 
     for campana in Campana.objects_default.all():
-        grupo_calificacion_campana = CalificacionCampana.objects.create(nombre=campana.nombre)
-        grupo_calificacion_campana.calificacion.add(*campana.calificaciones_campana.all())
+        grupo_calificacion_campana = CalificacionCampana.objects.create(
+            nombre=_("Grupo: {0}".format(campana.nombre)))
+        nombres_opciones_calificaciones = campana.opciones_calificacion.values_list(
+            'nombre', flat=True)
+        calificaciones_campana = NombreCalificacion.objects.filter(
+            nombre__in=nombres_opciones_calificaciones)
+        grupo_calificacion_campana.calificacion.add(*calificaciones_campana)
         campana.calificacion_campana = grupo_calificacion_campana
         campana.save()
 
