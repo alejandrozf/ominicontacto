@@ -550,7 +550,7 @@ class CampanaManager(models.Manager):
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=base_datos_sugerida,
-            calificacion_campana=campana.calificacion_campana,
+            opciones_calificacion=campana.opciones_calificacion,
             gestion=campana.gestion,
             type=campana.type,
             formulario=campana.formulario,
@@ -774,8 +774,6 @@ class Campana(models.Model):
     nombre = models.CharField(max_length=128, unique=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
-    calificaciones_campana = models.ManyToManyField(
-        Calificacion, related_name="campanas", through='OpcionCalificacion',)
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
         null=True, blank=True,
@@ -1020,10 +1018,16 @@ class OpcionCalificacion(models.Model):
 
     FORMULARIO_CHOICES = (
         (GESTION, _('Gestión')),
+        (NO_ACCION, _('Sin acción')),
     )
-    campana = models.ForeignKey(Campana, on_delete=models.CASCADE)
-    calificacion = models.ForeignKey(Calificacion, on_delete=models.CASCADE)
+    campana = models.ForeignKey(
+        Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
+    nombre = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
+            self.nombre, self.campana.nombre, self.get_tipo_display()))
 
 
 class Queue(models.Model):

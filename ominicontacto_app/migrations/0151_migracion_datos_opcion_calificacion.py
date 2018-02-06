@@ -13,7 +13,7 @@ def adicionar_calificaciones_campana(apps, schema_editor):
     """
     Campana = apps.get_model("ominicontacto_app", "campana")
     OpcionCalificacion = apps.get_model('ominicontacto_app', 'opcioncalificacion')
-    Calificacion = apps.get_model('ominicontacto_app', 'calificacion')
+    NombreCalificacion = apps.get_model('ominicontacto_app', 'nombrecalificacion')
 
     GESTION = 1
 
@@ -22,19 +22,19 @@ def adicionar_calificaciones_campana(apps, schema_editor):
         # todas tendrán inicialmente el valor de opción por defecto NO_ACCION, excepto la
         # calificación que corresponde con el tipo de gestión de la campaña
         opciones_clasificacion = [
-            OpcionCalificacion(campana=campana, calificacion=calificacion)
+            OpcionCalificacion(campana=campana, nombre=calificacion.nombre)
             for calificacion in campana.calificacion_campana.calificacion.all()
             if calificacion.nombre != campana.gestion]
-        calificacion_gestion, _ = Calificacion.objects.get_or_create(nombre=campana.gestion)
+        calificacion_gestion, _ = NombreCalificacion.objects.get_or_create(nombre=campana.gestion)
         opciones_clasificacion.append(OpcionCalificacion(
-            campana=campana, calificacion=calificacion_gestion, tipo=GESTION))
+            campana=campana, nombre=calificacion_gestion.nombre, tipo=GESTION))
         OpcionCalificacion.objects.bulk_create(opciones_clasificacion)
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0150_modelo_intermedio_campanas_calificaciones'),
+        ('ominicontacto_app', '0150_crea_modelo_opcion_calificacion'),
     ]
 
     operations = [

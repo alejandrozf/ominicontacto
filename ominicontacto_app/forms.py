@@ -20,7 +20,7 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio, NombreCalificacion, CalificacionCampana, ParametroExtraParaWebform
+    AgendaManual, ArchivoDeAudio, NombreCalificacion, ParametroExtraParaWebform
 )
 
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -360,14 +360,13 @@ class CampanaForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificaciones_campana', 'bd_contacto', 'formulario',
+        fields = ('nombre', 'bd_contacto', 'formulario',
                   'gestion', 'sitio_externo', 'tipo_interaccion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
 
         widgets = {
-            'calificaciones_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             'gestion': forms.TextInput(attrs={'class': 'form-control'}),
@@ -412,12 +411,11 @@ class CampanaUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('calificaciones_campana', 'bd_contacto', 'gestion', 'objetivo')
+        fields = ('bd_contacto', 'gestion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
         widgets = {
-            'calificaciones_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'gestion': forms.TextInput(attrs={'class': 'form-control'}),
@@ -773,7 +771,7 @@ class CampanaDialerForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificaciones_campana',
+        fields = ('nombre', 'fecha_inicio', 'fecha_fin',
                   'bd_contacto', 'formulario', 'gestion', 'sitio_externo',
                   'tipo_interaccion', 'objetivo')
         labels = {
@@ -781,7 +779,6 @@ class CampanaDialerForm(forms.ModelForm):
         }
 
         widgets = {
-            'calificaciones_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
@@ -827,11 +824,10 @@ class CampanaDialerUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('fecha_inicio', 'fecha_fin', 'calificaciones_campana',
+        fields = ('fecha_inicio', 'fecha_fin',
                   'gestion', 'objetivo')
 
         widgets = {
-            'calificaciones_campana': forms.Select(attrs={'class': 'form-control'}),
             'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
         }
@@ -1060,12 +1056,11 @@ class CampanaDialerTemplateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre_template', 'calificaciones_campana', 'formulario', 'gestion',
+        fields = ('nombre_template', 'formulario', 'gestion',
                   'sitio_externo', 'tipo_interaccion')
 
         widgets = {
             "nombre_template": forms.TextInput(attrs={'class': 'form-control'}),
-            'calificaciones_campana': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             "gestion": forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1105,11 +1100,10 @@ class CampanaManualForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificaciones_campana', 'formulario', 'gestion',
+        fields = ('nombre', 'formulario', 'gestion',
                   'sitio_externo', 'tipo_interaccion', 'objetivo')
 
         widgets = {
-            'calificaciones_campana': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1141,13 +1135,12 @@ class CampanaPreviewForm(CampanaManualForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificaciones_campana', 'formulario', 'gestion',
+        fields = ('nombre', 'formulario', 'gestion',
                   'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
                   'tiempo_desconexion')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'calificaciones_campana': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1252,9 +1245,9 @@ class CalificacionForm(forms.ModelForm):
 #         model = CalificacionCampana
 #         fields = ('nombre', 'calificacion')
 
-    def __init__(self, *args, **kwargs):
-        super(CalificacionCampanaForm, self).__init__(*args, **kwargs)
-        self.fields['calificacion'].queryset = NombreCalificacion.objects.usuarios()
+#     def __init__(self, *args, **kwargs):
+#         super(CalificacionCampanaForm, self).__init__(*args, **kwargs)
+#         self.fields['calificacion'].queryset = NombreCalificacion.objects.usuarios()
 
 
 class AgendaManualForm(forms.ModelForm):
