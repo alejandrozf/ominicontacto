@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0147_agregar_tipo_campana_queuelog'),
+        ('ominicontacto_app', '0148_cambia_nombre_modelo_calificacion'),
     ]
 
     operations = [
