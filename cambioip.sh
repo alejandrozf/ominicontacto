@@ -81,3 +81,8 @@ service httpd stop
 sleep 5
 echo "Empezando httpd"
 service httpd start
+echo "Parando asterisk"
+fwconsole stop
+sleep 5
+echo "Empezando asterisk"
+fwconsole start
