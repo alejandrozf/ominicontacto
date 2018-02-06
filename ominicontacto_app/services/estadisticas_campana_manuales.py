@@ -8,12 +8,10 @@ import pygal
 import datetime
 import os
 
-from pygal.style import Style, RedBlueStyle
+from pygal.style import Style
 
 from django.conf import settings
-from django.db.models import Count
-from ominicontacto_app.models import CalificacionCliente, Queuelog, CalificacionManual
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.models import Queuelog, CalificacionManual
 
 import logging as _logging
 
@@ -59,9 +57,6 @@ class EstadisticasService():
             cant = len(calificaciones_query.filter(calificacion=calificacion))
             calificaciones_nombre.append(calificacion.nombre)
             calificaciones_cantidad.append(cant)
-        cant_venta = len(calificaciones_query.filter(es_gestion=True))
-        calificaciones_nombre.append(campana.gestion)
-        calificaciones_cantidad.append(cant_venta)
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_agentes_campana(self, campana):
@@ -190,7 +185,6 @@ class EstadisticasService():
         total_ventas = total_calificacion_agente[2]
         calificaciones = total_calificacion_agente[3]
 
-
         # obtiene las cantidades totales por evento de las llamadas
         cantidad_llamadas = self.calcular_cantidad_llamadas(
             campana, fecha_desde, fecha_hasta)
@@ -202,8 +196,8 @@ class EstadisticasService():
             'calificaciones_nombre': calificaciones_nombre,
             'calificaciones_cantidad': calificaciones_cantidad,
             'total_calificados': total_calificados,
-            #'resultado_nombre': resultado_nombre,
-            #'resultado_cantidad': resultado_cantidad,
+            # 'resultado_nombre': resultado_nombre,
+            # 'resultado_cantidad': resultado_cantidad,
 
             'calificaciones': calificaciones,
             'cantidad_llamadas': cantidad_llamadas,
@@ -227,7 +221,8 @@ class EstadisticasService():
             estadisticas['calificaciones_nombre']
         barra_campana_calificacion.add('cantidad',
                                        estadisticas['calificaciones_cantidad'])
-        barra_campana_calificacion.render_to_png(os.path.join(settings.MEDIA_ROOT,
+        barra_campana_calificacion.render_to_png(os.path.join(
+            settings.MEDIA_ROOT,
             "reporte_campana", "barra_campana_calificacion.png"))
 
         # Barra: Total de llamados no atendidos en cada intento por campana.
@@ -253,21 +248,20 @@ class EstadisticasService():
         barra_campana_llamadas.x_labels = \
             estadisticas['cantidad_llamadas'][0]
         barra_campana_llamadas.add('cantidad',
-                                       estadisticas['cantidad_llamadas'][1])
+                                   estadisticas['cantidad_llamadas'][1])
 
         return {
             'estadisticas': estadisticas,
             'barra_campana_calificacion': barra_campana_calificacion,
             'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
-                                        estadisticas['calificaciones_cantidad'])
-            ,
+                                        estadisticas['calificaciones_cantidad']),
             'total_asignados': estadisticas['total_asignados'],
             'agentes_venta': estadisticas['agentes_venta'],
             'total_calificados': estadisticas['total_calificados'],
             'total_ventas': estadisticas['total_ventas'],
-            #'barra_campana_no_atendido': barra_campana_no_atendido,
-            #'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
-             #                               estadisticas['resultado_cantidad']),
+            # 'barra_campana_no_atendido': barra_campana_no_atendido,
+            # 'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
+            #                               estadisticas['resultado_cantidad']),
 
             'calificaciones': estadisticas['calificaciones'],
             'barra_campana_llamadas': barra_campana_llamadas,
