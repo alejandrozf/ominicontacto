@@ -322,3 +322,9 @@ class TriggerQueuelogTest(OMLBaseTest):
         # Pruebo que no agrege con un evento ENTERQUEUE sin nada en data4
         self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'ENTERQUEUE')
         self.assertEqual(cant_inicial, Queuelog.objects.count())
+        # Pruebo que no agrege con un evento ABANDON sin nada en data4
+        self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'ABANDON')
+        self.assertEqual(cant_inicial, Queuelog.objects.count())
+        # Pruebo que no agrege con un evento EXITWITHTIMEOUT sin nada en data4
+        self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'EXITWITHTIMEOUT')
+        self.assertEqual(cant_inicial, Queuelog.objects.count())
