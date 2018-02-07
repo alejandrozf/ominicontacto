@@ -8,6 +8,38 @@ from django.db import migrations, models
 from django.utils.translation import ugettext as _
 
 
+def adicionar_opciones_calificacion_modelos_calificacion_contactos(apps, schema_editor):
+    """
+    Crea opciones de calificacion y las relaciona con las calificaciones de contactos existentes
+    de acuerdo a los valores existentes
+    """
+    CalificacionCliente = apps.get_model('ominicontacto_app', 'calificacioncliente')
+    CalificacionManual = apps.get_model('ominicontacto_app', 'calificacionmanual')
+    OpcionCalificacion = apps.get_model('ominicontacto_app', 'opcioncalificacion')
+
+    for calif_cliente in CalificacionCliente.objects.all():
+        campana = calif_cliente.campana
+        nombre_calificacion = calif_cliente.calificacion.nombre
+        es_gestion = (campana.gestion == nombre_calificacion)
+        opcion_calificacion = OpcionCalificacion.objects.create(
+            campana=campana, nombre=nombre_calificacion, tipo=es_gestion)
+        calif_cliente.opcion_calificacion = opcion_calificacion
+        calif_cliente.save()
+
+    for calif_manual in CalificacionManual.objects.all():
+        campana = calif_manual.campana
+        nombre_calificacion = calif_manual.calificacion.nombre
+        es_gestion = (campana.gestion == nombre_calificacion)
+        opcion_calificacion = OpcionCalificacion.objects.create(
+            campana=campana, nombre=nombre_calificacion, tipo=es_gestion)
+        calif_manual.opcion_calificacion = opcion_calificacion
+        calif_manual.save()
+
+
+def adicionar_calificaciones_y_campanas_a_modelos_calificacion_contactos(apps, schema_editor):
+    pass
+
+
 def adicionar_calificaciones_campana(apps, schema_editor):
     """
     Adiciona las opciones de calificación a una campaña de acuerdo
@@ -99,6 +131,90 @@ class Migration(migrations.Migration):
 
         migrations.RunPython(code=migrations.RunPython.noop,
                              reverse_code=restaurar_grupos_calificaciones_campanas),
+
+        # operaciones para realizar la migración de datos de los campos 'calificacion'
+        # y 'campana' de los modelos CalificacionCliente y CalificacionManual hacia el
+        # el modelo OpcionCalificacion y viceversa
+
+        # permiten nulidad en los campos 'campana' y 'calificacion' de los modelos de calificaciones
+        # de contactos
+        migrations.AlterField(
+            model_name='calificacioncliente',
+            name='campana',
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE,
+                related_name='calificaconcliente', to='ominicontacto_app.Campana'),
+        ),
+
+        migrations.AlterField(
+            model_name='calificacioncliente',
+            name='calificacion',
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE,
+                 to='ominicontacto_app.NombreCalificacion'),
+        ),
+
+        migrations.AlterField(
+            model_name='calificacionmanual',
+            name='campana',
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE,
+                related_name='calificaconcliente', to='ominicontacto_app.Campana'),
+        ),
+
+        migrations.AlterField(
+            model_name='calificacionmanual',
+            name='calificacion',
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE,
+                 to='ominicontacto_app.NombreCalificacion'),
+        ),
+
+        # adiciona campo 'opcion_calificacion' a modelos de calificaciones de contactos
+        migrations.AddField(
+            model_name='calificacioncliente',
+            name='opcion_calificacion',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='calificaciones_cliente',
+                                    to='ominicontacto_app.OpcionCalificacion'),
+        ),
+
+        migrations.AddField(
+            model_name='calificacionmanual',
+            name='opcion_calificacion',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='calificaciones_cliente',
+                                    to='ominicontacto_app.OpcionCalificacion'),
+        ),
+
+        # realiza migraciones de datos para modelos de calificaciones de contactos
+        # hacia modelo OpcionCalificacion (y migraciones de datos reversas)
+
+        migrations.RunPython(
+            code=adicionar_opciones_calificacion_modelos_calificacion_contactos,
+            reverse_code=adicionar_calificaciones_y_campanas_a_modelos_calificacion_contactos),
+
+        # operaciones para eliminar los campos 'campanas' y 'calificacion' de los modelos de
+        # calificacion de contactos
+        migrations.RemoveField(
+            model_name='calificacioncliente',
+            name='campana',
+        ),
+
+        migrations.RemoveField(
+            model_name='calificacioncliente',
+            name='calificacion',
+        ),
+
+        migrations.RemoveField(
+            model_name='calificacionmanual',
+            name='campana',
+        ),
+
+        migrations.RemoveField(
+            model_name='calificacionmanual',
+            name='calificacion',
+        ),
 
         # operaciones para eliminar los grupos de calificaciones
         migrations.RemoveField(
