@@ -6,14 +6,12 @@ y gestion con el agente"""
 from __future__ import unicode_literals
 
 import json
-import requests
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.conf import settings
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
@@ -23,6 +21,7 @@ from ominicontacto_app.forms import (FormularioCalificacionFormSet, FormularioCo
                                      FormularioVentaFormSet)
 from django.views.decorators.csrf import csrf_exempt
 from ominicontacto_app.utiles import convertir_ascii_string
+from ominicontacto_app.services.wombat_call_service import WombatCallService
 
 import logging as logging_
 
@@ -89,11 +88,10 @@ class CalificacionClienteCreateView(CreateView):
                          'gestion': campana.gestion}
         )
         # actualiza el estado de wombat a travez de un post
-        url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
-                                      'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
-        requests.post(
-            url_wombat_agente.format(self.kwargs['wombat_id'],
-                                     self.kwargs['id_agente']))
+        if campana.type == Campana.TYPE_DIALER:
+            service = WombatCallService()
+            service.asignar_agente(self.kwargs['wombat_id'], self.kwargs['id_agente'])
+
         return self.render_to_response(self.get_context_data(
             form=form, calificacion_form=calificacion_form))
 
@@ -147,35 +145,19 @@ class CalificacionClienteCreateView(CreateView):
         campana = self.object_calificacion[0].campana
         cleaned_data_calificacion = calificacion_form.cleaned_data
         calificacion = cleaned_data_calificacion[0]['calificacion']
-        url_wombat = '/'.join([settings.OML_WOMBAT_URL,
-                               'api/calls/?op=extstatus&wombatid={0}&status={1}'
-                               ])
 
-        if calificacion.nombre == campana.gestion:
-            self.object_calificacion[0].es_venta = True
-            self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
-            self.object_calificacion[0].save()
-            # actualiza la calificacion en wombat
-            requests.post(
-                url_wombat.format(self.kwargs['wombat_id'], "venta"))
-            wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
-                self.object_calificacion[0].contacto)
-            if wombat_log.count() > 0:
-                wombat_log = wombat_log[0]
-            else:
-                wombat_log = None
-            if wombat_log:
-                wombat_log.calificacion = "venta"
-                wombat_log.save()
-            return redirect(self.get_success_url())
-        else:
-            self.object_calificacion[0].es_venta = False
-            self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
-            self.object_calificacion[0].save()
-            # actualiza la calificacion en wombat
-            requests.post(
-                url_wombat.format(self.kwargs['wombat_id'],
-                                  self.object_calificacion[0].calificacion.nombre))
+        es_venta = (calificacion.nombre == campana.gestion)
+        self.object_calificacion[0].es_venta = es_venta
+        self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
+        self.object_calificacion[0].save()
+
+        # actualiza la calificacion en wombat
+        if campana.type == Campana.TYPE_DIALER:
+            service = WombatCallService()
+            service.calificar(self.kwargs['wombat_id'],
+                              self.object_calificacion[0].calificacion.nombre)
+
+            # TODO: Analizar actualizacion de WombatLog. Por que filtra solo por contacto?
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
                 self.object_calificacion[0].contacto)
             if wombat_log.count() > 0:
@@ -185,6 +167,10 @@ class CalificacionClienteCreateView(CreateView):
             if wombat_log:
                 wombat_log.calificacion = self.object_calificacion[0].calificacion.nombre
                 wombat_log.save()
+
+        if es_venta:
+            return redirect(self.get_success_url())
+        else:
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
@@ -258,12 +244,12 @@ class CalificacionClienteUpdateView(UpdateView):
                          'gestion': campana.gestion},
             instance=self.object
         )
-        url_wombat_agente = '/'.join([settings.OML_WOMBAT_URL,
-                                      'api/calls/?op=attr&wombatid={0}&attr=id_agente&val={1}'])
+
         # actualiza el estado de la llamada en wombat
-        requests.post(
-            url_wombat_agente.format(self.kwargs['wombat_id'],
-                                     self.kwargs['id_agente']))
+        if campana.type == Campana.TYPE_DIALER:
+            service = WombatCallService()
+            service.asignar_agente(self.kwargs['wombat_id'], self.kwargs['id_agente'])
+
         return self.render_to_response(self.get_context_data(
             form=form, calificacion_form=calificacion_form))
 
@@ -339,34 +325,18 @@ class CalificacionClienteUpdateView(UpdateView):
             self.object_calificacion = self.object_calificacion[0]
 
         calificacion = calificacion_form.cleaned_data[0]['calificacion']
-        url_wombat = '/'.join([settings.OML_WOMBAT_URL,
-                               'api/calls/?op=extstatus&wombatid={0}&status={1}'
-                               ])
 
-        if calificacion.nombre == campana.gestion:
-            self.object_calificacion.es_venta = True
-            self.object_calificacion.save()
-            # actualiza la calificacion en wombat
-            requests.post(
-                url_wombat.format(self.kwargs['wombat_id'], "venta"))
-            wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
-                self.object_calificacion.contacto)
-            if wombat_log.count() > 0:
-                wombat_log = wombat_log[0]
-            else:
-                wombat_log = None
-            if wombat_log:
-                wombat_log.calificacion = "venta"
-                wombat_log.save()
-            return redirect(self.get_success_url())
+        es_venta = calificacion.nombre == campana.gestion
+        self.object_calificacion.es_venta = es_venta
+        self.object_calificacion.save()
 
-        else:
-            self.object_calificacion.es_venta = False
-            self.object_calificacion.save()
-            # actualiza la calificacion en wombat
-            requests.post(
-                url_wombat.format(self.kwargs['wombat_id'],
-                                  self.object_calificacion.calificacion.nombre))
+        # actualiza la calificacion en wombat
+        if campana.type == Campana.TYPE_DIALER:
+            service = WombatCallService()
+            service.calificar(self.kwargs['wombat_id'],
+                              self.object_calificacion[0].calificacion.nombre)
+
+            # TODO: Analizar actualizacion de WombatLog. Por que filtra solo por contacto?
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
                 self.object_calificacion.contacto)
             if wombat_log.count() > 0:
@@ -376,6 +346,11 @@ class CalificacionClienteUpdateView(UpdateView):
             if wombat_log:
                 wombat_log.calificacion = self.object_calificacion.calificacion.nombre
                 wombat_log.save()
+
+        if es_venta:
+            return redirect(self.get_success_url())
+
+        else:
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
@@ -812,25 +787,21 @@ class CalificacionUpdateView(UpdateView):
             self.object_calificacion = self.object_calificacion[0]
         campana = self.object_calificacion.campana
         calificacion = calificacion_form.cleaned_data[0]['calificacion']
-        url_wombat = '/'.join([settings.OML_WOMBAT_URL,
-                               'api/calls/?op=extstatus&wombatid={0}&status={1}'
-                               ])
 
-        if calificacion.nombre == campana.gestion:
-            self.object_calificacion.es_venta = True
-            self.object_calificacion.save()
-            # actualiza la calficacion de wombat
-            requests.post(
-                url_wombat.format(self.object_calificacion.wombat_id, "venta"))
+        es_venta = calificacion.nombre == campana.gestion
+        self.object_calificacion.es_venta = es_venta
+        self.object_calificacion.save()
+
+        # actualizar la calificacion de wombat
+        # TODO: No debe actualizarse el WombatLog local como en las otras vistas?
+        if campana.type == Campana.TYPE_DIALER:
+            service = WombatCallService()
+            service.calificar(self.object_calificacion.wombat_id,
+                              self.object_calificacion.calificacion.nombre)
+
+        if es_venta:
             return redirect(self.get_success_url())
-
         else:
-            self.object_calificacion.es_venta = False
-            self.object_calificacion.save()
-            # actualizar la calificacion de wombat
-            requests.post(
-                url_wombat.format(self.object_calificacion.wombat_id,
-                                  self.object_calificacion.calificacion.nombre))
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
