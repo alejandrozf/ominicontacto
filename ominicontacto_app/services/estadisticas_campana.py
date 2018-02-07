@@ -8,7 +8,7 @@ import pygal
 import datetime
 import os
 
-from pygal.style import Style, RedBlueStyle
+from pygal.style import Style
 
 from django.conf import settings
 from django.db.models import Count
@@ -59,9 +59,6 @@ class EstadisticasService():
             cant = len(calificaciones_query.filter(calificacion=calificacion))
             calificaciones_nombre.append(calificacion.nombre)
             calificaciones_cantidad.append(cant)
-        cant_venta = len(calificaciones_query.filter(es_venta=True))
-        calificaciones_nombre.append(campana.gestion)
-        calificaciones_cantidad.append(cant_venta)
         campana_log_wombat = campana.logswombat.filter(
             fecha_hora__range=(fecha_desde, fecha_hasta))
         campana_log_terminated = campana_log_wombat.filter(estado="TERMINATED",
@@ -305,7 +302,8 @@ class EstadisticasService():
             estadisticas['calificaciones_nombre']
         barra_campana_calificacion.add('cantidad',
                                        estadisticas['calificaciones_cantidad'])
-        barra_campana_calificacion.render_to_png(os.path.join(settings.MEDIA_ROOT,
+        barra_campana_calificacion.render_to_png(os.path.join(
+            settings.MEDIA_ROOT,
             "reporte_campana", "barra_campana_calificacion.png"))
 
         # Barra: Total de llamados no atendidos en cada intento por campana.
@@ -331,14 +329,13 @@ class EstadisticasService():
         barra_campana_llamadas.x_labels = \
             estadisticas['cantidad_llamadas'][0]
         barra_campana_llamadas.add('cantidad',
-                                       estadisticas['cantidad_llamadas'][1])
+                                   estadisticas['cantidad_llamadas'][1])
 
         return {
             'estadisticas': estadisticas,
             'barra_campana_calificacion': barra_campana_calificacion,
             'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
-                                        estadisticas['calificaciones_cantidad'])
-            ,
+                                        estadisticas['calificaciones_cantidad']),
             'total_asignados': estadisticas['total_asignados'],
             'agentes_venta': estadisticas['agentes_venta'],
             'total_calificados': estadisticas['total_calificados'],
