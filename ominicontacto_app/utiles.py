@@ -14,6 +14,7 @@ import tempfile
 import time
 import uuid
 import unicodedata
+import datetime
 from django.utils import timezone
 
 from django.conf import settings
@@ -239,6 +240,16 @@ def convert_fecha_datetime(fecha, final_dia=False):
     fecha = timezone.datetime(int(ano), int(mes), int(dia), hora, minuto,
                               tzinfo=timezone.get_current_timezone())
     return fecha
+
+
+def datetime_hora_minima_dia(fecha):
+    minima = timezone.datetime.combine(fecha, datetime.time.min)
+    return timezone.make_aware(minima, timezone.get_current_timezone())
+
+
+def datetime_hora_maxima_dia(fecha):
+    maxima = timezone.datetime.combine(fecha, datetime.time.max)
+    return timezone.make_aware(maxima, timezone.get_current_timezone())
 
 
 def convertir_ascii_string(cadena):
