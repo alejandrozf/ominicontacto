@@ -50,13 +50,18 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, calificados, no_calificados):
+    def escribir_archivo_csv(self, campana, calificados, no_calificados):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []
 
             encabezado.append("Telefono")
+
+            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            for nombre in nombres:
+                encabezado.append(nombre)
+
             encabezado.append("Gestionado")
 
             # Creamos csvwriter
@@ -73,6 +78,9 @@ class ArchivoDeReporteCsv(object):
 
                 # --- Buscamos datos
                 lista_opciones.append(calificacion.contacto.telefono)
+                datos = json.loads(calificacion.contacto.datos)
+                for dato in datos:
+                    lista_opciones.append(dato)
                 if calificacion.es_venta:
                     lista_opciones.append(calificacion.campana.gestion)
                 else:
@@ -89,6 +97,9 @@ class ArchivoDeReporteCsv(object):
 
                 # --- Buscamos datos
                 lista_opciones.append(contacto.telefono)
+                datos = json.loads(contacto.contacto.datos)
+                for dato in datos:
+                    lista_opciones.append(dato)
                 lista_opciones.append("AGENTE NO CALIFICO")
 
                 # --- Finalmente, escribimos la linea
@@ -113,7 +124,7 @@ class ReporteCampanaCalificadosCSV(object):
             campana, fecha_desde, fecha_hasta)
         no_calificados = self._obtener_listado_no_califico_fecha(
             campana, fecha_desde, fecha_hasta)
-        archivo_de_reporte.escribir_archivo_csv(calificados, no_calificados)
+        archivo_de_reporte.escribir_archivo_csv(campana, calificados, no_calificados)
 
     def obtener_url_reporte_csv_descargar(self, campana):
         #assert campana.estado == Campana.ESTADO_DEPURADA
