@@ -37,7 +37,29 @@ def adicionar_opciones_calificacion_modelos_calificacion_contactos(apps, schema_
 
 
 def adicionar_calificaciones_y_campanas_a_modelos_calificacion_contactos(apps, schema_editor):
-    pass
+    """
+    Asigna los nombres de calificaciones y campañas a las instancias de los modelos de calificación
+    de contactos tomando como referencia los valores de las opciones de clasificacion existentes
+    """
+    CalificacionCliente = apps.get_model('ominicontacto_app', 'calificacioncliente')
+    CalificacionManual = apps.get_model('ominicontacto_app', 'calificacionmanual')
+    NombreCalificacion = apps.get_model('ominicontacto_app', 'nombrecalificacion')
+
+    for calif_cliente in CalificacionCliente.objects.all():
+        opcion_calificacion = calif_cliente.opcion_calificacion
+        calif_cliente.campana = opcion_calificacion.campana
+        nombre_calificacion, _ = NombreCalificacion.objects.get_or_create(
+            nombre=opcion_calificacion.nombre)
+        calif_cliente.calificacion = nombre_calificacion
+        calif_cliente.save()
+
+    for calif_manual in CalificacionManual.objects.all():
+        opcion_calificacion = calif_manual.opcion_calificacion
+        calif_manual.campana = opcion_calificacion.campana
+        nombre_calificacion, _ = NombreCalificacion.objects.get_or_create(
+            nombre=opcion_calificacion.nombre)
+        calif_manual.calificacion = nombre_calificacion
+        calif_manual.save()
 
 
 def adicionar_calificaciones_campana(apps, schema_editor):
