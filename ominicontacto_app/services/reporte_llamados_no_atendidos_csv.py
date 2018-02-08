@@ -115,6 +115,9 @@ class ArchivoDeReporteCsv(object):
 
                 # --- Buscamos datos
                 lista_opciones.append(contacto.telefono)
+                datos = json.loads(contacto.contacto.datos)
+                for dato in datos:
+                    lista_opciones.append(dato)
                 lista_opciones.append("Contestador Detectado")
 
                 # --- Finalmente, escribimos la linea
