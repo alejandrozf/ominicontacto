@@ -264,7 +264,9 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(Campana.objects.get(pk=self.campana_activa.pk).nombre, nombre_campana)
 
-    def test_usuario_logueado_puede_eliminar_campana_preview(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_eliminar_campana_preview(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
         self.assertEqual(Campana.objects.get(
             pk=self.campana_activa.pk).estado, Campana.ESTADO_ACTIVA)
@@ -511,7 +513,9 @@ class CampanasTests(OMLBaseTest):
         # eliminamos la tarea generada
         crontab.remove(job)
 
-    def test_borrar_campana_preview_elimina_tarea_programada_actualizacion_contactos(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_borrar_campana_preview_elimina_tarea_programada_actualizacion_contactos(
+            self, _generar_y_recargar_configuracion_asterisk):
         self.campana_activa.crear_tarea_actualizacion()
         url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
         self.client.post(url, follow=True)
