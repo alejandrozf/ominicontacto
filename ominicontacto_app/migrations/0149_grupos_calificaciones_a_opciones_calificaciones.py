@@ -224,7 +224,7 @@ class Migration(migrations.Migration):
             model_name='calificacionmanual',
             name='opcion_calificacion',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='calificaciones_cliente', null=True,
+                                    related_name='calificaciones_manuales', null=True,
                                     to='ominicontacto_app.OpcionCalificacion'),
         ),
 

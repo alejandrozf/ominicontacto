@@ -454,7 +454,7 @@ class CalificacionClienteForm(forms.ModelForm):
 
     class Meta:
         model = CalificacionCliente
-        fields = ('campana', 'contacto', 'es_venta', 'calificacion', 'agente',
+        fields = ('contacto', 'es_venta', 'agente',
                   'observaciones', 'agendado', 'wombat_id')
         widgets = {
             'campana': forms.HiddenInput(),
@@ -1177,7 +1177,7 @@ class CalificacionManualForm(forms.ModelForm):
 
     class Meta:
         model = CalificacionManual
-        fields = ('campana', 'telefono', 'es_gestion', 'calificacion', 'agente',
+        fields = ('telefono', 'es_gestion', 'agente',
                   'observaciones', 'agendado')
         widgets = {
             'campana': forms.HiddenInput(),

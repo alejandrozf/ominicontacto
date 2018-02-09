@@ -3058,7 +3058,7 @@ class CalificacionManual(models.Model):
     telefono = models.CharField(max_length=128)
     es_gestion = models.BooleanField(default=False)
     opcion_calificacion = models.ForeignKey(
-        OpcionCalificacion, blank=False, related_name='calificaciones_cliente')
+        OpcionCalificacion, blank=False, related_name='calificaciones_manuales')
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
     observaciones = models.TextField(blank=True, null=True)
