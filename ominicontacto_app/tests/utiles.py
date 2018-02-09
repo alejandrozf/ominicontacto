@@ -199,8 +199,8 @@ class OMLTestUtilsMixin(object):
         calificaciones = self.crea_calificaciones()
         opciones_calificacion = []
         for calificacion in calificaciones:
-            opciones_calificacion.append(OpcionCalificacion(
-                campana=campana, calificacion=calificacion))
+            opciones_calificacion.append(
+                OpcionCalificacion(campana=campana, nombre=calificacion.nombre))
         OpcionCalificacion.objects.bulk_create(opciones_calificacion)
 
     def crear_campana(

@@ -189,8 +189,8 @@ class CampanaTest(OMLBaseTest):
 
         # assert para chequear que se haya creado la misma campana
         self.assertEqual(
-            set(campana_creada.calificaciones_campana.values_list('nombre', flat=True)),
-            set(campana_clonada.calificaciones_campana.values_list('nombre', flat=True)))
+            set(campana_creada.opciones_calificacion.values_list('nombre', flat=True)),
+            set(campana_clonada.opciones_calificacion.values_list('nombre', flat=True)))
         self.assertEqual(campana_creada.gestion,
                          campana_clonada.gestion)
         self.assertEqual(campana_creada.formulario,
