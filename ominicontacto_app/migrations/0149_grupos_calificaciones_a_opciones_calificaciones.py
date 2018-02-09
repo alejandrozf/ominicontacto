@@ -17,20 +17,38 @@ def adicionar_opciones_calificacion_modelos_calificacion_contactos(apps, schema_
     CalificacionManual = apps.get_model('ominicontacto_app', 'calificacionmanual')
     OpcionCalificacion = apps.get_model('ominicontacto_app', 'opcioncalificacion')
 
+    GESTION = 1
+
+    # TODO: unificar este código en un sólo ciclo cuando se hayan unificado los modelos
+    # CalificacionCliente y CalificacionManual
     for calif_cliente in CalificacionCliente.objects.all():
         campana = calif_cliente.campana
-        nombre_calificacion = calif_cliente.calificacion.nombre
-        es_gestion = (campana.gestion == nombre_calificacion)
-        opcion_calificacion = OpcionCalificacion.objects.create(
+        if calif_cliente.calificacion is None and calif_cliente.es_venta:
+            # las calificaciones de gestion anteriormente no tenían
+            # instancia de nombre de calificación asociada, se la asigna el nombre
+            # la opción de gestión de la campaña
+            es_gestion = GESTION
+            nombre_calificacion = campana.gestion
+        else:
+            nombre_calificacion = calif_cliente.calificacion.nombre
+            es_gestion = int(campana.gestion == nombre_calificacion)
+        opcion_calificacion, _ = OpcionCalificacion.objects.get_or_create(
             campana=campana, nombre=nombre_calificacion, tipo=es_gestion)
         calif_cliente.opcion_calificacion = opcion_calificacion
         calif_cliente.save()
 
     for calif_manual in CalificacionManual.objects.all():
         campana = calif_manual.campana
-        nombre_calificacion = calif_manual.calificacion.nombre
-        es_gestion = (campana.gestion == nombre_calificacion)
-        opcion_calificacion = OpcionCalificacion.objects.create(
+        if calif_manual.calificacion is None and calif_manual.es_gestion:
+            # las calificaciones manuales de gestion anteriormente no tenían
+            # instancia de nombre de calificación asociada, se la asigna el nombre
+            # la opción de gestión de la campaña
+            es_gestion = GESTION
+            nombre_calificacion = campana.gestion
+        else:
+            nombre_calificacion = calif_manual.calificacion.nombre
+            es_gestion = int(campana.gestion == nombre_calificacion)
+        opcion_calificacion, _ = OpcionCalificacion.objects.get_or_create(
             campana=campana, nombre=nombre_calificacion, tipo=es_gestion)
         calif_manual.opcion_calificacion = opcion_calificacion
         calif_manual.save()
@@ -193,11 +211,12 @@ class Migration(migrations.Migration):
         ),
 
         # adiciona campo 'opcion_calificacion' a modelos de calificaciones de contactos
+        # inicialmente permitiendo nulidad para poder luego adicionar los valores
         migrations.AddField(
             model_name='calificacioncliente',
             name='opcion_calificacion',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='calificaciones_cliente',
+                                    related_name='calificaciones_cliente', null=True,
                                     to='ominicontacto_app.OpcionCalificacion'),
         ),
 
@@ -205,7 +224,7 @@ class Migration(migrations.Migration):
             model_name='calificacionmanual',
             name='opcion_calificacion',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='calificaciones_cliente',
+                                    related_name='calificaciones_cliente', null=True,
                                     to='ominicontacto_app.OpcionCalificacion'),
         ),
 
@@ -215,6 +234,25 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             code=adicionar_opciones_calificacion_modelos_calificacion_contactos,
             reverse_code=adicionar_calificaciones_y_campanas_a_modelos_calificacion_contactos),
+
+
+        # no se permite nulidad al campo 'opcion_calificacion' en los modelos de calificación
+        # de contactos después de adicionar los datos de las opciones de calificación
+        migrations.AlterField(
+            model_name='calificacioncliente',
+            name='opcion_calificacion',
+            field=models.ForeignKey(
+                null=False, on_delete=django.db.models.deletion.CASCADE,
+                 to='ominicontacto_app.OpcionCalificacion'),
+        ),
+
+        migrations.AlterField(
+            model_name='calificacionmanual',
+            name='opcion_calificacion',
+            field=models.ForeignKey(
+                null=False, on_delete=django.db.models.deletion.CASCADE,
+                 to='ominicontacto_app.OpcionCalificacion'),
+        ),
 
         # operaciones para eliminar los campos 'campanas' y 'calificacion' de los modelos de
         # calificacion de contactos
