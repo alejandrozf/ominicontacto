@@ -2239,10 +2239,10 @@ class CalificacionCliente(models.Model):
     # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
     objects = CalificacionClienteManager()
 
-    campana = models.ForeignKey(Campana, related_name="calificaconcliente")
     contacto = models.ForeignKey(Contacto)
     es_venta = models.BooleanField(default=False)
-    calificacion = models.ForeignKey(NombreCalificacion, blank=False, null=True)
+    opcion_calificacion = models.ForeignKey(
+        OpcionCalificacion, blank=False, related_name='calificaciones_cliente')
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
     observaciones = models.TextField(blank=True, null=True)
@@ -3055,10 +3055,10 @@ class CalificacionManual(models.Model):
 
     # objects = CalificacionClienteManager()
 
-    campana = models.ForeignKey(Campana, related_name="calificacionmanual")
     telefono = models.CharField(max_length=128)
     es_gestion = models.BooleanField(default=False)
-    calificacion = models.ForeignKey(NombreCalificacion, blank=False, null=True)
+    opcion_calificacion = models.ForeignKey(
+        OpcionCalificacion, blank=False, related_name='calificaciones_cliente')
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
     observaciones = models.TextField(blank=True, null=True)
