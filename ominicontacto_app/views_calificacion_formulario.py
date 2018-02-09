@@ -334,7 +334,7 @@ class CalificacionClienteUpdateView(UpdateView):
         if campana.type == Campana.TYPE_DIALER:
             service = WombatCallService()
             service.calificar(self.kwargs['wombat_id'],
-                              self.object_calificacion[0].calificacion.nombre)
+                              self.object_calificacion.calificacion.nombre)
 
             # TODO: Analizar actualizacion de WombatLog. Por que filtra solo por contacto?
             wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
