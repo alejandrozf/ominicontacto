@@ -560,13 +560,12 @@ class CampanaManager(models.Manager):
         )
 
         opciones_calificacion = []
-        for calificacion in campana.calificaciones_campana.all():
-            opcion_calificacion = OpcionCalificacion(
-                campana=campana_replicada,
-                calificacion=calificacion, tipo=OpcionCalificacion.GESTION)
-            if calificacion.nombre == campana.gestion:
-                opcion_calificacion.opcion = OpcionCalificacion.GESTION
-            opciones_calificacion.append(opcion_calificacion)
+        for opcion_calificacion in campana.opciones_calificacion.all():
+            opcion_calificacion_replicada = OpcionCalificacion(
+                campana=campana_replicada, nombre=opcion_calificacion.nombre)
+            if opcion_calificacion_replicada.nombre == campana_replicada.gestion:
+                opcion_calificacion_replicada.tipo = OpcionCalificacion.GESTION
+            opciones_calificacion.append(opcion_calificacion_replicada)
         OpcionCalificacion.objects.bulk_create(opciones_calificacion)
 
         # Replica Cola
