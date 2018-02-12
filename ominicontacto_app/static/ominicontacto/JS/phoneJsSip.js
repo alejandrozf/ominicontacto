@@ -571,10 +571,14 @@ $(function() {
 							    var toOnline = function() {
 							      num = "0077UNPAUSE";
 							      if($("#UserStatus").html() === "ACW") {
-							        makeCall();
-							        $("#Resume").trigger('click');
+                      if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling")
+							        {
+                        makeCall();
+							          $("#Resume").trigger('click');
+                      }
 							      }
 							    };
+
 							    setTimeout(toOnline, timeoutACW);
 							  }
 							} // si no es agente predictivo....
