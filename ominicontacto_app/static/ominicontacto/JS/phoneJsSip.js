@@ -88,7 +88,7 @@ $(function() {
   if($("#sipExt").val() && $("#sipSec").val()) {
     config = {
       uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
-      ws_servers : "wss://"+KamailioIp+":"+ socketIoIp,
+      ws_servers : "wss://"+KamailioIp+":"+ KamailioPort,
       password : $("#sipSec").val(),
       hack_ip_in_contact: true,
       session_timers: false,
