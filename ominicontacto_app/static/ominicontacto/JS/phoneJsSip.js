@@ -1,4 +1,4 @@
-1//***************************************************
+//***************************************************
 var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
 var sipStatus = document.getElementById('SipStatus');
 var callStatus = document.getElementById('CallStatus');
@@ -6,10 +6,6 @@ var local = document.getElementById('localAudio');
 var remoto = document.getElementById('remoteAudio');
 var displayNumber = document.getElementById("numberToCall");
 var pauseButton = document.getElementById("Pause");
-
-function suma(a, b) {
-	return a+b;
-}
 
 function updateButton(btn,clsnm,inht) {
 	 	 btn.className = clsnm;
@@ -602,32 +598,33 @@ $(function() {
 							$("#sipLogout").prop('disabled',false);
 							updateButton(modifyUserStat, "label label-success", lastPause);
 						}
-						if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
-							changeStatus(3, $("#idagt").val());
-					        num = "00770";
-					        makeCall();
-					        entrante = false;
-							$("#Pause").prop('disabled',true);
-							$("#Resume").prop('disabled',false);
-							$("#sipLogout").prop('disabled',false);
-							updateButton(modifyUserStat, "label label-danger", "ACW");
+            if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
+              if (entrante !== false) {
+							  changeStatus(3, $("#idagt").val());
+					      num = "00770";
+					      makeCall();
+					      entrante = false;
+							  $("#Pause").prop('disabled',true);
+							  $("#Resume").prop('disabled',false);
+							  $("#sipLogout").prop('disabled',false);
+							  updateButton(modifyUserStat, "label label-danger", "ACW");
 		//			        inicio2();
-							if($("#auto_unpause").val() != 0) {
-								var timeoutACW = $("#auto_unpause").val();
-								timeoutACW = timeoutACW * 1000;
-								var toOnline = function() {
-									num = "0077UNPAUSE";
-									if($("#UserStatus").html() === "ACW") {
-										if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling")
-										{
-										  makeCall();
-										  $("#Resume").trigger('click');
+                if($("#auto_unpause").val() != 0) {
+								  var timeoutACW = $("#auto_unpause").val();
+								  timeoutACW = timeoutACW * 1000;
+                  var toOnline = function() {
+									  num = "0077UNPAUSE";
+									  if($("#UserStatus").html() === "ACW") {
+										  if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling") {
+										    makeCall();
+										    $("#Resume").trigger('click');
+									    }
 									  }
-									}
-								};
-								setTimeout(toOnline, timeoutACW);
-							}
-					    }
+                  };
+								  setTimeout(toOnline, timeoutACW);
+                }
+              }
+            }
 					} else {
 			//		   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
