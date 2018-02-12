@@ -599,7 +599,7 @@ $(function() {
 							updateButton(modifyUserStat, "label label-success", lastPause);
 						}
             if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
-              if (entrante !== false) {
+              //if (entrante == false) { funcionalidad oml-52
 							  changeStatus(3, $("#idagt").val());
 					      num = "00770";
 					      makeCall();
@@ -623,7 +623,7 @@ $(function() {
                   };
 								  setTimeout(toOnline, timeoutACW);
                 }
-              }
+              //} funcionalidad oml-52
             }
 					} else {
 			//		   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
