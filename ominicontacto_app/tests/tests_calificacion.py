@@ -4,12 +4,12 @@
 Tests sobre los procesos realicionados con la calificaciones de los contactos de las campañas
 """
 
-from mock import patch
+# from mock import patch
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+# from django.core.urlresolvers import reverse
 
-from django.utils import timezone
+# from django.utils import timezone
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
