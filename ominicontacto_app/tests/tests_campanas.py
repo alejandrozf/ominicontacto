@@ -17,18 +17,22 @@ from django.db import connections
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember
+from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember, OpcionCalificacion
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,
                                                NombreCalificacionFactory,
-                                               CalificacionClienteFactory)
+                                               CalificacionClienteFactory,
+                                               OpcionCalificacionFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
-from ominicontacto_app.utiles import (validar_nombres_campanas, convertir_ascii_string,
-                                      validar_gestion_campanas_aux)
+from ominicontacto_app.utiles import (
+    validar_nombres_campanas,
+    convertir_ascii_string,
+    validar_gestion_campanas_aux
+)
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.wombat_service import WombatService
 
@@ -144,7 +148,9 @@ class CampanasTests(OMLBaseTest):
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
 
-        self.calificacion = NombreCalificacionFactory.create()
+        calificacion_nombre = "calificacion_nombre"
+
+        self.calificacion = NombreCalificacionFactory.create(nombre=calificacion_nombre)
 
         calificacion_gestion = NombreCalificacionFactory.create(nombre=self.GESTION)
 
@@ -153,13 +159,17 @@ class CampanasTests(OMLBaseTest):
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW,
             tiempo_desconexion=self.tiempo_desconexion, gestion=self.GESTION)
-        self.campana_activa.calificacion_campana.calificacion.add(self.calificacion)
-        self.campana_activa.calificacion_campana.calificacion.add(calificacion_gestion)
-
+        OpcionCalificacionFactory.create(
+            campana=self.campana_activa,
+            nombre=calificacion_gestion.nombre, tipo=OpcionCalificacion.GESTION)
+        OpcionCalificacionFactory.create(
+            campana=self.campana_activa, nombre=calificacion_nombre)
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW,
             gestion=self.GESTION)
-        self.campana_borrada.calificacion_campana.calificacion.add(calificacion_gestion)
+        OpcionCalificacionFactory.create(
+            campana=self.campana_borrada, nombre=calificacion_nombre,
+            tipo=OpcionCalificacion.GESTION)
 
         self.agente_profile = AgenteProfileFactory.create(user=self.usuario_admin_supervisor)
 
