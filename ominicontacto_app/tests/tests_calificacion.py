@@ -14,11 +14,13 @@ from django.utils import timezone
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
                                                ContactoFactory, AgenteProfileFactory,
-                                               QueueMemberFactory, CalificacionClienteFactory,
-                                               NombreCalificacionFactory, CalificacionManualFactory)
+                                               QueueMemberFactory,
+                                               CalificacionClienteFactory,
+                                               NombreCalificacionFactory, CalificacionManualFactory,
+                                               OpcionCalificacionFactory)
 
 from ominicontacto_app.models import (AgendaContacto, AgendaManual, NombreCalificacion, Campana,
-                                      WombatLog)
+                                      OpcionCalificacion, WombatLog)
 
 
 class CalificacionTests(OMLBaseTest):
@@ -34,8 +36,14 @@ class CalificacionTests(OMLBaseTest):
         self.calificacion_gestion = NombreCalificacionFactory.create(nombre=self.campana.gestion)
         self.calificacion_agenda = NombreCalificacion.objects.get(
             nombre=settings.CALIFICACION_REAGENDA)
-        self.campana.calificacion_campana.calificacion.add(self.calificacion_gestion)
-        self.campana.calificacion_campana.calificacion.add(self.calificacion_agenda)
+        self.opcion_calificacion_gestion = OpcionCalificacionFactory.create(
+            campana=self.campana, nombre=self.calificacion_gestion.nombre,
+            tipo=OpcionCalificacion.GESTION)
+        self.opcion_calificacion_agenda = OpcionCalificacionFactory.create(
+            campana=self.campana, nombre=self.calificacion_gestion.nombre,
+            tipo=OpcionCalificacion.AGENDA)
+        self.opcion_calificacion_camp_manual = OpcionCalificacionFactory.create(
+            campana=self.campana, nombre=self.calificacion_gestion.nombre)
 
         self.contacto = ContactoFactory.create()
         self.campana.bd_contacto.contactos.add(self.contacto)
@@ -44,7 +52,8 @@ class CalificacionTests(OMLBaseTest):
         self.agente_profile = AgenteProfileFactory.create(user=UserFactory(is_agente=True))
 
         self.calificacion_cliente_manual = CalificacionManualFactory(
-            campana=self.campana, agente=self.agente_profile, telefono=self.contacto.telefono)
+            opcion_calificacion=self.opcion_calificacion_camp_manual, agente=self.agente_profile,
+            telefono=self.contacto.telefono)
 
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
 
@@ -189,7 +198,7 @@ class CalificacionTests(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_contacto.html')
 
-# Test: Llega WombatLog antes de calificar
+    # Test: Llega WombatLog antes de calificar
     @patch('requests.post')
     def test_update_wombat_log_calificacion_vacia(self, post):
         self._setUp_campana_dialer()
