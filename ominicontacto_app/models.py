@@ -2259,7 +2259,7 @@ class CalificacionCliente(models.Model):
 
     def __unicode__(self):
         return "Calificacion para la campana {0} para el contacto " \
-               "{1} ".format(self.campana, self.contacto)
+               "{1} ".format(self.opcion_calificacion.campana, self.contacto)
 
     def get_venta(self):
         try:
@@ -3075,7 +3075,7 @@ class CalificacionManual(models.Model):
 
     def __unicode__(self):
         return "Calificacion manual para la campana {0} para el telefono " \
-               "{1} ".format(self.campana, self.telefono)
+               "{1} ".format(self.opcion_calificacion.campana, self.telefono)
 
 
 class AgendaManualManager(models.Manager):
