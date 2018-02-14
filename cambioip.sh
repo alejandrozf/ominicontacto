@@ -42,7 +42,7 @@ else
     echo "No hay archivo de settings en /home/freetech/ominicontacto"
 fi
 
-cd /home/freetech/static/ominicontacto/JS/
+cd /home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto/JS/
 echo "Cambiando IP en /static/JS/config.js"
     sed -i "s/\(^var KamailioIp\).*/var KamailioIp = \"$nueva_ip\";/" config.js
 
@@ -55,10 +55,11 @@ if [ "$VIRTUAL_ENV" = "" ] ; then
   exit 1
 fi
 
-source /home/freetech/ominicontacto/virtualenv/bin/activate
+source /home/freetech/virtualenv/bin/activate
 cd /home/freetech/ominicontacto
 python manage.py collectstatic
 python manage.py compress
+python manage.py regenerar_asterisk
 
 echo "Restarteando servicios"
 echo "Parando kamailio"
