@@ -110,6 +110,14 @@
   become_user: freetech
   become_method: su
 
+- name: Creation of simbolic link of oml_settings_local.py
+  file: state=link src=/home/freetech/local/oml_settings_local.py dest=/home/freetech/ominicontacto/oml_settings_local.py owner=freetech force=true
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  become: yes
+  become_user: freetech
+  become_method: su
+  tags: test
+
 - name: Change owner and group of ominicontacto
   file: "path={{ item }} owner=freetech group=freetech recurse=yes"
   with_items:

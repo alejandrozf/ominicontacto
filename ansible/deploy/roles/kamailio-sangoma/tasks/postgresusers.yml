@@ -27,12 +27,14 @@
     - "'already exists' not in command_result.stderr"
     - "'ya existe' not in command_result.stderr"
     - "command_result.rc != 0"
-  tags: test
+
+- name: Erase of default kamailio.cfg file
+  shell: rm -rf /opt/kamailio/etc/kamailio/kamailio.cfg
 
 - name: Copy of oml-freepbx/kamailio-files to the desired destinations
   shell: "{{ item }} chdir=/home/freetech/ominicontacto/ominicontacto_voip"
   with_items:
-      - cp kamailio-files/kamailio.cfg /opt/kamailio/etc/kamailio/
       - cp kamailio-files/kamctlrc /opt/kamailio/etc/kamailio/
       - cp kamailio-files/kamailio.service /etc/systemd/system
       - cp kamailio-files/kamailio /etc/default
+- file: state=link src=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest=/opt/kamailio/etc/kamailio/kamailio.cfg force=true
