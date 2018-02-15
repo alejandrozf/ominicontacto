@@ -20,11 +20,18 @@
       - res_odbc_custom.conf
       - sip_custom.conf
       - sip_fts.conf
+  tags:
+    - issabel
+    - postinstall
+
 - shell: "rm -rf {{ item}} chdir=/var/lib/asterisk/agi-bin/"
   with_items:
       - omni-asterisk-logout.php
       - omni-blacklist.php
       - omni-grabaciones.php
+  tags:
+    - issabel
+    - postinstall
 
 - name: Config of asterisk-freepbx for OML
   file: "state=link src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/etc/asterisk/{{ item }} force=true"
@@ -46,6 +53,9 @@
       - res_odbc_custom.conf
       - sip_custom.conf
       - sip_fts.conf
+  tags:
+    - issabel
+    - postinstall
 
 - file: "state=link src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 force=true"
   with_items:
