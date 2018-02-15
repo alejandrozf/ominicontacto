@@ -9,13 +9,13 @@ import datetime
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView)
+    ListView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import RedirectView
 from ominicontacto_app.forms import (
-    BusquedaContactoForm, ContactoForm, ReporteForm, FormularioNuevoContacto,
-    FormularioCampanaContacto, UpdateBaseDatosForm, CampanaSupervisorUpdateForm
+    BusquedaContactoForm, ReporteForm, FormularioNuevoContacto,
+    FormularioCampanaContacto, CampanaSupervisorUpdateForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, Contacto, AgenteProfile, SupervisorProfile
@@ -42,45 +42,14 @@ import logging as logging_
 logger = logging_.getLogger(__name__)
 
 
-class CampanaListView(ListView):
+class CampanasDeleteMixin(object):
     """
-    Esta vista lista los objetos Campana de tipo Entrantes
+    Encapsula comportamiento común a todas las campanas en el momento de
+    eliminar
     """
-
-    template_name = 'campana/campana_list.html'
-    context_object_name = 'campanas'
-    model = Campana
-
-    def get_context_data(self, **kwargs):
-        context = super(CampanaListView, self).get_context_data(
-           **kwargs)
-        campanas = Campana.objects.obtener_campanas_entrantes()
-        # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
-        # las mismas
-        if self.request.user.is_authenticated() and self.request.user and \
-                not self.request.user.get_is_administrador():
-            user = self.request.user
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
-
-        context['campanas'] = campanas
-        context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
-        context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
-        context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
-        context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
-                                              oculto=False)
-        return context
-
-
-class CampanaDeleteView(DeleteView):
-    """
-    Esta vista se encarga de la eliminación de una campana
-    """
-    model = Queue
-    template_name = 'campana/delete_campana.html'
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        success_url = self.get_success_url()
 
         # Eliminamos el registro de la tabla de asterisk en mysql
         servicio_asterisk = AsteriskService()
@@ -109,6 +78,47 @@ class CampanaDeleteView(DeleteView):
             messages.SUCCESS,
             message,
         )
+
+
+class CampanaListView(ListView):
+    """
+    Esta vista lista los objetos Campana de tipo Entrantes
+    """
+
+    template_name = 'campana/campana_list.html'
+    context_object_name = 'campanas'
+    model = Campana
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaListView, self).get_context_data(
+            **kwargs)
+        campanas = Campana.objects.obtener_campanas_entrantes()
+        # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
+        # las mismas
+        if self.request.user.is_authenticated() and self.request.user and \
+                not self.request.user.get_is_administrador():
+            user = self.request.user
+            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+
+        context['campanas'] = campanas
+        context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
+        context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
+        context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
+        context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
+                                              oculto=False)
+        return context
+
+
+class CampanaDeleteView(CampanasDeleteMixin, DeleteView):
+    """
+    Esta vista se encarga de la eliminación de una campana
+    """
+    model = Queue
+    template_name = 'campana/delete_campana.html'
+
+    def delete(self, request, *args, **kwargs):
+        super(CampanaDeleteView, self).delete(request, *args, **kwargs)
+        success_url = self.get_success_url()
         return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
@@ -174,7 +184,6 @@ class ExportaReporteCampanaView(UpdateView):
         self.object = self.get_object()
 
         service = ReporteCampanaService()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
@@ -217,7 +226,6 @@ class ExportaReporteFormularioVentaView(UpdateView):
         self.object = self.get_object()
 
         service = ReporteMetadataClienteService()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)
@@ -364,7 +372,7 @@ class FormularioSeleccionCampanaFormView(FormView):
 
         campana_choice = [(campana.id, campana.nombre) for campana in
                           campanas]
-        return self.form_class(campana_choice=campana_choice,   **self.get_form_kwargs())
+        return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
 
     def form_valid(self, form):
         campana = form.cleaned_data.get('campana')
