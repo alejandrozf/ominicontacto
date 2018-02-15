@@ -12,7 +12,7 @@ from django.conf import settings
 from ominicontacto_app.asterisk_config import (
     SipConfigCreator, SipConfigFile, AsteriskConfigReloader)
 from ominicontacto_app.errors import OmlError
-
+from ominicontacto_app.models import Campana, Queue
 logger = logging.getLogger(__name__)
 
 
@@ -34,6 +34,15 @@ class AsteriskService():
         cursor = connection.cursor()
         return connection, cursor
 
+    def _get_sql_params_insercion_queue(self, queue):
+        sql = """INSERT INTO miscdests (description, destdial) values
+              (%(description)s, %(destdial)s)"""
+        params = {
+            'description': queue.name,
+            'destdial': queue.get_string_queue_asterisk(),
+        }
+        return sql, params
+
     def insertar_cola_asterisk(self, queue):
         """
         insert cola en asterisk
@@ -41,12 +50,7 @@ class AsteriskService():
         connection, cursor = self._conectar_base_datos()
 
         try:
-            sql = """INSERT INTO miscdests (description, destdial) values
-                  (%(description)s, %(destdial)s)"""
-            params = {
-                'description': queue.name,
-                'destdial': queue.get_string_queue_asterisk(),
-            }
+            sql, params = self._get_sql_params_insercion_queue(queue)
             cursor.execute(sql, params)
             connection.commit()
             connection.close()
@@ -71,6 +75,45 @@ class AsteriskService():
         except MySQLdb.DatabaseError, e:
             print "error base de datos"
             connection.close()
+
+    def sincronizar_informacion_de_colas(self):
+        borrar = []
+        sincronizadas = []
+        connection, cursor = self._conectar_base_datos()
+        sql = "SELECT id, description, destdial FROM miscdests;"
+        cursor.execute(sql)
+        entradas = cursor.fetchall()
+        for (id_entrada, description, destdial) in entradas:
+            try:
+                queue = Queue.objects.get(name=description)
+            except Queue.DoesNotExist:
+                borrar.append(str(id_entrada))
+            else:
+                sincronizadas.append(description)
+                if destdial != queue.get_string_queue_asterisk():
+                    sql = "UPDATE miscdests SET `destdial` = %(destdial)s WHERE id=%(id)s;"
+                    params = {
+                        'id': id_entrada,
+                        'destdial': queue.get_string_queue_asterisk(),
+                    }
+                    cursor.execute(sql, params)
+
+        if borrar:
+            ids = ','.join(borrar)
+            sql = "DELETE from miscdests WHERE id IN (%s)" % ids
+            cursor.execute(sql)
+
+        sin_entrada = Queue.objects.filter(campana__type=Campana.TYPE_ENTRANTE). \
+            exclude(name__in=sincronizadas).exclude(campana__estado=Campana.ESTADO_BORRADA)
+        for queue in sin_entrada:
+            sql, params = self._get_sql_params_insercion_queue(queue)
+            cursor.execute(sql, params)
+
+        try:
+            connection.commit()
+        except MySQLdb.DatabaseError, e:
+            print "error base de datos: %s" % e.message
+        connection.close()
 
 
 class RestablecerConfigSipError(OmlError):

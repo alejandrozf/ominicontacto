@@ -22,7 +22,8 @@ from django.db.models import Max, Q, Count
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 
-from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
+from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra, datetime_hora_minima_dia, \
+    datetime_hora_maxima_dia
 
 logger = logging.getLogger(__name__)
 
@@ -2531,10 +2532,8 @@ class QueuelogManager(models.Manager):
                                       agentes):
 
         if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
         cursor = connection.cursor()
         sql = """select agent_id, time, event, data1

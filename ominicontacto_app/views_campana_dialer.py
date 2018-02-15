@@ -21,8 +21,9 @@ from ominicontacto_app.forms import (
     UpdateBaseDatosForm, BusquedaContactoForm, FormularioCampanaContacto,
     FormularioNuevoContacto
 )
+
 from ominicontacto_app.utiles import convertir_ascii_string
-from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
+from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
 
 import logging as logging_
 
@@ -173,7 +174,7 @@ class ActivarCampanaDialerView(RedirectView):
         return super(ActivarCampanaDialerView, self).post(request, *args, **kwargs)
 
 
-class CampanaDialerDeleteView(DeleteView):
+class CampanaDialerDeleteView(CampanasDeleteMixin, DeleteView):
     """
     Esta vista se encarga de la eliminación de una campana
     """
@@ -183,7 +184,6 @@ class CampanaDialerDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
-
         service = CampanaService()
         # remueve campana de wombat
         remover = service.remove_campana_wombat(self.object)
@@ -196,15 +196,8 @@ class CampanaDialerDeleteView(DeleteView):
                 messages.ERROR,
                 message,
             )
+        super(CampanaDialerDeleteView, self).delete(request, *args, **kwargs)
         self.object.remover()
-        message = '<strong>Operación Exitosa!</strong>\
-        Se llevó a cabo con éxito la eliminación de la campana.'
-
-        messages.add_message(
-            self.request,
-            messages.SUCCESS,
-            message,
-        )
         return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):

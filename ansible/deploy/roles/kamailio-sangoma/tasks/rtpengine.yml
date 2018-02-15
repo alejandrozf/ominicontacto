@@ -5,6 +5,20 @@
   register: command_result
   ignore_errors: yes
 
+- name: Install of ffmpeg
+  shell: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+- shell: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+  register: command_result
+  failed_when:
+    - "'transferencia fallida' in command_result.stderr"
+    - "'failed' in command_result.stderr"
+
+- name: Install of ffmpeg
+  yum: name={{ item }} state=present
+  with_items:
+      - ffmpeg
+      - ffmpeg-devel
+
 - name: Installation of RTPengine
   shell: "make chdir=/usr/src/rtpengine/daemon"
 - copy: src=/usr/src/rtpengine/daemon/rtpengine dest=/usr/local/bin remote_src=yes

@@ -18,6 +18,9 @@
   yum: name='*' state=latest update_cache=yes
   when: ansible_os_family == "Sangoma"
 
+- name: Install of epel-release
+  yum: name=epel-release state=present
+
 - name: Install the necessary packages
   yum: name={{ item }} state=present
   with_items:
@@ -75,6 +78,7 @@
       - expect.x86_64
       - expect-devel.x86_64
       - MySQL-python.x86_64
+      - lame
 - meta: clear_host_errors
 
 - name: Change /etc/hostname

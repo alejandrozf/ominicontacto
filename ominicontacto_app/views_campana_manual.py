@@ -9,10 +9,9 @@ from __future__ import unicode_literals
 
 import datetime
 
-from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from ominicontacto_app.models import Campana, AgenteProfile
 from django.views.generic import (
     ListView, UpdateView, FormView, DeleteView
@@ -26,7 +25,7 @@ from ominicontacto_app.services.estadisticas_campana_manuales import Estadistica
 from ominicontacto_app.forms import ReporteForm
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_manual_agente import EstadisticasAgenteService
-from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
+from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
 
 
 import logging as logging_
@@ -215,7 +214,7 @@ class AgenteCampanaManualReporteGrafico(FormView):
             graficos_estadisticas=graficos_estadisticas))
 
 
-class CampanaManualDeleteView(DeleteView):
+class CampanaManualDeleteView(CampanasDeleteMixin, DeleteView):
     """
     Esta vista se encarga de la eliminación de una campana
     """
@@ -223,18 +222,8 @@ class CampanaManualDeleteView(DeleteView):
     template_name = 'campana_manual/delete_campana.html'
 
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
         success_url = self.get_success_url()
-
-        self.object.remover()
-        message = '<strong>Operación Exitosa!</strong>\
-        Se llevó a cabo con éxito la eliminación de la campana.'
-
-        messages.add_message(
-            self.request,
-            messages.SUCCESS,
-            message,
-        )
+        super(CampanaManualDeleteView, self).delete(request, *args, **kwargs)
         return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
