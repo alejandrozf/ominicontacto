@@ -1110,6 +1110,9 @@ class CampanaPreviewForm(CampanaManualForm):
 
 
 class CampanaPreviewUpdateForm(CampanaPreviewForm):
+    class Meta(CampanaPreviewForm.Meta):
+        exclude = ('nombre', )
+
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewUpdateForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
