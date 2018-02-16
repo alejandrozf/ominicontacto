@@ -9,6 +9,9 @@
 #          - mkdir /opt/kamailio/etc/certs/demoCA/newcerts
 #          - touch /opt/kamailio/etc/certs/demoCA/index.txt
 
+- name: Delete /kamailio/certs if already exists
+  file: state=absent path=/opt/kamailio/etc/certs/
+
 - name: Modificacion del /etc/pki/tls/openssl.cnf
   template: src=templates/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
 

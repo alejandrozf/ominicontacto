@@ -20,20 +20,11 @@ OPTIONS=\"-i $nueva_ip -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=
 EOF"
 
 echo "Cambiando IP en kamailio.cfg"
-cd /opt/kamailio/etc/kamailio/
-   sudo sed -i "s/$ip_actual.*/$nueva_ip!g\"/" kamailio.cfg
+cd /home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/
+sudo sed -i "s/$ip_actual.*/$nueva_ip!g\"/" kamailio.cfg
 
 cd /home/freetech/local
 echo "Cambiando IP en oml_settings_local.py de /home/freetech/local"
-    sed -i "s/\(^OML_OMNILEADS_IP\).*/OML_OMNILEADS_IP = \"$nueva_ip\"/" oml_settings_local.py
-    sed -i "s/\(^OML_WOMBAT_URL\).*/OML_WOMBAT_URL = \"http:\/\/$nueva_ip:8080\/wombat\"/" oml_settings_local.py
-    sed -i "s/\(^OML_KAMAILIO_IP\).*/OML_KAMAILIO_IP = \"$nueva_ip\/255.255.255.255\"/" oml_settings_local.py
-    sed -i "s/\(^OML_SUPERVISION_URL\).*/OML_SUPERVISION_URL = \"https:\/\/$nueva_ip:10443\/Omnisup\/index.php?page=Lista_Campanas\&supervId=\"/" oml_settings_local.py
-    sed -i "s/\(^OML_GRABACIONES_URL\).*/OML_GRABACIONES_URL = \"http:\/\/$nueva_ip\/grabaciones\"/" oml_settings_local.py
-
-cd /home/freetech/ominicontacto
-cp /home/freetech/local/oml_settings_local.py .
-    echo "Cambiando IP en oml_settings_local.py" /home/freetech/ominicontacto
     sed -i "s/\(^OML_OMNILEADS_IP\).*/OML_OMNILEADS_IP = \"$nueva_ip\"/" oml_settings_local.py
     sed -i "s/\(^OML_WOMBAT_URL\).*/OML_WOMBAT_URL = \"http:\/\/$nueva_ip:8080\/wombat\"/" oml_settings_local.py
     sed -i "s/\(^OML_KAMAILIO_IP\).*/OML_KAMAILIO_IP = \"$nueva_ip\/255.255.255.255\"/" oml_settings_local.py

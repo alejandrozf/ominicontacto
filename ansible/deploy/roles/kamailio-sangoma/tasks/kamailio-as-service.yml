@@ -28,13 +28,17 @@
       - /opt/kamailio/sbin/kamdbctl restore /home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamdb.sql
 
 - name: Change network parameters in kamailio.cfg
-  lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_IP_ADDR!\" line=\"#!substdef \"!MY_IP_ADDR!{{ omni_ip }}!g\"\""
+  lineinfile: "dest=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"MY_IP_ADDR!\" line=\"#!substdef \"!MY_IP_ADDR!{{ omni_ip }}!g\"\""
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-- lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_ASTERISK!\" line=\"#!substdef \"!MY_ASTERISK!{{ omni_ip }}!g\"\""
+  tags: postinstall
+- lineinfile: "dest=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"MY_ASTERISK!\" line=\"#!substdef \"!MY_ASTERISK!{{ omni_ip }}!g\"\""
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-- lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"^alias=\" line=\"alias=\"{{ omnicentos_fqdn }}\"\""
+  tags: postinstall
+- lineinfile: "dest=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"^alias=\" line=\"alias=\"{{ omnicentos_fqdn }}\"\""
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-- lineinfile: "dest=/opt/kamailio/etc/kamailio/kamailio.cfg regexp=\"MY_DOMAIN!\" line=\"#!substdef \"!MY_DOMAIN!{{ omnicentos_fqdn }}!g\"\""
+  tags: postinstall
+- lineinfile: "dest=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"MY_DOMAIN!\" line=\"#!substdef \"!MY_DOMAIN!{{ omnicentos_fqdn }}!g\"\""
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+  tags: postinstall
 
 
