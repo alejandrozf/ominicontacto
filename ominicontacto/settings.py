@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'compressor',
     'reciclado_app',
+    'formtools',
 ]
 
 MIDDLEWARE_CLASSES = [
