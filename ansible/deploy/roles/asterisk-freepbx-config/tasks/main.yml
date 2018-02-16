@@ -54,7 +54,7 @@
     - issabel
     - postinstall
 
-- file: "state=link src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 force=true"
+- copy: "src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner=asterisk"
   with_items:
       - omni-asterisk-logout.php
       - omni-blacklist.php
