@@ -147,22 +147,28 @@ class QueueEntranteForm(forms.ModelForm):
             'timeout': """En segundos """,
         }
         widgets = {
-            'campana': forms.HiddenInput(),
             'name': forms.HiddenInput(),
-            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
-            "retry": forms.TextInput(attrs={'class': 'form-control'}),
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'timeout': forms.TextInput(attrs={'class': 'form-control'}),
+            'retry': forms.TextInput(attrs={'class': 'form-control'}),
+            'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
+            'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            'weight': forms.TextInput(attrs={'class': 'form-control'}),
+            'wait': forms.TextInput(attrs={'class': 'form-control'}),
             'audios': forms.Select(attrs={'class': 'form-control'}),
-            "announce_frequency": forms.TextInput(attrs={'class': 'form-control'}),
+            'announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def clean_maxlen(self):
+        maxlen = self.cleaned_data.get('maxlen')
+        if not maxlen > 0:
+            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
+                                        ' mayor a cero')
+        return maxlen
+
     def clean_announce_frequency(self):
-        audio = self.cleaned_data.get('audio', None)
+        audio = self.cleaned_data.get('audios', None)
         frequency = self.cleaned_data.get('announce_frequency', None)
         if audio and not (frequency > 0):
             raise forms.ValidationError(
@@ -213,17 +219,15 @@ class QueueEntranteUpdateForm(forms.ModelForm):
             'timeout': """En segundos """,
         }
         widgets = {
-            'campana': forms.HiddenInput(),
             'name': forms.HiddenInput(),
-            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
-            "retry": forms.TextInput(attrs={'class': 'form-control'}),
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'timeout': forms.TextInput(attrs={'class': 'form-control'}),
+            'retry': forms.TextInput(attrs={'class': 'form-control'}),
+            'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
+            'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "audios": forms.Select(attrs={'class': 'form-control'}),
-            "announce_frequency": forms.TextInput(attrs={'class': 'form-control'}),
+            'weight': forms.TextInput(attrs={'class': 'form-control'}),
+            'wait': forms.TextInput(attrs={'class': 'form-control'}),
+            'announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
@@ -368,6 +372,7 @@ class CampanaForm(forms.ModelForm):
         }
 
         widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
             'gestion': forms.TextInput(attrs={'class': 'form-control'}),
@@ -376,9 +381,9 @@ class CampanaForm(forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
         }
 
-    def clean_gestion(self):
-        nombre = validar_gestion_campanas(self)
-        return nombre
+    # def clean_gestion(self):
+    #     nombre = validar_gestion_campanas(self)
+    #     return nombre
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
@@ -400,6 +405,10 @@ class CampanaForm(forms.ModelForm):
             if not sitio_externo:
                 raise forms.ValidationError('Debe seleccionar un sitio externo')
             return sitio_externo
+
+
+class CampanaOpcionCalificacionForm(forms.Form):
+    pass
 
 
 class CampanaUpdateForm(forms.ModelForm):
