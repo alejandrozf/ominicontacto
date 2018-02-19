@@ -211,8 +211,7 @@ class AgenteProfileCreateView(CreateView):
         self.object = form.save(commit=False)
         usuario = User.objects.get(pk=self.kwargs['pk_user'])
         self.object.user = usuario
-        self.object.sip_extension = AgenteProfile.objects.\
-            obtener_ultimo_sip_extension()
+        self.object.sip_extension = 1000 + usuario.id
         # generar un sip_password aleatorio
         self.object.sip_password = User.objects.make_random_password()
         self.object.reported_by = self.request.user
