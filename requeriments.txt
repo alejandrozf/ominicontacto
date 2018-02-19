@@ -8,6 +8,7 @@ Django==1.9.7
 django-compressor==2.2
 django-crispy-forms==1.6.0
 django-formtools==2.1
+django-widget-tweaks==1.4.1
 enum34==1.1.6
 factory-boy==2.9.2
 ipdb==0.10.1

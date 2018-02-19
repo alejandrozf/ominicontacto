@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'compressor',
     'reciclado_app',
     'formtools',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE_CLASSES = [
