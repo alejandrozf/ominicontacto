@@ -5,23 +5,27 @@
 from __future__ import unicode_literals
 
 
+from django import forms
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, UpdateView
+
+from formtools.wizard.views import SessionWizardView
+
 from ominicontacto_app.forms import (
     CampanaForm, QueueEntranteForm, QueueEntranteUpdateForm, CampanaUpdateForm,
-    ParametroExtraParaWebformFormSet
+    ParametroExtraParaWebformFormSet, CampanaOpcionCalificacionForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, BaseDatosContacto, ArchivoDeAudio
 )
+
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
-
 
 import logging as logging_
 
@@ -56,30 +60,79 @@ class CampanaEnDefinicionMixin(object):
             self.kwargs['pk_campana'])
 
 
-class CampanaEntranteConFormsetParametrosViewMixin(object):
+class CampanaEntranteCreateView(SessionWizardView):
+    """
+    Esta vista crea un objeto Campana.
+    Por defecto su estado es EN_DEFICNICION,
+    Redirecciona a crear las opciones para esta
+    Campana.
+    """
+
+    INICIAL = '0'
+    COLA = '1'
+    OPCIONES_CALIFICACION = '2'
+
+    FORMS = [(INICIAL, CampanaForm),
+             (COLA, QueueEntranteForm),
+             (OPCIONES_CALIFICACION, CampanaOpcionCalificacionForm)]
+
+    TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
+                 COLA: "campana/create_update_queue.html",
+                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html"}
+
+    form_list = FORMS
+
     model = Campana
     context_object_name = 'campana'
+    form_class = CampanaForm
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.get_form()
-        parametro_extra_formset = ParametroExtraParaWebformFormSet(instance=self.object)
-        return self.render_to_response(self.get_context_data(
-            form=form, parametro_extra_formset=parametro_extra_formset))
+    def get_template_names(self):
+        return [self.TEMPLATES[self.steps.current]]
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.get_form()
-        parametro_extra_formset = ParametroExtraParaWebformFormSet(self.request.POST,
-                                                                   instance=self.object)
+    def done(self, form_list, **kwargs):
+        pass
 
-        if form.is_valid() and parametro_extra_formset.is_valid():
-            return self.form_valid(form, parametro_extra_formset)
+    def get_form(self, step=None, data=None, files=None):
+        if step is None:
+            step = self.steps.current
+        if step != self.COLA:
+            return super(CampanaEntranteCreateView, self).get_form(step, data, files)
         else:
-            return self.form_invalid(form, parametro_extra_formset)
+            # se mantiene la mayor parte del código existente en el plug-in 'formtools
+            # con la excepción de que se le pasa el argumento 'audio_choices' para instanciar
+            # el formulario correspondiente
+            audio_choices = ArchivoDeAudio.objects.all()
+            form_class = self.form_list[step]
+            kwargs = self.get_form_kwargs(step)
+            kwargs.update({
+                'data': data,
+                'files': files,
+                'prefix': self.get_form_prefix(step, form_class),
+                'initial': self.get_form_initial(step),
+            })
+            if issubclass(form_class, (forms.ModelForm, forms.models.BaseInlineFormSet)):
+                kwargs.setdefault('instance', self.get_form_instance(step))
+            elif issubclass(form_class, forms.models.BaseModelFormSet):
+                kwargs.setdefault('queryset', self.get_form_instance(step))
+            return form_class(audio_choices, **kwargs)
 
-    def form_invalid(self, form, parametro_extra_formset, error=None):
+    def get_form_initial(self, step):
+        initial_data = super(CampanaEntranteCreateView, self).get_form_initial(step)
+        if step == self.COLA:
+            step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
+            name = step_cleaned_data['nombre']
+            initial_data.update({'name': name})
+        return initial_data
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     base_datos = BaseDatosContacto.objects.obtener_definidas()
+    #     if not base_datos:
+    #         message = ("Debe cargar una base de datos antes de comenzar a "
+    #                    "configurar una campana")
+    #         messages.warning(self.request, message)
+    #     return super(CampanaEntranteCreateView, self).dispatch(request, *args, **kwargs)
+
+    def form_invalid(self, form, error=None):
         message = '<strong>Operación Errónea!</strong> \
                 . {0}'.format(error)
 
@@ -88,48 +141,29 @@ class CampanaEntranteConFormsetParametrosViewMixin(object):
             messages.WARNING,
             message,
         )
-
         context_data = self.get_context_data()
         context_data['form'] = form
-        context_data['parametro_extra_formset'] = parametro_extra_formset
         return self.render_to_response(context_data)
 
+    # def form_valid(self, form):
+    #     self.object = form.save(commit=False)
+    #     if self.object.tipo_interaccion is Campana.FORMULARIO and \
+    #             not self.object.formulario:
+    #         error = "Debe seleccionar un formulario"
+    #         return self.form_invalid(form, error=error)
+    #     elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
+    #             not self.object.sitio_externo:
+    #         error = "Debe seleccionar un sitio externo"
+    #         return self.form_invalid(form, error=error)
+    #     self.object.type = Campana.TYPE_ENTRANTE
+    #     self.object.reported_by = self.request.user
+    #     self.object.save()
+    #     return super(CampanaEntranteCreateView, self).form_valid(form)
 
-class CampanaEntranteCreateView(CampanaEntranteConFormsetParametrosViewMixin, CreateView):
-    """
-    Esta vista crea un objeto Campana.
-    Por defecto su estado es EN_DEFICNICION,
-    Redirecciona a crear las opciones para esta
-    Campana.
-    """
-
-    template_name = 'campana/nueva_edita_campana.html'
-    form_class = CampanaForm
-
-    def get_object(self):
-        return None
-
-    def dispatch(self, request, *args, **kwargs):
-        base_datos = BaseDatosContacto.objects.obtener_definidas()
-        if not base_datos:
-            message = ("Debe cargar una base de datos antes de comenzar a "
-                       "configurar una campana")
-            messages.warning(self.request, message)
-        return super(CampanaEntranteCreateView, self).dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form, parametro_extra_formset):
-        self.object = form.save(commit=False)
-        self.object.type = Campana.TYPE_ENTRANTE
-        self.object.reported_by = self.request.user
-        self.object.save()
-        parametro_extra_formset.instance = self.object
-        parametro_extra_formset.save()
-        return super(CampanaEntranteCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse(
-            'queue_nuevo',
-            kwargs={"pk_campana": self.object.pk})
+    # def get_success_url(self):
+    #     return reverse(
+    #         'queue_nuevo',
+    #         kwargs={"pk_campana": self.object.pk})
 
 
 class CampanaEntranteUpdateView(CampanaEntranteConFormsetParametrosViewMixin, UpdateView):
@@ -167,7 +201,7 @@ class QueueEntranteCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     """Vista para la creacion de una Cola"""
     model = Queue
     form_class = QueueEntranteForm
-    template_name = 'campana/create_update_queue.html'
+    # template_name = 'campana/create_update_queue.html'
 
     def get_initial(self):
         initial = super(QueueEntranteCreateView, self).get_initial()
