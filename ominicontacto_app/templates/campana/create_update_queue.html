@@ -1,106 +1,98 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends "campana/wizard_base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
 
-{% block content %}
+{% block nav %}
+    <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs">
+            <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+            <li class="active"><a>{% trans 'Datos básicos de la cola' %}</a></li>
+            <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        </ul>
+    </ul>
+{% endblock %}
 
-            <ul class="nav nav-tabs">
-                <li><a href="{% url 'campana_update' campana.pk %}" >Campaña</a></li>
-                <li class="active"><a>Cola</a></li>
-            </ul>
-            <br>
-<div class="col-md-8 col-md-offset-1">
-    {% if object.name %}
-        <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
-    {% endif %}
-<form action="" enctype="multipart/form-data" method="post">
-    {% csrf_token %}
+{% block form_render %}
+    <br>
     {{ form.non_field_errors }}
-    {{ form.campana }} {{form.name }}
+        {{ form.name }}
         <div class="form-group row">
-        {{ form.timeout.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.timeout.id_for_label }}">Tiempo de Ring: </label>
-        <div class="col-sm-2">
-              {{ form.timeout }}
-              {{ form.timeout.help_text }}
+            {{ form.timeout.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.timeout.id_for_label }}">Tiempo de Ring: </label>
+            <div class="col-sm-2">
+                {{ form.timeout }}
+                {{ form.timeout.help_text }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.retry.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.retry.id_for_label }}">Tiempo de Reintento::</label>
-        <div class="col-sm-2">
-              {{ form.retry }}
+        <div class="form-group row">
+            {{ form.retry.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.retry.id_for_label }}">Tiempo de Reintento:</label>
+            <div class="col-sm-2">
+                {{ form.retry }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.audio_de_ingreso.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.audio_de_ingreso.id_for_label }}">Audio de ingreso:</label>
-        <div class="col-sm-3">
-              {{ form.audio_de_ingreso }}
+        <div class="form-group row">
+            {{ form.audio_de_ingreso.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.audio_de_ingreso.id_for_label }}">Audio de ingreso:</label>
+            <div class="col-sm-3">
+                {{ form.audio_de_ingreso }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.maxlen.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
-        <div class="col-sm-2">
-              {{ form.maxlen }}
+        <div class="form-group row">
+            {{ form.maxlen.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
+            <div class="col-sm-2">
+                {{ form.maxlen }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.servicelevel.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.servicelevel.id_for_label }}">Nivel de Servicio:</label>
-        <div class="col-sm-2">
-              {{ form.servicelevel }}
+        <div class="form-group row">
+            {{ form.servicelevel.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.servicelevel.id_for_label }}">Nivel de Servicio:</label>
+            <div class="col-sm-2">
+                {{ form.servicelevel }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.strategy.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.strategy.id_for_label }}">Estrategia de distribucion:</label>
-        <div class="col-sm-3">
-              {{ form.strategy }}
+        <div class="form-group row">
+            {{ form.strategy.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.strategy.id_for_label }}">Estrategia de distribucion:</label>
+            <div class="col-sm-3">
+                {{ form.strategy }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.weight.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.weight.id_for_label }}">Importancia de campaña:</label>
-        <div class="col-sm-2">
-              {{ form.weight }}
+        <div class="form-group row">
+            {{ form.weight.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.weight.id_for_label }}">Importancia de campaña:</label>
+            <div class="col-sm-2">
+                {{ form.weight }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.wait.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.wait.id_for_label }}">Tiempo de espera en cola:</label>
-        <div class="col-sm-2">
-              {{ form.wait }}
+        <div class="form-group row">
+            {{ form.wait.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.wait.id_for_label }}">Tiempo de espera en cola:</label>
+            <div class="col-sm-2">
+                {{ form.wait }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.auto_grabacion.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados:</label>
-        <div class="col-sm-1">
-              {{ form.auto_grabacion }}
+        <div class="form-group row">
+            {{ form.auto_grabacion.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados:</label>
+            <div class="col-sm-1">
+                {{ form.auto_grabacion }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.audios.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.audios.id_for_label }}">Anuncio periódico:</label>
-        <div class="col-sm-3">
-              {{ form.audios }}
+        <div class="form-group row">
+            {{ form.audios.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.audios.id_for_label }}">Anuncio periódico:</label>
+            <div class="col-sm-3">
+                {{ form.audios|add_class:"form-control" }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.announce_frequency.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.announce_frequency.id_for_label }}">Frecuencia del anuncio: </label>
-        <div class="col-sm-2">
-              {{ form.announce_frequency }}
+        <div class="form-group row">
+            {{ form.announce_frequency.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.announce_frequency.id_for_label }}">Frecuencia del anuncio: </label>
+            <div class="col-sm-2">
+                {{ form.announce_frequency }}
+            </div>
         </div>
-    </div>
     </br>
-    <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
-        Siguiente
-    </button>
-
-</form>
-</div>
-
-
 {% endblock %}
