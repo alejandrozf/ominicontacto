@@ -201,18 +201,7 @@ class AgenteProfile(models.Model):
 
 class SupervisorProfileManager(models.Manager):
 
-    def obtener_ultimo_sip_extension(self):
-        """
-        Este metodo se encarga de devolver el siguinte sip_extension
-        y si no existe supervisor e devuelve 3000
-        """
-        try:
-            identificador = \
-                self.latest('id').sip_extension + 1
-        except SupervisorProfile.DoesNotExist:
-            identificador = 3000
-
-        return identificador
+    pass
 
 
 class SupervisorProfile(models.Model):
