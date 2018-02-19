@@ -304,7 +304,7 @@ class CampanaPreviewDetailView(DetailView):
             if cat_count > 0:
                 counts_categorias[cat_name] = cat_count
 
-                # se contabilizan juntas las calificaciones con la etiqueta 'Ventas
+        # se contabilizan juntas las calificaciones con la etiqueta 'Ventas
         # y las que tienen el atributo 'is_venta' igual a True, pero no poseen etiqueta
         counts_categorias['Venta'] += count_ventas
 
