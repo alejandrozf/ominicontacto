@@ -438,7 +438,6 @@ class PausaToggleDeleteView(TemplateView):
         return redirect('pausa_list')
 
 
-
 def node_view(request):
     """Esta vista renderiza la pantalla del agente"""
     registro = []
