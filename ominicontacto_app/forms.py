@@ -385,6 +385,14 @@ class CampanaForm(forms.ModelForm):
     #     nombre = validar_gestion_campanas(self)
     #     return nombre
 
+    def clean(self):
+        if not self.fields['bd_contacto'].queryset.exists():
+            message = _("Debe cargar una base de datos antes de comenzar a "
+                        "configurar una campana")
+            self.add_error('bd_contacto', message)
+            raise forms.ValidationError(message, code='invalid')
+        return super(CampanaForm, self).clean()
+
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)

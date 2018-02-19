@@ -17,11 +17,7 @@ from ominicontacto_app.forms import (
     CampanaForm, QueueEntranteForm, QueueEntranteUpdateForm, CampanaUpdateForm,
     ParametroExtraParaWebformFormSet, CampanaOpcionCalificacionForm
 )
-from ominicontacto_app.models import (
-    Campana, Queue,
-    # BaseDatosContacto,
-    ArchivoDeAudio
-)
+from ominicontacto_app.models import Campana, Queue, ArchivoDeAudio
 
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -125,14 +121,6 @@ class CampanaEntranteCreateView(SessionWizardView):
             name = step_cleaned_data['nombre']
             initial_data.update({'name': name})
         return initial_data
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     base_datos = BaseDatosContacto.objects.obtener_definidas()
-    #     if not base_datos:
-    #         message = ("Debe cargar una base de datos antes de comenzar a "
-    #                    "configurar una campana")
-    #         messages.warning(self.request, message)
-    #     return super(CampanaEntranteCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form, error=None):
         message = '<strong>Operación Errónea!</strong> \
