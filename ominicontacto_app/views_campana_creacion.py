@@ -18,7 +18,9 @@ from ominicontacto_app.forms import (
     ParametroExtraParaWebformFormSet, CampanaOpcionCalificacionForm
 )
 from ominicontacto_app.models import (
-    Campana, Queue, BaseDatosContacto, ArchivoDeAudio
+    Campana, Queue,
+    # BaseDatosContacto,
+    ArchivoDeAudio
 )
 
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
@@ -100,7 +102,7 @@ class CampanaEntranteCreateView(SessionWizardView):
         else:
             # se mantiene la mayor parte del código existente en el plug-in 'formtools
             # con la excepción de que se le pasa el argumento 'audio_choices' para instanciar
-            # el formulario correspondiente
+            # con éxito el formulario correspondiente
             audio_choices = ArchivoDeAudio.objects.all()
             form_class = self.form_list[step]
             kwargs = self.get_form_kwargs(step)
@@ -283,8 +285,7 @@ class QueueEntranteUpdateView(UpdateView):
         try:
             Queue.objects.get(campana=campana)
         except Queue.DoesNotExist:
-            return HttpResponseRedirect("/campana/" + self.kwargs['pk_campana']
-                                        + "/cola/")
+            return HttpResponseRedirect("/campana/" + self.kwargs['pk_campana'] + "/cola/")
         else:
             return super(QueueEntranteUpdateView, self).dispatch(*args, **kwargs)
 
