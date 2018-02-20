@@ -122,19 +122,6 @@ class CampanaEntranteCreateView(SessionWizardView):
             initial_data.update({'name': name})
         return initial_data
 
-    def form_invalid(self, form, error=None):
-        message = '<strong>Operación Errónea!</strong> \
-                . {0}'.format(error)
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-        context_data = self.get_context_data()
-        context_data['form'] = form
-        return self.render_to_response(context_data)
-
 
 class CampanaEntranteUpdateView(CampanaEntranteConFormsetParametrosViewMixin, UpdateView):
     """
