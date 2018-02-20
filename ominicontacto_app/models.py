@@ -1197,6 +1197,12 @@ class Pausa(models.Model):
             return self.CHOICE_PRODUCTIVA
         return self.CHOICE_RECREATIVA
 
+
+class ParametroExtraParaWebform(models.Model):
+    campana = models.ForeignKey(Campana, related_name='parametros_extra_para_webform')
+    parametro = models.CharField(max_length=32)
+    columna = models.CharField(max_length=32)
+
 # ==============================================================================
 # Base Datos Contactos
 # ==============================================================================
