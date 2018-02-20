@@ -34,6 +34,13 @@ def update_sip_extension_in_supervisorprofile(apps, schema_editor):
     SupervisorProfile.objects.all().update(sip_extension=F('user') + 1000)
 
 
+def rollback(apps, schema_editor):
+    """
+    Esta migración es para el reverse_code
+    """
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -41,6 +48,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(update_sip_extension_in_agenteprofile),
-        migrations.RunPython(update_sip_extension_in_supervisorprofile),
+        migrations.RunPython(update_sip_extension_in_agenteprofile, reverse_code=rollback),
+        migrations.RunPython(update_sip_extension_in_supervisorprofile, reverse_code=rollback),
     ]

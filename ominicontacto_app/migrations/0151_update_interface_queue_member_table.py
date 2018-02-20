@@ -19,6 +19,13 @@ def update_interface_in_queue_member_table(apps, schema_editor):
         queue_member.save()
 
 
+def rollback(apps, schema_editor):
+    """
+    Esta migración es para el reverse_code
+    """
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -26,5 +33,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(update_interface_in_queue_member_table),
+        migrations.RunPython(update_interface_in_queue_member_table, reverse_code=rollback),
     ]

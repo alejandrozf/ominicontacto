@@ -13,7 +13,7 @@ def update_sip_agente_grabacion(apps, schema_editor):
     Grabacion = apps.get_model("ominicontacto_app", "grabacion")
     AgenteProfile = apps.get_model("ominicontacto_app", "agenteprofile")
 
-    for grabacion in  Grabacion.objects.all():
+    for grabacion in Grabacion.objects_default.all():
         try:
             agente = AgenteProfile.objects.get(sip_extension=grabacion.sip_agente)
         except AgenteProfile.DoesNotExist:
@@ -23,6 +23,13 @@ def update_sip_agente_grabacion(apps, schema_editor):
             grabacion.save()
 
 
+def rollback(apps, schema_editor):
+    """
+    Esta migración es para el reverse_code
+    """
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -30,5 +37,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(update_sip_agente_grabacion),
+        migrations.RunPython(update_sip_agente_grabacion, reverse_code=rollback),
     ]

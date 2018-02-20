@@ -29,6 +29,13 @@ def update_username_real_in_subscriber(apps, schema_editor):
     cursor.execute(sql)
 
 
+def rollback(apps, schema_editor):
+    """
+    Esta migración es para el reverse_code
+    """
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -36,6 +43,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(update_username_alto_in_subscriber),
-        migrations.RunPython(update_username_real_in_subscriber),
+        migrations.RunPython(update_username_alto_in_subscriber, reverse_code=rollback),
+        migrations.RunPython(update_username_real_in_subscriber, reverse_code=rollback),
     ]
