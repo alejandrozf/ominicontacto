@@ -118,7 +118,7 @@ def restaurar_grupos_calificaciones_campanas(apps, schema_editor):
 
     for campana in Campana.objects_default.all():
         grupo_calificacion_campana = CalificacionCampana.objects.create(
-            nombre=_("Grupo {0}".format(campana.nombre)))
+            nombre=_("Grupo {0}".format(campana.pk)))
         nombres_opciones_calificaciones = campana.opciones_calificacion.values_list(
             'nombre', flat=True)
         calificaciones_campana = NombreCalificacion.objects.filter(
