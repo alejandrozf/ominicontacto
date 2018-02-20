@@ -386,9 +386,19 @@ class CampanaForm(forms.ModelForm):
     #     return nombre
 
     def clean(self):
-        if not self.fields['bd_contacto'].queryset.exists():
+        if not self.fields['bd_contacto'].queryset:
             message = _("Debe cargar una base de datos antes de comenzar a "
                         "configurar una campana")
+            self.add_error('bd_contacto', message)
+            raise forms.ValidationError(message, code='invalid')
+        if self.cleaned_data['tipo_interaccion'] is Campana.FORMULARIO and \
+                not self.cleaned_data['formulario']:
+            message = _("Debe seleccionar un formulario")
+            self.add_error('bd_contacto', message)
+            raise forms.ValidationError(message, code='invalid')
+        elif self.cleaned_data['tipo_interaccion'] is Campana.SITIO_EXTERNO and \
+                not self.cleaned_data['sitio_externo']:
+            message = _("Debe seleccionar un sitio externo")
             self.add_error('bd_contacto', message)
             raise forms.ValidationError(message, code='invalid')
         return super(CampanaForm, self).clean()
