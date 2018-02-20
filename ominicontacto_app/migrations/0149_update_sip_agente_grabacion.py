@@ -13,14 +13,8 @@ def update_sip_agente_grabacion(apps, schema_editor):
     Grabacion = apps.get_model("ominicontacto_app", "grabacion")
     AgenteProfile = apps.get_model("ominicontacto_app", "agenteprofile")
 
-    for grabacion in Grabacion.objects_default.all():
-        try:
-            agente = AgenteProfile.objects.get(sip_extension=grabacion.sip_agente)
-        except AgenteProfile.DoesNotExist:
-            agente = None
-        if agente:
-            grabacion.sip_agente = 1000 + agente.user.id
-            grabacion.save()
+    for agente in AgenteProfile.objects.all():
+        Grabacion.objects_default.filter(sip_agente=agente.sip_extension).update(sip_agente=agente.user.id + 1000)
 
 
 def rollback(apps, schema_editor):
