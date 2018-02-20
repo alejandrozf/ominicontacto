@@ -1,5 +1,16 @@
 {% extends "campana/wizard_base.html" %}
 {% load i18n %}
+{% load static %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+     $('.link-formset').formset({
+       addText: 'add link',
+       deleteText: 'remove'
+     });
+    </script>
+{% endblock %}
 
 {% block nav %}
     <ul class="nav nav-tabs">
@@ -12,5 +23,11 @@
 {% endblock %}
 
 {% block formset_render %}
-    {{ form }}
+    {{ wizard.form.management_form }}
+    {% for form in wizard.form.forms %}
+        <div class="link-formset">
+            {{ form.nombre }}
+            {{ form.tipo }}
+        </div>
+    {% endfor %}
 {% endblock %}

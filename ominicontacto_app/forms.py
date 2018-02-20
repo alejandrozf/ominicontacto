@@ -20,8 +20,7 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio, NombreCalificacion, ParametroExtraParaWebform,
-    OpcionCalificacion
+    AgendaManual, ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
 )
 
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -425,8 +424,10 @@ class CampanaForm(forms.ModelForm):
             return sitio_externo
 
 
-class CampanaOpcionCalificacionForm(forms.Form):
-    pass
+class OpcionCalificacionForm(forms.ModelForm):
+    class Meta:
+        model = OpcionCalificacion
+        fields = ('tipo', 'nombre')
 
 
 class CampanaUpdateForm(forms.ModelForm):
@@ -722,6 +723,15 @@ class PausaForm(forms.ModelForm):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)
         return nombre
+
+
+FormularioCalificacionFormSet = inlineformset_factory(
+    Contacto, CalificacionCliente, form=CalificacionClienteForm,
+    can_delete=False, extra=1, max_num=1)
+
+OpcionCalificacionFormSet = inlineformset_factory(
+    Campana, OpcionCalificacion, form=OpcionCalificacionForm,
+    can_delete=False, extra=0, min_num=1, exclude=('campana',))
 
 
 class FormularioVentaForm(forms.ModelForm):

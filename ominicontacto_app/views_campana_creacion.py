@@ -15,7 +15,7 @@ from formtools.wizard.views import SessionWizardView
 
 from ominicontacto_app.forms import (
     CampanaForm, QueueEntranteForm, QueueEntranteUpdateForm, CampanaUpdateForm,
-    ParametroExtraParaWebformFormSet, CampanaOpcionCalificacionForm
+    ParametroExtraParaWebformFormSet, OpcionCalificacionFormSet
 )
 from ominicontacto_app.models import Campana, Queue, ArchivoDeAudio
 
@@ -72,7 +72,7 @@ class CampanaEntranteCreateView(SessionWizardView):
 
     FORMS = [(INICIAL, CampanaForm),
              (COLA, QueueEntranteForm),
-             (OPCIONES_CALIFICACION, CampanaOpcionCalificacionForm)]
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
 
     TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
                  COLA: "campana/create_update_queue.html",
