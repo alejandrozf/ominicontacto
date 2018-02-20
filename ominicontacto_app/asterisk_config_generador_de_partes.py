@@ -409,6 +409,7 @@ class GeneradorParaCampanaDialerStart(GeneradorDePedazoDeCampanaDialer):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Gosub(callstatusSub,s,1)
         same => n,Set(CHANNEL(hangup_handler_push)=canal-llamado,s,1)
         same => n,Set(CAMPANA={oml_queue_name})
         same => n,Set(AUX=${{CUT(CHANNEL,@,1)}})
