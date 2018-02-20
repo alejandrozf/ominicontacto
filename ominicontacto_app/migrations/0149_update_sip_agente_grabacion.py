@@ -13,6 +13,11 @@ def update_sip_agente_grabacion(apps, schema_editor):
     Grabacion = apps.get_model("ominicontacto_app", "grabacion")
     AgenteProfile = apps.get_model("ominicontacto_app", "agenteprofile")
 
+    # primero vamos actualizar las grabaciones que su sip agente no corresponde a ningún agente
+    Grabacion.objects_default.exclude(
+        sip_agente__in=AgenteProfile.objects.all().values_list('sip_extension', flat=True)).update(sip_agente=0)
+
+    # ahora actualizamos la grabaciones realizando la busqueda por agente
     for agente in AgenteProfile.objects.all():
         Grabacion.objects_default.filter(sip_agente=agente.sip_extension).update(sip_agente=agente.user.id + 1000)
 
