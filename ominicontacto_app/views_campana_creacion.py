@@ -135,26 +135,6 @@ class CampanaEntranteCreateView(SessionWizardView):
         context_data['form'] = form
         return self.render_to_response(context_data)
 
-    # def form_valid(self, form):
-    #     self.object = form.save(commit=False)
-    #     if self.object.tipo_interaccion is Campana.FORMULARIO and \
-    #             not self.object.formulario:
-    #         error = "Debe seleccionar un formulario"
-    #         return self.form_invalid(form, error=error)
-    #     elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-    #             not self.object.sitio_externo:
-    #         error = "Debe seleccionar un sitio externo"
-    #         return self.form_invalid(form, error=error)
-    #     self.object.type = Campana.TYPE_ENTRANTE
-    #     self.object.reported_by = self.request.user
-    #     self.object.save()
-    #     return super(CampanaEntranteCreateView, self).form_valid(form)
-
-    # def get_success_url(self):
-    #     return reverse(
-    #         'queue_nuevo',
-    #         kwargs={"pk_campana": self.object.pk})
-
 
 class CampanaEntranteUpdateView(CampanaEntranteConFormsetParametrosViewMixin, UpdateView):
     """
