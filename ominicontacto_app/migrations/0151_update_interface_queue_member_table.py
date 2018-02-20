@@ -22,7 +22,7 @@ def update_interface_in_queue_member_table(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0149_update_sip_extension_agenteprofile_supervisorprofile'),
+        ('ominicontacto_app', '0150_update_sip_extension_agenteprofile_supervisorprofile'),
     ]
 
     operations = [

@@ -37,7 +37,7 @@ def update_sip_extension_in_supervisorprofile(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0148_update_username_subscriber'),
+        ('ominicontacto_app', '0149_update_sip_agente_grabacion'),
     ]
 
     operations = [
