@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 from django.db import connection
+from django.conf import settings
 
 
 def update_username_alto_in_subscriber(apps, schema_editor):
@@ -11,6 +12,10 @@ def update_username_alto_in_subscriber(apps, schema_editor):
     Actualiza la tabla subscriber con un valor lo suficientemente alto
     para que no coincida con ningun valor de id de usuario
     """
+
+    if settings.OML_TESTING_MODE:
+        print("Ignorando migracion 0148_update_username_subscriber")
+        return
 
     cursor = connection.cursor()
     sql = """update subscriber set username = (10000 +id)"""
@@ -22,6 +27,10 @@ def update_username_real_in_subscriber(apps, schema_editor):
     """
     Actualiza la tabla subscriber con un valor real
     """
+
+    if settings.OML_TESTING_MODE:
+        print("Ignorando migracion 0148_update_username_subscriber")
+        return
 
     cursor = connection.cursor()
     sql = """update subscriber set username = (1000 + id)"""
