@@ -12,7 +12,8 @@ from django.shortcuts import redirect
 from django.views.generic import CreateView, UpdateView, FormView
 from ominicontacto_app.forms import (
     QueueDialerForm, QueueDialerUpdateForm, CampanaDialerUpdateForm,
-    SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm, CampanaDialerForm
+    SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm, CampanaDialerForm,
+    ParametroExtraParaWebformFormSet
 )
 from ominicontacto_app.models import (
     Campana, Queue, BaseDatosContacto, ActuacionVigente, ReglasIncidencia
@@ -58,29 +59,29 @@ class CampanaDialerEnDefinicionMixin(object):
             self.kwargs['pk_campana'])
 
 
-class CampanaDialerCreateView(CreateView):
-    """
-    Esta vista crea un objeto Campana.
-    Por defecto su estado es EN_DEFICNICION,
-    Redirecciona a crear las opciones para esta
-    Campana.
-    """
-
-    template_name = 'campana_dialer/nueva_edita_campana.html'
+class CampanaDialerConFormsetParametrosViewMixin(object):
     model = Campana
     context_object_name = 'campana'
-    form_class = CampanaDialerForm
 
-    def dispatch(self, request, *args, **kwargs):
-        base_datos = BaseDatosContacto.objects.obtener_definidas()
-        if not base_datos:
-            message = ("Debe cargar una base de datos antes de comenzar a "
-                       "configurar una campana dialer")
-            messages.warning(self.request, message)
-        return super(CampanaDialerCreateView, self).dispatch(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        parametro_extra_formset = ParametroExtraParaWebformFormSet(instance=self.object)
+        return self.render_to_response(self.get_context_data(
+            form=form, parametro_extra_formset=parametro_extra_formset))
 
-    def form_invalid(self, form, error=None):
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        parametro_extra_formset = ParametroExtraParaWebformFormSet(self.request.POST,
+                                                                   instance=self.object)
 
+        if form.is_valid() and parametro_extra_formset.is_valid():
+            return self.form_valid(form, parametro_extra_formset)
+        else:
+            return self.form_invalid(form, parametro_extra_formset)
+
+    def form_invalid(self, form, parametro_extra_formset, error=None):
         message = '<strong>Operación Errónea!</strong> \
                 . {0}'.format(error)
 
@@ -91,9 +92,33 @@ class CampanaDialerCreateView(CreateView):
         )
         context_data = self.get_context_data()
         context_data['form'] = form
+        context_data['parametro_extra_formset'] = parametro_extra_formset
         return self.render_to_response(context_data)
 
-    def form_valid(self, form):
+
+class CampanaDialerCreateView(CampanaDialerConFormsetParametrosViewMixin, CreateView):
+    """
+    Esta vista crea un objeto Campana.
+    Por defecto su estado es EN_DEFICNICION,
+    Redirecciona a crear las opciones para esta
+    Campana.
+    """
+
+    template_name = 'campana_dialer/nueva_edita_campana.html'
+    form_class = CampanaDialerForm
+
+    def dispatch(self, request, *args, **kwargs):
+        base_datos = BaseDatosContacto.objects.obtener_definidas()
+        if not base_datos:
+            message = ("Debe cargar una base de datos antes de comenzar a "
+                       "configurar una campana dialer")
+            messages.warning(self.request, message)
+        return super(CampanaDialerCreateView, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self):
+        return None
+
+    def form_valid(self, form, parametro_extra_formset):
         self.object = form.save(commit=False)
         tipo_interaccion = self.object.tipo_interaccion
         if tipo_interaccion is Campana.FORMULARIO and \
@@ -106,6 +131,8 @@ class CampanaDialerCreateView(CreateView):
         self.object.type = Campana.TYPE_DIALER
         self.object.reported_by = self.request.user
         self.object.save()
+        parametro_extra_formset.instance = self.object
+        parametro_extra_formset.save()
         return super(CampanaDialerCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -114,7 +141,7 @@ class CampanaDialerCreateView(CreateView):
             kwargs={"pk_campana": self.object.pk})
 
 
-class CampanaDialerUpdateView(UpdateView):
+class CampanaDialerUpdateView(CampanaDialerConFormsetParametrosViewMixin, UpdateView):
     """
     Esta vista actualiza un objeto Campana.
     """
@@ -126,6 +153,11 @@ class CampanaDialerUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def form_valid(self, form, parametro_extra_formset):
+        self.object = form.save(commit=False)
+        parametro_extra_formset.save()
+        return super(CampanaDialerUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(

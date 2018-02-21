@@ -20,11 +20,11 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio, Calificacion, CalificacionCampana
+    AgendaManual, ArchivoDeAudio, Calificacion, CalificacionCampana, ParametroExtraParaWebform
 )
 
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_gestion_campanas)
+                                      validar_gestion_campanas, validar_solo_ascii_y_sin_espacios)
 
 TIEMPO_MINIMO_DESCONEXION = 2
 
@@ -809,6 +809,27 @@ class CampanaDialerUpdateForm(forms.ModelForm):
 
     def clean_gestion(self):
         return validar_gestion_campanas(self)
+
+
+class ParametroExtraParaWebformForm(forms.ModelForm):
+    class Meta:
+        model = ParametroExtraParaWebform
+        fields = ('campana', 'parametro', 'columna')
+
+    def clean_parametro(self):
+        parametro = self.cleaned_data['parametro']
+        validar_solo_ascii_y_sin_espacios(parametro)
+        return parametro
+
+    def clean_columna(self):
+        columna = self.cleaned_data['columna']
+        validar_solo_ascii_y_sin_espacios(columna)
+        return columna
+
+
+ParametroExtraParaWebformFormSet = inlineformset_factory(
+    Campana, ParametroExtraParaWebform,
+    form=ParametroExtraParaWebformForm, can_delete=True, extra=1, max_num=6)
 
 
 class ActuacionVigenteForm(forms.ModelForm):

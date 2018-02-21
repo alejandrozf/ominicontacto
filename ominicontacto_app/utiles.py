@@ -287,15 +287,26 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
             self.writerow(row)
 
 
+def validar_solo_ascii_y_sin_espacios(
+        cadena,
+        error_ascii='el texto no puede contener tildes ni caracteres no ASCII',
+        error_espacios='el texto no puede contener espacios'):
+    """
+    Valida que no hayan espacios ni caracteres no ASCII
+    """
+    if ' ' in cadena:
+        raise ValidationError(error_espacios)
+    if any([(ord(i) >= 128) for i in cadena]):
+        raise ValidationError(error_ascii)
+
+
 def validar_nombres_campanas(nombre):
     """
     Valida que no hayan espacios ni caracteres no ASCII en los nombres de campañas
     """
     error_ascii = 'el nombre no puede contener tildes ni caracteres no ASCII'
-    if ' ' in nombre:
-        raise ValidationError('el nombre no puede contener espacios')
-    if any([(ord(i) >= 128) for i in nombre]):
-        raise ValidationError(error_ascii)
+    error_espacios = 'el nombre no puede contener espacios'
+    validar_solo_ascii_y_sin_espacios(nombre, error_ascii, error_espacios)
 
 
 def validar_gestion_campanas_aux(gestion, calificacion_campana):
