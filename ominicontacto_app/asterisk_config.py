@@ -67,6 +67,18 @@ class QueueDialplanConfigCreator(object):
             filepath = os.path.join('olc', filename)
         param_generales['filepath_audio_ingreso'] = filepath
 
+        sub_partes = []
+        param_generales['parametros_extra'] = ''
+        # Generador para lineas de Parametros Extra para Webform
+        if campana.parametros_extra_para_webform.count() > 0:
+            for parametro in campana.parametros_extra_para_webform.all():
+                generador_queue = self._generador_dialer_factory. \
+                    crear_generador_para_parametro_extra_para_webform({
+                        'parametro': parametro.parametro,
+                        'columna': parametro.columna})
+                sub_partes.append(generador_queue.generar_pedazo())
+        param_generales['parametros_extra'] = ''.join(sub_partes)
+
         if campana.queue_campana.auto_grabacion:
             generador_queue = self._generador_factory.\
                 crear_generador_para_queue_grabacion(param_generales)
@@ -102,16 +114,25 @@ class QueueDialplanConfigCreator(object):
             crear_generador_para_campana_dialer_start(param_generales)
         partes.append(generador_queue.generar_pedazo())
 
-        # Generador para contestadores
-        if campana.queue_campana.detectar_contestadores:
-            generador_queue = self._generador_dialer_factory. \
-                crear_generador_para_campana_dialer_contestadores(param_generales)
-            partes.append(generador_queue.generar_pedazo())
+        # Generador para lineas de Parametros Extra para Webform
+        if campana.parametros_extra_para_webform.count() > 0:
+            for parametro in campana.parametros_extra_para_webform.all():
+                generador_queue = self._generador_dialer_factory. \
+                    crear_generador_para_parametro_extra_para_webform({
+                        'parametro': parametro.parametro,
+                        'columna': parametro.columna})
+                partes.append(generador_queue.generar_pedazo())
 
         # Generador para grabacion
         if campana.queue_campana.auto_grabacion:
             generador_queue = self._generador_dialer_factory. \
                 crear_generador_para_campana_dialer_grabacion(param_generales)
+            partes.append(generador_queue.generar_pedazo())
+
+        # Generador para contestadores
+        if campana.queue_campana.detectar_contestadores:
+            generador_queue = self._generador_dialer_factory. \
+                crear_generador_para_campana_dialer_contestadores(param_generales)
             partes.append(generador_queue.generar_pedazo())
 
         # generador de acuerdo al tipo de interacion
@@ -137,6 +158,7 @@ class QueueDialplanConfigCreator(object):
                 generador_queue = self._generador_dialer_factory. \
                     crear_generador_para_campana_dialer_contestadores_end(param_generales)
             partes.append(generador_queue.generar_pedazo())
+
         return ''.join(partes)
 
     def _obtener_todas_entrante_para_generar_dialplan(self):
