@@ -861,7 +861,7 @@ class ParametroExtraParaWebformForm(forms.ModelForm):
 
 ParametroExtraParaWebformFormSet = inlineformset_factory(
     Campana, ParametroExtraParaWebform,
-    form=ParametroExtraParaWebformForm, can_delete=True, extra=1, max_num=6)
+    form=ParametroExtraParaWebformForm, can_delete=True, extra=1)
 
 
 class ActuacionVigenteForm(forms.ModelForm):

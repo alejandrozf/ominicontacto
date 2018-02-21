@@ -78,6 +78,22 @@ class CampanaEntranteConFormsetParametrosViewMixin(object):
         else:
             return self.form_invalid(form, parametro_extra_formset)
 
+    def form_invalid(self, form, parametro_extra_formset, error=None):
+
+        message = '<strong>Operación Errónea!</strong> \
+                . {0}'.format(error)
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+
+        context_data = self.get_context_data()
+        context_data['form'] = form
+        context_data['parametro_extra_formset'] = parametro_extra_formset
+        return self.render_to_response(context_data)
+
 
 class CampanaEntranteCreateView(CampanaEntranteConFormsetParametrosViewMixin, CreateView):
     """
@@ -100,21 +116,6 @@ class CampanaEntranteCreateView(CampanaEntranteConFormsetParametrosViewMixin, Cr
                        "configurar una campana")
             messages.warning(self.request, message)
         return super(CampanaEntranteCreateView, self).dispatch(request, *args, **kwargs)
-
-    def form_invalid(self, form, parametro_extra_formset, error=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                . {0}'.format(error)
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-        context_data = self.get_context_data()
-        context_data['form'] = form
-        context_data['parametro_extra_formset'] = parametro_extra_formset
-        return self.render_to_response(context_data)
 
     def form_valid(self, form, parametro_extra_formset):
         self.object = form.save(commit=False)
@@ -154,22 +155,6 @@ class CampanaEntranteUpdateView(CampanaEntranteConFormsetParametrosViewMixin, Up
         parametro_extra_formset.instance = self.object
         parametro_extra_formset.save()
         return super(CampanaEntranteUpdateView, self).form_valid(form)
-
-    def form_invalid(self, form, parametro_extra_formset, error=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                  La base de datos es erronea. {0}'.format(error)
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-
-        context_data = self.get_context_data()
-        context_data['form'] = form
-        context_data['parametro_extra_formset'] = parametro_extra_formset
-        return self.render_to_response(context_data)
 
     def get_success_url(self):
         return reverse(

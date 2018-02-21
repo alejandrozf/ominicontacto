@@ -1,12 +1,22 @@
     {% extends "base.html" %}
 {% load static %}
 {% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
 <script>
     $(document).ready(function() {
             $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
         $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
 
         });
+
+     $(function(){
+         $('.parametros-formset').formset({
+            addText: '+',
+            deleteText: 'borrar',
+            prefix: 'parametros_extra_para_webform'
+         });
+     })
+
     </script>
 {% endblock %}
 {% block content %}
@@ -106,12 +116,17 @@
             {{ form.objetivo }}
         </div>
     </div>
-    {{ parametro_extra_formset.management_form }}
-    <table>
+
+    <h4>Parámetros extra para Webform</h4>
+    <div class="form-group row">
+        {{ parametro_extra_formset.management_form }}
         {% for form in parametro_extra_formset %}
+        <table class="parametros-formset">
         {{ form }}
+        </table>    
         {% endfor %}
-    </table>    
+    </div>
+
     </br>
     <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
         Siguiente

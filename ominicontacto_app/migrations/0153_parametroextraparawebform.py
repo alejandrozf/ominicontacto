@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0151_update_interface_queue_member_table'),
+        ('ominicontacto_app', '0152_crea_tabla_cdr'),
     ]
 
     operations = [
