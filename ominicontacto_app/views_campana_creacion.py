@@ -44,10 +44,6 @@ class CampanaEntranteCreateView(SessionWizardView):
 
     form_list = FORMS
 
-    model = Campana
-    context_object_name = 'campana'
-    form_class = CampanaForm
-
     def get_template_names(self):
         return [self.TEMPLATES[self.steps.current]]
 
@@ -119,3 +115,23 @@ class CampanaEntranteCreateView(SessionWizardView):
             name = step_cleaned_data['nombre']
             initial_data.update({'name': name})
         return initial_data
+
+
+class CampanaEntranteUpdateView(SessionWizardView):
+    """
+    Esta vista modifica una campaña entrante
+    """
+
+    INICIAL = '0'
+    COLA = '1'
+    OPCIONES_CALIFICACION = '2'
+
+    FORMS = [(INICIAL, CampanaForm),
+             (COLA, QueueEntranteForm),
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
+
+    TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
+                 COLA: "campana/create_update_queue.html",
+                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html"}
+
+    form_list = FORMS
