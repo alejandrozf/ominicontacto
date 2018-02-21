@@ -60,10 +60,7 @@ class CampanaEnDefinicionMixin(object):
 
 class CampanaEntranteCreateView(SessionWizardView):
     """
-    Esta vista crea un objeto Campana.
-    Por defecto su estado es EN_DEFICNICION,
-    Redirecciona a crear las opciones para esta
-    Campana.
+    Esta vista crea un objeto Campana de tipo entrante
     """
 
     INICIAL = '0'
@@ -87,8 +84,42 @@ class CampanaEntranteCreateView(SessionWizardView):
     def get_template_names(self):
         return [self.TEMPLATES[self.steps.current]]
 
+    def _save_queue(self, queue_form):
+        queue_form.instance.eventmemberstatus = True
+        queue_form.instance.eventwhencalled = True
+        queue_form.instance.ringinuse = True
+        queue_form.instance.setinterfacevar = True
+        queue_form.instance.wrapuptime = 0
+        queue_form.instance.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
+        audio_pk = queue_form.cleaned_data['audios']
+        if audio_pk:
+            audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
+            queue_form.instance.announce = audio.audio_asterisk
+        else:
+            queue_form.instance.announce = None
+        queue_form.instance.save()
+        servicio_asterisk = AsteriskService()
+        servicio_asterisk.insertar_cola_asterisk(queue_form.instance)
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError:
+            raise
+
     def done(self, form_list, **kwargs):
-        pass
+        campana_form = form_list[int(self.INICIAL)]
+        queue_form = form_list[int(self.COLA)]
+        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        campana_form.instance.type = Campana.TYPE_ENTRANTE
+        campana_form.instance.reported_by = self.request.user
+        campana_form.instance.estado = Campana.ESTADO_ACTIVA
+        campana_form.save()
+        campana = campana_form.instance
+        queue_form.instance.campana = campana
+        self._save_queue(queue_form)
+        opciones_calificacion_formset.instance = campana
+        opciones_calificacion_formset.save()
+        return HttpResponseRedirect(reverse('campana_list'))
 
     def get_form(self, step=None, data=None, files=None):
         if step is None:
@@ -159,50 +190,6 @@ class QueueEntranteCreateView(CheckEstadoCampanaMixin, CampanaEnDefinicionMixin,
     model = Queue
     form_class = QueueEntranteForm
     # template_name = 'campana/create_update_queue.html'
-
-    def get_initial(self):
-        initial = super(QueueEntranteCreateView, self).get_initial()
-        initial.update({'campana': self.campana.id,
-                        'name': self.campana.nombre})
-        return initial
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        audios = ArchivoDeAudio.objects.all()
-        return self.form_class(audios_choices=audios, **self.get_form_kwargs())
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.eventmemberstatus = True
-        self.object.eventwhencalled = True
-        self.object.ringinuse = True
-        self.object.setinterfacevar = True
-        self.object.wrapuptime = 0
-        self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
-        audio_pk = form.cleaned_data['audios']
-        if audio_pk:
-            audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
-            self.object.announce = audio.audio_asterisk
-        else:
-            self.object.announce = None
-        self.object.save()
-        servicio_asterisk = AsteriskService()
-        servicio_asterisk.insertar_cola_asterisk(self.object)
-        self.campana.estado = Campana.ESTADO_ACTIVA
-        self.campana.save()
-        activacion_queue_service = ActivacionQueueService()
-        try:
-            activacion_queue_service.activar()
-        except RestablecerDialplanError, e:
-            message = ("<strong>Operación Errónea!</strong> "
-                       "No se pudo confirmar la creación del dialplan  "
-                       "al siguiente error: {0}".format(e))
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-        return super(QueueEntranteCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(QueueEntranteCreateView, self).get_context_data(**kwargs)
