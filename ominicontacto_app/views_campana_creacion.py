@@ -10,7 +10,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, UpdateView
 from ominicontacto_app.forms import (
-    CampanaForm, QueueEntranteForm, QueueEntranteUpdateForm, CampanaUpdateForm
+    CampanaForm, QueueEntranteForm, QueueEntranteUpdateForm, CampanaUpdateForm,
+    ParametroExtraParaWebformFormSet
 )
 from ominicontacto_app.models import (
     Campana, Queue, BaseDatosContacto, ArchivoDeAudio
@@ -55,7 +56,30 @@ class CampanaEnDefinicionMixin(object):
             self.kwargs['pk_campana'])
 
 
-class CampanaEntranteCreateView(CreateView):
+class CampanaEntranteConFormsetParametrosViewMixin(object):
+    model = Campana
+    context_object_name = 'campana'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        parametro_extra_formset = ParametroExtraParaWebformFormSet(instance=self.object)
+        return self.render_to_response(self.get_context_data(
+            form=form, parametro_extra_formset=parametro_extra_formset))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        parametro_extra_formset = ParametroExtraParaWebformFormSet(self.request.POST,
+                                                                   instance=self.object)
+
+        if form.is_valid() and parametro_extra_formset.is_valid():
+            return self.form_valid(form, parametro_extra_formset)
+        else:
+            return self.form_invalid(form, parametro_extra_formset)
+
+
+class CampanaEntranteCreateView(CampanaEntranteConFormsetParametrosViewMixin, CreateView):
     """
     Esta vista crea un objeto Campana.
     Por defecto su estado es EN_DEFICNICION,
@@ -64,9 +88,10 @@ class CampanaEntranteCreateView(CreateView):
     """
 
     template_name = 'campana/nueva_edita_campana.html'
-    model = Campana
-    context_object_name = 'campana'
     form_class = CampanaForm
+
+    def get_object(self):
+        return None
 
     def dispatch(self, request, *args, **kwargs):
         base_datos = BaseDatosContacto.objects.obtener_definidas()
@@ -76,7 +101,7 @@ class CampanaEntranteCreateView(CreateView):
             messages.warning(self.request, message)
         return super(CampanaEntranteCreateView, self).dispatch(request, *args, **kwargs)
 
-    def form_invalid(self, form, error=None):
+    def form_invalid(self, form, parametro_extra_formset, error=None):
 
         message = '<strong>Operación Errónea!</strong> \
                 . {0}'.format(error)
@@ -88,21 +113,16 @@ class CampanaEntranteCreateView(CreateView):
         )
         context_data = self.get_context_data()
         context_data['form'] = form
+        context_data['parametro_extra_formset'] = parametro_extra_formset
         return self.render_to_response(context_data)
 
-    def form_valid(self, form):
+    def form_valid(self, form, parametro_extra_formset):
         self.object = form.save(commit=False)
-        if self.object.tipo_interaccion is Campana.FORMULARIO and \
-                not self.object.formulario:
-            error = "Debe seleccionar un formulario"
-            return self.form_invalid(form, error=error)
-        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-                not self.object.sitio_externo:
-            error = "Debe seleccionar un sitio externo"
-            return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_ENTRANTE
         self.object.reported_by = self.request.user
         self.object.save()
+        parametro_extra_formset.instance = self.object
+        parametro_extra_formset.save()
         return super(CampanaEntranteCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -111,20 +131,18 @@ class CampanaEntranteCreateView(CreateView):
             kwargs={"pk_campana": self.object.pk})
 
 
-class CampanaEntranteUpdateView(UpdateView):
+class CampanaEntranteUpdateView(CampanaEntranteConFormsetParametrosViewMixin, UpdateView):
     """
     Esta vista actualiza un objeto Campana.
     """
 
     template_name = 'campana/edita_campana.html'
-    model = Campana
-    context_object_name = 'campana'
     form_class = CampanaUpdateForm
 
     def get_object(self, queryset=None):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
-    def form_valid(self, form):
+    def form_valid(self, form, parametro_extra_formset):
         self.object = form.save(commit=False)
         campana_service = CampanaService()
         error = None
@@ -132,10 +150,12 @@ class CampanaEntranteUpdateView(UpdateView):
             error = campana_service.validar_modificacion_bd_contacto(
                 self.get_object(), self.object.bd_contacto)
         if error:
-            return self.form_invalid(form, error=error)
+            return self.form_invalid(form, parametro_extra_formset, error=error)
+        parametro_extra_formset.instance = self.object
+        parametro_extra_formset.save()
         return super(CampanaEntranteUpdateView, self).form_valid(form)
 
-    def form_invalid(self, form, error=None):
+    def form_invalid(self, form, parametro_extra_formset, error=None):
 
         message = '<strong>Operación Errónea!</strong> \
                   La base de datos es erronea. {0}'.format(error)
@@ -148,6 +168,7 @@ class CampanaEntranteUpdateView(UpdateView):
 
         context_data = self.get_context_data()
         context_data['form'] = form
+        context_data['parametro_extra_formset'] = parametro_extra_formset
         return self.render_to_response(context_data)
 
     def get_success_url(self):

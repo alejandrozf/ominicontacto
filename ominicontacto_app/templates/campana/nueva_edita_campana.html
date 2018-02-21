@@ -73,6 +73,12 @@
             {{ form.objetivo }}
         </div>
     </div>
+    {{ parametro_extra_formset.management_form }}
+    <table>
+        {% for form in parametro_extra_formset %}
+        {{ form }}
+        {% endfor %}
+    </table>    
     </br>
     <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
         Siguiente

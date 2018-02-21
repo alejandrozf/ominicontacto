@@ -120,14 +120,6 @@ class CampanaDialerCreateView(CampanaDialerConFormsetParametrosViewMixin, Create
 
     def form_valid(self, form, parametro_extra_formset):
         self.object = form.save(commit=False)
-        tipo_interaccion = self.object.tipo_interaccion
-        if tipo_interaccion is Campana.FORMULARIO and \
-           not self.object.formulario:
-            error = "Debe seleccionar un formulario"
-            return self.form_invalid(form, error=error)
-        elif tipo_interaccion is Campana.SITIO_EXTERNO and not self.object.sitio_externo:
-            error = "Debe seleccionar un sitio externo"
-            return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_DIALER
         self.object.reported_by = self.request.user
         self.object.save()
