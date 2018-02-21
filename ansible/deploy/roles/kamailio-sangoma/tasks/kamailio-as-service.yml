@@ -19,9 +19,14 @@
     - "'already exists' not in command_result.stderr"
     - "command_result.rc != 0"
 
+- name: Create kamailio.log file
+  file: path=/var/log/kamailio/ state=directory mode=0755
+- file: path=/var/log/kamailio/kamailio.log state=touch mode=0755
+
 - name: Run kamailio as a service
   shell: "{{ item }}"
   with_items:
+      - systemctl restart rsyslog
       - systemctl enable kamailio
       - systemctl daemon-reload
       - chown kamailio:kamailio -R /opt/kamailio

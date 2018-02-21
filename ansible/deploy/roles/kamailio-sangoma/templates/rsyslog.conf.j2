@@ -70,9 +70,9 @@ cron.*                                                  /var/log/cron
 uucp,news.crit                                          /var/log/spooler
 
 # Save boot messages also to boot.log
+local0.*                                                -/var/log/kamailio/kamailio.log
+local1.*                                                -/var/log/rtpengine/rtpengine.log
 local7.*                                                /var/log/boot.log
-local1.*                                                -/var/log/rtpengine.log
-local0.*                                                -/var/log/kamailio.log
 
 # ### begin forwarding rule ###
 # The statement between the begin ... end define a SINGLE forwarding
