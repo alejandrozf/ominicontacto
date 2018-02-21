@@ -92,7 +92,7 @@ class OMLTestUtilsMixin(object):
         grupo = Grupo.objects.create(nombre="grupo_test", auto_unpause=0)
         return AgenteProfile.objects.create(
             user=user,
-            sip_extension=AgenteProfile.objects.obtener_ultimo_sip_extension(),
+            sip_extension=1000 + user.id,
             sip_password="sdsfhdfhfdhfd",
             grupo=grupo,
             reported_by=user
@@ -101,8 +101,7 @@ class OMLTestUtilsMixin(object):
     def crear_supervisor_profile(self, user):
         return SupervisorProfile.objects.create(
             user=user,
-            sip_extension=SupervisorProfile.objects.
-            obtener_ultimo_sip_extension(),
+            sip_extension=1000 + user.id,
             sip_password="sdsfhdfhfdhfd",
         )
 

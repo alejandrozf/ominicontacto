@@ -138,19 +138,6 @@ class AgenteProfileManager(models.Manager):
                              "con el sip {0} no existe ".format(sip_agente))
             return None
 
-    def obtener_ultimo_sip_extension(self):
-        """
-        Este metodo se encarga de devolver el siguinte sip_extension
-        y si no existe agente e devuelve 100
-        """
-        try:
-            identificador = \
-                self.latest('id').sip_extension + 1
-        except AgenteProfile.DoesNotExist:
-            identificador = 1000
-
-        return identificador
-
 
 class AgenteProfile(models.Model):
     ESTADO_OFFLINE = 1
@@ -214,18 +201,7 @@ class AgenteProfile(models.Model):
 
 class SupervisorProfileManager(models.Manager):
 
-    def obtener_ultimo_sip_extension(self):
-        """
-        Este metodo se encarga de devolver el siguinte sip_extension
-        y si no existe supervisor e devuelve 3000
-        """
-        try:
-            identificador = \
-                self.latest('id').sip_extension + 1
-        except SupervisorProfile.DoesNotExist:
-            identificador = 3000
-
-        return identificador
+    pass
 
 
 class SupervisorProfile(models.Model):
