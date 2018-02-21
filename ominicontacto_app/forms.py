@@ -360,8 +360,8 @@ class CampanaForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'formulario',
-                  'gestion', 'sitio_externo', 'tipo_interaccion', 'objetivo')
+        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'tipo_interaccion', 'formulario',
+                  'gestion', 'sitio_externo', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -384,6 +384,22 @@ class CampanaForm(forms.ModelForm):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)
         return nombre
+
+    def clean_formulario(self):
+        tipo_interaccion = self.cleaned_data['tipo_interaccion']
+        if tipo_interaccion is Campana.FORMULARIO:
+            formulario = self.cleaned_data.get('formulario', None)
+            if not formulario:
+                raise forms.ValidationError('Debe seleccionar un formulario')
+            return formulario
+
+    def clean_sitio_externo(self):
+        tipo_interaccion = self.cleaned_data['tipo_interaccion']
+        if tipo_interaccion is Campana.SITIO_EXTERNO:
+            sitio_externo = self.cleaned_data.get('sitio_externo', None)
+            if not sitio_externo:
+                raise forms.ValidationError('Debe seleccionar un sitio externo')
+            return sitio_externo
 
 
 class CampanaUpdateForm(forms.ModelForm):
@@ -756,8 +772,8 @@ class CampanaDialerForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo',
-                  'tipo_interaccion', 'objetivo')
+                  'bd_contacto', 'tipo_interaccion', 'formulario', 'gestion', 'sitio_externo',
+                  'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -779,6 +795,22 @@ class CampanaDialerForm(forms.ModelForm):
 
     def clean_gestion(self):
         return validar_gestion_campanas(self)
+
+    def clean_formulario(self):
+        tipo_interaccion = self.cleaned_data['tipo_interaccion']
+        if tipo_interaccion is Campana.FORMULARIO:
+            formulario = self.cleaned_data.get('formulario', None)
+            if not formulario:
+                raise forms.ValidationError('Debe seleccionar un formulario')
+            return formulario
+
+    def clean_sitio_externo(self):
+        tipo_interaccion = self.cleaned_data['tipo_interaccion']
+        if tipo_interaccion is Campana.SITIO_EXTERNO:
+            sitio_externo = self.cleaned_data.get('sitio_externo', None)
+            if not sitio_externo:
+                raise forms.ValidationError('Debe seleccionar un sitio externo')
+            return sitio_externo
 
 
 class CampanaDialerUpdateForm(forms.ModelForm):
