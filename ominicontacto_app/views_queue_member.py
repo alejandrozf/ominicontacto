@@ -12,10 +12,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm
-from ominicontacto_app.models import Campana, Queue, QueueMember, Grupo, AgenteProfile
+from ominicontacto_app.models import Campana, QueueMember, Grupo, AgenteProfile
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
-from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpQueueRemoveError
@@ -34,7 +33,7 @@ class QueueMemberCreateView(FormView):
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        #agentes = AgenteProfile.objects.filter(reported_by=self.request.user)
+        # agentes = AgenteProfile.objects.filter(reported_by=self.request.user)
         agentes = AgenteProfile.objects.filter(is_inactive=False)
         return self.form_class(members=agentes, **self.get_form_kwargs())
 
@@ -60,12 +59,11 @@ class QueueMemberCreateView(FormView):
                                                       elimina_espacios(campana.nombre))
             self.object.membername = self.object.member.user.get_full_name()
             self.object.interface = """Local/{0}@from-queue/n""".format(
-            self.object.member.sip_extension)
+                self.object.member.sip_extension)
             self.object.paused = 0  # por ahora no lo definimos
             self.object.save()
 
         return super(QueueMemberCreateView, self).form_valid(form)
-
 
     def form_invalid(self, form):
         return self.render_to_response(
@@ -85,6 +83,8 @@ class QueueMemberCreateView(FormView):
             context['url_finalizar'] = 'campana_dialer_list'
         elif campana.type is Campana.TYPE_MANUAL:
             context['url_finalizar'] = 'campana_manual_list'
+        elif campana.type is Campana.TYPE_PREVIEW:
+            context['url_finalizar'] = 'campana_preview_list'
         return context
 
     def get_success_url(self):
@@ -103,7 +103,7 @@ class GrupoAgenteCreateView(FormView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         grupo_id = form.cleaned_data.get('grupo')
         grupo = Grupo.objects.get(pk=grupo_id)
-        #agentes = grupo.agentes.filter(reported_by=self.request.user)
+        # agentes = grupo.agentes.filter(reported_by=self.request.user)
         agentes = grupo.agentes.filter(is_inactive=False)
         # agrega los agentes a la campana siempre cuando no se encuentren agregados
         for agente in agentes:
@@ -116,8 +116,7 @@ class GrupoAgenteCreateView(FormView):
                           'penalty': 0,
                           'paused': 0,
                           'id_campana': "{0}_{1}".format(
-                              campana.id, elimina_espacios(campana.nombre))
-                            },
+                              campana.id, elimina_espacios(campana.nombre))},
             )
         return super(GrupoAgenteCreateView, self).form_valid(form)
 
@@ -132,6 +131,8 @@ class GrupoAgenteCreateView(FormView):
             context['url_finalizar'] = 'campana_dialer_list'
         elif campana.type is Campana.TYPE_MANUAL:
             context['url_finalizar'] = 'campana_manual_list'
+        elif campana.type is Campana.TYPE_PREVIEW:
+            context['url_finalizar'] = 'campana_preview_list'
         return context
 
     def get_success_url(self):
@@ -146,8 +147,8 @@ class QueueMemberCampanaView(TemplateView):
     template_name = 'queue/queue_member.html'
 
     def get_object(self, queryset=None):
-         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-         return campana.queue_campana
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return campana.queue_campana
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -164,7 +165,7 @@ class QueueMemberCampanaView(TemplateView):
                 message,
             )
 
-        #agentes = AgenteProfile.objects.filter(reported_by=request.user)
+        # agentes = AgenteProfile.objects.filter(reported_by=request.user)
         agentes = AgenteProfile.objects.filter(is_inactive=False)
         queue_member_form = QueueMemberForm(data=self.request.GET or None,
                                             members=agentes)
