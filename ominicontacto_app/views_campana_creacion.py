@@ -88,8 +88,11 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         else:
             queue_form.instance.announce = None
         queue_form.instance.save()
+        return queue_form.instance
+
+    def _insert_queue_asterisk(self, queue):
         servicio_asterisk = AsteriskService()
-        servicio_asterisk.insertar_cola_asterisk(queue_form.instance)
+        servicio_asterisk.insertar_cola_asterisk(queue)
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
@@ -106,7 +109,8 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         campana_form.save()
         campana = campana_form.instance
         queue_form.instance.campana = campana
-        self._save_queue(queue_form)
+        queue = self._save_queue(queue_form)
+        self._insert_queue_asterisk(queue)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
         return HttpResponseRedirect(reverse('campana_list'))
