@@ -24,16 +24,16 @@ function mostrarEstadoAgentes($camp) {
             $status = trim($status);
             if($status == "Not in use") {
                 $jsonString .= '"estado": "Libre",';
-                $jsonString .= '"tiempo": "---",';
-            } else if($status == "paused") {
+                $jsonString .= '"tiempo": "' . trim($tiempo) . '",'; //27
+                } else if($status == "paused") {
                 $jsonString .= '"estado": "Pausa - ' . $pausa[2] . '",';
                 $jsonString .= '"tiempo": "' . trim($tiempo) . '",';
-            } else if($status == "In use") {
+                } else if($status == "In use") {
                 $jsonString .= '"estado": "Llamada",';
-                $jsonString .= '"tiempo": "---",';
-            } else if($status == "in call") {
+                $jsonString .= '"tiempo": "' . trim($tiempo) . '",';
+                } else if($status == "in call") {
                 $jsonString .= '"estado": "Llamada",';
-                $jsonString .= '"tiempo": "---",';
+                $jsonString .= '"tiempo": "' . trim($tiempo) . '",'; //36
             } else {
                 $jsonString .= '"estado": "Desconectado",';
                 $jsonString .= '"tiempo": "---",';

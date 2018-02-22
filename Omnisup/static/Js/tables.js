@@ -1,6 +1,15 @@
 var tabagt;
 $(function () {
-    tabagt = $('#tableAgt').DataTable({
+  tabagt = $('#tableAgt').DataTabl
+    createdRow: function (row, data, dataIndex) {
+      if (data.estado === "Libre") {
+        $(row).css("background-color", "rgb(164, 235, 143)");
+      } else if (data.estado === "Llamada") {
+        $(row).css("background-color", "rgb(44, 169, 231)");
+      } else {//esta en pausa
+        $(row).css("background-color", "rgb(249, 159, 157)");
+      }
+    },
     columns: [
         {data: 'agente'},
         {data: 'estado'},
