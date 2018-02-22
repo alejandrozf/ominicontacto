@@ -1,6 +1,6 @@
 var tabagt;
 $(function () {
-  tabagt = $('#tableAgt').DataTables({
+  tabagt = $('#tableAgt').DataTable({
     createdRow: function (row, data, dataIndex) {
       if (data.estado === "Libre") {
         $(row).css("background-color", "rgb(164, 235, 143)");
