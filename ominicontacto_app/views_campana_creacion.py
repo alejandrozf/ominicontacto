@@ -27,6 +27,23 @@ logger = logging_.getLogger(__name__)
 
 
 class CampanaEntranteMixin(object):
+    INICIAL = '0'
+    COLA = '1'
+    OPCIONES_CALIFICACION = '2'
+
+    FORMS = [(INICIAL, CampanaForm),
+             (COLA, QueueEntranteForm),
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
+
+    TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
+                 COLA: "campana/create_update_queue.html",
+                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html"}
+
+    form_list = FORMS
+
+    def get_template_names(self):
+        return [self.TEMPLATES[self.steps.current]]
+
     def get_form(self, step=None, data=None, files=None):
         if step is None:
             step = self.steps.current
@@ -54,25 +71,8 @@ class CampanaEntranteMixin(object):
 
 class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
     """
-    Esta vista crea un objeto Campana de tipo entrante
+    Esta vista crea una campaña entrante
     """
-
-    INICIAL = '0'
-    COLA = '1'
-    OPCIONES_CALIFICACION = '2'
-
-    FORMS = [(INICIAL, CampanaForm),
-             (COLA, QueueEntranteForm),
-             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
-
-    TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
-                 COLA: "campana/create_update_queue.html",
-                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html"}
-
-    form_list = FORMS
-
-    def get_template_names(self):
-        return [self.TEMPLATES[self.steps.current]]
 
     def _save_queue(self, queue_form):
         queue_form.instance.eventmemberstatus = True
@@ -124,23 +124,6 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     """
     Esta vista modifica una campaña entrante
     """
-
-    INICIAL = '0'
-    COLA = '1'
-    OPCIONES_CALIFICACION = '2'
-
-    FORMS = [(INICIAL, CampanaForm),
-             (COLA, QueueEntranteForm),
-             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
-
-    TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
-                 COLA: "campana/create_update_queue.html",
-                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html"}
-
-    form_list = FORMS
-
-    def get_template_names(self):
-        return [self.TEMPLATES[self.steps.current]]
 
     def done(self, form_list, *args, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
