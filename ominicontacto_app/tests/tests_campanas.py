@@ -249,20 +249,20 @@ class CampanasTests(OMLBaseTest):
 
     def test_usuario_logueado_puede_modificar_campana_preview(self):
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
-        nombre_campana = 'campana_preview_actualizada'
-        post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana_activa.calificacion_campana.pk,
+        nuevo_objetivo = 3
+        post_data = {'calificacion_campana': self.campana_activa.calificacion_campana.pk,
                      'bd_contacto': self.campana_activa.bd_contacto.pk,
                      'tipo_interaccion': Campana.FORMULARIO,
                      'formulario': self.campana.formulario.pk,
                      'gestion': 'Venta',
                      'detectar_contestadores': True,
                      'auto_grabacion': True,
-                     'objetivo': 1,
+                     'objetivo': nuevo_objetivo,
                      'tiempo_desconexion': 10}
-        self.assertNotEqual(Campana.objects.get(pk=self.campana_activa.pk).nombre, nombre_campana)
+        self.assertNotEqual(Campana.objects.get(pk=self.campana_activa.pk).objetivo,
+                            nuevo_objetivo)
         self.client.post(url, post_data, follow=True)
-        self.assertEqual(Campana.objects.get(pk=self.campana_activa.pk).nombre, nombre_campana)
+        self.assertEqual(Campana.objects.get(pk=self.campana_activa.pk).objetivo, nuevo_objetivo)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_usuario_logueado_puede_eliminar_campana_preview(

@@ -48,13 +48,16 @@
 - name: Modify of /etc/rsyslog.conf
   template: src=templates/rsyslog.conf.j2 dest=/etc/rsyslog.conf
 
+- name: Create rtpengine.log file
+  file: path=/var/log/rtpengine/ state=directory mode=0755
+- file: path=/var/log/rtpengine/rtpengine.log state=touch mode=0755
+
 - name: Last changes
   shell: "{{ item }} chdir="
   with_items:
-      - touch /var/log/rtpengine.log
-      - systemctl restart rsyslog
       - systemctl enable rtpengine.service
       - mkdir -p /var/spool/rtpengine
       - chmod +x /usr/local/bin/rtpengine
       - systemctl start rtpengine
+
 

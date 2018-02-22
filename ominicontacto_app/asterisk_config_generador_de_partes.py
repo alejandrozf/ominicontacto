@@ -150,6 +150,9 @@ class GeneradorDePedazoDeCampanaDialerFactory(object):
     def crear_generador_para_campana_dialer_sitio_externo(self, parametros):
         return GeneradorParaCampanaDialerSitioExterno(parametros)
 
+    def crear_generador_para_parametro_extra_para_webform(self, parametros):
+        return GeneradorParaParametroExtraParaWebform(parametros)
+
     def crear_generador_para_campana_dialer_contestadores_end(self, parametros):
         return GeneradorParaCampanaDialerContestadoresEnd(parametros)
 
@@ -191,6 +194,7 @@ class GeneradorParaQueueSinGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
+        {parametros_extra}
         same => n,Set(__TIPOLLAMADA=IN)
         same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,{oml_queue_wait},,,queuelogSub)
@@ -221,6 +225,7 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
         same => n,SIPAddHeader(IDCamp:{oml_campana_id})
+        {parametros_extra}
         same => n,Set(__TIPOLLAMADA=IN)
         same => n,QueueLog({oml_queue_name},${{UNIQUEID}},NONE,ENTERQUEUE,|${{NUMMARCADO}}||${{TIPOLLAMADA}}|{oml_queue_type})
         same => n,Queue({oml_queue_name},tTc,,,{oml_queue_wait},,,queuelogSub)
@@ -384,6 +389,26 @@ class GeneradorParaPausaGlobal(GeneradorDePedazo):
     def get_parametros(self):
         return self._parametros
 
+
+# ==============================================================================
+# Campana Dialer
+# ==============================================================================
+
+
+class GeneradorParaParametroExtraParaWebform(GeneradorDePedazo):
+
+    def __init__(self, parametros):
+        self._parametros = parametros
+
+    def get_template(self):
+        return """
+        same => n,SIPAddHeader({parametro}:${{{columna}}})
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
 # ==============================================================================
 # Campana Dialer
 # ==============================================================================
@@ -409,6 +434,7 @@ class GeneradorParaCampanaDialerStart(GeneradorDePedazoDeCampanaDialer):
         ;----------------------------------------------------------------------
 
         exten => {oml_queue_id_asterisk},1,NoOp(cola {oml_queue_name})
+        same => n,Gosub(callstatusSub,s,1)
         same => n,Set(CHANNEL(hangup_handler_push)=canal-llamado,s,1)
         same => n,Set(CAMPANA={oml_queue_name})
         same => n,Set(AUX=${{CUT(CHANNEL,@,1)}})

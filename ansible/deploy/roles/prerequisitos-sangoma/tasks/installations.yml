@@ -21,6 +21,10 @@
 - name: Install of epel-release
   yum: name=epel-release state=present
 
+- name: Install of sngrep
+  template: src=templates/irontec.repo dest=/etc/yum.repos.d/irontec.repo
+- shell: "rpm --import http://packages.irontec.com/public.key"
+
 - name: Install the necessary packages
   yum: name={{ item }} state=present
   with_items:
@@ -79,6 +83,7 @@
       - expect-devel.x86_64
       - MySQL-python.x86_64
       - lame
+      - sngrep
 - meta: clear_host_errors
 
 - name: Change /etc/hostname

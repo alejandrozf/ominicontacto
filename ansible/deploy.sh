@@ -35,7 +35,8 @@ USAGE="
        nginx: configuraciones de nginx \n
        omnivoip: ejecuta toda la instalacion de omnivoip \n
        omniapp: ejecuta toda la instalacion de omniapp (abarca deploy de django de OML y nginx) \n
-       pre-centos: ejecuta los prerequisitos de centos (instalacion de paquetes tambien) \n
+       pre-sangoma: ejecuta los prerequisitos de SangomaOS (instalacion de paquetes tambien) \n
+       pre-centos: ejecuta los prerequisitos de Centos (instalacion de paquetes tambien) \n
        postgresusers: crea la base de datos y usuarios postgres \n
        postinstall: ejecuta tareas necesarias para un post-deploy \n
        queuelog-trigger: ejecuta el trigger de queuelog \n

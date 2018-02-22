@@ -134,6 +134,9 @@ MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'ominicontacto_app.User'
 
+TEST_RUNNER = "tests.tests.ManagedModelTestRunner"
+OML_TESTING_MODE = False
+
 LOGIN_REDIRECT_URL = 'index'
 
 OL_SIP_LIMITE_INFERIOR = 1000

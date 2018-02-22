@@ -1,11 +1,62 @@
 ---
 
-- name: Config of asterisk-freepbx for OML
-  shell: "{{ item }} chdir=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files"
+- name: Delete of asterisk files managed by omnileads
+  shell: "rm -rf {{ item }} chdir=/etc/asterisk/"
   with_items:
-      - cp *.conf /etc/asterisk/
-      - cp *.php /var/lib/asterisk/agi-bin
-      - chmod +x /var/lib/asterisk/agi-bin/omni*
+      - extensions_custom.conf
+      - extensions_fts.conf
+      - sip_custom.conf
+      - extconfig.conf
+      - amd.conf
+      - func_odbc.conf
+      - http_custom.conf
+      - extensions_fts_globals.conf
+      - extensions_fts_queues.conf
+      - func_odbc.conf
+      - manager_custom.conf
+      - queues_custom.conf
+      - globals_custom.conf
+      - pjsip.transports_custom.conf
+      - res_odbc_custom.conf
+  tags:
+    - issabel
+    - postinstall
+
+- shell: "rm -rf {{ item}} chdir=/var/lib/asterisk/agi-bin/"
+  with_items:
+      - omni-asterisk-logout.php
+      - omni-blacklist.php
+      - omni-grabaciones.php
+  tags:
+    - issabel
+    - postinstall
+
+- name: Config of asterisk-freepbx for OML
+  file: "state=link src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/etc/asterisk/{{ item }} force=true"
+  with_items:
+      - extensions_custom.conf
+      - extensions_fts.conf
+      - sip_custom.conf
+      - extconfig.conf
+      - amd.conf
+      - func_odbc.conf
+      - func_odbc.conf
+      - http_custom.conf
+      - manager_custom.conf
+      - queues_custom.conf
+      - globals_custom.conf
+      - http_custom.conf
+      - pjsip.transports_custom.conf
+      - res_odbc_custom.conf
+  tags:
+    - issabel
+    - postinstall
+
+- copy: "src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner=asterisk"
+  with_items:
+      - omni-asterisk-logout.php
+      - omni-blacklist.php
+      - omni-grabaciones.php
   tags:
     - issabel
     - postinstall

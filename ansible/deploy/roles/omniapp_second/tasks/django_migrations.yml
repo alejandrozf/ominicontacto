@@ -27,6 +27,7 @@
           - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
           - collectstatic
           - compress
+          - regenerar_asterisk
   environment:
     PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   ignore_errors: yes
