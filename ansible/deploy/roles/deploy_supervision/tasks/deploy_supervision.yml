@@ -2,6 +2,8 @@
 - set_fact: omnisup_dir=/home/freetech
   tags: issabel
 
+- file: path=/home/freetech/Omnisup state=absent
+
 - name: Install of php56-fpm
   yum: name=php56w-fpm.x86_64 state=present
   ignore_errors: yes
@@ -30,25 +32,21 @@
       - systemctl enable php-fpm
   tags: issabel
 
-- name: Move Omnisup directory
-  shell: "cp -a {{ omnisup_dir }}/ominicontacto/Omnisup {{ omnisup_dir }}"
-  tags: issabel
-
-- name: Change of Omnisup permissions
-  shell: "chmod 755 -R {{ omnisup_dir }}/Omnisup"
-  tags: issabel
-
 - name: Creation of config.php
-  template: src=templates/config.php.j2 dest={{ omnisup_dir }}/Omnisup/config.php
+  template: src=templates/config.php.j2 dest={{ omnisup_dir }}/ominicontacto/Omnisup/config.php
   tags: issabel
 
 - name: Modify of config.js in /static/Js
-  template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/Omnisup/static/Js/config.js"
+  template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/ominicontacto/Omnisup/static/Js/config.js"
   tags: issabel
 
 - name: Change phone.js default port on /static/JS/phone.js
-  lineinfile: "dest={{ omnisup_dir }}/Omnisup/static/Js/phone.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
+  lineinfile: "dest={{ omnisup_dir }}/ominicontacto/Omnisup/static/Js/phone.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
   when: ansible_os_family == "Redhat" or ansible_os_family == "Sangoma"
+  tags: issabel
+
+- name: Create simbolic link of Omnisup directory
+  file: src={{ omnisup_dir }}/ominicontacto/Omnisup dest={{ omnisup_dir }}/Omnisup state=link owner=freetech group=freetech mode=755
   tags: issabel
 
 - name: Restart php-fpm service
