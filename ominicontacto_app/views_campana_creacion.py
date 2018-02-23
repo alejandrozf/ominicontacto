@@ -68,6 +68,15 @@ class CampanaEntranteMixin(object):
                 kwargs.setdefault('queryset', self.get_form_instance(step))
             return form_class(audio_choices, **kwargs)
 
+    def _insert_queue_asterisk(self, queue):
+        servicio_asterisk = AsteriskService()
+        servicio_asterisk.insertar_cola_asterisk(queue)
+        activacion_queue_service = ActivacionQueueService()
+        try:
+            activacion_queue_service.activar()
+        except RestablecerDialplanError:
+            raise
+
 
 class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
     """
@@ -89,15 +98,6 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
             queue_form.instance.announce = None
         queue_form.instance.save()
         return queue_form.instance
-
-    def _insert_queue_asterisk(self, queue):
-        servicio_asterisk = AsteriskService()
-        servicio_asterisk.insertar_cola_asterisk(queue)
-        activacion_queue_service = ActivacionQueueService()
-        try:
-            activacion_queue_service.activar()
-        except RestablecerDialplanError:
-            raise
 
     def done(self, form_list, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
@@ -132,17 +132,15 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     def done(self, form_list, *args, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
         queue_form = form_list[int(self.COLA)]
-        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-        campana_form.instance.type = Campana.TYPE_ENTRANTE
-        campana_form.instance.reported_by = self.request.user
-        campana_form.instance.estado = Campana.ESTADO_ACTIVA
-        campana_form.save()
+        campana_form.instance.save()
+        queue_form.instance.save()
         campana = campana_form.instance
-        queue_form.instance.campana = campana
-        # self._save_queue(queue_form)
-        queue_form.save()
-        opciones_calificacion_formset.instance = campana
+        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        opciones_calificacion_formset.instance = campana_form.instance
+        for opcion_calificacion_form in opciones_calificacion_formset.forms:
+            opcion_calificacion_form.instance.campana = campana
         opciones_calificacion_formset.save()
+        self._insert_queue_asterisk(queue_form.instance)
         return HttpResponseRedirect(reverse('campana_list'))
 
     def get_form_instance(self, step):
@@ -153,11 +151,9 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         if step == self.COLA:
             return campana.queue_campana
 
-    def get_form_initial(self, step):
-        if step == self.OPCIONES_CALIFICACION:
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(CampanaEntranteUpdateView, self).get_context_data(form=form, **kwargs)
+        if self.steps.current == self.OPCIONES_CALIFICACION:
             campana = self.get_form_instance(self.INICIAL)
-            opciones_calificacion = campana.opciones_calificacion.all()
-            initial_data = [{'nombre': opcion_calificacion.nombre, 'tipo': opcion_calificacion.tipo}
-                            for opcion_calificacion in opciones_calificacion]
-            return initial_data
-        return super(CampanaEntranteUpdateView, self).get_form_initial(step)
+            context['wizard']['form'].queryset = campana.opciones_calificacion.all()
+        return context
