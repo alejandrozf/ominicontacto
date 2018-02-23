@@ -38,11 +38,6 @@
   template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/ominicontacto/Omnisup/static/Js/config.js"
   tags: issabel
 
-- name: Change phone.js default port on /static/JS/phone.js
-  lineinfile: "dest={{ omnisup_dir }}/ominicontacto/Omnisup/static/Js/phone.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
-  when: ansible_os_family == "Redhat" or ansible_os_family == "Sangoma"
-  tags: issabel
-
 - name: Create simbolic link of Omnisup directory
   file: src={{ omnisup_dir }}/ominicontacto/Omnisup dest={{ omnisup_dir }}/Omnisup state=link owner=freetech group=freetech mode=755
   tags: issabel

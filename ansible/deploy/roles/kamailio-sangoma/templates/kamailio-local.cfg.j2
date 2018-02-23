@@ -1,5 +1,5 @@
-#!substdef "!MY_IP_ADDR!172.16.20.12!g"
-#!substdef "!MY_DOMAIN!oml-dev.example.com!g"
+#!substdef "!MY_IP_ADDR!{{ omni_ip }}!g"
+#!substdef "!MY_DOMAIN!{{ omnicentos_fqdn }}!g"
 #!substdef "!MY_UDP_PORT!5060!g"
 #!substdef "!MY_TCP_PORT!5060!g"
 #!substdef "!MY_TLS_PORT!5061!g"
@@ -7,8 +7,9 @@
 #!substdef "!MY_WSS_PORT!14443!g"
 #!substdef "!MY_MSRP_PORT!6060!g"
 #!substdef "!MY_MSRPTCP_PORT!6061!g"
-#!substdef "!MY_ASTERISK!172.16.20.12!g"
+#!substdef "!MY_ASTERISK!{{ omni_ip }}!g"
 #!substdef "!MY_DB!127.0.0.1!g"
+
 
 #!substdef "!MY_UDP_ADDR!udp:MY_IP_ADDR:MY_UDP_PORT!g"
 #!substdef "!MY_TCP_ADDR!tcp:MY_IP_ADDR:MY_TCP_PORT!g"
@@ -19,4 +20,3 @@
 #!substdef "!MY_MSRPTCP_ADDR!tcp:MY_IP_ADDR:MY_MSRPTCP_PORT!g"
 #!substdef "!MSRP_MIN_EXPIRES!1800!g"
 #!substdef "!MSRP_MAX_EXPIRES!3600!g"
-
