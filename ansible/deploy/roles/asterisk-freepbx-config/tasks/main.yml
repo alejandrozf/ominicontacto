@@ -27,6 +27,7 @@
       - omni-asterisk-logout.php
       - omni-blacklist.php
       - omni-grabaciones.php
+      - omni-dialednum.php
   tags:
     - issabel
     - postinstall
@@ -52,11 +53,12 @@
     - issabel
     - postinstall
 
-- copy: "src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner=asterisk"
+- copy: "src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner=asterisk group=asterisk"
   with_items:
       - omni-asterisk-logout.php
       - omni-blacklist.php
       - omni-grabaciones.php
+      - omni-dialednum.php
   tags:
     - issabel
     - postinstall
