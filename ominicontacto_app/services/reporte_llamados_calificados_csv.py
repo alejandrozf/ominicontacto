@@ -61,8 +61,11 @@ class ArchivoDeReporteCsv(object):
             nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
                 encabezado.append(nombre)
-
-            encabezado.append("Gestionado")
+            encabezado.append("Fecha-Hora Contacto")
+            encabezado.append("Tel status")
+            encabezado.append("Tel contactado")
+            encabezado.append("Calificado")
+            encabezado.append("Agente")
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -81,10 +84,14 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(calificacion.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
+                lista_opciones.append(calificacion.fecha)
+                lista_opciones.append("Contactado")
+                lista_opciones.append(calificacion.contacto.telefono)
                 if calificacion.es_venta:
                     lista_opciones.append(calificacion.campana.gestion)
                 else:
                     lista_opciones.append(calificacion.calificacion)
+                lista_opciones.append(calificacion.agente)
 
                     # --- Finalmente, escribimos la linea
 
@@ -100,7 +107,11 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(contacto.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
+                lista_opciones.append("N/D")
+                lista_opciones.append("Contactado")
+                lista_opciones.append(contacto.telefono)
                 lista_opciones.append("AGENTE NO CALIFICO")
+                lista_opciones.append(contacto.agente)
 
                 # --- Finalmente, escribimos la linea
 
