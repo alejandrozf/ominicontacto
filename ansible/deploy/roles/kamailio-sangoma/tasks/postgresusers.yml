@@ -38,5 +38,8 @@
       - cp kamailio-files/kamctlrc /opt/kamailio/etc/kamailio/
       - cp kamailio-files/kamailio.service /etc/systemd/system
       - cp kamailio-files/kamailio /etc/default
-- file: state=link src=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest=/opt/kamailio/etc/kamailio/kamailio.cfg force=true
+- file: "state=link src=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/{{ item }} dest=/opt/kamailio/etc/kamailio/{{ item }} force=true owner=kamailio group=kamailio"
+  with_items:
+      - kamailio.cfg
+      - kamailio-local.cfg
   tags: postinstall

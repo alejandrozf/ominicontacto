@@ -39,9 +39,6 @@
 - lineinfile: "dest=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"MY_ASTERISK!\" line=\"#!substdef \"!MY_ASTERISK!{{ omni_ip }}!g\"\""
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
   tags: postinstall
-- lineinfile: "dest=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"^alias=\" line=\"alias=\"{{ omnicentos_fqdn }}\"\""
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-  tags: postinstall
 - lineinfile: "dest=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"MY_DOMAIN!\" line=\"#!substdef \"!MY_DOMAIN!{{ omnicentos_fqdn }}!g\"\""
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
   tags: postinstall
