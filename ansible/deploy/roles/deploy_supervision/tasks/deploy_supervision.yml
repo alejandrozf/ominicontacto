@@ -32,9 +32,7 @@
       - systemctl enable php-fpm
   tags: issabel
 
-- name: Creation of config.php
-  template: src=templates/config.php.j2 dest={{ omnisup_dir }}/ominicontacto/Omnisup/config.php
-  tags: issabel
+
 
 - name: Modify of config.js in /static/Js
   template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/ominicontacto/Omnisup/static/Js/config.js"
