@@ -140,13 +140,14 @@ class QueueEntranteForm(forms.ModelForm):
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
-                  'audios', 'announce_frequency', 'audio_de_ingreso')
+                  'audios', 'announce_frequency', 'audio_de_ingreso', 'campana')
 
         help_texts = {
             'timeout': """En segundos """,
         }
         widgets = {
             'name': forms.HiddenInput(),
+            'campana': forms.HiddenInput(),
             'timeout': forms.TextInput(attrs={'class': 'form-control'}),
             'retry': forms.TextInput(attrs={'class': 'form-control'}),
             'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
@@ -427,7 +428,7 @@ class CampanaForm(forms.ModelForm):
 class OpcionCalificacionForm(forms.ModelForm):
     class Meta:
         model = OpcionCalificacion
-        fields = ('tipo', 'nombre')
+        fields = ('tipo', 'nombre', 'campana')
 
 
 class CampanaUpdateForm(forms.ModelForm):
@@ -731,7 +732,7 @@ FormularioCalificacionFormSet = inlineformset_factory(
 
 OpcionCalificacionFormSet = inlineformset_factory(
     Campana, OpcionCalificacion, form=OpcionCalificacionForm,
-    can_delete=True, extra=0, min_num=1, exclude=('campana',))
+    can_delete=True, extra=0, min_num=1)
 
 
 class FormularioVentaForm(forms.ModelForm):
