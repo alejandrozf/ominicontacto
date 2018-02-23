@@ -16,7 +16,6 @@
                 {{ wizard.management_form }}
                 {% if wizard.form.forms %}
                     {% block formset_render %}
-                        {{ wizard.form }}
                     {% endblock %}
                 {% else %}
                     {% block form_render %}

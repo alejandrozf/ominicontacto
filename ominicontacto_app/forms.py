@@ -731,7 +731,7 @@ FormularioCalificacionFormSet = inlineformset_factory(
 
 OpcionCalificacionFormSet = inlineformset_factory(
     Campana, OpcionCalificacion, form=OpcionCalificacionForm,
-    can_delete=False, extra=0, min_num=1, exclude=('campana',))
+    can_delete=True, extra=0, min_num=1, exclude=('campana',))
 
 
 class FormularioVentaForm(forms.ModelForm):

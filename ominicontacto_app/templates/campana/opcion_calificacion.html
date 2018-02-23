@@ -7,7 +7,8 @@
     <script type="text/javascript">
      $('.link-formset').formset({
        addText: 'add link',
-       deleteText: 'remove'
+       deleteText: 'remove',
+       prefix: '{{ wizard.form.prefix }}'
      });
     </script>
 {% endblock %}
@@ -23,11 +24,18 @@
 {% endblock %}
 
 {% block formset_render %}
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+            {% for form in wizard.form.forms %}
+                <tr class="link-formset">
+                    <td>
+                        {% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+                        {{ form.nombre }}
+                    </td>
+                    <td>{{ form.tipo }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {{ wizard.form.management_form }}
-    {% for form in wizard.form.forms %}
-        <div class="link-formset">
-            {{ form.nombre }}
-            {{ form.tipo }}
-        </div>
-    {% endfor %}
 {% endblock %}

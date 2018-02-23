@@ -154,10 +154,6 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
             return campana.queue_campana
 
     def get_form_initial(self, step):
-        """
-        This redefinition avoid to call 'super' on steps 2 and 3 because we need to initialize
-        formsets and the default implementation of this version returns an incompatible type
-        """
         if step == self.OPCIONES_CALIFICACION:
             campana = self.get_form_instance(self.INICIAL)
             opciones_calificacion = campana.opciones_calificacion.all()
