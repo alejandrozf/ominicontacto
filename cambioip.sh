@@ -19,9 +19,9 @@ sudo bash -c "cat > /etc/sysconfig/rtpengine <<EOF
 OPTIONS=\"-i $nueva_ip -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=local1\"
 EOF"
 
-echo "Cambiando IP en kamailio.cfg"
-cd /home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/
-sudo sed -i "s/$ip_actual.*/$nueva_ip!g\"/" kamailio.cfg
+echo "Cambiando IP en kamailio-local.cfg"
+cd /opt/kamailio/etc/kamailio/
+sudo sed -i "s/$ip_actual.*/$nueva_ip!g\"/" kamailio-local.cfg
 
 cd /home/freetech/local
 echo "Cambiando IP en oml_settings_local.py de /home/freetech/local"
