@@ -32,6 +32,11 @@
       - chown kamailio:kamailio -R /opt/kamailio
       - /opt/kamailio/sbin/kamdbctl restore /home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamdb.sql
 
+- name: Creation of kamailio.cfg file
+  template: src=templates/kamailio-local.cfg.j2 dest=/opt/kamailio/etc/kamailio/ owner=kamailio group=kamailio
+  tags: postinstall
 
+- file: state=link src=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest=/opt/kamailio/etc/kamailio/kamailio.cfg force=true owner=kamailio group=kamailio
+  tags: postinstall
 
 
