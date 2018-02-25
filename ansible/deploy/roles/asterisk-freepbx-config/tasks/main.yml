@@ -26,6 +26,7 @@
   with_items:
       - omni-asterisk-logout.php
       - omni-blacklist.php
+      - omni-dialednum.php
       - omni-grabaciones.php
       - omni-dialednum.php
   tags:
@@ -57,6 +58,7 @@
   with_items:
       - omni-asterisk-logout.php
       - omni-blacklist.php
+      - omni-dialednum.php
       - omni-grabaciones.php
       - omni-dialednum.php
   tags:
