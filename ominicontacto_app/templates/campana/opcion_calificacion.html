@@ -40,9 +40,11 @@
             {% endif %}
             {% for form in wizard.form.forms %}
                 <tr class="linkFormset">
+                    <td>
                     {% if form.instance.pk %}
-                        <td>{{ form.DELETE }}</td>
+                        {{ form.DELETE }}
                     {% endif %}
+                    </td>
                     <td>
                         {{ form.nombre.errors }}
                         {{ form.nombre|add_class:"form-control" }}
