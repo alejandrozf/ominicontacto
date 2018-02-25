@@ -436,18 +436,20 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
     MIN_NUM_FORMS = 2
 
     def clean(self):
-        """Valida que no haya dos opciones de calificación con el mismo nombre para una campaña
-        ni más de un tipo 'Gestión'
+        """
+        Realiza los validaciones relacionadas con la semántica de las opciones de calificación
         """
         if any(self.errors):
             return
         nombres = []
         tipos_gestion_cont = 0
-        if len(self.forms) < self.MIN_NUM_FORMS:
+        deleted_forms = self.deleted_forms
+        save_candidates_forms = set(self.forms) - set(deleted_forms)
+        if len(save_candidates_forms) < self.MIN_NUM_FORMS:
                 raise forms.ValidationError(
                     _("Debe ingresar al menos {0} opciones de calificación".format(
                         self.MIN_NUM_FORMS)))
-        for form in self.forms:
+        for form in save_candidates_forms:
             nombre = form.cleaned_data.get('nombre', None)
             tipo = form.cleaned_data.get('tipo', None)
             if nombre is None:
