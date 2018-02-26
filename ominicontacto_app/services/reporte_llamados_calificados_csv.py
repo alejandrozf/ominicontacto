@@ -66,6 +66,11 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Tel contactado")
             encabezado.append("Calificado")
             encabezado.append("Agente")
+            # agrego el encabezado para los campos del formulario
+            # FIXME: posible bug si la campana tiene configurado sitio externo
+            campos = campana.formulario.campos.all()
+            for campo in campos:
+                encabezado.append(campo.nombre_campo)
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -92,6 +97,11 @@ class ArchivoDeReporteCsv(object):
                 else:
                     lista_opciones.append(calificacion.calificacion)
                 lista_opciones.append(calificacion.agente)
+
+                if calificacion.get_venta():
+                    datos = json.loads(calificacion.get_venta().metadata)
+                    for campo in campos:
+                        lista_opciones.append(datos[campo.nombre_campo])
 
                     # --- Finalmente, escribimos la linea
 
