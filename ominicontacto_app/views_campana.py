@@ -14,7 +14,7 @@ from django.views.generic import (
     ListView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import RedirectView
 from ominicontacto_app.forms import (
-    BusquedaContactoForm, ReporteForm, FormularioNuevoContacto,
+    ReporteForm, FormularioNuevoContacto,
     FormularioCampanaContacto, CampanaSupervisorUpdateForm
 )
 from ominicontacto_app.models import (
@@ -126,47 +126,6 @@ class CampanaDeleteView(CampanasDeleteMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('campana_list')
-
-
-class BusquedaFormularioFormView(FormView):
-    """Vista para buscar un contacto dentro de una campana"""
-    form_class = BusquedaContactoForm
-    template_name = 'agente/formulario_busqueda_contacto.html'
-
-    def get(self, request, *args, **kwargs):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
-            campana.bd_contacto)
-        return self.render_to_response(self.get_context_data(
-            listado_de_contacto=listado_de_contacto))
-
-    def get_context_data(self, **kwargs):
-        context = super(BusquedaFormularioFormView, self).get_context_data(
-            **kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        context['campana'] = campana
-        return context
-
-    def form_valid(self, form):
-        filtro = form.cleaned_data.get('buscar')
-        try:
-            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-            listado_de_contacto = Contacto.objects.\
-                contactos_by_filtro_bd_contacto(campana.bd_contacto, filtro)
-        except Contacto.DoesNotExist:
-            listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
-                campana.bd_contacto)
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-
-        if listado_de_contacto:
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-        else:
-            listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
-                campana.bd_contacto)
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
 
 
 class ExportaReporteCampanaView(UpdateView):

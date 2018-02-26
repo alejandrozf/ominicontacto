@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.conf.urls import url, patterns, include
+from django.conf.urls import url, include
 from django.views.static import serve
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
@@ -263,11 +263,6 @@ urlpatterns = [
     url(r'^campana/elimina/(?P<pk_campana>\d+)/$',
         login_required(views_campana.CampanaDeleteView.as_view()),
         name='campana_elimina',
-        ),
-    url(r'^formulario/(?P<pk_campana>\d+)/buscar/$',
-        login_required(
-            views_campana.BusquedaFormularioFormView.as_view()),
-        name='formulario_buscar',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/exporta/$',
         login_required(
