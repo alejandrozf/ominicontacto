@@ -62,7 +62,8 @@ class ArchivoDeReporteCsv(object):
             for nombre in nombres:
                 encabezado.append(nombre)
 
-            encabezado.append("Estado")
+            encabezado.append("Fecha-Hora Contacto")
+            encabezado.append("Tel status")
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -102,6 +103,7 @@ class ArchivoDeReporteCsv(object):
                     datos = json.loads(contacto.contacto.datos)
                     for dato in datos:
                         lista_opciones.append(dato)
+                    lista_opciones.append(contacto.fecha_hora)
                     lista_opciones.append(estado)
 
                     # --- Finalmente, escribimos la linea
@@ -118,6 +120,7 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(contacto.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
+                lista_opciones.append(contacto.fecha_hora)
                 lista_opciones.append("Contestador Detectado")
 
                 # --- Finalmente, escribimos la linea
