@@ -146,7 +146,7 @@ class ReporteCampanaCalificadosCSV(object):
 
         # Esto no debería suceder.
         logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para la campana %s", nombre_reporte)
+                     " CSV de descarga para la campana %s", campana.nombre)
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
     def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):
