@@ -516,6 +516,12 @@ class CampanaManager(models.Manager):
         """
         return self.filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
 
+    def obtener_templates_activos_entrantes(self):
+        """
+        Devuelve templates de campañas entrantes en estado activo.
+        """
+        return self.obtener_campanas_entrantes().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+
     def crea_campana_de_template(self, template):
         """
         Este método se encarga de crear una campana a partir del template

@@ -228,6 +228,17 @@ urlpatterns = [
                        mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
     # ==========================================================================
+    #  Templates Campana Entrante
+    # ==========================================================================
+    url(r'^campana_entrante_template/create/$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateCreateView.as_view()),
+        name="lista_campana_entrante_template_create"),
+    url(r'^campana_entrante_template/list/$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateListView.as_view()),
+        name="lista_campana_entrante_template_list"),
+    # ==========================================================================
     # Campana Entrante
     # ==========================================================================
     url(r'^campana/nuevo/$',

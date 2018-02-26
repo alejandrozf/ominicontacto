@@ -174,10 +174,10 @@
                                 {% endif %}
                                 <li class="divider"></li>
                                 <li>
-                                    <a href="{#% url 'lista_campana_entrante_template' %#}">{% trans 'Listado de templates de campañas entrantes' %}</a>
+                                    <a href="{% url 'lista_campana_entrante_template_list' %}">{% trans 'Listado de templates de campañas entrantes' %}</a>
                                 </li>
 				<li>
-                            	    <a href="{#% url 'campana_entrante_template_create' %#}">{% trans 'Crear nuevo template de campaña entrante'%}</a>
+                            	    <a href="{% url 'lista_campana_entrante_template_create' %}">{% trans 'Crear nuevo template de campaña entrante'%}</a>
                                 <li>
                                     <a href="{% url 'lista_campana_dialer_template' %}">Listado de templates de campañas dialer</a>
                                 </li>

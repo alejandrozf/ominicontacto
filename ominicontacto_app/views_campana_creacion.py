@@ -9,6 +9,8 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.views.generic import View, ListView
+
 
 from formtools.wizard.views import SessionWizardView
 
@@ -157,3 +159,20 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
             campana = self.get_form_instance(self.INICIAL)
             context['wizard']['form'].queryset = campana.opciones_calificacion.all()
         return context
+
+
+class CampanaEntranteTemplateListView(ListView):
+    template_name = "campana/lista_template.html"
+    context_object_name = 'templates_activos_entrantes'
+    model = Campana
+
+    def get_queryset(self):
+        return Campana.objects.obtener_templates_activos_entrantes()
+
+
+class CampanaEntranteTemplateCreateView(CampanaEntranteCreateView):
+    pass
+
+
+class CampanaEntranteTemplateDeleteView(View):
+    template_name = "campana/delete_campana_template.html"
