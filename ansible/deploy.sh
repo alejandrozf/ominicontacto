@@ -8,6 +8,8 @@
 #
 ANSIBLE=`which ansible`
 PIP=`which pip`
+current_directory=`pwd`
+export ANSIBLE_CONFIG=$current_directory
 
 Help() {
 USAGE="
@@ -69,9 +71,9 @@ Rama() {
     #        exit 1
     #fi
 
-    set -e
-    cd $(dirname $0)
-    TMP=/tmp/ominicontacto-build
+    #set -e
+    #cd $(dirname $0)
+    #TMP=/tmp/ominicontacto-build
     if [ -e $TMP ] ; then
         rm -rf $TMP
     fi
@@ -142,25 +144,22 @@ Preliminar() {
 #    git config --global user.name "lionite"
 #    git config --global user.email "felipe.macias@freetechsolutions.com.ar"
     git pull origin $1
-    #git fetch
-    #git checkout develop
-    #echo "Copiando la carpeta ansible a /etc/"
-    #cp -a ~/ominicontacto/ansible /etc/
 
     echo "Parámetros de la aplicación"
     echo -en "Ingrese valor de variable session_cookie_age: "; read session_cookie
-    sed -i "s/\(^session_\).*/session_cookie_age: $session_cookie/" /etc/ansible/group_vars/all
+    sed -i "s/\(^session_\).*/session_cookie_age: $session_cookie/" $current_directory/group_vars/all
     echo -en "Ingrese la contraseña de superuser de Omnileads: "; read admin_pass
-    sed -i "s/\(^admin_pass\).*/admin_pass: $admin_pass/" /etc/ansible/group_vars/all
-
+    sed -i "s/\(^admin_pass\).*/admin_pass: $admin_pass/" $current_directory/group_vars/all
+    sed -i "s|inventory.*$|inventory = $current_directory\/hosts|g" $current_directory/ansible.cfg
+        sed -i "s|roles_path.*$|roles_path = $current_directory\/roles\/|g" $current_directory/ansible.cfg
 }
 
 IngresarIP(){
 
     echo -en "Ingrese el formato de audio en el que quiere las grabaciones: "; read audio
-    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" /etc/ansible/deploy/roles/oml_server/templates/oml_settings_local.py
+    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" $current_directory/deploy/roles/oml_server/templates/oml_settings_local.py
     echo -en "Ingrese fqdn  de maquina a deployar: "; read omnicentos_fqdn
-    sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" /etc/ansible/group_vars/all
+    sed -i "s/\(^omnicentos_fqdn:\).*/omnicentos_fqdn: $omnicentos_fqdn/" $current_directory/group_vars/all
     echo "Transifiendo llave publica a usuario root de Centos"
 }
 
@@ -194,18 +193,18 @@ if [ $opcion -eq 1 ]; then
 
 elif [ $opcion -eq 2 ]; then
 
-    sed -i "23s/.*/$ip ansible_ssh_port=22/" /etc/ansible/hosts
+    sed -i "23s/.*/$ip ansible_ssh_port=22/" $current_directory/hosts
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s /etc/ansible/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
+    ansible-playbook -s $current_directory/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"|
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
 
 elif [ $opcion -eq 3 ]; then
 
-    sed -i "21s/.*/$ip ansible_ssh_port=22/" /etc/ansible/hosts
+    sed -i "21s/.*/$ip ansible_ssh_port=22/" $current_directory/hosts
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s /etc/ansible/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
+    ansible-playbook -s $current_directory/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
