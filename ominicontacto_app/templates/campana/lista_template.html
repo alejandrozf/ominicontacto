@@ -17,24 +17,20 @@
                 </tr>
             </thead>
             <tbody>
-                {% for campana in templates_activos %}
+                {% for campana in templates_activos_entrantes %}
                     <tr>
                         <td width="25%">
-                            <a href="{% url 'campana_entrante_template_lista' campana.pk %}">
-                                {% if campana.nombre_template %}
-                                    {{ campana.nombre_template }}
-                                {% else %}
-                                    {{ campana.nombre }}
-                                {% endif %}
+                            <a href="{% url 'campana_entrante_template_detail' campana.pk %}">
+                                {{ campana.nombre }}
                             </a>
                         </td>
 
                         <td width="14%">
-                            <a href="{% url 'campana_entrante_template_create' campana.pk %}"  class="btn btn-success btn-sm">
+                            <a href="{% url 'campana_entrante_template_create_campana' campana.pk %}"  class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span>
-                                {% trans 'Crear Campaña de Template' %}
+                                {% trans 'Crear Campaña desde Template' %}
                             </a>
-                            <a href="{% url 'campana_entrante_template_eliminar' campana.pk %}"  class="btn btn-danger btn-sm">
+                            <a href="{% url 'campana_entrante_template_delete' campana.pk %}"  class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove"></span>
                                 {% trans 'Eliminar' %}
                             </a>

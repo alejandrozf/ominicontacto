@@ -230,14 +230,26 @@ urlpatterns = [
     # ==========================================================================
     #  Templates Campana Entrante
     # ==========================================================================
-    url(r'^campana_entrante_template/create/$',
+    url(r'^campana_entrante_template/crear/$',
         login_required(
             views_campana_creacion.CampanaEntranteTemplateCreateView.as_view()),
-        name="lista_campana_entrante_template_create"),
-    url(r'^campana_entrante_template/list/$',
+        name="campana_entrante_template_create"),
+    url(r'^campana_entrante_template/crear_campana/(?P<pk_campana_template>\d+)$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateCreateCampanaView.as_view()),
+        name="campana_entrante_template_create_campana"),
+    url(r'^campana_entrante_template/lista/$',
         login_required(
             views_campana_creacion.CampanaEntranteTemplateListView.as_view()),
-        name="lista_campana_entrante_template_list"),
+        name="campana_entrante_template_list"),
+    url(r'^campana_entrante_template/detalle/(?P<pk_campana>\d+)/$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateDetailView.as_view()),
+        name="campana_entrante_template_detail"),
+    url(r'^campana_entrante_template/elimina/(?P<pk_campana>\d+)/$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateDeleteView.as_view()),
+        name="campana_entrante_template_delete"),
     # ==========================================================================
     # Campana Entrante
     # ==========================================================================
