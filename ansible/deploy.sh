@@ -73,7 +73,7 @@ Rama() {
 
     #set -e
     #cd $(dirname $0)
-    #TMP=/tmp/ominicontacto-build
+    TMP=/var/tmp/ominicontacto-build
     if [ -e $TMP ] ; then
         rm -rf $TMP
     fi
@@ -195,7 +195,7 @@ elif [ $opcion -eq 2 ]; then
 
     sed -i "23s/.*/$ip ansible_ssh_port=22/" $current_directory/hosts
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s $current_directory/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"|
+    ansible-playbook -s $current_directory/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
