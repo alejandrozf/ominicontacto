@@ -119,6 +119,7 @@ EOF
 
     # ----------
     export DO_CHECKS="${DO_CHECKS:-no}"
+    rama=$1
 }
 
 Preliminar() {
@@ -195,7 +196,7 @@ elif [ $opcion -eq 2 ]; then
 
     sed -i "23s/.*/$ip ansible_ssh_port=22/" $current_directory/hosts
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s $current_directory/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
+    ansible-playbook -s $current_directory/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
@@ -204,7 +205,7 @@ elif [ $opcion -eq 3 ]; then
 
     sed -i "21s/.*/$ip ansible_ssh_port=22/" $current_directory/hosts
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s $current_directory/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
+    ansible-playbook -s $current_directory/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""

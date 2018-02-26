@@ -47,6 +47,26 @@
 - name: Upload built (rsync to /ominicontacto)
   # Copies xxx/app to /home/freetech/ominicontacto (/ominicontacto on dest is implicit)
   synchronize: "src={{ build_dir }} dest=/home/freetech delete=yes checksum=yes times=no"
+  when: desarrollo == 0
+
+- name: Change permissions on id_rsa
+  shell: "chmod 700 /home/freetech/.ssh/id_rsa"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+- name: Clone of OML repository
+  git: repo=git@bitbucket.org:freetechdesarrollo/ominicontacto.git version={{ rama }} dest=/home/freetech/ominicontacto/
+  when: desarrollo != 0
+  become: yes
+  become_method: su
+  become_user: freetech
+  ignore_errors: yes
+
+- name: Checkout of desired branch
+  shell: "git checkout {{ rama }} chdir=/home/freetech/ominicontacto"
+  become: yes
+  become_method: su
+  become_user: freetech
+  when: desarrollo != 0
 
 - name: Change owner and group of ominicontacto
   file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
