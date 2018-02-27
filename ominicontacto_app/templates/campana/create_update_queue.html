@@ -14,9 +14,10 @@
 
 {% block form_render %}
     <br>
-    {{ form.errors }}
     {{ form.non_field_errors }}
+    {{ form.name.errors }}
     {{ form.name }}
+    {{ form.campana.errors }}
     {{ form.campana }}
     <div class="form-group row">
         {{ form.timeout.errors }}
