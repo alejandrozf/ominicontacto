@@ -6,7 +6,7 @@ from django.views.static import serve
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
-    views_calificacion_formulario, views_campana, views_campana_reportes, views_pdf,
+    views_calificacion_cliente, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
@@ -446,43 +446,40 @@ urlpatterns = [
         name='formulario_vista',
         ),
     # ==========================================================================
-    # Calificacion Formulario
+    # CalificacionCliente / Formulario
     # ==========================================================================
-    url(
-        r'^formulario/(?P<pk_campana>\d+)/venta/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
-        login_required(views_calificacion_formulario.FormularioCreateFormView.as_view()),
-        name='formulario_venta',
-    ),
-    url(
-        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
-        login_required(views_calificacion_formulario.CalificacionClienteCreateView.as_view()),
-        name='calificacion_formulario_create',
-    ),
-    url(
-        r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
-        login_required(views_calificacion_formulario.CalificacionClienteUpdateView.as_view()),
-        name='calificacion_formulario_update',
-    ),
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/create/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
+        login_required(views_calificacion_cliente.CalificacionClienteCreateView.as_view()),
+        name='calificacion_formulario_create'
+        ),
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/$',
+        login_required(views_calificacion_cliente.CalificacionClienteUpdateView.as_view()),
+        name='calificacion_formulario_update'
+        ),
+    url(r'^formulario/(?P<pk_calificacion>\d+)/calificacion/actualiza/$',
+        login_required(
+            views_calificacion_cliente.CalificacionUpdateView.as_view()),
+        name='formulario_calificacion_actualiza'
+        ),
+    url(r'^calificacion_cliente/externa/$',
+        views_calificacion_cliente.calificacion_cliente_externa_view,
+        name='calificacion_cliente_externa'
+        ),
+    url(r'^formulario/(?P<pk_campana>\d+)/venta/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
+        login_required(views_calificacion_cliente.FormularioCreateFormView.as_view()),
+        name='formulario_venta'
+        ),
     url(r'^formulario/(?P<pk>\d+)/detalle/$',
         login_required(
-            views_calificacion_formulario.FormularioDetailView.as_view()),
-        name='formulario_detalle',
+            views_calificacion_cliente.FormularioDetailView.as_view()),
+        name='formulario_detalle'
         ),
-    url(
-        r'^formulario/(?P<pk_metadata>\d+)/metadata/$',
+    url(r'^formulario/(?P<pk_metadata>\d+)/metadata/$',
         login_required(
-            views_calificacion_formulario.FormularioUpdateFormView.as_view()),
-        name='formulario_venta_update',
-    ),
-    url(
-        r'^formulario/(?P<pk_calificacion>\d+)/calificacion/actualiza/$',
-        login_required(
-            views_calificacion_formulario.CalificacionUpdateView.as_view()),
-        name='formulario_califiacion_actualiza',
-    ),
-    url(r'^califacacion_cliente/externa/$',
-        views_calificacion_formulario.calificacion_cliente_externa_view,
-        name='califiacion_cliente_externa'
+            views_calificacion_cliente.FormularioUpdateFormView.as_view()),
+        name='formulario_venta_update'
         ),
     # ==========================================================================
     # Agente
