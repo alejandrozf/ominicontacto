@@ -103,7 +103,7 @@ class ArchivoDeReporteCsv(object):
                     datos = json.loads(contacto.contacto.datos)
                     for dato in datos:
                         lista_opciones.append(dato)
-                    lista_opciones.append(contacto.fecha_hora)
+                    lista_opciones.append(contacto.fecha_hora.strftime("%Y/%m/%d %H:%M:%S"))
                     lista_opciones.append(estado)
 
                     # --- Finalmente, escribimos la linea
@@ -120,7 +120,7 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(contacto.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
-                lista_opciones.append(contacto.fecha_hora)
+                lista_opciones.append(contacto.fecha_hora.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contestador Detectado")
 
                 # --- Finalmente, escribimos la linea
