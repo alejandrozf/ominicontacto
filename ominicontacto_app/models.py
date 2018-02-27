@@ -2168,7 +2168,7 @@ class CalificacionClienteManager(models.Manager):
 
 
 class CalificacionCliente(models.Model):
-
+    # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
     objects = CalificacionClienteManager()
 
     campana = models.ForeignKey(Campana, related_name="calificaconcliente")
@@ -2258,6 +2258,21 @@ class MensajeChat(models.Model):
 
 class WombatLogManager(models.Manager):
 
+    def actualizar_wombat_log_para_calificacion(self, calificacion):
+        """
+        Actualiza la calificacion del WombatLog. Si no existe no hace nada.
+        TODO: Discutir si debe actualizar tambien el agente.
+        TODO: Deberia usarse update_or_create()
+        """
+        try:
+            wombat_log = self.get(campana=calificacion.campana, contacto=calificacion.contacto)
+            wombat_log.calificacion = calificacion.calificacion.nombre
+            wombat_log.save()
+        except WombatLog.DoesNotExist:
+            pass
+        except WombatLog.MultipleObjectsReturned:
+            pass
+
     def obtener_wombat_log_contacto(self, contacto):
         try:
             return self.filter(contacto=contacto)
@@ -2267,6 +2282,7 @@ class WombatLogManager(models.Manager):
 
 
 class WombatLog(models.Model):
+    # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
     objects = WombatLogManager()
 
     campana = models.ForeignKey(Campana, related_name="logswombat")

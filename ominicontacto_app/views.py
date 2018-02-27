@@ -456,7 +456,7 @@ def node_view(request):
             'registro': registro,
             'campanas_preview_activas': campanas_preview_activas,
             'agente_profile': agente_profile,
-            }
+        }
         return render_to_response(
             'agente/base_agente.html',
             context,
@@ -634,6 +634,7 @@ def crear_chat_view(request):
 def wombat_log_view(request):
     """
     Log de wombat insertar los log q devuelve los log de las campana de wombat
+    TODO: Debe usar update_or_create.
     """
     print request.POST
     dict_post = request.POST

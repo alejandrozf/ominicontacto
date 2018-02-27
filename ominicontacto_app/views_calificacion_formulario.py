@@ -144,9 +144,9 @@ class CalificacionClienteCreateView(CreateView):
         self.object_calificacion = calificacion_form.save(commit=False)
         campana = self.object_calificacion[0].campana
         cleaned_data_calificacion = calificacion_form.cleaned_data
-        calificacion = cleaned_data_calificacion[0]['calificacion']
+        opcion_de_calificacion = cleaned_data_calificacion[0]['calificacion']
 
-        es_venta = (calificacion.nombre == campana.gestion)
+        es_venta = (opcion_de_calificacion.nombre == campana.gestion)
         self.object_calificacion[0].es_venta = es_venta
         self.object_calificacion[0].wombat_id = int(self.kwargs['wombat_id'])
         self.object_calificacion[0].save()
@@ -156,17 +156,7 @@ class CalificacionClienteCreateView(CreateView):
             service = WombatCallService()
             service.calificar(self.kwargs['wombat_id'],
                               self.object_calificacion[0].calificacion.nombre)
-
-            # TODO: Analizar actualizacion de WombatLog. Por que filtra solo por contacto?
-            wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
-                self.object_calificacion[0].contacto)
-            if wombat_log.count() > 0:
-                wombat_log = wombat_log[0]
-            else:
-                wombat_log = None
-            if wombat_log:
-                wombat_log.calificacion = self.object_calificacion[0].calificacion.nombre
-                wombat_log.save()
+            WombatLog.objects.actualizar_wombat_log_para_calificacion(self.object_calificacion[0])
 
         if es_venta:
             return redirect(self.get_success_url())
@@ -174,7 +164,7 @@ class CalificacionClienteCreateView(CreateView):
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
-            if calificacion.es_reservada():
+            if opcion_de_calificacion.es_reservada():
                 return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(reverse('calificacion_formulario_update',
                                                 kwargs={
@@ -324,9 +314,9 @@ class CalificacionClienteUpdateView(UpdateView):
         else:
             self.object_calificacion = self.object_calificacion[0]
 
-        calificacion = calificacion_form.cleaned_data[0]['calificacion']
+        opcion_de_calificacion = calificacion_form.cleaned_data[0]['calificacion']
 
-        es_venta = calificacion.nombre == campana.gestion
+        es_venta = opcion_de_calificacion.nombre == campana.gestion
         self.object_calificacion.es_venta = es_venta
         self.object_calificacion.save()
 
@@ -335,17 +325,7 @@ class CalificacionClienteUpdateView(UpdateView):
             service = WombatCallService()
             service.calificar(self.kwargs['wombat_id'],
                               self.object_calificacion.calificacion.nombre)
-
-            # TODO: Analizar actualizacion de WombatLog. Por que filtra solo por contacto?
-            wombat_log = WombatLog.objects.obtener_wombat_log_contacto(
-                self.object_calificacion.contacto)
-            if wombat_log.count() > 0:
-                wombat_log = wombat_log[0]
-            else:
-                wombat_log = None
-            if wombat_log:
-                wombat_log.calificacion = self.object_calificacion.calificacion.nombre
-                wombat_log.save()
+            WombatLog.objects.actualizar_wombat_log_para_calificacion(self.object_calificacion)
 
         if es_venta:
             return redirect(self.get_success_url())
@@ -354,7 +334,7 @@ class CalificacionClienteUpdateView(UpdateView):
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
-            if calificacion.es_reservada():
+            if opcion_de_calificacion.es_reservada():
                 return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(reverse('calificacion_formulario_update',
                                                 kwargs={
@@ -786,18 +766,18 @@ class CalificacionUpdateView(UpdateView):
         else:
             self.object_calificacion = self.object_calificacion[0]
         campana = self.object_calificacion.campana
-        calificacion = calificacion_form.cleaned_data[0]['calificacion']
+        opcion_de_calificacion = calificacion_form.cleaned_data[0]['calificacion']
 
-        es_venta = calificacion.nombre == campana.gestion
+        es_venta = opcion_de_calificacion.nombre == campana.gestion
         self.object_calificacion.es_venta = es_venta
         self.object_calificacion.save()
 
         # actualizar la calificacion de wombat
-        # TODO: No debe actualizarse el WombatLog local como en las otras vistas?
         if campana.type == Campana.TYPE_DIALER:
             service = WombatCallService()
             service.calificar(self.object_calificacion.wombat_id,
                               self.object_calificacion.calificacion.nombre)
+            WombatLog.objects.actualizar_wombat_log_para_calificacion(self.object_calificacion)
 
         if es_venta:
             return redirect(self.get_success_url())
@@ -805,7 +785,7 @@ class CalificacionUpdateView(UpdateView):
             message = 'Operación Exitosa!\
             Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
-            if calificacion.es_reservada():
+            if opcion_de_calificacion.es_reservada():
                 return redirect(self.get_success_url_agenda())
             return HttpResponseRedirect(
                 reverse('reporte_agente_calificaciones',
