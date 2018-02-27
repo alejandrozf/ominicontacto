@@ -242,7 +242,7 @@ urlpatterns = [
         login_required(
             views_campana_creacion.CampanaEntranteTemplateListView.as_view()),
         name="campana_entrante_template_list"),
-    url(r'^campana_entrante_template/detalle/(?P<pk_campana>\d+)/$',
+    url(r'^campana_entrante_template/detalle/(?P<pk>\d+)/$',
         login_required(
             views_campana_creacion.CampanaEntranteTemplateDetailView.as_view()),
         name="campana_entrante_template_detail"),

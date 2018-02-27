@@ -252,9 +252,10 @@ class CampanaEntranteTemplateCreateCampanaView(CampanaEntranteCreateView):
         return context
 
 
+class CampanaEntranteTemplateDetailView(DetailView):
+    template_name = "campana/detalle_campana_template.html"
+    model = Campana
+
+
 class CampanaEntranteTemplateDeleteView(DeleteView):
     template_name = "campana/delete_campana_template.html"
-
-
-class CampanaEntranteTemplateDetailView(DetailView):
-    template_name = "campana/detail_campana_template.html"
