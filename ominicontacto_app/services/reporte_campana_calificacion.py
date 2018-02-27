@@ -59,8 +59,7 @@ class ArchivoDeReporteCsv(object):
             nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
                 encabezado.append(nombre)
-            encabezado.append("Es una venta")
-            encabezado.append("Calificacion No venta")
+            encabezado.append("Calificado")
             encabezado.append("Fecha-Hora Contacto")
             encabezado.append("Tel status")
             encabezado.append("Tel contactado")
@@ -90,13 +89,9 @@ class ArchivoDeReporteCsv(object):
                 for dato in datos:
                     lista_opciones.append(dato)
                 if calificacion.es_venta:
-                    lista_opciones.append("SI")
+                    lista_opciones.append(calificacion.campana.gestion)
                 else:
-                    lista_opciones.append("NO")
-                if calificacion.calificacion:
-                    lista_opciones.append(calificacion.calificacion.nombre)
-                else:
-                    lista_opciones.append("N/A")
+                    lista_opciones.append(calificacion.calificacion)
                 lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(calificacion.contacto.telefono)
