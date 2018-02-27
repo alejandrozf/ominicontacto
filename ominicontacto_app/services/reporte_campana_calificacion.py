@@ -61,7 +61,11 @@ class ArchivoDeReporteCsv(object):
                 encabezado.append(nombre)
             encabezado.append("Es una venta")
             encabezado.append("Calificacion No venta")
+            encabezado.append("Fecha-Hora Contacto")
+            encabezado.append("Tel status")
+            encabezado.append("Tel contactado")
             encabezado.append("Observaciones")
+            encabezado.append("Agente")
             encabezado.append("base de datos")
 
 
@@ -93,7 +97,11 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append(calificacion.calificacion.nombre)
                 else:
                     lista_opciones.append("N/A")
+                lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
+                lista_opciones.append("Contactado")
+                lista_opciones.append(calificacion.contacto.telefono)
                 lista_opciones.append(calificacion.observaciones)
+                lista_opciones.append(calificacion.agente)
                 lista_opciones.append(calificacion.contacto.bd_contacto)
 
                 # --- Finalmente, escribimos la linea
