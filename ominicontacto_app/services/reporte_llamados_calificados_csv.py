@@ -65,7 +65,9 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Tel status")
             encabezado.append("Tel contactado")
             encabezado.append("Calificado")
+            encabezado.append("Observaciones")
             encabezado.append("Agente")
+            encabezado.append("base de datos")
             # agrego el encabezado para los campos del formulario
             # FIXME: posible bug si la campana tiene configurado sitio externo
             campos = campana.formulario.campos.all()
@@ -96,7 +98,9 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append(calificacion.campana.gestion)
                 else:
                     lista_opciones.append(calificacion.calificacion)
+                lista_opciones.append(calificacion.observaciones)
                 lista_opciones.append(calificacion.agente)
+                lista_opciones.append(calificacion.contacto.bd_contacto)
 
                 if calificacion.get_venta():
                     datos = json.loads(calificacion.get_venta().metadata)
@@ -122,7 +126,9 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append("Contactado")
                 lista_opciones.append(contacto.telefono)
                 lista_opciones.append("AGENTE NO CALIFICO")
+                lista_opciones.append("")
                 lista_opciones.append(contacto.agente)
+                lista_opciones.append(contacto.contacto.bd_contacto)
 
                 # --- Finalmente, escribimos la linea
 
