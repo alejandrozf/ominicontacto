@@ -89,7 +89,7 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(calificacion.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
-                lista_opciones.append(calificacion.fecha)
+                lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(calificacion.contacto.telefono)
                 if calificacion.es_venta:
@@ -117,7 +117,8 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(contacto.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
-                lista_opciones.append("N/D")
+                lista_opciones.append(
+                    contacto.fecha_hora.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(contacto.telefono)
                 lista_opciones.append("AGENTE NO CALIFICO")
