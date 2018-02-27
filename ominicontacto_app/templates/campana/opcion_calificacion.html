@@ -28,7 +28,9 @@
         <tbody>
             {% for form in wizard.form.forms %}
                 <tr class="link-formset">
-                    <td>{{ form.DELETE }}</td>
+                    {% if form.instance.pk %}
+                        <td>{{ form.DELETE }}</td>
+                    {% endif %}
                     <td>{{ form.nombre }}</td>
                     <td>{{ form.tipo }}</td>
                     <td>{{ form.id }}</td>

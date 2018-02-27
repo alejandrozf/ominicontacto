@@ -233,11 +233,23 @@ class CampanaEntranteTemplateCreateCampanaView(CampanaEntranteCreateView):
                 'audio_de_ingreso': queue.audio_de_ingreso,
             }
         else:
-            # step == self.OPCIONES_CALIFICACION
-            initial_data = [{'nombre': opcion_calificacion.nombre,
-                             'tipo': opcion_calificacion.tipo}
-                            for opcion_calificacion in campana_template.opciones_calificacion.all()]
+            initial_data = super(
+                CampanaEntranteTemplateCreateCampanaView, self).get_form_initial(step)
         return initial_data
+
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(
+            CampanaEntranteTemplateCreateCampanaView, self).get_context_data(form=form, **kwargs)
+        if self.steps.current == self.OPCIONES_CALIFICACION:
+            pk = self.kwargs.get('pk_campana_template', None)
+            campana_template = get_object_or_404(Campana, pk=pk)
+            initial_data = campana_template.opciones_calificacion.values('nombre', 'tipo')
+            opts_calif_init_formset = context['wizard']['form']
+            calif_init_formset = OpcionCalificacionFormSet(initial=initial_data)
+            calif_init_formset.extra = len(initial_data) - 1
+            calif_init_formset.prefix = opts_calif_init_formset.prefix
+            context['wizard']['form'] = calif_init_formset
+        return context
 
 
 class CampanaEntranteTemplateDeleteView(DeleteView):
