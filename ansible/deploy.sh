@@ -165,6 +165,8 @@ IngresarIP(){
 }
 
 Tag() {
+    echo -en "Va a deployar un cliente? (ingrese 0) o una maquina de desarrollo (ingrese 1) ? "; read desarrollo
+    sed -i "s/\(^desarrollo:\).*/desarrollo: $desarrollo/" $current_directory/group_vars/all
     echo -en "Ingrese IP  de maquina a deployar: "; read ip
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$ip
     echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"

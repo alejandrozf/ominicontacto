@@ -54,7 +54,7 @@
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
 - name: Clone of OML repository
-  git: repo=git@bitbucket.org:freetechdesarrollo/ominicontacto.git version={{ rama }} dest=/home/freetech/ominicontacto/
+  git: repo=git@bitbucket.org:freetechdesarrollo/ominicontacto.git dest=/home/freetech/ominicontacto/ accept_hostkey=yes
   when: desarrollo != 0
   become: yes
   become_method: su
@@ -62,7 +62,7 @@
   ignore_errors: yes
 
 - name: Checkout of desired branch
-  shell: "git checkout {{ rama }} chdir=/home/freetech/ominicontacto"
+  git: repo=git@bitbucket.org:freetechdesarrollo/ominicontacto.git clone=no version={{ rama }} dest=/home/freetech/ominicontacto
   become: yes
   become_method: su
   become_user: freetech
