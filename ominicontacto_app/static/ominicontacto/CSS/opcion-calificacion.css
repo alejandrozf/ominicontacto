@@ -1,13 +1,13 @@
 .fieldsFormset {
-    margin: 10px;
+    margin: 5px;
 }
 
 .deleteFormset {
-    margin: 20px;
+    margin: 10px;
     font-weight: bold;
 }
 
 .addFormset {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     font-weight: bold;
 }
