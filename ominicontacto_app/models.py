@@ -2195,6 +2195,9 @@ class CalificacionCliente(models.Model):
         except MetadataCliente.MultipleObjectsReturned:
             return None
 
+    def set_es_venta(self):
+        self.es_venta = self.campana.gestion == self.calificacion.nombre
+
 
 class DuracionDeLlamada(models.Model):
     """Representa la duración de las llamdas de las campanas, con el fin

@@ -14,7 +14,6 @@
             {% csrf_token %}
             <table class="table table-striped">
                 <tr>{{form.as_table}}</tr>
-                {{calificacion_form.management_form}}
                 <tr>{{calificacion_form.as_table}}</tr>
             </table>
             <button type="submit" id="id_guardar" class="btn btn-success btn-sm">

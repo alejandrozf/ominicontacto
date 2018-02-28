@@ -24,6 +24,7 @@ class CalificacionTests(OMLBaseTest):
     PWD = u'admin123'
 
     def setUp(self):
+        super(CalificacionTests, self).setUp()
         self.usuario_agente = UserFactory(is_agente=True)
         self.usuario_agente.set_password(self.PWD)
         self.usuario_agente.save()
@@ -50,17 +51,11 @@ class CalificacionTests(OMLBaseTest):
     def _obtener_post_data_calificacion_cliente(self):
         post_data = {
             'telefono': self.contacto.telefono,
-            'calificacioncliente_set-TOTAL_FORMS': 1,
-            'calificacioncliente_set-INITIAL_FORMS': 0,
-            'calificacioncliente_set-MIN_NUM_FORMS': 0,
-            'calificacioncliente_set-MAX_NUM_FORMS': 1,
-            'calificacioncliente_set-0-calificacion': '',
-            'calificacioncliente_set-0-campana': self.campana.pk,
-            'calificacioncliente_set-0-contacto': self.contacto.pk,
-            'calificacioncliente_set-0-es_venta': False,
-            'calificacioncliente_set-0-agente': self.agente_profile.pk,
-            'calificacioncliente_set-0-agendado': False,
-            'calificacioncliente_set-0-id': ''}
+            'campana': self.campana.pk,
+            'contacto': self.contacto.pk,
+            'agente': self.agente_profile.pk,
+            'calificacion': '',
+        }
         return post_data
 
     def test_no_se_admite_tipo_calificacion_cliente_vacia_en_creacion_calificacion(self):
@@ -75,15 +70,14 @@ class CalificacionTests(OMLBaseTest):
         self.assertFalse(calificacion_form.is_valid())
 
     def test_no_se_admite_tipo_calificacion_cliente_vacia_en_modificacion_calificacion(self):
-        calificacion_cliente = CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
+                                          agente=self.agente_profile)
         url = reverse('calificacion_formulario_update',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente()
-        post_data['calificacioncliente_set-0-id'] = calificacion_cliente.pk
         response = self.client.post(url, post_data, follow=True)
         calificacion_form = response.context_data.get('calificacion_form')
         self.assertFalse(calificacion_form.is_valid())
@@ -96,23 +90,21 @@ class CalificacionTests(OMLBaseTest):
                               'pk_contacto': self.contacto.pk,
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente()
-        post_data['calificacioncliente_set-0-calificacion'] = self.calificacion_gestion.pk
+        post_data['calificacion'] = self.calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/formulario_create.html')
 
     @patch('requests.post')
     def test_calificacion_cliente_modificacion_redirecciona_formulario_gestion(self, post):
-        calificacion_cliente = CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
+                                          agente=self.agente_profile)
         url = reverse('calificacion_formulario_update',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente()
-        post_data['calificacioncliente_set-0-id'] = calificacion_cliente.pk
-        post_data['calificacioncliente_set-0-calificacion'] = self.calificacion_gestion.pk
-        post_data['calificacioncliente_set-INITIAL_FORMS'] = 1
+        post_data['calificacion'] = self.calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/formulario_create.html')
 
@@ -170,17 +162,15 @@ class CalificacionTests(OMLBaseTest):
 
     @patch('requests.post')
     def test_escoger_calificacion_agenda_redirecciona_formulario_agenda(self, post):
-        calificacion_cliente = CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
+                                          agente=self.agente_profile)
         url = reverse('calificacion_formulario_update',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente()
-        post_data['calificacioncliente_set-0-id'] = calificacion_cliente.pk
-        post_data['calificacioncliente_set-0-calificacion'] = self.calificacion_agenda.pk
-        post_data['calificacioncliente_set-INITIAL_FORMS'] = 1
+        post_data['calificacion'] = self.calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_contacto.html')
 

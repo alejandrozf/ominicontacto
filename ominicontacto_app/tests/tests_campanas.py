@@ -411,18 +411,14 @@ class CampanasTests(OMLBaseTest):
                   'id_agente': self.agente_profile.pk,
                   'wombat_id': 0}
         url = reverse('calificacion_formulario_create', kwargs=kwargs)
-        post_data = {'calificacioncliente_set-0-es_venta': ['False'],
-                     'calificacioncliente_set-0-calificacion': [self.calificacion.pk],
-                     'calificacioncliente_set-0-agente': [self.agente_profile.pk],
-                     'calificacioncliente_set-MAX_NUM_FORMS': ['1', '1'],
-                     'calificacioncliente_set-MIN_NUM_FORMS': ['0', '0'],
-                     'calificacioncliente_set-INITIAL_FORMS': ['0', '0'],
-                     'calificacioncliente_set-0-observaciones': [''],
-                     'calificacioncliente_set-0-agendado': ['False'],
-                     'calificacioncliente_set-0-campana': [self.campana_activa.pk],
-                     'calificacioncliente_set-0-contacto': [self.contacto.pk],
-                     'calificacioncliente_set-TOTAL_FORMS': ['1', '1'],
-                     'calificacioncliente_set-0-id': ['']}
+        post_data = {'es_venta': ['False'],
+                     'calificacion': [self.calificacion.pk],
+                     'agente': [self.agente_profile.pk],
+                     'observaciones': [''],
+                     'agendado': ['False'],
+                     'campana': [self.campana_activa.pk],
+                     'contacto': [self.contacto.pk],
+                     'id': ['']}
         return values, url, post_data
 
     @patch('requests.post')
