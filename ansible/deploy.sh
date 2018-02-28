@@ -164,9 +164,16 @@ IngresarIP(){
     echo "Transifiendo llave publica a usuario root de Centos"
 }
 
+Desarrollo() {
+    echo ""
+    echo "#############################################################################"
+    echo "Escogió la opción -d por lo que el deploy es para una máquina de desarrollo"
+    echo "#############################################################################"
+    echo ""
+    sed -i "s/\(^desarrollo:\).*/desarrollo: 1/" $current_directory/group_vars/all
+}
+
 Tag() {
-    echo -en "Va a deployar un cliente? (ingrese 0) o una maquina de desarrollo (ingrese 1) ? "; read desarrollo
-    sed -i "s/\(^desarrollo:\).*/desarrollo: $desarrollo/" $current_directory/group_vars/all
     echo -en "Ingrese IP  de maquina a deployar: "; read ip
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@$ip
     echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
@@ -233,7 +240,7 @@ fi
 
 }
 
-while getopts "r::t:ih" OPTION;do
+while getopts "r::t:ihd:" OPTION;do
 	case "${OPTION}" in
 		r) # Rama a deployar
             Rama $OPTARG
@@ -244,14 +251,16 @@ while getopts "r::t:ih" OPTION;do
 		;;
 		t) #Tag
 		    set -f # disable glob
-            IFS=',' # split on space characters
+           IFS=',' # split on space characters
             array=($OPTARG) # use the split+glob operator
    		    Tag $array
 		;;
 		h) # Print the help option
 			Help
 		;;
-
+		d) #Cliente de desarrollo?
+		    Desarrollo
+		 ;;
 	esac
 done
 if [ $# -eq 0  ]; then Help; fi

@@ -25,6 +25,7 @@
           - /home/freetech/media_root/reporte_campana
           - /home/freetech/static
           - /home/freetech/log
+  when: desarrollo == 0
 
 
 #----------------------------------------------------------------------
