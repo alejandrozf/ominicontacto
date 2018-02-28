@@ -1,14 +1,21 @@
 {% extends "campana/wizard_base.html" %}
 {% load i18n %}
 {% load static %}
+{% load widget_tweaks %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
+{% endblock %}
 
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script type="text/javascript">
-     $('.link-formset').formset({
-       addText: 'add link',
-       deleteText: 'remove',
-       prefix: '{{ wizard.form.prefix }}'
+     $('.linkFormset').formset({
+       addText: '+',
+       deleteText: '-',
+       prefix: '{{ wizard.form.prefix }}',
+       addCssClass: 'addFormset btn btn-info',
+       deleteCssClass: 'deleteFormset btn btn-danger',
      });
     </script>
 {% endblock %}
@@ -27,12 +34,12 @@
     <table border="0" cellpadding="0" cellspacing="0">
         <tbody>
             {% for form in wizard.form.forms %}
-                <tr class="link-formset">
+                <tr class="linkFormset">
                     {% if form.instance.pk %}
                         <td>{{ form.DELETE }}</td>
                     {% endif %}
-                    <td>{{ form.nombre }}</td>
-                    <td>{{ form.tipo }}</td>
+                    <td>{{ form.nombre|add_class:"form-control" }}</td>
+                    <td>{{ form.tipo|add_class:"form-control fieldsFormset" }}</td>
                     <td>{{ form.id }}</td>
                 </tr>
             {% endfor %}
