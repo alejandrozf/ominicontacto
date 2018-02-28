@@ -182,7 +182,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'formulario_calificacion_actualiza' calificacion_cliente.pk %}">editar calificacion</a>
+                                    <a href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.campana_id calificacion_cliente.contacto_id agente.pk calificacion.wombat_id%}">editar calificacion</a>
                                     {% if calificacion_cliente.get_venta %}
                                         <a href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">editar gestion</a>
                                     {% endif %}

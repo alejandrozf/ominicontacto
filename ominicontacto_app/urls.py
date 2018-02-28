@@ -458,10 +458,11 @@ urlpatterns = [
         login_required(views_calificacion_cliente.CalificacionClienteUpdateView.as_view()),
         name='calificacion_formulario_update'
         ),
-    url(r'^formulario/(?P<pk_calificacion>\d+)/calificacion/actualiza/$',
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/reporte/$',
         login_required(
             views_calificacion_cliente.CalificacionUpdateView.as_view()),
-        name='formulario_calificacion_actualiza'
+        name='calificacion_cliente_actualiza_desde_reporte'
         ),
     url(r'^calificacion_cliente/externa/$',
         views_calificacion_cliente.calificacion_cliente_externa_view,
