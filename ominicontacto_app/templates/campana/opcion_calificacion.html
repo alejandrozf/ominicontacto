@@ -38,8 +38,14 @@
                     {% if form.instance.pk %}
                         <td>{{ form.DELETE }}</td>
                     {% endif %}
-                    <td>{{ form.nombre|add_class:"form-control" }}</td>
-                    <td>{{ form.tipo|add_class:"form-control fieldsFormset" }}</td>
+                    <td>
+                        {{ form.nombre.errors }}
+                        {{ form.nombre|add_class:"form-control" }}
+                    </td>
+                    <td>
+                        {{ form.tipo.errors }}
+                        {{ form.tipo|add_class:"form-control fieldsFormset" }}
+                    </td>
                     <td>{{ form.id }}</td>
                 </tr>
             {% endfor %}
