@@ -7,9 +7,11 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView, DeleteView
+from django.utils.translation import ugettext as _
 
 
 from formtools.wizard.views import SessionWizardView
@@ -253,9 +255,35 @@ class CampanaEntranteTemplateCreateCampanaView(CampanaEntranteCreateView):
 
 
 class CampanaEntranteTemplateDetailView(DetailView):
+    """
+    Muestra el detalle de un template para crear una campaña entrante
+    """
     template_name = "campana/detalle_campana_template.html"
     model = Campana
 
 
 class CampanaEntranteTemplateDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto Campana Entrante-->Template.
+    """
     template_name = "campana/delete_campana_template.html"
+    model = Campana
+
+    def get_success_url(self):
+        return reverse("campana_entrante_template_list")
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.borrar_template()
+
+        message = _("Operación Exitosa:\
+        se llevó a cabo con éxito la eliminación del Template.")
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+            extra_tags="safe",
+        )
+        return HttpResponseRedirect(self.get_success_url())

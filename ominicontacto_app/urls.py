@@ -246,7 +246,7 @@ urlpatterns = [
         login_required(
             views_campana_creacion.CampanaEntranteTemplateDetailView.as_view()),
         name="campana_entrante_template_detail"),
-    url(r'^campana_entrante_template/elimina/(?P<pk_campana>\d+)/$',
+    url(r'^campana_entrante_template/elimina/(?P<pk>\d+)/$',
         login_required(
             views_campana_creacion.CampanaEntranteTemplateDeleteView.as_view()),
         name="campana_entrante_template_delete"),
