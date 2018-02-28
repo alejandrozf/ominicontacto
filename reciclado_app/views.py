@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.views.generic import FormView
+from ominicontacto_app.models import Campana
 
 import logging as logging_
 
@@ -23,7 +24,8 @@ class ReciclarCampanaDialerFormView(FormView):
     template_name = 'nuevo_reciclado.html'
 
     def get_form(self):
-
+        self.form_class = self.get_form_class()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         return self.form_class(**self.get_form_kwargs())
 
     def form_valid(self, form):
