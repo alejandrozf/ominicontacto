@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import json
 from django import forms
 from django.conf import settings
-from django.forms.models import inlineformset_factory, ModelChoiceField
+from django.forms.models import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
@@ -431,6 +431,44 @@ class OpcionCalificacionForm(forms.ModelForm):
         fields = ('tipo', 'nombre', 'campana')
 
 
+class OpcionCalificacionBaseFormset(BaseInlineFormSet):
+
+    MIN_NUM_FORMS = 2
+
+    def clean(self):
+        """Valida que no haya dos opciones de calificación con el mismo nombre para una campaña
+        ni más de un tipo 'Gestión'
+        """
+        if any(self.errors):
+            return
+        nombres = []
+        tipos_gestion_cont = 0
+        if len(self.forms) < self.MIN_NUM_FORMS:
+                raise forms.ValidationError(
+                    _("Debe ingresar al menos {0} opciones de calificación".format(
+                        self.MIN_NUM_FORMS)))
+        for form in self.forms:
+            nombre = form.cleaned_data['nombre']
+            tipo = form.cleaned_data['tipo']
+            if nombre in nombres:
+                raise forms.ValidationError(
+                    _("Los nombres de las opciones de calificación deben ser distintos"),
+                    code="invalid")
+            if nombre == settings.CALIFICACION_REAGENDA:
+                raise forms.ValidationError(
+                    _("El nombre de la opción de calificación '{0}' está reservado para uso interno"
+                      " del sistema, por favor use otro".format(nombre)))
+            if tipo == OpcionCalificacion.GESTION and tipos_gestion_cont == 0:
+                tipos_gestion_cont += 1
+            elif tipo == OpcionCalificacion.GESTION and tipos_gestion_cont > 0:
+                raise forms.ValidationError(
+                    _("Sólo debe existir una opción de calificación de tipo gestión por campaña"))
+            nombres.append(nombre)
+        if tipos_gestion_cont == 0:
+            raise forms.ValidationError(
+                _("Debe escoger una opción de calificación de tipo gestión por campaña"))
+
+
 class CampanaUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -732,7 +770,7 @@ FormularioCalificacionFormSet = inlineformset_factory(
 
 OpcionCalificacionFormSet = inlineformset_factory(
     Campana, OpcionCalificacion, form=OpcionCalificacionForm,
-    can_delete=True, extra=0, min_num=1)
+    formset=OpcionCalificacionBaseFormset, extra=0, min_num=1)
 
 
 class FormularioVentaForm(forms.ModelForm):
