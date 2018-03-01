@@ -48,3 +48,19 @@ class EstadisticasContactacion():
         if campana_log_terminated.count() > 0:
             count_estados.update({'Contestador Detectado': campana_log_terminated.count()})
         return count_estados
+
+    def obtener_cantidad_calificacion(self, campana):
+        """
+        Obtiene las cantidad de llamadas por calificacion de la campana
+        :param campana: campana la cual se van obtiene las calificaciones
+        :return: cantidad por calificacion
+        """
+
+        calificaciones_query = campana.calificaconcliente.values(
+            'calificacion__nombre').annotate(Count('calificacion')).filter(
+            calificacion__count__gt=0)
+        count_calificacion = {}
+        for calificacion in calificaciones_query:
+            count_calificacion.update(
+                {calificacion['calificacion__nombre']: calificacion['calificacion__count']})
+        return count_calificacion
