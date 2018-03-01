@@ -66,4 +66,9 @@ class EstadisticasContactacion():
         for calificacion in calificaciones_query:
             count_calificacion.update(
                 {calificacion['calificacion__nombre']: calificacion['calificacion__count']})
+        count_calificacion.update(
+            {campana.gestion: campana.calificaconcliente.filter(es_venta=True).count()})
+        count_calificacion.update(
+            {'Agente no califico': campana.logswombat.filter(
+                estado='TERMINATED', calificacion='').count()})
         return count_calificacion
