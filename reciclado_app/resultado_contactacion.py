@@ -41,9 +41,12 @@ class EstadisticasContactacion():
                 estado = "Error de sistema"
             elif estado == "RS_REJECTED":
                 estado = "Congestion"
-            if estado in count_estados.keys():
-                count_estados[estado] += resultado['estado__count']
             else:
+                estado = None
+            # se ignoran los demas estados no antes mappeados
+            if estado in count_estados.keys() and estado:
+                count_estados[estado] += resultado['estado__count']
+            elif estado:
                 count_estados.update({estado: resultado['estado__count']})
         if campana_log_terminated.count() > 0:
             count_estados.update({'Contestador Detectado': campana_log_terminated.count()})
