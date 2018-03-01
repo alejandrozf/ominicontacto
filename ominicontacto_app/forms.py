@@ -448,8 +448,10 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
                     _("Debe ingresar al menos {0} opciones de calificación".format(
                         self.MIN_NUM_FORMS)))
         for form in self.forms:
-            nombre = form.cleaned_data['nombre']
-            tipo = form.cleaned_data['tipo']
+            nombre = form.cleaned_data.get('nombre', None)
+            tipo = form.cleaned_data.get('tipo', None)
+            if nombre is None:
+                raise forms.ValidationError(_("Rellene los campos en blanco"))
             if nombre in nombres:
                 raise forms.ValidationError(
                     _("Los nombres de las opciones de calificación deben ser distintos"),
