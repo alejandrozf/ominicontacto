@@ -16,10 +16,7 @@ class EstadisticasContactacion():
         """
         Obtiene los llamados no contactados por campana
         :param campana: campana a la cual se van obtener los llamados no contactados
-        :param fecha_desde: fecha desde la cual se obtener los llamados no contactados
-        :param fecha_hasta: fehca hasta la cual se va obtener los llamados no contactados
-        :return: nombre del evento no contactados, la cantidad por ese evento y el total
-        de  llamados no atendidos
+        :return: un dicionario con la cantidad por eventos de no contactados
         """
 
         campana_log_terminated = campana.logswombat.filter(
