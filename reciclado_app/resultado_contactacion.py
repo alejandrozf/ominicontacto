@@ -72,3 +72,17 @@ class EstadisticasContactacion():
             {'Agente no califico': campana.logswombat.filter(
                 estado='TERMINATED', calificacion='').count()})
         return count_calificacion
+
+    def obtener_resultado_contactacion(self, campana):
+        """
+        obtiene el resultado de los contactados con el contacto y los no contactos
+        :param campana: campana de la cual se desea obtener
+        :return: un dicionario con las contactaciones
+        """
+        no_contactados = self.obtener_cantidad_no_contactados(campana)
+        contactados = self.obtener_cantidad_calificacion(campana)
+
+        resultados = {}
+        resultados.update(no_contactados)
+        resultados.update(contactados)
+        return resultados
