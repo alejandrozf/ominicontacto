@@ -228,7 +228,6 @@ class CalificacionClienteFactory(DjangoModelFactory):
     contacto = SubFactory(ContactoFactory)
     calificacion = SubFactory(CalificacionFactory)
     agente = SubFactory(AgenteProfileFactory)
-    wombat_id = Sequence(lambda n: n)
 
 
 class CalificacionManualFactory(DjangoModelFactory):

@@ -474,14 +474,13 @@ class CalificacionClienteForm(forms.ModelForm):
     class Meta:
         model = CalificacionCliente
         fields = ('campana', 'contacto', 'es_venta', 'calificacion', 'agente',
-                  'observaciones', 'agendado', 'wombat_id')
+                  'observaciones', 'agendado')
         widgets = {
             'campana': forms.HiddenInput(),
             'contacto': forms.HiddenInput(),
             'es_venta': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
             'agendado': forms.HiddenInput(),
-            'wombat_id': forms.HiddenInput(),
         }
 
     def clean_contacto(self):
@@ -503,7 +502,7 @@ class CalificacionClienteForm(forms.ModelForm):
 
 
 class CalificacionClienteUpdateForm(CalificacionClienteForm):
-    fields = ('es_venta', 'calificacion', 'agente', 'observaciones', 'agendado', 'wombat_id')
+    fields = ('es_venta', 'calificacion', 'agente', 'observaciones', 'agendado')
 
 
 class GrupoAgenteForm(forms.Form):

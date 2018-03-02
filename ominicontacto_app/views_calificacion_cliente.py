@@ -32,7 +32,6 @@ logger = logging_.getLogger(__name__)
 
 class CalificacionClienteFormView(FormView):
     # TODO: Sacar la logica de la vista!
-    # TODO: Sacar wombat_id del modelo CalificacionCliente
     template_name = 'formulario/calificacion_create_update.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
@@ -65,14 +64,10 @@ class CalificacionClienteFormView(FormView):
         if self.request.method == 'GET':
             initial = {'campana': self.kwargs['pk_campana'],
                        'contacto': self.kwargs['pk_contacto'],
-                       'agente': self.kwargs['id_agente'],
-                       'wombat_id': self.kwargs['wombat_id']}
+                       'agente': self.kwargs['id_agente']}
             return {'instance': self.object, 'initial': initial}
         elif self.request.method == 'POST':
-            post_data = self.request.POST
-            if 'wombat_id' not in post_data:
-                post_data['wombat_id'] = self.kwargs['wombat_id']
-            return {'instance': self.object, 'data': post_data}
+            return {'instance': self.object, 'data': self.request.POST}
 
     def get_calificacion_form(self):
         kwargs = self.get_calificacion_form_kwargs()
@@ -232,7 +227,7 @@ def calificacion_cliente_externa_view(request):
                 except CalificacionCliente.DoesNotExist:
                     CalificacionCliente.objects.create(
                         campana=campana, contacto=contacto, calificacion=calificacion,
-                        agente=agente, wombat_id=0)
+                        agente=agente)
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:

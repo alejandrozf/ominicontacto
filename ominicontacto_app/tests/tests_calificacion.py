@@ -225,7 +225,6 @@ class CalificacionTests(OMLBaseTest):
         self.assertEqual(log.estado, 'TERMINATE')
         self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
 
-
     @patch('requests.post')
     def test_update_wombat_log_despues_de_calificar(self, post):
         # Llega WombatLog despues de calificar con calificacion
