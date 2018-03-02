@@ -17,7 +17,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                QueueMemberFactory, CalificacionClienteFactory,
                                                CalificacionFactory, CalificacionManualFactory)
 
-from ominicontacto_app.models import AgendaContacto, AgendaManual, Calificacion, Campana
+from ominicontacto_app.models import AgendaContacto, AgendaManual, Calificacion, Campana, WombatLog
 
 
 class CalificacionTests(OMLBaseTest):
@@ -48,11 +48,27 @@ class CalificacionTests(OMLBaseTest):
 
         self.client.login(username=self.usuario_agente, password=self.PWD)
 
-    def _obtener_post_data_calificacion_cliente(self):
+    def _setUp_campana_dialer(self):
+        self.campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
+        self.campana_dialer.calificacion_campana.calificacion.add(self.calificacion_gestion)
+        self.campana_dialer.calificacion_campana.calificacion.add(self.calificacion_agenda)
+
+        self.contacto_dialer = ContactoFactory.create()
+        self.campana_dialer.bd_contacto.contactos.add(self.contacto_dialer)
+
+        self.queue_dialer = QueueFactory.create(campana=self.campana_dialer)
+
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue_dialer)
+
+    def _obtener_post_data_calificacion_cliente(self, campana=None, contacto=None):
+        if campana is None:
+            campana = self.campana
+        if contacto is None:
+            contacto = self.contacto
         post_data = {
-            'telefono': self.contacto.telefono,
-            'campana': self.campana.pk,
-            'contacto': self.contacto.pk,
+            'telefono': contacto.telefono,
+            'campana': campana.pk,
+            'contacto': contacto.pk,
             'agente': self.agente_profile.pk,
             'calificacion': '',
         }
@@ -173,6 +189,114 @@ class CalificacionTests(OMLBaseTest):
         post_data['calificacion'] = self.calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_contacto.html')
+
+# Test: Llega WombatLog antes de calificar
+    @patch('requests.post')
+    def test_update_wombat_log_calificacion_vacia(self, post):
+        self._setUp_campana_dialer()
+        # Llega el WombatLog desde WombatDialer antes de calificar (cuelga y luego califica)
+        url = reverse('wombat_log')
+        post_data = {'I_ID_CLIENTE': self.contacto_dialer.id,
+                     'I_ID_CAMPANA': self.campana_dialer.id,
+                     'num': str(self.contacto_dialer.telefono),
+                     'state': 'BASURA',
+                     'extstate': '',
+                     'timeout': '0',
+                     'reschedule': '',
+                     'retry': '',
+                     }
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.json()['status'], 'OK')
+        log = WombatLog.objects.get(campana=self.campana_dialer, contacto=self.contacto_dialer)
+        self.assertEqual(log.telefono, str(self.contacto_dialer.telefono))
+
+        # Califico localmente, y el WombatLog debe quedar con ese valor de calificacion
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana_dialer.pk,
+                              'pk_contacto': self.contacto_dialer.pk,
+                              'wombat_id': 0})
+        post_data = self._obtener_post_data_calificacion_cliente(campana=self.campana_dialer,
+                                                                 contacto=self.contacto_dialer)
+        post_data['calificacion'] = self.calificacion_gestion.pk
+        self.client.post(url, post_data, follow=True)
+        log = WombatLog.objects.get(id=log.id)
+        self.assertEqual(log.agente, self.agente_profile)
+        self.assertEqual(log.estado, 'TERMINATE')
+        self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
+
+
+    @patch('requests.post')
+    def test_update_wombat_log_despues_de_calificar(self, post):
+        # Llega WombatLog despues de calificar con calificacion
+        self._setUp_campana_dialer()
+
+        # Calificacion
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana_dialer.pk,
+                              'pk_contacto': self.contacto_dialer.pk,
+                              'wombat_id': 0})
+        post_data = self._obtener_post_data_calificacion_cliente(campana=self.campana_dialer,
+                                                                 contacto=self.contacto_dialer)
+        post_data['calificacion'] = self.calificacion_gestion.pk
+        self.client.post(url, post_data, follow=True)
+        log = WombatLog.objects.get(campana=self.campana_dialer, contacto=self.contacto_dialer)
+        self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
+
+        # Llega el WombatLog desde WombatDialer después de calificar (califica y luego cuelga)
+        url = reverse('wombat_log')
+        post_data = {'I_ID_CLIENTE': self.contacto_dialer.id,
+                     'I_ID_CAMPANA': self.campana_dialer.id,
+                     'num': str(self.contacto_dialer.telefono),
+                     'O_id_agente': self.agente_profile.id,
+                     'state': 'TERMINAL',
+                     'extstate': 'CALIFICACION_NUEVA',
+                     'timeout': '0',
+                     'reschedule': '',
+                     'retry': '',
+                     }
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.json()['status'], 'OK')
+        log = WombatLog.objects.get(id=log.id)
+        self.assertEqual(log.agente, self.agente_profile)
+        self.assertEqual(log.calificacion, 'CALIFICACION_NUEVA')
+
+    @patch('requests.post')
+    def test_update_wombat_log_con_calificacion_vacia_despues_de_calificar(self, post):
+        # Test: Llega WombatLog despues de calificar sin calificacion
+        self._setUp_campana_dialer()
+
+        # Calificacion
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana_dialer.pk,
+                              'pk_contacto': self.contacto_dialer.pk,
+                              'wombat_id': 0})
+        post_data = self._obtener_post_data_calificacion_cliente(campana=self.campana_dialer,
+                                                                 contacto=self.contacto_dialer)
+        post_data['calificacion'] = self.calificacion_gestion.pk
+        self.client.post(url, post_data, follow=True)
+        log = WombatLog.objects.get(campana=self.campana_dialer, contacto=self.contacto_dialer)
+        self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
+
+        # Llega el WombatLog desde WombatDialer después de calificar (califica y luego cuelga)
+        url = reverse('wombat_log')
+        post_data = {'I_ID_CLIENTE': self.contacto_dialer.id,
+                     'I_ID_CAMPANA': self.campana_dialer.id,
+                     'num': str(self.contacto_dialer.telefono),
+                     'O_id_agente': self.agente_profile.id,
+                     'state': 'TERMINAL',
+                     'extstate': '',
+                     'timeout': '0',
+                     'reschedule': '',
+                     'retry': '',
+                     }
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.json()['status'], 'OK')
+        log = WombatLog.objects.get(id=log.id)
+        self.assertEqual(log.agente, self.agente_profile)
+        self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
 
     @patch('requests.post')
     def test_calificacion_cliente_marcada_agendado_cuando_se_salva_agenda(self, post):

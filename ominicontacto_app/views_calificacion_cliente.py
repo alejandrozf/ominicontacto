@@ -110,8 +110,7 @@ class CalificacionClienteFormView(FormView):
 
         # Notificar a Wombat que se asigna el contacto al agente
         # Solamente si tengo wombat_id en los kwargs y es distinto de 0
-        campana = Campana.objects.get(id=self.kwargs['pk_campana'])
-        if campana.type == Campana.TYPE_DIALER and not kwargs['wombat_id'] == '0':
+        if self.campana.type == Campana.TYPE_DIALER and not kwargs['wombat_id'] == '0':
             service = WombatCallService()
             service.asignar_agente(self.kwargs['wombat_id'], self.kwargs['id_agente'])
 
@@ -147,16 +146,17 @@ class CalificacionClienteFormView(FormView):
         self.object_calificacion.save()
 
         # Finalizar relacion de contacto con agente
-        # TODO: Optimizacion, si ya hay calificacion ya se termino la relacion agente contacto
-        campana = self.object_calificacion.campana
-        if campana.type == Campana.TYPE_PREVIEW:
-            campana.gestionar_finalizacion_relacion_agente_contacto(contacto.id)
+        # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
+        if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
+            self.campana.gestionar_finalizacion_relacion_agente_contacto(contacto.id)
 
         # Actualizar la calificacion en wombat
-        if campana.type == Campana.TYPE_DIALER:
-            service = WombatCallService()
-            service.calificar(self.object_calificacion.wombat_id,
-                              self.object_calificacion.calificacion.nombre)
+        if self.campana.type == Campana.TYPE_DIALER:
+            # Si recibo el parámetro 'wombat_id' es porque es una llamada disparada por Wombat
+            if not self.kwargs['wombat_id'] == '0':
+                service = WombatCallService()
+                service.calificar(self.kwargs['wombat_id'],
+                                  self.object_calificacion.calificacion.nombre)
             WombatLog.objects.actualizar_wombat_log_para_calificacion(self.object_calificacion)
 
         if self.object_calificacion.es_venta:

@@ -489,7 +489,8 @@ class CalificacionClienteForm(forms.ModelForm):
         contacto = self.cleaned_data.get('contacto', None)
         if campana and contacto:
             if not contacto.bd_contacto == campana.bd_contacto:
-                raise forms.ValidationError('Calificacion incorrecta')
+                raise forms.ValidationError('El Contacto no corresponde a la base de datos'
+                                            ' de la Campaña')
             return contacto
 
     def clean_calificacion(self):

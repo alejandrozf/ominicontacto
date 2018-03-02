@@ -2267,25 +2267,21 @@ class WombatLogManager(models.Manager):
 
     def actualizar_wombat_log_para_calificacion(self, calificacion):
         """
-        Actualiza la calificacion del WombatLog. Si no existe no hace nada.
-        TODO: Discutir si debe actualizar tambien el agente.
-        TODO: Deberia usarse update_or_create()
+        Actualiza la calificacion del WombatLog. (Por haber creado/actualizado la calificación)
+        Si no existe crea una temporal.
         """
         try:
-            wombat_log = self.get(campana=calificacion.campana, contacto=calificacion.contacto)
-            wombat_log.calificacion = calificacion.calificacion.nombre
-            wombat_log.save()
-        except WombatLog.DoesNotExist:
-            pass
+            WombatLog.objects.update_or_create(
+                campana=calificacion.campana, contacto=calificacion.contacto,
+                defaults={
+                    'agente': calificacion.agente,
+                    'estado': 'TERMINATE',
+                    'calificacion': calificacion.calificacion.nombre,
+                })
         except WombatLog.MultipleObjectsReturned:
+            # Error, no debeía haber otro WombatLog. Puede deberse a una race condition entre la
+            # vista que califica, y la vista que recibe el POST de Wombat.
             pass
-
-    def obtener_wombat_log_contacto(self, contacto):
-        try:
-            return self.filter(contacto=contacto)
-        except WombatLog.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contacto con el id"
-                                       ": {0}".format(contacto.pk)))
 
 
 class WombatLog(models.Model):
@@ -2296,11 +2292,11 @@ class WombatLog(models.Model):
     contacto = models.ForeignKey(Contacto)
     agente = models.ForeignKey(AgenteProfile, related_name="logsaagente",
                                blank=True, null=True)
-    telefono = models.CharField(max_length=128)
+    telefono = models.CharField(max_length=128, blank=True)
     estado = models.CharField(max_length=128)
-    calificacion = models.CharField(max_length=128)
-    timeout = models.IntegerField()
-    metadata = models.TextField()
+    calificacion = models.CharField(max_length=128, blank=True)
+    timeout = models.IntegerField(default=0)
+    metadata = models.TextField(default='')
     fecha_hora = models.DateTimeField(auto_now=True)
 
 
