@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 from django.core.urlresolvers import reverse
 from django.views.generic import FormView
 from ominicontacto_app.models import Campana
+from reciclado_app.forms import RecicladoForm
 
 import logging as logging_
 
@@ -20,13 +21,14 @@ class ReciclarCampanaDialerFormView(FormView):
     dialer
     """
 
-    form_class = None
+    form_class = RecicladoForm
     template_name = 'nuevo_reciclado.html'
 
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        return self.form_class(**self.get_form_kwargs())
+    def get_form_kwargs(self):
+        kwargs = super(ReciclarCampanaDialerFormView, self).get_form_kwargs()
+        reciclado_choice = None
+        kwargs['reciclado_choice'] = reciclado_choice
+        return kwargs
 
     def form_valid(self, form):
         return super(ReciclarCampanaDialerFormView, self).form_valid(form)
