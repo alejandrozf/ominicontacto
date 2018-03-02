@@ -929,33 +929,37 @@ class Campana(models.Model):
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
 
-    def finalizar_relacion_agente_contacto(self, contacto_pk):
+    def gestionar_finalizacion_relacion_agente_contacto(self, contacto_pk):
         """
         Marca como finalizada la relación entre un agente y un contacto de una campaña
         preview
         """
         try:
-            agente_en_contacto = AgenteEnContacto.objects.get(
-                contacto_id=contacto_pk, campana_id=self.pk)
+            agente_en_contacto = AgenteEnContacto.objects \
+                .exclude(estado=AgenteEnContacto.ESTADO_FINALIZADO) \
+                .get(contacto_id=contacto_pk, campana_id=self.pk)
         except AgenteEnContacto.DoesNotExist:
+            # Si el contacto ya esta FINALIZADO, no hace falta actualizar.
             # para el caso cuando se llama al procedimiento luego de añadir un
             # nuevo contacto desde la consola de agentes
             pass
         else:
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
             agente_en_contacto.save()
+            self.gestionar_finalizacion_por_contactos_calificados()
 
-            # si todos los contactos de la campaña han sido calificados
-            # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
-            # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
-            # y se marca la campaña como finalizada
-            contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
-            n_contactos_campana = contactos_campana.count()
-            n_contactos_atendidos = contactos_campana.filter(
-                estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
-            if n_contactos_campana == n_contactos_atendidos:
-                contactos_campana.delete()
-                self.finalizar()
+    def gestionar_finalizacion_por_contactos_calificados(self):
+        # si todos los contactos de la campaña han sido calificados
+        # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
+        # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
+        # y se marca la campaña como finalizada
+        contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
+        n_contactos_campana = contactos_campana.count()
+        n_contactos_atendidos = contactos_campana.filter(
+            estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
+        if n_contactos_campana == n_contactos_atendidos:
+            contactos_campana.delete()
+            self.finalizar()
 
     def get_string_queue_asterisk(self):
         if self.queue_campana:

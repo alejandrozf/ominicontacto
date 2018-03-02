@@ -59,7 +59,7 @@ class CalificacionTests(OMLBaseTest):
         return post_data
 
     def test_no_se_admite_tipo_calificacion_cliente_vacia_en_creacion_calificacion(self):
-        url = reverse('calificacion_formulario_create',
+        url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
@@ -72,7 +72,7 @@ class CalificacionTests(OMLBaseTest):
     def test_no_se_admite_tipo_calificacion_cliente_vacia_en_modificacion_calificacion(self):
         CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
                                           agente=self.agente_profile)
-        url = reverse('calificacion_formulario_update',
+        url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
@@ -84,7 +84,7 @@ class CalificacionTests(OMLBaseTest):
 
     @patch('requests.post')
     def test_calificacion_cliente_creacion_redirecciona_formulario_gestion(self, post):
-        url = reverse('calificacion_formulario_create',
+        url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
@@ -98,7 +98,7 @@ class CalificacionTests(OMLBaseTest):
     def test_calificacion_cliente_modificacion_redirecciona_formulario_gestion(self, post):
         CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
                                           agente=self.agente_profile)
-        url = reverse('calificacion_formulario_update',
+        url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
@@ -164,7 +164,7 @@ class CalificacionTests(OMLBaseTest):
     def test_escoger_calificacion_agenda_redirecciona_formulario_agenda(self, post):
         CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
                                           agente=self.agente_profile)
-        url = reverse('calificacion_formulario_update',
+        url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,

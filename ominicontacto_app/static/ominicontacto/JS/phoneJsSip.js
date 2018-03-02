@@ -870,14 +870,8 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
 
-  function getDataCreate(campid, leadid, agentid, wombatId) {
-    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/create/"+agentid+"/"+wombatId+"/";
-    $("#dataView").attr('src', url);
-  }
-
-
   function getData(campid, leadid, agentid, wombatId) {
-    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
+    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/calificacion/";
     $("#dataView").attr('src', url);
   }
 

@@ -410,7 +410,7 @@ class CampanasTests(OMLBaseTest):
                   'pk_campana': self.campana_activa.pk,
                   'id_agente': self.agente_profile.pk,
                   'wombat_id': 0}
-        url = reverse('calificacion_formulario_create', kwargs=kwargs)
+        url = reverse('calificacion_formulario_update_or_create', kwargs=kwargs)
         post_data = {'es_venta': ['False'],
                      'calificacion': [self.calificacion.pk],
                      'agente': [self.agente_profile.pk],
