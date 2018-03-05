@@ -41,7 +41,7 @@
             {% for form in wizard.form.forms %}
                 <tr class="linkFormset">
                     <td>
-                    {% if form.instance.pk %}
+                    {% if form.instance.pk and not form.instance.es_agenda %}
                         {{ form.DELETE }}
                     {% endif %}
                     </td>

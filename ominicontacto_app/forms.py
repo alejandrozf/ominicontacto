@@ -430,6 +430,33 @@ class OpcionCalificacionForm(forms.ModelForm):
         model = OpcionCalificacion
         fields = ('tipo', 'nombre', 'campana')
 
+    def __init__(self, *args, **kwargs):
+        super(OpcionCalificacionForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk and instance.es_agenda():
+            self.fields['nombre'].disabled = True
+            self.fields['tipo'].disabled = True
+        else:
+            self.fields['tipo'].choices = OpcionCalificacion.FORMULARIO_CHOICES_NO_AGENDA
+
+    def clean_nombre(self):
+        instance = getattr(self, 'instance', None)
+        if instance.pk is None and instance.nombre == settings.CALIFICACION_REAGENDA:
+            raise forms.ValidationError(
+                _("El nombre de la opción de calificación '{0}' está reservado para uso interno"
+                  " del sistema, por favor use otro".format(instance.nombre)))
+        if instance and instance.pk and instance.es_agenda():
+            return instance.nombre
+        else:
+            return self.cleaned_data['nombre']
+
+    def clean_tipo(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk and instance.es_agenda():
+            return instance.tipo
+        else:
+            return self.cleaned_data['tipo']
+
 
 class OpcionCalificacionBaseFormset(BaseInlineFormSet):
 
@@ -458,10 +485,6 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
                 raise forms.ValidationError(
                     _("Los nombres de las opciones de calificación deben ser distintos"),
                     code="invalid")
-            if nombre == settings.CALIFICACION_REAGENDA:
-                raise forms.ValidationError(
-                    _("El nombre de la opción de calificación '{0}' está reservado para uso interno"
-                      " del sistema, por favor use otro".format(nombre)))
             if tipo == OpcionCalificacion.GESTION and tipos_gestion_cont == 0:
                 tipos_gestion_cont += 1
             elif tipo == OpcionCalificacion.GESTION and tipos_gestion_cont > 0:
@@ -471,6 +494,14 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         if tipos_gestion_cont == 0:
             raise forms.ValidationError(
                 _("Debe escoger una opción de calificación de tipo gestión por campaña"))
+
+    def save(self):
+        """
+        Inserta la una opción de calificación interna del sistema para agendar contactos
+        """
+        campana = self.instance
+        campana.gestionar_opcion_calificacion_agenda()
+        super(OpcionCalificacionBaseFormset, self).save()
 
 
 class CampanaUpdateForm(forms.ModelForm):

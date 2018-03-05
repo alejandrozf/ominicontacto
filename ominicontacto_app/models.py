@@ -1004,7 +1004,16 @@ class Campana(models.Model):
             return self.queue_campana.get_string_queue_asterisk()
 
     def obtener_calificaciones(self):
-        return CalificacionCliente.objects.calificaciones_de_campana(self)
+        return CalificacionCliente.objects.filter(
+            opcion_calificacion__campana=self)
+
+    def gestionar_opcion_calificacion_agenda(self):
+        """
+        Devuelve la opción de calificación de agenda para la campaña.
+        En caso de no existir la crea.
+        """
+        OpcionCalificacion.objects.get_or_create(
+            campana=self, nombre=settings.CALIFICACION_REAGENDA, tipo=OpcionCalificacion.AGENDA)
 
 
 class QueueManager(models.Manager):
@@ -1042,6 +1051,11 @@ class OpcionCalificacion(models.Model):
     FORMULARIO_CHOICES = (
         (GESTION, _('Gestión')),
         (NO_ACCION, _('Sin acción')),
+        (AGENDA, _('Agenda')),
+    )
+    FORMULARIO_CHOICES_NO_AGENDA = (
+        (GESTION, _('Gestión')),
+        (NO_ACCION, _('Sin acción')),
     )
     campana = models.ForeignKey(
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
@@ -1051,6 +1065,9 @@ class OpcionCalificacion(models.Model):
     def __unicode__(self):
         return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
             self.nombre, self.campana.nombre, self.get_tipo_display()))
+
+    def es_agenda(self):
+        return self.tipo == self.AGENDA
 
 
 class Queue(models.Model):
@@ -2256,9 +2273,6 @@ class CalificacionClienteManager(models.Manager):
                 cantidad=Count('calificacion')).filter(campana=campana)
         except CalificacionCliente.DoesNotExist:
             raise (SuspiciousOperation("No se encontro califacaciones "))
-
-    def calificaciones_de_campana(self, campana):
-        return self.filter(opcion_calificacion__campana_id=campana.id)
 
 
 class CalificacionCliente(models.Model):
