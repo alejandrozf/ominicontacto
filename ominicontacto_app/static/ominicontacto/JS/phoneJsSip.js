@@ -318,7 +318,7 @@ $(function() {
                                                     getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
                                                 }
                                                  else if (originHeader === "CLICK2CALLPREVIEW") {
-                                                   getDataCreate(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                   getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
         		if(fromUser !== "Unknown") {
