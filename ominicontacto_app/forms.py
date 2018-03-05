@@ -500,7 +500,8 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         Inserta la una opción de calificación interna del sistema para agendar contactos
         """
         campana = self.instance
-        campana.gestionar_opcion_calificacion_agenda()
+        if campana.estado != Campana.ESTADO_TEMPLATE_ACTIVO:
+            campana.gestionar_opcion_calificacion_agenda()
         super(OpcionCalificacionBaseFormset, self).save()
 
 
