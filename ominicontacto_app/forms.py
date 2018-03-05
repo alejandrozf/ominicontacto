@@ -381,10 +381,6 @@ class CampanaForm(forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
         }
 
-    # def clean_gestion(self):
-    #     nombre = validar_gestion_campanas(self)
-    #     return nombre
-
     def clean(self):
         if not self.fields['bd_contacto'].queryset:
             message = _("Debe cargar una base de datos antes de comenzar a "
@@ -503,36 +499,6 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         if campana.estado != Campana.ESTADO_TEMPLATE_ACTIVO:
             campana.gestionar_opcion_calificacion_agenda()
         super(OpcionCalificacionBaseFormset, self).save()
-
-
-class CampanaUpdateForm(forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        super(CampanaUpdateForm, self).__init__(*args, **kwargs)
-
-        self.fields['bd_contacto'].queryset = \
-            BaseDatosContacto.objects.obtener_definidas()
-
-    class Meta:
-        model = Campana
-        fields = ('bd_contacto', 'gestion', 'objetivo')
-        labels = {
-            'bd_contacto': 'Base de Datos de Contactos',
-        }
-        widgets = {
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
-            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
-        }
-
-    def clean_gestion(self):
-        return validar_gestion_campanas(self)
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
 
 
 class ContactoForm(forms.ModelForm):
