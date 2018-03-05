@@ -5,7 +5,11 @@ from __future__ import unicode_literals
 import django.db.models.deletion
 
 from django.db import migrations, models
+from django.conf import settings
 from django.utils.translation import ugettext as _
+
+GESTION = 1
+AGENDA = 2
 
 
 def adicionar_opciones_calificacion_modelos_calificacion_contactos(apps, schema_editor):
@@ -17,8 +21,6 @@ def adicionar_opciones_calificacion_modelos_calificacion_contactos(apps, schema_
     CalificacionManual = apps.get_model('ominicontacto_app', 'calificacionmanual')
     OpcionCalificacion = apps.get_model('ominicontacto_app', 'opcioncalificacion')
 
-    GESTION = 1
-
     # TODO: unificar este código en un sólo ciclo cuando se hayan unificado los modelos
     # CalificacionCliente y CalificacionManual
     for calif_cliente in CalificacionCliente.objects.all():
@@ -27,13 +29,16 @@ def adicionar_opciones_calificacion_modelos_calificacion_contactos(apps, schema_
             # las calificaciones de gestion anteriormente no tenían
             # instancia de nombre de calificación asociada, se la asigna el nombre
             # la opción de gestión de la campaña
-            es_gestion = GESTION
+            tipo = GESTION
             nombre_calificacion = campana.gestion
+        elif calif_cliente.calificacion.nombre == settings.CALIFICACION_REAGENDA:
+            nombre_calificacion = calif_cliente.calificacion.nombre
+            tipo = AGENDA
         else:
             nombre_calificacion = calif_cliente.calificacion.nombre
-            es_gestion = int(campana.gestion == nombre_calificacion)
+            tipo = int(campana.gestion == nombre_calificacion)
         opcion_calificacion, _ = OpcionCalificacion.objects.get_or_create(
-            campana=campana, nombre=nombre_calificacion, tipo=es_gestion)
+            campana=campana, nombre=nombre_calificacion, tipo=tipo)
         calif_cliente.opcion_calificacion = opcion_calificacion
         calif_cliente.save()
 
@@ -43,13 +48,16 @@ def adicionar_opciones_calificacion_modelos_calificacion_contactos(apps, schema_
             # las calificaciones manuales de gestion anteriormente no tenían
             # instancia de nombre de calificación asociada, se la asigna el nombre
             # la opción de gestión de la campaña
-            es_gestion = GESTION
+            tipo = GESTION
             nombre_calificacion = campana.gestion
+        elif calif_manual.calificacion.nombre == settings.CALIFICACION_REAGENDA:
+            nombre_calificacion = calif_manual.calificacion.nombre
+            tipo = AGENDA
         else:
             nombre_calificacion = calif_manual.calificacion.nombre
-            es_gestion = int(campana.gestion == nombre_calificacion)
+            tipo = int(campana.gestion == nombre_calificacion)
         opcion_calificacion, _ = OpcionCalificacion.objects.get_or_create(
-            campana=campana, nombre=nombre_calificacion, tipo=es_gestion)
+            campana=campana, nombre=nombre_calificacion, tipo=tipo)
         calif_manual.opcion_calificacion = opcion_calificacion
         calif_manual.save()
 
@@ -90,8 +98,6 @@ def adicionar_calificaciones_campana(apps, schema_editor):
     OpcionCalificacion = apps.get_model('ominicontacto_app', 'opcioncalificacion')
     NombreCalificacion = apps.get_model('ominicontacto_app', 'nombrecalificacion')
 
-    GESTION = 1
-
     for campana in Campana.objects_default.all():
         # creamos las opciones de calificacion que relacionan las campañas con las calificaciones
         # todas tendrán inicialmente el valor de opción por defecto NO_ACCION, excepto la
@@ -99,10 +105,12 @@ def adicionar_calificaciones_campana(apps, schema_editor):
         opciones_clasificacion = [
             OpcionCalificacion(campana=campana, nombre=calificacion.nombre)
             for calificacion in campana.calificacion_campana.calificacion.all()
-            if calificacion.nombre != campana.gestion]
+            if calificacion.nombre not in [campana.gestion, settings.CALIFICACION_REAGENDA]]
         calificacion_gestion, _ = NombreCalificacion.objects.get_or_create(nombre=campana.gestion)
-        opciones_clasificacion.append(OpcionCalificacion(
-            campana=campana, nombre=calificacion_gestion.nombre, tipo=GESTION))
+        opciones_clasificacion.extend(
+            [OpcionCalificacion(campana=campana, nombre=calificacion_gestion.nombre, tipo=GESTION),
+             OpcionCalificacion(
+                 campana=campana, nombre=settings.CALIFICACION_REAGENDA, tipo=AGENDA)])
         OpcionCalificacion.objects.bulk_create(opciones_clasificacion)
 
 
