@@ -34,7 +34,18 @@ class ReciclarCampanaDialerFormView(FormView):
     def get_form_kwargs(self):
         kwargs = super(ReciclarCampanaDialerFormView, self).get_form_kwargs()
         reciclado_choice = [(item, item) for item in self.resultado.keys()]
-        kwargs['reciclado_choice'] = reciclado_choice
+        reciclado_choice_2 = []
+        for clave, valor in self.resultado.items():
+            nombre = clave + " " + str(valor)
+
+            item = (clave, nombre)
+            reciclado_choice_2.append(item)
+        estadisticas = EstadisticasContactacion()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contactados = estadisticas.obtener_cantidad_calificacion(campana)
+        contactados_choice = [(contactacion.id, contactacion.label_checkbox)
+                              for contactacion in contactados]
+        kwargs['reciclado_choice'] = contactados_choice
         return kwargs
 
     def get_context_data(self, **kwargs):

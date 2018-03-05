@@ -64,16 +64,23 @@ class EstadisticasContactacion():
         """
 
         calificaciones_query = campana.calificaconcliente.values(
-            'calificacion__nombre').annotate(Count('calificacion')).filter(
+            'calificacion__nombre', 'calificacion__id').annotate(Count('calificacion')).filter(
             calificacion__count__gt=0)
-        count_calificacion = {}
-        for calificacion in calificaciones_query:
-            count_calificacion.update(
-                {calificacion['calificacion__nombre']: calificacion['calificacion__count']})
-        count_calificacion.update(
-            {campana.gestion: campana.calificaconcliente.filter(es_venta=True).count()})
 
-        return count_calificacion
+        calificaciones = []
+        for calificacion in calificaciones_query:
+            cantidad_contactacion = CantidadContactacion(
+                calificacion['calificacion__id'],
+                calificacion['calificacion__nombre'],
+                calificacion['calificacion__count']
+            )
+            calificaciones.append(cantidad_contactacion)
+
+        cantidad_contactacion = CantidadContactacion(
+            0, campana.gestion, campana.calificaconcliente.filter(es_venta=True).count()
+        )
+        calificaciones.append(cantidad_contactacion)
+        return calificaciones
 
     def obtener_resultado_contactacion(self, campana):
         """
@@ -86,5 +93,29 @@ class EstadisticasContactacion():
 
         resultados = {}
         resultados.update(no_contactados)
-        resultados.update(contactados)
+        #resultados.update(contactados)
         return resultados
+
+
+class CantidadContactacion(object):
+
+    def __init__(self, id, nombre, cantidad):
+        self._id = id
+        self._nombre = nombre
+        self._cantidad = cantidad
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def nombre(self):
+        return self._nombre
+
+    @property
+    def cantidad(self):
+        return self._cantidad
+
+    @property
+    def label_checkbox(self):
+        return self._nombre + "  " + str(self._cantidad)
