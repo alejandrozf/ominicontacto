@@ -10,9 +10,8 @@
       - amd.conf
       - func_odbc.conf
       - http_custom.conf
-      - extensions_fts_globals.conf
-      - extensions_fts_queues.conf
       - func_odbc.conf
+      - cdr_adaptive_odbc.conf
       - manager_custom.conf
       - queues_custom.conf
       - globals_custom.conf
@@ -42,7 +41,7 @@
       - extconfig.conf
       - amd.conf
       - func_odbc.conf
-      - func_odbc.conf
+      - cdr_adaptive_odbc.conf
       - http_custom.conf
       - manager_custom.conf
       - queues_custom.conf
