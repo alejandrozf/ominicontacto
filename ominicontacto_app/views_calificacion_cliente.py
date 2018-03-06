@@ -53,7 +53,7 @@ class GestorDeCalificaciones(object):
 
         if actualizar_wombat:
             # Si recibo el parámetro 'wombat_id' es porque es una llamada disparada por Wombat
-            llamada_disparada_por_wombat = wombat_id == '0'
+            llamada_disparada_por_wombat = wombat_id is not '0'
             if llamada_disparada_por_wombat:
                 service = WombatCallService()
                 service.calificar(wombat_id,

@@ -2274,7 +2274,7 @@ class WombatLogManager(models.Manager):
                 campana=calificacion.campana, contacto=calificacion.contacto,
                 defaults={
                     'agente': calificacion.agente,
-                    'estado': 'TERMINATE',
+                    'estado': 'TERMINATED',
                     'calificacion': calificacion.calificacion.nombre,
                 })
         except WombatLog.MultipleObjectsReturned:

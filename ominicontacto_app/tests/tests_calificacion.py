@@ -222,7 +222,7 @@ class CalificacionTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         log = WombatLog.objects.get(id=log.id)
         self.assertEqual(log.agente, self.agente_profile)
-        self.assertEqual(log.estado, 'TERMINATE')
+        self.assertEqual(log.estado, 'TERMINATED')
         self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
 
     @patch('requests.post')
