@@ -25,11 +25,11 @@ class ReciclarCampanaDialerFormView(FormView):
     form_class = RecicladoForm
     template_name = 'nuevo_reciclado.html'
 
-    def get(self, request, *args, **kwargs):
-        estadisticas = EstadisticasContactacion()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        self.resultado = estadisticas.obtener_resultado_contactacion(campana)
-        return super(ReciclarCampanaDialerFormView, self).get(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     estadisticas = EstadisticasContactacion()
+    #     campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+    #     self.resultado = estadisticas.obtener_resultado_contactacion(campana)
+    #     return super(ReciclarCampanaDialerFormView, self).get(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(ReciclarCampanaDialerFormView, self).get_form_kwargs()
@@ -52,13 +52,9 @@ class ReciclarCampanaDialerFormView(FormView):
         kwargs['no_contactados_choice'] = no_contactados_choice
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super(ReciclarCampanaDialerFormView, self).get_context_data(**kwargs)
-        context['resultados'] = self.resultado
-        return context
-
     def form_valid(self, form):
-        return super(ReciclarCampanaDialerFormView, self).form_valid(form)
+        print form.cleaned_data
+        return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
         reverse('view_blanco')

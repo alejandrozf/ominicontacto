@@ -13,10 +13,12 @@ class RecicladoForm(forms.Form):
 
         super(RecicladoForm, self).__init__(*args, **kwargs)
         self.fields['reciclado_calificacion'] = forms.MultipleChoiceField(
+            required=False,
             choices=reciclado_choice,
             widget=forms.CheckboxSelectMultiple(
                 attrs={'class': 'form-control'}),)
         self.fields['reciclado_no_contactacion'] = forms.MultipleChoiceField(
+            required=False,
             choices=no_contactados_choice,
             widget=forms.CheckboxSelectMultiple(
                 attrs={'class': 'form-control'}), )
