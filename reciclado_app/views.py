@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.views.generic import FormView
 from ominicontacto_app.models import Campana
 from reciclado_app.forms import RecicladoForm
@@ -53,7 +54,20 @@ class ReciclarCampanaDialerFormView(FormView):
         return kwargs
 
     def form_valid(self, form):
-        print form.cleaned_data
+        reciclado_calificacion = form.cleaned_data.get('reciclado_calificacion')
+        reciclado_no_contactacion = form.cleaned_data.get('reciclado_no_contactacion')
+        if not (reciclado_calificacion and reciclado_no_contactacion):
+            message = '<strong>Operación Errónea!</strong> \
+                        Debe seleccionar al menos una opcion para reciclar '
+
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.form_invalid(form)
+
         return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
