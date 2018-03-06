@@ -11,9 +11,7 @@
             <thead>
                 <tr>
                     <th>{% trans 'Nombre' %}</th>
-
                     <th>{% trans 'Acciones' %};</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -24,7 +22,6 @@
                                 {{ campana.nombre }}
                             </a>
                         </td>
-
                         <td width="14%">
                             <a href="{% url 'campana_entrante_template_create_campana' campana.pk %}"  class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span>
@@ -43,6 +40,5 @@
                 {% endfor %}
             </tbody>
         </table>
-
     </div>
 {% endblock %}
