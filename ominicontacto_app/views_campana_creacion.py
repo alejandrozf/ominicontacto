@@ -282,6 +282,5 @@ class CampanaEntranteTemplateDeleteView(DeleteView):
             self.request,
             messages.SUCCESS,
             message,
-            extra_tags="safe",
         )
         return HttpResponseRedirect(self.get_success_url())
