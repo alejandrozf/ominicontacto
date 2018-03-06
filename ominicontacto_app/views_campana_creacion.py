@@ -73,6 +73,21 @@ class CampanaEntranteMixin(object):
                 kwargs.setdefault('queryset', self.get_form_instance(step))
             return form_class(audio_choices, **kwargs)
 
+    def _get_instance_from_campana(self, pk, step):
+        campana = get_object_or_404(Campana, pk=pk)
+        if step in [self.INICIAL, self.OPCIONES_CALIFICACION]:
+            return campana
+        if step == self.COLA:
+            return campana.queue_campana
+
+    def get_form_instance(self, step):
+        pk = self.kwargs.get('pk_campana', False)
+        if pk:
+            # vista de modificación de campana
+            return self._get_instance_from_campana(pk, step)
+        else:
+            super(CampanaEntranteMixin, self).get_form_instance(step)
+
     def _insert_queue_asterisk(self, queue):
         servicio_asterisk = AsteriskService()
         servicio_asterisk.insertar_cola_asterisk(queue)
@@ -149,14 +164,6 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         opts_calif_init_formset.save()
         self._insert_queue_asterisk(queue_form.instance)
         return HttpResponseRedirect(reverse('campana_list'))
-
-    def get_form_instance(self, step):
-        pk = self.kwargs.get('pk_campana', None)
-        campana = get_object_or_404(Campana, pk=pk)
-        if step in [self.INICIAL, self.OPCIONES_CALIFICACION]:
-            return campana
-        if step == self.COLA:
-            return campana.queue_campana
 
 
 class CampanaEntranteTemplateListView(ListView):

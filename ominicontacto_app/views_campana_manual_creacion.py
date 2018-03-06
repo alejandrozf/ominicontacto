@@ -11,7 +11,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
-from ominicontacto_app.forms import CampanaManualForm, CampanaManualUpdateForm
+
+from formtools.wizard.views import SessionWizardView
+
+from ominicontacto_app.forms import CampanaManualForm, OpcionCalificacionFormSet
 from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -19,6 +22,7 @@ from ominicontacto_app.services.asterisk_service import AsteriskService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import\
     SincronizarBaseDatosContactosService
+from ominicontacto_app.views_campana_creacion import CampanaEntranteMixin, CampanaEntranteCreateView
 
 
 import logging as logging_
@@ -26,89 +30,38 @@ import logging as logging_
 logger = logging_.getLogger(__name__)
 
 
-class CheckEstadoCampanaMixin(object):
-    """Mixin para utilizar en las vistas de creación de campañas.
-    Utiliza `Campana.objects.obtener_en_definicion_para_editar()`
-    para obtener la campaña pasada por url.
-    Este metodo falla si la campaña no deberia ser editada.
-    ('editada' en el contexto del proceso de creacion de la campaña)
+class CampanaManualMixin(CampanaEntranteMixin):
+    INICIAL = '0'
+    COLA = None
+    OPCIONES_CALIFICACION = '1'
+
+    FORMS = [(INICIAL, CampanaManualForm),
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
+
+    TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
+                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html"}
+
+    form_list = FORMS
+
+
+class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
+    """
+    Esta vista crea una campaña de tipo manual
     """
 
-    def dispatch(self, request, *args, **kwargs):
-        chequeada = kwargs.pop('_campana_chequeada', False)
-        if not chequeada:
-            self.campana = Campana.objects.obtener_en_definicion_para_editar(
-                self.kwargs['pk_campana'])
-
-        return super(CheckEstadoCampanaMixin, self).dispatch(request, *args,
-                                                             **kwargs)
-
-
-class CampanaEnDefinicionMixin(object):
-    """Mixin para obtener el objeto campama que valida que siempre este en
-    el estado en definición.
-    """
-
-    def get_object(self, queryset=None):
-        return Campana.objects.obtener_en_definicion_para_editar(
-            self.kwargs['pk_campana'])
-
-
-class CampanaManualCreateView(CreateView):
-    """
-    Esta vista crea un objeto Campana.
-    Por defecto su estado es EN_DEFICNICION,
-    Redirecciona a crear las opciones para esta
-    Campana.
-    """
-
-    template_name = 'campana_manual/nueva_edita_campana.html'
-    model = Campana
-    context_object_name = 'campana'
-    form_class = CampanaManualForm
-
-    def dispatch(self, request, *args, **kwargs):
-        base_datos = BaseDatosContacto.objects.obtener_definidas()
-        if not base_datos:
-            message = ("Debe cargar una base de datos antes de comenzar a "
-                       "configurar una campana")
-            messages.warning(self.request, message)
-        return super(CampanaManualCreateView, self).dispatch(request, *args, **kwargs)
-
-    def form_invalid(self, form, error=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                . {0}'.format(error)
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-
-        context_data = self.get_context_data()
-        context_data['form'] = form
-        return self.render_to_response(context_data)
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        if self.object.tipo_interaccion is Campana.FORMULARIO and \
-            not self.object.formulario:
-            error = "Debe seleccionar un formulario"
-            return self.form_invalid(form, error=error)
-        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-            not self.object.sitio_externo:
-            error = "Debe seleccionar un sitio externo"
-            return self.form_invalid(form, error=error)
-        self.object.type = Campana.TYPE_MANUAL
-        self.object.reported_by = self.request.user
-        self.object.estado = Campana.ESTADO_ACTIVA
-        self.object.save()
-        auto_grabacion = form.cleaned_data['auto_grabacion']
-        detectar_contestadores = form.cleaned_data['detectar_contestadores']
-        queue = Queue(
-            campana=self.object,
-            name=self.object.nombre,
+    def done(self, form_list, **kwargs):
+        campana_form = form_list[int(self.INICIAL)]
+        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        campana_form.instance.type = Campana.TYPE_MANUAL
+        campana_form.instance.reported_by = self.request.user
+        campana_form.instance.estado = Campana.ESTADO_ACTIVA
+        campana_form.save()
+        auto_grabacion = campana_form.cleaned_data['auto_grabacion']
+        detectar_contestadores = campana_form.cleaned_data['detectar_contestadores']
+        campana = campana_form.instance
+        queue = Queue.objects.create(
+            campana=campana,
+            name=campana.nombre,
             maxlen=5,
             wrapuptime=5,
             servicelevel=30,
@@ -121,48 +74,28 @@ class CampanaManualCreateView(CreateView):
             wait=120,
             queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=auto_grabacion,
-            detectar_contestadores=detectar_contestadores
-        )
-        queue.save()
-        return super(CampanaManualCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse(
-            'campana_manual_list')
+            detectar_contestadores=detectar_contestadores)
+        opciones_calificacion_formset.instance = campana
+        opciones_calificacion_formset.save()
+        self._insert_queue_asterisk(queue)
+        return HttpResponseRedirect(reverse('campana_manual_list'))
 
 
-class CampanaManualUpdateView(UpdateView):
+class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
     """
-    Esta vista actualiza un objeto Campana.
+    Esta vista actualiza una campaña de tipo manual.
     """
 
-    template_name = 'campana_manual/nueva_edita_campana.html'
-    model = Campana
-    context_object_name = 'campana'
-    form_class = CampanaManualUpdateForm
-
-    def get_initial(self):
-        initial = super(CampanaManualUpdateView, self).get_initial()
-        campana = self.get_object()
-        initial.update({
-            'auto_grabacion': campana.queue_campana.auto_grabacion,
-            'detectar_contestadores': campana.queue_campana.detectar_contestadores})
+    def get_form_initial(self, step):
+        initial = super(CampanaManualUpdateView, self).get_form_initial(step)
+        campana = self.get_form_instance(step)
+        if step == self.INICIAL:
+            initial.update({
+                'auto_grabacion': campana.queue_campana.auto_grabacion,
+                'detectar_contestadores': campana.queue_campana.detectar_contestadores})
         return initial
 
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        if self.object.tipo_interaccion is Campana.FORMULARIO and \
-            not self.object.formulario:
-            error = "Debe seleccionar un formulario"
-            return self.form_invalid(form, error=error)
-        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-            not self.object.sitio_externo:
-            error = "Debe seleccionar un sitio externo"
-            return self.form_invalid(form, error=error)
-        self.object.save()
         auto_grabacion = form.cleaned_data['auto_grabacion']
         detectar_contestadores = form.cleaned_data['detectar_contestadores']
         queue = self.object.queue_campana
@@ -171,22 +104,20 @@ class CampanaManualUpdateView(UpdateView):
         queue.save()
         return super(CampanaManualUpdateView, self).form_valid(form)
 
-    def form_invalid(self, form, error=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                . {0}'.format(error)
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-
-        context_data = self.get_context_data()
-        context_data['form'] = form
-        return self.render_to_response(context_data)
-
-        return self.render_to_response(self.get_context_data())
+    def done(self, form_list, **kwargs):
+        campana_form = form_list[int(self.INICIAL)]
+        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        campana_form.save()
+        auto_grabacion = campana_form.cleaned_data['auto_grabacion']
+        detectar_contestadores = campana_form.cleaned_data['detectar_contestadores']
+        campana = campana_form.instance
+        queue = campana.queue_campana
+        queue.detectar_contestadores = detectar_contestadores
+        queue.auto_grabacion = auto_grabacion
+        opciones_calificacion_formset.instance = campana
+        opciones_calificacion_formset.save()
+        self._insert_queue_asterisk(queue)
+        return HttpResponseRedirect(reverse('campana_manual_list'))
 
     def get_success_url(self):
         return reverse('campana_manual_list')

@@ -356,33 +356,15 @@ class GrabacionBusquedaForm(forms.Form):
         self.fields['campana'].choices = campana_choice
 
 
-class CampanaForm(forms.ModelForm):
+class CampanaMixinForm(object):
     def __init__(self, *args, **kwargs):
-        super(CampanaForm, self).__init__(*args, **kwargs)
-
-        self.fields['bd_contacto'].queryset =\
-            BaseDatosContacto.objects.obtener_definidas()
-
-    class Meta:
-        model = Campana
-        fields = ('nombre', 'bd_contacto', 'formulario',
-                  'gestion', 'sitio_externo', 'tipo_interaccion', 'objetivo')
-        labels = {
-            'bd_contacto': 'Base de Datos de Contactos',
-        }
-
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
-            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
-            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
-            'tipo_interaccion': forms.RadioSelect(),
-        }
+        super(CampanaMixinForm, self).__init__(*args, **kwargs)
+        if self.fields.get('bd_contacto', False):
+            self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
     def clean(self):
-        if not self.fields['bd_contacto'].queryset:
+        bd_contacto_field = self.fields.get('bd_contacto', False)
+        if bd_contacto_field and not bd_contacto_field.queryset:
             message = _("Debe cargar una base de datos antes de comenzar a "
                         "configurar una campana")
             self.add_error('bd_contacto', message)
@@ -390,14 +372,14 @@ class CampanaForm(forms.ModelForm):
         if self.cleaned_data['tipo_interaccion'] is Campana.FORMULARIO and \
                 not self.cleaned_data['formulario']:
             message = _("Debe seleccionar un formulario")
-            self.add_error('bd_contacto', message)
+            self.add_error('formulario', message)
             raise forms.ValidationError(message, code='invalid')
         elif self.cleaned_data['tipo_interaccion'] is Campana.SITIO_EXTERNO and \
                 not self.cleaned_data['sitio_externo']:
             message = _("Debe seleccionar un sitio externo")
-            self.add_error('bd_contacto', message)
+            self.add_error('formulario', message)
             raise forms.ValidationError(message, code='invalid')
-        return super(CampanaForm, self).clean()
+        return super(CampanaMixinForm, self).clean()
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
@@ -419,6 +401,26 @@ class CampanaForm(forms.ModelForm):
             if not sitio_externo:
                 raise forms.ValidationError('Debe seleccionar un sitio externo')
             return sitio_externo
+
+
+class CampanaForm(CampanaMixinForm, forms.ModelForm):
+    class Meta:
+        model = Campana
+        fields = ('nombre', 'bd_contacto', 'formulario',
+                  'gestion', 'sitio_externo', 'tipo_interaccion', 'objetivo')
+        labels = {
+            'bd_contacto': 'Base de Datos de Contactos',
+        }
+
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'formulario': forms.Select(attrs={'class': 'form-control'}),
+            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
+            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
+            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tipo_interaccion': forms.RadioSelect(),
+        }
 
 
 class OpcionCalificacionForm(forms.ModelForm):
@@ -1173,12 +1175,9 @@ class ReporteAgenteForm(forms.Form):
         self.fields['grupo_agente'].choices = grupo_choice
 
 
-class CampanaManualForm(forms.ModelForm):
+class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
     detectar_contestadores = forms.BooleanField(required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(CampanaManualForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Campana
@@ -1191,29 +1190,18 @@ class CampanaManualForm(forms.ModelForm):
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'hidden'}),
         }
 
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
 
-    def clean_gestion(self):
-        return validar_gestion_campanas(self)
-
-
-class CampanaManualUpdateForm(CampanaManualForm):
-    class Meta(CampanaManualForm.Meta):
-        exclude = ('nombre', )
-
-
-class CampanaPreviewForm(CampanaManualForm):
+class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
-
-        self.fields['bd_contacto'].queryset =\
-            BaseDatosContacto.objects.obtener_definidas()
         self.fields['bd_contacto'].required = True
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['bd_contacto'].disabled = True
+            self.fields['tiempo_desconexion'].disabled = True
 
     class Meta:
         model = Campana
@@ -1237,18 +1225,6 @@ class CampanaPreviewForm(CampanaManualForm):
             msg = 'Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION)
             raise forms.ValidationError(msg)
         return tiempo_desconexion
-
-
-class CampanaPreviewUpdateForm(CampanaPreviewForm):
-    class Meta(CampanaPreviewForm.Meta):
-        exclude = ('nombre', )
-
-    def __init__(self, *args, **kwargs):
-        super(CampanaPreviewUpdateForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            self.fields['bd_contacto'].disabled = True
-            self.fields['tiempo_desconexion'].disabled = True
 
 
 class CalificacionManualForm(forms.ModelForm):
