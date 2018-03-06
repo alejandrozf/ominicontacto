@@ -160,3 +160,63 @@ class CantidadContactacion(object):
     @property
     def label_checkbox(self):
         return self._nombre + "  " + str(self._cantidad)
+
+
+class RecicladorContactosCampanaDIALER():
+    """
+    Este manager se encarga de obtener los contactos según los tipo de
+    reciclado de campana de dialer que se realice.
+    """
+
+    def obtener_contactos_reciclados(self, campana, reciclado_calificacion, reciclado_no_contactacion):
+        """
+        Este método se encarga de iterar sobre los tipos de reciclado que
+        se indiquen aplicar en el reciclado de campana. Según el tipo de
+        reciclado se invoca al método adecuado para llevar a cabo la consulta
+        correspondiente, y en caso de que sea mas de uno se sumarizan las
+        mismas.
+        """
+        contactos_reciclados = set()
+        if reciclado_calificacion:
+            contactos_reciclados.update( self._obtener_contactos_calificados(
+                campana, reciclado_calificacion))
+        if reciclado_no_contactacion:
+            print "estoy"
+            contactos_reciclados.update(self._obtener_contactos_no_contactados(
+                campana, reciclado_no_contactacion))
+        return contactos_reciclados
+
+    def _obtener_contactos_calificados(self, campana, reciclado_calificacion):
+        """
+            Este metodo se encarga obtener los contactos calificados por las
+            calificaciones seleccionada
+
+        """
+        calificaciones_query = campana.calificaconcliente.filter(
+            calificacion__in=reciclado_calificacion).distinct()
+
+        a = [ b.contacto for b in calificaciones_query]
+
+        return a
+
+    def _obtener_contactos_no_contactados(self, campana, reciclado_no_contactacion):
+        """
+            Este metodo se encarga obtener los contactos no contactados de
+             acuerdo a los estados seleccionados
+
+        """
+        no_contactados = set()
+        if EstadisticasContactacion.CONTESTADOR in reciclado_no_contactacion:
+            reciclado_no_contactacion.remove(EstadisticasContactacion.CONTESTADOR)
+            no_contactados.update(campana.logswombat.filter(
+                estado="TERMINATED", calificacion='CONTESTADOR'))
+        elif EstadisticasContactacion.AGENTE_NO_DISPONIBLE in reciclado_no_contactacion:
+            reciclado_no_contactacion.remove(EstadisticasContactacion.AGENTE_NO_DISPONIBLE)
+            no_contactados.update(campana.logswombat.filter(
+                estado='TERMINATED', calificacion=''))
+        estados = [EstadisticasContactacion.MAP_LOG_WOMBAT[int(estado)]
+                   for estado in reciclado_no_contactacion]
+        no_contactados.update( campana.logswombat.filter(estado__in=estados))
+        a = [b.contacto for b in no_contactados]
+        print a[1:10]
+        return a

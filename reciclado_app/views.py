@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.views.generic import FormView
 from ominicontacto_app.models import Campana
 from reciclado_app.forms import RecicladoForm
-from reciclado_app.resultado_contactacion import EstadisticasContactacion
+from reciclado_app.resultado_contactacion import EstadisticasContactacion, RecicladorContactosCampanaDIALER
 
 import logging as logging_
 
@@ -56,7 +56,7 @@ class ReciclarCampanaDialerFormView(FormView):
     def form_valid(self, form):
         reciclado_calificacion = form.cleaned_data.get('reciclado_calificacion')
         reciclado_no_contactacion = form.cleaned_data.get('reciclado_no_contactacion')
-        if not (reciclado_calificacion and reciclado_no_contactacion):
+        if not (reciclado_calificacion or reciclado_no_contactacion):
             message = '<strong>Operación Errónea!</strong> \
                         Debe seleccionar al menos una opcion para reciclar '
 
@@ -68,6 +68,11 @@ class ReciclarCampanaDialerFormView(FormView):
             )
             return self.form_invalid(form)
 
+        print reciclado_calificacion
+        print reciclado_no_contactacion
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        reciclador = RecicladorContactosCampanaDIALER()
+        reciclador.obtener_contactos_reciclados(campana, reciclado_calificacion, reciclado_no_contactacion)
         return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
