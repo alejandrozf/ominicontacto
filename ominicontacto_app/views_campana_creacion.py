@@ -30,6 +30,69 @@ import logging as logging_
 logger = logging_.getLogger(__name__)
 
 
+class CampanaTemplateCreateMixin(object):
+    def get_form_initial(self, step):
+        initial_data = super(CampanaTemplateCreateMixin, self).get_form_initial(step)
+        if step == self.INICIAL:
+            ultimo_id_campana = Campana.objects.obtener_ultimo_id_campana() + 1
+            campana_nombre = "CAMPANA_CLONADA_{0}".format(ultimo_id_campana)
+            initial_data.update({'nombre': campana_nombre})
+        elif step == self.COLA:
+            step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
+            name = step_cleaned_data['nombre']
+            initial_data.update({'name': name})
+        return initial_data
+
+
+class CampanaTemplateCreateCampanaMixin(object):
+    def get_form_initial(self, step):
+        pk = self.kwargs.get('pk_campana_template', None)
+        campana_template = get_object_or_404(Campana, pk=pk)
+        if step == self.INICIAL:
+            ultimo_id_campana = Campana.objects.obtener_ultimo_id_campana() + 1
+            campana_nombre = "CAMPANA_CLONADA_{0}".format(ultimo_id_campana)
+            initial_data = {
+                'nombre': campana_nombre,
+                'bd_contacto': campana_template.bd_contacto,
+                'formulario': campana_template.formulario,
+                'gestion': campana_template.gestion,
+                'objetivo': campana_template.objetivo}
+        elif step == self.COLA:
+            step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
+            name = step_cleaned_data['nombre']
+            queue = campana_template.queue_campana
+            initial_data = {
+                'name': name,
+                'timeout': queue.timeout,
+                'retry': queue.retry,
+                'maxlen': queue.maxlen,
+                'servicelevel': queue.servicelevel,
+                'strategy': queue.strategy,
+                'weight': queue.weight,
+                'wait': queue.wait,
+                'announce_frequency': queue.announce_frequency,
+                'audio_de_ingreso': queue.audio_de_ingreso,
+            }
+        else:
+            initial_data = super(
+                CampanaTemplateCreateCampanaMixin, self).get_form_initial(step)
+        return initial_data
+
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(
+            CampanaTemplateCreateCampanaMixin, self).get_context_data(form=form, **kwargs)
+        if self.steps.current == self.OPCIONES_CALIFICACION:
+            pk = self.kwargs.get('pk_campana_template', None)
+            campana_template = get_object_or_404(Campana, pk=pk)
+            initial_data = campana_template.opciones_calificacion.values('nombre', 'tipo')
+            opts_calif_init_formset = context['wizard']['form']
+            calif_init_formset = OpcionCalificacionFormSet(initial=initial_data)
+            calif_init_formset.extra = len(initial_data) - 1
+            calif_init_formset.prefix = opts_calif_init_formset.prefix
+            context['wizard']['form'] = calif_init_formset
+        return context
+
+
 class CampanaEntranteMixin(object):
     INICIAL = '0'
     COLA = '1'
@@ -83,9 +146,10 @@ class CampanaEntranteMixin(object):
     def get_form_instance(self, step):
         pk = self.kwargs.get('pk_campana', False)
         if pk:
-            # vista de modificación de campana
+            # vista de modificación de campaña
             return self._get_instance_from_campana(pk, step)
         else:
+            # vista de creación de campaña
             super(CampanaEntranteMixin, self).get_form_instance(step)
 
     def _insert_queue_asterisk(self, queue):
@@ -178,78 +242,22 @@ class CampanaEntranteTemplateListView(ListView):
         return Campana.objects.obtener_templates_activos_entrantes()
 
 
-class CampanaEntranteTemplateCreateView(CampanaEntranteCreateView):
+class CampanaEntranteTemplateCreateView(CampanaTemplateCreateMixin, CampanaEntranteCreateView):
     """
     Crea una campaña sin acción en el sistema, sólo con el objetivo de servir de
     template base para agilizar la creación de las campañas entrantes
     """
-    def get_form_initial(self, step):
-        initial_data = super(CampanaEntranteCreateView, self).get_form_initial(step)
-        if step == self.INICIAL:
-            ultimo_id_campana = Campana.objects.obtener_ultimo_id_campana() + 1
-            campana_nombre = "CAMPANA_CLONADA_{0}".format(ultimo_id_campana)
-            initial_data.update({'nombre': campana_nombre})
-        elif step == self.COLA:
-            step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
-            name = step_cleaned_data['nombre']
-            initial_data.update({'name': name})
-        return initial_data
-
     def done(self, form_list, **kwargs):
         self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO)
         return HttpResponseRedirect(reverse('campana_entrante_template_list'))
 
 
-class CampanaEntranteTemplateCreateCampanaView(CampanaEntranteCreateView):
+class CampanaEntranteTemplateCreateCampanaView(
+        CampanaTemplateCreateCampanaMixin, CampanaEntranteCreateView):
     """
     Crea una campaña entrante a partir de una campaña de template existente
     """
-    def get_form_initial(self, step):
-        pk = self.kwargs.get('pk_campana_template', None)
-        campana_template = get_object_or_404(Campana, pk=pk)
-        if step == self.INICIAL:
-            ultimo_id_campana = Campana.objects.obtener_ultimo_id_campana() + 1
-            campana_nombre = "CAMPANA_CLONADA_{0}".format(ultimo_id_campana)
-            initial_data = {
-                'nombre': campana_nombre,
-                'bd_contacto': campana_template.bd_contacto,
-                'formulario': campana_template.formulario,
-                'gestion': campana_template.gestion,
-                'objetivo': campana_template.objetivo}
-        elif step == self.COLA:
-            step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
-            name = step_cleaned_data['nombre']
-            queue = campana_template.queue_campana
-            initial_data = {
-                'name': name,
-                'timeout': queue.timeout,
-                'retry': queue.retry,
-                'maxlen': queue.maxlen,
-                'servicelevel': queue.servicelevel,
-                'strategy': queue.strategy,
-                'weight': queue.weight,
-                'wait': queue.wait,
-                'announce_frequency': queue.announce_frequency,
-                'audio_de_ingreso': queue.audio_de_ingreso,
-            }
-        else:
-            initial_data = super(
-                CampanaEntranteTemplateCreateCampanaView, self).get_form_initial(step)
-        return initial_data
-
-    def get_context_data(self, form, *args, **kwargs):
-        context = super(
-            CampanaEntranteTemplateCreateCampanaView, self).get_context_data(form=form, **kwargs)
-        if self.steps.current == self.OPCIONES_CALIFICACION:
-            pk = self.kwargs.get('pk_campana_template', None)
-            campana_template = get_object_or_404(Campana, pk=pk)
-            initial_data = campana_template.opciones_calificacion.values('nombre', 'tipo')
-            opts_calif_init_formset = context['wizard']['form']
-            calif_init_formset = OpcionCalificacionFormSet(initial=initial_data)
-            calif_init_formset.extra = len(initial_data) - 1
-            calif_init_formset.prefix = opts_calif_init_formset.prefix
-            context['wizard']['form'] = calif_init_formset
-        return context
+    pass
 
 
 class CampanaEntranteTemplateDetailView(DetailView):

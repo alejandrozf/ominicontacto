@@ -182,8 +182,15 @@
                                 <li>
                                     <a href="{% url 'lista_campana_dialer_template' %}">Listado de templates de campañas dialer</a>
                                 </li>
-						    	<li>
-                            		<a href="{% url 'campana_dialer_template_create' %}">Crear nueva template de campaña dialer</a>
+			        <li>
+                                     <a href="{% url 'campana_dialer_template_create' %}">Crear nueva template de campaña dialer</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_manual_template_list' %}">{% trans 'Listado de templates de campañas manuales' %}</a>
+                                </li>
+				<li>
+                            	    <a href="{% url 'campana_manual_template_create' %}">{% trans 'Crear nuevo template de campaña manual'%}</a>
+                                <li>
                                 <li class="divider"></li>
                                 <li>
                             		<a href="{% url 'calificacion_list' %}">Listado de Calificaciones</a>

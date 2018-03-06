@@ -4,26 +4,18 @@
 
 from __future__ import unicode_literals
 
-
-from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
+from django.views.generic import DetailView, ListView
 
 from formtools.wizard.views import SessionWizardView
 
 from ominicontacto_app.forms import CampanaManualForm, OpcionCalificacionFormSet
-from ominicontacto_app.models import Campana, Queue, BaseDatosContacto
-from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
-                                                       RestablecerDialplanError)
-from ominicontacto_app.services.asterisk_service import AsteriskService
-from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.services.exportar_base_datos import\
-    SincronizarBaseDatosContactosService
-from ominicontacto_app.views_campana_creacion import CampanaEntranteMixin, CampanaEntranteCreateView
-
+from ominicontacto_app.models import Campana, Queue
+from ominicontacto_app.views_campana_creacion import (CampanaEntranteMixin,
+                                                      CampanaTemplateCreateMixin,
+                                                      CampanaTemplateCreateCampanaMixin,
+                                                      CampanaEntranteTemplateDeleteView)
 
 import logging as logging_
 
@@ -49,12 +41,12 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
     Esta vista crea una campaña de tipo manual
     """
 
-    def done(self, form_list, **kwargs):
+    def _save_forms(self, form_list, estado):
         campana_form = form_list[int(self.INICIAL)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
         campana_form.instance.type = Campana.TYPE_MANUAL
         campana_form.instance.reported_by = self.request.user
-        campana_form.instance.estado = Campana.ESTADO_ACTIVA
+        campana_form.instance.estado = estado
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
         detectar_contestadores = campana_form.cleaned_data['detectar_contestadores']
@@ -77,6 +69,10 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
             detectar_contestadores=detectar_contestadores)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
+        return queue
+
+    def done(self, form_list, **kwargs):
+        queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA)
         self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
@@ -121,3 +117,52 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
 
     def get_success_url(self):
         return reverse('campana_manual_list')
+
+
+class CampanaManualTemplateListView(ListView):
+    """
+    Vista que muestra todos los templates de campañas entrantes activos
+    """
+    template_name = "campana_manual/lista_template.html"
+    context_object_name = 'templates_activos_manuales'
+    model = Campana
+
+    def get_queryset(self):
+        return Campana.objects.obtener_templates_activos_manuales()
+
+
+class CampanaManualTemplateCreateView(CampanaTemplateCreateMixin, CampanaManualCreateView):
+    """
+    Crea una campaña sin acción en el sistema, sólo con el objetivo de servir de
+    template base para agilizar la creación de las campañas manuales
+    """
+    def done(self, form_list, **kwargs):
+        self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO)
+        return HttpResponseRedirect(reverse('campana_manual_template_list'))
+
+
+class CampanaManualTemplateCreateCampanaView(
+        CampanaTemplateCreateCampanaMixin, CampanaManualCreateView):
+    """
+    Crea una campaña manual a partir de una campaña de template existente
+    """
+    pass
+
+
+class CampanaManualTemplateDetailView(DetailView):
+    """
+    Muestra el detalle de un template para crear una campaña manual
+    """
+    template_name = "campana_manual/detalle_campana_template.html"
+    model = Campana
+
+
+class CampanaManualTemplateDeleteView(CampanaEntranteTemplateDeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto Campana Manual-->Template.
+    """
+    model = Campana
+
+    def get_success_url(self):
+        return reverse("campana_manual_template_list")

@@ -788,6 +788,29 @@ urlpatterns = [
             views_campana_dialer_template.TemplateDeleteView.as_view()),
         name="campana_dialer_template_elimina"),
     # ==========================================================================
+    #  Templates Campana Manual
+    # ==========================================================================
+    url(r'^campana_manual_template/crear/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateCreateView.as_view()),
+        name="campana_manual_template_create"),
+    url(r'^campana_manual_template/crear_campana/(?P<pk_campana_template>\d+)$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateCreateCampanaView.as_view()),
+        name="campana_manual_template_create_campana"),
+    url(r'^campana_manual_template/lista/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateListView.as_view()),
+        name="campana_manual_template_list"),
+    url(r'^campana_manual_template/detalle/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateDetailView.as_view()),
+        name="campana_manual_template_detail"),
+    url(r'^campana_manual_template/elimina/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateDeleteView.as_view()),
+        name="campana_manual_template_delete"),
+    # ==========================================================================
     # Campana Manual
     # ==========================================================================
     url(r'^campana_manual/create/$',
