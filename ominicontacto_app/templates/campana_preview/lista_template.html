@@ -6,7 +6,7 @@
 {% block content %}
     <div class="col-md-10 col-md-offset-1">
 
-        <h4><b>Lista templates para campañas entrantes</b></h4>
+        <h4><b>Lista templates para campañas preview</b></h4>
         <table class="table table-stripped table-condensed table-bordered">
             <thead>
                 <tr>
@@ -15,19 +15,20 @@
                 </tr>
             </thead>
             <tbody>
-                {% for campana in templates_activos_entrantes %}
+                {% for campana in templates_activos_preview %}
                     <tr>
                         <td width="25%">
-                            <a href="{% url 'campana_entrante_template_detail' campana.pk %}">
+                            <a href="{% url 'campana_preview_template_detail' campana.pk %}">
                                 {{ campana.nombre }}
                             </a>
                         </td>
+
                         <td width="14%">
-                            <a href="{% url 'campana_entrante_template_create_campana' campana.pk %}"  class="btn btn-success btn-sm">
+                            <a href="{% url 'campana_preview_template_create_campana' campana.pk %}"  class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 {% trans 'Crear Campaña desde Template' %}
                             </a>
-                            <a href="{% url 'campana_entrante_template_delete' campana.pk %}"  class="btn btn-danger btn-sm">
+                            <a href="{% url 'campana_preview_template_delete' campana.pk %}"  class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove"></span>
                                 {% trans 'Eliminar' %}
                             </a>
@@ -35,10 +36,11 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5"> {% trans 'No existen templates para campañas entrantes' %}</td>
+                        <td colspan="5"> {% trans 'No existen templates para campañas preview' %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
     </div>
 {% endblock %}

@@ -6,23 +6,23 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, DeleteView
 
 from formtools.wizard.views import SessionWizardView
 
 from ominicontacto_app.forms import CampanaManualForm, OpcionCalificacionFormSet
 from ominicontacto_app.models import Campana, Queue
-from ominicontacto_app.views_campana_creacion import (CampanaEntranteMixin,
+from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
                                                       CampanaTemplateCreateCampanaMixin,
-                                                      CampanaEntranteTemplateDeleteView)
+                                                      CampanaTemplateDeleteMixin)
 
 import logging as logging_
 
 logger = logging_.getLogger(__name__)
 
 
-class CampanaManualMixin(CampanaEntranteMixin):
+class CampanaManualMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = None
     OPCIONES_CALIFICACION = '1'
@@ -41,15 +41,14 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
     Esta vista crea una campaña de tipo manual
     """
 
-    def _save_forms(self, form_list, estado):
+    def _save_forms(self, form_list, estado, tipo):
         campana_form = form_list[int(self.INICIAL)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-        campana_form.instance.type = Campana.TYPE_MANUAL
+        campana_form.instance.type = tipo
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.estado = estado
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
-        detectar_contestadores = campana_form.cleaned_data['detectar_contestadores']
         campana = campana_form.instance
         queue = Queue.objects.create(
             campana=campana,
@@ -65,14 +64,13 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
             weight=0,
             wait=120,
             queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
-            auto_grabacion=auto_grabacion,
-            detectar_contestadores=detectar_contestadores)
+            auto_grabacion=auto_grabacion)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
         return queue
 
     def done(self, form_list, **kwargs):
-        queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA)
+        queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_MANUAL)
         self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
@@ -86,37 +84,26 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         initial = super(CampanaManualUpdateView, self).get_form_initial(step)
         campana = self.get_form_instance(step)
         if step == self.INICIAL:
-            initial.update({
-                'auto_grabacion': campana.queue_campana.auto_grabacion,
-                'detectar_contestadores': campana.queue_campana.detectar_contestadores})
+            initial['auto_grabacion'] = campana.queue_campana.auto_grabacion
         return initial
 
-    def form_valid(self, form):
-        auto_grabacion = form.cleaned_data['auto_grabacion']
-        detectar_contestadores = form.cleaned_data['detectar_contestadores']
-        queue = self.object.queue_campana
-        queue.auto_grabacion = auto_grabacion
-        queue.detectar_contestadores = detectar_contestadores
-        queue.save()
-        return super(CampanaManualUpdateView, self).form_valid(form)
-
-    def done(self, form_list, **kwargs):
+    def _save_forms(self, form_list, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
-        detectar_contestadores = campana_form.cleaned_data['detectar_contestadores']
         campana = campana_form.instance
         queue = campana.queue_campana
-        queue.detectar_contestadores = detectar_contestadores
         queue.auto_grabacion = auto_grabacion
+        queue.save()
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
+        return queue
+
+    def done(self, form_list, **kwargs):
+        queue = self._save_forms(form_list, **kwargs)
         self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_manual_list'))
-
-    def get_success_url(self):
-        return reverse('campana_manual_list')
 
 
 class CampanaManualTemplateListView(ListView):
@@ -137,7 +124,7 @@ class CampanaManualTemplateCreateView(CampanaTemplateCreateMixin, CampanaManualC
     template base para agilizar la creación de las campañas manuales
     """
     def done(self, form_list, **kwargs):
-        self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO)
+        self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO, Campana.TYPE_MANUAL)
         return HttpResponseRedirect(reverse('campana_manual_template_list'))
 
 
@@ -157,12 +144,13 @@ class CampanaManualTemplateDetailView(DetailView):
     model = Campana
 
 
-class CampanaManualTemplateDeleteView(CampanaEntranteTemplateDeleteView):
+class CampanaManualTemplateDeleteView(CampanaTemplateDeleteMixin, DeleteView):
     """
     Esta vista se encarga de la eliminación del
     objeto Campana Manual-->Template.
     """
     model = Campana
+    template_name = "campana_manual/delete_campana_template.html"
 
     def get_success_url(self):
         return reverse("campana_manual_template_list")

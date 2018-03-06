@@ -93,7 +93,22 @@ class CampanaTemplateCreateCampanaMixin(object):
         return context
 
 
-class CampanaEntranteMixin(object):
+class CampanaTemplateDeleteMixin(object):
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.borrar_template()
+        message = _("Operación Exitosa:\
+        se llevó a cabo con éxito la eliminación del Template.")
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class CampanaWizardMixin(object):
     INICIAL = '0'
     COLA = '1'
     OPCIONES_CALIFICACION = '2'
@@ -115,7 +130,7 @@ class CampanaEntranteMixin(object):
         if step is None:
             step = self.steps.current
         if step != self.COLA:
-            return super(CampanaEntranteMixin, self).get_form(step, data, files)
+            return super(CampanaWizardMixin, self).get_form(step, data, files)
         else:
             # se mantiene la mayor parte del código existente en el plug-in 'formtools
             # con la excepción de que se le pasa el argumento 'audio_choices' para instanciar
@@ -150,7 +165,7 @@ class CampanaEntranteMixin(object):
             return self._get_instance_from_campana(pk, step)
         else:
             # vista de creación de campaña
-            super(CampanaEntranteMixin, self).get_form_instance(step)
+            super(CampanaWizardMixin, self).get_form_instance(step)
 
     def _insert_queue_asterisk(self, queue):
         servicio_asterisk = AsteriskService()
@@ -162,7 +177,7 @@ class CampanaEntranteMixin(object):
             raise
 
 
-class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
+class CampanaEntranteCreateView(CampanaWizardMixin, SessionWizardView):
     """
     Esta vista crea una campaña entrante
     """
@@ -212,7 +227,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         return initial_data
 
 
-class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
+class CampanaEntranteUpdateView(CampanaWizardMixin, SessionWizardView):
     """
     Esta vista modifica una campaña entrante
     """
@@ -268,7 +283,7 @@ class CampanaEntranteTemplateDetailView(DetailView):
     model = Campana
 
 
-class CampanaEntranteTemplateDeleteView(DeleteView):
+class CampanaEntranteTemplateDeleteView(CampanaTemplateDeleteMixin, DeleteView):
     """
     Esta vista se encarga de la eliminación del
     objeto Campana Entrante-->Template.
@@ -278,17 +293,3 @@ class CampanaEntranteTemplateDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse("campana_entrante_template_list")
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.borrar_template()
-
-        message = _("Operación Exitosa:\
-        se llevó a cabo con éxito la eliminación del Template.")
-
-        messages.add_message(
-            self.request,
-            messages.SUCCESS,
-            message,
-        )
-        return HttpResponseRedirect(self.get_success_url())

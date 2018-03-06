@@ -877,6 +877,30 @@ urlpatterns = [
         views_campana_manual.CampanaManualBorradasListView.as_view(),
         name="campana_manual_mostrar_ocultas"),
     # ==========================================================================
+    #  Templates Campana Preview
+    # ==========================================================================
+    url(r'^campana_preview_template/crear/$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateCreateView.as_view()),
+        name="campana_preview_template_create"),
+    url(r'^campana_preview_template/crear_campana/(?P<pk_campana_template>\d+)$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateCreateCampanaView.as_view()),
+        name="campana_preview_template_create_campana"),
+    url(r'^campana_preview_template/lista/$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateListView.as_view()),
+        name="campana_preview_template_list"),
+    url(r'^campana_preview_template/detalle/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateDetailView.as_view()),
+        name="campana_preview_template_detail"),
+    url(r'^campana_preview_template/elimina/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateDeleteView.as_view()),
+        name="campana_preview_template_delete"),
+
+    # ==========================================================================
     # Campana Preview
     # ==========================================================================
     url(r'^campana_preview/lista/$',
@@ -887,10 +911,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewCreateView.as_view()),
         name="campana_preview_create"),
-    # url(r'^campana_preview/(?P<pk_campana>\d+)/update/$',
-    #     login_required(
-    #         views_campana_preview.CampanaPreviewUpdateView.as_view()),
-    #     name="campana_preview_update"),
+    url(r'^campana_preview/(?P<pk_campana>\d+)/update/$',
+        login_required(
+            views_campana_preview.CampanaPreviewUpdateView.as_view()),
+        name="campana_preview_update"),
     url(r'^campana_preview/(?P<pk_campana>\d+)/delete/$',
         login_required(
             views_campana_preview.CampanaPreviewDeleteView.as_view()),

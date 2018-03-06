@@ -1195,6 +1195,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
 
 class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
+    auto_grabacion = forms.BooleanField(required=False)
+
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
         self.fields['bd_contacto'].required = True
