@@ -70,8 +70,7 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
         return queue
 
     def done(self, form_list, **kwargs):
-        queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_MANUAL)
-        self._insert_queue_asterisk(queue)
+        self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_MANUAL)
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
 
@@ -101,8 +100,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         return queue
 
     def done(self, form_list, **kwargs):
-        queue = self._save_forms(form_list, **kwargs)
-        self._insert_queue_asterisk(queue)
+        self._save_forms(form_list, **kwargs)
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
 

@@ -55,7 +55,6 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_PREVIEW)
-        self._insert_queue_asterisk(queue)
         # rellenar la tabla que relación agentes y contactos con los valores iniciales
         queue.campana.establecer_valores_iniciales_agente_contacto()
         # crear(sobreescribir) archivo de crontab con la configuración de llamadas al procedimiento
@@ -70,8 +69,7 @@ class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
     """
 
     def done(self, form_list, **kwargs):
-        queue = self._save_forms(form_list, **kwargs)
-        self._insert_queue_asterisk(queue)
+        self._save_forms(form_list, **kwargs)
         return HttpResponseRedirect(reverse('campana_preview_list'))
 
 

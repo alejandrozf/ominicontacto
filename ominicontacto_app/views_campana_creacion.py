@@ -167,9 +167,10 @@ class CampanaWizardMixin(object):
             # vista de creación de campaña
             super(CampanaWizardMixin, self).get_form_instance(step)
 
-    def _insert_queue_asterisk(self, queue):
-        servicio_asterisk = AsteriskService()
-        servicio_asterisk.insertar_cola_asterisk(queue)
+    def _insert_queue_asterisk(self, queue, solo_activar=False):
+        if not solo_activar:
+            servicio_asterisk = AsteriskService()
+            servicio_asterisk.insertar_cola_asterisk(queue)
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
@@ -241,7 +242,7 @@ class CampanaEntranteUpdateView(CampanaWizardMixin, SessionWizardView):
         opts_calif_init_formset = form_list[int(self.OPCIONES_CALIFICACION)]
         opts_calif_init_formset.instance = campana
         opts_calif_init_formset.save()
-        self._insert_queue_asterisk(queue_form.instance)
+        self._insert_queue_asterisk(queue_form.instance, solo_activar=True)
         return HttpResponseRedirect(reverse('campana_list'))
 
 
