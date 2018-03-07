@@ -195,9 +195,8 @@ class RecicladorContactosCampanaDIALER():
         calificaciones_query = campana.calificaconcliente.filter(
             calificacion__in=reciclado_calificacion).distinct()
 
-        a = [ b.contacto for b in calificaciones_query]
-
-        return a
+        contactos = [calificacion.contacto for calificacion in calificaciones_query]
+        return contactos
 
     def _obtener_contactos_no_contactados(self, campana, reciclado_no_contactacion):
         """
@@ -210,13 +209,17 @@ class RecicladorContactosCampanaDIALER():
             reciclado_no_contactacion.remove(EstadisticasContactacion.CONTESTADOR)
             no_contactados.update(campana.logswombat.filter(
                 estado="TERMINATED", calificacion='CONTESTADOR'))
+        elif EstadisticasContactacion.AGENTE_NO_CALIFICO in reciclado_no_contactacion:
+            reciclado_no_contactacion.remove(EstadisticasContactacion.AGENTE_NO_CALIFICO)
+            no_contactados.update(campana.logswombat.filter(
+                estado='TERMINATED', calificacion=''))
         elif EstadisticasContactacion.AGENTE_NO_DISPONIBLE in reciclado_no_contactacion:
             reciclado_no_contactacion.remove(EstadisticasContactacion.AGENTE_NO_DISPONIBLE)
             no_contactados.update(campana.logswombat.filter(
-                estado='TERMINATED', calificacion=''))
+                estado=EstadisticasContactacion.AGENTE_NO_DISPONIBLE, calificacion=''))
+
         estados = [EstadisticasContactacion.MAP_LOG_WOMBAT[int(estado)]
                    for estado in reciclado_no_contactacion]
-        no_contactados.update( campana.logswombat.filter(estado__in=estados))
-        a = [b.contacto for b in no_contactados]
-        print a[1:10]
-        return a
+        no_contactados.update(campana.logswombat.filter(estado__in=estados))
+        contactos = [wombat_log.contacto for wombat_log in no_contactados]
+        return contactos
