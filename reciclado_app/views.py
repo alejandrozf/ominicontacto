@@ -11,7 +11,8 @@ from ominicontacto_app.errors import OmlRecicladoCampanaError
 from django.views.generic import FormView
 from ominicontacto_app.models import Campana
 from reciclado_app.forms import RecicladoForm
-from reciclado_app.resultado_contactacion import EstadisticasContactacion, RecicladorContactosCampanaDIALER
+from reciclado_app.resultado_contactacion import (
+    EstadisticasContactacion, RecicladorContactosCampanaDIALER)
 
 import logging as logging_
 
@@ -38,7 +39,7 @@ class ReciclarCampanaDialerFormView(FormView):
                               for contactacion in contactados]
         no_contactados = estadisticas.obtener_cantidad_no_contactados(campana)
         no_contactados_choice = [(value.id, value.label_checkbox)
-                              for key, value in no_contactados.items()]
+                                 for key, value in no_contactados.items()]
         kwargs['reciclado_choice'] = contactados_choice
         kwargs['no_contactados_choice'] = no_contactados_choice
         return kwargs
@@ -49,7 +50,6 @@ class ReciclarCampanaDialerFormView(FormView):
         if not (reciclado_calificacion or reciclado_no_contactacion):
             message = '<strong>Operación Errónea!</strong> \
                         Debe seleccionar al menos una opcion para reciclar '
-
 
             messages.add_message(
                 self.request,
@@ -81,4 +81,4 @@ class ReciclarCampanaDialerFormView(FormView):
 
         return HttpResponseRedirect(
             reverse('campana_dialer_replicar_update',
-                kwargs={"pk_campana": campana_reciclada.pk}))
+                    kwargs={"pk_campana": campana_reciclada.pk}))

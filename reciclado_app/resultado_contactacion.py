@@ -85,7 +85,7 @@ class EstadisticasContactacion():
                 "Contestador Detectado", campana_log_terminated.count()
             )
             count_estados.update(
-                {EstadisticasContactacion.CONTESTADOR: cantidad_contactacion })
+                {EstadisticasContactacion.CONTESTADOR: cantidad_contactacion})
         # por cuestion de obtencion de datos se colo agente no califico como no contactado
         cantidad_contactacion = CantidadContactacion(
             EstadisticasContactacion.AGENTE_NO_CALIFICO,
@@ -124,12 +124,12 @@ class EstadisticasContactacion():
         :param campana: campana de la cual se desea obtener
         :return: un dicionario con las contactaciones
         """
+        # FIXME: Borra este metodo o refactorizar, no se usa
         no_contactados = self.obtener_cantidad_no_contactados(campana)
         contactados = self.obtener_cantidad_calificacion(campana)
 
         resultados = {}
         resultados.update(no_contactados)
-        #resultados.update(contactados)
         return resultados
 
 
@@ -168,7 +168,8 @@ class RecicladorContactosCampanaDIALER():
     reciclado de campana de dialer que se realice.
     """
 
-    def obtener_contactos_reciclados(self, campana, reciclado_calificacion, reciclado_no_contactacion):
+    def obtener_contactos_reciclados(self, campana, reciclado_calificacion,
+                                     reciclado_no_contactacion):
         """
         Este método se encarga de iterar sobre los tipos de reciclado que
         se indiquen aplicar en el reciclado de campana. Según el tipo de
@@ -178,7 +179,7 @@ class RecicladorContactosCampanaDIALER():
         """
         contactos_reciclados = set()
         if reciclado_calificacion:
-            contactos_reciclados.update( self._obtener_contactos_calificados(
+            contactos_reciclados.update(self._obtener_contactos_calificados(
                 campana, reciclado_calificacion))
         if reciclado_no_contactacion:
             contactos_reciclados.update(self._obtener_contactos_no_contactados(
