@@ -97,10 +97,14 @@ class CalificacionClienteFormView(FormView):
         if self.request.method == 'GET':
             initial = {'campana': self.kwargs['pk_campana'],
                        'contacto': self.kwargs['pk_contacto'],
-                       'agente': self.kwargs['id_agente']}
+                       'agente': self.kwargs['id_agente'],
+                       'wombat_id': self.kwargs['wombat_id']}
             return {'instance': self.object, 'initial': initial}
         elif self.request.method == 'POST':
-            return {'instance': self.object, 'data': self.request.POST}
+            post_data = self.request.POST
+            if 'wombat_id' not in post_data:
+                post_data['wombat_id'] = self.kwargs['wombat_id']
+            return {'instance': self.object, 'data': post_data}
 
     def get_calificacion_form(self):
         kwargs = self.get_calificacion_form_kwargs()
