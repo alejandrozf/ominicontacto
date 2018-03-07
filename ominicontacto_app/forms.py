@@ -191,63 +191,6 @@ class QueueMemberForm(forms.ModelForm):
         fields = ('member', 'penalty')
 
 
-class QueueEntranteUpdateForm(forms.ModelForm):
-    """
-    El form para actualizar la cola para las llamadas
-    """
-
-    audios = forms.ChoiceField(choices=[], required=False)
-
-    def __init__(self, audios_choices, id_audio, *args, **kwargs):
-        super(QueueEntranteUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['timeout'].required = True
-        self.fields['retry'].required = True
-        self.fields['announce_frequency'].required = False
-        audios_choices = [(audio.id, audio.descripcion)
-                          for audio in audios_choices]
-        audios_choices.insert(0, ('', '---------'))
-        self.fields['audios'].choices = audios_choices
-        self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
-
-    class Meta:
-        model = Queue
-        fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion', 'audios', 'announce_frequency',
-                  'audio_de_ingreso')
-
-        help_texts = {
-            'timeout': """En segundos """,
-        }
-        widgets = {
-            'name': forms.HiddenInput(),
-            'timeout': forms.TextInput(attrs={'class': 'form-control'}),
-            'retry': forms.TextInput(attrs={'class': 'form-control'}),
-            'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
-            'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
-            'strategy': forms.Select(attrs={'class': 'form-control'}),
-            'weight': forms.TextInput(attrs={'class': 'form-control'}),
-            'wait': forms.TextInput(attrs={'class': 'form-control'}),
-            'announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
-            'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-    def clean(self):
-        maxlen = self.cleaned_data.get('maxlen')
-        if not maxlen > 0:
-            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
-                                        ' mayor a cero')
-
-        return self.cleaned_data
-
-    def clean_announce_frequency(self):
-        audio = self.cleaned_data.get('audios', None)
-        frequency = self.cleaned_data.get('announce_frequency', None)
-        if audio and not (frequency > 0):
-            raise forms.ValidationError(
-                _('Debe definir una frecuencia para el Anuncio Periódico'))
-        return frequency
-
-
 class BaseDatosContactoForm(forms.ModelForm):
 
     class Meta:
