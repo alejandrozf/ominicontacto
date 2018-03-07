@@ -204,6 +204,7 @@ class RecicladorContactosCampanaDIALER():
              acuerdo a los estados seleccionados
 
         """
+        reciclado_no_contactacion = map(int, reciclado_no_contactacion)
         no_contactados = set()
         if EstadisticasContactacion.CONTESTADOR in reciclado_no_contactacion:
             reciclado_no_contactacion.remove(EstadisticasContactacion.CONTESTADOR)
@@ -218,7 +219,7 @@ class RecicladorContactosCampanaDIALER():
             no_contactados.update(campana.logswombat.filter(
                 estado=EstadisticasContactacion.AGENTE_NO_DISPONIBLE, calificacion=''))
 
-        estados = [EstadisticasContactacion.MAP_LOG_WOMBAT[int(estado)]
+        estados = [EstadisticasContactacion.MAP_LOG_WOMBAT[estado]
                    for estado in reciclado_no_contactacion]
         no_contactados.update(campana.logswombat.filter(estado__in=estados))
         contactos = [wombat_log.contacto for wombat_log in no_contactados]
