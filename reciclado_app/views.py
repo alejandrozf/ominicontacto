@@ -72,7 +72,7 @@ class ReciclarCampanaDialerFormView(FormView):
         print reciclado_no_contactacion
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         reciclador = RecicladorContactosCampanaDIALER()
-        reciclador.obtener_contactos_reciclados(campana, reciclado_calificacion, reciclado_no_contactacion)
+        reciclador.reciclar(campana, reciclado_calificacion, reciclado_no_contactacion)
         return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):

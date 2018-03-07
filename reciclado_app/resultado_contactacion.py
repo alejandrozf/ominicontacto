@@ -181,7 +181,6 @@ class RecicladorContactosCampanaDIALER():
             contactos_reciclados.update( self._obtener_contactos_calificados(
                 campana, reciclado_calificacion))
         if reciclado_no_contactacion:
-            print "estoy"
             contactos_reciclados.update(self._obtener_contactos_no_contactados(
                 campana, reciclado_no_contactacion))
         return contactos_reciclados
@@ -223,3 +222,15 @@ class RecicladorContactosCampanaDIALER():
         no_contactados.update(campana.logswombat.filter(estado__in=estados))
         contactos = [wombat_log.contacto for wombat_log in no_contactados]
         return contactos
+
+    def reciclar(self, campana, reciclado_calificacion, reciclado_no_contactacion):
+
+        # Obtener los contactos reciclados
+        contactos_reciclados = self.obtener_contactos_reciclados(
+            campana, reciclado_calificacion, reciclado_no_contactacion)
+
+        # Creamos la instancia de BaseDatosContacto para el reciclado.
+        bd_contacto_reciclada = campana.bd_contacto.copia_para_reciclar()
+        bd_contacto_reciclada.genera_contactos(contactos_reciclados)
+        bd_contacto_reciclada.define()
+        return bd_contacto_reciclada

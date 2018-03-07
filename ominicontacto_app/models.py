@@ -1805,6 +1805,22 @@ class BaseDatosContacto(models.Model):
         self.oculto = False
         self.save()
 
+    def genera_contactos(self, lista_contactos):
+        """
+        Este metodo se encarga de realizar la generación de contactos
+        a partir de una lista de contactos.
+        Parametros:
+        - lista_contactos: lista de contactos.
+        """
+
+        for contacto in lista_contactos:
+            Contacto.objects.create(
+                telefono=contacto.telefono,
+                datos=contacto.datos,
+                bd_contacto=self,
+            )
+        self.cantidad_contactos = len(lista_contactos)
+
 
 class ContactoManager(models.Manager):
 
