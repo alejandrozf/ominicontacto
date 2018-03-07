@@ -27,6 +27,7 @@ from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_ca
                                       validar_gestion_campanas, validar_solo_ascii_y_sin_espacios)
 
 TIEMPO_MINIMO_DESCONEXION = 2
+EMPTY_CHOICE = ('', '---------')
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -132,7 +133,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['announce_frequency'].required = False
         audios_choices = [(audio.id, audio.descripcion)
                           for audio in audios_choices]
-        audios_choices.insert(0, ('', '---------'))
+        audios_choices.insert(0, EMPTY_CHOICE)
         self.fields['audios'].choices = audios_choices
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
@@ -280,7 +281,7 @@ class GrabacionBusquedaForm(forms.Form):
     fecha = forms.CharField(required=False,
                             widget=forms.TextInput(attrs={'class': 'form-control'}))
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
-    tipo_llamada_choice.insert(0, ('', '---------'))
+    tipo_llamada_choice.insert(0, EMPTY_CHOICE)
     tipo_llamada = forms.ChoiceField(required=False,
                                      choices=tipo_llamada_choice)
     tel_cliente = forms.CharField(required=False)
@@ -293,9 +294,9 @@ class GrabacionBusquedaForm(forms.Form):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         agente_choice = [(agente.sip_extension, agente.user.get_full_name())
                          for agente in AgenteProfile.objects.filter(is_inactive=False)]
-        agente_choice.insert(0, ('', '---------'))
+        agente_choice.insert(0, EMPTY_CHOICE)
         self.fields['sip_agente'].choices = agente_choice
-        campana_choice.insert(0, ('', '---------'))
+        campana_choice.insert(0, EMPTY_CHOICE)
         self.fields['campana'].choices = campana_choice
 
 
@@ -371,9 +372,23 @@ class OpcionCalificacionForm(forms.ModelForm):
         model = OpcionCalificacion
         fields = ('tipo', 'nombre', 'campana')
 
+        widgets = {
+            'nombre': forms.Select()
+        }
+
     def __init__(self, *args, **kwargs):
+        nombres_calificaciones = kwargs.pop('nombres_calificaciones')
         super(OpcionCalificacionForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            # al modificar, en caso de que el valor del campo 'nombre' no esté entre las
+            # calificaciones creadas se agrega
+            choices = set(nombres_calificaciones + ((instance.nombre, instance.nombre),))
+        else:
+            # al crear se muestra en primer lugar una opción vacía
+            choices = (EMPTY_CHOICE,) + nombres_calificaciones
+        self.fields['nombre'] = forms.ChoiceField(choices=choices)
+
         if instance and instance.pk and instance.es_agenda():
             self.fields['nombre'].disabled = True
             self.fields['tipo'].disabled = True
@@ -402,6 +417,15 @@ class OpcionCalificacionForm(forms.ModelForm):
 class OpcionCalificacionBaseFormset(BaseInlineFormSet):
 
     MIN_NUM_FORMS = 2
+
+    def _construct_form(self, index, **kwargs):
+        # adicionamos dinámicamente las nombres de calificaciones existentes en el sistema
+        # para que el usuario pueda escoger de ellas al crear las opciones de calificación
+        nombres_calificaciones_qs = NombreCalificacion.objects.usuarios().values_list(
+            'nombre', flat=True)
+        kwargs['nombres_calificaciones'] = tuple((nombre, nombre)
+                                                 for nombre in nombres_calificaciones_qs)
+        return super(OpcionCalificacionBaseFormset, self)._construct_form(index, **kwargs)
 
     def clean(self):
         """
@@ -1114,7 +1138,7 @@ class ReporteAgenteForm(forms.Form):
         self.fields['agente'].choices = agente_choice
         grupo_choice = [(grupo.id, grupo.nombre)
                         for grupo in Grupo.objects.all()]
-        grupo_choice.insert(0, ('', '---------'))
+        grupo_choice.insert(0, EMPTY_CHOICE)
         self.fields['grupo_agente'].choices = grupo_choice
 
 
