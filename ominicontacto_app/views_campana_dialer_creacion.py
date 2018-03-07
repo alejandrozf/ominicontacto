@@ -429,7 +429,8 @@ class QueueDialerUpdateView(UpdateView):
 
 
 class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
-                                CampanaDialerEnDefinicionMixin, UpdateView):
+                                CampanaDialerEnDefinicionMixin,CampanaDialerConFormsetParametrosViewMixin,
+                                UpdateView):
     """
     Esta vista actualiza una campana luego de crearla por template
     """
@@ -459,7 +460,7 @@ class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
         )
         return self.render_to_response(self.get_context_data())
 
-    def form_valid(self, form):
+    def form_valid(self, form, parametro_extra_formset):
         self.object = form.save(commit=False)
         tipo_interaccion = self.object.tipo_interaccion
         if tipo_interaccion is Campana.FORMULARIO and not self.object.formulario:
@@ -470,6 +471,8 @@ class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
             return self.form_invalid(form, error=error)
         self.object.reported_by = self.request.user
         self.object.save()
+        parametro_extra_formset.instance = self.object
+        parametro_extra_formset.save()
         return super(CampanaDialerReplicarView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
