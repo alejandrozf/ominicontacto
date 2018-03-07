@@ -126,31 +126,6 @@ class CampanaWizardMixin(object):
     def get_template_names(self):
         return [self.TEMPLATES[self.steps.current]]
 
-    def get_form(self, step=None, data=None, files=None):
-        if step is None:
-            step = self.steps.current
-        if step != self.COLA:
-            return super(CampanaWizardMixin, self).get_form(step, data, files)
-        else:
-            # se mantiene la mayor parte del código existente en el plug-in 'formtools
-            # con la excepción de que se le pasa el argumento 'audio_choices' para instanciar
-            # con éxito el formulario correspondiente pues formtools no es lo suficientemente
-            # flexible
-            audio_choices = ArchivoDeAudio.objects.all()
-            form_class = self.form_list[step]
-            kwargs = self.get_form_kwargs(step)
-            kwargs.update({
-                'data': data,
-                'files': files,
-                'prefix': self.get_form_prefix(step, form_class),
-                'initial': self.get_form_initial(step),
-            })
-            if issubclass(form_class, (forms.ModelForm, forms.models.BaseInlineFormSet)):
-                kwargs.setdefault('instance', self.get_form_instance(step))
-            elif issubclass(form_class, forms.models.BaseModelFormSet):
-                kwargs.setdefault('queryset', self.get_form_instance(step))
-            return form_class(audio_choices, **kwargs)
-
     def _get_instance_from_campana(self, pk, step):
         campana = get_object_or_404(Campana, pk=pk)
         if step in [self.INICIAL, self.OPCIONES_CALIFICACION]:
@@ -178,7 +153,34 @@ class CampanaWizardMixin(object):
             raise
 
 
-class CampanaEntranteCreateView(CampanaWizardMixin, SessionWizardView):
+class CampanaEntranteMixin(CampanaWizardMixin):
+    def get_form(self, step=None, data=None, files=None):
+        if step is None:
+            step = self.steps.current
+        if step != self.COLA:
+            return super(CampanaWizardMixin, self).get_form(step, data, files)
+        else:
+            # se mantiene la mayor parte del código existente en el plug-in 'formtools
+            # con la excepción de que se le pasa el argumento 'audio_choices' para instanciar
+            # con éxito el formulario correspondiente pues formtools no es lo suficientemente
+            # flexible
+            audio_choices = ArchivoDeAudio.objects.all()
+            form_class = self.form_list[step]
+            kwargs = self.get_form_kwargs(step)
+            kwargs.update({
+                'data': data,
+                'files': files,
+                'prefix': self.get_form_prefix(step, form_class),
+                'initial': self.get_form_initial(step),
+            })
+            if issubclass(form_class, (forms.ModelForm, forms.models.BaseInlineFormSet)):
+                kwargs.setdefault('instance', self.get_form_instance(step))
+            elif issubclass(form_class, forms.models.BaseModelFormSet):
+                kwargs.setdefault('queryset', self.get_form_instance(step))
+            return form_class(audio_choices, **kwargs)
+
+
+class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
     """
     Esta vista crea una campaña entrante
     """
@@ -228,7 +230,7 @@ class CampanaEntranteCreateView(CampanaWizardMixin, SessionWizardView):
         return initial_data
 
 
-class CampanaEntranteUpdateView(CampanaWizardMixin, SessionWizardView):
+class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     """
     Esta vista modifica una campaña entrante
     """
