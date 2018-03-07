@@ -210,11 +210,11 @@ class RecicladorContactosCampanaDIALER():
             reciclado_no_contactacion.remove(EstadisticasContactacion.CONTESTADOR)
             no_contactados.update(campana.logswombat.filter(
                 estado="TERMINATED", calificacion='CONTESTADOR'))
-        elif EstadisticasContactacion.AGENTE_NO_CALIFICO in reciclado_no_contactacion:
+        if EstadisticasContactacion.AGENTE_NO_CALIFICO in reciclado_no_contactacion:
             reciclado_no_contactacion.remove(EstadisticasContactacion.AGENTE_NO_CALIFICO)
             no_contactados.update(campana.logswombat.filter(
                 estado='TERMINATED', calificacion=''))
-        elif EstadisticasContactacion.AGENTE_NO_DISPONIBLE in reciclado_no_contactacion:
+        if EstadisticasContactacion.AGENTE_NO_DISPONIBLE in reciclado_no_contactacion:
             reciclado_no_contactacion.remove(EstadisticasContactacion.AGENTE_NO_DISPONIBLE)
             no_contactados.update(campana.logswombat.filter(
                 estado=EstadisticasContactacion.AGENTE_NO_DISPONIBLE, calificacion=''))
