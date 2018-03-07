@@ -558,6 +558,7 @@ class CampanaManager(models.Manager):
             sitio_externo=campana.sitio_externo,
             tipo_interaccion=campana.tipo_interaccion,
             reported_by=campana.reported_by,
+            objetivo=campana.objetivo,
         )
 
         # Replica Cola
@@ -579,6 +580,12 @@ class CampanaManager(models.Manager):
             queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
+            announce=campana.queue_campana.announce,
+            announce_frequency=campana.queue_campana.announce_frequency,
+            audio_para_contestadores=campana.queue_campana.audio_para_contestadores,
+            audio_de_ingreso=campana.queue_campana.audio_de_ingreso,
+            initial_predictive_model=campana.queue_campana.initial_predictive_model,
+            initial_boost_factor=campana.queue_campana.initial_boost_factor,
 
         )
 
@@ -661,6 +668,20 @@ class CampanaManager(models.Manager):
         campanas = self.obtener_activas() & self.obtener_campanas_dialer()
         canales_en_uso = campanas.aggregate(suma=Sum('queue_campana__maxlen'))['suma']
         return 0 if canales_en_uso is None else canales_en_uso
+
+    def reciclar_campana(self, campana, bd_contacto):
+        """
+        Este método replica la campana pasada por parámetro con fin de
+        reciclar la misma.
+        """
+
+        campana_reciclada = self.replicar_campana(campana)
+        campana_reciclada.nombre = '{0}_(reciclada)'.format(
+        campana_reciclada.nombre)
+        campana_reciclada.bd_contacto = bd_contacto
+        campana_reciclada.save()
+
+        return campana_reciclada
 
 
 class Campana(models.Model):
