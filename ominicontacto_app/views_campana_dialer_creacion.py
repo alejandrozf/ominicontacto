@@ -102,9 +102,6 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         if step == self.COLA:
             step_initial_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
             initial['name'] = step_initial_cleaned_data['nombre']
-        elif step == self.ACTUACION_VIGENTE:
-            campana = self.get_form_instance(self.INICIAL)
-            initial['campana'] = campana
         return initial
 
     def done(self, form_list, **kwargs):
