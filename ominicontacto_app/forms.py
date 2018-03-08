@@ -938,14 +938,17 @@ class ReglasIncidenciaForm(forms.ModelForm):
 
     class Meta:
         model = ReglasIncidencia
-        fields = ('campana', 'estado', 'intento_max', 'reintentar_tarde')
+        fields = ('estado', 'intento_max', 'reintentar_tarde')
 
         widgets = {
-            'campana': forms.HiddenInput(),
             'estado': forms.Select(attrs={'class': 'form-control'}),
             "intento_max": forms.TextInput(attrs={'class': 'form-control'}),
             "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+ReglasIncidenciaFormSet = inlineformset_factory(
+    Campana, ReglasIncidencia, form=ReglasIncidenciaForm, extra=0, min_num=1)
 
 
 class QueueDialerForm(forms.ModelForm):

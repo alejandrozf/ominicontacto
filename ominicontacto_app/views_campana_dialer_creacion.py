@@ -5,12 +5,13 @@
 from __future__ import unicode_literals
 
 # from django.contrib import messages
+from django import forms
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 # from django.shortcuts import redirect
 # from django.views.generic import CreateView, UpdateView, FormView
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
-                                     ReglasIncidenciaForm, CampanaDialerForm,
+                                     ReglasIncidenciaFormSet, CampanaDialerForm,
                                      OpcionCalificacionFormSet)
 from ominicontacto_app.models import (
     Campana,
@@ -48,7 +49,7 @@ class CampanaDialerMixin(CampanaWizardMixin):
              (COLA, QueueDialerForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (ACTUACION_VIGENTE, ActuacionVigenteForm),
-             (REGLAS_INCIDENCIA, ReglasIncidenciaForm),
+             (REGLAS_INCIDENCIA, ReglasIncidenciaFormSet),
              (SINCRONIZAR, SincronizaDialerForm)]
 
     TEMPLATES = {INICIAL: 'campana_dialer/nueva_edita_campana.html',
@@ -59,6 +60,36 @@ class CampanaDialerMixin(CampanaWizardMixin):
                  SINCRONIZAR: 'campana_dialer/sincronizar_lista.html'}
 
     form_list = FORMS
+
+    def get_form(self, step=None, data=None, files=None):
+        if step is None:
+            step = self.steps.current
+        if step == self.SINCRONIZAR:
+            # se mantiene la mayor parte del código existente en el plug-in 'formtools
+            # con la excepción de que se le pasa el argumento 'tts_choices' para instanciar
+            # con éxito el formulario correspondiente pues formtools no es lo suficientemente
+            # flexible y sólo usa kwargs para instanciar
+            campana = self.get_cleaned_data_for_step(self.INICIAL)
+            bd_contacto = campana['bd_contacto']
+            metadata = bd_contacto.get_metadata()
+            nombres_de_columnas = metadata.nombres_de_columnas
+            nombres_de_columnas.remove('telefono')
+            tts_choices = [(columna, columna) for columna in
+                           nombres_de_columnas]
+            form_class = self.form_list[step]
+            kwargs = self.get_form_kwargs(step)
+            kwargs.update({
+                'data': data,
+                'files': files,
+                'prefix': self.get_form_prefix(step, form_class),
+                'initial': self.get_form_initial(step),
+            })
+            if issubclass(form_class, (forms.ModelForm, forms.models.BaseInlineFormSet)):
+                kwargs.setdefault('instance', self.get_form_instance(step))
+            elif issubclass(form_class, forms.models.BaseModelFormSet):
+                kwargs.setdefault('queryset', self.get_form_instance(step))
+            return form_class(tts_choices, **kwargs)
+        return super(CampanaDialerMixin, self).get_form(step, data, files)
 
 
 class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
