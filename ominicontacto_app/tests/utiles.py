@@ -18,7 +18,7 @@ from django.conf import settings
 from ominicontacto_app.models import (
     User, AgenteProfile, Grupo, SupervisorProfile, Contacto,
     BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue,
-    ActuacionVigente, ReglasIncidencia
+    ActuacionVigente, ReglasIncidencia, CalificacionCliente, WombatLog
 )
 from ominicontacto_app.tests.factories import CalificacionFactory
 
@@ -190,6 +190,8 @@ class OMLTestUtilsMixin(object):
         c = Calificacion.objects.create(nombre="contestador")
         grupo_calificacion.append(c)
         c = Calificacion.objects.create(nombre="equivocado")
+        grupo_calificacion.append(c)
+        c = Calificacion.objects.create(nombre="Venta")
         grupo_calificacion.append(c)
         return grupo_calificacion
 
@@ -406,6 +408,29 @@ class OMLTestUtilsMixin(object):
             reintentar_tarde=150
         )
         regla.save()
+
+    def crear_calificacion_cliente(self, campana, agente, contacto,
+                                   calificacion, es_venta=False):
+        calficacioncliente = CalificacionCliente(
+            campana=campana,
+            agente=agente,
+            contacto=contacto,
+            es_venta=es_venta,
+            wombat_id=0,
+            calificacion=calificacion
+        )
+        calficacioncliente.save()
+
+    def crear_wombat_log(self, campana, agente, contacto, estado, calificacion):
+        metadata = {
+            'reschedule': 0,
+            'retry': 1
+        }
+        WombatLog.objects.create(campana=campana, agente=agente,
+                                 telefono=rtel(),
+                                 estado=estado, calificacion=calificacion,
+                                 timeout=15, contacto=contacto,
+                                 metadata=json.dumps(metadata))
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
