@@ -38,7 +38,7 @@
                 {{ form.prefijo_discador }}
             </div>
         </div>
-        {% if campana.tipo_interaccion == 2%}
+        {% if tipo_interaccion == 2 %}
             <div class="form-group row">
                 {{ form.columnas.errors }}
                 <label class="col-sm-3 control-label" for="{{ form.columnas.id_for_label }}">Columnas: </label>

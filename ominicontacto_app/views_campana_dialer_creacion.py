@@ -15,11 +15,12 @@ from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, Actu
                                      OpcionCalificacionFormSet)
 from ominicontacto_app.models import (
     Campana,
-    # Queue, BaseDatosContacto, ActuacionVigente, ReglasIncidencia
+    Queue,
+    # BaseDatosContacto, ActuacionVigente, ReglasIncidencia
 )
 
-# from ominicontacto_app.services.campana_service import CampanaService
-# from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
+from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 # from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
 #                                                        RestablecerDialplanError)
 
@@ -104,8 +105,88 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
             initial['name'] = step_initial_cleaned_data['nombre']
         return initial
 
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(CampanaDialerCreateView, self).get_context_data(form, *args, **kwargs)
+        if self.steps.current == self.SINCRONIZAR:
+            cleaned_data_step_initial = self.get_cleaned_data_for_step(self.INICIAL)
+            context['tipo_interaccion'] = cleaned_data_step_initial['tipo_interaccion']
+        return context
+
+    def _save_campana(self, campana_form, estado):
+        campana_form.instance.type = Campana.TYPE_DIALER
+        campana_form.instance.reported_by = self.request.user
+        campana_form.instance.estado = estado
+        campana_form.save()
+        return campana_form.instance
+
+    def _save_queue(self, queue_form):
+        queue_form.instance.eventmemberstatus = True
+        queue_form.instance.eventwhencalled = True
+        queue_form.instance.ringinuse = True
+        queue_form.instance.setinterfacevar = True
+        queue_form.instance.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
+        if queue_form.instance.initial_boost_factor is None:
+            queue_form.instance.initial_boost_factor = 1.0
+        queue_form.save()
+        return queue_form.instance
+
+    def _sincronizar_campana(self, sincronizar_form, campana):
+        evitar_duplicados = sincronizar_form.cleaned_data.get('evitar_duplicados')
+        evitar_sin_telefono = sincronizar_form.cleaned_data.get('evitar_sin_telefono')
+        prefijo_discador = sincronizar_form.cleaned_data.get('prefijo_discador')
+        columnas = sincronizar_form.cleaned_data.get('columnas')
+        service_base = SincronizarBaseDatosContactosService()
+        # Crea un achivo con la lista de contactos para importar a wombat
+        service_base.crear_lista(campana, columnas, evitar_duplicados,
+                                 evitar_sin_telefono, prefijo_discador)
+        campana_service = CampanaService()
+        # crear campana en wombat
+        campana_service.crear_campana_wombat(campana)
+        # crea trunk en wombat
+        campana_service.crear_trunk_campana_wombat(campana)
+        # crea reglas de incidencia en wombat
+        for regla in campana.reglas_incidencia.all():
+            parametros = [regla.get_estado_wombat(), regla.estado_personalizado,
+                          regla.intento_max, regla.reintentar_tarde,
+                          regla.get_en_modo_wombat()]
+            campana_service.crear_reschedule_campana_wombat(campana, parametros)
+        # crea endpoint en wombat
+        campana_service.crear_endpoint_campana_wombat(campana)
+        # asocia endpoint en wombat a campana
+        campana_service.crear_endpoint_asociacion_campana_wombat(
+            campana)
+        # crea lista en wombat
+        campana_service.crear_lista_wombat(campana)
+        # asocia lista a campana en wombat
+        campana_service.crear_lista_asociacion_campana_wombat(campana)
+
+    def _save_forms(self, form_list, estado):
+        campana_form = form_list[int(self.INICIAL)]
+        queue_form = form_list[int(self.COLA)]
+        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        actuacion_vigente_form = form_list[int(self.ACTUACION_VIGENTE)]
+        reglas_incidencia_form = form_list[int(self.REGLAS_INCIDENCIA)]
+
+        campana = self._save_campana(campana_form, estado)
+
+        queue_form.instance.campana = campana
+        self._save_queue(queue_form)
+
+        opciones_calificacion_formset.instance = campana
+        opciones_calificacion_formset.save()
+
+        actuacion_vigente_form.instance.campana = campana
+        actuacion_vigente_form.save()
+
+        reglas_incidencia_form.instance = campana
+        reglas_incidencia_form.save()
+
+        return campana
+
     def done(self, form_list, **kwargs):
-        self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_DIALER)
+        sincronizar_form = form_list[int(self.SINCRONIZAR)]
+        campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
+        self._sincronizar_campana(sincronizar_form, campana)
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
