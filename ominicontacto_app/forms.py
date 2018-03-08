@@ -906,10 +906,9 @@ class ActuacionVigenteForm(forms.ModelForm):
 
     class Meta:
         model = ActuacionVigente
-        fields = ('campana', 'domingo', 'lunes', 'martes', 'miercoles', 'jueves',
+        fields = ('domingo', 'lunes', 'martes', 'miercoles', 'jueves',
                   'viernes', 'sabado', 'hora_desde', 'hora_hasta')
         widgets = {
-            'campana': forms.HiddenInput(),
             'dia_semanal': forms.Select(attrs={'class': 'form-control'}),
             "hora_desde": forms.TextInput(attrs={'class': 'form-control'}),
             "hora_hasta": forms.TextInput(attrs={'class': 'form-control'}),

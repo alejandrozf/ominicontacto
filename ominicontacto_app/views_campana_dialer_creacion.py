@@ -39,23 +39,23 @@ logger = logging_.getLogger(__name__)
 class CampanaDialerMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = '1'
-    ACTUACION = '2'
-    REGLAS_INCIDENCIA = '3'
-    OPCIONES_CALIFICACION = '4'
+    OPCIONES_CALIFICACION = '2'
+    ACTUACION_VIGENTE = '3'
+    REGLAS_INCIDENCIA = '4'
     SINCRONIZAR = '5'
 
     FORMS = [(INICIAL, CampanaDialerForm),
              (COLA, QueueDialerForm),
-             (ACTUACION, ActuacionVigenteForm),
-             (REGLAS_INCIDENCIA, ReglasIncidenciaForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (ACTUACION_VIGENTE, ActuacionVigenteForm),
+             (REGLAS_INCIDENCIA, ReglasIncidenciaForm),
              (SINCRONIZAR, SincronizaDialerForm)]
 
     TEMPLATES = {INICIAL: 'campana_dialer/nueva_edita_campana.html',
                  COLA: 'campana_dialer/create_update_queue.html',
-                 ACTUACION: 'campana_dialer/actuacion_vigente_campana.html',
+                 OPCIONES_CALIFICACION: 'campana_dialer/opcion_calificacion.html',
+                 ACTUACION_VIGENTE: 'campana_dialer/actuacion_vigente_campana.html',
                  REGLAS_INCIDENCIA: 'campana_dialer/reglas_incidencia.html',
-                 OPCIONES_CALIFICACION: 'campana_dialer/reglas_incidencia.html',
                  SINCRONIZAR: 'campana_dialer/sincronizar_lista.html'}
 
     form_list = FORMS
@@ -69,10 +69,12 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
     def get_form_initial(self, step):
         initial = super(CampanaDialerCreateView, self).get_form_initial(step)
         if step == self.COLA:
-            step_inicial_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
-            initial['name'] = step_inicial_cleaned_data['nombre']
+            step_initial_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
+            initial['name'] = step_initial_cleaned_data['nombre']
+        elif step == self.ACTUACION_VIGENTE:
+            campana = self.get_form_instance(self.INICIAL)
+            initial['campana'] = campana
         return initial
-
 
     def done(self, form_list, **kwargs):
         self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_DIALER)

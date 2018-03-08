@@ -25,9 +25,9 @@
         <li class="active"><a>{% trans 'Cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
         {% if not form.instance.pk %}
-            <li class="disabled"><a>Actuacion</a></li>
-            <li class="disabled"><a>Reglas Incidencias</a></li>
-            <li class="disabled"><a>Sincronizar</a></li>
+            <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
+            <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
+            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
         {% endif %}
     </ul>
 {% endblock %}
