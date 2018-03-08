@@ -441,7 +441,7 @@ class FormularioNuevoContactoFormView(FormView):
         agente = self.request.user.get_agente_profile()
 
         return HttpResponseRedirect(
-            reverse('calificacion_formulario_update',
+            reverse('calificacion_formulario_update_or_create',
                     kwargs={"pk_campana": self.kwargs['pk_campana'],
                             "pk_contacto": contacto.pk,
                             "id_agente": agente.pk,

@@ -20,6 +20,7 @@ from ominicontacto_app.models import (
     BaseDatosContacto, Calificacion, CalificacionCampana, Campana, Queue,
     ActuacionVigente, ReglasIncidencia
 )
+from ominicontacto_app.tests.factories import CalificacionFactory
 
 
 def ru():
@@ -409,6 +410,12 @@ class OMLTestUtilsMixin(object):
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
     """Clase base para tests"""
+
+    def setUp(self, *args, **kwargs):
+        super(OMLBaseTest, self).setUp(*args, **kwargs)
+        if hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and \
+                settings.DESHABILITAR_MIGRACIONES_EN_TESTS:
+            CalificacionFactory(nombre=settings.CALIFICACION_REAGENDA)
 
 
 class OMLTransaccionBaseTest(TransactionTestCase, OMLTestUtilsMixin):

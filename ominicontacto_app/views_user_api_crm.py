@@ -3,15 +3,13 @@
 """
 Esta vista se configua user y password del cual se van conectar a la api de la cuál se
 conecta al servicio json configurada calificacion_cliente_externa_view() en el
-modulo views_calificacion_formulario
+modulo views_calificacion_cliente
 """
 
 from __future__ import unicode_literals
 
 
-from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, UpdateView, ListView
 from ominicontacto_app.forms import UserApiCrmForm
 from ominicontacto_app.models import UserApiCrm
