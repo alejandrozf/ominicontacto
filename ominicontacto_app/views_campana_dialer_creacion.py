@@ -66,6 +66,14 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
     Esta vista crea una campaña de tipo dialer
     """
 
+    def get_form_initial(self, step):
+        initial = super(CampanaDialerCreateView, self).get_form_initial(step)
+        if step == self.COLA:
+            step_inicial_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
+            initial['name'] = step_inicial_cleaned_data['nombre']
+        return initial
+
+
     def done(self, form_list, **kwargs):
         self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_DIALER)
         return HttpResponseRedirect(reverse('campana_dialer_list'))
