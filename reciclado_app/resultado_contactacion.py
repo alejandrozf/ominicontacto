@@ -12,14 +12,14 @@ from django.db.models import Count
 
 class EstadisticasContactacion():
 
-    AGENTE_NO_DISPONIBLE = 0
-    OCUPADO = 1
-    NO_CONTESTA = 2
-    NUMERO_ERRONEO = 3
-    ERROR_DE_SISTEMA = 4
-    CONGESTION = 5
-    CONTESTADOR = 6
-    AGENTE_NO_CALIFICO = 7
+    AGENTE_NO_DISPONIBLE = 1
+    OCUPADO = 2
+    NO_CONTESTA = 3
+    NUMERO_ERRONEO = 4
+    ERROR_DE_SISTEMA = 5
+    CONGESTION = 6
+    CONTESTADOR = 7
+    AGENTE_NO_CALIFICO = 8
     MAP_LOG_WOMBAT = {
         AGENTE_NO_DISPONIBLE: "RS_LOST",
         OCUPADO: "RS_BUSY",
