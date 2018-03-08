@@ -513,12 +513,6 @@ class CampanaManager(models.Manager):
         """
         return campanas.filter(Q(supervisors=user) | Q(reported_by=user))
 
-    def obtener_ultimo_id_campana(self):
-        last = self.last()
-        if last:
-            return last.pk
-        return 0
-
     def obtener_templates_activos(self):
         """
         Devuelve templates campañas en estado activo.
@@ -543,11 +537,9 @@ class CampanaManager(models.Manager):
         """
         assert isinstance(campana, Campana)
 
-        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
-
         # Replica Campana.
         campana_replicada = self.create(
-            nombre="CAMPANA_CLONADA_{0}".format(ultimo_id + 1),
+            nombre=uuid.uuid4(),
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=campana.bd_contacto,
@@ -560,6 +552,8 @@ class CampanaManager(models.Manager):
             reported_by=campana.reported_by,
             objetivo=campana.objetivo,
         )
+        campana_replicada.nombre = "CAMPANA_CLONADA_{0}".format(campana_replicada.pk)
+        campana_replicada.save()
 
         # Replica Cola
         Queue.objects.create(
