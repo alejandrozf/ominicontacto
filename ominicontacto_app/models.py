@@ -386,38 +386,6 @@ class ArchivoDeAudio(models.Model):
 
 class CampanaManager(models.Manager):
 
-    def obtener_en_definicion_para_editar(self, campana_id):
-        """Devuelve la campaña pasada por ID, siempre que dicha
-        campaña pueda ser editar (editada en el proceso de
-        definirla, o sea, en el proceso de "creacion" de la
-        campaña).
-
-        En caso de no encontarse, lanza SuspiciousOperation
-        """
-        try:
-            return self.filter(
-                estado=self.model.ESTADO_EN_DEFINICION).get(
-                pk=campana_id)
-        except self.model.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro campana %s en "
-                                      "estado ESTADO_EN_DEFINICION"))
-
-    def obtener_template_en_definicion_para_editar(self, campana_id):
-        """Devuelve la campaña template pasada por ID, siempre que dicha
-        campaña pueda ser editar (editada en el proceso de
-        definirla, o sea, en el proceso de "creacion" de la
-        campaña).
-
-        En caso de no encontarse, lanza SuspiciousOperation
-        """
-        try:
-            return self.filter(
-                estado=self.model.ESTADO_TEMPLATE_EN_DEFINICION).get(
-                pk=campana_id)
-        except self.model.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro campana %s en "
-                                      "estado ESTADO_TEMPLATE_EN_DEFINICION"))
-
     def obtener_pausadas(self):
         """
         Devuelve campañas en estado pausadas.
@@ -721,9 +689,6 @@ class Campana(models.Model):
 
     objects = CampanaManager()
 
-    ESTADO_EN_DEFINICION = 1
-    """La campaña esta siendo definida en el wizard"""
-
     ESTADO_ACTIVA = 2
     """La campaña esta activa, o sea, EN_CURSO o PROGRAMADA
     A nivel de modelos, solo queremos registrar si está ACTIVA, y no nos
@@ -746,9 +711,6 @@ class Campana(models.Model):
     ESTADO_INACTIVA = 6
     """La campaña inactiva"""
 
-    ESTADO_TEMPLATE_EN_DEFINICION = 7
-    """La campaña se creo como template y esta en proceso de definición."""
-
     ESTADO_TEMPLATE_ACTIVO = 8
     """La campaña se creo como template y esta activa, en condición de usarse
     como tal."""
@@ -758,14 +720,12 @@ class Campana(models.Model):
     como tal."""
 
     ESTADOS = (
-        (ESTADO_EN_DEFINICION, 'En definicion'),
         (ESTADO_ACTIVA, 'Activa'),
         (ESTADO_FINALIZADA, 'Finalizada'),
         (ESTADO_BORRADA, 'Borrada'),
         (ESTADO_PAUSADA, 'Pausada'),
         (ESTADO_INACTIVA, 'Inactiva'),
 
-        (ESTADO_TEMPLATE_EN_DEFINICION, '(Template en definicion)'),
         (ESTADO_TEMPLATE_ACTIVO, 'Template Activo'),
         (ESTADO_TEMPLATE_BORRADO, 'Template Borrado'),
     )
@@ -801,7 +761,7 @@ class Campana(models.Model):
 
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
-        default=ESTADO_EN_DEFINICION,
+        default=ESTADO_INACTIVA,
     )
     nombre = models.CharField(max_length=128, unique=True)
     fecha_inicio = models.DateField(null=True, blank=True)

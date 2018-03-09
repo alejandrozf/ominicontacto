@@ -12,13 +12,11 @@ from django.views.generic import (
     ListView, CreateView, DeleteView)
 from django.views.generic.base import RedirectView
 from django.views.generic.detail import DetailView
-from ominicontacto_app.forms import (
-    QueueDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm,
-    CampanaDialerTemplateForm
-)
-from ominicontacto_app.models import (
-    Campana, Queue, ActuacionVigente, ReglasIncidencia
-)
+from ominicontacto_app.forms import QueueDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm
+from ominicontacto_app.models import Campana, Queue, ActuacionVigente, ReglasIncidencia
+
+from ominicontacto_app.views_campana_creacion import CampanaTemplateCreateMixin
+from ominicontacto_app.views_campana_dialer_creacion import CampanaDialerCreateView
 
 
 import logging as logging_
@@ -26,15 +24,7 @@ import logging as logging_
 logger = logging_.getLogger(__name__)
 
 
-class TemplateMixin(object):
-
-    def get_context_data(self, **kwargs):
-        context = super(TemplateMixin, self).get_context_data(**kwargs)
-        context['es_template'] = True
-        return context
-
-
-class TemplateListView(TemplateMixin, ListView):
+class TemplateListView(ListView):
     """
     Esta vista lista los objetos Capanas-->Templates activos.
     """
@@ -46,90 +36,22 @@ class TemplateListView(TemplateMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(TemplateListView, self).get_context_data(**kwargs)
         context['templates_activos'] = \
-            Campana.objects.obtener_templates_activos()
+            Campana.objects.obtener_templates_activos_dialer()
         return context
 
 
-class CheckEstadoCampanaDialerTemplateMixin(object):
-    """Mixin para utilizar en las vistas de creación de campañas.
-    Utiliza `Campana.objects.obtener_en_definicion_para_editar()`
-    para obtener la campaña pasada por url.
-    Este metodo falla si la campaña no deberia ser editada.
-    ('editada' en el contexto del proceso de creacion de la campaña)
+class CampanaDialerTemplateCreateView(CampanaTemplateCreateMixin, CampanaDialerCreateView):
+    """
+    Crea una campaña sin acción en el sistema, sólo con el objetivo de servir de
+    template base para agilizar la creación de las campañas dialer
     """
 
-    def dispatch(self, request, *args, **kwargs):
-        chequeada = kwargs.pop('_campana_chequeada', False)
-        if not chequeada:
-            self.campana = Campana.objects.obtener_template_en_definicion_para_editar(
-                self.kwargs['pk_campana'])
-
-        return super(CheckEstadoCampanaDialerTemplateMixin, self).dispatch(
-            request, *args, **kwargs)
+    def done(self, form_list, *args, **kwargs):
+        self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO)
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
-class CampanaDialerTemplateEnDefinicionMixin(object):
-    """Mixin para obtener el objeto campama que valida que siempre este en
-    el estado en definición.
-    """
-
-    def get_object(self, queryset=None):
-        return Campana.objects.obtener_template_en_definicion_para_editar(
-            self.kwargs['pk_campana'])
-
-
-class CampanaDialerTemplateCreateView(TemplateMixin, CreateView):
-    """
-    Esta vista crea un objeto Campana.
-    Por defecto su estado es EN_DEFICNICION,
-    Redirecciona a crear las opciones para esta
-    Campana.
-    """
-
-    template_name = 'campana_dialer/nueva_edita_campana.html'
-    model = Campana
-    context_object_name = 'campana'
-    form_class = CampanaDialerTemplateForm
-
-    def form_invalid(self, form, error=None):
-
-        message = '<strong>Operación Errónea!</strong> \
-                . {0}'.format(error)
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-        return self.render_to_response(self.get_context_data())
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
-        self.object.nombre = "TEMPLATE_{0}".format(ultimo_id + 1)
-        self.object.es_template = True
-        self.object.estado = Campana.ESTADO_TEMPLATE_EN_DEFINICION
-        if self.object.tipo_interaccion is Campana.FORMULARIO and \
-                not self.object.formulario:
-            error = "Debe seleccionar un formulario"
-            return self.form_invalid(form, error=error)
-        elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-                not self.object.sitio_externo:
-            error = "Debe seleccionar un sitio externo"
-            return self.form_invalid(form, error=error)
-        self.object.type = Campana.TYPE_DIALER
-        self.object.reported_by = self.request.user
-        self.object.save()
-        return super(CampanaDialerTemplateCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse(
-            'campana_dialer_template_queue_create',
-            kwargs={"pk_campana": self.object.pk})
-
-
-class ActuacionVigenteCampanaDialerTemplateCreateView(
-        CheckEstadoCampanaDialerTemplateMixin, CreateView):
+class ActuacionVigenteCampanaDialerTemplateCreateView(CreateView):
     """
     Esta vista crea uno objeto ActuacionVigente
     para la Campana que se este creando.
@@ -160,8 +82,7 @@ class ActuacionVigenteCampanaDialerTemplateCreateView(
         )
 
 
-class ReglasIncidenciaCampanaDialerTemplateCreateView(
-        CheckEstadoCampanaDialerTemplateMixin, TemplateMixin, CreateView):
+class ReglasIncidenciaCampanaDialerTemplateCreateView(CreateView):
     """
     Esta vista crea uno o varios objetos ReglasIncidencia
     para la Campana que se este creando.
@@ -224,8 +145,7 @@ def regla_incidencia_delete_view(request, pk_campana, pk_regla):
         ))
 
 
-class QueueDialerTemplateCreateView(CheckEstadoCampanaDialerTemplateMixin,
-                                    CampanaDialerTemplateEnDefinicionMixin, CreateView):
+class QueueDialerTemplateCreateView(CreateView):
     """Vista para crear una cola dialer para template de campana"""
     model = Queue
     form_class = QueueDialerForm
@@ -260,9 +180,7 @@ class QueueDialerTemplateCreateView(CheckEstadoCampanaDialerTemplateMixin,
         )
 
 
-class ConfirmaCampanaDialerTemplateView(
-    CheckEstadoCampanaDialerTemplateMixin, CampanaDialerTemplateEnDefinicionMixin,
-        RedirectView):
+class ConfirmaCampanaDialerTemplateView(RedirectView):
     """Vista confirma la creacion de un template de campana"""
     pattern_name = 'lista_campana_dialer_template'
     url = None
@@ -276,7 +194,7 @@ class ConfirmaCampanaDialerTemplateView(
             request, *args, **kwargs)
 
 
-class CreaCampanaTemplateView(TemplateMixin, RedirectView):
+class CreaCampanaTemplateView(RedirectView):
     """Vista crea campana apartir de template"""
     permanent = False
     url = None
@@ -299,13 +217,13 @@ class CreaCampanaTemplateView(TemplateMixin, RedirectView):
                                                         **kwargs)
 
 
-class TemplateDetailView(TemplateMixin, DetailView):
+class TemplateDetailView(DetailView):
     """Vista muestra el detalle de la campana"""
     template_name = 'template/template_detalle.html'
     model = Campana
 
 
-class TemplateDeleteView(TemplateMixin, DeleteView):
+class TemplateDeleteView(DeleteView):
     """
     Esta vista se encarga de la eliminación del
     objeto Campana-->Template.

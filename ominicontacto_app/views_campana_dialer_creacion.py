@@ -16,13 +16,10 @@ from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, Actu
 from ominicontacto_app.models import (
     Campana,
     Queue,
-    # BaseDatosContacto, ActuacionVigente, ReglasIncidencia
 )
 
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
-# from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
-#                                                        RestablecerDialplanError)
 
 from formtools.wizard.views import SessionWizardView
 
@@ -191,6 +188,9 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
 
 
 class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
+    """
+    Esta vista modifica una campaña de tipo dialer
+    """
     INICIAL = '0'
     COLA = '1'
     OPCIONES_CALIFICACION = '2'
