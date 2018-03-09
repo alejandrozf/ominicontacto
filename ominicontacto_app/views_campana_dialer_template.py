@@ -6,11 +6,15 @@ from __future__ import unicode_literals
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DeleteView
 from django.views.generic.detail import DetailView
 
 from ominicontacto_app.views_campana_creacion import CampanaTemplateCreateMixin
+from django.shortcuts import get_object_or_404
+
+from ominicontacto_app.forms import ReglasIncidenciaFormSet
 from ominicontacto_app.models import Campana
 
 from ominicontacto_app.views_campana_creacion import CampanaTemplateCreateCampanaMixin
@@ -46,12 +50,36 @@ class CampanaDialerTemplateCreateView(CampanaTemplateCreateMixin, CampanaDialerC
 
     def done(self, form_list, *args, **kwargs):
         self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO)
-        return HttpResponseRedirect(reverse('campana_dialer_list'))
+        return HttpResponseRedirect(reverse('lista_campana_dialer_template'))
 
 
-class CampanaDialerCreateCampana(CampanaTemplateCreateCampanaMixin, CampanaDialerCreateView):
+class CampanaDialerTemplateCreateCampanaView(CampanaTemplateCreateCampanaMixin,
+                                             CampanaDialerCreateView):
     """Vista que crea campana a partir de template"""
-    pass
+
+    def get_form_initial(self, step):
+        pk = self.kwargs.get('pk_campana_template', None)
+        campana_template = get_object_or_404(Campana, pk=pk)
+
+        if step == self.ACTUACION_VIGENTE:
+            initial = model_to_dict(campana_template.actuacionvigente)
+        else:
+            initial = super(CampanaDialerTemplateCreateCampanaView, self).get_form_initial(step)
+        return initial
+
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(
+            CampanaDialerTemplateCreateCampanaView, self).get_context_data(form=form, **kwargs)
+        if self.steps.current == self.REGLAS_INCIDENCIA:
+            pk = self.kwargs.get('pk_campana_template', None)
+            campana_template = get_object_or_404(Campana, pk=pk)
+            initial_data = campana_template.reglas_incidencia.values()
+            reglas_incidencia_init_formset = context['wizard']['form']
+            reglas_incidencia_formset = ReglasIncidenciaFormSet(initial=initial_data)
+            reglas_incidencia_formset.extra = len(initial_data) - 1
+            reglas_incidencia_formset.prefix = reglas_incidencia_init_formset.prefix
+            context['wizard']['form'] = reglas_incidencia_formset
+        return context
 
 
 class TemplateDetailView(DetailView):

@@ -715,9 +715,9 @@ urlpatterns = [
         login_required(
             views_campana_dialer_template.TemplateListView.as_view()),
         name="lista_campana_dialer_template"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/crea_campana/$',
+    url(r'^campana_dialer_template/(?P<pk_campana_template>\d+)/crea_campana/$',
         login_required(
-            views_campana_dialer_template.CampanaDialerCreateCampana.as_view()),
+            views_campana_dialer_template.CampanaDialerTemplateCreateCampanaView.as_view()),
         name="crea_campana_dialer_template"),
     url(r'^campana_dialer_template/(?P<pk>\d+)/detalle/$',
         login_required(
