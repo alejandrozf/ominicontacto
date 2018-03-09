@@ -10,7 +10,9 @@ import random
 
 from django.db.models import Count
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from reciclado_app.resultado_contactacion import EstadisticasContactacion
+from reciclado_app.resultado_contactacion import (
+    EstadisticasContactacion, RecicladorContactosCampanaDIALER
+)
 
 
 class RecicladoTest(OMLBaseTest):
@@ -89,7 +91,7 @@ class RecicladoTest(OMLBaseTest):
 
     def test_devuelve_correctamente_calificados(self):
         """
-        este test testea todos los resultados las cantidad de los no
+        este test testea todos los resultados las cantidad de los
         contactdos chequeando que devuelva correctamente
         """
 
@@ -116,3 +118,75 @@ class RecicladoTest(OMLBaseTest):
         for contactacion in calificaciones_query:
             self.assertEquals(contactacion['calificacion__count'],
                               contactados_dict[contactacion['calificacion__id']])
+
+    def test_obtiene_contactos_reciclados(self):
+        # estados no contactados:
+        estados = [2, 3, 4, 5, 6]
+
+        contactos = self.campana.bd_contacto.contactos.all()
+        calificaciones = self.campana.calificacion_campana.calificacion.all()
+
+        for _ in range(0, 100):
+            contacto = random.choice(contactos)
+            es_contactado = random.choice([True, False])
+
+            if es_contactado:
+                calificacion = random.choice(calificaciones)
+                self.crear_calificacion_cliente(
+                    self.campana, self.agente, contacto, calificacion)
+            else:
+                estado = random.choice(estados)
+                calificacion = ''
+                if estado is "TERMINATED":
+                    calificacion = random.choice(["CONTESTADOR", ""])
+                    self.crear_wombat_log(
+                        self.campana, self.agente, contacto, estado, calificacion)
+
+        estado_elegido = random.choice(estados)
+        calificacion = random.choice(calificaciones)
+        estado_list = []
+        estado_list.append(estado_elegido)
+        calificacion_list = []
+        calificacion_list.append(calificacion)
+
+        # vamos a chequear que sea la misma cantidad de contactos reciclados
+        # para los calificados
+        calificaciones_query = self.campana.calificaconcliente.filter(
+            calificacion__in=calificacion_list).distinct()
+        reciclador = RecicladorContactosCampanaDIALER()
+        contactos_reciclados = reciclador._obtener_contactos_calificados(
+            self.campana, calificacion_list)
+        self.assertEquals(calificaciones_query.count(), len(contactos_reciclados))
+
+        # ahora vamos a chequear para los no contactados
+        no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
+            self.campana, estado_list)
+        estados = [EstadisticasContactacion.MAP_LOG_WOMBAT[estado]
+                   for estado in estado_list]
+        no_contactados = self.campana.logswombat.filter(estado__in=estados)
+
+        self.assertEquals(len(no_contactados_reciclados), no_contactados.count())
+
+        # ahora chequeamos para contestador
+        contestadores = self.campana.logswombat.filter(
+                estado="TERMINATED", calificacion='CONTESTADOR')
+        no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
+            self.campana, [7])
+
+        self.assertEquals(len(no_contactados_reciclados), contestadores.count())
+
+        # ahora chequeamos para agente no califico
+        no_califico = self.campana.logswombat.filter(
+                estado="TERMINATED", calificacion='')
+        no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
+            self.campana, [8])
+
+        self.assertEquals(len(no_contactados_reciclados), no_califico.count())
+
+        # ahora chequeamos para agente no disponible
+        no_disponible = self.campana.logswombat.filter(
+                estado="RS_LOST", calificacion='')
+        no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
+            self.campana, [1])
+
+        self.assertEquals(len(no_contactados_reciclados), no_disponible.count())
