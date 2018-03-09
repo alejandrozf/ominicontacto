@@ -368,12 +368,15 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
 
 class OpcionCalificacionForm(forms.ModelForm):
+    usada_en_calificacion = forms.BooleanField(initial=False, required=False)
+
     class Meta:
         model = OpcionCalificacion
         fields = ('tipo', 'nombre', 'campana')
 
         widgets = {
-            'nombre': forms.Select()
+            'nombre': forms.Select(),
+            'usada_en_calificacion': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -384,6 +387,10 @@ class OpcionCalificacionForm(forms.ModelForm):
             # al modificar, en caso de que el valor del campo 'nombre' no esté entre las
             # calificaciones creadas se agrega
             choices = set(nombres_calificaciones + ((instance.nombre, instance.nombre),))
+            usada_en_calificacion = (
+                CalificacionCliente.objects.filter(opcion_calificacion=instance).exists() or
+                CalificacionManual.objects.filter(opcion_calificacion=instance).exists())
+            self.initial['usada_en_calificacion'] = usada_en_calificacion
         else:
             # al crear se muestra en primer lugar una opción vacía
             choices = (EMPTY_CHOICE,) + nombres_calificaciones
@@ -441,6 +448,7 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
                 raise forms.ValidationError(
                     _("Debe ingresar al menos {0} opciones de calificación".format(
                         self.MIN_NUM_FORMS)))
+
         for form in save_candidates_forms:
             nombre = form.cleaned_data.get('nombre', None)
             tipo = form.cleaned_data.get('tipo', None)

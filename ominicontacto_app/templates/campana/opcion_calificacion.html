@@ -39,9 +39,14 @@
                 {% endfor %}
             {% endif %}
             {% for form in wizard.form.forms %}
-                <tr class="linkFormset">
+                {{ form.errors }}
+                <tr class="linkFormset"
+                    {% if form.usada_en_calificacion.value %}
+                    data-toggle="tooltip" data-placement="top"
+                    title="Esta opción de calificación ya está siendo usada en la campaña, no se permitirá su eliminación"
+                    {% endif %}>
                     <td>
-                    {% if form.instance.pk and not form.instance.es_agenda %}
+                    {% if form.instance.pk and not form.instance.es_agenda and not form.usada_en_calificacion.value %}
                         {{ form.DELETE }}
                     {% endif %}
                     </td>
