@@ -533,10 +533,10 @@ urlpatterns = [
     #     login_required(
     #         views_campana_dialer_creacion.SincronizaDialerView.as_view()),
     #     name="campana_dialer_sincronizar"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/update/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.CampanaDialerUpdateView.as_view()),
-    #     name="campana_dialer_update"),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/update/$',
+        login_required(
+            views_campana_dialer_creacion.CampanaDialerUpdateView.as_view()),
+        name="campana_dialer_update"),
     url(r'^campana_dialer/list/$',
         login_required(views_campana_dialer.CampanaDialerListView.as_view()),
         name="campana_dialer_list"),

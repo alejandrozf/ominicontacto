@@ -190,6 +190,28 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
+class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
+    INICIAL = '0'
+    COLA = '1'
+    OPCIONES_CALIFICACION = '2'
+
+    FORMS = [(INICIAL, CampanaDialerForm),
+             (COLA, QueueDialerForm),
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
+
+    TEMPLATES = {INICIAL: 'campana_dialer/nueva_edita_campana.html',
+                 COLA: 'campana_dialer/create_update_queue.html',
+                 OPCIONES_CALIFICACION: 'campana_dialer/opcion_calificacion.html'}
+
+    form_list = FORMS
+
+    def done(self, form_list, **kwargs):
+        sincronizar_form = form_list[int(self.SINCRONIZAR)]
+        campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
+        self._sincronizar_campana(sincronizar_form, campana)
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
+
+
 # class SincronizaDialerView(FormView):
 #     """
 #     Esta vista sincroniza base datos con discador
