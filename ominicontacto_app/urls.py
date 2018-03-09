@@ -529,10 +529,6 @@ urlpatterns = [
     url(r'^campana_dialer/create/$',
         login_required(views_campana_dialer_creacion.CampanaDialerCreateView.as_view()),
         name="campana_dialer_create"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/sincronizar_lista/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.SincronizaDialerView.as_view()),
-    #     name="campana_dialer_sincronizar"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/update/$',
         login_required(
             views_campana_dialer_creacion.CampanaDialerUpdateView.as_view()),
@@ -543,18 +539,15 @@ urlpatterns = [
     url(r'^campana_dialer/start/$',
         login_required(
             views_campana_dialer.PlayCampanaDialerView.as_view()),
-        name='start_campana_dialer',
-        ),
+        name='start_campana_dialer'),
     url(r'^campana_dialer/pausar/$',
         login_required(
             views_campana_dialer.PausarCampanaDialerView.as_view()),
-        name='pausar_campana_dialer',
-        ),
+        name='pausar_campana_dialer'),
     url(r'^campana_dialer/activar/$',
         login_required(
             views_campana_dialer.ActivarCampanaDialerView.as_view()),
-        name='activar_campana_dialer',
-        ),
+        name='activar_campana_dialer'),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/delete/$',
         login_required(
             views_campana_dialer.CampanaDialerDeleteView.as_view()),
@@ -587,26 +580,6 @@ urlpatterns = [
         login_required(
             views_campana_dialer.FormularioNuevoContactoFormView.as_view()),
         name="nuevo_contacto_campana_dialer"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/actuacion_vigente/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.ActuacionVigenteCampanaDialerCreateView.as_view()),
-    #     name="nuevo_actuacion_vigente_campana_dialer"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/reglas_incidencia/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.ReglasIncidenciaCampanaDialerCreateView.as_view()),
-    #     name="nueva_reglas_incidencia_campana_dialer"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/reglas_incidencia/(?P<pk_regla>\d+)/delete/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.regla_incidencia_delete_view),
-    #     name="delete_regla_incidencia_campana_dialer"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/cola/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.QueueDialerCreateView.as_view()),
-    #     name="campana_dialer_queue_create"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/cola_update/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.QueueDialerUpdateView.as_view()),
-    #     name="campana_dialer_queue_update"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/supervisors/$',
         login_required(
             views_campana_dialer.CampanaDialerSupervisorUpdateView.as_view()),
