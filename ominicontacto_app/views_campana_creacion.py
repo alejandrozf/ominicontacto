@@ -16,9 +16,7 @@ from django.utils.translation import ugettext as _
 
 from formtools.wizard.views import SessionWizardView
 
-from ominicontacto_app.forms import (
-    CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet, ParametroExtraParaWebformFormSet
-)
+from ominicontacto_app.forms import CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet
 from ominicontacto_app.models import Campana, Queue, ArchivoDeAudio
 
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
