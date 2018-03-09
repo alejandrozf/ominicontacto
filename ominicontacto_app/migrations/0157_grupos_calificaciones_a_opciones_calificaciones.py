@@ -159,8 +159,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
                                         verbose_name='ID')),
-                ('tipo', models.IntegerField(
-                    choices=[(1, 'Gesti\xf3n'), (0, 'Sin acci\xf3n')], default=0)),
+                ('tipo', models.IntegerField(choices=[(1, 'Gesti\xf3n'), (0, 'Sin acci\xf3n'), (2, 'Agenda')], default=0)),
                 ('nombre', models.CharField(max_length=20)),
             ],
         ),
@@ -253,7 +252,11 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 null=False, related_name='calificaciones_cliente',
                 on_delete=django.db.models.deletion.CASCADE,
+<<<<<<< HEAD:ominicontacto_app/migrations/0157_grupos_calificaciones_a_opciones_calificaciones.py
                 to='ominicontacto_app.OpcionCalificacion'),
+=======
+                 to='ominicontacto_app.OpcionCalificacion'),
+>>>>>>> Fix en migraciones pendientes (en modelo OpcionCalificacion):ominicontacto_app/migrations/0149_grupos_calificaciones_a_opciones_calificaciones.py
         ),
 
         migrations.AlterField(
