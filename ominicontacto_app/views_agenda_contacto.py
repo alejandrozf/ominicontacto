@@ -64,7 +64,7 @@ class AgendaContactoCreateView(CreateView):
         self.object.save()
         # Después de agendado el contacto se marca como agendado en la calificación
         CalificacionCliente.objects.filter(
-            campana=campana, contacto__pk=self.kwargs['pk_contacto'],
+            opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'],
             agente__pk=self.kwargs['id_agente']).update(agendado=True)
         return super(AgendaContactoCreateView, self).form_valid(form)
 
@@ -135,7 +135,7 @@ class AgendaManualCreateView(CreateView):
         telefono = cleaned_data.get('telefono')
         campana = form.instance.campana
         CalificacionManual.objects.filter(
-            agente=agente, campana=campana, telefono=telefono).update(agendado=True)
+            agente=agente, opcion_calificacion__campana=campana, telefono=telefono).update(agendado=True)
         return super(AgendaManualCreateView, self).form_valid(form)
 
     def get_success_url(self):

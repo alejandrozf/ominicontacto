@@ -47,7 +47,7 @@ class EstadisticasAgenteService():
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         calificaciones = campana.calificacion_campana.calificacion.all()
         calificaciones_query = CalificacionManual.objects.filter(
-            agente=agente, campana=campana, fecha__range=(fecha_desde, fecha_hasta))
+            agente=agente, opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_asignados = len(calificaciones_query)

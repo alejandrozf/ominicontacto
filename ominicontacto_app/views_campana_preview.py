@@ -286,7 +286,8 @@ class CampanaPreviewDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CampanaPreviewDetailView, self).get_context_data(**kwargs)
         campana = self.get_object()
-        qs_campana_calificaciones = CalificacionCliente.objects.filter(campana_id=campana.pk)
+        qs_campana_calificaciones = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana__pk=campana.pk)
 
         context['terminadas'] = qs_campana_calificaciones.count()
         context['estimadas'] = campana.bd_contacto.contactos.count() - context['terminadas']
