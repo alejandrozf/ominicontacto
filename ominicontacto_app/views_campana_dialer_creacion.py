@@ -205,233 +205,25 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
 
     form_list = FORMS
 
+    def _save_queue(self, queue_form):
+        if queue_form.instance.initial_boost_factor is None:
+            queue_form.instance.initial_boost_factor = 1.0
+        return queue_form.save()
+
     def done(self, form_list, **kwargs):
-        sincronizar_form = form_list[int(self.SINCRONIZAR)]
-        campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
-        self._sincronizar_campana(sincronizar_form, campana)
+        campana_form = form_list[int(self.INICIAL)]
+        queue_form = form_list[int(self.COLA)]
+        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+
+        campana = campana_form.save()
+        queue = self._save_queue(queue_form)
+        opciones_calificacion_formset.save()
+
+        self._insert_queue_asterisk(queue, solo_activar=True)
+        campana_service = CampanaService()
+        campana_service.update_endpoint(campana)
+
         return HttpResponseRedirect(reverse('campana_dialer_list'))
-
-
-# class SincronizaDialerView(FormView):
-#     """
-#     Esta vista sincroniza base datos con discador
-#     """
-
-#     def get_form(self):
-#         self.form_class = self.get_form_class()
-#         self.object = self.get_object()
-#         metadata = self.object.bd_contacto.get_metadata()
-#         nombres_de_columnas = metadata.nombres_de_columnas
-#         nombres_de_columnas.remove('telefono')
-#         tts_choices = [(columna, columna) for columna in
-#                        nombres_de_columnas]
-#         return self.form_class(tts_choices=tts_choices, **self.get_form_kwargs())
-
-#     def form_valid(self, form):
-#         evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
-#         evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
-#         prefijo_discador = form.cleaned_data.get('prefijo_discador')
-#         columnas = form.cleaned_data.get('columnas')
-#         self.object = self.get_object()
-#         service_base = SincronizarBaseDatosContactosService()
-#         # Crea un achivo con la lista de contactos para importar a wombat
-#         service_base.crear_lista(self.object, columnas, evitar_duplicados,
-#                                  evitar_sin_telefono, prefijo_discador)
-#         campana_service = CampanaService()
-#         # crear campana en wombat
-#         campana_service.crear_campana_wombat(self.object)
-#         # crea trunk en wombat
-#         campana_service.crear_trunk_campana_wombat(self.object)
-#         # crea reglas de incidencia en wombat
-#         for regla in self.object.reglas_incidencia.all():
-#             parametros = [regla.get_estado_wombat(), regla.estado_personalizado,
-#                           regla.intento_max, regla.reintentar_tarde,
-#                           regla.get_en_modo_wombat()]
-#             campana_service.crear_reschedule_campana_wombat(self.object, parametros)
-#         # crea endpoint en wombat
-#         campana_service.crear_endpoint_campana_wombat(self.object)
-#         # asocia endpoint en wombat a campana
-#         campana_service.crear_endpoint_asociacion_campana_wombat(
-#             self.object)
-#         # crea lista en wombat
-#         campana_service.crear_lista_wombat(self.object)
-#         # asocia lista a campana en wombat
-#         campana_service.crear_lista_asociacion_campana_wombat(self.object)
-#         self.object.estado = Campana.ESTADO_INACTIVA
-#         self.object.save()
-#         activacion_queue_service = ActivacionQueueService()
-#         try:
-#             activacion_queue_service.activar()
-#         except RestablecerDialplanError, e:
-#             raise
-
-
-# class ActuacionVigenteCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, CreateView):
-#     """
-#     Esta vista crea uno objeto ActuacionVigente
-#     para la Campana que se este creando.
-#     Inicializa el form con campo campana (hidden)
-#     con el id de campana que viene en la url.
-#     """
-
-#     template_name = 'campana_dialer/actuacion_vigente_campana.html'
-#     model = ActuacionVigente
-#     context_object_name = 'actuacion'
-#     form_class = ActuacionVigenteForm
-
-#     def get_initial(self):
-#         initial = super(ActuacionVigenteCampanaDialerCreateView, self).get_initial()
-#         initial.update({'campana': self.campana.id})
-#         return initial
-
-
-# class ReglasIncidenciaCampanaDialerCreateView(CheckEstadoCampanaDialerMixin, CreateView):
-#     """
-#     Esta vista crea uno o varios objetos ReglasIncidencia
-#     para la Campana que se este creando.
-#     Inicializa el form con campo campana (hidden)
-#     con el id de campana que viene en la url.
-#     """
-
-#     template_name = 'campana_dialer/reglas_incidencia.html'
-#     model = ReglasIncidencia
-#     context_object_name = 'reglas_incidencia'
-#     form_class = ReglasIncidenciaForm
-
-#     def get_initial(self):
-#         initial = super(ReglasIncidenciaCampanaDialerCreateView, self).get_initial()
-#         initial.update({'campana': self.campana.id})
-#         return initial
-
-#     def get_context_data(self, **kwargs):
-#         context = super(
-#             ReglasIncidenciaCampanaDialerCreateView, self).get_context_data(**kwargs)
-#         context['campana'] = self.campana
-#         return context
-
-#     def form_valid(self, form):
-#         self.object = form.save(commit=False)
-#         if self.campana.valida_reglas_incidencia(self.object):
-#             message = """¡Cuidado!
-#             El estado {0} ya se encuentra cargado""".format(
-#                 self.object.get_estado_display())
-#             messages.add_message(
-#                 self.request,
-#                 messages.WARNING,
-#                 message,
-#             )
-#             return self.form_invalid(form)
-#         if self.object.estado is ReglasIncidencia.TERMINATED:
-#             self.object.estado_personalizado = "CONTESTADOR"
-#         self.object.save()
-
-#         return super(ReglasIncidenciaCampanaDialerCreateView, self).form_valid(form)
-
-#     def get_success_url(self):
-#         return reverse(
-#             'nueva_reglas_incidencia_campana_dialer',
-#             kwargs={"pk_campana": self.kwargs['pk_campana']}
-#         )
-
-
-# def regla_incidencia_delete_view(request, pk_campana, pk_regla):
-#     """Esta vista elimina una regla de incidencia en wombat"""
-#     regla = ReglasIncidencia.objects.get(pk=pk_regla)
-#     regla.delete()
-#     return HttpResponseRedirect(
-#         reverse(
-#             'nueva_reglas_incidencia_campana_dialer',
-#             kwargs={"pk_campana": pk_campana}
-#         ))
-
-
-# class QueueDialerCreateView(CheckEstadoCampanaDialerMixin,
-#                             CampanaDialerEnDefinicionMixin, CreateView):
-#     """Vista crear cola para campana dialer"""
-#     model = Queue
-#     form_class = QueueDialerForm
-#     template_name = 'campana_dialer/create_update_queue.html'
-
-#     def get_initial(self):
-#         initial = super(QueueDialerCreateView, self).get_initial()
-#         initial.update({'campana': self.campana.id,
-#                         'name': self.campana.nombre})
-#         return initial
-
-#     def form_valid(self, form):
-#         self.object = form.save(commit=False)
-#         self.object.eventmemberstatus = True
-#         self.object.eventwhencalled = True
-#         self.object.ringinuse = True
-#         self.object.setinterfacevar = True
-#         self.object.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
-#         if self.object.initial_boost_factor is None:
-#             self.object.initial_boost_factor = 1.0
-#         self.object.save()
-#         return super(QueueDialerCreateView, self).form_valid(form)
-
-#     def get_context_data(self, **kwargs):
-#         context = super(QueueDialerCreateView, self).get_context_data(**kwargs)
-#         context['campana'] = self.campana
-#         context['create'] = True
-#         return context
-
-#     def get_success_url(self):
-#         return reverse(
-#             'nuevo_actuacion_vigente_campana_dialer',
-#             kwargs={"pk_campana": self.campana.pk}
-#         )
-
-
-# class QueueDialerUpdateView(UpdateView):
-#     """Vista actualiza cola para campana dialer"""
-#     model = Queue
-#     form_class = QueueDialerUpdateForm
-#     template_name = 'campana_dialer/create_update_queue.html'
-
-#     def get_object(self, queryset=None):
-#         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-#         return campana.queue_campana
-
-#     def dispatch(self, *args, **kwargs):
-#         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-#         try:
-#             Queue.objects.get(campana=campana)
-#         except Queue.DoesNotExist:
-#             return HttpResponseRedirect("/campana_dialer/" + self.kwargs['pk_campana'] + "/cola/")
-#         else:
-#             return super(QueueDialerUpdateView, self).dispatch(*args, **kwargs)
-
-#     def form_valid(self, form):
-#         self.object = form.save(commit=False)
-#         if self.object.initial_boost_factor is None:
-#             self.object.initial_boost_factor = 1.0
-#         self.object.save()
-#         activacion_queue_service = ActivacionQueueService()
-#         try:
-#             activacion_queue_service.activar()
-#         except RestablecerDialplanError, e:
-#             message = ("<strong>Operación Errónea!</strong> "
-#                        "No se pudo confirmar la creación del dialplan  "
-#                        "al siguiente error: {0}".format(e))
-#             messages.add_message(
-#                 self.request,
-#                 messages.ERROR,
-#                 message,
-#             )
-#         campana_service = CampanaService()
-#         campana_service.update_endpoint(self.object.campana)
-#         return super(QueueDialerUpdateView, self).form_valid(form)
-
-#     def get_context_data(self, **kwargs):
-#         context = super(QueueDialerUpdateView, self).get_context_data(**kwargs)
-#         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-#         context['campana'] = campana
-#         return context
-
-#     def get_success_url(self):
-#         return reverse('campana_dialer_list')
-
 
 # class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
 #                                 CampanaDialerEnDefinicionMixin, UpdateView):
