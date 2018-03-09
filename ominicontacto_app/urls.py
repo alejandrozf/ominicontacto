@@ -584,18 +584,6 @@ urlpatterns = [
         login_required(
             views_campana_dialer.CampanaDialerSupervisorUpdateView.as_view()),
         name="campana_dialer_supervisors"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/replicar_update/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.CampanaDialerReplicarView.as_view()),
-    #     name="campana_dialer_replicar_update"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/replicar_cola/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.QueueDialerReplicarView.as_view()),
-    #     name="campana_dialer_replicar_cola"),
-    # url(r'^campana_dialer/(?P<pk_campana>\d+)/update_actuacion_vigente/$',
-    #     login_required(
-    #         views_campana_dialer_creacion.ActuacionVigenteCampanaDialerUpdateView.as_view()),
-    #     name="campana_dialer_update_actuacion_vigente"),
     url(r'^campana_dialer/mostrar_ocultas/$',
         views_campana_dialer.CampanaDialerBorradasListView.as_view(),
         name="campana_dialer_mostrar_ocultas"),
@@ -723,34 +711,13 @@ urlpatterns = [
         login_required(
             views_campana_dialer_template.CampanaDialerTemplateCreateView.as_view()),
         name="campana_dialer_template_create"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/cola/$',
-        login_required(
-            views_campana_dialer_template.QueueDialerTemplateCreateView.as_view()),
-        name="campana_dialer_template_queue_create"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/actuacion_vigente/$',
-        login_required(
-            views_campana_dialer_template.ActuacionVigenteCampanaDialerTemplateCreateView.as_view()),
-        name="nuevo_actuacion_vigente_campana_dialer_template"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/reglas_incidencia/$',
-        login_required(
-            views_campana_dialer_template.ReglasIncidenciaCampanaDialerTemplateCreateView.as_view()),
-        name="nueva_reglas_incidencia_campana_dialer_template"),
-    url(
-        r'^campana_dialer_template/(?P<pk_campana>\d+)/reglas_incidencia/(?P<pk_regla>\d+)/delete/$',
-        login_required(
-            views_campana_dialer_template.regla_incidencia_delete_view),
-        name="delete_regla_incidencia_campana_dialer_template"),
     url(r'^campana_dialer_template/lista/$',
         login_required(
             views_campana_dialer_template.TemplateListView.as_view()),
         name="lista_campana_dialer_template"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/confirma/$',
-        login_required(
-            views_campana_dialer_template.ConfirmaCampanaDialerTemplateView.as_view()),
-        name="confirma_campana_dialer_template"),
     url(r'^campana_dialer_template/(?P<pk_campana>\d+)/crea_campana/$',
         login_required(
-            views_campana_dialer_template.CreaCampanaTemplateView.as_view()),
+            views_campana_dialer_template.CampanaDialerCreateCampana.as_view()),
         name="crea_campana_dialer_template"),
     url(r'^campana_dialer_template/(?P<pk>\d+)/detalle/$',
         login_required(
