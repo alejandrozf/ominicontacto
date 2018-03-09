@@ -86,3 +86,33 @@ class RecicladoTest(OMLBaseTest):
                 id_estado = EstadisticasContactacion.AGENTE_NO_CALIFICO
                 self.assertEquals(no_contactados_lista[id_estado],
                                   log['estado__count'])
+
+    def test_devuelve_correctamente_calificados(self):
+        """
+        este test testea todos los resultados las cantidad de los no
+        contactdos chequeando que devuelva correctamente
+        """
+
+        contactos = self.campana.bd_contacto.contactos.all()
+
+        for _ in range(0, 100):
+            contacto = random.choice(contactos)
+            calificaciones = self.campana.calificacion_campana.calificacion.all()
+            calificacion = random.choice(calificaciones)
+            self.crear_calificacion_cliente(
+                self.campana, self.agente, contacto, calificacion)
+
+        estadisticas = EstadisticasContactacion()
+        calificados = estadisticas.obtener_cantidad_calificacion(self.campana)
+
+        calificaciones_query = self.campana.calificaconcliente.values(
+            'calificacion__nombre', 'calificacion__id').annotate(
+            Count('calificacion')).filter(
+            calificacion__count__gt=0)
+
+        contactados_dict = {}
+        for contactado in calificados:
+            contactados_dict.update({contactado.id: contactado.cantidad})
+        for contactacion in calificaciones_query:
+            self.assertEquals(contactacion['calificacion__count'],
+                              contactados_dict[contactacion['calificacion__id']])
