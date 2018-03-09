@@ -55,7 +55,7 @@
     <form id="form_estados_campanas" role="form" method="post">
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
-    <h4><b>Campañas Activas</b></h4>
+    <h4><b>Campañas Activas</b> <span style="color:red;">- Canales en uso: {{ canales_en_uso }}</span></h4>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
