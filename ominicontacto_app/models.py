@@ -18,7 +18,7 @@ from crontab import CronTab
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
 from django.db import models, connection
-from django.db.models import Max, Q, Count
+from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 
@@ -656,6 +656,11 @@ class CampanaManager(models.Manager):
         queue_a_eliminar.delete()
         # guardarmos la nueva queue
         queue_replicada.save()
+
+    def obtener_canales_dialer_en_uso(self):
+        campanas = self.obtener_activas() & self.obtener_campanas_dialer()
+        canales_en_uso = campanas.aggregate(suma=Sum('queue_campana__maxlen'))['suma']
+        return 0 if canales_en_uso is None else canales_en_uso
 
 
 class Campana(models.Model):
