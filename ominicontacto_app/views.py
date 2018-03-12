@@ -456,7 +456,7 @@ def node_view(request):
             'registro': registro,
             'campanas_preview_activas': campanas_preview_activas,
             'agente_profile': agente_profile,
-            }
+        }
         return render_to_response(
             'agente/base_agente.html',
             context,
@@ -635,7 +635,6 @@ def wombat_log_view(request):
     """
     Log de wombat insertar los log q devuelve los log de las campana de wombat
     """
-    print request.POST
     dict_post = request.POST
 
     id_contacto = int(dict_post['I_ID_CLIENTE'])
@@ -664,15 +663,29 @@ def wombat_log_view(request):
         campana = None
         logger.exception("Excepcion detectada al obtener campana "
                          "con la id {0} no existe ".format(id_campana))
+    except Contacto.DoesNotExist:
+        contacto = None
+        logger.exception("Excepcion detectada al obtener contacto "
+                         "con la id {0} no existe ".format(id_contacto))
     except AgenteProfile.DoesNotExist:
         agente = None
         logger.exception("Excepcion detectada al obtener agente "
                          "con la id {0} no existe ".format(id_agente))
 
-    WombatLog.objects.create(campana=campana, agente=agente, telefono=telefono,
-                             estado=estado, calificacion=calificacion,
-                             timeout=timeout, contacto=contacto,
-                             metadata=json.dumps(metadata))
+    defaults = {
+        'agente': agente,
+        'telefono': telefono,
+        'estado': estado,
+        'timeout': timeout,
+        'metadata': json.dumps(metadata),
+    }
+    # Si la calificacion viene vacía, puede ser que ya se haya creado el WombatLog
+    # correspondiente. Entonces no corresponde sobreescribirla.
+    if not calificacion == '':
+        defaults['calificacion'] = calificacion
+
+    WombatLog.objects.update_or_create(campana=campana, contacto=contacto, defaults=defaults)
+
     response = JsonResponse({'status': 'OK'})
     return response
 

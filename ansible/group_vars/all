@@ -6,6 +6,9 @@
 #                                                                                                          #
 ############################################################################################################
 
+#### Para setear si el postinstall es para FTS o para cliente #####
+desarrollo: 0
+
 ############ Componentes del certificado del CA ###########
 serial: 01
 ca_country: AR
@@ -16,7 +19,7 @@ ca_organizationalunit: Desarrollo
 
 ############## Repositorios #######################
 #rtpengine
-rtpengine_repo: https://github.com/sipwise/rtpengine
+rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr5.5.3.1.tar.gz
 #kamailio
 kamailio_repo: git://git.kamailio.org/kamailio
 #omnileads-AIO

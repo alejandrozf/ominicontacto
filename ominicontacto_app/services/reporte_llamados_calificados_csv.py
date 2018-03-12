@@ -61,8 +61,18 @@ class ArchivoDeReporteCsv(object):
             nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
                 encabezado.append(nombre)
-
-            encabezado.append("Gestionado")
+            encabezado.append("Fecha-Hora Contacto")
+            encabezado.append("Tel status")
+            encabezado.append("Tel contactado")
+            encabezado.append("Calificado")
+            encabezado.append("Observaciones")
+            encabezado.append("Agente")
+            encabezado.append("base de datos")
+            # agrego el encabezado para los campos del formulario
+            # FIXME: posible bug si la campana tiene configurado sitio externo
+            campos = campana.formulario.campos.all()
+            for campo in campos:
+                encabezado.append(campo.nombre_campo)
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -81,10 +91,21 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(calificacion.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
+                lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
+                lista_opciones.append("Contactado")
+                lista_opciones.append(calificacion.contacto.telefono)
                 if calificacion.es_venta:
                     lista_opciones.append(calificacion.campana.gestion)
                 else:
                     lista_opciones.append(calificacion.calificacion)
+                lista_opciones.append(calificacion.observaciones)
+                lista_opciones.append(calificacion.agente)
+                lista_opciones.append(calificacion.contacto.bd_contacto)
+
+                if calificacion.get_venta():
+                    datos = json.loads(calificacion.get_venta().metadata)
+                    for campo in campos:
+                        lista_opciones.append(datos[campo.nombre_campo])
 
                     # --- Finalmente, escribimos la linea
 
@@ -100,7 +121,14 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(contacto.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
+                lista_opciones.append(
+                    contacto.fecha_hora.strftime("%Y/%m/%d %H:%M:%S"))
+                lista_opciones.append("Contactado")
+                lista_opciones.append(contacto.telefono)
                 lista_opciones.append("AGENTE NO CALIFICO")
+                lista_opciones.append("")
+                lista_opciones.append(contacto.agente)
+                lista_opciones.append(contacto.contacto.bd_contacto)
 
                 # --- Finalmente, escribimos la linea
 
@@ -135,7 +163,7 @@ class ReporteCampanaCalificadosCSV(object):
 
         # Esto no debería suceder.
         logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para la campana %s", nombre_reporte)
+                     " CSV de descarga para la campana %s", campana.nombre)
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
     def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):

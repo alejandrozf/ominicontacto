@@ -465,21 +465,45 @@ class ExportaDialerForm(forms.Form):
 
 class CalificacionClienteForm(forms.ModelForm):
 
-    def __init__(self, calificacion_choice, gestion, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
-        self.fields['calificacion'].queryset = calificacion_choice
+        if 'campana' in self.initial:
+            campana = Campana.objects.get(id=self.initial['campana'])
+            self.fields['calificacion'].queryset = campana.calificacion_campana.calificacion.all()
 
     class Meta:
         model = CalificacionCliente
         fields = ('campana', 'contacto', 'es_venta', 'calificacion', 'agente',
-                  'observaciones', 'agendado')
+                  'observaciones', 'agendado', 'wombat_id')
         widgets = {
             'campana': forms.HiddenInput(),
             'contacto': forms.HiddenInput(),
             'es_venta': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
             'agendado': forms.HiddenInput(),
+            'wombat_id': forms.HiddenInput(),
         }
+
+    def clean_contacto(self):
+        campana = self.cleaned_data.get('campana', None)
+        contacto = self.cleaned_data.get('contacto', None)
+        if campana and contacto:
+            if not contacto.bd_contacto == campana.bd_contacto:
+                raise forms.ValidationError('El Contacto no corresponde a la base de datos'
+                                            ' de la Campaña')
+            return contacto
+
+    def clean_calificacion(self):
+        campana = self.cleaned_data.get('campana', None)
+        calificacion = self.cleaned_data.get('calificacion', None)
+        if campana and calificacion:
+            if calificacion not in campana.calificacion_campana.calificacion.all():
+                raise forms.ValidationError('Calificacion incorrecta')
+            return calificacion
+
+
+class CalificacionClienteUpdateForm(CalificacionClienteForm):
+    fields = ('es_venta', 'calificacion', 'agente', 'observaciones', 'agendado', 'wombat_id')
 
 
 class GrupoAgenteForm(forms.Form):
@@ -686,11 +710,6 @@ class PausaForm(forms.ModelForm):
         nombre = self.cleaned_data['nombre']
         validar_nombres_campanas(nombre)
         return nombre
-
-
-FormularioCalificacionFormSet = inlineformset_factory(
-    Contacto, CalificacionCliente, form=CalificacionClienteForm,
-    can_delete=False, extra=1, max_num=1)
 
 
 class FormularioVentaForm(forms.ModelForm):

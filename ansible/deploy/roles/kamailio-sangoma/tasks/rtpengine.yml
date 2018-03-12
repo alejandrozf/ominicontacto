@@ -1,9 +1,15 @@
 ---
+- set_fact: rtpengine_name=rtpengine-mr5.5.3.1
 
-- name: Clone of the RTPengine repo
-  git: repo={{ rtpengine_repo }} dest=/usr/src/rtpengine
-  register: command_result
-  ignore_errors: yes
+- name: Download of RTPengine-mr5.5.3.1
+  get_url: url={{ rtpengine_repo }} dest=/usr/src/
+  register: destino
+
+- name: Untar the file
+  unarchive: "src=/usr/src/{{ rtpengine_name }}.tar.gz dest=/usr/src/ remote_src=yes"
+
+- name: Delete tar file
+  file: "dest=/usr/src/{{ rtpengine_name }}.tar.gz state=absent"
 
 - name: Install of ffmpeg
   shell: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
@@ -20,23 +26,23 @@
       - ffmpeg-devel
 
 - name: Installation of RTPengine
-  shell: "make chdir=/usr/src/rtpengine/daemon"
-- copy: src=/usr/src/rtpengine/daemon/rtpengine dest=/usr/local/bin remote_src=yes
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/daemon"
+- copy: src=/usr/src/{{ rtpengine_name }}/daemon/rtpengine dest=/usr/local/bin remote_src=yes
 
 - name: Modify of the RTPengine kernel module to let it know where is our kernel
-  lineinfile: "path=/usr/src/rtpengine/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= /usr/src/kernels/$(shell uname -r)\""
+  lineinfile: "path=/usr/src/{{ rtpengine_name }}/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= /usr/src/kernels/$(shell uname -r)\""
 
 - name: Installation of RTPengine kernel module
-  shell: "make chdir=/usr/src/rtpengine/kernel-module"
-- shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/rtpengine/kernel-module"
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
+- shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
   register: command_result
   failed_when:
     - "'File exists' not in command_result.stderr"
     - "command_result.rc != 0"
 
 - name: Installation of IPtables extensions
-  shell: "make chdir=/usr/src/rtpengine/iptables-extension"
-- copy: src=/usr/src/rtpengine/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/iptables-extension"
+- copy: src=/usr/src/{{ rtpengine_name }}/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
 
 - name: Copy of rptengine init script in sysconfig
   copy: src=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/rtpengine_sysconfig dest=/etc/sysconfig/rtpengine remote_src=yes

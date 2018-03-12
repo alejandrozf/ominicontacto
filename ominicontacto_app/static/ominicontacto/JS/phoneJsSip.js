@@ -318,7 +318,7 @@ $(function() {
                                                     getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
                                                 }
                                                  else if (originHeader === "CLICK2CALLPREVIEW") {
-                                                   getDataCreate(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+                                                   getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
         		if(fromUser !== "Unknown") {
@@ -870,14 +870,8 @@ $(function() {
   	$("#dataView").attr('src', url);
   }
 
-  function getDataCreate(campid, leadid, agentid, wombatId) {
-    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/create/"+agentid+"/"+wombatId+"/";
-    $("#dataView").attr('src', url);
-  }
-
-
   function getData(campid, leadid, agentid, wombatId) {
-    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/";
+    var url = "/formulario/"+campid+"/calificacion/"+leadid+"/update/"+agentid+"/"+wombatId+"/calificacion/";
     $("#dataView").attr('src', url);
   }
 

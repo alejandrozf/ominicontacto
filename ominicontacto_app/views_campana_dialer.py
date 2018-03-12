@@ -61,6 +61,8 @@ class CampanaDialerListView(ListView):
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
                                               oculto=False)
         context['finalizadas'] = campanas.filter(estado=Campana.ESTADO_FINALIZADA)
+
+        context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
         return context
 
     # def get(self, request, *args, **kwargs):
@@ -441,7 +443,7 @@ class FormularioNuevoContactoFormView(FormView):
         agente = self.request.user.get_agente_profile()
 
         return HttpResponseRedirect(
-            reverse('calificacion_formulario_update',
+            reverse('calificacion_formulario_update_or_create',
                     kwargs={"pk_campana": self.kwargs['pk_campana'],
                             "pk_contacto": contacto.pk,
                             "id_agente": agente.pk,

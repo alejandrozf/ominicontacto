@@ -1,6 +1,8 @@
 /oml_settings_local.py
 /ominicontacto_app/static/ominicontacto/JS/config.js
 /ominicontacto_app/static/ominicontacto/voip.cert
+/Omnisup/static/Js/config.js
+oml-uwsgi.pid
 .idea/
 virtualenv/
 *.pyc

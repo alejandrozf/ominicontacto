@@ -32,17 +32,10 @@
       - systemctl enable php-fpm
   tags: issabel
 
-- name: Creation of config.php
-  template: src=templates/config.php.j2 dest={{ omnisup_dir }}/ominicontacto/Omnisup/config.php
-  tags: issabel
+
 
 - name: Modify of config.js in /static/Js
   template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/ominicontacto/Omnisup/static/Js/config.js"
-  tags: issabel
-
-- name: Change phone.js default port on /static/JS/phone.js
-  lineinfile: "dest={{ omnisup_dir }}/ominicontacto/Omnisup/static/Js/phone.js regexp=\"^        config.ws_servers=\" line=\"        config.ws_servers= 'wss://' + KamailioIp + ':14443';\""
-  when: ansible_os_family == "Redhat" or ansible_os_family == "Sangoma"
   tags: issabel
 
 - name: Create simbolic link of Omnisup directory

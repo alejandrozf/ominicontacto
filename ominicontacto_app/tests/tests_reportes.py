@@ -17,6 +17,7 @@ from ominicontacto_app.services.reporte_grafico import GraficoService
 
 class BaseReportesTests(OMLBaseTest):
     PWD = u'admin123'
+
     def setUp(self):
         self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
         self.usuario_admin_supervisor.set_password(self.PWD)
@@ -279,7 +280,8 @@ class TriggerQueuelogTest(OMLBaseTest):
         with connection.cursor() as c:
             c.execute(sql_query)
 
-    @skipIf(settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
+    @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
+            settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_tipo_campana_entrantes(self):
         queuename = "1_cp1"
@@ -287,7 +289,8 @@ class TriggerQueuelogTest(OMLBaseTest):
         queuelog = Queuelog.objects.get(queuename=queuename)
         self.assertEqual(queuelog.data5, str(Campana.TYPE_ENTRANTE))
 
-    @skipIf(settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
+    @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
+            settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_tipo_campana_dialer(self):
         queuename = "1_cp1"
@@ -295,7 +298,8 @@ class TriggerQueuelogTest(OMLBaseTest):
         queuelog = Queuelog.objects.get(queuename=queuename)
         self.assertEqual(queuelog.data5, str(Campana.TYPE_DIALER))
 
-    @skipIf(settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
+    @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
+            settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_tipo_campana_manual(self):
         queuename = "1_cp1"
@@ -303,7 +307,8 @@ class TriggerQueuelogTest(OMLBaseTest):
         queuelog = Queuelog.objects.get(queuename=queuename)
         self.assertEqual(queuelog.data5, str(Campana.TYPE_MANUAL))
 
-    @skipIf(settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
+    @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
+            settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_tipo_campana_pre(self):
         queuename = "1_cp1"
@@ -311,7 +316,8 @@ class TriggerQueuelogTest(OMLBaseTest):
         queuelog = Queuelog.objects.get(queuename=queuename)
         self.assertEqual(queuelog.data5, str(Campana.TYPE_PREVIEW))
 
-    @skipIf(settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
+    @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
+            settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_filtro_de_duplicados_en_trigger_queue_log(self):
         queuename = "1_cp1"

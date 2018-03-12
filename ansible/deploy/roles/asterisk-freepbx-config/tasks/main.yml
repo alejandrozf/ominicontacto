@@ -10,9 +10,8 @@
       - amd.conf
       - func_odbc.conf
       - http_custom.conf
-      - extensions_fts_globals.conf
-      - extensions_fts_queues.conf
       - func_odbc.conf
+      - cdr_adaptive_odbc.conf
       - manager_custom.conf
       - queues_custom.conf
       - globals_custom.conf
@@ -27,6 +26,8 @@
       - omni-asterisk-logout.php
       - omni-blacklist.php
       - omni-grabaciones.php
+      - omni-dialednum.php
+      - generate_outbound_route_context.php
   tags:
     - issabel
     - postinstall
@@ -40,7 +41,7 @@
       - extconfig.conf
       - amd.conf
       - func_odbc.conf
-      - func_odbc.conf
+      - cdr_adaptive_odbc.conf
       - http_custom.conf
       - manager_custom.conf
       - queues_custom.conf
@@ -52,11 +53,13 @@
     - issabel
     - postinstall
 
-- copy: "src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner=asterisk"
+- copy: "src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner=asterisk group=asterisk"
   with_items:
       - omni-asterisk-logout.php
       - omni-blacklist.php
+      - omni-dialednum.php
       - omni-grabaciones.php
+      - generate_outbound_route_context.php
   tags:
     - issabel
     - postinstall

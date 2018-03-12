@@ -18,7 +18,7 @@ from crontab import CronTab
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
 from django.db import models, connection
-from django.db.models import Max, Q, Count
+from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 
@@ -513,12 +513,6 @@ class CampanaManager(models.Manager):
         """
         return campanas.filter(Q(supervisors=user) | Q(reported_by=user))
 
-    def obtener_ultimo_id_campana(self):
-        last = self.last()
-        if last:
-            return last.pk
-        return 0
-
     def obtener_templates_activos(self):
         """
         Devuelve templates campañas en estado activo.
@@ -543,11 +537,9 @@ class CampanaManager(models.Manager):
         """
         assert isinstance(campana, Campana)
 
-        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
-
         # Replica Campana.
         campana_replicada = self.create(
-            nombre="CAMPANA_CLONADA_{0}".format(ultimo_id + 1),
+            nombre=uuid.uuid4(),
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=campana.bd_contacto,
@@ -558,7 +550,10 @@ class CampanaManager(models.Manager):
             sitio_externo=campana.sitio_externo,
             tipo_interaccion=campana.tipo_interaccion,
             reported_by=campana.reported_by,
+            objetivo=campana.objetivo,
         )
+        campana_replicada.nombre = "CAMPANA_CLONADA_{0}".format(campana_replicada.pk)
+        campana_replicada.save()
 
         # Replica Cola
         Queue.objects.create(
@@ -579,6 +574,12 @@ class CampanaManager(models.Manager):
             queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
+            announce=campana.queue_campana.announce,
+            announce_frequency=campana.queue_campana.announce_frequency,
+            audio_para_contestadores=campana.queue_campana.audio_para_contestadores,
+            audio_de_ingreso=campana.queue_campana.audio_de_ingreso,
+            initial_predictive_model=campana.queue_campana.initial_predictive_model,
+            initial_boost_factor=campana.queue_campana.initial_boost_factor,
 
         )
 
@@ -656,6 +657,25 @@ class CampanaManager(models.Manager):
         queue_a_eliminar.delete()
         # guardarmos la nueva queue
         queue_replicada.save()
+
+    def obtener_canales_dialer_en_uso(self):
+        campanas = self.obtener_activas() & self.obtener_campanas_dialer()
+        canales_en_uso = campanas.aggregate(suma=Sum('queue_campana__maxlen'))['suma']
+        return 0 if canales_en_uso is None else canales_en_uso
+
+    def reciclar_campana(self, campana, bd_contacto):
+        """
+        Este método replica la campana pasada por parámetro con fin de
+        reciclar la misma.
+        """
+
+        campana_reciclada = self.replicar_campana(campana)
+        campana_reciclada.nombre = '{0}_(reciclada)'.format(
+        campana_reciclada.nombre)
+        campana_reciclada.bd_contacto = bd_contacto
+        campana_reciclada.save()
+
+        return campana_reciclada
 
 
 class Campana(models.Model):
@@ -929,33 +949,37 @@ class Campana(models.Model):
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
 
-    def finalizar_relacion_agente_contacto(self, contacto_pk):
+    def gestionar_finalizacion_relacion_agente_contacto(self, contacto_pk):
         """
         Marca como finalizada la relación entre un agente y un contacto de una campaña
         preview
         """
         try:
-            agente_en_contacto = AgenteEnContacto.objects.get(
-                contacto_id=contacto_pk, campana_id=self.pk)
+            agente_en_contacto = AgenteEnContacto.objects \
+                .exclude(estado=AgenteEnContacto.ESTADO_FINALIZADO) \
+                .get(contacto_id=contacto_pk, campana_id=self.pk)
         except AgenteEnContacto.DoesNotExist:
+            # Si el contacto ya esta FINALIZADO, no hace falta actualizar.
             # para el caso cuando se llama al procedimiento luego de añadir un
             # nuevo contacto desde la consola de agentes
             pass
         else:
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
             agente_en_contacto.save()
+            self.gestionar_finalizacion_por_contactos_calificados()
 
-            # si todos los contactos de la campaña han sido calificados
-            # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
-            # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
-            # y se marca la campaña como finalizada
-            contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
-            n_contactos_campana = contactos_campana.count()
-            n_contactos_atendidos = contactos_campana.filter(
-                estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
-            if n_contactos_campana == n_contactos_atendidos:
-                contactos_campana.delete()
-                self.finalizar()
+    def gestionar_finalizacion_por_contactos_calificados(self):
+        # si todos los contactos de la campaña han sido calificados
+        # o sea, tienen el valor 'estado' igual a FINALIZADO se eliminan todas
+        # las entradas correspondientes a la campaña en el modelo AgenteEnContacto
+        # y se marca la campaña como finalizada
+        contactos_campana = AgenteEnContacto.objects.filter(campana_id=self.pk)
+        n_contactos_campana = contactos_campana.count()
+        n_contactos_atendidos = contactos_campana.filter(
+            estado=AgenteEnContacto.ESTADO_FINALIZADO).count()
+        if n_contactos_campana == n_contactos_atendidos:
+            contactos_campana.delete()
+            self.finalizar()
 
     def get_string_queue_asterisk(self):
         if self.queue_campana:
@@ -1796,6 +1820,22 @@ class BaseDatosContacto(models.Model):
         self.oculto = False
         self.save()
 
+    def genera_contactos(self, lista_contactos):
+        """
+        Este metodo se encarga de realizar la generación de contactos
+        a partir de una lista de contactos.
+        Parametros:
+        - lista_contactos: lista de contactos.
+        """
+
+        for contacto in lista_contactos:
+            Contacto.objects.create(
+                telefono=contacto.telefono,
+                datos=contacto.datos,
+                bd_contacto=self,
+            )
+        self.cantidad_contactos = len(lista_contactos)
+
 
 class ContactoManager(models.Manager):
 
@@ -2168,7 +2208,7 @@ class CalificacionClienteManager(models.Manager):
 
 
 class CalificacionCliente(models.Model):
-
+    # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
     objects = CalificacionClienteManager()
 
     campana = models.ForeignKey(Campana, related_name="calificaconcliente")
@@ -2178,7 +2218,7 @@ class CalificacionCliente(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
     observaciones = models.TextField(blank=True, null=True)
-    wombat_id = models.IntegerField()
+    wombat_id = models.IntegerField(default=0)
     agendado = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -2194,6 +2234,9 @@ class CalificacionCliente(models.Model):
             return None
         except MetadataCliente.MultipleObjectsReturned:
             return None
+
+    def set_es_venta(self):
+        self.es_venta = self.campana.gestion == self.calificacion.nombre
 
 
 class DuracionDeLlamada(models.Model):
@@ -2258,26 +2301,38 @@ class MensajeChat(models.Model):
 
 class WombatLogManager(models.Manager):
 
-    def obtener_wombat_log_contacto(self, contacto):
+    def actualizar_wombat_log_para_calificacion(self, calificacion):
+        """
+        Actualiza la calificacion del WombatLog. (Por haber creado/actualizado la calificación)
+        Si no existe crea una temporal.
+        """
         try:
-            return self.filter(contacto=contacto)
-        except WombatLog.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contacto con el id"
-                                       ": {0}".format(contacto.pk)))
+            WombatLog.objects.update_or_create(
+                campana=calificacion.campana, contacto=calificacion.contacto,
+                defaults={
+                    'agente': calificacion.agente,
+                    'estado': 'TERMINATED',
+                    'calificacion': calificacion.calificacion.nombre,
+                })
+        except WombatLog.MultipleObjectsReturned:
+            # Error, no debeía haber otro WombatLog. Puede deberse a una race condition entre la
+            # vista que califica, y la vista que recibe el POST de Wombat.
+            pass
 
 
 class WombatLog(models.Model):
+    # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
     objects = WombatLogManager()
 
     campana = models.ForeignKey(Campana, related_name="logswombat")
     contacto = models.ForeignKey(Contacto)
     agente = models.ForeignKey(AgenteProfile, related_name="logsaagente",
                                blank=True, null=True)
-    telefono = models.CharField(max_length=128)
+    telefono = models.CharField(max_length=128, blank=True)
     estado = models.CharField(max_length=128)
-    calificacion = models.CharField(max_length=128)
-    timeout = models.IntegerField()
-    metadata = models.TextField()
+    calificacion = models.CharField(max_length=128, blank=True)
+    timeout = models.IntegerField(default=0)
+    metadata = models.TextField(default='')
     fecha_hora = models.DateTimeField(auto_now=True)
 
 

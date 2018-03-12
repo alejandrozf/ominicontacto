@@ -13,9 +13,7 @@ from django.views.generic import DeleteView
 from django.views.generic import View, ListView, CreateView, UpdateView, FormView
 from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
 from django.core.urlresolvers import reverse
-from ominicontacto_app.forms import (
-    BusquedaContactoForm, ContactoForm, FormularioNuevoContacto, EscogerCampanaForm
-)
+from ominicontacto_app.forms import ContactoForm, FormularioNuevoContacto, EscogerCampanaForm
 from ominicontacto_app.utiles import convertir_ascii_string
 
 

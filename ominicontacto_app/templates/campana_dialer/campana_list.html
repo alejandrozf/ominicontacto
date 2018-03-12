@@ -55,7 +55,7 @@
     <form id="form_estados_campanas" role="form" method="post">
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
-    <h4><b>Campañas Activas</b></h4>
+    <h4><b>Campañas Activas</b> <span style="color:red;">- Canales en uso: {{ canales_en_uso }}</span></h4>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
@@ -108,6 +108,9 @@
                     </a>
                     <a type="button" id="{{ campana.id }}" name="{% url 'pausar_campana_dialer' %}" class="btn-submit">
                         <span class="glyphicon glyphicon-pause" aria-hidden="true" title="pause"></span>
+                    </a>
+                    <a href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                        <span class="glyphicon glyphicon-duplicate" aria-hidden="true" title="reciclar campaña"></span>
                     </a>
                 </td>
             </tr>
@@ -176,6 +179,9 @@
                     <a type="button" id="{{ campana.id }}" name="{% url 'activar_campana_dialer' %}" class="btn-submit">
                         <span class="glyphicon glyphicon-play" aria-hidden="true" title="activar"></span>
                     </a>
+                    <a href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                        <span class="glyphicon glyphicon-duplicate" aria-hidden="true" title="reciclar campaña"></span>
+                    </a>
                 </td>
             </tr>
        {% empty %}
@@ -243,6 +249,9 @@
                     <a type="button" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}" class="btn-submit">
                         <span class="glyphicon glyphicon-play" aria-hidden="true" title="play"></span>
                     </a>
+                    <a href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                        <span class="glyphicon glyphicon-duplicate" aria-hidden="true" title="reciclar campaña"></span>
+                    </a>
                 </td>
             </tr>
        {% empty %}
@@ -300,6 +309,9 @@
                     </a>
                     <a href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
+                    </a>
+                    <a href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                        <span class="glyphicon glyphicon-duplicate" aria-hidden="true" title="reciclar campaña"></span>
                     </a>
                 </td>
             </tr>
@@ -368,6 +380,9 @@
                         <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
                     </a>
                     {% endif %}
+                    <a href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                        <span class="glyphicon glyphicon-duplicate" aria-hidden="true" title="reciclar campaña"></span>
+                    </a>
                 </td>
             </tr>
        {% empty %}

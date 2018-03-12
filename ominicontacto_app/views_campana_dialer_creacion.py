@@ -127,6 +127,11 @@ class CampanaDialerCreateView(CampanaDialerConFormsetParametrosViewMixin, Create
         parametro_extra_formset.save()
         return super(CampanaDialerCreateView, self).form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(CampanaDialerCreateView, self).get_context_data(**kwargs)
+        context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
+        return context
+
     def get_success_url(self):
         return reverse(
             'campana_dialer_queue_create',
@@ -410,6 +415,7 @@ class QueueDialerUpdateView(UpdateView):
                 message,
             )
         campana_service = CampanaService()
+        campana_service.crear_campana_wombat(self.object.campana)
         campana_service.update_endpoint(self.object.campana)
         return super(QueueDialerUpdateView, self).form_valid(form)
 
@@ -424,7 +430,8 @@ class QueueDialerUpdateView(UpdateView):
 
 
 class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
-                                CampanaDialerEnDefinicionMixin, UpdateView):
+                                CampanaDialerEnDefinicionMixin,CampanaDialerConFormsetParametrosViewMixin,
+                                UpdateView):
     """
     Esta vista actualiza una campana luego de crearla por template
     """
@@ -454,7 +461,7 @@ class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
         )
         return self.render_to_response(self.get_context_data())
 
-    def form_valid(self, form):
+    def form_valid(self, form, parametro_extra_formset):
         self.object = form.save(commit=False)
         tipo_interaccion = self.object.tipo_interaccion
         if tipo_interaccion is Campana.FORMULARIO and not self.object.formulario:
@@ -465,7 +472,14 @@ class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
             return self.form_invalid(form, error=error)
         self.object.reported_by = self.request.user
         self.object.save()
+        parametro_extra_formset.instance = self.object
+        parametro_extra_formset.save()
         return super(CampanaDialerReplicarView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaDialerReplicarView, self).get_context_data(**kwargs)
+        context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
+        return context
 
     def get_success_url(self):
         return reverse(

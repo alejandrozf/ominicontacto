@@ -38,8 +38,7 @@
                       <tr class="fts-table-bg">
                         <th>Telefono</th>
                         <th>Datos</th>
-                        <th>Gestionado como: {{campana.gestion}}</th>
-                        <th>Calificacion no gestion</th>
+                        <th>Calificacion</th>
                         <th>Observaciones</th>
                           <th>base de datos</th>
                       </tr>
@@ -54,18 +53,11 @@
                                 <td>
                                     {{ contacto.contacto.datos}}
                                 </td>
-                                <td>
-                                    {% if contacto.es_venta %}
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    {% else %}
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                    {% endif %}
-                                </td>
-                                <td>
+                                 <td>
                                 {% if contacto.calificacion %}
                                     {{ contacto.calificacion.nombre }}
                                 {% else %}
-                                    N/A
+                                   {{campana.gestion}}
                                 {% endif %}
                                 </td>
                                 <td>
