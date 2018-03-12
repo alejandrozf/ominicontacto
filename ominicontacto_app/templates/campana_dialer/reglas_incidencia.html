@@ -60,6 +60,11 @@
             </tr>
         </thead>
         <tbody>
+            {% if wizard.form.non_form_errors %}
+                {% for error in wizard.form.non_form_errors %}
+                    <div class="alert alert-warning">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
             {% for form in wizard.form.forms %}
                 <tr class="linkFormset">
                     <td>{{ form.estado }}</td>

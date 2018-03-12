@@ -954,8 +954,26 @@ class ReglasIncidenciaForm(forms.ModelForm):
         }
 
 
+class ReglasIncidenciaBaseFomset(BaseInlineFormSet):
+
+    def clean(self):
+        """
+        Realiza la  validación de que no existan reglas de incidencia de un mismo tipo repetidas
+        """
+        if any(self.errors):
+            return
+        estados_reglas = []
+        for form in self.forms:
+            estado = form.cleaned_data.get('estado')
+            if estado in estados_reglas:
+                raise forms.ValidationError(
+                    _("Los nombres de los estados de las reglas deben ser distintos"))
+            estados_reglas.append(estado)
+
+
 ReglasIncidenciaFormSet = inlineformset_factory(
-    Campana, ReglasIncidencia, form=ReglasIncidenciaForm, extra=0, min_num=1)
+    Campana, ReglasIncidencia, form=ReglasIncidenciaForm, formset=ReglasIncidenciaBaseFomset,
+    extra=0, min_num=1)
 
 
 class QueueDialerForm(forms.ModelForm):
