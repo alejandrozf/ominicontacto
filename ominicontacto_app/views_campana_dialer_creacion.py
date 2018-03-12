@@ -415,6 +415,7 @@ class QueueDialerUpdateView(UpdateView):
                 message,
             )
         campana_service = CampanaService()
+        campana_service.crear_campana_wombat(self.object.campana)
         campana_service.update_endpoint(self.object.campana)
         return super(QueueDialerUpdateView, self).form_valid(form)
 

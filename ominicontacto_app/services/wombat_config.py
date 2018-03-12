@@ -31,7 +31,12 @@ class CampanaCreator(object):
 
         assert campana is not None, "Campana == None"
 
+        campana_id_wombat = ""
+        if campana.campaign_id_wombat:
+            campana_id_wombat = campana.campaign_id_wombat
+
         dict_campana = {
+            "campaignId": campana_id_wombat,
             "name": "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
 
             "priority": 10,
