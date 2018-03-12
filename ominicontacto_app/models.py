@@ -513,12 +513,6 @@ class CampanaManager(models.Manager):
         """
         return campanas.filter(Q(supervisors=user) | Q(reported_by=user))
 
-    def obtener_ultimo_id_campana(self):
-        last = self.last()
-        if last:
-            return last.pk
-        return 0
-
     def obtener_templates_activos(self):
         """
         Devuelve templates campañas en estado activo.
@@ -543,11 +537,9 @@ class CampanaManager(models.Manager):
         """
         assert isinstance(campana, Campana)
 
-        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
-
         # Replica Campana.
         campana_replicada = self.create(
-            nombre="CAMPANA_CLONADA_{0}".format(ultimo_id + 1),
+            nombre=uuid.uuid4(),
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=campana.bd_contacto,
@@ -558,7 +550,10 @@ class CampanaManager(models.Manager):
             sitio_externo=campana.sitio_externo,
             tipo_interaccion=campana.tipo_interaccion,
             reported_by=campana.reported_by,
+            objetivo=campana.objetivo,
         )
+        campana_replicada.nombre = "CAMPANA_CLONADA_{0}".format(campana_replicada.pk)
+        campana_replicada.save()
 
         # Replica Cola
         Queue.objects.create(
@@ -579,6 +574,12 @@ class CampanaManager(models.Manager):
             queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
+            announce=campana.queue_campana.announce,
+            announce_frequency=campana.queue_campana.announce_frequency,
+            audio_para_contestadores=campana.queue_campana.audio_para_contestadores,
+            audio_de_ingreso=campana.queue_campana.audio_de_ingreso,
+            initial_predictive_model=campana.queue_campana.initial_predictive_model,
+            initial_boost_factor=campana.queue_campana.initial_boost_factor,
 
         )
 
@@ -661,6 +662,20 @@ class CampanaManager(models.Manager):
         campanas = self.obtener_activas() & self.obtener_campanas_dialer()
         canales_en_uso = campanas.aggregate(suma=Sum('queue_campana__maxlen'))['suma']
         return 0 if canales_en_uso is None else canales_en_uso
+
+    def reciclar_campana(self, campana, bd_contacto):
+        """
+        Este método replica la campana pasada por parámetro con fin de
+        reciclar la misma.
+        """
+
+        campana_reciclada = self.replicar_campana(campana)
+        campana_reciclada.nombre = '{0}_(reciclada)'.format(
+        campana_reciclada.nombre)
+        campana_reciclada.bd_contacto = bd_contacto
+        campana_reciclada.save()
+
+        return campana_reciclada
 
 
 class Campana(models.Model):
@@ -1804,6 +1819,22 @@ class BaseDatosContacto(models.Model):
         """setea la base de datos como visible"""
         self.oculto = False
         self.save()
+
+    def genera_contactos(self, lista_contactos):
+        """
+        Este metodo se encarga de realizar la generación de contactos
+        a partir de una lista de contactos.
+        Parametros:
+        - lista_contactos: lista de contactos.
+        """
+
+        for contacto in lista_contactos:
+            Contacto.objects.create(
+                telefono=contacto.telefono,
+                datos=contacto.datos,
+                bd_contacto=self,
+            )
+        self.cantidad_contactos = len(lista_contactos)
 
 
 class ContactoManager(models.Manager):

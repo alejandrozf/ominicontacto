@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'ominicontacto_app',
     'crispy_forms',
     'compressor',
+    'reciclado_app',
 ]
 
 MIDDLEWARE_CLASSES = [
