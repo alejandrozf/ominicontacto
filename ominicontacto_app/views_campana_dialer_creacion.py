@@ -127,6 +127,11 @@ class CampanaDialerCreateView(CampanaDialerConFormsetParametrosViewMixin, Create
         parametro_extra_formset.save()
         return super(CampanaDialerCreateView, self).form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(CampanaDialerCreateView, self).get_context_data(**kwargs)
+        context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
+        return context
+
     def get_success_url(self):
         return reverse(
             'campana_dialer_queue_create',
@@ -466,6 +471,11 @@ class CampanaDialerReplicarView(CheckEstadoCampanaDialerMixin,
         self.object.reported_by = self.request.user
         self.object.save()
         return super(CampanaDialerReplicarView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(CampanaDialerReplicarView, self).get_context_data(**kwargs)
+        context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
+        return context
 
     def get_success_url(self):
         return reverse(

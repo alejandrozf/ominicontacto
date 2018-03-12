@@ -23,7 +23,9 @@
             {% if es_template %}
                 <h4 class="inline">Nuevo Template de Campaña Dialer: Datos Básicos</h4>
             {% else %}
-                <h4 class="inline">Nueva Campaña Dialer: Datos Básicos</h4>
+                <h4 class="inline">Nueva Campaña Dialer: Datos Básicos
+                    <span style="color:red;">- Canales en uso: {{ canales_en_uso }}</span>
+                </h4>
             {% endif %}
 
             <ul class="nav nav-tabs">
