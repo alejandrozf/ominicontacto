@@ -1039,7 +1039,15 @@ class OpcionCalificacion(models.Model):
             self.nombre, self.campana.nombre, self.get_tipo_display()))
 
     def es_agenda(self):
+
         return self.tipo == self.AGENDA
+
+    def usada_en_calificacion(self):
+        """
+        Devuelve si opción de calificación está siendo usada en la campaña
+        """
+        return (self.calificaciones_cliente.exists() or
+                self.calificaciones_manuales.exists())
 
 
 class Queue(models.Model):

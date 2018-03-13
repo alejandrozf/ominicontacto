@@ -387,9 +387,7 @@ class OpcionCalificacionForm(forms.ModelForm):
             # al modificar, en caso de que el valor del campo 'nombre' no esté entre las
             # calificaciones creadas se agrega
             choices = set(nombres_calificaciones + ((instance.nombre, instance.nombre),))
-            usada_en_calificacion = (instance.calificaciones_cliente.exists() or
-                                     instance.calificaciones_manuales.exists())
-            self.initial['usada_en_calificacion'] = usada_en_calificacion
+            self.initial['usada_en_calificacion'] = instance.usada_en_calificacion()
         else:
             # al crear se muestra en primer lugar una opción vacía
             choices = (EMPTY_CHOICE,) + nombres_calificaciones
