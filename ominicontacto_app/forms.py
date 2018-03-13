@@ -303,6 +303,7 @@ class GrabacionBusquedaForm(forms.Form):
 class CampanaMixinForm(object):
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
+        self.fields['bd_contacto'].required = not self.initial.get('es_template', False)
         if self.fields.get('bd_contacto', False):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
@@ -817,7 +818,6 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
 
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
         self.fields['fecha_fin'].required = True
-        self.fields['bd_contacto'].required = True
 
     class Meta:
         model = Campana
@@ -1161,9 +1161,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
-        self.fields['bd_contacto'].required = True
         instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
+        if instance and instance.pk and not self.initial.get('es_template', False):
             self.fields['bd_contacto'].disabled = True
             self.fields['tiempo_desconexion'].disabled = True
 

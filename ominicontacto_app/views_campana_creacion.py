@@ -34,7 +34,8 @@ class CampanaTemplateCreateMixin(object):
         if step == self.INICIAL:
             ultimo_id_campana = Campana.objects.obtener_ultimo_id_campana() + 1
             campana_nombre = "CAMPANA_CLONADA_{0}".format(ultimo_id_campana)
-            initial_data.update({'nombre': campana_nombre})
+            initial_data.update({'nombre': campana_nombre,
+                                 'bd_contacto': None, 'es_template': True})
         elif step == self.COLA:
             step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
             name = step_cleaned_data['nombre']
@@ -54,7 +55,8 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'bd_contacto': campana_template.bd_contacto,
                 'formulario': campana_template.formulario,
                 'gestion': campana_template.gestion,
-                'objetivo': campana_template.objetivo}
+                'objetivo': campana_template.objetivo,
+                'es_template': False}
         elif step == self.COLA:
             step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
             name = step_cleaned_data['nombre']
