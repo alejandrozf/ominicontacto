@@ -20,7 +20,7 @@ from ominicontacto_app.services.reporte_campana_pdf import \
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.utiles import convert_fecha_datetime
-yfrom ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
 
 

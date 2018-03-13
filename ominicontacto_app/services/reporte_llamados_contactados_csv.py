@@ -363,6 +363,6 @@ class ReporteCampanaContactadosCSV(object):
             fecha_hora__range=(fecha_desde, fecha_hasta))
 
     def _obtener_listado_no_califico_fecha(self, campana, fecha_desde, fecha_hasta):
-        return campana.logswombat.filter(
-            fecha_hora__range=(fecha_desde, fecha_hasta), estado="TERMINATED",
-            calificacion='')
+        no_contactados = self._obtener_listado_no_contactado_fecha(
+            campana, fecha_desde, fecha_hasta)
+        return no_contactados.filter(estado="TERMINATED", calificacion="")
