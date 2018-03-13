@@ -368,8 +368,6 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
 
 class OpcionCalificacionForm(forms.ModelForm):
-    usada_en_calificacion = forms.BooleanField(initial=False, required=False)
-
     class Meta:
         model = OpcionCalificacion
         fields = ('tipo', 'nombre', 'campana')
@@ -387,7 +385,6 @@ class OpcionCalificacionForm(forms.ModelForm):
             # al modificar, en caso de que el valor del campo 'nombre' no esté entre las
             # calificaciones creadas se agrega
             choices = set(nombres_calificaciones + ((instance.nombre, instance.nombre),))
-            self.initial['usada_en_calificacion'] = instance.usada_en_calificacion()
         else:
             # al crear se muestra en primer lugar una opción vacía
             choices = (EMPTY_CHOICE,) + nombres_calificaciones
@@ -746,7 +743,7 @@ FormularioCalificacionFormSet = inlineformset_factory(
 
 OpcionCalificacionFormSet = inlineformset_factory(
     Campana, OpcionCalificacion, form=OpcionCalificacionForm,
-    formset=OpcionCalificacionBaseFormset, extra=1, min_num=1)
+    formset=OpcionCalificacionBaseFormset, extra=0, min_num=1)
 
 
 class FormularioVentaForm(forms.ModelForm):
