@@ -16,6 +16,19 @@
        prefix: '{{ wizard.form.prefix }}',
        addCssClass: 'addFormset btn btn-info',
        deleteCssClass: 'deleteFormset btn btn-danger',
+       added: function (row) {
+         /* inicializa el nuevo formulario de opción de calificación */
+         $(row.find('.nombre > select')).prop( "disabled", false );
+         var $tipo = $(row.find('.tipo > select'));
+         $tipo.prop( "disabled", false );
+         var tipoOpciones = {"Sin Acción": "0",
+                            "Gestión": "1"};
+         $tipo.empty();
+         $.each(tipoOpciones, function(key,value) {
+           $tipo.append($("<option></option>")
+             .attr("value", value).text(key));
+         });
+       },
      });
     </script>
 {% endblock %}
@@ -53,11 +66,11 @@
                         {{ form.DELETE }}
                     {% endif %}
                     </td>
-                    <td>
+                    <td class="nombre">
                         {{ form.nombre.errors }}
                         {{ form.nombre|add_class:"form-control" }}
                     </td>
-                    <td>
+                    <td class="tipo">
                         {{ form.tipo.errors }}
                         {{ form.tipo|add_class:"form-control fieldsFormset" }}
                     </td>
