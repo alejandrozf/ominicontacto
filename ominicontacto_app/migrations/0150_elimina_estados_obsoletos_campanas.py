@@ -4,6 +4,21 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 
+ESTADO_EN_DEFINICION = 1
+ESTADO_TEMPLATE_EN_DEFINICION = 7
+
+
+def eliminar_campanas_estados_intermedios(apps, schema_editor):
+    """
+    Elimina todas las campañas con estados intermedios previo a la eliminación de esos campos
+    en el modelo Campana pues representan campañas que no habrían sido terminadas de completar
+    de acuerdo al esquema anterior de wizards
+    """
+    Campana = apps.get_model("ominicontacto_app", "campana")
+
+    Campana.objects_default.filter(
+        estado__in=[ESTADO_EN_DEFINICION, ESTADO_TEMPLATE_EN_DEFINICION]).delete()
+
 
 class Migration(migrations.Migration):
 
@@ -12,9 +27,13 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(eliminar_campanas_estados_intermedios, migrations.RunPython.noop),
         migrations.AlterField(
             model_name='campana',
             name='estado',
-            field=models.PositiveIntegerField(choices=[(2, 'Activa'), (3, 'Finalizada'), (4, 'Borrada'), (5, 'Pausada'), (6, 'Inactiva'), (8, 'Template Activo'), (9, 'Template Borrado')], default=6),
+            field=models.PositiveIntegerField(choices=[(2, 'Activa'), (3, 'Finalizada'),
+                                                       (4, 'Borrada'), (5, 'Pausada'),
+                                                       (6, 'Inactiva'), (8, 'Template Activo'),
+                                                       (9, 'Template Borrado')], default=6),
         ),
     ]
