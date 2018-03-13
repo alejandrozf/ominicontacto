@@ -23,6 +23,7 @@ from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_llamados_no_atendidos_csv import ReporteCampanaCSVService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.reporte_llamados_calificados_csv import ReporteCampanaCalificadosCSV
+from ominicontacto_app.services.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
 
 
 class CampanaDialerReporteCalificacionListView(ListView):
@@ -69,6 +70,10 @@ class CampanaDialerReporteGrafico(FormView):
         calificados_csv = ReporteCampanaCalificadosCSV()
         calificados_csv.crea_reporte_csv(
             self.get_object(), hoy, hoy_ahora)
+        # genera reporte de llamadas contactados
+        calificados_csv = ReporteCampanaContactadosCSV()
+        calificados_csv.crea_reporte_csv(
+            self.get_object(), hoy, hoy_ahora)
         # genera los reportes grafico de la campana
         graficos_estadisticas = service.general_campana(self.get_object(), hoy,
                                                         hoy_ahora)
@@ -96,6 +101,10 @@ class CampanaDialerReporteGrafico(FormView):
         service_csv.crea_reporte_csv(self.get_object(), fecha_desde, fecha_hasta)
         # genera reporte de llamadas calificados
         calificados_csv = ReporteCampanaCalificadosCSV()
+        calificados_csv.crea_reporte_csv(
+            self.get_object(), fecha_desde, fecha_hasta)
+        # genera reporte de llamadas contactados
+        calificados_csv = ReporteCampanaContactadosCSV()
         calificados_csv.crea_reporte_csv(
             self.get_object(), fecha_desde, fecha_hasta)
         service = EstadisticasService()
@@ -241,6 +250,25 @@ class ExportaReporteCalificadosView(UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         service_csv = ReporteCampanaCalificadosCSV()
+        url = service_csv.obtener_url_reporte_csv_descargar(self.object)
+
+        return redirect(url)
+
+
+class ExportaReporteContactadosView(UpdateView):
+    """
+    Esta vista invoca a generar un csv de reporte de la campana.
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        service_csv = ReporteCampanaContactadosCSV()
         url = service_csv.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)

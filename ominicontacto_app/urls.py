@@ -664,6 +664,11 @@ urlpatterns = [
             views_campana_dialer_reportes.ExportaReporteCalificadosView.as_view()),
         name='exporta_reporte_calificados',
         ),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/exporta_contactados/$',
+        login_required(
+            views_campana_dialer_reportes.ExportaReporteContactadosView.as_view()),
+        name='exporta_reporte_contactados',
+        ),
     # ==========================================================================
     # Backlist
     # ==========================================================================
