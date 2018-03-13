@@ -11,3 +11,9 @@
     margin-bottom: 5px;
     font-weight: bold;
 }
+
+.borderWarning {
+    border-style: solid;
+    border-color: yellow;
+    border-width: 1px;
+}
