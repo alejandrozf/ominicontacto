@@ -32,7 +32,6 @@ SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 
 class User(AbstractUser):
     is_agente = models.BooleanField(default=False)
-    is_customer = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
 
