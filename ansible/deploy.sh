@@ -60,7 +60,7 @@ Rama() {
     #echo "   Inventario: $INVENTORY"
     echo ""
 
-    cd ~/ominicontacto
+    cd $current_directory
     git checkout $1
     git pull origin +$1:$1
 
@@ -140,11 +140,6 @@ Preliminar() {
         echo "Generando llaves públicas de usuario actual"
         ssh-keygen
     fi
-
-    cd ~/ominicontacto
-#    git config --global user.name "lionite"
-#    git config --global user.email "felipe.macias@freetechsolutions.com.ar"
-    git pull origin $1
 
     echo "Parámetros de la aplicación"
     echo -en "Ingrese valor de variable session_cookie_age: "; read session_cookie
