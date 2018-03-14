@@ -9,7 +9,7 @@ cd $(dirname $0)
 
 
 
-coverage run --omit='ominicontacto_app/migrations/*,ominicontacto_app/tests/*,reciclado_app/tests/*' --source='ominicontacto_app.models' manage.py test ominicontacto_app.tests reciclado_app.tests
+coverage run --omit='ominicontacto_app/migrations/*,ominicontacto_app/tests/*,ominicontacto_app/tests/tests.py ,reciclado_app/tests/*' --source='ominicontacto_app,reciclado_app' manage.py test ominicontacto_app.tests reciclado_app.tests
 
 coverage html -d /tmp/oml-coverity --title="Coverage para Omnileads"
 
