@@ -390,23 +390,23 @@ class EstadisticasService():
 
         return total_agentes
 
-    def _obtener_total_ics_agente(self, dict_agentes, agentes):
+    def _obtener_total_preview_agente(self, dict_agentes, agentes):
         """
-        Obtiene el total grabaciones ICS por agente en una lista
-        :return: lista con el total de llamadas ICS por agente
+        Obtiene el total grabaciones PREVIEW por agente en una lista
+        :return: lista con el total de llamadas PREVIEW por agente
         """
-        total_ics = []
+        total_preview = []
 
         for agente in agentes:
             cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_ICS).\
+            result = dict_agentes.filter(tipo_llamada=Grabacion.TYPE_PREVIEW).\
                 filter(sip_agente=agente)
             if result:
                 cantidad = result[0]['cantidad']
 
-            total_ics.append(cantidad)
+            total_preview.append(cantidad)
 
-        return total_ics
+        return total_preview
 
     def _obtener_total_dialer_agente(self, dict_agentes, agentes):
         """
@@ -481,7 +481,7 @@ class EstadisticasService():
 
         total_agentes = self._obtener_total_agente_grabacion(
             dict_agentes, agentes)
-        total_agente_ics = self._obtener_total_ics_agente(
+        total_agente_preview = self._obtener_total_preview_agente(
             dict_agentes, agentes)
         total_agente_dialer = self._obtener_total_dialer_agente(
             dict_agentes, agentes)
@@ -499,7 +499,7 @@ class EstadisticasService():
             'agentes': agentes,
             'agentes_nombre': agentes_nombre,
             'total_agentes': total_agentes,
-            'total_agente_ics': total_agente_ics,
+            'total_agente_preview': total_agente_preview,
             'total_agente_dialer': total_agente_dialer,
             'total_agente_inbound': total_agente_inbound,
             'total_agente_manual': total_agente_manual,
@@ -523,7 +523,7 @@ class EstadisticasService():
                                    'tipo de llamadas'
 
         barra_agente_total.x_labels = estadisticas['agentes_nombre']
-        barra_agente_total.add('ICS', estadisticas['total_agente_ics'])
+        barra_agente_total.add('PREVIEW', estadisticas['total_agente_preview'])
         barra_agente_total.add('DIALER', estadisticas['total_agente_dialer'])
         barra_agente_total.add('INBOUND', estadisticas['total_agente_inbound'])
         barra_agente_total.add('MANUAL', estadisticas['total_agente_manual'])
@@ -532,7 +532,7 @@ class EstadisticasService():
             'estadisticas': estadisticas,
             'dict_agente_counter': zip(estadisticas['agentes_nombre'],
                                        estadisticas['total_agentes'],
-                                       estadisticas['total_agente_ics'],
+                                       estadisticas['total_agente_preview'],
                                        estadisticas['total_agente_dialer'],
                                        estadisticas['total_agente_inbound'],
                                        estadisticas['total_agente_manual']),

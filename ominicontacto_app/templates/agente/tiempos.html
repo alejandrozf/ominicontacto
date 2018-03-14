@@ -271,7 +271,7 @@
                                         <tr>
                                             <th>Agente</th>
                                             <th>Total </th>
-                                            <th>ICS</th>
+                                            <th>PREVIEW</th>
                                             <th>DIALER</th>
                                             <th>INBOUND</th>
                                             <th>MANUAL</th>
@@ -279,11 +279,11 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                            {% for agente, total_campana, total_ics, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
+                                            {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
                                                 <tr>
                                                     <td><h5>{{ agente }} </h5></td>
                                                     <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_ics }}</span></h5></td>
+                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_preview }}</span></h5></td>
                                                     <td width="10%" align="right"><h5><span class="label label-primary">{{ total_dialer }}</span></h5></td>
                                                     <td width="10%" align="right"><h5><span class="label label-primary">{{ total_inbound }}</span></h5></td>
                                                     <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manual }}</span></h5></td>
