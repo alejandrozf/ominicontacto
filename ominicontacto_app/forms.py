@@ -446,23 +446,6 @@ class ContactoForm(forms.ModelForm):
         }
 
 
-class ExportaDialerForm(forms.Form):
-    campana = forms.ChoiceField(choices=())
-    evitar_duplicados = forms.BooleanField(required=False)
-    evitar_sin_telefono = forms.BooleanField(required=False)
-    prefijo_discador = forms.CharField(required=False)
-    telefonos = forms.MultipleChoiceField(
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-        choices=(),
-    )
-
-    def __init__(self, campana_choice, tts_choices, *args, **kwargs):
-        super(ExportaDialerForm, self).__init__(*args, **kwargs)
-        self.fields['campana'].choices = campana_choice
-        self.fields['telefonos'].choices = tts_choices
-
-
 class CalificacionClienteForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):

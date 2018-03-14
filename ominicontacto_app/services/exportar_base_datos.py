@@ -107,41 +107,6 @@ class ArchivoDeReporteCsv(object):
         return os.path.exists(self.ruta)
 
 
-class ExportarBaseDatosContactosService(object):
-
-    def crea_reporte_csv(self, base_datos, campana, telefonos, usa_contestador,
-                         evitar_duplicados, evitar_sin_telefono,
-                         prefijo_discador):
-        archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
-        archivo_de_reporte.crear_archivo_en_directorio()
-
-        if evitar_duplicados:
-            service_base_datos = BaseDatosService()
-            service_base_datos.eliminar_contactos_duplicados(base_datos)
-
-        contactos = Contacto.objects.contactos_by_bd_contacto(base_datos)
-
-        if evitar_sin_telefono:
-            contactos = contactos.exclude(telefono__isnull=True).exclude(
-                telefono__exact='')
-
-        metadata = base_datos.get_metadata()
-        campana = Campana.objects.get(pk=campana)
-        archivo_de_reporte.escribir_archivo_csv(contactos, metadata, campana,
-                                                telefonos, usa_contestador,
-                                                prefijo_discador)
-
-    def obtener_url_reporte_csv_descargar(self, base_datos):
-        archivo_de_reporte = ArchivoDeReporteCsv(base_datos)
-        if archivo_de_reporte.ya_existe():
-            return archivo_de_reporte.url_descarga
-
-        # Esto no debería suceder.
-        logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para la base de datos %s", base_datos.pk)
-        assert os.path.exists(archivo_de_reporte.url_descarga)
-
-
 class SincronizarBaseDatosContactosService(object):
 
     def __init__(self):
