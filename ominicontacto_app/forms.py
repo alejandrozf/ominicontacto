@@ -34,7 +34,7 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
         fields = ('username', 'password', 'first_name', 'last_name', 'email', 'is_agente',
-                  'is_customer', 'is_supervisor')
+                  'is_supervisor')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -48,7 +48,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = (
             'username', 'first_name', 'last_name', 'email', 'is_agente',
-            'is_customer', 'is_supervisor')
+            'is_supervisor')
 
 
 class UserChangeForm(forms.ModelForm):
@@ -84,7 +84,7 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'is_agente',
-                  'is_customer', 'is_supervisor', 'password1', 'password2')
+                  'is_supervisor', 'password1', 'password2')
 
 
 class AgenteProfileForm(forms.ModelForm):
