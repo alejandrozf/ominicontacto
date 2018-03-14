@@ -323,5 +323,10 @@ def validar_gestion_campanas(campana_form):
     la campaña
     """
     gestion = campana_form.cleaned_data['gestion']
-    calificacion_campana = campana_form.cleaned_data['calificacion_campana']
+    calificacion_campana = campana_form.cleaned_data.get('calificacion_campana',
+                                                 None)
+    if not calificacion_campana:
+        msg = _('Debe seleccionar una calificacion valida '
+                'para chequear la gestion')
+        raise ValidationError(msg)
     return validar_gestion_campanas_aux(gestion, calificacion_campana)
