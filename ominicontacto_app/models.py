@@ -510,7 +510,8 @@ class CampanaManager(models.Manager):
         :param user: usuario a filtrar
         :return: campanas filtradas por usuaro
         """
-        return campanas.filter(Q(supervisors=user) | Q(reported_by=user))
+        return campanas.filter(
+            Q(supervisors=user) | Q(reported_by=user)).distinct()
 
     def obtener_templates_activos(self):
         """
