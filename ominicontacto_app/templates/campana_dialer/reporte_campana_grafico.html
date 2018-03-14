@@ -89,8 +89,14 @@
     </form>
 </div>
 
+<div class="col-md-12">
+    <div class="row">
+    Reportes de contactados
+    <a class="btn btn-warning btn-xs" href="{% url 'exporta_reporte_contactados' campana.pk %}">Exportar Reporte de contactadas(CSV)</a>
+    </div>
 
-
+    <div class="row">
+        </br>
 
                 <table class="table table-bordered">
                         <thead>
@@ -139,7 +145,7 @@
                         </tbody>
                     </table>
 
-  <table class="table table-bordered">
+                <table class="table table-bordered">
                         <thead>
                             <tr class="fts-table-bg">
                                 <td colspan="2">
@@ -186,6 +192,10 @@
                             </tr>
                         </tbody>
                     </table>
+    </div>
+</div>
+
+
 <div class="col-md-6">
 <table class="table table-bordered">
     <thead>
