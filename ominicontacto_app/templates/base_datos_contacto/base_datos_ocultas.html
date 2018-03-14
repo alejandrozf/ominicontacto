@@ -19,9 +19,6 @@
                                     <a href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
                                     <span class="glyphicon glyphicon-asterisk" aria-hidden="true" title="agregar contactos desde el csv"></span>
                                     </a>
-                                    <a href="{% url 'exporta_dialer' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-export" aria-hidden="true" title="exportar base datos en csv"></span>
-                                    </a>
                                     {% if base_datos_contacto.oculto %}
                                     <a type="button"  href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}" c>
                                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>

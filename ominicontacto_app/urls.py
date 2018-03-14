@@ -188,16 +188,6 @@ urlpatterns = [
                        ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
         ),
-    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/exporta_dialer/$',
-        login_required(views_base_de_datos_contacto.
-                       ExportaDialerView.as_view()),
-        name='exporta_dialer',
-        ),
-    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/genera_dialer/$',
-        login_required(views_base_de_datos_contacto.
-                       GeneraExportacionDialerView.as_view()),
-        name='exporta_csv_dialer',
-        ),
     url(r'^contacto/nuevo/$',
         login_required(views_contacto.ContactoCreateView.as_view()),
         name='contacto_nuevo',
