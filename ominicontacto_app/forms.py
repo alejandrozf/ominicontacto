@@ -1317,3 +1317,15 @@ class EscogerCampanaForm(forms.Form):
         super(EscogerCampanaForm, self).__init__(*args, **kwargs)
         choices = [(pk, nombre) for pk, nombre in campanas]
         self.fields['campana'].choices = choices
+
+
+class GrupoForm(forms.ModelForm):
+
+    class Meta:
+        model = Grupo
+        fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
+                  'auto_attend_dialer', 'auto_pause', 'auto_unpause')
+
+    def __init__(self, *args, **kwargs):
+        super(GrupoForm, self).__init__(*args, **kwargs)
+        self.fields['auto_unpause'].required = False

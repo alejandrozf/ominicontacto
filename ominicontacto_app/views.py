@@ -30,7 +30,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
-    AgendaBusquedaForm, PausaForm
+    AgendaBusquedaForm, PausaForm, GrupoForm
 )
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
@@ -328,8 +328,14 @@ class GrupoCreateView(CreateView):
     """
     model = Grupo
     template_name = 'base_create_update_form.html'
-    fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
-              'auto_attend_dialer', 'auto_pause', 'auto_unpause')
+    form_class = GrupoForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if not self.object.auto_unpause:
+            self.object.auto_unpause = 0
+        self.object.save()
+        return super(GrupoCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('grupo_list')
@@ -341,8 +347,15 @@ class GrupoUpdateView(UpdateView):
         """
     model = Grupo
     template_name = 'base_create_update_form.html'
-    fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
-              'auto_attend_dialer', 'auto_pause', 'auto_unpause')
+    form_class = GrupoForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        auto_unpause = form.cleaned_data.get('auto_unpause')
+        if not auto_unpause:
+            self.object.auto_unpause = 0
+        self.object.save()
+        return super(GrupoUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('grupo_list')
