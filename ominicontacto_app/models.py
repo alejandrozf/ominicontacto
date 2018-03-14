@@ -975,10 +975,6 @@ class Campana(models.Model):
         if self.queue_campana:
             return self.queue_campana.get_string_queue_asterisk()
 
-    def obtener_calificaciones(self):
-        return CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=self)
-
     def gestionar_opcion_calificacion_agenda(self):
         """
         Devuelve la opción de calificación de agenda para la campaña.
@@ -986,6 +982,27 @@ class Campana(models.Model):
         """
         OpcionCalificacion.objects.get_or_create(
             campana=self, nombre=settings.CALIFICACION_REAGENDA, tipo=OpcionCalificacion.AGENDA)
+
+    def obtener_calificaciones_cliente(self):
+        """
+        Devuelve todas las calificaciones realizadas en la campaña
+        (de acuerdo al modelo CalificacionCliente)
+        """
+        # TODO: cambiar cuando los modelos de calificación estén ya unificados
+        calificaciones_cliente = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana=self)
+        return calificaciones_cliente
+
+    def obtener_calificaciones_manuales(self):
+        """
+        Devuelve todas las calificaciones manuales realizadas en la campaña
+        (de acuerdo al modelo CalificacionManual)
+        """
+        # TODO: cambiar cuando los modelos de calificación estén ya unificados
+        calificaciones_manuales = CalificacionManual.objects.filter(
+            opcion_calificacion__campana=self)
+        return calificaciones_manuales
+
 
 
 class QueueManager(models.Manager):
@@ -1039,8 +1056,10 @@ class OpcionCalificacion(models.Model):
             self.nombre, self.campana.nombre, self.get_tipo_display()))
 
     def es_agenda(self):
-
         return self.tipo == self.AGENDA
+
+    def es_gestion(self):
+        return self.tipo == self.GESTION
 
     def usada_en_calificacion(self):
         """
@@ -2253,6 +2272,13 @@ class CalificacionClienteManager(models.Manager):
                 cantidad=Count('calificacion')).filter(opcion_calificacion__campana=campana)
         except CalificacionCliente.DoesNotExist:
             raise (SuspiciousOperation("No se encontro califacaciones "))
+
+    def obtener_calificaciones_gestion(self):
+        """
+        Devuelve todas las calificaciones de tipo gestión
+        """
+        return self.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
+
 
 
 class CalificacionCliente(models.Model):

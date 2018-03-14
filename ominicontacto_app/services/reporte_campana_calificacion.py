@@ -67,8 +67,6 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Agente")
             encabezado.append("base de datos")
 
-
-
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
 
@@ -78,7 +76,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las calificaciones de la campana
-            for calificacion in campana.obtener_calificaciones():
+            for calificacion in campana.obtener_calificaciones_cliente():
                 lista_opciones = []
 
                 # --- Buscamos datos

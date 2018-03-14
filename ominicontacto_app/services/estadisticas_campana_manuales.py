@@ -11,7 +11,10 @@ import os
 from pygal.style import Style
 
 from django.conf import settings
-from ominicontacto_app.models import Queuelog, CalificacionManual
+from django.db.models import Count
+from ominicontacto_app.models import (CalificacionCliente, Queuelog, CalificacionManual,
+                                      OpcionCalificacion)
+from ominicontacto_app.services.campana_service import CampanaService
 
 import logging as _logging
 
@@ -47,15 +50,15 @@ class EstadisticasService():
         """
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        calificaciones = campana.calificacion_campana.calificacion.all()
+        opciones_calificaciones = campana.opciones_calificacion.all()
         calificaciones_query = CalificacionManual.objects.filter(
             opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_asignados = len(calificaciones_query)
-        for calificacion in calificaciones:
-            cant = len(calificaciones_query.filter(calificacion=calificacion))
-            calificaciones_nombre.append(calificacion.nombre)
+        for opcion_calificacion in opciones_calificaciones:
+            cant = len(calificaciones_query.filter(opcion_calificacion=opcion_calificacion))
+            calificaciones_nombre.append(opcion_calificacion.nombre)
             calificaciones_cantidad.append(cant)
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
@@ -89,38 +92,38 @@ class EstadisticasService():
         total_calificados = 0
         total_ventas = 0
 
-        calificaciones = campana.calificacion_campana.calificacion.all()
+        opciones_calificaciones = campana.opciones_calificacion.all()
 
         dict_calificaciones = {}
         # armo dict de las calificaciones e inicializandolo en 0
-        for calificacion in calificaciones:
-            dict_calificaciones.update({calificacion.pk: 0})
+        for opcion_calificacion in opciones_calificaciones:
+            dict_calificaciones.update({opcion_calificacion.pk: 0})
 
         for agente in members_campana:
             dato_agente = []
             dato_agente.append(agente)
             agente_calificaciones = agente.calificacionesmanuales.filter(
-                campana=campana, fecha__range=(fecha_desde, fecha_hasta))
+                opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
             total_cal_agente = agente_calificaciones.count()
             dato_agente.append(total_cal_agente)
             total_calificados += total_cal_agente
 
             dict_total = dict_calificaciones.copy()
 
-            for calificacion in calificaciones:
+            for opcion_calificacion in opciones_calificaciones:
                 cantidad = agente_calificaciones.filter(
-                    calificacion=calificacion).count()
-                dict_total[calificacion.pk] = cantidad
+                    opcion_calificacion=opcion_calificacion).count()
+                dict_total[opcion_calificacion.pk] = cantidad
 
             dato_agente.append(dict_total)
 
             total_ven_agente = agente_calificaciones.filter(
-                es_gestion=True).count()
+                opcion_calificacion__tipo=OpcionCalificacion.GESTION).count()
             dato_agente.append(total_ven_agente)
             total_ventas += total_ven_agente
             agentes_venta.append(dato_agente)
 
-        return agentes_venta, total_calificados, total_ventas, calificaciones
+        return agentes_venta, total_calificados, total_ventas, opciones_calificaciones
 
     def calcular_cantidad_llamadas(self, campana, fecha_inferior, fecha_superior):
         """
