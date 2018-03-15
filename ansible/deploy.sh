@@ -68,7 +68,7 @@ Rama() {
     echo ""
 
     git checkout $1
-    
+
     ################### Build.sh #####################
 
     #if [ "$VIRTUAL_ENV" = "" ] ; then
