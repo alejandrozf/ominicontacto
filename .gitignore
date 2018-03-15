@@ -7,6 +7,7 @@ oml-uwsgi.pid
 /ansible/ansible.cfg
 /ansible/group_vars/all
 /ansible/deploy/*.retry
+/ansible/deploy/roles/oml_server/templates/oml_settings_local.py
 .idea/
 virtualenv/
 *.pyc
