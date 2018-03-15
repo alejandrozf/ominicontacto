@@ -939,6 +939,8 @@ urlpatterns = [
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
         ),
+    url(r'^user/(?P<username>\w{0,50})/$', views.profile_page,),
+
 ]
 
 urlpatterns += [url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}), ]

@@ -740,3 +740,12 @@ class AcercaTemplateView(TemplateView):
         context['commit'] = version.OML_COMMIT
         context['fecha_deploy'] = version.OML_BUILD_DATE
         return context
+
+
+# TEST para probar sitio externo
+def profile_page(request, username):
+    prueba = request.GET.get('q', '')
+    print prueba
+    return render_to_response('blanco.html',
+                              context_instance=RequestContext(request))
+
