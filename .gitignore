@@ -3,8 +3,6 @@
 /ominicontacto_app/static/ominicontacto/voip.cert
 /Omnisup/static/Js/config.js
 oml-uwsgi.pid
-/ansible/hosts
-/ansible/deploy/*.retry
 .idea/
 virtualenv/
 *.pyc
