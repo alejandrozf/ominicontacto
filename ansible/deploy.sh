@@ -56,7 +56,8 @@ Rama() {
     mkdir -p /var/tmp/ansible
     TMP_ANSIBLE='/var/tmp/ansible'
     echo "Copiando el contenido de ansible del repositorio al directorio temporal"
-    cp -a $current_directory/ansible/* $TMP_ANSIBLE
+    cp -a $current_directory/* $TMP_ANSIBLE
+    cd ..
     echo "Pasando al deploy de OmniAPP"
     set -e
     echo ""
@@ -67,8 +68,7 @@ Rama() {
     echo ""
 
     git checkout $1
-    git pull origin +$1:$1
-
+    
     ################### Build.sh #####################
 
     #if [ "$VIRTUAL_ENV" = "" ] ; then
