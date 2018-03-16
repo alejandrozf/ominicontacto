@@ -2344,11 +2344,11 @@ class WombatLogManager(models.Manager):
         """
         try:
             WombatLog.objects.update_or_create(
-                campana=calificacion.campana, contacto=calificacion.contacto,
+                campana=calificacion.opcion_calificacion.campana, contacto=calificacion.contacto,
                 defaults={
                     'agente': calificacion.agente,
                     'estado': 'TERMINATED',
-                    'calificacion': calificacion.calificacion.nombre,
+                    'calificacion': calificacion.opcion_calificacion.nombre,
                 })
         except WombatLog.MultipleObjectsReturned:
             # Error, no debeía haber otro WombatLog. Puede deberse a una race condition entre la

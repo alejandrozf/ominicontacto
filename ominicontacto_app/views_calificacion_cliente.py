@@ -17,7 +17,7 @@ from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
-    WombatLog, Calificacion, UserApiCrm)
+    WombatLog, OpcionCalificacion, UserApiCrm)
 from ominicontacto_app.forms import (CalificacionClienteForm, CalificacionClienteUpdateForm,
                                      FormularioContactoCalificacion, FormularioVentaFormSet)
 from django.views.decorators.csrf import csrf_exempt
@@ -57,7 +57,7 @@ class GestorDeCalificaciones(object):
             if llamada_disparada_por_wombat:
                 service = WombatCallService()
                 service.calificar(wombat_id,
-                                  calificacion.calificacion.nombre)
+                                  calificacion.opcion_calificacion.nombre)
             WombatLog.objects.actualizar_wombat_log_para_calificacion(calificacion)
 
 
@@ -255,19 +255,19 @@ def calificacion_cliente_externa_view(request):
             if usuario.password == received_json_data['password_api']:
                 campana = Campana.objects.get(pk=received_json_data['pk_campana'])
                 contacto = Contacto.objects.get(pk=received_json_data['id_cliente'])
-                opcion_calificacion = Calificacion.objects.get(
+                opcion_calificacion = OpcionCalificacion.objects.get(
                     pk=received_json_data['id_calificacion'])
                 agente = AgenteProfile.objects.get(pk=received_json_data['id_agente'])
                 try:
                     calificacion = CalificacionCliente.objects.get(
-                        contacto=contacto, campana=campana)
+                        contacto=contacto, opcion_calificacion__campana=campana)
                     id_opcion_vieja = calificacion.calificacion.id
-                    calificacion.calificacion = opcion_calificacion
+                    calificacion.opcion_calificacion = opcion_calificacion
                     calificacion.agente = agente
                     calificacion.save()
                 except CalificacionCliente.DoesNotExist:
                     calificacion = CalificacionCliente.objects.create(
-                        campana=campana, contacto=contacto, calificacion=opcion_calificacion,
+                        campana=campana, contacto=contacto, opcion_calificacion=opcion_calificacion,
                         agente=agente)
                     id_opcion_vieja = None
 
