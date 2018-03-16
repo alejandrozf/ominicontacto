@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
+from django.db.models import F
 
 
 def update_sip_agente_grabacion(apps, schema_editor):
@@ -17,9 +18,12 @@ def update_sip_agente_grabacion(apps, schema_editor):
     Grabacion.objects_default.exclude(
         sip_agente__in=AgenteProfile.objects.all().values_list('sip_extension', flat=True)).update(sip_agente=0)
 
+    # ahora vamos actualizar todas las grabacion con 10000
+    Grabacion.objects_default.all().update(sip_agente=F('sip_agente') + 10000)
+
     # ahora actualizamos la grabaciones realizando la busqueda por agente
     for agente in AgenteProfile.objects.all():
-        Grabacion.objects_default.filter(sip_agente=agente.sip_extension).update(sip_agente=agente.user.id + 1000)
+        Grabacion.objects_default.filter(sip_agente=agente.sip_extension + 10000).update(sip_agente=agente.user.id + 1000)
 
 
 def rollback(apps, schema_editor):
