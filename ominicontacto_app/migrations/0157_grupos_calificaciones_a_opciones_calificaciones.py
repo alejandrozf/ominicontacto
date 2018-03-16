@@ -151,7 +151,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
                                         verbose_name='ID')),
-                ('tipo', models.IntegerField(choices=[(1, 'Gesti\xf3n')], default=0)),
+                ('tipo', models.IntegerField(
+                    choices=[(1, 'Gesti\xf3n'), (0, 'Sin acci\xf3n')], default=0)),
                 ('nombre', models.CharField(max_length=20)),
             ],
         ),
@@ -242,16 +243,18 @@ class Migration(migrations.Migration):
             model_name='calificacioncliente',
             name='opcion_calificacion',
             field=models.ForeignKey(
-                null=False, on_delete=django.db.models.deletion.CASCADE,
-                 to='ominicontacto_app.OpcionCalificacion'),
+                null=False, related_name='calificaciones_cliente',
+                on_delete=django.db.models.deletion.CASCADE,
+                to='ominicontacto_app.OpcionCalificacion'),
         ),
 
         migrations.AlterField(
             model_name='calificacionmanual',
             name='opcion_calificacion',
             field=models.ForeignKey(
-                null=False, on_delete=django.db.models.deletion.CASCADE,
-                 to='ominicontacto_app.OpcionCalificacion'),
+                null=False, related_name='calificaciones_manuales',
+                on_delete=django.db.models.deletion.CASCADE,
+                to='ominicontacto_app.OpcionCalificacion'),
         ),
 
         # operaciones para eliminar los campos 'campanas' y 'calificacion' de los modelos de
