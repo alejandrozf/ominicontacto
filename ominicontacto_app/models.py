@@ -2357,6 +2357,7 @@ class DuracionDeLlamada(models.Model):
 
 
 class MetadataCliente(models.Model):
+    # Información del formulario de gestión completado en una Calificacion.
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
     campana = models.ForeignKey(Campana, related_name="metadatacliente")
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
@@ -3114,19 +3115,22 @@ class CalificacionManual(models.Model):
 
     # objects = CalificacionClienteManager()
 
-    telefono = models.CharField(max_length=128)
-    es_gestion = models.BooleanField(default=False)
+    contacto = models.ForeignKey(Contacto, null=True)  # TODO: Sacar null=True
+    es_venta = models.BooleanField(default=False)
     opcion_calificacion = models.ForeignKey(
         OpcionCalificacion, blank=False, related_name='calificaciones_manuales')
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
     observaciones = models.TextField(blank=True, null=True)
+    wombat_id = models.IntegerField(default=0)
     agendado = models.BooleanField(default=False)
+
+    telefono = models.CharField(max_length=128, blank=True, null=True)
     metadata = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
-        return "Calificacion manual para la campana {0} para el telefono " \
-               "{1} ".format(self.opcion_calificacion.campana, self.telefono)
+        return _("Calificación manual para la campana {0} para el contacto con teléfono "
+                 "{1} ").format(self.opcion_calificacion.campana, self.contacto.telefono)
 
 
 class AgendaManualManager(models.Manager):

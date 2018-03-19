@@ -189,13 +189,13 @@
                         {% for calificacion_manual in calificaciones_manuales %}
                             <tr>
                                 <td>
-                                    {{ calificacion_manual.telefono }}
+                                    {{ calificacion_manual.contacto.telefono }}
                                 </td>
                                 <td>
                                     no aplica
                                 </td>
                                 <td>
-                                    {% if calificacion_manual.es_gestion %}
+                                    {% if calificacion_manual.es_venta %}
                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     {% else %}
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
@@ -215,7 +215,7 @@
                                 </td>
                                 <td>
                                     <a href="{% url 'campana_manual_calificacion_update' calificacion_manual.pk %}">editar calificacion</a>
-                                    {% if calificacion_manual.es_gestion  %}
+                                    {% if calificacion_manual.es_venta  %}
                                         <a href="{% url 'campana_manual_calificacion_gestion' calificacion_manual.pk %}">editar gestion</a>
                                     {% endif %}
                                 </td>

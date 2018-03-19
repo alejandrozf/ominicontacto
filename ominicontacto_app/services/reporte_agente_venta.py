@@ -150,4 +150,4 @@ class ReporteFormularioVentaService(object):
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         return agente.calificacionesmanuales.filter(
-            fecha__range=(fecha_desde, fecha_hasta), es_gestion=True)
+            fecha__range=(fecha_desde, fecha_hasta), es_venta=True)

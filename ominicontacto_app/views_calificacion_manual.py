@@ -42,13 +42,13 @@ class CalificacionManualMixin(object):
         calificacion = cleaned_data['calificacion']
         campana = cleaned_data['campana']
         if calificacion.nombre == campana.gestion:
-            self.object.es_gestion = True
+            self.object.es_venta = True
             self.object.save()
             return HttpResponseRedirect(
                 reverse('campana_manual_calificacion_gestion',
                         kwargs={'pk_calificacion': self.object.pk}))
         else:
-            self.object.es_gestion = False
+            self.object.es_venta = False
             self.object.save()
         message = 'Operación Exitosa! Se llevó a cabo con éxito la actualizacion de la ' \
                   'calificacion del cliente'

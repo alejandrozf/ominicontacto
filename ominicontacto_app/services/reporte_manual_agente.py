@@ -56,6 +56,7 @@ class EstadisticasAgenteService():
             cant = len(calificaciones_query.filter(opcion_calificacion=opcion_calificacion))
             calificaciones_nombre.append(opcion_calificacion.nombre)
             calificaciones_cantidad.append(cant)
+
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_venta(self, campana, agente, fecha_desde, fecha_hasta):

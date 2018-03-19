@@ -74,9 +74,9 @@ class ArchivoDeReporteCsv(object):
 
                 # --- Buscamos datos
 
-                lista_opciones.append(calificacion.telefono)
+                lista_opciones.append(calificacion.contacto.telefono)
 
-                if calificacion.es_gestion:
+                if calificacion.es_venta:
                     lista_opciones.append("SI")
                 else:
                     lista_opciones.append("NO")
