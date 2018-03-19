@@ -76,12 +76,12 @@
   when: ansible_os_family == "Debian"
 
 - name: Copy of the Kamailio cert in voip.cert
-  template: src=templates/concatenate.sh dest=/root/ mode=755
+  template: src=templates/concatenate.sh dest=/var/tmp/ mode=755
   tags: kamailio-cert
   become: true
   become_method: sudo
 
-- shell: "bash concatenate.sh chdir=/root/"
+- shell: "bash concatenate.sh chdir=/var/tmp"
   tags: kamailio-cert
   become: true
   become_method: sudo

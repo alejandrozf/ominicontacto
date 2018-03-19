@@ -13,7 +13,7 @@
   become_method: sudo
 
 - name: Create omnileads user and public key
-  user: name=omnileads generate_ssh_key=yes group=omnileads ssh_key_bits=2048 state=present
+  user: name=omnileads generate_ssh_key=yes group=omnileads ssh_key_bits=2048 state=present shell=/bin/bash
   become: true
   become_method: sudo
 
