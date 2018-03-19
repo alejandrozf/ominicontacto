@@ -14,6 +14,7 @@ import datetime
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
+from ominicontacto_app.models import Campana
 from django.utils.encoding import force_text
 
 
@@ -69,10 +70,10 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Agente")
             encabezado.append("base de datos")
             # agrego el encabezado para los campos del formulario
-            # FIXME: posible bug si la campana tiene configurado sitio externo
-            campos = campana.formulario.campos.all()
-            for campo in campos:
-                encabezado.append(campo.nombre_campo)
+            if campana.tipo_interaccion is Campana.FORMULARIO:
+                campos = campana.formulario.campos.all()
+                for campo in campos:
+                    encabezado.append(campo.nombre_campo)
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -102,7 +103,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(calificacion.agente)
                 lista_opciones.append(calificacion.contacto.bd_contacto)
 
-                if calificacion.get_venta():
+                if calificacion.get_venta() and campana.tipo_interaccion is Campana.FORMULARIO:
                     datos = json.loads(calificacion.get_venta().metadata)
                     for campo in campos:
                         lista_opciones.append(datos[campo.nombre_campo])
@@ -246,10 +247,10 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Agente")
             encabezado.append("base de datos")
             # agrego el encabezado para los campos del formulario
-            # FIXME: posible bug si la campana tiene configurado sitio externo
-            campos = campana.formulario.campos.all()
-            for campo in campos:
-                encabezado.append(campo.nombre_campo)
+            if campana.tipo_interaccion is Campana.FORMULARIO:
+                campos = campana.formulario.campos.all()
+                for campo in campos:
+                    encabezado.append(campo.nombre_campo)
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -279,7 +280,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(calificacion.agente)
                 lista_opciones.append(calificacion.contacto.bd_contacto)
 
-                if calificacion.get_venta():
+                if calificacion.get_venta() and campana.tipo_interaccion is Campana.FORMULARIO:
                     datos = json.loads(calificacion.get_venta().metadata)
                     for campo in campos:
                         lista_opciones.append(datos[campo.nombre_campo])
