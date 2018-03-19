@@ -6,6 +6,7 @@
   vars:
           build_dir: "{{ BUILD_DIR }}"
           rama: "{{ RAMA }}"
+  remote_user: omnileads
   gather_facts: True
 
   roles:

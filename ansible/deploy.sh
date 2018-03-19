@@ -9,7 +9,8 @@
 ANSIBLE=`which ansible`
 PIP=`which pip`
 current_directory=`pwd`
-export ANSIBLE_CONFIG=$current_directory
+TMP_ANSIBLE='/var/tmp/ansible'
+export ANSIBLE_CONFIG=$TMP_ANSIBLE
 
 Help() {
 USAGE="
@@ -51,23 +52,26 @@ USAGE="
 }
 
 Rama() {
+
+    echo "#######################################################"
+    echo "##Bienvenido al asistente de instalación de Omnileads##"
+    echo "#######################################################"
+    echo ""
     cd $current_directory
     echo "Creando directorio temporal de ansible"
     mkdir -p /var/tmp/ansible
-    TMP_ANSIBLE='/var/tmp/ansible'
     echo "Copiando el contenido de ansible del repositorio al directorio temporal"
     cp -a $current_directory/* $TMP_ANSIBLE
-    cd ..
+    cd /root/ominicontacto
     echo "Pasando al deploy de OmniAPP"
     set -e
     echo ""
     echo "Se iniciará deploy:"
     echo ""
     echo "      Version: $1"
-    #echo "   Inventario: $INVENTORY"
     echo ""
 
-    git checkout $1
+    #git checkout $1
 
     ################### Build.sh #####################
 
@@ -129,8 +133,7 @@ EOF
 
 Preliminar() {
 
-    echo "Bienvenido al asistente de instalación de Omnileads"
-    echo ""
+
     echo "Instalando ansible 2.4.0"
 
     if [ -z $ANSIBLE ]; then
@@ -159,7 +162,6 @@ IngresarIP(){
 #    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" $TMP_ANSIBLE/deploy/roles/oml_server/templates/oml_settings_local.py
     echo -en "Ingrese fqdn  de maquina a deployar: "; read omnicentos_fqdn
     sed -i "s/\(^omnicentos_fqdn=\).*/omnicentos_fqdn=$omnicentos_fqdn/" $TMP_ANSIBLE/hosts
-    echo "Transifiendo llave publica a usuario root de Centos"
 }
 
 Desarrollo() {
@@ -173,7 +175,8 @@ Desarrollo() {
 
 Tag() {
     echo -en "Ingrese IP  de maquina a deployar: "; read ip
-    ssh-copy-id -i ~/.ssh/id_rsa.pub root@$ip
+    echo "Transifiriendo llave publica a usuario omnileads de Centos"
+    ssh-copy-id -i ~/.ssh/id_rsa.pub omnileads@$ip
     echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
     echo -en "Opcion: ";read opcion
 
@@ -203,7 +206,7 @@ elif [ $opcion -eq 2 ]; then
 
     sed -i "8s/.*/$ip ansible_ssh_port=22/" $TMP_ANSIBLE/hosts
     echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s $TMP_ANSIBLE/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
+    ansible-playbook -s $TMP_ANSIBLE/deploy/omnileads-freepbx.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
@@ -212,7 +215,7 @@ elif [ $opcion -eq 3 ]; then
 
     sed -i "6s/.*/$ip ansible_ssh_port=22/" $TMP_ANSIBLE/hosts
     echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s $TMP_ANSIBLE/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
+    ansible-playbook -s $TMP_ANSIBLE/deploy/omnileads-centos.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación omnileads"
     echo ""
