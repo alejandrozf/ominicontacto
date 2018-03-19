@@ -513,6 +513,12 @@ class CampanaManager(models.Manager):
         return campanas.filter(
             Q(supervisors=user) | Q(reported_by=user)).distinct()
 
+    def obtener_ultimo_id_campana(self):
+        last = self.last()
+        if last:
+            return last.pk
+        return 0
+
     def obtener_templates_activos(self):
         """
         Devuelve templates campañas en estado activo.
@@ -530,19 +536,29 @@ class CampanaManager(models.Manager):
         campana = Campana.objects.replicar_campana(template)
         return campana
 
-    def replicar_campana(self, campana):
+    def replicar_campana(self, campana, nombre_campana=None, bd_contacto=None):
         """
         Este método se encarga de replicar una campana existente, creando una
         campana nueva de iguales características.
         """
         assert isinstance(campana, Campana)
 
+        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
+        nombre_sugerido = "CAMPANA_CLONADA_{0}".format(ultimo_id + 1)
+        if nombre_campana:
+            nombre_sugerido = nombre_campana
+
+        base_datos_sugerida = campana.bd_contacto
+
+        if bd_contacto:
+            base_datos_sugerida = bd_contacto
+
         # Replica Campana.
         campana_replicada = self.create(
-            nombre=uuid.uuid4(),
+            nombre=nombre_sugerido,
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
-            bd_contacto=campana.bd_contacto,
+            bd_contacto=base_datos_sugerida,
             calificacion_campana=campana.calificacion_campana,
             gestion=campana.gestion,
             type=campana.type,
@@ -552,8 +568,6 @@ class CampanaManager(models.Manager):
             reported_by=campana.reported_by,
             objetivo=campana.objetivo,
         )
-        campana_replicada.nombre = "CAMPANA_CLONADA_{0}".format(campana_replicada.pk)
-        campana_replicada.save()
 
         # Replica Cola
         Queue.objects.create(
@@ -668,13 +682,9 @@ class CampanaManager(models.Manager):
         Este método replica la campana pasada por parámetro con fin de
         reciclar la misma.
         """
-
-        campana_reciclada = self.replicar_campana(campana)
-        campana_reciclada.nombre = '{0}_(reciclada)'.format(
-        campana_reciclada.nombre)
-        campana_reciclada.bd_contacto = bd_contacto
-        campana_reciclada.save()
-
+        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
+        nombre = "CAMPANA_CLONADA_{0}_(reciclada)".format(ultimo_id + 1)
+        campana_reciclada = self.replicar_campana(campana, nombre, bd_contacto)
         return campana_reciclada
 
 
