@@ -4,7 +4,6 @@
 
 from __future__ import unicode_literals
 
-
 from django import forms
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -32,9 +31,9 @@ logger = logging_.getLogger(__name__)
 class CampanaTemplateCreateMixin(object):
     def get_form_initial(self, step):
         initial_data = super(CampanaTemplateCreateMixin, self).get_form_initial(step)
+        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
         if step == self.INICIAL:
-            ultimo_id_campana = Campana.objects.obtener_ultimo_id_campana() + 1
-            campana_nombre = "CAMPANA_CLONADA_{0}".format(ultimo_id_campana)
+            campana_nombre = "CAMPANA_CLONADA_{0}".format(ultimo_id)
             initial_data.update({'nombre': campana_nombre,
                                  'bd_contacto': None, 'es_template': True})
         elif step == self.COLA:
@@ -48,9 +47,9 @@ class CampanaTemplateCreateCampanaMixin(object):
     def get_form_initial(self, step):
         pk = self.kwargs.get('pk_campana_template', None)
         campana_template = get_object_or_404(Campana, pk=pk)
+        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
         if step == self.INICIAL:
-            ultimo_id_campana = Campana.objects.obtener_ultimo_id_campana() + 1
-            campana_nombre = "CAMPANA_CLONADA_{0}".format(ultimo_id_campana)
+            campana_nombre = "{0}_{1}".format(campana_template.nombre, ultimo_id)
             initial_data = {
                 'nombre': campana_nombre,
                 'bd_contacto': campana_template.bd_contacto,
@@ -93,7 +92,8 @@ class CampanaTemplateCreateCampanaMixin(object):
             calif_init_formset.prefix = opts_calif_init_formset.prefix
             context['wizard']['form'] = calif_init_formset
         if current_step == self.PARAMETROS_EXTRA_WEB_FORM:
-            initial_data = campana_template.par.values('parametro', 'columna')
+            initial_data = campana_template.parametros_extra_para_webform.values(
+                'parametro', 'columna')
             param_extra_init_formset = context['wizard']['form']
             param_extra_formset = ParametroExtraParaWebformFormSet(initial=initial_data)
             param_extra_formset.extra = len(initial_data) - 1

@@ -1004,7 +1004,6 @@ class Campana(models.Model):
         return calificaciones_manuales
 
 
-
 class QueueManager(models.Manager):
 
     def ultimo_queue_asterisk(self):
@@ -2278,7 +2277,6 @@ class CalificacionClienteManager(models.Manager):
         Devuelve todas las calificaciones de tipo gestión
         """
         return self.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
-
 
 
 class CalificacionCliente(models.Model):

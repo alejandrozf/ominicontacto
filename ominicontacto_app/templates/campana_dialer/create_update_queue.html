@@ -20,10 +20,13 @@
 {% endblock %}
 
 {% block nav %}
+    <h4 class="inline">{% trans 'Campaña Dialer: Datos de Cola' %}</h4>
+
     <ul class="nav nav-tabs">
         <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
         <li class="active"><a>{% trans 'Cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
         {% if not form.instance.pk %}
             <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
             <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
