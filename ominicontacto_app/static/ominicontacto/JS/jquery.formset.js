@@ -228,8 +228,4 @@
         added: null,                     // Function called each time a new form is added
         removed: null                    // Function called each time a form is deleted
     };
-<<<<<<< HEAD
 })(jQuery);
-=======
-})(jQuery);
->>>>>>> - Arma esqueleto de formsets de ultimo paso wizard creacion campañas entrantes

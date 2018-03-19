@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0150_elimina_estados_obsoletos_campanas'),
+        ('ominicontacto_app', '0158_elimina_estados_obsoletos_campanas'),
     ]
 
     operations = [

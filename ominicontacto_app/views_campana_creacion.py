@@ -16,7 +16,8 @@ from django.utils.translation import ugettext as _
 
 from formtools.wizard.views import SessionWizardView
 
-from ominicontacto_app.forms import CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet
+from ominicontacto_app.forms import (CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet,
+                                     ParametroExtraParaWebformFormSet)
 from ominicontacto_app.models import Campana, Queue, ArchivoDeAudio
 
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
@@ -81,15 +82,23 @@ class CampanaTemplateCreateCampanaMixin(object):
     def get_context_data(self, form, *args, **kwargs):
         context = super(
             CampanaTemplateCreateCampanaMixin, self).get_context_data(form=form, **kwargs)
-        if self.steps.current == self.OPCIONES_CALIFICACION:
-            pk = self.kwargs.get('pk_campana_template', None)
-            campana_template = get_object_or_404(Campana, pk=pk)
+        pk = self.kwargs.get('pk_campana_template', None)
+        campana_template = get_object_or_404(Campana, pk=pk)
+        current_step = self.steps.current
+        if current_step == self.OPCIONES_CALIFICACION:
             initial_data = campana_template.opciones_calificacion.values('nombre', 'tipo')
             opts_calif_init_formset = context['wizard']['form']
             calif_init_formset = OpcionCalificacionFormSet(initial=initial_data)
             calif_init_formset.extra = len(initial_data) - 1
             calif_init_formset.prefix = opts_calif_init_formset.prefix
             context['wizard']['form'] = calif_init_formset
+        if current_step == self.PARAMETROS_EXTRA_WEB_FORM:
+            initial_data = campana_template.par.values('parametro', 'columna')
+            param_extra_init_formset = context['wizard']['form']
+            param_extra_formset = ParametroExtraParaWebformFormSet(initial=initial_data)
+            param_extra_formset.extra = len(initial_data) - 1
+            param_extra_formset.prefix = param_extra_init_formset.prefix
+            context['wizard']['form'] = param_extra_formset
         return context
 
 
@@ -112,14 +121,17 @@ class CampanaWizardMixin(object):
     INICIAL = '0'
     COLA = '1'
     OPCIONES_CALIFICACION = '2'
+    PARAMETROS_EXTRA_WEB_FORM = '3'
 
     FORMS = [(INICIAL, CampanaForm),
              (COLA, QueueEntranteForm),
-             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet)]
 
     TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
                  COLA: "campana/create_update_queue.html",
-                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html"}
+                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html",
+                 PARAMETROS_EXTRA_WEB_FORM: "campana/parametros_extra_web_form.html"}
 
     form_list = FORMS
 
@@ -128,7 +140,7 @@ class CampanaWizardMixin(object):
 
     def _get_instance_from_campana(self, pk, step):
         campana = get_object_or_404(Campana, pk=pk)
-        if step in [self.INICIAL, self.OPCIONES_CALIFICACION]:
+        if step in [self.INICIAL, self.OPCIONES_CALIFICACION, self.PARAMETROS_EXTRA_WEB_FORM]:
             return campana
         if step == self.COLA:
             return campana.queue_campana
@@ -205,6 +217,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         campana_form = form_list[int(self.INICIAL)]
         queue_form = form_list[int(self.COLA)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form.instance.type = Campana.TYPE_ENTRANTE
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.estado = estado
@@ -214,6 +227,8 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue = self._save_queue(queue_form)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
+        parametros_extra_web_formset.instance = campana
+        parametros_extra_web_formset.save()
         return queue
 
     def done(self, form_list, **kwargs):
@@ -244,6 +259,9 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         opts_calif_init_formset = form_list[int(self.OPCIONES_CALIFICACION)]
         opts_calif_init_formset.instance = campana
         opts_calif_init_formset.save()
+        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
+        parametros_extra_web_formset.instance = campana
+        parametros_extra_web_formset.save()
         self._insert_queue_asterisk(queue_form.instance, solo_activar=True)
         return HttpResponseRedirect(reverse('campana_list'))
 

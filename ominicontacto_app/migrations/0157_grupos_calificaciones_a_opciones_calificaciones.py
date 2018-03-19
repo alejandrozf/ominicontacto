@@ -252,11 +252,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 null=False, related_name='calificaciones_cliente',
                 on_delete=django.db.models.deletion.CASCADE,
-<<<<<<< HEAD:ominicontacto_app/migrations/0157_grupos_calificaciones_a_opciones_calificaciones.py
                 to='ominicontacto_app.OpcionCalificacion'),
-=======
-                 to='ominicontacto_app.OpcionCalificacion'),
->>>>>>> Fix en migraciones pendientes (en modelo OpcionCalificacion):ominicontacto_app/migrations/0149_grupos_calificaciones_a_opciones_calificaciones.py
         ),
 
         migrations.AlterField(

@@ -307,7 +307,7 @@ class CampanaMixinForm(object):
         if self.fields.get('bd_contacto', False):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
-    def clean(self):
+    def clean(self):            # TODO: refactorizar estas validaciones, con las comentadas
         bd_contacto_field = self.fields.get('bd_contacto', False)
         if bd_contacto_field and not bd_contacto_field.queryset:
             message = _("Debe cargar una base de datos antes de comenzar a "
@@ -331,21 +331,21 @@ class CampanaMixinForm(object):
         validar_nombres_campanas(nombre)
         return nombre
 
-    def clean_formulario(self):
-        tipo_interaccion = self.cleaned_data['tipo_interaccion']
-        if tipo_interaccion is Campana.FORMULARIO:
-            formulario = self.cleaned_data.get('formulario', None)
-            if not formulario:
-                raise forms.ValidationError('Debe seleccionar un formulario')
-            return formulario
+    # def clean_formulario(self):
+    #     tipo_interaccion = self.cleaned_data['tipo_interaccion']
+    #     if tipo_interaccion is Campana.FORMULARIO:
+    #         formulario = self.cleaned_data.get('formulario', None)
+    #         if not formulario:
+    #             raise forms.ValidationError('Debe seleccionar un formulario')
+    #         return formulario
 
-    def clean_sitio_externo(self):
-        tipo_interaccion = self.cleaned_data['tipo_interaccion']
-        if tipo_interaccion is Campana.SITIO_EXTERNO:
-            sitio_externo = self.cleaned_data.get('sitio_externo', None)
-            if not sitio_externo:
-                raise forms.ValidationError('Debe seleccionar un sitio externo')
-            return sitio_externo
+    # def clean_sitio_externo(self):
+    #     tipo_interaccion = self.cleaned_data['tipo_interaccion']
+    #     if tipo_interaccion is Campana.SITIO_EXTERNO:
+    #         sitio_externo = self.cleaned_data.get('sitio_externo', None)
+    #         if not sitio_externo:
+    #             raise forms.ValidationError('Debe seleccionar un sitio externo')
+    #         return sitio_externo
 
 
 class CampanaForm(CampanaMixinForm, forms.ModelForm):
@@ -885,7 +885,7 @@ class ParametroExtraParaWebformForm(forms.ModelForm):
 
 ParametroExtraParaWebformFormSet = inlineformset_factory(
     Campana, ParametroExtraParaWebform,
-    form=ParametroExtraParaWebformForm, can_delete=True, extra=1)
+    form=ParametroExtraParaWebformForm, can_delete=True, extra=0, min_num=1)
 
 
 class ActuacionVigenteForm(forms.ModelForm):
