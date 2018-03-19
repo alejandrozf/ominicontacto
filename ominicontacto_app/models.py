@@ -551,14 +551,26 @@ class CampanaManager(models.Manager):
             objetivo=campana.objetivo,
         )
 
+        # Se replican las opciones de calificación
         opciones_calificacion = []
         for opcion_calificacion in campana.opciones_calificacion.all():
             opcion_calificacion_replicada = OpcionCalificacion(
-                campana=campana_replicada, nombre=opcion_calificacion.nombre)
+                campana=campana_replicada, nombre=opcion_calificacion.nombre,
+                tipo=opcion_calificacion.tipo)
             if opcion_calificacion_replicada.nombre == campana_replicada.gestion:
                 opcion_calificacion_replicada.tipo = OpcionCalificacion.GESTION
             opciones_calificacion.append(opcion_calificacion_replicada)
         OpcionCalificacion.objects.bulk_create(opciones_calificacion)
+
+        # se replican los parámetros para web form
+        parametros_web_form = []
+        for parametro_web_form in campana.parametros_extra_para_webform.all():
+            parametro = parametro_web_form.parametro
+            columna = parametro_web_form.columna
+            parametro_web_form_replicado = ParametroExtraParaWebform(
+                campana=campana_replicada, parametro=parametro, columna=columna)
+            parametros_web_form.append(parametro_web_form_replicado)
+        ParametroExtraParaWebform.objects.bulk_create(parametros_web_form)
 
         # Replica Cola
         Queue.objects.create(
