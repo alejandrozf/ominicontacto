@@ -4,29 +4,23 @@
 
 from __future__ import unicode_literals
 
+import uuid
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView)
+    ListView, CreateView, DeleteView)
 from django.views.generic.base import RedirectView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.forms import (
-    QueueDialerForm, QueueDialerUpdateForm, CampanaDialerUpdateForm,
-    SincronizaDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm,
+    QueueDialerForm, ActuacionVigenteForm, ReglasIncidenciaForm,
     CampanaDialerTemplateForm
 )
 from ominicontacto_app.models import (
-    Campana, Queue, BaseDatosContacto, ActuacionVigente, ReglasIncidencia
+    Campana, Queue, ActuacionVigente, ReglasIncidencia
 )
-
-from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.services.exportar_base_datos import\
-    SincronizarBaseDatosContactosService
-from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
-                                                       RestablecerDialplanError)
 
 
 import logging as logging_
@@ -113,16 +107,15 @@ class CampanaDialerTemplateCreateView(TemplateMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
-        self.object.nombre = "TEMPLATE_{0}".format(ultimo_id + 1)
+        self.object.nombre = "TEMPLATE_{0}".format(uuid.uuid4())
         self.object.es_template = True
         self.object.estado = Campana.ESTADO_TEMPLATE_EN_DEFINICION
         if self.object.tipo_interaccion is Campana.FORMULARIO and \
-            not self.object.formulario:
+                not self.object.formulario:
             error = "Debe seleccionar un formulario"
             return self.form_invalid(form, error=error)
         elif self.object.tipo_interaccion is Campana.SITIO_EXTERNO and \
-            not self.object.sitio_externo:
+                not self.object.sitio_externo:
             error = "Debe seleccionar un sitio externo"
             return self.form_invalid(form, error=error)
         self.object.type = Campana.TYPE_DIALER
@@ -270,7 +263,7 @@ class QueueDialerTemplateCreateView(CheckEstadoCampanaDialerTemplateMixin,
 
 class ConfirmaCampanaDialerTemplateView(
     CheckEstadoCampanaDialerTemplateMixin, CampanaDialerTemplateEnDefinicionMixin,
-    RedirectView):
+        RedirectView):
     """Vista confirma la creacion de un template de campana"""
     pattern_name = 'lista_campana_dialer_template'
     url = None
