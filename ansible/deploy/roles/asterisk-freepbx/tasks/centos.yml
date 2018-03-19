@@ -1,10 +1,10 @@
 ---
 
 - set_fact: asterisk_tar=asterisk-13.18.3.tar.gz
-- set_fact: libpri_tar=libpri-current.tar.gz
-- set_fact: jansson_tar=v2.7.tar.gz
-- set_fact: dahdi_tar=dahdi-linux-complete-current.tar.gz
-- set_fact: iksemel_tar=master.zip
+- set_fact: libpri_tar=libpri-1.6.0.tar.gz
+- set_fact: jansson_tar=jansson-2.7.tar.gz
+- set_fact: dahdi_tar=dahdi-linux-complete-2.11.1+2.11.1.tar.gz
+- set_fact: iksemel_tar=iksemel-master.zip
 
 - name: Descarga de paquetes de asterisk
   get_url: "url={{ item }} dest=/usr/src/"
@@ -18,29 +18,29 @@
   become_method: sudo
 
 - name: Descompresion de todos los paquetes
-  unarchive: "src={{ item }} dest=/usr/src/ remote_src=yes"
+  unarchive: "src=/usr/src/{{ item }} dest=/usr/src/ remote_src=yes"
   with_items:
-      - asterisk_tar
-      - libpri_tar
-      - dahdi_dat
-      - iksemel_tar
-      - jansson_tar
+      - "{{ asterisk_tar }}"
+      - "{{ libpri_tar }}"
+      - "{{ dahdi_tar }}"
+      - "{{ iksemel_tar }}"
+      - "{{ jansson_tar }}"
   become: yes
   become_method: sudo
 
 - name: Borrado de los tar
-  file: "dest={{ item }} state=absent"
+  file: "dest=/usr/src/{{ item }} state=absent"
   with_items:
-      - asterisk_tar
-      - libpri_tar
-      - dahdi_dat
-      - iksemel_tar
-      - jansson_tar
+      - "{{ asterisk_tar }}"
+      - "{{ libpri_tar }}"
+      - "{{ dahdi_tar }}"
+      - "{{ iksemel_tar }}"
+      - "{{ jansson_tar }}"
   become: yes
   become_method: sudo
 
 - name: Create iksemel directory
-  file: path=/opt/iksemel-master state=present
+  file: path=/opt/iksemel-master state=directory owner=omnileads group=omnileads
   become: yes
   become_method: sudo
 
@@ -55,7 +55,7 @@
   become_method: sudo
 
 - name: Instalacion de Dahdi Linux
-  shell: "{{ item }} chdir=/usr/src/dahdi-linux-complete-2.11.1+2.11.1.tar.gz"
+  shell: "{{ item }} chdir=/usr/src/dahdi-linux-complete-2.11.1+2.11.1"
   with_items:
         - "make all"
         - "make install"
@@ -72,7 +72,7 @@
   become_method: sudo
 
 - name: Create jansson directory
-  file: path=/opt/jansson-2.7 state=present
+  file: path=/opt/jansson-2.7 state=directory owner=omnileads group=omnileads
   become: yes
   become_method: sudo
 
@@ -102,7 +102,7 @@
   become_method: sudo
 
 - name: Create asterisk directory
-  file: path=/opt/asterisk-13 state=present
+  file: path=/opt/asterisk-13 state=directory owner=omnileads group=omnileads
   become: yes
   become_method: sudo
 
@@ -111,8 +111,8 @@
   with_items:
           - contrib/scripts/install_prereq install
           - ./configure --libdir=/opt/asterisk-13/lib64 --prefix=/opt/asterisk-13 --with-externals-cache=/tmp/downloads
-  become: yes
-  become_method: sudo
+ # become: yes
+ # become_method: sudo
 
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-13.18.3"
   register: command_result
@@ -127,16 +127,17 @@
           - make
           - make install
           - make config
+          - make samples
           - ldconfig
           - chkconfig asterisk off
-  become: yes
-  become_method: sudo
+ # become: yes
+ # become_method: sudo
 - meta: clear_host_errors
 
 - name: Set up permissiond and raise up service
   shell: "{{ item }}"
   with_items:
-          - "chown omnileads. /opt/asterisk-13"
+          - "chown -R omnileads.omnileads /opt/asterisk-13"
   become: yes
   become_method: sudo
 
@@ -154,16 +155,15 @@
   become_method: sudo
   notify: restart httpd
 
-- name: Modify asterisk sysconfig to change default user for raise up asterisk
-  lineinfile: dest=/etc/sysconfig/asterisk regexp=\"^#AST_USER\" line=\"AST_USER=\"omnileads\"\"
+- name: Load init.d script to raise up asterisk
+  template: src=templates/asterisk-13-omnileads dest=/etc/init.d/asterisk mode=755
   become: yes
   become_method: sudo
 
-- lineinfile: dest=/etc/sysconfig/asterisk regexp=\"^#AST_GROUP\" line=\"AST_GROUP=\"omnileads\"\"
+- name: Create simbolic link of asterisk binarie
+  file: state=link src=/opt/asterisk-13/sbin/asterisk dest=/sbin/asterisk force=true
+  when: ansible_os_family == "RedHat"
   become: yes
   become_method: sudo
 
-- name: Change verbosity of asterisk in sysconfig
-  lineinfile: dest=/etc/sysconfig/asterisk regexp=\"^#VERBOSITY\" line=\"VERBOSITY=3\"
-  become: yes
-  become_method: sudo
+

@@ -62,10 +62,10 @@ SESSION_COOKIE_AGE = {{ session_cookie_age }}
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 OML_QUEUE_FILENAME = "/opt/omnileads/extensions_fts_queues.conf"
 OML_ASTERISK_HOSTNAME = "root@{{ localhost }}"
-OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
+OML_ASTERISK_REMOTEPATH = "/opt/asterisk-13/etc/asterisk/"
 OML_SIP_FILENAME = "/opt/omnileads/sip_fts.conf"
 OML_QUEUES_FILENAME = "/opt/omnileads/queues_fts.conf"
-OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
+OML_BACKLIST_REMOTEPATH  = "/opt/asterisk-13/var/spool/asterisk/"
 OML_GLOBALS_VARIABLES_FILENAME = "/opt/omnileads/extensions_fts_globals.conf"
 
 # parametros de conexion con base de datos mysql de asterisk

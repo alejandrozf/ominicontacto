@@ -15,7 +15,6 @@
           - {role: kamailio-sangoma, when: ansible_os_family == "Sangoma"}
           - {role: omniapp_second, tags: ['omniapp']}
           - {role: asterisk-freepbx-config, when: ansible_os_family == "Sangoma", tags: ['asterisk-config']}
-          - {role: asternic, when: ansible_os_family == "Sangoma", tags: ['asternic']}
           - deploy_supervision
 
 

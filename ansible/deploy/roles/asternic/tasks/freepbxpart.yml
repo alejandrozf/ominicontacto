@@ -1,12 +1,12 @@
 ---
 
 - name: Modify of /etc/httpd/conf.d/freepbx.conf
-  template: src=roles/asternic/templates/freepbx-conf.j2 dest=/etc/httpd/conf.d/freepbx.conf
+  template: src=templates/grabaciones.conf dest=/etc/nginx/conf.d/grabaciones.conf
   become: yes
   become_method: sudo
 
-- name: restart httpd
-  service: name=httpd state=restarted enabled=yes
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
   become: yes
   become_method: sudo
 
