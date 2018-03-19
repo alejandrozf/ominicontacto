@@ -10,7 +10,8 @@ from django.views.generic import DetailView, ListView, DeleteView
 
 from formtools.wizard.views import SessionWizardView
 
-from ominicontacto_app.forms import CampanaManualForm, OpcionCalificacionFormSet
+from ominicontacto_app.forms import (CampanaManualForm, OpcionCalificacionFormSet,
+                                     ParametroExtraParaWebformFormSet)
 from ominicontacto_app.models import Campana, Queue
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -26,12 +27,15 @@ class CampanaManualMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = None
     OPCIONES_CALIFICACION = '1'
+    PARAMETROS_EXTRA_WEB_FORM = '2'
 
     FORMS = [(INICIAL, CampanaManualForm),
-             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet)]
 
     TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
-                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html"}
+                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html",
+                 PARAMETROS_EXTRA_WEB_FORM: "campana_manual/parametros_extra_web_form.html"}
 
     form_list = FORMS
 
@@ -44,6 +48,7 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
     def _save_forms(self, form_list, estado, tipo):
         campana_form = form_list[int(self.INICIAL)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form.instance.type = tipo
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.estado = estado
@@ -67,6 +72,8 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
             auto_grabacion=auto_grabacion)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
+        parametros_extra_web_formset.instance = campana
+        parametros_extra_web_formset.save()
         return queue
 
     def done(self, form_list, **kwargs):
@@ -89,6 +96,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
     def _save_forms(self, form_list, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
         campana = campana_form.instance
@@ -97,6 +105,8 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         queue.save()
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
+        parametros_extra_web_formset.instance = campana
+        parametros_extra_web_formset.save()
         return queue
 
     def done(self, form_list, **kwargs):

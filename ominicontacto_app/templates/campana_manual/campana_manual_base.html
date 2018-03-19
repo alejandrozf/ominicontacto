@@ -6,9 +6,12 @@
 {% block title_campana %}{% endblock %}
 
 {% block nav %}
+    <h4 class="inline">{% trans 'Campaña Manual: Datos básicos' %}</h4>
+
     <ul class="nav nav-tabs">
         <li class="active"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
     </ul>
 {% endblock %}
 
@@ -23,7 +26,13 @@
                 {{ form.nombre|add_class:"form-control" }}
             </div>
         </div>
-        {% block bd_contactos %}{% endblock %}
+        <div class="form-group row">
+            {{ form.bd_contacto.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
+            <div class="col-sm-6">
+                {{ form.bd_contacto }}
+            </div>
+        </div>
         {{ form.tipo_interaccion.errors }}
         <div class="form-group row">
             {{ form.formulario.errors }}

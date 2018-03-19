@@ -1127,7 +1127,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'formulario', 'gestion',
+        fields = ('nombre', 'formulario', 'gestion', 'bd_contacto',
                   'sitio_externo', 'tipo_interaccion', 'objetivo')
 
         widgets = {
@@ -1136,7 +1136,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
-            'bd_contacto': forms.Select(attrs={'class': 'hidden'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
