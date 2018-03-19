@@ -18,7 +18,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, View, DetailView, DeleteView
 
-from ominicontacto_app.forms import CampanaPreviewForm, OpcionCalificacionFormSet
+from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
+                                     ParametroExtraParaWebformFormSet)
 from ominicontacto_app.models import AgenteEnContacto, CalificacionCliente, Campana
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -38,12 +39,15 @@ class CampanaPreviewMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = None
     OPCIONES_CALIFICACION = '1'
+    PARAMETROS_EXTRA_WEB_FORM = '2'
 
     FORMS = [(INICIAL, CampanaPreviewForm),
-             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet)]
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet)]
 
     TEMPLATES = {INICIAL: "campana_preview/campana_preview.html",
-                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html"}
+                 OPCIONES_CALIFICACION: "campana_preview/opcion_calificacion.html",
+                 PARAMETROS_EXTRA_WEB_FORM: "campana_preview/parametros_extra_web_form.html"}
 
     form_list = FORMS
 

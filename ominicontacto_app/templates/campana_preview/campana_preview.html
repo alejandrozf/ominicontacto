@@ -1,13 +1,25 @@
 {% extends "campana_manual/campana_manual_base.html" %}
+{% load i18n %}
+
 {% block title_campana %}
-    <h4 class="inline">Campaña Preview: Datos Básicos</h4><br>
+    <h4 class="inline">{% trans 'Campaña Preview: Datos Básicos' %}</h4><br>
+{% endblock %}
+
+{% block nav %}
+    <h4 class="inline">{% trans 'Campaña Preview: Datos básicos' %}</h4>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a>{% trans 'Campaña' %}</a></li>
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
+    </ul>
 {% endblock %}
 
 {% block tiempo_desconexion %}
     <div class="form-group row">
         {{ form.tiempo_desconexion.errors }}
         <label class="col-sm-3 control-label">Tiempo de desconexión: </label>
-        <div class="col-sm-6" data-toggle="tooltip" data-placement="top"
+        <div class="col-sm-3" data-toggle="tooltip" data-placement="top"
              title="A partir de este tiempo en minutos, un agente será desconectado de cualquier contacto que tenga asignado y no haya atendido">
             {{ form.tiempo_desconexion }}
         </div>
