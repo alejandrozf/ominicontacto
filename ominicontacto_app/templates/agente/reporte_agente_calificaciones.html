@@ -154,9 +154,9 @@
                             <tr>
                                 <td>
                                     <a type="button" pk_contacto="{{ calificacion_cliente.contacto.pk }}"
-                                       tipo_campana="{{ calificacion_cliente.campana.type }}"
-                                       campana_nombre="{{ calificacion_cliente.campana.nombre }}"
-                                       pk_campana="{{ calificacion_cliente.campana.pk }}"
+                                       tipo_campana="{{ calificacion_cliente.opcion_calificacion.campana.type }}"
+                                       campana_nombre="{{ calificacion_cliente.opcion_calificacion.campana.nombre }}"
+                                       pk_campana="{{ calificacion_cliente.opcion_calificacion.campana.pk }}"
                                        agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}" class="btn-submit">{{ calificacion_cliente.contacto.telefono }}</a>
                                 </td>
                                 <td>
@@ -170,11 +170,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                {% if calificacion_cliente.calificacion %}
-                                    {{ calificacion_cliente.calificacion.nombre }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
+                                  {{ calificacion_cliente.opcion_calificacion.nombre }}
                                 </td>
                                 <td>
                                     {% if calificacion_cliente.observaciones %}
@@ -182,7 +178,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.campana_id calificacion_cliente.contacto_id agente.pk calificacion_cliente.wombat_id %}">editar calificacion</a>
+                                    <a href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id agente.pk calificacion_cliente.wombat_id %}">editar calificacion</a>
                                     {% if calificacion_cliente.get_venta %}
                                         <a href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">editar gestion</a>
                                     {% endif %}

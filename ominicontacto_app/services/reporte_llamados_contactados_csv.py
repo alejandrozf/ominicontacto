@@ -95,10 +95,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(calificacion.contacto.telefono)
-                if calificacion.es_venta:
-                    lista_opciones.append(calificacion.campana.gestion)
-                else:
-                    lista_opciones.append(calificacion.calificacion)
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 lista_opciones.append(calificacion.agente)
                 lista_opciones.append(calificacion.contacto.bd_contacto)
@@ -272,10 +269,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(calificacion.contacto.telefono)
-                if calificacion.es_venta:
-                    lista_opciones.append(calificacion.campana.gestion)
-                else:
-                    lista_opciones.append(calificacion.calificacion)
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 lista_opciones.append(calificacion.agente)
                 lista_opciones.append(calificacion.contacto.bd_contacto)

@@ -45,9 +45,10 @@ class GestorDeCalificaciones(object):
         """
         # Actualizar la calificacion en wombat
         # Optimizacion: Si no es nueva y no cambia la opcion, no hace falta calificar en Wombat
-        es_dialer = calificacion.campana.type == Campana.TYPE_DIALER
+        es_dialer = calificacion.opcion_calificacion.campana.type == Campana.TYPE_DIALER
         es_nueva = id_opcion_vieja is None
-        cambio_calificacion = not es_nueva and not id_opcion_vieja == calificacion.calificacion.id
+        cambio_calificacion = not es_nueva and \
+            not id_opcion_vieja == calificacion.opcion_calificacion.id
 
         actualizar_wombat = es_dialer and (es_nueva or cambio_calificacion)
 
@@ -76,8 +77,9 @@ class CalificacionClienteFormView(FormView):
 
     def get_object(self):
         try:
-            return CalificacionCliente.objects.get(campana_id=self.kwargs['pk_campana'],
-                                                   contacto_id=self.kwargs['pk_contacto'])
+            return CalificacionCliente.objects.get(
+                opcion_calificacion__campana_id=self.kwargs['pk_campana'],
+                contacto_id=self.kwargs['pk_contacto'])
         except CalificacionCliente.DoesNotExist:
             return None
 
@@ -95,8 +97,7 @@ class CalificacionClienteFormView(FormView):
 
     def get_calificacion_form_kwargs(self):
         if self.request.method == 'GET':
-            initial = {'campana': self.kwargs['pk_campana'],
-                       'contacto': self.kwargs['pk_contacto'],
+            initial = {'contacto': self.kwargs['pk_contacto'],
                        'agente': self.kwargs['id_agente'],
                        'wombat_id': self.kwargs['wombat_id']}
             return {'instance': self.object, 'initial': initial}
@@ -106,12 +107,12 @@ class CalificacionClienteFormView(FormView):
                 post_data['wombat_id'] = self.kwargs['wombat_id']
             return {'instance': self.object, 'data': post_data}
 
-    def get_calificacion_form(self):
+    def get_form(self):
         kwargs = self.get_calificacion_form_kwargs()
         if self.object is None:
-            calificacion_form = CalificacionClienteForm(**kwargs)
+            calificacion_form = CalificacionClienteForm(campana=self.campana, **kwargs)
         else:
-            calificacion_form = CalificacionClienteUpdateForm(**kwargs)
+            calificacion_form = CalificacionClienteUpdateForm(campana=self.campana, **kwargs)
         return calificacion_form
 
     def get_contacto_form_kwargs(self):
@@ -140,7 +141,7 @@ class CalificacionClienteFormView(FormView):
 
     def get(self, request, *args, **kwargs):
         contacto_form = self.get_contacto_form()
-        calificacion_form = self.get_calificacion_form()
+        calificacion_form = self.get_form()
 
         gestor_de_calificaciones = GestorDeCalificaciones()
         gestor_de_calificaciones.agente_calificara_contacto(self.campana,
@@ -155,7 +156,7 @@ class CalificacionClienteFormView(FormView):
         Valida formulario de Contacto y de CalificacionCliente
         """
         contacto_form = self.get_contacto_form()
-        calificacion_form = self.get_calificacion_form()
+        calificacion_form = self.get_form()
         if contacto_form.is_valid() and calificacion_form.is_valid():
             return self.form_valid(contacto_form, calificacion_form)
         else:
@@ -177,7 +178,7 @@ class CalificacionClienteFormView(FormView):
 
         id_opcion_vieja = None
         if self.object is not None:
-            id_opcion_vieja = calificacion_form.initial['calificacion']
+            id_opcion_vieja = calificacion_form.initial['opcion_calificacion']
         self.object_calificacion = calificacion_form.save(commit=False)
         self.object_calificacion.set_es_venta()
         self.object_calificacion.save()
@@ -198,7 +199,7 @@ class CalificacionClienteFormView(FormView):
                         Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
 
-        if self.object_calificacion.calificacion.es_reservada():
+        if self.object_calificacion.es_agenda():
             return redirect(self.get_success_url_agenda())
         elif self.kwargs['from'] == 'reporte':
             return redirect(self.get_success_url_reporte())
@@ -261,7 +262,7 @@ def calificacion_cliente_externa_view(request):
                 try:
                     calificacion = CalificacionCliente.objects.get(
                         contacto=contacto, opcion_calificacion__campana=campana)
-                    id_opcion_vieja = calificacion.calificacion.id
+                    id_opcion_vieja = calificacion.opcion_calificacion.id
                     calificacion.opcion_calificacion = opcion_calificacion
                     calificacion.agente = agente
                     calificacion.save()

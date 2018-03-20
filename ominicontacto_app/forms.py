@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import json
 from django import forms
 from django.conf import settings
-from django.forms.models import inlineformset_factory
+from django.forms.models import inlineformset_factory, ModelChoiceField
 from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
@@ -20,7 +20,8 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio, NombreCalificacion, ParametroExtraParaWebform
+    AgendaManual, ArchivoDeAudio, NombreCalificacion, ParametroExtraParaWebform,
+    OpcionCalificacion
 )
 
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -444,20 +445,25 @@ class ContactoForm(forms.ModelForm):
         }
 
 
-class CalificacionClienteForm(forms.ModelForm):
+class OpcionCalificacionModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.nombre
 
-    def __init__(self, *args, **kwargs):
+
+class CalificacionClienteForm(forms.ModelForm):
+    opcion_calificacion = OpcionCalificacionModelChoiceField(
+        OpcionCalificacion.objects.all(), empty_label='---------')
+
+    def __init__(self, campana, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
-        if 'campana' in self.initial:
-            campana = Campana.objects.get(id=self.initial['campana'])
-            self.fields['calificacion'].queryset = campana.calificacion_campana.calificacion.all()
+        self.campana = campana
+        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
 
     class Meta:
         model = CalificacionCliente
-        fields = ('contacto', 'es_venta', 'agente',
+        fields = ('contacto', 'es_venta', 'agente', 'opcion_calificacion',
                   'observaciones', 'agendado', 'wombat_id')
         widgets = {
-            'campana': forms.HiddenInput(),
             'contacto': forms.HiddenInput(),
             'es_venta': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
@@ -466,25 +472,23 @@ class CalificacionClienteForm(forms.ModelForm):
         }
 
     def clean_contacto(self):
-        campana = self.cleaned_data.get('campana', None)
         contacto = self.cleaned_data.get('contacto', None)
-        if campana and contacto:
-            if not contacto.bd_contacto == campana.bd_contacto:
+        if contacto:
+            if not contacto.bd_contacto == self.campana.bd_contacto:
                 raise forms.ValidationError('El Contacto no corresponde a la base de datos'
                                             ' de la Campaña')
             return contacto
 
-    def clean_calificacion(self):
-        campana = self.cleaned_data.get('campana', None)
-        calificacion = self.cleaned_data.get('calificacion', None)
-        if campana and calificacion:
-            if calificacion not in campana.calificacion_campana.calificacion.all():
-                raise forms.ValidationError('Calificacion incorrecta')
-            return calificacion
+    def clean_opcion_calificacion(self):
+        opcion_calificacion = self.cleaned_data.get('opcion_calificacion', None)
+        if opcion_calificacion:
+            if opcion_calificacion not in self.campana.opciones_calificacion.all():
+                raise forms.ValidationError(_('Opción de calificación incorrecta'))
+            return opcion_calificacion
 
 
 class CalificacionClienteUpdateForm(CalificacionClienteForm):
-    fields = ('es_venta', 'calificacion', 'agente', 'observaciones', 'agendado', 'wombat_id')
+    fields = ('es_venta', 'opcion_calificacion', 'agente', 'observaciones', 'agendado', 'wombat_id')
 
 
 class GrupoAgenteForm(forms.Form):

@@ -2263,7 +2263,7 @@ class CalificacionCliente(models.Model):
 
     def get_venta(self):
         try:
-            return MetadataCliente.objects.get(campana=self.campana,
+            return MetadataCliente.objects.get(campana=self.opcion_calificacion.campana,
                                                agente=self.agente,
                                                contacto=self.contacto)
         except MetadataCliente.DoesNotExist:
@@ -2272,7 +2272,14 @@ class CalificacionCliente(models.Model):
             return None
 
     def set_es_venta(self):
-        self.es_venta = self.campana.gestion == self.calificacion.nombre
+        # TODO: Usar metodo de OpcionCalificacion.es_gestion()
+        # self.es_venta = self.opcion_calificacion.es_gestion()
+        self.es_venta = self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
+
+    def es_agenda(self):
+        # TODO: Usar metodo de OpcionCalificacion.es_agenda()
+        # return self.opcion_calificacion.es_agenda()
+        return self.opcion_calificacion.tipo == OpcionCalificacion.AGENDA
 
 
 class DuracionDeLlamada(models.Model):

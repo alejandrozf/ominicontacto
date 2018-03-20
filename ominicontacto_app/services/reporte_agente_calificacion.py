@@ -85,10 +85,7 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append("SI")
                 else:
                     lista_opciones.append("NO")
-                if calificacion.calificacion:
-                    lista_opciones.append(calificacion.calificacion.nombre)
-                else:
-                    lista_opciones.append("N/A")
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 datos = json.loads(calificacion.contacto.datos)
                 for dato in datos:
@@ -110,10 +107,7 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append("SI")
                 else:
                     lista_opciones.append("NO")
-                if calificacion.calificacion:
-                    lista_opciones.append(calificacion.calificacion.nombre)
-                else:
-                    lista_opciones.append("N/A")
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
 
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')

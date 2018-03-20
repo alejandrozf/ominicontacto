@@ -107,7 +107,7 @@ class CalificacionManualUpdateView(CalificacionManualMixin, UpdateView):
     def get_form(self):
         self.form_class = self.get_form_class()
         calificacion = self.get_object()
-        campana = calificacion.campana
+        campana = calificacion.opcion_calificacion.campana
         calificaciones = campana.calificacion_campana.calificacion.all()
         return self.form_class(
             calificacion_choice=calificaciones, gestion=campana.gestion,
@@ -128,7 +128,7 @@ class CalificacionManualGestion(UpdateView):
     def get_form(self):
         self.form_class = self.get_form_class()
         calificacion = self.get_object()
-        campana = calificacion.campana
+        campana = calificacion.opcion_calificacion.campana
         campos = campana.formulario.campos.all()
         return self.form_class(campos=campos, **self.get_form_kwargs())
 

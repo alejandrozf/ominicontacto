@@ -88,10 +88,7 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(calificacion.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
-                if calificacion.es_venta:
-                    lista_opciones.append(calificacion.campana.gestion)
-                else:
-                    lista_opciones.append(calificacion.calificacion)
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(calificacion.contacto.telefono)
