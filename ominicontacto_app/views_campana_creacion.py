@@ -96,7 +96,7 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'parametro', 'columna')
             param_extra_init_formset = context['wizard']['form']
             param_extra_formset = ParametroExtraParaWebformFormSet(initial=initial_data)
-            param_extra_formset.extra = len(initial_data) - 1
+            param_extra_formset.extra = len(initial_data) + 1
             param_extra_formset.prefix = param_extra_init_formset.prefix
             context['wizard']['form'] = param_extra_formset
         return context

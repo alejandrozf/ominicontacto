@@ -81,6 +81,16 @@ class CampanaDialerTemplateCreateCampanaView(CampanaTemplateCreateCampanaMixin,
             context['wizard']['form'] = reglas_incidencia_formset
         return context
 
+    def done(self, form_list, *args, **kwargs):
+        borrar_template = bool(int(kwargs.get('borrar_template')))
+        if borrar_template:
+            # para el caso de cuando se usa la vista en el reciclado y se hace necesario
+            # eliminar la campaña que la genera
+            pk = self.kwargs.get('pk_campana_template', None)
+            campana_template = get_object_or_404(Campana, pk=pk)
+            campana_template.delete()
+        return super(CampanaDialerTemplateCreateCampanaView, self).done(form_list, *args, **kwargs)
+
 
 class TemplateDetailView(DetailView):
     """Vista muestra el detalle de la campana"""

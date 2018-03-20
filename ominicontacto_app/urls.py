@@ -423,7 +423,8 @@ urlpatterns = [
         login_required(views_formulario.FormularioPreviewFormView.as_view()),
         name='formulario_vista_previa',
         ),
-    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
+    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
+        r'/(?P<id_agente>\d+)/$',
         login_required(views_formulario.FormularioCreateFormView.as_view()),
         name='formulario_create',
         ),
@@ -715,7 +716,8 @@ urlpatterns = [
         login_required(
             views_campana_dialer_template.TemplateListView.as_view()),
         name="lista_campana_dialer_template"),
-    url(r'^campana_dialer_template/(?P<pk_campana_template>\d+)/crea_campana/$',
+    url(r'^campana_dialer_template/(?P<pk_campana_template>\d+)/crea_campana/'
+        r'(?P<borrar_template>\d+)/$',
         login_required(
             views_campana_dialer_template.CampanaDialerTemplateCreateCampanaView.as_view()),
         name="crea_campana_dialer_template"),
@@ -765,7 +767,8 @@ urlpatterns = [
         login_required(
             views_campana_manual.CampanaManualListView.as_view()),
         name="campana_manual_list"),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<pk_agente>\d+)/create/(?P<telefono>\d+)/$',
+    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<pk_agente>\d+)/create/'
+        r'(?P<telefono>\d+)/$',
         login_required(
             views_calificacion_manual.CalificacionManualCreateView.as_view()),
         name="campana_manual_calificacion_create"),

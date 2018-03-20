@@ -80,5 +80,6 @@ class ReciclarCampanaDialerFormView(FormView):
             return self.form_invalid(form)
 
         return HttpResponseRedirect(
-            reverse('crea_campana_dialer_template',
-                    kwargs={"pk_campana_template": campana_reciclada.pk}))
+            reverse("crea_campana_dialer_template",
+                    kwargs={"pk_campana_template": campana_reciclada.pk,
+                            "borrar_template": 1}))
