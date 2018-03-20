@@ -32,8 +32,8 @@ omnisup_repo: https://github.com/Pignatar0md/Omnisup
 ################ URL's ############################
 
 #URLS para descargar asterisk
-dahdi_linux: http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-current.tar.gz
-libpri: http://downloads.asterisk.org/pub/telephony/libpri/libpri-current.tar.gz
+dahdi_linux: http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-2.11.1+2.11.1.tar.gz
+libpri: http://downloads.asterisk.org/pub/telephony/libpri/libpri-1.6.0.tar.gz
 asterisk_v13: http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-13.18.3.tar.gz
 jansson: https://github.com/akheron/jansson/archive/v2.7.tar.gz
 asternic: http://download.asternic.net/asternic-stats-pro-2.2.0.tgz
@@ -50,7 +50,7 @@ postgresql_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-
 ################## Variables para la aplicacion OML ###################
 
 #Variable para oml_settings_local.py
-django_dir: /home/freetech/ominicontacto
+django_dir: /opt/omnileads/ominicontacto
 #Credenciales Superuser OML
 admin_user: admin
 

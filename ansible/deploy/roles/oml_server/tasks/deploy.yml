@@ -5,26 +5,30 @@
 #----------------------------------------------------------------------
 
 #- name: Change key permission
-#  file: path=/home/freetech/.ssh/ state=directory owner=freetech group=freetech mode=600 recurse=yes
+#  file: path=/opt/omnileads/.ssh/ state=directory owner=omnileads group=omnileads mode=600 recurse=yes
 
-- name: Creation of freetech group
-  group: name=freetech state=present
+- name: Creation of omnileads group
+  group: name=omnileads state=present
+  become: true
+  become_method: sudo
 
-- name: Create freetech user
-  user: name=freetech group=freetech shell=/bin/bash state=present
+- name: Create omnileads user and public key
+  user: name=omnileads generate_ssh_key=yes group=omnileads ssh_key_bits=2048 state=present shell=/bin/bash
+  become: true
+  become_method: sudo
 
 - name: Create the required directories
-  file: "dest={{ item }} state=directory owner=freetech group=freetech mode=0755 recurse=yes"
-    # /home/freetech es incluido xq el permiso por default (0700) hace que
+  file: "dest={{ item }} state=directory owner=omnileads group=omnileads mode=0755 recurse=yes"
+    # /opt/omnileads es incluido xq el permiso por default (0700) hace que
   with_items:
-          - /home/freetech
-          - /home/freetech/.pip
-          - /home/freetech/ominicontacto/
-          - /home/freetech/local
-          - /home/freetech/nginx_certs
-          - /home/freetech/media_root/reporte_campana
-          - /home/freetech/static
-          - /home/freetech/log
+          - /opt/omnileads
+          - /opt/omnileads/.pip
+          - /opt/omnileads/ominicontacto/
+          - /opt/omnileads/local
+          - /opt/omnileads/nginx_certs
+          - /opt/omnileads/media_root/reporte_campana
+          - /opt/omnileads/static
+          - /opt/omnileads/log
   when: desarrollo == 0
 
 
@@ -34,114 +38,92 @@
 
 - name: Setup pip
   ini_file: >
-    dest=/home/freetech/.pip/pip.conf
+    dest=/opt/omnileads/.pip/pip.conf
     section=install
     option='download-cache'
-    value='/home/freetech/.pip/cache'
-  become: yes
-  become_method: su
-  become_user: freetech
-
-- name: Editar el sudoers para ejecutar rsync sin pedir password de sudo
-  lineinfile: "dest=/etc/sudoers line=\"freetech ALL = NOPASSWD: /usr/bin/rsync\""
+    value='/opt/omnileads/.pip/cache'
 
 - name: Upload built (rsync to /ominicontacto)
-  # Copies xxx/app to /home/freetech/ominicontacto (/ominicontacto on dest is implicit)
-  synchronize: "src={{ build_dir }} dest=/home/freetech delete=yes checksum=yes times=no"
+  # Copies xxx/app to /opt/omnileads/ominicontacto (/ominicontacto on dest is implicit)
+  synchronize: "src={{ build_dir }} dest=/opt/omnileads delete=yes checksum=yes times=no"
   when: desarrollo == 0
 
-- name: Change permissions on id_rsa
-  shell: "chmod 700 /home/freetech/.ssh/id_rsa"
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-
 - name: Clone of OML repository
-  git: repo=git@bitbucket.org:freetechdesarrollo/ominicontacto.git dest=/home/freetech/ominicontacto/ accept_hostkey=yes
+  git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git dest=/opt/omnileads/ominicontacto/ accept_hostkey=yes
   when: desarrollo != 0
-  become: yes
-  become_method: su
-  become_user: freetech
   ignore_errors: yes
 
 - name: Checkout of desired branch
-  git: repo=git@bitbucket.org:freetechdesarrollo/ominicontacto.git clone=no version={{ rama }} dest=/home/freetech/ominicontacto
-  become: yes
-  become_method: su
-  become_user: freetech
+  git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git clone=no version={{ rama }} dest=/opt/omnileads/ominicontacto
   when: desarrollo != 0
 
 - name: Change owner and group of ominicontacto
-  file: "path={{ django_dir }} owner=freetech group=freetech recurse=yes"
+  file: "path={{ django_dir }} owner=omnileads group=omnileads recurse=yes"
 
 - name: Upgrade of python setuptools
   pip:
     name=setuptools
-    virtualenv=/home/freetech/virtualenv
+    virtualenv=/opt/omnileads/virtualenv
     virtualenv_command=/usr/bin/virtualenv-2.7
     extra_args=--upgrade
   environment:
-    PATH: /home/freetech/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
-    PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
+    PATH: /opt/omnileads/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+    PYTHONPATH: '/opt/omnileads/ominicontacto:/opt/omnileads/local'
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
-  become: yes
+  become: true
   become_method: su
-  become_user: freetech
+  become_user: omnileads
+
+- name: Setup virtualenv
+  pip:
+    requirements={{ django_dir }}/requeriments.txt
+    virtualenv=/opt/omnileads/virtualenv
+    virtualenv_command=/usr/bin/virtualenv-2.7
+  environment:
+      #PATH: /usr/pgsql-9.6/bin/:{{ lookup('env', 'PATH') }}:/opt/omnileads/ominicontacto/virtualenv/bin
+      PATH: /opt/omnileads/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+      PYTHONPATH: '/opt/omnileads/ominicontacto:/opt/omnileads/local'
+  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  become: true
+  become_method: su
+  become_user: omnileads
+- meta: clear_host_errors
+
 
 - name: Upgrade of python setuptools
   pip:
     name=setuptools
-    virtualenv=/home/freetech/virtualenv
+    virtualenv=/opt/omnileads/virtualenv
     virtualenv_command=/usr/bin/virtualenv
     extra_args=--upgrade
   environment:
-    PATH: /home/freetech/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
-    PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
+    PATH: /opt/omnileads/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
+    PYTHONPATH: '/opt/omnileads/ominicontacto:/opt/omnileads/local'
   when: ansible_os_family == "Debian"
 
 - name: Setup virtualenv
   pip: >
     requirements={{ django_dir }}/requeriments.txt
-    virtualenv=/home/freetech/virtualenv
-  when: ansible_os_family == "Debian"
-
-- name: Setup virtualenv
-  pip:
-    requirements={{ django_dir }}/requeriments.txt
-    virtualenv=/home/freetech/virtualenv
-    virtualenv_command=/usr/bin/virtualenv-2.7
-  environment:
-      #PATH: /usr/pgsql-9.6/bin/:{{ lookup('env', 'PATH') }}:/home/freetech/ominicontacto/virtualenv/bin
-      PATH: /home/freetech/virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin
-      PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
-  become: yes
-  become_method: su
-  become_user: freetech
-- meta: clear_host_errors
-
-- name: Upload oml_settings_local.py
-  template: src=templates/oml_settings_local_debian.py dest=/home/freetech/local
-  when: ansible_os_family == "Debian"
-- shell:  "mv oml_settings_local_debian.py oml_settings_local.py chdir=/home/freetech/local"
+    virtualenv=/opt/omnileads/virtualenv
   when: ansible_os_family == "Debian"
 
 - name: Upload oml_settings_local.py
-  template: src=templates/oml_settings_local.py dest=/home/freetech/local
+  template: src=templates/oml_settings_local_debian.py dest=/opt/omnileads/local
+  when: ansible_os_family == "Debian"
+- shell:  "mv oml_settings_local_debian.py oml_settings_local.py chdir=/opt/omnileads/local"
+  when: ansible_os_family == "Debian"
+
+- name: Upload oml_settings_local.py
+  template: src=templates/oml_settings_local.py dest=/opt/omnileads/local
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
-  become: yes
-  become_user: freetech
-  become_method: su
 
 - name: Creation of simbolic link of oml_settings_local.py
-  file: state=link src=/home/freetech/local/oml_settings_local.py dest=/home/freetech/ominicontacto/oml_settings_local.py owner=freetech force=true
+  file: state=link src=/opt/omnileads/local/oml_settings_local.py dest=/opt/omnileads/ominicontacto/oml_settings_local.py owner=omnileads force=true
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
-  become: yes
-  become_user: freetech
-  become_method: su
-  tags: test
 
 - name: Change owner and group of ominicontacto
-  file: "path={{ item }} owner=freetech group=freetech recurse=yes"
+  file: "path={{ item }} owner=omnileads group=omnileads recurse=yes"
   with_items:
     - "{{ django_dir }}"
-    - "/home/freetech"
+    - "/opt/omnileads"
 

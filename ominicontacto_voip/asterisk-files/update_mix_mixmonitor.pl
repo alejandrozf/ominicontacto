@@ -21,8 +21,8 @@ $config{'dbuser'} = 'qstatsUser';
 $config{'dbpass'} = 'qstatsPassw0rd';
 
 # Destination directory for recordings
-$config{'asterisk_spool'}  = "/var/spool/asterisk/monitor";
-$config{'destination_dir'} = "/var/spool/asterisk/asternic";
+$config{'asterisk_spool'}  = "/opt/asterisk-13/var/spool/asterisk/monitor";
+$config{'destination_dir'} = "/opt/asterisk-13/var/spool/asterisk/asternic";
 
 $config{'move_recording'} = true;
 

@@ -1,29 +1,39 @@
 ---
-- set_fact: omnisup_dir=/home/freetech
+- set_fact: omnisup_dir=/opt/omnileads
   tags: issabel
 
-- file: path=/home/freetech/Omnisup state=absent
+- file: path=/opt/omnileads/Omnisup state=absent
 
 - name: Install of php56-fpm
   yum: name=php56w-fpm.x86_64 state=present
+  become: yes
+  become_method: sudo
   ignore_errors: yes
 
 - name: Install of php-fpm
   yum: name=php-fpm.x86_64 state=present
   tags: issabel
+  become: yes
+  become_method: sudo
   ignore_errors: yes
 
 - name: Modify of php.ini
   lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
   tags: issabel
+  become: yes
+  become_method: sudo
 
 - name: Edit sudoers to permit apache users to run asterisk commands
-  lineinfile: "dest=/etc/sudoers line=\"apache ALL = NOPASSWD: /usr/sbin/asterisk\""
+  lineinfile: "dest=/etc/sudoers line=\"apache ALL = NOPASSWD: /opt/asterisk-13/sbin/asterisk\""
   tags: issabel
+  become: yes
+  become_method: sudo
 
 - name: Modify of /php-fpm.d/php-fpm.sock
   template: src=templates/www.conf.j2 dest=/etc/php-fpm.d/www.conf
   tags: issabel
+  become: yes
+  become_method: sudo
 
 - name: Enable and start of php-fpm service
   shell: "{{ item }}"
@@ -32,36 +42,41 @@
       - systemctl enable php-fpm
   tags: issabel
 
-
-
 - name: Modify of config.js in /static/Js
   template: "src=templates/config.js.j2 dest={{ omnisup_dir }}/ominicontacto/Omnisup/static/Js/config.js"
   tags: issabel
 
 - name: Create simbolic link of Omnisup directory
-  file: src={{ omnisup_dir }}/ominicontacto/Omnisup dest={{ omnisup_dir }}/Omnisup state=link owner=freetech group=freetech mode=755
+  file: src={{ omnisup_dir }}/ominicontacto/Omnisup dest={{ omnisup_dir }}/Omnisup state=link owner=omnileads group=omnileads mode=755
   tags: issabel
 
 - name: Restart php-fpm service
   service: name=php-fpm state=restarted enabled=yes
   tags: issabel
+  become: yes
+  become_method: sudo
 
-- name: Set permissions of required to freetech's user
+- name: Set permissions of required to omnileads's user
   shell: "{{ item }}"
   with_items:
-      - "chown freetech:freetech -R /var/run/php-fpm/php-fpm.sock"
-      - "chown freetech:freetech -R {{ omnisup_dir }}/Omnisup"
-      - "chown freetech:freetech -R /var/lib/nginx/"
+      - "chown omnileads:omnileads -R /var/run/php-fpm/php-fpm.sock"
+      - "chown omnileads:omnileads -R {{ omnisup_dir }}/Omnisup"
+      - "chown omnileads:omnileads -R /var/lib/nginx/"
   tags: issabel
+  become: yes
+  become_method: sudo
 
 - name: Creation of /etc/nginx/conf.d/supervision.conf
   template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
   tags: issabel
+  become: yes
+  become_method: sudo
 
 - name: Restart of nginx
   service: name=nginx state=restarted enabled=yes
   tags: issabel
-
+  become: yes
+  become_method: sudo
 
 
 

@@ -5,14 +5,20 @@
   with_items:
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
+  become: true
+  become_method: sudo
   tags: issabel
 
 - name: Update/upgrade of centos
   yum: name='*' state=latest update_cache=yes
+  become: true
+  become_method: sudo
   tags: issabel
 
 - name: Install Development tools
   command: "yum -y groupinstall core base \"Development Tools\""
+  become: true
+  become_method: sudo
   tags: issabel
 
 - name: Install of dependencies
@@ -47,9 +53,11 @@
        - gnutls-devel
        - python-devel
        - texinfo
+  become: true
+  become_method: sudo
   tags: issabel
 
-- name: Install php 5.6
+- name: Download of epel-release repo
   command: "{{ item }}"
   with_items:
       - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -58,17 +66,27 @@
     - "'transferencia fallida' in command_result.stderr"
     - "'failed' in command_result.stderr"
   tags: issabel
+  become: true
+  become_method: sudo
 - meta: clear_host_errors
 
-- get_url: url=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm dest=/root/ validate_certs=no
-- shell: "rpm -Uvh webtatic-release.rpm chdir=/root"
+- name: Download of webtatic repo
+  get_url: url=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm dest=/root/ validate_certs=no
+  become: true
+  become_method: sudo
+
+- name: Installation of webtatic repo
+  shell: "rpm -Uvh webtatic-release.rpm chdir=/root"
   register: command_result
+  become: true
+  become_method: sudo
   failed_when:
     - "'ya está instalado' not in command_result.stderr"
     - "'already installed' not in command_result.stderr"
     - "command_result.rc != 0"
 
-- yum: name={{ item }} state=present
+- name: Install of php56
+  yum: name={{ item }} state=present
   with_items:
       - php56w
       - php56w-pdo
@@ -81,9 +99,12 @@
       - php56w-ldap
       - php56w-intl
       - php56w-soap
+  become: true
+  become_method: sudo
 - meta: clear_host_errors
 
-- yum: name={{ item }} state=present
+- name: Install of php
+  yum: name={{ item }} state=present
   with_items:
       - php
       - php-pdo
@@ -96,16 +117,26 @@
       - php-ldap
       - php-intl
       - php-soap
+  become: true
+  become_method: sudo
 - meta: clear_host_errors
   tags: issabel
 
-- name: Install of NodeJS
+- name: Download NodeJS setup script
   shell: "curl -sL https://rpm.nodesource.com/setup_8.x | bash -"
-- yum: name=nodejs state=present
+  become: true
+  become_method: sudo
+
+- name: Install NodeJS
+  yum: name=nodejs state=present
+  become: true
+  become_method: sudo
   tags: issabel
 
 - name: Install Console_Getopt
   pear: name=Console_Getopt state=present
+  become: true
+  become_method: sudo
 - meta: clear_host_errors
   tags: issabel
 

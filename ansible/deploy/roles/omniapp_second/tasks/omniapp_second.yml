@@ -3,10 +3,14 @@
 - name: Change nginx default port
   template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
 
 - name: Enable nginx
   shell: systemctl enable nginx
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
 
 #- name: Copy of the ominicontacto nginx configuration
 #  copy: "src={{ django_dir }}/nginx/ominicontacto-twohosts.conf dest=/etc/nginx/conf.d/ remote_src=yes"
@@ -22,21 +26,27 @@
 
 - name: Create of ominicontacto.conf
   template: src=templates/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf
+  become: true
+  become_method: sudo
 
 - name: Copy of the certificates in nginx
-  copy: "src=/opt/kamailio/etc/certs/{{ item }} dest=/home/freetech/nginx_certs/ remote_src=yes"
+  copy: "src=/opt/kamailio/etc/certs/{{ item }} dest=/opt/omnileads/nginx_certs/ remote_src=yes"
   with_items:
       - cert.pem
       - key.pem
+  become: true
+  become_method: sudo
   tags: kamailio-cert
   notify: restart nginx
 
 - name: Create ominicontacto-daemon service
   shell: "{{ item }}"
   with_items:
-          - "cp /home/freetech/ominicontacto/ominicontacto-daemon /etc/init.d/"
+          - "cp /opt/omnileads/ominicontacto/ominicontacto-daemon /etc/init.d/"
           - "chmod 755 /etc/init.d/ominicontacto-daemon"
           - "chown root:root /etc/init.d/ominicontacto-daemon"
+  become: true
+  become_method: sudo
 
 - name: Start the ominicontacto-daemon service
   command: "{{ item }}"
@@ -46,6 +56,8 @@
           - "service ominicontacto-daemon stop"
           - "chkconfig ominicontacto-daemon on"
           - "service ominicontacto-daemon start"
+  become: true
+  become_method: sudo
   ignore_errors: yes
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
@@ -58,14 +70,20 @@
           - "update-rc.d ominicontacto-daemon enable 4"
           - "update-rc.d ominicontacto-daemon enable 5"
           - "service ominicontacto-daemon start"
+  become: true
+  become_method: sudo
   ignore_errors: yes
   when: ansible_os_family == "Debian"
 
 - name: Copy of the Kamailio cert in voip.cert
-  template: src=templates/concatenate.sh dest=/root/ mode=755
-  tags: static
-- shell: "bash concatenate.sh chdir=/root/"
-  tags: static
+  template: src=templates/concatenate.sh dest=/var/tmp/ mode=755
+  tags: kamailio-cert
+  become: true
+  become_method: sudo
 
+- shell: "bash concatenate.sh chdir=/var/tmp"
+  tags: kamailio-cert
+  become: true
+  become_method: sudo
 
 
