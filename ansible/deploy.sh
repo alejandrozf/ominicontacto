@@ -71,7 +71,7 @@ Rama() {
     echo "      Version: $1"
     echo ""
 
-    #git checkout $1
+    git checkout $1
 
     ################### Build.sh #####################
 

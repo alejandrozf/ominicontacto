@@ -118,7 +118,16 @@
       - systemctl disable firewalld
   tags: issabel
 
+- name: Add start of asterisk to rc.local
+  shell: "chkconfig asterisk on"
+  when: ansible_os_family == "RedHat"
+  tags: issabel
+  become: yes
+  become_method: sudo
+
 - name: Start asterisk
   shell: "service asterisk start"
+  when: ansible_os_family == "RedHat"
+  tags: issabel
   become: yes
   become_method: sudo
