@@ -22,7 +22,7 @@ from ominicontacto_app.models import (
     ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
     AgendaManual, ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
 )
-
+from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_gestion_campanas, validar_solo_ascii_y_sin_espacios)
 
@@ -333,6 +333,21 @@ class CampanaMixinForm(object):
 
 
 class CampanaForm(CampanaMixinForm, forms.ModelForm):
+
+    def clean_bd_contacto(self):
+        bd_contacto = self.cleaned_data.get('bd_contacto')
+        bd_contacto_field = 'bd_contacto'
+        if self.instance.pk and bd_contacto_field in self.changed_data:
+            campana_service = CampanaService()
+            error = campana_service.validar_modificacion_bd_contacto(
+                self.instance, bd_contacto)
+            if error:
+                raise forms.ValidationError(
+                    _("Los nombres de las columnas de la nueva base de datos no coinciden"
+                      " con la anterior"),
+                    code='invalid')
+        return bd_contacto
+
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'formulario',
