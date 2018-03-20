@@ -803,6 +803,25 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
         self.fields['fecha_fin'].required = True
 
+        if self.instance.pk:
+            self.fields['bd_contacto'].disabled = True
+            self.fields['formulario'].disabled = True
+            self.fields['tipo_interaccion'].required = False
+
+    def clean_bd_contacto(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.bd_contacto
+        else:
+            return self.cleaned_data['bd_contacto']
+
+    def clean_formulario(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.formulario
+        else:
+            return self.cleaned_data['formulario']
+
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',

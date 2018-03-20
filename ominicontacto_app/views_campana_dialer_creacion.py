@@ -206,7 +206,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet)]
 
-    TEMPLATES = {INICIAL: 'campana_dialer/nueva_edita_campana.html',
+    TEMPLATES = {INICIAL: 'campana_dialer/edita_campana.html',
                  COLA: 'campana_dialer/create_update_queue.html',
                  OPCIONES_CALIFICACION: 'campana_dialer/opcion_calificacion.html',
                  PARAMETROS_EXTRA_WEB_FORM: 'campana_dialer/parametros_extra_web_form.html'}
