@@ -3,7 +3,7 @@
 
 {% block content %}
 <br>
-<div class="col-md-3 col-md-offset-4">
+<div>
 
     <table class="table table-stripped">
         <thead>
@@ -20,8 +20,8 @@
                 <td>{{ modulo.id }}</td>
                 <td>{{ modulo.nombre }}</td>
                 <td>
-                    <a href="{% url 'modulo_update' modulo.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'modulo_delete' modulo.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Grupo"></span></a>
+                    <a href="{% url 'modulo_update' modulo.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
+                    <a href="{% url 'modulo_delete' modulo.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Grupo"></span></a>
 
                 </td>
             </tr>

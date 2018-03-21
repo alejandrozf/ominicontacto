@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="col-md-8 col-md-offset-2">
+<div>
 <br>
     <table class="table">
         <thead>
@@ -29,7 +29,7 @@
                 {% if user.get_is_administrador %}
                 <td>
                     {% if usuario.is_agente %}
-                        <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                        <span class="far fa-check-circle" aria-hidden="true"></span>
                         {%  if not usuario.get_agente_profile %}
                             {%  if not usuario.get_supervisor_profile %}
                                 <a href="{% url 'agenteprofile_nuevo' usuario.id %}">Crear perfil</a>
@@ -38,13 +38,13 @@
                             <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">Modificar perfil</a>
                         {% endif %}
                         {% else %}
-                           <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                           <span class="fas fa-ban" aria-hidden="true"></span>
 
                     {% endif %}
                 </td>
                 <td>
                     {% if usuario.is_supervisor %}
-                        <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                        <span class="far fa-check-circle" aria-hidden="true"></span>
                     {%  if not usuario.get_supervisor_profile %}
                             {%  if not usuario.get_agente_profile %}
                                 <a href="{% url 'supervisor_create' usuario.id %}">Crear perfil</a>
@@ -53,13 +53,13 @@
                             <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">Modificar perfil</a>
                         {% endif %}
                         {% else %}
-                           <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                           <span class="fas fa-ban" aria-hidden="true"></span>
 
                     {% endif %}
                 </td>
-                <td><a href="{% url 'user_update' usuario.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar Usuario"></span></a>
+                <td><a href="{% url 'user_update' usuario.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar Usuario"></span></a>
                     {% if usuario.id != 1 %}
-                    <a href="{% url 'user_delete' usuario.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Usuario"></span></a>
+                    <a href="{% url 'user_delete' usuario.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Usuario"></span></a>
                       {% endif %}
                 </td>
                 {% endif %}

@@ -2,22 +2,22 @@
 {% load static %}
 
 {% block content %}
-<div class="col-md-3">
+<div>
     <form method="post">{% csrf_token %}
         <h4>Pausa <strong>{{ object.nombre}}</strong></h4>
         {% if object.eliminada %}
-          <h4>¿Desea reactivar esta Pausa? </h4>
+          <p>¿Desea reactivar esta Pausa? </p>
         {% else %}
-          <h4>¿Está seguro que desea eliminar esta Pausa? </h4>
+          <p>¿Está seguro que desea eliminar esta Pausa? </p>
         {% endif %}
-        <button type="submit" class="btn btn-danger btn-sm">
+        <button type="submit" class="btn btn-danger">
         {% if object.eliminada %}
-            <span class="glyphicon glyphicon-remove"></span> Reactivar
+            Reactivar
         {% else %}
-            <span class="glyphicon glyphicon-ok"></span> Eliminar
+            Eliminar
         {% endif %}
         </button>
-        <a href="{% url 'pausa_list' %}">Cancelar</a>
+        <a class="btn btn-outline-danger" href="{% url 'pausa_list' %}">Cancelar</a>
     </form>
 </div>
 {% endblock %}

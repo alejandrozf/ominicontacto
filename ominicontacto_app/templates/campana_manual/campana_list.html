@@ -12,19 +12,19 @@
             <td> {{campana.get_estado_display}}  </td>
             <td width="14%">
                 <a href="{% url 'queue_member_campana' campana.pk %}">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
+                    <span class="far fa-plus-square" aria-hidden="true" title="agregar agentes"></span>
                 </a>
                 <a href="{% url 'campana_manual_supervisors' campana.pk %}">
-                    <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
+                    <span class="fas fa-eye" aria-hidden="true" title="dar permiso para ver"></span>
                 </a>
                 <a href="{% url 'campana_manual_delete' campana.pk %}">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true" title="eliminar campana"></span>
+                    <span class="far fa-trash-alt" aria-hidden="true" title="eliminar campana"></span>
                 </a>
                 <a href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
-                    <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
+                    <span class="fas fa-list" aria-hidden="true" title="ver calificaciones"></span>
                 </a>
                 <a href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
-                    <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
+                    <span class="far fa-chart-bar" aria-hidden="true" title="ver reportes graficos"></span>
                 </a>
             </td>
         </tr>
@@ -47,24 +47,24 @@
             <td> {{campana.get_estado_display}}  </td>
             <td width="14%">
                 <a href="{% url 'queue_member_campana' campana.pk %}">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
+                    <span class="far fa-plus-square" aria-hidden="true" title="agregar agentes"></span>
                 </a>
                 <a href="{% url 'campana_manual_supervisors' campana.pk %}">
-                    <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
+                    <span class="fas fa-eye" aria-hidden="true" title="dar permiso para ver"></span>
                 </a>
                 <a href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
-                    <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
+                    <span class="fas fa-list" aria-hidden="true" title="ver calificaciones"></span>
                 </a>
                 <a href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
-                    <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
+                    <span class="far fa-chart-bar" aria-hidden="true" title="ver reportes graficos"></span>
                 </a>
                 {% if campana.oculto %}
                     <a type="button"  href="{% url 'campana_manual_desocultar' campana.pk %}">
-                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
+                        <span class="fas fa-eye" aria-hidden="true" title="visible"></span>
                     </a>
                 {% else %}
                     <a type="button" href="{% url 'campana_manual_ocultar' campana.pk %}" >
-                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
+                        <span class="fas fa-eye-slash" aria-hidden="true" title="ocultar"></span>
                     </a>
                 {% endif %}
             </td>

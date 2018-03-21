@@ -3,7 +3,7 @@
 
 {% block content %}
 <br/>
-<div class="col-md-8 col-md-offset-2">
+<div>
 
     <table class="table table-stripped">
         <thead>
@@ -19,7 +19,7 @@
             <tr>
                 <td>{{ formulario.nombre }}</td>
                 <td>{{ formulario.descripcion }}</td>
-                <td><a href="{% url 'formulario_vista' formulario.pk %}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                <td><a href="{% url 'formulario_vista' formulario.pk %}"><span class="fas fa-search" aria-hidden="true"></span></a></td>
             </tr>
        {% empty %}
         <tr>

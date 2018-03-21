@@ -3,7 +3,7 @@
 
 {% block content %}
 <br/>
-<div class="col-md-8 col-md-offset-2">
+<div>
 
     <table class="table table-stripped">
         <thead>
@@ -19,7 +19,7 @@
                 <td><a href="{% url 'edita_archivo_audio' audio.id %}">{{ audio.descripcion }}</a></td>
                 <td>
                     <a href="{% url 'eliminar_archivo_audio' audio.pk %}" class="btn btn-danger btn-sm">
-                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="far fa-trash-alt"></span>
                         Eliminar
                     </a>
                 </td>

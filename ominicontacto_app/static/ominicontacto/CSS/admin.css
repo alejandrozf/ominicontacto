@@ -1,6 +1,121 @@
-/*
-css para la parte administrativa de omnileads
-*/
+body {
+    font-family: 'Asap', sans-serif;
+}
+a {
+    color: #8FC641;
+}
+a, a:hover, a:focus {
+    color: #76AA2E;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+hr {
+    margin: 4px 0;
+}
+.wrapper-main {
+    display: flex;
+    align-items: stretch;
+} 
+/* ///// Sidebar menu */
+
+#sidebar {
+	min-width: 220px;
+    max-width: 220px;
+    min-height: 100vh;
+    background-color: #ECEEEA;
+    transition: all 0.3s;
+}
+#sidebar > ul > li {
+    position: relative;
+} 
+#sidebar ul li a {
+    display: block;
+    padding: 8px 12px 8px 34px;
+    color: #6A716A;
+}
+#sidebar .icon {
+    width: 14px;
+    font-size: 14px;
+    color: #6A716A;
+    position: absolute;
+    left: 10px;
+    top: 12px;    
+}
+#sidebar .icon.active {
+    color: #000000;
+}  
+#sidebar ul li a:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+#sidebar .submenu, #sidebar a[aria-expanded="true"] {
+    background-color: rgba(0,0,0,0.05);
+}
+#sidebar .submenu a {
+    padding-left: 34px;
+}
+#sidebar ul a.active {
+    background-color: #8FC641;
+    color: #ffffff;
+}
+#sidebar ul a.active:hover {
+    background-color: #80B13A;
+}
+
+/* ///// Sidebar chevron icons */
+
+#sidebar a[data-toggle="collapse"] {
+    position: relative;
+}
+#sidebar a[aria-expanded="false"]::before, #sidebar a[aria-expanded="true"]::before {
+    content: '\e900';
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    font-family: 'icomoon';
+    font-size: 0.6em;
+}
+
+#sidebar a[aria-expanded="true"]::before {
+    content: '\e903';
+}
+
+.sidebar-header {
+    height: 60px;
+    background-color: #F5F5F5;
+    border-bottom: 2px solid rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+}
+.sidebar-header #nav-logo {
+    width: 160px;
+}
+.sidebar-header #nav-logo-symbol {
+    width: 34px;
+    display: none;
+}
+.wrapper-content {
+    width: 100%;
+}
+.wrapper-info {
+    padding: 14px 20px 0 20px;
+}
+#topbar {
+    height: 60px;
+    padding: 0 20px;
+    background: #ffffff;
+    border-bottom: 2px solid rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;  
+    position: relative;  
+}
+#nav-user {
+    position: absolute;
+    right: 20px;
+}
+
+/* ///// Grafics */
 
 .graficos-avances svg {
     min-height: 100px;
@@ -11,4 +126,134 @@ css para la parte administrativa de omnileads
     background: #c3c3c3 !important;
     color: #222;
 }
+/* ///// Button styles */
+.btn-primary {
+    background-color: #8FC641;
+    border-color: #8FC641;
+}
+.btn-primary:hover {
+    background-color: #9FD84E;
+    border-color: #8FC641;    
+}
+.btn-light {
+    background-color: #FFFFFF;
+    border: solid 1px rgba(0,0,0,0.2);
+}
+.btn-light:hover {
+    background-color: #F0F0F0;
+}
+.btn-outline-primary {
+    color: #8FC641;
+    border-color: #8FC641;
+}
+.btn-outline-primary:hover {
+    color: #8FC641;
+    border-color: #8FC641;
+    background-color: #F9FDF3;
+}
+.btn-outline-danger {
+    color: #D25836;
+    border-color: #D25836;
+}
+.btn-outline-danger:hover {
+    color: #D25836;
+    border-color: #D25836;
+    background-color: #FFECE7;
+}
+@media (min-width: 768px) {
 
+    #sidebar.active {
+        min-width: 60px;
+        max-width: 60px;
+    }
+    #sidebar.active  #nav-logo {
+        display: none;    
+    }
+    #sidebar.active  #nav-logo-symbol {
+        display: block;
+    }
+    #sidebar.active > ul > li {
+        position: relative;
+    }       
+    #sidebar.active > ul > li:hover {
+        background-color: rgba(0,0,0,0.15);
+        cursor: pointer;
+    }
+    #sidebar.active > ul > li > a {
+        min-width: 300px;
+        padding: 9px 14px;        
+        position: absolute;
+        left: 60px;
+        top: 0;
+        display: none;
+        z-index: 100;
+    }
+    #sidebar.active .menu-link {
+        background-color: #EBEDE9;
+        border-left: 1px solid rgba(0,0,0,0.15); 
+    }
+    #sidebar.active .menu-link:hover {
+        background-color: #DFE1DD;
+    }
+    #sidebar.active .menu-link.active {
+        background-color: #8FC641;
+        color: #ffffff;
+    }    
+    #sidebar.active .menu-link.active:hover {
+        background-color: #80B13A;
+    }
+    #sidebar.active .menu-header {
+        background-color: #C9CBC7;
+        border-left: 1px solid rgba(0,0,0,0.15); 
+    }
+    #sidebar.active ul.submenu {
+        min-width: 300px;
+        background-color: #EBEDE9;
+        border-left: 1px solid rgba(0,0,0,0.15);        
+        position: absolute;
+        left: 60px;
+        top: 42px;
+        display: none;
+        z-index: 100;
+    }
+    #sidebar.active ul.submenu a {
+        display: block;
+        padding: 6px 10px;
+    }
+
+    #sidebar.active .icon {
+        width: 100%;
+        color: #000000;
+        padding: 14px 22px;
+        position: initial;
+        left: initial;
+    }      
+    #sidebar.active .icon.active {
+        background-color: rgba(0,0,0,0.1);
+    }     
+    #sidebar.active > ul > li:hover ul.submenu, #sidebar.active > ul > li:hover .menu-link, #sidebar.active > ul > li:hover .menu-header {
+        display: block;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+#sidebar {
+    margin-left: -220px;
+}
+#sidebar ul i {
+    position: initial !important;
+    left: initial;
+}    
+#sidebar.active {
+    margin-left: 0;
+    min-width: 200px;
+    max-width: 200px;     
+}
+#sidebar.active ul i {
+    position: absolute !important;
+    left: 0;
+} 
+
+}

@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="col-md-6">
+<div>
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
@@ -17,13 +17,13 @@
     <div class="form-group row">
         {{ form.url.errors }}
         <label class="col-sm-3 control-label" for="{{ form.url.id_for_label }}">Url: </label>
-        <div class="col-sm-9">
+        <div class="col-sm-6">
               {{ form.url }}
         </div>
     </div>
 
     </br>
-    <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
+    <button type="submit" id="id_guardar" class="btn btn-primary">
         Guardar
     </button>
 

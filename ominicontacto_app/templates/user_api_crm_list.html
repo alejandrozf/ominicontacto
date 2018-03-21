@@ -3,7 +3,7 @@
 
 {% block content %}
 <br>
-<div class="col-md-6 col-md-offset-3">
+<div>
 
     <table class="table table-stripped">
         <thead>
@@ -18,7 +18,7 @@
                 <td>{{ user.usuario }}</td>
                 <td>{{ user.password}}</td>
                 <td>
-                    <a href="{% url 'user_api_crm_update' user.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
+                    <a href="{% url 'user_api_crm_update' user.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
 
                 </td>
             </tr>

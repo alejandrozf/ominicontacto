@@ -6,8 +6,8 @@
     <form method="post">{% csrf_token %}
         <h4>Calificacion<strong>{{ object.nombre}}</strong></h4>
         <h4>¿Esta seguro que desea eliminar este calificacion? </h4>
-        <button type="submit" class="btn btn-danger btn-sm">
-            <span class="glyphicon glyphicon-remove"></span> Eliminar
+        <button type="submit" class="btn btn-danger">
+            <span class="far fa-trash-alt"></span> Eliminar
         </button>
         <a href="{% url 'calificacion_list' %}">Cancelar</a>
     </form>

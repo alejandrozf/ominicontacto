@@ -11,21 +11,21 @@
                                 </td>
                                 <td>
                                     <a href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar contacto"></span>
+                                    <span class="far fa-plus-square" aria-hidden="true" title="agregar contacto"></span>
                                     </a>
                                     <a href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-th-list" aria-hidden="true" title="listado de contactos"></span>
+                                    <span class="fas fa-list" aria-hidden="true" title="listado de contactos"></span>
                                     </a>
                                     <a href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-asterisk" aria-hidden="true" title="agregar contactos desde el csv"></span>
+                                    <span class="fas fa-asterisk" aria-hidden="true" title="agregar contactos desde el csv"></span>
                                     </a>
                                     {% if base_datos_contacto.oculto %}
-                                    <a type="button"  href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}" c>
-                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
+                                    <a href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}" c>
+                                        <span class="fas fa-eye" aria-hidden="true" title="visible"></span>
                                     </a>
                                     {% else %}
-                                    <a type="button" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}" >
-                                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
+                                    <a href="{% url 'oculta_base_dato' base_datos_contacto.pk %}" >
+                                        <span class="fas fa-eye-slash" aria-hidden="true" title="ocultar"></span>
                                     </a>
                                     {% endif %}
                                 </td>

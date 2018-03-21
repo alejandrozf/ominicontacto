@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-10 col-md-offset-1">
+    <div>
         <form id="form_estados_campanas" role="form" method="post">
             {% csrf_token %}
             <input type="hidden" id="campana_id" name="campana_id">
@@ -62,7 +62,7 @@
                         <th>Estado</th>
                         <th>Acciones
                             <a  href="#" style="color: black; text-decoration: none;" onclick="{{ mostrar_ocultas_tipo|default:"mostrar_campanas_ocultas()" }}" >
-                                <span class="glyphicon glyphicon-resize-small" aria-hidden="true" title="Mostrar ocultas"></span>
+                                <span class="fas fa-expand-arrows-alt" aria-hidden="true" title="Mostrar ocultas"></span>
                             </a>
                         </th>
                     </tr>

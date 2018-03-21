@@ -3,22 +3,20 @@
 
 {% block content %}
 
-        <div class="panel-heading">
-            <h4 class="inline">Acerca de la Aplicación.</h4>
-            <div class="clear-fix"></div>
-        </div>
+
+        <h4>Acerca de la Aplicación.</h4>
+
         <div class="panel-body">
-            <div class="col-lg-12">
-                <div>
-                    <dl class="dl-horizontal">
-                      <dt>Branch</dt>
-                      <dd>{{ branch }}</dd>
-                      <dt>Commit</dt>
-                      <dd>{{ commit }}</dd>
-                      <dt>Deploy</dt>
-                      <dd>{{ fecha_deploy }}</dd>
-                    </dl> 
-                </div>                           
-            </div>
-        </div>
+
+        <div>
+            <dl class="dl-horizontal">
+              <dt>Branch</dt>
+              <dd>{{ branch }}</dd>
+              <dt>Commit</dt>
+              <dd>{{ commit }}</dd>
+              <dt>Deploy</dt>
+              <dd>{{ fecha_deploy }}</dd>
+            </dl> 
+        </div>                           
+
 {% endblock %}

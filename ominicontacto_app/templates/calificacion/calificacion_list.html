@@ -3,7 +3,7 @@
 
 {% block content %}
 <br/>
-<div class="col-md-3 col-md-offset-4">
+<div>
 
     <table class="table table-stripped">
         <thead>
@@ -18,8 +18,8 @@
             <tr>
                 <td>{{ calificacion.nombre }}</td>
                 <td>
-                    <a href="{% url 'calificacion_update' calificacion.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'calificacion_delete' calificacion.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Calificacion"></span></a>
+                    <a href="{% url 'calificacion_update' calificacion.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
+                    <a href="{% url 'calificacion_delete' calificacion.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Calificacion"></span></a>
 
                 </td>
             </tr>

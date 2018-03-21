@@ -3,7 +3,7 @@
 
 {% block content %}
 <br>
-<div class="col-md-6 col-md-offset-3">
+<div>
 
     <table class="table table-stripped">
         <thead>
@@ -28,37 +28,37 @@
                 <td>{{ grupo.nombre }}</td>
                 <td>
                     {% if grupo.auto_attend_ics %}
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <span class="far fa-check-circle" aria-hidden="true"></span>
                     {% else %}
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <span class="fas fa-ban" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <td>
                     {% if grupo.auto_attend_inbound %}
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <span class="far fa-check-circle" aria-hidden="true"></span>
                     {% else %}
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <span class="fas fa-ban" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <td>
                     {% if grupo.auto_attend_dialer %}
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <span class="far fa-check-circle" aria-hidden="true"></span>
                     {% else %}
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <span class="fas fa-ban" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <td>
                     {% if grupo.auto_pause %}
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <span class="far fa-check-circle" aria-hidden="true"></span>
                     {% else %}
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <span class="fas fa-ban" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <td>{{grupo.auto_unpause}}</td>
                 {% if user.get_is_administrador %}
                 <td>
-                    <a href="{% url 'grupo_update' grupo.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'grupo_delete' grupo.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Grupo"></span></a>
+                    <a href="{% url 'grupo_update' grupo.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
+                    <a href="{% url 'grupo_delete' grupo.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Grupo"></span></a>
 
                 </td>
                 {% endif %}

@@ -3,7 +3,7 @@
 
 {% block content %}
 <br/>
-<div class="col-md-3 col-md-offset-4">
+<div>
 
     <table class="table table-stripped">
         <thead>
@@ -20,8 +20,8 @@
                 <td>{{ pausa.id }}</td>
                 <td>{{ pausa.nombre }}</td>
                 <td>
-                    <a href="{% url 'pausa_update' pausa.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'pausa_delete' pausa.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar"></span></a>
+                    <a href="{% url 'pausa_update' pausa.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
+                    <a href="{% url 'pausa_delete' pausa.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar"></span></a>
 
                 </td>
             </tr>
@@ -53,8 +53,8 @@
                 <td>{{ pausa.id }}</td>
                 <td>{{ pausa.nombre }}</td>
                 <td>
-                    <a href="{% url 'pausa_update' pausa.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'pausa_delete' pausa.id %}"><span class="glyphicon glyphicon-refresh" aria-hidden="true" title="Reactivar"></span></a>
+                    <a href="{% url 'pausa_update' pausa.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
+                    <a href="{% url 'pausa_delete' pausa.id %}"><span class="fas fa-redo" aria-hidden="true" title="Reactivar"></span></a>
                 </td>
             </tr>
         {% endfor %}

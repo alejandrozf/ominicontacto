@@ -50,7 +50,7 @@ function filtrar_pagina(pagina) {
 {% endblock %}
 {% block content %}
 
-<div class="col-md-3">
+<div>
 
     <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
         {% csrf_token %}
@@ -62,7 +62,7 @@ function filtrar_pagina(pagina) {
         </button>
     </form>
 </div>
-<div class="col-md-9">
+<div>
     <table class="table table-stripped">
         <thead>
             <tr>
