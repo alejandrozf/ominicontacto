@@ -4,8 +4,6 @@
 
 from __future__ import unicode_literals
 
-import uuid
-
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -107,7 +105,8 @@ class CampanaDialerTemplateCreateView(TemplateMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.nombre = "TEMPLATE_{0}".format(uuid.uuid4())
+        ultimo_id = Campana.objects.obtener_ultimo_id_campana()
+        self.object.nombre = "TEMPLATE_{0}".format(ultimo_id + 1)
         self.object.es_template = True
         self.object.estado = Campana.ESTADO_TEMPLATE_EN_DEFINICION
         if self.object.tipo_interaccion is Campana.FORMULARIO and \
