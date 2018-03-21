@@ -92,7 +92,7 @@ class EstadisticasContactacion():
         :return: cantidad por calificacion
         """
 
-        calificaciones_query = campana.calificaconcliente.values(
+        calificaciones_query = campana.obtener_calificaciones().values(
             'calificacion__nombre', 'calificacion__id').annotate(Count('calificacion')).filter(
             calificacion__count__gt=0)
 
@@ -181,7 +181,7 @@ class RecicladorContactosCampanaDIALER():
             calificaciones seleccionada
 
         """
-        calificaciones_query = campana.calificaconcliente.filter(
+        calificaciones_query = campana.obtener_calificaciones().filter(
             calificacion__in=reciclado_calificacion).distinct()
 
         contactos = [calificacion.contacto for calificacion in calificaciones_query]

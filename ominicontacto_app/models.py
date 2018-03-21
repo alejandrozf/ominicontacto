@@ -991,6 +991,9 @@ class Campana(models.Model):
         if self.queue_campana:
             return self.queue_campana.get_string_queue_asterisk()
 
+    def obtener_calificaciones(self):
+        return CalificacionCliente.objects.calificaciones_de_campana(self)
+
 
 class QueueManager(models.Manager):
 
@@ -2241,6 +2244,9 @@ class CalificacionClienteManager(models.Manager):
                 cantidad=Count('calificacion')).filter(campana=campana)
         except CalificacionCliente.DoesNotExist:
             raise (SuspiciousOperation("No se encontro califacaciones "))
+
+    def calificaciones_de_campana(self, campana):
+        return self.filter(opcion_calificacion__campana_id=campana.id)
 
 
 class CalificacionCliente(models.Model):

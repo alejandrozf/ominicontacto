@@ -44,34 +44,30 @@
                       </tr>
                     </thead>
                     <tbody>
-                        {% for contacto in campana.calificaconcliente.all %}
+                        {% for calificacion in campana.obtener_calificaciones %}
                             <tr>
 
                                 <td>
-                                    {{ contacto.contacto.telefono }}
+                                    {{ calificacion.contacto.telefono }}
                                 </td>
                                 <td>
-                                    {{ contacto.contacto.datos}}
+                                    {{ calificacion.contacto.datos}}
                                 </td>
                                  <td>
-                                {% if contacto.calificacion %}
-                                    {{ contacto.calificacion.nombre }}
-                                {% else %}
-                                   {{campana.gestion}}
-                                {% endif %}
+                                    {{ calificacion.opcion_calificacion.nombre }}
                                 </td>
                                 <td>
-                                    {% if contacto.observaciones %}
-                                        {{contacto.observaciones}}
+                                    {% if calificacion.observaciones %}
+                                        {{calificacion.observaciones}}
                                     {% endif %}
                                 </td>
-                                <td>{{contacto.contacto.bd_contacto}}</td>
+                                <td>{{calificacion.contacto.bd_contacto}}</td>
                             </tr>
                         {% empty %}
                             <tr>
                                 <td colspan="16">
                                     <p class="text-center text-danger">
-                                        <em>No se encontraron Contactos para esta campaña.</em>
+                                        <em>No se encontraron Calificaciones para esta campaña.</em>
                                     </p>
                                 </td>
                             </tr>
