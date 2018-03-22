@@ -2,56 +2,52 @@
 {% load static %}
 
 {% block content %}
-<br>
-<div>
 
-    <table class="table table-stripped">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>nombre del agente</th>
-                <th>sip_extension</th>
-                <th>modulos</th>
-                <th>grupo</th>
-                <th>campañas</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for agente in agentes %}
-            <tr>
-                <td>{{ agente.id }}</td>
-                <td>{{ agente.user.get_full_name}}</td>
-                <td>{{ agente.sip_extension }}</td>
-                <td>{{ agente.get_modulos}}</td>
-                <td>{{ agente.grupo}}</td>
-                <td>
-                    {% for queue in agente.campana_member.all %}
-                        {{ queue.queue_name.campana.nombre }}
-                    {% endfor %}
-                </td>
-                <td>
-                     {% if agente.is_inactive %}
-                    Agente Inactivo
-                    <a class="btn btn-light"  href="{% url 'agente_activar' agente.pk %}" >
-                        activar
-                    </a>
-                    {% else %}
-                    Agente Activo
-                    <a class="btn btn-light" href="{% url 'agente_desactivar' agente.pk %}" >
-                        desactivar
-                    </a>
-                    {% endif %}
-                </td>
-            </tr>
-       {% empty %}
+<table class="table table-stripped">
+    <thead>
         <tr>
-            <td colspan="7">No existen agentes</td>
+            <th>id</th>
+            <th>nombre del agente</th>
+            <th>sip_extension</th>
+            <th>modulos</th>
+            <th>grupo</th>
+            <th>campañas</th>
+            <th></th>
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for agente in agentes %}
+        <tr>
+            <td>{{ agente.id }}</td>
+            <td>{{ agente.user.get_full_name}}</td>
+            <td>{{ agente.sip_extension }}</td>
+            <td>{{ agente.get_modulos}}</td>
+            <td>{{ agente.grupo}}</td>
+            <td>
+                {% for queue in agente.campana_member.all %}
+                    {{ queue.queue_name.campana.nombre }}
+                {% endfor %}
+            </td>
+            <td>
+                 {% if agente.is_inactive %}
+                Agente Inactivo
+                <a class="btn btn-light"  href="{% url 'agente_activar' agente.pk %}" >
+                    activar
+                </a>
+                {% else %}
+                Agente Activo
+                <a class="btn btn-light" href="{% url 'agente_desactivar' agente.pk %}" >
+                    desactivar
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td colspan="7">No existen agentes</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-
-</div>
 {% endblock %}

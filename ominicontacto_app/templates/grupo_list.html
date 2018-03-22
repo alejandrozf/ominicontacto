@@ -2,75 +2,71 @@
 {% load static %}
 
 {% block content %}
-<br>
-<div>
 
-    <table class="table table-stripped">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Nombre</th>
-                <th>Auto attend ics</th>
-                <th>Auto attend inbound</th>
-                <th>Auto attend dialer</th>
-                <th>Auto pause</th>
-                <th>Auto unpause</th>
-                {% if user.get_is_administrador %}
-                <th>acciones</th>
-                {% endif %}
-
-            </tr>
-        </thead>
-        <tbody>
-        {% for grupo in object_list %}
-            <tr>
-                <td>{{ grupo.id }}</td>
-                <td>{{ grupo.nombre }}</td>
-                <td>
-                    {% if grupo.auto_attend_ics %}
-                        <span class="far fa-check-circle" aria-hidden="true"></span>
-                    {% else %}
-                        <span class="fas fa-ban" aria-hidden="true"></span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if grupo.auto_attend_inbound %}
-                        <span class="far fa-check-circle" aria-hidden="true"></span>
-                    {% else %}
-                        <span class="fas fa-ban" aria-hidden="true"></span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if grupo.auto_attend_dialer %}
-                        <span class="far fa-check-circle" aria-hidden="true"></span>
-                    {% else %}
-                        <span class="fas fa-ban" aria-hidden="true"></span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if grupo.auto_pause %}
-                        <span class="far fa-check-circle" aria-hidden="true"></span>
-                    {% else %}
-                        <span class="fas fa-ban" aria-hidden="true"></span>
-                    {% endif %}
-                </td>
-                <td>{{grupo.auto_unpause}}</td>
-                {% if user.get_is_administrador %}
-                <td>
-                    <a href="{% url 'grupo_update' grupo.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'grupo_delete' grupo.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Grupo"></span></a>
-
-                </td>
-                {% endif %}
-            </tr>
-       {% empty %}
+<table class="table">
+    <thead>
         <tr>
-            <td colspan="7">No existen grupos</td>
+            <th>id</th>
+            <th>Nombre</th>
+            <th>Auto attend ics</th>
+            <th>Auto attend inbound</th>
+            <th>Auto attend dialer</th>
+            <th>Auto pause</th>
+            <th>Auto unpause</th>
+            {% if user.get_is_administrador %}
+            <th>acciones</th>
+            {% endif %}
+
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for grupo in object_list %}
+        <tr>
+            <td>{{ grupo.id }}</td>
+            <td>{{ grupo.nombre }}</td>
+            <td>
+                {% if grupo.auto_attend_ics %}
+                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                {% else %}
+                    <span class="fas fa-ban" aria-hidden="true"></span>
+                {% endif %}
+            </td>
+            <td>
+                {% if grupo.auto_attend_inbound %}
+                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                {% else %}
+                    <span class="fas fa-ban" aria-hidden="true"></span>
+                {% endif %}
+            </td>
+            <td>
+                {% if grupo.auto_attend_dialer %}
+                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                {% else %}
+                    <span class="fas fa-ban" aria-hidden="true"></span>
+                {% endif %}
+            </td>
+            <td>
+                {% if grupo.auto_pause %}
+                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                {% else %}
+                    <span class="fas fa-ban" aria-hidden="true"></span>
+                {% endif %}
+            </td>
+            <td>{{grupo.auto_unpause}}</td>
+            {% if user.get_is_administrador %}
+            <td>
+                <a href="{% url 'grupo_update' grupo.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
+                <a href="{% url 'grupo_delete' grupo.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Grupo"></span></a>
 
+            </td>
+            {% endif %}
+        </tr>
+   {% empty %}
+    <tr>
+        <td colspan="7">No existen grupos</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-</div>
 {% endblock %}

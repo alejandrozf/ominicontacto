@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="col-md-6">
+
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
@@ -38,6 +38,6 @@
     </a>
 
 </form>
-</div>
+
 
 {% endblock %}

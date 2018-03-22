@@ -2,37 +2,33 @@
 {% load static %}
 
 {% block content %}
-<br>
-<div>
 
-    <table class="table table-stripped">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
-
-            </tr>
-        </thead>
-        <tbody>
-        {% for modulo in object_list %}
-            <tr>
-                <td>{{ modulo.id }}</td>
-                <td>{{ modulo.nombre }}</td>
-                <td>
-                    <a href="{% url 'modulo_update' modulo.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'modulo_delete' modulo.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Grupo"></span></a>
-
-                </td>
-            </tr>
-       {% empty %}
+<table class="table table-stripped">
+    <thead>
         <tr>
-            <td colspan="3">No existen modulos</td>
+            <th>id</th>
+            <th>Nombre</th>
+            <th>Acciones</th>
+
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for modulo in object_list %}
+        <tr>
+            <td>{{ modulo.id }}</td>
+            <td>{{ modulo.nombre }}</td>
+            <td>
+                <a href="{% url 'modulo_update' modulo.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
+                <a href="{% url 'modulo_delete' modulo.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Grupo"></span></a>
 
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td colspan="3">No existen modulos</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-</div>
 {% endblock %}

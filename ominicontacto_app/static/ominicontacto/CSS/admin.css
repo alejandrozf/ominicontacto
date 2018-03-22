@@ -17,13 +17,18 @@ hr {
     align-items: stretch;
 } 
 /* ///// Sidebar menu */
+.collapsing {
+    -webkit-transition: 0.1s;
+    transition: 0.1s;
+    
+}
 
 #sidebar {
 	min-width: 220px;
     max-width: 220px;
     min-height: 100vh;
     background-color: #ECEEEA;
-    transition: all 0.3s;
+    transition: 0.3s;
 }
 #sidebar > ul > li {
     position: relative;
@@ -99,7 +104,7 @@ hr {
     width: 100%;
 }
 .wrapper-info {
-    padding: 14px 20px 0 20px;
+    padding: 30px;
 }
 #topbar {
     height: 60px;
@@ -160,6 +165,17 @@ hr {
     border-color: #D25836;
     background-color: #FFECE7;
 }
+
+/* ///// Tables styles */
+.table thead th {
+    background-color: #F7F7F7;
+    border-top: 0;
+    border-bottom: 2px solid rgba(0,0,0,0.15);
+}
+
+
+
+
 @media (min-width: 768px) {
 
     #sidebar.active {

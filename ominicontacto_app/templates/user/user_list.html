@@ -3,90 +3,87 @@
 
 {% block content %}
 
-<div>
-<br>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>username</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                {% if user.get_is_administrador %}
-                <td>&nbsp;agente</td>
-                <td>supervisor</td>
-                <td>acciones</td>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-        {% for usuario in page_obj %}
-            <tr>
-                <td>{{ usuario.id }}</td>
-                <td>{{ usuario.username }}</td>
-                <td>{{ usuario.first_name }}</td>
-                <td>{{ usuario.last_name }}</td>
-                {% if user.get_is_administrador %}
-                <td>
-                    {% if usuario.is_agente %}
-                        <span class="far fa-check-circle" aria-hidden="true"></span>
-                        {%  if not usuario.get_agente_profile %}
-                            {%  if not usuario.get_supervisor_profile %}
-                                <a href="{% url 'agenteprofile_nuevo' usuario.id %}">Crear perfil</a>
-                            {% endif %}
-                        {% else %}
-                            <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">Modificar perfil</a>
-                        {% endif %}
-                        {% else %}
-                           <span class="fas fa-ban" aria-hidden="true"></span>
 
-                    {% endif %}
-                </td>
-                <td>
-                    {% if usuario.is_supervisor %}
-                        <span class="far fa-check-circle" aria-hidden="true"></span>
-                    {%  if not usuario.get_supervisor_profile %}
-                            {%  if not usuario.get_agente_profile %}
-                                <a href="{% url 'supervisor_create' usuario.id %}">Crear perfil</a>
-                            {% endif %}
-                        {% else %}
-                            <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">Modificar perfil</a>
-                        {% endif %}
-                        {% else %}
-                           <span class="fas fa-ban" aria-hidden="true"></span>
-
-                    {% endif %}
-                </td>
-                <td><a href="{% url 'user_update' usuario.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar Usuario"></span></a>
-                    {% if usuario.id != 1 %}
-                    <a href="{% url 'user_delete' usuario.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Usuario"></span></a>
-                      {% endif %}
-                </td>
-                {% endif %}
-            </tr>
-       {% empty %}
+<table class="table">
+    <thead>
         <tr>
-            <td colspan="3">No existen usuarios</td>
+            <th>id</th>
+            <th>username</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            {% if user.get_is_administrador %}
+            <th>&nbsp;agente</th>
+            <th>supervisor</th>
+            <th>acciones</th>
+            {% endif %}
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for usuario in page_obj %}
+        <tr>
+            <td>{{ usuario.id }}</td>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.first_name }}</td>
+            <td>{{ usuario.last_name }}</td>
+            {% if user.get_is_administrador %}
+            <td>
+                {% if usuario.is_agente %}
+                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                    {%  if not usuario.get_agente_profile %}
+                        {%  if not usuario.get_supervisor_profile %}
+                            <a href="{% url 'agenteprofile_nuevo' usuario.id %}">Crear perfil</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">Modificar perfil</a>
+                    {% endif %}
+                    {% else %}
+                       <span class="fas fa-ban" aria-hidden="true"></span>
 
-    <div class="pagination">
-        <span class="pager">
-            {% if page_obj.has_previous %}
-                <li><a href="{% url 'user_list' page=page_obj.previous_page_number%}">Anterior</a></li>
+                {% endif %}
+            </td>
+            <td>
+                {% if usuario.is_supervisor %}
+                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                {%  if not usuario.get_supervisor_profile %}
+                        {%  if not usuario.get_agente_profile %}
+                            <a href="{% url 'supervisor_create' usuario.id %}">Crear perfil</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">Modificar perfil</a>
+                    {% endif %}
+                    {% else %}
+                       <span class="fas fa-ban" aria-hidden="true"></span>
+
+                {% endif %}
+            </td>
+            <td><a href="{% url 'user_update' usuario.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar Usuario"></span></a>
+                {% if usuario.id != 1 %}
+                <a href="{% url 'user_delete' usuario.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Usuario"></span></a>
+                  {% endif %}
+            </td>
             {% endif %}
+        </tr>
+   {% empty %}
+    <tr>
+        <td colspan="3">No existen usuarios</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-            <span class="current">
-                Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
-            </span>
+<div class="pagination">
+    <span class="pager">
+        {% if page_obj.has_previous %}
+            <li><a href="{% url 'user_list' page=page_obj.previous_page_number%}">Anterior</a></li>
+        {% endif %}
 
-            {% if page_obj.has_next %}
-                 <li><a href="{% url 'user_list' page=page_obj.next_page_number %}">Siguiente</a></li>
-            {% endif %}
+        <span class="current">
+            Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
         </span>
-    </div>
 
+        {% if page_obj.has_next %}
+             <li><a href="{% url 'user_list' page=page_obj.next_page_number %}">Siguiente</a></li>
+        {% endif %}
+    </span>
 </div>
 {% endblock %}

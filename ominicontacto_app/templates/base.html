@@ -10,28 +10,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /    >
     <!-- Bootstrap -->
     <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
-
-<!--     <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}" >
-    <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap-theme.min.css' %}">
-    <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/font-awesome.min.css' %}"> -->
-
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}"></link>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">    
 
-    <!--
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .navbar-header {
-    position: absolute;
-      }
-    </style> -->
     {% block extra_css %}{% endblock %}
-
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
@@ -330,15 +314,28 @@ $(document).ready(function () {
     $("a[href='" + currentPath + "']").addClass("active");
 
     // Expand sidebar menus for current selected anchor
+
     $("a[href='" + currentPath + "']").parent().parent(".collapse").collapse('show');
 
     // Add active class to sidebar icon
     $("a[href='" + currentPath + "']").parent().parent().siblings(".icon").addClass('active');
     $("a[href='" + currentPath + "']").siblings(".icon").addClass('active');
 
-    //Toogle sidebar
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
+    // //Toogle sidebar and keep current state on page reload    
+    //retrieve current state
+    $('#sidebar').toggleClass(window.sessionStorage.toggled);
+
+    /* Toggle */
+    $('#sidebarCollapse').on('click',function(){
+
+       if (window.sessionStorage.toggled != "active" ) {
+          $('#sidebar').toggleClass("active", true );
+          window.sessionStorage.toggled = "active";
+       } else {
+          $('#sidebar').toggleClass("active", false );
+          window.sessionStorage.toggled = "";
+       }
+
     });
 
 });
