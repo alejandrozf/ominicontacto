@@ -3,7 +3,7 @@
 - include: sshkey_transfer.yml
   tags:
     - omniapp
-    - postinstall
+    - sshkey-transfer
 
 - include: django_migrations.yml
   tags:

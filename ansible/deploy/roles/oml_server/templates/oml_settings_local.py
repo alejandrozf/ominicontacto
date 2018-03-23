@@ -50,8 +50,8 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = "/opt/omnileads/static"
-MEDIA_ROOT =    "/opt/omnileads/media_root"
+STATIC_ROOT = "/home/freetech/static"
+MEDIA_ROOT =    "/home/freetech/media_root"
 
 OML_OMNILEADS_IP = "{{ omni_ip }}"
 
@@ -60,13 +60,13 @@ SESSION_COOKIE_AGE = {{ session_cookie_age }}
 
 #  para hacer un include de este archivo
 # **** RECORDAR: revisar permisos y que existan los directorios ****
-OML_QUEUE_FILENAME = "/opt/omnileads/extensions_fts_queues.conf"
+OML_QUEUE_FILENAME = "/home/freetech/extensions_fts_queues.conf"
 OML_ASTERISK_HOSTNAME = "root@{{ localhost }}"
-OML_ASTERISK_REMOTEPATH = "/opt/asterisk-13/etc/asterisk/"
-OML_SIP_FILENAME = "/opt/omnileads/sip_fts.conf"
-OML_QUEUES_FILENAME = "/opt/omnileads/queues_fts.conf"
-OML_BACKLIST_REMOTEPATH  = "/opt/asterisk-13/var/spool/asterisk/"
-OML_GLOBALS_VARIABLES_FILENAME = "/opt/omnileads/extensions_fts_globals.conf"
+OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
+OML_SIP_FILENAME = "/home/freetech/sip_fts.conf"
+OML_QUEUES_FILENAME = "/home/freetech/queues_fts.conf"
+OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
+OML_GLOBALS_VARIABLES_FILENAME = "/home/freetech/extensions_fts_globals.conf"
 
 # parametros de conexion con base de datos mysql de asterisk
 DATABASE_MYSQL_ASTERISK = {
@@ -108,7 +108,7 @@ OML_WOMBAT_URL = "http://{{ omni_ip }}:8080/wombat"
 # 'OML_WOMBAT_FILENAME': donde se alojara temporalmente los json de wombat
 # ejemplo "http://172.16.20.222/wombat"
 
-OML_WOMBAT_FILENAME = "/opt/omnileads/"
+OML_WOMBAT_FILENAME = "/home/freetech/"
 
 # 'OML_WOMBAT_USER': user para conectarse con la api de WOMBAT DIALER
 # "user_test"
@@ -148,7 +148,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': '/opt/omnileads/log/{0}'.format(_logging_output_file),
+            'filename': '/home/freetech/log/{0}'.format(_logging_output_file),
             'formatter': 'verbose'
         },
     },

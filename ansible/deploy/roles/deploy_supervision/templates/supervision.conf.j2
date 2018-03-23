@@ -2,11 +2,11 @@ server {
     listen 10443 http2 ssl;
     listen [::]:10443 http2 ssl;
     server_name default_server;
-    ssl_certificate /opt/omnileads/nginx_certs/cert.pem;
-    ssl_certificate_key /opt/omnileads/nginx_certs/key.pem;
+    ssl_certificate /home/freetech/nginx_certs/cert.pem;
+    ssl_certificate_key /home/freetech/nginx_certs/key.pem;
     access_log      /var/log/nginx/example.com_access.log combined;
     error_log       /var/log/nginx/example.com_error.log error;
-    root /opt/omnileads;
+    root /home/freetech;
     index index.php index.html;
     location / {
 

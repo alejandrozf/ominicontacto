@@ -1,7 +1,7 @@
 ---
 
 - name: Delete of asterisk files managed by omnileads
-  shell: "rm -rf {{ item }} chdir=/opt/asterisk-13/etc/asterisk/"
+  shell: "rm -rf {{ item }} chdir=/etc/asterisk/"
   with_items:
       - extensions_custom.conf
       - extensions_fts.conf
@@ -21,7 +21,7 @@
     - issabel
     - postinstall
 
-- shell: "rm -rf {{ item}} chdir=/opt/asterisk-13/var/lib/asterisk/agi-bin/"
+- shell: "rm -rf {{ item}} chdir=/var/lib/asterisk/agi-bin/"
   with_items:
       - omni-asterisk-logout.php
       - omni-blacklist.php
@@ -33,7 +33,7 @@
     - postinstall
 
 - name: Config of asterisk-freepbx for OML
-  file: "state=link src=/opt/omnileads/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/opt/asterisk-13/etc/asterisk/{{ item }} force=true"
+  file: "state=link src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/etc/asterisk/{{ item }} force=true"
   with_items:
       - extensions_custom.conf
       - extensions_fts.conf
@@ -53,7 +53,7 @@
     - issabel
     - postinstall
 
-- copy: "src=/opt/omnileads/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/opt/asterisk-13/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner=omnileads group=omnileads"
+- copy: "src=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest=/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner=asterisk group=asterisk"
   with_items:
       - omni-asterisk-logout.php
       - omni-blacklist.php
@@ -64,11 +64,8 @@
     - issabel
     - postinstall
 
-- name: Create of asterisk cron
-  file: path=/var/spool/cron/asterisk state=touch owner=root group=root mode=755
-
 - name: Asterisk crontab modification
-  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * /opt/asterisk-13/asterisk/agi-bin/omni-asterisk-logout.php\""
+  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * /var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
   tags: issabel
 
 - name: Create /usr/local/parselog
@@ -76,26 +73,26 @@
   tags: issabel
 
 - name: Set ownership to asterisk user
-  shell: "{{ item }} chdir=/opt/omnileads/ominicontacto/ominicontacto_voip/asterisk-files"
+  shell: "{{ item }} chdir=/home/freetech/ominicontacto/ominicontacto_voip/asterisk-files"
   with_items:
       - cp update_mix_mixmonitor.pl /usr/local/parselog
       - chmod +x /usr/local/parselog/update_mix_mixmonitor.pl
-      - chown omnileads.omnileads -R /usr/local/parselog
-      - cp /opt/omnileads/ominicontacto/ominicontacto_voip/extra-files/odbcinst.ini /etc/
-      - cp /opt/omnileads/ominicontacto/ominicontacto_voip/extra-files/odbc.ini /etc/
-      - mkdir /opt/asterisk-13/var/lib/asterisk/sounds/es
-      - mkdir /opt/asterisk-13/var/lib/asterisk/sounds/en
-      - tar xzvf es-oml.tgz -C /opt/asterisk-13/var/lib/asterisk/sounds/es/
-      - tar xzvf en-oml.tgz -C /opt/asterisk-13/var/lib/asterisk/sounds/en/
+      - chown asterisk.asterisk -R /usr/local/parselog
+      - cp /home/freetech/ominicontacto/ominicontacto_voip/extra-files/odbcinst.ini /etc/
+      - cp /home/freetech/ominicontacto/ominicontacto_voip/extra-files/odbc.ini /etc/
+      - mkdir /var/lib/asterisk/sounds/es
+      - mkdir /var/lib/asterisk/sounds/en
+      - tar xzvf es-oml.tgz -C /var/lib/asterisk/sounds/es/
+      - tar xzvf en-oml.tgz -C /var/lib/asterisk/sounds/en/
   ignore_errors: yes
   tags: issabel
 
 - name: Add web enabled in /etc/asterisk/manager.conf
-  ini_file: "path=/opt/asterisk-13/etc/asterisk/manager.conf section=general option=webenabled no_extra_spaces=yes value=yes state=present"
+  ini_file: "path=/etc/asterisk/manager.conf section=general option=webenabled no_extra_spaces=yes value=yes state=present"
   tags: issabel
 
 - name: Add web nocolor=yes in /etc/asterisk/asterisk.conf
-  ini_file: "path=/opt/asterisk-13/etc/asterisk/asterisk.conf section=options option=nocolor no_extra_spaces=yes value=yes state=present"
+  ini_file: "path=/etc/asterisk/asterisk.conf section=options option=nocolor no_extra_spaces=yes value=yes state=present"
   tags: issabel
 
 - name: Install Mysql-python DB module
@@ -118,16 +115,5 @@
       - systemctl disable firewalld
   tags: issabel
 
-- name: Add start of asterisk to rc.local
-  shell: "chkconfig asterisk on"
-  when: ansible_os_family == "RedHat"
-  tags: issabel
-  become: yes
-  become_method: sudo
-
-- name: Start asterisk
-  shell: "service asterisk start"
-  when: ansible_os_family == "RedHat"
-  tags: issabel
-  become: yes
-  become_method: sudo
+- name: Start asterisk with fwconsole
+  shell: "fwconsole start"

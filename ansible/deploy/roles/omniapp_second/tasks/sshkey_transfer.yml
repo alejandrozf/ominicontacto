@@ -1,18 +1,18 @@
 ---
 
-- name: Transfer ssh key from omnileads's user to root's user
-  shell: cat /home/omnileads/.ssh/id_rsa.pub
+- name: Transfer ssh key from freetech's user to root's user
+  shell: cat /home/freetech/.ssh/id_rsa.pub
   register: ssh_key
 - authorized_key: user=root key={{ ssh_key.stdout }} state=present manage_dir=yes
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
 - name: Change permissions on id_rsa
-  shell: "chmod 700 /home/omnileads/.ssh/id_rsa"
+  shell: "chmod 700 /home/freetech/.ssh/id_rsa"
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
 - name: Try first ssh login
   shell: "ssh -oStrictHostKeyChecking=no root@127.0.0.1"
   become: yes
-  become_user: omnileads
+  become_user: freetech
   become_method: su
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"

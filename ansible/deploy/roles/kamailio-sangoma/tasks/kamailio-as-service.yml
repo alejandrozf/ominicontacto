@@ -5,30 +5,23 @@
   with_items:
       - /opt/kamailio/run/
       - /opt/kamailio/run/kamailio/
-  become: true
-  become_method: sudo
 
-#- name: Creation of kamailio user and group
-#  shell: "{{ item }}"
-#  with_items:
+- name: Creation of kamailio user and group
+  shell: "{{ item }}"
+  with_items:
       #- mkdir -p /opt/kamailio/run/kamailio
-#      - groupadd -g 5000 kamailio
-#      - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
+      - groupadd -g 5000 kamailio
+      - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
 #  ignore_errors: yes
-#  register: command_result
-#  failed_when:
-#    - "'ya existe' not in command_result.stderr"
-#    - "'already exists' not in command_result.stderr"
-#    - "command_result.rc != 0"
+  register: command_result
+  failed_when:
+    - "'ya existe' not in command_result.stderr"
+    - "'already exists' not in command_result.stderr"
+    - "command_result.rc != 0"
 
-- name: Create kamailio.log file and directory
+- name: Create kamailio.log file
   file: path=/var/log/kamailio/ state=directory mode=0755
-  become: true
-  become_method: sudo
-
 - file: path=/var/log/kamailio/kamailio.log state=touch mode=0755
-  become: true
-  become_method: sudo
 
 - name: Run kamailio as a service
   shell: "{{ item }}"
@@ -36,21 +29,14 @@
       - systemctl restart rsyslog
       - systemctl enable kamailio
       - systemctl daemon-reload
-      - chown omnileads:omnileads -R /opt/kamailio
-      - /opt/kamailio/sbin/kamdbctl restore /opt/omnileads/ominicontacto/ominicontacto_voip/kamailio-files/kamdb.sql
-  become: true
-  become_method: sudo
+      - chown kamailio:kamailio -R /opt/kamailio
+      - /opt/kamailio/sbin/kamdbctl restore /home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamdb.sql
 
 - name: Creation of kamailio.cfg file
-  template: src=templates/kamailio-local.cfg dest=/opt/kamailio/etc/kamailio/ owner=omnileads group=omnileads
+  template: src=templates/kamailio-local.cfg dest=/opt/kamailio/etc/kamailio/ owner=kamailio group=kamailio
   tags: postinstall
-  become: true
-  become_method: sudo
 
-- name: Link kamailio.cfg repo file to /opt/kamailio
-  file: state=link src=/opt/omnileads/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest=/opt/kamailio/etc/kamailio/kamailio.cfg force=true owner=omnileads group=omnileads
+- file: state=link src=/home/freetech/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest=/opt/kamailio/etc/kamailio/kamailio.cfg force=true owner=kamailio group=kamailio
   tags: postinstall
-  become: true
-  become_method: sudo
 
 

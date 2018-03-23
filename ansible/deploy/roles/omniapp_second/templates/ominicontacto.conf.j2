@@ -1,5 +1,5 @@
 server {
-    listen          80;
+    listen          1180;
     server_name     default_server;
     #rewrite ^/(.*)  https://172.16.20.241:8000/$1 permanent;
     rewrite ^ https://$http_host$request_uri? permanent;
@@ -11,11 +11,11 @@ server {
     access_log      /var/log/nginx/example.com_access.log combined;
     error_log       /var/log/nginx/example.com_error.log error;
 
-    ssl_certificate         /opt/omnileads/nginx_certs/cert.pem;
-    ssl_certificate_key     /opt/omnileads/nginx_certs/key.pem;
+    ssl_certificate         /home/freetech/nginx_certs/cert.pem;
+    ssl_certificate_key     /home/freetech/nginx_certs/key.pem;
 
     location /static/ {
-         alias /opt/omnileads/static/;
+         alias /home/freetech/static/;
          autoindex on;
          allow all;
     }

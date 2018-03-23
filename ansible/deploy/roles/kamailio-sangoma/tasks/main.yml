@@ -12,5 +12,5 @@
 - include: kamailio-as-service.yml
   tags: kamailio
 
-- include: certificate_CA.yml
+- include: roles/kamailio-debian/tasks/certificate_CA.yml
   tags: kamailio-cert

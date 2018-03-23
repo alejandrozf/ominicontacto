@@ -6,7 +6,6 @@
   vars:
           build_dir: "{{ BUILD_DIR }}"
           rama: "{{ RAMA }}"
-  remote_user: omnileads
   gather_facts: True
 
   roles:
@@ -16,6 +15,7 @@
           - {role: omniapp_second, tags: ['omniapp'], tags: ['issabel']}
           - {role: asterisk-freepbx, when: ansible_os_family == "RedHat", tags: ['omnivoip','asterisk-install'] }
           - {role: asterisk-freepbx-config, when: ansible_os_family == "RedHat", tags: ['omnivoip','asterisk-config'] }
+          - {role: asternic, when: ansible_os_family == "RedHat", tags: ['omnivoip','asternic','issabel'] }
           - deploy_supervision
 
 

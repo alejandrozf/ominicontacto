@@ -4,47 +4,38 @@
   get_url: "url={{ item }} dest=/usr/src/"
   register: destino
   with_items:
-      - "{{ freepbx }}"
-  become: yes
-  become_method: sudo
+          - "{{ freepbx }}"
 
 - name: Descompresion de todos los paquetes
-  unarchive: "src=/usr/src/{{ item }} dest=/usr/src/ remote_src=yes"
+  unarchive: "src={{ item }} dest=/usr/src/ remote_src=yes"
   with_items:
-      - freepbx-14.0-latest.tgz
+          - "{{ destino.results[0].dest }}"
   register: nombres_tar
-  become: yes
-  become_method: sudo
 
 - name: Borrado de los tar
-  file: "dest=/usrc/src/{{ item }} state=absent"
+  file: "dest={{ item }} state=absent"
   with_items:
-      - freepbx-14.0-latest.tgz
-  become: yes
-  become_method: sudo
+          - "{{ nombres_tar.results[0].src }}"
+
+- action: shell ls /usr/src/
+  register: dirsrc
 
 - name: Instalacion de freepbx
-  shell: "{{ item }} chdir=/usr/src/freepbx"
+  shell: "{{ item }} chdir=/usr/src/{{ dirsrc.stdout_lines[2] }}"
   with_items:
           - ./start_asterisk start
           - ./install -n
-  become: yes
-  become_method: sudo
   when: ansible_os_family == "Debian"
 
 - name: Instalacion de freepbx
-  shell: "./start_asterisk start chdir=/usr/src/freepbx"
-  become: yes
-  become_method: sudo
+  shell: "./start_asterisk start chdir=/usr/src/{{ dirsrc.stdout_lines[3] }}"
   when: ansible_os_family == "RedHat"
 
-- shell: "./install -n chdir=/usr/src/freepbx"
+- shell: "./install -n chdir=/usr/src/{{ dirsrc.stdout_lines[3] }}"
   register: command_result
   failed_when:
     - "'freepbx.conf file detected' not in command_result.stderr"
     - "command_result.rc != 0"
-  become: yes
-  become_method: sudo
   when: ansible_os_family == "RedHat"
 - meta: clear_host_errors
 

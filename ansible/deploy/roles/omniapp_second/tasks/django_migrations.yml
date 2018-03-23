@@ -1,9 +1,9 @@
 ---
 
-- set_fact: static_route=/opt/omnileads/ominicontacto/ominicontacto_app/static/ominicontacto
+- set_fact: static_route=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto
 
-- name: Change the ip address in config.js
-  template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner=omnileads group=omnileads"
+- name: Change the FQDN in config.js
+  template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner=freetech group=freetech"
 
 - name: Createlang of the database
   shell: "createlang plpythonu kamailio"
@@ -15,12 +15,13 @@
     - "'already installed' not in command_result.stderr"
     - "command_result.rc != 0"
 
+
 - name: Run Django migrations
   django_manage: >
           command={{ item }}
           app_path={{ django_dir }}
           settings=ominicontacto.settings
-          virtualenv=/opt/omnileads/virtualenv
+          virtualenv=/home/freetech/virtualenv
   with_items:
           - migrate
           - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
@@ -28,11 +29,11 @@
           - compress
           - regenerar_asterisk
   environment:
-    PYTHONPATH: '/opt/omnileads/ominicontacto:/opt/omnileads/local'
-  become: yes
-  become_method: su
-  become_user: omnileads
+    PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
   ignore_errors: yes
+  become: yes
+  become_method: sudo
+  become_user: freetech
 
 - name: Change password of superuser
   template: "src=templates/changepassword.sh.j2 dest={{ django_dir }}/changepassword.sh mode=0755"
@@ -41,13 +42,10 @@
   shell: "./changepassword.sh chdir={{ django_dir }}"
   environment:
           DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
-          PYTHONPATH: '/opt/omnileads/ominicontacto:/opt/omnileads/local'
+          PYTHONPATH: '/home/freetech/ominicontacto:/home/freetech/local'
 
-- name: Erase the script for changing superuser password
-  file: path=/opt/omnileads/ominicontacto/changepassword.sh state=absent
-
-#- name: Change permissions on id_rsa
-#  shell: "chmod 700 /opt/omnileads/.ssh/id_rsa"
-#  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+- name: Change permissions on id_rsa
+  shell: "chmod 700 /home/freetech/.ssh/id_rsa"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
 

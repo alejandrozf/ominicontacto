@@ -2,7 +2,7 @@
 #   * Official English Documentation: http://nginx.org/en/docs/
 #   * Official Russian Documentation: http://nginx.org/ru/docs/
 
-user omnileads;
+user freetech;
 worker_processes auto;
 error_log /var/log/nginx/error.log;
 pid /run/nginx.pid;
@@ -24,7 +24,6 @@ http {
     sendfile            on;
     tcp_nopush          on;
     tcp_nodelay         on;
-    disable_symlinks off;
     keepalive_timeout   65;
     types_hash_max_size 2048;
    	client_max_body_size 20M;
@@ -37,8 +36,8 @@ http {
     include /etc/nginx/conf.d/*.conf;
 
     server {
-        listen       80 default_server;
-        listen       [::]:80 default_server;
+        listen       1180 default_server;
+        listen       [::]:1180 default_server;
         server_name  _;
         root         /usr/share/nginx/html;
 
@@ -48,12 +47,6 @@ http {
         location / {
         }
 
-        location /grabaciones {
-            alias /opt/asterisk-13/var/spool/asterisk/asternic;
-            autoindex on;
-            allow all;
-        }
-
         error_page 404 /404.html;
             location = /40x.html {
         }
@@ -61,7 +54,6 @@ http {
         error_page 500 502 503 504 /50x.html;
             location = /50x.html {
         }
-
     }
 
 # Settings for a TLS enabled server.
@@ -95,4 +87,3 @@ http {
 #    }
 
 }
-
