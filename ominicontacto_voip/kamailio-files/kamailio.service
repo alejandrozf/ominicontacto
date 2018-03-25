@@ -5,7 +5,7 @@ After=syslog.target network-online.target postgresql.service
 
 [Service]
 Type=forking
-User=omnileads
+User=kamailio
 Environment=SHM_SIZE=64
 Environment=PKG_SIZE=8
 ExecStartPre=/opt/kamailio/sbin/kamailio -c

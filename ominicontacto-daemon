@@ -9,20 +9,20 @@
 . /lib/lsb/init-functions
 
 RETVAL=0
-USER=omnileads
-GROUP=omnileads
-CMD=/opt/omnileads/virtualenv/bin/uwsgi
+USER=freetech
+GROUP=freetech
+CMD=/home/freetech/virtualenv/bin/uwsgi
 
-export PYTHONPATH=/opt/omnileads/ominicontacto
+export PYTHONPATH=/home/freetech/ominicontacto
 
-. /opt/omnileads/virtualenv/bin/activate
+. /home/freetech/virtualenv/bin/activate
 
 # See how we were called.
 case "$1" in
   start)
         echo -n "Starting OminicontactoDaemon... "
-        # $CMD --ini /opt/omnileads/ominicontacto/oml_uwsgi.ini
-        su -l -s /bin/bash -c "$CMD --ini /opt/omnileads/ominicontacto/oml_uwsgi.ini" $USER
+        # $CMD --ini /home/freetech/ominicontacto/oml_uwsgi.ini
+        su -l -s /bin/bash -c "$CMD --ini /home/freetech/ominicontacto/oml_uwsgi.ini" $USER
         RETVAL=$?
         if [ $RETVAL -eq 0 ]
         then
@@ -34,13 +34,13 @@ case "$1" in
         ;;
   stop)
         echo -n "Stopping OminicontactoDaemon... "
-        pgrep -u omnileads uwsgi > /dev/null || {
+        pgrep -u freetech uwsgi > /dev/null || {
                 echo "OminicontactoDaemon no esta corriendo..."
                 log_failure_msg
                 exit 1
         }
 
-        su -l -s /bin/bash -c "echo 'q' > /opt/omnileads/ominicontacto/.uwsgi-fifo" $USER
+        su -l -s /bin/bash -c "echo 'q' > /home/freetech/ominicontacto/.uwsgi-fifo" $USER
         RETVAL=$?
         if [ $RETVAL -eq 0 ]
         then
@@ -52,13 +52,13 @@ case "$1" in
         ;;
   reload)
         echo -n "Reload de OminicontactoDaemon... "
-        pgrep -u omnileads uwsgi > /dev/null || {
+        pgrep -u freetech uwsgi > /dev/null || {
             log_failure_msg
 			echo "OminicontactoDaemon no esta corriendo..."
             exit 1
         }
 
-        su -l -s /bin/bash -c "echo 'r' > /opt/omnileads/ominicontacto/.uwsgi-fifo" $USER
+        su -l -s /bin/bash -c "echo 'r' > /home/freetech/ominicontacto/.uwsgi-fifo" $USER
         RETVAL=$?
         if [ $RETVAL -eq 0 ]
         then
@@ -69,7 +69,7 @@ case "$1" in
         echo
         ;;
   status)
-        pgrep -u omnileads uwsgi > /dev/null || {
+        pgrep -u freetech uwsgi > /dev/null || {
                 log_failure_msg
                 echo "OminicontactoDaemon no esta corriendo..."
                 exit 1
