@@ -2,41 +2,37 @@
 {% load static %}
 
 {% block content %}
-<br/>
-<div>
 
-    <table class="table table-stripped">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
-
-            </tr>
-        </thead>
-        <tbody>
-        {% for pausa in pausas_activas %}
-            <tr>
-                <td>{{ pausa.id }}</td>
-                <td>{{ pausa.nombre }}</td>
-                <td>
-                    <a href="{% url 'pausa_update' pausa.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'pausa_delete' pausa.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar"></span></a>
-
-                </td>
-            </tr>
-       {% empty %}
+<table class="table">
+    <thead>
         <tr>
-            <td colspan="3">No existen pausas activas</td>
+            <th>id</th>
+            <th>Nombre</th>
+            <th>Acciones</th>
+
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for pausa in pausas_activas %}
+        <tr>
+            <td>{{ pausa.id }}</td>
+            <td>{{ pausa.nombre }}</td>
+            <td>
+                <a href="{% url 'pausa_update' pausa.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
+                <a href="{% url 'pausa_delete' pausa.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar"></span></a>
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td colspan="3">No existen pausas activas</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-
-</div>
 {% if pausas_eliminadas %}
-  <div class="col-md-3 col-md-offset-4">
+
+<div>
     <h4> Pausas Eliminadas </h4>
     <table class="table table-stripped">
         <thead>
@@ -60,9 +56,7 @@
         {% endfor %}
         </tbody>
     </table>
-
-
-  </div>
+</div>
 {% endif %}
 
 {% endblock %}

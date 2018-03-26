@@ -50,60 +50,68 @@
 
             <ul id="nav-main-menu" class="list-unstyled">
                 {% if user.get_is_supervisor_normal or user.get_is_administrador %}
-                <li>    
+                <li class="main-menu-li">	
                     <span class="icon far fa-user"></span>
-                    <a class="menu-header" href="#menuUsers" role="button" data-toggle="collapse" aria-expanded="false">Usuarios</a>
-                    <ul class="collapse list-unstyled submenu" id="menuUsers" data-parent="#nav-main-menu">
+                    <a class="menu-header" href="#menuUsersGroups" role="button" data-toggle="collapse" aria-expanded="false">Usuarios y grupos</a>
+				    <ul class="collapse list-unstyled submenu" id="menuUsersGroups" data-parent="#nav-main-menu">
                         <li>
-                            <a href="{% url 'user_list' page=1 %}">Usuarios</a>
-                        </li>
+                            <a href="#menuUsers" role="button" data-toggle="collapse" aria-expanded="false">Lista de usuarios</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuUsers" data-parent="">  
+                                <li>
+                                    <a href="{% url 'user_list' page=1 %}">Usuarios</a>
+                                </li> 
+                                {% if user.get_is_administrador %} 
+                                <li>
+                                    <a href="{% url 'user_nuevo' %}">Nuevo Usuario</a>
+                                </li>                                
+                                {% endif %}      
+                                <li>
+                                    <a href="{% url 'agente_list' %}">Agentes</a>
+                                </li> 
+                                {% if user.get_is_administrador %}
+                                <li>
+                                    <a href="{% url 'supervisor_list' %}">Supervisores</a>
+                                </li>
+                                {% endif %}                                                                                       
+                            </ul>                          
+                        </li>                        
+
                         {% if user.get_is_administrador %}
                         <li>
-                            <a href="{% url 'user_nuevo' %}">Nuevo Usuario</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="{% url 'user_api_crm_list' %}">Usuarios para api crm</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'user_api_crm_create' %}">Nuevo usuario api crm</a>
-                        </li>
+                    		<a href="{% url 'user_api_crm_list' %}">Usuarios api crm</a>
+                		</li>
+                		<li>
+                    		<a href="{% url 'user_api_crm_create' %}">Nuevo usuario api crm</a>
+                		</li>
                         {% endif %}
-                        <li class="divider"></li>
+
                         <li>
-                            <a href="{% url 'agente_list' %}">Agentes</a>
-                        </li>
+                    		<a href="{% url 'grupo_list' %}">Grupos de agentes</a>
+                		</li>
+
                         {% if user.get_is_administrador %}
-                        <li>
-                            <a href="{% url 'supervisor_list' %}">Supervisores</a>
-                        </li>
+                		<li>
+                    		<a href="{% url 'grupo_nuevo' %}">Nuevo Grupo de agentes</a>
+                		</li>
                         {% endif %}
-                        <hr>
-                        <li>
-                            <a href="{% url 'grupo_list' %}">Grupos</a>
-                        </li>
-                        {% if user.get_is_administrador %}
-                        <li>
-                            <a href="{% url 'grupo_nuevo' %}">Nuevo Grupo</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </li>
-                {% endif %}
-                {% if user.get_is_administrador %}
-                <li>
+
+				    </ul>
+				</li>
+                 {% endif %}
+                 {% if user.get_is_administrador %}
+                <li class="main-menu-li">
                     <span class="icon far fa-building"></span>
-                    <a class="menu-header" href="#menuModules" role="button" data-toggle="collapse" aria-expanded="false">Módulos</a>
-                    <ul class="collapse list-unstyled submenu" id="menuModules" data-parent="#nav-main-menu">
-                        <li>
-                            <a href="{% url 'modulo_list' %}">Módulos</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'modulo_nuevo' %}">Habilitar Módulo</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
+				    <a class="menu-header" href="#menuModules" role="button" data-toggle="collapse" aria-expanded="false">Módulos</a>
+				    <ul class="collapse list-unstyled submenu" id="menuModules" data-parent="#nav-main-menu">
+				    	<li>
+                    		<a href="{% url 'modulo_list' %}">Módulos disponibles</a>
+                		</li>
+                		<li>
+                    		<a href="{% url 'modulo_nuevo' %}">Habilitar Módulo</a>
+                		</li>
+				    </ul>
+				</li>
+                <li class="main-menu-li">
                     <span class="icon far fa-file-audio"></span>
                     <a class="menu-header" href="#menuAudio" role="button" data-toggle="collapse" aria-expanded="false">Audios</a>
                     <ul class="collapse list-unstyled submenu" id="menuAudio" data-parent="#nav-main-menu">
@@ -117,100 +125,138 @@
                 </li>
                 {% endif %}
                 {% if user.get_is_supervisor_normal or user.get_is_administrador %}
-                <li>
+                <li class="main-menu-li">
                     <span class="icon far fa-flag"></span>
-                    <a class="menu-header" href="#menuCampaign" role="button" data-toggle="collapse" aria-expanded="false">Campaña</a>
-                    <ul class="collapse list-unstyled submenu" id="menuCampaign" data-parent="#nav-main-menu">
+				    <a class="menu-header" href="#menuCampaign" role="button" data-toggle="collapse" aria-expanded="false">Campaña</a>
+				    <ul class="nav-submenu collapse list-unstyled submenu" id="menuCampaign" data-parent="#nav-main-menu">
                         <li>
-                            <a href="{% url 'campana_list' %}">Campañas Entrantes</a>
-                        </li>
+                            <a href="#menuCampaignDialer" role="button" data-toggle="collapse" aria-expanded="false">Campañas dialer</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuCampaignDialer" data-parent=".nav-submenu">  
+                                <li>
+                                    <a href="{% url 'campana_dialer_list' %}">Listado de campañas</a>
+                                </li>  
+                                <li>
+                                    <a href="{% url 'campana_dialer_create' %}">Nueva campaña</a>
+                                </li>  
+                                <li>
+                                    <a href="{% url 'lista_campana_dialer_template' %}">Templates</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_dialer_template_create' %}">Nuevo template</a>
+                                </li>                                        
+                            </ul>                          
+                        </li> 
                         <li>
-                            <a href="{% url 'campana_nuevo' %}">Nueva campaña Entrante</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_dialer_list' %}">Campañas Dialer</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_dialer_create' %}">Nueva campaña Dialer</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_manual_list' %}">Campañas Manuales</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_manual_create' %}">Nueva campaña Manual</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_preview_list' %}">Campañas Preview</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_preview_create' %}">Nueva campaña Preview</a>
-                        </li>
-                        {% if user.get_is_administrador %}
-                        <li>
-                            <a href="{% url 'regenerar_asterisk' %}">Regenerar Asterisk</a>
-                        </li>
-                        {% endif %}
-                        <hr>
-                        <li>
-                            <a href="{% url 'campana_entrante_template_list' %}">{% trans 'Templates de campañas entrantes' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_entrante_template_create' %}">{% trans 'Crear nuevo template de campaña entrante'%}</a>
-                        <li>
-                            <a href="{% url 'lista_campana_dialer_template' %}">Templates de campañas dialer</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_dialer_template_create' %}">Nuevo template de campaña dialer</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_manual_template_list' %}">{% trans 'Templates de campañas manuales' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_manual_template_create' %}">{% trans 'Nuevo template de campaña manual'%}</a>
-                        <li>
-                        <li>
-                            <a href="{% url 'campana_preview_template_list' %}">{% trans 'Templates de campañas preview' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'campana_preview_template_create' %}">{% trans 'Nuevo template de campaña preview'%}</a>
-                        <li>
+                            <a href="#menuCampaignPreview" role="button" data-toggle="collapse" aria-expanded="false">Campañas preview</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuCampaignPreview" data-parent=".nav-submenu">  
+                                <li>
+                                    <a href="{% url 'campana_preview_list' %}">Listado de campañas</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_preview_create' %}">Nueva campaña</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_preview_template_list' %}">{% trans 'Templates' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_preview_template_create' %}">{% trans 'Nuevo Template'%}</a>
+                                </li>
+                            </ul>
+                        </li> 
 
-                        <hr>
                         <li>
-                            <a href="{% url 'calificacion_list' %}">Calificaciones</a>
-                        </li>
+                            <a href="#menuCampaignIn" role="button" data-toggle="collapse" aria-expanded="false">Campañas entrante</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuCampaignIn" data-parent=".nav-submenu">  
+                                <li>
+                                    <a href="{% url 'campana_list' %}">Listado de campañas</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_nuevo' %}">Nueva campaña</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_entrante_template_list' %}">{% trans 'Templates' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_entrante_template_create' %}">{% trans 'Nuevo template'%}</a>
+                                </li>
+                            </ul>
+                        </li> 
+
                         <li>
-                            <a href="{% url 'calificacion_nuevo' %}">Nueva Calificación</a>
-                        </li>
-                        <hr>
+                            <a href="#menuCampaignManual" role="button" data-toggle="collapse" aria-expanded="false">Campañas manuales</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuCampaignManual" data-parent=".nav-submenu">  
+                                <li>
+                                    <a href="{% url 'campana_manual_list' %}">Listado de campañas</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_manual_create' %}">Nueva campaña</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_manual_template_list' %}">{% trans 'Templates' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'campana_manual_template_create' %}">{% trans 'Nuevo Template'%}</a>
+                                </li>
+                            </ul>
+                        </li> 
+
                         <li>
-                            <a href="{% url 'formulario_list' %}">Formularios</a>
-                        </li>                        
+                            <a href="#menuQualifications" role="button" data-toggle="collapse" aria-expanded="false">Calificaciones</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuQualifications" data-parent=".nav-submenu">  
+                                <li>
+                                    <a href="{% url 'calificacion_list' %}">Listado de calificaciones</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'calificacion_nuevo' %}">Nueva Calificación</a>
+                                </li>
+                            </ul>                          
+                        </li> 
+
                         <li>
-                            <a href="{% url 'formulario_nuevo' %}">Nuevo formulario</a>
-                        </li>
-                        <hr>
+                            <a href="#menuForms" role="button" data-toggle="collapse" aria-expanded="false">Formularios</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuForms" data-parent=".nav-submenu">  
+                                <li>
+                                    <a href="{% url 'formulario_list' %}">Listado de formularios</a>
+                                </li>                        
+                                <li>
+                                    <a href="{% url 'formulario_nuevo' %}">Nuevo formulario</a>
+                                </li>                                   
+                            </ul>                          
+                        </li> 
+
                         <li>
-                            <a href="{% url 'sitio_externo_list' %}">Sitios externos</a>
-                        </li>                        
+                            <a href="#menuSites" role="button" data-toggle="collapse" aria-expanded="false">Sitios Externos</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuSites" data-parent=".nav-submenu">  
+                                <li>
+                                    <a href="{% url 'sitio_externo_list' %}">Listado de Sitios</a>
+                                </li>                        
+                                  <li>
+                                    <a href="{% url 'sitio_externo_create' %}">Nuevo sitio</a>
+                                </li>                                 
+                            </ul>                          
+                        </li> 
+
+<!--                         {% if user.get_is_administrador %}
                         <li>
-                            <a href="{% url 'sitio_externo_create' %}">Nuevo sitio</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
+                    		<a href="{% url 'regenerar_asterisk' %}">Regenerar asterisk</a>
+                	</li>
+                        {% endif %} -->
+                        
+				    </ul>
+				</li>
+                <li class="main-menu-li">
                     <span class="icon far fa-stop-circle"></span>
                     <a class="menu-header" href="#menuBreaks" role="button" data-toggle="collapse" aria-expanded="false">Pausas</a>
                     <ul class="collapse list-unstyled submenu" id="menuBreaks" data-parent="#nav-main-menu">
                         <li>
-                            <a href="{% url 'pausa_list' %}">Pausas</a>
+                            <a href="{% url 'pausa_list' %}">Listado de pausas</a>
                         </li>
-                        <li>
-                            <a href="{% url 'pausa_nuevo' %}">Nueva pausa</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
+				    	<li>
+                    		<a href="{% url 'pausa_nuevo' %}">Nueva pausa</a>
+                		</li>
+				    </ul>
+				</li>
+                <li class="main-menu-li">
                     <span class="icon far fa-id-badge"></span>
                     <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">Contactos</a>
                     <ul class="collapse list-unstyled submenu" id="menuContacts" data-parent="#nav-main-menu">
@@ -230,11 +276,11 @@
                     </ul>
                 </li>
                 {% endif %}
-                <li>
+                <li class="main-menu-li">
                     <span class="icon fas fa-search"></span>
                     <a class="menu-link" href="{% url 'grabacion_buscar' 1 %}">Buscar Grabación</a>
                 </li>
-                <li>
+                <li class="main-menu-li">
                     <span class="icon far fa-chart-bar"></span>
                     <a class="menu-header"class="menu-header" href="#menuReports" role="button" data-toggle="collapse" aria-expanded="false">Reportes</a>
                     <ul class="collapse list-unstyled submenu" id="menuReports" data-parent="#nav-main-menu">
@@ -250,19 +296,19 @@
                         {% endif %}
                         <li>
                             {# <a href="#">IM</a> #}
-                        </li>
-                    </ul>
-                </li>
-                <li>
+                		</li>
+				    </ul>
+				</li>
+                <li class="main-menu-li">
                     <span class="icon far fa-compass"></span>
                     <a class="menu-header" href="#menuSupervise" role="button" data-toggle="collapse" aria-expanded="false">Supervision</a>
                     <ul class="collapse list-unstyled submenu" id="menuSupervise" data-parent="#nav-main-menu">
                         <li>
                             <a href="{% url 'supervision_externa_url' %}">Llamadas Activas</a>
                         </li>
-                    </ul>
-                </li>
-                <li>
+				    </ul>
+				</li>
+                <li class="main-menu-li">
                     <span class="icon far fa-question-circle"></span>
                     <a class="menu-link" href="{% url 'acerca' %}">Acerca de</a>
                 </li>
@@ -313,13 +359,13 @@ $(document).ready(function () {
     // Add active class to current selected anchor
     $("a[href='" + currentPath + "']").addClass("active");
 
-    // Expand sidebar menus for current selected anchor
-
-    $("a[href='" + currentPath + "']").parent().parent(".collapse").collapse('show');
-
+    // Expand sidebar first level submenus for current selected anchor
+    $("a[href='" + currentPath + "']").closest('ul .submenu').collapse('show');
+    // Expand sidebar second level submenus for current selected anchor
+    $("ul.submenu-two a[href='" + currentPath + "']").closest('ul').collapse('show');
+    
     // Add active class to sidebar icon
-    $("a[href='" + currentPath + "']").parent().parent().siblings(".icon").addClass('active');
-    $("a[href='" + currentPath + "']").siblings(".icon").addClass('active');
+    $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
 
     // //Toogle sidebar and keep current state on page reload    
     //retrieve current state

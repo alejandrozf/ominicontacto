@@ -52,11 +52,14 @@ hr {
 #sidebar ul li a:hover {
     background-color: rgba(0,0,0,0.05);
 }
-#sidebar .submenu, #sidebar a[aria-expanded="true"] {
+#sidebar .submenu, #sidebar .submenu-two, #sidebar a[aria-expanded="true"] {
     background-color: rgba(0,0,0,0.05);
 }
 #sidebar .submenu a {
     padding-left: 34px;
+}
+#sidebar .submenu-two a {
+    padding-left: 50px;
 }
 #sidebar ul a.active {
     background-color: #8FC641;
@@ -196,7 +199,7 @@ hr {
         cursor: pointer;
     }
     #sidebar.active > ul > li > a {
-        min-width: 300px;
+        min-width: 250px;
         padding: 9px 14px;        
         position: absolute;
         left: 60px;
@@ -223,7 +226,7 @@ hr {
         border-left: 1px solid rgba(0,0,0,0.15); 
     }
     #sidebar.active ul.submenu {
-        min-width: 300px;
+        min-width: 250px;
         background-color: #EBEDE9;
         border-left: 1px solid rgba(0,0,0,0.15);        
         position: absolute;
@@ -231,6 +234,15 @@ hr {
         top: 42px;
         display: none;
         z-index: 100;
+    }
+    #sidebar.active ul.submenu-two {
+    min-width: 250px;
+    background-color: #EBEDE9;
+    border-left: 1px solid rgba(0,0,0,0.15);        
+    position: absolute;
+    left: 250px;
+    top: 42px;
+    z-index: 100;
     }
     #sidebar.active ul.submenu a {
         display: block;
