@@ -767,19 +767,18 @@ urlpatterns = [
         login_required(
             views_campana_manual.CampanaManualListView.as_view()),
         name="campana_manual_list"),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<pk_agente>\d+)/create/'
+
+    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
         r'(?P<telefono>\d+)/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualCreateView.as_view()),
-        name="campana_manual_calificacion_create"),
-    url(r'^campana_manual/(?P<pk_calificacion>\d+)/calificacion/update/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualUpdateView.as_view()),
+        login_required(views_calificacion_manual.CalificacionManualFormView.as_view()),
+        kwargs={'from': 'calificacion', 'pk_contacto': None},
+        name="calificar_por_telefono"),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/update/'
+        r'(?P<pk_contacto>\d+)/$',
+        login_required(views_calificacion_manual.CalificacionManualFormView.as_view()),
+        kwargs={'from': 'calificacion', 'telefono': ''},
         name="campana_manual_calificacion_update"),
-    url(r'^campana_manual/(?P<pk_calificacion>\d+)/gestion/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualGestion.as_view()),
-        name="campana_manual_calificacion_gestion"),
+
     url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_calificacion/$',
         login_required(
             views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),

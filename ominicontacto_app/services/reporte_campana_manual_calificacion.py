@@ -9,7 +9,6 @@ from __future__ import unicode_literals
 import csv
 import logging
 import os
-import json
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -80,10 +79,7 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append("SI")
                 else:
                     lista_opciones.append("NO")
-                if calificacion.calificacion:
-                    lista_opciones.append(calificacion.calificacion.nombre)
-                else:
-                    lista_opciones.append("N/A")
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
 
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')

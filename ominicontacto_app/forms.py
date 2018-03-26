@@ -506,6 +506,10 @@ class OpcionCalificacionModelChoiceField(ModelChoiceField):
 
 
 class CalificacionClienteForm(forms.ModelForm):
+    """
+    Formulario para la creacion de Calificaciones de Clientes
+    """
+
     opcion_calificacion = OpcionCalificacionModelChoiceField(
         OpcionCalificacion.objects.all(), empty_label='---------')
 
@@ -544,6 +548,34 @@ class CalificacionClienteForm(forms.ModelForm):
 
 class CalificacionClienteUpdateForm(CalificacionClienteForm):
     fields = ('es_venta', 'opcion_calificacion', 'agente', 'observaciones', 'agendado', 'wombat_id')
+
+
+class CalificacionManualForm(forms.ModelForm):
+    """
+    Formulario para la creacion de Calificaciones Manuales
+    En este punto no hay contacto.
+    """
+    opcion_calificacion = OpcionCalificacionModelChoiceField(
+        OpcionCalificacion.objects.all(), empty_label='---------')
+
+    def __init__(self, campana, *args, **kwargs):
+        super(CalificacionManualForm, self).__init__(*args, **kwargs)
+        self.campana = campana
+        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
+
+    class Meta:
+        model = CalificacionManual
+        fields = ('opcion_calificacion', 'observaciones')
+        widgets = {
+            'opcion_calificacion': forms.Select(),
+            # 'contacto': forms.HiddenInput(),
+            # 'es_venta': forms.HiddenInput(),
+            # 'agente': forms.HiddenInput(),
+        }
+
+
+class CalificacionManualUpdateForm(CalificacionClienteForm):
+    fields = ('opcion_calificacion', 'agente', 'observaciones', )
 
 
 class GrupoAgenteForm(forms.Form):
@@ -1196,64 +1228,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             msg = 'Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION)
             raise forms.ValidationError(msg)
         return tiempo_desconexion
-
-
-class CalificacionManualForm(forms.ModelForm):
-
-    def __init__(self, calificacion_choice, gestion, *args, **kwargs):
-        super(CalificacionManualForm, self).__init__(*args, **kwargs)
-        self.fields['calificacion'].queryset = calificacion_choice
-
-    class Meta:
-        model = CalificacionManual
-        fields = ('telefono', 'es_venta', 'agente',
-                  'observaciones', 'agendado')
-        widgets = {
-            'campana': forms.HiddenInput(),
-            'es_venta': forms.HiddenInput(),
-            'agente': forms.HiddenInput(),
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-            'agendado': forms.HiddenInput(),
-        }
-
-
-class FormularioManualGestionForm(forms.ModelForm):
-
-    def __init__(self, campos, *args, **kwargs):
-        super(FormularioManualGestionForm, self).__init__(*args, **kwargs)
-
-        for campo in campos:
-            if campo.tipo is FieldFormulario.TIPO_TEXTO:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.TextInput(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_FECHA:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.TextInput(
-                        attrs={'class': 'class-fecha form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_LISTA:
-                choices = [(option, option)
-                           for option in json.loads(campo.values_select)]
-                self.fields[campo.nombre_campo] = forms.ChoiceField(
-                    choices=choices,
-                    label=campo.nombre_campo, widget=forms.Select(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_TEXTO_AREA:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.Textarea(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-
-    class Meta:
-        model = CalificacionManual
-        fields = ('telefono',)
-
-        widgets = {
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-        }
 
 
 class CalificacionForm(forms.ModelForm):

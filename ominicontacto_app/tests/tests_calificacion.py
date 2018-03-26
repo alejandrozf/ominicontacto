@@ -152,7 +152,7 @@ class CalificacionTests(OMLBaseTest):
 
     def test_no_se_admite_tipo_calificacion_manual_vacia_en_creacion_calificacion(self):
         url = reverse('campana_manual_calificacion_create',
-                      kwargs={'pk_agente': self.agente_profile.pk,
+                      kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'telefono': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_manual()
@@ -176,7 +176,7 @@ class CalificacionTests(OMLBaseTest):
 
     def test_escoger_calificacion_gestion_llamada_manual_redirecciona_formulario_gestion(self):
         url = reverse('campana_manual_calificacion_create',
-                      kwargs={'pk_agente': self.agente_profile.pk,
+                      kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'telefono': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_manual()

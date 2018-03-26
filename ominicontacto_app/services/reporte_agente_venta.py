@@ -89,23 +89,6 @@ class ArchivoDeReporteCsv(object):
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
-            for metadata in calificaciones_manuales:
-                lista_opciones = []
-
-                # --- Buscamos datos
-
-                lista_opciones.append(metadata.telefono)
-                if metadata.metadata:
-                    datos = json.loads(metadata.metadata)
-                    for clave, valor in datos.items():
-                        lista_opciones.append(valor)
-
-                # --- Finalmente, escribimos la linea
-
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
-                csvwiter.writerow(lista_opciones_utf8)
-
     def ya_existe(self):
         return os.path.exists(self.ruta)
 

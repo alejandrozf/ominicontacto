@@ -11,147 +11,196 @@ import logging as logging_
 
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.http.response import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import FormView
 
-from ominicontacto_app.models import CalificacionManual, Campana, AgenteProfile
-from ominicontacto_app.forms import CalificacionManualForm, FormularioManualGestionForm
-
+from ominicontacto_app.models import CalificacionManual, Campana, AgenteProfile, Contacto
+from ominicontacto_app.forms import (CalificacionManualForm, CalificacionManualUpdateForm,
+                                     FormularioContactoCalificacion, )
+from ominicontacto_app.utiles import convertir_ascii_string
 
 logger = logging_.getLogger(__name__)
 
 
-class CalificacionManualMixin(object):
+class CalificacionManualFormView(FormView):
     """
-    Encapsula comportamiento similar en vistas de calificación
-    de campañas manuales
+    Vista para la creacion y actualización de las calificaciones.
+    Además actualiza los datos del contacto.
     """
-
     template_name = 'campana_manual/calificacion_create_update.html'
+    context_object_name = 'calificacion_manual'
     model = CalificacionManual
     form_class = CalificacionManualForm
 
-    def get_success_url(self):
-        return reverse('campana_manual_calificacion_update',
-                       kwargs={'pk_calificacion': self.object.pk})
+    def get_contacto(self):
+        if 'pk_contacto' in self.kwargs and self.kwargs['pk_contacto'] is not None:
+            try:
+                return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+            except Contacto.DoesNotExist:
+                return None
+        return None
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        cleaned_data = form.cleaned_data
-        calificacion = cleaned_data['calificacion']
-        campana = cleaned_data['campana']
-        if calificacion.nombre == campana.gestion:
-            self.object.es_venta = True
-            self.object.save()
-            return HttpResponseRedirect(
-                reverse('campana_manual_calificacion_gestion',
-                        kwargs={'pk_calificacion': self.object.pk}))
+    def get_object(self):
+        if self.contacto is not None:
+            try:
+                return CalificacionManual.objects.get(
+                    opcion_calificacion__campana_id=self.kwargs['pk_campana'],
+                    contacto_id=self.contacto.id)
+            except CalificacionManual.DoesNotExist:
+                return None
+        return None
+
+    def dispatch(self, *args, **kwargs):
+        self.agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+        self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        self.contacto = self.get_contacto()
+        self.wombat_id = self.kwargs.get('wombat_id', '0')
+
+        self.object = self.get_object()
+        return super(CalificacionManualFormView, self).dispatch(*args, **kwargs)
+
+    def get_calificacion_form_kwargs(self):
+        if self.request.method == 'GET':
+
+            if self.contacto is not None:
+                initial = {'contacto': self.contacto.id}
+                return {'instance': self.object, 'initial': initial}
+            return {'instance': self.object}
+        elif self.request.method == 'POST':
+            post_data = self.request.POST
+            return {'instance': self.object, 'data': post_data}
+
+    def get_form(self):
+        kwargs = self.get_calificacion_form_kwargs()
+        if self.object is None:
+            calificacion_form = CalificacionManualForm(campana=self.campana, **kwargs)
         else:
-            self.object.es_venta = False
-            self.object.save()
-        message = 'Operación Exitosa! Se llevó a cabo con éxito la actualizacion de la ' \
-                  'calificacion del cliente'
-        messages.success(self.request, message)
-        if calificacion.es_reservada():
-            return HttpResponseRedirect(
-                reverse('agenda_manual_create',
-                        kwargs={"telefono": self.object.telefono,
-                                "id_agente": self.object.agente.pk,
-                                "pk_campana": campana.pk}))
-        return super(CalificacionManualMixin, self).form_valid(form)
+            calificacion_form = CalificacionManualUpdateForm(campana=self.campana, **kwargs)
+        return calificacion_form
 
+    def get_contacto_form_kwargs(self):
+        kwargs = {}
+        initial = {}
+        if self.contacto is not None:
+            kwargs['instance'] = self.contacto
+        else:
+            initial['telefono'] = self.kwargs['telefono']
 
-class CalificacionManualCreateView(CalificacionManualMixin, CreateView):
-    """
-    En esta vista se crea la calificacion del contacto de una campana manual
-    """
+        if self.request.method == 'GET':
+            # TODO: Pasar esta logica al formulario?
+            base_datos = self.campana.bd_contacto
+            nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+            if self.contacto is not None:
+                datos = json.loads(self.contacto.datos)
+            else:
+                # Si no tengo contacto, paso los datos vacios.
+                datos = [''] * len(nombres)
+            for nombre, dato in zip(nombres, datos):
+                initial.update({convertir_ascii_string(nombre): dato})
+            kwargs['initial'] = initial
+        elif self.request.method == 'POST':
+            kwargs['data'] = self.request.POST
 
-    def get_initial(self):
-        initial = super(CalificacionManualCreateView, self).get_initial()
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        telefono = self.kwargs['telefono']
-        initial.update({'campana': campana,
-                        'agente': agente,
-                        'telefono': telefono})
-        return initial
+        return kwargs
 
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        calificaciones = campana.calificacion_campana.calificacion.all()
-        return self.form_class(
-            calificacion_choice=calificaciones, gestion=campana.gestion,
-            **self.get_form_kwargs())
+    def get_campos_formulario_contacto(self):
+        # TODO: Pasar esta logica al formulario?
+        base_datos = self.campana.bd_contacto
+        metadata = base_datos.get_metadata()
+        campos = metadata.nombres_de_columnas
+        return campos
 
-    def get_context_data(self, **kwargs):
-        context = super(CalificacionManualCreateView, self).get_context_data(**kwargs)
-        context['pk_campana'] = self.kwargs['pk_campana']
-        context['pk_agente'] = self.kwargs['pk_agente']
-        return context
+    def get_contacto_form(self):
+        return FormularioContactoCalificacion(campos=self.get_campos_formulario_contacto(),
+                                              **self.get_contacto_form_kwargs())
+
+    def get(self, request, *args, **kwargs):
+        contacto_form = self.get_contacto_form()
+        calificacion_form = self.get_form()
+
+        return self.render_to_response(self.get_context_data(
+            contacto_form=contacto_form, calificacion_form=calificacion_form))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Valida formulario de Contacto y de CalificacionCliente
+        """
+        contacto_form = self.get_contacto_form()
+        calificacion_form = self.get_form()
+        if contacto_form.is_valid() and calificacion_form.is_valid():
+            return self.form_valid(contacto_form, calificacion_form)
+        else:
+            return self.form_invalid(contacto_form, calificacion_form)
+
+    def form_valid(self, contacto_form, calificacion_form):
+        contacto = contacto_form.save(commit=False)
+        # TODO: Pasar esta logica al formulario?
+        base_datos = self.campana.bd_contacto
+        metadata = base_datos.get_metadata()
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = contacto_form.cleaned_data.get(convertir_ascii_string(nombre))
+            datos.append(campo)
+        contacto.datos = json.dumps(datos)
+        contacto.save()
+        self.contacto = contacto
+
+        self.object_calificacion = calificacion_form.save(commit=False)
+        self.object_calificacion.set_es_venta()
+
+        # Test
+        self.object_calificacion.agente = self.agente
+        self.object_calificacion.contacto = contacto
+
+        self.object_calificacion.save()
+
+        # Finalizar relacion de contacto con agente
+        # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
+        if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
+            self.campana.gestionar_finalizacion_relacion_agente_contacto(contacto.id)
+
+        if self.object_calificacion.es_venta:
+            return redirect(self.get_success_url_venta())
+        else:
+            message = 'Operación Exitosa!\
+                        Se llevó a cabo con éxito la calificacion del cliente'
+            messages.success(self.request, message)
+
+        if self.object_calificacion.es_agenda():
+            return redirect(self.get_success_url_agenda())
+        # elif self.kwargs['from'] == 'reporte':
+        #    return redirect(self.get_success_url_reporte())
+        else:
+            return redirect(self.get_success_url())
+
+    def form_invalid(self, contacto_form, calificacion_form):
+        """
+        Re-renders the context data with the data-filled forms and errors.
+        """
+        return self.render_to_response(self.get_context_data(contacto_form=contacto_form,
+                                                             calificacion_form=calificacion_form))
+
+    def get_success_url_venta(self):
+        return reverse('formulario_venta',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "pk_contacto": self.contacto.id,
+                               "id_agente": self.kwargs['id_agente']})
+
+    def get_success_url_agenda(self):
+        return reverse('agenda_contacto_create',
+                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                               "pk_contacto": self.contacto.id,
+                               "id_agente": self.kwargs['id_agente']})
+
+    def get_success_url_reporte(self):
+        return reverse('reporte_agente_calificaciones',
+                       kwargs={"pk_agente": self.object_calificacion.agente.pk})
 
     def get_success_url(self):
         return reverse('campana_manual_calificacion_update',
-                       kwargs={'pk_calificacion': self.object.pk})
-
-
-class CalificacionManualUpdateView(CalificacionManualMixin, UpdateView):
-    """
-    En esta vista se actualiza la calificacion del contacto de una campana manual
-    """
-
-    def get_object(self, queryset=None):
-        return CalificacionManual.objects.get(pk=self.kwargs['pk_calificacion'])
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        calificacion = self.get_object()
-        campana = calificacion.opcion_calificacion.campana
-        calificaciones = campana.calificacion_campana.calificacion.all()
-        return self.form_class(
-            calificacion_choice=calificaciones, gestion=campana.gestion,
-            **self.get_form_kwargs())
-
-
-class CalificacionManualGestion(UpdateView):
-    """
-    En esta vista se actualiza la calificacion del contacto de una campana manual
-    """
-    template_name = 'campana_manual/calificacion_create_update.html'
-    model = CalificacionManual
-    form_class = FormularioManualGestionForm
-
-    def get_object(self, queryset=None):
-        return CalificacionManual.objects.get(pk=self.kwargs['pk_calificacion'])
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        calificacion = self.get_object()
-        campana = calificacion.opcion_calificacion.campana
-        campos = campana.formulario.campos.all()
-        return self.form_class(campos=campos, **self.get_form_kwargs())
-
-    def get_initial(self):
-        initial = super(CalificacionManualGestion, self).get_initial()
-        self.object = self.get_object()
-        if self.object.metadata:
-            datos = json.loads(self.object.metadata)
-            initial.update(datos)
-        return initial
-
-    def form_valid(self, form):
-        cleaned_data = form.cleaned_data
-        del cleaned_data['telefono']
-        metadata = json.dumps(cleaned_data)
-        self.object = self.get_object()
-        self.object.metadata = metadata
-        self.object.save()
-        message = 'Operación Exitosa!' \
-                  'Se llevó a cabo con éxito el llenado del formulario del' \
-                  ' cliente'
-        messages.success(self.request, message)
-        return redirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse('view_blanco')
+                       kwargs={"pk_campana": self.campana.id,
+                               "pk_contacto": self.contacto.id,
+                               # "wombat_id": self.wombat_id,
+                               "id_agente": self.kwargs['id_agente']})

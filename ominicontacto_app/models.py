@@ -1005,6 +1005,9 @@ class Campana(models.Model):
             opcion_calificacion__campana=self)
         return calificaciones_manuales
 
+    def obtener_calificaciones_manuales(self):
+        return CalificacionManual.objects.filter(opcion_calificacion__campana_id=self.id)
+
 
 class QueueManager(models.Manager):
 
@@ -3115,7 +3118,7 @@ class CalificacionManual(models.Model):
 
     # objects = CalificacionClienteManager()
 
-    contacto = models.ForeignKey(Contacto, null=True)  # TODO: Sacar null=True
+    contacto = models.ForeignKey(Contacto)
     es_venta = models.BooleanField(default=False)
     opcion_calificacion = models.ForeignKey(
         OpcionCalificacion, blank=False, related_name='calificaciones_manuales')
@@ -3125,12 +3128,29 @@ class CalificacionManual(models.Model):
     wombat_id = models.IntegerField(default=0)
     agendado = models.BooleanField(default=False)
 
-    telefono = models.CharField(max_length=128, blank=True, null=True)
-    metadata = models.TextField(blank=True, null=True)
-
     def __unicode__(self):
         return _("Calificación manual para la campana {0} para el contacto con teléfono "
                  "{1} ").format(self.opcion_calificacion.campana, self.contacto.telefono)
+
+    def get_venta(self):
+        try:
+            return MetadataCliente.objects.get(campana=self.opcion_calificacion.campana,
+                                               agente=self.agente,
+                                               contacto=self.contacto)
+        except MetadataCliente.DoesNotExist:
+            return None
+        except MetadataCliente.MultipleObjectsReturned:
+            return None
+
+    def set_es_venta(self):
+        # TODO: Usar metodo de OpcionCalificacion.es_gestion()
+        # self.es_venta = self.opcion_calificacion.es_gestion()
+        self.es_venta = self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
+
+    def es_agenda(self):
+        # TODO: Usar metodo de OpcionCalificacion.es_agenda()
+        # return self.opcion_calificacion.es_agenda()
+        return self.opcion_calificacion.tipo == OpcionCalificacion.AGENDA
 
 
 class AgendaManualManager(models.Manager):
