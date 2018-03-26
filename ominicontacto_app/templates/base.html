@@ -25,6 +25,9 @@
       }
     </style>
 
+    {% block extra_css %}
+    {% endblock %}
+
     <!-- jquery UI -->
     {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
