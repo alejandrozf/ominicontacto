@@ -216,11 +216,11 @@
                             <a href="#menuForms" role="button" data-toggle="collapse" aria-expanded="false">Formularios</a>
                             <ul class="collapse list-unstyled submenu-two" id="menuForms" data-parent=".nav-submenu">  
                                 <li>
-                                    <a href="{% url 'formulario_list' %}">Listado de formularios</a>
-                                </li>                        
-                                <li>
                                     <a href="{% url 'formulario_nuevo' %}">Nuevo formulario</a>
-                                </li>                                   
+                                </li>   
+                                <li>
+                                    <a href="{% url 'formulario_list' %}">Listado de formularios</a>
+                                </li>                    
                             </ul>                          
                         </li> 
 
@@ -228,11 +228,11 @@
                             <a href="#menuSites" role="button" data-toggle="collapse" aria-expanded="false">Sitios Externos</a>
                             <ul class="collapse list-unstyled submenu-two" id="menuSites" data-parent=".nav-submenu">  
                                 <li>
-                                    <a href="{% url 'sitio_externo_list' %}">Listado de Sitios</a>
-                                </li>                        
-                                  <li>
                                     <a href="{% url 'sitio_externo_create' %}">Nuevo sitio</a>
-                                </li>                                 
+                                </li>  
+                                <li>
+                                    <a href="{% url 'sitio_externo_list' %}">Listado de sitios</a>
+                                </li>         
                             </ul>                          
                         </li> 
 
@@ -361,13 +361,14 @@ $(document).ready(function () {
 
     // Expand sidebar first level submenus for current selected anchor
     $("a[href='" + currentPath + "']").closest('ul .submenu').collapse('show');
+
     // Expand sidebar second level submenus for current selected anchor
     $("ul.submenu-two a[href='" + currentPath + "']").closest('ul').collapse('show');
     
     // Add active class to sidebar icon
     $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
 
-    // //Toogle sidebar and keep current state on page reload    
+    //Toogle sidebar and keep current state on page reload    
     //retrieve current state
     $('#sidebar').toggleClass(window.sessionStorage.toggled);
 

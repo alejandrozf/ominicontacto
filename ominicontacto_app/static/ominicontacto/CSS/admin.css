@@ -28,7 +28,7 @@ hr {
     max-width: 220px;
     min-height: 100vh;
     background-color: #ECEEEA;
-    transition: 0.3s;
+   /* transition: 0.3s;*/
 }
 #sidebar > ul > li {
     position: relative;
@@ -176,8 +176,14 @@ hr {
     border-bottom: 2px solid rgba(0,0,0,0.15);
 }
 
-
-
+/* ///// Pagination styles */
+.page-link, .page-link:hover {
+    color: #8FC641;
+}
+.page-item.active .page-link {
+    background-color: #8FC641;
+    border-color: #8FC641;
+}
 
 @media (min-width: 768px) {
 
@@ -191,7 +197,7 @@ hr {
     #sidebar.active  #nav-logo-symbol {
         display: block;
     }
-    #sidebar.active > ul > li {
+    #sidebar.active > ul > li, #sidebar.active > ul > li > ul > li {
         position: relative;
     }       
     #sidebar.active > ul > li:hover {
@@ -236,19 +242,33 @@ hr {
         z-index: 100;
     }
     #sidebar.active ul.submenu-two {
-    min-width: 250px;
-    background-color: #EBEDE9;
-    border-left: 1px solid rgba(0,0,0,0.15);        
-    position: absolute;
-    left: 250px;
-    top: 42px;
-    z-index: 100;
+        min-width: 250px;
+        background-color: #EBEDE9;
+        border-left: 1px solid rgba(0,0,0,0.15); 
+        position: absolute;
+        left: 248px;
+        top: 0;
+        z-index: 100;
     }
+
+    /* ///// Change collapsible menu icons */ 
+    #sidebar.active ul.submenu > li > a[aria-expanded="false"]::before, #sidebar.active ul.submenu > li > a[aria-expanded="true"]::before {
+        content: '\e902';
+        display: block;
+        position: absolute;
+        right: 10px;
+        top: 12px;
+        font-family: 'icomoon';
+        font-size: 0.6em;
+    }
+    #sidebar.active ul.submenu > li > a[aria-expanded="true"]::before {
+        content: '\e902';
+    }    
+
     #sidebar.active ul.submenu a {
         display: block;
         padding: 6px 10px;
     }
-
     #sidebar.active .icon {
         width: 100%;
         color: #000000;
@@ -258,10 +278,15 @@ hr {
     }      
     #sidebar.active .icon.active {
         background-color: rgba(0,0,0,0.1);
-    }     
+    }    
     #sidebar.active > ul > li:hover ul.submenu, #sidebar.active > ul > li:hover .menu-link, #sidebar.active > ul > li:hover .menu-header {
         display: block;
     }
+    #sidebar.active > ul > li > ul > li:hover ul.submenu-two {
+        display: block;
+        z-index: 200;
+        box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    }    
 
 }
 
