@@ -9,7 +9,7 @@ import pygal
 import datetime
 from pygal.style import Style
 
-from ominicontacto_app.models import CalificacionManual, OpcionCalificacion, Queuelog
+from ominicontacto_app.models import CalificacionCliente, OpcionCalificacion, Queuelog
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 import logging as _logging
 
@@ -46,9 +46,10 @@ class EstadisticasAgenteService():
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         opciones_calificacion = campana.opciones_calificacion.all()
-        calificaciones_query = CalificacionManual.objects.filter(
+        calificaciones_query = CalificacionCliente.objects.filter(
             agente=agente, opcion_calificacion__campana=campana,
             fecha__range=(fecha_desde, fecha_hasta))
+
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_asignados = len(calificaciones_query)
@@ -71,13 +72,14 @@ class EstadisticasAgenteService():
         """
         dato_agente = []
         dato_agente.append(agente)
-        total_cal_agente = len(agente.calificacionesmanuales.filter(
+        total_cal_agente = len(agente.calificaciones.filter(
             opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta)))
         dato_agente.append(total_cal_agente)
-        total_ven_agente = len(agente.calificacionesmanuales.filter(
+        total_ven_agente = len(agente.calificaciones.filter(
             opcion_calificacion__campana=campana,
             opcion_calificacion__tipo=OpcionCalificacion.GESTION,
             fecha__range=(fecha_desde, fecha_hasta)))
+
         dato_agente.append(total_ven_agente)
 
         return dato_agente

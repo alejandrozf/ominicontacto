@@ -15,8 +15,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, FormView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
-    AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual, CalificacionCliente,
-    CalificacionManual
+    AgendaContacto, Contacto, AgenteProfile, Campana, AgendaManual, CalificacionCliente
 )
 from ominicontacto_app.forms import (
     AgendaContactoForm, AgendaBusquedaForm, AgendaManualForm
@@ -112,6 +111,7 @@ class AgenteContactoListFormView(FormView):
             listado_de_eventos=listado_de_eventos, agente=agente))
 
 
+# TODO: EliminarAgendaManual
 class AgendaManualCreateView(CreateView):
     """Vista para crear una nueva agenda para una llamada manual"""
     template_name = 'agenda_contacto/create_agenda_manual.html'
@@ -134,8 +134,10 @@ class AgendaManualCreateView(CreateView):
         agente = cleaned_data.get('agente')
         telefono = cleaned_data.get('telefono')
         campana = form.instance.campana
-        CalificacionManual.objects.filter(
-            agente=agente, opcion_calificacion__campana=campana, telefono=telefono).update(agendado=True)
+        CalificacionCliente.objects.filter(
+            agente=agente,
+            opcion_calificacion__campana=campana,
+            telefono=telefono).update(agendado=True)
         return super(AgendaManualCreateView, self).form_valid(form)
 
     def get_success_url(self):

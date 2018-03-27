@@ -16,7 +16,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                ContactoFactory, AgenteProfileFactory,
                                                QueueMemberFactory,
                                                CalificacionClienteFactory,
-                                               NombreCalificacionFactory, CalificacionManualFactory,
+                                               NombreCalificacionFactory,
                                                OpcionCalificacionFactory)
 
 from ominicontacto_app.models import (AgendaContacto, AgendaManual, NombreCalificacion, Campana,
@@ -51,9 +51,9 @@ class CalificacionTests(OMLBaseTest):
         self.queue = QueueFactory.create(campana=self.campana)
         self.agente_profile = AgenteProfileFactory.create(user=UserFactory(is_agente=True))
 
-        self.calificacion_cliente_manual = CalificacionManualFactory(
+        self.calificacion_cliente = CalificacionClienteFactory(
             opcion_calificacion=self.opcion_calificacion_camp_manual, agente=self.agente_profile,
-            telefono=self.contacto.telefono)
+            contacto=self.contacto)
 
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
 
@@ -161,14 +161,14 @@ class CalificacionTests(OMLBaseTest):
 
     def test_no_se_admite_tipo_calificacion_manual_vacia_en_modificacion_calificacion(self):
         url = reverse('campana_manual_calificacion_update',
-                      kwargs={'pk_calificacion': self.calificacion_cliente_manual.pk})
+                      kwargs={'pk_calificacion': self.calificacion_cliente.pk})
         post_data = self._obtener_post_data_calificacion_manual()
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context_data['form'].is_valid())
 
     def test_escoger_calificacion_agenda_llamada_manual_redirecciona_formulario_agenda(self):
         url = reverse('campana_manual_calificacion_update',
-                      kwargs={'pk_calificacion': self.calificacion_cliente_manual.pk})
+                      kwargs={'pk_calificacion': self.calificacion_cliente.pk})
         post_data = self._obtener_post_data_calificacion_manual()
         post_data['calificacion'] = self.calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)
@@ -337,13 +337,13 @@ class CalificacionTests(OMLBaseTest):
     def test_calificacion_manual_marcada_agendada_cuando_se_salva_agenda(self):
         url = reverse('agenda_manual_create',
                       kwargs={'id_agente': self.agente_profile.pk,
-                              'telefono': self.contacto.telefono,
+                              'contacto': self.contacto,
                               'pk_campana': self.campana.pk})
         post_data = self._obtener_post_data_agenda()
-        self.assertFalse(self.calificacion_cliente_manual.agendado)
+        self.assertFalse(self.calificacion_cliente.agendado)
         self.client.post(url, post_data, follow=True)
-        self.calificacion_cliente_manual.refresh_from_db()
-        self.assertTrue(self.calificacion_cliente_manual.agendado)
+        self.calificacion_cliente.refresh_from_db()
+        self.assertTrue(self.calificacion_cliente.agendado)
 
     @patch('requests.post')
     def test_no_se_programan_en_wombat_agendas_globales_calificaciones_campanas_no_dialer(

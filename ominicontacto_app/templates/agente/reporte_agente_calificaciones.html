@@ -178,41 +178,13 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                  {% if calificacion_cliente.es_calificacion_manual %}
+                                    <a href="{% url 'campana_manual_calificacion_update' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.agente_id calificacion_cliente.contacto_id %}">editar calificacion</a>
+                                  {% else %}
                                     <a href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id agente.pk calificacion_cliente.wombat_id %}">editar calificacion</a>
+                                  {% endif %}
                                     {% if calificacion_cliente.get_venta %}
                                         <a href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">editar gestion</a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-
-                        {% endfor %}
-                        {% for calificacion_manual in calificaciones_manuales %}
-                            <tr>
-                                <td>
-                                    {{ calificacion_manual.contacto.telefono }}
-                                </td>
-                                <td>
-                                    no aplica
-                                </td>
-                                <td>
-                                    {% if calificacion_manual.es_venta %}
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    {% else %}
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {{ calificacion_manual.opcion_calificacion.nombre }}
-                                </td>
-                                <td>
-                                    {% if calificacion_manual.observaciones %}
-                                        {{calificacion_manual.observaciones}}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a href="{% url 'campana_manual_calificacion_update' calificacion_manual.opcion_calificacion.campana_id calificacion_manual.agente_id calificacion_manual.contacto_id %}">editar calificacion</a>
-                                    {% if calificacion_manual.es_venta  %}
-                                        <a href="{% url 'formulario_venta_update' calificacion_manual.get_venta.pk %}">editar gestion</a>
                                     {% endif %}
                                 </td>
                             </tr>

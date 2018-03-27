@@ -14,9 +14,8 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import FormView
 
-from ominicontacto_app.models import CalificacionManual, Campana, AgenteProfile, Contacto
-from ominicontacto_app.forms import (CalificacionManualForm, CalificacionManualUpdateForm,
-                                     FormularioContactoCalificacion, )
+from ominicontacto_app.models import CalificacionCliente, Campana, AgenteProfile, Contacto
+from ominicontacto_app.forms import CalificacionClienteForm, FormularioContactoCalificacion
 from ominicontacto_app.utiles import convertir_ascii_string
 
 logger = logging_.getLogger(__name__)
@@ -29,8 +28,8 @@ class CalificacionManualFormView(FormView):
     """
     template_name = 'campana_manual/calificacion_create_update.html'
     context_object_name = 'calificacion_manual'
-    model = CalificacionManual
-    form_class = CalificacionManualForm
+    model = CalificacionCliente
+    form_class = CalificacionClienteForm
 
     def get_contacto(self):
         if 'pk_contacto' in self.kwargs and self.kwargs['pk_contacto'] is not None:
@@ -43,10 +42,10 @@ class CalificacionManualFormView(FormView):
     def get_object(self):
         if self.contacto is not None:
             try:
-                return CalificacionManual.objects.get(
-                    opcion_calificacion__campana_id=self.kwargs['pk_campana'],
+                return CalificacionCliente.objects.get(
+                    opcion_calificacion__campana=self.campana,
                     contacto_id=self.contacto.id)
-            except CalificacionManual.DoesNotExist:
+            except CalificacionCliente.DoesNotExist:
                 return None
         return None
 
@@ -72,11 +71,7 @@ class CalificacionManualFormView(FormView):
 
     def get_form(self):
         kwargs = self.get_calificacion_form_kwargs()
-        if self.object is None:
-            calificacion_form = CalificacionManualForm(campana=self.campana, **kwargs)
-        else:
-            calificacion_form = CalificacionManualUpdateForm(campana=self.campana, **kwargs)
-        return calificacion_form
+        return CalificacionClienteForm(campana=self.campana, **kwargs)
 
     def get_contacto_form_kwargs(self):
         kwargs = {}
@@ -144,16 +139,16 @@ class CalificacionManualFormView(FormView):
             campo = contacto_form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
         contacto.datos = json.dumps(datos)
+        contacto.bd_contacto = base_datos
         contacto.save()
         self.contacto = contacto
 
         self.object_calificacion = calificacion_form.save(commit=False)
         self.object_calificacion.set_es_venta()
-
-        # Test
         self.object_calificacion.agente = self.agente
         self.object_calificacion.contacto = contacto
 
+        self.object_calificacion.es_calificacion_manual = True
         self.object_calificacion.save()
 
         # Finalizar relacion de contacto con agente
@@ -184,15 +179,15 @@ class CalificacionManualFormView(FormView):
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',
-                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                       kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id,
-                               "id_agente": self.kwargs['id_agente']})
+                               "id_agente": self.agente.id})
 
     def get_success_url_agenda(self):
         return reverse('agenda_contacto_create',
-                       kwargs={"pk_campana": self.kwargs['pk_campana'],
+                       kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id,
-                               "id_agente": self.kwargs['id_agente']})
+                               "id_agente": self.agente.id})
 
     def get_success_url_reporte(self):
         return reverse('reporte_agente_calificaciones',
@@ -203,4 +198,4 @@ class CalificacionManualFormView(FormView):
                        kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id,
                                # "wombat_id": self.wombat_id,
-                               "id_agente": self.kwargs['id_agente']})
+                               "id_agente": self.agente.id})

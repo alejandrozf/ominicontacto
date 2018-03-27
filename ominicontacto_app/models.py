@@ -985,28 +985,8 @@ class Campana(models.Model):
         OpcionCalificacion.objects.get_or_create(
             campana=self, nombre=settings.CALIFICACION_REAGENDA, tipo=OpcionCalificacion.AGENDA)
 
-    def obtener_calificaciones_cliente(self):
-        """
-        Devuelve todas las calificaciones realizadas en la campaña
-        (de acuerdo al modelo CalificacionCliente)
-        """
-        # TODO: cambiar cuando los modelos de calificación estén ya unificados
-        calificaciones_cliente = CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=self)
-        return calificaciones_cliente
-
-    def obtener_calificaciones_manuales(self):
-        """
-        Devuelve todas las calificaciones manuales realizadas en la campaña
-        (de acuerdo al modelo CalificacionManual)
-        """
-        # TODO: cambiar cuando los modelos de calificación estén ya unificados
-        calificaciones_manuales = CalificacionManual.objects.filter(
-            opcion_calificacion__campana=self)
-        return calificaciones_manuales
-
-    def obtener_calificaciones_manuales(self):
-        return CalificacionManual.objects.filter(opcion_calificacion__campana_id=self.id)
+    def obtener_calificaciones(self):
+        return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
 
 
 class QueueManager(models.Manager):
@@ -2304,6 +2284,9 @@ class CalificacionCliente(models.Model):
     wombat_id = models.IntegerField(default=0)
     agendado = models.BooleanField(default=False)
 
+    # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
+    es_calificacion_manual = models.BooleanField(default=False)
+
     def __unicode__(self):
         return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.opcion_calificacion.campana, self.contacto)
@@ -3114,45 +3097,7 @@ class UserApiCrm(models.Model):
         return self.usuario
 
 
-class CalificacionManual(models.Model):
-
-    # objects = CalificacionClienteManager()
-
-    contacto = models.ForeignKey(Contacto)
-    es_venta = models.BooleanField(default=False)
-    opcion_calificacion = models.ForeignKey(
-        OpcionCalificacion, blank=False, related_name='calificaciones_manuales')
-    fecha = models.DateTimeField(auto_now_add=True)
-    agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
-    observaciones = models.TextField(blank=True, null=True)
-    wombat_id = models.IntegerField(default=0)
-    agendado = models.BooleanField(default=False)
-
-    def __unicode__(self):
-        return _("Calificación manual para la campana {0} para el contacto con teléfono "
-                 "{1} ").format(self.opcion_calificacion.campana, self.contacto.telefono)
-
-    def get_venta(self):
-        try:
-            return MetadataCliente.objects.get(campana=self.opcion_calificacion.campana,
-                                               agente=self.agente,
-                                               contacto=self.contacto)
-        except MetadataCliente.DoesNotExist:
-            return None
-        except MetadataCliente.MultipleObjectsReturned:
-            return None
-
-    def set_es_venta(self):
-        # TODO: Usar metodo de OpcionCalificacion.es_gestion()
-        # self.es_venta = self.opcion_calificacion.es_gestion()
-        self.es_venta = self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
-
-    def es_agenda(self):
-        # TODO: Usar metodo de OpcionCalificacion.es_agenda()
-        # return self.opcion_calificacion.es_agenda()
-        return self.opcion_calificacion.tipo == OpcionCalificacion.AGENDA
-
-
+# TODO: EliminarAgendaManual
 class AgendaManualManager(models.Manager):
 
     def eventos_fecha_hoy(self):
@@ -3177,6 +3122,7 @@ class AgendaManualManager(models.Manager):
         return eventos.order_by('-fecha')
 
 
+# TODO: EliminarAgendaManual
 class AgendaManual(models.Model):
     objects = AgendaManualManager()
 

@@ -107,7 +107,7 @@ class RecicladoTest(OMLBaseTest):
         estadisticas = EstadisticasContactacion()
         calificados = estadisticas.obtener_cantidad_calificacion(self.campana)
 
-        calificaciones_query = self.campana.obtener_calificaciones_cliente().values(
+        calificaciones_query = self.campana.obtener_calificaciones().values(
             'calificacion__nombre', 'calificacion__id').annotate(
             Count('calificacion')).filter(
             calificacion__count__gt=0)
@@ -151,7 +151,7 @@ class RecicladoTest(OMLBaseTest):
 
         # vamos a chequear que sea la misma cantidad de contactos reciclados
         # para los calificados
-        calificaciones_query = self.campana.obtener_calificaciones_cliente().filter(
+        calificaciones_query = self.campana.obtener_calificaciones().filter(
             calificacion__in=calificacion_list).distinct()
         reciclador = RecicladorContactosCampanaDIALER()
         contactos_reciclados = reciclador._obtener_contactos_calificados(

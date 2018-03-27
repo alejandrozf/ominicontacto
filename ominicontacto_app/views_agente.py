@@ -58,11 +58,8 @@ class AgenteReporteCalificaciones(FormView):
         fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
         listado_calificaciones = agente.calificaciones.filter(fecha__range=(
             fecha_desde, fecha_hasta))
-        calificaciones_manuales = agente.calificacionesmanuales.filter(fecha__range=(
-            fecha_desde, fecha_hasta))
         return self.render_to_response(self.get_context_data(
-            listado_calificaciones=listado_calificaciones, agente=agente,
-            calificaciones_manuales=calificaciones_manuales))
+            listado_calificaciones=listado_calificaciones, agente=agente))
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
@@ -80,11 +77,8 @@ class AgenteReporteCalificaciones(FormView):
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         listado_calificaciones = agente.calificaciones.filter(fecha__range=(
             fecha_desde, fecha_hasta))
-        calificaciones_manuales = agente.calificacionesmanuales.filter(fecha__range=(
-            fecha_desde, fecha_hasta))
         return self.render_to_response(self.get_context_data(
-            listado_calificaciones=listado_calificaciones, agente=agente,
-            calificaciones_manuales=calificaciones_manuales))
+            listado_calificaciones=listado_calificaciones, agente=agente))
 
 
 class ExportaReporteFormularioVentaView(UpdateView):

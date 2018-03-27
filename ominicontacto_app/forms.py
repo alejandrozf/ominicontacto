@@ -19,8 +19,8 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
+    ReglasIncidencia, UserApiCrm, SupervisorProfile, AgendaManual, ArchivoDeAudio,
+    NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -520,62 +520,10 @@ class CalificacionClienteForm(forms.ModelForm):
 
     class Meta:
         model = CalificacionCliente
-        fields = ('contacto', 'es_venta', 'agente', 'opcion_calificacion',
-                  'observaciones', 'agendado', 'wombat_id')
-        widgets = {
-            'contacto': forms.HiddenInput(),
-            'es_venta': forms.HiddenInput(),
-            'agente': forms.HiddenInput(),
-            'agendado': forms.HiddenInput(),
-            'wombat_id': forms.HiddenInput(),
-        }
-
-    def clean_contacto(self):
-        contacto = self.cleaned_data.get('contacto', None)
-        if contacto:
-            if not contacto.bd_contacto == self.campana.bd_contacto:
-                raise forms.ValidationError('El Contacto no corresponde a la base de datos'
-                                            ' de la Campaña')
-            return contacto
-
-    def clean_opcion_calificacion(self):
-        opcion_calificacion = self.cleaned_data.get('opcion_calificacion', None)
-        if opcion_calificacion:
-            if opcion_calificacion not in self.campana.opciones_calificacion.all():
-                raise forms.ValidationError(_('Opción de calificación incorrecta'))
-            return opcion_calificacion
-
-
-class CalificacionClienteUpdateForm(CalificacionClienteForm):
-    fields = ('es_venta', 'opcion_calificacion', 'agente', 'observaciones', 'agendado', 'wombat_id')
-
-
-class CalificacionManualForm(forms.ModelForm):
-    """
-    Formulario para la creacion de Calificaciones Manuales
-    En este punto no hay contacto.
-    """
-    opcion_calificacion = OpcionCalificacionModelChoiceField(
-        OpcionCalificacion.objects.all(), empty_label='---------')
-
-    def __init__(self, campana, *args, **kwargs):
-        super(CalificacionManualForm, self).__init__(*args, **kwargs)
-        self.campana = campana
-        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
-
-    class Meta:
-        model = CalificacionManual
         fields = ('opcion_calificacion', 'observaciones')
         widgets = {
-            'opcion_calificacion': forms.Select(),
-            # 'contacto': forms.HiddenInput(),
-            # 'es_venta': forms.HiddenInput(),
-            # 'agente': forms.HiddenInput(),
+            'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
         }
-
-
-class CalificacionManualUpdateForm(CalificacionClienteForm):
-    fields = ('opcion_calificacion', 'agente', 'observaciones', )
 
 
 class GrupoAgenteForm(forms.Form):
@@ -1243,8 +1191,8 @@ class CalificacionForm(forms.ModelForm):
         return nombre
 
 
+# TODO: EliminarAgendaManual
 class AgendaManualForm(forms.ModelForm):
-
     class Meta:
         model = AgendaManual
         fields = ('telefono', 'agente', 'tipo_agenda', 'fecha', 'hora',

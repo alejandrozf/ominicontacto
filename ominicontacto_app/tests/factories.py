@@ -14,7 +14,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       NombreCalificacion, Formulario,
                                       Grabacion, GrabacionMarca, Queuelog, SitioExterno, User,
                                       Contacto, SupervisorProfile, AgenteEnContacto, QueueMember,
-                                      CalificacionCliente, CalificacionManual, OpcionCalificacion,
+                                      CalificacionCliente, OpcionCalificacion,
                                       ArchivoDeAudio)
 
 faker = faker.Factory.create()
@@ -219,17 +219,8 @@ class CalificacionClienteFactory(DjangoModelFactory):
     opcion_calificacion = SubFactory(OpcionCalificacionFactory)
     contacto = SubFactory(ContactoFactory)
     agente = SubFactory(AgenteProfileFactory)
-    wombat_id = Sequence(lambda n: n)
-
-
-class CalificacionManualFactory(DjangoModelFactory):
-    class Meta:
-        model = CalificacionManual
-
-    opcion_calificacion = SubFactory(OpcionCalificacionFactory)
-    telefono = lazy_attribute(lambda a: faker.random_number(10))
     fecha = lazy_attribute(lambda a: timezone.now())
-    agente = SubFactory(AgenteProfileFactory)
+    wombat_id = Sequence(lambda n: n)
 
 
 class ArchivoDeAudioFactory(DjangoModelFactory):
