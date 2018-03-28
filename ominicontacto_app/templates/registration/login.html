@@ -11,35 +11,39 @@
                 <p> Username/password incorrecto ingrese nuevamente los datos </p>
             </div>
         {% endif %}
-        <form class="form-signin" role="form" method="post" action="">
-            {% csrf_token %}
-						<img src="{% static 'ominicontacto/Img/omnileads_logo.png' %}" alt="FtsLogo" width="240">
-            <div class="form-group">
-                <label class="control-label">Usuario</label>
+        <div class="wrapper-content login">
+            <form role="form" method="post" action="">
+                {% csrf_token %}
                 <div>
-                    {{ form.username }}
-                    <span class="help-inline text-danger">
-                        {{ form.username.errors }}
-                    </span>
+                    <img src="{% static 'ominicontacto/Img/ic_logo_full.svg' %}" alt="FtsLogo" width="240">                    
                 </div>
-             </div>
 
-            <div class="form-group">
-                <label class="control-label">Clave</label>
-                <div>
-                    {{ form.password }}
-                    <span class="help-inline text-danger">
-                        {{ form.password.errors }}
-                    </span>
-                </div>
-             </div>
+                <div class="form-group">
+                    <label class="control-label">Usuario</label>
+                    <div>
+                        {{ form.username }}
+                        <span class="help-inline text-danger">
+                            {{ form.username.errors }}
+                        </span>
+                    </div>
+                 </div>
 
-            <br>
+                <div class="form-group">
+                    <label class="control-label">Clave</label>
+                    <div>
+                        {{ form.password }}
+                        <span class="help-inline text-danger">
+                            {{ form.password.errors }}
+                        </span>
+                    </div>
+                 </div>
 
-            <button class="btn btn-success" type="submit" >Ingresar</button>
+                <br>
 
+                <button class="btn btn-outline-primary" type="submit" >Ingresar</button>
+            </form>            
+        </div>
 
-        </form>
  
 
     {% endif %}

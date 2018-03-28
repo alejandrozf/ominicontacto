@@ -16,7 +16,48 @@ hr {
     display: flex;
     align-items: stretch;
 } 
-/* ///// Sidebar menu */
+
+
+/*///// Welcome screen 
+*/
+.wrapper-content.welcome {
+    padding-top: 200px;
+    text-align: center;
+}
+.wrapper-content.welcome .btn{
+    width: 300px;
+    margin-bottom: 20px;
+}
+.wrapper-content.welcome h4{
+    margin-bottom: 40px;
+}
+
+/*///// Login screen 
+*/
+.wrapper-content.login {
+    padding-top: 90px;
+    text-align: center;
+}
+.wrapper-content.login img {
+    width: 270px;
+    margin-bottom: 40px;
+}
+.wrapper-content.login form > div:first-of-type {
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+    margin-bottom: 30px;
+}
+.wrapper-content.login input {
+    width: 320px;
+    margin: auto;
+    text-align: center;
+}
+.wrapper-content.login button {
+    width: 320px;
+}
+
+
+/* ///// Sidebar menu 
+*/
 .collapsing {
     -webkit-transition: 0.1s;
     transition: 0.1s;
@@ -106,6 +147,9 @@ hr {
 .wrapper-content {
     width: 100%;
 }
+
+
+
 .wrapper-info {
     padding: 30px;
 }
