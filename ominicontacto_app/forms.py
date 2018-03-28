@@ -963,7 +963,7 @@ class ReglasIncidenciaBaseFomset(BaseInlineFormSet):
 
 ReglasIncidenciaFormSet = inlineformset_factory(
     Campana, ReglasIncidencia, form=ReglasIncidenciaForm, formset=ReglasIncidenciaBaseFomset,
-    extra=0, min_num=1)
+    extra=1, min_num=0)
 
 
 class QueueDialerForm(forms.ModelForm):
