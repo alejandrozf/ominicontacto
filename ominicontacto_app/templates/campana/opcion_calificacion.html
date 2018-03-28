@@ -10,6 +10,8 @@
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script type="text/javascript">
+     /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
+        en un formset  */
      $('.linkFormset').formset({
        addText: '+',
        deleteText: '-',
@@ -30,6 +32,9 @@
          });
        },
      });
+     /* oculta los links de eliminación para los formularios de opciones de calificación
+        que no deben ser eliminados */
+     $('.readOnly>td').find('.deleteFormset').attr('class', 'hidden')
     </script>
 {% endblock %}
 
@@ -57,14 +62,16 @@
             {% for form in wizard.form.forms %}
                 <tr
                     {% if form.instance.usada_en_calificacion %}
-                    class="linkFormset borderWarning"
+                    class="linkFormset readOnly"
                     data-toggle="tooltip" data-placement="top"
                     title="Esta opción de calificación ya está siendo usada en la campaña, no se permitirá su eliminación, tenga en cuenta además que si modifica su nombre esto puede causarle confusión al consultar los reportes"
+                    {% elif form.instance.es_agenda %}
+                    class="linkFormset readOnly"
                     {% else %}
                     class="linkFormset"
                     {% endif %}>
                     <td>
-                    {% if form.instance.pk and not form.instance.es_agenda and not form.instance.usada_en_calificacion %}
+                    {% if form.instance.pk %}
                         {{ form.DELETE }}
                     {% endif %}
                     </td>

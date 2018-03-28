@@ -389,7 +389,7 @@ class OpcionCalificacionForm(forms.ModelForm):
             choices = (EMPTY_CHOICE,) + nombres_calificaciones
         self.fields['nombre'] = forms.ChoiceField(choices=choices)
 
-        if instance and instance.pk and instance.es_agenda():
+        if instance and instance.pk and instance.no_editable():
             self.fields['nombre'].disabled = True
             self.fields['tipo'].disabled = True
         else:
@@ -401,14 +401,14 @@ class OpcionCalificacionForm(forms.ModelForm):
             raise forms.ValidationError(
                 _("El nombre de la opción de calificación '{0}' está reservado para uso interno"
                   " del sistema, por favor use otro".format(instance.nombre)))
-        if instance and instance.pk and instance.es_agenda():
+        if instance and instance.pk and instance.no_editable():
             return instance.nombre
         else:
             return self.cleaned_data['nombre']
 
     def clean_tipo(self):
         instance = getattr(self, 'instance', None)
-        if instance and instance.pk and instance.es_agenda():
+        if instance and instance.pk and instance.no_editable():
             return instance.tipo
         else:
             return self.cleaned_data['tipo']

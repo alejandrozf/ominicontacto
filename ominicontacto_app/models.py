@@ -1074,10 +1074,16 @@ class OpcionCalificacion(models.Model):
 
     def usada_en_calificacion(self):
         """
-        Devuelve si opción de calificación está siendo usada en la campaña
+        Determina si opción de calificación está siendo usada en la campaña
         """
         return (self.calificaciones_cliente.exists() or
                 self.calificaciones_manuales.exists())
+
+    def no_editable(self):
+        """
+        Determina si la opción de calificada puede ser editada/eliminada en la campaña
+        """
+        return self.es_agenda() or self.usada_en_calificacion()
 
 
 class Queue(models.Model):
