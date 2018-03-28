@@ -24,7 +24,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_gestion_campanas, validar_solo_ascii_y_sin_espacios)
+                                      validar_solo_ascii_y_sin_espacios)
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
@@ -351,7 +351,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'formulario',
-                  'gestion', 'sitio_externo', 'tipo_interaccion', 'objetivo')
+                  'sitio_externo', 'tipo_interaccion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -360,7 +360,6 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
@@ -457,7 +456,7 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
             nombre = form.cleaned_data.get('nombre', None)
             tipo = form.cleaned_data.get('tipo', None)
             if nombre is None or tipo is None:
-                raise forms.ValidationError(_("Rellene los campos en blanco"))
+                raise forms.ValidationError(_("Rellene los campos en blanco"), code='invalid')
             if nombre in nombres:
                 raise forms.ValidationError(
                     _("Los nombres de las opciones de calificación deben ser distintos"),
@@ -467,7 +466,8 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
             nombres.append(nombre)
         if tipos_gestion_cont == 0:
             raise forms.ValidationError(
-                _("Debe escoger una opción de calificación de tipo gestión por campaña"))
+                _("Debe escoger una opción de calificación de tipo gestión por campaña"),
+                code='invalid')
 
     def save(self):
         """
@@ -847,7 +847,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
-                  'bd_contacto', 'formulario', 'gestion', 'sitio_externo',
+                  'bd_contacto', 'formulario', 'sitio_externo',
                   'tipo_interaccion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
@@ -856,40 +856,10 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
         }
-
-
-class CampanaDialerUpdateForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(CampanaDialerUpdateForm, self).__init__(*args, **kwargs)
-
-        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
-        self.fields['fecha_inicio'].required = True
-
-        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
-        self.fields['fecha_fin'].required = True
-
-    class Meta:
-        model = Campana
-        fields = ('fecha_inicio', 'fecha_fin',
-                  'gestion', 'objetivo')
-
-        widgets = {
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
-            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
-        }
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
-
-    def clean_gestion(self):
-        return validar_gestion_campanas(self)
 
 
 class ParametroExtraParaWebformForm(forms.ModelForm):
@@ -1127,13 +1097,12 @@ class CampanaDialerTemplateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre_template', 'formulario', 'gestion',
+        fields = ('nombre_template', 'formulario',
                   'sitio_externo', 'tipo_interaccion')
 
         widgets = {
             "nombre_template": forms.TextInput(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             "tipo_interaccion": forms.RadioSelect(),
         }
@@ -1168,12 +1137,11 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'formulario', 'gestion', 'bd_contacto',
+        fields = ('nombre', 'formulario', 'bd_contacto',
                   'sitio_externo', 'tipo_interaccion', 'objetivo')
 
         widgets = {
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1193,14 +1161,13 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'formulario', 'gestion',
+        fields = ('nombre', 'formulario',
                   'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
                   'tiempo_desconexion')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
