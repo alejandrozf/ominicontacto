@@ -55,7 +55,6 @@
                 {% endfor %}
             {% endif %}
             {% for form in wizard.form.forms %}
-                {{ form.errors }}
                 <tr
                     {% if form.instance.usada_en_calificacion %}
                     class="linkFormset borderWarning"

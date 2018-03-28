@@ -417,8 +417,6 @@ class OpcionCalificacionForm(forms.ModelForm):
 
 class OpcionCalificacionBaseFormset(BaseInlineFormSet):
 
-    MIN_NUM_FORMS = 2
-
     def _construct_form(self, index, **kwargs):
         # adicionamos dinámicamente las nombres de calificaciones existentes en el sistema
         # para que el usuario pueda escoger de ellas al crear las opciones de calificación
@@ -427,6 +425,20 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         kwargs['nombres_calificaciones'] = tuple((nombre, nombre)
                                                  for nombre in nombres_calificaciones_qs)
         return super(OpcionCalificacionBaseFormset, self)._construct_form(index, **kwargs)
+
+    def _validar_numero_opciones_calificacion(self, save_candidates_forms):
+
+        # en el caso de la modificación vamos a tener un form más que en la creación por la
+        # creación automática de la calificación reservada de Agenda
+        MIN_NUM_FORMS = int(self.instance.pk is not None) + 1
+        if MIN_NUM_FORMS == 1:
+            msg = _("Debe ingresar al menos {0} opción de calificación".format(MIN_NUM_FORMS))
+        else:
+            # MIN_NUM_FORMS == 2
+            msg = _("Debe ingresar al menos {0} opciones de calificación".format(MIN_NUM_FORMS))
+
+        if len(save_candidates_forms) < MIN_NUM_FORMS:
+            raise forms.ValidationError(msg, code='invalid')
 
     def clean(self):
         """
@@ -438,25 +450,20 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         tipos_gestion_cont = 0
         deleted_forms = self.deleted_forms
         save_candidates_forms = set(self.forms) - set(deleted_forms)
-        if len(save_candidates_forms) < self.MIN_NUM_FORMS:
-                raise forms.ValidationError(
-                    _("Debe ingresar al menos {0} opciones de calificación".format(
-                        self.MIN_NUM_FORMS)))
+
+        self._validar_numero_opciones_calificacion(save_candidates_forms)
 
         for form in save_candidates_forms:
             nombre = form.cleaned_data.get('nombre', None)
             tipo = form.cleaned_data.get('tipo', None)
-            if nombre is None:
+            if nombre is None or tipo is None:
                 raise forms.ValidationError(_("Rellene los campos en blanco"))
             if nombre in nombres:
                 raise forms.ValidationError(
                     _("Los nombres de las opciones de calificación deben ser distintos"),
                     code="invalid")
-            if tipo == OpcionCalificacion.GESTION and tipos_gestion_cont == 0:
+            if tipo == OpcionCalificacion.GESTION:
                 tipos_gestion_cont += 1
-            elif tipo == OpcionCalificacion.GESTION and tipos_gestion_cont > 0:
-                raise forms.ValidationError(
-                    _("Sólo debe existir una opción de calificación de tipo gestión por campaña"))
             nombres.append(nombre)
         if tipos_gestion_cont == 0:
             raise forms.ValidationError(
