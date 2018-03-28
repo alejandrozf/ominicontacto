@@ -13,6 +13,8 @@
 {% endblock %}
 {% block content %}
 
+<h1>Nueva base de datos de contacto</h1>
+
 <form role="form" method="post" enctype="multipart/form-data" > {% csrf_token %}
     <table class="table table-striped">
         {{form.as_table}}

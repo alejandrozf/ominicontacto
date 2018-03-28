@@ -1,3 +1,5 @@
+/*///// General
+*/
 body {
     font-family: 'Asap', sans-serif;
 }
@@ -12,14 +14,83 @@ a, a:hover, a:focus {
 hr {
     margin: 4px 0;
 }
+h1 {
+    font-size: 1.3rem;
+}
+h2 {
+    font-size: 1.1rem;
+}
+h3 {
+    font-size: 0.9rem;
+}
+h4 {
+    font-size: 0.7rem;
+}
 .wrapper-main {
     display: flex;
     align-items: stretch;
 } 
 
+/* ///// Button styles 
+*/
+
+.btn-primary {
+    background-color: #8FC641;
+    border-color: #8FC641;
+}
+.btn-primary:hover {
+    background-color: #9FD84E;
+    border-color: #8FC641;    
+}
+.btn-light {
+    background-color: #FFFFFF;
+    border: solid 1px rgba(0,0,0,0.2);
+}
+.btn-light:hover {
+    background-color: #F0F0F0;
+}
+.btn-outline-primary {
+    color: #8FC641;
+    border-color: #8FC641;
+}
+.btn-outline-primary:hover {
+    color: #8FC641;
+    border-color: #8FC641;
+    background-color: #F9FDF3;
+}
+.btn-outline-danger {
+    color: #D25836;
+    border-color: #D25836;
+}
+.btn-outline-danger:hover {
+    color: #D25836;
+    border-color: #D25836;
+    background-color: #FFECE7;
+}
+
+/* ///// Tables styles 
+*/
+
+.table thead th {
+    background-color: #F7F7F7;
+    border-top: 0;
+    border-bottom: 2px solid rgba(0,0,0,0.15);
+}
+
+/* ///// Pagination styles 
+*/
+
+.page-link, .page-link:hover {
+    color: #8FC641;
+}
+.page-item.active .page-link {
+    background-color: #8FC641;
+    border-color: #8FC641;
+}
 
 /*///// Welcome screen 
 */
+
 .wrapper-content.welcome {
     padding-top: 200px;
     text-align: center;
@@ -34,6 +105,7 @@ hr {
 
 /*///// Login screen 
 */
+
 .wrapper-content.login {
     padding-top: 90px;
     text-align: center;
@@ -56,20 +128,34 @@ hr {
 }
 
 
-/* ///// Sidebar menu 
+/* ///// Admin sidebar menu 
 */
+
 .collapsing {
     -webkit-transition: 0.1s;
-    transition: 0.1s;
-    
+    transition: 0.1s;   
 }
-
 #sidebar {
 	min-width: 220px;
     max-width: 220px;
     min-height: 100vh;
     background-color: #ECEEEA;
    /* transition: 0.3s;*/
+}
+.sidebar-header {
+    height: 60px;
+    background-color: #F5F5F5;
+    border-bottom: 2px solid rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+}
+.sidebar-header #nav-logo {
+    width: 160px;
+}
+.sidebar-header #nav-logo-symbol {
+    width: 34px;
+    display: none;
 }
 #sidebar > ul > li {
     position: relative;
@@ -110,7 +196,8 @@ hr {
     background-color: #80B13A;
 }
 
-/* ///// Sidebar chevron icons */
+/* ///// Sidebar chevron icons 
+*/
 
 #sidebar a[data-toggle="collapse"] {
     position: relative;
@@ -124,109 +211,8 @@ hr {
     font-family: 'icomoon';
     font-size: 0.6em;
 }
-
 #sidebar a[aria-expanded="true"]::before {
     content: '\e903';
-}
-
-.sidebar-header {
-    height: 60px;
-    background-color: #F5F5F5;
-    border-bottom: 2px solid rgba(0,0,0,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;    
-}
-.sidebar-header #nav-logo {
-    width: 160px;
-}
-.sidebar-header #nav-logo-symbol {
-    width: 34px;
-    display: none;
-}
-.wrapper-content {
-    width: 100%;
-}
-
-
-
-.wrapper-info {
-    padding: 30px;
-}
-#topbar {
-    height: 60px;
-    padding: 0 20px;
-    background: #ffffff;
-    border-bottom: 2px solid rgba(0,0,0,0.15);
-    display: flex;
-    align-items: center;  
-    position: relative;  
-}
-#nav-user {
-    position: absolute;
-    right: 20px;
-}
-
-/* ///// Grafics */
-
-.graficos-avances svg {
-    min-height: 100px;
-    max-height: 450px;
-}
-
-.oml-table-bg {
-    background: #c3c3c3 !important;
-    color: #222;
-}
-/* ///// Button styles */
-.btn-primary {
-    background-color: #8FC641;
-    border-color: #8FC641;
-}
-.btn-primary:hover {
-    background-color: #9FD84E;
-    border-color: #8FC641;    
-}
-.btn-light {
-    background-color: #FFFFFF;
-    border: solid 1px rgba(0,0,0,0.2);
-}
-.btn-light:hover {
-    background-color: #F0F0F0;
-}
-.btn-outline-primary {
-    color: #8FC641;
-    border-color: #8FC641;
-}
-.btn-outline-primary:hover {
-    color: #8FC641;
-    border-color: #8FC641;
-    background-color: #F9FDF3;
-}
-.btn-outline-danger {
-    color: #D25836;
-    border-color: #D25836;
-}
-.btn-outline-danger:hover {
-    color: #D25836;
-    border-color: #D25836;
-    background-color: #FFECE7;
-}
-
-/* ///// Tables styles */
-.table thead th {
-    background-color: #F7F7F7;
-    border-top: 0;
-    border-bottom: 2px solid rgba(0,0,0,0.15);
-}
-
-/* ///// Pagination styles */
-.page-link, .page-link:hover {
-    color: #8FC641;
-}
-.page-item.active .page-link {
-    background-color: #8FC641;
-    border-color: #8FC641;
 }
 
 @media (min-width: 768px) {
@@ -250,7 +236,7 @@ hr {
     }
     #sidebar.active > ul > li > a {
         min-width: 250px;
-        padding: 9px 14px;        
+        padding: 10px 14px;        
         position: absolute;
         left: 60px;
         top: 0;
@@ -281,7 +267,7 @@ hr {
         border-left: 1px solid rgba(0,0,0,0.15);        
         position: absolute;
         left: 60px;
-        top: 42px;
+        top: 44px;
         display: none;
         z-index: 100;
     }
@@ -315,8 +301,10 @@ hr {
     }
     #sidebar.active .icon {
         width: 100%;
+        font-size: 16px;
         color: #000000;
         padding: 14px 22px;
+        display: block;
         position: initial;
         left: initial;
     }      
@@ -334,23 +322,68 @@ hr {
 
 }
 
+/* ///// Top Admin navigation 
+*/
+
+#topbar {
+    height: 60px;
+    padding: 0 20px;
+    background: #ffffff;
+    border-bottom: 2px solid rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;  
+    position: relative;  
+}
+#topbar a {
+    color: #6A716A; 
+}
+#topbar a:hover, #topbar button:hover  {
+    background-color: rgba(0,0,0,0.05);
+}
+#nav-user {
+    position: absolute;
+    right: 20px;
+}
+
+/* ///// Admin content area
+*/
+
+.wrapper-content {
+    width: 100%;
+}
+.wrapper-info {
+    padding: 30px;
+}
+.wrapper-info > h1:first-of-type {
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+
+
+/* ///// Grafics 
+*/
+
+.graficos-avances svg {
+    min-height: 100px;
+    max-height: 450px;
+}
+
+.oml-table-bg {
+    background: #c3c3c3 !important;
+    color: #222;
+}
+
+
 
 @media (max-width: 768px) {
-#sidebar {
-    margin-left: -220px;
-}
-#sidebar ul i {
-    position: initial !important;
-    left: initial;
-}    
-#sidebar.active {
-    margin-left: 0;
-    min-width: 200px;
-    max-width: 200px;     
-}
-#sidebar.active ul i {
-    position: absolute !important;
-    left: 0;
-} 
+    #sidebar {
+        margin-left: -220px;
+    }   
+    #sidebar.active {
+        margin-left: 0;
+        min-width: 200px;
+        max-width: 200px;     
+    }
 
 }
