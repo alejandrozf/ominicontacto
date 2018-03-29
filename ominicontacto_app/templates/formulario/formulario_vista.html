@@ -9,8 +9,6 @@
 {% endblock %}
 {% block content %}
 
-<div class="row">
-<div class="col-md-6">
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     <table class="table table-striped">
@@ -18,8 +16,7 @@
     </table>
 
 </form>
-    <a href="{% url 'formulario_list' %}" class="btn btn-default">volver a listado de formularios</a>
 
-</div>
-</div>
+    <a href="{% url 'formulario_list' %}" class="btn btn-outline-primary" role="button">volver a listado de formularios</a>
+
 {% endblock %}

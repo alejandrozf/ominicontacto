@@ -51,11 +51,14 @@
 {% endblock %}
 
 {% block content %}
+
+<h1>Campañas dialer</h1>
+
 <div>
     <form id="form_estados_campanas" role="form" method="post">
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
-    <h4><b>Campañas Activas</b> <span style="color:red;">- Canales en uso: {{ canales_en_uso }}</span></h4>
+    <h2>Campañas Activas <span style="color:red;">- Canales en uso: {{ canales_en_uso }}</span></h2>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
@@ -122,7 +125,7 @@
         </tbody>
     </table>
     <br>
-    <h4><b>Campañas Pausadas</b></h4>
+    <h2>Campañas Pausadas</h2>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
@@ -192,7 +195,7 @@
         </tbody>
     </table>
     <br>
-    <h4><b>Campañas Inactivas</b></h4>
+    <h2>Campañas Inactivas</h2>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
@@ -262,7 +265,7 @@
         </tbody>
     </table>
     <br>
-            <h4><b>Campañas Finalizadas</b></h4>
+    <h2>Campañas Finalizadas</h2>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
@@ -323,7 +326,7 @@
         </tbody>
     </table>
     <br>
-    <h4><b>Campañas Eliminadas</b></h4>
+    <h2>Campañas Eliminadas</h2>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>

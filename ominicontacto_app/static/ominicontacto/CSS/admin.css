@@ -2,6 +2,7 @@
 */
 body {
     font-family: 'Asap', sans-serif;
+    color: #2F342F;
 }
 a {
     color: #8FC641;
@@ -11,21 +12,28 @@ a, a:hover, a:focus {
     text-decoration: none;
     transition: all 0.3s;
 }
+a:hover, button:hover {
+    background-color: rgba(0,0,0,0.05);    
+}
 hr {
     margin: 4px 0;
 }
 h1 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
 }
 h2 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
 }
 h3 {
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 h4 {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
+.hidden {
+    display: none;
+}
+
 .wrapper-main {
     display: flex;
     align-items: stretch;
@@ -75,6 +83,62 @@ h4 {
     background-color: #F7F7F7;
     border-top: 0;
     border-bottom: 2px solid rgba(0,0,0,0.15);
+}
+
+/* ///// Form styles 
+*/
+label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6A716A;
+    display: block;
+}
+.form-row > div {
+    margin-bottom: 20px;
+}
+.form-row div:nth-child(odd) {
+    padding-right: 30px;
+}
+form hr {
+    margin-bottom: 20px;
+}
+ul.errorlist {
+    list-style: none;
+    padding: 0;
+    color: #D25836;
+    font-size: 0.9rem;
+}
+ul.errorlist li {
+    padding: 5px 0;
+}
+
+/* ///// Search form
+*/
+.wrapper-info h3 .icon {
+    font-size: 0.8rem;
+}
+#wrapper-search {
+    border-top: 1px solid rgba(0,0,0,0.15);
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+    margin-bottom: 40px;
+}
+#wrapperSearchForm {
+    padding: 14px 0;
+}
+#wrapperSearchForm .btn-primary {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+#btnCollapse[data-toggle="collapse"] {
+    text-align: center;
+}
+#btnCollapse[aria-expanded="false"]::before, #btnCollapse[aria-expanded="true"]::before {
+    content: '\e900';
+    font-family: 'icomoon';
+    font-size: 1rem;
+}
+#btnCollapse[aria-expanded="true"]::before {
+    content: '\e903';
 }
 
 /* ///// Pagination styles 
@@ -337,9 +401,6 @@ h4 {
 #topbar a {
     color: #6A716A; 
 }
-#topbar a:hover, #topbar button:hover  {
-    background-color: rgba(0,0,0,0.05);
-}
 #nav-user {
     position: absolute;
     right: 20px;
@@ -352,14 +413,22 @@ h4 {
     width: 100%;
 }
 .wrapper-info {
-    padding: 30px;
+    padding: 30px 44px;
 }
 .wrapper-info > h1:first-of-type {
+    font-size: 1.2rem;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 32px;
+}
+.wrapper-info h2 {
+    margin-bottom: 14px;
 }
 
-
+/* ///// Admin content area
+*/
+.wrapper-info .nav-tabs {
+    margin-bottom: 20px;
+}
 
 /* ///// Grafics 
 */
@@ -377,6 +446,10 @@ h4 {
 
 
 @media (max-width: 768px) {
+    .wrapper-info {
+        padding: 30px;
+    }
+
     #sidebar {
         margin-left: -220px;
     }   
@@ -385,5 +458,11 @@ h4 {
         min-width: 200px;
         max-width: 200px;     
     }
+
+    /* ///// Form styles 
+    */
+    .form-row div:nth-child(odd) {
+        padding-right: 5px;
+    }    
 
 }

@@ -77,52 +77,45 @@
     </script>
 {% endblock %}
 {% block content %}
-
-<div class="col-md-6">
-
-    <form role="form" method="post" enctype="multipart/form-data" >
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div class="form-group row">
-        {{ form.fecha.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.fecha.id_for_label }}">Fecha: </label>
-            <div class="col-sm-6">
-                <div class="input-group date pull-right active" id="">
-                       {{form.fecha}}
-                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
-                        </span>
+<h1>Agentes</h1>
+<h3><span class="icon icon-search"></span> Buscar</h3>
+<div id="wrapper-search">
+    
+    <div id="wrapperSearchForm" class="show"> 
+        
+        <form role="form" method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-row">
+                <div class="col-md-6">
+                    <label for="{{ form.fecha.id_for_label }}">Fecha: </label>
+                    {{form.fecha}}
+                    {{ form.fecha.errors }}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.todos_agentes.id_for_label }}">Todos los agentes: </label>
+                      {{ form.todos_agentes }}
+                      {{ form.todos_agentes.errors }}
+                </div>                
+                <div class="col-md-6">
+                    <label for="{{ form.agente.id_for_label }}">Agente: </label>
+                      {{ form.agente }}
+                      {{ form.agente.errors }}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.agente.id_for_label }}">Grupo de agentes: </label>
+                      {{ form.grupo_agente }}
+                      {{ form.grupo_agente.errors }}
                 </div>
             </div>
-        </div>
 
-        <div class="form-group row">
-        {{ form.agente.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.agente.id_for_label }}">Agente: </label>
-            <div class="col-sm-6">
-              {{ form.agente }}
-            </div>
-        </div>
-        <div class="form-group row">
-        {{ form.todos_agentes.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.todos_agentes.id_for_label }}">Todos los agentes: </label>
-            <div class="col-sm-6">
-              {{ form.todos_agentes }}
-            </div>
-        </div>
-        <div class="form-group row">
-        {{ form.grupo_agente.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.agente.id_for_label }}">Grupo de agentes: </label>
-            <div class="col-sm-6">
-              {{ form.grupo_agente }}
-            </div>
-        </div>
-
-                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                        Buscar
-                </button>
-
-
-    </form>
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Buscar
+            </button>        
+        </form>
+    </div>
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm">
+    </button>
 </div>
 
 {% if graficos_estadisticas  %}

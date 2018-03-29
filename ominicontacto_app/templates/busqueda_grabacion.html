@@ -51,6 +51,7 @@ function filtrar_pagina(pagina) {
 {% block content %}
 
 <h1>Buscar grabación</h1>
+
 <div class="wrapper-search">
     <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
         {% csrf_token %}
@@ -62,6 +63,7 @@ function filtrar_pagina(pagina) {
         </button>
     </form>
 </div>
+
 <div class="wrapper-results">
     <table class="table table-stripped">
         <thead>

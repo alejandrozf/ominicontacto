@@ -2,34 +2,34 @@
 {% load static %}
 
 {% block content %}
-
+<h1>Nuevo audio</h1>
 
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
-    <div class="form-group row">
-        {{ form.descripcion.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.descripcion.id_for_label }}">Descripcion: </label>
-        <div class="col-sm-6">
-              {{ form.descripcion }}
+    <div class="form-row">
+        <div class="col-md-6">
+            <label for="{{ form.descripcion.id_for_label }}">Descripcion: </label>
+            {{ form.descripcion }}
+            {{ form.descripcion.errors }}
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.audio_original.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.audio_original.id_for_label }}">Audio: </label>
-        <div class="col-sm-9">
-              {{ form.audio_original }}
-            {{ form.audio_original.help_text }}
+        <div class="col-md-6">
+            <label for="{{ form.audio_original.id_for_label }}">Audio: </label>
+            {{ form.audio_original }}
+            <small id="audioHelpBlock" class="form-text text-muted">
+              {{ form.audio_original.help_text }}
+            </small>            
+            {{ form.audio_original.errors }}
         </div>
+        {% if object.audio_original %}
+        <div class="col-md-6">
+            <h4>Archivo de Audio</h4>
+            <audio src="{{ object.audio_original.url }}" controls></audio>
+        </div>
+        {% endif %}
     </div>
-    {% if object.audio_original %}
-    <div>
-        <h4>Archivo de Audio</h4>
-        <audio src="{{ object.audio_original.url }}" controls></audio>
-    </div>
-    {% endif %}
 
-    </br>
+    <hr>
     <button type="submit" id="id_guardar" class="btn btn-primary">
         Guardar
     </button>

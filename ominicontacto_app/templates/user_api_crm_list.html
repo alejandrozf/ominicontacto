@@ -2,34 +2,31 @@
 {% load static %}
 
 {% block content %}
-<br>
-<div>
+<h1>Usuarios Api Crm</h1>
 
-    <table class="table table-stripped">
-        <thead>
-            <tr>
-                <th>usuario</th>
-                <th>password</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in object_list %}
-            <tr>
-                <td>{{ user.usuario }}</td>
-                <td>{{ user.password}}</td>
-                <td>
-                    <a href="{% url 'user_api_crm_update' user.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
-
-                </td>
-            </tr>
-       {% empty %}
+<table class="table table-stripped">
+    <thead>
         <tr>
-            <td colspan="3">No existen usuarios api crm</td>
+            <th>usuario</th>
+            <th>password</th>
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for user in object_list %}
+        <tr>
+            <td>{{ user.usuario }}</td>
+            <td>{{ user.password}}</td>
+            <td>
+                <a href="{% url 'user_api_crm_update' user.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
 
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td>No existen usuarios api crm</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-</div>
 {% endblock %}

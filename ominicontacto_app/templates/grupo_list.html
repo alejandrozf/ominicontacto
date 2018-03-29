@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+<h1>Grupos de agentes</h1>
 
 <table class="table">
     <thead>
@@ -16,7 +17,6 @@
             {% if user.get_is_administrador %}
             <th>acciones</th>
             {% endif %}
-
         </tr>
     </thead>
     <tbody>
@@ -63,7 +63,7 @@
         </tr>
    {% empty %}
     <tr>
-        <td colspan="7">No existen grupos</td>
+        <td>No existen grupos</td>
     </tr>
     {% endfor %}
     </tbody>
