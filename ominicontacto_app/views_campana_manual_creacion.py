@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView, DeleteView
 
 from formtools.wizard.views import SessionWizardView
@@ -141,7 +142,13 @@ class CampanaManualTemplateCreateCampanaView(
     """
     Crea una campaña manual a partir de una campaña de template existente
     """
-    pass
+    def get_form_initial(self, step):
+        initial = super(CampanaManualTemplateCreateCampanaView, self).get_form_initial(step)
+        if step == self.INICIAL:
+            pk = self.kwargs.get('pk_campana_template', None)
+            campana_template = get_object_or_404(Campana, pk=pk)
+            initial['auto_grabacion'] = campana_template.queue_campana.auto_grabacion
+        return initial
 
 
 class CampanaManualTemplateDetailView(DetailView):

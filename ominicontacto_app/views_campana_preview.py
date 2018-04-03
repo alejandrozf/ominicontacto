@@ -104,7 +104,14 @@ class CampanaPreviewTemplateCreateCampanaView(
     """
     Crea una campaña preview a partir de una campaña de template existente
     """
-    pass
+    def get_form_initial(self, step):
+        initial = super(CampanaPreviewTemplateCreateCampanaView, self).get_form_initial(step)
+        if step == self.INICIAL:
+            pk = self.kwargs.get('pk_campana_template', None)
+            campana_template = get_object_or_404(Campana, pk=pk)
+            initial['auto_grabacion'] = campana_template.queue_campana.auto_grabacion
+            initial['tiempo_desconexion'] = campana_template.tiempo_desconexion
+        return initial
 
 
 class CampanaPreviewTemplateDetailView(DetailView):

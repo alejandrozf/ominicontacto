@@ -72,6 +72,7 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'wait': queue.wait,
                 'announce_frequency': queue.announce_frequency,
                 'audio_de_ingreso': queue.audio_de_ingreso,
+                'auto_grabacion': queue.auto_grabacion,
             }
         else:
             initial_data = super(

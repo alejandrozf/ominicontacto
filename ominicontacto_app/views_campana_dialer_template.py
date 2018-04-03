@@ -67,7 +67,6 @@ class CampanaDialerTemplateCreateCampanaView(CampanaTemplateCreateCampanaMixin,
             initial = super(CampanaDialerTemplateCreateCampanaView, self).get_form_initial(step)
             queue = campana_template.queue_campana
             initial['wrapuptime'] = queue.wrapuptime
-            initial['auto_grabacion'] = queue.auto_grabacion
             initial['detectar_contestadores'] = queue.detectar_contestadores
             initial['initial_predictive_model'] = queue.initial_predictive_model
             initial['initial_boost_factor'] = queue.initial_boost_factor
