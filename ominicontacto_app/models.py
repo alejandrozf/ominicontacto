@@ -508,17 +508,6 @@ class CampanaManager(models.Manager):
         """
         return self.obtener_campanas_preview().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
 
-    def crea_campana_de_template(self, template):
-        """
-        Este método se encarga de crear una campana a partir del template
-        proporcionado.
-        """
-        assert template.estado == Campana.ESTADO_TEMPLATE_ACTIVO
-        assert template.es_template
-
-        campana = Campana.objects.replicar_campana(template)
-        return campana
-
     def replicar_campana(self, campana, nombre_campana=None, bd_contacto=None):
         """
         Este método se encarga de replicar una campana existente, creando una
@@ -554,12 +543,13 @@ class CampanaManager(models.Manager):
         # Se replican las opciones de calificación
         opciones_calificacion = []
         for opcion_calificacion in campana.opciones_calificacion.all():
-            opcion_calificacion_replicada = OpcionCalificacion(
-                campana=campana_replicada, nombre=opcion_calificacion.nombre,
-                tipo=opcion_calificacion.tipo)
-            if opcion_calificacion_replicada.nombre == campana_replicada.gestion:
-                opcion_calificacion_replicada.tipo = OpcionCalificacion.GESTION
-            opciones_calificacion.append(opcion_calificacion_replicada)
+            if not opcion_calificacion.es_agenda():
+                # no se replica la opcion de calificación de agenda pues
+                # debe crearse cuando se crea la campaña desde el wizard
+                opcion_calificacion_replicada = OpcionCalificacion(
+                    campana=campana_replicada, nombre=opcion_calificacion.nombre,
+                    tipo=opcion_calificacion.tipo)
+                opciones_calificacion.append(opcion_calificacion_replicada)
         OpcionCalificacion.objects.bulk_create(opciones_calificacion)
 
         # se replican los parámetros para web form
