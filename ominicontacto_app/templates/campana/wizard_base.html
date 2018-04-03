@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+    {{ wizard.form.media }}
+{% endblock %}
+
+{% block content %}
+    {% block nav %}
+    {% endblock %}
+    <br>
+    <div class="col-md-7">
+        <form action="" method="post" id="wizardForm">{% csrf_token %}
+            <table>
+                {{ wizard.management_form }}
+                {% if wizard.form.forms %}
+                    {% block formset_render %}
+                    {% endblock %}
+                {% else %}
+                    {% block form_render %}
+                    {% endblock %}
+                {% endif %}
+            </table>
+            {% if wizard.steps.prev %}
+                <button class="btn btn-lg btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+                <button class="btn btn-lg btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+            {% endif %}
+            <button class='btn btn-lg btn-primary' type='submit' data-loading-text={% trans 'Cargando...' %}>
+                {% if wizard.steps.next %}
+                    {% trans "Paso siguiente" %}
+                {% else %}
+                    {% trans "Finalizar" %}
+                {% endif %}
+            </button>
+        </form>
+    </div>
+{% endblock %}

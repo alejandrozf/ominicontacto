@@ -107,7 +107,7 @@ class RecicladoTest(OMLBaseTest):
         estadisticas = EstadisticasContactacion()
         calificados = estadisticas.obtener_cantidad_calificacion(self.campana)
 
-        calificaciones_query = self.campana.calificaconcliente.values(
+        calificaciones_query = self.campana.obtener_calificaciones_cliente().values(
             'calificacion__nombre', 'calificacion__id').annotate(
             Count('calificacion')).filter(
             calificacion__count__gt=0)
@@ -151,7 +151,7 @@ class RecicladoTest(OMLBaseTest):
 
         # vamos a chequear que sea la misma cantidad de contactos reciclados
         # para los calificados
-        calificaciones_query = self.campana.calificaconcliente.filter(
+        calificaciones_query = self.campana.obtener_calificaciones_cliente().filter(
             calificacion__in=calificacion_list).distinct()
         reciclador = RecicladorContactosCampanaDIALER()
         contactos_reciclados = reciclador._obtener_contactos_calificados(
@@ -162,14 +162,14 @@ class RecicladoTest(OMLBaseTest):
         no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
             self.campana, estado_list)
         estados = [EstadisticasContactacion.MAP_LOG_WOMBAT[estado]
-                   for estado in estado_list]
+                   for estado_contactacion in estado_list]
         no_contactados = self.campana.logswombat.filter(estado__in=estados)
 
         self.assertEquals(len(no_contactados_reciclados), no_contactados.count())
 
         # ahora chequeamos para contestador
         contestadores = self.campana.logswombat.filter(
-                estado="TERMINATED", calificacion='CONTESTADOR')
+            estado="TERMINATED", calificacion='CONTESTADOR')
         no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
             self.campana, [7])
 
@@ -177,7 +177,7 @@ class RecicladoTest(OMLBaseTest):
 
         # ahora chequeamos para agente no califico
         no_califico = self.campana.logswombat.filter(
-                estado="TERMINATED", calificacion='')
+            estado="TERMINATED", calificacion='')
         no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
             self.campana, [8])
 
@@ -185,7 +185,7 @@ class RecicladoTest(OMLBaseTest):
 
         # ahora chequeamos para agente no disponible
         no_disponible = self.campana.logswombat.filter(
-                estado="RS_LOST", calificacion='')
+            estado="RS_LOST", calificacion='')
         no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
             self.campana, [1])
 

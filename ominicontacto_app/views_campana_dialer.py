@@ -65,9 +65,6 @@ class CampanaDialerListView(ListView):
         context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
         return context
 
-    # def get(self, request, *args, **kwargs):
-    #   return self.render_to_response(self.get_context_data())
-
 
 class PlayCampanaDialerView(RedirectView):
     """

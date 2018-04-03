@@ -123,3 +123,12 @@ class ReporteMetadataClienteService(object):
         logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
                      " CSV de descarga para la campana %s", campana.pk)
         assert os.path.exists(archivo_de_reporte.url_descarga)
+
+    def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):
+        return campana.obtener_calificaciones_cliente().filter(
+            fecha__range=(fecha_desde, fecha_hasta))
+
+    def _obtener_listado_no_califico_fecha(self, campana, fecha_desde, fecha_hasta):
+        return campana.logswombat.filter(
+            fecha_hora__range=(fecha_desde, fecha_hasta), estado="TERMINATED",
+            calificacion='')

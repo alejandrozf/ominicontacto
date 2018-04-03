@@ -386,38 +386,6 @@ class ArchivoDeAudio(models.Model):
 
 class CampanaManager(models.Manager):
 
-    def obtener_en_definicion_para_editar(self, campana_id):
-        """Devuelve la campaña pasada por ID, siempre que dicha
-        campaña pueda ser editar (editada en el proceso de
-        definirla, o sea, en el proceso de "creacion" de la
-        campaña).
-
-        En caso de no encontarse, lanza SuspiciousOperation
-        """
-        try:
-            return self.filter(
-                estado=self.model.ESTADO_EN_DEFINICION).get(
-                pk=campana_id)
-        except self.model.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro campana %s en "
-                                      "estado ESTADO_EN_DEFINICION"))
-
-    def obtener_template_en_definicion_para_editar(self, campana_id):
-        """Devuelve la campaña template pasada por ID, siempre que dicha
-        campaña pueda ser editar (editada en el proceso de
-        definirla, o sea, en el proceso de "creacion" de la
-        campaña).
-
-        En caso de no encontarse, lanza SuspiciousOperation
-        """
-        try:
-            return self.filter(
-                estado=self.model.ESTADO_TEMPLATE_EN_DEFINICION).get(
-                pk=campana_id)
-        except self.model.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro campana %s en "
-                                      "estado ESTADO_TEMPLATE_EN_DEFINICION"))
-
     def obtener_pausadas(self):
         """
         Devuelve campañas en estado pausadas.
@@ -516,16 +484,29 @@ class CampanaManager(models.Manager):
         """
         return self.filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
 
-    def crea_campana_de_template(self, template):
+    def obtener_templates_activos_entrantes(self):
         """
-        Este método se encarga de crear una campana a partir del template
-        proporcionado.
+        Devuelve templates de campañas entrantes en estado activo.
         """
-        assert template.estado == Campana.ESTADO_TEMPLATE_ACTIVO
-        assert template.es_template
+        return self.obtener_campanas_entrantes().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
 
-        campana = Campana.objects.replicar_campana(template)
-        return campana
+    def obtener_templates_activos_dialer(self):
+        """
+        Devuelve templates de campañas dialer en estado activo.
+        """
+        return self.obtener_campanas_dialer().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+
+    def obtener_templates_activos_manuales(self):
+        """
+        Devuelve templates de campañas manuales en estado activo.
+        """
+        return self.obtener_campanas_manuales().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+
+    def obtener_templates_activos_preview(self):
+        """
+        Devuelve templates de campañas preview en estado activo.
+        """
+        return self.obtener_campanas_preview().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
 
     def replicar_campana(self, campana, nombre_campana=None, bd_contacto=None):
         """
@@ -559,14 +540,27 @@ class CampanaManager(models.Manager):
             objetivo=campana.objetivo,
         )
 
+        # Se replican las opciones de calificación
         opciones_calificacion = []
         for opcion_calificacion in campana.opciones_calificacion.all():
-            opcion_calificacion_replicada = OpcionCalificacion(
-                campana=campana_replicada, nombre=opcion_calificacion.nombre)
-            if opcion_calificacion_replicada.nombre == campana_replicada.gestion:
-                opcion_calificacion_replicada.tipo = OpcionCalificacion.GESTION
-            opciones_calificacion.append(opcion_calificacion_replicada)
+            if not opcion_calificacion.es_agenda():
+                # no se replica la opcion de calificación de agenda pues
+                # debe crearse cuando se crea la campaña desde el wizard
+                opcion_calificacion_replicada = OpcionCalificacion(
+                    campana=campana_replicada, nombre=opcion_calificacion.nombre,
+                    tipo=opcion_calificacion.tipo)
+                opciones_calificacion.append(opcion_calificacion_replicada)
         OpcionCalificacion.objects.bulk_create(opciones_calificacion)
+
+        # se replican los parámetros para web form
+        parametros_web_form = []
+        for parametro_web_form in campana.parametros_extra_para_webform.all():
+            parametro = parametro_web_form.parametro
+            columna = parametro_web_form.columna
+            parametro_web_form_replicado = ParametroExtraParaWebform(
+                campana=campana_replicada, parametro=parametro, columna=columna)
+            parametros_web_form.append(parametro_web_form_replicado)
+        ParametroExtraParaWebform.objects.bulk_create(parametros_web_form)
 
         # Replica Cola
         Queue.objects.create(
@@ -697,9 +691,6 @@ class Campana(models.Model):
 
     objects = CampanaManager()
 
-    ESTADO_EN_DEFINICION = 1
-    """La campaña esta siendo definida en el wizard"""
-
     ESTADO_ACTIVA = 2
     """La campaña esta activa, o sea, EN_CURSO o PROGRAMADA
     A nivel de modelos, solo queremos registrar si está ACTIVA, y no nos
@@ -722,9 +713,6 @@ class Campana(models.Model):
     ESTADO_INACTIVA = 6
     """La campaña inactiva"""
 
-    ESTADO_TEMPLATE_EN_DEFINICION = 7
-    """La campaña se creo como template y esta en proceso de definición."""
-
     ESTADO_TEMPLATE_ACTIVO = 8
     """La campaña se creo como template y esta activa, en condición de usarse
     como tal."""
@@ -734,14 +722,12 @@ class Campana(models.Model):
     como tal."""
 
     ESTADOS = (
-        (ESTADO_EN_DEFINICION, 'En definicion'),
         (ESTADO_ACTIVA, 'Activa'),
         (ESTADO_FINALIZADA, 'Finalizada'),
         (ESTADO_BORRADA, 'Borrada'),
         (ESTADO_PAUSADA, 'Pausada'),
         (ESTADO_INACTIVA, 'Inactiva'),
 
-        (ESTADO_TEMPLATE_EN_DEFINICION, '(Template en definicion)'),
         (ESTADO_TEMPLATE_ACTIVO, 'Template Activo'),
         (ESTADO_TEMPLATE_BORRADO, 'Template Borrado'),
     )
@@ -777,7 +763,7 @@ class Campana(models.Model):
 
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
-        default=ESTADO_EN_DEFINICION,
+        default=ESTADO_INACTIVA,
     )
     nombre = models.CharField(max_length=128, unique=True)
     fecha_inicio = models.DateField(null=True, blank=True)
@@ -991,8 +977,33 @@ class Campana(models.Model):
         if self.queue_campana:
             return self.queue_campana.get_string_queue_asterisk()
 
-    def obtener_calificaciones(self):
-        return CalificacionCliente.objects.calificaciones_de_campana(self)
+    def gestionar_opcion_calificacion_agenda(self):
+        """
+        Devuelve la opción de calificación de agenda para la campaña.
+        En caso de no existir la crea.
+        """
+        OpcionCalificacion.objects.get_or_create(
+            campana=self, nombre=settings.CALIFICACION_REAGENDA, tipo=OpcionCalificacion.AGENDA)
+
+    def obtener_calificaciones_cliente(self):
+        """
+        Devuelve todas las calificaciones realizadas en la campaña
+        (de acuerdo al modelo CalificacionCliente)
+        """
+        # TODO: cambiar cuando los modelos de calificación estén ya unificados
+        calificaciones_cliente = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana=self)
+        return calificaciones_cliente
+
+    def obtener_calificaciones_manuales(self):
+        """
+        Devuelve todas las calificaciones manuales realizadas en la campaña
+        (de acuerdo al modelo CalificacionManual)
+        """
+        # TODO: cambiar cuando los modelos de calificación estén ya unificados
+        calificaciones_manuales = CalificacionManual.objects.filter(
+            opcion_calificacion__campana=self)
+        return calificaciones_manuales
 
 
 class QueueManager(models.Manager):
@@ -1030,6 +1041,11 @@ class OpcionCalificacion(models.Model):
     FORMULARIO_CHOICES = (
         (GESTION, _('Gestión')),
         (NO_ACCION, _('Sin acción')),
+        (AGENDA, _('Agenda')),
+    )
+    FORMULARIO_CHOICES_NO_AGENDA = (
+        (GESTION, _('Gestión')),
+        (NO_ACCION, _('Sin acción')),
     )
     campana = models.ForeignKey(
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
@@ -1039,6 +1055,25 @@ class OpcionCalificacion(models.Model):
     def __unicode__(self):
         return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
             self.nombre, self.campana.nombre, self.get_tipo_display()))
+
+    def es_agenda(self):
+        return self.tipo == self.AGENDA
+
+    def es_gestion(self):
+        return self.tipo == self.GESTION
+
+    def usada_en_calificacion(self):
+        """
+        Determina si opción de calificación está siendo usada en la campaña
+        """
+        return (self.calificaciones_cliente.exists() or
+                self.calificaciones_manuales.exists())
+
+    def no_editable(self):
+        """
+        Determina si la opción de calificada puede ser editada/eliminada en la campaña
+        """
+        return self.es_agenda() or self.usada_en_calificacion()
 
 
 class Queue(models.Model):
@@ -2241,12 +2276,15 @@ class CalificacionClienteManager(models.Manager):
     def obtener_cantidad_calificacion_campana(self, campana):
         try:
             return self.values('calificacion').annotate(
-                cantidad=Count('calificacion')).filter(campana=campana)
+                cantidad=Count('calificacion')).filter(opcion_calificacion__campana=campana)
         except CalificacionCliente.DoesNotExist:
             raise (SuspiciousOperation("No se encontro califacaciones "))
 
-    def calificaciones_de_campana(self, campana):
-        return self.filter(opcion_calificacion__campana_id=campana.id)
+    def obtener_calificaciones_gestion(self):
+        """
+        Devuelve todas las calificaciones de tipo gestión
+        """
+        return self.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
 
 
 class CalificacionCliente(models.Model):

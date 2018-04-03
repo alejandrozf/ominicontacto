@@ -70,7 +70,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las calificaciones de la campana
-            for metadata in campana.calificacionmanual.all():
+            for metadata in campana.obtener_calificaciones_manuales():
                 lista_opciones = []
 
                 # --- Buscamos datos

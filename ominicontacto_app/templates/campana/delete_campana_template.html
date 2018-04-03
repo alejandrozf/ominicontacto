@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+    <div class="col-md-3">
+        <form method="post">{% csrf_token %}
+            <h4>Cola <strong>{{ object.nombre }}</strong></h4>
+            <h4>{% trans '¿Esta seguro que desea eliminar esta Campaña?' %} </h4>
+            <button type="submit" class="btn btn-danger btn-sm">
+                <span class="glyphicon glyphicon-remove"></span>{% trans 'Eliminar' %}
+            </button>
+            <a href="{% url 'campana_entrante_template_list' %}">{% trans 'Cancelar' %}</a>
+        </form>
+    </div>
+{% endblock %}

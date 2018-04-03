@@ -1,140 +1,87 @@
-    {% extends "base.html" %}
-{% load static %}
+{% extends "campana/wizard_base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+
 {% block head_js %}
-<script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-<script>
-    $(document).ready(function() {
-            $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
-        $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
+    <script>
+     $(document).ready(function() {
+       $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
+       $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
 
-        });
-
-     $(function(){
-         $('.parametros-formset').formset({
-            addText: '+',
-            deleteText: 'borrar',
-            prefix: 'parametros_extra_para_webform'
-         });
-     })
-
+     });
     </script>
 {% endblock %}
-{% block content %}
-            {% if es_template %}
-                <h4 class="inline">Nuevo Template de Campaña Dialer: Datos Básicos</h4>
-            {% else %}
-                <h4 class="inline">Nueva Campaña Dialer: Datos Básicos
-                    <span style="color:red;">- Canales en uso: {{ canales_en_uso }}</span>
-                </h4>
-            {% endif %}
 
-            <ul class="nav nav-tabs">
-                <li class="active"><a>Campaña</a></li>
-                <li class="disabled"><a>Cola</a></li>
-                <li class="disabled"><a>Actuacion</a></li>
-                 <li class="disabled"><a>Reglas Incidencias</a></li>
-                <li class="disabled"><a>Sincronizar</a></li>
-            </ul>
-            <br>
-<div class="col-md-6">
-<form action="" enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% if es_template %}
-    <div class="form-group row">
-        {{ form.nombre_template.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre template: </label>
-        <div class="col-sm-6">
-              {{ form.nombre_template }}
-        </div>
-    </div>
-    {% else %}
-    <div class="form-group row">
-        {{ form.nombre.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
-        <div class="col-sm-6" data-toggle="tooltip" data-placement="top" title="Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos">
-              {{ form.nombre }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.fecha_inicio.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>
-        <div class="col-sm-3">
-              {{ form.fecha_inicio }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.fecha_fin.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
-        <div class="col-sm-3">
-              {{ form.fecha_fin }}
-        </div>
-    </div>
-    {% endif %}
-    <div class="form-group row">
-        {{ form.calificacion_campana.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.calificacion_campana.id_for_label }}">Calificacion campana: </label>
-        <div class="col-sm-6">
-              {{ form.calificacion_campana }}
-        </div>
-    </div>
-     {% if not es_template %}
-    <div class="form-group row">
-        {{ form.bd_contacto.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
-        <div class="col-sm-6">
-              {{ form.bd_contacto }}
-        </div>
-    </div>
-    {% endif %}
-     {{ form.tipo_interaccion.errors }}
-    <div class="form-group row">
-        {{ form.formulario.errors }}
-        <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.0 }}</div> </label>
-        <div class="col-sm-6">
-              {{ form.formulario }}
-        </div>
-    </div>
+{% block nav %}
+    <h4 class="inline">{% trans 'Campaña Dialer: Datos Básicos' %} {% if not form.instance.pk %}<span style="color:red;">- {% trans 'Canales en uso:' %} {{ canales_en_uso }}{% endif %}</h4>
 
-    <div class="form-group row">
-        {{ form.sitio_externo.errors }}
-        <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
-        <div class="col-sm-6">
-              {{ form.sitio_externo }}
+    <ul class="nav nav-tabs">
+        <li class="active"><a>{% trans 'Campaña' %}</a></li>
+        <li class="disabled"><a>{% trans 'Cola' %}</a></li>
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        {% if not form.instance.pk %}
+            <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
+            <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
+            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}
+
+{% block form_render %}
+    {% with form as form %}
+        {{ form.non_field_errors }}
+        <div class="form-group row">
+            {{ form.nombre.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
+            <div class="col-sm-6" data-toggle="tooltip" data-placement="top" title="Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos">
+                {{ form.nombre|add_class:"form-control" }}
+            </div>
         </div>
-    </div>
-
-    <div class="form-group row">
-        {{ form.gestion.errors }}
-        <label class="col-sm-3 control-label">Gestion: </label>
-        <div class="col-sm-6">
-              {{ form.gestion }}
+        <div class="form-group row">
+            {{ form.fecha_inicio.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>
+            <div class="col-sm-3">
+                {{ form.fecha_inicio|attr:"id:id_fecha_inicio" }}
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        {{ form.objetivo.errors }}
-        <label class="col-sm-3 control-label">Objetivo: </label>
-        <div class="col-sm-6">
-            {{ form.objetivo }}
+        <div class="form-group row">
+            {{ form.fecha_fin.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
+            <div class="col-sm-3">
+                {{ form.fecha_fin|attr:"id:id_fecha_fin" }}
+            </div>
         </div>
-    </div>
-
-    <h4>Parámetros extra para Webform</h4>
-    <div class="form-group row">
-        {{ parametro_extra_formset.management_form }}
-        {% for form in parametro_extra_formset %}
-        <table class="parametros-formset">
-        {{ form }}
-        </table>    
-        {% endfor %}
-    </div>
-
-    </br>
-    <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
-        Siguiente
-    </button>
-
-</form>
-</div>
-
+        <div class="form-group row">
+            {{ form.bd_contacto.errors }}
+            <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
+            <div class="col-sm-6">
+                {{ form.bd_contacto }}
+            </div>
+        </div>
+        {% block tipo_interaccion %}
+            {{ form.tipo_interaccion.errors }}
+            <div class="form-group row">
+                {{ form.formulario.errors }}
+                <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.0 }}</div> </label>
+                <div class="col-sm-6">
+                    {{ form.formulario }}
+                </div>
+            </div>
+            <div class="form-group row">
+                {{ form.sitio_externo.errors }}
+                <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
+                <div class="col-sm-6">
+                    {{ form.sitio_externo }}
+                </div>
+            </div>
+        {% endblock %}
+        <div class="form-group row">
+            {{ form.objetivo.errors }}
+            <label class="col-sm-3 control-label">Objetivo: </label>
+            <div class="col-sm-3">
+                {{ form.objetivo }}
+            </div>
+        </div>
+    {% endwith %}
 {% endblock %}
