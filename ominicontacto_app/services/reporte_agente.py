@@ -8,7 +8,7 @@ import pygal
 import datetime
 from pygal.style import Style
 
-from ominicontacto_app.models import CalificacionCliente, Queuelog
+from ominicontacto_app.models import CalificacionCliente, OpcionCalificacion, Queuelog
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 import logging as _logging
 
@@ -44,20 +44,17 @@ class EstadisticasAgenteService():
         """
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        calificaciones = campana.calificacion_campana.calificacion.all()
+        opciones_calificacion = campana.opciones_calificacion.all()
         calificaciones_query = CalificacionCliente.objects.filter(
             agente=agente, opcion_calificacion__campana=campana, fecha__range=(
                 fecha_desde, fecha_hasta))
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_asignados = len(calificaciones_query)
-        for calificacion in calificaciones:
-            cant = len(calificaciones_query.filter(calificacion=calificacion))
-            calificaciones_nombre.append(calificacion.nombre)
+        for opcion_calificacion in opciones_calificacion:
+            cant = len(calificaciones_query.filter(opcion_calificacion=opcion_calificacion))
+            calificaciones_nombre.append(opcion_calificacion.nombre)
             calificaciones_cantidad.append(cant)
-        cant_venta = len(calificaciones_query.filter(es_venta=True))
-        calificaciones_nombre.append(campana.gestion)
-        calificaciones_cantidad.append(cant_venta)
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_venta(self, campana, agente, fecha_desde, fecha_hasta):
@@ -72,18 +69,16 @@ class EstadisticasAgenteService():
         """
         dato_agente = []
         dato_agente.append(agente)
-        total_cal_agente = len(agente.calificaciones.filter(campana=campana,
-                                                            fecha__range=(
-                                                                fecha_desde,
-                                                                fecha_hasta)))
+        total_cal_agente = len(agente.calificaciones.filter(
+            opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta)))
         dato_agente.append(total_cal_agente)
-        total_ven_agente = len(agente.calificaciones.filter(campana=campana,
-                                                            es_venta=True,
-                                                            fecha__range=(
-                                                                fecha_desde,
-                                                                fecha_hasta)))
+        total_ven_agente = len(agente.calificaciones.filter(
+            opcion_calificacion__campana=campana,
+            opcion_calificacion__tipo=OpcionCalificacion.GESTION,
+            fecha__range=(
+                fecha_desde,
+                fecha_hasta)))
         dato_agente.append(total_ven_agente)
-
         return dato_agente
 
     def calcular_tiempo_agente(self, agente, fecha_inferior, fecha_superior, campana):
