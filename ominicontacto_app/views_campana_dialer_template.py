@@ -63,6 +63,14 @@ class CampanaDialerTemplateCreateCampanaView(CampanaTemplateCreateCampanaMixin,
 
         if step == self.ACTUACION_VIGENTE:
             initial = model_to_dict(campana_template.actuacionvigente)
+        elif step == self.COLA:
+            initial = super(CampanaDialerTemplateCreateCampanaView, self).get_form_initial(step)
+            queue = campana_template.queue_campana
+            initial['wrapuptime'] = queue.wrapuptime
+            initial['auto_grabacion'] = queue.auto_grabacion
+            initial['detectar_contestadores'] = queue.detectar_contestadores
+            initial['initial_predictive_model'] = queue.initial_predictive_model
+            initial['initial_boost_factor'] = queue.initial_boost_factor
         else:
             initial = super(CampanaDialerTemplateCreateCampanaView, self).get_form_initial(step)
         return initial
@@ -76,7 +84,7 @@ class CampanaDialerTemplateCreateCampanaView(CampanaTemplateCreateCampanaMixin,
             initial_data = campana_template.reglas_incidencia.values()
             reglas_incidencia_init_formset = context['wizard']['form']
             reglas_incidencia_formset = ReglasIncidenciaFormSet(initial=initial_data)
-            reglas_incidencia_formset.extra = len(initial_data) - 1
+            reglas_incidencia_formset.extra = len(initial_data) + 1
             reglas_incidencia_formset.prefix = reglas_incidencia_init_formset.prefix
             context['wizard']['form'] = reglas_incidencia_formset
         return context
