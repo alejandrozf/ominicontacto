@@ -17,7 +17,9 @@ from ominicontacto_app.models import Campana, Queue
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
                                                       CampanaTemplateCreateCampanaMixin,
-                                                      CampanaTemplateDeleteMixin)
+                                                      CampanaTemplateDeleteMixin,
+                                                      asignar_bd_contactos_defecto_campo_vacio)
+
 
 import logging as logging_
 
@@ -53,6 +55,7 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
         campana_form.instance.type = tipo
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.estado = estado
+        campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
         campana = campana_form.instance
@@ -98,6 +101,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         campana_form = form_list[int(self.INICIAL)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
         parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
+        campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
         campana = campana_form.instance
