@@ -24,14 +24,14 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                AgenteEnContactoFactory, QueueMemberFactory,
                                                NombreCalificacionFactory,
                                                CalificacionClienteFactory,
-                                               OpcionCalificacionFactory)
+                                               OpcionCalificacionFactory, ArchivoDeAudioFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
 from ominicontacto_app.utiles import (
     validar_nombres_campanas,
-    convertir_ascii_string,
-    validar_gestion_campanas_aux
+    # convertir_ascii_string,
+    # validar_gestion_campanas_aux
 )
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 # from ominicontacto_app.services.wombat_service import WombatService
@@ -610,3 +610,116 @@ class CampanasTests(OMLBaseTest):
     #                            graficos_estadisticas['dict_llamadas_counter']]
     #     categoria_recibidas = 'Recibidas'
     #     self.assertFalse(categoria_recibidas in categorias_llamadas)
+
+    def _obtener_post_data_wizard_creacion_campana_entrante(self, nombre_campana, audio_ingreso):
+        post_step0_data = {
+            '0-nombre': nombre_campana,
+            '0-bd_contacto': '',
+            '0-tipo_interaccion': self.campana.tipo_interaccion,
+            '0-formulario': self.campana.formulario.pk,
+            '0-objetivo': 0,
+            'campana_entrante_create_view-current_step': 0,
+        }
+        post_step1_data = {
+            '1-timeout': 1,
+            '1-retry': 1,
+            '1-audio_de_ingreso': audio_ingreso.pk,
+            '1-maxlen': 1,
+            '1-servicelevel': 1,
+            '1-strategy': 'ringall',
+            '1-weight': 1,
+            '1-wait': 1,
+            '1-auto_grabacion': 'on',
+            '1-audios': audio_ingreso.pk,
+            '1-announce_frequency': 1,
+            'campana_entrante_create_view-current_step': 1,
+            '1-name': nombre_campana,
+            '1-campana': '',
+        }
+        post_step2_data = {
+            'campana_entrante_create_view-current_step': 2,
+            '2-0-nombre': 'Venta',
+            '2-0-tipo': 1,
+            '2-0-id': '',
+            '2-TOTAL_FORMS': 1,
+            '2-INITIAL_FORMS': 0,
+            '2-MIN_NUM_FORMS': 1,
+            '2-MAX_NUM_FORMS': 1000,
+        }
+        post_step3_data = {
+            'campana_entrante_create_view-current_step': 3,
+            '3-0-parametro': '',
+            '3-0-columna': '',
+            '3-0-id': '',
+            '3-TOTAL_FORMS': 1,
+            '3-INITIAL_FORMS': 0,
+            '3-MIN_NUM_FORMS': 0,
+            '3-MAX_NUM_FORMS': 1000,
+        }
+
+        return post_step0_data, post_step1_data, post_step2_data, post_step3_data
+
+    def _obtener_post_data_wizard_creacion_campana_manual(self, nombre_campana, audio_ingreso):
+        post_step0_data = {
+            '0-nombre': nombre_campana,
+            '0-bd_contacto': '',
+            '0-tipo_interaccion': self.campana.tipo_interaccion,
+            '0-formulario': self.campana.formulario.pk,
+            '0-objetivo': 0,
+            'campana_manual_create_view-current_step': 0,
+        }
+        post_step1_data = {
+            'campana_manual_create_view-current_step': 1,
+            '1-0-nombre': 'Venta',
+            '1-0-tipo': 1,
+            '1-0-id': '',
+            '1-TOTAL_FORMS': 1,
+            '1-INITIAL_FORMS': 0,
+            '1-MIN_NUM_FORMS': 1,
+            '1-MAX_NUM_FORMS': 1000,
+        }
+        post_step2_data = {
+            'campana_manual_create_view-current_step': 2,
+            '2-0-parametro': '',
+            '2-0-columna': '',
+            '2-0-id': '',
+            '2-TOTAL_FORMS': 1,
+            '2-INITIAL_FORMS': 0,
+            '2-MIN_NUM_FORMS': 0,
+            '2-MAX_NUM_FORMS': 1000,
+        }
+
+        return post_step0_data, post_step1_data, post_step2_data
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_wizard_crear_campana_entrante_sin_bd_le_asigna_bd_contactos_defecto(
+            self, _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_nuevo')
+        nombre_campana = 'campana_name'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
+             nombre_campana, audio_ingreso)
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
+        campana = Campana.objects.get(nombre=nombre_campana)
+        self.assertTrue(campana.bd_contacto is not None)
+
+    def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(self):
+        url = reverse('campana_manual_create')
+        nombre_campana = 'campana_nombre'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
+             nombre_campana, audio_ingreso)
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
+        campana = Campana.objects.get(nombre=nombre_campana)
+        self.assertTrue(campana.bd_contacto is not None)
