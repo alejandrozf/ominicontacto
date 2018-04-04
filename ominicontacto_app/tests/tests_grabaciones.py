@@ -26,17 +26,18 @@ class GrabacionesTests(OMLBaseTest):
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
 
-        self.grabacion1 = GrabacionFactory.create()
-        self.grabacion2 = GrabacionFactory.create()
-        self.grabacion3 = GrabacionFactory.create()
+        self.user_agente = self.crear_user_agente()
+        self.agente_profile = self.crear_agente_profile(self.user_agente)
+        sip_extension = self.agente_profile.sip_extension
+
+        self.grabacion1 = GrabacionFactory.create(duracion=0, sip_agente=sip_extension)
+        self.grabacion2 = GrabacionFactory.create(duracion=0, sip_agente=sip_extension)
+        self.grabacion3 = GrabacionFactory.create(duracion=0, sip_agente=sip_extension)
         self.marca_campana1 = GrabacionMarcaFactory.create(uid=self.grabacion1.uid)
         self.marca_campana2 = GrabacionMarcaFactory.create(uid=self.grabacion2.uid)
 
         self.client.login(username=self.usuario_admin_supervisor.username,
                           password=self.PWD)
-
-    def test_filtro_grabaciones_marcadas(self):
-        self.assertEqual(Grabacion.objects.marcadas().count(), 2)
 
     def test_vista_creacion_grabaciones_marcadas(self):
         url = reverse('grabacion_marcar')
@@ -75,3 +76,35 @@ class GrabacionesTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         data_response = json.loads(response.content)
         self.assertEqual(data_response['result'], 'No encontrada')
+
+
+class FiltrosGrabacionesTests(GrabacionesTests):
+
+    def test_filtro_grabaciones_marcadas(self):
+        self.assertEqual(Grabacion.objects.marcadas().count(), 2)
+
+    def test_buscar_grabaciones_por_duracion(self):
+        Grabacion.objects.filter(id=self.grabacion2.id).update(duracion=15, tel_cliente='42222222')
+        Grabacion.objects.filter(id=self.grabacion1.id).update(duracion=15, tel_cliente='41111111')
+        Grabacion.objects.filter(id=self.grabacion3.id).update(duracion=12, tel_cliente='43333333')
+        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'sip_agente': '',
+                     'campana': '', 'marcadas': '', 'duracion': '0'}
+
+        post_data['duracion'] = 12
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, '41111111')
+        self.assertContains(response, '42222222')
+        self.assertContains(response, '43333333')
+
+        post_data['duracion'] = 15
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, '41111111')
+        self.assertContains(response, '42222222')
+        self.assertNotContains(response, '43333333')
+
+        post_data['duracion'] = 16
+        response = self.client.post(url, post_data, follow=True)
+        self.assertNotContains(response, '41111111')
+        self.assertNotContains(response, '42222222')
+        self.assertNotContains(response, '43333333')
