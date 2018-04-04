@@ -709,6 +709,26 @@ class CampanasTests(OMLBaseTest):
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
 
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_entrante(
+            self, _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_nuevo')
+        nombre_campana = 'campana_name'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
+             nombre_campana, audio_ingreso)
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+
+        campana = Campana.objects.get(nombre=nombre_campana)
+        self.assertEqual(campana.bd_contacto.contactos.count(), 0)
+        self.contacto = ContactoFactory.create(bd_contacto=campana.bd_contacto)
+        campana.bd_contacto.contactos.add(self.contacto)
+        self.assertEqual(campana.bd_contacto.contactos.count(), 1)
+
     def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(self):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
@@ -723,3 +743,20 @@ class CampanasTests(OMLBaseTest):
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
+
+    def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_manual(self):
+        url = reverse('campana_manual_create')
+        nombre_campana = 'campana_nombre'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
+             nombre_campana, audio_ingreso)
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+
+        campana = Campana.objects.get(nombre=nombre_campana)
+        self.assertEqual(campana.bd_contacto.contactos.count(), 0)
+        self.contacto = ContactoFactory.create(bd_contacto=campana.bd_contacto)
+        campana.bd_contacto.contactos.add(self.contacto)
+        self.assertEqual(campana.bd_contacto.contactos.count(), 1)
