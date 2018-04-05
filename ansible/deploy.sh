@@ -250,7 +250,7 @@ Tag() {
     echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
     ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/deploy/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
-    ResultadoAnsible=`echo $?` > /var/log/oml_install 2>&1
+    ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación Omnileads"
     echo ""
 
