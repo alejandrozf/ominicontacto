@@ -10,11 +10,6 @@
   become: yes
   become_method: sudo
 
-- lineinfile: "dest=/etc/httpd/conf/httpd.conf regexp=\"^ErrorLog\" line=\"ErrorLog /dev/null\""
-  become: yes
-  become_method: sudo
-  notify: restart httpd
-
 - name: Load init.d script to raise up asterisk
   template: src=templates/asterisk-omnileads dest=/etc/init.d/asterisk mode=755
   when: ansible_os_family == "RedHat" and asterisk_location != ""
@@ -108,12 +103,11 @@
   when: asterisk_location == ""
 
 - name: Create of asterisk cron
-  file: path=/var/spool/cron/asterisk state=touch owner=root group=root mode=755
+  file: path=/var/spool/cron/asterisk state=touch owner={{ usuario }} group={{ usuario }} mode=755
   when: asterisk_location != ""
 
 - name: Asterisk crontab modification
-  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * {{ asterisk_location }}/asterisk/agi-bin/omni-asterisk-logout.php\""
-
+  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * {{ asterisk_location }}/var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
 
 - name: Copy of odbc files and omnileads sounds
   shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files"

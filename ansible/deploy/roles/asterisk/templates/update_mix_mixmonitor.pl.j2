@@ -23,10 +23,10 @@ $config{'dbpass'} = 'qstatsPassw0rd';
 # Destination directory for recordings
 {% if asterisk_location != "" %}
 $config{'asterisk_spool'}  = "{{ install_prefix }}asterisk/var/spool/asterisk/monitor";
-$config{'destination_dir'} = "{{ install_prefix }}asterisk/var/spool/asterisk/asternic";
+$config{'destination_dir'} = "{{ install_prefix }}asterisk/var/spool/asterisk/oml";
 {% else %}
 $config{'asterisk_spool'}  = "/var/spool/asterisk/monitor";
-$config{'destination_dir'} = "/var/spool/asterisk/asternic";
+$config{'destination_dir'} = "/var/spool/asterisk/oml";
 {% endif %}
 $config{'move_recording'} = true;
 

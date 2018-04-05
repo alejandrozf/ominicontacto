@@ -69,8 +69,8 @@ OML_QUEUES_FILENAME = "{{ install_prefix }}conf/queues_fts.conf"
 OML_GLOBALS_VARIABLES_FILENAME = "{{ install_prefix }}conf/extensions_fts_globals.conf"
 
 {% if asterisk_location != "" %}
-OML_ASTERISK_REMOTEPATH = "{{ install_prefix }}asterisk/etc/asterisk/"
-OML_BACKLIST_REMOTEPATH  = "{{ install_prefix }}asterisk/var/spool/asterisk/"
+OML_ASTERISK_REMOTEPATH = "{{ asterisk_location }}/etc/asterisk/"
+OML_BACKLIST_REMOTEPATH  = "{{ asterisk_location }}/var/spool/asterisk/"
 
 {% else %}
 OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
@@ -99,7 +99,7 @@ ASTERISK = {
 # **** RECORDAR: revisar permisos, usuario, etc.
 
 {% if asterisk_location != "" %}
-OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "{{ install_prefix}}usr/sbin/asterisk", "-rx", "core reload"]'
+OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "{{ asterisk_location }}/usr/sbin/asterisk", "-rx", "core reload"]'
 {% else %}
 OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "/usr/sbin/asterisk", "-rx", "core reload"]'
 {% endif %}
@@ -107,7 +107,7 @@ OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "/usr/sbin/asterisk", "-rx", "co
 # 'OML_GRABACIONES_URL': url donde se encuentra las grabaciones en elastix
 # ejemplo "http://172.16.20.222/grabaciones"
 
-OML_GRABACIONES_URL = "http://{{ omni_ip }}/grabaciones"
+OML_GRABACIONES_URL = "http://{{ omni_ip }}:1180/grabaciones"
 
 # 'OML_SUPERVISION_URL': url donde se encuentra las grabaciones en elastix
 # ejemplo "http://172.16.20.222:8090/Omnisup/index.php"
@@ -194,7 +194,7 @@ TMPL_OML_AUDIO_CONVERSOR_EXTENSION = ".wav"
 
 MONITORFORMAT = '{{ formato_conversion }}'
 
-OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
+OML_AUDIO_PATH_ASTERISK = "{{ asterisk_location }}/var/lib/asterisk/sounds/oml/"
 
 CALIFICACION_REAGENDA = 'Agendado'
 
