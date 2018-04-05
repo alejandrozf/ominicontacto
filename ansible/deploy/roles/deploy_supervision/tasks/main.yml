@@ -4,6 +4,7 @@
   tags:
     - supervision
     - omniapp
+    - postinstall
 
 - include: reboot.yml
   tags: reboot

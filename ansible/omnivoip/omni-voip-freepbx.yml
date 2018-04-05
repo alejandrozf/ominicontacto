@@ -1,6 +1,0 @@
-- name: Instalacion de Omnileads en SangomaFreePBX
-  hosts: omni-freepbx
-  roles:
-          # Instalación de paquetes y dependencias de omnivoip y setup inicial del server
-          # Instalación y configuración de Kamailio
-

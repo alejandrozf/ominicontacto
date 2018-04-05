@@ -11,7 +11,7 @@
   command: "{{ item }} chdir=/usr/src/kamailio/"
   with_items:
           - git checkout -b 4.4 origin/4.4
-          - make PREFIX=/opt/kamailio cfg
+          - make PREFIX={{ install_prefix }}kamailio cfg
 
 - name: Se añade los modulos al modules.lst
   lineinfile:
@@ -34,8 +34,8 @@
 - name: Copiado de los archivos de configuracion de kamailio
   command: "{{ item }} chdir=/usr/src/omnileads-AIO/kamailio/"
   with_items:
-          - cp kamailio.cfg /opt/kamailio/etc/kamailio/
-          - cp kamctlrc /opt/kamailio/etc/kamailio/
+          - cp kamailio.cfg {{ install_prefix }}kamailio/etc/kamailio/
+          - cp kamctlrc {{ install_prefix }}kamailio/etc/kamailio/
           - cp kamailio.service /etc/systemd/system/
           - cp kamailio-default /etc/default/kamailio
           - cp ngcp-rtpengine-daemon /etc/default/

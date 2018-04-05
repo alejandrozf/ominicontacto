@@ -32,8 +32,8 @@ omnisup_repo: https://github.com/Pignatar0md/Omnisup
 ################ URL's ############################
 
 #URLS para descargar asterisk
-dahdi_linux: http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-current.tar.gz
-libpri: http://downloads.asterisk.org/pub/telephony/libpri/libpri-current.tar.gz
+dahdi_linux: http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-2.11.1+2.11.1.tar.gz
+libpri: http://downloads.asterisk.org/pub/telephony/libpri/libpri-1.6.0.tar.gz
 asterisk_v13: http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-13.18.3.tar.gz
 jansson: https://github.com/akheron/jansson/archive/v2.7.tar.gz
 asternic: http://download.asternic.net/asternic-stats-pro-2.2.0.tgz
@@ -46,11 +46,15 @@ wombat: http://downloads.loway.ch/beta/WombatDialer-16.06.9-157.tar.gz
 #Postgresql 9.6 url
 postgresql_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
 
+### IP y FQDN de server a deployar
+
+#omni_ip: "{{ ansible_all_ipv4_addresses[0] }}"
+omni_ip: "{{ ansible_default_ipv4.address }}"
+omnicentos_fqdn: "{{ ansible_nodename }}"
+localhost: 127.0.0.1
 
 ################## Variables para la aplicacion OML ###################
-
 #Variable para oml_settings_local.py
-django_dir: /home/freetech/ominicontacto
 #Credenciales Superuser OML
 admin_user: admin
 

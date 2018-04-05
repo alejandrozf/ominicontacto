@@ -1,0 +1,19 @@
+---
+- name: Instalacion de Omnileads en CentOS
+  hosts: omnileads
+  # Siempre 'gather_facts' ya q' lo usaoms en varios 'when'
+  # gather_facts: '{{ lookup("env","DO_CHECKS") }}'
+  vars:
+          build_dir: "{{ BUILD_DIR }}"
+          rama: "{{ RAMA }}"
+  gather_facts: True
+  
+  roles:
+          - prerequisitos
+          - {role: oml_server, tags: ['virtualenv']}
+          - kamailio
+          - {role: omniapp_second, tags: ['omniapp']}
+          - asterisk
+          - deploy_supervision
+
+

@@ -1,0 +1,78 @@
+#! /bin/sh
+#
+# asterisk
+#
+# chkconfig: - 90 10
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+USER={{ usuario }}
+GROUP={{ usuario }}
+CMD={{ install_prefix }}asterisk/sbin/asterisk
+
+# $ wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-current.tar.gz
+# $ tar xzf asterisk-current.tar.gz
+# $ cd asterisk.9.0/
+# $ ./configure --prefix={{ install_prefix }}asterisk
+# $ make -j2
+# $ make install
+# $ make samples
+
+# See how we were called.
+case "$1" in
+  start)
+        echo -n "Starting asterisk... "
+        $CMD -U $USER -G $GROUP -g
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]
+        then
+                echo_success
+        else
+                echo_failure
+        fi
+        echo
+        ;;
+  stop)
+        echo -n "Stopping asterisk... "
+        su -l -s /bin/bash -c "$CMD -x 'core stop now'" $USER
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]
+        then
+                echo_success
+        else
+                echo_failure
+        fi
+        echo
+        ;;
+  reload)
+        echo -n "Reloading asterisk... "
+        su -l -s /bin/bash -c "$CMD -x 'core restart gracefully'" $USER
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]
+        then
+                echo_success
+        else
+                echo_failure
+        fi
+        echo
+        ;;
+  status)
+        echo -n "Asterisk 11 - Llamadas en curso:"
+        su -l -s /bin/bash -c "$CMD -x 'core show calls'" $USER
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]
+        then
+                echo_success
+        else
+                echo_failure
+        fi
+        echo
+        ;;
+  *)
+        echo "Usage: $0 start|stop"
+        exit 1
+esac
+
+exit $RETVAL

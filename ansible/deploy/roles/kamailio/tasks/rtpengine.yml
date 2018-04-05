@@ -1,0 +1,124 @@
+---
+- set_fact: rtpengine_name=rtpengine-mr5.5.3.1
+- set_fact: kernel="/usr/src/kernels/$(shell uname -r)"
+- name: Download of RTPengine-mr5.5.3.1
+  get_url: url={{ rtpengine_repo }} dest=/usr/src/
+  register: destino
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Untar the file
+  unarchive: "src=/usr/src/{{ rtpengine_name }}.tar.gz dest=/usr/src/ remote_src=yes"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Delete tar file
+  file: "dest=/usr/src/{{ rtpengine_name }}.tar.gz state=absent"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Install of ffmpeg repository
+  shell: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+- shell: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+  register: command_result
+  failed_when:
+    - "'transferencia fallida' in command_result.stderr"
+    - "'failed' in command_result.stderr"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Install of ffmpeg
+  yum: name={{ item }} state=present
+  with_items:
+      - ffmpeg
+      - ffmpeg-devel
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Installation of RTPengine
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/daemon"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Modify of the RTPengine kernel module to let it know where is our kernel
+  lineinfile: "path=/usr/src/{{ rtpengine_name }}/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= {{ kernel }}\""
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Installation of RTPengine kernel module
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Insert the kernel module created for RTPengine
+  shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
+  register: command_result
+  failed_when:
+    - "'File exists' not in command_result.stderr"
+    - "command_result.rc != 0"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Installation of IPtables extensions
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/iptables-extension"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+- name: Copy of iptables library to lib64/xtables
+  copy: src=/usr/src/{{ rtpengine_name }}/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
+  become: true
+  become_method: sudo
+
+- name: Copy of rptengine init script in sysconfig
+  copy: src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/rtpengine_sysconfig dest=/etc/sysconfig/rtpengine remote_src=yes
+  become: true
+  become_method: sudo
+
+- name: Copty of rtpengine service file to systemd
+  copy: src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/rtpengine.service dest=/etc/systemd/system remote_src=yes
+  become: true
+  become_method: sudo
+
+- name: Modify of RTPengine sysconfig file
+  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/sysconfig/rtpengine
+  become: true
+  become_method: sudo
+
+- name: Modify of /etc/rsyslog.conf
+  template: src=templates/rsyslog.conf.j2 dest=/etc/rsyslog.conf
+  become: true
+  become_method: sudo
+
+- name: Create rtpengine.log file and directory
+  file: path=/var/log/rtpengine/ state=directory mode=0755
+  become: true
+  become_method: sudo
+- file: path=/var/log/rtpengine/rtpengine.log state=touch mode=0755
+  become: true
+  become_method: sudo
+
+- name: Create /var/spool/rtpengine directory
+  file: path=/var/spool/rtpengine state=directory recurse=yes owner=root
+  become: true
+  become_method: sudo
+
+- name: Copy the rtpengine binary to /usr/local/bin
+  copy: src=/usr/src/{{ rtpengine_name }}/daemon/rtpengine dest=/usr/local/bin remote_src=yes mode=755
+  become: true
+  become_method: sudo
+
+- name: Start and enable rtpengine service
+  service: name=rtpengine state=started enabled=yes
+  become: true
+  become_method: sudo
+
