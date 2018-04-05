@@ -2,11 +2,11 @@ server {
     listen 10443 http2 ssl;
     listen [::]:10443 http2 ssl;
     server_name default_server;
-    ssl_certificate /home/freetech/nginx_certs/cert.pem;
-    ssl_certificate_key /home/freetech/nginx_certs/key.pem;
+    ssl_certificate {{ install_prefix }}nginx_certs/cert.pem;
+    ssl_certificate_key {{ install_prefix }}nginx_certs/key.pem;
     access_log      /var/log/nginx/example.com_access.log combined;
     error_log       /var/log/nginx/example.com_error.log error;
-    root /home/freetech;
+    root {{ install_prefix }};
     index index.php index.html;
     location / {
 

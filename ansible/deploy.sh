@@ -6,79 +6,88 @@
 # Autor: Andres Felipe Macias
 # Colaborador:  Federico Peker
 #
-ANSIBLE=`which ansible`
 PIP=`which pip`
 current_directory=`pwd`
 TMP_ANSIBLE='/var/tmp/ansible'
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
+IS_ANSIBLE="`find /usr/bin /usr/sbin /usr/local /root ~ -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
 
 Help() {
 USAGE="
        Opciones a ingresar: \n
             -h: ayuda \n
             -r: rama a deployar (ej: -r develop) \n
-            -i: instala ansible, transfiere llaves ssh a maquina a deployar, ingresar fqdn, formato de grabaciones, pass de OML \n
-            -t: ingresar ip, opcion de SO, tags de ansible (TAREAS A EJECUTAR y no ejecutar) \n
+            -i: instala ansible, ingresar formato de grabaciones, pass de OML \n
+            -t: ingresar ip, opcion de SO, tags de ansible (TAREAS A EJECUTAR) \n
         \n
        EJEMPLOS: \n
-       - ./deploy.sh -r develop -t hosts -> deployará la rama develop, ejecutara todas las tareas \n
-       - ./deploy.sh -r release-0.4 -i -t kamailio,nginx,kamailio-cert -> deploya la rama release-0.4, pide datos del server, ejecuta las tareas de instalación de kamailio y de nginx  exceptuando la creacion de certificados (tiene que estar separado por coma) \n
-       - ./deploy.sh -r release-0.4 -i -t asterisk,,kamailio-cert -> igual al anterior, solamente ejecutará tareas de instalación de asterisk exceptuando la creacion de certificados \n
+       - ./deploy.sh -r develop -t all -> deployará la rama develop, ejecutara todas las tareas \n
        \n
        Tags disponibles: \n
-       hosts: ejecuta todos los procesos \n
-       asterisk-install: compila e instala asterisk \n
-       asterisk-config: realiza tareas de configuracion de asterisk con OML \n
-       asternic: instala y configura asternic y scripts de grabaciones \n
-       deploy: instala la aplicación, setea el virtualenv y el entorno de OML \n
-       django-migrations: realiza todas las migraciones de django (uso de python manage.py) \n
-       freepbx: realiza la instalación de freepbx \n
-       kamailio: compila e instala kamailio y rtpengine \n
-       kamailio-cert: realiza el seteo y creacion de certificados usados por kamailio y nginx \n
-       nginx: configuraciones de nginx \n
-       omnivoip: ejecuta toda la instalacion de omnivoip \n
-       omniapp: ejecuta toda la instalacion de omniapp (abarca deploy de django de OML y nginx) \n
-       pre-sangoma: ejecuta los prerequisitos de SangomaOS (instalacion de paquetes tambien) \n
-       pre-centos: ejecuta los prerequisitos de Centos (instalacion de paquetes tambien) \n
-       postgresusers: crea la base de datos y usuarios postgres \n
-       postinstall: ejecuta tareas necesarias para un post-deploy \n
-       queuelog-trigger: ejecuta el trigger de queuelog \n
-       sshkey-transfer: realiza la transferencia de la llave publica ssh entre usuarios freetech y root \n
-       supervision: deploya la supervision \n "
-       static: crea el archivo voip.cert \n
-       wombat: instala y configura wombat \n
+       all: ejecuta todos los procesos \n
+       postinstall: ejecuta tareas necesarias para un post-deploy \n "
        echo -e $USAGE
        exit 1
 }
 
 Rama() {
 
-    echo "Bienvenido al asistente de instalación de Omnileads"
     echo ""
-    echo "Instalando ansible 2.4.0"
-
-    if [ -z $ANSIBLE ]; then
-        $PIP install 'ansible==2.4.0.0'
+    echo "###############################################################"
+    echo "##    Bienvenido al asistente de instalación de Omnileads    ##"
+    echo "###############################################################"
+    echo ""
+    sleep 2
+    echo "Detectando si ansible 2.5.0 se encuentra instalado"
+    if [ -z "$IS_ANSIBLE" ] ; then
+        echo "No tienes instalado ansible"
+        echo "Instalando ansible 2.5.0"
+	    echo ""
+	    $PIP install 'ansible==2.5.0.0' --user > /dev/null 2>&1
+        IS_ANSIBLE="`find /usr/bin /usr/sbin /usr/local /root ~ -name ansible |grep \"/bin/ansible\" |head -1 2> /dev/null`"
+	fi
+    ANS_VERSION=`"$IS_ANSIBLE" --version |grep ansible |head -1`
+	if [ "$ANS_VERSION" = 'ansible 2.5.0' ] ; then
+         echo "Ansible ya se encuentra instalado"
     else
-        echo "Ya tiene instalado ansible"
+        echo "Tienes una versión de ansible distinta a la 2.5.0"
+        echo "Instalando versión 2.5.0"
+        $PIP install 'ansible==2.5.0.0' --user > /dev/null 2>&1
     fi
 
     cd $current_directory
+    USUARIO="`grep ansible_user hosts| head -1 |awk -F " " '{print $3}'|awk -F "=" '{print $2}'`"
+    sleep 2
     echo "Creando directorio temporal de ansible"
+    if [ -e $TMP_ANSIBLE ]; then
+        rm -rf $TMP_ANSIBLE
+    fi
     mkdir -p /var/tmp/ansible
+    sleep 2
     echo "Copiando el contenido de ansible del repositorio al directorio temporal"
     cp -a $current_directory/* $TMP_ANSIBLE
+
+    if [ -z $FROM_INTWO ]; then
+        echo ""
+    else
+        sed -i "s/\(^LOCALHOST\).*/LOCALHOST=true/" $TMP_ANSIBLE/hosts
+    fi
+
+    sleep 2
+    echo "Creando directorio y carpeta de logs de proceso de instalación"
+    touch /var/log/oml_install
+    #sleep 2
     cd ..
-    echo "Pasando al deploy de OmniAPP"
+    echo "Chequeando y copiando el código a deployar"
     set -e
     echo ""
     echo "Se iniciará deploy:"
     echo ""
     echo "      Version: $1"
-   #echo "   Inventario: $INVENTORY"
     echo ""
 
-    git checkout $1
+    git checkout ansible/hosts
+    git checkout $1 1> /dev/null
 
     ################### Build.sh #####################
 
@@ -95,15 +104,18 @@ Rama() {
     fi
     mkdir -p $TMP/ominicontacto
     echo "Usando directorio temporal: $TMP/ominicontacto..."
-    echo "Creando bundle usando git-archive..."
+    sleep 2
+    echo "Copiando el código al directorio temporal "
     git archive --format=tar $(git rev-parse HEAD) | tar x -f - -C $TMP/ominicontacto
-
+    sleep 2
     echo "Eliminando archivos innecesarios..."
     rm -rf $TMP/ominicontacto/docs
     rm -rf $TMP/ominicontacto/ansible
     rm -rf $TMP/ominicontacto/run_coverage_tests.sh
-    rm -rf $TMP/ominicontacto/run_uwsgi.sh
-
+    rm -rf $TMP/ominicontacto/oml_settings_local_1_host_pro.py
+    rm -rf $TMP/ominicontacto/oml_settings_local_pro.py
+    rm -rf $TMP/ominicontacto/test*
+    sleep 2
     echo "Obteniendo datos de version..."
     branch_name=$(git symbolic-ref -q HEAD)
     branch_name=${branch_name##refs/heads/}
@@ -112,7 +124,10 @@ Rama() {
     commit="$(git rev-parse HEAD)"
     author="$(id -un)@$(hostname)"
 
-    echo "Creando archivo de version | Branch: $branch_name | Commit: $commit | Autor: $author"
+    echo -e "Creando archivo de version
+       Branch: $branch_name
+       Commit: $commit
+       Autor: $author"
     cat > $TMP/ominicontacto/ominicontacto_app/version.py <<EOF
 
 #
@@ -130,37 +145,91 @@ if __name__ == '__main__':
 
 EOF
 
-    echo "Validando version.py - Commit:"
-    python $TMP/ominicontacto/ominicontacto_app/version.py
+    #echo "Validando version.py - Commit:"
+    python $TMP/ominicontacto/ominicontacto_app/version.py > /dev/null 2>&1
 
     # ----------
     export DO_CHECKS="${DO_CHECKS:-no}"
     rama=$1
 }
 
-Preliminar() {
-
-    if [ -f ~/.ssh/id_rsa.pub ]; then
-        echo "Ya se han generado llaves para este usuario"
-    else
-        echo "Generando llaves públicas de usuario actual"
-        ssh-keygen
-    fi
-
-    echo "Parámetros de la aplicación"
-    echo -en "Ingrese valor de variable session_cookie_age: "; read session_cookie
-    sed -i "s/\(^session_\).*/session_cookie_age=$session_cookie/" $TMP_ANSIBLE/hosts
-    echo -en "Ingrese la contraseña de superuser de Omnileads: "; read admin_pass
-    sed -i "s/\(^admin_pass\).*/admin_pass=$admin_pass/" $TMP_ANSIBLE/hosts
+SessionCokie() {
+    echo -en "Ingrese valor de variable session_cookie_age: (valor numerico, default: 3600) "; read session_cookie
+}
+AdminPass() {
+    unset admin_pass
+    echo -en "Ingrese la contraseña de superuser de Omnileads: (default: toor123) (contraseña con numeros, letras y caracteres especiales): "; echo ""
+    prompt=`echo -en "Enter password: "`
+    read -p "$prompt" -r -s -e admin_pass
+    echo ""
+    while true; do
+        if [ -z $admin_pass ]; then
+            echo "ATENCION: Favor cambiar la contraseña, no usar la contraseña por default"
+            read -p "$prompt" -r -s -e admin_pass
+            echo ""
+        else
+            break
+        fi
+    done
+}
+AdminPass_2() {
+    unset admin_pass_2
+    echo -en "Ingrese nuevamente la contraseña de superuser de Omnileads: "; echo ""
+    prompt=`echo -en "Enter password: "`
+    read -p "$prompt" -r -s -e admin_pass_2
+    echo ""
 }
 
-IngresarIP(){
+Formato(){
+    echo -en "Ingrese el formato de audio en el que quiere las grabaciones (ej: wav, mp3. Default:mp3): "; read audio
+}
 
-    echo -en "Ingrese el formato de audio en el que quiere las grabaciones: "; read audio
-#    sed -i "s/\(^MONITORFORMAT\).*/MONITORFORMAT = \'$audio\'/" $TMP_ANSIBLE/deploy/roles/oml_server/templates/oml_settings_local.py
-    echo -en "Ingrese fqdn  de maquina a deployar: "; read omnicentos_fqdn
-    sed -i "s/\(^omnicentos_fqdn=\).*/omnicentos_fqdn=$omnicentos_fqdn/" $TMP_ANSIBLE/hosts
-    echo "Transifiendo llave publica a usuario root de Centos"
+Preliminar() {
+    echo ""
+    echo "########################################"
+    echo "##    Parámetros de la aplicación     ##"
+    echo "########################################"
+    echo ""
+    SessionCokie
+    while true; do
+        if [ -z $session_cookie ]; then
+            echo "Usando el valor numerico por default"
+            break
+        elif ! [[ "$session_cookie" =~ ^[0-9]+$ ]]; then
+            echo "Ingrese un valor numérico"
+            SessionCokie
+        else
+            sed -i "s/\(^session_\).*/session_cookie_age=$session_cookie/" $TMP_ANSIBLE/hosts
+            break
+        fi
+    done
+
+    while true; do
+        AdminPass
+        AdminPass_2
+        if [ "$admin_pass" = "$admin_pass_2" ]; then
+            echo "Las contraseñas coinciden"
+            sed -i "s/\(^admin_pass\).*/admin_pass=$admin_pass/" $TMP_ANSIBLE/hosts
+            break
+        else
+            echo "Las contraseñas no coinciden, vuelva a ingresarlas"
+            AdminPass
+            AdminPass_2
+        fi
+    done
+    Formato
+    while true; do
+        if  [ -z $audio ]; then
+            echo "Usando valor por default"
+            break
+        elif [ $audio != "wav" ] && [ $audio != "mp3" ]; then
+            echo "Valor ingresa inválido. Ingrese un valor válido"
+            Formato
+        else
+            sed -i "s/\(^formato_conversion\).*/formato_conversion=$audio/" $TMP_ANSIBLE/hosts
+            break
+        fi
+    done
 }
 
 Desarrollo() {
@@ -173,69 +242,26 @@ Desarrollo() {
 }
 
 Tag() {
-    echo -en "Ingrese IP  de maquina a deployar: "; read ip
-    ssh-copy-id -i ~/.ssh/id_rsa.pub root@$ip
-    echo "Ingrese 1 si va instalar en Debian, 2 si va a instalar en SangomaOS o 3 si va a instalar en Centos 7"
-    echo -en "Opcion: ";read opcion
 
-if [ $opcion -eq 1 ]; then
-    echo -en "Ingrese IP  de omni-voip: "; read omnivoip_ip
-    sed -i "s/\(^omnivoip_ip:\).*/omnivoip_ip: $omnivoip_ip/" /etc/ansible/hosts
-    sed -i "s/\(^192.168.70.62\).*/$omnivoip_ip/" /etc/ansible/hosts.yml
-
-    echo -en "Ingrese IP  de omni-app: "; read omniapp_ip
-    sed -i "s/\(^omniapp_ip:\).*/omniapp_ip: $omniapp_ip/" /etc/ansible/hosts
-    sed -i "s/\(^192.168.70.63\).*/$omniapp_ip/" /etc/ansible/hosts.yml
-
-    echo -en "Ingrese fqdn  de omni-voip: "; read omnivoip_fqdn
-    sed -i "s/\(^omnivoip_fqdn:\).*/omnivoip_ip: $omnivoip_fqdn/" /etc/ansible/hosts
-
-    echo -en "Ingrese fqdn  de omni-app: "; read omniapp_fqdn
-    sed -i "s/\(^omniapp_fqdn:\).*/omniapp_fqdn: $omniapp_fqdn/" /etc/ansible/hosts
-
-    echo "Ejecutando Ansible en Debian"
-    ansible-playbook -s /etc/ansible/omnivoip/omni-voip-debian.yml -u root
-    ResultadoAnsible=`echo $?`
-
-    echo "Finalizó la instalación omnileads"
+    echo "Comenzando la instalación de Omnileads con Ansible, este proceso puede tardar varios minutos"
     echo ""
-
-elif [ $opcion -eq 2 ]; then
-
-    sed -i "8s/.*/$ip ansible_ssh_port=22/" $TMP_ANSIBLE/hosts
-    echo "Ejecutando Ansible en SangomaOS"
-    ansible-playbook -s $TMP_ANSIBLE/deploy/omnileads-freepbx.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
-    ResultadoAnsible=`echo $?`
-    echo "Finalizó la instalación omnileads"
+    echo "Si comes bien hoy, tu cuerpo lo agradecerá mañana"
+    echo "El servicio sin humildad es egoísmo"
+    echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
-
-elif [ $opcion -eq 3 ]; then
-
-    sed -i "6s/.*/$ip ansible_ssh_port=22/" $TMP_ANSIBLE/hosts
-    echo "Ejecutando Ansible en Centos"
-    ansible-playbook -s $TMP_ANSIBLE/deploy/omnileads-centos.yml -u root --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}"
+    ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/deploy/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
     ResultadoAnsible=`echo $?`
-    echo "Finalizó la instalación omnileads"
+    echo "Finalizó la instalación Omnileads"
     echo ""
-
-else
-    echo "Parámetro inválido ingrese de nuevo"
-    echo  ""
-fi
 
 if [ ${ResultadoAnsible} -ne 0 ];then
-    echo "Fhostsó la ejecucion de Ansible, favor volver a correr el script"
+    echo "Falló la ejecucion de Ansible, favor volver a correr el script"
     exit 0
-#else
-
-#if [ $opcion -eq 1 ]; then
-#    echo "Ejecutando Ansible en Debian omni-app"
-#    ansible-playbook -s /etc/ansible/deploy/omni-app-debian.yml -u freetech --extra-vars "BUILD_DIR=$TMP/ominicontacto" -K
-#    echo "Ejecutando Ansible para copia de archivos entre servers"
-#    ansible-playbook -s /etc/ansible/deploy/omniapp_second/transfer.yml -u root -K
-#    echo "Finalizó la instalación de Omnileads"
-
 fi
+
+echo "Eliminando carpetas temporales creadas por este script"
+rm -rf /var/tmp/ansible
+rm -rf /var/tmp/ominicontacto-build
 
 }
 
@@ -246,7 +272,6 @@ while getopts "r::t:ihd:" OPTION;do
 		;;
 		i) #Realizar pasos y agregar opciones preliminares
 		    Preliminar
-		    IngresarIP
 		;;
 		t) #Tag
 		    set -f # disable glob
@@ -263,4 +288,5 @@ while getopts "r::t:ihd:" OPTION;do
 	esac
 done
 if [ $# -eq 0  ]; then Help; fi
+
 

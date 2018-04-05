@@ -9,20 +9,20 @@
 . /lib/lsb/init-functions
 
 RETVAL=0
-USER=freetech
-GROUP=freetech
-CMD=/home/freetech/virtualenv/bin/uwsgi
+USER={{ usuario }}
+GROUP={{ usuario }}
+CMD={{ install_prefix }}virtualenv/bin/uwsgi
 
-export PYTHONPATH=/home/freetech/ominicontacto
+export PYTHONPATH={{ install_prefix }}
 
-. /home/freetech/virtualenv/bin/activate
+. {{ install_prefix }}virtualenv/bin/activate
 
 # See how we were called.
 case "$1" in
   start)
         echo -n "Starting OminicontactoDaemon... "
-        # $CMD --ini /home/freetech/ominicontacto/oml_uwsgi.ini
-        su -l -s /bin/bash -c "$CMD --ini /home/freetech/ominicontacto/oml_uwsgi.ini" $USER
+        # $CMD --ini {{ install_prefix }}ominicontacto/oml_uwsgi.ini
+        su -l -s /bin/bash -c "$CMD --ini {{ install_prefix }}bin/oml_uwsgi.ini" $USER
         RETVAL=$?
         if [ $RETVAL -eq 0 ]
         then
@@ -34,14 +34,14 @@ case "$1" in
         ;;
   stop)
         echo -n "Stopping OminicontactoDaemon... "
-        #pgrep -u freetech uwsgi > /dev/null || {
+        #pgrep -u {{ usuario }} uwsgi > /dev/null || {
         fuser -k -n tcp 8000 > /dev/null || {
-		echo "OminicontactoDaemon no esta corriendo..."
+                echo "OminicontactoDaemon no esta corriendo..."
                 log_failure_msg
                 exit 1
         }
 
-        su -l -s /bin/bash -c "echo 'q' > /home/freetech/ominicontacto/.uwsgi-fifo" $USER
+        su -l -s /bin/bash -c "echo 'q' > {{ install_prefix }}bin/.uwsgi-fifo" $USER
         RETVAL=$?
         if [ $RETVAL -eq 0 ]
         then
@@ -53,24 +53,24 @@ case "$1" in
         ;;
   reload)
         echo -n "Reload de OminicontactoDaemon... "
-        pgrep -u freetech uwsgi > /dev/null || {
+        pgrep -u {{ usuario }} uwsgi > /dev/null || {
             log_failure_msg
 			echo "OminicontactoDaemon no esta corriendo..."
             exit 1
         }
 
-        su -l -s /bin/bash -c "echo 'r' > /home/freetech/ominicontacto/.uwsgi-fifo" $USER
+        su -l -s /bin/bash -c "echo 'r' > {{ install_prefix }}bin/.uwsgi-fifo" $USER
         RETVAL=$?
         if [ $RETVAL -eq 0 ]
         then
-                log_success_msg 
+                log_success_msg
         else
                 log_failure_msg
         fi
         echo
         ;;
   status)
-        pgrep -u freetech uwsgi > /dev/null || {
+        pgrep -u {{ usuario }} uwsgi > /dev/null || {
                 log_failure_msg
                 echo "OminicontactoDaemon no esta corriendo..."
                 exit 1

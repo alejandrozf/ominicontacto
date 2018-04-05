@@ -1,49 +1,45 @@
 ---
 
-- name: Modificacion sshd_config
-  shell: >
-          sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  notify: restart ssh
+- name: Print omni_distribution
+# nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos.
+# si no es asi, esta task generara un error
+  debug: msg="omni_distribution es {{ ansible_os_family }}"
 
-- name: FQN en /etc/hostname
-  template: src=templates/hostname-omniapp.j2 dest=/etc/hostname
+- name: Check omni_distribution
+  fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
+  when: (
+      ansible_os_family != "RedHat" and
+      ansible_os_family != "Sangoma" and
+      ansible_os_family != "Debian"
+      )
 
-- name: Añadir los FQDN al /etc/hosts
-  template: src=templates/hosts.j2 dest=/etc/hosts
+- name: Check if Asterisk is installed in /etc
+  command: test -d /etc/asterisk
+  ignore_errors: true
+  register: asterisk_etc_installed
+  tags: postinstall
+  become: true
+  become_method: sudo
 
-- name: Update/upgrade del sistema
-  apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
+- set_fact: asterisk_location={{ install_prefix }}asterisk
+  when: asterisk_etc_installed|failed
+  tags: postinstall
 
-- name: Instalacion de dependencias / paquetes de omni-app
-  apt: name={{ item }} state=present
-  with_items:
-          - virtualenv
-          - expect
-          - libcairo2-dev
-          - openssl
-          - nginx
-          - libpq-dev
-          - python-dev
-          - libxml2-dev
-          - libxslt1-dev
-          - libldap2-dev
-          - libsasl2-dev
-          - libffi-dev
-          - gcc
-          - libmysqlclient-dev
-          - python-virtualenv
-          - postgresql-9.4
-          - postgresql-contrib
-          - postgresql-server-dev-9.4
-          - python-mysqldb
-          - libjpeg-dev
-          - git
-          - ntp
-          - vim
-          - postgresql-plpython-9.4
-          - curl
-          - python-psycopg2
+- set_fact: asterisk_location=
+  when: asterisk_etc_installed|succeeded
+  tags: postinstall
 
-            #- name: Comienzo del deploy de Omnileads
-            #  local_action: script roles/oml_server/files/bin/deploy.sh {{ branch }} {{ inventario }}
+- name: Creation of {{ usuario }} group
+  group: name={{ usuario }} state=present
+  become: true
+  become_method: sudo
 
+- include: centos_prerequisitos.yml
+  when: ansible_os_family == "RedHat"
+
+- include: installations.yml
+
+- include: setup_mariadb.yml
+  when: ansible_os_family == "RedHat"
+
+- include: postgres-installation.yml

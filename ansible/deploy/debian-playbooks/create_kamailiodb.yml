@@ -6,8 +6,8 @@
         - name: Build the postgresql kamailio-debian
           shell: "{{ item }}"
           with_items:
-                  - "echo \"y\" | /opt/kamailio/sbin/kamdbctl create"
-                  - "/opt/kamailio/sbin/kamailio"
+                  - "echo \"y\" | {{ install_prefix }}kamailio/sbin/kamdbctl create"
+                  - "{{ install_prefix }}kamailio/sbin/kamailio"
           ignore_errors: yes
 
 

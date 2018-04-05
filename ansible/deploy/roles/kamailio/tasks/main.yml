@@ -1,0 +1,49 @@
+---
+
+- name: Check if Rtpengine is installed
+  command: test -f /usr/local/bin/rtpengine
+  ignore_errors: True
+  register: rtpengine_installed
+  tags: rtpengine
+  become: true
+  become_method: sudo
+
+- debug: msg="RTPengine no está instalado, se procede a la instalación"
+  when: rtpengine_installed|failed
+  tags: rtpengine
+
+- debug: msg="RTPengine ya se encuentra instalado se omite instalación"
+  when: rtpengine_installed|succeeded
+  tags: rtpengine
+
+- include: rtpengine.yml
+  tags: rtpengine
+  when: rtpengine_installed|failed
+
+- name: Check if Kamailio is installed
+  command: test -f {{ install_prefix }}kamailio/sbin/kamailio
+  ignore_errors: True
+  register: kamailio_installed
+  tags: kamailio
+  become: true
+  become_method: sudo
+
+- debug: msg="Kamailio no está instalado, se procede a la instalación"
+  tags: kamailio
+  when: kamailio_installed|failed
+
+- debug: msg="Kamailio ya se encuentra instalado se omite instalación"
+  tags: kamailio
+  when: kamailio_installed|succeeded
+
+- include: kamailio.yml
+  tags: kamailio
+
+- include: postgresusers.yml
+  tags: ['postgresusers','kamailio']
+
+- include: kamailio-as-service.yml
+  tags: kamailio
+
+- include: certificate_CA.yml
+  tags: kamailio-cert
