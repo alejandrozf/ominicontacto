@@ -77,10 +77,12 @@
     </script>
 {% endblock %}
 {% block content %}
+
 <h1>Agentes</h1>
-<h3><span class="icon icon-search"></span> Buscar</h3>
 <div id="wrapper-search">
-    
+
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+
     <div id="wrapperSearchForm" class="show"> 
         
         <form role="form" method="post" enctype="multipart/form-data" >
@@ -93,15 +95,15 @@
                     {{ form.fecha.errors }}
                 </div>
                 <div class="col-md-6">
+                    <label for="{{ form.agente.id_for_label }}">Agente: </label>
+                      {{ form.agente }}
+                      {{ form.agente.errors }}
+                </div>                
+                <div class="col-md-6">
                     <label for="{{ form.todos_agentes.id_for_label }}">Todos los agentes: </label>
                       {{ form.todos_agentes }}
                       {{ form.todos_agentes.errors }}
                 </div>                
-                <div class="col-md-6">
-                    <label for="{{ form.agente.id_for_label }}">Agente: </label>
-                      {{ form.agente }}
-                      {{ form.agente.errors }}
-                </div>
                 <div class="col-md-6">
                     <label for="{{ form.agente.id_for_label }}">Grupo de agentes: </label>
                       {{ form.grupo_agente }}
@@ -114,8 +116,6 @@
             </button>        
         </form>
     </div>
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm">
-    </button>
 </div>
 
 {% if graficos_estadisticas  %}

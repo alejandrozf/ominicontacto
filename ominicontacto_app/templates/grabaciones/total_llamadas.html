@@ -48,40 +48,42 @@
     <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
 
 
+<h1>Llamadas</h1>
 
 {% with graficos_estadisticas=graficos_estadisticas %}
-    <div class="col-md-6">
 
-      <form role="form" method="post" enctype="multipart/form-data" >
-        {% csrf_token %}
-        <table class="table">
-          <tr>
-            <td>
-              <div class="input-group date pull-right active" id="">
-                {{form.fecha}}
-                <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
-                </span>
-              </div>
-              <div>
-                Incluir campañas finalizadas {{form.finalizadas}}
-              </div>
-            </td>
-            <td>
-              <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                Filtrar por esa fecha
-              </button>
-            </td>
-          </tr>
-        </table>
+<div id="wrapper-search">
+  <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar </button>   
 
-      </form>
-    </div>
+  <div id="wrapperSearchForm" class="show">
+    <form role="form" method="post" enctype="multipart/form-data" >
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="col-md-6">
+          <label>Fecha: </label>
+            <div class="input-group date pull-right active" id="">
+              {{form.fecha}}
+            </div>
+        </div>
+        <div class="col-md-6">
+          <label>Incluir campañas finalizadas</label>
+           {{form.finalizadas}}
+        </div>       
+      </div>
 
-    <div class="col-md-12">
-      <h4>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
+      <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+        Filtrar por esa fecha
+      </button>    
+    </form>
+  </div> 
+
+</div>
+
+    <div>
+      <h2>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
     </div>
     {% if user.get_is_administrador %}
-    <div class="col-md-9">
+    <div>
       {% with total_llamadas=graficos_estadisticas.estadisticas.total_llamadas_dict %}
       <table class="table table-bordered">
         <tr>
@@ -153,10 +155,11 @@
       <form action="{% url 'exportar_llamadas' tipo_reporte='total_llamadas' %}" method="POST">
           {% csrf_token %}
           <input class="hidden" name="total_llamadas" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas_json }}"/>
-          <h5><button class="btn btn-info btn-sm">Exportar totales llamadas(CSV)</button></h5>
+          <button class="btn btn-primary">Exportar totales llamadas(CSV)</button>
+          <br>
       </form>
     </div>
-    <div class="col-md-3">
+    <div>
         <form action="{% url 'exportar_zip_reportes' %}" method="POST">
             {% csrf_token %}
             <input class="hidden" name="total_llamadas" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas_json }}"/>
@@ -164,7 +167,8 @@
             <input class="hidden" name="llamadas_campanas_dialer" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_dialer_json }}"/>
             <input class="hidden" name="llamadas_campanas_entrantes" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_entrantes_json }}"/>
             <input class="hidden" name="llamadas_campanas_manuales" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_manuales_json }}"/>
-            <h5><button class="btn btn-info btn-sm">Exportar a CSV todos los reportes</button></h5>
+            <button class="btn btn-primary">Exportar a CSV todos los reportes</button>
+            <br>
         </form>
     </div>
     {% endif %}
@@ -173,14 +177,14 @@
       <thead>
         <tr >
           <td colspan="2">
-            <h4>Totales llamadas.</h4>
+            <h3>Totales llamadas.</h3>
           </td>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Totales llamadas por tipo de campaña y forma de finalización</td>
-          <td>Porcentajes llamadas por tipo de campaña</td>
+          <td><h4>Totales llamadas por tipo de campaña y forma de finalización</h4></td>
+          <td><h4>Porcentajes llamadas por tipo de campaña</h4></td>
         </tr>
         <tr>
           <td width="50%" align="center">
@@ -205,7 +209,7 @@
         <thead>
             <tr class="fts-table-bg">
                 <td colspan="2">
-                    <h4>Cantidad de llamadas por campaña</h4>
+                    <h3>Cantidad de llamadas por campaña</h3>
                 </td>
             </tr>
         </thead>
@@ -248,13 +252,14 @@
     <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas' %}" method="POST">
         {% csrf_token %}
         <input class="hidden" name="llamadas_campanas" type="text" value="{{ graficos_estadisticas.dict_campana_counter_json }}"/>
-        <h5><button class="btn btn-info btn-sm">Exportar llamadas por campaña (CSV)</button></h5>
+        <button class="btn btn-primary">Exportar llamadas por campaña (CSV)</button>
+        <br>
     </form>
     <br/>
 
-    <div class="col-md-12">
+    <div>
       <div id="seccion-llamadas-dialer" style="border:1px solid #cecece;">
-        <h4>Distribucion de tipos de llamadas en campañas salientes discador </h4>
+        <h3>Distribucion de tipos de llamadas en campañas salientes discador </h3>
       <div style="overflow: auto; height: 200px">
       <table class="table table-bordered">
         <thead>
@@ -284,14 +289,15 @@
         <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas_dialer' %}" method="POST">
             {% csrf_token %}
             <input class="hidden" name="llamadas_campanas_dialer" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_dialer_json }}"/>
-            <h5><button class="btn btn-info btn-sm">Exportar llamadas campañas dialer</button></h5>
+            <button class="btn btn-primary">Exportar llamadas campañas dialer</button>
+            <br>
         </form>
       </div>
       </div>
       <br/>
 
       <div id="seccion-llamadas-entrantes" style="border:1px solid #cecece;">
-        <h4>Distribucion de tipos de llamadas en campañas entrantes </h4>
+        <h3>Distribucion de tipos de llamadas en campañas entrantes </h3>
       <div style="overflow: auto; height: 200px">
       <table class="table table-bordered">
         <thead>
@@ -321,14 +327,15 @@
         <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas_entrantes' %}" method="POST">
             {% csrf_token %}
             <input class="hidden" name="llamadas_campanas_entrantes" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_entrantes_json }}"/>
-            <h5><button class="btn btn-info btn-sm">Exportar llamadas campañas entrantes</button></h5>
+            <button class="btn btn-primary">Exportar llamadas campañas entrantes</button>
+            <br>
         </form>
       </div>
       </div>
       <br/>
 
       <div id="seccion-llamadas-manuales" style="border:1px solid #cecece;">
-        <h4>Distribucion de tipos de llamadas en campañas manuales </h4>
+        <h3>Distribucion de tipos de llamadas en campañas manuales </h3>
       <div style="overflow: auto; height: 200px">
       <table class="table table-bordered">
         <thead>
@@ -358,14 +365,15 @@
         <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas_manuales' %}" method="POST">
             {% csrf_token %}
             <input class="hidden" name="llamadas_campanas_manuales" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_manuales_json }}"/>
-            <h5><button class="btn btn-info btn-sm">Exportar llamadas campañas manuales</button></h5>
+            <button class="btn btn-primary">Exportar llamadas campañas manuales</button>
+            <br>
         </form>
       </div>
       </div>
       <br/>
 
       <div id="seccion-llamadas-preview" style="border:1px solid #cecece;">
-        <h4>Distribucion de tipos de llamadas en campañas Preview </h4>
+        <h3>Distribucion de tipos de llamadas en campañas Preview </h3>
       <div style="overflow: auto; height: 200px">
       <table class="table table-bordered">
         <thead>
@@ -395,7 +403,8 @@
         <form action="{% url 'exportar_llamadas' tipo_reporte='llamadas_campanas_preview' %}" method="POST">
             {% csrf_token %}
             <input class="hidden" name="llamadas_campanas_preview" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_preview_json }}"/>
-            <h5><button class="btn btn-info btn-sm">Exportar llamadas campañas Preview</button></h5>
+            <button class="btn btn-primary">Exportar llamadas campañas Preview</button>
+            <br>
         </form>
       </div>
       </div>

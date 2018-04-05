@@ -76,6 +76,13 @@ h4 {
     background-color: #FFECE7;
 }
 
+/* ///// Tabs
+*/
+
+.wrapper-tabs {
+    margin-bottom: 30px;
+}
+
 /* ///// Tables styles 
 */
 
@@ -114,31 +121,41 @@ ul.errorlist li {
 
 /* ///// Search form
 */
-.wrapper-info h3 .icon {
-    font-size: 0.8rem;
-}
 #wrapper-search {
-    border-top: 1px solid rgba(0,0,0,0.15);
-    border-bottom: 1px solid rgba(0,0,0,0.15);
+    border-bottom: 2px solid rgba(0,0,0,0.15);
     margin-bottom: 40px;
 }
 #wrapperSearchForm {
-    padding: 14px 0;
+    padding: 20px 0;
 }
 #wrapperSearchForm .btn-primary {
     padding-left: 40px;
     padding-right: 40px;
+    margin-top: 10px;
 }
 #btnCollapse[data-toggle="collapse"] {
-    text-align: center;
+    text-align: left;
+    position: relative;
+    padding: 14px 8px;
+    background-color: #ECEEEA;
+}
+#btnCollapse.collapsed {
+    background-color: #FFFFFF;
 }
 #btnCollapse[aria-expanded="false"]::before, #btnCollapse[aria-expanded="true"]::before {
     content: '\e900';
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 14px;    
     font-family: 'icomoon';
     font-size: 1rem;
 }
 #btnCollapse[aria-expanded="true"]::before {
     content: '\e903';
+}
+#btnCollapse .icon {
+    font-size: 0.8rem;
 }
 
 /* ///// Pagination styles 

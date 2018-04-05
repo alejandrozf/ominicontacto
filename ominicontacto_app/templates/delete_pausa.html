@@ -4,7 +4,7 @@
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h4>Pausa <strong>{{ object.nombre}}</strong></h4>
+        <h1>Pausa "{{ object.nombre}}" </h1>
         {% if object.eliminada %}
           <p>¿Desea reactivar esta Pausa? </p>
         {% else %}
