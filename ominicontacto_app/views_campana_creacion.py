@@ -23,9 +23,24 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.services.asterisk_service import AsteriskService
 
+from ominicontacto_app.tests.factories import BaseDatosContactoFactory
+
 import logging as logging_
 
 logger = logging_.getLogger(__name__)
+
+
+def asignar_bd_contactos_defecto_campo_vacio(campana_form):
+    """
+    Crea una base de datos de contactos vacía en caso de que el usuario no escoja
+    una de las existentes en el sistema y la campaña no sea un template, la asigna a
+    la instancia que crea el formulario de campaña y devuelve el formulario con el
+    cambio
+    """
+    if (campana_form.cleaned_data['bd_contacto'] is None and
+            not campana_form.initial.get('es_template', False)):
+        campana_form.instance.bd_contacto = BaseDatosContactoFactory.create()
+    return campana_form
 
 
 class CampanaTemplateCreateMixin(object):
@@ -222,6 +237,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         campana_form.instance.type = Campana.TYPE_ENTRANTE
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.estado = estado
+        campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()
         campana = campana_form.instance
         queue_form.instance.campana = campana
@@ -253,6 +269,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
 
     def done(self, form_list, *args, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
+        campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         queue_form = form_list[int(self.COLA)]
         campana_form.instance.save()
         queue_form.instance.save()

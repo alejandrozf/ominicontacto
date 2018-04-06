@@ -334,6 +334,14 @@ class CampanaMixinForm(object):
 
 class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super(CampanaForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance.pk is None:
+            self.fields['bd_contacto'].required = False
+        else:
+            self.fields['bd_contacto'].required = True
+
     def clean_bd_contacto(self):
         bd_contacto = self.cleaned_data.get('bd_contacto')
         bd_contacto_field = 'bd_contacto'
@@ -1134,6 +1142,14 @@ class ReporteAgenteForm(forms.Form):
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
     detectar_contestadores = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(CampanaManualForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance.pk is None:
+            self.fields['bd_contacto'].required = False
+        else:
+            self.fields['bd_contacto'].required = True
 
     class Meta:
         model = Campana
