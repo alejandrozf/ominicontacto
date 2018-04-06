@@ -19,7 +19,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile, AgendaManual, ArchivoDeAudio,
+    ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
     NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
 )
 from ominicontacto_app.services.campana_service import CampanaService
@@ -1189,23 +1189,6 @@ class CalificacionForm(forms.ModelForm):
             message = _('Esta calificación está reservada para el sistema')
             raise forms.ValidationError(message, code='invalid')
         return nombre
-
-
-# TODO: EliminarAgendaManual
-class AgendaManualForm(forms.ModelForm):
-    class Meta:
-        model = AgendaManual
-        fields = ('telefono', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones', 'campana')
-        widgets = {
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-            'agente': forms.HiddenInput(),
-            'campana': forms.HiddenInput(),
-            'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
-            "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
-            "fecha": forms.TextInput(attrs={'class': 'form-control'}),
-            "hora": forms.TextInput(attrs={'class': 'form-control'}),
-        }
 
 
 class ArchivoDeAudioForm(forms.ModelForm):

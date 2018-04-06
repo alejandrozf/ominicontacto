@@ -4,12 +4,12 @@
 Tests sobre los procesos realicionados con la calificaciones de los contactos de las campañas
 """
 
-# from mock import patch
+from mock import patch
 
 from django.conf import settings
-# from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse
 
-# from django.utils import timezone
+from django.utils import timezone
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
@@ -19,7 +19,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory)
 
-from ominicontacto_app.models import (AgendaContacto, AgendaManual, NombreCalificacion, Campana,
+from ominicontacto_app.models import (AgendaContacto, NombreCalificacion, Campana,
                                       OpcionCalificacion, WombatLog)
 
 
@@ -334,17 +334,6 @@ class CalificacionTests(OMLBaseTest):
                      'observaciones': observaciones}
         return post_data
 
-    def test_calificacion_manual_marcada_agendada_cuando_se_salva_agenda(self):
-        url = reverse('agenda_manual_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'contacto': self.contacto,
-                              'pk_campana': self.campana.pk})
-        post_data = self._obtener_post_data_agenda()
-        self.assertFalse(self.calificacion_cliente.agendado)
-        self.client.post(url, post_data, follow=True)
-        self.calificacion_cliente.refresh_from_db()
-        self.assertTrue(self.calificacion_cliente.agendado)
-
     @patch('requests.post')
     def test_no_se_programan_en_wombat_agendas_globales_calificaciones_campanas_no_dialer(
             self, post):
@@ -387,16 +376,3 @@ class CalificacionTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         agenda_contacto = AgendaContacto.objects.first()
         self.assertEqual(agenda_contacto.campana.pk, self.campana.pk)
-
-    @patch('requests.post')
-    def test_creacion_agenda_manual_adiciona_campo_campana(self, post):
-        CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
-        url = reverse('agenda_manual_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'telefono': self.contacto.telefono,
-                              'pk_campana': self.campana.pk})
-        post_data = self._obtener_post_data_agenda()
-        self.client.post(url, post_data, follow=True)
-        agenda_manual = AgendaManual.objects.first()
-        self.assertEqual(agenda_manual.campana.pk, self.campana.pk)

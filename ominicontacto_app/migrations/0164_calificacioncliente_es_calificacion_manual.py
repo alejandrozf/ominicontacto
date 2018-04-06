@@ -17,4 +17,9 @@ class Migration(migrations.Migration):
             name='es_calificacion_manual',
             field=models.BooleanField(default=False),
         ),
+        migrations.AlterField(
+            model_name='calificacioncliente',
+            name='fecha',
+            field=models.DateTimeField(),
+        ),
     ]
