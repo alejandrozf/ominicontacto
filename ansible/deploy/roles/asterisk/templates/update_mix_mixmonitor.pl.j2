@@ -21,13 +21,9 @@ $config{'dbuser'} = 'qstatsUser';
 $config{'dbpass'} = 'qstatsPassw0rd';
 
 # Destination directory for recordings
-{% if asterisk_location != "" %}
-$config{'asterisk_spool'}  = "{{ install_prefix }}asterisk/var/spool/asterisk/monitor";
-$config{'destination_dir'} = "{{ install_prefix }}asterisk/var/spool/asterisk/oml";
-{% else %}
-$config{'asterisk_spool'}  = "/var/spool/asterisk/monitor";
-$config{'destination_dir'} = "/var/spool/asterisk/oml";
-{% endif %}
+$config{'asterisk_spool'}  = "{{ asterisk_location }}/var/spool/asterisk/monitor";
+$config{'destination_dir'} = "{{ asterisk_location }}/var/spool/asterisk/oml";
+
 $config{'move_recording'} = true;
 
 # If you want "wav" recordings to be converted to .mp3

@@ -68,14 +68,8 @@ OML_SIP_FILENAME = "{{ install_prefix }}conf/sip_fts.conf"
 OML_QUEUES_FILENAME = "{{ install_prefix }}conf/queues_fts.conf"
 OML_GLOBALS_VARIABLES_FILENAME = "{{ install_prefix }}conf/extensions_fts_globals.conf"
 
-{% if asterisk_location != "" %}
 OML_ASTERISK_REMOTEPATH = "{{ asterisk_location }}/etc/asterisk/"
 OML_BACKLIST_REMOTEPATH  = "{{ asterisk_location }}/var/spool/asterisk/"
-
-{% else %}
-OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
-OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
-{% endif %}
 
 # parametros de conexion con base de datos mysql de asterisk
 DATABASE_MYSQL_ASTERISK = {
@@ -98,11 +92,7 @@ ASTERISK = {
 # 'OML_RELOAD_CMD': comando a ejecutar para realizar el reload de la configuracion de Asterisk
 # **** RECORDAR: revisar permisos, usuario, etc.
 
-{% if asterisk_location != "" %}
 OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "{{ asterisk_location }}/usr/sbin/asterisk", "-rx", "core reload"]'
-{% else %}
-OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "/usr/sbin/asterisk", "-rx", "core reload"]'
-{% endif %}
 
 # 'OML_GRABACIONES_URL': url donde se encuentra las grabaciones en elastix
 # ejemplo "http://172.16.20.222/grabaciones"

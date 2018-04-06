@@ -17,14 +17,14 @@ $ampmgrpass  = "fop222";
 $oResultado = $astman->connect("localhost", $ampmgruser, $ampmgrpass);
         if($oResultado == FALSE)
                 echo "Connection failed.\n";
-                                
-$listado = shell_exec("asterisk  -rx 'queue show' |grep Unava |awk '{print $1, $2}' FS='(' |awk '{print $1, $2}' FS='SIP' |awk '{print $1, $2}' FS='/' |awk '{print $1, $2}' FS=')'");
+
+$listado = shell_exec("{{ asterisk_location }}/usr/sbin/asterisk  -rx 'queue show' |grep Unava |awk '{print $1, $2}' FS='(' |awk '{print $1, $2}' FS='SIP' |awk '{print $1, $2}' FS='/' |awk '{print $1, $2}' FS=')'");
 
 if (empty($listado)) {
     echo '$var es o bien 0, vacía, o no se encuentra definida en absoluto';
 }
 
-else 
+else
 {
 $listado = explode("\n",$listado);
 //$listado = explode(" ",$listado);
@@ -37,7 +37,7 @@ foreach($listado as $valor)
 		$numero = trim($salida[2]," ");
 		echo "nobre: $nombre \n";
 		echo "numero-sip: $numero \n";
-		
+
 		$aResponse = $astman->Originate(
 							    'Local/066LOGOUT@fts-pausas/n',
                                 NULL,
@@ -50,7 +50,7 @@ foreach($listado as $valor)
                                 'Hangup',
                                 NULL
                                 );
-      echo "pepe \n"; 
+      echo "pepe \n";
     	}
 }
 
