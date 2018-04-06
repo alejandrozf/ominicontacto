@@ -75,7 +75,8 @@ Rama() {
 
     sleep 2
     echo "Creando directorio y carpeta de logs de proceso de instalación"
-    touch /var/log/oml_install
+    mkdir -p /var/tmp/log
+    touch /var/tmp/log/oml_install
     #sleep 2
     cd ..
     echo "Chequeando y copiando el código a deployar"

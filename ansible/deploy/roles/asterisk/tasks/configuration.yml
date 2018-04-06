@@ -10,11 +10,6 @@
   become: yes
   become_method: sudo
 
-- lineinfile: "dest=/etc/httpd/conf/httpd.conf regexp=\"^ErrorLog\" line=\"ErrorLog /dev/null\""
-  become: yes
-  become_method: sudo
-  notify: restart httpd
-
 - name: Load init.d script to raise up asterisk
   template: src=templates/asterisk-omnileads dest=/etc/init.d/asterisk mode=755
   when: ansible_os_family == "RedHat" and asterisk_location != ""
@@ -83,10 +78,18 @@
 - copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner={{ usuario }} group={{ usuario }}"
   with_items:
       - omni-asterisk-logout.php
-      - omni-blacklist.php
-      - omni-dialednum.php
+#      - omni-blacklist.php
+#      - omni-dialednum.php
       - omni-grabaciones.php
       - generate_outbound_route_context.php
+  tags:
+    - issabel
+    - postinstall
+
+- template: "src=templates/agi-bin/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 owner={{ usuario }} group={{ usuario }}"
+  with_items:
+      - omni-blacklist.php
+      - omni-dialednum.php
   tags:
     - issabel
     - postinstall
@@ -108,12 +111,11 @@
   when: asterisk_location == ""
 
 - name: Create of asterisk cron
-  file: path=/var/spool/cron/asterisk state=touch owner=root group=root mode=755
+  file: path=/var/spool/cron/asterisk state=touch owner={{ usuario }} group={{ usuario }} mode=755
   when: asterisk_location != ""
 
 - name: Asterisk crontab modification
-  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * {{ asterisk_location }}/asterisk/agi-bin/omni-asterisk-logout.php\""
-
+  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * {{ asterisk_location }}/var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
 
 - name: Copy of odbc files and omnileads sounds
   shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files"
@@ -142,7 +144,6 @@
       - "localhost"
       - "127.0.0.1"
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
-
 
 - name: Set up permissiond and raise up service
   shell: "{{ item }}"

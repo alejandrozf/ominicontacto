@@ -53,10 +53,3 @@
   changed_when: False
   become: true
   become_method: sudo
-
-- shell: "{{ item }}"
-  with_items:
-      - systemctl enable httpd.service
-      - systemctl start httpd.service
-  become: true
-  become_method: sudo

@@ -49,7 +49,12 @@ http {
         }
 
         location /grabaciones {
-            alias {{ install_prefix }}asterisk/var/spool/asterisk/asternic;
+
+        {% if asterisk_location != "" %}
+            alias {{ install_prefix }}asterisk/var/spool/asterisk/oml;
+        {% else %}
+            alias /var/spool/asterisk/oml;
+        {% endif %}
             autoindex on;
             allow all;
         }

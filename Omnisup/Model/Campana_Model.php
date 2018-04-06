@@ -48,7 +48,7 @@ class Campana_Model {
 
     function getCampaign($CampName) {
         //$cmd = "asterisk  -rx 'queue show " . $CampName . "' |grep 'from ' |awk '{print $1}' FS='has taken'|awk '{print $1, $2}' FS='\(ringinuse disabled\)' |awk '{print $1, $2}' FS='\(dynamic\)'";
-        $cmd = "sudo /usr/sbin/asterisk  -rx 'queue show " . $CampName . "' |awk '{print $1}' FS='has taken'|awk '{print $1, $2}' FS='\\\(ringinuse disabled\\\)' |awk '{print $1, $2}' FS='\\\(dynamic\\\)' |grep --color=never 'SIP'";
+        $cmd = "sudo asterisk  -rx 'queue show " . $CampName . "' |awk '{print $1}' FS='has taken'|awk '{print $1, $2}' FS='\\\(ringinuse disabled\\\)' |awk '{print $1, $2}' FS='\\\(dynamic\\\)' |grep --color=never 'SIP'";
 	$data = shell_exec($cmd);
         return $data;
     }
@@ -321,7 +321,7 @@ class Campana_Model {
     }
 
     function getQueuedCalls($CampName) {
-        $cmd = "asterisk  -rx 'queue show " . $CampName . "' |grep wait |awk '{print $2}' FS='\(' |awk '{print $1}' FS=','";
+        $cmd = "sudo asterisk  -rx 'queue show " . $CampName . "' |grep wait |awk '{print $2}' FS='\(' |awk '{print $1}' FS=','";
         $data = shell_exec($cmd);
         return $data;
     }

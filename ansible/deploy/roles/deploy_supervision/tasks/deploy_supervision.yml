@@ -37,7 +37,6 @@
       - systemctl start php-fpm
       - systemctl enable php-fpm
 
-
 - name: Modify of config.js in /static/Js
   template: "src=templates/config.js.j2 dest={{ omnisup_dir }}ominicontacto/Omnisup/static/Js/config.js"
 
