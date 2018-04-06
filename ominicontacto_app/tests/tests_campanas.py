@@ -15,8 +15,10 @@ from mock import patch
 from django.core.urlresolvers import reverse
 from django.db import connections
 from django.forms import ValidationError
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember, OpcionCalificacion
+from ominicontacto_app.forms import CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
@@ -533,23 +535,19 @@ class CampanasTests(OMLBaseTest):
         jobs = list(jobs_generator)
         self.assertEqual(jobs, [])
 
-    def test_campanas_preview_minimo_tiempo_de_desconexion(self):
-        url = reverse('campana_preview_create')
+    def test_campanas_preview_formularios_validan_minimo_tiempo_de_desconexion(self):
         nombre_campana = 'campana_preview_test'
         tiempo_desconexion = 1
-        post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana.calificacion_campana.pk,
-                     'bd_contacto': self.campana_activa.bd_contacto.pk,
-                     'tipo_interaccion': Campana.FORMULARIO,
-                     'formulario': self.campana.formulario.pk,
-                     'gestion': 'Venta',
-                     'detectar_contestadores': True,
-                     'auto_grabacion': True,
-                     'objetivo': 1,
-                     'tiempo_desconexion': tiempo_desconexion}
-        self.client.post(url, post_data, follow=True)
-        self.assertFalse(Campana.objects.filter(
-            nombre=nombre_campana, tiempo_desconexion=tiempo_desconexion).exists())
+        campana_preview_data = {'nombre': nombre_campana,
+                                'bd_contacto': self.campana_activa.bd_contacto.pk,
+                                'tipo_interaccion': Campana.FORMULARIO,
+                                'formulario': self.campana.formulario.pk,
+                                'auto_grabacion': True,
+                                'objetivo': 1,
+                                'tiempo_desconexion': tiempo_desconexion}
+        campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
+        message = _('Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION))
+        self.assertEqual(campana_preview_form.errors['tiempo_desconexion'], [message])
 
     def test_usuario_no_logueado_no_accede_a_vista_detalle_campana_preview(self):
         self.client.logout()
