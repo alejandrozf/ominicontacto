@@ -272,7 +272,7 @@ class AccesoReportesTests(BaseReportesTests):
 
 class TriggerQueuelogTest(OMLBaseTest):
 
-    def _aplicar_sql_query(self, str_tipo_campana, tipo_campana, queuename, event = 'CONNECT'):
+    def _aplicar_sql_query(self, str_tipo_campana, tipo_campana, queuename, event='CONNECT'):
         fields = "(time, callid, queuename, agent, event, data1, data2, data3, data4, data5)"
         values = ('2017-12-22 03:45:00.0000', '2312312.233', queuename, 'agente_test', event,
                   'data1', 'data2', 'data3', str_tipo_campana, tipo_campana)

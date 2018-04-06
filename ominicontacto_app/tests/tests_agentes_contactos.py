@@ -56,7 +56,8 @@ class AgentesContactosTests(OMLBaseTest):
         agente = usuario_agente.get_agente_profile()
         queue = QueueFactory.create(campana=campana)
         QueueMemberFactory.create(
-            member=agente, queue_name=queue, id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
+            member=agente, queue_name=queue,
+            id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
 
     def test_contacto_list_muestra_campanas_dialer_entrantes_agente(self):
         self.client.login(username=self.usuario_agente.username, password=self.PWD)
@@ -79,7 +80,6 @@ class AgentesContactosTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         ids_campanas_devueltas = set([int(pk) for pk, _ in response.context_data['campanas']])
         self.assertFalse(self.campana_preview.pk in ids_campanas_devueltas)
-
 
     def test_api_contacto_list_devuelve_datos_campana_agente(self):
         self.client.login(username=self.usuario_agente.username, password=self.PWD)
