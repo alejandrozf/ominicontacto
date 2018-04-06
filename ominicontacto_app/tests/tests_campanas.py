@@ -195,7 +195,7 @@ class CampanasTests(OMLBaseTest):
         with self.assertRaisesMessage(ValidationError, "el nombre no puede contener espacios"):
             validar_nombres_campanas("nombre con espacios")
 
-    def test_validacion_campana_debe_tener_alguna_calificacion_de_gestion(self):
+    def test_validacion_campana_debe_tener_alguna_opcion_calificacion_de_gestion(self):
         pass
 
     def test_tipo_campanas_preview(self):
@@ -565,26 +565,35 @@ class CampanasTests(OMLBaseTest):
         # ya existe otro contacto para la BD de la campaña creado en el setUp
         # acá creamos otro
         ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
-        CalificacionClienteFactory.create(
-            campana=self.campana_activa, agente=self.agente_profile, es_venta=True)
-        return CalificacionClienteFactory.create(
-            campana=self.campana_activa, agente=self.agente_profile, es_venta=False)
+        opcion_calificacion_gestion = OpcionCalificacionFactory(
+            campana=self.campana_activa, tipo=OpcionCalificacion.GESTION)
+        opcion_calificacion_noaccion = OpcionCalificacionFactory(
+            campana=self.campana_activa, tipo=OpcionCalificacion.NO_ACCION)
+        calif_gestion = CalificacionClienteFactory.create(
+            opcion_calificacion=opcion_calificacion_gestion, agente=self.agente_profile)
+        calif_no_accion = CalificacionClienteFactory.create(
+            opcion_calificacion=opcion_calificacion_noaccion, agente=self.agente_profile)
+        return calif_gestion, calif_no_accion
 
     def test_usuario_logueado_accede_a_datos_vista_detalle_campana_preview(self):
-        calif_no_venta = self._crear_datos_vistas_detalles_campana_preview()
+        calif_gestion, calif_no_accion = self._crear_datos_vistas_detalles_campana_preview()
         url = reverse('campana_preview_detalle', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, u'campana_preview/detalle.html')
-        self.assertEqual(response.context_data['categorias']['Venta'], 1)
-        self.assertEqual(response.context['categorias'][calif_no_venta.calificacion.nombre], 1)
+        self.assertEqual(
+            response.context_data['categorias'][calif_gestion.opcion_calificacion.nombre], 1)
+        self.assertEqual(
+            response.context['categorias'][calif_no_accion.opcion_calificacion.nombre], 1)
 
     def test_usuario_logueado_accede_a_datos_vista_detalle_express_campana_preview(self):
-        calif_no_venta = self._crear_datos_vistas_detalles_campana_preview()
+        calif_gestion, calif_no_accion = self._crear_datos_vistas_detalles_campana_preview()
         url = reverse('campana_preview_detalle_express', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, u'campana_preview/detalle_express.html')
-        self.assertEqual(response.context_data['categorias']['Venta'], 1)
-        self.assertEqual(response.context['categorias'][calif_no_venta.calificacion.nombre], 1)
+        self.assertEqual(
+            response.context_data['categorias'][calif_gestion.opcion_calificacion.nombre], 1)
+        self.assertEqual(
+            response.context['categorias'][calif_no_accion.opcion_calificacion.nombre], 1)
 
     def test_usuario_logueado_no_accede_a_reporte_grafico_campana_preview(self):
         self.client.logout()
