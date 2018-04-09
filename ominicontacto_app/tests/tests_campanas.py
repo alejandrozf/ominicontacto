@@ -159,10 +159,10 @@ class CampanasTests(OMLBaseTest):
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW,
             tiempo_desconexion=self.tiempo_desconexion, gestion=self.GESTION)
-        OpcionCalificacionFactory.create(
-            campana=self.campana_activa,
-            nombre=calificacion_gestion.nombre, tipo=OpcionCalificacion.GESTION)
-        OpcionCalificacionFactory.create(
+        self.opcion_calificacion_gestion = OpcionCalificacionFactory.create(
+            campana=self.campana_activa, nombre=calificacion_gestion.nombre,
+            tipo=OpcionCalificacion.GESTION)
+        self.opcion_calificacion_noaccion = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=calificacion_nombre)
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW,
@@ -418,8 +418,7 @@ class CampanasTests(OMLBaseTest):
                   'id_agente': self.agente_profile.pk,
                   'wombat_id': 0}
         url = reverse('calificacion_formulario_update_or_create', kwargs=kwargs)
-        post_data = {'es_venta': ['False'],
-                     'calificacion': [self.calificacion.pk],
+        post_data = {'opcion_calificacion': [self.opcion_calificacion_noaccion.pk],
                      'agente': [self.agente_profile.pk],
                      'observaciones': [''],
                      'agendado': ['False'],
@@ -565,14 +564,10 @@ class CampanasTests(OMLBaseTest):
         # ya existe otro contacto para la BD de la campaña creado en el setUp
         # acá creamos otro
         ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
-        opcion_calificacion_gestion = OpcionCalificacionFactory(
-            campana=self.campana_activa, tipo=OpcionCalificacion.GESTION)
-        opcion_calificacion_noaccion = OpcionCalificacionFactory(
-            campana=self.campana_activa, tipo=OpcionCalificacion.NO_ACCION)
         calif_gestion = CalificacionClienteFactory.create(
-            opcion_calificacion=opcion_calificacion_gestion, agente=self.agente_profile)
+            opcion_calificacion=self.opcion_calificacion_gestion, agente=self.agente_profile)
         calif_no_accion = CalificacionClienteFactory.create(
-            opcion_calificacion=opcion_calificacion_noaccion, agente=self.agente_profile)
+            opcion_calificacion=self.opcion_calificacion_noaccion, agente=self.agente_profile)
         return calif_gestion, calif_no_accion
 
     def test_usuario_logueado_accede_a_datos_vista_detalle_campana_preview(self):
