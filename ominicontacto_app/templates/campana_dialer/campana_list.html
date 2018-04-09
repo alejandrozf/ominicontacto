@@ -179,7 +179,7 @@
                     <a href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
                         <span class="far fa-chart-bar" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'activar_campana_dialer' %}" class="btn-submit">
+                    <a id="{{ campana.id }}" name="{% url 'activar_campana_dialer' %}" class="btn-submit">
                         <span class="fas fa-play" aria-hidden="true" title="activar"></span>
                     </a>
                     <a href="{% url 'reciclar_campana_dialer' campana.pk %}">
@@ -249,7 +249,7 @@
                     <a href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
                         <span class="far fa-chart-bar" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
-                    <a type="button" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}" class="btn-submit">
+                    <a id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}" class="btn-submit">
                         <span class="fas fa-play" aria-hidden="true" title="play"></span>
                     </a>
                     <a href="{% url 'reciclar_campana_dialer' campana.pk %}">
@@ -375,11 +375,11 @@
                         <span class="far fa-chart-bar" aria-hidden="true" title="ver reportes graficos"></span>
                     </a>
                     {% if campana.oculto %}
-                    <a type="button"  href="{% url 'campana_dialer_desocultar' campana.pk %}" c>
+                    <a href="{% url 'campana_dialer_desocultar' campana.pk %}" c>
                         <span class="fas fa-eye" aria-hidden="true" title="visible"></span>
                     </a>
                     {% else %}
-                    <a type="button" href="{% url 'campana_dialer_ocultar' campana.pk %}" >
+                    <a href="{% url 'campana_dialer_ocultar' campana.pk %}" >
                         <span class="fas fa-eye-slash" aria-hidden="true" title="ocultar"></span>
                     </a>
                     {% endif %}

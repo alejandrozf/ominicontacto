@@ -143,7 +143,7 @@ ul.errorlist li {
     background-color: #FFFFFF;
 }
 #btnCollapse[aria-expanded="false"]::before, #btnCollapse[aria-expanded="true"]::before {
-    content: '\e900';
+    content: '\e904';
     display: block;
     position: absolute;
     right: 10px;
@@ -152,7 +152,7 @@ ul.errorlist li {
     font-size: 1rem;
 }
 #btnCollapse[aria-expanded="true"]::before {
-    content: '\e903';
+    content: '\e907';
 }
 #btnCollapse .icon {
     font-size: 0.8rem;
@@ -168,6 +168,15 @@ ul.errorlist li {
     background-color: #8FC641;
     border-color: #8FC641;
 }
+
+
+/* ///// Modals 
+*/
+
+.modal-title {
+    line-height: 1.4rem;
+}
+
 
 /*///// Welcome screen 
 */
@@ -284,7 +293,7 @@ ul.errorlist li {
     position: relative;
 }
 #sidebar a[aria-expanded="false"]::before, #sidebar a[aria-expanded="true"]::before {
-    content: '\e900';
+    content: '\e904';
     display: block;
     position: absolute;
     right: 10px;
@@ -293,7 +302,7 @@ ul.errorlist li {
     font-size: 0.6em;
 }
 #sidebar a[aria-expanded="true"]::before {
-    content: '\e903';
+    content: '\e907';
 }
 
 @media (min-width: 768px) {
@@ -364,7 +373,7 @@ ul.errorlist li {
 
     /* ///// Change collapsible menu icons */ 
     #sidebar.active ul.submenu > li > a[aria-expanded="false"]::before, #sidebar.active ul.submenu > li > a[aria-expanded="true"]::before {
-        content: '\e902';
+        content: '\e906';
         display: block;
         position: absolute;
         right: 10px;
@@ -373,7 +382,7 @@ ul.errorlist li {
         font-size: 0.6em;
     }
     #sidebar.active ul.submenu > li > a[aria-expanded="true"]::before {
-        content: '\e902';
+        content: '\e906';
     }    
 
     #sidebar.active ul.submenu a {
@@ -383,7 +392,7 @@ ul.errorlist li {
     #sidebar.active .icon {
         width: 100%;
         font-size: 16px;
-        color: #000000;
+        color: #2F342F;
         padding: 14px 22px;
         display: block;
         position: initial;
@@ -445,6 +454,12 @@ ul.errorlist li {
 */
 .wrapper-info .nav-tabs {
     margin-bottom: 20px;
+}
+
+/* ///// Campaign list
+*/
+a span.fa-play, a span.fa-pause-circle {
+    color: #76AA2E;
 }
 
 /* ///// Grafics 
