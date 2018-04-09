@@ -16,6 +16,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import connections
 from django.forms import ValidationError
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember, OpcionCalificacion
@@ -639,7 +640,89 @@ class CampanasTests(OMLBaseTest):
         return post_step0_data, post_step1_data, post_step2_data, post_step3_data
 
     def _obtener_post_data_wizard_creacion_campana_dialer(self, nombre_campana, audio_ingreso):
-        pass
+        fecha_inicio = timezone.now()
+        fecha_fin = fecha_inicio + timezone.timedelta(days=5)
+        post_step0_data = {
+            '0-nombre': nombre_campana,
+            '0-bd_contacto': self.campana_activa.bd_contacto.pk,
+            '0-tipo_interaccion': self.campana.tipo_interaccion,
+            '0-formulario': self.campana.formulario.pk,
+            '0-objetivo': 0,
+            '0-fecha_inicio': fecha_inicio.date().strftime("%d/%m/%Y"),
+            '0-fecha_fin': fecha_fin.date().strftime("%d/%m/%Y"),
+            'campana_dialer_create_view-current_step': 0,
+        }
+        post_step1_data = {
+            '1-timeout': 1,
+            '1-retry': 1,
+            '1-audio_de_ingreso': audio_ingreso.pk,
+            '1-maxlen': 1,
+            '1-servicelevel': 1,
+            '1-strategy': 'ringall',
+            '1-weight': 1,
+            '1-wait': 1,
+            '1-auto_grabacion': 'on',
+            '1-audios': audio_ingreso.pk,
+            '1-announce_frequency': 1,
+            '1-name': nombre_campana,
+            '1-wrapuptime': 1,
+            '1-campana': '',
+            '1-detectar_contestadores': 'on',
+            '1-initial_predictive_model': 'on',
+            '1-initial_boost_factor': 1.0,
+            '1-name': nombre_campana,
+            '1-audio_para_contestadores': 1,
+            'campana_dialer_create_view-current_step': 1,
+        }
+        post_step2_data = {
+            'campana_dialer_create_view-current_step': 2,
+            '2-0-nombre': 'Venta',
+            '2-0-tipo': 1,
+            '2-0-id': '',
+            '2-TOTAL_FORMS': 1,
+            '2-INITIAL_FORMS': 0,
+            '2-MIN_NUM_FORMS': 1,
+            '2-MAX_NUM_FORMS': 1000,
+        }
+        post_step3_data = {
+            'campana_dialer_create_view-current_step': 3,
+            '3-0-parametro': '',
+            '3-0-columna': '',
+            '3-0-id': '',
+            '3-TOTAL_FORMS': 1,
+            '3-INITIAL_FORMS': 0,
+            '3-MIN_NUM_FORMS': 0,
+            '3-MAX_NUM_FORMS': 1000,
+        }
+        post_step4_data = {
+            'campana_dialer_create_view-current_step': 4,
+            '4-lunes': 'on',
+            '4-martes': 'on',
+            '4-miercoles': 'on',
+            '4-jueves': 'on',
+            '4-viernes': 'on',
+            '4-hora_desde': '09:06',
+            '4-hora_hasta': '18:06',
+        }
+        post_step5_data = {
+            'campana_dialer_create_view-current_step': 5,
+            '5-0-estado': '',
+            '5-0-reintentar_tarde': '',
+            '5-0-intento_max': '',
+            '5-TOTAL_FORMS': '1',
+            '5-INITIAL_FORMS': '0',
+            '5-MIN_NUM_FORMS': '0',
+            '5-MAX_NUM_FORMS': '1000',
+        }
+        post_step6_data = {
+            '6-evitar_duplicados': 'on',
+            '6-evitar_sin_telefono': 'on',
+            '6-prefijo_discador': '351',
+            'campana_dialer_create_view-current_step': 6,
+        }
+
+        return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+                post_step4_data, post_step5_data, post_step6_data)
 
     def _obtener_post_data_wizard_creacion_campana_manual(self, nombre_campana):
         post_step0_data = {
@@ -799,3 +882,23 @@ class CampanasTests(OMLBaseTest):
                                graficos_estadisticas['dict_llamadas_counter']]
         categoria_recibidas = 'Recibidas'
         self.assertFalse(categoria_recibidas in categorias_llamadas)
+
+    @patch('ominicontacto_app.services.campana_service.CampanaService')
+    def test_usuario_logueado_puede_crear_campana_dialer(self, CampanaService):
+        url = reverse('campana_dialer_create')
+        nombre_campana = 'campana_dialer_test'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+         post_step4_data, post_step5_data,
+         post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
+             nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
+        self.client.post(url, post_step6_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
