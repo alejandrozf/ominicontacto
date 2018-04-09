@@ -671,7 +671,7 @@ class CampanasTests(OMLBaseTest):
             '1-initial_predictive_model': 'on',
             '1-initial_boost_factor': 1.0,
             '1-name': nombre_campana,
-            '1-audio_para_contestadores': 1,
+            '1-audio_para_contestadores': audio_ingreso.pk,
             'campana_dialer_create_view-current_step': 1,
         }
         post_step2_data = {
@@ -884,7 +884,9 @@ class CampanasTests(OMLBaseTest):
         self.assertFalse(categoria_recibidas in categorias_llamadas)
 
     @patch('ominicontacto_app.services.campana_service.CampanaService')
-    def test_usuario_logueado_puede_crear_campana_dialer(self, CampanaService):
+    @patch('ominicontacto_app.services.exportar_base_datos.SincronizarBaseDatosContactosService')
+    def test_usuario_logueado_puede_crear_campana_dialer(
+            self, CampanaService, SincronizarBaseDatosContactosService):
         url = reverse('campana_dialer_create')
         nombre_campana = 'campana_dialer_test'
         audio_ingreso = ArchivoDeAudioFactory.create()
