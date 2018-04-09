@@ -158,59 +158,6 @@ class CampanaTest(OMLBaseTest):
         for c in campanas[:2]:
             self.assertIn(c, campanas_pausadas)
 
-    def test_crear_campana_de_template(self):
-        """
-        Crea campana desde un template de campana
-        """
-        campana = self.crear_campana_dialer()
-
-        hora_desde = datetime.time(9, 00)
-        hora_hasta = datetime.time(10, 00)
-        self.crear_actuacion_vigente(campana, hora_desde=hora_desde,
-                                     hora_hasta=hora_hasta)
-
-        estados = [ReglasIncidencia.RS_BUSY, ReglasIncidencia.RS_NOANSWER,
-                   ReglasIncidencia.RS_REJECTED, ReglasIncidencia.RS_TIMEOUT,
-                   ReglasIncidencia.TERMINATED]
-        for estado in estados:
-            self.crear_regla_incidencia(campana, estado)
-
-        campana_creada = campana
-
-        # actualizo campana como template de campana
-        # crear util para crear un template de campana dialer
-
-        campana.estado = Campana.ESTADO_TEMPLATE_ACTIVO
-        campana.es_template = True
-        campana.save()
-
-        # creo campana apartir de un template
-        campana_clonada = Campana.objects.crea_campana_de_template(campana)
-
-        # assert para chequear que se haya creado la misma campana
-        self.assertEqual(
-            set(campana_creada.opciones_calificacion.values_list('nombre', flat=True)),
-            set(campana_clonada.opciones_calificacion.values_list('nombre', flat=True)))
-        self.assertEqual(campana_creada.gestion,
-                         campana_clonada.gestion)
-        self.assertEqual(campana_creada.formulario,
-                         campana_clonada.formulario)
-        self.assertEqual(campana_creada.sitio_externo,
-                         campana_clonada.sitio_externo)
-        self.assertEqual(campana_creada.tipo_interaccion,
-                         campana_clonada.tipo_interaccion)
-        self.assertEqual(campana_creada.queue_campana.maxlen,
-                         campana_clonada.queue_campana.maxlen)
-        self.assertEqual(campana_creada.queue_campana.wait,
-                         campana_clonada.queue_campana.wait)
-        self.assertEqual(campana_creada.actuacionvigente.hora_desde,
-                         campana_clonada.actuacionvigente.hora_desde)
-        self.assertEqual(campana_creada.actuacionvigente.hora_desde,
-                         campana_clonada.actuacionvigente.hora_desde)
-        self.assertEqual(campana_creada.actuacionvigente.hora_hasta,
-                         campana_clonada.actuacionvigente.hora_hasta)
-        self.assertEqual(campana_clonada.reglas_incidencia.all().count(), 5)
-
 
 class QueuelogManagerTest(OMLBaseTest):
 
