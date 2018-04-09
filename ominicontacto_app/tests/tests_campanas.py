@@ -13,6 +13,7 @@ from crontab import CronTab
 from mock import patch
 
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.db import connections
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -162,6 +163,9 @@ class CampanasTests(OMLBaseTest):
         self.opcion_calificacion_gestion = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=calificacion_gestion.nombre,
             tipo=OpcionCalificacion.GESTION)
+        self.opcion_calificacion_agenda = OpcionCalificacionFactory.create(
+            campana=self.campana_activa, nombre=settings.CALIFICACION_REAGENDA,
+            tipo=OpcionCalificacion.AGENDA)
         self.opcion_calificacion_noaccion = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=calificacion_nombre)
         self.campana_borrada = CampanaFactory.create(
@@ -241,34 +245,30 @@ class CampanasTests(OMLBaseTest):
     def test_usuario_logueado_puede_crear_campana_preview(self):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
-        post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana_activa.calificacion_campana.pk,
-                     'bd_contacto': self.campana_activa.bd_contacto.pk,
-                     'tipo_interaccion': Campana.FORMULARIO,
-                     'formulario': self.campana.formulario.pk,
-                     'gestion': 'Venta',
-                     'detectar_contestadores': True,
-                     'auto_grabacion': True,
-                     'objetivo': 1,
-                     'tiempo_desconexion': 10}
-        self.client.post(url, post_data, follow=True)
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+             nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
     def test_usuario_logueado_puede_modificar_campana_preview(self):
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
         nuevo_objetivo = 3
-        post_data = {'calificacion_campana': self.campana_activa.calificacion_campana.pk,
-                     'bd_contacto': self.campana_activa.bd_contacto.pk,
-                     'tipo_interaccion': Campana.FORMULARIO,
-                     'formulario': self.campana.formulario.pk,
-                     'gestion': 'Venta',
-                     'detectar_contestadores': True,
-                     'auto_grabacion': True,
-                     'objetivo': nuevo_objetivo,
-                     'tiempo_desconexion': 10}
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_modificacion_campana_preview(
+             self.campana_activa.nombre, audio_ingreso)
+        post_step0_data['0-objetivo'] = nuevo_objetivo
         self.assertNotEqual(Campana.objects.get(pk=self.campana_activa.pk).objetivo,
                             nuevo_objetivo)
-        self.client.post(url, post_data, follow=True)
+        # realizamos la modificación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
         self.assertEqual(Campana.objects.get(pk=self.campana_activa.pk).objetivo, nuevo_objetivo)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
@@ -323,18 +323,14 @@ class CampanasTests(OMLBaseTest):
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto(self):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
-        post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana_activa.calificacion_campana.pk,
-                     'bd_contacto': self.campana_activa.bd_contacto.pk,
-                     'tipo_interaccion': Campana.FORMULARIO,
-                     'formulario': self.campana.formulario.pk,
-                     'gestion': 'Venta',
-                     'detectar_contestadores': True,
-                     'auto_grabacion': True,
-                     'objetivo': 1,
-                     'tiempo_desconexion': 10}
-        self.assertFalse(AgenteEnContacto.objects.all().exists())
-        self.client.post(url, post_data, follow=True)
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+             nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
         self.assertTrue(AgenteEnContacto.objects.all().exists())
 
     def test_usuario_no_logueado_no_obtiene_contacto_campana_preview(self):
@@ -495,17 +491,15 @@ class CampanasTests(OMLBaseTest):
     def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(self):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
-        post_data = {'nombre': nombre_campana,
-                     'calificacion_campana': self.campana_activa.calificacion_campana.pk,
-                     'bd_contacto': self.campana_activa.bd_contacto.pk,
-                     'tipo_interaccion': Campana.FORMULARIO,
-                     'formulario': self.campana.formulario.pk,
-                     'gestion': 'Venta',
-                     'detectar_contestadores': True,
-                     'auto_grabacion': True,
-                     'objetivo': 1,
-                     'tiempo_desconexion': 10}
-        self.client.post(url, post_data, follow=True)
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+             nombre_campana, audio_ingreso)
+        self.assertFalse(AgenteEnContacto.objects.all().exists())
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
         crontab = CronTab(user=os.getlogin())
         campana = Campana.objects.get(nombre=nombre_campana)
         jobs_generator = crontab.find_comment(str(campana.pk))
@@ -676,6 +670,50 @@ class CampanasTests(OMLBaseTest):
 
         return post_step0_data, post_step1_data, post_step2_data
 
+    def _obtener_post_data_wizard_creacion_campana_preview(self, nombre_campana, audio_ingreso):
+        # los parámetros de creación de una campaña preview son bastante similares a una manual
+        # por lo que se reutiliza el código del método que genera los parámetros para las campañas
+        # manuales y sólo se modifican algunos
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
+            nombre_campana, audio_ingreso)
+        post_step0_data.pop('campana_manual_create_view-current_step')
+        post_step1_data.pop('campana_manual_create_view-current_step')
+        post_step2_data.pop('campana_manual_create_view-current_step')
+        post_step0_data['0-bd_contacto'] = self.campana_activa.bd_contacto.pk
+        post_step0_data['0-tiempo_desconexion'] = 2
+        post_step0_data['campana_preview_create_view-current_step'] = 0
+        post_step1_data['campana_preview_create_view-current_step'] = 1
+        post_step2_data['campana_preview_create_view-current_step'] = 2
+
+        return post_step0_data, post_step1_data, post_step2_data
+
+    def _obtener_post_data_wizard_modificacion_campana_preview(self, nombre_campana, audio_ingreso):
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+            nombre_campana, audio_ingreso)
+        post_step0_data.pop('campana_preview_create_view-current_step')
+        post_step1_data.pop('campana_preview_create_view-current_step')
+        post_step2_data.pop('campana_preview_create_view-current_step')
+        post_step0_data['campana_preview_update_view-current_step'] = 0
+        post_step2_data['campana_preview_update_view-current_step'] = 2
+        post_step1_data = {
+            'campana_preview_update_view-current_step': 1,
+            '1-0-nombre': self.opcion_calificacion_gestion.nombre,
+            '1-0-tipo': OpcionCalificacion.GESTION,
+            '1-0-id': self.opcion_calificacion_gestion.pk,
+            '1-1-nombre': self.opcion_calificacion_agenda.nombre,
+            '1-1-tipo': OpcionCalificacion.AGENDA,
+            '1-1-id': self.opcion_calificacion_agenda.pk,
+            '1-TOTAL_FORMS': 2,
+            '1-INITIAL_FORMS': 2,
+            '1-MIN_NUM_FORMS': 1,
+            '1-MAX_NUM_FORMS': 1000,
+        }
+        post_step2_data['0-2-id'] = None
+
+        return post_step0_data, post_step1_data, post_step2_data
+
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_wizard_crear_campana_entrante_sin_bd_le_asigna_bd_contactos_defecto(
             self, _generar_y_recargar_configuracion_asterisk):
@@ -685,6 +723,7 @@ class CampanasTests(OMLBaseTest):
         (post_step0_data, post_step1_data, post_step2_data,
          post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
              nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
@@ -703,6 +742,7 @@ class CampanasTests(OMLBaseTest):
         (post_step0_data, post_step1_data, post_step2_data,
          post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
              nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
@@ -721,6 +761,7 @@ class CampanasTests(OMLBaseTest):
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
              nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
@@ -736,6 +777,7 @@ class CampanasTests(OMLBaseTest):
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
              nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
