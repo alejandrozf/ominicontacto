@@ -2046,7 +2046,7 @@ class GrabacionManager(models.Manager):
                                        "sip agente"))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, sip_agente, campana, campanas, marcadas):
+                            tel_cliente, sip_agente, campana, campanas, marcadas, duracion):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -2064,6 +2064,8 @@ class GrabacionManager(models.Manager):
             grabaciones = grabaciones.filter(sip_agente=sip_agente)
         if campana:
             grabaciones = grabaciones.filter(campana=campana)
+        if duracion and duracion > 0:
+            grabaciones = grabaciones.filter(duracion__gte=duracion)
         if marcadas:
             total_grabaciones_marcadas = Grabacion.objects.marcadas()
             grabaciones = grabaciones & total_grabaciones_marcadas
@@ -2126,6 +2128,7 @@ class Grabacion(models.Model):
     sip_agente = models.IntegerField()
     campana = models.ForeignKey(Campana, related_name='grabaciones')
     uid = models.CharField(max_length=45, blank=True, null=True)
+    duracion = models.IntegerField(default=0)
 
     def __unicode__(self):
         return "grabacion del agente con el sip {0} con el cliente {1}".format(

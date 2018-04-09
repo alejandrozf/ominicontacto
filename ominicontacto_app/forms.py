@@ -340,6 +340,9 @@ class GrabacionBusquedaForm(forms.Form):
     campana = forms.ChoiceField(required=False, choices=())
     pagina = forms.CharField(required=False, widget=forms.HiddenInput())
     marcadas = forms.BooleanField(required=False)
+    duracion = forms.IntegerField(required=False, min_value=0, initial=0,
+                                  label=_(u'Duración mínima'),
+                                  widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
