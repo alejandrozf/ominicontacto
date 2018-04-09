@@ -638,7 +638,10 @@ class CampanasTests(OMLBaseTest):
 
         return post_step0_data, post_step1_data, post_step2_data, post_step3_data
 
-    def _obtener_post_data_wizard_creacion_campana_manual(self, nombre_campana, audio_ingreso):
+    def _obtener_post_data_wizard_creacion_campana_dialer(self, nombre_campana, audio_ingreso):
+        pass
+
+    def _obtener_post_data_wizard_creacion_campana_manual(self, nombre_campana):
         post_step0_data = {
             '0-nombre': nombre_campana,
             '0-bd_contacto': '',
@@ -676,7 +679,7 @@ class CampanasTests(OMLBaseTest):
         # manuales y sólo se modifican algunos
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
-            nombre_campana, audio_ingreso)
+            nombre_campana)
         post_step0_data.pop('campana_manual_create_view-current_step')
         post_step1_data.pop('campana_manual_create_view-current_step')
         post_step2_data.pop('campana_manual_create_view-current_step')
@@ -757,10 +760,9 @@ class CampanasTests(OMLBaseTest):
     def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(self):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
-        audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
-             nombre_campana, audio_ingreso)
+             nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -773,10 +775,9 @@ class CampanasTests(OMLBaseTest):
     def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_manual(self):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
-        audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
-             nombre_campana, audio_ingreso)
+             nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
