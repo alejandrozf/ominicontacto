@@ -15,7 +15,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       Grabacion, GrabacionMarca, Queuelog, SitioExterno, User,
                                       Contacto, SupervisorProfile, AgenteEnContacto, QueueMember,
                                       CalificacionCliente, OpcionCalificacion,
-                                      ArchivoDeAudio, ParametroExtraParaWebform)
+                                      ArchivoDeAudio, ParametroExtraParaWebform, ActuacionVigente)
 
 faker = faker.Factory.create()
 
@@ -237,3 +237,19 @@ class ParametroExtraParaWebformFactory(DjangoModelFactory):
     campana = SubFactory(CampanaFactory)
     parametro = Sequence(lambda n: "parametro_{0}".format(n))
     columna = Sequence(lambda n: "columna_{0}".format(n))
+
+
+class ActuacionVigenteFactory(DjangoModelFactory):
+    class Meta:
+        model = ActuacionVigente
+
+    campana = SubFactory(CampanaFactory)
+    domingo = False
+    lunes = True
+    martes = True
+    miercoles = True
+    jueves = True
+    viernes = True
+    sabado = False
+    hora_desde = timezone.now()
+    hora_hasta = timezone.now() + timezone.timedelta(hours=3)

@@ -28,7 +28,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                NombreCalificacionFactory,
                                                CalificacionClienteFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
-                                               ParametroExtraParaWebformFactory)
+                                               ParametroExtraParaWebformFactory,
+                                               ActuacionVigenteFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -1135,3 +1136,98 @@ class CampanasTests(OMLBaseTest):
         self.assertTrue(Campana.objects.filter(
             nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
             type=Campana.TYPE_DIALER).exists())
+
+    def _obtener_post_data_wizard_creacion_campana_dialer_desde_template(
+            self, nombre_campana, audio_ingreso):
+        (post_step0_data, post_step1_data,
+         post_step2_data,
+         post_step3_data,
+         post_step4_data,
+         post_step5_data,
+         post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
+             nombre_campana, audio_ingreso)
+        post_step0_data['campana_dialer_template_create_campana_view-current_step'] = 0
+        post_step1_data['campana_dialer_template_create_campana_view-current_step'] = 1
+        post_step2_data['campana_dialer_template_create_campana_view-current_step'] = 2
+        post_step3_data['campana_dialer_template_create_campana_view-current_step'] = 3
+        post_step4_data['campana_dialer_template_create_campana_view-current_step'] = 4
+        post_step5_data['campana_dialer_template_create_campana_view-current_step'] = 5
+        post_step6_data['campana_dialer_template_create_campana_view-current_step'] = 6
+        post_step0_data.pop('campana_dialer_create_view-current_step')
+        post_step1_data.pop('campana_dialer_create_view-current_step')
+        post_step2_data.pop('campana_dialer_create_view-current_step')
+        post_step3_data.pop('campana_dialer_create_view-current_step')
+        post_step4_data.pop('campana_dialer_create_view-current_step')
+        post_step5_data.pop('campana_dialer_create_view-current_step')
+        post_step6_data.pop('campana_dialer_create_view-current_step')
+        post_step0_data['0-nombre'] = nombre_campana
+        post_step1_data['1-name'] = nombre_campana
+        post_step1_data['1-strategy'] = self.campana_dialer.queue_campana.strategy
+        opt_calif = self.campana_dialer.opciones_calificacion.first()
+        actuacion_vigente = self.campana_dialer.actuacionvigente
+        param_extra_web_form = self.campana_dialer.parametros_extra_para_webform.first()
+        post_step2_data['2-0-nombre'] = opt_calif.nombre
+        post_step2_data['2-0-tipo'] = opt_calif.tipo
+        post_step3_data['3-0-parametro'] = param_extra_web_form.parametro
+        post_step3_data['3-0-columna'] = param_extra_web_form.columna
+        post_step4_data['4-lunes'] = actuacion_vigente.lunes
+        hora_desde = actuacion_vigente.hora_desde.time()
+        hora_hasta = actuacion_vigente.hora_hasta.time()
+        post_step4_data['4-hora_desde'] = hora_desde.strftime("%H:%M")
+        post_step4_data['4-hora_hasta'] = hora_hasta.strftime("%H:%M")
+
+        return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+                post_step4_data, post_step5_data, post_step6_data)
+
+    @patch.object(CampanaService, 'crear_campana_wombat')
+    @patch.object(CampanaService, 'crear_trunk_campana_wombat')
+    @patch.object(CampanaService, 'crear_reschedule_campana_wombat')
+    @patch.object(CampanaService, 'crear_endpoint_campana_wombat')
+    @patch.object(CampanaService, 'crear_endpoint_asociacion_campana_wombat')
+    @patch.object(CampanaService, 'crear_lista_wombat')
+    @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
+    @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_crear_campana_dialer_desde_template(
+            self, crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
+            crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
+            crear_lista_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
+            _generar_y_recargar_configuracion_asterisk):
+        url = reverse('crea_campana_dialer_template', args=[self.campana_dialer.pk, 1])
+        nombre_campana = 'campana_dialer_clonada'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        parametro_web_form = ParametroExtraParaWebformFactory(campana=self.campana_dialer)
+        opt_calif = self.campana_dialer.opciones_calificacion.get(tipo=OpcionCalificacion.GESTION)
+        actuacion_vigente = ActuacionVigenteFactory.create(campana=self.campana_dialer)
+        (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+         post_step4_data, post_step5_data,
+         post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer_desde_template(
+             nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
+        self.client.post(url, post_step6_data, follow=True)
+
+        campana_clonada = Campana.objects.get(nombre=nombre_campana)
+        opt_calif_clonada_gestion = campana_clonada.opciones_calificacion.get(
+            tipo=OpcionCalificacion.GESTION)
+        param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
+        actuacion_vigente_clonada = campana_clonada.actuacionvigente
+        # chequeamos que la campaña clonada contenga iguales valores en opciones de calificacion
+        # y parametros extra, entre otros a la campaña template
+        self.assertNotEqual(campana_clonada.pk, self.campana_dialer.pk)
+        self.assertEqual(
+            campana_clonada.queue_campana.strategy, self.campana_dialer.queue_campana.strategy)
+        self.assertEqual(opt_calif_clonada_gestion.nombre, opt_calif.nombre)
+        self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
+        self.assertEqual(param_extra_web_form_clonado.parametro, parametro_web_form.parametro)
+        self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
+        self.assertEqual(actuacion_vigente_clonada.lunes, actuacion_vigente.lunes)
+        self.assertEqual(actuacion_vigente_clonada.hora_desde.strftime("%H:%M"),
+                         actuacion_vigente.hora_desde.strftime("%H:%M"))
+        self.assertEqual(actuacion_vigente_clonada.hora_hasta.strftime("%H:%M"),
+                         actuacion_vigente.hora_hasta.strftime("%H:%M"))
