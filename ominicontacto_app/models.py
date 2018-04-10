@@ -1162,6 +1162,9 @@ class QueueMemberManager(models.Manager):
     def get_campanas_activas(self):
         return self.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
 
+    def borrar_member_queue(self, member):
+        return self.filter(member=member).delete()
+
 
 class QueueMember(models.Model):
     """

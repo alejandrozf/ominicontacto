@@ -26,7 +26,7 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, WombatLog, Campana, Contacto,
+    Chat, MensajeChat, WombatLog, Campana, Contacto, QueueMember
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
@@ -150,11 +150,14 @@ class UserDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        # DEUDA TECNICA: separar todo esto en un servicio o app aparte
         if self.object.is_agente and self.object.get_agente_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
                 self.object.get_agente_profile())
             self.object.get_agente_profile().borrar()
+            QueueMember.objects.borrar_member_queue(
+                self.object.get_agente_profile())
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
