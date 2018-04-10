@@ -1085,3 +1085,51 @@ class CampanasTests(OMLBaseTest):
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
         self.assertEqual(param_extra_web_form_clonado.parametro, parametro_web_form.parametro)
         self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
+
+    def _obtener_post_data_wizard_creacion_template_campana_dialer(
+            self, nombre_campana, audio_ingreso):
+        (post_step0_data, post_step1_data,
+         post_step2_data,
+         post_step3_data,
+         post_step4_data,
+         post_step5_data,
+         post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
+             nombre_campana, audio_ingreso)
+        post_step0_data['campana_dialer_template_create_view-current_step'] = 0
+        post_step1_data['campana_dialer_template_create_view-current_step'] = 1
+        post_step2_data['campana_dialer_template_create_view-current_step'] = 2
+        post_step3_data['campana_dialer_template_create_view-current_step'] = 3
+        post_step4_data['campana_dialer_template_create_view-current_step'] = 4
+        post_step5_data['campana_dialer_template_create_view-current_step'] = 5
+        post_step6_data['campana_dialer_template_create_view-current_step'] = 6
+        post_step0_data.pop('campana_dialer_create_view-current_step')
+        post_step1_data.pop('campana_dialer_create_view-current_step')
+        post_step2_data.pop('campana_dialer_create_view-current_step')
+        post_step3_data.pop('campana_dialer_create_view-current_step')
+        post_step4_data.pop('campana_dialer_create_view-current_step')
+        post_step5_data.pop('campana_dialer_create_view-current_step')
+        post_step6_data.pop('campana_dialer_create_view-current_step')
+
+        return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+                post_step4_data, post_step5_data, post_step6_data)
+
+    def test_usuario_logueado_puede_crear_template_campana_dialer(self):
+        url = reverse('campana_dialer_template_create')
+        nombre_campana = 'campana_dialer_template'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+         post_step4_data, post_step5_data,
+         post_step6_data) = self._obtener_post_data_wizard_creacion_template_campana_dialer(
+             nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
+        self.client.post(url, post_step6_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(
+            nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
+            type=Campana.TYPE_DIALER).exists())
