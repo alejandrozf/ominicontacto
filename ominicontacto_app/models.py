@@ -157,6 +157,7 @@ class AgenteProfile(models.Model):
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
     reported_by = models.ForeignKey(User, related_name="reportedby")
     is_inactive = models.BooleanField(default=False)
+    borrado = models.BooleanField(default=False, editable=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
@@ -189,6 +190,15 @@ class AgenteProfile(models.Model):
 
     def activar(self):
         self.is_inactive = False
+        self.save()
+
+    def borrar(self):
+        """
+        Setea Agente como BORRADO .
+        """
+        logger.info("Seteando Usuario %s como BORRADO", self.id)
+
+        self.borrado = True
         self.save()
 
 

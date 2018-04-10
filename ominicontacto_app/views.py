@@ -154,6 +154,7 @@ class UserDeleteView(DeleteView):
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
                 self.object.get_agente_profile())
+            self.object.get_agente_profile().borrar()
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
