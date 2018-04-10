@@ -27,7 +27,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                AgenteEnContactoFactory, QueueMemberFactory,
                                                NombreCalificacionFactory,
                                                CalificacionClienteFactory,
-                                               OpcionCalificacionFactory, ArchivoDeAudioFactory)
+                                               OpcionCalificacionFactory, ArchivoDeAudioFactory,
+                                               ParametroExtraParaWebformFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -986,3 +987,100 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_step3_data, follow=True)
         self.campana_dialer.refresh_from_db()
         self.assertEqual(self.campana_dialer.objetivo, nuevo_objetivo)
+
+    def _obtener_post_data_wizard_creacion_template_campana_entrante(
+            self, nombre_campana, audio_ingreso):
+        (post_step0_data, post_step1_data,
+         post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
+             nombre_campana, audio_ingreso)
+        post_step0_data['campana_entrante_template_create_view-current_step'] = 0
+        post_step1_data['campana_entrante_template_create_view-current_step'] = 1
+        post_step2_data['campana_entrante_template_create_view-current_step'] = 2
+        post_step3_data['campana_entrante_template_create_view-current_step'] = 3
+        post_step0_data.pop('campana_entrante_create_view-current_step')
+        post_step1_data.pop('campana_entrante_create_view-current_step')
+        post_step2_data.pop('campana_entrante_create_view-current_step')
+        post_step3_data.pop('campana_entrante_create_view-current_step')
+
+        return post_step0_data, post_step1_data, post_step2_data, post_step3_data
+
+    def _obtener_post_data_wizard_creacion_campana_entrante_desde_template(
+            self, campana, audio_ingreso):
+        (post_step0_data, post_step1_data,
+         post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
+             campana.nombre, audio_ingreso)
+        post_step0_data['campana_entrante_template_create_campana_view-current_step'] = 0
+        post_step1_data['campana_entrante_template_create_campana_view-current_step'] = 1
+        post_step2_data['campana_entrante_template_create_campana_view-current_step'] = 2
+        post_step3_data['campana_entrante_template_create_campana_view-current_step'] = 3
+        post_step0_data.pop('campana_entrante_create_view-current_step')
+        post_step1_data.pop('campana_entrante_create_view-current_step')
+        post_step2_data.pop('campana_entrante_create_view-current_step')
+        post_step3_data.pop('campana_entrante_create_view-current_step')
+        post_step1_data['1-strategy'] = campana.queue_campana.strategy
+        opt_calif = campana.opciones_calificacion.first()
+        param_extra_web_form = campana.parametros_extra_para_webform.first()
+        post_step2_data['2-0-nombre'] = opt_calif.nombre
+        post_step2_data['2-0-tipo'] = opt_calif.tipo
+        post_step3_data['3-0-parametro'] = param_extra_web_form.parametro
+        post_step3_data['3-0-columna'] = param_extra_web_form.columna
+
+        return post_step0_data, post_step1_data, post_step2_data, post_step3_data
+
+    def test_usuario_logueado_puede_crear_template_campana_entrante(self):
+        url = reverse('campana_entrante_template_create')
+        nombre_campana = 'campana_entrante_template'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_template_campana_entrante(
+             nombre_campana, audio_ingreso)
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(
+            nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
+            type=Campana.TYPE_ENTRANTE).exists())
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_crear_campana_entrante_desde_template(
+            self, _generar_y_recargar_configuracion_asterisk):
+        campana_entrante_template = CampanaFactory.create(
+            type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+        nombre_campana = 'campana_entrante_clonada'
+        url = reverse(
+            'campana_entrante_template_create_campana', args=[campana_entrante_template.pk])
+        queue = QueueFactory.create(
+            campana=campana_entrante_template, pk=campana_entrante_template.nombre)
+        opt_calif = OpcionCalificacionFactory.create(
+            tipo=OpcionCalificacion.GESTION, nombre=self.calificacion.nombre,
+            campana=campana_entrante_template)
+        parametro_web_form = ParametroExtraParaWebformFactory(campana=campana_entrante_template)
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante_desde_template(
+             campana_entrante_template, audio_ingreso)
+        post_step0_data['0-nombre'] = nombre_campana
+        post_step1_data['1-name'] = nombre_campana
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        campana_clonada = Campana.objects.get(nombre=nombre_campana)
+        opt_calif_clonada_gestion = campana_clonada.opciones_calificacion.get(
+            tipo=OpcionCalificacion.GESTION)
+        param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
+        # chequeamos que la campaña clonada contenga iguales valores en opciones de calificacion
+        # y parametros extra, entre otros
+        self.assertEqual(campana_clonada.queue_campana.strategy, queue.strategy)
+        self.assertEqual(opt_calif_clonada_gestion.nombre, opt_calif.nombre)
+        self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
+        self.assertEqual(param_extra_web_form_clonado.parametro, parametro_web_form.parametro)
+        self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)

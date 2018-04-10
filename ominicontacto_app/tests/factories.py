@@ -15,7 +15,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       Grabacion, GrabacionMarca, Queuelog, SitioExterno, User,
                                       Contacto, SupervisorProfile, AgenteEnContacto, QueueMember,
                                       CalificacionCliente, OpcionCalificacion,
-                                      ArchivoDeAudio)
+                                      ArchivoDeAudio, ParametroExtraParaWebform)
 
 faker = faker.Factory.create()
 
@@ -228,3 +228,12 @@ class ArchivoDeAudioFactory(DjangoModelFactory):
         model = ArchivoDeAudio
 
     descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(faker.text(5)))
+
+
+class ParametroExtraParaWebformFactory(DjangoModelFactory):
+    class Meta:
+        model = ParametroExtraParaWebform
+
+    campana = SubFactory(CampanaFactory)
+    parametro = Sequence(lambda n: "parametro_{0}".format(n))
+    columna = Sequence(lambda n: "columna_{0}".format(n))
