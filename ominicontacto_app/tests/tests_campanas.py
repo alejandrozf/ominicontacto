@@ -162,9 +162,11 @@ class CampanasTests(OMLBaseTest):
         self.campana = CampanaFactory.create()
         self.campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
         self.opcion_calificacion_gestion_dialer = OpcionCalificacionFactory(
-            campana=self.campana_dialer, tipo=OpcionCalificacion.GESTION)
+            campana=self.campana_dialer, nombre=calificacion_nombre,
+            tipo=OpcionCalificacion.GESTION)
         self.opcion_calificacion_agenda_dialer = OpcionCalificacionFactory(
-            campana=self.campana_dialer, tipo=OpcionCalificacion.AGENDA)
+            campana=self.campana_dialer, nombre=settings.CALIFICACION_REAGENDA,
+            tipo=OpcionCalificacion.AGENDA)
         QueueFactory.create(campana=self.campana_dialer, pk=self.campana_dialer.nombre)
 
         self.campana_activa = CampanaFactory.create(
