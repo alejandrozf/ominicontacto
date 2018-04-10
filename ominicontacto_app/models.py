@@ -34,6 +34,7 @@ class User(AbstractUser):
     is_agente = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
+    borrado = models.BooleanField(default=False, editable=False)
 
     def get_agente_profile(self):
         agente_profile = None
@@ -89,22 +90,15 @@ class User(AbstractUser):
         self.last_session_key = key
         self.save()
 
-#     def get_patient_profile(self):
-#         patient_profile = None
-#         if hasattr(self, 'patientprofile'):
-#             patient_profile = self.patientprofile
-#         return patient_profile
-#
-#     def get_physiotherapist_profile(self):
-#         physiotherapist_profile = None
-#         if hasattr(self, 'physiotherapistprofile'):
-#             physiotherapist_profile = self.physiotherapistprofile
-#         return physiotherapist_profile
-#
-#     class Meta:
-#         db_table = 'auth_user'
-#
-#
+    def borrar(self):
+        """
+        Setea Usuario como BORRADO y is_active como False.
+        """
+        logger.info("Seteando Usuario %s como BORRADO", self.id)
+
+        self.borrado = True
+        self.is_active = False
+        self.save()
 
 
 class Modulo(models.Model):

@@ -158,7 +158,8 @@ class UserDeleteView(DeleteView):
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
                 self.object.get_supervisor_profile())
-        return super(UserDeleteView, self).delete(request, *args, **kwargs)
+        self.object.borrar()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})
