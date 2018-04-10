@@ -1231,3 +1231,30 @@ class CampanasTests(OMLBaseTest):
                          actuacion_vigente.hora_desde.strftime("%H:%M"))
         self.assertEqual(actuacion_vigente_clonada.hora_hasta.strftime("%H:%M"),
                          actuacion_vigente.hora_hasta.strftime("%H:%M"))
+
+    def _obtener_post_data_wizard_creacion_template_campana_manual(self, nombre_campana):
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
+             nombre_campana)
+        post_step0_data['campana_manual_template_create_view-current_step'] = 0
+        post_step1_data['campana_manual_template_create_view-current_step'] = 1
+        post_step2_data['campana_manual_template_create_view-current_step'] = 2
+        post_step0_data.pop('campana_manual_create_view-current_step')
+        post_step1_data.pop('campana_manual_create_view-current_step')
+        post_step2_data.pop('campana_manual_create_view-current_step')
+        return post_step0_data, post_step1_data, post_step2_data
+
+    def test_usuario_logueado_puede_crear_template_campana_manual(self):
+        url = reverse('campana_manual_template_create')
+        nombre_campana = 'campana_manual_template'
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_template_campana_manual(
+             nombre_campana)
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(
+            nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
+            type=Campana.TYPE_MANUAL).exists())
