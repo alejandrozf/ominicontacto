@@ -99,41 +99,39 @@ class RecicladoTest(OMLBaseTest):
 
         for _ in range(0, 100):
             contacto = random.choice(contactos)
-            calificaciones = self.campana.calificacion_campana.calificacion.all()
-            calificacion = random.choice(calificaciones)
-            self.crear_calificacion_cliente(
-                self.campana, self.agente, contacto, calificacion)
+            opciones_calificacion = self.campana.opciones_calificacion.all()
+            opcion_calificacion = random.choice(opciones_calificacion)
+            self.crear_calificacion_cliente(self.agente, contacto, opcion_calificacion)
 
         estadisticas = EstadisticasContactacion()
         calificados = estadisticas.obtener_cantidad_calificacion(self.campana)
 
-        calificaciones_query = self.campana.obtener_calificaciones().values(
-            'calificacion__nombre', 'calificacion__id').annotate(
-            Count('calificacion')).filter(
-            calificacion__count__gt=0)
+        calificaciones_query = self.campana.obtener_calificaciones_cliente().values(
+            'opcion_calificacion__nombre', 'opcion_calificacion__id').annotate(
+            Count('opcion_calificacion')).filter(
+            opcion_calificacion__count__gt=0)
 
         contactados_dict = {}
         for contactado in calificados:
             contactados_dict.update({contactado.id: contactado.cantidad})
         for contactacion in calificaciones_query:
-            self.assertEquals(contactacion['calificacion__count'],
-                              contactados_dict[contactacion['calificacion__id']])
+            self.assertEquals(contactacion['opcion_calificacion__count'],
+                              contactados_dict[contactacion['opcion_calificacion__id']])
 
     def test_obtiene_contactos_reciclados(self):
         # estados no contactados:
         estados = [2, 3, 4, 5, 6]
 
         contactos = self.campana.bd_contacto.contactos.all()
-        calificaciones = self.campana.calificacion_campana.calificacion.all()
+        opciones_calificacion = self.campana.opciones_calificacion.all()
 
         for _ in range(0, 100):
             contacto = random.choice(contactos)
             es_contactado = random.choice([True, False])
 
             if es_contactado:
-                calificacion = random.choice(calificaciones)
-                self.crear_calificacion_cliente(
-                    self.campana, self.agente, contacto, calificacion)
+                opcion_calificacion = random.choice(opciones_calificacion)
+                self.crear_calificacion_cliente(self.agente, contacto, opcion_calificacion)
             else:
                 estado = random.choice(estados)
                 calificacion = ''
@@ -143,7 +141,7 @@ class RecicladoTest(OMLBaseTest):
                         self.campana, self.agente, contacto, estado, calificacion)
 
         estado_elegido = random.choice(estados)
-        calificacion = random.choice(calificaciones)
+        calificacion = random.choice(opciones_calificacion)
         estado_list = []
         estado_list.append(estado_elegido)
         calificacion_list = []
@@ -151,8 +149,8 @@ class RecicladoTest(OMLBaseTest):
 
         # vamos a chequear que sea la misma cantidad de contactos reciclados
         # para los calificados
-        calificaciones_query = self.campana.obtener_calificaciones().filter(
-            calificacion__in=calificacion_list).distinct()
+        calificaciones_query = self.campana.obtener_calificaciones_cliente().filter(
+            opcion_calificacion__in=calificacion_list).distinct()
         reciclador = RecicladorContactosCampanaDIALER()
         contactos_reciclados = reciclador._obtener_contactos_calificados(
             self.campana, calificacion_list)
