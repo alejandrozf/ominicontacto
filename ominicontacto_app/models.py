@@ -194,11 +194,12 @@ class AgenteProfile(models.Model):
 
     def borrar(self):
         """
-        Setea Agente como BORRADO .
+        Setea Agente como BORRADO y is_inactive True .
         """
         logger.info("Seteando Agente %s como BORRADO", self.id)
 
         self.borrado = True
+        self.is_inactive = True
         self.save()
 
 
