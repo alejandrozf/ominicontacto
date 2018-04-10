@@ -150,40 +150,6 @@ class CalificacionTests(OMLBaseTest):
         }
         return post_data
 
-    def test_no_se_admite_tipo_calificacion_manual_vacia_en_creacion_calificacion(self):
-        url = reverse('campana_manual_calificacion_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
-                              'telefono': self.contacto.pk})
-        post_data = self._obtener_post_data_calificacion_manual()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context_data['form'].is_valid())
-
-    def test_no_se_admite_tipo_calificacion_manual_vacia_en_modificacion_calificacion(self):
-        url = reverse('campana_manual_calificacion_update',
-                      kwargs={'pk_calificacion': self.calificacion_cliente.pk})
-        post_data = self._obtener_post_data_calificacion_manual()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context_data['form'].is_valid())
-
-    def test_escoger_calificacion_agenda_llamada_manual_redirecciona_formulario_agenda(self):
-        url = reverse('campana_manual_calificacion_update',
-                      kwargs={'pk_calificacion': self.calificacion_cliente.pk})
-        post_data = self._obtener_post_data_calificacion_manual()
-        post_data['calificacion'] = self.calificacion_agenda.pk
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_manual.html')
-
-    def test_escoger_calificacion_gestion_llamada_manual_redirecciona_formulario_gestion(self):
-        url = reverse('campana_manual_calificacion_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
-                              'telefono': self.contacto.pk})
-        post_data = self._obtener_post_data_calificacion_manual()
-        post_data['calificacion'] = self.calificacion_gestion.pk
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'campana_manual/calificacion_create_update.html')
-
     @patch('requests.post')
     def test_escoger_calificacion_agenda_redirecciona_formulario_agenda(self, post):
         CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,

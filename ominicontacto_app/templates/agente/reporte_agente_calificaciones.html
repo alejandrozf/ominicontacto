@@ -178,11 +178,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                  {% if calificacion_cliente.es_calificacion_manual %}
-                                    <a href="{% url 'campana_manual_calificacion_update' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.agente_id calificacion_cliente.contacto_id %}">editar calificacion</a>
-                                  {% else %}
                                     <a href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id agente.pk calificacion_cliente.wombat_id %}">editar calificacion</a>
-                                  {% endif %}
                                     {% if calificacion_cliente.get_venta %}
                                         <a href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">editar gestion</a>
                                     {% endif %}
