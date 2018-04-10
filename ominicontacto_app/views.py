@@ -176,7 +176,7 @@ class UserListView(ListView):
 
     def get_queryset(self):
         """Returns user ordernado por id"""
-        return User.objects.all().order_by('id')
+        return User.objects.exclude(borrado=True).order_by('id')
 
 
 class AgenteProfileCreateView(CreateView):
@@ -315,7 +315,7 @@ class AgenteListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(AgenteListView, self).get_context_data(
             **kwargs)
-        agentes = AgenteProfile.objects.all()
+        agentes = AgenteProfile.objects.exclude(borrado=True)
 
         # if self.request.user.is_authenticated() and self.request.user:
         #     user = self.request.user
@@ -751,4 +751,3 @@ def profile_page(request, username):
     print prueba
     return render_to_response('blanco.html',
                               context_instance=RequestContext(request))
-
