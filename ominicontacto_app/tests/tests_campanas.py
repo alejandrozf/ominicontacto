@@ -37,6 +37,8 @@ from ominicontacto_app.utiles import (
 )
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.wombat_service import WombatService
+from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 
 
 def test_concurrently(args_list):
@@ -157,6 +159,12 @@ class CampanasTests(OMLBaseTest):
         calificacion_gestion = NombreCalificacionFactory.create(nombre=self.GESTION)
 
         self.campana = CampanaFactory.create()
+        self.campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
+        self.opcion_calificacion_gestion_dialer = OpcionCalificacionFactory(
+            campana=self.campana_dialer, tipo=OpcionCalificacion.GESTION)
+        self.opcion_calificacion_agenda_dialer = OpcionCalificacionFactory(
+            campana=self.campana_dialer, tipo=OpcionCalificacion.AGENDA)
+        QueueFactory.create(campana=self.campana_dialer, pk=self.campana_dialer.nombre)
 
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW,
@@ -724,6 +732,49 @@ class CampanasTests(OMLBaseTest):
         return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
                 post_step4_data, post_step5_data, post_step6_data)
 
+    def _obtener_post_data_wizard_modificacion_campana_dialer(self, nombre_campana, audio_ingreso):
+        (post_step0_data, post_step1_data, post_step2_data, post_step3_data, __, __,
+         __) = self._obtener_post_data_wizard_creacion_campana_dialer(nombre_campana, audio_ingreso)
+        post_step0_data.pop('0-tipo_interaccion')
+        post_step0_data.pop('0-formulario')
+        post_step0_data.pop('campana_dialer_create_view-current_step')
+        post_step2_data.pop('campana_dialer_create_view-current_step')
+        post_step3_data.pop('campana_dialer_create_view-current_step')
+        post_step0_data['campana_dialer_update_view-current_step'] = 0
+        post_step0_data.pop('0-bd_contacto')
+        post_step1_data = {
+            '1-maxlen': 1,
+            '1-wrapuptime': 1,
+            '1-servicelevel': 1,
+            '1-strategy': 'rrmemory',
+            '1-weight': 1,
+            '1-wait': 1,
+            '1-auto_grabacion': 'on',
+            '1-detectar_contestadores': 'on',
+            '1-audio_para_contestadores': audio_ingreso.pk,
+            '1-initial_predictive_model': 'on',
+            '1-initial_boost_factor': 1.0,
+            'campana_dialer_update_view-current_step': 1,
+            '1-campana': self.campana_dialer.pk,
+            '1-name': nombre_campana,
+        }
+        post_step2_data = {
+            'campana_dialer_update_view-current_step': 2,
+            '2-0-nombre': self.opcion_calificacion_gestion_dialer.nombre,
+            '2-0-tipo': OpcionCalificacion.GESTION,
+            '2-0-id': self.opcion_calificacion_gestion_dialer.pk,
+            '2-1-nombre': self.opcion_calificacion_agenda_dialer.nombre,
+            '2-1-tipo': OpcionCalificacion.AGENDA,
+            '2-1-id': self.opcion_calificacion_agenda_dialer.pk,
+            '2-TOTAL_FORMS': 2,
+            '2-INITIAL_FORMS': 2,
+            '2-MIN_NUM_FORMS': 1,
+            '2-MAX_NUM_FORMS': 1000,
+        }
+        post_step3_data['campana_dialer_update_view-current_step'] = 3
+
+        return post_step0_data, post_step1_data, post_step2_data, post_step3_data
+
     def _obtener_post_data_wizard_creacion_campana_manual(self, nombre_campana):
         post_step0_data = {
             '0-nombre': nombre_campana,
@@ -883,10 +934,20 @@ class CampanasTests(OMLBaseTest):
         categoria_recibidas = 'Recibidas'
         self.assertFalse(categoria_recibidas in categorias_llamadas)
 
-    @patch('ominicontacto_app.services.campana_service.CampanaService')
-    @patch('ominicontacto_app.services.exportar_base_datos.SincronizarBaseDatosContactosService')
+    @patch.object(CampanaService, 'crear_campana_wombat')
+    @patch.object(CampanaService, 'crear_trunk_campana_wombat')
+    @patch.object(CampanaService, 'crear_reschedule_campana_wombat')
+    @patch.object(CampanaService, 'crear_endpoint_campana_wombat')
+    @patch.object(CampanaService, 'crear_endpoint_asociacion_campana_wombat')
+    @patch.object(CampanaService, 'crear_lista_wombat')
+    @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
+    @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_usuario_logueado_puede_crear_campana_dialer(
-            self, CampanaService, SincronizarBaseDatosContactosService):
+            self, crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
+            crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
+            crear_lista_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
+            _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_dialer_create')
         nombre_campana = 'campana_dialer_test'
         audio_ingreso = ArchivoDeAudioFactory.create()
@@ -904,3 +965,24 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_step6_data, follow=True)
 
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
+
+    @patch.object(ActivacionQueueService, 'activar')
+    @patch.object(CampanaService, 'update_endpoint')
+    @patch.object(ActivacionQueueService, '_generar_y_recargar_configuracion_asterisk')
+    def test_usuario_logueado_puede_modificar_campana_dialer(
+            self, activar, update_endpoint, _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_dialer_update', args=[self.campana_dialer.pk])
+        nuevo_objetivo = 3
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_modificacion_campana_dialer(
+             self.campana_dialer.nombre, audio_ingreso)
+        self.assertNotEqual(self.campana_dialer.objetivo, nuevo_objetivo)
+        post_step0_data['0-objetivo'] = nuevo_objetivo
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.campana_dialer.refresh_from_db()
+        self.assertEqual(self.campana_dialer.objetivo, nuevo_objetivo)
