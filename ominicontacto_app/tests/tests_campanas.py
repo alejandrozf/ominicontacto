@@ -1078,7 +1078,8 @@ class CampanasTests(OMLBaseTest):
             tipo=OpcionCalificacion.GESTION)
         param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
         # chequeamos que la campaña clonada contenga iguales valores en opciones de calificacion
-        # y parametros extra, entre otros
+        # y parametros extra, entre otros a la campaña template
+        self.assertNotEqual(campana_clonada.pk, campana_entrante_template.pk)
         self.assertEqual(campana_clonada.queue_campana.strategy, queue.strategy)
         self.assertEqual(opt_calif_clonada_gestion.nombre, opt_calif.nombre)
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
