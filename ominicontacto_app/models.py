@@ -196,7 +196,7 @@ class AgenteProfile(models.Model):
         """
         Setea Agente como BORRADO .
         """
-        logger.info("Seteando Usuario %s como BORRADO", self.id)
+        logger.info("Seteando Agente %s como BORRADO", self.id)
 
         self.borrado = True
         self.save()
@@ -214,14 +214,19 @@ class SupervisorProfile(models.Model):
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     is_administrador = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
+    borrado = models.BooleanField(default=False, editable=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
-#
-# class PhysiotherapistProfile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     active = models.BooleanField(default=True)
-#     name = models.CharField(max_length=64)
+
+    def borrar(self):
+        """
+        Setea Supervisor como BORRADO .
+        """
+        logger.info("Seteando Supervisor %s como BORRADO", self.id)
+
+        self.borrado = True
+        self.save()
 
 
 class CalificacionManager(models.Manager):
