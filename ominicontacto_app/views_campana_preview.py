@@ -283,8 +283,8 @@ class CampanaPreviewDetailView(DetailView):
         counts_categorias = defaultdict(int)
 
         for cat_data in finalizadas_categorias_count_dict:
-            cat_count = cat_data['calificacion__nombre__count']
-            cat_name = cat_data['calificacion__nombre']
+            cat_count = cat_data['opcion_calificacion__nombre__count']
+            cat_name = cat_data['opcion_calificacion__nombre']
             if cat_count > 0:
                 counts_categorias[cat_name] = cat_count
 
@@ -309,7 +309,7 @@ class CampanaPreviewDetailView(DetailView):
 
             finalizadas_ventas_count = qs_finalizadas_ventas.count()
             finalizadas_otras_categorias_count_dict = qs_finalizadas_otras_categorias.values(
-                'calificacion__nombre').annotate(Count('calificacion__nombre'))
+                'opcion_calificacion__nombre').annotate(Count('opcion_calificacion__nombre'))
             cats_dict = self._crear_dict_categorias(
                 finalizadas_ventas_count, finalizadas_otras_categorias_count_dict)
             context['categorias'] = cats_dict

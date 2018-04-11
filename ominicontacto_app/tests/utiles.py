@@ -406,17 +406,16 @@ class OMLTestUtilsMixin(object):
         )
         regla.save()
 
-    def crear_calificacion_cliente(self, campana, agente, contacto,
-                                   calificacion, es_venta=False):
-        calficacioncliente = CalificacionCliente(
-            campana=campana,
+    def crear_calificacion_cliente(self, agente, contacto,
+                                   opcion_calificacion, es_venta=False):
+        calificacioncliente = CalificacionCliente(
             agente=agente,
             contacto=contacto,
             es_venta=es_venta,
             wombat_id=0,
-            calificacion=calificacion
+            opcion_calificacion=opcion_calificacion
         )
-        calficacioncliente.save()
+        calificacioncliente.save()
 
     def crear_wombat_log(self, campana, agente, contacto, estado, calificacion):
         metadata = {
