@@ -132,7 +132,10 @@ def restaurar_grupos_calificaciones_campanas(apps, schema_editor):
         calificaciones_campana = NombreCalificacion.objects.filter(
             nombre__in=nombres_opciones_calificaciones)
         grupo_calificacion_campana.calificacion.add(*calificaciones_campana)
+        nombre_calificacion_gestion = campana.opciones_calificacion.filter(
+            tipo=GESTION).first().nombre
         campana.calificacion_campana = grupo_calificacion_campana
+        campana.gestion = nombre_calificacion_gestion
         campana.save()
 
 
@@ -159,7 +162,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
                                         verbose_name='ID')),
-                ('tipo', models.IntegerField(choices=[(1, 'Gesti\xf3n'), (0, 'Sin acci\xf3n'), (2, 'Agenda')], default=0)),
+                ('tipo', models.IntegerField(choices=[(1, 'Gesti\xf3n'), (0, 'Sin acci\xf3n'),
+                                                      (2, 'Agenda')], default=0)),
                 ('nombre', models.CharField(max_length=20)),
             ],
         ),
