@@ -1258,3 +1258,50 @@ class CampanasTests(OMLBaseTest):
         self.assertTrue(Campana.objects.filter(
             nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
             type=Campana.TYPE_MANUAL).exists())
+
+    def _obtener_post_data_wizard_creacion_campana_manual_desde_template(self, nombre_campana):
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual(
+             nombre_campana)
+        post_step0_data['campana_manual_template_create_campana_view-current_step'] = 0
+        post_step1_data['campana_manual_template_create_campana_view-current_step'] = 1
+        post_step2_data['campana_manual_template_create_campana_view-current_step'] = 2
+        post_step0_data.pop('campana_manual_create_view-current_step')
+        post_step1_data.pop('campana_manual_create_view-current_step')
+        post_step2_data.pop('campana_manual_create_view-current_step')
+        return post_step0_data, post_step1_data, post_step2_data
+
+    def test_usuario_logueado_puede_crear_campana_manual_desde_template(self):
+        campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
+        queue = QueueFactory.create(
+            campana=campana, pk=campana.nombre)
+        opt_calif = OpcionCalificacionFactory.create(
+            campana=campana, tipo=OpcionCalificacion.GESTION,
+            nombre=self.calificacion.nombre)
+        param_extra_web_form = ParametroExtraParaWebformFactory.create(campana=campana)
+        url = reverse('campana_manual_template_create_campana', args=[campana.pk])
+        nombre_campana = 'campana_manual_clonada'
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_manual_desde_template(
+             nombre_campana)
+        post_step0_data['0-nombre'] = nombre_campana
+        post_step1_data['1-0-nombre'] = opt_calif.nombre
+        post_step1_data['1-0-tipo'] = opt_calif.tipo
+        post_step2_data['2-0-parametro'] = param_extra_web_form.parametro
+        post_step2_data['2-0-columna'] = param_extra_web_form.columna
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        campana_clonada = Campana.objects.get(nombre=nombre_campana)
+        opt_calif_clonada_gestion = campana_clonada.opciones_calificacion.get(
+            tipo=OpcionCalificacion.GESTION)
+        param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
+        # chequeamos que la campaña clonada contenga iguales valores en opciones de calificacion
+        # y parametros extra, entre otros a la campaña template
+        self.assertNotEqual(campana_clonada.pk, self.campana_dialer.pk)
+        self.assertEqual(campana_clonada.queue_campana.strategy, queue.strategy)
+        self.assertEqual(opt_calif_clonada_gestion.nombre, opt_calif.nombre)
+        self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
+        self.assertEqual(param_extra_web_form_clonado.parametro, param_extra_web_form.parametro)
+        self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
