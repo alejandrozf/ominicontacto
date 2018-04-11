@@ -18,7 +18,7 @@ $oResultado = $astman->connect("localhost", $ampmgruser, $ampmgrpass);
         if($oResultado == FALSE)
                 echo "Connection failed.\n";
                                 
-$listado = shell_exec("/usr/sbin/asterisk  -rx 'queue show' |grep Unava |awk '{print $1, $2}' FS='(' |awk '{print $1, $2}' FS='SIP' |awk '{print $1, $2}' FS='/' |awk '{print $1, $2}' FS=')'");
+$listado = shell_exec("asterisk  -rx 'queue show' |grep Unava |awk '{print $1, $2}' FS='(' |awk '{print $1, $2}' FS='SIP' |awk '{print $1, $2}' FS='/' |awk '{print $1, $2}' FS=')'");
 
 if (empty($listado)) {
     echo '$var es o bien 0, vacía, o no se encuentra definida en absoluto';

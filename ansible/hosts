@@ -1,33 +1,14 @@
-[omni-app]
-192.168.70.63
-[omni-voip]
-192.168.70.62
-[omni-centos]
-172.16.20.12
-[omni-freepbx]
-192.168.99.2 ansible_ssh_port=22
-
-[omnileads:children]
-omni-centos
-omni-freepbx
+[omnileads]
+localhost ansible_connection=local ansible_user=omnileads
 
 [omnileads:vars]
-
-################## IP's y FQDN's ###################
-omnivoip_ip=192.168.70.62
-omnivoip_fqdn=omnileads-voip.example.com
-omniapp_ip=192.168.70.63
-omniapp_fqdn=omnileads-app.example.com
-red_deploy=192.168.70.0/24
-omni_ip="{{ ansible_all_ipv4_addresses[0] }}"
-localhost=127.0.0.1
-omnicentos_fqdn=oml-sfafa
-
+LOCALHOST=false
 ################ Puerto SSH ##################
 ssh_port="{{ ansible_ssh_port }}"
-
+install_prefix=/opt/omnileads/
+usuario="{{ ansible_user }}"
 ##Parametros de la aplicación modificables
-admin_pass=098098ZZZ
+admin_pass=toor123
 session_cookie_age=3600
 formato_conversion=mp3
 

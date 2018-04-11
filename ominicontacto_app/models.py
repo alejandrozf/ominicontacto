@@ -35,6 +35,7 @@ class User(AbstractUser):
     is_agente = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
+    borrado = models.BooleanField(default=False, editable=False)
 
     def get_agente_profile(self):
         agente_profile = None
@@ -90,22 +91,15 @@ class User(AbstractUser):
         self.last_session_key = key
         self.save()
 
-#     def get_patient_profile(self):
-#         patient_profile = None
-#         if hasattr(self, 'patientprofile'):
-#             patient_profile = self.patientprofile
-#         return patient_profile
-#
-#     def get_physiotherapist_profile(self):
-#         physiotherapist_profile = None
-#         if hasattr(self, 'physiotherapistprofile'):
-#             physiotherapist_profile = self.physiotherapistprofile
-#         return physiotherapist_profile
-#
-#     class Meta:
-#         db_table = 'auth_user'
-#
-#
+    def borrar(self):
+        """
+        Setea Usuario como BORRADO y is_active como False.
+        """
+        logger.info("Seteando Usuario %s como BORRADO", self.id)
+
+        self.borrado = True
+        self.is_active = False
+        self.save()
 
 
 class Modulo(models.Model):
@@ -164,6 +158,7 @@ class AgenteProfile(models.Model):
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
     reported_by = models.ForeignKey(User, related_name="reportedby")
     is_inactive = models.BooleanField(default=False)
+    borrado = models.BooleanField(default=False, editable=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
@@ -198,6 +193,16 @@ class AgenteProfile(models.Model):
         self.is_inactive = False
         self.save()
 
+    def borrar(self):
+        """
+        Setea Agente como BORRADO y is_inactive True .
+        """
+        logger.info("Seteando Agente %s como BORRADO", self.id)
+
+        self.borrado = True
+        self.is_inactive = True
+        self.save()
+
 
 class SupervisorProfileManager(models.Manager):
 
@@ -211,14 +216,19 @@ class SupervisorProfile(models.Model):
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     is_administrador = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
+    borrado = models.BooleanField(default=False, editable=False)
 
     def __unicode__(self):
         return self.user.get_full_name()
-#
-# class PhysiotherapistProfile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     active = models.BooleanField(default=True)
-#     name = models.CharField(max_length=64)
+
+    def borrar(self):
+        """
+        Setea Supervisor como BORRADO .
+        """
+        logger.info("Seteando Supervisor %s como BORRADO", self.id)
+
+        self.borrado = True
+        self.save()
 
 
 class NombreCalificacionManager(models.Manager):
@@ -1198,6 +1208,9 @@ class QueueMemberManager(models.Manager):
     def get_campanas_activas(self):
         return self.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
 
+    def borrar_member_queue(self, member):
+        return self.filter(member=member).delete()
+
 
 class QueueMember(models.Model):
     """
@@ -2092,7 +2105,7 @@ class GrabacionManager(models.Manager):
                                        "sip agente"))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, sip_agente, campana, campanas, marcadas):
+                            tel_cliente, sip_agente, campana, campanas, marcadas, duracion):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -2110,6 +2123,8 @@ class GrabacionManager(models.Manager):
             grabaciones = grabaciones.filter(sip_agente=sip_agente)
         if campana:
             grabaciones = grabaciones.filter(campana=campana)
+        if duracion and duracion > 0:
+            grabaciones = grabaciones.filter(duracion__gte=duracion)
         if marcadas:
             total_grabaciones_marcadas = Grabacion.objects.marcadas()
             grabaciones = grabaciones & total_grabaciones_marcadas
@@ -2172,6 +2187,7 @@ class Grabacion(models.Model):
     sip_agente = models.IntegerField()
     campana = models.ForeignKey(Campana, related_name='grabaciones')
     uid = models.CharField(max_length=45, blank=True, null=True)
+    duracion = models.IntegerField(default=0)
 
     def __unicode__(self):
         return "grabacion del agente con el sip {0} con el cliente {1}".format(

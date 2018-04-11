@@ -26,7 +26,7 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, WombatLog, Campana, Contacto,
+    Chat, MensajeChat, WombatLog, Campana, Contacto, QueueMember
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
@@ -150,15 +150,21 @@ class UserDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        # DEUDA TECNICA: separar todo esto en un servicio o app aparte
         if self.object.is_agente and self.object.get_agente_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
+                self.object.get_agente_profile())
+            self.object.get_agente_profile().borrar()
+            QueueMember.objects.borrar_member_queue(
                 self.object.get_agente_profile())
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
                 self.object.get_supervisor_profile())
-        return super(UserDeleteView, self).delete(request, *args, **kwargs)
+            self.object.get_supervisor_profile().borrar()
+        self.object.borrar()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})
@@ -173,7 +179,7 @@ class UserListView(ListView):
 
     def get_queryset(self):
         """Returns user ordernado por id"""
-        return User.objects.all().order_by('id')
+        return User.objects.exclude(borrado=True).order_by('id')
 
 
 class AgenteProfileCreateView(CreateView):
@@ -312,7 +318,7 @@ class AgenteListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(AgenteListView, self).get_context_data(
             **kwargs)
-        agentes = AgenteProfile.objects.all()
+        agentes = AgenteProfile.objects.exclude(borrado=True)
 
         # if self.request.user.is_authenticated() and self.request.user:
         #     user = self.request.user
@@ -748,4 +754,3 @@ def profile_page(request, username):
     print prueba
     return render_to_response('blanco.html',
                               context_instance=RequestContext(request))
-

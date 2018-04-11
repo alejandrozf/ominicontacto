@@ -84,3 +84,7 @@ class SupervisorListView(ListView):
     """Vista lista los supervisores """
     model = SupervisorProfile
     template_name = 'supervisor_profile_list.html'
+
+    def get_queryset(self):
+        """Returns Supervisor excluyendo los borrados"""
+        return SupervisorProfile.objects.exclude(borrado=True)

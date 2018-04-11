@@ -25,6 +25,8 @@ class UserFactory(DjangoModelFactory):
         model = User
 
     username = lazy_attribute(lambda a: faker.name())
+    first_name = lazy_attribute(lambda a: faker.first_name())
+    last_name = lazy_attribute(lambda a: faker.last_name())
     last_session_key = Sequence(lambda n: "session_{0}.dat".format(n))
 
 

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export PYTHONPATH={{ install_prefix}}ominicontacto/ominicontacto_app:{{ install_prefix}}local
+
+{{install_prefix}}virtualenv/bin/python \
+    {{ install_prefix}}ominicontacto/ominicontacto_app/manage.py $*

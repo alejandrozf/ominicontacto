@@ -219,8 +219,8 @@ class GeneradorParaQueueGrabacion(GeneradorDePedazoDeQueue):
         same => n,Answer()
         same => n,Playback({filepath_audio_ingreso})
         same => n,Gosub(hangup-fts,llamante_handler,1)
-        same => n,Set(__MONITOR_FILENAME=/var/spool/asterisk/monitor/q-${{EXTEN}}-${{STRFTIME(${{EPOCH}},,%Y%m%d-%H%M%S)}}-${{UNIQUEID}})
-        same => n,MixMonitor(${{MONITOR_FILENAME}}.wav)
+        same => n,Set(__MONITOR_FILENAME=q-${{EXTEN}}-${{STRFTIME(${{EPOCH}},,%Y%m%d-%H%M%S)}}-${{UNIQUEID}})
+        same => n,MixMonitor(${{MONITOR_FILENAME}}.wav,b,/usr/local/parselog/update_mix_mixmonitor.pl ${{UNIQUEID}} ${{MONITOR_FILENAME}}.wav)
         same => n,SIPAddHeader(uidGrabacion:${{UNIQUEID}})
         same => n,SIPAddHeader(Origin:IN)
         same => n,SIPAddHeader(IDCliente:${{IDCliente}})
@@ -465,8 +465,7 @@ class GeneradorParaCampanaDialerGrabacion(GeneradorDePedazoDeCampanaDialer):
     def get_template(self):
         return """
         same => n,Set(__MONITOR_FILENAME=q-${{STRFTIME(${{EPOCH}},,%Y%m%d%H%M%S)}}-${{ID_CAMPANA}}-${{NUMMARCADO}}-${{UNIQUEID}})
-        same => n,Set(__MONITOR_EXEC=/usr/local/parselog/update_mix_mixmonitor.pl ^{{UNIQUEID}} ^{{MIXMONITOR_FILENAME}})
-        same => n,MixMonitor(${{MONITOR_FILENAME}}.wav,b)
+        same => n,MixMonitor(${{MONITOR_FILENAME}}.wav,b,/usr/local/parselog/update_mix_mixmonitor.pl ${{UNIQUEID}} ${{MONITOR_FILENAME}}.wav)
         same => n,SIPAddHeader(uidGrabacion:${{UNIQUEID}})
         """
 

@@ -1,0 +1,49 @@
+---
+
+- name: Modify of pg_hba.conf file
+  template: src=templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
+  become: true
+  become_method: sudo
+
+- name: Restart postgres service
+  service: name=postgresql-9.6 state=restarted enabled=yes
+  become: true
+  become_method: sudo
+
+- name: Create kamailio postgres user
+  become: yes
+  become_method: sudo
+  become_user: postgres
+  postgresql_user: name=kamailio password=kamailiorw role_attr_flags=SUPERUSER
+
+- name: Create kamailioro postgres user
+  postgresql_user: name=kamailioro password=kamailioro role_attr_flags=SUPERUSER
+  become: yes
+  become_method: sudo
+  become_user: postgres
+
+- name: Create kamailio database
+  shell: createdb -O kamailio kamailio
+  become: yes
+  become_method: sudo
+  become_user: postgres
+  register: command_result
+  failed_when:
+    - "'already exists' not in command_result.stderr"
+    - "'ya existe' not in command_result.stderr"
+    - "command_result.rc != 0"
+
+- name: Erase of default kamailio.cfg file
+  shell: rm -rf {{ install_prefix }}kamailio/etc/kamailio/kamailio.cfg
+  tags: postinstall
+
+- name: Copy of oml-freepbx/kamailio-files to the desired destinations
+  shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip"
+  with_items:
+      - cp kamailio-files/kamctlrc {{ install_prefix }}kamailio/etc/kamailio/
+
+- name: Creation of kamailio file in /etc/default
+  template: src=templates/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
+
+- name: Creation of kamailio.service file in systemd
+  template: src=templates/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=655

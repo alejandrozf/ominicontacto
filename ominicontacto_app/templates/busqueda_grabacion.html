@@ -39,16 +39,14 @@
 
         cb(start, end);
 
-
-
 });
 
 function filtrar_pagina(pagina) {
             $("#id_pagina").val(pagina);
              $("#form-buscar-grabacion").submit();
         };
-
 </script>
+
 {% endblock %}
 {% block content %}
 
@@ -140,23 +138,39 @@ function filtrar_pagina(pagina) {
 </div>
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/select2.min.css' %}"></link>
+{% endblock %}
+
 {% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
     <script>
-     $('#descripcionModal').on('show.bs.modal', function (event) {
-       var button = $(event.relatedTarget)
-       var uid_val = button.data('uid');
-       var modal = $(this);
-       var URL = "/grabacion/descripcion/" + uid_val + "/";
-       $.get( URL, function( data ) {
-         $('#descripcionModalLabel').text(data.result);
-         $('#descripcion-text').text(data.descripcion);
-         console.log(data);
-       })
-        .fail(function( data ){
-          $('#descripcionModalLabel').text("Error");
-          $('#descripcion-text').text("Ha ocurrido un error al intentar conectarse");
-          console.log(data);
-        });
+     /* se activa en todos los campos de selección un plugin para
+        JQuery que permite una mejor búsqueda */
+     $(document).ready(function() {
+
+       $('select.form-control').each(function() {
+         $(this).select2();});
+
+
+       /* $('#id_campana').attr('class', 'select2-hidden-accessible');*/
+
+       $('#descripcionModal').on('show.bs.modal', function (event) {
+         var button = $(event.relatedTarget)
+         var uid_val = button.data('uid');
+         var modal = $(this);
+         var URL = "/grabacion/descripcion/" + uid_val + "/";
+         $.get( URL, function( data ) {
+           $('#descripcionModalLabel').text(data.result);
+           $('#descripcion-text').text(data.descripcion);
+           console.log(data);
+         })
+          .fail(function( data ){
+            $('#descripcionModalLabel').text("Error");
+            $('#descripcion-text').text("Ha ocurrido un error al intentar conectarse");
+            console.log(data);
+          });
+       });
        });
     </script>
 {% endblock %}

@@ -1,0 +1,70 @@
+---
+
+- name: Creation of kamamailio run directories
+  file: "path={{ item }} state=directory mode=0755"
+  with_items:
+      - "{{ install_prefix }}kamailio/run/"
+      - "{{ install_prefix }}kamailio/run/kamailio/"
+  become: true
+  become_method: sudo
+
+#- name: Creation of kamailio user and group
+#  shell: "{{ item }}"
+#  with_items:
+      #- mkdir -p {{ install_prefix }}kamailio/run/kamailio
+#      - groupadd -g 5000 kamailio
+#      - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
+#  ignore_errors: yes
+#  register: command_result
+#  failed_when:
+#    - "'ya existe' not in command_result.stderr"
+#    - "'already exists' not in command_result.stderr"
+#    - "command_result.rc != 0"
+
+- name: Create kamailio.log file and directory
+  file: path=/var/log/kamailio/ state=directory mode=0755
+  become: true
+  become_method: sudo
+
+- file: path=/var/log/kamailio/kamailio.log state=touch mode=0755
+  become: true
+  become_method: sudo
+
+- name: Run kamailio as a service
+  shell: "{{ item }}"
+  with_items:
+      - systemctl restart rsyslog
+      - systemctl enable kamailio
+      - systemctl daemon-reload
+      - "chown {{ usuario }}:{{ usuario }} -R {{ install_prefix }}kamailio"
+  become: true
+  become_method: sudo
+
+- name: Execution of kamdbctl script
+  shell: "{{ install_prefix }}kamailio/sbin/kamdbctl restore {{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamdb.sql"
+  when: kamailio_installed|failed
+  become: true
+  become_method: sudo
+
+- name: Creation of kamailio.cfg file
+  template: src=templates/kamailio-local.cfg dest={{ install_prefix }}kamailio/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
+  tags: postinstall
+  become: true
+  become_method: sudo
+
+- name: Link kamailio.cfg repo file to {{ install_prefix }}kamailio
+  file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ install_prefix }}kamailio/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }}
+  tags: postinstall
+  become: true
+  become_method: sudo
+
+- name: Change the path of files in kamailio.cfg
+  replace: path={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"/opt/omnileads/kamailio\" replace=\"{{ install_prefix }}kamailio\"
+  become: true
+  become_method: sudo
+  tags:
+    - postinstall
+    - test
+
+
+
