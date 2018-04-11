@@ -258,10 +258,9 @@ class CampanasTests(OMLBaseTest):
     def test_usuario_logueado_puede_crear_campana_preview(self):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
-        audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
-             nombre_campana, audio_ingreso)
+             nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -271,10 +270,9 @@ class CampanasTests(OMLBaseTest):
     def test_usuario_logueado_puede_modificar_campana_preview(self):
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
         nuevo_objetivo = 3
-        audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_modificacion_campana_preview(
-             self.campana_activa.nombre, audio_ingreso)
+             self.campana_activa.nombre)
         post_step0_data['0-objetivo'] = nuevo_objetivo
         self.assertNotEqual(Campana.objects.get(pk=self.campana_activa.pk).objetivo,
                             nuevo_objetivo)
@@ -336,10 +334,9 @@ class CampanasTests(OMLBaseTest):
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto(self):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
-        audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
-             nombre_campana, audio_ingreso)
+             nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -504,10 +501,9 @@ class CampanasTests(OMLBaseTest):
     def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(self):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
-        audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
-             nombre_campana, audio_ingreso)
+             nombre_campana)
         self.assertFalse(AgenteEnContacto.objects.all().exists())
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
@@ -811,7 +807,7 @@ class CampanasTests(OMLBaseTest):
 
         return post_step0_data, post_step1_data, post_step2_data
 
-    def _obtener_post_data_wizard_creacion_campana_preview(self, nombre_campana, audio_ingreso):
+    def _obtener_post_data_wizard_creacion_campana_preview(self, nombre_campana):
         # los parámetros de creación de una campaña preview son bastante similares a una manual
         # por lo que se reutiliza el código del método que genera los parámetros para las campañas
         # manuales y sólo se modifican algunos
@@ -829,10 +825,10 @@ class CampanasTests(OMLBaseTest):
 
         return post_step0_data, post_step1_data, post_step2_data
 
-    def _obtener_post_data_wizard_modificacion_campana_preview(self, nombre_campana, audio_ingreso):
+    def _obtener_post_data_wizard_modificacion_campana_preview(self, nombre_campana):
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
-            nombre_campana, audio_ingreso)
+            nombre_campana)
         post_step0_data.pop('campana_preview_create_view-current_step')
         post_step1_data.pop('campana_preview_create_view-current_step')
         post_step2_data.pop('campana_preview_create_view-current_step')
@@ -1305,3 +1301,30 @@ class CampanasTests(OMLBaseTest):
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
         self.assertEqual(param_extra_web_form_clonado.parametro, param_extra_web_form.parametro)
         self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
+
+    def _obtener_post_data_wizard_creacion_template_campana_preview(self, nombre_campana):
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+             nombre_campana)
+        post_step0_data['campana_preview_template_create_view-current_step'] = 0
+        post_step1_data['campana_preview_template_create_view-current_step'] = 1
+        post_step2_data['campana_preview_template_create_view-current_step'] = 2
+        post_step0_data.pop('campana_preview_create_view-current_step')
+        post_step1_data.pop('campana_preview_create_view-current_step')
+        post_step2_data.pop('campana_preview_create_view-current_step')
+        return post_step0_data, post_step1_data, post_step2_data
+
+    def test_usuario_logueado_puede_crear_template_campana_preview(self):
+        url = reverse('campana_preview_template_create')
+        nombre_campana = 'campana_preview_template'
+        (post_step0_data, post_step1_data,
+         post_step2_data) = self._obtener_post_data_wizard_creacion_template_campana_preview(
+             nombre_campana)
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(
+            nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
+            type=Campana.TYPE_PREVIEW).exists())
