@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0160_asignar_bd_contacto_vacias'),
+        ('ominicontacto_app', '0164_asignar_bd_contacto_vacias'),
     ]
 
     operations = [
@@ -21,7 +21,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='calificacionmanual',
             name='contacto',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='ominicontacto_app.Contacto'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                    to='ominicontacto_app.Contacto'),
         ),
         migrations.AddField(
             model_name='calificacionmanual',

@@ -57,7 +57,7 @@ def rollback(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0161_igualar_calmanual_a_calcliente'),
+        ('ominicontacto_app', '0165_igualar_calmanual_a_calcliente'),
     ]
 
     operations = [

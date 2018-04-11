@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0166_elimina_modelo_calificacion_manual'),
+        ('ominicontacto_app', '0170_elimina_modelo_calificacion_manual'),
     ]
 
     operations = [

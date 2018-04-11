@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0155_remove_user_is_customer'),
+        ('ominicontacto_app', '0159_supervisorprofile_borrado'),
     ]
 
     operations = [

@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0163_elimina_campos_sobrantes_calmanual'),
+        ('ominicontacto_app', '0167_elimina_campos_sobrantes_calmanual'),
     ]
 
     operations = [

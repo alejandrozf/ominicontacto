@@ -46,7 +46,7 @@ def rollback(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0159_elimina_estados_obsoletos_campanas_modelo'),
+        ('ominicontacto_app', '0163_elimina_estados_obsoletos_campanas_modelo'),
     ]
 
     operations = [

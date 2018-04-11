@@ -23,7 +23,7 @@ def eliminar_campanas_estados_intermedios(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0157_grupos_calificaciones_a_opciones_calificaciones'),
+        ('ominicontacto_app', '0161_grupos_calificaciones_a_opciones_calificaciones'),
     ]
 
     operations = [

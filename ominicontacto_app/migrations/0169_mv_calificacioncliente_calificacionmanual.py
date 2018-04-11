@@ -91,7 +91,7 @@ def rollback(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0164_calificacioncliente_es_calificacion_manual'),
+        ('ominicontacto_app', '0168_calificacioncliente_es_calificacion_manual'),
     ]
 
     operations = [
