@@ -11,7 +11,7 @@ from ominicontacto_app import (
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_calificacion_manual, views_campana_preview, views_archivo_de_audio
+    views_campana_preview, views_archivo_de_audio
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -447,6 +447,12 @@ urlpatterns = [
         kwargs={'from': 'reporte'},
         name='calificacion_cliente_actualiza_desde_reporte'
         ),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
+        r'(?P<telefono>\d+)/$',
+        login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'calificacion', 'pk_contacto': None, 'manual': True},
+        name="calificar_por_telefono"),
+
     url(r'^calificacion_cliente/externa/$',
         views_calificacion_cliente.calificacion_cliente_externa_view,
         name='calificacion_cliente_externa'
@@ -509,21 +515,8 @@ urlpatterns = [
         login_required(views_agenda_contacto.AgendaContactoDetailView.as_view()),
         name="agenda_contacto_detalle"),
     url(r'^agenda_contacto/eventos/$',
-        login_required(views_agenda_contacto.AgenteContactoListFormView.as_view()),
+        login_required(views_agenda_contacto.AgendaContactoListFormView.as_view()),
         name="agenda_contacto_listado"),
-    url(
-        r'^agenda_manual/(?P<telefono>\d+)/create/(?P<id_agente>\d+)/(?P<pk_campana>\d+)/$',
-        login_required(
-            views_agenda_contacto.AgendaManualCreateView.as_view()),
-        name="agenda_manual_create"),
-    url(r'^agenda_manual/(?P<pk>\d+)/detalle/$',
-        login_required(
-            views_agenda_contacto.AgendaManualDetailView.as_view()),
-        name="agenda_manual_detalle"),
-    url(r'^agenda_manual/eventos/$',
-        login_required(
-            views_agenda_contacto.AgenteManualListFormView.as_view()),
-        name="agenda_manual_listado"),
     # ==========================================================================
     # Campana Dialer
     # ==========================================================================
@@ -767,19 +760,7 @@ urlpatterns = [
         login_required(
             views_campana_manual.CampanaManualListView.as_view()),
         name="campana_manual_list"),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<pk_agente>\d+)/create/'
-        r'(?P<telefono>\d+)/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualCreateView.as_view()),
-        name="campana_manual_calificacion_create"),
-    url(r'^campana_manual/(?P<pk_calificacion>\d+)/calificacion/update/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualUpdateView.as_view()),
-        name="campana_manual_calificacion_update"),
-    url(r'^campana_manual/(?P<pk_calificacion>\d+)/gestion/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualGestion.as_view()),
-        name="campana_manual_calificacion_gestion"),
+
     url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_calificacion/$',
         login_required(
             views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),

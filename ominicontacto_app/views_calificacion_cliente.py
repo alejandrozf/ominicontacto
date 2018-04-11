@@ -18,7 +18,7 @@ from django.views.generic.detail import DetailView
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
     WombatLog, OpcionCalificacion, UserApiCrm)
-from ominicontacto_app.forms import (CalificacionClienteForm, CalificacionClienteUpdateForm,
+from ominicontacto_app.forms import (CalificacionClienteForm,
                                      FormularioContactoCalificacion, FormularioVentaFormSet)
 from django.views.decorators.csrf import csrf_exempt
 from ominicontacto_app.utiles import convertir_ascii_string
@@ -73,64 +73,72 @@ class CalificacionClienteFormView(FormView):
     form_class = CalificacionClienteForm
 
     def get_contacto(self):
-        return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+        if 'pk_contacto' in self.kwargs and self.kwargs['pk_contacto'] is not None:
+            try:
+                return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+            except Contacto.DoesNotExist:
+                return None
+        return None
 
     def get_object(self):
-        try:
-            return CalificacionCliente.objects.get(
-                opcion_calificacion__campana_id=self.kwargs['pk_campana'],
-                contacto_id=self.kwargs['pk_contacto'])
-        except CalificacionCliente.DoesNotExist:
-            return None
+        if self.contacto is not None:
+            try:
+                return CalificacionCliente.objects.get(
+                    opcion_calificacion__campana=self.campana,
+                    contacto_id=self.contacto.id)
+            except CalificacionCliente.DoesNotExist:
+                return None
+        return None
 
     def dispatch(self, *args, **kwargs):
-        try:
-            self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-            self.contacto = self.get_contacto()
-        except Contacto.DoesNotExist:
+        self.agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+        self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        self.contacto = self.get_contacto()
+        self.wombat_id = self.kwargs.get('wombat_id', '0')
+        if self.contacto is None and self.campana.type == Campana.TYPE_DIALER:
             return HttpResponseRedirect(reverse('campana_dialer_busqueda_contacto',
-                                                kwargs={"pk_campana":
-                                                        self.kwargs['pk_campana']}))
+                                                kwargs={"pk_campana": self.campana.id}))
 
         self.object = self.get_object()
         return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
 
     def get_calificacion_form_kwargs(self):
-        if self.request.method == 'GET':
-            initial = {'contacto': self.kwargs['pk_contacto'],
-                       'agente': self.kwargs['id_agente'],
-                       'wombat_id': self.kwargs['wombat_id']}
-            return {'instance': self.object, 'initial': initial}
+        calificacion_kwargs = {'instance': self.object}
+        if self.request.method == 'GET' and self.contacto is not None:
+                calificacion_kwargs['initial'] = {'contacto': self.contacto.id}
         elif self.request.method == 'POST':
-            post_data = self.request.POST
-            if 'wombat_id' not in post_data:
-                post_data['wombat_id'] = self.kwargs['wombat_id']
-            return {'instance': self.object, 'data': post_data}
+            calificacion_kwargs['data'] = self.request.POST
+        return calificacion_kwargs
 
     def get_form(self):
         kwargs = self.get_calificacion_form_kwargs()
-        if self.object is None:
-            calificacion_form = CalificacionClienteForm(campana=self.campana, **kwargs)
-        else:
-            calificacion_form = CalificacionClienteUpdateForm(campana=self.campana, **kwargs)
-        return calificacion_form
+        return CalificacionClienteForm(campana=self.campana, **kwargs)
 
     def get_contacto_form_kwargs(self):
+        kwargs = {}
+        initial = {}
+        if self.contacto is not None:
+            kwargs['instance'] = self.contacto
+        else:
+            initial['telefono'] = self.kwargs['telefono']
+
         if self.request.method == 'GET':
             # TODO: Pasar esta logica al formulario?
-            base_datos = self.contacto.bd_contacto
+            base_datos = self.campana.bd_contacto
             nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-            datos = json.loads(self.contacto.datos)
-            initial = {}
+            datos = [''] * len(nombres)
+            if self.contacto is not None:
+                datos = json.loads(self.contacto.datos)
             for nombre, dato in zip(nombres, datos):
                 initial.update({convertir_ascii_string(nombre): dato})
-            return {'instance': self.contacto, 'initial': initial}
+            kwargs['initial'] = initial
         elif self.request.method == 'POST':
-            return {'instance': self.contacto, 'data': self.request.POST}
+            kwargs['data'] = self.request.POST
+        return kwargs
 
     def get_campos_formulario_contacto(self):
         # TODO: Pasar esta logica al formulario?
-        base_datos = self.contacto.bd_contacto
+        base_datos = self.campana.bd_contacto
         metadata = base_datos.get_metadata()
         campos = metadata.nombres_de_columnas
         return campos
@@ -145,8 +153,8 @@ class CalificacionClienteFormView(FormView):
 
         gestor_de_calificaciones = GestorDeCalificaciones()
         gestor_de_calificaciones.agente_calificara_contacto(self.campana,
-                                                            kwargs['id_agente'],
-                                                            kwargs['wombat_id'])
+                                                            self.agente.id,
+                                                            self.wombat_id)
 
         return self.render_to_response(self.get_context_data(
             contacto_form=contacto_form, calificacion_form=calificacion_form))
@@ -163,9 +171,9 @@ class CalificacionClienteFormView(FormView):
             return self.form_invalid(contacto_form, calificacion_form)
 
     def form_valid(self, contacto_form, calificacion_form):
-        contacto = contacto_form.save(commit=False)
+        self.contacto = contacto_form.save(commit=False)
         # TODO: Pasar esta logica al formulario?
-        base_datos = contacto.bd_contacto
+        base_datos = self.campana.bd_contacto
         metadata = base_datos.get_metadata()
         nombres = metadata.nombres_de_columnas
         datos = []
@@ -173,24 +181,32 @@ class CalificacionClienteFormView(FormView):
         for nombre in nombres:
             campo = contacto_form.cleaned_data.get(convertir_ascii_string(nombre))
             datos.append(campo)
-        contacto.datos = json.dumps(datos)
-        contacto.save()
+        self.contacto.datos = json.dumps(datos)
+        self.contacto.bd_contacto = base_datos
+        self.contacto.save()
+
+        self.object_calificacion = calificacion_form.save(commit=False)
+        self.object_calificacion.set_es_venta()
+        self.object_calificacion.agente = self.agente
+        self.object_calificacion.contacto = self.contacto
 
         id_opcion_vieja = None
         if self.object is not None:
             id_opcion_vieja = calificacion_form.initial['opcion_calificacion']
-        self.object_calificacion = calificacion_form.save(commit=False)
-        self.object_calificacion.set_es_venta()
+        else:
+            es_calificacion_manual = 'manual' in self.kwargs and self.kwargs['manual']
+            self.object_calificacion.es_calificacion_manual = es_calificacion_manual
+
         self.object_calificacion.save()
 
         # Finalizar relacion de contacto con agente
         # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
         if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
-            self.campana.gestionar_finalizacion_relacion_agente_contacto(contacto.id)
+            self.campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
 
         gestor_de_calificaciones = GestorDeCalificaciones()
         gestor_de_calificaciones.agente_califica_contacto(
-            self.object_calificacion, id_opcion_vieja, self.kwargs['wombat_id'])
+            self.object_calificacion, id_opcion_vieja, self.wombat_id)
 
         if self.object_calificacion.es_venta:
             return redirect(self.get_success_url_venta())
@@ -215,15 +231,15 @@ class CalificacionClienteFormView(FormView):
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',
-                       kwargs={"pk_campana": self.kwargs['pk_campana'],
-                               "pk_contacto": self.kwargs['pk_contacto'],
-                               "id_agente": self.kwargs['id_agente']})
+                       kwargs={"pk_campana": self.campana.id,
+                               "pk_contacto": self.contacto.id,
+                               "id_agente": self.agente.id})
 
     def get_success_url_agenda(self):
         return reverse('agenda_contacto_create',
-                       kwargs={"pk_campana": self.kwargs['pk_campana'],
-                               "pk_contacto": self.kwargs['pk_contacto'],
-                               "id_agente": self.kwargs['id_agente']})
+                       kwargs={"pk_campana": self.campana.id,
+                               "pk_contacto": self.contacto.id,
+                               "id_agente": self.agente.id})
 
     def get_success_url_reporte(self):
         return reverse('reporte_agente_calificaciones',
@@ -231,10 +247,10 @@ class CalificacionClienteFormView(FormView):
 
     def get_success_url(self):
         return reverse('calificacion_formulario_update_or_create',
-                       kwargs={"pk_campana": self.kwargs['pk_campana'],
-                               "pk_contacto": self.kwargs['pk_contacto'],
-                               "wombat_id": self.kwargs['wombat_id'],
-                               "id_agente": self.kwargs['id_agente']})
+                       kwargs={"pk_campana": self.campana.id,
+                               "pk_contacto": self.contacto.id,
+                               "wombat_id": self.wombat_id,
+                               "id_agente": self.agente.id})
 
 
 @csrf_exempt
@@ -298,10 +314,23 @@ def calificacion_cliente_externa_view(request):
 
 
 class FormularioCreateFormView(CreateView):
+    # TODO: Refactor FormularioUpdateFormView y FormularioCreateFormView
+    #       Comparten mucho codigo. Unificar o extender de una misma base.
     """En esta vista se crea el formulario de gestion"""
     template_name = 'formulario/formulario_create.html'
     model = MetadataCliente
     form_class = FormularioContactoCalificacion
+
+    def dispatch(self, *args, **kwargs):
+        metadatas = MetadataCliente.objects.filter(
+            contacto_id=self.kwargs['pk_contacto'],
+            campana_id=self.kwargs['pk_campana'],
+            agente_id=self.kwargs['id_agente'],
+        )
+        if metadatas.count() > 0:
+            return HttpResponseRedirect(reverse('formulario_venta_update',
+                                                kwargs={"pk_metadata": metadatas[0].id}))
+        return super(FormularioCreateFormView, self).dispatch(*args, **kwargs)
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
@@ -455,6 +484,8 @@ class FormularioDetailView(DetailView):
 
 
 class FormularioUpdateFormView(UpdateView):
+    # TODO: Refactor FormularioUpdateFormView y FormularioCreateFormView
+    #       Comparten mucho codigo. Unificar o extender de una misma base.
     """Vista para actualizar un formulario de gestion"""
     template_name = 'formulario/formulario_create.html'
     model = MetadataCliente

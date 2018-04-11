@@ -985,25 +985,8 @@ class Campana(models.Model):
         OpcionCalificacion.objects.get_or_create(
             campana=self, nombre=settings.CALIFICACION_REAGENDA, tipo=OpcionCalificacion.AGENDA)
 
-    def obtener_calificaciones_cliente(self):
-        """
-        Devuelve todas las calificaciones realizadas en la campaña
-        (de acuerdo al modelo CalificacionCliente)
-        """
-        # TODO: cambiar cuando los modelos de calificación estén ya unificados
-        calificaciones_cliente = CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=self)
-        return calificaciones_cliente
-
-    def obtener_calificaciones_manuales(self):
-        """
-        Devuelve todas las calificaciones manuales realizadas en la campaña
-        (de acuerdo al modelo CalificacionManual)
-        """
-        # TODO: cambiar cuando los modelos de calificación estén ya unificados
-        calificaciones_manuales = CalificacionManual.objects.filter(
-            opcion_calificacion__campana=self)
-        return calificaciones_manuales
+    def obtener_calificaciones(self):
+        return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
 
 
 class QueueManager(models.Manager):
@@ -1066,8 +1049,7 @@ class OpcionCalificacion(models.Model):
         """
         Determina si opción de calificación está siendo usada en la campaña
         """
-        return (self.calificaciones_cliente.exists() or
-                self.calificaciones_manuales.exists())
+        return self.calificaciones_cliente.exists()
 
     def no_editable(self):
         """
@@ -2301,6 +2283,9 @@ class CalificacionCliente(models.Model):
     wombat_id = models.IntegerField(default=0)
     agendado = models.BooleanField(default=False)
 
+    # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
+    es_calificacion_manual = models.BooleanField(default=False)
+
     def __unicode__(self):
         return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.opcion_calificacion.campana, self.contacto)
@@ -2357,6 +2342,7 @@ class DuracionDeLlamada(models.Model):
 
 
 class MetadataCliente(models.Model):
+    # Información del formulario de gestión completado en una Calificacion.
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
     campana = models.ForeignKey(Campana, related_name="metadatacliente")
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
@@ -3108,77 +3094,6 @@ class UserApiCrm(models.Model):
 
     def __unicode__(self):
         return self.usuario
-
-
-class CalificacionManual(models.Model):
-
-    # objects = CalificacionClienteManager()
-
-    telefono = models.CharField(max_length=128)
-    es_gestion = models.BooleanField(default=False)
-    opcion_calificacion = models.ForeignKey(
-        OpcionCalificacion, blank=False, related_name='calificaciones_manuales')
-    fecha = models.DateTimeField(auto_now_add=True)
-    agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
-    observaciones = models.TextField(blank=True, null=True)
-    agendado = models.BooleanField(default=False)
-    metadata = models.TextField(blank=True, null=True)
-
-    def __unicode__(self):
-        return "Calificacion manual para la campana {0} para el telefono " \
-               "{1} ".format(self.opcion_calificacion.campana, self.telefono)
-
-
-class AgendaManualManager(models.Manager):
-
-    def eventos_fecha_hoy(self):
-        try:
-            return self.filter(fecha=datetime.datetime.today())
-        except AgendaContacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
-                                       "fecha"))
-
-    def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
-        eventos = self.filter(tipo_agenda=AgendaManual.TYPE_PERSONAL)
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-            eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
-        else:
-            hoy_ahora = datetime.datetime.today()
-            hoy = hoy_ahora.date()
-            eventos = eventos.filter(fecha__gte=hoy)
-        return eventos.order_by('-fecha')
-
-
-class AgendaManual(models.Model):
-    objects = AgendaManualManager()
-
-    TYPE_PERSONAL = 1
-    """Tipo de agenda Personal"""
-
-    TYPE_GLOBAL = 2
-    """Tipo de agenda Global"""
-
-    TYPE_AGENDA_CHOICES = (
-        (TYPE_PERSONAL, 'PERSONAL'),
-        (TYPE_GLOBAL, 'GLOBAL'),
-    )
-
-    agente = models.ForeignKey(AgenteProfile, related_name="agendamanual")
-    telefono = models.CharField(max_length=128)
-    fecha = models.DateField()
-    hora = models.TimeField()
-    tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
-    observaciones = models.TextField(blank=True, null=True)
-    campana = models.ForeignKey(Campana, related_name="agendas_manuales", null=True)
-
-    def __unicode__(self):
-        return "Agenda para el telefono {0} agendado por el agente {1}" \
-               " para la fecha {2} a la hora {3}hs ".format(
-                   self.telefono, self.agente, self.fecha, self.hora)
 
 
 class AgenteEnContacto(models.Model):

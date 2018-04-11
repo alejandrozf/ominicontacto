@@ -186,42 +186,6 @@
                             </tr>
 
                         {% endfor %}
-                        {% for calificacion_manual in calificaciones_manuales %}
-                            <tr>
-                                <td>
-                                    {{ calificacion_manual.telefono }}
-                                </td>
-                                <td>
-                                    no aplica
-                                </td>
-                                <td>
-                                    {% if calificacion_manual.es_gestion %}
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    {% else %}
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                {% if calificacion_manual.calificacion %}
-                                    {{ calificacion_manual.calificacion.nombre }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                                </td>
-                                <td>
-                                    {% if calificacion_manual.observaciones %}
-                                        {{calificacion_manual.observaciones}}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a href="{% url 'campana_manual_calificacion_update' calificacion_manual.pk %}">editar calificacion</a>
-                                    {% if calificacion_manual.es_gestion  %}
-                                        <a href="{% url 'campana_manual_calificacion_gestion' calificacion_manual.pk %}">editar gestion</a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-
-                        {% endfor %}
                     </tbody>
                 </table>
      </form>

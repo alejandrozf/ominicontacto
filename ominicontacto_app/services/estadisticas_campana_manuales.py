@@ -11,10 +11,7 @@ import os
 from pygal.style import Style
 
 from django.conf import settings
-from django.db.models import Count
-from ominicontacto_app.models import (CalificacionCliente, Queuelog, CalificacionManual,
-                                      OpcionCalificacion)
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.models import CalificacionCliente, Queuelog, OpcionCalificacion
 
 import logging as _logging
 
@@ -51,7 +48,7 @@ class EstadisticasService():
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         opciones_calificaciones = campana.opciones_calificacion.all()
-        calificaciones_query = CalificacionManual.objects.filter(
+        calificaciones_query = CalificacionCliente.objects.filter(
             opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
         calificaciones_nombre = []
         calificaciones_cantidad = []
@@ -102,7 +99,7 @@ class EstadisticasService():
         for agente in members_campana:
             dato_agente = []
             dato_agente.append(agente)
-            agente_calificaciones = agente.calificacionesmanuales.filter(
+            agente_calificaciones = agente.calificaciones.filter(
                 opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
             total_cal_agente = agente_calificaciones.count()
             dato_agente.append(total_cal_agente)

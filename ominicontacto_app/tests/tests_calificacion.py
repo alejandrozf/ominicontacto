@@ -4,22 +4,22 @@
 Tests sobre los procesos realicionados con la calificaciones de los contactos de las campañas
 """
 
-# from mock import patch
+from mock import patch
 
 from django.conf import settings
-# from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse
 
-# from django.utils import timezone
+from django.utils import timezone
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
                                                ContactoFactory, AgenteProfileFactory,
                                                QueueMemberFactory,
                                                CalificacionClienteFactory,
-                                               NombreCalificacionFactory, CalificacionManualFactory,
+                                               NombreCalificacionFactory,
                                                OpcionCalificacionFactory)
 
-from ominicontacto_app.models import (AgendaContacto, AgendaManual, NombreCalificacion, Campana,
+from ominicontacto_app.models import (AgendaContacto, NombreCalificacion, Campana,
                                       OpcionCalificacion, WombatLog)
 
 
@@ -33,17 +33,17 @@ class CalificacionTests(OMLBaseTest):
         self.usuario_agente.save()
 
         self.campana = CampanaFactory.create()
-        self.calificacion_gestion = NombreCalificacionFactory.create(nombre=self.campana.gestion)
-        self.calificacion_agenda = NombreCalificacion.objects.get(
+        self.nombre_opcion_gestion = NombreCalificacionFactory.create(nombre=self.campana.gestion)
+        self.nombre_calificacion_agenda = NombreCalificacion.objects.get(
             nombre=settings.CALIFICACION_REAGENDA)
         self.opcion_calificacion_gestion = OpcionCalificacionFactory.create(
-            campana=self.campana, nombre=self.calificacion_gestion.nombre,
+            campana=self.campana, nombre=self.nombre_opcion_gestion.nombre,
             tipo=OpcionCalificacion.GESTION)
         self.opcion_calificacion_agenda = OpcionCalificacionFactory.create(
-            campana=self.campana, nombre=self.calificacion_gestion.nombre,
+            campana=self.campana, nombre=self.nombre_calificacion_agenda.nombre,
             tipo=OpcionCalificacion.AGENDA)
         self.opcion_calificacion_camp_manual = OpcionCalificacionFactory.create(
-            campana=self.campana, nombre=self.calificacion_gestion.nombre)
+            campana=self.campana, nombre=self.nombre_opcion_gestion.nombre)
 
         self.contacto = ContactoFactory.create()
         self.campana.bd_contacto.contactos.add(self.contacto)
@@ -51,9 +51,9 @@ class CalificacionTests(OMLBaseTest):
         self.queue = QueueFactory.create(campana=self.campana)
         self.agente_profile = AgenteProfileFactory.create(user=UserFactory(is_agente=True))
 
-        self.calificacion_cliente_manual = CalificacionManualFactory(
+        self.calificacion_cliente = CalificacionClienteFactory(
             opcion_calificacion=self.opcion_calificacion_camp_manual, agente=self.agente_profile,
-            telefono=self.contacto.telefono)
+            contacto=self.contacto)
 
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
 
@@ -61,8 +61,8 @@ class CalificacionTests(OMLBaseTest):
 
     def _setUp_campana_dialer(self):
         self.campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
-        self.campana_dialer.calificacion_campana.calificacion.add(self.calificacion_gestion)
-        self.campana_dialer.calificacion_campana.calificacion.add(self.calificacion_agenda)
+        self.campana_dialer.opciones_calificacion.add(self.opcion_calificacion_gestion)
+        self.campana_dialer.opciones_calificacion.add(self.opcion_calificacion_agenda)
 
         self.contacto_dialer = ContactoFactory.create()
         self.campana_dialer.bd_contacto.contactos.add(self.contacto_dialer)
@@ -81,7 +81,7 @@ class CalificacionTests(OMLBaseTest):
             'campana': campana.pk,
             'contacto': contacto.pk,
             'agente': self.agente_profile.pk,
-            'calificacion': '',
+            'opcion_calificacion': '',
         }
         return post_data
 
@@ -97,8 +97,6 @@ class CalificacionTests(OMLBaseTest):
         self.assertFalse(calificacion_form.is_valid())
 
     def test_no_se_admite_tipo_calificacion_cliente_vacia_en_modificacion_calificacion(self):
-        CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
-                                          agente=self.agente_profile)
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
@@ -117,21 +115,19 @@ class CalificacionTests(OMLBaseTest):
                               'pk_contacto': self.contacto.pk,
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente()
-        post_data['calificacion'] = self.calificacion_gestion.pk
+        post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/formulario_create.html')
 
     @patch('requests.post')
     def test_calificacion_cliente_modificacion_redirecciona_formulario_gestion(self, post):
-        CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
-                                          agente=self.agente_profile)
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente()
-        post_data['calificacion'] = self.calificacion_gestion.pk
+        post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/formulario_create.html')
 
@@ -143,58 +139,22 @@ class CalificacionTests(OMLBaseTest):
             'agente': self.agente_profile.pk,
             'calificacion': '',
             'observaciones': 'test',
-            'es_gestion': False,
+            'es_venta': False,
             'campana': self.campana.pk,
             'agendado': False,
             'telefono': self.contacto.pk
         }
         return post_data
 
-    def test_no_se_admite_tipo_calificacion_manual_vacia_en_creacion_calificacion(self):
-        url = reverse('campana_manual_calificacion_create',
-                      kwargs={'pk_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
-                              'telefono': self.contacto.pk})
-        post_data = self._obtener_post_data_calificacion_manual()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context_data['form'].is_valid())
-
-    def test_no_se_admite_tipo_calificacion_manual_vacia_en_modificacion_calificacion(self):
-        url = reverse('campana_manual_calificacion_update',
-                      kwargs={'pk_calificacion': self.calificacion_cliente_manual.pk})
-        post_data = self._obtener_post_data_calificacion_manual()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context_data['form'].is_valid())
-
-    def test_escoger_calificacion_agenda_llamada_manual_redirecciona_formulario_agenda(self):
-        url = reverse('campana_manual_calificacion_update',
-                      kwargs={'pk_calificacion': self.calificacion_cliente_manual.pk})
-        post_data = self._obtener_post_data_calificacion_manual()
-        post_data['calificacion'] = self.calificacion_agenda.pk
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_manual.html')
-
-    def test_escoger_calificacion_gestion_llamada_manual_redirecciona_formulario_gestion(self):
-        url = reverse('campana_manual_calificacion_create',
-                      kwargs={'pk_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
-                              'telefono': self.contacto.pk})
-        post_data = self._obtener_post_data_calificacion_manual()
-        post_data['calificacion'] = self.calificacion_gestion.pk
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'campana_manual/calificacion_create_update.html')
-
     @patch('requests.post')
     def test_escoger_calificacion_agenda_redirecciona_formulario_agenda(self, post):
-        CalificacionClienteFactory.create(campana=self.campana, contacto=self.contacto,
-                                          agente=self.agente_profile)
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk,
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente()
-        post_data['calificacion'] = self.calificacion_agenda.pk
+        post_data['opcion_calificacion'] = self.opcion_calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_contacto.html')
 
@@ -226,12 +186,12 @@ class CalificacionTests(OMLBaseTest):
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente(campana=self.campana_dialer,
                                                                  contacto=self.contacto_dialer)
-        post_data['calificacion'] = self.calificacion_gestion.pk
+        post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         self.client.post(url, post_data, follow=True)
         log = WombatLog.objects.get(id=log.id)
         self.assertEqual(log.agente, self.agente_profile)
         self.assertEqual(log.estado, 'TERMINATED')
-        self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
+        self.assertEqual(log.calificacion, self.opcion_calificacion_gestion.nombre)
 
     @patch('requests.post')
     def test_update_wombat_log_despues_de_calificar(self, post):
@@ -246,10 +206,10 @@ class CalificacionTests(OMLBaseTest):
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente(campana=self.campana_dialer,
                                                                  contacto=self.contacto_dialer)
-        post_data['calificacion'] = self.calificacion_gestion.pk
+        post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         self.client.post(url, post_data, follow=True)
         log = WombatLog.objects.get(campana=self.campana_dialer, contacto=self.contacto_dialer)
-        self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
+        self.assertEqual(log.calificacion, self.opcion_calificacion_gestion.nombre)
 
         # Llega el WombatLog desde WombatDialer después de calificar (califica y luego cuelga)
         url = reverse('wombat_log')
@@ -282,10 +242,10 @@ class CalificacionTests(OMLBaseTest):
                               'wombat_id': 0})
         post_data = self._obtener_post_data_calificacion_cliente(campana=self.campana_dialer,
                                                                  contacto=self.contacto_dialer)
-        post_data['calificacion'] = self.calificacion_gestion.pk
+        post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         self.client.post(url, post_data, follow=True)
         log = WombatLog.objects.get(campana=self.campana_dialer, contacto=self.contacto_dialer)
-        self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
+        self.assertEqual(log.calificacion, self.opcion_calificacion_gestion.nombre)
 
         # Llega el WombatLog desde WombatDialer después de calificar (califica y luego cuelga)
         url = reverse('wombat_log')
@@ -303,21 +263,22 @@ class CalificacionTests(OMLBaseTest):
         self.assertEqual(response.json()['status'], 'OK')
         log = WombatLog.objects.get(id=log.id)
         self.assertEqual(log.agente, self.agente_profile)
-        self.assertEqual(log.calificacion, self.calificacion_gestion.nombre)
+        self.assertEqual(log.calificacion, self.opcion_calificacion_gestion.nombre)
 
     @patch('requests.post')
     def test_calificacion_cliente_marcada_agendado_cuando_se_salva_agenda(self, post):
-        calificacion_cliente = CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_agenda
+        self.calificacion_cliente.agendado = False
+        self.calificacion_cliente.save()
         url = reverse('agenda_contacto_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_agenda()
-        self.assertFalse(calificacion_cliente.agendado)
+        self.assertFalse(self.calificacion_cliente.agendado)
         self.client.post(url, post_data, follow=True)
-        calificacion_cliente.refresh_from_db()
-        self.assertTrue(calificacion_cliente.agendado)
+        self.calificacion_cliente.refresh_from_db()
+        self.assertTrue(self.calificacion_cliente.agendado)
 
     def _obtener_post_data_agenda(self):
         observaciones = 'test_schedule'
@@ -334,24 +295,14 @@ class CalificacionTests(OMLBaseTest):
                      'observaciones': observaciones}
         return post_data
 
-    def test_calificacion_manual_marcada_agendada_cuando_se_salva_agenda(self):
-        url = reverse('agenda_manual_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'telefono': self.contacto.telefono,
-                              'pk_campana': self.campana.pk})
-        post_data = self._obtener_post_data_agenda()
-        self.assertFalse(self.calificacion_cliente_manual.agendado)
-        self.client.post(url, post_data, follow=True)
-        self.calificacion_cliente_manual.refresh_from_db()
-        self.assertTrue(self.calificacion_cliente_manual.agendado)
-
     @patch('requests.post')
     def test_no_se_programan_en_wombat_agendas_globales_calificaciones_campanas_no_dialer(
             self, post):
         self.campana.type = Campana.TYPE_PREVIEW
         self.campana.save()
-        CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_agenda
+        self.calificacion_cliente.save()
+
         url = reverse('agenda_contacto_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
@@ -365,8 +316,8 @@ class CalificacionTests(OMLBaseTest):
             self, post):
         self.campana.type = Campana.TYPE_DIALER
         self.campana.save()
-        CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_agenda
+        self.calificacion_cliente.save()
         url = reverse('agenda_contacto_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
@@ -377,8 +328,7 @@ class CalificacionTests(OMLBaseTest):
 
     @patch('requests.post')
     def test_creacion_agenda_contacto_adiciona_campo_campana(self, post):
-        CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
+        self.calificacion_cliente.opcion_calificacion_gestion = self.opcion_calificacion_agenda
         url = reverse('agenda_contacto_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
@@ -387,16 +337,3 @@ class CalificacionTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         agenda_contacto = AgendaContacto.objects.first()
         self.assertEqual(agenda_contacto.campana.pk, self.campana.pk)
-
-    @patch('requests.post')
-    def test_creacion_agenda_manual_adiciona_campo_campana(self, post):
-        CalificacionClienteFactory.create(
-            campana=self.campana, contacto=self.contacto, agente=self.agente_profile)
-        url = reverse('agenda_manual_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'telefono': self.contacto.telefono,
-                              'pk_campana': self.campana.pk})
-        post_data = self._obtener_post_data_agenda()
-        self.client.post(url, post_data, follow=True)
-        agenda_manual = AgendaManual.objects.first()
-        self.assertEqual(agenda_manual.campana.pk, self.campana.pk)

@@ -11,7 +11,12 @@
                                     </h3>
                                 </td>
 
-
+                                <td>
+                                    <h5>
+                                        <b>Base Datos: </b>
+                                        {{ campana.bd_contacto }}
+                                    </h5>
+                                </td>
                                 <td><h5><a href="{% url 'exporta_csv_calificacon' campana.pk %}">Exportar Calificacion(CSV)</a></h5></td>
                                 <td><h5><a href="{% url 'exporta_csv_gestion' campana.pk %}">Exportar Gestion: {{campana.gestion}}(CSV)</a></h5></td>
                             </tr>
@@ -28,29 +33,25 @@
                       </tr>
                     </thead>
                     <tbody>
-                        {% for contacto in campana.calificacionmanual.all %}
+                        {% for calificacion in campana.obtener_calificaciones %}
                             <tr>
 
                                 <td>
-                                    {{ contacto.telefono }}
+                                    {{ calificacion.contacto.telefono }}
                                 </td>
                                 <td>
-                                    {% if contacto.es_gestion %}
+                                    {% if calificacion.es_venta %}
                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     {% else %}
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                {% if contacto.calificacion %}
-                                    {{ contacto.calificacion.nombre }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
+                                    {{ calificacion.opcion_calificacion.nombre }}
                                 </td>
                                 <td>
-                                    {% if contacto.observaciones %}
-                                        {{contacto.observaciones}}
+                                    {% if calificacion.observaciones %}
+                                        {{calificacion.observaciones}}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -58,7 +59,7 @@
                             <tr>
                                 <td colspan="16">
                                     <p class="text-center text-danger">
-                                        <em>No se encontraron Contactos para esta campaña.</em>
+                                        <em>No se encontraron Calificaciones para esta campaña.</em>
                                     </p>
                                 </td>
                             </tr>

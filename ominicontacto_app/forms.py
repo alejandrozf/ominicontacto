@@ -19,8 +19,8 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
+    ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
+    NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -506,6 +506,10 @@ class OpcionCalificacionModelChoiceField(ModelChoiceField):
 
 
 class CalificacionClienteForm(forms.ModelForm):
+    """
+    Formulario para la creacion de Calificaciones de Clientes
+    """
+
     opcion_calificacion = OpcionCalificacionModelChoiceField(
         OpcionCalificacion.objects.all(), empty_label='---------')
 
@@ -516,34 +520,10 @@ class CalificacionClienteForm(forms.ModelForm):
 
     class Meta:
         model = CalificacionCliente
-        fields = ('contacto', 'es_venta', 'agente', 'opcion_calificacion',
-                  'observaciones', 'agendado', 'wombat_id')
+        fields = ('opcion_calificacion', 'observaciones')
         widgets = {
-            'contacto': forms.HiddenInput(),
-            'es_venta': forms.HiddenInput(),
-            'agente': forms.HiddenInput(),
-            'agendado': forms.HiddenInput(),
-            'wombat_id': forms.HiddenInput(),
+            'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
         }
-
-    def clean_contacto(self):
-        contacto = self.cleaned_data.get('contacto', None)
-        if contacto:
-            if not contacto.bd_contacto == self.campana.bd_contacto:
-                raise forms.ValidationError('El Contacto no corresponde a la base de datos'
-                                            ' de la Campaña')
-            return contacto
-
-    def clean_opcion_calificacion(self):
-        opcion_calificacion = self.cleaned_data.get('opcion_calificacion', None)
-        if opcion_calificacion:
-            if opcion_calificacion not in self.campana.opciones_calificacion.all():
-                raise forms.ValidationError(_('Opción de calificación incorrecta'))
-            return opcion_calificacion
-
-
-class CalificacionClienteUpdateForm(CalificacionClienteForm):
-    fields = ('es_venta', 'opcion_calificacion', 'agente', 'observaciones', 'agendado', 'wombat_id')
 
 
 class GrupoAgenteForm(forms.Form):
@@ -1198,64 +1178,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         return tiempo_desconexion
 
 
-class CalificacionManualForm(forms.ModelForm):
-
-    def __init__(self, calificacion_choice, gestion, *args, **kwargs):
-        super(CalificacionManualForm, self).__init__(*args, **kwargs)
-        self.fields['calificacion'].queryset = calificacion_choice
-
-    class Meta:
-        model = CalificacionManual
-        fields = ('telefono', 'es_gestion', 'agente',
-                  'observaciones', 'agendado')
-        widgets = {
-            'campana': forms.HiddenInput(),
-            'es_gestion': forms.HiddenInput(),
-            'agente': forms.HiddenInput(),
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-            'agendado': forms.HiddenInput(),
-        }
-
-
-class FormularioManualGestionForm(forms.ModelForm):
-
-    def __init__(self, campos, *args, **kwargs):
-        super(FormularioManualGestionForm, self).__init__(*args, **kwargs)
-
-        for campo in campos:
-            if campo.tipo is FieldFormulario.TIPO_TEXTO:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.TextInput(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_FECHA:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.TextInput(
-                        attrs={'class': 'class-fecha form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_LISTA:
-                choices = [(option, option)
-                           for option in json.loads(campo.values_select)]
-                self.fields[campo.nombre_campo] = forms.ChoiceField(
-                    choices=choices,
-                    label=campo.nombre_campo, widget=forms.Select(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_TEXTO_AREA:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.Textarea(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-
-    class Meta:
-        model = CalificacionManual
-        fields = ('telefono',)
-
-        widgets = {
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-        }
-
-
 class CalificacionForm(forms.ModelForm):
     class Meta:
         model = NombreCalificacion
@@ -1267,23 +1189,6 @@ class CalificacionForm(forms.ModelForm):
             message = _('Esta calificación está reservada para el sistema')
             raise forms.ValidationError(message, code='invalid')
         return nombre
-
-
-class AgendaManualForm(forms.ModelForm):
-
-    class Meta:
-        model = AgendaManual
-        fields = ('telefono', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones', 'campana')
-        widgets = {
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-            'agente': forms.HiddenInput(),
-            'campana': forms.HiddenInput(),
-            'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
-            "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
-            "fecha": forms.TextInput(attrs={'class': 'form-control'}),
-            "hora": forms.TextInput(attrs={'class': 'form-control'}),
-        }
 
 
 class ArchivoDeAudioForm(forms.ModelForm):
