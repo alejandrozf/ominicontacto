@@ -941,12 +941,14 @@ class CampanasTests(OMLBaseTest):
     @patch.object(CampanaService, 'crear_endpoint_asociacion_campana_wombat')
     @patch.object(CampanaService, 'crear_lista_wombat')
     @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
+    @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_usuario_logueado_puede_crear_campana_dialer(
             self, crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
-            crear_lista_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
+            crear_lista_wombat, crear_lista_asociacion_campana_wombat,
+            chequear_campanas_finalizada_eliminarlas, crear_lista,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_dialer_create')
         nombre_campana = 'campana_dialer_test'
