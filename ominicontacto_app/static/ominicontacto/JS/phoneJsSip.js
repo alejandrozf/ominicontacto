@@ -697,6 +697,11 @@ $(function() {
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
 				getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
+				setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+					Sounds("", "stop");
+			    userAgent.terminateSessions();
+			    defaultCallState();
+				}, 60000);
 			}
 		} else {
       displayNumber.style.borderColor = "red";
