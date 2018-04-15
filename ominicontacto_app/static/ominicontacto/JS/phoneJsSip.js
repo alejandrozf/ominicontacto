@@ -667,6 +667,7 @@ $(function() {
   	  $("#modalSelectCmp").modal("show");
     } else {
 			makeCall();
+			Sounds("Out", "play");
 			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
 				Sounds("", "stop");
 				userAgent.terminateSessions();
