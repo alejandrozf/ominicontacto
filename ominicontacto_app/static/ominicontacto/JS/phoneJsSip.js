@@ -860,9 +860,15 @@ $(function() {
       if(callType === "In") {
         ring = document.getElementById('RingIn');
         ring.play();
+				ring.ended(function () {
+					ring.play();
+				});
       } else if(callType === "Out") {
         ring = document.getElementById('RingOut');
         ring.play();
+				ring.ended(function () {
+					ring.play();
+				});
       } else {
       	ring = document.getElementById('RingBusy');
         ring.play();
