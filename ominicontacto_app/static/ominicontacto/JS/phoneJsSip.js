@@ -522,15 +522,6 @@ $(function() {
       objRTCsession.session.sendDTMF('*098');
     }
 
-		function TerminarLlamada() {
-			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
-				Sounds("", "stop");
-		    userAgent.terminateSessions();
-		    defaultCallState();
-			}, 61000);
-		}
-
-
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
 			if(entrante) {
 				if(fromUser) { // fromUser es para entrantes
@@ -676,7 +667,11 @@ $(function() {
   	  $("#modalSelectCmp").modal("show");
     } else {
 			makeCall();
-			TerminarLlamada();
+			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+				Sounds("", "stop");
+				userAgent.terminateSessions();
+				defaultCallState();
+			}, 61000);
 		}
   });
 
@@ -703,7 +698,11 @@ $(function() {
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
 				getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
-				TerminarLlamada();
+				setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+					Sounds("", "stop");
+			    userAgent.terminateSessions();
+			    defaultCallState();
+				}, 61000);
 			}
 		} else {
       displayNumber.style.borderColor = "red";
@@ -727,7 +726,11 @@ $(function() {
 			$("#campAssocManualCall").html(headerNomCamp);
 			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
 	  	makeCall();
-			TerminarLlamada();
+			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+				Sounds("", "stop");
+		    userAgent.terminateSessions();
+		    defaultCallState();
+			}, 61000);
     } else {
 			$("#modalSelectCmp").modal("hide");
 			headerIdCamp = $("#cmpList").val();
