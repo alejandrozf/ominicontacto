@@ -522,6 +522,15 @@ $(function() {
       objRTCsession.session.sendDTMF('*098');
     }
 
+		function TerminarLlamada() {
+			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+				Sounds("", "stop");
+		    userAgent.terminateSessions();
+		    defaultCallState();
+			}, 61000);
+		}
+
+
 		e.session.on("ended",function() {               // Cuando Finaliza la llamada
 			if(entrante) {
 				if(fromUser) { // fromUser es para entrantes
@@ -661,17 +670,14 @@ $(function() {
 	});
 
   $("#redial").click(function () {// esto es para enviar un Invite/llamada
-		setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
-			Sounds("", "stop");
-	    userAgent.terminateSessions();
-	    defaultCallState();
-		}, 60000);
   	entrante = false;
   	num = lastDialedNumber;
 		if($("#campAssocManualCall").html() == "") {
   	  $("#modalSelectCmp").modal("show");
-    }
-		makeCall();
+    } else {
+			makeCall();
+			TerminarLlamada();
+		}
   });
 
   $("#endCall").click(function() {
@@ -697,11 +703,7 @@ $(function() {
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
 				getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
-				setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
-					Sounds("", "stop");
-			    userAgent.terminateSessions();
-			    defaultCallState();
-				}, 60000);
+				TerminarLlamada();
 			}
 		} else {
       displayNumber.style.borderColor = "red";
@@ -713,7 +715,7 @@ $(function() {
 	});
 
   $("#SelectCamp").click(function () {
-		if(displayNumber.value != "") {
+    if(displayNumber.value != "") {
 			$("#modalSelectCmp").modal("hide");
 	  	headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
@@ -725,12 +727,8 @@ $(function() {
 			$("#campAssocManualCall").html(headerNomCamp);
 			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
 	  	makeCall();
-			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
-				Sounds("", "stop");
-		    userAgent.terminateSessions();
-		    defaultCallState();
-			}, 60000);
-		} else {
+			TerminarLlamada();
+    } else {
 			$("#modalSelectCmp").modal("hide");
 			headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
