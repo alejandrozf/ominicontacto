@@ -661,6 +661,11 @@ $(function() {
 	});
 
   $("#redial").click(function () {// esto es para enviar un Invite/llamada
+		setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+			Sounds("", "stop");
+	    userAgent.terminateSessions();
+	    defaultCallState();
+		}, 60000);
   	entrante = false;
   	num = lastDialedNumber;
 		if($("#campAssocManualCall").html() == "") {
@@ -715,6 +720,11 @@ $(function() {
 			$("#campAssocManualCall").html(headerNomCamp);
 			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
 	  	makeCall();
+			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+				Sounds("", "stop");
+		    userAgent.terminateSessions();
+		    defaultCallState();
+			}, 60000);
 		} else {
 			$("#modalSelectCmp").modal("hide");
 			headerIdCamp = $("#cmpList").val();
