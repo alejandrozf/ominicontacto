@@ -95,10 +95,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(calificacion.contacto.telefono)
-                if calificacion.es_venta:
-                    lista_opciones.append(calificacion.campana.gestion)
-                else:
-                    lista_opciones.append(calificacion.calificacion)
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 lista_opciones.append(calificacion.agente)
                 lista_opciones.append(calificacion.contacto.bd_contacto)
@@ -160,7 +157,7 @@ class ArchivoDeReporteCsv(object):
                     # --- Finalmente, escribimos la linea
 
                     lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
+                                           for item in lista_opciones]
                     csvwiter.writerow(lista_opciones_utf8)
 
     def escribir_archivo_no_atendidos_csv(self, campana, no_contactados):
@@ -272,10 +269,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(calificacion.contacto.telefono)
-                if calificacion.es_venta:
-                    lista_opciones.append(calificacion.campana.gestion)
-                else:
-                    lista_opciones.append(calificacion.calificacion)
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 lista_opciones.append(calificacion.agente)
                 lista_opciones.append(calificacion.contacto.bd_contacto)
@@ -343,7 +337,7 @@ class ReporteCampanaContactadosCSV(object):
             campana, no_contactados)
 
     def obtener_url_reporte_csv_descargar(self, campana, nombre_reporte):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
+        # assert campana.estado == Campana.ESTADO_DEPURADA
 
         archivo_de_reporte = ArchivoDeReporteCsv(campana, nombre_reporte)
         if archivo_de_reporte.ya_existe():
@@ -355,7 +349,7 @@ class ReporteCampanaContactadosCSV(object):
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
     def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):
-        return campana.calificaconcliente.filter(
+        return campana.obtener_calificaciones().filter(
             fecha__range=(fecha_desde, fecha_hasta))
 
     def _obtener_listado_no_contactado_fecha(self, campana, fecha_desde, fecha_hasta):

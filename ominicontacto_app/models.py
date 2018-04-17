@@ -21,6 +21,7 @@ from django.db import models, connection
 from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra, datetime_hora_minima_dia, \
     datetime_hora_maxima_dia
@@ -230,7 +231,7 @@ class SupervisorProfile(models.Model):
         self.save()
 
 
-class CalificacionManager(models.Manager):
+class NombreCalificacionManager(models.Manager):
     def usuarios(self):
         """
         Devuelve todas las calificaciones excepto la restringida de sistema
@@ -239,22 +240,12 @@ class CalificacionManager(models.Manager):
         return self.exclude(nombre=settings.CALIFICACION_REAGENDA)
 
 
-class Calificacion(models.Model):
+class NombreCalificacion(models.Model):
     nombre = models.CharField(max_length=50)
-    objects = CalificacionManager()
+    objects = NombreCalificacionManager()
 
     def es_reservada(self):
         return self.nombre == settings.CALIFICACION_REAGENDA
-
-    def __unicode__(self):
-        return self.nombre
-
-
-class CalificacionCampana(models.Model):
-    """Clase Version
-    Atributos: Calificacion, nombre. """
-    nombre = models.CharField(max_length=50)
-    calificacion = models.ManyToManyField(Calificacion)
 
     def __unicode__(self):
         return self.nombre
@@ -405,38 +396,6 @@ class ArchivoDeAudio(models.Model):
 
 class CampanaManager(models.Manager):
 
-    def obtener_en_definicion_para_editar(self, campana_id):
-        """Devuelve la campaña pasada por ID, siempre que dicha
-        campaña pueda ser editar (editada en el proceso de
-        definirla, o sea, en el proceso de "creacion" de la
-        campaña).
-
-        En caso de no encontarse, lanza SuspiciousOperation
-        """
-        try:
-            return self.filter(
-                estado=self.model.ESTADO_EN_DEFINICION).get(
-                pk=campana_id)
-        except self.model.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro campana %s en "
-                                      "estado ESTADO_EN_DEFINICION"))
-
-    def obtener_template_en_definicion_para_editar(self, campana_id):
-        """Devuelve la campaña template pasada por ID, siempre que dicha
-        campaña pueda ser editar (editada en el proceso de
-        definirla, o sea, en el proceso de "creacion" de la
-        campaña).
-
-        En caso de no encontarse, lanza SuspiciousOperation
-        """
-        try:
-            return self.filter(
-                estado=self.model.ESTADO_TEMPLATE_EN_DEFINICION).get(
-                pk=campana_id)
-        except self.model.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro campana %s en "
-                                      "estado ESTADO_TEMPLATE_EN_DEFINICION"))
-
     def obtener_pausadas(self):
         """
         Devuelve campañas en estado pausadas.
@@ -535,16 +494,29 @@ class CampanaManager(models.Manager):
         """
         return self.filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
 
-    def crea_campana_de_template(self, template):
+    def obtener_templates_activos_entrantes(self):
         """
-        Este método se encarga de crear una campana a partir del template
-        proporcionado.
+        Devuelve templates de campañas entrantes en estado activo.
         """
-        assert template.estado == Campana.ESTADO_TEMPLATE_ACTIVO
-        assert template.es_template
+        return self.obtener_campanas_entrantes().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
 
-        campana = Campana.objects.replicar_campana(template)
-        return campana
+    def obtener_templates_activos_dialer(self):
+        """
+        Devuelve templates de campañas dialer en estado activo.
+        """
+        return self.obtener_campanas_dialer().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+
+    def obtener_templates_activos_manuales(self):
+        """
+        Devuelve templates de campañas manuales en estado activo.
+        """
+        return self.obtener_campanas_manuales().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+
+    def obtener_templates_activos_preview(self):
+        """
+        Devuelve templates de campañas preview en estado activo.
+        """
+        return self.obtener_campanas_preview().filter(estado=Campana.ESTADO_TEMPLATE_ACTIVO)
 
     def replicar_campana(self, campana, nombre_campana=None, bd_contacto=None):
         """
@@ -569,7 +541,6 @@ class CampanaManager(models.Manager):
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=base_datos_sugerida,
-            calificacion_campana=campana.calificacion_campana,
             gestion=campana.gestion,
             type=campana.type,
             formulario=campana.formulario,
@@ -578,6 +549,28 @@ class CampanaManager(models.Manager):
             reported_by=campana.reported_by,
             objetivo=campana.objetivo,
         )
+
+        # Se replican las opciones de calificación
+        opciones_calificacion = []
+        for opcion_calificacion in campana.opciones_calificacion.all():
+            if not opcion_calificacion.es_agenda():
+                # no se replica la opcion de calificación de agenda pues
+                # debe crearse cuando se crea la campaña desde el wizard
+                opcion_calificacion_replicada = OpcionCalificacion(
+                    campana=campana_replicada, nombre=opcion_calificacion.nombre,
+                    tipo=opcion_calificacion.tipo)
+                opciones_calificacion.append(opcion_calificacion_replicada)
+        OpcionCalificacion.objects.bulk_create(opciones_calificacion)
+
+        # se replican los parámetros para web form
+        parametros_web_form = []
+        for parametro_web_form in campana.parametros_extra_para_webform.all():
+            parametro = parametro_web_form.parametro
+            columna = parametro_web_form.columna
+            parametro_web_form_replicado = ParametroExtraParaWebform(
+                campana=campana_replicada, parametro=parametro, columna=columna)
+            parametros_web_form.append(parametro_web_form_replicado)
+        ParametroExtraParaWebform.objects.bulk_create(parametros_web_form)
 
         # Replica Cola
         Queue.objects.create(
@@ -708,9 +701,6 @@ class Campana(models.Model):
 
     objects = CampanaManager()
 
-    ESTADO_EN_DEFINICION = 1
-    """La campaña esta siendo definida en el wizard"""
-
     ESTADO_ACTIVA = 2
     """La campaña esta activa, o sea, EN_CURSO o PROGRAMADA
     A nivel de modelos, solo queremos registrar si está ACTIVA, y no nos
@@ -733,9 +723,6 @@ class Campana(models.Model):
     ESTADO_INACTIVA = 6
     """La campaña inactiva"""
 
-    ESTADO_TEMPLATE_EN_DEFINICION = 7
-    """La campaña se creo como template y esta en proceso de definición."""
-
     ESTADO_TEMPLATE_ACTIVO = 8
     """La campaña se creo como template y esta activa, en condición de usarse
     como tal."""
@@ -745,14 +732,12 @@ class Campana(models.Model):
     como tal."""
 
     ESTADOS = (
-        (ESTADO_EN_DEFINICION, 'En definicion'),
         (ESTADO_ACTIVA, 'Activa'),
         (ESTADO_FINALIZADA, 'Finalizada'),
         (ESTADO_BORRADA, 'Borrada'),
         (ESTADO_PAUSADA, 'Pausada'),
         (ESTADO_INACTIVA, 'Inactiva'),
 
-        (ESTADO_TEMPLATE_EN_DEFINICION, '(Template en definicion)'),
         (ESTADO_TEMPLATE_ACTIVO, 'Template Activo'),
         (ESTADO_TEMPLATE_BORRADO, 'Template Borrado'),
     )
@@ -788,14 +773,11 @@ class Campana(models.Model):
 
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
-        default=ESTADO_EN_DEFINICION,
+        default=ESTADO_INACTIVA,
     )
     nombre = models.CharField(max_length=128, unique=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
-    calificacion_campana = models.ForeignKey(CalificacionCampana,
-                                             related_name="calificacioncampana"
-                                             )
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
         null=True, blank=True,
@@ -1005,6 +987,17 @@ class Campana(models.Model):
         if self.queue_campana:
             return self.queue_campana.get_string_queue_asterisk()
 
+    def gestionar_opcion_calificacion_agenda(self):
+        """
+        Devuelve la opción de calificación de agenda para la campaña.
+        En caso de no existir la crea.
+        """
+        OpcionCalificacion.objects.get_or_create(
+            campana=self, nombre=settings.CALIFICACION_REAGENDA, tipo=OpcionCalificacion.AGENDA)
+
+    def obtener_calificaciones(self):
+        return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
+
 
 class QueueManager(models.Manager):
 
@@ -1020,6 +1013,59 @@ class QueueManager(models.Manager):
         Devuelve queue excluyendo las campanas borradas
         """
         return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
+
+
+class OpcionCalificacion(models.Model):
+    """
+    Especifica el tipo de formulario al cual será redireccionada
+    la gestión de un contacto en una campaña de acuerdo a la
+    calificacion escogida
+    """
+    # no se redireccionara a ningún formulario, solo se salvará la calificación
+    NO_ACCION = 0
+
+    # será le dará tratamiento usando el formulario de gestión
+    GESTION = 1
+
+    # será le dará tratamiento usando el formulario de agenda cuando se elija la calificación
+    # reservada para el sistema, no elegible por el usuario)
+    AGENDA = 2
+
+    FORMULARIO_CHOICES = (
+        (GESTION, _('Gestión')),
+        (NO_ACCION, _('Sin acción')),
+        (AGENDA, _('Agenda')),
+    )
+    FORMULARIO_CHOICES_NO_AGENDA = (
+        (GESTION, _('Gestión')),
+        (NO_ACCION, _('Sin acción')),
+    )
+    campana = models.ForeignKey(
+        Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
+    tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
+    nombre = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
+            self.nombre, self.campana.nombre, self.get_tipo_display()))
+
+    def es_agenda(self):
+        return self.tipo == self.AGENDA
+
+    def es_gestion(self):
+        return self.tipo == self.GESTION
+
+    def usada_en_calificacion(self):
+        """
+        Determina si opción de calificación está siendo usada en la campaña
+        """
+        return self.calificaciones_cliente.exists()
+
+    def no_editable(self):
+        """
+        Determina si la opción de calificada puede ser editada/eliminada en la campaña
+        """
+        return self.es_agenda() or self.usada_en_calificacion()
 
 
 class Queue(models.Model):
@@ -2228,32 +2274,41 @@ class CalificacionClienteManager(models.Manager):
     def obtener_cantidad_calificacion_campana(self, campana):
         try:
             return self.values('calificacion').annotate(
-                cantidad=Count('calificacion')).filter(campana=campana)
+                cantidad=Count('calificacion')).filter(opcion_calificacion__campana=campana)
         except CalificacionCliente.DoesNotExist:
             raise (SuspiciousOperation("No se encontro califacaciones "))
+
+    def obtener_calificaciones_gestion(self):
+        """
+        Devuelve todas las calificaciones de tipo gestión
+        """
+        return self.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
 
 
 class CalificacionCliente(models.Model):
     # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
     objects = CalificacionClienteManager()
 
-    campana = models.ForeignKey(Campana, related_name="calificaconcliente")
     contacto = models.ForeignKey(Contacto)
     es_venta = models.BooleanField(default=False)
-    calificacion = models.ForeignKey(Calificacion, blank=False, null=True)
+    opcion_calificacion = models.ForeignKey(
+        OpcionCalificacion, blank=False, related_name='calificaciones_cliente')
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
     observaciones = models.TextField(blank=True, null=True)
     wombat_id = models.IntegerField(default=0)
     agendado = models.BooleanField(default=False)
 
+    # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
+    es_calificacion_manual = models.BooleanField(default=False)
+
     def __unicode__(self):
         return "Calificacion para la campana {0} para el contacto " \
-               "{1} ".format(self.campana, self.contacto)
+               "{1} ".format(self.opcion_calificacion.campana, self.contacto)
 
     def get_venta(self):
         try:
-            return MetadataCliente.objects.get(campana=self.campana,
+            return MetadataCliente.objects.get(campana=self.opcion_calificacion.campana,
                                                agente=self.agente,
                                                contacto=self.contacto)
         except MetadataCliente.DoesNotExist:
@@ -2262,7 +2317,14 @@ class CalificacionCliente(models.Model):
             return None
 
     def set_es_venta(self):
-        self.es_venta = self.campana.gestion == self.calificacion.nombre
+        # TODO: Usar metodo de OpcionCalificacion.es_gestion()
+        # self.es_venta = self.opcion_calificacion.es_gestion()
+        self.es_venta = self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
+
+    def es_agenda(self):
+        # TODO: Usar metodo de OpcionCalificacion.es_agenda()
+        # return self.opcion_calificacion.es_agenda()
+        return self.opcion_calificacion.tipo == OpcionCalificacion.AGENDA
 
 
 class DuracionDeLlamada(models.Model):
@@ -2296,6 +2358,7 @@ class DuracionDeLlamada(models.Model):
 
 
 class MetadataCliente(models.Model):
+    # Información del formulario de gestión completado en una Calificacion.
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
     campana = models.ForeignKey(Campana, related_name="metadatacliente")
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
@@ -2334,11 +2397,11 @@ class WombatLogManager(models.Manager):
         """
         try:
             WombatLog.objects.update_or_create(
-                campana=calificacion.campana, contacto=calificacion.contacto,
+                campana=calificacion.opcion_calificacion.campana, contacto=calificacion.contacto,
                 defaults={
                     'agente': calificacion.agente,
                     'estado': 'TERMINATED',
-                    'calificacion': calificacion.calificacion.nombre,
+                    'calificacion': calificacion.opcion_calificacion.nombre,
                 })
         except WombatLog.MultipleObjectsReturned:
             # Error, no debeía haber otro WombatLog. Puede deberse a una race condition entre la
@@ -3047,77 +3110,6 @@ class UserApiCrm(models.Model):
 
     def __unicode__(self):
         return self.usuario
-
-
-class CalificacionManual(models.Model):
-
-    # objects = CalificacionClienteManager()
-
-    campana = models.ForeignKey(Campana, related_name="calificacionmanual")
-    telefono = models.CharField(max_length=128)
-    es_gestion = models.BooleanField(default=False)
-    calificacion = models.ForeignKey(Calificacion, blank=False, null=True)
-    fecha = models.DateTimeField(auto_now_add=True)
-    agente = models.ForeignKey(AgenteProfile, related_name="calificacionesmanuales")
-    observaciones = models.TextField(blank=True, null=True)
-    agendado = models.BooleanField(default=False)
-    metadata = models.TextField(blank=True, null=True)
-
-    def __unicode__(self):
-        return "Calificacion manual para la campana {0} para el telefono " \
-               "{1} ".format(self.campana, self.telefono)
-
-
-class AgendaManualManager(models.Manager):
-
-    def eventos_fecha_hoy(self):
-        try:
-            return self.filter(fecha=datetime.datetime.today())
-        except AgendaContacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
-                                       "fecha"))
-
-    def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
-        eventos = self.filter(tipo_agenda=AgendaManual.TYPE_PERSONAL)
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-            eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
-        else:
-            hoy_ahora = datetime.datetime.today()
-            hoy = hoy_ahora.date()
-            eventos = eventos.filter(fecha__gte=hoy)
-        return eventos.order_by('-fecha')
-
-
-class AgendaManual(models.Model):
-    objects = AgendaManualManager()
-
-    TYPE_PERSONAL = 1
-    """Tipo de agenda Personal"""
-
-    TYPE_GLOBAL = 2
-    """Tipo de agenda Global"""
-
-    TYPE_AGENDA_CHOICES = (
-        (TYPE_PERSONAL, 'PERSONAL'),
-        (TYPE_GLOBAL, 'GLOBAL'),
-    )
-
-    agente = models.ForeignKey(AgenteProfile, related_name="agendamanual")
-    telefono = models.CharField(max_length=128)
-    fecha = models.DateField()
-    hora = models.TimeField()
-    tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
-    observaciones = models.TextField(blank=True, null=True)
-    campana = models.ForeignKey(Campana, related_name="agendas_manuales", null=True)
-
-    def __unicode__(self):
-        return "Agenda para el telefono {0} agendado por el agente {1}" \
-               " para la fecha {2} a la hora {3}hs ".format(
-                   self.telefono, self.agente, self.fecha, self.hora)
 
 
 class AgenteEnContacto(models.Model):

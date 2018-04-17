@@ -9,7 +9,6 @@ from __future__ import unicode_literals
 import csv
 import logging
 import os
-import json
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -69,21 +68,18 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las calificaciones de la campana
-            for calificacion in campana.calificacionmanual.all():
+            for calificacion in campana.obtener_calificaciones():
                 lista_opciones = []
 
                 # --- Buscamos datos
 
-                lista_opciones.append(calificacion.telefono)
+                lista_opciones.append(calificacion.contacto.telefono)
 
-                if calificacion.es_gestion:
+                if calificacion.es_venta:
                     lista_opciones.append("SI")
                 else:
                     lista_opciones.append("NO")
-                if calificacion.calificacion:
-                    lista_opciones.append(calificacion.calificacion.nombre)
-                else:
-                    lista_opciones.append("N/A")
+                lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
 
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')

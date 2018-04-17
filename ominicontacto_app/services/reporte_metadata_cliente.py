@@ -102,18 +102,18 @@ class ArchivoDeReporteCsv(object):
 class ReporteMetadataClienteService(object):
 
     def crea_reporte_csv(self, campana):
-        #assert campana.estado == Campana.ESTADO_ACTIVA
+        # assert campana.estado == Campana.ESTADO_ACTIVA
 
         archivo_de_reporte = ArchivoDeReporteCsv(campana)
 
         archivo_de_reporte.crear_archivo_en_directorio()
 
-        #opciones_por_contacto = self._obtener_opciones_por_contacto(campana)
+        # opciones_por_contacto = self._obtener_opciones_por_contacto(campana)
 
         archivo_de_reporte.escribir_archivo_csv(campana)
 
     def obtener_url_reporte_csv_descargar(self, campana):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
+        # assert campana.estado == Campana.ESTADO_DEPURADA
 
         archivo_de_reporte = ArchivoDeReporteCsv(campana)
         if archivo_de_reporte.ya_existe():
@@ -123,3 +123,12 @@ class ReporteMetadataClienteService(object):
         logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
                      " CSV de descarga para la campana %s", campana.pk)
         assert os.path.exists(archivo_de_reporte.url_descarga)
+
+    def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):
+        return campana.obtener_calificaciones().filter(
+            fecha__range=(fecha_desde, fecha_hasta))
+
+    def _obtener_listado_no_califico_fecha(self, campana, fecha_desde, fecha_hasta):
+        return campana.logswombat.filter(
+            fecha_hora__range=(fecha_desde, fecha_hasta), estado="TERMINATED",
+            calificacion='')

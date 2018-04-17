@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+
+{% block content %}
+    <div class="col-md-10 col-md-offset-1">
+
+        <h4><b>Lista templates para campañas manual</b></h4>
+        <table class="table table-stripped table-condensed table-bordered">
+            <thead>
+                <tr>
+                    <th>{% trans 'Nombre' %}</th>
+                    <th>{% trans 'Acciones' %};</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campana in templates_activos_manuales %}
+                    <tr>
+                        <td width="25%">
+                            <a href="{% url 'campana_manual_template_detail' campana.pk %}">
+                                {{ campana.nombre }}
+                            </a>
+                        </td>
+
+                        <td width="14%">
+                            <a href="{% url 'campana_manual_template_create_campana' campana.pk %}"  class="btn btn-success btn-sm">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                {% trans 'Crear Campaña desde Template' %}
+                            </a>
+                            <a href="{% url 'campana_manual_template_delete' campana.pk %}"  class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                {% trans 'Eliminar' %}
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5"> {% trans 'No existen templates para campañas manuales' %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

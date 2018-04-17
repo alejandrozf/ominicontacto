@@ -5,7 +5,7 @@
 {% block content %}
 <div class="col-md-10 col-md-offset-1">
 
-    <h4><b>Lista template</b></h4>
+    <h4><b>Lista templates para campañas dialer</b></h4>
     <table class="table table-stripped table-condensed table-bordered">
         <thead>
             <tr>
@@ -29,7 +29,7 @@
                 </td>
 
                 <td width="14%">
-                    <a href="{% url 'crea_campana_dialer_template' campana.pk %}"  class="btn btn-success btn-sm">
+                    <a href="{% url 'crea_campana_dialer_template' campana.pk 0 %}"  class="btn btn-success btn-sm">
                                             <span class="glyphicon glyphicon-plus"></span>
                                             Crear Campaña de Template
                                         </a>

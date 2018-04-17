@@ -8,146 +8,130 @@ from ast import literal_eval
 from collections import defaultdict
 from random import choice
 
-from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count
 from django.db.utils import DatabaseError
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
-from django.views.generic import CreateView, UpdateView, View, DetailView
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, View, DetailView, DeleteView
 
-from ominicontacto_app.models import (BaseDatosContacto, Campana, Queue, AgenteEnContacto,
-                                      CalificacionCliente)
-from ominicontacto_app.forms import CampanaPreviewForm, CampanaPreviewUpdateForm
-from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
-from ominicontacto_app.views_campana_dialer_reportes import CampanaDialerReporteGrafico
+from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
+                                     ParametroExtraParaWebformFormSet)
+from ominicontacto_app.models import AgenteEnContacto, CalificacionCliente, Campana
+from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
+                                                      CampanaTemplateCreateMixin,
+                                                      CampanaTemplateCreateCampanaMixin,
+                                                      CampanaTemplateDeleteMixin)
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
+from ominicontacto_app.views_campana_dialer_reportes import CampanaDialerReporteGrafico
+from ominicontacto_app.views_campana_manual_creacion import (CampanaManualCreateView,
+                                                             CampanaManualUpdateView)
+from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView
+
 
 logger = logging_.getLogger(__name__)
 
 
-class CampanaPreviewCreateView(CreateView):
+class CampanaPreviewMixin(CampanaWizardMixin):
+    INICIAL = '0'
+    COLA = None
+    OPCIONES_CALIFICACION = '1'
+    PARAMETROS_EXTRA_WEB_FORM = '2'
+
+    FORMS = [(INICIAL, CampanaPreviewForm),
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet)]
+
+    TEMPLATES = {INICIAL: "campana_preview/campana_preview.html",
+                 OPCIONES_CALIFICACION: "campana_preview/opcion_calificacion.html",
+                 PARAMETROS_EXTRA_WEB_FORM: "campana_preview/parametros_extra_web_form.html"}
+
+    form_list = FORMS
+
+
+class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
     """
     Crea una campaña de tipo Preview
     """
-    model = Campana
-    template_name = 'campana_preview/campana_preview.html'
-    context_object_name = 'campana'
-    form_class = CampanaPreviewForm
 
-    def dispatch(self, request, *args, **kwargs):
-        base_datos = BaseDatosContacto.objects.obtener_definidas().exists()
-        if not base_datos:
-            message = ("Debe cargar una base de datos antes de comenzar a "
-                       "configurar una campana")
-            messages.warning(self.request, message)
-        return super(CampanaPreviewCreateView, self).dispatch(request, *args, **kwargs)
-
-    def form_invalid(self, form, error=''):
-        message = 'Operación Errónea! {0}'.format(error)
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-        return render(self.request, 'campana_preview/campana_preview.html', {'form': form})
-
-    def form_valid(self, form):
-        tipo_interaccion = form.instance.tipo_interaccion
-        if tipo_interaccion is Campana.FORMULARIO and not form.instance.formulario:
-            error = "Debe seleccionar un formulario"
-            return self.form_invalid(form, error=error)
-        elif tipo_interaccion is Campana.SITIO_EXTERNO and not form.instance.sitio_externo:
-            error = "Debe seleccionar un sitio externo"
-            return self.form_invalid(form, error=error)
-        form.instance.type = Campana.TYPE_PREVIEW
-        form.instance.reported_by = self.request.user
-        form.instance.estado = Campana.ESTADO_ACTIVA
-        form.save()
-        auto_grabacion = form.cleaned_data['auto_grabacion']
-        detectar_contestadores = form.cleaned_data['detectar_contestadores']
-        queue = Queue(
-            campana=form.instance,
-            name=form.instance.nombre,
-            maxlen=5,
-            wrapuptime=5,
-            servicelevel=30,
-            strategy='rrmemory',
-            eventmemberstatus=True,
-            eventwhencalled=True,
-            ringinuse=True,
-            setinterfacevar=True,
-            weight=0,
-            wait=120,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
-            auto_grabacion=auto_grabacion,
-            detectar_contestadores=detectar_contestadores
-        )
-        queue.save()
-
+    def done(self, form_list, **kwargs):
+        queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_PREVIEW)
         # rellenar la tabla que relación agentes y contactos con los valores iniciales
-        form.instance.establecer_valores_iniciales_agente_contacto()
+        queue.campana.establecer_valores_iniciales_agente_contacto()
         # crear(sobreescribir) archivo de crontab con la configuración de llamadas al procedimiento
         # de actualización de las asignaciones de agente a contactos
-        form.instance.crear_tarea_actualizacion()
-        return super(CampanaPreviewCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse('campana_preview_list')
+        queue.campana.crear_tarea_actualizacion()
+        return HttpResponseRedirect(reverse('campana_preview_list'))
 
 
-class CampanaPreviewUpdateView(UpdateView):
+class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
     """
-    Esta vista actualiza un objeto Campana.
+    Modifica una campaña de tipo Preview
     """
 
+    def done(self, form_list, **kwargs):
+        self._save_forms(form_list, **kwargs)
+        return HttpResponseRedirect(reverse('campana_preview_list'))
+
+
+class CampanaPreviewTemplateListView(ListView):
+    """
+    Vista que muestra todos los templates de campañas entrantes activos
+    """
+    template_name = "campana_preview/lista_template.html"
+    context_object_name = 'templates_activos_preview'
     model = Campana
-    template_name = 'campana_preview/campana_preview_update.html'
-    context_object_name = 'campana'
-    form_class = CampanaPreviewUpdateForm
 
-    def get_initial(self):
-        initial = super(CampanaPreviewUpdateView, self).get_initial()
-        campana = self.get_object()
-        initial.update({
-            'auto_grabacion': campana.queue_campana.auto_grabacion,
-            'detectar_contestadores': campana.queue_campana.detectar_contestadores})
+    def get_queryset(self):
+        return Campana.objects.obtener_templates_activos_preview()
+
+
+class CampanaPreviewTemplateCreateView(CampanaTemplateCreateMixin, CampanaPreviewCreateView):
+    """
+    Crea una campaña sin acción en el sistema, sólo con el objetivo de servir de
+    template base para agilizar la creación de las campañas preview
+    """
+    def done(self, form_list, **kwargs):
+        self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO, Campana.TYPE_PREVIEW)
+        return HttpResponseRedirect(reverse('campana_preview_template_list'))
+
+
+class CampanaPreviewTemplateCreateCampanaView(
+        CampanaTemplateCreateCampanaMixin, CampanaPreviewCreateView):
+    """
+    Crea una campaña preview a partir de una campaña de template existente
+    """
+    def get_form_initial(self, step):
+        initial = super(CampanaPreviewTemplateCreateCampanaView, self).get_form_initial(step)
+        if step == self.INICIAL:
+            pk = self.kwargs.get('pk_campana_template', None)
+            campana_template = get_object_or_404(Campana, pk=pk)
+            initial['auto_grabacion'] = campana_template.queue_campana.auto_grabacion
+            initial['tiempo_desconexion'] = campana_template.tiempo_desconexion
         return initial
 
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
-    def form_valid(self, form):
-        tipo_interaccion = form.instance.tipo_interaccion
-        if tipo_interaccion is Campana.FORMULARIO and \
-           not form.instance.formulario:
-            error = "Debe seleccionar un formulario"
-            return self.form_invalid(form, error=error)
-        elif tipo_interaccion is Campana.SITIO_EXTERNO and not form.instance.sitio_externo:
-            error = "Debe seleccionar un sitio externo"
-            return self.form_invalid(form, error=error)
-        form.save()
-        auto_grabacion = form.cleaned_data['auto_grabacion']
-        detectar_contestadores = form.cleaned_data['detectar_contestadores']
-        queue = self.object.queue_campana
-        queue.auto_grabacion = auto_grabacion
-        queue.detectar_contestadores = detectar_contestadores
-        queue.save()
-        return super(CampanaPreviewUpdateView, self).form_valid(form)
+class CampanaPreviewTemplateDetailView(DetailView):
+    """
+    Muestra el detalle de un template para crear una campaña preview
+    """
+    template_name = "campana_preview/detalle_campana_template.html"
+    model = Campana
 
-    def form_invalid(self, form, error=''):
-        message = 'Operación Errónea! {0}'.format(error)
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-        return render(self.request, 'campana_preview/campana_preview.html', {'form': form})
+
+class CampanaPreviewTemplateDeleteView(CampanaTemplateDeleteMixin, DeleteView):
+    """
+    Esta vista se encarga de la eliminación del
+    objeto Campana Preview-->Template.
+    """
+    model = Campana
+    template_name = "campana_preview/delete_campana_template.html"
 
     def get_success_url(self):
-        return reverse('campana_preview_list')
+        return reverse("campana_preview_template_list")
 
 
 class CampanaPreviewDeleteView(CampanaManualDeleteView):
@@ -218,7 +202,7 @@ def campana_mostrar_ocultar_view(request, *args, **kwargs):
 
 def campana_validar_contacto_asignado_view(request, *args, **kwargs):
     """
-    Cambia el atributo 'oculto' de la campaña hacia el valor opuesto (muestra/oculta)
+    Valida si un contacto sigue asignado al agente que quiere llamarlo
     """
     campana_id = request.POST.get('pk_campana')
     agente_id = request.POST.get('pk_agente')
@@ -299,12 +283,12 @@ class CampanaPreviewDetailView(DetailView):
         counts_categorias = defaultdict(int)
 
         for cat_data in finalizadas_categorias_count_dict:
-            cat_count = cat_data['calificacion__nombre__count']
-            cat_name = cat_data['calificacion__nombre']
+            cat_count = cat_data['opcion_calificacion__nombre__count']
+            cat_name = cat_data['opcion_calificacion__nombre']
             if cat_count > 0:
                 counts_categorias[cat_name] = cat_count
 
-                # se contabilizan juntas las calificaciones con la etiqueta 'Ventas
+        # se contabilizan juntas las calificaciones con la etiqueta 'Ventas
         # y las que tienen el atributo 'is_venta' igual a True, pero no poseen etiqueta
         counts_categorias['Venta'] += count_ventas
 
@@ -313,7 +297,8 @@ class CampanaPreviewDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CampanaPreviewDetailView, self).get_context_data(**kwargs)
         campana = self.get_object()
-        qs_campana_calificaciones = CalificacionCliente.objects.filter(campana_id=campana.pk)
+        qs_campana_calificaciones = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana__pk=campana.pk)
 
         context['terminadas'] = qs_campana_calificaciones.count()
         context['estimadas'] = campana.bd_contacto.contactos.count() - context['terminadas']
@@ -324,7 +309,7 @@ class CampanaPreviewDetailView(DetailView):
 
             finalizadas_ventas_count = qs_finalizadas_ventas.count()
             finalizadas_otras_categorias_count_dict = qs_finalizadas_otras_categorias.values(
-                'calificacion__nombre').annotate(Count('calificacion__nombre'))
+                'opcion_calificacion__nombre').annotate(Count('opcion_calificacion__nombre'))
             cats_dict = self._crear_dict_categorias(
                 finalizadas_ventas_count, finalizadas_otras_categorias_count_dict)
             context['categorias'] = cats_dict

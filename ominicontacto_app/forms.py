@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import json
 from django import forms
 from django.conf import settings
-from django.forms.models import inlineformset_factory
+from django.forms.models import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
@@ -19,14 +19,15 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile, CalificacionManual,
-    AgendaManual, ArchivoDeAudio, Calificacion, CalificacionCampana, ParametroExtraParaWebform
+    ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
+    NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
 )
-
+from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_gestion_campanas, validar_solo_ascii_y_sin_espacios)
+                                      validar_solo_ascii_y_sin_espacios)
 
 TIEMPO_MINIMO_DESCONEXION = 2
+EMPTY_CHOICE = ('', '---------')
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -132,7 +133,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['announce_frequency'].required = False
         audios_choices = [(audio.id, audio.descripcion)
                           for audio in audios_choices]
-        audios_choices.insert(0, ('', '---------'))
+        audios_choices.insert(0, EMPTY_CHOICE)
         self.fields['audios'].choices = audios_choices
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
@@ -140,28 +141,35 @@ class QueueEntranteForm(forms.ModelForm):
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
-                  'audios', 'announce_frequency', 'audio_de_ingreso')
+                  'audios', 'announce_frequency', 'audio_de_ingreso', 'campana')
 
         help_texts = {
             'timeout': """En segundos """,
         }
         widgets = {
-            'campana': forms.HiddenInput(),
             'name': forms.HiddenInput(),
-            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
-            "retry": forms.TextInput(attrs={'class': 'form-control'}),
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
+            'campana': forms.HiddenInput(),
+            'timeout': forms.TextInput(attrs={'class': 'form-control'}),
+            'retry': forms.TextInput(attrs={'class': 'form-control'}),
+            'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
+            'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            'weight': forms.TextInput(attrs={'class': 'form-control'}),
+            'wait': forms.TextInput(attrs={'class': 'form-control'}),
             'audios': forms.Select(attrs={'class': 'form-control'}),
-            "announce_frequency": forms.TextInput(attrs={'class': 'form-control'}),
+            'announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def clean_maxlen(self):
+        maxlen = self.cleaned_data.get('maxlen')
+        if not maxlen > 0:
+            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
+                                        ' mayor a cero')
+        return maxlen
+
     def clean_announce_frequency(self):
-        audio = self.cleaned_data.get('audio', None)
+        audio = self.cleaned_data.get('audios', None)
         frequency = self.cleaned_data.get('announce_frequency', None)
         if audio and not (frequency > 0):
             raise forms.ValidationError(
@@ -182,65 +190,6 @@ class QueueMemberForm(forms.ModelForm):
     class Meta:
         model = QueueMember
         fields = ('member', 'penalty')
-
-
-class QueueEntranteUpdateForm(forms.ModelForm):
-    """
-    El form para actualizar la cola para las llamadas
-    """
-
-    audios = forms.ChoiceField(choices=[], required=False)
-
-    def __init__(self, audios_choices, id_audio, *args, **kwargs):
-        super(QueueEntranteUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['timeout'].required = True
-        self.fields['retry'].required = True
-        self.fields['announce_frequency'].required = False
-        audios_choices = [(audio.id, audio.descripcion)
-                          for audio in audios_choices]
-        audios_choices.insert(0, ('', '---------'))
-        self.fields['audios'].choices = audios_choices
-        self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
-
-    class Meta:
-        model = Queue
-        fields = ('timeout', 'retry', 'maxlen', 'servicelevel', 'strategy',
-                  'weight', 'wait', 'auto_grabacion', 'audios', 'announce_frequency',
-                  'audio_de_ingreso')
-
-        help_texts = {
-            'timeout': """En segundos """,
-        }
-        widgets = {
-            'campana': forms.HiddenInput(),
-            'name': forms.HiddenInput(),
-            "timeout": forms.TextInput(attrs={'class': 'form-control'}),
-            "retry": forms.TextInput(attrs={'class': 'form-control'}),
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
-            'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "audios": forms.Select(attrs={'class': 'form-control'}),
-            "announce_frequency": forms.TextInput(attrs={'class': 'form-control'}),
-            'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-    def clean(self):
-        maxlen = self.cleaned_data.get('maxlen')
-        if not maxlen > 0:
-            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
-                                        ' mayor a cero')
-
-        return self.cleaned_data
-
-    def clean_announce_frequency(self):
-        audio = self.cleaned_data.get('audios', None)
-        frequency = self.cleaned_data.get('announce_frequency', None)
-        if audio and not (frequency > 0):
-            raise forms.ValidationError(
-                _('Debe definir una frecuencia para el Anuncio Periódico'))
-        return frequency
 
 
 class BaseDatosContactoForm(forms.ModelForm):
@@ -332,7 +281,7 @@ class GrabacionBusquedaForm(forms.Form):
     fecha = forms.CharField(required=False,
                             widget=forms.TextInput(attrs={'class': 'form-control'}))
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
-    tipo_llamada_choice.insert(0, ('', '---------'))
+    tipo_llamada_choice.insert(0, EMPTY_CHOICE)
     tipo_llamada = forms.ChoiceField(required=False,
                                      choices=tipo_llamada_choice)
     tel_cliente = forms.CharField(required=False)
@@ -348,92 +297,197 @@ class GrabacionBusquedaForm(forms.Form):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         agente_choice = [(agente.sip_extension, agente.user.get_full_name())
                          for agente in AgenteProfile.objects.filter(is_inactive=False)]
-        agente_choice.insert(0, ('', '---------'))
+        agente_choice.insert(0, EMPTY_CHOICE)
         self.fields['sip_agente'].choices = agente_choice
-        campana_choice.insert(0, ('', '---------'))
+        campana_choice.insert(0, EMPTY_CHOICE)
         self.fields['campana'].choices = campana_choice
 
 
-class CampanaForm(forms.ModelForm):
+class CampanaMixinForm(object):
+    def __init__(self, *args, **kwargs):
+        super(CampanaMixinForm, self).__init__(*args, **kwargs)
+        self.fields['bd_contacto'].required = not self.initial.get('es_template', False)
+        if self.fields.get('bd_contacto', False):
+            self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
+
+    def clean(self):
+        bd_contacto_field = self.fields.get('bd_contacto', False)
+        if bd_contacto_field and not bd_contacto_field.queryset:
+            message = _("Debe cargar una base de datos antes de comenzar a "
+                        "configurar una campana")
+            self.add_error('bd_contacto', message)
+            raise forms.ValidationError(message, code='invalid')
+        if self.cleaned_data.get('tipo_interaccion') is Campana.FORMULARIO and \
+                not self.cleaned_data.get('formulario'):
+            message = _("Debe seleccionar un formulario")
+            self.add_error('formulario', message)
+            raise forms.ValidationError(message, code='invalid')
+        elif self.cleaned_data.get('tipo_interaccion') is Campana.SITIO_EXTERNO and \
+                not self.cleaned_data.get('sitio_externo'):
+            message = _("Debe seleccionar un sitio externo")
+            self.add_error('formulario', message)
+            raise forms.ValidationError(message, code='invalid')
+        return super(CampanaMixinForm, self).clean()
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        validar_nombres_campanas(nombre)
+        return nombre
+
+
+class CampanaForm(CampanaMixinForm, forms.ModelForm):
+
     def __init__(self, *args, **kwargs):
         super(CampanaForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance.pk is None:
+            self.fields['bd_contacto'].required = False
+        else:
+            self.fields['bd_contacto'].required = True
 
-        self.fields['bd_contacto'].queryset =\
-            BaseDatosContacto.objects.obtener_definidas()
+    def clean_bd_contacto(self):
+        bd_contacto = self.cleaned_data.get('bd_contacto')
+        bd_contacto_field = 'bd_contacto'
+        if self.instance.pk and bd_contacto_field in self.changed_data:
+            campana_service = CampanaService()
+            error = campana_service.validar_modificacion_bd_contacto(
+                self.instance, bd_contacto)
+            if error:
+                raise forms.ValidationError(
+                    _("Los nombres de las columnas de la nueva base de datos no coinciden"
+                      " con la anterior"),
+                    code='invalid')
+        return bd_contacto
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificacion_campana', 'bd_contacto', 'tipo_interaccion', 'formulario',
-                  'gestion', 'sitio_externo', 'objetivo')
+        fields = ('nombre', 'bd_contacto', 'formulario',
+                  'sitio_externo', 'tipo_interaccion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
 
         widgets = {
-            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
         }
 
-    def clean_gestion(self):
-        nombre = validar_gestion_campanas(self)
-        return nombre
 
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
+class OpcionCalificacionForm(forms.ModelForm):
+    class Meta:
+        model = OpcionCalificacion
+        fields = ('tipo', 'nombre', 'campana')
 
-    def clean_formulario(self):
-        tipo_interaccion = self.cleaned_data['tipo_interaccion']
-        if tipo_interaccion is Campana.FORMULARIO:
-            formulario = self.cleaned_data.get('formulario', None)
-            if not formulario:
-                raise forms.ValidationError('Debe seleccionar un formulario')
-            return formulario
-
-    def clean_sitio_externo(self):
-        tipo_interaccion = self.cleaned_data['tipo_interaccion']
-        if tipo_interaccion is Campana.SITIO_EXTERNO:
-            sitio_externo = self.cleaned_data.get('sitio_externo', None)
-            if not sitio_externo:
-                raise forms.ValidationError('Debe seleccionar un sitio externo')
-            return sitio_externo
-
-
-class CampanaUpdateForm(forms.ModelForm):
+        widgets = {
+            'nombre': forms.Select(),
+            'usada_en_calificacion': forms.HiddenInput(),
+        }
 
     def __init__(self, *args, **kwargs):
-        super(CampanaUpdateForm, self).__init__(*args, **kwargs)
+        nombres_calificaciones = kwargs.pop('nombres_calificaciones')
+        super(OpcionCalificacionForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            # al modificar, en caso de que el valor del campo 'nombre' no esté entre las
+            # calificaciones creadas se agrega
+            choices = set(nombres_calificaciones + ((instance.nombre, instance.nombre),))
+        else:
+            # al crear se muestra en primer lugar una opción vacía
+            choices = (EMPTY_CHOICE,) + nombres_calificaciones
+        self.fields['nombre'] = forms.ChoiceField(choices=choices)
 
-        self.fields['bd_contacto'].queryset = \
-            BaseDatosContacto.objects.obtener_definidas()
-
-    class Meta:
-        model = Campana
-        fields = ('calificacion_campana', 'bd_contacto', 'gestion', 'objetivo')
-        labels = {
-            'bd_contacto': 'Base de Datos de Contactos',
-        }
-        widgets = {
-            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
-            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
-        }
-
-    def clean_gestion(self):
-        return validar_gestion_campanas(self)
+        if instance and instance.pk and instance.no_editable():
+            self.fields['nombre'].disabled = True
+            self.fields['tipo'].disabled = True
+        else:
+            self.fields['tipo'].choices = OpcionCalificacion.FORMULARIO_CHOICES_NO_AGENDA
 
     def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
+        instance = getattr(self, 'instance', None)
+        if instance.pk is None and instance.nombre == settings.CALIFICACION_REAGENDA:
+            raise forms.ValidationError(
+                _("El nombre de la opción de calificación '{0}' está reservado para uso interno"
+                  " del sistema, por favor use otro".format(instance.nombre)))
+        if instance and instance.pk and instance.no_editable():
+            return instance.nombre
+        else:
+            return self.cleaned_data['nombre']
+
+    def clean_tipo(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk and instance.no_editable():
+            return instance.tipo
+        else:
+            return self.cleaned_data['tipo']
+
+
+class OpcionCalificacionBaseFormset(BaseInlineFormSet):
+
+    def _construct_form(self, index, **kwargs):
+        # adicionamos dinámicamente las nombres de calificaciones existentes en el sistema
+        # para que el usuario pueda escoger de ellas al crear las opciones de calificación
+        nombres_calificaciones_qs = NombreCalificacion.objects.usuarios().values_list(
+            'nombre', flat=True)
+        kwargs['nombres_calificaciones'] = tuple((nombre, nombre)
+                                                 for nombre in nombres_calificaciones_qs)
+        return super(OpcionCalificacionBaseFormset, self)._construct_form(index, **kwargs)
+
+    def _validar_numero_opciones_calificacion(self, save_candidates_forms):
+
+        # en el caso de la modificación vamos a tener un form más que en la creación por la
+        # creación automática de la calificación reservada de Agenda
+        MIN_NUM_FORMS = int(self.instance.pk is not None) + 1
+        if MIN_NUM_FORMS == 1:
+            msg = _("Debe ingresar al menos {0} opción de calificación".format(MIN_NUM_FORMS))
+        else:
+            # MIN_NUM_FORMS == 2
+            msg = _("Debe ingresar al menos {0} opciones de calificación".format(MIN_NUM_FORMS))
+
+        if len(save_candidates_forms) < MIN_NUM_FORMS:
+            raise forms.ValidationError(msg, code='invalid')
+
+    def clean(self):
+        """
+        Realiza los validaciones relacionadas con la semántica de las opciones de calificación
+        """
+        if any(self.errors):
+            return
+        nombres = []
+        tipos_gestion_cont = 0
+        deleted_forms = self.deleted_forms
+        save_candidates_forms = set(self.forms) - set(deleted_forms)
+
+        self._validar_numero_opciones_calificacion(save_candidates_forms)
+
+        for form in save_candidates_forms:
+            nombre = form.cleaned_data.get('nombre', None)
+            tipo = form.cleaned_data.get('tipo', None)
+            if nombre is None or tipo is None:
+                raise forms.ValidationError(_("Rellene los campos en blanco"), code='invalid')
+            if nombre in nombres:
+                raise forms.ValidationError(
+                    _("Los nombres de las opciones de calificación deben ser distintos"),
+                    code="invalid")
+            if tipo == OpcionCalificacion.GESTION:
+                tipos_gestion_cont += 1
+            nombres.append(nombre)
+        if tipos_gestion_cont == 0:
+            raise forms.ValidationError(
+                _("Debe escoger una opción de calificación de tipo gestión por campaña"),
+                code='invalid')
+
+    def save(self):
+        """
+        Inserta la una opción de calificación interna del sistema para agendar contactos
+        """
+        campana = self.instance
+        if campana.estado != Campana.ESTADO_TEMPLATE_ACTIVO:
+            campana.gestionar_opcion_calificacion_agenda()
+        super(OpcionCalificacionBaseFormset, self).save()
 
 
 class ContactoForm(forms.ModelForm):
@@ -449,47 +503,30 @@ class ContactoForm(forms.ModelForm):
         }
 
 
-class CalificacionClienteForm(forms.ModelForm):
+class OpcionCalificacionModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.nombre
 
-    def __init__(self, *args, **kwargs):
+
+class CalificacionClienteForm(forms.ModelForm):
+    """
+    Formulario para la creacion de Calificaciones de Clientes
+    """
+
+    opcion_calificacion = OpcionCalificacionModelChoiceField(
+        OpcionCalificacion.objects.all(), empty_label='---------')
+
+    def __init__(self, campana, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
-        if 'campana' in self.initial:
-            campana = Campana.objects.get(id=self.initial['campana'])
-            self.fields['calificacion'].queryset = campana.calificacion_campana.calificacion.all()
+        self.campana = campana
+        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
 
     class Meta:
         model = CalificacionCliente
-        fields = ('campana', 'contacto', 'es_venta', 'calificacion', 'agente',
-                  'observaciones', 'agendado', 'wombat_id')
+        fields = ('opcion_calificacion', 'observaciones')
         widgets = {
-            'campana': forms.HiddenInput(),
-            'contacto': forms.HiddenInput(),
-            'es_venta': forms.HiddenInput(),
-            'agente': forms.HiddenInput(),
-            'agendado': forms.HiddenInput(),
-            'wombat_id': forms.HiddenInput(),
+            'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
         }
-
-    def clean_contacto(self):
-        campana = self.cleaned_data.get('campana', None)
-        contacto = self.cleaned_data.get('contacto', None)
-        if campana and contacto:
-            if not contacto.bd_contacto == campana.bd_contacto:
-                raise forms.ValidationError('El Contacto no corresponde a la base de datos'
-                                            ' de la Campaña')
-            return contacto
-
-    def clean_calificacion(self):
-        campana = self.cleaned_data.get('campana', None)
-        calificacion = self.cleaned_data.get('calificacion', None)
-        if campana and calificacion:
-            if calificacion not in campana.calificacion_campana.calificacion.all():
-                raise forms.ValidationError('Calificacion incorrecta')
-            return calificacion
-
-
-class CalificacionClienteUpdateForm(CalificacionClienteForm):
-    fields = ('es_venta', 'calificacion', 'agente', 'observaciones', 'agendado', 'wombat_id')
 
 
 class GrupoAgenteForm(forms.Form):
@@ -698,6 +735,15 @@ class PausaForm(forms.ModelForm):
         return nombre
 
 
+FormularioCalificacionFormSet = inlineformset_factory(
+    Contacto, CalificacionCliente, form=CalificacionClienteForm,
+    can_delete=False, extra=1, max_num=1)
+
+OpcionCalificacionFormSet = inlineformset_factory(
+    Campana, OpcionCalificacion, form=OpcionCalificacionForm,
+    formset=OpcionCalificacionBaseFormset, extra=0, min_num=1)
+
+
 class FormularioVentaForm(forms.ModelForm):
 
     def __init__(self, campos, *args, **kwargs):
@@ -760,92 +806,51 @@ class AgendaContactoForm(forms.ModelForm):
         }
 
 
-class CampanaDialerForm(forms.ModelForm):
+class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
-
-        self.fields['bd_contacto'].queryset =\
-            BaseDatosContacto.objects.obtener_definidas()
 
         self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
         self.fields['fecha_inicio'].required = True
 
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
         self.fields['fecha_fin'].required = True
-        self.fields['bd_contacto'].required = True
+
+        if self.instance.pk:
+            self.fields['bd_contacto'].disabled = True
+            self.fields['formulario'].disabled = True
+            self.fields['tipo_interaccion'].required = False
+
+    def clean_bd_contacto(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.bd_contacto
+        else:
+            return self.cleaned_data['bd_contacto']
+
+    def clean_formulario(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.formulario
+        else:
+            return self.cleaned_data['formulario']
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'bd_contacto', 'tipo_interaccion', 'formulario', 'gestion', 'sitio_externo',
-                  'objetivo')
+        fields = ('nombre', 'fecha_inicio', 'fecha_fin',
+                  'bd_contacto', 'formulario', 'sitio_externo',
+                  'tipo_interaccion', 'objetivo')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
 
         widgets = {
-            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
         }
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
-
-    def clean_gestion(self):
-        return validar_gestion_campanas(self)
-
-    def clean_formulario(self):
-        tipo_interaccion = self.cleaned_data['tipo_interaccion']
-        if tipo_interaccion is Campana.FORMULARIO:
-            formulario = self.cleaned_data.get('formulario', None)
-            if not formulario:
-                raise forms.ValidationError('Debe seleccionar un formulario')
-            return formulario
-
-    def clean_sitio_externo(self):
-        tipo_interaccion = self.cleaned_data['tipo_interaccion']
-        if tipo_interaccion is Campana.SITIO_EXTERNO:
-            sitio_externo = self.cleaned_data.get('sitio_externo', None)
-            if not sitio_externo:
-                raise forms.ValidationError('Debe seleccionar un sitio externo')
-            return sitio_externo
-
-
-class CampanaDialerUpdateForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(CampanaDialerUpdateForm, self).__init__(*args, **kwargs)
-
-        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
-        self.fields['fecha_inicio'].required = True
-
-        self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
-        self.fields['fecha_fin'].required = True
-
-    class Meta:
-        model = Campana
-        fields = ('fecha_inicio', 'fecha_fin', 'calificacion_campana',
-                  'gestion', 'objetivo')
-
-        widgets = {
-            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
-            'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
-        }
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
-
-    def clean_gestion(self):
-        return validar_gestion_campanas(self)
 
 
 class ParametroExtraParaWebformForm(forms.ModelForm):
@@ -889,10 +894,9 @@ class ActuacionVigenteForm(forms.ModelForm):
 
     class Meta:
         model = ActuacionVigente
-        fields = ('campana', 'domingo', 'lunes', 'martes', 'miercoles', 'jueves',
+        fields = ('domingo', 'lunes', 'martes', 'miercoles', 'jueves',
                   'viernes', 'sabado', 'hora_desde', 'hora_hasta')
         widgets = {
-            'campana': forms.HiddenInput(),
             'dia_semanal': forms.Select(attrs={'class': 'form-control'}),
             "hora_desde": forms.TextInput(attrs={'class': 'form-control'}),
             "hora_hasta": forms.TextInput(attrs={'class': 'form-control'}),
@@ -922,14 +926,35 @@ class ReglasIncidenciaForm(forms.ModelForm):
 
     class Meta:
         model = ReglasIncidencia
-        fields = ('campana', 'estado', 'intento_max', 'reintentar_tarde')
+        fields = ('estado', 'intento_max', 'reintentar_tarde')
 
         widgets = {
-            'campana': forms.HiddenInput(),
             'estado': forms.Select(attrs={'class': 'form-control'}),
             "intento_max": forms.TextInput(attrs={'class': 'form-control'}),
             "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class ReglasIncidenciaBaseFomset(BaseInlineFormSet):
+
+    def clean(self):
+        """
+        Realiza la  validación de que no existan reglas de incidencia de un mismo tipo repetidas
+        """
+        if any(self.errors):
+            return
+        estados_reglas = []
+        for form in self.forms:
+            estado = form.cleaned_data.get('estado')
+            if estado in estados_reglas:
+                raise forms.ValidationError(
+                    _("Los nombres de los estados de las reglas deben ser distintos"))
+            estados_reglas.append(estado)
+
+
+ReglasIncidenciaFormSet = inlineformset_factory(
+    Campana, ReglasIncidencia, form=ReglasIncidenciaForm, formset=ReglasIncidenciaBaseFomset,
+    extra=1, min_num=0)
 
 
 class QueueDialerForm(forms.ModelForm):
@@ -1063,14 +1088,12 @@ class CampanaDialerTemplateForm(forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre_template', 'calificacion_campana', 'formulario', 'gestion',
+        fields = ('nombre_template', 'formulario',
                   'sitio_externo', 'tipo_interaccion')
 
         widgets = {
             "nombre_template": forms.TextInput(attrs={'class': 'form-control'}),
-            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            "gestion": forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             "tipo_interaccion": forms.RadioSelect(),
         }
@@ -1095,64 +1118,55 @@ class ReporteAgenteForm(forms.Form):
         self.fields['agente'].choices = agente_choice
         grupo_choice = [(grupo.id, grupo.nombre)
                         for grupo in Grupo.objects.all()]
-        grupo_choice.insert(0, ('', '---------'))
+        grupo_choice.insert(0, EMPTY_CHOICE)
         self.fields['grupo_agente'].choices = grupo_choice
 
 
-class CampanaManualForm(forms.ModelForm):
+class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
     detectar_contestadores = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(CampanaManualForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance.pk is None:
+            self.fields['bd_contacto'].required = False
+        else:
+            self.fields['bd_contacto'].required = True
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificacion_campana', 'formulario', 'gestion',
+        fields = ('nombre', 'formulario', 'bd_contacto',
                   'sitio_externo', 'tipo_interaccion', 'objetivo')
 
         widgets = {
-            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
 
-    def clean_gestion(self):
-        return validar_gestion_campanas(self)
+class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
+    auto_grabacion = forms.BooleanField(required=False)
 
-
-class CampanaManualUpdateForm(CampanaManualForm):
-    class Meta(CampanaManualForm.Meta):
-        exclude = ('nombre', )
-
-
-class CampanaPreviewForm(CampanaManualForm):
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
-
-        self.fields['bd_contacto'].queryset =\
-            BaseDatosContacto.objects.obtener_definidas()
-        self.fields['bd_contacto'].required = True
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk and not self.initial.get('es_template', False):
+            self.fields['bd_contacto'].disabled = True
+            self.fields['tiempo_desconexion'].disabled = True
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'calificacion_campana', 'formulario', 'gestion',
+        fields = ('nombre', 'formulario',
                   'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
                   'tiempo_desconexion')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'calificacion_campana': forms.Select(attrs={'class': 'form-control'}),
             'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1167,79 +1181,9 @@ class CampanaPreviewForm(CampanaManualForm):
         return tiempo_desconexion
 
 
-class CampanaPreviewUpdateForm(CampanaPreviewForm):
-    class Meta(CampanaPreviewForm.Meta):
-        exclude = ('nombre', )
-
-    def __init__(self, *args, **kwargs):
-        super(CampanaPreviewUpdateForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            self.fields['bd_contacto'].disabled = True
-            self.fields['tiempo_desconexion'].disabled = True
-
-
-class CalificacionManualForm(forms.ModelForm):
-
-    def __init__(self, calificacion_choice, gestion, *args, **kwargs):
-        super(CalificacionManualForm, self).__init__(*args, **kwargs)
-        self.fields['calificacion'].queryset = calificacion_choice
-
-    class Meta:
-        model = CalificacionManual
-        fields = ('campana', 'telefono', 'es_gestion', 'calificacion', 'agente',
-                  'observaciones', 'agendado')
-        widgets = {
-            'campana': forms.HiddenInput(),
-            'es_gestion': forms.HiddenInput(),
-            'agente': forms.HiddenInput(),
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-            'agendado': forms.HiddenInput(),
-        }
-
-
-class FormularioManualGestionForm(forms.ModelForm):
-
-    def __init__(self, campos, *args, **kwargs):
-        super(FormularioManualGestionForm, self).__init__(*args, **kwargs)
-
-        for campo in campos:
-            if campo.tipo is FieldFormulario.TIPO_TEXTO:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.TextInput(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_FECHA:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.TextInput(
-                        attrs={'class': 'class-fecha form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_LISTA:
-                choices = [(option, option)
-                           for option in json.loads(campo.values_select)]
-                self.fields[campo.nombre_campo] = forms.ChoiceField(
-                    choices=choices,
-                    label=campo.nombre_campo, widget=forms.Select(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-            elif campo.tipo is FieldFormulario.TIPO_TEXTO_AREA:
-                self.fields[campo.nombre_campo] = forms.CharField(
-                    label=campo.nombre_campo, widget=forms.Textarea(
-                        attrs={'class': 'form-control'}),
-                    required=campo.is_required)
-
-    class Meta:
-        model = CalificacionManual
-        fields = ('telefono',)
-
-        widgets = {
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-        }
-
-
 class CalificacionForm(forms.ModelForm):
     class Meta:
-        model = Calificacion
+        model = NombreCalificacion
         fields = ('nombre',)
 
     def clean_nombre(self):
@@ -1248,33 +1192,6 @@ class CalificacionForm(forms.ModelForm):
             message = _('Esta calificación está reservada para el sistema')
             raise forms.ValidationError(message, code='invalid')
         return nombre
-
-
-class CalificacionCampanaForm(forms.ModelForm):
-    class Meta:
-        model = CalificacionCampana
-        fields = ('nombre', 'calificacion')
-
-    def __init__(self, *args, **kwargs):
-        super(CalificacionCampanaForm, self).__init__(*args, **kwargs)
-        self.fields['calificacion'].queryset = Calificacion.objects.usuarios()
-
-
-class AgendaManualForm(forms.ModelForm):
-
-    class Meta:
-        model = AgendaManual
-        fields = ('telefono', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones', 'campana')
-        widgets = {
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-            'agente': forms.HiddenInput(),
-            'campana': forms.HiddenInput(),
-            'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
-            "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
-            "fecha": forms.TextInput(attrs={'class': 'form-control'}),
-            "hora": forms.TextInput(attrs={'class': 'form-control'}),
-        }
 
 
 class ArchivoDeAudioForm(forms.ModelForm):
