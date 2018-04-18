@@ -381,6 +381,16 @@ class GrupoDeleteView(DeleteView):
     model = Grupo
     template_name = 'delete_grupo.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        grupo = Grupo.objects.get(pk=self.kwargs['pk'])
+        agentes = grupo.agentes.all()
+        if agentes:
+            message = ("No está permitido eliminar un grupo que tiene agentes")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(
+                reverse('grupo_list'))
+        return super(GrupoDeleteView, self).dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse('grupo_list')
 
