@@ -67,11 +67,14 @@ class CampanaDialerMixin(CampanaWizardMixin):
             # flexible y sólo usa kwargs para instanciar
             campana = self.get_cleaned_data_for_step(self.INICIAL)
             bd_contacto = campana['bd_contacto']
-            metadata = bd_contacto.get_metadata()
-            nombres_de_columnas = metadata.nombres_de_columnas
-            nombres_de_columnas.remove('telefono')
-            tts_choices = [(columna, columna) for columna in
-                           nombres_de_columnas]
+            if bd_contacto is None:
+                tts_choices = []
+            else:
+                metadata = bd_contacto.get_metadata()
+                nombres_de_columnas = metadata.nombres_de_columnas
+                nombres_de_columnas.remove('telefono')
+                tts_choices = [(columna, columna) for columna in
+                               nombres_de_columnas]
             form_class = self.form_list[step]
             kwargs = self.get_form_kwargs(step)
             kwargs.update({
