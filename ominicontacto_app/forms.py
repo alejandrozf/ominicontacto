@@ -801,17 +801,27 @@ class AgendaContactoForm(forms.ModelForm):
 
     class Meta:
         model = AgendaContacto
-        fields = ('contacto', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones', 'campana')
+        fields = ('contacto', 'agente', 'campana', 'tipo_agenda', 'fecha', 'hora', 'observaciones')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
+            'campana': forms.HiddenInput(),
             'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
             "hora": forms.TextInput(attrs={'class': 'form-control'}),
-            'campana': forms.HiddenInput(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(AgendaContactoForm, self).__init__(*args, **kwargs)
+        if not kwargs['initial']['campana'].type == Campana.TYPE_DIALER:
+            self.fields['tipo_agenda'].choices = [(AgendaContacto.TYPE_PERSONAL, 'PERSONAL')]
+
+    def clean_tipo_agenda(self):
+        campana = self.cleaned_data.get('campana', None)
+        if not campana and campana.type == Campana.TYPE_DIALER:
+            return AgendaContacto.TYPE_PERSONAL
+        return self.cleaned_data['tipo_agenda']
 
 
 class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
