@@ -234,6 +234,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
 
         self._insert_queue_asterisk(queue, solo_activar=True)
         campana_service = CampanaService()
+        campana_service.crear_campana_wombat(campana)
         campana_service.update_endpoint(campana)
 
         return HttpResponseRedirect(reverse('campana_dialer_list'))
