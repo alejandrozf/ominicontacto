@@ -51,6 +51,14 @@ class CustomUserCreationForm(UserCreationForm):
             'username', 'first_name', 'last_name', 'email', 'is_agente',
             'is_supervisor')
 
+    def clean(self):
+        is_agente = self.cleaned_data.get('is_agente', None)
+        is_supervisor = self.cleaned_data.get('is_supervisor', None)
+        if is_agente and is_supervisor:
+            raise forms.ValidationError(
+                _('Un usuario no puede ser Agente y Supervisor al mismo tiempo'))
+        return self.cleaned_data
+
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
@@ -61,31 +69,31 @@ class UserChangeForm(forms.ModelForm):
     password1 = forms.CharField(max_length=20,
                                 required=False,
                                 # will be overwritten by __init__()
-                                help_text='Ingrese la nueva contraseña (sólo si desea cambiarla)',
+                                help_text=_('Ingrese la nueva contraseña '
+                                            '(sólo si desea cambiarla)'),
                                 # will be overwritten by __init__()
                                 widget=forms.PasswordInput(),
-                                label='Contrasena')
+                                label=_('Contrasena'))
 
     password2 = forms.CharField(
         max_length=20,
         required=False,  # will be overwritten by __init__()
         # will be overwritten by __init__()
-        help_text='Ingrese la nueva contraseña (sólo si desea cambiarla)',
+        help_text=_('Ingrese la nueva contraseña (sólo si desea cambiarla)'),
         widget=forms.PasswordInput(),
-        label='Contrasena (otra vez)')
+        label=_('Contrasena (otra vez)'))
 
     def clean(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
         if password1 != password2:
-            raise forms.ValidationError('Los passwords no concuerdan')
+            raise forms.ValidationError(_('Los passwords no concuerdan'))
 
         return self.cleaned_data
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'is_agente',
-                  'is_supervisor', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
 
 class AgenteProfileForm(forms.ModelForm):
@@ -1057,7 +1065,7 @@ class UserApiCrmForm(forms.ModelForm):
     def clean_usuario(self):
         usuario = self.cleaned_data['usuario']
         if ' ' in usuario:
-            raise forms.ValidationError('el usuario no puede contener espacios')
+            raise forms.ValidationError(_('El usuario no puede contener espacios'))
         return usuario
 
 
@@ -1068,9 +1076,18 @@ class SupervisorProfileForm(forms.ModelForm):
         fields = ('is_administrador', 'is_customer')
 
         labels = {
-            'is_administrador': 'Es administrador de sistema',
-            'is_customer': 'Es usuario cliente',
+            'is_administrador': _('Es administrador de sistema'),
+            'is_customer': _('Es usuario cliente'),
         }
+
+    def clean(self):
+        is_administrador = self.cleaned_data.get('is_administrador', None)
+        is_customer = self.cleaned_data.get('is_customer', None)
+        if is_administrador and is_customer:
+            raise forms.ValidationError(
+                _('Un Supervisor no puede ser Administrador de sistema '
+                  'y Cliente al mismo tiempo'))
+        return self.cleaned_data
 
 
 class CampanaSupervisorUpdateForm(forms.ModelForm):
