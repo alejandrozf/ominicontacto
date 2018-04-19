@@ -67,6 +67,9 @@
                 {% endfor %}
             {% endif %}
             {% for form in wizard.form.forms %}
+                {% if form.errors  %}
+                    <div class="alert alert-warning">{{ form.errors|escape }}</div>
+                {% endif %}
                 <tr class="linkFormset">
                     <td>{{ form.estado }}</td>
                     {% if form.instance.pk %}
@@ -83,14 +86,6 @@
                     {% endif %}
                     <td>{{ form.intento_max }}</td>
                     <td></td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="6">
-                        <p class="text-center text-danger">
-                            <em>{% trans 'No se encontraron reglas creadas' %}.</em>
-                        </p>
-                    </td>
                 </tr>
             {% endfor %}
         </tbody>
