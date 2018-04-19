@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 from django import forms
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView, DeleteView
@@ -179,6 +180,19 @@ class CampanaWizardMixin(object):
             activacion_queue_service.activar()
         except RestablecerDialplanError:
             raise
+
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(CampanaWizardMixin, self).get_context_data(form, *args, **kwargs)
+        is_formset_step = issubclass(form.__class__, BaseInlineFormSet)
+        context['is_formset_step'] = is_formset_step
+        if (is_formset_step and form.forms == [] and
+                self.steps.current == self.PARAMETROS_EXTRA_WEB_FORM):
+            # reiniciamos el formset para que el usuario si no tiene formularios
+            # para que el usuario tenga posibilidad de agregar nuevos formularios
+            new_formset = ParametroExtraParaWebformFormSet()
+            new_formset.prefix = form.prefix
+            context['wizard']['form'] = new_formset
+        return context
 
 
 class CampanaEntranteMixin(CampanaWizardMixin):

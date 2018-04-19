@@ -111,6 +111,14 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         elif current_step == self.SINCRONIZAR:
             cleaned_data_step_initial = self.get_cleaned_data_for_step(self.INICIAL)
             context['tipo_interaccion'] = cleaned_data_step_initial['tipo_interaccion']
+        elif current_step == self.REGLAS_INCIDENCIA and form.forms == []:
+            # reiniciamos el formset para que el usuario si no tiene formularios
+            # para que el usuario tenga posibilidad de agregar nuevos formularios
+            new_formset = ReglasIncidenciaFormSet()
+            new_formset.prefix = form.prefix
+            context['wizard']['form'] = new_formset
+        return context
+
         return context
 
     def _save_campana(self, campana_form, estado):
