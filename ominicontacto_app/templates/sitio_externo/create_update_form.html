@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<h1>Nuevo sitio</h1>
+<h1>Nuevo sitio externo</h1>
 
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
@@ -18,11 +18,11 @@
             {{ form.url }}
             {{ form.url.errors }}
         </div>
-
-        <button type="submit" id="id_guardar" class="btn btn-primary">
-            Guardar
-        </button>
     </div>
+    <hr>
+    <button type="submit" id="id_guardar" class="btn btn-primary">
+        Guardar
+    </button>    
 </form>
 
 {% endblock %}

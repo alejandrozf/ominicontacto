@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1>Listado de calificaciones</h1>
+<h1>Calificaciones</h1>
 
 <table class="table table-stripped">
     <thead>
@@ -18,9 +18,15 @@
         <tr>
             <td>{{ calificacion.nombre }}</td>
             <td>
-                <a href="{% url 'calificacion_update' calificacion.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
-                <a href="{% url 'calificacion_delete' calificacion.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Calificacion"></span></a>
-
+                <div class="dropdown">
+                  <button class="btn btn-light dropdown-toggle" type="button" id="dropdownEditMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Opciones
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownEditMenu">
+                    <a class="dropdown-item" href="{% url 'calificacion_update' calificacion.id %}"><span class="icon icon-pencil" aria-hidden="true" title="Modificar"></span>Editar</a>
+                    <a class="dropdown-item" href="{% url 'calificacion_delete' calificacion.id %}"><span class="icon icon-trash" aria-hidden="true" title="Eliminar Calificacion"></span>Eliminar</a>
+                  </div>
+                </div>             
             </td>
         </tr>
    {% empty %}

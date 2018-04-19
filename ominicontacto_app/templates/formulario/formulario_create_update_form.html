@@ -4,13 +4,11 @@
 {% block content %}
 <h1>Nuevo formulario</h1>
 
-<div class="wrapper-tabs">
-    <ul class="nav nav-tabs">
-        <li class="nav-item active"><a class="nav-link">Nuevo Formulario</a></li>
-        <li class="nav-item disabled"><a class="nav-link">Campos del formulario</a></li>
-        <li class="nav-item"><a class="nav-link">Vista previa del formulario</a></li>
-    </ul>
-</div>
+<ul class="nav nav-indicators">
+    <li class="active"><a>Nuevo Formulario</a></li>
+    <li class="disabled"><a>Campos del formulario</a></li>
+    <li class="disabled"><a>Vista previa del formulario</a></li>
+</ul>
 
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}

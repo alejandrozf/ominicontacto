@@ -2,13 +2,13 @@
 {% load i18n %}
 
 {% block title_campana %}
-    <h4 class="inline">{% trans 'Campaña Preview: Datos Básicos' %}</h4><br>
+    <h1>{% trans 'Campaña Preview: Datos Básicos' %}</h1>
 {% endblock %}
 
 {% block nav %}
-    <h4 class="inline">{% trans 'Campaña Preview: Datos básicos' %}</h4>
+    <h1>{% trans 'Campaña Preview: Datos básicos' %}</h1>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-indicators">
         <li class="active"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
         <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
@@ -16,12 +16,16 @@
 {% endblock %}
 
 {% block tiempo_desconexion %}
-    <div class="form-group row">
+    <div class="col-md-6">
         {{ form.tiempo_desconexion.errors }}
-        <label class="col-sm-3 control-label">Tiempo de desconexión: </label>
-        <div class="col-sm-3" data-toggle="tooltip" data-placement="top"
+        <label>Tiempo de desconexión: </label>
+        <!-- <div class="col-sm-3" data-toggle="tooltip" data-placement="top"
              title="A partir de este tiempo en minutos, un agente será desconectado de cualquier contacto que tenga asignado y no haya atendido">
-            {{ form.tiempo_desconexion }}
-        </div>
+            
+        </div> -->
+        {{ form.tiempo_desconexion }}
+        <small class="form-text text-muted">
+            A partir de este tiempo en minutos, un agente será desconectado de cualquier contacto que tenga asignado y no haya atendido.
+        </small>        
     </div>
 {% endblock %}

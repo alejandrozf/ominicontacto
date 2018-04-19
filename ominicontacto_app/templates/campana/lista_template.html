@@ -4,14 +4,14 @@
 
 
 {% block content %}
-    <div class="col-md-10 col-md-offset-1">
 
-        <h4><b>Lista templates para campañas entrantes</b></h4>
-        <table class="table table-stripped table-condensed table-bordered">
+        <h1>Templates campañas entrantes</h1>
+
+        <table class="table table-stripped">
             <thead>
                 <tr>
                     <th>{% trans 'Nombre' %}</th>
-                    <th>{% trans 'Acciones' %};</th>
+                    <th>{% trans 'Acciones' %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,5 +40,5 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
+
 {% endblock %}

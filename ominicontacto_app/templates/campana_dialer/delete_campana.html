@@ -2,14 +2,14 @@
 {% load static %}
 
 {% block content %}
-<div>
+
     <form method="post">{% csrf_token %}
          {% if es_template %}
-                        <h4>Template <strong>{{ object.nombre_template }}</strong></h4>
-                        <h4>¿Esta seguro que desea eliminar este Template? </h4>
+                        <h1>Template "{{ object.nombre_template }}"</h1>
+                        <p>¿Esta seguro que desea eliminar este Template? </p>
                     {% else %}
-                        <h4>Campaña <strong>{{ object.nombre }}</strong></h4>
-                        <h4>¿Esta seguro que desea eliminar esta Campaña? </h4>
+                        <h1>Campaña "{{ object.nombre }}"</h1>
+                        <p>¿Esta seguro que desea eliminar esta Campaña? </p>
                     {% endif %}
 
         <button type="submit" class="btn btn-danger">Eliminar</button>
@@ -19,5 +19,5 @@
         <a class="btn btn-outline-danger" href="{% url 'campana_dialer_list' %}">Cancelar</a>
         {% endif %}
     </form>
-</div>
+
 {% endblock %}

@@ -12,12 +12,23 @@ a, a:hover, a:focus {
     text-decoration: none;
     transition: all 0.3s;
 }
-a:hover, button:hover {
+button:hover {
     background-color: rgba(0,0,0,0.05);    
 }
 hr {
-    margin: 4px 0;
+    margin: 12px 0 20px 0;
 }
+.hidden {
+    display: none;
+}
+.wrapper-main {
+    display: flex;
+    align-items: stretch;
+} 
+
+/*///// Fonts
+*/
+
 h1 {
     font-size: 1.4rem;
 }
@@ -30,14 +41,49 @@ h3 {
 h4 {
     font-size: 0.8rem;
 }
-.hidden {
-    display: none;
+
+/* ///// Navigation indicators 
+*/
+
+ul.nav-indicators {
+    margin: 22px 0 30px 0;
+    padding: 8px;    
+    background-color: #F5F5F5; 
+    border-radius: 6px;   
+}
+ul.nav-indicators a {   
+    padding: 4px;
+    margin: 6px;
+    display: inline-block;
+}
+ul.nav-indicators li.active a {
+    color: #8FC641;
+    font-weight: 500;
+    border-bottom: 4px solid #8FC641;   
+}
+ul.nav-indicators li.active a:hover {
+    color: #8FC641;
+    background-color: transparent;
+}
+ul.nav-indicators li.disabled a {
+    color: #A7ACA7;
+}
+ul.nav-indicators li.disabled a:hover {
+    color: #A7ACA7;
+    background-color: transparent;    
 }
 
-.wrapper-main {
-    display: flex;
-    align-items: stretch;
-} 
+/* ///// Dropdown 
+*/
+button.dropdown-toggle {
+    color: #6A716A;
+}
+.dropdown-item {
+    padding-left: 1rem;
+}
+.dropdown-item .icon {
+    margin-right: 8px;
+}
 
 /* ///// Button styles 
 */
@@ -94,6 +140,7 @@ h4 {
 
 /* ///// Form styles 
 */
+
 label {
     font-size: 0.85rem;
     font-weight: 500;
@@ -105,9 +152,6 @@ label {
 }
 .form-row div:nth-child(odd) {
     padding-right: 30px;
-}
-form hr {
-    margin-bottom: 20px;
 }
 ul.errorlist {
     list-style: none;
@@ -121,6 +165,7 @@ ul.errorlist li {
 
 /* ///// Search form
 */
+
 #wrapper-search {
     border-bottom: 2px solid rgba(0,0,0,0.15);
     margin-bottom: 40px;

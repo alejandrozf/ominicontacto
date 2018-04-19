@@ -18,7 +18,7 @@
         <tr>
             <td>{{ formulario.nombre }}</td>
             <td>{{ formulario.descripcion }}</td>
-            <td><a href="{% url 'formulario_vista' formulario.pk %}"><span class="fas fa-search" aria-hidden="true"></span></a></td>
+            <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">Ver</a></td>
         </tr>
    {% empty %}
     <tr>

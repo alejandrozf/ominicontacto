@@ -59,79 +59,65 @@
     </script>
 {% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-tabs">
-            <li class="disabled"><a>Nuevo Formulario</a></li>
-            <li class="active"><a>Campos del formulario</a></li>
-            <li class="disabled"><a>Vista previa del formulario</a></li>
-        </ul>
-    </div>
-</div>
-</br>
-<div class="row">
+<h1>Nuevo formulario</h1>
 
-<div class="col-md-6">
+<ul class="nav nav-indicators">
+    <li class="disabled"><a>Nuevo Formulario</a></li>
+    <li class="active"><a>Campos del formulario</a></li>
+    <li class="disabled"><a>Vista previa del formulario</a></li>
+</ul>
+
 <form action="" enctype="multipart/form-data" method="post">
 
                 {% csrf_token %}
 
-                <h4>Nuevo campo</h4>
+                <h2>Nuevo campo</h2>
                 {{ form.non_field_errors }}
     {{ form.formulario }}
     {{ form.values_select }}
-    <div class="form-group row">
-        {{ form.nombre_campo.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.nombre_campo.id_for_label }}">Nombre de campo: </label>
-        <div class="col-sm-6">
-              {{ form.nombre_campo }}
+    <div class="form-row">
+        <div class="col-md-4">
+            <label for="{{ form.nombre_campo.id_for_label }}">Nombre de campo:</label>
+            {{ form.nombre_campo }}
+            {{ form.nombre_campo.errors }}
+        </div>
+        <div class="col-md-4">
+            <label for="{{ form.tipo.id_for_label }}">Tipo:</label>
+            {{ form.tipo}}
+            {{ form.tipo.errors }}
+        </div>
+        <div class="col-md-4">
+            <label for="{{ form.tipo.id_for_label }}">Campo requerido: </label>
+            {{ form.is_required}}
+            {{ form.is_required.errors }}
         </div>
     </div>
-    <div class="form-group row">
-        {{ form.tipo.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.tipo.id_for_label }}">Tipo: </label>
-        <div class="col-sm-6">
-              {{ form.tipo}}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.is_required.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.tipo.id_for_label }}">Campo requerido: </label>
-        <div class="col-sm-6">
-              {{ form.is_required}}
-        </div>
-    </div>
-    <div class="form-group row">
-
-        <div class="col-sm-4">
-            <div class="input-group row">
+    <button type="submit" id="id_guardar" class="btn btn-primary ">
+        Agregar campo
+    </button>   
+    <br>
+    <br> 
+    <hr>
+    <div class="form-row">
+        <div class="col-md-6">
               {{ form.value_item}}
-                <span class="input-group-btn">
-                    <a id="agregar_lista" class="btn btn-default" style="color:black;" disabled="disabled"><strong>+</strong></a>
-                </span>
-
-            </div>
-            <br>
-            <div class="row">
-            <a id="eliminar_lista" class="btn btn-default btn-sm pull-right" style="color:black;" disabled="disabled">Eliminar seleccionados</a>
-            </div>
+              <br>
+                <a id="agregar_lista" class="btn btn-outline-primary" disabled="disabled">+ Agregar item</a>
+                <a id="eliminar_lista" class="btn btn-light" disabled="disabled">Eliminar seleccionados</a>
         </div>
-
-        <div class="col-sm-6">
-            {{ form.list_values.errors }}
-              {{ form.list_values}}
+        <div class="col-md-6">
+            {{ form.list_values}}
+            {{ form.list_values.errors }}            
         </div>
     </div>
-                <button type="submit" id="id_guardar" class="btn btn-success ">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Agregar campo
-                </button>
+
 </form>
-    </div>
-<div class="col-md-6">
+<hr>
+<br>
+<div>
                 {% if formulario %}
-                    <h4>Campos del formulario</h4>
-                    <table class="table table-bordered table-hover">
+                    <h2>Campos del formulario</h2>
+                    <table class="table">
                         <thead>
                         <tr class="fts-table-bg">
                             <th>Orden</th>
@@ -170,16 +156,15 @@
                                     </td>
                                     <td>
                                             {% if not forloop.last %}
-                                                    <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_DOWN }}" type="button" class="btn btn-default btn-xs orden">
-
-                                                       <span class="glyphicon glyphicon-chevron-down"></span>
+                                                    <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_DOWN }}" type="button" class="btn btn-light orden">
+                                                       <span class="icon icon-chevron-down"></span>
                                                     </button>
                                             {% endif %}
                                         </td>
                                         <td>
                                             {% if not forloop.first %}
-                                                     <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_UP }}" type="button" class="btn btn-default btn-xs orden">
-                                                    <span class="glyphicon glyphicon-chevron-up"></span>
+                                                     <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_UP }}" type="button" class="btn btn-light orden">
+                                                    <span class="icon icon-chevron-up"></span>
                                                 </button>
                                             {% endif %}
                                         </td>
@@ -187,7 +172,7 @@
                              {% empty %}
                                 <tr>
                                     <td colspan="4">
-                                        <p class="text-center text-danger">
+                                        <p>
                                             <em>No se encontraron campos creados.</em>
                                         </p>
                                     </td>
@@ -205,10 +190,12 @@
 
 
 </div>
-    <div class="col-md-12">
-        <a type="submit" href="{% url 'formulario_vista_previa' formulario.pk %}" class="btn btn-default pull-right">
+
+    <div>
+        <hr>
+        <a class="btn btn-primary" role="button" type="submit" href="{% url 'formulario_vista_previa' formulario.pk %}">
             Continuar
         </a>
     </div>
-</div>
+
 {% endblock %}

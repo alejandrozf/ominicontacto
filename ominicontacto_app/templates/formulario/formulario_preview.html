@@ -8,19 +8,14 @@
     </script>
 {% endblock %}
 {% block content %}
+<h1>Nuevo formulario</h1>
 
-<div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-tabs">
-            <li class="disabled"><a>Nuevo Formulario</a></li>
-            <li><a href="{% url 'formulario_field' pk_formulario %}">Campos del formulario</a></li>
-            <li class="active"><a>Vista previa del formulario</a></li>
-        </ul>
-    </div>
-</div>
-</br>
-<div class="row">
-<div class="col-md-6">
+<ul class="nav nav-indicators">
+    <li class="disabled"><a>Nuevo Formulario</a></li>
+    <li><a href="{% url 'formulario_field' pk_formulario %}">Campos del formulario</a></li>
+    <li class="active"><a>Vista previa del formulario</a></li>
+</ul>
+
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     <table class="table table-striped">
@@ -28,7 +23,8 @@
     </table>
 
 </form>
-    <button type="button" class="btn btn-default " data-toggle="modal" data-target="#myModal">
+<hr>
+    <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal">
   Finalizar
 </button>
 
@@ -37,12 +33,12 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
+        <h1 class="modal-title" id="myModalLabel">Atención</h1>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Atención</h4>
       </div>
       <div class="modal-body">
-        <p>Está seguro que desea finalizar la edición del formuario?</p>
-          <p>Luego de la finalizacion del formulario no podrá editarlo</p>
+        <h2>¿Está seguro que desea finalizar la edición del formuario?</h2>
+          <p>Luego de la finalizacion del formulario no podrá editarlo.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
@@ -50,7 +46,5 @@
       </div>
     </div>
   </div>
-</div>
-</div>
 </div>
 {% endblock %}

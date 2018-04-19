@@ -31,12 +31,14 @@
 {% endblock %}
 
 {% block content %}
+<h1>Campañas manuales</h1>
+
     <div>
         <form id="form_estados_campanas" role="form" method="post">
             {% csrf_token %}
             <input type="hidden" id="campana_id" name="campana_id">
-            <h4><b>Campañas Activas</b></h4>
-            <table class="table table-stripped table-condensed table-bordered">
+            <h2>Campañas Activas</h2>
+            <table class="table table-stripped">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -53,8 +55,8 @@
 
             {% block campanas_finalizadas %}{% endblock %}
 
-            <h4><b>Campañas Eliminadas</b></h4>
-            <table class="table table-stripped table-condensed table-bordered">
+            <h2>Campañas Eliminadas</h2>
+            <table class="table table-stripped">
                 <thead>
                     <tr>
                         <th>Nombre</th>

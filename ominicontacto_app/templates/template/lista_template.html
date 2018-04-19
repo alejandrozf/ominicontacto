@@ -3,10 +3,9 @@
 
 
 {% block content %}
-<div class="col-md-10 col-md-offset-1">
 
-    <h4><b>Lista templates para campañas dialer</b></h4>
-    <table class="table table-stripped table-condensed table-bordered">
+    <h1>Templates de campañas dialer</h1>
+    <table class="table table-stripped">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -29,14 +28,15 @@
                 </td>
 
                 <td width="14%">
-                    <a href="{% url 'crea_campana_dialer_template' campana.pk 0 %}"  class="btn btn-success btn-sm">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                            Crear Campaña de Template
-                                        </a>
-                    <a href="{% url 'campana_dialer_template_elimina' campana.pk %}"  class="btn btn-danger btn-sm">
-                                                <span class="glyphicon glyphicon-remove"></span>
-                                                Eliminar
-                                        </a>
+                    <div class="dropdown">
+                      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownEditMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Opciones
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownEditMenu">
+                        <a class="dropdown-item" href="{% url 'crea_campana_dialer_template' campana.pk 0 %}"><span class="icon far fa-circle" aria-hidden="true"></span>Crear campaña de template</a>
+                        <a class="dropdown-item" href="{% url 'campana_dialer_template_elimina' campana.pk %}"><span class="icon icon-trash" aria-hidden="true"></span>Eliminar</a>
+                      </div>
+                    </div>
                 </td>
             </tr>
        {% empty %}
@@ -47,5 +47,4 @@
         </tbody>
     </table>
 
-</div>
 {% endblock %}
