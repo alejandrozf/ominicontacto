@@ -508,7 +508,7 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
-    def asterisk_db(self, action, family, key, value=None):
+    def asterisk_db(self, action, family, key, val=None):
         """
         para interactuar con Asterisk database
         :param action: DBDel, DBdelTree, DBGet, DBPut
@@ -522,8 +522,8 @@ class AsteriskHttpClient(object):
             'family': family,
             'key': key,
         }
-        if action == 'DBPut' and value:
-            dict_response.update({'value': value})
+        if action == 'DBPut' and val:
+            dict_response.update({'val': val})
         response_body, _ = self._request("/mxml", dict_response)
         parser = AsteriskXmlParserForAsteriskDB()
         parser.parse(response_body)
