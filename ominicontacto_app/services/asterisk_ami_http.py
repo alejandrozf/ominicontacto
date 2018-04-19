@@ -522,7 +522,7 @@ class AsteriskHttpClient(object):
             'family': family,
             'key': key,
         }
-        if action is 'DBPut' and value:
+        if action == 'DBPut' and value:
             dict_response.update({'value': value})
         response_body, _ = self._request("/mxml", dict_response)
         parser = AsteriskXmlParserForAsteriskDB()
