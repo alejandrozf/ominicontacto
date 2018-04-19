@@ -14,8 +14,7 @@ $sip_agente=$argv[4];
 $campana=$argv[6];
 $fecha=$argv[7];
 $uid=$argv[8];
-$duracion=0; //$argv[9];
-//$fecha=date('Y-m-d H:m:s');
+$duracion=$argv[9];
 
 $connection=pg_connect("host=127.0.0.1 port=5432 password=kamailiorw user=kamailio")
 or die('NO HAY CONEXION: ' . pg_last_error()); 
