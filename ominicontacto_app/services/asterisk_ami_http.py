@@ -100,7 +100,7 @@ class AsteriskXmlParser(object):
         try:
             self.root = ET.fromstring(xml)
         except ExpatError as e:
-            logger.exception("Error al parsear XML. ""
+            logger.exception("Error al parsear XML. "
                              "ExpatError.code: {0.code}. XML:\n{1}".format(e, xml))
             raise
         logger.debug("Parseo finalizado")
