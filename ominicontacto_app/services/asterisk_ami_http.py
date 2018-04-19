@@ -330,7 +330,7 @@ class AsteriskXmlParserForAsteriskDB(AsteriskXmlParser):
     def parse(self, xml):
         """Parsea XML."""
         self._parse_and_check(xml,
-                              exception_for_error=AsteriskHttpAsteriskDBrror,
+                              exception_for_error=AsteriskHttpAsteriskDBError,
                               check_success=True)
 
 
@@ -704,5 +704,5 @@ class AsteriskHttpQueueRemoveError(AsteriskHttpAmiError):
     """The queueremove command failed"""
 
 
-class AsteriskHttpAsteriskDBrror(AsteriskHttpAmiError):
+class AsteriskHttpAsteriskDBError(AsteriskHttpAmiError):
     """The asterisk db command failed"""
