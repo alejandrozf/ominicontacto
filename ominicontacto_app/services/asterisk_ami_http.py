@@ -522,7 +522,7 @@ class AsteriskHttpClient(object):
             'family': family,
             'key': key,
         }
-        if action is 'DNPut' and value:
+        if action is 'DBPut' and value:
             dict_response.update({'value': value})
         response_body, _ = self._request("/mxml", dict_response)
         parser = AsteriskXmlParserForAsteriskDB()
@@ -536,7 +536,7 @@ class AsteriskHttpClient(object):
 
 class AmiStatusTracker(object):
 
-    REGEX = re.compile("^Local/([0-9]+)-([0-9]+)-([0-9]+)@""
+    REGEX = re.compile("^Local/([0-9]+)-([0-9]+)-([0-9]+)@"
                        "FTS_local_campana_([0-9]+)")
 
     REGEX_NO_LOCAL_CHANNEL_CONTEXT = re.compile("^campania_([0-9]+)$")
