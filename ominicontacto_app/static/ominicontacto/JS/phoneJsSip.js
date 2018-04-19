@@ -665,8 +665,15 @@ $(function() {
   	num = lastDialedNumber;
 		if($("#campAssocManualCall").html() == "") {
   	  $("#modalSelectCmp").modal("show");
-    }
-		makeCall();
+    } else {
+			makeCall();
+			Sounds("Out", "play");
+			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+				Sounds("", "stop");
+				userAgent.terminateSessions();
+				defaultCallState();
+			}, 61000);
+		}
   });
 
   $("#endCall").click(function() {
@@ -692,6 +699,11 @@ $(function() {
 		    $("#redial").prop('disabled',false);
 		  	makeCall();
 				getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
+				setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+					Sounds("", "stop");
+			    userAgent.terminateSessions();
+			    defaultCallState();
+				}, 61000);
 			}
 		} else {
       displayNumber.style.borderColor = "red";
@@ -703,7 +715,7 @@ $(function() {
 	});
 
   $("#SelectCamp").click(function () {
-		if(displayNumber.value != "") {
+    if(displayNumber.value != "") {
 			$("#modalSelectCmp").modal("hide");
 	  	headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
@@ -715,7 +727,12 @@ $(function() {
 			$("#campAssocManualCall").html(headerNomCamp);
 			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
 	  	makeCall();
-		} else {
+			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
+				Sounds("", "stop");
+		    userAgent.terminateSessions();
+		    defaultCallState();
+			}, 61000);
+    } else {
 			$("#modalSelectCmp").modal("hide");
 			headerIdCamp = $("#cmpList").val();
 	  	$("#idCamp").val(headerIdCamp);
@@ -843,9 +860,15 @@ $(function() {
       if(callType === "In") {
         ring = document.getElementById('RingIn');
         ring.play();
+				ring.onended = function () {
+					ring.play();
+				};
       } else if(callType === "Out") {
         ring = document.getElementById('RingOut');
         ring.play();
+				ring.onended = function () {
+					ring.play();
+				};
       } else {
       	ring = document.getElementById('RingBusy');
         ring.play();
