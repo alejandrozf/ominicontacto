@@ -396,6 +396,13 @@ class ArchivoDeAudio(models.Model):
         self.borrado = True
         self.save()
 
+    def get_filename_audio_asterisk(self):
+        """
+        Returna el filename del audio asterisl
+        """
+        filepath = self.audio_asterisk.path
+        return os.path.splitext(os.path.basename(filepath))[0]
+
 
 class CampanaManager(models.Manager):
 
