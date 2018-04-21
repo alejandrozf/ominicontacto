@@ -11,10 +11,11 @@ from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, po
 from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
-                                      CalificacionCampana, Calificacion, Formulario, Grabacion,
-                                      GrabacionMarca, Queuelog, SitioExterno, User, Contacto,
-                                      SupervisorProfile, AgenteEnContacto, QueueMember,
-                                      CalificacionCliente, CalificacionManual)
+                                      NombreCalificacion, Formulario,
+                                      Grabacion, GrabacionMarca, Queuelog, SitioExterno, User,
+                                      Contacto, SupervisorProfile, AgenteEnContacto, QueueMember,
+                                      CalificacionCliente, OpcionCalificacion,
+                                      ArchivoDeAudio, ParametroExtraParaWebform, ActuacionVigente)
 
 faker = faker.Factory.create()
 
@@ -24,6 +25,8 @@ class UserFactory(DjangoModelFactory):
         model = User
 
     username = lazy_attribute(lambda a: faker.name())
+    first_name = lazy_attribute(lambda a: faker.first_name())
+    last_name = lazy_attribute(lambda a: faker.last_name())
     last_session_key = Sequence(lambda n: "session_{0}.dat".format(n))
 
 
@@ -84,26 +87,11 @@ class FormularioFactory(DjangoModelFactory):
     descripcion = lazy_attribute(lambda a: faker.paragraph(10))
 
 
-class CalificacionFactory(DjangoModelFactory):
+class NombreCalificacionFactory(DjangoModelFactory):
     class Meta:
-        model = Calificacion
+        model = NombreCalificacion
 
-    nombre = lazy_attribute(lambda a: "calificacion_{0}".format(faker.text(10)))
-
-
-class CalificacionCampanaFactory(DjangoModelFactory):
-    class Meta:
-        model = CalificacionCampana
-
-    nombre = lazy_attribute(lambda a: "calificacion_campana_{0}".format(faker.text(10)))
-
-    @post_generation
-    def calificacion(self, create, extracted, **kwargs):
-        if not create:
-            return
-        if extracted:
-            for _calification in extracted:
-                self.calification.add(_calification)
+    nombre = lazy_attribute(lambda a: "nombre_calificacion_{0}".format(faker.text(10)))
 
 
 class CampanaFactory(DjangoModelFactory):
@@ -114,8 +102,6 @@ class CampanaFactory(DjangoModelFactory):
     estado = lazy_attribute(lambda a: faker.random_digit_not_null())
     fecha_inicio = lazy_attribute(lambda a: timezone.now())
     fecha_fin = lazy_attribute(lambda a: a.fecha_inicio)
-
-    calificacion_campana = SubFactory(CalificacionCampanaFactory)
     bd_contacto = SubFactory(BaseDatosContactoFactory)
     formulario = SubFactory(FormularioFactory)
     campaign_id_wombat = lazy_attribute(lambda a: faker.random_number(7))
@@ -220,23 +206,52 @@ class QueueMemberFactory(DjangoModelFactory):
     id_campana = lazy_attribute(lambda a: "{0}_campana".format(uuid4()))
 
 
+class OpcionCalificacionFactory(DjangoModelFactory):
+    class Meta:
+        model = OpcionCalificacion
+
+    campana = SubFactory(CampanaFactory)
+    nombre = lazy_attribute(lambda a: faker.text(15))
+
+
 class CalificacionClienteFactory(DjangoModelFactory):
     class Meta:
         model = CalificacionCliente
 
-    campana = SubFactory(CampanaFactory)
+    opcion_calificacion = SubFactory(OpcionCalificacionFactory)
     contacto = SubFactory(ContactoFactory)
-    calificacion = SubFactory(CalificacionFactory)
     agente = SubFactory(AgenteProfileFactory)
+    fecha = lazy_attribute(lambda a: timezone.now())
     wombat_id = Sequence(lambda n: n)
 
 
-class CalificacionManualFactory(DjangoModelFactory):
+class ArchivoDeAudioFactory(DjangoModelFactory):
     class Meta:
-        model = CalificacionManual
+        model = ArchivoDeAudio
+
+    descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(faker.text(5)))
+
+
+class ParametroExtraParaWebformFactory(DjangoModelFactory):
+    class Meta:
+        model = ParametroExtraParaWebform
 
     campana = SubFactory(CampanaFactory)
-    telefono = lazy_attribute(lambda a: faker.random_number(10))
-    calificacion = SubFactory(CalificacionFactory)
-    fecha = lazy_attribute(lambda a: timezone.now())
-    agente = SubFactory(AgenteProfileFactory)
+    parametro = Sequence(lambda n: "parametro_{0}".format(n))
+    columna = Sequence(lambda n: "columna_{0}".format(n))
+
+
+class ActuacionVigenteFactory(DjangoModelFactory):
+    class Meta:
+        model = ActuacionVigente
+
+    campana = SubFactory(CampanaFactory)
+    domingo = False
+    lunes = True
+    martes = True
+    miercoles = True
+    jueves = True
+    viernes = True
+    sabado = False
+    hora_desde = timezone.now()
+    hora_hasta = timezone.now() + timezone.timedelta(hours=3)

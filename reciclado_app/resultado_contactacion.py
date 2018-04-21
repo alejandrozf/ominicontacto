@@ -92,34 +92,20 @@ class EstadisticasContactacion():
         :return: cantidad por calificacion
         """
 
-        calificaciones_query = campana.calificaconcliente.values(
-            'calificacion__nombre', 'calificacion__id').annotate(Count('calificacion')).filter(
-            calificacion__count__gt=0)
+        calificaciones_query = campana.obtener_calificaciones().values(
+            'opcion_calificacion__nombre', 'opcion_calificacion__id').annotate(
+                Count('opcion_calificacion')).filter(opcion_calificacion__count__gt=0)
 
         calificaciones = []
         for calificacion in calificaciones_query:
             cantidad_contactacion = CantidadContactacion(
-                calificacion['calificacion__id'],
-                calificacion['calificacion__nombre'],
-                calificacion['calificacion__count']
+                calificacion['opcion_calificacion__id'],
+                calificacion['opcion_calificacion__nombre'],
+                calificacion['opcion_calificacion__count']
             )
             calificaciones.append(cantidad_contactacion)
 
         return calificaciones
-
-    def obtener_resultado_contactacion(self, campana):
-        """
-        obtiene el resultado de los contactados con el contacto y los no contactos
-        :param campana: campana de la cual se desea obtener
-        :return: un dicionario con las contactaciones
-        """
-        # FIXME: Borra este metodo o refactorizar, no se usa
-        no_contactados = self.obtener_cantidad_no_contactados(campana)
-        contactados = self.obtener_cantidad_calificacion(campana)
-
-        resultados = {}
-        resultados.update(no_contactados)
-        return resultados
 
 
 class CantidadContactacion(object):
@@ -181,8 +167,8 @@ class RecicladorContactosCampanaDIALER():
             calificaciones seleccionada
 
         """
-        calificaciones_query = campana.calificaconcliente.filter(
-            calificacion__in=reciclado_calificacion).distinct()
+        calificaciones_query = campana.obtener_calificaciones().filter(
+            opcion_calificacion__in=reciclado_calificacion).distinct()
 
         contactos = [calificacion.contacto for calificacion in calificaciones_query]
         return contactos

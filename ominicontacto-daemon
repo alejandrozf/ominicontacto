@@ -34,8 +34,9 @@ case "$1" in
         ;;
   stop)
         echo -n "Stopping OminicontactoDaemon... "
-        pgrep -u freetech uwsgi > /dev/null || {
-                echo "OminicontactoDaemon no esta corriendo..."
+        #pgrep -u freetech uwsgi > /dev/null || {
+        fuser -k -n tcp 8000 > /dev/null || {
+		echo "OminicontactoDaemon no esta corriendo..."
                 log_failure_msg
                 exit 1
         }

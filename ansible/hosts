@@ -1,23 +1,19 @@
-# This is the default ansible 'hosts' file.
-#
-# It should live in /etc/ansible/hosts
-#
-#   - Comments begin with the '#' character
-#   - Blank lines are ignored
-#   - Groups of hosts are delimited by [header] elements
-#   - You can enter hostnames or ip addresses
-#   - A hostname/ip can be a member of multiple groups
-# Ex 1: Ungrouped hosts, specify before any group headers.
-#green.example.com
-#blue.example.com
-#192.168.100.1
-#192.168.100.10
+[omnileads]
+localhost ansible_connection=local ansible_user=omnileads
 
-[omni-app]
-192.168.70.63
-[omni-voip]
-192.168.70.62
-[omni-centos]
-172.16.20.12
-[omni-freepbx]
-192.168.99.2 ansible_ssh_port=22
+[omnileads:vars]
+LOCALHOST=false
+################ Puerto SSH ##################
+ssh_port="{{ ansible_ssh_port }}"
+install_prefix=/opt/omnileads/
+usuario="{{ ansible_user }}"
+##Parametros de la aplicación modificables
+admin_pass=toor123
+session_cookie_age=3600
+formato_conversion=mp3
+
+#Contraseña de mysql en centos-sangoma
+mysql_root_password=
+
+#### Para setear si el postinstall es para FTS o para cliente #####
+desarrollo=0

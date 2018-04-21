@@ -1,0 +1,29 @@
+{% extends "campana/parametros_extra_web_form.html" %}
+{% load i18n %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+     $('.linkFormset').formset({
+       addText: '+',
+       deleteText: '-',
+       prefix: '{{ wizard.form.prefix }}',
+       addCssClass: 'addFormset btn btn-info',
+       deleteCssClass: 'deleteFormset btn btn-danger',
+     });
+    </script>
+{% endblock %}
+
+{% block nav %}
+    <h4 class="inline">{% trans 'Campaña Manual: Parámetros extra para web form' %}</h4>
+
+    <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs">
+            <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+            <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+            <li class="active"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        </ul>
+    </ul>
+{% endblock %}

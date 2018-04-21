@@ -56,6 +56,10 @@ class ArchivoDeReporteCsv(object):
             encabezado = []
 
             encabezado.append("Telefono")
+            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            for nombre in nombres:
+                encabezado.append(nombre)
+            encabezado.append("base_datos")
             campos = campana.formulario.campos.all()
 
             for campo in campos:
@@ -69,17 +73,21 @@ class ArchivoDeReporteCsv(object):
                                       for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
-            # Iteramos cada uno de las calificaciones de la campana
-            for metadata in campana.calificacionmanual.all():
+            # Iteramos cada uno de las metadata de la gestion del formulario
+            for metadata in campana.metadatacliente.all():
                 lista_opciones = []
 
                 # --- Buscamos datos
 
-                lista_opciones.append(metadata.telefono)
-                if metadata.metadata:
-                    datos = json.loads(metadata.metadata)
-                    for clave, valor in datos.items():
-                        lista_opciones.append(valor)
+                lista_opciones.append(metadata.contacto.telefono)
+
+                datos = json.loads(metadata.contacto.datos)
+                for dato in datos:
+                    lista_opciones.append(dato)
+                lista_opciones.append(metadata.contacto.bd_contacto)
+                datos = json.loads(metadata.metadata)
+                for campo in campos:
+                    lista_opciones.append(datos[campo.nombre_campo])
 
                 # --- Finalmente, escribimos la linea
 
@@ -94,18 +102,18 @@ class ArchivoDeReporteCsv(object):
 class ReporteGestionCampanaService(object):
 
     def crea_reporte_csv(self, campana):
-        #assert campana.estado == Campana.ESTADO_ACTIVA
+        # assert campana.estado == Campana.ESTADO_ACTIVA
 
         archivo_de_reporte = ArchivoDeReporteCsv(campana)
 
         archivo_de_reporte.crear_archivo_en_directorio()
 
-        #opciones_por_contacto = self._obtener_opciones_por_contacto(campana)
+        # opciones_por_contacto = self._obtener_opciones_por_contacto(campana)
 
         archivo_de_reporte.escribir_archivo_csv(campana)
 
     def obtener_url_reporte_csv_descargar(self, campana):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
+        # assert campana.estado == Campana.ESTADO_DEPURADA
 
         archivo_de_reporte = ArchivoDeReporteCsv(campana)
         if archivo_de_reporte.ya_existe():

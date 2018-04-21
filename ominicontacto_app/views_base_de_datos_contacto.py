@@ -22,15 +22,13 @@ from ominicontacto_app.errors import (
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
 from ominicontacto_app.forms import (
     BaseDatosContactoForm, DefineNombreColumnaForm, DefineColumnaTelefonoForm,
-    DefineDatosExtrasForm, PrimerLineaEncabezadoForm, ExportaDialerForm)
+    DefineDatosExtrasForm, PrimerLineaEncabezadoForm)
 from ominicontacto_app.models import BaseDatosContacto, UserApiCrm
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
     NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
     ContactoExistenteError, CreacionBaseDatosApiService)
-from ominicontacto_app.services.exportar_base_datos import \
-    ExportarBaseDatosContactosService
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 from django.views.decorators.csrf import csrf_exempt
 import logging as logging_
@@ -808,90 +806,6 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
     def get_success_url(self):
         return reverse('lista_base_datos_contacto')
-
-
-class ExportaDialerView(FormView):
-    """
-    Esta vista invoca a generar un csv para la exportacion de la base de datos.
-    """
-
-    model = BaseDatosContacto
-    context_object_name = 'BaseDatosContacto'
-    form_class = ExportaDialerForm
-    template_name = 'base_create_update_form.html'
-
-    def get_object(self, queryset=None):
-        return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        self.object = self.get_object()
-        metadata = self.object.get_metadata()
-        columnas_telefono = metadata.columnas_con_telefono
-        nombres_de_columnas = metadata.nombres_de_columnas
-        tts_choices = [(columna, nombres_de_columnas[columna]) for columna in
-                       columnas_telefono if columna > 6]
-        campana_choice = [(campana.id, campana.nombre) for campana in
-                          self.object.campanas.all()]
-        return self.form_class(campana_choice=campana_choice, tts_choices=tts_choices,
-                               **self.get_form_kwargs())
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if not self.object.campanas.all():
-            message = ("Esta base de datos no tiene ninguna campaña ")
-            messages.warning(self.request, message)
-        return super(ExportaDialerView, self).dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-
-        campana = form.cleaned_data.get('campana')
-        evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
-        evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
-        prefijo_discador = form.cleaned_data.get('prefijo_discador')
-        telefonos = form.cleaned_data.get('telefonos')
-        self.object = self.get_object()
-        service = ExportarBaseDatosContactosService()
-        service.crea_reporte_csv(self.object, campana, telefonos, evitar_duplicados,
-                                 evitar_sin_telefono, prefijo_discador)
-        message = 'Operación Exitosa!\
-                Se llevó a cabo con éxito la exportación del reporte.'
-
-        messages.add_message(
-            self.request,
-            messages.SUCCESS,
-            message,
-        )
-        return redirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse(
-            'exporta_csv_dialer',
-            kwargs={"bd_contacto": self.object.pk})
-
-
-class GeneraExportacionDialerView(UpdateView):
-    """
-    Esta vista invoca a generar un csv de reporte de la base de datos.
-    """
-
-    model = BaseDatosContacto
-    context_object_name = 'base_datos_contacto'
-    template_name = 'base_datos_contacto/exportacion_dialer.html'
-    fields = '__all__'
-
-    def get_object(self, queryset=None):
-        return BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
-
-    def get_context_data(self, **kwargs):
-        context = super(GeneraExportacionDialerView, self).get_context_data(
-            **kwargs)
-        self.object = self.get_object()
-        service = ExportarBaseDatosContactosService()
-        url = service.obtener_url_reporte_csv_descargar(self.object)
-        context['url_descarga'] = url
-        context['base_datos_contacto'] = self.object
-        return context
 
 
 class OcultarBaseView(RedirectView):

@@ -1,128 +1,123 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends "campana/wizard_base.html" %}
+{% load i18n %}
 
 {% block head_js %}
-<script type="text/javascript">
-    $(function() {
-        $('#id_detectar_contestadores').change(actualizarEstadoDeSelectorDeAudios);
-        actualizarEstadoDeSelectorDeAudios();
-    });
+    <script type="text/javascript">
+     $(function() {
+       $('#id_detectar_contestadores').change(actualizarEstadoDeSelectorDeAudios);
+       actualizarEstadoDeSelectorDeAudios();
+     });
 
-    function actualizarEstadoDeSelectorDeAudios(){
-        var detectar = $('#id_detectar_contestadores').prop("checked");
-        if (!detectar){
-            $('#id_audio_para_contestadores').val('');
-        }
-        $('#id_audio_para_contestadores').prop("disabled", !detectar);
-    };
+     function actualizarEstadoDeSelectorDeAudios(){
+       var detectar = $('#id_detectar_contestadores').prop("checked");
+       if (!detectar){
+         $('#id_audio_para_contestadores').val('');
+       }
+       $('#id_audio_para_contestadores').prop("disabled", !detectar);
+     };
 
-</script>
+    </script>
 {% endblock %}
 
-{% block content %}
+{% block nav %}
+    <h4 class="inline">{% trans 'Campaña Dialer: Datos de Cola' %}</h4>
 
-            <ul class="nav nav-tabs">
-                <li><a href="{% url 'campana_dialer_update' campana.pk %}" >Campaña</a></li>
-                <li class="active"><a>Cola</a></li>
-                {% if create %}
-                <li class="disabled"><a>Actuacion</a></li>
-                 <li class="disabled"><a>Reglas Incidencias</a></li>
-                <li class="disabled"><a>Sincronizar</a></li>
-                {% endif %}
-            </ul>
-            <br>
-    <div class="col-md-8 col-md-offset-1">
-                {% if object.name %}
-                    <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
-                {% endif %}
-<form action="" enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {{ form.campana }} {{form.name }}
-    <div class="form-group row">
-        {{ form.maxlen.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
-        <div class="col-sm-2">
-              {{ form.maxlen }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.wrapuptime.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.wrapuptime.id_for_label }}">Tiempo de descanso entre llamadas:</label>
-        <div class="col-sm-2">
-              {{ form.wrapuptime }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.servicelevel.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.servicelevel.id_for_label }}">Nivel de Servicio:</label>
-        <div class="col-sm-2">
-              {{ form.servicelevel }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.strategy.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.strategy.id_for_label }}">Estrategia de distribucion:</label>
-        <div class="col-sm-2">
-              {{ form.strategy }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.weight.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.weight.id_for_label }}">Importancia de campaña:</label>
-        <div class="col-sm-2">
-              {{ form.weight }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.wait.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.wait.id_for_label }}">Tiempo de espera en cola:</label>
-        <div class="col-sm-2">
-              {{ form.wait }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.auto_grabacion.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados:</label>
-        <div class="col-sm-1">
-              {{ form.auto_grabacion }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.detectar_contestadores.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.detectar_contestadores.id_for_label }}">Detectar contestadores:</label>
-        <div class="col-sm-1">
-              {{ form.detectar_contestadores }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.audio_para_contestadores.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Audio para contestadores:</label>
-        <div class="col-sm-2">
-              {{ form.audio_para_contestadores }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.initial_predictive_model.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Activar predictividad:</label>
-        <div class="col-sm-2">
-              {{ form.initial_predictive_model }}
-        </div>
-    </div>
-    <div class="form-group row">
-        {{ form.initial_boost_factor.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Factor de boost inicial:</label>
-        <div class="col-sm-2">
-              {{ form.initial_boost_factor }}
-        </div>
-    </div>
-    </br>
-    <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
-        Siguiente
-    </button>
+    <ul class="nav nav-tabs">
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        <li class="active"><a>{% trans 'Cola' %}</a></li>
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        {% if not form.instance.campana %}
+            <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
+            <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
+            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}
 
-</form>
-
-
-
+{% block form_render %}
+    {% with form as form %}
+        {% if object.name %}
+            <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
+        {% endif %}
+        {{ form.non_field_errors }}
+        {{ form.campana }} {{form.name }}
+        <div class="form-group row">
+            {{ form.maxlen.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
+            <div class="col-sm-2">
+                {{ form.maxlen }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.wrapuptime.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.wrapuptime.id_for_label }}">Tiempo de descanso entre llamadas:</label>
+            <div class="col-sm-2">
+                {{ form.wrapuptime }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.servicelevel.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.servicelevel.id_for_label }}">Nivel de Servicio:</label>
+            <div class="col-sm-2">
+                {{ form.servicelevel }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.strategy.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.strategy.id_for_label }}">Estrategia de distribucion:</label>
+            <div class="col-sm-2">
+                {{ form.strategy }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.weight.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.weight.id_for_label }}">Importancia de campaña:</label>
+            <div class="col-sm-2">
+                {{ form.weight }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.wait.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.wait.id_for_label }}">Tiempo de espera en cola:</label>
+            <div class="col-sm-2">
+                {{ form.wait }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.auto_grabacion.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados:</label>
+            <div class="col-sm-1">
+                {{ form.auto_grabacion }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.detectar_contestadores.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.detectar_contestadores.id_for_label }}">Detectar contestadores:</label>
+            <div class="col-sm-1">
+                {{ form.detectar_contestadores }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.audio_para_contestadores.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Audio para contestadores:</label>
+            <div class="col-sm-2">
+                {{ form.audio_para_contestadores }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.initial_predictive_model.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Activar predictividad:</label>
+            <div class="col-sm-2">
+                {{ form.initial_predictive_model }}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.initial_boost_factor.errors }}
+            <label class="col-sm-4 control-label" for="{{ form.audio_para_contestadores.id_for_label }}">Factor de boost inicial:</label>
+            <div class="col-sm-2">
+                {{ form.initial_boost_factor }}
+            </div>
+        </div>
+    {% endwith %}
 {% endblock %}

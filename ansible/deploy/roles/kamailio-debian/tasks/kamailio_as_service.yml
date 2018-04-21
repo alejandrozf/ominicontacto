@@ -8,4 +8,4 @@
           - chown kamailio:kamailio /var/run/kamailio
           - systemctl enable kamailio
           - systemctl daemon-reload
-          - chown kamailio:kamailio -R /opt/kamailio
+          - chown kamailio:kamailio -R {{ install_prefix }}kamailio

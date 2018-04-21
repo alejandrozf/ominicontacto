@@ -1,0 +1,92 @@
+{% extends "campana/wizard_base.html" %}
+{% load i18n %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+     /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
+        en un formset  */
+     $('.linkFormset').formset({
+       addText: '+',
+       deleteText: '-',
+       prefix: '{{ wizard.form.prefix }}',
+       addCssClass: 'addFormset btn btn-info',
+       deleteCssClass: 'deleteFormset btn btn-danger',
+       added: function (row) {
+         /* inicializa el nuevo formulario de opción de calificación */
+         $(row.find('.nombre > select')).prop( "disabled", false );
+         var $tipo = $(row.find('.tipo > select'));
+         $tipo.prop( "disabled", false );
+         var tipoOpciones = {"Sin Acción": "0",
+                            "Gestión": "1"};
+         $tipo.empty();
+         $.each(tipoOpciones, function(key,value) {
+           $tipo.append($("<option></option>")
+             .attr("value", value).text(key));
+         });
+       },
+     });
+     /* oculta los links de eliminación para los formularios de opciones de calificación
+        que no deben ser eliminados */
+     $('.readOnly>td').find('.deleteFormset').attr('class', 'hidden')
+    </script>
+{% endblock %}
+
+{% block nav %}
+    <h4 class="inline">{% trans 'Campaña Entrante: Opciones de calificación' %}</h4>
+
+    <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs">
+            <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+            <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
+            <li class="active"><a>{% trans 'Opciones de calificación' %}</a></li>
+            <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        </ul>
+    </ul>
+{% endblock %}
+
+{% block formset_render %}
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+            {% if wizard.form.non_form_errors %}
+                {% for error in wizard.form.non_form_errors %}
+                    <div class="alert alert-warning">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            {% for form in wizard.form.forms %}
+                <tr
+                    {% if form.instance.usada_en_calificacion %}
+                    class="linkFormset readOnly"
+                    data-toggle="tooltip" data-placement="top"
+                    title="Esta opción de calificación ya está siendo usada en la campaña, no se permitirá su eliminación, tenga en cuenta además que si modifica su nombre esto puede causarle confusión al consultar los reportes"
+                    {% elif form.instance.es_agenda %}
+                    class="linkFormset readOnly"
+                    {% else %}
+                    class="linkFormset"
+                    {% endif %}>
+                    <td>
+                    {% if form.instance.pk %}
+                        {{ form.DELETE }}
+                    {% endif %}
+                    </td>
+                    <td class="nombre">
+                        {{ form.nombre.errors }}
+                        {{ form.nombre|add_class:"form-control" }}
+                    </td>
+                    <td class="tipo">
+                        {{ form.tipo.errors }}
+                        {{ form.tipo|add_class:"form-control fieldsFormset" }}
+                    </td>
+                    <td>{{ form.id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ wizard.form.management_form }}
+{% endblock %}

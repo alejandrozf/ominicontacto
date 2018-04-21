@@ -17,7 +17,6 @@ class CustomUserAdmin(UserAdmin):
             None, {
                 'fields': (
                     'is_agente',
-                    'is_customer',
                     'is_supervisor'
                 )
             }
@@ -38,7 +37,6 @@ class UserAdmin(CustomUserAdmin):
         'is_active',
         'is_superuser',
         'is_agente',
-        'is_customer',
         'is_supervisor',
         'last_login',
         'date_joined'

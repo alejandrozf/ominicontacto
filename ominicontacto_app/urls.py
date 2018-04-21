@@ -11,7 +11,7 @@ from ominicontacto_app import (
     views_campana_dialer_reportes, views_back_list, views_sitio_externo,
     views_queue_member, views_user_api_crm, views_supervisor,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_calificacion_manual, views_campana_preview, views_archivo_de_audio
+    views_campana_preview, views_archivo_de_audio
 )
 from django.contrib.auth.decorators import login_required
 from ominicontacto_app.views_utils import (
@@ -188,16 +188,6 @@ urlpatterns = [
                        ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
         ),
-    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/exporta_dialer/$',
-        login_required(views_base_de_datos_contacto.
-                       ExportaDialerView.as_view()),
-        name='exporta_dialer',
-        ),
-    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/genera_dialer/$',
-        login_required(views_base_de_datos_contacto.
-                       GeneraExportacionDialerView.as_view()),
-        name='exporta_csv_dialer',
-        ),
     url(r'^contacto/nuevo/$',
         login_required(views_contacto.ContactoCreateView.as_view()),
         name='contacto_nuevo',
@@ -238,6 +228,29 @@ urlpatterns = [
                        mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
     # ==========================================================================
+    #  Templates Campana Entrante
+    # ==========================================================================
+    url(r'^campana_entrante_template/crear/$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateCreateView.as_view()),
+        name="campana_entrante_template_create"),
+    url(r'^campana_entrante_template/crear_campana/(?P<pk_campana_template>\d+)$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateCreateCampanaView.as_view()),
+        name="campana_entrante_template_create_campana"),
+    url(r'^campana_entrante_template/lista/$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateListView.as_view()),
+        name="campana_entrante_template_list"),
+    url(r'^campana_entrante_template/detalle/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateDetailView.as_view()),
+        name="campana_entrante_template_detail"),
+    url(r'^campana_entrante_template/elimina/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_creacion.CampanaEntranteTemplateDeleteView.as_view()),
+        name="campana_entrante_template_delete"),
+    # ==========================================================================
     # Campana Entrante
     # ==========================================================================
     url(r'^campana/nuevo/$',
@@ -247,14 +260,6 @@ urlpatterns = [
     url(r'^campana/(?P<pk_campana>\d+)/update/$',
         login_required(views_campana_creacion.CampanaEntranteUpdateView.as_view()),
         name='campana_update',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/cola/$',
-        login_required(views_campana_creacion.QueueEntranteCreateView.as_view()),
-        name='queue_nuevo',
-        ),
-    url(r'^campana/update/(?P<pk_campana>\d+)/cola/$',
-        login_required(views_campana_creacion.QueueEntranteUpdateView.as_view()),
-        name='queue_update',
         ),
     url(r'campana/list/$',
         login_required(views_campana.CampanaListView.as_view()),
@@ -390,26 +395,7 @@ urlpatterns = [
         login_required(views_calificacion.CalificacionDeleteView.as_view()),
         name='calificacion_delete',
         ),
-    url(r'^calificacion_campana/nuevo/$',
-        login_required(
-            views_calificacion.CalificacionCampanaCreateView.as_view()),
-        name='calificacion_campana_nuevo',
-        ),
-    url(r'^calificacion_campana/update/(?P<pk>\d+)/$',
-        login_required(
-            views_calificacion.CalificacionCampanaUpdateView.as_view()),
-        name='calificacion_campana_update',
-        ),
-    url(r'^calificacion_campana/lista/$',
-        login_required(
-            views_calificacion.CalificacionCampanaListView.as_view()),
-        name='calificacion_campana_list',
-        ),
-    url(r'^calificacion_campana/delete/(?P<pk>\d+)/$',
-        login_required(
-            views_calificacion.CalificacionCampanaDeleteView.as_view()),
-        name='calificacion_campana_delete',
-        ),
+
     # ==========================================================================
     # Formulario
     # ==========================================================================
@@ -437,7 +423,8 @@ urlpatterns = [
         login_required(views_formulario.FormularioPreviewFormView.as_view()),
         name='formulario_vista_previa',
         ),
-    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
+    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
+        r'/(?P<id_agente>\d+)/$',
         login_required(views_formulario.FormularioCreateFormView.as_view()),
         name='formulario_create',
         ),
@@ -460,6 +447,12 @@ urlpatterns = [
         kwargs={'from': 'reporte'},
         name='calificacion_cliente_actualiza_desde_reporte'
         ),
+    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
+        r'(?P<telefono>\d+)/$',
+        login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'calificacion', 'pk_contacto': None, 'manual': True},
+        name="calificar_por_telefono"),
+
     url(r'^calificacion_cliente/externa/$',
         views_calificacion_cliente.calificacion_cliente_externa_view,
         name='calificacion_cliente_externa'
@@ -522,31 +515,14 @@ urlpatterns = [
         login_required(views_agenda_contacto.AgendaContactoDetailView.as_view()),
         name="agenda_contacto_detalle"),
     url(r'^agenda_contacto/eventos/$',
-        login_required(views_agenda_contacto.AgenteContactoListFormView.as_view()),
+        login_required(views_agenda_contacto.AgendaContactoListFormView.as_view()),
         name="agenda_contacto_listado"),
-    url(
-        r'^agenda_manual/(?P<telefono>\d+)/create/(?P<id_agente>\d+)/(?P<pk_campana>\d+)/$',
-        login_required(
-            views_agenda_contacto.AgendaManualCreateView.as_view()),
-        name="agenda_manual_create"),
-    url(r'^agenda_manual/(?P<pk>\d+)/detalle/$',
-        login_required(
-            views_agenda_contacto.AgendaManualDetailView.as_view()),
-        name="agenda_manual_detalle"),
-    url(r'^agenda_manual/eventos/$',
-        login_required(
-            views_agenda_contacto.AgenteManualListFormView.as_view()),
-        name="agenda_manual_listado"),
     # ==========================================================================
     # Campana Dialer
     # ==========================================================================
     url(r'^campana_dialer/create/$',
         login_required(views_campana_dialer_creacion.CampanaDialerCreateView.as_view()),
         name="campana_dialer_create"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/sincronizar_lista/$',
-        login_required(
-            views_campana_dialer_creacion.SincronizaDialerView.as_view()),
-        name="campana_dialer_sincronizar"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/update/$',
         login_required(
             views_campana_dialer_creacion.CampanaDialerUpdateView.as_view()),
@@ -557,18 +533,15 @@ urlpatterns = [
     url(r'^campana_dialer/start/$',
         login_required(
             views_campana_dialer.PlayCampanaDialerView.as_view()),
-        name='start_campana_dialer',
-        ),
+        name='start_campana_dialer'),
     url(r'^campana_dialer/pausar/$',
         login_required(
             views_campana_dialer.PausarCampanaDialerView.as_view()),
-        name='pausar_campana_dialer',
-        ),
+        name='pausar_campana_dialer'),
     url(r'^campana_dialer/activar/$',
         login_required(
             views_campana_dialer.ActivarCampanaDialerView.as_view()),
-        name='activar_campana_dialer',
-        ),
+        name='activar_campana_dialer'),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/delete/$',
         login_required(
             views_campana_dialer.CampanaDialerDeleteView.as_view()),
@@ -601,42 +574,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer.FormularioNuevoContactoFormView.as_view()),
         name="nuevo_contacto_campana_dialer"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/actuacion_vigente/$',
-        login_required(
-            views_campana_dialer_creacion.ActuacionVigenteCampanaDialerCreateView.as_view()),
-        name="nuevo_actuacion_vigente_campana_dialer"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/reglas_incidencia/$',
-        login_required(
-            views_campana_dialer_creacion.ReglasIncidenciaCampanaDialerCreateView.as_view()),
-        name="nueva_reglas_incidencia_campana_dialer"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/reglas_incidencia/(?P<pk_regla>\d+)/delete/$',
-        login_required(
-            views_campana_dialer_creacion.regla_incidencia_delete_view),
-        name="delete_regla_incidencia_campana_dialer"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/cola/$',
-        login_required(
-            views_campana_dialer_creacion.QueueDialerCreateView.as_view()),
-        name="campana_dialer_queue_create"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/cola_update/$',
-        login_required(
-            views_campana_dialer_creacion.QueueDialerUpdateView.as_view()),
-        name="campana_dialer_queue_update"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/supervisors/$',
         login_required(
             views_campana_dialer.CampanaDialerSupervisorUpdateView.as_view()),
         name="campana_dialer_supervisors"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/replicar_update/$',
-        login_required(
-            views_campana_dialer_creacion.CampanaDialerReplicarView.as_view()),
-        name="campana_dialer_replicar_update"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/replicar_cola/$',
-        login_required(
-            views_campana_dialer_creacion.QueueDialerReplicarView.as_view()),
-        name="campana_dialer_replicar_cola"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/update_actuacion_vigente/$',
-        login_required(
-            views_campana_dialer_creacion.ActuacionVigenteCampanaDialerUpdateView.as_view()),
-        name="campana_dialer_update_actuacion_vigente"),
     url(r'^campana_dialer/mostrar_ocultas/$',
         views_campana_dialer.CampanaDialerBorradasListView.as_view(),
         name="campana_dialer_mostrar_ocultas"),
@@ -673,6 +614,11 @@ urlpatterns = [
         login_required(
             views_campana_dialer_reportes.ExportaReporteCalificadosView.as_view()),
         name='exporta_reporte_calificados',
+        ),
+    url(r'^campana_dialer/(?P<pk_campana>\d+)/exporta_contactados/$',
+        login_required(
+            views_campana_dialer_reportes.ExportaReporteContactadosView.as_view()),
+        name='exporta_reporte_contactados',
         ),
     # ==========================================================================
     # Backlist
@@ -759,43 +705,46 @@ urlpatterns = [
         login_required(
             views_campana_dialer_template.CampanaDialerTemplateCreateView.as_view()),
         name="campana_dialer_template_create"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/cola/$',
-        login_required(
-            views_campana_dialer_template.QueueDialerTemplateCreateView.as_view()),
-        name="campana_dialer_template_queue_create"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/actuacion_vigente/$',
-        login_required(
-            views_campana_dialer_template.ActuacionVigenteCampanaDialerTemplateCreateView.as_view()),
-        name="nuevo_actuacion_vigente_campana_dialer_template"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/reglas_incidencia/$',
-        login_required(
-            views_campana_dialer_template.ReglasIncidenciaCampanaDialerTemplateCreateView.as_view()),
-        name="nueva_reglas_incidencia_campana_dialer_template"),
-    url(
-        r'^campana_dialer_template/(?P<pk_campana>\d+)/reglas_incidencia/(?P<pk_regla>\d+)/delete/$',
-        login_required(
-            views_campana_dialer_template.regla_incidencia_delete_view),
-        name="delete_regla_incidencia_campana_dialer_template"),
     url(r'^campana_dialer_template/lista/$',
         login_required(
             views_campana_dialer_template.TemplateListView.as_view()),
         name="lista_campana_dialer_template"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/confirma/$',
+    url(r'^campana_dialer_template/(?P<pk_campana_template>\d+)/crea_campana/'
+        r'(?P<borrar_template>\d+)/$',
         login_required(
-            views_campana_dialer_template.ConfirmaCampanaDialerTemplateView.as_view()),
-        name="confirma_campana_dialer_template"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/crea_campana/$',
-        login_required(
-            views_campana_dialer_template.CreaCampanaTemplateView.as_view()),
+            views_campana_dialer_template.CampanaDialerTemplateCreateCampanaView.as_view()),
         name="crea_campana_dialer_template"),
     url(r'^campana_dialer_template/(?P<pk>\d+)/detalle/$',
         login_required(
             views_campana_dialer_template.TemplateDetailView.as_view()),
         name="campana_dialer_template_detalle"),
-    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/elmina/$',
+    url(r'^campana_dialer_template/(?P<pk_campana>\d+)/elimina/$',
         login_required(
             views_campana_dialer_template.TemplateDeleteView.as_view()),
         name="campana_dialer_template_elimina"),
+    # ==========================================================================
+    #  Templates Campana Manual
+    # ==========================================================================
+    url(r'^campana_manual_template/crear/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateCreateView.as_view()),
+        name="campana_manual_template_create"),
+    url(r'^campana_manual_template/crear_campana/(?P<pk_campana_template>\d+)$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateCreateCampanaView.as_view()),
+        name="campana_manual_template_create_campana"),
+    url(r'^campana_manual_template/lista/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateListView.as_view()),
+        name="campana_manual_template_list"),
+    url(r'^campana_manual_template/detalle/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateDetailView.as_view()),
+        name="campana_manual_template_detail"),
+    url(r'^campana_manual_template/elimina/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_manual_creacion.CampanaManualTemplateDeleteView.as_view()),
+        name="campana_manual_template_delete"),
     # ==========================================================================
     # Campana Manual
     # ==========================================================================
@@ -811,18 +760,7 @@ urlpatterns = [
         login_required(
             views_campana_manual.CampanaManualListView.as_view()),
         name="campana_manual_list"),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<pk_agente>\d+)/create/(?P<telefono>\d+)/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualCreateView.as_view()),
-        name="campana_manual_calificacion_create"),
-    url(r'^campana_manual/(?P<pk_calificacion>\d+)/calificacion/update/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualUpdateView.as_view()),
-        name="campana_manual_calificacion_update"),
-    url(r'^campana_manual/(?P<pk_calificacion>\d+)/gestion/$',
-        login_required(
-            views_calificacion_manual.CalificacionManualGestion.as_view()),
-        name="campana_manual_calificacion_gestion"),
+
     url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_calificacion/$',
         login_required(
             views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
@@ -862,6 +800,30 @@ urlpatterns = [
     url(r'^campana_manual/mostrar_ocultas/$',
         views_campana_manual.CampanaManualBorradasListView.as_view(),
         name="campana_manual_mostrar_ocultas"),
+    # ==========================================================================
+    #  Templates Campana Preview
+    # ==========================================================================
+    url(r'^campana_preview_template/crear/$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateCreateView.as_view()),
+        name="campana_preview_template_create"),
+    url(r'^campana_preview_template/crear_campana/(?P<pk_campana_template>\d+)$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateCreateCampanaView.as_view()),
+        name="campana_preview_template_create_campana"),
+    url(r'^campana_preview_template/lista/$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateListView.as_view()),
+        name="campana_preview_template_list"),
+    url(r'^campana_preview_template/detalle/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateDetailView.as_view()),
+        name="campana_preview_template_detail"),
+    url(r'^campana_preview_template/elimina/(?P<pk>\d+)/$',
+        login_required(
+            views_campana_preview.CampanaPreviewTemplateDeleteView.as_view()),
+        name="campana_preview_template_delete"),
+
     # ==========================================================================
     # Campana Preview
     # ==========================================================================
@@ -944,6 +906,8 @@ urlpatterns = [
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
         ),
+    url(r'^user/(?P<username>\w{0,50})/$', views.profile_page,),
+
 ]
 
 urlpatterns += [url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}), ]

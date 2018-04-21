@@ -26,11 +26,11 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, WombatLog, Campana, Contacto,
+    Chat, MensajeChat, WombatLog, Campana, Contacto, QueueMember
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
-    AgendaBusquedaForm, PausaForm
+    AgendaBusquedaForm, PausaForm, GrupoForm
 )
 from django.contrib.auth.forms import AuthenticationForm
 from services.kamailio_service import KamailioService
@@ -150,15 +150,21 @@ class UserDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        # DEUDA TECNICA: separar todo esto en un servicio o app aparte
         if self.object.is_agente and self.object.get_agente_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
+                self.object.get_agente_profile())
+            self.object.get_agente_profile().borrar()
+            QueueMember.objects.borrar_member_queue(
                 self.object.get_agente_profile())
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             kamailio_service = KamailioService()
             kamailio_service.delete_agente_kamailio(
                 self.object.get_supervisor_profile())
-        return super(UserDeleteView, self).delete(request, *args, **kwargs)
+            self.object.get_supervisor_profile().borrar()
+        self.object.borrar()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})
@@ -173,7 +179,7 @@ class UserListView(ListView):
 
     def get_queryset(self):
         """Returns user ordernado por id"""
-        return User.objects.all().order_by('id')
+        return User.objects.exclude(borrado=True).order_by('id')
 
 
 class AgenteProfileCreateView(CreateView):
@@ -312,7 +318,7 @@ class AgenteListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(AgenteListView, self).get_context_data(
             **kwargs)
-        agentes = AgenteProfile.objects.all()
+        agentes = AgenteProfile.objects.exclude(borrado=True)
 
         # if self.request.user.is_authenticated() and self.request.user:
         #     user = self.request.user
@@ -328,8 +334,14 @@ class GrupoCreateView(CreateView):
     """
     model = Grupo
     template_name = 'base_create_update_form.html'
-    fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
-              'auto_attend_dialer', 'auto_pause', 'auto_unpause')
+    form_class = GrupoForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if not self.object.auto_unpause:
+            self.object.auto_unpause = 0
+        self.object.save()
+        return super(GrupoCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('grupo_list')
@@ -341,8 +353,15 @@ class GrupoUpdateView(UpdateView):
         """
     model = Grupo
     template_name = 'base_create_update_form.html'
-    fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
-              'auto_attend_dialer', 'auto_pause', 'auto_unpause')
+    form_class = GrupoForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        auto_unpause = form.cleaned_data.get('auto_unpause')
+        if not auto_unpause:
+            self.object.auto_unpause = 0
+        self.object.save()
+        return super(GrupoUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('grupo_list')
@@ -361,6 +380,16 @@ class GrupoDeleteView(DeleteView):
     """
     model = Grupo
     template_name = 'delete_grupo.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        grupo = Grupo.objects.get(pk=self.kwargs['pk'])
+        agentes = grupo.agentes.all()
+        if agentes:
+            message = ("No está permitido eliminar un grupo que tiene agentes")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(
+                reverse('grupo_list'))
+        return super(GrupoDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('grupo_list')
@@ -727,3 +756,11 @@ class AcercaTemplateView(TemplateView):
         context['commit'] = version.OML_COMMIT
         context['fecha_deploy'] = version.OML_BUILD_DATE
         return context
+
+
+# TEST para probar sitio externo
+def profile_page(request, username):
+    prueba = request.GET.get('q', '')
+    print prueba
+    return render_to_response('blanco.html',
+                              context_instance=RequestContext(request))

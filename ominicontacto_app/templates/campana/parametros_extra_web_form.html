@@ -1,0 +1,66 @@
+{% extends "campana/wizard_base.html" %}
+{% load i18n %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+     $('.linkFormset').formset({
+       addText: '+',
+       deleteText: '-',
+       prefix: '{{ wizard.form.prefix }}',
+       addCssClass: 'addFormset btn btn-info',
+       deleteCssClass: 'deleteFormset btn btn-danger',
+     });
+    </script>
+{% endblock %}
+
+{% block nav %}
+    <ul class="nav nav-tabs">
+        <h4 class="inline">{% trans 'Campaña Entrante: Parámetros extra para web form' %}</h4>
+
+        <ul class="nav nav-tabs">
+            <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+            <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
+            <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+            <li class="active"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        </ul>
+    </ul>
+{% endblock %}
+
+{% block formset_render %}
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+            {% if wizard.form.non_form_errors %}
+                {% for error in wizard.form.non_form_errors %}
+                    <div class="alert alert-warning">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            {% for form in wizard.form.forms %}
+                {{ form.errors }}
+                <tr class="linkFormset">
+                    <td>
+                        {% if form.instance.pk %}
+                            {{ form.DELETE }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ form.parametro.errors }}
+                        {{ form.parametro|add_class:"form-control" }}
+                    </td>
+                    <td>
+                        {{ form.columna.errors }}
+                        {{ form.columna|add_class:"form-control fieldsFormset" }}
+                    </td>
+                    <td>{{ form.id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ wizard.form.management_form }}
+{% endblock %}

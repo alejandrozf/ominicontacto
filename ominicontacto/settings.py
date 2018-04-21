@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'compressor',
     'reciclado_app',
+    'formtools',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -144,10 +146,10 @@ OL_SIP_LIMITE_INFERIOR = 1000
 OL_SIP_LIMITE_SUPERIOR = 3000
 
 
-OL_NRO_TELEFONO_LARGO_MIN = 10
+OL_NRO_TELEFONO_LARGO_MIN = 5
 """Largo minimo permitido de nros telefonicos"""
 
-OL_NRO_TELEFONO_LARGO_MAX = 13
+OL_NRO_TELEFONO_LARGO_MAX = 15
 """Largo maximo permitido de nros telefonicos"""
 
 OL_MAX_CANTIDAD_CONTACTOS = 60000

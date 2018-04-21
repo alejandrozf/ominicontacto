@@ -7,10 +7,9 @@ copiado del modulo reporte_agente
 
 import pygal
 import datetime
-from pygal.style import Style, RedBlueStyle
+from pygal.style import Style
 
-from django.db.models import Count
-from ominicontacto_app.models import CalificacionManual, Calificacion, Queuelog
+from ominicontacto_app.models import CalificacionCliente, OpcionCalificacion, Queuelog
 from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 import logging as _logging
 
@@ -46,26 +45,26 @@ class EstadisticasAgenteService():
         """
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        calificaciones = campana.calificacion_campana.calificacion.all()
-        calificaciones_query = CalificacionManual.objects.filter(agente=agente,
-            campana=campana, fecha__range=(fecha_desde, fecha_hasta))
+        opciones_calificacion = campana.opciones_calificacion.all()
+        calificaciones_query = CalificacionCliente.objects.filter(
+            agente=agente, opcion_calificacion__campana=campana,
+            fecha__range=(fecha_desde, fecha_hasta))
+
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_asignados = len(calificaciones_query)
-        for calificacion in calificaciones:
-            cant = len(calificaciones_query.filter(calificacion=calificacion))
-            calificaciones_nombre.append(calificacion.nombre)
+        for opcion_calificacion in opciones_calificacion:
+            cant = len(calificaciones_query.filter(opcion_calificacion=opcion_calificacion))
+            calificaciones_nombre.append(opcion_calificacion.nombre)
             calificaciones_cantidad.append(cant)
-        cant_venta = len(calificaciones_query.filter(es_gestion=True))
-        calificaciones_nombre.append(campana.gestion)
-        calificaciones_cantidad.append(cant_venta)
+
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def obtener_venta(self, campana, agente, fecha_desde, fecha_hasta):
         """
         Obtiene total de calificado como no gestion y el total de los calificado como
         gestion(venta)
-        :param campana: campana la cual se evaluara las calificaciones 
+        :param campana: campana la cual se evaluara las calificaciones
         :param agente: agente el caul se evauluara sus calificaciones
         :param fecha_desde: fecha desde el cual se obtendran las calificaciones
         :param fecha_hasta: fecha hasta la cual se obtendran las calificaciones
@@ -73,11 +72,14 @@ class EstadisticasAgenteService():
         """
         dato_agente = []
         dato_agente.append(agente)
-        total_cal_agente = len(agente.calificacionesmanuales.filter(
-            campana=campana, fecha__range=(fecha_desde, fecha_hasta)))
+        total_cal_agente = len(agente.calificaciones.filter(
+            opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta)))
         dato_agente.append(total_cal_agente)
-        total_ven_agente = len(agente.calificacionesmanuales.filter(
-            campana=campana, es_gestion=True, fecha__range=(fecha_desde, fecha_hasta)))
+        total_ven_agente = len(agente.calificaciones.filter(
+            opcion_calificacion__campana=campana,
+            opcion_calificacion__tipo=OpcionCalificacion.GESTION,
+            fecha__range=(fecha_desde, fecha_hasta)))
+
         dato_agente.append(total_ven_agente)
 
         return dato_agente
@@ -188,7 +190,7 @@ class EstadisticasAgenteService():
         }
         return dic_estadisticas
 
-    def general_campana(self, agente,  campana, fecha_inferior, fecha_superior):
+    def general_campana(self, agente, campana, fecha_inferior, fecha_superior):
         estadisticas = self._calcular_estadisticas(campana, fecha_inferior,
                                                    fecha_superior, agente)
 
@@ -211,6 +213,5 @@ class EstadisticasAgenteService():
             'barra_campana_calificacion': barra_campana_calificacion,
             'total_asignados': estadisticas['total_asignados'],
             'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
-                                        estadisticas['calificaciones_cantidad'])
-            ,
+                                        estadisticas['calificaciones_cantidad']),
         }

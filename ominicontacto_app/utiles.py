@@ -19,7 +19,6 @@ from django.utils import timezone
 
 from django.conf import settings
 from django.forms import ValidationError
-from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlError
 import logging as _logging
@@ -141,7 +140,7 @@ def crear_archivo_en_media_root(dirname_template, prefix, suffix=""):
 
     os.chmod(output_filename, 0644)
 
-    _, generated_filename = os.path.split(output_filename)
+    __, generated_filename = os.path.split(output_filename)
     return relative_dirname, generated_filename
 
 
@@ -307,21 +306,3 @@ def validar_nombres_campanas(nombre):
     error_ascii = 'el nombre no puede contener tildes ni caracteres no ASCII'
     error_espacios = 'el nombre no puede contener espacios'
     validar_solo_ascii_y_sin_espacios(nombre, error_ascii, error_espacios)
-
-
-def validar_gestion_campanas_aux(gestion, calificacion_campana):
-    if not calificacion_campana.calificacion.filter(nombre=gestion).exists():
-        msg = _('Este valor debe coincidir con el nombre de alguna de '
-                'las calificaciones asociadas')
-        raise ValidationError(msg)
-    return gestion
-
-
-def validar_gestion_campanas(campana_form):
-    """
-    Valida que el nombre de gestión coincide con el de alguna calificación asociada a
-    la campaña
-    """
-    gestion = campana_form.cleaned_data['gestion']
-    calificacion_campana = campana_form.cleaned_data['calificacion_campana']
-    return validar_gestion_campanas_aux(gestion, calificacion_campana)

@@ -168,8 +168,7 @@ class ReporteCampanaCalificadosCSV(object):
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
     def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):
-        return campana.calificaconcliente.filter(
-            fecha__range=(fecha_desde, fecha_hasta))
+        return campana.obtener_calificaciones().filter(fecha__range=(fecha_desde, fecha_hasta))
 
     def _obtener_listado_no_califico_fecha(self, campana, fecha_desde, fecha_hasta):
         return campana.logswombat.filter(
