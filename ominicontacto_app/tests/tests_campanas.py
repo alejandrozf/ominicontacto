@@ -969,10 +969,12 @@ class CampanasTests(OMLBaseTest):
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
 
     @patch.object(ActivacionQueueService, 'activar')
+    @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'update_endpoint')
     @patch.object(ActivacionQueueService, '_generar_y_recargar_configuracion_asterisk')
     def test_usuario_logueado_puede_modificar_campana_dialer(
-            self, activar, update_endpoint, _generar_y_recargar_configuracion_asterisk):
+            self, activar, crear_campana_wombat, update_endpoint,
+            _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_dialer_update', args=[self.campana_dialer.pk])
         nuevo_objetivo = 3
         audio_ingreso = ArchivoDeAudioFactory.create()

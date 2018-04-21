@@ -27,7 +27,7 @@
         <li class="active"><a>{% trans 'Cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
         <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
-        {% if not form.instance.pk %}
+        {% if not form.instance.campana %}
             <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
             <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
             <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>

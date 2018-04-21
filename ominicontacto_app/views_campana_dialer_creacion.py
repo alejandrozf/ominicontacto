@@ -67,11 +67,14 @@ class CampanaDialerMixin(CampanaWizardMixin):
             # flexible y sólo usa kwargs para instanciar
             campana = self.get_cleaned_data_for_step(self.INICIAL)
             bd_contacto = campana['bd_contacto']
-            metadata = bd_contacto.get_metadata()
-            nombres_de_columnas = metadata.nombres_de_columnas
-            nombres_de_columnas.remove('telefono')
-            tts_choices = [(columna, columna) for columna in
-                           nombres_de_columnas]
+            if bd_contacto is None:
+                tts_choices = []
+            else:
+                metadata = bd_contacto.get_metadata()
+                nombres_de_columnas = metadata.nombres_de_columnas
+                nombres_de_columnas.remove('telefono')
+                tts_choices = [(columna, columna) for columna in
+                               nombres_de_columnas]
             form_class = self.form_list[step]
             kwargs = self.get_form_kwargs(step)
             kwargs.update({
@@ -108,6 +111,14 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         elif current_step == self.SINCRONIZAR:
             cleaned_data_step_initial = self.get_cleaned_data_for_step(self.INICIAL)
             context['tipo_interaccion'] = cleaned_data_step_initial['tipo_interaccion']
+        elif current_step == self.REGLAS_INCIDENCIA and form.forms == []:
+            # reiniciamos el formset para que el usuario si no tiene formularios
+            # para que el usuario tenga posibilidad de agregar nuevos formularios
+            new_formset = ReglasIncidenciaFormSet()
+            new_formset.prefix = form.prefix
+            context['wizard']['form'] = new_formset
+        return context
+
         return context
 
     def _save_campana(self, campana_form, estado):
@@ -231,6 +242,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
 
         self._insert_queue_asterisk(queue, solo_activar=True)
         campana_service = CampanaService()
+        campana_service.crear_campana_wombat(campana)
         campana_service.update_endpoint(campana)
 
         return HttpResponseRedirect(reverse('campana_dialer_list'))
