@@ -11,7 +11,7 @@ import os
 from pygal.style import Style
 
 from django.conf import settings
-from ominicontacto_app.models import CalificacionCliente, Queuelog, OpcionCalificacion
+from ominicontacto_app.models import CalificacionCliente, OpcionCalificacion
 
 import logging as _logging
 
@@ -122,50 +122,50 @@ class EstadisticasService():
 
         return agentes_venta, total_calificados, total_ventas, opciones_calificaciones
 
-    def calcular_cantidad_llamadas(self, campana, fecha_inferior, fecha_superior):
-        """
-        Obtiene las cantidades toteles detalladas como resultado de las llamadas
-        :param campana: campana la cuales se obtendran el detalle de la llamada
-        :param fecha_inferior: fecha desde la cual se obtendran las llamadas
-        :param fecha_superior: fecha hasta la cual se obtendran las llamadas
-        :return: los eventos de llamadas con sus cantidades totales
-        """
-        eventos_llamadas_ingresadas = ['ENTERQUEUE']
-        eventos_llamadas_atendidas = ['CONNECT']
-        eventos_llamadas_abandonadas = ['ABANDON']
-        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
+    # def calcular_cantidad_llamadas(self, campana, fecha_inferior, fecha_superior):
+    #     """
+    #     Obtiene las cantidades toteles detalladas como resultado de las llamadas
+    #     :param campana: campana la cuales se obtendran el detalle de la llamada
+    #     :param fecha_inferior: fecha desde la cual se obtendran las llamadas
+    #     :param fecha_superior: fecha hasta la cual se obtendran las llamadas
+    #     :return: los eventos de llamadas con sus cantidades totales
+    #     """
+    #     eventos_llamadas_ingresadas = ['ENTERQUEUE']
+    #     eventos_llamadas_atendidas = ['CONNECT']
+    #     eventos_llamadas_abandonadas = ['ABANDON']
+    #     eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
 
-        # obtiene las llamadas recibidas
-        ingresadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, campana.id)
-        # obtiene las llamadas atendidas
-        atendidas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-            eventos_llamadas_atendidas, fecha_inferior, fecha_superior, campana.id)
-        # obtiene las llamadas abandonadas
-        abandonadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, campana.id)
-        # obtiene las llamadas expiradas
-        expiradas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-            eventos_llamadas_expiradas, fecha_inferior, fecha_superior, campana.id)
-        count_llamadas_ingresadas = ingresadas.count()
-        count_llamadas_atendidas = atendidas.count()
-        count_llamadas_abandonadas = abandonadas.count()
-        count_llamadas_expiradas = expiradas.count()
-        count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
-        count_manuales_atendidas = atendidas.filter(data4='saliente').count()
-        count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
-        cantidad_campana = []
-        nombres_cantidades = ["Recibidas", "Atendidas", "Expiradas", "Abandonadas",
-                              "Manuales", "Manuales atendidas", "Manuales no atendidas"]
-        cantidad_campana.append(count_llamadas_ingresadas)
-        cantidad_campana.append(count_llamadas_atendidas)
-        cantidad_campana.append(count_llamadas_expiradas)
-        cantidad_campana.append(count_llamadas_abandonadas)
-        cantidad_campana.append(count_llamadas_manuales)
-        cantidad_campana.append(count_manuales_atendidas)
-        cantidad_campana.append(count_manuales_abandonadas)
+    #     # obtiene las llamadas recibidas
+    #     ingresadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
+    #         eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, campana.id)
+    #     # obtiene las llamadas atendidas
+    #     atendidas = Queuelog.objects.obtener_log_campana_id_event_periodo(
+    #         eventos_llamadas_atendidas, fecha_inferior, fecha_superior, campana.id)
+    #     # obtiene las llamadas abandonadas
+    #     abandonadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
+    #         eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, campana.id)
+    #     # obtiene las llamadas expiradas
+    #     expiradas = Queuelog.objects.obtener_log_campana_id_event_periodo(
+    #         eventos_llamadas_expiradas, fecha_inferior, fecha_superior, campana.id)
+    #     count_llamadas_ingresadas = ingresadas.count()
+    #     count_llamadas_atendidas = atendidas.count()
+    #     count_llamadas_abandonadas = abandonadas.count()
+    #     count_llamadas_expiradas = expiradas.count()
+    #     count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
+    #     count_manuales_atendidas = atendidas.filter(data4='saliente').count()
+    #     count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
+    #     cantidad_campana = []
+    #     nombres_cantidades = ["Recibidas", "Atendidas", "Expiradas", "Abandonadas",
+    #                           "Manuales", "Manuales atendidas", "Manuales no atendidas"]
+    #     cantidad_campana.append(count_llamadas_ingresadas)
+    #     cantidad_campana.append(count_llamadas_atendidas)
+    #     cantidad_campana.append(count_llamadas_expiradas)
+    #     cantidad_campana.append(count_llamadas_abandonadas)
+    #     cantidad_campana.append(count_llamadas_manuales)
+    #     cantidad_campana.append(count_manuales_atendidas)
+    #     cantidad_campana.append(count_manuales_abandonadas)
 
-        return nombres_cantidades, cantidad_campana
+    #     return nombres_cantidades, cantidad_campana
 
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
         # obtener cantidad de calificaciones por campana

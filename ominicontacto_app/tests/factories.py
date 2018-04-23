@@ -12,7 +12,7 @@ from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
                                       NombreCalificacion, Formulario,
-                                      Grabacion, GrabacionMarca, Queuelog, SitioExterno, User,
+                                      Grabacion, GrabacionMarca, SitioExterno, User,
                                       Contacto, SupervisorProfile, AgenteEnContacto, QueueMember,
                                       CalificacionCliente, OpcionCalificacion,
                                       ArchivoDeAudio, ParametroExtraParaWebform, ActuacionVigente)
@@ -119,15 +119,15 @@ class CampanaFactory(DjangoModelFactory):
                 self.supervisors.add(supervisor)
 
 
-class QueuelogFactory(DjangoModelFactory):
-    class Meta:
-        model = Queuelog
+# class QueuelogFactory(DjangoModelFactory):
+#     class Meta:
+#         model = Queuelog
 
-    time = lazy_attribute(lambda a: timezone.now())
-    callid = lazy_attribute(lambda a: faker.text(32))
-    queuename = lazy_attribute(lambda a: faker.text(32))
-    campana_id = lazy_attribute(lambda a: faker.random_number(7))
-    agent = lazy_attribute(lambda a: faker.text(32))
+#     time = lazy_attribute(lambda a: timezone.now())
+#     callid = lazy_attribute(lambda a: faker.text(32))
+#     queuename = lazy_attribute(lambda a: faker.text(32))
+#     campana_id = lazy_attribute(lambda a: faker.random_number(7))
+#     agent = lazy_attribute(lambda a: faker.text(32))
 
 
 class GrabacionFactory(DjangoModelFactory):
