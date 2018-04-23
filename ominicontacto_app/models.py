@@ -132,6 +132,9 @@ class AgenteProfileManager(models.Manager):
                              "con el sip {0} no existe ".format(sip_agente))
             return None
 
+    def obtener_activos(self):
+        return self.filter(is_inactive=False, borrado=False, user__borrado=False)
+
 
 class AgenteProfile(models.Model):
     ESTADO_OFFLINE = 1
@@ -410,7 +413,7 @@ class CampanaManager(models.Manager):
 
     def obtener_activas(self):
         """
-        Devuelve campañas en estado pausadas.
+        Devuelve campañas en estado activas.
         """
         return self.filter(estado=Campana.ESTADO_ACTIVA)
 

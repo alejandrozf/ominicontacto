@@ -7,24 +7,25 @@ Vista relacionada al Agente
 from __future__ import unicode_literals
 
 import datetime
-from django.views.generic import FormView, UpdateView, TemplateView
+from django.views.generic import FormView, UpdateView, TemplateView, View
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from ominicontacto_app.models import (
-    AgenteProfile, Contacto, CalificacionCliente, Grupo
-)
-from ominicontacto_app.forms import ReporteForm, ReporteAgenteForm
-from ominicontacto_app.services.reporte_agente_calificacion import \
-    ReporteAgenteService
-from ominicontacto_app.services.reporte_agente_venta import \
-    ReporteFormularioVentaService
-from ominicontacto_app.utiles import convert_fecha_datetime
-from ominicontacto_app.services.reporte_llamadas import EstadisticasService
 from django.http import JsonResponse
 from django.contrib.auth import logout
 from django.conf import settings
+from django.db.models import F, Value
+from django.db.models.functions import Concat
+
+from ominicontacto_app.models import (
+    AgenteProfile, Contacto, CalificacionCliente, Grupo, Campana
+)
+from ominicontacto_app.forms import ReporteForm, ReporteAgenteForm
+from ominicontacto_app.services.reporte_agente_calificacion import ReporteAgenteService
+from ominicontacto_app.services.reporte_agente_venta import ReporteFormularioVentaService
+from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.services.reporte_llamadas import EstadisticasService
 from ominicontacto_app.services.asterisk_ami_http import (
     AsteriskHttpClient, AsteriskHttpOriginateError
 )
@@ -293,8 +294,7 @@ class ActivarAgenteView(RedirectView):
 
 class AgenteCampanasPreviewActivasView(TemplateView):
     """
-    Devuelve un JSON con información de las campañas previews activas de las cuales es miembro
-    un agente
+    Campañas previews activas de las cuales es miembro un agente
     """
     template_name = 'agente/campanas_preview.html'
 
@@ -305,3 +305,27 @@ class AgenteCampanasPreviewActivasView(TemplateView):
         context['campanas_preview_activas'] = campanas_preview_activas.values_list(
             'queue_name__campana', 'queue_name__campana__nombre')
         return context
+
+
+class CampanasActivasView(View):
+    """
+    Devuelve un JSON con información de las campañas activas del sistema
+    """
+    def get(self, request, tipo_campana):
+        campanas_activas = Campana.objects.obtener_activas() \
+            .filter(type=tipo_campana).values('id', 'nombre')
+        return JsonResponse(data={'campanas': list(campanas_activas)})
+
+
+class AgentesDeGrupoPropioView(View):
+    """
+    Devuelve un JSON con información de los agentes pertenecientes al grupo del agente
+    """
+    def get(self, request):
+        agente_profile = self.request.user.get_agente_profile()
+        agentes_del_grupo = agente_profile.grupo.agentes.obtener_activos() \
+            .exclude(id=agente_profile.id)
+        data_agentes = agentes_del_grupo.annotate(
+            full_name=Concat(F('user__first_name'), Value(' '), F('user__last_name'))) \
+            .values('id', 'full_name', 'sip_extension')
+        return JsonResponse(data={'agentes': list(data_agentes)})
