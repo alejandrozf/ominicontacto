@@ -10,9 +10,9 @@ import pygal
 from collections import OrderedDict
 from pygal.style import Style
 
-from django.db.models import Count
+# from django.db.models import Count
 
-from ominicontacto_app.models import Queuelog, Campana
+from ominicontacto_app.models import Campana
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -295,31 +295,31 @@ class GraficoService():
             estadisticas[tipo]['no_manuales'][evento] += cantidad
             estadisticas[tipo]['por_campana'][campana_id]['no_manuales'][evento] += cantidad
 
-    def _calcular_estadisticas(self, fecha_inferior, fecha_superior, user, finalizadas):
+    # def _calcular_estadisticas(self, fecha_inferior, fecha_superior, user, finalizadas):
 
-        campanas = self._campanas_implicadas(user, finalizadas)
-        events = ['ENTERQUEUE', 'CONNECT', 'ABANDON', 'EXITWITHTIMEOUT']
-        tipos_campana = (Campana.TYPE_ENTRANTE,
-                         Campana.TYPE_DIALER,
-                         Campana.TYPE_MANUAL,
-                         Campana.TYPE_PREVIEW)
+    #     campanas = self._campanas_implicadas(user, finalizadas)
+    #     events = ['ENTERQUEUE', 'CONNECT', 'ABANDON', 'EXITWITHTIMEOUT']
+    #     tipos_campana = (Campana.TYPE_ENTRANTE,
+    #                      Campana.TYPE_DIALER,
+    #                      Campana.TYPE_MANUAL,
+    #                      Campana.TYPE_PREVIEW)
 
-        cantidades = Queuelog.objects.filter(event__in=events,
-                                             data5__in=tipos_campana,
-                                             campana_id__in=campanas,
-                                             time__range=(fecha_inferior, fecha_superior)
-                                             ).values('data4', 'data5', 'campana_id', 'event'
-                                                      ).annotate(cantidad=Count('campana_id'))
+    #     cantidades = Queuelog.objects.filter(event__in=events,
+    #                                          data5__in=tipos_campana,
+    #                                          campana_id__in=campanas,
+    #                                          time__range=(fecha_inferior, fecha_superior)
+    #                                          ).values('data4', 'data5', 'campana_id', 'event'
+    #                                                   ).annotate(cantidad=Count('campana_id'))
 
-        estadisticas = self._inicializar_conteo_de_estadisticas(campanas, tipos_campana)
+    #     estadisticas = self._inicializar_conteo_de_estadisticas(campanas, tipos_campana)
 
-        for cantidad in cantidades:
-            self._contabilizar_en_estadisticas(estadisticas, cantidad)
+    #     for cantidad in cantidades:
+    #         self._contabilizar_en_estadisticas(estadisticas, cantidad)
 
-        estadisticas_formato = self._formatear_estadisticas(estadisticas, campanas, tipos_campana)
-        estadisticas_formato['fecha_desde'] = fecha_inferior
-        estadisticas_formato['fecha_hasta'] = fecha_superior
-        return estadisticas_formato
+    #     estadisticas_formato = self._formatear_estadisticas(estadisticas, campanas, tipos_campana)
+    #     estadisticas_formato['fecha_desde'] = fecha_inferior
+    #     estadisticas_formato['fecha_hasta'] = fecha_superior
+    #     return estadisticas_formato
 
     def _generar_grafico_torta_porcentajes(self, total_llamadas_dict):
 

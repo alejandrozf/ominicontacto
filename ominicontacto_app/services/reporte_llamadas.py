@@ -8,9 +8,12 @@ import datetime
 from pygal.style import Style
 
 from ominicontacto_app.models import (
-    AgenteProfile, Queuelog, Campana, Grabacion, Pausa
+    AgenteProfile,
+    # Campana,
+    Grabacion,
+    Pausa
 )
-from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
+# from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
 
 import logging as _logging
 
@@ -61,287 +64,287 @@ class EstadisticasService():
 
         return datos
 
-    def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
-        """
-        Calcula el tiempo de pausa de los agentes en el periodo evaluado
-        :return: un listado de agentes con el tiempo de pausa
-        """
-        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
+    # def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
+    #     """
+    #     Calcula el tiempo de pausa de los agentes en el periodo evaluado
+    #     :return: un listado de agentes con el tiempo de pausa
+    #     """
+    #     eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
 
-        agentes_tiempo = []
-        # iterar por agente evaluando los eventos de pausa
-        agentes_id = [agente.id for agente in agentes]
-        logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
-            eventos_pausa,
-            fecha_inferior,
-            fecha_superior,
-            agentes_id)
+    #     agentes_tiempo = []
+    #     # iterar por agente evaluando los eventos de pausa
+    #     agentes_id = [agente.id for agente in agentes]
+    #     logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
+    #         eventos_pausa,
+    #         fecha_inferior,
+    #         fecha_superior,
+    #         agentes_id)
 
-        for agente in agentes:
+    #     for agente in agentes:
 
-            is_unpause = False
-            time_actual = None
-            tiempos_pausa = {}
-            log_agente = self._filter_query_por_agente(logs_time, agente.id)
-            # iterar los log teniendo en cuenta que si encuentra un evento
-            # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
-            # logs = [id_agent, time, event, data1]
-            for logs in log_agente:
-                if is_unpause and logs[2] == 'PAUSEALL':
-                    resta = time_actual - logs[1]
-                    id_pausa = logs[3]
-                    if id_pausa in tiempos_pausa.keys():
-                        tiempos_pausa[id_pausa] += resta
-                    else:
-                        tiempos_pausa.update({id_pausa: resta})
-                    is_unpause = False
-                    time_actual = None
-                if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
-                    time_actual = logs[1]
-                    is_unpause = True
-            for id_pausa in tiempos_pausa:
-                datos_de_pausa = self._obtener_datos_de_pausa(id_pausa)
-                tiempo = str(datetime.timedelta(seconds=tiempos_pausa[id_pausa].seconds))
-                tiempo_agente = {
-                    'nombre_agente': agente.user.get_full_name(),
-                    'pausa': datos_de_pausa['nombre'],
-                    'tipo_de_pausa': datos_de_pausa['tipo'],
-                    'tiempo': tiempo,
-                }
-                agentes_tiempo.append(tiempo_agente)
+    #         is_unpause = False
+    #         time_actual = None
+    #         tiempos_pausa = {}
+    #         log_agente = self._filter_query_por_agente(logs_time, agente.id)
+    #         # iterar los log teniendo en cuenta que si encuentra un evento
+    #         # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
+    #         # logs = [id_agent, time, event, data1]
+    #         for logs in log_agente:
+    #             if is_unpause and logs[2] == 'PAUSEALL':
+    #                 resta = time_actual - logs[1]
+    #                 id_pausa = logs[3]
+    #                 if id_pausa in tiempos_pausa.keys():
+    #                     tiempos_pausa[id_pausa] += resta
+    #                 else:
+    #                     tiempos_pausa.update({id_pausa: resta})
+    #                 is_unpause = False
+    #                 time_actual = None
+    #             if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
+    #                 time_actual = logs[1]
+    #                 is_unpause = True
+    #         for id_pausa in tiempos_pausa:
+    #             datos_de_pausa = self._obtener_datos_de_pausa(id_pausa)
+    #             tiempo = str(datetime.timedelta(seconds=tiempos_pausa[id_pausa].seconds))
+    #             tiempo_agente = {
+    #                 'nombre_agente': agente.user.get_full_name(),
+    #                 'pausa': datos_de_pausa['nombre'],
+    #                 'tipo_de_pausa': datos_de_pausa['tipo'],
+    #                 'tiempo': tiempo,
+    #             }
+    #             agentes_tiempo.append(tiempo_agente)
 
-        return agentes_tiempo
+    #     return agentes_tiempo
 
-    def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
-        """
-        Calcula el tiempo de llamadas de los agentes en el periodo evaluado
-        :return: un listado de agentes con el tiempo de llamadas
-        """
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+    # def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
+    #     """
+    #     Calcula el tiempo de llamadas de los agentes en el periodo evaluado
+    #     :return: un listado de agentes con el tiempo de llamadas
+    #     """
+    #     eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
-        agentes_tiempo = []
+    #     agentes_tiempo = []
 
-        # iterar por agente evaluando los eventos de llamadas
-        for agente in agentes:
-            logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
-                eventos_llamadas, fecha_inferior, fecha_superior, agente)
-            llamadas_cola = {}
-            for logs in logs_time:
-                tiempo_llamada = int(logs.data2)
-                if logs.queuename in llamadas_cola.keys():
-                    llamadas_cola[logs.queuename] += tiempo_llamada
-                else:
-                    llamadas_cola.update({logs.queuename: tiempo_llamada})
-            for tiempo_cola in llamadas_cola:
-                tiempo_agente = []
-                tiempo_agente.append(agente)
-                tiempo_agente.append(tiempo_cola)
-                llamadas_cola[tiempo_cola] = str(datetime.timedelta(
-                    0, llamadas_cola[tiempo_cola]))
-                tiempo_agente.append(llamadas_cola[tiempo_cola])
-                agentes_tiempo.append(tiempo_agente)
+    #     # iterar por agente evaluando los eventos de llamadas
+    #     for agente in agentes:
+    #         logs_time = Queuelog.objects.obtener_log_agente_event_periodo(
+    #             eventos_llamadas, fecha_inferior, fecha_superior, agente)
+    #         llamadas_cola = {}
+    #         for logs in logs_time:
+    #             tiempo_llamada = int(logs.data2)
+    #             if logs.queuename in llamadas_cola.keys():
+    #                 llamadas_cola[logs.queuename] += tiempo_llamada
+    #             else:
+    #                 llamadas_cola.update({logs.queuename: tiempo_llamada})
+    #         for tiempo_cola in llamadas_cola:
+    #             tiempo_agente = []
+    #             tiempo_agente.append(agente)
+    #             tiempo_agente.append(tiempo_cola)
+    #             llamadas_cola[tiempo_cola] = str(datetime.timedelta(
+    #                 0, llamadas_cola[tiempo_cola]))
+    #             tiempo_agente.append(llamadas_cola[tiempo_cola])
+    #             agentes_tiempo.append(tiempo_agente)
 
-        return agentes_tiempo
+    #     return agentes_tiempo
 
-    def calcular_tiempos_agentes(self, agentes, fecha_inferior, fecha_superior):
-        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
-        agentes_tiempo = []
-        agentes_id = [agente.id for agente in agentes]
-        logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
-            eventos_pausa,
-            fecha_inferior,
-            fecha_superior,
-            agentes_id)
+    # def calcular_tiempos_agentes(self, agentes, fecha_inferior, fecha_superior):
+    #     eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
+    #     agentes_tiempo = []
+    #     agentes_id = [agente.id for agente in agentes]
+    #     logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
+    #         eventos_pausa,
+    #         fecha_inferior,
+    #         fecha_superior,
+    #         agentes_id)
 
-        for agente in agentes:
-            agente_nuevo = None
-            is_unpause = False
-            time_actual = None
+    #     for agente in agentes:
+    #         agente_nuevo = None
+    #         is_unpause = False
+    #         time_actual = None
 
-            log_agente = self._filter_query_por_agente(logs_time, agente.id)
+    #         log_agente = self._filter_query_por_agente(logs_time, agente.id)
 
-            for logs in log_agente:
-                if is_unpause and logs[2] == 'PAUSEALL':
-                    resta = time_actual - logs[1]
-                    agente_en_lista = filter(lambda x: x.agente == agente,
-                                             agentes_tiempo)
-                    if agente_en_lista:
-                        agente_nuevo = agente_en_lista[0]
-                        if agente_nuevo.tiempo_pausa:
-                            agente_nuevo._tiempo_pausa += resta
-                        else:
-                            agente_nuevo._tiempo_pausa = resta
-                    else:
-                        agente_nuevo = AgenteTiemposReporte(
-                            agente, None, resta, None, 0, 0, 0, 0)
-                        agentes_tiempo.append(agente_nuevo)
-                    agente_nuevo = None
-                    is_unpause = False
-                    time_actual = None
-                if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
-                    time_actual = logs[1]
-                    is_unpause = True
+    #         for logs in log_agente:
+    #             if is_unpause and logs[2] == 'PAUSEALL':
+    #                 resta = time_actual - logs[1]
+    #                 agente_en_lista = filter(lambda x: x.agente == agente,
+    #                                          agentes_tiempo)
+    #                 if agente_en_lista:
+    #                     agente_nuevo = agente_en_lista[0]
+    #                     if agente_nuevo.tiempo_pausa:
+    #                         agente_nuevo._tiempo_pausa += resta
+    #                     else:
+    #                         agente_nuevo._tiempo_pausa = resta
+    #                 else:
+    #                     agente_nuevo = AgenteTiemposReporte(
+    #                         agente, None, resta, None, 0, 0, 0, 0)
+    #                     agentes_tiempo.append(agente_nuevo)
+    #                 agente_nuevo = None
+    #                 is_unpause = False
+    #                 time_actual = None
+    #             if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
+    #                 time_actual = logs[1]
+    #                 is_unpause = True
 
-        eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
+    #     eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
 
-        logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
-            eventos_sesion,
-            fecha_inferior,
-            fecha_superior,
-            agentes_id)
+    #     logs_time = Queuelog.objects.obtener_tiempos_event_agentes(
+    #         eventos_sesion,
+    #         fecha_inferior,
+    #         fecha_superior,
+    #         agentes_id)
 
-        for agente in agentes:
-            agente_nuevo = None
-            is_remove = False
-            time_actual = None
-            log_agente = self._filter_query_por_agente(logs_time, agente.id)
-            for logs in log_agente:
-                if is_remove and logs[2] == 'ADDMEMBER':
-                    resta = time_actual - logs[1]
-                    agente_en_lista = filter(lambda x: x.agente == agente,
-                                             agentes_tiempo)
-                    if agente_en_lista:
-                        agente_nuevo = agente_en_lista[0]
-                        if agente_nuevo.tiempo_sesion:
-                            agente_nuevo._tiempo_sesion += resta
-                        else:
-                            agente_nuevo._tiempo_sesion = resta
-                    else:
-                        agente_nuevo = AgenteTiemposReporte(
-                            agente, resta, None, None, 0, 0, 0, 0)
-                        agentes_tiempo.append(agente_nuevo)
-                    agente_nuevo = None
-                    is_remove = False
-                    time_actual = None
-                if logs[2] == 'REMOVEMEMBER':
-                    time_actual = logs[1]
-                    is_remove = True
+    #     for agente in agentes:
+    #         agente_nuevo = None
+    #         is_remove = False
+    #         time_actual = None
+    #         log_agente = self._filter_query_por_agente(logs_time, agente.id)
+    #         for logs in log_agente:
+    #             if is_remove and logs[2] == 'ADDMEMBER':
+    #                 resta = time_actual - logs[1]
+    #                 agente_en_lista = filter(lambda x: x.agente == agente,
+    #                                          agentes_tiempo)
+    #                 if agente_en_lista:
+    #                     agente_nuevo = agente_en_lista[0]
+    #                     if agente_nuevo.tiempo_sesion:
+    #                         agente_nuevo._tiempo_sesion += resta
+    #                     else:
+    #                         agente_nuevo._tiempo_sesion = resta
+    #                 else:
+    #                     agente_nuevo = AgenteTiemposReporte(
+    #                         agente, resta, None, None, 0, 0, 0, 0)
+    #                     agentes_tiempo.append(agente_nuevo)
+    #                 agente_nuevo = None
+    #                 is_remove = False
+    #                 time_actual = None
+    #             if logs[2] == 'REMOVEMEMBER':
+    #                 time_actual = logs[1]
+    #                 is_remove = True
 
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+    #     eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
-        agentes_id = [agente.id for agente in agentes]
-        logs_time = Queuelog.objects.obtener_tiempo_llamadas_agente(
-            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
+    #     agentes_id = [agente.id for agente in agentes]
+    #     logs_time = Queuelog.objects.obtener_tiempo_llamadas_agente(
+    #         eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
 
-        for log in logs_time:
+    #     for log in logs_time:
 
-            agente = AgenteProfile.objects.get(pk=int(log[0]))
-            agente_en_lista = filter(lambda x: x.agente == agente,
-                                     agentes_tiempo)
-            if agente_en_lista:
-                agente_nuevo = agente_en_lista[0]
-                agente_nuevo._tiempo_llamada = int(log[1])
-            else:
-                agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, int(log[1]), 0, 0, 0, 0)
-                agentes_tiempo.append(agente_nuevo)
+    #         agente = AgenteProfile.objects.get(pk=int(log[0]))
+    #         agente_en_lista = filter(lambda x: x.agente == agente,
+    #                                  agentes_tiempo)
+    #         if agente_en_lista:
+    #             agente_nuevo = agente_en_lista[0]
+    #             agente_nuevo._tiempo_llamada = int(log[1])
+    #         else:
+    #             agente_nuevo = AgenteTiemposReporte(
+    #                 agente, None, None, int(log[1]), 0, 0, 0, 0)
+    #             agentes_tiempo.append(agente_nuevo)
 
-        logs_time = Queuelog.objects.obtener_count_evento_agente(
-            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
+    #     logs_time = Queuelog.objects.obtener_count_evento_agente(
+    #         eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
 
-        for log in logs_time:
+    #     for log in logs_time:
 
-            agente = AgenteProfile.objects.get(pk=int(log[0]))
-            agente_en_lista = filter(lambda x: x.agente == agente,
-                                     agentes_tiempo)
-            if agente_en_lista:
-                agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_llamadas_procesadas = int(log[1])
-            else:
-                agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, None, logs_time.count(),
-                    0, 0, 0)
-                agentes_tiempo.append(agente_nuevo)
+    #         agente = AgenteProfile.objects.get(pk=int(log[0]))
+    #         agente_en_lista = filter(lambda x: x.agente == agente,
+    #                                  agentes_tiempo)
+    #         if agente_en_lista:
+    #             agente_nuevo = agente_en_lista[0]
+    #             agente_nuevo._cantidad_llamadas_procesadas = int(log[1])
+    #         else:
+    #             agente_nuevo = AgenteTiemposReporte(
+    #                 agente, None, None, None, logs_time.count(),
+    #                 0, 0, 0)
+    #             agentes_tiempo.append(agente_nuevo)
 
-        eventos_llamadas_perdidas = ['RINGNOANSWER']
+    #     eventos_llamadas_perdidas = ['RINGNOANSWER']
 
-        logs_time = Queuelog.objects.obtener_count_evento_agente(
-            eventos_llamadas_perdidas, fecha_inferior, fecha_superior,
-            agentes_id)
+    #     logs_time = Queuelog.objects.obtener_count_evento_agente(
+    #         eventos_llamadas_perdidas, fecha_inferior, fecha_superior,
+    #         agentes_id)
 
-        for log in logs_time:
+    #     for log in logs_time:
 
-            agente = AgenteProfile.objects.get(pk=int(log[0]))
-            agente_en_lista = filter(lambda x: x.agente == agente,
-                                     agentes_tiempo)
-            if agente_en_lista:
-                agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_llamadas_perdidas = int(log[1])
-            else:
-                agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, None, 0,
-                    int(log[1]), 0, 0)
-                agentes_tiempo.append(agente_nuevo)
+    #         agente = AgenteProfile.objects.get(pk=int(log[0]))
+    #         agente_en_lista = filter(lambda x: x.agente == agente,
+    #                                  agentes_tiempo)
+    #         if agente_en_lista:
+    #             agente_nuevo = agente_en_lista[0]
+    #             agente_nuevo._cantidad_llamadas_perdidas = int(log[1])
+    #         else:
+    #             agente_nuevo = AgenteTiemposReporte(
+    #                 agente, None, None, None, 0,
+    #                 int(log[1]), 0, 0)
+    #             agentes_tiempo.append(agente_nuevo)
 
-        logs_time = Queuelog.objects.obtener_tiempo_llamadas_saliente_agente(
-            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
+    #     logs_time = Queuelog.objects.obtener_tiempo_llamadas_saliente_agente(
+    #         eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
 
-        for log in logs_time:
+    #     for log in logs_time:
 
-            agente = AgenteProfile.objects.get(pk=int(log[0]))
-            agente_en_lista = filter(lambda x: x.agente == agente,
-                                     agentes_tiempo)
-            if agente_en_lista:
-                agente_nuevo = agente_en_lista[0]
-                agente_nuevo._tiempo_llamada_saliente = int(log[1])
-            else:
-                agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, None, 0, 0, int(log[1]), 0)
-                agentes_tiempo.append(agente_nuevo)
+    #         agente = AgenteProfile.objects.get(pk=int(log[0]))
+    #         agente_en_lista = filter(lambda x: x.agente == agente,
+    #                                  agentes_tiempo)
+    #         if agente_en_lista:
+    #             agente_nuevo = agente_en_lista[0]
+    #             agente_nuevo._tiempo_llamada_saliente = int(log[1])
+    #         else:
+    #             agente_nuevo = AgenteTiemposReporte(
+    #                 agente, None, None, None, 0, 0, int(log[1]), 0)
+    #             agentes_tiempo.append(agente_nuevo)
 
-        logs_time = Queuelog.objects.obtener_count_saliente_evento_agente(
-            eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
+    #     logs_time = Queuelog.objects.obtener_count_saliente_evento_agente(
+    #         eventos_llamadas, fecha_inferior, fecha_superior, agentes_id)
 
-        for log in logs_time:
+    #     for log in logs_time:
 
-            agente = AgenteProfile.objects.get(pk=int(log[0]))
-            agente_en_lista = filter(lambda x: x.agente == agente,
-                                     agentes_tiempo)
-            if agente_en_lista:
-                agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_llamadas_saliente = int(log[1])
-            else:
-                agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, None, 0,
-                    0, 0, int(log[1]))
-                agentes_tiempo.append(agente_nuevo)
+    #         agente = AgenteProfile.objects.get(pk=int(log[0]))
+    #         agente_en_lista = filter(lambda x: x.agente == agente,
+    #                                  agentes_tiempo)
+    #         if agente_en_lista:
+    #             agente_nuevo = agente_en_lista[0]
+    #             agente_nuevo._cantidad_llamadas_saliente = int(log[1])
+    #         else:
+    #             agente_nuevo = AgenteTiemposReporte(
+    #                 agente, None, None, None, 0,
+    #                 0, 0, int(log[1]))
+    #             agentes_tiempo.append(agente_nuevo)
 
-        return agentes_tiempo
+    #     return agentes_tiempo
 
-    def obtener_count_llamadas_campana(self, agentes, fecha_inferior,
-                                       fecha_superior, user):
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+    # def obtener_count_llamadas_campana(self, agentes, fecha_inferior,
+    #                                    fecha_superior, user):
+    #     eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
 
-        campanas = Campana.objects.obtener_all_dialplan_asterisk()
-        if not user.get_is_administrador():
-            campanas = Campana.objects.obtener_campanas_vista_by_user(
-                campanas, user)
+    #     campanas = Campana.objects.obtener_all_dialplan_asterisk()
+    #     if not user.get_is_administrador():
+    #         campanas = Campana.objects.obtener_campanas_vista_by_user(
+    #             campanas, user)
 
-        agentes_tiempo = []
-        agentes = [agente.id for agente in agentes]
-        logs_time = Queuelog.objects.obtener_agentes_campanas_total(
-            eventos_llamadas, fecha_inferior, fecha_superior, agentes,
-            campanas)
+    #     agentes_tiempo = []
+    #     agentes = [agente.id for agente in agentes]
+    #     logs_time = Queuelog.objects.obtener_agentes_campanas_total(
+    #         eventos_llamadas, fecha_inferior, fecha_superior, agentes,
+    #         campanas)
 
-        for log in logs_time:
-            campana = log[1].split('_')
-            try:
-                campana_nombre = campana[1]
-            except ValueError:
-                campana_nombre = log[1]
-            agente = log[0].split('_')
-            try:
-                agente_nombre = agente[1]
-            except ValueError:
-                agente_nombre = log[0]
-            tiempo_agente = []
-            tiempo_agente.append(agente_nombre)
-            tiempo_agente.append(campana_nombre)
-            tiempo_agente.append(str(datetime.timedelta(0, log[2])))
-            tiempo_agente.append(log[3])
-            agentes_tiempo.append(tiempo_agente)
+    #     for log in logs_time:
+    #         campana = log[1].split('_')
+    #         try:
+    #             campana_nombre = campana[1]
+    #         except ValueError:
+    #             campana_nombre = log[1]
+    #         agente = log[0].split('_')
+    #         try:
+    #             agente_nombre = agente[1]
+    #         except ValueError:
+    #             agente_nombre = log[0]
+    #         tiempo_agente = []
+    #         tiempo_agente.append(agente_nombre)
+    #         tiempo_agente.append(campana_nombre)
+    #         tiempo_agente.append(str(datetime.timedelta(0, log[2])))
+    #         tiempo_agente.append(log[3])
+    #         agentes_tiempo.append(tiempo_agente)
 
-        return agentes_tiempo
+    #     return agentes_tiempo
 
     ########################################################################
     #           ATENCION COPIADO de reporte_grafico.py
