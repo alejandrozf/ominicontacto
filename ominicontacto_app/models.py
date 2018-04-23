@@ -400,8 +400,10 @@ class ArchivoDeAudio(models.Model):
         """
         Returna el filename del audio asterisl
         """
-        filepath = self.audio_asterisk.path
-        return os.path.splitext(os.path.basename(filepath))[0]
+        if self.audio_asterisk:
+            filepath = self.audio_asterisk.path
+            return os.path.splitext(os.path.basename(filepath))[0]
+        return None
 
 
 class CampanaManager(models.Manager):
