@@ -311,9 +311,8 @@ class CampanasActivasView(View):
     """
     Devuelve un JSON con información de las campañas activas del sistema
     """
-    def get(self, request, tipo_campana):
-        campanas_activas = Campana.objects.obtener_activas() \
-            .filter(type=tipo_campana).values('id', 'nombre')
+    def get(self, request):
+        campanas_activas = Campana.objects.obtener_activas().values('id', 'nombre', 'type')
         return JsonResponse(data={'campanas': list(campanas_activas)})
 
 

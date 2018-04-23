@@ -159,11 +159,11 @@ urlpatterns = [
     # ==========================================================================
     # Servicios para phoneJS
     # ==========================================================================
-    url(r'^service/campana/activas/(?P<tipo_campana>\d+)/$',
+    url(r'^service/campana/activas/$',
         login_required(
             views_agente.CampanasActivasView.as_view()),
         name="service_campanas_activas"),
-    url(r'^service/agente/agentes_de_grupo/$',
+    url(r'^service/agente/otros_agentes_de_grupo/$',
         login_required(
             views_agente.AgentesDeGrupoPropioView.as_view()),
         name="service_agentes_de_grupo"),
