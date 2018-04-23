@@ -14,7 +14,23 @@ class Command(BaseCommand):
     distintos tipos de campañas
     """
 
-    EVENTOS = ['CONNECT', 'ABANDON', 'EXITWITHTIMEOUT']
+    EVENTOS = [
+        'DIAL',
+        'ANSWER',
+        'COMPLETEAGENT',
+        'COMPLETECALLER',
+        'ENTERQUEUE',
+        'CONNECT',
+        'EXITWITHTIMEOUT',
+        'ABANDON',
+        'NO ANSWER',
+        'BUSY',
+        'CHANUNAVAIL',
+        'OTHER',
+        'FAIL',
+        'AMD',
+        'BLACKLIST',
+    ]
 
     help = 'Crea el número de llamadas de acuerdo al parámetro recibido'
 
@@ -26,6 +42,7 @@ class Command(BaseCommand):
         id_campana_entrante = CampanaFactory.create(type=Campana.TYPE_ENTRANTE, estado=estado).pk
         id_campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER, estado=estado).pk
         id_campana_manual = CampanaFactory.create(type=Campana.TYPE_MANUAL, estado=estado).pk
+        id_campana_manual = CampanaFactory.create(type=Campana.TYPE_PREVIEW, estado=estado).pk
 
         return [id_campana_entrante, id_campana_dialer, id_campana_manual]
 
