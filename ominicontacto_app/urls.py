@@ -157,6 +157,17 @@ urlpatterns = [
         name='acerca',
         ),
     # ==========================================================================
+    # Servicios para phoneJS
+    # ==========================================================================
+    url(r'^service/campana/activas/$',
+        login_required(
+            views_agente.CampanasActivasView.as_view()),
+        name="service_campanas_activas"),
+    url(r'^service/agente/otros_agentes_de_grupo/$',
+        login_required(
+            views_agente.AgentesDeGrupoPropioView.as_view()),
+        name="service_agentes_de_grupo"),
+    # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
     url(r'^base_datos_contacto/(?P<pk_bd_contacto>\d+)/actualizar/$',
@@ -621,7 +632,7 @@ urlpatterns = [
         name='exporta_reporte_contactados',
         ),
     # ==========================================================================
-    # Backlist
+    # Blacklist
     # ==========================================================================
     url(r'^backlist/nueva/$',
         login_required(views_back_list.BacklistCreateView.as_view()),
