@@ -14,7 +14,7 @@ class Command(BaseCommand):
     distintos tipos de campañas
     """
 
-    EVENTOS = [
+    EVENTOS_LLAMADA = [
         'DIAL',
         'ANSWER',
         'COMPLETEAGENT',
@@ -30,6 +30,13 @@ class Command(BaseCommand):
         'FAIL',
         'AMD',
         'BLACKLIST',
+    ]
+
+    EVENTOS_AGENTE = [
+        'ADDMEMBER',
+        'REMOVEMEMBER',
+        'PAUSEALL',
+        'UNPAUSEALL',
     ]
 
     help = 'Crea el número de llamadas de acuerdo al parámetro recibido'
@@ -51,7 +58,7 @@ class Command(BaseCommand):
         Crea registros Queuelog aleatorios para simular las distintas situaciones por las que puede
         transcurrir una llamada
         """
-        campana = randint(0, 2)
+        campana = randint(0, 3)
 
         campana_id = campanas_ids[campana]
         if campana + 1 == Campana.TYPE_MANUAL:
@@ -63,7 +70,7 @@ class Command(BaseCommand):
         callid = QueuelogFactory.create(
             event='ENTERQUEUE', campana_id=campana_id, data4=data4).callid
         QueuelogFactory.create(
-            event=self.EVENTOS[evento], callid=callid, campana_id=campana_id, data4=data4)
+            event=self.EVENTOS_LLAMADA[evento], callid=callid, campana_id=campana_id, data4=data4)
 
     def handle(self, *args, **options):
         nro_llamadas = options['nro_llamadas'][0]
