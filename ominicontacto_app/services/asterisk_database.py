@@ -3,6 +3,12 @@
 from __future__ import unicode_literals
 
 from ominicontacto_app.utiles import elimina_espacios
+from ominicontacto_app.models import Campana
+from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
+    AsteriskHttpAsteriskDBError
+import logging as _logging
+
+logger = _logging.getLogger(__name__)
 
 
 class CampanaFamily(object):
@@ -39,3 +45,33 @@ class CampanaFamily(object):
     def create_dict(self, campana):
         dict_campana = self._genera_dict(campana)
         return dict_campana
+
+    def _obtener_todas_campana_para_generar_familys(self):
+        """Devuelve las campanas para generar .
+        """
+        return Campana.objects.obtener_all_dialplan_asterisk()
+
+    def create_familys(self, campana=None, campanas=None):
+        """Crea familys en database de asterisk
+        """
+
+        if campanas:
+            pass
+        elif campana:
+            campanas = [campana]
+        else:
+            campanas = self._obtener_todas_campana_para_generar_familys()
+        client = AsteriskHttpClient()
+        client.login()
+        for campana in campanas:
+            logger.info("Creando familys para campana %s", campana.nombre)
+            variables = self.create_dict(campana)
+
+            for key, val in variables.items():
+                try:
+                    family = "/OML/CAMP/{0}/".format(campana.id)
+                    client.asterisk_db("DBPut", family, key, val=val)
+                except AsteriskHttpAsteriskDBError:
+                    logger.exception("Error al intentar DBPut al insertar"
+                                     " en la family {0} la siguiente key={1}"
+                                     " y val={2}".format(family, key, val))
