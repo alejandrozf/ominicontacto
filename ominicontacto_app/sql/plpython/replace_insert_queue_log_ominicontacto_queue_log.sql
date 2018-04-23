@@ -16,8 +16,14 @@ data3 = TD['new']['data3']
 data4 = TD['new']['data4']
 data5 = TD['new']['data5']
 
-plan = plpy.prepare("INSERT INTO ominicontacto_app_queuelog(time, callid, queuename, agent, event, data1, data2, data3, data4, data5, campana_id, agent_id) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
-["timestamp with time zone", "text", "text", "text", "text", "text", "text", "text", "text", "text", "int", "int"])
+plan_llamadas_log = plpy.prepare(
+    "INSERT INTO reportes_llamadaslog(time, callid, campana_id, agente_id, event, data1, "
+    "data2, data3, data4, data5) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10)",
+    ["timestamp with time zone", "text", "text", "int", "int", "text", "text", "text", "text",
+     "text"])
+plan_agente_log = plpy.prepare(
+    "INSERT INTO reportes_actividadagentelog(time, agente_id, event, data1) VALUES($1 ,$2, $3, $4)",
+    ["timestamp with time zone", "int", "text", "text"])
 campana = queuename.split('_')
 try:
     campana_id = int(campana[0])
@@ -29,9 +35,12 @@ try:
 except ValueError:
     agente_id = -1
 
-# Filtro queuelogs automaticos de Asterisk (duplican logs)
-if not (data4 == '' and event in ['CONNECT', 'ENTERQUEUE', 'ABANDON', 'EXITWITHTIMEOUT']):
-    plpy.execute(plan, [fecha, callid, queuename, agent, event, data1, data2, data3, data4, data5, campana_id, agente_id])
+if event in ['ADDMEMBER', 'REMOVEMEMBER']):
+    # es un log de la actividad de un agente
+    plpy.execute(plan_agente_log, [fecha, agente_id, event, data1])
+else:
+    # es un log que forma parte de una llamada
+    plpy.execute(plan_llamadas_log, [time, callid, campana_id, agente_id, event, data1, data2,
+                                     data3, data4, data5])
 
 $$ language plpythonu;
-
