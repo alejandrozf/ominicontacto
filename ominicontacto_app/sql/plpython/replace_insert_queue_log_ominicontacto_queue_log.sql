@@ -35,7 +35,7 @@ try:
 except ValueError:
     agente_id = -1
 
-if event in ['ADDMEMBER', 'REMOVEMEMBER']):
+if event in ['ADDMEMBER', 'REMOVEMEMBER']:
     # es un log de la actividad de un agente
     plpy.execute(plan_agente_log, [fecha, agente_id, event, data1])
 else:
