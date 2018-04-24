@@ -176,3 +176,17 @@ class PausaFamily(object):
                 logger.exception("Error al intentar DBPut al insertar"
                                  " en la family {0} la siguiente ket=NAME"
                                  " y val={1}".format(family, pausa.nombre))
+
+    def delete_tree_family(self, family):
+        """Elimina el tree de la family pasada por parametro"""
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.asterisk_db_deltree(family)
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBDelTree de {0}".format(family))
+
+    def regenerar_familys_agente(self):
+        """regenera la family de los agentes"""
+        self.delete_tree_family("/OML/PAUSE")
+        self.create_familys()
