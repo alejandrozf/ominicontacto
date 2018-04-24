@@ -81,14 +81,16 @@ class CampanaFamily(object):
                                      " en la family {0} la siguiente key={1}"
                                      " y val={2}".format(family, key, val))
 
-    def delete_all_family(self):
+    def delete_tree_family(self, family):
+        """Elimina el tree de la family pasada por parametro"""
         try:
             client = AsteriskHttpClient()
             client.login()
-            client.asterisk_db_deltree("/OML/CAMP")
+            client.asterisk_db_deltree(family)
         except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de /OML/CAMP")
+            logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
     def regenerar_familys_campana(self):
-        self.delete_all_family()
+        """regenera la family de las campana"""
+        self.delete_tree_family("/OML/CAMP")
         self.create_familys()
