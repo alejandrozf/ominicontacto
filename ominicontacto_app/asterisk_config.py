@@ -64,7 +64,7 @@ class QueueDialplanConfigCreator(object):
         if campana.queue_campana.audio_de_ingreso:
             local_filepath = campana.queue_campana.audio_de_ingreso.audio_asterisk.path
             filename = os.path.splitext(os.path.basename(local_filepath))[0]
-            filepath = os.path.join('olc', filename)
+            filepath = os.path.join('oml', filename)
         param_generales['filepath_audio_ingreso'] = filepath
 
         sub_partes = []
