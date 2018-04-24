@@ -161,7 +161,7 @@ class PausaFamily(object):
         """Obtener todas pausas"""
         return Pausa.objects.activas()
 
-    def create_family(self):
+    def create_familys(self):
         """Crea family en database asterisk"""
 
         pausas = self._obtener_todas_pausas_para_generar_family()
