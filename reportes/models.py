@@ -12,13 +12,14 @@ class LlamadasLog(models.Model):
     time = models.DateTimeField(db_index=True)
     callid = models.CharField(max_length=32, blank=True, null=True)
     campana_id = models.IntegerField(db_index=True, blank=True, null=True)
+    tipo_campana = models.IntegerField(blank=True, null=True)
+    tipo_llamada = models.IntegerField(blank=True, null=True)
     agente_id = models.IntegerField(db_index=True, blank=True, null=True)
     event = models.CharField(max_length=32, blank=True, null=True)
-    data1 = models.CharField(max_length=128, blank=True, null=True)
-    data2 = models.CharField(max_length=128, blank=True, null=True)
-    data3 = models.CharField(max_length=128, blank=True, null=True)
-    data4 = models.CharField(max_length=128, blank=True, null=True)
-    data5 = models.CharField(max_length=128, blank=True, null=True)
+    numero_marcado = models.CharField(max_length=128, blank=True, null=True)
+    id_contacto = models.CharField(max_length=128, blank=True, null=True)
+    tiempo_ring = models.CharField(max_length=128, blank=True, null=True)
+    duracion_llamada = models.CharField(max_length=128, blank=True, null=True)
 
     def __unicode__(self):
         return "Log de llamada con fecha {0} con id de campaña {1} con id de agente {2} " \
