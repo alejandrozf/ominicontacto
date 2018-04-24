@@ -32,7 +32,7 @@ class CampanaFamily(object):
                     campana.queue_campana.audio_para_contestadores.get_filename_audio_asterisk())})
 
         if campana.queue_campana.audio_de_ingreso:
-            dict_campana.update({'WELCOMEPLAY': "olc/{0}".format(
+            dict_campana.update({'WELCOMEPLAY': "oml/{0}".format(
                 campana.queue_campana.audio_de_ingreso.get_filename_audio_asterisk())})
 
         if campana.formulario:
