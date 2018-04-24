@@ -10,11 +10,11 @@ callid = TD['new']['callid']
 campana_id = TD['new']['queuename']
 agente_id = TD['new']['agent']
 event = TD['new']['event']
-data1 = TD['new']['data1']
-data2 = TD['new']['data2']
-data3 = TD['new']['data3']
-data4 = TD['new']['data4']
-data5 = TD['new']['data5']
+data1 = TD['new']['data1']      # numero marcado
+data2 = TD['new']['data2']      # id contacto
+data3 = TD['new']['data3']      # tipo llamada / tipo manual
+data4 = TD['new']['data4']      # ring time
+data5 = TD['new']['data5']      # duracion llamada
 
 EVENTOS_AGENTE = ['ADDMEMBER', 'REMOVEMEMBER']
 
