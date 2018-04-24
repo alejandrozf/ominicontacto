@@ -135,6 +135,8 @@ class AgenteProfileManager(models.Manager):
                              "con el sip {0} no existe ".format(sip_agente))
             return None
 
+    def obtener_agentes_activos(self):
+        return self.filter(is_inactive=False)
 
 class AgenteProfile(models.Model):
     ESTADO_OFFLINE = 1

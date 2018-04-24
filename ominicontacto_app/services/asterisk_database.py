@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from ominicontacto_app.utiles import elimina_espacios
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import Campana, AgenteProfile
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 import logging as _logging
@@ -94,3 +94,48 @@ class CampanaFamily(object):
         """regenera la family de las campana"""
         self.delete_tree_family("/OML/CAMP")
         self.create_familys()
+
+
+class AgenteFamily(object):
+
+    def _genera_dict(self, agente):
+
+        dict_agente = {
+            'SIP': agente.sip_extension,
+            'STATUS': ""
+        }
+
+        return dict_agente
+
+    def create_dict(self, agente):
+        dict_agente = self._genera_dict(agente)
+        return dict_agente
+
+    def _obtener_todos_agentes_para_generar_family(self):
+        """Obtengo todos los agentes activos"""
+        return AgenteProfile.objects.obtener_agentes_activos()
+
+    def create_familys(self, agente=None, agentes=None):
+        """Crea familys en database de asterisk
+        """
+
+        if agentes:
+            pass
+        elif agente:
+            agentes = [agente]
+        else:
+            agentes = self._obtener_todos_agentes_para_generar_family()
+        client = AsteriskHttpClient()
+        client.login()
+        for agente in agentes:
+            logger.info("Creando familys para agente %s", agente.id)
+            variables = self.create_dict(agente)
+
+            for key, val in variables.items():
+                try:
+                    family = "/OML/AGENT/{0}/".format(agente.id)
+                    client.asterisk_db("DBPut", family, key, val=val)
+                except AsteriskHttpAsteriskDBError:
+                    logger.exception("Error al intentar DBPut al insertar"
+                                     " en la family {0} la siguiente key={1}"
+                                     " y val={2}".format(family, key, val))
