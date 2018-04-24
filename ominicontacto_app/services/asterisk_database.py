@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from ominicontacto_app.utiles import elimina_espacios
-from ominicontacto_app.models import Campana, AgenteProfile
+from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 import logging as _logging
@@ -153,3 +153,26 @@ class AgenteFamily(object):
         """regenera la family de los agentes"""
         self.delete_tree_family("/OML/AGENT")
         self.create_familys()
+
+
+class PausaFamily(object):
+
+    def _obtener_todas_pausas_para_generar_family(self):
+        """Obtener todas pausas"""
+        return Pausa.objects.activas()
+
+    def create_family(self):
+        """Crea family en database asterisk"""
+
+        pausas = self._obtener_todas_pausas_para_generar_family()
+        for pausa in pausas:
+            logger.info("Creando familys para pausa %s", pausa.nombre)
+            try:
+                client = AsteriskHttpClient()
+                client.login()
+                family = "/OML/PAUSE/{0}/".format(pausa.id)
+                client.asterisk_db("DBPut", family, "NAME", val=pausa.nombre)
+            except AsteriskHttpAsteriskDBError:
+                logger.exception("Error al intentar DBPut al insertar"
+                                 " en la family {0} la siguiente ket=NAME"
+                                 " y val={1}".format(family, pausa.nombre))
