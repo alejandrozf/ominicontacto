@@ -33,9 +33,9 @@ class ActividadAgenteLog(models.Model):
     time = models.DateTimeField(db_index=True)
     agente_id = models.IntegerField(db_index=True, blank=True, null=True)
     event = models.CharField(max_length=32, blank=True, null=True)
-    data1 = models.CharField(max_length=128, blank=True, null=True)
+    pausa_id = models.CharField(max_length=128, blank=True, null=True)
 
     def __unicode__(self):
         return "Log de actividad agente con fecha {0} para agente de id {1} con el evento {2} " \
                "con data1 {3}".format(self.time, self.agente_id,
-                                      self.event, self.data1)
+                                      self.event, self.pausa_id)
