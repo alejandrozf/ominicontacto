@@ -92,6 +92,7 @@ button.dropdown-toggle {
 */
 
 .btn-primary {
+    color: #FFFFFF !important;    
     background-color: #8FC641;
     border-color: #8FC641;
 }
@@ -107,20 +108,20 @@ button.dropdown-toggle {
     background-color: #F0F0F0;
 }
 .btn-outline-primary {
-    color: #8FC641;
+    color: #8FC641 !important;
     border-color: #8FC641;
 }
 .btn-outline-primary:hover {
-    color: #8FC641;
+    color: #8FC641 !important;
     border-color: #8FC641;
     background-color: #F9FDF3;
 }
 .btn-outline-danger {
-    color: #D25836;
+    color: #D25836 !important;
     border-color: #D25836;
 }
 .btn-outline-danger:hover {
-    color: #D25836;
+    color: #D25836 !important;
     border-color: #D25836;
     background-color: #FFECE7;
 }

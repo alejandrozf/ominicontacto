@@ -92,7 +92,7 @@
             {{ form.is_required.errors }}
         </div>
     </div>
-    <button type="submit" id="id_guardar" class="btn btn-primary ">
+    <button type="submit" id="id_guardar" class="btn btn-outline-primary ">
         Agregar campo
     </button>   
     <br>
@@ -102,8 +102,8 @@
         <div class="col-md-6">
               {{ form.value_item}}
               <br>
-                <a id="agregar_lista" class="btn btn-outline-primary" disabled="disabled">+ Agregar item</a>
-                <a id="eliminar_lista" class="btn btn-light" disabled="disabled">Eliminar seleccionados</a>
+                <a id="agregar_lista" class="btn btn-outline-primary" disabled="disabled">Agregar item</a>
+                <a id="eliminar_lista" class="btn btn-outline-danger" disabled="disabled">Eliminar seleccionados</a>
         </div>
         <div class="col-md-6">
             {{ form.list_values}}
@@ -193,7 +193,7 @@
 
     <div>
         <hr>
-        <a class="btn btn-primary" role="button" type="submit" href="{% url 'formulario_vista_previa' formulario.pk %}">
+        <a class="btn btn-primary" role="button" href="{% url 'formulario_vista_previa' formulario.pk %}">
             Continuar
         </a>
     </div>
