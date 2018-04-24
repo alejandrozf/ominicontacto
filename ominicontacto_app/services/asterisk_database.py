@@ -27,6 +27,7 @@ class CampanaFamily(object):
             'SL': campana.queue_campana.servicelevel,
             'TC': "",  # a partir de esta variable no se usan
             'IDJSON': "",
+            'PERMITOCCULT': "",
             'MAXCALLS': "",
             'FAILOVER': "",
         }
