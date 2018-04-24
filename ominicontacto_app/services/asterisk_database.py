@@ -139,3 +139,12 @@ class AgenteFamily(object):
                     logger.exception("Error al intentar DBPut al insertar"
                                      " en la family {0} la siguiente key={1}"
                                      " y val={2}".format(family, key, val))
+
+    def delete_tree_family(self, family):
+        """Elimina el tree de la family pasada por parametro"""
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.asterisk_db_deltree(family)
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBDelTree de {0}".format(family))
