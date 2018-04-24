@@ -16,14 +16,6 @@ data3 = TD['new']['data3']
 data4 = TD['new']['data4']
 data5 = TD['new']['data5']
 
-plan_llamadas_log = plpy.prepare(
-    "INSERT INTO reportes_llamadaslog(time, callid, campana_id, agente_id, event, data1, "
-    "data2, data3, data4, data5) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10)",
-    ["timestamp with time zone", "text", "text", "int", "int", "text", "text", "text", "text",
-     "text"])
-plan_agente_log = plpy.prepare(
-    "INSERT INTO reportes_actividadagentelog(time, agente_id, event, data1) VALUES($1 ,$2, $3, $4)",
-    ["timestamp with time zone", "int", "text", "text"])
 campana = queuename.split('_')
 try:
     campana_id = int(campana[0])
@@ -35,12 +27,24 @@ try:
 except ValueError:
     agente_id = -1
 
+plan_llamadas_log = plpy.prepare(
+    "INSERT INTO reportes_llamadaslog(time, callid, campana_id, agente_id, event, data1, data2, data3, data4, data5) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10)",
+    ["timestamp with time zone", "text", "int", "int", "text", "text", "text", "text", "text",
+     "text"])
+plan_agente_log = plpy.prepare(
+    "INSERT INTO reportes_actividadagentelog(time, agente_id, event, data1) VALUES($1 ,$2, $3, $4)",
+    ["timestamp with time zone", "int", "text", "text"])
+
+
 if event in ['ADDMEMBER', 'REMOVEMEMBER']:
     # es un log de la actividad de un agente
     plpy.execute(plan_agente_log, [fecha, agente_id, event, data1])
+elif event in ['PAUSEALL', 'UNPAUSEALL']:
+    # no insertamos logs de estos eventos
+    pass
 else:
     # es un log que forma parte de una llamada
-    plpy.execute(plan_llamadas_log, [time, callid, campana_id, agente_id, event, data1, data2,
+    plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, agente_id, event, data1, data2,
                                      data3, data4, data5])
 
 $$ language plpythonu;
