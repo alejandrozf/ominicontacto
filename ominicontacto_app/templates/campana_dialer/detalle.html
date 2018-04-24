@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+    <h1>Campaña: {{ campana.nombre }}</h1>
     <h2>Datos generales</h2>
     <p>Nombre: <strong>{{ campana.nombre }}</strong></p>
     <p>Estado: <strong>{{ campana.get_estado_display}}</strong></p>

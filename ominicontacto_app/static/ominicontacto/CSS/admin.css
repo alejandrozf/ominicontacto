@@ -16,7 +16,7 @@ button:hover {
     background-color: rgba(0,0,0,0.05);    
 }
 hr {
-    margin: 12px 0 20px 0;
+    margin: 26px 0 26px 0;
 }
 .hidden {
     display: none;
@@ -85,7 +85,9 @@ button.dropdown-toggle {
     margin-right: 8px;
     color: #6A716A;
 }
-
+.dropdown-item a:hover {
+    cursor: pointer;
+}
 /* ///// Button styles 
 */
 
@@ -122,6 +124,10 @@ button.dropdown-toggle {
     border-color: #D25836;
     background-color: #FFECE7;
 }
+a.btn .icon {
+    color: #6A716A;    
+    margin-right: 10px;
+}
 
 /* ///// Tabs
 */
@@ -137,6 +143,13 @@ button.dropdown-toggle {
     background-color: #F7F7F7;
     border-top: 0;
     border-bottom: 2px solid rgba(0,0,0,0.15);
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #F7F7F7;
+    border-top: 0;
+}
+.table-striped td, .table-striped th  {
+    border-top: none;
 }
 
 /* ///// Form styles 
@@ -202,6 +215,7 @@ ul.errorlist li {
 }
 #btnCollapse .icon {
     font-size: 0.8rem;
+    margin-right: 10px;
 }
 
 /* ///// Pagination styles 

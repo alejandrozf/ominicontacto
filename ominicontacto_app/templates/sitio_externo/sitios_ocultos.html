@@ -9,12 +9,12 @@
                                 </td>
                                 <td>
                                     {% if sitio.oculto %}
-                                    <a type="button"  href="{% url 'desoculta_sitio_externo' sitio.pk %}" c>
-                                        <span class="fas fa-eye" aria-hidden="true" title="visible"></span>
+                                    <a class="btn btn-light" href="{% url 'desoculta_sitio_externo' sitio.pk %}">
+                                        <span class="icon fas fa-eye" aria-hidden="true" title="visible"></span>Hacer visible
                                     </a>
                                     {% else %}
-                                    <a type="button" href="{% url 'oculta_sitio_externo' sitio.pk %}" >
-                                        <span class="fas fa-eye-slash" aria-hidden="true" title="ocultar"></span>
+                                    <a class="btn btn-light" href="{% url 'oculta_sitio_externo' sitio.pk %}" >
+                                        <span class="icon fas fa-eye-slash" aria-hidden="true" title="ocultar"></span>Ocultar
                                     </a>
                                     {% endif %}
 
@@ -23,9 +23,7 @@
                         {% empty %}
                             <tr>
                                 <td colspan="3">
-                                    <p class="text-center text-danger">
-                                        <em>No se encontraron sitios externos creados.</em>
-                                    </p>
+                                    <p>No se encontraron sitios externos creados.</p>
                                 </td>
                             </tr>
                         {% endfor %}

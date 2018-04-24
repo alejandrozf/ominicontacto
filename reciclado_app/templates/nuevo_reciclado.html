@@ -3,29 +3,30 @@
 
 {% block content %}
 
-    <div class="col-md-4 col-md-offset-4">
-
-        <form action = "" method = "post" enctype="multipart/form-data" role="form">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-            {% for pk, choice in form.reciclado_calificacion.field.widget.choices %}
-            <div class="col-sm-12 form-group row">
-                    <label  for="id_{{ forloop.counter0 }}"><input id="id_{{ forloop.counter0 }}" name="reciclado_calificacion" type="checkbox" value="{{pk}}" />
-                    {{ choice }}
-                    </label>
+    <form action = "" method = "post" enctype="multipart/form-data" role="form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for pk, choice in form.reciclado_calificacion.field.widget.choices %}
+        <div class="form-row">
+            <div class="col-md-6">
+                <label  for="id_{{ forloop.counter0 }}"><input id="id_{{ forloop.counter0 }}" name="reciclado_calificacion" type="checkbox" value="{{pk}}" />
+                {{ choice }}
+                </label>
             </div>
             {% endfor %}
             {% for pk, choice in form.reciclado_no_contactacion.field.widget.choices %}
-            <div class="col-sm-12 form-group row">
-                    <label  for="id_no_{{ forloop.counter0 }}"><input id="id_no_{{ forloop.counter0 }}" name="reciclado_no_contactacion" type="checkbox" value="{{pk}}" />
-                    {{ choice }}
-                    </label>
+            <div class="col-md-6">
+                <label  for="id_no_{{ forloop.counter0 }}"><input id="id_no_{{ forloop.counter0 }}" name="reciclado_no_contactacion" type="checkbox" value="{{pk}}" />
+                {{ choice }}
+                </label>
             </div>
-             {% endfor %}
-            <button type="submit" id="id_registrar" class="col-sm-6 btn btn-success btn-md row">
-                Reciclar
-            </button>
-	    </form>
-    </div>
+         {% endfor %}
+        </div>
+        <hr>
+        <button type="submit" id="id_registrar" class="btn btn-primary">
+            Reciclar
+        </button>
+    </form>
+
 
 {% endblock %}

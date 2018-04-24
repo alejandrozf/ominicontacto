@@ -22,7 +22,7 @@
     Mostrar ocultos
 </a>
 <hr>
-<table class="table table-stripped">
+<table class="table">
     <thead>
       <tr class="fts-table-bg">
         <th>Sitio externo</th>
@@ -41,12 +41,12 @@
                 </td>
                 <td>
                     {% if sitio.oculto %}
-                    <a href="{% url 'desoculta_sitio_externo' sitio.pk %}" >
-                        <span class="fas fa-eye" aria-hidden="true" title="visible"></span>  Hacer visible
+                    <a class="btn btn-light" href="{% url 'desoculta_sitio_externo' sitio.pk %}" >
+                        <span class="icon fas fa-eye" aria-hidden="true" title="visible"></span>Hacer visible
                     </a>
                     {% else %}
                     <a class="btn btn-light" href="{% url 'oculta_sitio_externo' sitio.pk %}" >
-                        <span class="fas fa-eye-slash" aria-hidden="true" title="ocultar"></span>  Ocultar
+                        <span class="icon fas fa-eye-slash" aria-hidden="true" title="ocultar"></span>Ocultar
                     </a>
                     {% endif %}
 

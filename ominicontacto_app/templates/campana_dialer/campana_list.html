@@ -355,6 +355,10 @@
     </table>
     <br>
     <h2>Campañas Eliminadas</h2>
+    <a  href="#" class="btn btn-light btn-sm" onclick="mostrar_campanas_dialer_ocultas()" >
+        Mostrar ocultos
+    </a>    
+    <hr>
     <table class="table table-stripped">
         <thead>
             <tr>
@@ -364,12 +368,7 @@
                 <th>Fecha Fin</th>
                 <th>Base de datos</th>
                 <th>Estado</th>
-                <th>Acciones
-                    <a  href="#" style="color: black; text-decoration: none;" onclick="mostrar_campanas_dialer_ocultas()" >
-                        <span class="fas fa-expand-arrows-alt" aria-hidden="true" title="Mostrar ocultas"></span>
-                    </a>
-                </th>
-
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody id="t_body_borradas">
@@ -413,7 +412,7 @@
                             </a> 
                             {% else %}
                             <a class="dropdown-item" href="{% url 'campana_dialer_ocultar' campana.pk %}">
-                                <span class="icon fas fa-eye-slash"></span>Ocultar
+                                \Ocultar
                             </a> 
                             {% endif %}
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">

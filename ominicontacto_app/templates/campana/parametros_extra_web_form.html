@@ -11,11 +11,11 @@
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script type="text/javascript">
      $('.linkFormset').formset({
-       addText: '+',
-       deleteText: '-',
+       addText: 'Agregar parámetro',
+       deleteText: 'Remover',
        prefix: '{{ wizard.form.prefix }}',
-       addCssClass: 'addFormset btn btn-info',
-       deleteCssClass: 'deleteFormset btn btn-danger',
+       addCssClass: 'addFormset btn btn-outline-primary',
+       deleteCssClass: 'deleteFormset btn btn-outline-danger',
      });
     </script>
 {% endblock %}
