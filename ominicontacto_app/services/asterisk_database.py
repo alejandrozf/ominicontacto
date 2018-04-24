@@ -87,4 +87,8 @@ class CampanaFamily(object):
             client.login()
             client.asterisk_db_deltree("/OML/CAMP")
         except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de /OML/CAMP/")
+            logger.exception("Error al intentar DBDelTree de /OML/CAMP")
+
+    def regenerar_familys_campana(self):
+        self.delete_all_family()
+        self.create_familys()
