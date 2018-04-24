@@ -25,6 +25,10 @@ class CampanaFamily(object):
             'QUEUETIME': campana.queue_campana.wait,
             'MAXQCALLS': campana.queue_campana.maxlen,
             'SL': campana.queue_campana.servicelevel,
+            'TC': "",  # a partir de esta variable no se usan
+            'IDJSON': "",
+            'MAXCALLS': "",
+            'FAILOVER': "",
         }
 
         if campana.queue_campana.audio_para_contestadores:
