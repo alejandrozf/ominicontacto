@@ -138,6 +138,7 @@ class AgenteProfileManager(models.Manager):
     def obtener_agentes_activos(self):
         return self.filter(is_inactive=False)
 
+
 class AgenteProfile(models.Model):
     ESTADO_OFFLINE = 1
     """Agente en estado offline"""
