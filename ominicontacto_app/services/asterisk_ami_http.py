@@ -515,7 +515,6 @@ class AsteriskHttpClient(object):
         :param family: grupo de datos
         :param key: identificador
         :param value: valor
-        :return:
         """
         dict_response = {
             'action': action,
@@ -529,6 +528,20 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
+    def asterisk_db_deltree(self, family):
+        """
+        Realizar el DbDelTree en database de asterisk
+        :param family: grupo de datos
+        """
+        dict_response = {
+            'action': 'DBdelTree',
+            'family': family,
+        }
+
+        response_body, _ = self._request("/mxml", dict_response)
+        parser = AsteriskXmlParserForAsteriskDB()
+        parser.parse(response_body)
+        return parser
 
 #==============================================================================
 # AmiStatusTracker

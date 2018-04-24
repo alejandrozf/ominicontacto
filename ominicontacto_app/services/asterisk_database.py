@@ -80,3 +80,11 @@ class CampanaFamily(object):
                     logger.exception("Error al intentar DBPut al insertar"
                                      " en la family {0} la siguiente key={1}"
                                      " y val={2}".format(family, key, val))
+
+    def delete_all_family(self):
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.asterisk_db_deltree("/OML/CAMP/")
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBDelTree de /OML/CAMP/")
