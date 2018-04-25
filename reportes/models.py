@@ -17,9 +17,9 @@ class LlamadaLog(models.Model):
     agente_id = models.IntegerField(db_index=True, blank=True, null=True)
     event = models.CharField(max_length=32, blank=True, null=True)
     numero_marcado = models.CharField(max_length=128, blank=True, null=True)
-    contacto_id = models.CharField(max_length=128, blank=True, null=True)
-    tiempo_ring = models.CharField(max_length=128, blank=True, null=True)
-    duracion_llamada = models.CharField(max_length=128, blank=True, null=True)
+    contacto_id = models.IntegerField(blank=True, null=True)
+    bridge_wait_time = models.IntegerField(blank=True, null=True)
+    duracion_llamada = models.IntegerField(blank=True, null=True)
 
     def __unicode__(self):
         return "Log de llamada con fecha {0} con id de campaña {1} con id de agente {2} " \
