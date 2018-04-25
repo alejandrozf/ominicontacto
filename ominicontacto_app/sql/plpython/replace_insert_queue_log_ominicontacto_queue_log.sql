@@ -7,14 +7,14 @@ types_values = range(1, 5)
 tiempo = TD['new']['time']
 fecha = datetime.datetime.strptime(tiempo, '%Y-%m-%d %H:%M:%S.%f')
 callid = TD['new']['callid']
-campana_id = TD['new']['queuename']
+queuename = TD['new']['queuename']  # <id-campana>-<tipo-campana>-<tipo-llamada>
 agente_id = TD['new']['agent']
 event = TD['new']['event']
-data1 = TD['new']['data1']      # numero marcado
-data2 = TD['new']['data2']      # id contacto
-data3 = TD['new']['data3']      # tipo llamada / tipo manual
-data4 = TD['new']['data4']      # ring time
-data5 = TD['new']['data5']      # duracion llamada
+numero_marcado = TD['new']['data1']
+contacto_id = TD['new']['data2']
+# el campo 'data3' no lo usamos por el momento
+tiempo_ring = TD['new']['data4']
+duracion_llamada = TD['new']['data5']
 
 EVENTOS_AGENTE = ['ADDMEMBER', 'REMOVEMEMBER']
 
@@ -32,11 +32,17 @@ EVENTOS_NO_INSERTAR = [
     'UNPAUSE',
 ]
 
+try:
+    campana_id, tipo_campana, tipo_llamada = queuename.split("-")
+except ValueError:
+    campana_id, tipo_campana, tipo_llamada = (-1, -1, -1)
+
+
 if event in EVENTOS_AGENTE and queuename == 'ALL':
     # es un log de la actividad de un agente
     plan_agente_log = plpy.prepare(
-    "INSERT INTO reportes_actividadagentelog(time, agente_id, event, data1) VALUES($1 ,$2, $3, $4)",
-    ["timestamp with time zone", "int", "text", "text"])
+        "INSERT INTO reportes_actividadagentelog(time, agente_id, event, pausa_id) VALUES($1 ,$2, $3, $4)",
+        ["timestamp with time zone", "int", "text", "text"])
     plpy.execute(plan_agente_log, [fecha, agente_id, event, data1])
 elif event in EVENTOS_NO_INSERTAR:
     # no insertamos logs de estos eventos
@@ -44,10 +50,11 @@ elif event in EVENTOS_NO_INSERTAR:
 else:
     # es un log que forma parte de una llamada
     plan_llamadas_log = plpy.prepare(
-    "INSERT INTO reportes_llamadaslog(time, callid, campana_id, agente_id, event, data1, data2, data3, data4, data5) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10)",
-    ["timestamp with time zone", "text", "int", "int", "text", "text", "text", "text", "text",
-     "text"])
-    plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, agente_id, event, data1, data2,
-                                     data3, data4, data5])
+        "INSERT INTO reportes_llamadaslog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, tiempo_ring, tiempo_llamada) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+        ["timestamp with time zone", "text", "int", "int", "int", "int", "text", "text", "text",
+         "text", "text"])
+    plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
+                                     agente_id, event, numero_marcado, contacto_id, tiempo_ring,
+                                     duracion_llamada])
 
 $$ language plpythonu;
