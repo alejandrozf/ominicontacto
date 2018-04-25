@@ -17,7 +17,7 @@ class LlamadasLog(models.Model):
     agente_id = models.IntegerField(db_index=True, blank=True, null=True)
     event = models.CharField(max_length=32, blank=True, null=True)
     numero_marcado = models.CharField(max_length=128, blank=True, null=True)
-    id_contacto = models.CharField(max_length=128, blank=True, null=True)
+    contacto_id = models.CharField(max_length=128, blank=True, null=True)
     tiempo_ring = models.CharField(max_length=128, blank=True, null=True)
     duracion_llamada = models.CharField(max_length=128, blank=True, null=True)
 
