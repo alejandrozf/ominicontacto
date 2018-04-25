@@ -1,16 +1,15 @@
 CREATE OR REPLACE FUNCTION insert_queue_log_ominicontacto_queue_log() returns trigger as $$import datetime
 from plpy import spiexceptions
 
-types_keys = ("IN", "DIALER", "saliente", "preview")
-types_values = range(1, 5)
-
 tiempo = TD['new']['time']
 fecha = datetime.datetime.strptime(tiempo, '%Y-%m-%d %H:%M:%S.%f')
 callid = TD['new']['callid']
 queuename = TD['new']['queuename']  # <id-campana>-<tipo-campana>-<tipo-llamada>
 agente_id = TD['new']['agent']
 event = TD['new']['event']
-numero_marcado = TD['new']['data1']
+# 'data1' en los logs de llamadas tiene el número marcado y en los eventos de agente
+# el id de la pausa
+data1 = TD['new']['data1']
 contacto_id = TD['new']['data2']
 # el campo 'data3' no lo usamos por el momento
 tiempo_ring = TD['new']['data4']
@@ -50,11 +49,11 @@ elif event in EVENTOS_NO_INSERTAR:
 else:
     # es un log que forma parte de una llamada
     plan_llamadas_log = plpy.prepare(
-        "INSERT INTO reportes_llamadaslog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, tiempo_ring, tiempo_llamada) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+        "INSERT INTO reportes_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, tiempo_ring, duracion_llamada) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
         ["timestamp with time zone", "text", "int", "int", "int", "int", "text", "text", "text",
          "text", "text"])
     plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
-                                     agente_id, event, numero_marcado, contacto_id, tiempo_ring,
+                                     agente_id, event, data1, contacto_id, tiempo_ring,
                                      duracion_llamada])
 
 $$ language plpythonu;
