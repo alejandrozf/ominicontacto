@@ -296,6 +296,34 @@ class TriggerQueuelogTest(OMLBaseTest):
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
+    def test_adicion_eventos_llamadas_inserta_en_modelo_logs_llamadas(self):
+        queuename = '1-1-1'
+        EVENTOS_LLAMADAS = [
+            'DIAL',
+            'ANSWER',
+            'CONNECT',
+            'COMPLETEAGENT',
+            'COMPLETECALLER',
+            'ENTERQUEUE',
+            'EXITWITHTIMEOUT',
+            'ABANDON',
+            'NOANSWER',
+            'CANCEL',
+            'BUSY',
+            'CHANUNAVAIL',
+            'OTHER',
+            'FAIL',
+            'AMD',
+            'BLACKLIST',
+            'RINGNOANSWER',
+        ]
+        evento = choice(EVENTOS_LLAMADAS)
+        self._aplicar_sql_query(queuename, event=evento)
+        self.assertTrue(LlamadaLog.objects.all().exists())
+
+    @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
+            settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
+            'Sin migraciones no existe la tabla ´queue_log´')
     def test_adicion_info_campanas_pasa_correctamente_a_modelo_de_logs_llamadas(self):
         queuename = '1-1-1'
         campana_id, tipo_campana, tipo_llamada = queuename.split("-")
@@ -319,9 +347,9 @@ class TriggerQueuelogTest(OMLBaseTest):
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
-    def test_eventos_actividad_agente_insertan_info_en_tabla_de_logs_actividades_de_agente(self):
+    def test_eventos_sesion_actividad_agente_insertan_info_en_tabla_logs_actividades_agente(self):
         queuename = 'ALL'
-        evento_agente = choice(['ADDMEMBER', 'REMOVEMEMBER'])
+        evento_agente = choice(['ADDMEMBER', 'REMOVEMEMBER', 'PAUSEALL', 'UNPAUSEALL'])
         self._aplicar_sql_query(queuename, event=evento_agente)
         actividad_agente_log = ActividadAgenteLog.objects.first()
         self.assertEqual(actividad_agente_log.event, evento_agente)
@@ -329,22 +357,9 @@ class TriggerQueuelogTest(OMLBaseTest):
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
-    def test_eventos_no_logueables_no_se_insertan_en_logs_llamadas_actividades_agentes(self):
+    def test_evento_no_logueable_no_se_inserta_en_logs_llamadas_actividades_agentes(self):
         queuename = '1-1-1'
-        EVENTOS_NO_INSERTAR = [
-            'PAUSE',
-            'UNPAUSE',
-            'CONFIG_RELOAD',
-            'CALLSTATUS',
-            'CALLOUTBOUND',
-            'INFO',
-            'QUEUESTART',
-            'CONFIGRELOAD',
-            'COMPLETECALL',
-            'PAUSE',
-            'UNPAUSE',
-        ]
-        evento = choice(EVENTOS_NO_INSERTAR)
-        self._aplicar_sql_query(queuename, event=evento)
+        evento_no_logueable = 'NO_LOGUEAR'
+        self._aplicar_sql_query(queuename, event=evento_no_logueable)
         self.assertFalse(LlamadaLog.objects.all().exists())
         self.assertFalse(ActividadAgenteLog.objects.all().exists())

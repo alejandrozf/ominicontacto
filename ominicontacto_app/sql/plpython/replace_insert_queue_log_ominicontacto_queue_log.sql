@@ -15,20 +15,26 @@ contacto_id = TD['new']['data2']
 tiempo_ring = TD['new']['data4']
 duracion_llamada = TD['new']['data5']
 
-EVENTOS_AGENTE = ['ADDMEMBER', 'REMOVEMEMBER']
+EVENTOS_AGENTE = ['ADDMEMBER', 'REMOVEMEMBER', 'PAUSEALL', 'UNPAUSEALL']
 
-EVENTOS_NO_INSERTAR = [
-    'PAUSE',
-    'UNPAUSE',
-    'CONFIG_RELOAD',
-    'CALLSTATUS',
-    'CALLOUTBOUND',
-    'INFO',
-    'QUEUESTART',
-    'CONFIGRELOAD',
-    'COMPLETECALL',
-    'PAUSE',
-    'UNPAUSE',
+EVENTOS_LLAMADAS = [
+    'DIAL',
+    'ANSWER',
+    'CONNECT',
+    'COMPLETEAGENT',
+    'COMPLETECALLER',
+    'ENTERQUEUE',
+    'EXITWITHTIMEOUT',
+    'ABANDON',
+    'NOANSWER',
+    'CANCEL',
+    'BUSY',
+    'CHANUNAVAIL',
+    'OTHER',
+    'FAIL',
+    'AMD',
+    'BLACKLIST',
+    'RINGNOANSWER',
 ]
 
 try:
@@ -43,10 +49,7 @@ if event in EVENTOS_AGENTE and queuename == 'ALL':
         "INSERT INTO reportes_actividadagentelog(time, agente_id, event, pausa_id) VALUES($1 ,$2, $3, $4)",
         ["timestamp with time zone", "int", "text", "text"])
     plpy.execute(plan_agente_log, [fecha, agente_id, event, data1])
-elif event in EVENTOS_NO_INSERTAR:
-    # no insertamos logs de estos eventos
-    pass
-else:
+elif event in EVENTOS_LLAMADAS:
     # es un log que forma parte de una llamada
     plan_llamadas_log = plpy.prepare(
         "INSERT INTO reportes_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, tiempo_ring, duracion_llamada) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
@@ -55,5 +58,8 @@ else:
     plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
                                      agente_id, event, data1, contacto_id, tiempo_ring,
                                      duracion_llamada])
+else:
+    # no insertamos logs de estos eventos de momento
+    pass
 
 $$ language plpythonu;
