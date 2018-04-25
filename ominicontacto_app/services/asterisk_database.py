@@ -42,8 +42,13 @@ class CampanaFamily(object):
 
         if campana.formulario:
             dict_campana.update({'IDFORM': campana.formulario.pk})
-        elif campana.sitio_externo:
+        else:
+            dict_campana.update({'IDFORM': ""})
+
+        if campana.sitio_externo:
             dict_campana.update({'IDEXTERNALURL': campana.sitio_externo.pk})
+        else:
+            dict_campana.update({'IDEXTERNALURL': ""})
 
         return dict_campana
 
