@@ -20,7 +20,6 @@ class RecicladoTest(OMLBaseTest):
     def setUp(self):
         base_datos = self.crear_base_datos_contacto(cant_contactos=100)
         self.campana = self.crear_campana_dialer(bd_contactos=base_datos)
-        print self.campana.bd_contacto
         user_agente = self.crear_user_agente()
         self.agente = self.crear_agente_profile(user_agente)
 
