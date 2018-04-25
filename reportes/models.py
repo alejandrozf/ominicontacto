@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 
-class LlamadasLog(models.Model):
+class LlamadaLog(models.Model):
     """
     Define la estructura de un evento de log de cola relacionado con una llamada
     """
