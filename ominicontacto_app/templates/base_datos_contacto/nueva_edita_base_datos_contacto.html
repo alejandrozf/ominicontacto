@@ -15,16 +15,16 @@
 
 <h1>Nueva base de datos de contacto</h1>
 
-<form role="form" method="post" enctype="multipart/form-data" > {% csrf_token %}
-    <table class="table table-striped">
-        {{form.as_table}}
-    </table>
+<form role="form" method="post" enctype="multipart/form-data" >
+    {% include "base_form_fields.html" with form=form %}
     <hr>
     <button type="submit" id="id_registrar" class="btn btn-primary modal_proceso_grande">
         Definir Base Datos
     </button>
 </form>
 <br>
-<a class="btn btn-outline-primary" href="/static/ominicontacto/base_datos_ejemplo.csv" target="_blank">bajar base de datos de ejemplo</a>
+<div>
+<a class="btn btn-outline-primary" href="/static/ominicontacto/base_datos_ejemplo.csv" target="_blank">bajar base de datos de ejemplo</a>    
+</div>
 
 {% endblock %}

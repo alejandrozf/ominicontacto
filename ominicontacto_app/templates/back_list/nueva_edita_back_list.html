@@ -12,11 +12,9 @@
     {% endblock %}
 {% block content %}
 
-<h1>Nueva backlist</h1>
-<form role="form" method="post" enctype="multipart/form-data" > {% csrf_token %}
-    <table class="table table-striped">
-        {{form.as_table}}
-    </table>
+<h1>Nueva blacklist</h1>
+<form role="form" method="post" enctype="multipart/form-data">
+    {% include "base_form_fields.html" with form=form %}
     <hr>
     <button type="submit" id="id_registrar" class="btn btn-primary modal_proceso_grande">
         Definir Backlist
@@ -24,3 +22,6 @@
 </form>
 
 {% endblock %}
+
+
+

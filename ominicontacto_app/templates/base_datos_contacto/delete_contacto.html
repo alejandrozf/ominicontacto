@@ -4,10 +4,9 @@
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h4>Contacto  <strong> {{object.pk}}</strong></h4>
-        <p>¿Esta seguro que desea eliminar este contacto? </p>
+        <h1>Contacto "{{object.pk}}"</h1>
+        <p>¿Esta seguro que desea eliminar este contacto?</p>
         <button type="submit" class="btn btn-danger">Eliminar</button>
-            <span class="glyphicon glyphicon-remove"></span> Eliminar
         <a class="btn btn-outline-danger" href="{% url 'contacto_list_bd_contacto' object.bd_contacto.pk %}">Cancelar</a>
     </form>
 </div>

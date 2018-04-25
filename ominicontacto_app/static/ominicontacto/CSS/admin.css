@@ -287,8 +287,8 @@ ul.errorlist li {
     transition: 0.1s;   
 }
 #sidebar {
-	min-width: 220px;
-    max-width: 220px;
+	min-width: 210px;
+    max-width: 210px;
     min-height: 100vh;
     background-color: #ECEEEA;
    /* transition: 0.3s;*/
@@ -500,7 +500,7 @@ ul.errorlist li {
     width: 100%;
 }
 .wrapper-info {
-    padding: 30px 44px;
+    padding: 34px 50px 30px 50px;
 }
 .wrapper-info > h1:first-of-type {
     font-size: 1.2rem;

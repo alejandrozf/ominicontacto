@@ -52,13 +52,16 @@ function filtrar_pagina(pagina) {
 
 <h1>Buscar grabación</h1>
 
-<div class="wrapper-search">
-    <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
-        {% include "base_form_fields.html" with form=form %}
-        <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-            Buscar
-        </button>
-    </form>
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <div id="wrapperSearchForm" class="show">
+        <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
+            {% include "base_form_fields.html" with form=form %}
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Buscar
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="wrapper-results">
@@ -91,8 +94,8 @@ function filtrar_pagina(pagina) {
                         <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="Descargar"></span>
                     </a>
                 </td>
-                <td><button type="button" class="btn btn-primary" data-toggle="modal"
-                            data-target="#descripcionModal" data-uid="{{ grabacion.uid }}">Ver descripción</button></td>
+                <td><button type="button" class="btn btn-light btn-sm" data-toggle="modal"
+                            data-target="#descripcionModal" data-uid="{{ grabacion.uid }}">Descripción</button></td>
             </tr>
        {% empty %}
         <tr>

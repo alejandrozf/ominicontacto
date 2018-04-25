@@ -28,7 +28,7 @@
             {% if user.get_is_administrador %}
             <td>
                 {% if usuario.is_agente %}
-                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                    <span class="icon icon-check" aria-hidden="true"></span>
                     {%  if not usuario.get_agente_profile %}
                         {%  if not usuario.get_supervisor_profile %}
                             <a href="{% url 'agenteprofile_nuevo' usuario.id %}">Crear perfil</a>
@@ -37,13 +37,13 @@
                         <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">Modificar perfil</a>
                     {% endif %}
                     {% else %}
-                       <span class="fas fa-ban" aria-hidden="true"></span>
+                       <span class="icon icon-cancel" aria-hidden="true"></span>
 
                 {% endif %}
             </td>
             <td>
                 {% if usuario.is_supervisor %}
-                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                    <span class="icon icon-check" aria-hidden="true"></span>
                 {%  if not usuario.get_supervisor_profile %}
                         {%  if not usuario.get_agente_profile %}
                             <a href="{% url 'supervisor_create' usuario.id %}">Crear perfil</a>
@@ -52,14 +52,26 @@
                         <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">Modificar perfil</a>
                     {% endif %}
                     {% else %}
-                       <span class="fas fa-ban" aria-hidden="true"></span>
+                       <span class="icon icon-cancel" aria-hidden="true"></span>
 
                 {% endif %}
             </td>
-            <td><a href="{% url 'user_update' usuario.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar Usuario"></span></a>
-                {% if usuario.id != 1 %}
-                <a href="{% url 'user_delete' usuario.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Usuario"></span></a>
-                  {% endif %}
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Opciones
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                        <a class="dropdown-item" href="{% url 'user_update' usuario.id %}">
+                            <span class="icon icon-pencil"></span>Editar
+                        </a>
+                        {% if usuario.id != 1 %}
+                        <a class="dropdown-item" href="{% url 'user_delete' usuario.id %}">
+                            <span class="icon icon-trash"></span>Eliminar
+                        </a>  
+                        {% endif %}                          
+                    </div>
+                </div>    
             </td>
             {% endif %}
         </tr>
@@ -71,19 +83,29 @@
     </tbody>
 </table>
 
-<div class="pagination">
-    <span class="pager">
+<nav aria-label="Page navigation">
+    <ul class="pagination">
         {% if page_obj.has_previous %}
-            <li><a href="{% url 'user_list' page=page_obj.previous_page_number%}">Anterior</a></li>
+            <li class="page-item">
+                <a class="page-link" href="{% url 'user_list' page=page_obj.previous_page_number%}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Anterior</span>
+                </a>
+            </li>
         {% endif %}
 
-        <span class="current">
+        <li class="page-item current">
             Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
-        </span>
+        </li>
 
         {% if page_obj.has_next %}
-             <li><a href="{% url 'user_list' page=page_obj.next_page_number %}">Siguiente</a></li>
+            <li class="page-item">
+                <a class="page-link" href="{% url 'user_list' page=page_obj.next_page_number %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Siguiente</span>
+                </a>
+            </li>
         {% endif %}
-    </span>
-</div>
+    </ul>
+</nav>
 {% endblock %}

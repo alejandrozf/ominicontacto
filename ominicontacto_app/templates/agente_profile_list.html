@@ -4,7 +4,7 @@
 {% block content %}
 <h1>Agentes</h1>
 
-<table class="table table-stripped">
+<table class="table">
     <thead>
         <tr>
             <th>id</th>
@@ -32,12 +32,12 @@
             <td>
                  {% if agente.is_inactive %}
                 Agente Inactivo
-                <a class="btn btn-light"  href="{% url 'agente_activar' agente.pk %}" >
+                <a class="btn btn-light btn-sm"  href="{% url 'agente_activar' agente.pk %}" >
                     activar
                 </a>
                 {% else %}
                 Agente Activo
-                <a class="btn btn-light" href="{% url 'agente_desactivar' agente.pk %}" >
+                <a class="btn btn-light btn-sm" href="{% url 'agente_desactivar' agente.pk %}" >
                     desactivar
                 </a>
                 {% endif %}

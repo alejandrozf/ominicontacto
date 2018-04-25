@@ -4,7 +4,7 @@
 {% block content %}
 <h1>Usuarios Api Crm</h1>
 
-<table class="table table-stripped">
+<table class="table">
     <thead>
         <tr>
             <th>usuario</th>
@@ -17,8 +17,9 @@
             <td>{{ user.usuario }}</td>
             <td>{{ user.password}}</td>
             <td>
-                <a href="{% url 'user_api_crm_update' user.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
-
+                <a class="btn btn-light btn-sm" href="{% url 'user_api_crm_update' user.id %}">
+                    Editar
+                </a>
             </td>
         </tr>
    {% empty %}

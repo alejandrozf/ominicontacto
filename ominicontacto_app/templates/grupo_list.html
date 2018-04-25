@@ -26,38 +26,48 @@
             <td>{{ grupo.nombre }}</td>
             <td>
                 {% if grupo.auto_attend_ics %}
-                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                    <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
-                    <span class="fas fa-ban" aria-hidden="true"></span>
+                    <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
             </td>
             <td>
                 {% if grupo.auto_attend_inbound %}
-                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                    <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
-                    <span class="fas fa-ban" aria-hidden="true"></span>
+                    <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
             </td>
             <td>
                 {% if grupo.auto_attend_dialer %}
-                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                    <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
-                    <span class="fas fa-ban" aria-hidden="true"></span>
+                    <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
             </td>
             <td>
                 {% if grupo.auto_pause %}
-                    <span class="far fa-check-circle" aria-hidden="true"></span>
+                    <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
-                    <span class="fas fa-ban" aria-hidden="true"></span>
+                    <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
             </td>
             <td>{{grupo.auto_unpause}}</td>
             {% if user.get_is_administrador %}
             <td>
-                <a href="{% url 'grupo_update' grupo.id %}"><span class="far fa-edit" aria-hidden="true" title="Modificar"></span></a>
-                <a href="{% url 'grupo_delete' grupo.id %}"><span class="far fa-trash-alt" aria-hidden="true" title="Eliminar Grupo"></span></a>
-
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Opciones
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                        <a class="dropdown-item" href="{% url 'grupo_update' grupo.id %}">
+                            <span class="icon icon-pencil"></span>Editar
+                        </a>
+                        <a class="dropdown-item" href="{% url 'grupo_delete' grupo.id %}">
+                            <span class="icon icon-trash"></span>Eliminar
+                        </a>                       
+                    </div>
+                </div>
             </td>
             {% endif %}
         </tr>
