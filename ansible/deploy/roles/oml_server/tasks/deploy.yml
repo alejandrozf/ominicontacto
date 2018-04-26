@@ -19,7 +19,6 @@
           - "{{ install_prefix }}.pip"
           - "{{ install_prefix }}ominicontacto/"
           - "{{ install_prefix }}local"
-          - "{{ install_prefix }}conf"
           - "{{ install_prefix }}wombat-json"
           - "{{ install_prefix }}bin"
           - "{{ install_prefix }}nginx_certs"

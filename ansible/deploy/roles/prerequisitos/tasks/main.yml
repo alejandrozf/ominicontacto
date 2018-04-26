@@ -29,6 +29,22 @@
   when: asterisk_etc_installed|succeeded
   tags: postinstall
 
+- name: Check if Kamailio is installed in /opt
+  command: test -d /opt/kamailio
+  ignore_errors: true
+  register: kamailio_opt_installed
+  tags: postinstall
+  become: true
+  become_method: sudo
+
+- set_fact: kamailio_location={{ install_prefix }}kamailio
+  when: kamailio_opt_installed|failed
+  tags: postinstall
+
+- set_fact: kamailio_location=
+  when: kamailio_opt_installed|succeeded
+  tags: postinstall
+
 - name: Creation of {{ usuario }} group
   group: name={{ usuario }} state=present
   become: true
