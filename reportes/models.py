@@ -20,6 +20,7 @@ class LlamadaLog(models.Model):
     contacto_id = models.IntegerField(blank=True, null=True)
     bridge_wait_time = models.IntegerField(blank=True, null=True)
     duracion_llamada = models.IntegerField(blank=True, null=True)
+    archivo_grabacion = models.CharField(max_length=50, blank=True, null=True)
 
     def __unicode__(self):
         return "Log de llamada con fecha {0} con id de campaña {1} con id de agente {2} " \
