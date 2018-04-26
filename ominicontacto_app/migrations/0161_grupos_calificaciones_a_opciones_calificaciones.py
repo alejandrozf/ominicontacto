@@ -164,7 +164,7 @@ class Migration(migrations.Migration):
                                         verbose_name='ID')),
                 ('tipo', models.IntegerField(choices=[(1, 'Gesti\xf3n'), (0, 'Sin acci\xf3n'),
                                                       (2, 'Agenda')], default=0)),
-                ('nombre', models.CharField(max_length=20)),
+                ('nombre', models.CharField(max_length=50)),
             ],
         ),
 
