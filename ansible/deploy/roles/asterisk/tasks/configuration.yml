@@ -55,7 +55,7 @@
 #    - postinstall
 
 - name: Config of asterisk-freepbx for OML
-  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{    { item }} force=true owner={{ usuario }} group={{ usuario }}"
+  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
   with_items:
       - extensions_custom.conf
       - extensions_fts.conf

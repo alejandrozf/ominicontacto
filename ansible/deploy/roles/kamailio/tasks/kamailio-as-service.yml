@@ -61,7 +61,7 @@
 - name: Change the path of files in kamailio.cfg
   replace: path={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"/opt/omnileads/kamailio\" replace=\"{{ install_prefix }}kamailio\"
   become: true
-  when: kamailio_installed == ""
+  when: kamailio_installed != ""
   become_method: sudo
   tags:
     - postinstall
