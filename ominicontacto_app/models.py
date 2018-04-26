@@ -1046,7 +1046,7 @@ class OpcionCalificacion(models.Model):
     campana = models.ForeignKey(
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
-    nombre = models.CharField(max_length=20)
+    nombre = models.CharField(max_length=50)
 
     def __unicode__(self):
         return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
