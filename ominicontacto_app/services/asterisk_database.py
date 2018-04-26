@@ -195,3 +195,16 @@ class PausaFamily(object):
         """regenera la family de las pausas"""
         self.delete_tree_family("/OML/PAUSE")
         self.create_familys()
+
+
+class RegenerarAsteriskFamilysOML(object):
+
+    def __init__(self):
+        self.campana_family = CampanaFamily()
+        self.agente_family = AgenteFamily()
+        self.pausa_family = PausaFamily()
+
+    def regenerar_asterisk(self):
+        self.campana_family.regenerar_familys_campana()
+        self.agente_family.regenerar_familys_agente()
+        self.pausa_family.regenerar_familys_pausa()

@@ -13,6 +13,7 @@ from ominicontacto_app.asterisk_config import (
     QueueDialplanConfigCreator, QueueConfigFile, AsteriskConfigReloader,
     QueuesCreator, QueuesConfigFile, SipConfigCreator, SipConfigFile,
     GlobalsVariableConfigCreator, GlobalsConfigFile)
+from ominicontacto_app.services.asterisk_database import RegenerarAsteriskFamilysOML
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,7 @@ class RegeneracionAsteriskService(object):
         self.config_sip_file = SipConfigFile()
         self.globals_config_creator = GlobalsVariableConfigCreator()
         self.config_globals_file = GlobalsConfigFile()
+        self.asterisk_database = RegenerarAsteriskFamilysOML()
 
     def _generar_y_recargar_configuracion_asterisk(self):
         proceso_ok = True
@@ -87,6 +89,7 @@ class RegeneracionAsteriskService(object):
             self.config_queues_file.copy_asterisk()
             self.reload_asterisk_config.reload_asterisk()
             self.config_globals_file.copy_asterisk()
+            self.asterisk_database.regenerar_asterisk()
 
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
