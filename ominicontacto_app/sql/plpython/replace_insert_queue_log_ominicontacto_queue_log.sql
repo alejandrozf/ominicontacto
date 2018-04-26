@@ -11,9 +11,9 @@ event = TD['new']['event']
 # el id de la pausa
 data1 = TD['new']['data1']
 contacto_id = TD['new']['data2']
-# el campo 'data3' no lo usamos por el momento
-bridge_wait_time = TD['new']['data4']
-duracion_llamada = TD['new']['data5']
+bridge_wait_time = TD['new']['data3']
+duracion_llamada = TD['new']['data4']
+archivo_grabacion = TD['new']['data5']
 
 EVENTOS_AGENTE = ['ADDMEMBER', 'REMOVEMEMBER', 'PAUSEALL', 'UNPAUSEALL']
 
@@ -52,12 +52,12 @@ if event in EVENTOS_AGENTE and queuename == 'ALL':
 elif event in EVENTOS_LLAMADAS:
     # es un log que forma parte de una llamada
     plan_llamadas_log = plpy.prepare(
-        "INSERT INTO reportes_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+        "INSERT INTO reportes_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
         ["timestamp with time zone", "text", "int", "int", "int", "int", "text", "text", "int",
-         "int", "int"])
+         "int", "int", "text"])
     plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
                                      agente_id, event, data1, contacto_id, bridge_wait_time,
-                                     duracion_llamada])
+                                     duracion_llamada, archivo_grabacion])
 else:
     # no insertamos logs de estos eventos de momento
     pass

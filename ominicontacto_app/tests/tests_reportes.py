@@ -280,14 +280,15 @@ TELEFONO = '1234567890'
 CONTACTO_ID = 1
 BRIDGE_WAIT_TIME = 5
 DURACION_LLAMADA = 60
+ARCHIVO_GRABACION = 'grabacion.mp3'
 
 
 class TriggerQueuelogTest(OMLBaseTest):
 
     def _aplicar_sql_query(self, queuename, time=timezone.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
                            callid=CALLID, agent=1, event=EVENT, data1=TELEFONO,
-                           data2=CONTACTO_ID, data3='', data4=BRIDGE_WAIT_TIME,
-                           data5=DURACION_LLAMADA):
+                           data2=CONTACTO_ID, data3=BRIDGE_WAIT_TIME, data4=DURACION_LLAMADA,
+                           data5=ARCHIVO_GRABACION):
         fields = "(time, callid, queuename, agent, event, data1, data2, data3, data4, data5)"
         values = (time, callid, queuename, agent, event, data1, data2, data3, data4, data5)
         sql_query = "insert into queue_log {0} values {1};".format(fields, str(values))
