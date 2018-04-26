@@ -22,7 +22,6 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
-from ominicontacto_app.services.asterisk_service import AsteriskService
 
 from ominicontacto_app.services.reporte_campana_calificacion import \
     ReporteCampanaService
@@ -51,9 +50,6 @@ class CampanasDeleteMixin(object):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        # Eliminamos el registro de la tabla de asterisk en mysql
-        servicio_asterisk = AsteriskService()
-        servicio_asterisk.delete_cola_asterisk(self.object.queue_campana)
         # realizamos la eliminacion de la queue
         self.object.remover()
         # actualizamos el archivo de dialplan
