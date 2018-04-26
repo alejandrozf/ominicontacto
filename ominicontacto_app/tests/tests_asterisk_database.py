@@ -8,7 +8,9 @@ from __future__ import unicode_literals
 
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.services.asterisk_database import CampanaFamily
+from ominicontacto_app.services.asterisk_database import (
+    CampanaFamily, AgenteFamily
+)
 from ominicontacto_app.utiles import elimina_espacios
 
 
@@ -17,6 +19,8 @@ class AsteriskDatabaseTest(OMLBaseTest):
     def setUp(self):
         self.campana_dialer = self.crear_campana_dialer()
         self.campana_entrante = self.crear_campana_entrante()
+        user = self.crear_user_agente()
+        self.agente = self.crear_agente_profile(user)
 
     def test_devuelve_correctamente_dict_campana_asterisk(self):
         """
@@ -100,3 +104,31 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['PERMITOCCULT'], "")
         self.assertEqual(dict_campana['MAXCALLS'], "")
         self.assertEqual(dict_campana['FAILOVER'], "")
+
+    def test_devuelve_correctamente_dict_agente_asterisk(self):
+        """
+        este test testea el diccionario de la family del agente
+        """
+        servicio = AgenteFamily()
+        dict_agente = servicio.create_dict(self.agente)
+
+        self.assertItemsEqual(['SIP', 'STATUS'], dict_agente.keys())
+
+    def test_falla_dict_agente_asterisk(self):
+        """
+        este test testea el diccionario de la family del agente
+        """
+        servicio = AgenteFamily()
+        dict_agente = servicio.create_dict(self.agente)
+
+        self.assertNotIn('PASS', dict_agente.keys())
+
+    def test_devuelve_correctamente_values_agente_asterisk(self):
+        """
+        este test testea los values del diccionario de la family del agente
+        """
+        servicio = AgenteFamily()
+        dict_agente = servicio.create_dict(self.agente)
+
+        self.assertEqual(dict_agente['SIP'], self.agente.sip_extension)
+        self.assertEqual(dict_agente['STATUS'], "")
