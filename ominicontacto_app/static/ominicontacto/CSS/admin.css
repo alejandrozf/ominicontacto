@@ -168,7 +168,7 @@ label {
 .form-row > div {
     margin-bottom: 20px;
 }
-.form-row div:nth-child(odd) {
+.form-row > div:nth-child(odd) {
     padding-right: 30px;
 }
 ul.errorlist {
@@ -288,6 +288,18 @@ ul.errorlist li {
     background-color: #8FC641;
 }
 
+/*///// Datetime picker widget
+*/
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+    width: 14em;
+}
+.bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
+    background-color: #8FC641;
+}
+.bootstrap-datetimepicker-widget table td span.active {
+    background-color: #8FC641;
+}
 /*///// Welcome screen 
 */
 
