@@ -1002,22 +1002,6 @@ class Campana(models.Model):
         return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
 
 
-class QueueManager(models.Manager):
-
-    def ultimo_queue_asterisk(self):
-        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
-        if number['queue_asterisk__max'] is None:
-            return 1
-        else:
-            return number['queue_asterisk__max'] + 1
-
-    def obtener_all_except_borradas(self):
-        """
-        Devuelve queue excluyendo las campanas borradas
-        """
-        return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
-
-
 class OpcionCalificacion(models.Model):
     """
     Especifica el tipo de formulario al cual será redireccionada
@@ -1069,6 +1053,22 @@ class OpcionCalificacion(models.Model):
         Determina si la opción de calificada puede ser editada/eliminada en la campaña
         """
         return self.es_agenda() or self.usada_en_calificacion()
+
+
+class QueueManager(models.Manager):
+
+    def ultimo_queue_asterisk(self):
+        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
+        if number['queue_asterisk__max'] is None:
+            return 1
+        else:
+            return number['queue_asterisk__max'] + 1
+
+    def obtener_all_except_borradas(self):
+        """
+        Devuelve queue excluyendo las campanas borradas
+        """
+        return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
 
 
 class Queue(models.Model):
