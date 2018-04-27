@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'reciclado_app',
     'formtools',
     'widget_tweaks',
-    'reportes',
+    'reportes_app',
 ]
 
 MIDDLEWARE_CLASSES = [
