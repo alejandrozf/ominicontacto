@@ -3,15 +3,18 @@
 """
 Tests del los reportes que realiza el sistema
 """
+from random import choice
 from unittest import skipIf
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import connection
 from django.utils import timezone
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.tests.factories import CampanaFactory, QueuelogFactory, UserFactory
-from ominicontacto_app.models import Campana, Queuelog
+from ominicontacto_app.tests.factories import CampanaFactory, UserFactory
+from ominicontacto_app.models import Campana
+from reportes_app.models import ActividadAgenteLog, LlamadaLog
 from ominicontacto_app.services.reporte_grafico import GraficoService
 
 
@@ -74,51 +77,51 @@ class ReportesTests(BaseReportesTests):
             self.NRO_CAMPANAS_PREVIEW, type=Campana.TYPE_PREVIEW, estado=Campana.ESTADO_ACTIVA,
             reported_by=self.usuario_admin_supervisor)
 
-        self.queues_campanas_dialer_ingresadas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_DIALER_INGRESADAS, campana_id=self.campanas_dialer[0].pk,
-            event=self.evento_llamadas_ingresadas, data5=Campana.TYPE_DIALER)
-        self.queues_campanas_dialer_atendidas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_DIALER_ATENDIDAS, campana_id=self.campanas_dialer[1].pk,
-            event=self.evento_llamadas_atendidas, data5=Campana.TYPE_DIALER)
-        self.queues_campanas_dialer_abandonadas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_DIALER_ABANDONADAS, campana_id=self.campanas_dialer[2].pk,
-            event=self.evento_llamadas_abandonadas, data5=Campana.TYPE_DIALER)
-        self.queues_campanas_dialer_expiradas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_DIALER_EXPIRADAS, campana_id=self.campanas_dialer[3].pk,
-            event=self.evento_llamadas_expiradas, data5=Campana.TYPE_DIALER)
+        # self.queues_campanas_dialer_ingresadas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_DIALER_INGRESADAS, campana_id=self.campanas_dialer[0].pk,
+        #     event=self.evento_llamadas_ingresadas, data5=Campana.TYPE_DIALER)
+        # self.queues_campanas_dialer_atendidas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_DIALER_ATENDIDAS, campana_id=self.campanas_dialer[1].pk,
+        #     event=self.evento_llamadas_atendidas, data5=Campana.TYPE_DIALER)
+        # self.queues_campanas_dialer_abandonadas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_DIALER_ABANDONADAS, campana_id=self.campanas_dialer[2].pk,
+        #     event=self.evento_llamadas_abandonadas, data5=Campana.TYPE_DIALER)
+        # self.queues_campanas_dialer_expiradas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_DIALER_EXPIRADAS, campana_id=self.campanas_dialer[3].pk,
+        #     event=self.evento_llamadas_expiradas, data5=Campana.TYPE_DIALER)
 
-        self.queues_campanas_entrantes_ingresadas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_ENTRANTES_INGRESADAS, campana_id=self.campanas_entrantes[0].pk,
-            event=self.evento_llamadas_ingresadas, data5=Campana.TYPE_ENTRANTE)
-        self.queues_campanas_entrantes_atendidas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_ENTRANTES_ATENDIDAS, campana_id=self.campanas_entrantes[1].pk,
-            event=self.evento_llamadas_atendidas, data5=Campana.TYPE_ENTRANTE)
-        self.queues_campanas_entrantes_abandonadas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_ENTRANTES_ABANDONADAS, campana_id=self.campanas_entrantes[2].pk,
-            event=self.evento_llamadas_abandonadas, data5=Campana.TYPE_ENTRANTE)
-        self.queues_campanas_entrantes_expiradas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_ENTRANTES_EXPIRADAS, campana_id=self.campanas_entrantes[3].pk,
-            event=self.evento_llamadas_expiradas, data5=Campana.TYPE_ENTRANTE)
+        # self.queues_campanas_entrantes_ingresadas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_ENTRANTES_INGRESADAS, campana_id=self.campanas_entrantes[0].pk,
+        #     event=self.evento_llamadas_ingresadas, data5=Campana.TYPE_ENTRANTE)
+        # self.queues_campanas_entrantes_atendidas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_ENTRANTES_ATENDIDAS, campana_id=self.campanas_entrantes[1].pk,
+        #     event=self.evento_llamadas_atendidas, data5=Campana.TYPE_ENTRANTE)
+        # self.queues_campanas_entrantes_abandonadas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_ENTRANTES_ABANDONADAS, campana_id=self.campanas_entrantes[2].pk,
+        #     event=self.evento_llamadas_abandonadas, data5=Campana.TYPE_ENTRANTE)
+        # self.queues_campanas_entrantes_expiradas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_ENTRANTES_EXPIRADAS, campana_id=self.campanas_entrantes[3].pk,
+        #     event=self.evento_llamadas_expiradas, data5=Campana.TYPE_ENTRANTE)
 
-        self.queues_campanas_manuales_ingresadas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_MANUALES_INGRESADAS, campana_id=self.campanas_manuales[0].pk,
-            event=self.evento_llamadas_ingresadas, data4='saliente', data5=Campana.TYPE_MANUAL)
-        self.queues_campanas_manuales_atendidas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_MANUALES_ATENDIDAS, campana_id=self.campanas_manuales[1].pk,
-            event=self.evento_llamadas_atendidas, data4='saliente', data5=Campana.TYPE_MANUAL)
-        self.queues_campanas_manuales_abandonadas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_MANUALES_ABANDONADAS, campana_id=self.campanas_manuales[2].pk,
-            event=self.evento_llamadas_abandonadas, data4='saliente', data5=Campana.TYPE_MANUAL)
+        # self.queues_campanas_manuales_ingresadas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_MANUALES_INGRESADAS, campana_id=self.campanas_manuales[0].pk,
+        #     event=self.evento_llamadas_ingresadas, data4='saliente', data5=Campana.TYPE_MANUAL)
+        # self.queues_campanas_manuales_atendidas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_MANUALES_ATENDIDAS, campana_id=self.campanas_manuales[1].pk,
+        #     event=self.evento_llamadas_atendidas, data4='saliente', data5=Campana.TYPE_MANUAL)
+        # self.queues_campanas_manuales_abandonadas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_MANUALES_ABANDONADAS, campana_id=self.campanas_manuales[2].pk,
+        #     event=self.evento_llamadas_abandonadas, data4='saliente', data5=Campana.TYPE_MANUAL)
 
-        self.queues_campanas_preview_ingresadas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_PREVIEW_INGRESADAS, campana_id=self.campanas_preview[0].pk,
-            event=self.evento_llamadas_ingresadas, data4='preview', data5=Campana.TYPE_PREVIEW)
-        self.queues_campanas_preview_atendidas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_PREVIEW_ATENDIDAS, campana_id=self.campanas_preview[1].pk,
-            event=self.evento_llamadas_atendidas, data4='preview', data5=Campana.TYPE_PREVIEW)
-        self.queues_campanas_preview_abandonadas = QueuelogFactory.create_batch(
-            self.NRO_QUEUES_PREVIEW_ABANDONADAS, campana_id=self.campanas_preview[2].pk,
-            event=self.evento_llamadas_abandonadas, data4='preview', data5=Campana.TYPE_PREVIEW)
+        # self.queues_campanas_preview_ingresadas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_PREVIEW_INGRESADAS, campana_id=self.campanas_preview[0].pk,
+        #     event=self.evento_llamadas_ingresadas, data4='preview', data5=Campana.TYPE_PREVIEW)
+        # self.queues_campanas_preview_atendidas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_PREVIEW_ATENDIDAS, campana_id=self.campanas_preview[1].pk,
+        #     event=self.evento_llamadas_atendidas, data4='preview', data5=Campana.TYPE_PREVIEW)
+        # self.queues_campanas_preview_abandonadas = QueuelogFactory.create_batch(
+        #     self.NRO_QUEUES_PREVIEW_ABANDONADAS, campana_id=self.campanas_preview[2].pk,
+        #     event=self.evento_llamadas_abandonadas, data4='preview', data5=Campana.TYPE_PREVIEW)
 
     def test_datos_reporte_total_llamadas_csv_contiene_tabla_totales_llamadas_por_tipo(self):
         # el usuario debe primero acceder a la página de los reportes y a partir
@@ -270,12 +273,24 @@ class AccesoReportesTests(BaseReportesTests):
         self.assertFalse(response.serialize().find('total_llamadas.csv') > -1)
 
 
+# Valores por defecto para insertar en la tabla queue_log
+CALLID = '2312312.233'
+EVENT = 'ENTERQUEUE'
+TELEFONO = '1234567890'
+CONTACTO_ID = 1
+BRIDGE_WAIT_TIME = 5
+DURACION_LLAMADA = 60
+ARCHIVO_GRABACION = 'grabacion.mp3'
+
+
 class TriggerQueuelogTest(OMLBaseTest):
 
-    def _aplicar_sql_query(self, str_tipo_campana, tipo_campana, queuename, event='CONNECT'):
+    def _aplicar_sql_query(self, queuename, time=timezone.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
+                           callid=CALLID, agent=1, event=EVENT, data1=TELEFONO,
+                           data2=CONTACTO_ID, data3=BRIDGE_WAIT_TIME, data4=DURACION_LLAMADA,
+                           data5=ARCHIVO_GRABACION):
         fields = "(time, callid, queuename, agent, event, data1, data2, data3, data4, data5)"
-        values = ('2017-12-22 03:45:00.0000', '2312312.233', queuename, 'agente_test', event,
-                  'data1', 'data2', 'data3', str_tipo_campana, tipo_campana)
+        values = (time, callid, queuename, agent, event, data1, data2, data3, data4, data5)
         sql_query = "insert into queue_log {0} values {1};".format(fields, str(values))
         with connection.cursor() as c:
             c.execute(sql_query)
@@ -283,54 +298,70 @@ class TriggerQueuelogTest(OMLBaseTest):
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
-    def test_adicion_info_tipo_campana_entrantes(self):
-        queuename = "1_cp1"
-        self._aplicar_sql_query('IN', Campana.TYPE_ENTRANTE, queuename)
-        queuelog = Queuelog.objects.get(queuename=queuename)
-        self.assertEqual(queuelog.data5, str(Campana.TYPE_ENTRANTE))
+    def test_adicion_eventos_llamadas_inserta_en_modelo_logs_llamadas(self):
+        queuename = '1-1-1'
+        EVENTOS_LLAMADAS = [
+            'DIAL',
+            'ANSWER',
+            'CONNECT',
+            'COMPLETEAGENT',
+            'COMPLETECALLER',
+            'ENTERQUEUE',
+            'EXITWITHTIMEOUT',
+            'ABANDON',
+            'NOANSWER',
+            'CANCEL',
+            'BUSY',
+            'CHANUNAVAIL',
+            'OTHER',
+            'FAIL',
+            'AMD',
+            'BLACKLIST',
+            'RINGNOANSWER',
+        ]
+        evento = choice(EVENTOS_LLAMADAS)
+        self._aplicar_sql_query(queuename, event=evento)
+        self.assertTrue(LlamadaLog.objects.all().exists())
 
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
-    def test_adicion_info_tipo_campana_dialer(self):
-        queuename = "1_cp1"
-        self._aplicar_sql_query('DIALER', Campana.TYPE_DIALER, queuename)
-        queuelog = Queuelog.objects.get(queuename=queuename)
-        self.assertEqual(queuelog.data5, str(Campana.TYPE_DIALER))
+    def test_adicion_info_campanas_pasa_correctamente_a_modelo_de_logs_llamadas(self):
+        queuename = '1-1-1'
+        campana_id, tipo_campana, tipo_llamada = queuename.split("-")
+        self._aplicar_sql_query(queuename)
+        llamada_log = LlamadaLog.objects.first()
+        self.assertEqual(llamada_log.campana_id, int(campana_id))
+        self.assertEqual(llamada_log.tipo_campana, int(tipo_campana))
+        self.assertEqual(llamada_log.tipo_llamada, int(tipo_llamada))
 
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
-    def test_adicion_info_tipo_campana_manual(self):
-        queuename = "1_cp1"
-        self._aplicar_sql_query('saliente', Campana.TYPE_MANUAL, queuename)
-        queuelog = Queuelog.objects.get(queuename=queuename)
-        self.assertEqual(queuelog.data5, str(Campana.TYPE_MANUAL))
+    def test_adicion_info_incorrecta_campanas_pasa_valores_error_a_logs_llamadas(self):
+        queuename = ''
+        self._aplicar_sql_query(queuename)
+        llamada_log = LlamadaLog.objects.first()
+        self.assertEqual(llamada_log.campana_id, -1)
+        self.assertEqual(llamada_log.tipo_campana, -1)
+        self.assertEqual(llamada_log.tipo_llamada, -1)
 
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
-    def test_adicion_info_tipo_campana_pre(self):
-        queuename = "1_cp1"
-        self._aplicar_sql_query('preview', Campana.TYPE_PREVIEW, queuename)
-        queuelog = Queuelog.objects.get(queuename=queuename)
-        self.assertEqual(queuelog.data5, str(Campana.TYPE_PREVIEW))
+    def test_eventos_sesion_actividad_agente_insertan_info_en_tabla_logs_actividades_agente(self):
+        queuename = 'ALL'
+        evento_agente = choice(['ADDMEMBER', 'REMOVEMEMBER', 'PAUSEALL', 'UNPAUSEALL'])
+        self._aplicar_sql_query(queuename, event=evento_agente)
+        actividad_agente_log = ActividadAgenteLog.objects.first()
+        self.assertEqual(actividad_agente_log.event, evento_agente)
 
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
             'Sin migraciones no existe la tabla ´queue_log´')
-    def test_filtro_de_duplicados_en_trigger_queue_log(self):
-        queuename = "1_cp1"
-        cant_inicial = Queuelog.objects.count()
-        # Pruebo que no agrege con un evento CONNECT sin nada en data4
-        self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'CONNECT')
-        self.assertEqual(cant_inicial, Queuelog.objects.count())
-        # Pruebo que no agrege con un evento ENTERQUEUE sin nada en data4
-        self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'ENTERQUEUE')
-        self.assertEqual(cant_inicial, Queuelog.objects.count())
-        # Pruebo que no agrege con un evento ABANDON sin nada en data4
-        self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'ABANDON')
-        self.assertEqual(cant_inicial, Queuelog.objects.count())
-        # Pruebo que no agrege con un evento EXITWITHTIMEOUT sin nada en data4
-        self._aplicar_sql_query('', Campana.TYPE_PREVIEW, queuename, 'EXITWITHTIMEOUT')
-        self.assertEqual(cant_inicial, Queuelog.objects.count())
+    def test_evento_no_logueable_no_se_inserta_en_logs_llamadas_actividades_agentes(self):
+        queuename = '1-1-1'
+        evento_no_logueable = 'NO_LOGUEAR'
+        self._aplicar_sql_query(queuename, event=evento_no_logueable)
+        self.assertFalse(LlamadaLog.objects.all().exists())
+        self.assertFalse(ActividadAgenteLog.objects.all().exists())
