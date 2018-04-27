@@ -603,7 +603,6 @@ class CampanaManager(models.Manager):
             ringinuse=campana.queue_campana.ringinuse,
             setinterfacevar=campana.queue_campana.setinterfacevar,
             wait=campana.queue_campana.wait,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
             announce=campana.queue_campana.announce,
@@ -680,7 +679,6 @@ class CampanaManager(models.Manager):
             ringinuse=campana.queue_campana.ringinuse,
             setinterfacevar=campana.queue_campana.setinterfacevar,
             wait=campana.queue_campana.wait,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
         )

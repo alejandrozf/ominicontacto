@@ -3,7 +3,6 @@
                 <td width="45%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
-                <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
                     {{ campana.bd_contacto }}
                 </td>
@@ -40,6 +39,6 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="5">No existen campañas</td>
+            <td colspan="4">No existen campañas</td>
         </tr>
         {% endfor %}
