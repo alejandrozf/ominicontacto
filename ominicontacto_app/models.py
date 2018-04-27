@@ -998,10 +998,6 @@ class Campana(models.Model):
             contactos_campana.delete()
             self.finalizar()
 
-    def get_string_queue_asterisk(self):
-        if self.queue_campana:
-            return self.queue_campana.get_string_queue_asterisk()
-
     def gestionar_opcion_calificacion_agenda(self):
         """
         Devuelve la opción de calificación de agenda para la campaña.
@@ -1015,13 +1011,6 @@ class Campana(models.Model):
 
 
 class QueueManager(models.Manager):
-
-    def ultimo_queue_asterisk(self):
-        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
-        if number['queue_asterisk__max'] is None:
-            return 1
-        else:
-            return number['queue_asterisk__max'] + 1
 
     def obtener_all_except_borradas(self):
         """
@@ -1195,9 +1184,6 @@ class Queue(models.Model):
     def guardar_ep_id_wombat(self, ep_id_wombat):
         self.ep_id_wombat = ep_id_wombat
         self.save()
-
-    def get_string_queue_asterisk(self):
-        return '0078' + str(self.queue_asterisk)
 
     def get_string_initial_predictive_model(self):
         if self.initial_predictive_model:

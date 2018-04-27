@@ -53,7 +53,6 @@ class QueueDialplanConfigCreator(object):
             'oml_queue_name': "{0}_{1}".format(campana.id,
                                                elimina_espacios(campana.nombre)),
             'oml_queue_type': campana.type,
-            'oml_queue_id_asterisk': campana.get_string_queue_asterisk(),
             'oml_queue_wait': campana.queue_campana.wait,
             'oml_campana_id': campana.id,
             'date': str(datetime.datetime.now())
@@ -105,7 +104,6 @@ class QueueDialplanConfigCreator(object):
             'oml_queue_name': "{0}_{1}".format(campana.id,
                                                elimina_espacios(campana.nombre)),
             'oml_queue_type': campana.type,
-            'oml_queue_id_asterisk': campana.get_string_queue_asterisk(),
             'date': str(datetime.datetime.now()),
         }
 
