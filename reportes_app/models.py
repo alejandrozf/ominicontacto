@@ -93,6 +93,8 @@ class LlamadaLog(models.Model):
     Define la estructura de un evento de log de cola relacionado con una llamada
     """
 
+    LLAMADA_MANUAL = 3
+
     objects = LlamadaLogManager()
 
     time = models.DateTimeField(db_index=True)

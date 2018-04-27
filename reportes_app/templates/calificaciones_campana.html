@@ -4,14 +4,15 @@
 {% block content %}
 
                 <h1>Campaña {{ campana.nombre }}</h1>
-                
-                <h3>Desde: {{ campana.fecha_inicio|date:"d/m/Y" }}</h3>
-                <h3>Hasta: {{ campana.fecha_fin|date:"d/m/Y" }}</h3>
-                <h3>Base Datos: {{ campana.bd_contacto }}</h3>   
+
+                {% if campana.fecha_inicio %}
+                    <h3>Desde: {{ campana.fecha_inicio|date:"d/m/Y" }}</h3>
+                    <h3>Hasta: {{ campana.fecha_fin|date:"d/m/Y" }}</h3>
+                {% endif %}
+                <h3>Base Datos: {{ campana.bd_contacto }}</h3>
                 <br>
                 <a class="btn btn-outline-primary" href="{% url 'exporta_campana_reporte' campana.pk %}">Exportar Calificacion(CSV)</a>
                 <a class="btn btn-outline-primary" href="{% url 'exporta_formulario_reporte' campana.pk %}">Exportar Gestion: {{campana.gestion}}(CSV)</a>
-                <hr>
                 <table class="table">
                     <thead>
                       <tr class="fts-table-bg">

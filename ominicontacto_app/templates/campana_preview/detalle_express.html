@@ -1,19 +1,34 @@
+{% load i18n  %}
 
-
-        <h2>Datos generales</h2>
-        <hr>
-        <h3>Nombre: <strong>{{ campana.nombre }}</strong></h3>
-        <h3>Estado: <strong>{{ campana.get_estado_display}}</strong></h3>
-        <h3>Base de datos: <strong>{{ campana.bd_contacto}}</strong></h3>
-        <h3>Calificaciones: <strong>{{ campana.calificacion_campana}}</strong></h3>
-        <h3>Gestion: <strong>{{ campana.gestion}}</strong></h3>
-        <br>
-        <h2>Resultados de las llamadas de la campaña</h2>
-        <hr>
-        <h3> Contactos atendidos: <strong>{{ terminadas }}</strong></h3>
-        <h3> Contactos restantes por atender: <strong>{{ estimadas }}</strong></h3>
-        <br>
-        {% for categoria, count in categorias.items %}
-            <p>Finalizados por {{ categoria }}:<strong>{{ count }}</strong></p>
-        {% endfor %}
-
+<h2>{% trans 'Datos generales' %}</h2>
+<hr>
+<h3>{% trans 'Nombre' %}:<strong>{{ campana.nombre }}</strong></h3>
+<h3>{% trans 'Estado' %}: <strong>{{ campana.get_estado_display}}</strong></h3>
+<h3>{% trans 'Base de datos' %}: <strong>{{ campana.bd_contacto}}</strong></h3>
+<p>{% trans 'Opciones de calificación' %}:
+    <strong>
+        <ul>
+            {% for opcion_calificacion in opciones_calificacion %}
+                <li>{{ opcion_calificacion.nombre }}</li>
+            {% endfor %}
+        </ul>
+    </strong>
+</p>
+<p>{% trans 'Opciones de calificación de gestión' %}:
+    <strong>
+        <ul>
+            {% for opcion_calificacion in opciones_calificacion_gestion %}
+                <li>{{ opcion_calificacion.nombre }}</li>
+            {% endfor %}
+        </ul>
+    </strong>
+</p>
+<br>
+<h2>{% trans 'Resultados de las llamadas de la campaña' %}</h2>
+<hr>
+<h3>{% trans 'Contactos atendidos' %}:<strong>{{ terminadas }}</strong></h3>
+<h3>{% trans 'Contactos restantes por atender' %}:<strong>{{ estimadas }}</strong></h3>
+<br>
+{% for categoria, count in categorias.items %}
+    <p>{% trans 'Finalizados por' %} {{ categoria }}:<strong>{{ count }}</strong></p>
+{% endfor %}

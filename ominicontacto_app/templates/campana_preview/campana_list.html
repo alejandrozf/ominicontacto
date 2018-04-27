@@ -88,17 +88,17 @@
                         <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
                             <span class="icon icon-eye"></span>Dar permiso para ver
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                             <span class="icon icon-list"></span>Calificaciones
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                             <span class="icon icon-graph"></span>Reportes
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>Eliminar
-                        </a>                            
+                        </a>
                     </div>
-                </div>              
+                </div>
             </td>
         </tr>
     {% empty %}
@@ -137,17 +137,17 @@
                                 <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
                                     <span class="icon icon-eye"></span>Dar permiso para ver
                                 </a>
-                                <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
+                                <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                                     <span class="icon icon-list"></span>Calificaciones
                                 </a>
-                                <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
+                                <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                     <span class="icon icon-graph"></span>Reportes
                                 </a>
                                 <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                                     <span class="icon icon-trash"></span>Eliminar
-                                </a>                            
+                                </a>
                             </div>
-                        </div>      
+                        </div>
                     </td>
                 </tr>
             {% empty %}
@@ -179,12 +179,12 @@
                         <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
                             <span class="icon icon-eye"></span>Dar permiso para ver
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                             <span class="icon icon-list"></span>Calificaciones
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                             <span class="icon icon-graph"></span>Reportes
-                        </a> 
+                        </a>
                         {% if campana.oculto %}
                         <a class="dropdown-item campana-mostrar-esconder" data="visible" href="">
                             <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
@@ -197,7 +197,7 @@
                         </a>
                         {% endif %}
                     </div>
-                </div>  
+                </div>
             </td>
         </tr>
     {% empty %}
@@ -210,7 +210,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title">Usuario desconectado</h1>                  
+                    <h1 class="modal-title">Usuario desconectado</h1>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">

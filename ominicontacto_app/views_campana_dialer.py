@@ -12,7 +12,7 @@ import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from ominicontacto_app.models import Contacto, Campana
 from django.views.generic import ListView, DeleteView, FormView
 from django.views.generic.base import RedirectView
@@ -230,25 +230,6 @@ class DesOcultarCampanaDialerView(RedirectView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         campana.desocultar()
         return HttpResponseRedirect(reverse('campana_dialer_list'))
-
-
-def detalle_campana_dialer_view(request):
-    """Vista que muestrar el detalle de campana en wombat"""
-    pk_campana = int(request.GET['pk_campana'])
-    campana = Campana.objects.get(pk=pk_campana)
-    campana_service = CampanaService()
-    dato_campana = campana_service.obtener_dato_campana_run(campana)
-    status = campana_service.obtener_status_campana_running(
-        dato_campana['hoppercampId'])
-    data = {
-        'campana': campana,
-        'efectuadas': dato_campana['n_calls_attempted'],
-        'terminadas': dato_campana['n_calls_completed'],
-        'estimadas': dato_campana['n_est_remaining_calls'],
-        'status': status
-
-    }
-    return render(request, 'campana_dialer/detalle_campana.html', data)
 
 
 class UpdateBaseDatosDialerView(FormView):
