@@ -37,11 +37,6 @@ EVENTOS_LLAMADAS = [
     'RINGNOANSWER',
 ]
 
-try:
-    campana_id, tipo_campana, tipo_llamada = queuename.split("-")
-except ValueError:
-    campana_id, tipo_campana, tipo_llamada = (-1, -1, -1)
-
 
 if event in EVENTOS_AGENTE and queuename == 'ALL':
     # es un log de la actividad de un agente
@@ -51,6 +46,10 @@ if event in EVENTOS_AGENTE and queuename == 'ALL':
     plpy.execute(plan_agente_log, [fecha, agente_id, event, data1])
 elif event in EVENTOS_LLAMADAS:
     # es un log que forma parte de una llamada
+    try:
+        campana_id, tipo_campana, tipo_llamada = queuename.split("-")
+    except ValueError:
+        campana_id, tipo_campana, tipo_llamada = (-1, -1, -1)
     plan_llamadas_log = plpy.prepare(
         "INSERT INTO reportes_app_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
         ["timestamp with time zone", "text", "int", "int", "int", "int", "text", "text", "int",
