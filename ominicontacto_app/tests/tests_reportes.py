@@ -14,7 +14,7 @@ from django.utils import timezone
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import CampanaFactory, UserFactory
 from ominicontacto_app.models import Campana
-from reportes.models import ActividadAgenteLog, LlamadaLog
+from reportes_app.models import ActividadAgenteLog, LlamadaLog
 from ominicontacto_app.services.reporte_grafico import GraficoService
 
 
