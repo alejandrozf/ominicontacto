@@ -43,6 +43,7 @@ from ominicontacto_app.utiles import convert_string_in_boolean,\
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from ominicontacto_app import version
+from ominicontacto_app.services.asterisk_database import PausaFamily
 
 
 logger = logging.getLogger(__name__)
@@ -422,6 +423,13 @@ class PausaCreateView(RegenerarAsteriskOnSuccessMixin, CreateView):
     model = Pausa
     template_name = 'base_create_update_form.html'
     form_class = PausaForm
+
+    def post(self, request, *args, **kwargs):
+        """regeneramos las pausas en asterisk database"""
+        servicio_asterisk = PausaFamily()
+        servicio_asterisk.regenerar_familys_pausa()
+        form = self.get_form()
+        return self.form_valid(form)
 
 
 class PausaUpdateView(RegenerarAsteriskOnSuccessMixin, UpdateView):
