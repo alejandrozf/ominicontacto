@@ -179,7 +179,6 @@ class QueueFactory(DjangoModelFactory):
     setinterfacevar = True
 
     wait = lazy_attribute(lambda a: faker.random_number(5))
-    queue_asterisk = lazy_attribute(lambda a: faker.random_int(10))
 
 
 class AgenteEnContactoFactory(DjangoModelFactory):
