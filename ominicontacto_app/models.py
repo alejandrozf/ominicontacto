@@ -1146,7 +1146,6 @@ class Queue(models.Model):
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
 
     wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
-    queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
     detectar_contestadores = models.BooleanField(default=False)
