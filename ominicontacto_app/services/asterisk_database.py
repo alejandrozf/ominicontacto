@@ -79,7 +79,7 @@ class CampanaFamily(object):
 
             for key, val in variables.items():
                 try:
-                    family = "/OML/CAMP/{0}/".format(campana.id)
+                    family = "OML/CAMP/{0}".format(campana.id)
                     client.asterisk_db("DBPut", family, key, val=val)
                 except AsteriskHttpAsteriskDBError:
                     logger.exception("Error al intentar DBPut al insertar"
@@ -97,7 +97,7 @@ class CampanaFamily(object):
 
     def regenerar_familys_campana(self):
         """regenera la family de las campana"""
-        self.delete_tree_family("/OML/CAMP")
+        self.delete_tree_family("OML/CAMP")
         self.create_familys()
 
 
@@ -138,7 +138,7 @@ class AgenteFamily(object):
 
             for key, val in variables.items():
                 try:
-                    family = "/OML/AGENT/{0}/".format(agente.id)
+                    family = "OML/AGENT/{0}".format(agente.id)
                     client.asterisk_db("DBPut", family, key, val=val)
                 except AsteriskHttpAsteriskDBError:
                     logger.exception("Error al intentar DBPut al insertar"
@@ -156,7 +156,7 @@ class AgenteFamily(object):
 
     def regenerar_familys_agente(self):
         """regenera la family de los agentes"""
-        self.delete_tree_family("/OML/AGENT")
+        self.delete_tree_family("OML/AGENT")
         self.create_familys()
 
 
@@ -175,7 +175,7 @@ class PausaFamily(object):
             try:
                 client = AsteriskHttpClient()
                 client.login()
-                family = "/OML/PAUSE/{0}/".format(pausa.id)
+                family = "OML/PAUSE/{0}".format(pausa.id)
                 client.asterisk_db("DBPut", family, "NAME", val=pausa.nombre)
             except AsteriskHttpAsteriskDBError:
                 logger.exception("Error al intentar DBPut al insertar"
@@ -193,7 +193,7 @@ class PausaFamily(object):
 
     def regenerar_familys_pausa(self):
         """regenera la family de las pausas"""
-        self.delete_tree_family("/OML/PAUSE")
+        self.delete_tree_family("OML/PAUSE")
         self.create_familys()
 
 
