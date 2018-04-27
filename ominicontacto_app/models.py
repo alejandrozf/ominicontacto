@@ -135,6 +135,9 @@ class AgenteProfileManager(models.Manager):
                              "con el sip {0} no existe ".format(sip_agente))
             return None
 
+    def obtener_agentes_activos(self):
+        return self.filter(is_inactive=False)
+
 
 class AgenteProfile(models.Model):
     ESTADO_OFFLINE = 1
@@ -395,6 +398,15 @@ class ArchivoDeAudio(models.Model):
 
         self.borrado = True
         self.save()
+
+    def get_filename_audio_asterisk(self):
+        """
+        Returna el filename del audio asterisl
+        """
+        if self.audio_asterisk:
+            filepath = self.audio_asterisk.path
+            return os.path.splitext(os.path.basename(filepath))[0]
+        return None
 
 
 class CampanaManager(models.Manager):

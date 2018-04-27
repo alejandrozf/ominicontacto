@@ -12,15 +12,20 @@ import datetime
 import uuid
 import shutil
 import json
+import tempfile
 
 from django.test import TestCase, TransactionTestCase
 from django.conf import settings
+from django.test.utils import override_settings
 from ominicontacto_app.models import (
     User, AgenteProfile, Grupo, SupervisorProfile, Contacto,
     BaseDatosContacto, NombreCalificacion, Campana, Queue, OpcionCalificacion,
-    ActuacionVigente, ReglasIncidencia, CalificacionCliente, WombatLog
+    ActuacionVigente, ReglasIncidencia, CalificacionCliente, WombatLog,
+    ArchivoDeAudio
 )
 from ominicontacto_app.tests.factories import NombreCalificacionFactory
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
+from mock import Mock
 
 
 def ru():
@@ -32,6 +37,11 @@ def rtel():
     """Devuelve nro telefonico aleatorio"""
     return unicode(random.randint(1140000000000000,
                                   1149999999999999))
+
+
+def _tmpdir():
+    """Crea directorio temporal"""
+    return tempfile.mkdtemp(prefix=".oml-tests-", dir="/dev/shm")
 
 
 class OMLTestUtilsMixin(object):
@@ -319,6 +329,7 @@ class OMLTestUtilsMixin(object):
             ringinuse=True,
             setinterfacevar=True,
             queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+            audio_para_contestadores=self.crear_arhivo_de_audio()
         )
         queue.save()
 
@@ -345,6 +356,7 @@ class OMLTestUtilsMixin(object):
             ringinuse=True,
             setinterfacevar=True,
             queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
+            audio_de_ingreso=self.crear_arhivo_de_audio()
         )
         queue.save()
 
@@ -427,6 +439,19 @@ class OMLTestUtilsMixin(object):
                                  estado=estado, calificacion=calificacion,
                                  timeout=15, contacto=contacto,
                                  metadata=json.dumps(metadata))
+
+    @override_settings(MEDIA_ROOT=_tmpdir())
+    def crear_arhivo_de_audio(self):
+        original = self.copy_test_resource_to_mediaroot("wavs/8k16bitpcm.wav")
+
+        archivo_de_audio = ArchivoDeAudio(id=1,
+                                          descripcion="Audio",
+                                          audio_original=original)
+        conversor_audio = ConversorDeAudioService()
+        conversor_audio.convertir_audio_de_archivo_de_audio_globales(
+            archivo_de_audio)
+        archivo_de_audio.save = Mock()
+        return archivo_de_audio
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
