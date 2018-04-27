@@ -185,11 +185,11 @@ ul.errorlist li {
 */
 
 #wrapper-search {
-    border-bottom: 2px solid rgba(0,0,0,0.15);
     margin-bottom: 40px;
 }
 #wrapperSearchForm {
     padding: 20px 0;
+    border-bottom: 2px solid rgba(0,0,0,0.15);    
 }
 #wrapperSearchForm .btn-primary {
     padding-left: 40px;
@@ -199,17 +199,21 @@ ul.errorlist li {
 #btnCollapse[data-toggle="collapse"] {
     text-align: left;
     position: relative;
-    padding: 14px 8px;
+    padding: 14px 14px;
     background-color: #ECEEEA;
 }
 #btnCollapse.collapsed {
     background-color: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.15);
+}
+#btnCollapse:hover {
+    background-color: #F0F0F0;
 }
 #btnCollapse[aria-expanded="false"]::before, #btnCollapse[aria-expanded="true"]::before {
     content: '\e904';
     display: block;
     position: absolute;
-    right: 10px;
+    right: 16px;
     top: 14px;    
     font-family: 'icomoon';
     font-size: 1rem;
@@ -238,6 +242,12 @@ ul.errorlist li {
 
 .modal-title {
     line-height: 1.4rem;
+}
+
+/* ///// Modals 
+*/
+input[type=file].form-control {
+    padding: .27rem .3rem;
 }
 
 /* ///// Select widget 
