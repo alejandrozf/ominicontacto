@@ -10,9 +10,9 @@ import logging
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
-    QueueDialplanConfigCreator, QueueConfigFile, AsteriskConfigReloader,
-    QueuesCreator, QueuesConfigFile, SipConfigCreator, SipConfigFile,
-    GlobalsVariableConfigCreator, GlobalsConfigFile)
+    AsteriskConfigReloader, QueuesCreator, QueuesConfigFile, SipConfigCreator,
+    SipConfigFile, GlobalsVariableConfigCreator, GlobalsConfigFile
+)
 from ominicontacto_app.services.asterisk_database import RegenerarAsteriskFamilysOML
 
 logger = logging.getLogger(__name__)
@@ -26,8 +26,6 @@ class RestablecerDialplanError(OmlError):
 class RegeneracionAsteriskService(object):
 
     def __init__(self):
-        self.dialplan_config_creator = QueueDialplanConfigCreator()
-        self.config_file = QueueConfigFile()
         self.queues_config_creator = QueuesCreator()
         self.config_queues_file = QueuesConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()
@@ -40,16 +38,6 @@ class RegeneracionAsteriskService(object):
     def _generar_y_recargar_configuracion_asterisk(self):
         proceso_ok = True
         mensaje_error = ""
-
-        try:
-            self.dialplan_config_creator.create_dialplan()
-        except:
-            logger.exception("ActivacionQueueService: error al "
-                             "intentar dialplan_config_creator()")
-
-            proceso_ok = False
-            mensaje_error += ("Hubo un inconveniente al crear el archivo de "
-                              "configuracion del dialplan de Asterisk. ")
 
         try:
             self.queues_config_creator.create_dialplan()
@@ -84,7 +72,6 @@ class RegeneracionAsteriskService(object):
         if not proceso_ok:
             raise(RestablecerDialplanError(mensaje_error))
         else:
-            self.config_file.copy_asterisk()
             self.config_sip_file.copy_asterisk()
             self.config_queues_file.copy_asterisk()
             self.reload_asterisk_config.reload_asterisk()
