@@ -72,7 +72,6 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
             setinterfacevar=True,
             weight=0,
             wait=120,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=auto_grabacion)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()

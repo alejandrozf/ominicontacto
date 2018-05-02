@@ -133,7 +133,6 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         queue_form.instance.eventwhencalled = True
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
-        queue_form.instance.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
         if queue_form.instance.initial_boost_factor is None:
             queue_form.instance.initial_boost_factor = 1.0
         queue_form.save()

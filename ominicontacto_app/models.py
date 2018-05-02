@@ -603,7 +603,6 @@ class CampanaManager(models.Manager):
             ringinuse=campana.queue_campana.ringinuse,
             setinterfacevar=campana.queue_campana.setinterfacevar,
             wait=campana.queue_campana.wait,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
             announce=campana.queue_campana.announce,
@@ -680,7 +679,6 @@ class CampanaManager(models.Manager):
             ringinuse=campana.queue_campana.ringinuse,
             setinterfacevar=campana.queue_campana.setinterfacevar,
             wait=campana.queue_campana.wait,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
         )
@@ -998,10 +996,6 @@ class Campana(models.Model):
             contactos_campana.delete()
             self.finalizar()
 
-    def get_string_queue_asterisk(self):
-        if self.queue_campana:
-            return self.queue_campana.get_string_queue_asterisk()
-
     def gestionar_opcion_calificacion_agenda(self):
         """
         Devuelve la opción de calificación de agenda para la campaña.
@@ -1015,13 +1009,6 @@ class Campana(models.Model):
 
 
 class QueueManager(models.Manager):
-
-    def ultimo_queue_asterisk(self):
-        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
-        if number['queue_asterisk__max'] is None:
-            return 1
-        else:
-            return number['queue_asterisk__max'] + 1
 
     def obtener_all_except_borradas(self):
         """
@@ -1146,7 +1133,6 @@ class Queue(models.Model):
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
 
     wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
-    queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
     detectar_contestadores = models.BooleanField(default=False)
@@ -1196,9 +1182,6 @@ class Queue(models.Model):
     def guardar_ep_id_wombat(self, ep_id_wombat):
         self.ep_id_wombat = ep_id_wombat
         self.save()
-
-    def get_string_queue_asterisk(self):
-        return '0078' + str(self.queue_asterisk)
 
     def get_string_initial_predictive_model(self):
         if self.initial_predictive_model:

@@ -328,7 +328,6 @@ class OMLTestUtilsMixin(object):
             eventwhencalled=True,
             ringinuse=True,
             setinterfacevar=True,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             audio_para_contestadores=self.crear_arhivo_de_audio()
         )
         queue.save()
@@ -355,7 +354,6 @@ class OMLTestUtilsMixin(object):
             eventwhencalled=True,
             ringinuse=True,
             setinterfacevar=True,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             audio_de_ingreso=self.crear_arhivo_de_audio()
         )
         queue.save()
@@ -379,7 +377,6 @@ class OMLTestUtilsMixin(object):
             setinterfacevar=True,
             weight=0,
             wait=120,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=True,
             detectar_contestadores=True
         )
