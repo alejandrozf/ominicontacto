@@ -66,16 +66,16 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignActive">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon far fa-plus-square"></span>Agregar agentes
+                                <span class="icon icon-plus"></span>Agregar agentes
                             </a>   
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permiso para ver
+                                <span class="icon icon-eye"></span>Dar permiso para ver
                             </a> 
                             <a class="dropdown-item" href="{% url 'reporte_campana' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>Calificaciones
                             </a> 
                             <a class="dropdown-item" href="{% url 'reporte_campana_grafico' campana.pk %}">
-                                <span class="icon fas fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
@@ -121,16 +121,16 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignPaused">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon far fa-plus-square"></span>Agregar agentes
+                                <span class="icon icon-plus"></span>Agregar agentes
                             </a>     
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permisos para ver
+                                <span class="icon icon-eye"></span>Dar permisos para ver
                             </a> 
                             <a class="dropdown-item" href="{% url 'reporte_campana' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>Calificaciones
                             </a> 
                             <a class="dropdown-item" href="{% url 'reporte_campana_grafico' campana.pk %}">
-                                <span class="icon fas fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
@@ -176,16 +176,16 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignInactive">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon far fa-plus-square"></span>Agregar agentes
+                                <span class="icon icon-plus"></span>Agregar agentes
                             </a>     
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permisos para ver
+                                <span class="icon icon-eye"></span>Dar permisos para ver
                             </a> 
                             <a class="dropdown-item" href="{% url 'reporte_campana' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>Calificaciones
                             </a> 
                             <a class="dropdown-item" href="{% url 'reporte_campana_grafico' campana.pk %}">
-                                <span class="icon fas fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
@@ -235,24 +235,24 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignDeleted">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon far fa-plus-square"></span>Agregar agentes
+                                <span class="icon icon-plus"></span>Agregar agentes
                             </a>     
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permisos para ver
+                                <span class="icon icon-eye"></span>Dar permisos para ver
                             </a> 
                             <a class="dropdown-item" href="{% url 'reporte_campana' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>Calificaciones
                             </a> 
                             <a class="dropdown-item" href="{% url 'reporte_campana_grafico' campana.pk %}">
-                                <span class="icon fas fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a> 
                             {% if campana.oculto %}
                             <a class="dropdown-item" href="{% url 'desoculta_campana' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Hacer visible
+                                <span class="icon icon-eye"></span>Hacer visible
                             </a>
                             {% else %}
                             <a class="dropdown-item" href="{% url 'oculta_campana' campana.pk %}" >
-                                <span class="icon fas fa-eye-slash"></span>Ocultar
+                                <span class="icon icon-eye-slash"></span>Ocultar
                             </a>
                             {% endif %}
                             <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">

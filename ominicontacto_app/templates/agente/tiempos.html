@@ -120,9 +120,10 @@
 
 {% if graficos_estadisticas  %}
 
-<div class="col-md-12">
-    <h4>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
-    <table class="table table-bordered">
+<div>
+    <h2>Periodo evaluado {{graficos_estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
+    <hr>
+    <table class="table">
     <thead>
         <tr>
             <th>Agente</th>
@@ -136,8 +137,6 @@
             <th>Cantidad de llamadas perdidas</th>
             <th>Media de llamadas asignadas</th>
             <th>Media de llamadas salientes manuales</th>
-
-
         </tr>
     </thead>
     {% for agente in graficos_estadisticas.estadisticas.agentes_tiempos %}
@@ -190,11 +189,11 @@
     </tbody>
 </table>
 
-    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='tiempos_agentes' %}">Exportar reporte de tiempos(CSV)</a></h5>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='tiempos_agentes' %}">Exportar reporte de tiempos(CSV)</a>
 </div>
-
-<div class="col-md-12">
-<table class="table table-bordered">
+<hr>
+<div>
+<table class="table">
     <thead>
         <tr>
             <th>Agente</th>
@@ -216,12 +215,12 @@
 
     </tbody>
 </table>
-    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='pausas_agentes' %}">Exportar reporte de pausas(CSV)</a></h5>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='pausas_agentes' %}">Exportar reporte de pausas(CSV)</a>
 
 </div>
-
-<div class="col-md-12">
-<table class="table table-bordered">
+<hr>
+<div>
+<table class="table">
     <thead>
         <tr>
             <th>Agente</th>
@@ -244,58 +243,48 @@
 
     </tbody>
 </table>
-                <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_agentes' %}">Exportar reporte cantidad llamadas(CSV)</a></h5>
-
+<a class="btn btn-outline-primary" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_agentes' %}">Exportar reporte cantidad llamadas(CSV)</a>
 </div>
-<div class="col-md-12">
-               <table class="table table-bordered">
-                        <thead>
-                            <tr class="fts-table-bg">
-                                <td colspan="2">
-                                    <h4>Cantidad de llamadas por agente</h4>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td width="50%">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th>Agente</th>
-                                            <th>Total </th>
-                                            <th>PREVIEW</th>
-                                            <th>DIALER</th>
-                                            <th>INBOUND</th>
-                                            <th>MANUAL</th>
-
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
-                                                <tr>
-                                                    <td><h5>{{ agente }} </h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_campana }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_preview }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_dialer }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_inbound }}</span></h5></td>
-                                                    <td width="10%" align="right"><h5><span class="label label-primary">{{ total_manual }}</span></h5></td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td width="50%" align="center">
-                                    <div class="graficos-avances">
-                                        <figure>
-                                            {{ graficos_estadisticas.barra_agente_total.render|safe }}
-                                        </figure>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-    <h5><a class="btn btn-info btn-sm" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a></h5>
+<hr>
+<div>
+    <h2>Cantidad de llamadas por agente</h2>
+    <br>
+    <div class="form-row">
+        <div class="col-lg-6">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Agente</th>
+                    <th>Total </th>
+                    <th>PREVIEW</th>
+                    <th>DIALER</th>
+                    <th>INBOUND</th>
+                    <th>MANUAL</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
+                        <tr>
+                            <td>{{ agente }}</td>
+                            <td>{{ total_campana }}</td>
+                            <td>{{ total_preview }}</td>
+                            <td>{{ total_dialer }}</td>
+                            <td>{{ total_inbound }}</td>
+                            <td>{{ total_manual }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6">
+            <div class="graficos-avances">
+                <figure>
+                    {{ graficos_estadisticas.barra_agente_total.render|safe }}
+                </figure>
+            </div>
+        </div>
+    </div> 
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a>
 
 </div>
 {% endif %}

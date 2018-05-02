@@ -23,14 +23,19 @@
                             </a>
                         </td>
                         <td width="14%">
-                            <a href="{% url 'campana_entrante_template_create_campana' campana.pk %}"  class="btn btn-success btn-sm">
-                                <span class="glyphicon glyphicon-plus"></span>
-                                {% trans 'Crear Campaña desde Template' %}
-                            </a>
-                            <a href="{% url 'campana_entrante_template_delete' campana.pk %}"  class="btn btn-danger btn-sm">
-                                <span class="glyphicon glyphicon-remove"></span>
-                                {% trans 'Eliminar' %}
-                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Opciones
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                                    <a class="dropdown-item" href="{% url 'campana_entrante_template_create_campana' campana.pk %}">
+                                        <span class="icon icon-plus"></span>{% trans 'Crear Campaña desde Template' %}
+                                    </a>     
+                                    <a class="dropdown-item" href="{% url 'campana_entrante_template_delete' campana.pk %}">
+                                        <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                                    </a>                                            
+                                </div>
+                            </div>                            
                         </td>
                     </tr>
                 {% empty %}

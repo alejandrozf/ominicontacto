@@ -126,8 +126,6 @@
                             <th>Campo requerido</th>
                             <th>Valores de la lista</th>
                             <th></th>
-                            <th></th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -140,9 +138,9 @@
                                     <td>{{ campo.get_tipo_display }}</td>
                                                                         <td>
                                         {% if campo.is_required %}
-                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                            <span class="icon icon-check" aria-hidden="true"></span>
                                         {% else %}
-                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                            <span class="icon icon-cancel" aria-hidden="true"></span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -151,23 +149,27 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="{% url 'formulario_field_delete' formulario.pk campo.pk %}" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
-
-                                    </td>
-                                    <td>
-                                            {% if not forloop.last %}
-                                                    <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_DOWN }}" type="button" class="btn btn-light orden">
-                                                       <span class="icon icon-chevron-down"></span>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Opciones
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">  
+                                                {% if not forloop.last %}
+                                                        <button class="dropdown-item orden" data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_DOWN }}" type="button">
+                                                           <span class="icon icon-chevron-down"></span>Mover abajo
+                                                        </button>
+                                                {% endif %}
+                                                {% if not forloop.first %}
+                                                    <button class="dropdown-item orden" data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_UP }}" type="button">
+                                                    <span class="icon icon-chevron-up"></span>Mover arriba
                                                     </button>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if not forloop.first %}
-                                                     <button data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_UP }}" type="button" class="btn btn-light orden">
-                                                    <span class="icon icon-chevron-up"></span>
-                                                </button>
-                                            {% endif %}
-                                        </td>
+                                                {% endif %}                                                                                     
+                                                <a class="dropdown-item" href="{% url 'formulario_field_delete' formulario.pk campo.pk %}">
+                                                    <span class="icon icon-trash" aria-hidden="true"></span>Eliminar
+                                                </a>                                                                                    
+                                            </div>
+                                        </div>
+                                    </td>                                      
                                 </tr>
                              {% empty %}
                                 <tr>

@@ -85,16 +85,16 @@
                             <span class="icon icon-pencil"></span>Modificar
                         </a>
                         <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                            <span class="icon far fa-plus-square"></span>Agregar agentes
+                            <span class="icon icon-plus"></span>Agregar agentes
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
-                            <span class="icon fas fa-eye"></span>Dar permiso para ver
+                            <span class="icon icon-eye"></span>Dar permiso para ver
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
-                            <span class="icon fas fa-list"></span>Calificaciones
+                            <span class="icon icon-list"></span>Calificaciones
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
-                            <span class="icon far fa-chart-bar"></span>Reportes
+                            <span class="icon icon-graph"></span>Reportes
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>Eliminar
@@ -127,7 +127,7 @@
                     <td width="25%">
                         <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                         <a href="{% url 'campana_preview_detalle' campana.pk %}">
-                            <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                            &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                         </a>
                     </td>
                     <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
@@ -140,13 +140,13 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignFinished">
                                 <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
-                                    <span class="icon fas fa-eye"></span>Dar permiso para ver
+                                    <span class="icon icon-eye"></span>Dar permiso para ver
                                 </a>
                                 <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
-                                    <span class="icon fas fa-list"></span>Calificaciones
+                                    <span class="icon icon-list"></span>Calificaciones
                                 </a>
                                 <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
-                                    <span class="icon far fa-chart-bar"></span>Reportes
+                                    <span class="icon icon-graph"></span>Reportes
                                 </a>
                                 <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                                     <span class="icon icon-trash"></span>Eliminar
@@ -171,7 +171,7 @@
         <tr>
             <td width="25%">
                 {{ campana.nombre }}<a href="{% url 'campana_preview_detalle' campana.pk %}">
-                <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
+                    &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                 </a>
             </td>
             <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
@@ -179,32 +179,32 @@
             <td> {{campana.get_estado_display}} </td>
             <td width="14%">
                 <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignFinished" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignDeleted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Opciones
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignFinished">
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignDeleted">
                         <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
-                            <span class="icon fas fa-eye"></span>Dar permiso para ver
+                            <span class="icon icon-eye"></span>Dar permiso para ver
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
-                            <span class="icon fas fa-list"></span>Calificaciones
+                            <span class="icon icon-list"></span>Calificaciones
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
-                            <span class="icon far fa-chart-bar"></span>Reportes
-                        </a>                                                  
+                            <span class="icon icon-graph"></span>Reportes
+                        </a> 
+                        {% if campana.oculto %}
+                        <a class="dropdown-item campana-mostrar-esconder" data="visible" href="">
+                            <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
+                            <span class="icon icon-eye"></span>Hacer visible
+                        </a>
+                        {% else %}
+                        <a class="dropdown-item campana-mostrar-esconder" data="visible" href="">
+                            <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
+                            <span class="icon icon-eye-slash"></span>Ocultar
+                        </a>
+                        {% endif %}
                     </div>
                 </div>  
-                {% if campana.oculto %}
-                <a type="button"  data="visible" class="campana-mostrar-esconder">
-                    <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
-                    <span class="icon fas fa-eye"></span>Hacer visible
-                </a>
-                {% else %}
-                <a type="button"  data="ocultar" class="campana-mostrar-esconder">
-                    <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
-                    <span class="icon fas fa-eye-slash"></span>Ocultar
-                </a>
-                {% endif %}                              
             </td>
         </tr>
     {% empty %}

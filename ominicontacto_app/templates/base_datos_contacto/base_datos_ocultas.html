@@ -16,21 +16,21 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                                             <a class="dropdown-item" href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
-                                                <span class="icon far fa-plus-square"></span>Agregar contacto
+                                                <span class="icon icon-plus"></span>Agregar contacto
                                             </a>
                                             <a class="dropdown-item" href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
-                                                <span class="icon fas fa-list"></span>Lista de contactos
+                                                <span class="icon icon-list"></span>Lista de contactos
                                             </a>
                                             <a class="dropdown-item" href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
-                                                <span class="icon fas fa-asterisk"></span>Agregar contactos
+                                                <span class="icon icon-plus"></span>Agregar contactos
                                             </a>     
                                             {% if base_datos_contacto.oculto %}
                                             <a class="dropdown-item" href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}">
-                                                <span class="icon fas fa-eye"></span>Hacer visible
+                                                <span class="icon icon-eye"></span>Hacer visible
                                             </a>
                                             {% else %}
                                             <a class="dropdown-item" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}">
-                                                <span class="icon fas fa-eye-slash"></span>Ocultar
+                                                <span class="icon icon-eye-slash"></span>Ocultar
                                             </a> 
                                             {% endif %}
                                         </div>

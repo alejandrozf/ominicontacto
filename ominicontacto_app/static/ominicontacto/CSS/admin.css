@@ -15,6 +15,7 @@ a, a:hover, a:focus {
 }
 button:hover {
     background-color: rgba(0,0,0,0.05);    
+    cursor: pointer;
 }
 hr {
     margin: 26px 0 26px 0;
@@ -603,6 +604,9 @@ a span.fa-play, a span.fa-pause-circle {
 .oml-table-bg {
     background: #c3c3c3 !important;
     color: #222;
+}
+figure text {
+    font-size: 1rem;
 }
 
 /* ///// Media queries 

@@ -59,7 +59,7 @@
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
     <h2>Campañas Activas <span style="color:red;">- Canales en uso: {{ canales_en_uso }}</span></h2>
-    <table class="table table-stripped">
+    <table class="table">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -100,22 +100,22 @@
                                 <span class="icon icon-pencil"></span>Editar
                             </a>
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon far fa-plus-square"></span>Agregar agentes
+                                <span class="icon icon-plus"></span>Agregar agentes
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permiso para ver
+                                <span class="icon icon-eye"></span>Dar permiso para ver
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_calificacion' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>Calificaciones
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
-                                <span class="icon far fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a>
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon far fa-copy"></span>Reciclar
+                                <span class="icon icon-refresh"></span>Reciclar
                             </a> 
                             <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'pausar_campana_dialer' %}">
-                                <span class="icon far fa-pause-circle"></span>Pausar
+                                <span class="icon icon-control-pause"></span>Pausar
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
@@ -133,7 +133,7 @@
     </table>
     <br>
     <h2>Campañas Pausadas</h2>
-    <table class="table table-stripped">
+    <table class="table">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -177,22 +177,22 @@
                                 <span class="icon icon-pencil"></span>Editar
                             </a>
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon far fa-plus-square"></span>Agregar agentes
+                                <span class="icon icon-plus"></span>Agregar agentes
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permiso para ver
+                                <span class="icon icon-eye"></span>Dar permiso para ver
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_calificacion' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>Calificaciones
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
-                                <span class="icon far fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a>
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon far fa-copy"></span>Reciclar
+                                <span class="icon icon-refresh"></span>Reciclar
                             </a>  
                             <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'activar_campana_dialer' %}">
-                                <span class="icon fas fa-play"></span>Activar
+                                <span class="icon icon-control-play"></span>Activar
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
@@ -210,7 +210,7 @@
     </table>
     <br>
     <h2>Campañas Inactivas</h2>
-    <table class="table table-stripped">
+    <table class="table">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -254,22 +254,22 @@
                                 <span class="icon icon-pencil"></span>Editar
                             </a>
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon far fa-plus-square"></span>Agregar agentes
+                                <span class="icon icon-plus"></span>Agregar agentes
                             </a>  
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permisos para ver
+                                <span class="icon icon-eye"></span>Dar permisos para ver
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_calificacion' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Ver calificaciones
+                                <span class="icon icon-list"></span>Ver calificaciones
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
-                                <span class="icon far fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a> 
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon far fa-copy"></span>Reciclar
+                                <span class="icon icon-refresh"></span>Reciclar
                             </a>                                                                                                                                             
                             <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
-                                <span class="icon fas fa-play"></span>Iniciar
+                                <span class="icon icon-control-play"></span>Iniciar
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
@@ -287,7 +287,7 @@
     </table>
     <br>
     <h2>Campañas Finalizadas</h2>
-    <table class="table table-stripped">
+    <table class="table">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -328,16 +328,16 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignFinished">
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permisos para ver
+                                <span class="icon icon-eye"></span>Dar permisos para ver
                             </a>   
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_calificacion' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>Calificaciones
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
-                                <span class="icon far fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a>                                                                                             
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon far fa-copy"></span>Reciclar
+                                <span class="icon icon-refresh"></span>Reciclar
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
@@ -356,10 +356,10 @@
     <br>
     <h2>Campañas Eliminadas</h2>
     <a href="#" class="btn btn-light btn-sm" onclick="mostrar_campanas_dialer_ocultas()" >
-        Mostrar ocultos
+        Mostrar ocultas
     </a>    
     <hr>
-    <table class="table table-stripped">
+    <table class="table">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -398,25 +398,25 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignDeleted">
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Dar permiso para ver
+                                <span class="icon icon-eye"></span>Dar permiso para ver
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_calificacion' campana.pk %}">
-                                <span class="icon fas fa-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>Calificaciones
                             </a> 
                             <a class="dropdown-item" href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
-                                <span class="icon far fa-chart-bar"></span>Reportes
+                                <span class="icon icon-graph"></span>Reportes
                             </a> 
                             {% if campana.oculto %}
                             <a class="dropdown-item" href="{% url 'campana_dialer_desocultar' campana.pk %}">
-                                <span class="icon fas fa-eye"></span>Hacer visible
+                                <span class="icon icon-eye"></span>Hacer visible
                             </a> 
                             {% else %}
                             <a class="dropdown-item" href="{% url 'campana_dialer_ocultar' campana.pk %}">
-                                \Ocultar
+                                <span class="icon icon-eye-slash"></span>Ocultar
                             </a> 
                             {% endif %}
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon far fa-copy"></span>Reciclar
+                                <span class="icon icon-refresh"></span>Reciclar
                             </a>                                                              
                         </div>
                     </div>
