@@ -16,7 +16,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametroExtraParaWebform,
                                       ActuacionVigente)
-from reportes.models import LlamadaLog, ActividadAgenteLog
+from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
 faker = faker.Factory.create()
 
