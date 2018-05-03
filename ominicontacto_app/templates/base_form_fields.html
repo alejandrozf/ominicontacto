@@ -10,7 +10,7 @@
             {{ field.label_tag }} {{ field }}
             {% if field.help_text %}
                 <small class="form-text text-muted">
-                    {{ form.audio_original.help_text|safe }}
+                    {{ field.help_text|safe }}
                 </small>            
             {% endif %}
             {{ field.errors }}

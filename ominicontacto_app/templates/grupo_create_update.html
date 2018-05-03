@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div>
+    <form action = "" method = "post">
+
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+        <div class="form-row">
+            <div class="col-md-6">
+                {{ form.nombre.label_tag }} {{ form.nombre }}
+                {{ form.nombre.errors }}
+            </div>
+            <div class="col-md-6">
+                {{ form.auto_unpause.label_tag }} {{ form.auto_unpause }}
+                {{ form.auto_unpause.errors }}
+            </div>
+            <div class="col-md-3">
+                {{ form.auto_attend_ics.label_tag }} {{ form.auto_attend_ics }}
+                {{ form.auto_attend_ics.errors }}
+            </div>
+            <div class="col-md-3">
+                {{ form.auto_attend_inbound.label_tag }} {{ form.auto_attend_inbound }}
+                {{ form.auto_attend_inbound.errors }}
+            </div>
+            <div class="col-md-3">
+                {{ form.auto_attend_dialer.label_tag }} {{ form.auto_attend_dialer }}
+                {{ form.auto_attend_dialer.errors }}
+            </div>
+            <div class="col-md-3">
+                {{ form.auto_pause.label_tag }} {{ form.auto_pause }}
+                {{ form.auto_pause.errors }}
+            </div>
+        </div>
+
+
+        <hr>
+        <button type="submit" id="id_registrar" class="btn btn-primary">
+            Guardar
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}
