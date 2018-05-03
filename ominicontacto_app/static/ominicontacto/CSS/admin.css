@@ -359,8 +359,8 @@ input[type=file].form-control {
     transition: 0.1s;   
 }
 #sidebar {
-	min-width: 210px;
-    max-width: 210px;
+	min-width: 220px;
+    max-width: 220px;
     min-height: 100vh;
     background-color: #ECEEEA;
    /* transition: 0.3s;*/
@@ -623,8 +623,8 @@ figure text {
     }   
     #sidebar.active {
         margin-left: 0;
-        min-width: 200px;
-        max-width: 200px;     
+        min-width: 220px;
+        max-width: 220px;     
     }
 
     /* ///// Form styles 
