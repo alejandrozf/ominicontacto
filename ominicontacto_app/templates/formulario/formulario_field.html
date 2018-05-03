@@ -40,11 +40,16 @@
             });
             $("#id_tipo").change(function() {
                 if( $("#id_tipo").val() == 3 ) {
+
+                    $("#lista_control").slideDown('fast');
+                    $("#separador_lista_control").slideDown('fast');
                     $("#id_value_item").removeAttr('disabled');
                     $("#id_list_values").removeAttr('disabled');
                     $("#agregar_lista").removeAttr('disabled');
                     $("#eliminar_lista").removeAttr('disabled');
                 } else {
+                    $("#lista_control").slideUp('fast');
+                    $("#separador_lista_control").slideUp('fast');
                     $("#id_value_item").attr('disabled', true);
                     $("#id_list_values").attr('disabled', true);
                     $("#agregar_lista").attr('disabled', true);
@@ -97,8 +102,8 @@
     </button>   
     <br>
     <br> 
-    <hr>
-    <div class="form-row">
+    <hr id="separador_lista_control" style="display: none;">
+    <div class="form-row" id="lista_control" style="display: none;">
         <div class="col-md-6">
               {{ form.value_item}}
               <br>

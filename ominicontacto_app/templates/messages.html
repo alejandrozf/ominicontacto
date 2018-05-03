@@ -6,7 +6,7 @@
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>¡Error!</h1>
-            <p>{{ message }}</p>
+            <p>{{ message|safe  }}</p>
         </div>
 
     {% elif "warning" in message.tags %}
@@ -14,7 +14,7 @@
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>¡Atención!</h1>
-            <p>{{ message }}</p>
+            <p>{{ message|safe  }}</p>
         </div>
 
     {% elif "success" in message.tags %}
@@ -22,7 +22,7 @@
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>Finalizado</h1>
-            <p>{{ message }}</p>
+            <p>{{ message|safe }}</p>
         </div>
 
     {% elif "info" in message.tags %}
@@ -30,21 +30,21 @@
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>Información</h1>
-            <p>{{ message }}</p>
+            <p>{{ message|safe  }}</p>
         </div>
 
     {% elif "debug" in message.tags %} {# the same as "INFO" #}
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>Información</h1>
-            <p>{{ message }}</p>
+            <p>{{ message|safe  }}</p>
         </div>
 
     {% else %} {# the same as "INFO" #}
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>Información</h1>
-            <p>{{ message }}</p>
+            <p>{{ message|safe  }}</p>
         </div>
 
     {% endif %}

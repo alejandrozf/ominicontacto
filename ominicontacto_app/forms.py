@@ -205,6 +205,10 @@ class BaseDatosContactoForm(forms.ModelForm):
     class Meta:
         model = BaseDatosContacto
         fields = ('nombre', 'archivo_importacion')
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'archivo_importacion': forms.FileInput(attrs={'class': 'form-control'}),
+        }
 
 
 class DefineColumnaTelefonoForm(forms.Form):
@@ -926,6 +930,10 @@ class BacklistForm(forms.ModelForm):
     class Meta:
         model = Backlist
         fields = ('nombre', 'archivo_importacion')
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'archivo_importacion': forms.FileInput(attrs={'class': 'form-control'}),
+        }
 
 
 class SitioExternoForm(forms.ModelForm):

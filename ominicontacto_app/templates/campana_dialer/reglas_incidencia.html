@@ -58,6 +58,7 @@
                     <th>{% trans 'Modo de reintento' %} </th>
                 {% endif %}
                 <th>{% trans 'Intento max.' %}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -85,6 +86,7 @@
                         <td>{{ form.get_en_modo_display}}</td>
                     {% endif %}
                     <td>{{ form.intento_max }}</td>               
+                    <td></td>               
                 </tr>
             {% endfor %}
         </tbody>
