@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, connection
+from django.db.models import F
 
 
 def remove_field(apps, schema_editor):
@@ -26,10 +27,18 @@ def rollback(apps, schema_editor):
     cursor.execute(sql)
     # segundo paso asignar valores por default
     queue_table = apps.get_model("ominicontacto_app", "Queue")
-    queue_table.objects_default.all().update(queue_asterisk=1)
+    queue_table.objects_default.all().update(queue_asterisk=F("campana"))
     # tercer paso setear como not null
     cursor = connection.cursor()
     sql = """ALTER TABLE queue_table ALTER COLUMN queue_asterisk SET NOT NULL"""
+    cursor.execute(sql)
+    # cuarto paso agrega constraint de entero positivos
+    cursor = connection.cursor()
+    sql = """ALTER TABLE queue_table ADD CONSTRAINT queue_table_queue_asterisk_check CHECK (queue_asterisk >= 0)"""
+    cursor.execute(sql)
+    # quinto paso agrega constraint de unique
+    cursor = connection.cursor()
+    sql = """ALTER TABLE queue_table ADD CONSTRAINT queue_table_queue_asterisk_key UNIQUE (queue_asterisk)"""
     cursor.execute(sql)
 
 
