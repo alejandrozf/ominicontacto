@@ -224,3 +224,6 @@
   become: yes
   become_method: sudo
   ignore_errors: yes
+
+- name: Configuration of logrotate
+  template: src=templates/omnileads dest=/etc/logrotate.d/omnileads owner=root group=root mode=644

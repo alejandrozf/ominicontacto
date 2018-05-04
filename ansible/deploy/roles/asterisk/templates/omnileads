@@ -1,0 +1,35 @@
+{{ asterisk_location }}/var/log/asterisk/full {
+    daily
+    rotate 5
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+        /usr/sbin/asterisk -rx 'logger reload' > /dev/null 2> /dev/null
+    endscript
+}
+
+/var/log/kamailio/kamailio.log {
+    daily
+    rotate 5
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+	   /bin/kill -HUP `cat /var/run/rsyslog.pid 2> /dev/null` 2> /dev/null || true
+	endscript
+}
+
+/var/log/rtpengine/rtpengine.log {
+    daily
+    rotate 5
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+	   /bin/kill -HUP `cat /var/run/rsyslog.pid 2> /dev/null` 2> /dev/null || true
+	endscript
+}

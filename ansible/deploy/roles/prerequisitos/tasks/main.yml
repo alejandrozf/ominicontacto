@@ -56,6 +56,6 @@
 - include: installations.yml
 
 - include: setup_mariadb.yml
-  when: ansible_os_family == "RedHat"
+  when: asterisk_location == ""
 
 - include: postgres-installation.yml
