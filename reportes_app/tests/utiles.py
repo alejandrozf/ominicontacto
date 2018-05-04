@@ -82,7 +82,7 @@ class GeneradorDeLlamadaLogs():
                               numero_marcado=numero_marcado,
                               contacto_id=contacto_id,
                               bridge_wait_time=bridge_wait_time,
-                              duracion_llamada=duracion_llamada,
+                              duracion_llamada=-1,
                               archivo_grabacion='')
             if tipo_llamada in [Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]:
                 assert finalizacion in CONNECT, \

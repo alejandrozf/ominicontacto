@@ -46,33 +46,29 @@ class Command(BaseCommand):
     def crear_agentes(self):
         self.agentes = []
         for i in range(1, 5):
-            try:
-                usr = User.objects.get(username='agente_simulador_%i' % i)
-                agente = usr.agente_profile
-            except User.DoesNotExist:
-                usr = UserFactory(username='agente_simulador_%i' % i, is_agente=True)
+            username = 'agente_simulado_%i' % i
+            usrs = User.objects.filter(username=username)
+            if usrs.count() == 1:
+                agente = usrs[0].agenteprofile
+            else:
+                usr = UserFactory(username=username, is_agente=True)
                 agente = AgenteProfileFactory(user=usr)
             self.agentes.append(agente)
 
     def crear_campanas(self):
+        self.campanas = {}
         estado = Campana.ESTADO_ACTIVA
-        entrante = CampanaFactory.create(type=Campana.TYPE_ENTRANTE, estado=estado)
-        for i in range(5):
-            ContactoFactory(bd_contacto=entrante.bd_contacto)
-        dialer = CampanaFactory.create(type=Campana.TYPE_DIALER, estado=estado)
-        for i in range(5):
-            ContactoFactory(bd_contacto=dialer.bd_contacto)
-        manual = CampanaFactory.create(type=Campana.TYPE_MANUAL, estado=estado)
-        for i in range(5):
-            ContactoFactory(bd_contacto=manual.bd_contacto)
-        preview = CampanaFactory.create(type=Campana.TYPE_PREVIEW, estado=estado)
-        for i in range(5):
-            ContactoFactory(bd_contacto=preview.bd_contacto)
-
-        self.campanas = {Campana.TYPE_ENTRANTE: entrante,
-                         Campana.TYPE_DIALER: dialer,
-                         Campana.TYPE_MANUAL: manual,
-                         Campana.TYPE_PREVIEW: preview}
+        for (tipo, nombre_tipo) in Campana.TYPES_CAMPANA:
+            nombre = 'campana_simulada_%s' % nombre_tipo
+            qs = Campana.objects.filter(nombre=nombre)
+            if qs.count() == 1:
+                campana = qs[0]
+            else:
+                campana = CampanaFactory.create(
+                    type=tipo, estado=estado, nombre=nombre,
+                    reported_by=self.agentes[0].user)
+            ContactoFactory.create_batch(5, bd_contacto=campana.bd_contacto)
+            self.campanas[tipo] = campana
 
     def obtener_contacto_al_azar(self, campana, permitir_ninguno=False):
         contactos = list(campana.bd_contacto.contactos.all())
