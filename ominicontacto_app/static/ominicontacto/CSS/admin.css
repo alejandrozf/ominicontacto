@@ -593,6 +593,13 @@ a span.fa-play, a span.fa-pause-circle {
     color: #76AA2E;
 }
 
+/* ///// Campaign dialer
+*/
+
+table.campana-reglas .td-remove .btn {
+    margin: 0;
+}
+
 /* ///// Grafics 
 */
 

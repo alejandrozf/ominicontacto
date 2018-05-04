@@ -46,7 +46,7 @@
 {% endblock %}
 
 {% block formset_render %}
-    <table class="table">
+    <table class="table campana-reglas">
         <thead>
             <tr class="fts-table-bg">
                 <th>{% trans 'Estado' %}</th>
@@ -86,7 +86,7 @@
                         <td>{{ form.get_en_modo_display}}</td>
                     {% endif %}
                     <td>{{ form.intento_max }}</td>               
-                    <td></td>               
+                    <td class="td-remove"></td>               
                 </tr>
             {% endfor %}
         </tbody>
