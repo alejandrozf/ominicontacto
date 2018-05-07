@@ -25,8 +25,6 @@
        - lynx
        - tftp-server
        - unixODBC
-       - mariadb-server
-       - mariadb
        - ncurses-devel
        - sendmail
        - sendmail-cf
@@ -98,6 +96,7 @@
       - php56w-soap
   become: true
   become_method: sudo
+  when: asterisk_location != ""
 - meta: clear_host_errors
 
 - name: Install of php
@@ -116,8 +115,8 @@
       - php-soap
   become: true
   become_method: sudo
+  when: asterisk_location == ""
 - meta: clear_host_errors
-
 
 - name: Download NodeJS setup script
   shell: "curl -sL https://rpm.nodesource.com/setup_8.x | bash -"
