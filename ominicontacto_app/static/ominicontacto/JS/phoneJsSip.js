@@ -1,5 +1,6 @@
-//***************************************************
-var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true, flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
+var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true;
+var flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
+var agentIdHeaderVal, campaignIdHeaderVal;
 var sipStatus = document.getElementById('SipStatus');
 var callStatus = document.getElementById('CallStatus');
 var local = document.getElementById('localAudio');
@@ -34,6 +35,38 @@ $(function() {
 			error: function (jqXHR, textStatus, errorThrown) {
 									debugger;
 									console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+			}
+		});
+	}
+
+	function getCampActivas(status, idagente) {
+		$.ajax({
+			type: "get",
+			url: "/service/campana/activas/",
+			contentType: "text/html",
+			success: function (msg) {
+				for (var i = 0; i < msg.campanas.length; i++) {
+					$("#campToTransfer").append("<option value='" + msg.campanas[i].id + "'>" + msg.campanas[i].nombre + "</option>");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+					console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+			}
+		});
+	}
+
+	function getAgentes(status, idagente) {
+		$.ajax({
+			type: "get",
+			url: "/service/agente/otros_agentes_de_grupo/",
+			contentType: "text/html",
+			success: function (msg) {
+				for (var i = 0; i < msg.agentes.length; i++) {
+					$("#agentToTransfer").append("<option value='" + msg.agentes[i].id + "'>" + msg.agentes[i].full_name + "</option>");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+					console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 			}
 		});
 	}
@@ -112,6 +145,8 @@ $(function() {
 
   //Connects to the WebSocket server
   userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
+		getAgentes();
+		getCampActivas();
     setSipStatus("greydot.png", "  No account", sipStatus);
   	updateButton(modifyUserStat, "label label-success", "Online");
     num = "0077LOGIN";
@@ -275,8 +310,7 @@ $(function() {
    }
 	 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     e.session.on("failed",function(e) {  // cuando falla el establecimiento de la llamada
-      $("#aTransfer").prop('disabled', true);
-      $("#bTransfer").prop('disabled', true);
+      $("#Transfer").prop('disabled', true);
       $("#onHold").prop('disabled', true);
       $("#modalReceiveCalls").modal('hide');
       Sounds("","stop");
@@ -321,7 +355,11 @@ $(function() {
                                                    getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
-            getFormManualCalls(CampIdHeader, $("#idagt").val(), fromUser);
+        		if(fromUser !== "Unknown") {
+        	    processCallid(fromUser);
+        		} else {
+        			getBlankFormCamp(CampIdHeader);
+        		}
         	}
         }
 
@@ -421,8 +459,7 @@ $(function() {
 
       e.session.on("accepted", function() { 			// cuando se establece una llamada
         Sounds("", "stop");
-        $("#aTransfer").prop('disabled', false);
-        $("#bTransfer").prop('disabled', false);
+        $("#Transfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
 
         if(num.substring(4,0) != "0077") {
@@ -493,25 +530,136 @@ $(function() {
 		nine.onclick = function() {
 			e.session.sendDTMF("9");
 		};
+		var dash = document.getElementById("#");
+		dash.onclick = function() {
+			e.session.sendDTMF("#");
+		};
+		var ast = document.getElementById("*");
+		ast.onclick = function() {
+			e.session.sendDTMF("*");
+		};
 
-    var aTransf = document.getElementById("aTransfer");
-    aTransf.onclick = function() {
-      flagTransf = true;
-      e.session.sendDTMF("*");
-      e.session.sendDTMF("2");
-      setTimeout(transferir(e), 3000);
-    };
+		var makeTransfer = document.getElementById("makeTransfer");
+		var blindTransf = document.getElementById("blindTransf");
+		var consultTransf = document.getElementById("consultTransf");
+		var transfToAgent = document.getElementById("transfToAgent");
+		var transfToNum = document.getElementById("transfToNum");
+		var transfToCamp = document.getElementById("transfToCamp");
+		$("#Transfer").click(function () {
+			$("#modalTransfer").modal("show");
+		});
 
-    var bTransf = document.getElementById("bTransfer");
-    bTransf.onclick = function() {
-      flagTransf = true;
-      e.session.sendDTMF("#");
-      e.session.sendDTMF("#");
-      setTimeout(transferir(e), 3000);
-    };
+		$("#blindTransf").change(function () {
+			if (this.checked) {
+				$("#campToTransfer").prop('disabled', false);
+				transfToCamp.checked = true;
+				transfToCamp.disabled = false;
+			}
+		});
 
-    function transferir(objRTCsession) {
-      objRTCsession.session.sendDTMF(displayNumber.value);
+		$("#consultTransf").change(function () {
+			if (this.checked) {
+				$("#campToTransfer").prop('disabled', true);
+				transfToCamp.checked = false;
+				transfToCamp.disabled = true;
+			} else {
+				$("#campToTransfer").prop('disabled', false);
+				transfToCamp.checked = true;
+			}
+		});
+
+		$("#transfToNum").change(function () {
+			if (this.checked) {
+				$("#numberToTransfer").prop('disabled', false);
+				$("#campToTransfer").prop('disabled', true);
+				$("#agentToTransfer").prop('disabled', true);
+			}
+		});
+
+		$("#transfToCamp").change(function () {
+			if (this.checked) {
+				$("#campToTransfer").prop('disabled', false);
+				$("#numberToTransfer").prop('disabled', true);
+				$("#agentToTransfer").prop('disabled', true);
+			}
+		});
+
+		$("#transfToAgent").change(function () {
+			if (this.checked) {
+				$("#agentToTransfer").prop('disabled', false);
+				$("#campToTransfer").prop('disabled', true);
+				$("#numberToTransfer").prop('disabled', true);
+			}
+		});
+
+		makeTransfer.onclick = function () {
+		  flagTransf = true;
+			if (blindTransf.checked) {
+				e.session.sendDTMF("#");
+				e.session.sendDTMF("#");
+				if (transfToAgent.checked) {
+					if ($("select[id=agentToTransfer]").val()) {
+						agentIdHeaderVal = $("select[id=agentToTransfer]").val();
+						setTimeout(function () {
+							e.session.sendDTMF("0");
+							e.session.sendDTMF("0");
+							e.session.sendDTMF("0");
+							e.session.sendDTMF("0");
+							e.session.sendDTMF(agentIdHeaderVal);
+						}, 2500);
+					}
+				} else if (transfToCamp.checked) {
+					if ($("select[id=campToTransfer]").val()) {
+						campaignIdHeaderVal = $("select[id=campToTransfer]").val();
+						setTimeout(function () {
+							e.session.sendDTMF("9");
+							e.session.sendDTMF("9");
+							e.session.sendDTMF("9");
+							e.session.sendDTMF("9");
+							e.session.sendDTMF(campaignIdHeaderVal);
+						}, 2500);
+				  }
+				} else if (transfToNum.checked) {
+				  if ($("#numberToTransfer").val()) {
+						var i = 0;
+	          setTimeout(function () {
+							while(i < $("#numberToTransfer").val().length) {
+								e.session.sendDTMF($("#numberToTransfer").val()[i]);
+								i++;
+							}
+						}, 2500);
+				  }
+				}
+			} else if (consultTransf.checked) {
+				e.session.sendDTMF("*");
+				e.session.sendDTMF("2");
+				if (transfToAgent.checked == true) {
+					if ($("select[id=agentToTransfer]").val()) {
+						agentIdHeaderVal = $("select[id=agentToTransfer]").val();
+						setTimeout(function () {
+							e.session.sendDTMF("1");
+							e.session.sendDTMF("1");
+							e.session.sendDTMF("1");
+							e.session.sendDTMF("1");
+							e.session.sendDTMF(agentIdHeaderVal);
+						}, 2500);
+					}
+				} else if (transfToNum.checked) {
+					if ($("#numberToTransfer").val()) {
+						var i = 0;
+						setTimeout(function () {
+							while(i < $("#numberToTransfer").val().length) {
+								e.session.sendDTMF($("#numberToTransfer").val()[i]);
+								i++;
+							}
+						}, 2500);
+					}
+				}
+			}
+		};
+
+    function transferir(objRTCsession, transferDst) {
+      objRTCsession.session.sendDTMF(transferDst);
     }
 
 		function transferirHold(objRTCsession) {
@@ -793,7 +941,7 @@ $(function() {
                 'audio': true,
                 'video': false
               },
-      'extraHeaders':['Idcamp:'+headerIdCamp, 'Nomcamp:'+headerNomCamp, 'Tipocamp:'+idTipoCamp],
+      'extraHeaders':['Idcamp:' + headerIdCamp, 'Nomcamp:' + headerNomCamp, 'Tipocamp:'+idTipoCamp],
 			pcConfig: {rtcpMuxPolicy: 'negotiate'}
     };
     //Mando el invite/llamada
@@ -828,8 +976,7 @@ $(function() {
 		callSipStatus.id = "dial_status";
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
-    $("#aTransfer").prop('disabled', true);
-    $("#bTransfer").prop('disabled', true);
+    $("#Transfer").prop('disabled', true);
     $("#onHold").prop('disabled', false);
   }
 
@@ -877,6 +1024,16 @@ $(function() {
         ring = document.getElementById('RingBusy');
         ring.pause();
     }
+  }
+
+  function getBlankFormCamp(campid) {
+    var url = '/campana/'+campid+'/formulario_nuevo/';
+    $("#dataView").attr('src', url);
+  }
+
+	function processCallid(callerid) {
+  	var url = "/campana/selecciona/";
+  	$("#dataView").attr('src', url);
   }
 
   function getData(campid, leadid, agentid, wombatId) {
