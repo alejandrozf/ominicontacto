@@ -755,12 +755,12 @@ class Campana(models.Model):
         (ESTADO_TEMPLATE_BORRADO, 'Template Borrado'),
     )
 
-    TYPE_ENTRANTE = 1
-    TYPE_ENTRANTE_DISPLAY = 'Entrante'
+    TYPE_MANUAL = 1
+    TYPE_MANUAL_DISPLAY = 'Manual'
     TYPE_DIALER = 2
     TYPE_DIALER_DISPLAY = 'Dialer'
-    TYPE_MANUAL = 3
-    TYPE_MANUAL_DISPLAY = 'Manual'
+    TYPE_ENTRANTE = 3
+    TYPE_ENTRANTE_DISPLAY = 'Entrante'
     TYPE_PREVIEW = 4
     TYPE_PREVIEW_DISPLAY = 'Preview'
 
@@ -2162,8 +2162,8 @@ class Grabacion(models.Model):
     # managers que se creen.
 
     objects = GrabacionManager()
-    TYPE_ICS = 1
-    """Tipo de llamada ICS"""
+    TYPE_MANUAL = 1
+    """Tipo de llamada manual"""
 
     TYPE_DIALER = 2
     """Tipo de llamada DIALER"""
@@ -2171,14 +2171,9 @@ class Grabacion(models.Model):
     TYPE_INBOUND = 3
     """Tipo de llamada inbound"""
 
-    TYPE_MANUAL = 4
-    """Tipo de llamada manual"""
-
-    TYPE_PREVIEW = 5
-    # tipo de llamada preview
-
+    TYPE_PREVIEW = 4
+    """Tipo de llamada preview"""
     TYPE_LLAMADA_CHOICES = (
-        (TYPE_ICS, 'ICS'),
         (TYPE_DIALER, 'DIALER'),
         (TYPE_INBOUND, 'INBOUND'),
         (TYPE_MANUAL, 'MANUAL'),
@@ -2336,8 +2331,8 @@ class DuracionDeLlamada(models.Model):
     """Representa la duración de las llamdas de las campanas, con el fin
         de contar con los datos para búsquedas y estadísticas"""
 
-    TYPE_ICS = 1
-    """Tipo de llamada ICS"""
+    TYPE_MANUAL = 1
+    """Tipo de llamada manual"""
 
     TYPE_DIALER = 2
     """Tipo de llamada DIALER"""
@@ -2345,11 +2340,11 @@ class DuracionDeLlamada(models.Model):
     TYPE_INBOUND = 3
     """Tipo de llamada inbound"""
 
-    TYPE_MANUAL = 4
-    """Tipo de llamada manual"""
+    TYPE_PREVIEW = 4
+    """Tipo de llamada inbound"""
 
     TYPE_LLAMADA_CHOICES = (
-        (TYPE_ICS, 'ICS'),
+        (TYPE_PREVIEW, 'PREVIEW'),
         (TYPE_DIALER, 'DIALER'),
         (TYPE_INBOUND, 'INBOUND'),
         (TYPE_MANUAL, 'MANUAL'),
