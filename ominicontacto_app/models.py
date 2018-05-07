@@ -1063,13 +1063,6 @@ class OpcionCalificacion(models.Model):
 
 class QueueManager(models.Manager):
 
-    def ultimo_queue_asterisk(self):
-        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
-        if number['queue_asterisk__max'] is None:
-            return 1
-        else:
-            return number['queue_asterisk__max'] + 1
-
     def obtener_all_except_borradas(self):
         """
         Devuelve queue excluyendo las campanas borradas
