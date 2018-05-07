@@ -135,8 +135,8 @@ class AgenteProfileManager(models.Manager):
                              "con el sip {0} no existe ".format(sip_agente))
             return None
 
-    def obtener_agentes_activos(self):
-        return self.filter(is_inactive=False)
+    def obtener_activos(self):
+        return self.filter(is_inactive=False, borrado=False, user__borrado=False)
 
 
 class AgenteProfile(models.Model):
@@ -425,7 +425,7 @@ class CampanaManager(models.Manager):
 
     def obtener_activas(self):
         """
-        Devuelve campañas en estado pausadas.
+        Devuelve campañas en estado activas.
         """
         return self.filter(estado=Campana.ESTADO_ACTIVA)
 
@@ -1008,15 +1008,6 @@ class Campana(models.Model):
         return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
 
 
-class QueueManager(models.Manager):
-
-    def obtener_all_except_borradas(self):
-        """
-        Devuelve queue excluyendo las campanas borradas
-        """
-        return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
-
-
 class OpcionCalificacion(models.Model):
     """
     Especifica el tipo de formulario al cual será redireccionada
@@ -1045,7 +1036,7 @@ class OpcionCalificacion(models.Model):
     campana = models.ForeignKey(
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
-    nombre = models.CharField(max_length=20)
+    nombre = models.CharField(max_length=50)
 
     def __unicode__(self):
         return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
@@ -1068,6 +1059,22 @@ class OpcionCalificacion(models.Model):
         Determina si la opción de calificada puede ser editada/eliminada en la campaña
         """
         return self.es_agenda() or self.usada_en_calificacion()
+
+
+class QueueManager(models.Manager):
+
+    def ultimo_queue_asterisk(self):
+        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
+        if number['queue_asterisk__max'] is None:
+            return 1
+        else:
+            return number['queue_asterisk__max'] + 1
+
+    def obtener_all_except_borradas(self):
+        """
+        Devuelve queue excluyendo las campanas borradas
+        """
+        return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
 
 
 class Queue(models.Model):

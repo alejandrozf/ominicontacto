@@ -291,7 +291,7 @@ class CalificacionTests(OMLBaseTest):
                      'fecha': fecha,
                      'telefono': self.contacto.telefono,
                      'hora': hora,
-                     'tipo_agenda': AgendaContacto.TYPE_GLOBAL,
+                     'tipo_agenda': AgendaContacto.TYPE_PERSONAL,
                      'observaciones': observaciones}
         return post_data
 
@@ -308,6 +308,7 @@ class CalificacionTests(OMLBaseTest):
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_agenda()
+        post_data['tipo_agenda'] = AgendaContacto.TYPE_GLOBAL
         self.client.post(url, post_data, follow=True)
         self.assertEqual(post.call_count, 0)
 
@@ -323,6 +324,7 @@ class CalificacionTests(OMLBaseTest):
                               'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_agenda()
+        post_data['tipo_agenda'] = AgendaContacto.TYPE_GLOBAL
         self.client.post(url, post_data, follow=True)
         self.assertEqual(post.call_count, 1)
 

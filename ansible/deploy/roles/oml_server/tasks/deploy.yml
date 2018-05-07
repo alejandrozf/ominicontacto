@@ -72,7 +72,7 @@
 
 - name: Setup virtualenv
   pip:
-    requirements={{ install_prefix }}ominicontacto/requeriments.txt
+    requirements={{ install_prefix }}ominicontacto/requirements.txt
     virtualenv={{ install_prefix }}virtualenv
     virtualenv_command=/usr/bin/virtualenv-2.7
   environment:
@@ -98,7 +98,7 @@
 
 - name: Setup virtualenv
   pip: >
-    requirements={{ install_prefix }}ominicontactorequeriments.txt
+    requirements={{ install_prefix }}ominicontacto/requirements.txt
     virtualenv={{ install_prefix }}virtualenv
   when: ansible_os_family == "Debian"
 

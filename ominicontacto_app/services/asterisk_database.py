@@ -34,7 +34,7 @@ class CampanaFamily(object):
 
         if campana.queue_campana.audio_para_contestadores:
             dict_campana.update({'AMDPLAY': "oml/{0}".format(
-                    campana.queue_campana.audio_para_contestadores.get_filename_audio_asterisk())})
+                campana.queue_campana.audio_para_contestadores.get_filename_audio_asterisk())})
 
         if campana.queue_campana.audio_de_ingreso:
             dict_campana.update({'WELCOMEPLAY': "oml/{0}".format(
@@ -118,7 +118,7 @@ class AgenteFamily(object):
 
     def _obtener_todos_agentes_para_generar_family(self):
         """Obtengo todos los agentes activos"""
-        return AgenteProfile.objects.obtener_agentes_activos()
+        return AgenteProfile.objects.obtener_activos()
 
     def create_familys(self, agente=None, agentes=None):
         """Crea familys en database de asterisk

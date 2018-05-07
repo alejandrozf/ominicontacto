@@ -321,11 +321,7 @@ $(function() {
                                                    getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
-        		if(fromUser !== "Unknown") {
-        	    processCallid(fromUser);
-        		} else {
-        			getBlankFormCamp(CampIdHeader);
-        		}
+            getFormManualCalls(CampIdHeader, $("#idagt").val(), fromUser);
         	}
         }
 
@@ -881,16 +877,6 @@ $(function() {
         ring = document.getElementById('RingBusy');
         ring.pause();
     }
-  }
-
-  function getBlankFormCamp(campid) {
-    var url = '/campana/'+campid+'/formulario_nuevo/';
-    $("#dataView").attr('src', url);
-  }
-
-	function processCallid(callerid) {
-  	var url = "/campana/selecciona/";
-  	$("#dataView").attr('src', url);
   }
 
   function getData(campid, leadid, agentid, wombatId) {
