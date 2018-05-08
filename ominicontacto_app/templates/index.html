@@ -9,11 +9,15 @@
 
 {% endblock %}
 {% block logueo %}
-<h1>Bievenidos a Omnileads</h1>
-<h3>Debe loguearse para operar con nuestro sistema</h3>
-<a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in" aria-hidden="true" title="Login"> Loguearse</span></a>
- <a class="btn btn-info"  href="/static/ominicontacto/voip.cert" target="_blank">
-     <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="descarga">
-            bajar certificado digital</span>
-        </a>
+<div class="wrapper-content welcome">
+	<h1>Bievenidos a Omnileads</h1>
+	<h3>Debe loguearse para operar con nuestro sistema</h3>
+	<br>
+	<div>
+		<a class="btn btn-primary" role="button" href="{% url 'login' %}">Ingresar</a>
+	</div>
+	<div>
+		<a class="btn btn-outline-primary" role="button" href="/static/ominicontacto/voip.cert" target="_blank">bajar 	certificado digital</span></a>
+	</div>
+	</div>        
 {% endblock %}

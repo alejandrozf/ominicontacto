@@ -2,49 +2,56 @@
 {% load static %}
 
 {% block content %}
-<br/>
-<div class="col-md-3 col-md-offset-4">
 
-    <table class="table table-stripped">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
+<h1>Pausas</h1>
 
-            </tr>
-        </thead>
-        <tbody>
-        {% for pausa in pausas_activas %}
-            <tr>
-                <td>{{ pausa.id }}</td>
-                <td>{{ pausa.nombre }}</td>
-                <td>
-                    <a href="{% url 'pausa_update' pausa.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'pausa_delete' pausa.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar"></span></a>
-
-                </td>
-            </tr>
-       {% empty %}
+<table class="table">
+    <thead>
         <tr>
-            <td colspan="3">No existen pausas activas</td>
+            <th>id</th>
+            <th>Nombre</th>
+            <th>Acciones</th>
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for pausa in pausas_activas %}
+        <tr>
+            <td>{{ pausa.id }}</td>
+            <td>{{ pausa.nombre }}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownPauseActive" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Opciones
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPauseActive">
+                        <a class="dropdown-item" href="{% url 'pausa_update' pausa.id %}">
+                            <span class="icon icon-pencil"></span>Editar
+                        </a>
+                        <a class="dropdown-item" href="{% url 'pausa_delete' pausa.id %}">
+                            <span class="icon icon-trash"></span>Eliminar
+                        </a>                            
+                    </div>
+                </div>
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td colspan="3">No existen pausas activas</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-
-</div>
 {% if pausas_eliminadas %}
-  <div class="col-md-3 col-md-offset-4">
-    <h4> Pausas Eliminadas </h4>
-    <table class="table table-stripped">
+
+<div>
+    <h2>Pausas Eliminadas </h2>
+    <table class="table">
         <thead>
             <tr>
                 <th>id</th>
                 <th>Nombre</th>
                 <th>Acciones</th>
-
             </tr>
         </thead>
         <tbody>
@@ -53,16 +60,25 @@
                 <td>{{ pausa.id }}</td>
                 <td>{{ pausa.nombre }}</td>
                 <td>
-                    <a href="{% url 'pausa_update' pausa.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'pausa_delete' pausa.id %}"><span class="glyphicon glyphicon-refresh" aria-hidden="true" title="Reactivar"></span></a>
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownPauseDeleted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Opciones
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPauseDeleted">
+                            <a class="dropdown-item" href="{% url 'pausa_update' pausa.id %}">
+                                <span class="icon icon-pencil"></span>Editar
+                            </a>
+                            <a class="dropdown-item" href="{% url 'pausa_delete' pausa.id %}">
+                                <span class="icon fas fa-redo"></span>Reactivar
+                            </a>                            
+                        </div>
+                    </div>                    
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-
-  </div>
+</div>
 {% endif %}
 
 {% endblock %}

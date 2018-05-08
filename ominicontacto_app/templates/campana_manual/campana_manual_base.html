@@ -6,9 +6,9 @@
 {% block title_campana %}{% endblock %}
 
 {% block nav %}
-    <h4 class="inline">{% trans 'Campaña Manual: Datos básicos' %}</h4>
+    <h1>{% trans 'Campaña Manual: Datos básicos' %}</h1>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-indicators">
         <li class="active"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
         <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
@@ -18,52 +18,44 @@
 {% block form_render %}
     {% with form as form %}
         {{ form.non_field_errors }}
-        <div class="form-group row">
-            {{ form.nombre.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
-            <div class="col-sm-6" data-toggle="tooltip" data-placement="top"
-                 title="Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos">
+        <div class="form-row">
+            <div class="col-md-6">
+                <label for="{{ form.nombre.id_for_label }}">Nombre: </label>
                 {{ form.nombre|add_class:"form-control" }}
+                <small class="form-text text-muted">
+                    Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos.
+                </small>                 
+                {{ form.nombre.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.bd_contacto.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
-            <div class="col-sm-6">
+            <div class="col-md-6">
+                <label for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
                 {{ form.bd_contacto }}
+                {{ form.bd_contacto.errors }}
             </div>
-        </div>
-        {{ form.tipo_interaccion.errors }}
-        <div class="form-group row">
-            {{ form.formulario.errors }}
-            <label class="col-sm-3 control-label"><div class="myradio hidden">{{ form.tipo_interaccion.0 }}</div> Formulario: </label>
-            <div class="col-sm-6">
+            {{ form.tipo_interaccion.errors }}
+            <div class="col-md-6">
+                <label><div class="myradio hidden">{{ form.tipo_interaccion.0 }}</div> Formulario: </label>
                 {{ form.formulario }}
+                {{ form.formulario.errors }}
             </div>
-        </div>
-        {% comment %}
-        <div class="form-group row">
-        {{ form.sitio_externo.errors }}
-        <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
-        <div class="col-sm-6">
-        {{ form.sitio_externo }}
-        </div>
-        </div>
-        {% endcomment %}
-        <div class="form-group row">
-            {{ form.auto_grabacion.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados: </label>
-            <div class="col-sm-6">
+            {% comment %}
+            <div class="col-md-6">
+                <label><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
+                {{ form.sitio_externo }}
+                {{ form.sitio_externo.errors }}
+            </div>
+            {% endcomment %}
+            <div class="col-md-6">
+                <label for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados: </label>
                 {{ form.auto_grabacion }}
+                {{ form.auto_grabacion.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.objetivo.errors }}
-            <label class="col-sm-3 control-label">Objetivo: </label>
-            <div class="col-sm-3">
+            <div class="col-md-6">
+                <label>Objetivo: </label>
                 {{ form.objetivo }}
+                {{ form.objetivo.errors }}
             </div>
+            {% block tiempo_desconexion %}{% endblock %}
         </div>
-        {% block tiempo_desconexion %}{% endblock %}
     {% endwith %}
 {% endblock %}

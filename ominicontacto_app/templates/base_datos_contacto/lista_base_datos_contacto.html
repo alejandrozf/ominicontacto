@@ -2,82 +2,84 @@
 {% load static %}
 
 {% block head_js %}
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        function mostrar_bases_datos_ocultas() {
+    function mostrar_bases_datos_ocultas() {
 
-            $.get('{% url  'mostrar_bases_datos_ocultas' %}',
-                    function (data) {
-                        $('#t_body_ocultas').html(data);
+        $.get('{% url  'mostrar_bases_datos_ocultas' %}',
+                function (data) {
+                    $('#t_body_ocultas').html(data);
 
-                    });
-        }
+                });
+    }
 
-    </script>
+</script>
 {% endblock %}
 
 {% block content %}
-<br/>
-<div class="col-md-6 col-md-offset-3">
 
-<table class="table table-stripped">
-                    <thead>
-                      <tr class="fts-table-bg">
-                        <th>Base Datos Contactos</th>
-                        <th>Creada</th>
-                        <th>Cantidad Contactos</th>
-                          <th>Acciones
-                               <a  href="#" style="color: black; text-decoration: none;" onclick="mostrar_bases_datos_ocultas()" >
-                        <span class="glyphicon glyphicon-resize-small" aria-hidden="true" title="Mostrar ocultas"></span>
-                    </a>
-                          </th>
-                      </tr>
-                    </thead>
-                    <tbody id="t_body_ocultas">
-                        {% for base_datos_contacto in bases_datos_contacto %}
-                            <tr>
-                                <td>
-                                    {{ base_datos_contacto.nombre }}
-                                </td>
-                                <td>
-                                    {{ base_datos_contacto.fecha_alta|date:"d/m/Y" }}
-                                </td>
-                                <td>
-                                    {{ base_datos_contacto.get_cantidad_contactos }}
-                                </td>
-                                <td>
-                                    <a href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar contacto"></span>
-                                    </a>
-                                    <a href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-th-list" aria-hidden="true" title="listado de contactos"></span>
-                                    </a>
-                                    <a href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-asterisk" aria-hidden="true" title="agregar contactos desde el csv"></span>
-                                    </a>
-                                    {% if base_datos_contacto.oculto %}
-                                    <a type="button"  href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}" c>
-                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
-                                    </a>
-                                    {% else %}
-                                    <a type="button" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}" >
-                                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
-                                    </a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="6">
-                                    <p class="text-center text-danger">
-                                        <em>No se encontraron Bases de Datos de Contactos creadas.</em>
-                                    </p>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+<h1>Base de datos de contactos</h1>
+<a href="#" class="btn btn-light btn-sm" onclick="mostrar_bases_datos_ocultas()" >
+    Mostrar ocultas
+</a>
+<hr>
+<table class="table">
+    <thead>
+      <tr class="fts-table-bg">
+        <th>Base Datos Contactos</th>
+        <th>Creada</th>
+        <th>Cantidad Contactos</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="t_body_ocultas">
+        {% for base_datos_contacto in bases_datos_contacto %}
+            <tr>
+                <td>
+                    {{ base_datos_contacto.nombre }}
+                </td>
+                <td>
+                    {{ base_datos_contacto.fecha_alta|date:"d/m/Y" }}
+                </td>
+                <td>
+                    {{ base_datos_contacto.get_cantidad_contactos }}
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Opciones
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                            <a class="dropdown-item" href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
+                                <span class="icon icon-plus"></span>Agregar contacto
+                            </a>
+                            <a class="dropdown-item" href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
+                                <span class="icon icon-list"></span>Lista de contactos
+                            </a>
+                            <a class="dropdown-item" href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
+                                <span class="icon icon-plus"></span>Agregar contactos
+                            </a>     
+                            {% if base_datos_contacto.oculto %}
+                            <a class="dropdown-item" href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}">
+                                <span class="icon icon-eye"></span>Hacer visible
+                            </a>
+                            {% else %}
+                            <a class="dropdown-item" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}">
+                                <span class="icon icon-eye-slash"></span>Ocultar
+                            </a> 
+                            {% endif %}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">
+                    <p>No se encontraron Bases de Datos de Contactos creadas.</p>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-
-</div>
 {% endblock %}

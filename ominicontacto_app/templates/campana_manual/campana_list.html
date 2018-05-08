@@ -11,21 +11,28 @@
 
             <td> {{campana.get_estado_display}}  </td>
             <td width="14%">
-                <a href="{% url 'queue_member_campana' campana.pk %}">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
-                </a>
-                <a href="{% url 'campana_manual_supervisors' campana.pk %}">
-                    <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
-                </a>
-                <a href="{% url 'campana_manual_delete' campana.pk %}">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true" title="eliminar campana"></span>
-                </a>
-                <a href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
-                    <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
-                </a>
-                <a href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
-                    <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
-                </a>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignActive" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Opciones
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignActive">
+                        <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
+                            <span class="icon icon-plus"></span>Agregar agentes
+                        </a>     
+                        <a class="dropdown-item" href="{% url 'campana_manual_supervisors' campana.pk %}">
+                            <span class="icon icon-eye"></span>Dar permisos para ver
+                        </a> 
+                        <a class="dropdown-item" href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
+                            <span class="icon icon-list"></span>Calificaciones
+                        </a> 
+                        <a class="dropdown-item" href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
+                            <span class="icon icon-graph"></span>Reportes
+                        </a> 
+                        <a class="dropdown-item" href="{% url 'campana_manual_delete' campana.pk %}">
+                            <span class="icon icon-trash"></span>Eliminar
+                        </a>                                            
+                    </div>
+                </div>
             </td>
         </tr>
     {% empty %}
@@ -46,27 +53,34 @@
 
             <td> {{campana.get_estado_display}}  </td>
             <td width="14%">
-                <a href="{% url 'queue_member_campana' campana.pk %}">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar agentes"></span>
-                </a>
-                <a href="{% url 'campana_manual_supervisors' campana.pk %}">
-                    <span class="glyphicon glyphicon-sunglasses" aria-hidden="true" title="dar permiso para ver"></span>
-                </a>
-                <a href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
-                    <span class="glyphicon glyphicon-list" aria-hidden="true" title="ver calificaciones"></span>
-                </a>
-                <a href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
-                    <span class="glyphicon glyphicon-stats" aria-hidden="true" title="ver reportes graficos"></span>
-                </a>
-                {% if campana.oculto %}
-                    <a type="button"  href="{% url 'campana_manual_desocultar' campana.pk %}">
-                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
-                    </a>
-                {% else %}
-                    <a type="button" href="{% url 'campana_manual_ocultar' campana.pk %}" >
-                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
-                    </a>
-                {% endif %}
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignDeleted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Opciones
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignDeleted">
+                        <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
+                            <span class="icon icon-plus"></span>Agregar agentes
+                        </a>     
+                        <a class="dropdown-item" href="{% url 'campana_manual_supervisors' campana.pk %}">
+                            <span class="icon icon-eye"></span>Dar permisos para ver
+                        </a> 
+                        <a class="dropdown-item" href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
+                            <span class="icon icon-list"></span>Calificaciones
+                        </a> 
+                        <a class="dropdown-item" href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
+                            <span class="icon icon-graph"></span>Reportes
+                        </a> 
+                        {% if campana.oculto %}
+                            <a class="dropdown-item" href="{% url 'campana_manual_desocultar' campana.pk %}">
+                                <span class="icon icon-eye"></span>Hacer visible
+                            </a>
+                        {% else %}
+                            <a class="dropdown-item" href="{% url 'campana_manual_ocultar' campana.pk %}" >
+                                <span class="icon icon-eye-slash"></span>Ocultar
+                            </a>
+                        {% endif %}                                          
+                    </div>
+                </div>
             </td>
         </tr>
     {% empty %}

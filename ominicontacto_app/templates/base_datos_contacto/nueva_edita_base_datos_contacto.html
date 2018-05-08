@@ -2,30 +2,29 @@
 {% load static %}
 {% block head_js %}
 
-    <script type="text/javascript">
-        $(function() {
-            $(".modal_proceso_grande").click(function (){
-                $('#modal_proceso_grande').modal();
-            });
+<script type="text/javascript">
+    $(function() {
+        $(".modal_proceso_grande").click(function (){
+            $('#modal_proceso_grande').modal();
         });
-    </script>
-    {% endblock %}
+    });
+</script>
+
+{% endblock %}
 {% block content %}
 
-    <div class="col-md-4 col-md-offset-4">
+<h1>Nueva base de datos de contacto</h1>
 
-        <form role="form" method="post" enctype="multipart/form-data" > {% csrf_token %}
-            <table class="table table-striped">
-		        {{form.as_table}}
-            </table>
-            <button type="submit" id="id_registrar" class="btn btn-default btn-block modal_proceso_grande">
-                Definir Base Datos
-            </button>
-	    </form>
-        <br>
-        <a class="btn btn-info" href="/static/ominicontacto/base_datos_ejemplo.csv" target="_blank">
-            bajar base de datos de ejemplo
-        </a>
-    </div>
+<form role="form" method="post" enctype="multipart/form-data" >
+    {% include "base_form_fields.html" with form=form %}
+    <hr>
+    <button type="submit" id="id_registrar" class="btn btn-primary modal_proceso_grande">
+        Definir Base Datos
+    </button>
+</form>
+<br>
+<div>
+<a class="btn btn-outline-primary" href="/static/ominicontacto/base_datos_ejemplo.csv" target="_blank">bajar base de datos de ejemplo</a>    
+</div>
 
 {% endblock %}

@@ -2,14 +2,12 @@
 {% load static %}
 
 {% block content %}
-<div class="col-md-3">
     <form method="post">{% csrf_token %}
-        <h4>Cola <strong>{{ object.nombre }}</strong></h4>
-        <h4>¿Esta seguro que desea eliminar esta Campaña? </h4>
-        <button type="submit" class="btn btn-danger btn-sm">
-            <span class="glyphicon glyphicon-remove"></span> Eliminar
+        <h1>Cola "{{ object.nombre }}"</h1>
+        <p>¿Esta seguro que desea eliminar esta Campaña? </p>
+        <button type="submit" class="btn btn-danger">
+            Eliminar
         </button>
-        <a href="{% url 'campana_list' %}">Cancelar</a>
+        <a class="btn btn-outline-danger" href="{% url 'campana_list' %}">Cancelar</a>
     </form>
-</div>
 {% endblock %}

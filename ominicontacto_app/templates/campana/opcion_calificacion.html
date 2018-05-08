@@ -13,11 +13,11 @@
      /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
         en un formset  */
      $('.linkFormset').formset({
-       addText: '+',
-       deleteText: '-',
+       addText: 'Agregar campo',
+       deleteText: 'Remover',
        prefix: '{{ wizard.form.prefix }}',
-       addCssClass: 'addFormset btn btn-info',
-       deleteCssClass: 'deleteFormset btn btn-danger',
+       addCssClass: 'addFormset btn btn-outline-primary',
+       deleteCssClass: 'deleteFormset btn btn-outline-danger',
        added: function (row) {
          /* inicializa el nuevo formulario de opción de calificación */
          $(row.find('.nombre > select')).prop( "disabled", false );
@@ -39,15 +39,13 @@
 {% endblock %}
 
 {% block nav %}
-    <h4 class="inline">{% trans 'Campaña Entrante: Opciones de calificación' %}</h4>
+    <h1>{% trans 'Campaña Entrante: Opciones de calificación' %}</h1>
 
-    <ul class="nav nav-tabs">
-        <ul class="nav nav-tabs">
+    <ul class="nav nav-indicators">
             <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
             <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
             <li class="active"><a>{% trans 'Opciones de calificación' %}</a></li>
             <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
-        </ul>
     </ul>
 {% endblock %}
 

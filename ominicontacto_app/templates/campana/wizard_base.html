@@ -10,7 +10,7 @@
     {% block nav %}
     {% endblock %}
     <br>
-    <div class="col-md-7">
+    <div>
         <form action="" method="post" id="wizardForm">{% csrf_token %}
             <table>
                 {{ wizard.management_form }}
@@ -22,11 +22,12 @@
                     {% endblock %}
                 {% endif %}
             </table>
+            <hr>
             {% if wizard.steps.prev %}
-                <button class="btn btn-lg btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
-                <button class="btn btn-lg btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+                <button class="btn btn-outline-primary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+                <button class="btn btn-outline-primary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
             {% endif %}
-            <button class='btn btn-lg btn-primary' type='submit' data-loading-text={% trans 'Cargando...' %}>
+            <button class='btn btn-primary' type='submit' data-loading-text={% trans 'Cargando...' %}>
                 {% if wizard.steps.next %}
                     {% trans "Paso siguiente" %}
                 {% else %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="col-md-9">
+<h1>Template {{object.nombre_template}}</h1>
         <table class="table table-striped">
             <tr>
                 <td><strong>Template de campaña dialer </strong></td>
@@ -81,41 +81,46 @@
                 <td>{{object.actuacionvigente.hora_desde}}hs - {{object.actuacionvigente.hora_hasta}}hs</td>
             </tr>
         </table>
-    <h4>Reglas de incidencia</h4>
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                        <tr class="fts-table-bg">
-                            <th>Estado</th>
-                            <th>Con estado personalizado</th>
-                            <th>Reintentar más tarde</th>
-                            <th>Modo de reintento</th>
-                            <th>Intento max.</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {% for reglas in object.reglas_incidencia.all %}
-                                <tr>
-                                    <td>{{reglas.get_estado_display}}</td>
-                                    <td>
-                                        {% if reglas.estado_personalizado %}
-                                            {{ reglas.estado_personalizado }}
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ reglas.reintentar_tarde }}s.</td>
-                                    <td>{{ reglas.get_en_modo_display}}</td>
-                                    <td>{{ reglas.intento_max }}</td>
-                                </tr>
-                             {% empty %}
-                                <tr>
-                                    <td colspan="5  ">
-                                        <p class="text-center text-danger">
-                                            <em>No se encontraron reglas creadas.</em>
-                                        </p>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-    <a href="{% url 'lista_campana_dialer_template' %}" class="btn-sm btn-info">Volver a listado de template</a>
+        <br>
+    <div>
+        <h2>Reglas de incidencia</h2> 
+        <br>
+        <table class="table table-hover">
+            <thead>
+            <tr class="fts-table-bg">
+                <th>Estado</th>
+                <th>Con estado personalizado</th>
+                <th>Reintentar más tarde</th>
+                <th>Modo de reintento</th>
+                <th>Intento max.</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for reglas in object.reglas_incidencia.all %}
+                    <tr>
+                        <td>{{reglas.get_estado_display}}</td>
+                        <td>
+                            {% if reglas.estado_personalizado %}
+                                {{ reglas.estado_personalizado }}
+                            {% endif %}
+                        </td>
+                        <td>{{ reglas.reintentar_tarde }}s.</td>
+                        <td>{{ reglas.get_en_modo_display}}</td>
+                        <td>{{ reglas.intento_max }}</td>
+                    </tr>
+                 {% empty %}
+                    <tr>
+                        <td colspan="5  ">
+                            <p class="text-center text-danger">
+                                <em>No se encontraron reglas creadas.</em>
+                            </p>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>           
     </div>
+    <hr>
+    <a href="{% url 'lista_campana_dialer_template' %}" class="btn btn-outline-primary">Volver a listado de template</a>
+
 {% endblock %}

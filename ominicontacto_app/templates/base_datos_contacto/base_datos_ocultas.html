@@ -10,32 +10,37 @@
                                     {{ base_datos_contacto.get_cantidad_contactos }}
                                 </td>
                                 <td>
-                                    <a href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true" title="agregar contacto"></span>
-                                    </a>
-                                    <a href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-th-list" aria-hidden="true" title="listado de contactos"></span>
-                                    </a>
-                                    <a href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
-                                    <span class="glyphicon glyphicon-asterisk" aria-hidden="true" title="agregar contactos desde el csv"></span>
-                                    </a>
-                                    {% if base_datos_contacto.oculto %}
-                                    <a type="button"  href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}" c>
-                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
-                                    </a>
-                                    {% else %}
-                                    <a type="button" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}" >
-                                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
-                                    </a>
-                                    {% endif %}
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Opciones
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                                            <a class="dropdown-item" href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
+                                                <span class="icon icon-plus"></span>Agregar contacto
+                                            </a>
+                                            <a class="dropdown-item" href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
+                                                <span class="icon icon-list"></span>Lista de contactos
+                                            </a>
+                                            <a class="dropdown-item" href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
+                                                <span class="icon icon-plus"></span>Agregar contactos
+                                            </a>     
+                                            {% if base_datos_contacto.oculto %}
+                                            <a class="dropdown-item" href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}">
+                                                <span class="icon icon-eye"></span>Hacer visible
+                                            </a>
+                                            {% else %}
+                                            <a class="dropdown-item" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}">
+                                                <span class="icon icon-eye-slash"></span>Ocultar
+                                            </a> 
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         {% empty %}
                             <tr>
                                 <td colspan="6">
-                                    <p class="text-center text-danger">
-                                        <em>No se encontraron Bases de Datos de Contactos creadas.</em>
-                                    </p>
+                                    <p>No se encontraron Bases de Datos de Contactos creadas.</p>
                                 </td>
                             </tr>
                         {% endfor %}
