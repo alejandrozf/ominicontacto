@@ -2,40 +2,26 @@
 {% load static %}
 
 {% block content %}
+
+                <h1>Campaña {{ campana.nombre }}</h1>
+                
+                <h3>Base Datos: {{ campana.bd_contacto }}</h3>
+                <br>
+                <a class="btn btn-outline-primary" href="{% url 'exporta_csv_calificacon' campana.pk %}">Exportar Calificacion(CSV)</a>
+                <a class="btn btn-outline-primary" href="{% url 'exporta_csv_gestion' campana.pk %}">Exportar Gestion: {{campana.gestion}}(CSV)</a>
+                <hr>
                 <table class="table">
-                        <tbody>
-                            <tr class="fts-table-bg">
-                                <td width="45%">
-                                    <h3 class="text-primary">
-                                        {{ campana.nombre }}
-                                    </h3>
-                                </td>
-
-                                <td>
-                                    <h5>
-                                        <b>Base Datos: </b>
-                                        {{ campana.bd_contacto }}
-                                    </h5>
-                                </td>
-                                <td><h5><a href="{% url 'exporta_csv_calificacon' campana.pk %}">Exportar Calificacion(CSV)</a></h5></td>
-                                <td><h5><a href="{% url 'exporta_csv_gestion' campana.pk %}">Exportar Gestion: {{campana.gestion}}(CSV)</a></h5></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                <table class="table table-bordered">
                     <thead>
                       <tr class="fts-table-bg">
-                        <th>Telefono</th>
+                        <th>Teléfono</th>
                         <th>Gestionado como: {{campana.gestion}}</th>
-                        <th>Calificacion no gestion</th>
-                          <th>Observaciones</th>
+                        <th>Calificacion no gestión</th>
+                        <th>Observaciones</th>
                       </tr>
                     </thead>
                     <tbody>
                         {% for calificacion in campana.obtener_calificaciones %}
                             <tr>
-
                                 <td>
                                     {{ calificacion.contacto.telefono }}
                                 </td>
@@ -58,9 +44,7 @@
                         {% empty %}
                             <tr>
                                 <td colspan="16">
-                                    <p class="text-center text-danger">
-                                        <em>No se encontraron Calificaciones para esta campaña.</em>
-                                    </p>
+                                    <p>No se encontraron Calificaciones para esta campaña.</p>
                                 </td>
                             </tr>
                         {% endfor %}

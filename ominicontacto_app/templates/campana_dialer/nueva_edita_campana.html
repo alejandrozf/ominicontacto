@@ -13,9 +13,9 @@
 {% endblock %}
 
 {% block nav %}
-    <h4 class="inline">{% trans 'Campaña Dialer: Datos Básicos' %} {% if not form.instance.pk %}<span style="color:red;">- {% trans 'Canales en uso:' %} {{ canales_en_uso }}{% endif %}</h4>
+    <h1>{% trans 'Campaña Dialer: Datos Básicos' %} {% if not form.instance.pk %}<span style="color:red;">- {% trans 'Canales en uso:' %} {{ canales_en_uso }}{% endif %}</h1>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-indicators">
         <li class="active"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
@@ -31,56 +31,47 @@
 {% block form_render %}
     {% with form as form %}
         {{ form.non_field_errors }}
-        <div class="form-group row">
-            {{ form.nombre.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.nombre.id_for_label }}">Nombre: </label>
-            <div class="col-sm-6" data-toggle="tooltip" data-placement="top" title="Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos">
-                {{ form.nombre|add_class:"form-control" }}
+        <div class="form-row">
+            <div class="col-md-6">
+                <label for="{{ form.nombre.id_for_label }}">Nombre: </label>
+                {{ form.nombre|add_class:"form-control" }}                
+                <small id="nameHelpBlock" class="form-text text-muted">
+                    Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos.
+                </small>    
+                {{ form.nombre.errors }} 
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.fecha_inicio.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>
-            <div class="col-sm-3">
-                {{ form.fecha_inicio|attr:"id:id_fecha_inicio" }}
+            <div class="col-md-6">
+                <label for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>       
+                {{ form.fecha_inicio|attr:"id:id_fecha_inicio" }}                         
+                {{ form.fecha_inicio.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.fecha_fin.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
-            <div class="col-sm-3">
+            <div class="col-md-6">
+                <label for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
                 {{ form.fecha_fin|attr:"id:id_fecha_fin" }}
+                {{ form.fecha_fin.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.bd_contacto.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
-            <div class="col-sm-6">
+            <div class="col-md-6">
+                <label for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
                 {{ form.bd_contacto }}
+                {{ form.bd_contacto.errors }}
             </div>
-        </div>
         {% block tipo_interaccion %}
             {{ form.tipo_interaccion.errors }}
-            <div class="form-group row">
+            <div class="col-md-6">
+                <label><div class="myradio">{{ form.tipo_interaccion.0 }}</div> </label>
+                {{ form.formulario }}
                 {{ form.formulario.errors }}
-                <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.0 }}</div> </label>
-                <div class="col-sm-6">
-                    {{ form.formulario }}
-                </div>
             </div>
-            <div class="form-group row">
+            <div class="col-md-6">
+                <label><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
                 {{ form.sitio_externo.errors }}
-                <label class="col-sm-3 control-label"><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
-                <div class="col-sm-6">
-                    {{ form.sitio_externo }}
-                </div>
+                {{ form.sitio_externo }}
             </div>
         {% endblock %}
-        <div class="form-group row">
-            {{ form.objetivo.errors }}
-            <label class="col-sm-3 control-label">Objetivo: </label>
-            <div class="col-sm-3">
+            <div class="col-md-6">
+                <label>Objetivo: </label>
                 {{ form.objetivo }}
+                {{ form.objetivo.errors }}
             </div>
         </div>
     {% endwith %}

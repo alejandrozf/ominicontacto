@@ -2,13 +2,11 @@
 {% load i18n %}
 
 {% block nav %}
-    <h4 class="inline">{% trans 'Campaña Preview: Opciones de calificación' %}</h4>
+    <h1>{% trans 'Campaña Preview: Opciones de calificación' %}</h1>
 
-    <ul class="nav nav-tabs">
-        <ul class="nav nav-tabs">
-            <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
-            <li class="active"><a>{% trans 'Opciones de calificación' %}</a></li>
-            <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
-        </ul>
+    <ul class="nav nav-indicators">
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        <li class="active"><a>{% trans 'Opciones de calificación' %}</a></li>
+        <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
     </ul>
 {% endblock %}

@@ -1,0 +1,19 @@
+    {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+    <div class="form-row">
+    {% for field in form.visible_fields %}
+        <div class="col-md-6">
+            {{ field.label_tag }} {{ field }}
+            {% if field.help_text %}
+                <small class="form-text text-muted">
+                    {{ field.help_text|safe }}
+                </small>            
+            {% endif %}
+            {{ field.errors }}
+        </div>
+    {% endfor %}
+    </div>

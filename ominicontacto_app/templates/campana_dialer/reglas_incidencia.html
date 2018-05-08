@@ -22,19 +22,19 @@
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script type="text/javascript">
      $('.linkFormset').formset({
-       addText: '+',
-       deleteText: '-',
+       addText: 'Agregar regla',
+       deleteText: 'Remover',
        prefix: '{{ wizard.form.prefix }}',
-       addCssClass: 'addFormset btn btn-info',
-       deleteCssClass: 'deleteFormset btn btn-danger',
+       addCssClass: 'addFormset btn btn-outline-primary',
+       deleteCssClass: 'deleteFormset btn btn-outline-danger',
      });
     </script>
 {% endblock %}
 
 {% block nav %}
-    <h4 class="inline">{% trans 'Campaña Dialer: Reglas incidencia'  %} </h4>
+    <h1>{% trans 'Campaña Dialer: Reglas incidencia'  %} </h1>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-indicators">
         <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
@@ -46,7 +46,7 @@
 {% endblock %}
 
 {% block formset_render %}
-    <table class="table">
+    <table class="table campana-reglas">
         <thead>
             <tr class="fts-table-bg">
                 <th>{% trans 'Estado' %}</th>
@@ -58,6 +58,7 @@
                     <th>{% trans 'Modo de reintento' %} </th>
                 {% endif %}
                 <th>{% trans 'Intento max.' %}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -84,8 +85,8 @@
                     {% if form.instance.pk %}
                         <td>{{ form.get_en_modo_display}}</td>
                     {% endif %}
-                    <td>{{ form.intento_max }}</td>
-                    <td></td>
+                    <td>{{ form.intento_max }}</td>               
+                    <td class="td-remove"></td>               
                 </tr>
             {% endfor %}
         </tbody>

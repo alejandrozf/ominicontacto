@@ -1,21 +1,19 @@
-<div class="row">
-    <div class="col-sm-6">
-        <div class="row">
-            <p>Nombre de la Campana <strong>{{ campana.nombre }}</strong></p>
-            <p> Estado <strong>{{ campana.get_estado_display}}</strong></p>
-            <p> Base de datos <strong>{{ campana.bd_contacto}}</strong></p>
-            <p> Calificaciones <strong>{{ campana.calificacion_campana}}</strong></p>
-            <p> Gestion <strong>{{ campana.gestion}}</strong></p>
-        </div>
-        <div class="row">
-            <p><strong> Resultados de las llamadas de la campaña</strong></p>
-            <p> Contactos atendidos <strong>{{ terminadas }}</strong></p>
-            <p> Contactos restantes por atender <strong>{{ estimadas }}</strong></p>
-        </div>
-    </div>
-    <div class="col-sm-6">
+
+
+        <h2>Datos generales</h2>
+        <hr>
+        <h3>Nombre: <strong>{{ campana.nombre }}</strong></h3>
+        <h3>Estado: <strong>{{ campana.get_estado_display}}</strong></h3>
+        <h3>Base de datos: <strong>{{ campana.bd_contacto}}</strong></h3>
+        <h3>Calificaciones: <strong>{{ campana.calificacion_campana}}</strong></h3>
+        <h3>Gestion: <strong>{{ campana.gestion}}</strong></h3>
+        <br>
+        <h2>Resultados de las llamadas de la campaña</h2>
+        <hr>
+        <h3> Contactos atendidos: <strong>{{ terminadas }}</strong></h3>
+        <h3> Contactos restantes por atender: <strong>{{ estimadas }}</strong></h3>
+        <br>
         {% for categoria, count in categorias.items %}
             <p>Finalizados por {{ categoria }}:<strong>{{ count }}</strong></p>
         {% endfor %}
-    </div>
-</div>
+

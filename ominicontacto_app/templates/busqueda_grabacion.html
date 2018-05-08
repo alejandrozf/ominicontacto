@@ -50,19 +50,21 @@ function filtrar_pagina(pagina) {
 {% endblock %}
 {% block content %}
 
-<div class="col-md-3">
+<h1>Buscar grabación</h1>
 
-    <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
-        {% csrf_token %}
-        <table class="table">
-            {{ form.as_table }}
-        </table>
-        <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-            Buscar
-        </button>
-    </form>
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <div id="wrapperSearchForm" class="show">
+        <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
+            {% include "base_form_fields.html" with form=form %}
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Buscar
+            </button>
+        </form>
+    </div>
 </div>
-<div class="col-md-9">
+
+<div class="wrapper-results">
     <table class="table table-stripped">
         <thead>
             <tr>
@@ -92,8 +94,8 @@ function filtrar_pagina(pagina) {
                         <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="Descargar"></span>
                     </a>
                 </td>
-                <td><button type="button" class="btn btn-primary" data-toggle="modal"
-                            data-target="#descripcionModal" data-uid="{{ grabacion.uid }}">Ver descripción</button></td>
+                <td><button type="button" class="btn btn-light btn-sm" data-toggle="modal"
+                            data-target="#descripcionModal" data-uid="{{ grabacion.uid }}">Descripción</button></td>
             </tr>
        {% empty %}
         <tr>
@@ -103,25 +105,37 @@ function filtrar_pagina(pagina) {
         </tbody>
     </table>
 
-    <ul class="pagination nav navbar-nav">
-    {% if listado_de_grabaciones.has_previous %}
-            <li><a href="#" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">Prev</a></li>
-    {% endif %}
-    {% for page in listado_de_grabaciones.paginator.page_range %}
-        <li class="{% if listado_de_grabaciones.number == page  %}active{% endif %}"><a href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
-    {% endfor %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination">           
+        {% if listado_de_grabaciones.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li> 
+        {% endif %}
+        {% for page in listado_de_grabaciones.paginator.page_range %}
+            <li class="page-item {% if listado_de_grabaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
+        {% endfor %}
 
-    {% if listado_de_grabaciones.has_next %}
-        <li> <a href="#" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">Next</a></li>
-    {% endif %}
- </ul>
+        {% if listado_de_grabaciones.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+        {% endif %}
+        </ul>
+    </nav>
 
  <div class="modal fade" id="descripcionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
      <div class="modal-dialog" role="document">
          <div class="modal-content">
              <div class="modal-header">
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                 <h4 class="modal-title" id="descripcionModalLabel"></h4>
+                <h1 class="modal-title" id="descripcionModalLabel"></h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
              </div>
              <div class="modal-body">
                  <form>

@@ -2,19 +2,15 @@
 
 {% block tipo_interaccion %}
     {% if form.tipo_interaccion.value == 1 %}
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Formulario: </label>
-            <div class="col-sm-3">
-                {{ form.formulario }}
-            </div>
+        <div class="col-md-6">
+            <label>Formulario: </label>
+            {{ form.formulario }}
         </div>
     {% endif %}
     {% if form.tipo_interaccion.value == 2 %}
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Sitio externo: </label>
-            <div class="col-sm-3">
-                {{ form.sitio_externo }}
-            </div>
+        <div class="col-md-6">
+            <label>Sitio externo: </label>
+            {{ form.sitio_externo }}
         </div>
     {% endif %}
 {% endblock %}

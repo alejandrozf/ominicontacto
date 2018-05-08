@@ -2,36 +2,31 @@
 {% load static %}
 
 {% block content %}
-<br/>
-<div class="col-md-8 col-md-offset-2">
+<h1>Audios</h1>
 
-    <table class="table table-stripped">
-        <thead>
-            <tr>
-                <th>Descripcion</th>
-                <th></th>
-
-            </tr>
-        </thead>
-        <tbody>
-        {% for audio in audios %}
-            <tr>
-                <td><a href="{% url 'edita_archivo_audio' audio.id %}">{{ audio.descripcion }}</a></td>
-                <td>
-                    <a href="{% url 'eliminar_archivo_audio' audio.pk %}" class="btn btn-danger btn-sm">
-                        <span class="glyphicon glyphicon-remove"></span>
-                        Eliminar
-                    </a>
-                </td>
-            </tr>
-       {% empty %}
+<table class="table">
+    <thead>
         <tr>
-            <td colspan="2">No se encontraron Audios</td>
+            <th>Descripcion</th>
+            <th></th>
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for audio in audios %}
+        <tr>
+            <td><a href="{% url 'edita_archivo_audio' audio.id %}">{{ audio.descripcion }}</a></td>
+            <td>
+                <a class="btn btn-light btn-sm" href="{% url 'eliminar_archivo_audio' audio.pk %}">
+                    Eliminar
+                </a>
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td>No se encontraron Audios</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-
-</div>
 {% endblock %}

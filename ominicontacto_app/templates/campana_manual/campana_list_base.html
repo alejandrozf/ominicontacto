@@ -31,12 +31,14 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-10 col-md-offset-1">
+<h1>Campañas manuales</h1>
+
+    <div>
         <form id="form_estados_campanas" role="form" method="post">
             {% csrf_token %}
             <input type="hidden" id="campana_id" name="campana_id">
-            <h4><b>Campañas Activas</b></h4>
-            <table class="table table-stripped table-condensed table-bordered">
+            <h2>Campañas Activas</h2>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -52,17 +54,17 @@
 
             {% block campanas_finalizadas %}{% endblock %}
 
-            <h4><b>Campañas Eliminadas</b></h4>
-            <table class="table table-stripped table-condensed table-bordered">
+            <h2>Campañas Eliminadas</h2>
+            <a href="#" class="btn btn-light btn-sm" onclick="{{ mostrar_ocultas_tipo|default:"mostrar_campanas_ocultas()" }}" >
+                Mostrar ocultas
+            </a>    
+            <hr>        
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Nombre</th>
                         <th>Estado</th>
-                        <th>Acciones
-                            <a  href="#" style="color: black; text-decoration: none;" onclick="{{ mostrar_ocultas_tipo|default:"mostrar_campanas_ocultas()" }}" >
-                                <span class="glyphicon glyphicon-resize-small" aria-hidden="true" title="Mostrar ocultas"></span>
-                            </a>
-                        </th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="t_body_borradas">
@@ -76,8 +78,8 @@
         <div class="modal-dialog" id="modal_ventana">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h1 id="address" class="modal-title"></h1>                    
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 id="address" class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -94,10 +96,5 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <style type="text/css">
-     p {
-       margin: 4px 10px 10px;
-     }
-    </style>
 
 {% endblock %}

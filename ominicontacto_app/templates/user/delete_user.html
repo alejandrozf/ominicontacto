@@ -2,14 +2,12 @@
 {% load static %}
 
 {% block content %}
-<div class="col-md-3">
+<div>
     <form method="post">{% csrf_token %}
-        <h4>Usuario <strong>{{ object.get_full_name}}</strong></h4>
-        <h4>¿Esta seguro que desea eliminar este usuario? </h4>
-        <button type="submit" class="btn btn-danger btn-sm">
-            <span class="glyphicon glyphicon-remove"></span> Eliminar
-        </button>
-        <a href="{% url 'user_list' page=1 %}">Cancelar</a>
+        <h1>Usuario "{{ object.get_full_name}}" </h1>
+        <p>¿Esta seguro que desea eliminar este usuario? </p>
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a class="btn btn-outline-danger" href="{% url 'user_list' page=1 %}">Cancelar</a>
     </form>
 </div>
 {% endblock %}

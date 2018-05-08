@@ -333,7 +333,7 @@ class GrupoCreateView(CreateView):
     DT: eliminar fields de la vista crear un form para ello
     """
     model = Grupo
-    template_name = 'base_create_update_form.html'
+    template_name = 'grupo_create_update.html'
     form_class = GrupoForm
 
     def form_valid(self, form):
@@ -352,7 +352,7 @@ class GrupoUpdateView(UpdateView):
         DT: eliminar fields de la vista crear un form para ello
         """
     model = Grupo
-    template_name = 'base_create_update_form.html'
+    template_name = 'grupo_create_update.html'
     form_class = GrupoForm
 
     def form_valid(self, form):
