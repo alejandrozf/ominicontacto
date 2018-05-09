@@ -36,6 +36,14 @@
   tags: kamailio
   when: kamailio_installed|succeeded
 
+- name: Check if Kamailio certificates exists
+  command: test -f {{ install_prefix }}kamailio/etc/certs || test -d /opt/kamailio/etc/certs
+  ignore_errors: True
+  register: certs_exists
+  tags: kamailio
+  become: true
+  become_method: sudo
+
 - include: kamailio.yml
   tags: kamailio
 
@@ -47,3 +55,4 @@
 
 - include: certificate_CA.yml
   tags: kamailio-cert
+  when: certs_exists|failed

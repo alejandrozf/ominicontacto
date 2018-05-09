@@ -9,10 +9,10 @@
 #          - mkdir {{ install_prefix }}kamailio/etc/certs/demoCA/newcerts
 #          - touch {{ install_prefix }}kamailio/etc/certs/demoCA/index.txt
 
-- name: Delete /kamailio/certs if already exists
-  file: state=absent path={{ install_prefix }}kamailio/etc/certs/
-  become: true
-  become_method: sudo
+#- name: Delete /kamailio/certs if already exists
+#  file: state=absent path={{ install_prefix }}kamailio/etc/certs/
+#  become: true
+#  become_method: sudo
 
 - name: Modificacion del /etc/pki/tls/openssl.cnf
   template: src=templates/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
