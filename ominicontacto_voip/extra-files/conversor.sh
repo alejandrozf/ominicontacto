@@ -5,9 +5,9 @@ Date="`which date`"
 Lame="`which lame`"
 Ano="`${Date} +%Y -d today`"
 Mes="`${Date} +%m -d today`"
-Dia="`${Date} +%d -d today`"
-Convertir=1
-Mover_interno=1
+Dia="`${Date} +%d -d yesterday`"
+Convertir=0
+Mover_interno=0
 Mover_externo=0
 IP="172.16.20.12"
 
