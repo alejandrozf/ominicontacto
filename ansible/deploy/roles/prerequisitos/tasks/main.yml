@@ -41,7 +41,7 @@
   when: kamailio_opt_installed|failed
   tags: ['postinstall','kamailio']
 
-- set_fact: kamailio_location=
+- set_fact: kamailio_location=/opt/kamailio
   when: kamailio_opt_installed|succeeded
   tags: ['postinstall','kamailio']
 

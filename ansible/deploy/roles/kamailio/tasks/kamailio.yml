@@ -29,7 +29,7 @@
 
 
 - name: Make Prefix kamailio.cfg
-  shell: "make PREFIX={{ install_prefix }}kamailio cfg chdir=/usr/src/kamailio"
+  shell: "make PREFIX={{ kamailio_location }} cfg chdir=/usr/src/kamailio"
   become: true
   become_method: sudo
   when: kamailio_installed|failed
