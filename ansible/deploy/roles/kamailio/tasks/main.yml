@@ -21,7 +21,7 @@
   when: rtpengine_installed|failed
 
 - name: Check if Kamailio is installed
-  command: test -f {{ install_prefix }}kamailio/sbin/kamailio
+  shell: test -f {{ install_prefix }}kamailio/sbin/kamailio || test -f /opt/kamailio/sbin/kamailio
   ignore_errors: True
   register: kamailio_installed
   tags: kamailio

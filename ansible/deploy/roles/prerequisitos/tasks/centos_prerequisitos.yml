@@ -48,6 +48,8 @@
        - gnutls-devel
        - python-devel
        - texinfo
+       - mariadb
+       - mariadb-server
   become: true
   become_method: sudo
 
