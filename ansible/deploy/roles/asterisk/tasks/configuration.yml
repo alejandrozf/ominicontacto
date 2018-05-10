@@ -118,7 +118,7 @@
   become_method: sudo
 
 - name: Creation of generate_outbound_route_context.php script
-  template: "src=templates/agi-bin/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/generate_outbound_route_context.php mode=755 owner={{ usuario }} group={{ usuario }}"
+  template: "src=templates/agi-bin/generate_outbound_route_context.php dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/generate_outbound_route_context.php mode=755 owner={{ usuario }} group={{ usuario }}"
   become: yes
   become_method: sudo
   when: asterisk_location == ""
