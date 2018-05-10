@@ -56,29 +56,28 @@
 </head>
 <body>
 
-<div class="col-md-4">
+<h1>Agendas</h1>
 
-    <form role="form" method="post" enctype="multipart/form-data" >
-        {% csrf_token %}
-        <table class="table">
-           <tr>
-               <td>
-                   <div class="input-group date pull-right active" id="">
-                       {{form.fecha}}
-                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
-                        </span>
-                    </div>
-               </td>
-               <td>
-                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                        Filtrar por este rango
-                </button>
-               </td>
-           </tr>
-        </table>
+<form role="form" method="post" enctype="multipart/form-data" >
+    {% csrf_token %}
+    <table class="table">
+       <tr>
+           <td>
+               <div class="input-group date pull-right active" id="">
+                   {{form.fecha}}
+                    <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+           </td>
+           <td>
+               <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                    Filtrar por este rango
+            </button>
+           </td>
+       </tr>
+    </table>
+</form>
 
-    </form>
-</div>
     <table class="table table-bordered">
         <thead>
             <tr>

@@ -1,0 +1,110 @@
+@font-face {
+  font-family: 'oml-agent';
+  src:  url('../../fonts/oml-agent.eot?jbgk83');
+  src:  url('../../fonts/oml-agent.eot?jbgk83#iefix') format('embedded-opentype'),
+    url('../../fonts/oml-agent.ttf?jbgk83') format('truetype'),
+    url('../../fonts/oml-agent.woff?jbgk83') format('woff'),
+    url('../../fonts/oml-agent.svg?jbgk83#oml-agent') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'oml-agent' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-agenda:before {
+  content: "\e900";
+}
+.icon-cancel:before {
+  content: "\e901";
+}
+.icon-check:before {
+  content: "\e902";
+}
+.icon-chevron-down:before {
+  content: "\e903";
+}
+.icon-chevron-left:before {
+  content: "\e904";
+}
+.icon-chevron-right:before {
+  content: "\e905";
+}
+.icon-chevron-up:before {
+  content: "\e906";
+}
+.icon-cog:before {
+  content: "\e907";
+}
+.icon-info:before {
+  content: "\e908";
+}
+.icon-notebook:before {
+  content: "\e909";
+}
+.icon-pause:before {
+  content: "\e90a";
+}
+.icon-pencil:before {
+  content: "\e90b";
+}
+.icon-play:before {
+  content: "\e90c";
+}
+.icon-plus:before {
+  content: "\e90d";
+}
+.icon-ratings:before {
+  content: "\e90e";
+}
+.icon-refresh:before {
+  content: "\e90f";
+}
+.icon-search:before {
+  content: "\e910";
+}
+.icon-solid-chat:before {
+  content: "\e911";
+}
+.icon-solid-fb-chat:before {
+  content: "\e912";
+}
+.icon-solid-mail:before {
+  content: "\e913";
+}
+.icon-solid-messages:before {
+  content: "\e914";
+}
+.icon-solid-phone-end:before {
+  content: "\e915";
+}
+.icon-solid-phone-call:before {
+  content: "\e916";
+}
+.icon-solid-phone-redial:before {
+  content: "\e917";
+}
+.icon-solid-phone-save:before {
+  content: "\e918";
+}
+.icon-solid-phone:before {
+  content: "\e919";
+}
+.icon-trash:before {
+  content: "\e91a";
+}
+.icon-user:before {
+  content: "\e91b";
+}
