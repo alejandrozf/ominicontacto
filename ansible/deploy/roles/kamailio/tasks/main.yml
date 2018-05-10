@@ -37,7 +37,7 @@
   when: kamailio_installed|succeeded
 
 - name: Check if Kamailio certificates exists
-  command: test -f {{ install_prefix }}kamailio/etc/certs || test -d /opt/kamailio/etc/certs
+  shell: test -d {{ install_prefix }}kamailio/etc/certs || test -d /opt/kamailio/etc/certs
   ignore_errors: True
   register: certs_exists
   tags: kamailio
