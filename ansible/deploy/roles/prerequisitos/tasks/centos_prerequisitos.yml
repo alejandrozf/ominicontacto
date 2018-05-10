@@ -8,11 +8,11 @@
   become: true
   become_method: sudo
 
-- name: Update/upgrade of centos
-  yum: name='*' state=latest update_cache=yes
-  become: true
-  become_method: sudo
-  when: LOCALHOST == "true"
+  #- name: Update/upgrade of centos
+  #yum: name='*' state=latest update_cache=yes
+  #become: true
+  #become_method: sudo
+  #when: LOCALHOST == "true"
 
 - name: Install Development tools
   command: "yum -y groupinstall core base \"Development Tools\""
