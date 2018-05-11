@@ -1,0 +1,80 @@
+#!/bin/bash
+# Script para realizar backup/restore de la herramienta
+
+# Inicialización de variables
+FECHA=`date +%Y%m%d`
+export PGPASSWORD=""
+
+Backup() {
+
+    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup
+
+    #System Files
+    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cd /etc/systemd/system
+    cp kamailio.service rtpengine.service /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cp /etc/default/kamailio /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cd /etc/init.d
+    cp asterisk ominicontacto-daemon /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cp /etc/nginx/nginx.conf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cp /etc/nginx/conf.d/* /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cp /etc/sysconfig/rtpengine /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cp /etc/pki/tls/openssl.cnf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cp /etc/rsyslog.conf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cp /var/lib/pgsql/9.6/data/pg_hba.conf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    cp /etc/logrotate.d/omnileads /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files/*
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
+
+    #Asterisk Files
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
+    cp -L {{ asterisk_location }}/etc/asterisk/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
+    cp {{ asterisk_location }}/var/lib/asterisk/agi-bin/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
+    cd {{ asterisk_location }}/var/lib/asterisk/sounds/ /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
+    cp /usr/local/parselog/conversor.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/*
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/
+
+    #Kamailio Files
+    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
+    cp -La {{ kamailio_location}}/etc/ /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/*
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/
+
+    #Django Files
+    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/django
+    rsync -L -av --exclude=asterisk --exclude=kamailio --exclude=virtualenv {{ install_prefix }}/ /tmp/omnileads-backup/$FECHA-omnileads-backup/django
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/django.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/django/.
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/django
+
+    #Databases
+    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database
+    pg_dump -Fc -U kamailio -w -h 127.0.0.1 kamailio > /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup.sql
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/*
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/
+
+    # Tar the last directory
+    mkdir -p {{ install_prefix }}/backup
+    #tar czvf $FECHA-omnileads-backup.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/
+    cd /tmp/omnileads-backup && tar czvf $FECHA-omnileads-backup.tgz $FECHA-omnileads-backup
+    mv /tmp/omnileads-backup/$FECHA-omnileads-backup.tgz {{ install_prefix }}/backup
+    rm -rf /tmp/omnileads-backup/
+    }
+
+Restore() {
+    echo -n
+}
+
+while getopts "r:b" OPTION;do
+	case "${OPTION}" in
+		r) # Rama a deployar
+            Restore
+		;;
+		b) #Realizar pasos y agregar opciones preliminares
+		    Backup
+		;;
+	esac
+done
+if [ $# -eq 0  ]; then echo -n; fi

@@ -151,7 +151,7 @@
   when: asterisk_location == ""
 
 - name: Copy the cron-omnileads file
-  copy: src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/cron-omnileads dest=/var/spool/cron/ owner={{ usuario }} group={{ usuario }} remote_src=yes
+  template: src=templates/cron-omnileads dest=/etc/cron.d/cron-omnileads owner=root group=root
   when: asterisk_location != ""
 
 - name: Copy of odbc files and omnileads sounds
