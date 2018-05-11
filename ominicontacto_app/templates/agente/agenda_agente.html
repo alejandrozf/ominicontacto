@@ -4,12 +4,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}">
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    {% compress js %}
+    <!-- Custom CSS -->       
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-agent.css' %}">     
+    <!-- Scripts -->
+    {% compress js %}    
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
     {% endcompress %}
@@ -58,27 +65,17 @@
 
 <h1>Agendas</h1>
 
-<form role="form" method="post" enctype="multipart/form-data" >
+<form role="form" method="post" enctype="multipart/form-data" class="form-inline" >
     {% csrf_token %}
-    <table class="table">
-       <tr>
-           <td>
-               <div class="input-group date pull-right active" id="">
-                   {{form.fecha}}
-                    <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
-                    </span>
-                </div>
-           </td>
-           <td>
-               <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                    Filtrar por este rango
-            </button>
-           </td>
-       </tr>
-    </table>
+        <div class="date active" id="">
+            {{form.fecha}}
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Filtrar
+            </button>        
+        </div>        
 </form>
-
-    <table class="table table-bordered">
+<hr>
+    <table class="table">
         <thead>
             <tr>
                 <th>Fecha</th>
@@ -96,16 +93,16 @@
                 <td>{{ evento.hora|date:"H:i" }}</td>
                 <td>
                     {% if evento.es_personal %}
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <span class="icon icon-check" aria-hidden="true"></span>
                     {% else %}
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <span class="icon icon-cancel" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <td>
                     {% if evento.es_smart %}
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <span class="icon icon-check" aria-hidden="true"></span>
                     {% else %}
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <span class="icon icon-cancel" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <td>
@@ -124,7 +121,7 @@
             </tr>
        {% empty %}
         <tr>
-            <td colspan="6">No existen eventos para el día de hoy</td>
+            <td>No existen eventos para el día de hoy</td>
         </tr>
         {% endfor %}
         </tbody>

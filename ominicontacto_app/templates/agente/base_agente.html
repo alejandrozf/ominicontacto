@@ -8,44 +8,32 @@
     <title>OmniLeads</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >    
-
-    <!--   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">  -->  
-
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">       
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>        
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
-<!--     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/phone.css' %}"></link> -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/webchat.css' %}"></link>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-agent.css' %}">   
     <!-- Scripts -->
     <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  -->
-
-    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>   
-    {% compress js %}
+    {% compress js %}    
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>       
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
     {% endcompress %}
-    <!-- Bootstrap -->
-    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>  
-
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>--> 
-
     <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>        
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-   <!--  <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     
 </head>
 
@@ -369,42 +357,51 @@
         <div class="modal fade" id="modalwebChat" role="dialog">
         <div class="modal-dialog modal-lg">
         <div class="modal-content">
-          <div class="modal-header">
-              <h1 class="modal-title">WebChat</h1>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-            <div class="container-fluid">
-              <div class="row">
-                <input type="hidden" value="{{user}}" id="user">
-                <div class="col-md-4 col-md-offset-1">
-                  <textarea class="form-control" rows="2" id="chatMessage" autocomplete="off" disabled="disabled"/></textarea>
-                </div>
-                <input type="hidden" value="">
-                <button class="btn btn-md btn-success" disabled="disabled" id="sendMessage">Enviar</button>
-                <!--<button type="button" id="conf" class="btn btn-info btn-sm">
-                  <span class="glyphicon glyphicon-cog"></span>
-                </button>-->
-              </div><br>
-                <div class="row">
-                <input type="hidden" id="conversationId"/>
-                <div class="col-md-4 col-md-offset-1 chatWindow">
-                  <ul id="messages"></ul>
-                </div>
-                <div class="col-md-4 col-md-offset-1 table-responsive">
-                  <table class="table table-compressed table-stripped table-hover">
-                    <thead>
-                      <th>Estado</th><th>Usuario</th><th style="text-align: right">Chatear</th>
-                    </thead>
-                    <tbody id="tbodyContacts">
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+            <div class="modal-header">
+                <h1 class="modal-title">
+                    <span class="icon icon-solid-chat"></span>WebChat
+                </h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
+            <div class="modal-body">
+                <div id="webchatWindow">
+                    <input type="hidden" id="conversationId"/>
+                    <div class="chatWindow">
+                        <ul id="messages"></ul>
+                    </div> 
+                    <div class="chatWindowActions">
+                        <div>
+                            <input type="hidden" value="{{user}}" id="user">
+                            <textarea class="form-control" rows="1" id="chatMessage" autocomplete="off" placeholder="Escribe un mensaje..." disabled="disabled"/></textarea>
+                        </div>
+                        <div>
+                            <input type="hidden" value="">
+                            <button class="btn btn-primary" disabled="disabled" id="sendMessage">Enviar</button>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownWebchatActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  <span class="icon icon-cog"></span>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownWebchatActions">
+                                    <button class="dropdown-item" type="button">Action</button>
+                                </div>
+                            </div>
+                        </div>                      
+                    </div>               
+                </div>
+                <div id="webchatInfo">
+                    <table class="table table-compressed table-hover">
+                        <thead>
+                            <th>Estado</th>
+                            <th>Usuario</th>
+                            <th>Chatear</th>
+                        </thead>
+                        <tbody id="tbodyContacts">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         </div>
         </div> <!-- Fin Modal Webchat -->
@@ -414,7 +411,9 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Mensajes</h1>
+                <h1 class="modal-title">
+                    <span class="icon icon-solid-messages"></span>Mensajes
+                </h1>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -434,7 +433,10 @@
                   <div class="tab-pane fade show active" id="messagesContent" role="tabpanel" aria-labelledby="messagesTab">
                     <table class="table table-compressed" id="threadMsgsTable">
                       <thead>
-                        <th style="text-align: left">From</th><th style="text-align: left">To</th><th style="text-align: left">Mensaje</th><th style="text-align: left">Fecha</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Mensaje</th>
+                        <th>Fecha</th>
                       </thead>
                       <tbody id="bodyThreadMsgTable">
                       </tbody>
@@ -443,7 +445,7 @@
                     <input type="hidden" id="phoneSendThread" value="">
 
                     <textarea cols="12" rows="1" name='textSend' id="textSendThread" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea><br>
-                    <button type="button" class="btn btn-success" id="sendMessageFromThread" data-dismiss="modal">Enviar</button>
+                    <button type="button" class="btn btn-primary" id="sendMessageFromThread" data-dismiss="modal">Enviar</button>
                   </div>
 
                   <div class="tab-pane fade" id="regitryContent" role="tabpanel" aria-labelledby="registryTab">
@@ -453,7 +455,9 @@
                                 <div class="form-group">
                                   <table class="table table-compressed" id="messagesTable">
                                       <thead>
-                                      <th>Tel</th><th style="text-align: left">Mensaje</th><th style="text-align: center">Acciones</th>
+                                      <th>Tel</th>
+                                      <th>Mensaje</th>
+                                      <th>Acciones</th>
                                     </thead>
                                     <tbody id="cuerpoTabla">
 
@@ -473,7 +477,7 @@
                                         <textarea cols="19" rows="2" name='textSend' id="textSend" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <button id="sendMessage" type="button" name="Enviar" class="btn btn-success">Enviar</button>
+                                        <button id="sendMessage" type="button" name="Enviar" class="btn btn-primary">Enviar</button>
                                         &nbsp;&nbsp;&nbsp;<label for="newSMS">Nuevos:&nbsp;</label><label id="newSMS">0</label>
                                     </div>
                                 </div>
@@ -496,41 +500,47 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title">Facebook chat</h1>
+                    <h1 class="modal-title">
+                        <span class="icon icon-solid-fb-chat"></span>Facebook chat
+                    </h1>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container-fluid">
-                      <form role="form">
-                            <div class="row">
-                              <div class="col-md-5">
-                                <div class="form-group">
-                                  <table class="table table-compressed" id="messagesTable">
-                                      <thead>
-                                      <th style="text-align: left">Conversaciones</th>
-                                    </thead>
-                                    <tbody id="cuerpoTablaFb">
-                                    </tbody>
-                                    <tr>
-                                    </tr>
-                                  </table>
+                    <div>
+                        <table class="table table-compressed" id="messagesTable">
+                            <thead>
+                            <th>Conversaciones</th>
+                          </thead>
+                          <tbody id="cuerpoTablaFb">
+                          </tbody>
+                          <tr>
+                          </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <form role="form">
+                              <div class="chatWindow">
+                                  <div id="messagesFb"></div>
+                              </div>
+                              <div class="chatWindowActions">
+                                <div>
+                                    <textarea cols="42" rows="1" name='textSend' id="textSendFb" placeholder="Escribe un mensaje..." class="form-control" required></textarea>                     
                                 </div>
-                              </div>
-                              <div class="col-md-6">
-                                      <div class="col-md-4 chatWindowFb">
-                                        <hr>
-                                          <div id="messagesFb"></div>
-                                      </div>
-                                      <div class="form-inline">
-                                        <textarea cols="42" rows="1" name='textSend' id="textSendFb" placeholder="El contenido de tu mensaje aqui..." class="form-control" required></textarea>
-                                        <button id="sendMessageFb" type="button" name="Enviar" class="btn btn-sm btn-primary">Enviar</button>
-                                        <button id="endDialogFb" type="button" name="" class="btn btn-sm btn-warning">Fin</button>
+                                <div>
+                                    <button id="sendMessageFb" type="button" name="Enviar" class="btn btn-primary">Enviar</button>
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownFbActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          <span class="icon icon-cog"></span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownFbActions">
+                                            <button id="endDialogFb" class="dropdown-item" type="button">Fin</button>
+                                        </div>
                                     </div>
-                              </div>
-                          </div>
-                      </form>
+                                </div>
+                            </div>
+                          </form>                      
                     </div>
                 </div>
             </div>
@@ -543,7 +553,7 @@
             <!-- Modal content-->
             <div class="modal-content">
               <div class="modal-body">
-              	&nbsp;<label class="infoAjax" id="infoAjax"></label>
+              	<label class="infoAjax" id="infoAjax"></label>
               </div>
             </div>
           </div>
@@ -555,7 +565,6 @@
         <nav id="navBar">
             <ul id="navMainMenu" class="list-unstyled">
                 <li class="main-menu-li">
-                  <span class="fas fa-phone-slash"></span>
                     <span class="icon icon-notebook"></span>
                     <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">Contactos</a>
                     <ul class="collapse list-unstyled submenu" id="menuContacts" data-parent="#navMainMenu">
@@ -643,15 +652,15 @@
                 <div id="timers">
                     <span id="operationTime" class="label label-default">
                         Operación:
-                        <label id="horaO"></label><label id="minsO"></label><label id="segsO"></label>
+                        <span id="horaO"></span><span id="minsO"></span><span id="segsO"></span>
                     </span>
                     <span id="pauseTime" class="label label-default">
                         Pausa:
-                        <label id="horaP"></label><label id="minsP"></label><label id="segsP"></label>
+                        <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
                     </span>
                     <span id="sumTime" class="label label-default">
                         Total:
-                        <label id="horaT"></label><label id="minsT"></label><label id="segsT"></label>
+                        <span id="horaT"></span><span id="minsT"></span><span id="segsT"></span>
                     </span>
                 </div>
                 <div id="timersControls">
