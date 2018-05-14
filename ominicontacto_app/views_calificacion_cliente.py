@@ -7,6 +7,7 @@ Vistas para manejar CalificacionCliente y los Formularios asociados a la Gestion
 from __future__ import unicode_literals
 
 import json
+import logging as logging_
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -15,16 +16,17 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
+from django.views.decorators.csrf import csrf_exempt
+
+from simple_history.utils import update_change_reason
+
+from ominicontacto_app.forms import (CalificacionClienteForm,
+                                     FormularioContactoCalificacion, FormularioVentaFormSet)
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
     WombatLog, OpcionCalificacion, UserApiCrm)
-from ominicontacto_app.forms import (CalificacionClienteForm,
-                                     FormularioContactoCalificacion, FormularioVentaFormSet)
-from django.views.decorators.csrf import csrf_exempt
-from ominicontacto_app.utiles import convertir_ascii_string
 from ominicontacto_app.services.wombat_call_service import WombatCallService
-
-import logging as logging_
+from ominicontacto_app.utiles import convertir_ascii_string
 
 
 logger = logging_.getLogger(__name__)
@@ -198,6 +200,9 @@ class CalificacionClienteFormView(FormView):
             self.object_calificacion.es_calificacion_manual = es_calificacion_manual
 
         self.object_calificacion.save()
+        # modificamos la entrada de la modificación en la instancia para así diferenciar
+        # cambios realizados directamente desde una llamada de las otras modificaciones
+        update_change_reason(self.object_calificacion, self.kwargs.get('from'))
 
         # Finalizar relacion de contacto con agente
         # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
@@ -214,7 +219,6 @@ class CalificacionClienteFormView(FormView):
             message = 'Operación Exitosa!\
                         Se llevó a cabo con éxito la calificacion del cliente'
             messages.success(self.request, message)
-
         if self.object_calificacion.es_agenda():
             return redirect(self.get_success_url_agenda())
         elif self.kwargs['from'] == 'reporte':
@@ -250,7 +254,8 @@ class CalificacionClienteFormView(FormView):
                        kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id,
                                "wombat_id": self.wombat_id,
-                               "id_agente": self.agente.id})
+                               "id_agente": self.agente.id,
+                               "from": "recalificacion"})
 
 
 @csrf_exempt

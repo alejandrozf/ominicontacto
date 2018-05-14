@@ -53,12 +53,17 @@
 {% with graficos_estadisticas=graficos_estadisticas %}
 
 <h1>Campaña: {{campana.nombre}}</h1>
-{% if graficos_estadisticas.estadisticas.llamadas_realizadas != None %}
 <div class="form-row">
-    <h3 class="col-md-6">{% trans 'Llamadas Pendientes' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</strong></h3>
-    <h3 class="col-md-6">{% trans 'Llamadas Realizadas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</strong></h3>
+    {% if graficos_estadisticas.estadisticas.llamadas_pendientes != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Pendientes' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</strong></h3>
+    {% endif %}
+    {% if graficos_estadisticas.estadisticas.llamadas_realizadas != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Realizadas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</strong></h3>
+    {% endif %}
+    {% if graficos_estadisticas.estadisticas.llamadas_recibidas != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Recibidas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_recibidas}}</strong></h3>
+    {% endif %}
 </div>
-{% endif %}
 <br>
 <div>
     <a class="btn btn-primary" href="{% url 'campana_reporte_pdf' campana.pk %}" target="_blank">{% trans 'Exportar Reporte(PDF)' %}</a>
@@ -157,7 +162,7 @@
         </div>
     </div>
     <div>
-        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">Exportar Reporte llamadas(CSV)</a>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">Exportar Reporte llamadas no atendidas(CSV)</a>
     </div>
     <br>
 </div>

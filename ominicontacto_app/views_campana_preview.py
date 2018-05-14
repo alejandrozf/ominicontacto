@@ -18,13 +18,12 @@ from django.views.generic import ListView, View, DetailView, DeleteView
 
 from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
                                      ParametroExtraParaWebformFormSet)
-from ominicontacto_app.models import AgenteEnContacto, CalificacionCliente, Campana
+from ominicontacto_app.models import AgenteEnContacto, Campana
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
                                                       CampanaTemplateCreateCampanaMixin,
                                                       CampanaTemplateDeleteMixin)
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView
-from ominicontacto_app.views_campana_dialer_reportes import CampanaDialerReporteGrafico
 from ominicontacto_app.views_campana_manual_creacion import (CampanaManualCreateView,
                                                              CampanaManualUpdateView)
 from ominicontacto_app.views_campana_manual import CampanaManualListView, CampanaManualDeleteView

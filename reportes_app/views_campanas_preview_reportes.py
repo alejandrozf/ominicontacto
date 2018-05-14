@@ -16,9 +16,9 @@ class CampanaPreviewDetailView(DetailView):
     template_name = 'campana_preview/detalle.html'
     model = Campana
 
-    def _crear_dict_categorias(self, count_ventas, finalizadas_categorias_count_dict):
-        # se contabilizan juntas las calificaciones con la etiqueta 'Ventas
-        # y las que tienen el atributo 'is_venta' igual a True, pero no poseen etiqueta
+    def _crear_dict_categorias(self, count_gestiones, finalizadas_categorias_count_dict):
+        # se contabilizan juntas las calificaciones de tipo gestión con la etiqueta
+        # 'Gestion'
         counts_categorias = defaultdict(int)
 
         for cat_data in finalizadas_categorias_count_dict:
@@ -27,7 +27,7 @@ class CampanaPreviewDetailView(DetailView):
             if cat_count > 0:
                 counts_categorias[cat_name] = cat_count
 
-        counts_categorias['Venta'] += count_ventas
+        counts_categorias['Gestión'] += count_gestiones
 
         return dict(counts_categorias)
 
@@ -45,16 +45,16 @@ class CampanaPreviewDetailView(DetailView):
         context['estimadas'] = campana.bd_contacto.contactos.count() - context['terminadas']
 
         if context['terminadas']:
-            qs_finalizadas_ventas = qs_campana_calificaciones.filter(
+            qs_finalizadas_gestiones = qs_campana_calificaciones.filter(
                 opcion_calificacion__tipo=OpcionCalificacion.GESTION)
             qs_finalizadas_otras_categorias = qs_campana_calificaciones.exclude(
                 opcion_calificacion__tipo=OpcionCalificacion.GESTION)
 
-            finalizadas_ventas_count = qs_finalizadas_ventas.count()
+            finalizadas_gestiones_count = qs_finalizadas_gestiones.count()
             finalizadas_otras_categorias_count_dict = qs_finalizadas_otras_categorias.values(
                 'opcion_calificacion__nombre').annotate(Count('opcion_calificacion__nombre'))
             cats_dict = self._crear_dict_categorias(
-                finalizadas_ventas_count, finalizadas_otras_categorias_count_dict)
+                finalizadas_gestiones_count, finalizadas_otras_categorias_count_dict)
             context['categorias'] = cats_dict
 
         return context

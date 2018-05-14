@@ -12,8 +12,10 @@ import os
 import json
 
 from django.conf import settings
-from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
+from django.utils.timezone import localtime
+
+from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 
 logger = logging.getLogger(__name__)
@@ -55,16 +57,15 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Telefono")
+            encabezado.append("Fecha-Hora Contacto")
+            encabezado.append("Agente")
+            encabezado.append("Tel status")
+            encabezado.append("Tel contactado")
             nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append("Calificado")
-            encabezado.append("Fecha-Hora Contacto")
-            encabezado.append("Tel status")
-            encabezado.append("Tel contactado")
             encabezado.append("Observaciones")
-            encabezado.append("Agente")
             encabezado.append("base de datos")
 
             # Creamos csvwriter
@@ -80,18 +81,16 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones = []
 
                 # --- Buscamos datos
-
+                calificacion_fecha_local = localtime(calificacion.fecha)
+                lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
+                lista_opciones.append(calificacion.agente)
+                lista_opciones.append("Contactado")
                 lista_opciones.append(calificacion.contacto.telefono)
-
                 datos = json.loads(calificacion.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
-                lista_opciones.append(calificacion.fecha.strftime("%Y/%m/%d %H:%M:%S"))
-                lista_opciones.append("Contactado")
-                lista_opciones.append(calificacion.contacto.telefono)
                 lista_opciones.append(calificacion.observaciones)
-                lista_opciones.append(calificacion.agente)
                 lista_opciones.append(calificacion.contacto.bd_contacto)
 
                 # --- Finalmente, escribimos la linea
@@ -107,19 +106,13 @@ class ArchivoDeReporteCsv(object):
 class ReporteCampanaService(object):
 
     def crea_reporte_csv(self, campana):
-        #assert campana.estado == Campana.ESTADO_ACTIVA
-
         archivo_de_reporte = ArchivoDeReporteCsv(campana)
 
         archivo_de_reporte.crear_archivo_en_directorio()
 
-        #opciones_por_contacto = self._obtener_opciones_por_contacto(campana)
-
         archivo_de_reporte.escribir_archivo_csv(campana)
 
     def obtener_url_reporte_csv_descargar(self, campana):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
-
         archivo_de_reporte = ArchivoDeReporteCsv(campana)
         if archivo_de_reporte.ya_existe():
             return archivo_de_reporte.url_descarga

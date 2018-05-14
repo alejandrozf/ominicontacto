@@ -96,7 +96,7 @@ class TiemposAgente(object):
                             agente_nuevo._tiempo_sesion = resta
                     else:
                         agente_nuevo = AgenteTiemposReporte(
-                            agente, resta, 0, 0, 0, 0)
+                            agente, resta, 0, 0, 0, 0, 0, 0)
                         self.agentes_tiempo.append(agente_nuevo)
                     agente_nuevo = None
                     is_remove = False
@@ -138,7 +138,7 @@ class TiemposAgente(object):
                             agente_nuevo._tiempo_pausa = resta
                     else:
                         agente_nuevo = AgenteTiemposReporte(
-                            agente, None, resta, 0, 0, 0)
+                            agente, None, resta, 0, 0, 0, 0, 0)
                         self.agentes_tiempo.append(agente_nuevo)
                     agente_nuevo = None
                     is_unpause = False
@@ -170,7 +170,7 @@ class TiemposAgente(object):
                 agente_nuevo._tiempo_llamada = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, int(log[1]), 0, 0)
+                    agente, None, None, int(log[1]), 0, 0, 0, 0)
                 self.agentes_tiempo.append(agente_nuevo)
 
     def calcular_cantidad_llamadas(self, agentes, fecha_inferior, fecha_superior):
@@ -196,7 +196,7 @@ class TiemposAgente(object):
                 agente_nuevo._cantidad_llamadas_procesadas = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, 0, 0, logs_time.count(), 0)
+                    agente, None, 0, 0, logs_time.count(), 0, 0, 0)
                 self.agentes_tiempo.append(agente_nuevo)
 
     def calcular_intentos_fallidos(self, agentes, fecha_inferior, fecha_superior):
@@ -224,7 +224,7 @@ class TiemposAgente(object):
                 agente_nuevo._cantidad_intentos_fallidos = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, 0, 0, 0, int(log[1]))
+                    agente, None, 0, 0, 0, int(log[1]), 0, 0)
                 self.agentes_tiempo.append(agente_nuevo)
 
     def calcular_tiempo_pausa_tipo(self, agentes, fecha_inferior, fecha_superior):

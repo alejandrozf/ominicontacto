@@ -70,13 +70,13 @@ class ArchivoDeReportePDF(object):
         self.cabecera(pdf, campana)
 
         self.tabla_calificacion(pdf, estadisticas['dict_campana_counter'],
-                                estadisticas['total_asignados']
-                                )
-        self.tabla_no_atendidos(pdf, estadisticas['dict_no_atendido_counter'],
-                                estadisticas['total_no_atendidos']
-                                )
-
+                                estadisticas['total_asignados'])
         pdf.showPage()
+
+        self.tabla_no_atendidos(pdf, estadisticas['dict_no_atendido_counter'],
+                                estadisticas['total_no_atendidos'])
+        pdf.showPage()
+
         self.tabla_agente(pdf, estadisticas['agentes_venta'],
                           estadisticas['calificaciones'])
         pdf.showPage()
@@ -107,11 +107,11 @@ class ArchivoDeReportePDF(object):
         pdf.setFont("Helvetica", 10)
         pdf.drawString(0.75 * inch, 740, u"Cantidad por calificacion")
         # Establecemos el tamaño de la hoja que ocupará la tabla
-        detalle_orden.wrapOn(pdf, 50, 50)
+        detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
-        # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 7.1 * inch)
+        # 6.75 mas cercano del margen TOP
+        detalle_orden.drawOn(pdf, 0.75 * inch, 8.75 * inch)
         archivo_imagen = settings.MEDIA_ROOT + \
             '/reporte_campana/barra_campana_calificacion.png'
 
@@ -140,17 +140,17 @@ class ArchivoDeReportePDF(object):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75 * inch, 430, u"Cantidad de llamados no atendidos")
+        pdf.drawString(0.75 * inch, 740, u"Cantidad de llamados no atendidos")
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
-        # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 4.3 * inch)
+        # 6.75 mas cercano del margen TOP
+        detalle_orden.drawOn(pdf, 0.75 * inch, 6.75 * inch)
         archivo_imagen = settings.MEDIA_ROOT + \
             '/reporte_campana/barra_campana_no_atendido.png'
 
-        pdf.drawImage(archivo_imagen, 4 * inch, 3.5 * inch, 250, 200,
+        pdf.drawImage(archivo_imagen, 4 * inch, 7.5 * inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
 
     def tabla_agente(self, pdf, agentes_venta, nombres_calificaciones):
@@ -179,13 +179,12 @@ class ArchivoDeReportePDF(object):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        # pdf.drawString(0.75*inch, 9 * inch, u"Calificaciones por agente")
         # Establecemos el tamaño de la hoja que ocupará la tabla
-        detalle_orden.wrapOn(pdf, 50, 50)
+        detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
-        # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 300)
+        # 6.75 mas cercano del margen TOP
+        detalle_orden.drawOn(pdf, 0.75 * inch, 9.75 * inch)
 
     def ya_existe(self):
         return os.path.exists(self.ruta)

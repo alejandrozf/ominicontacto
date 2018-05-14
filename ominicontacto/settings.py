@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'formtools',
     'widget_tweaks',
     'reportes_app',
+    'simple_history',
 ]
 
 MIDDLEWARE_CLASSES = [

@@ -4,72 +4,10 @@
 
 from __future__ import unicode_literals
 
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from ominicontacto_app.models import Campana, OpcionCalificacion
-from django.views.generic import UpdateView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.services.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
-
-
-class ExportaReporteNoAtendidosView(UpdateView):
-    """
-    Esta vista invoca a generar un csv de reporte de la campana.
-    """
-
-    model = Campana
-    context_object_name = 'campana'
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        service_csv = ReporteCampanaContactadosCSV()
-        url = service_csv.obtener_url_reporte_csv_descargar(
-            self.object, "no_atendidos")
-
-        return redirect(url)
-
-
-class ExportaReporteCalificadosView(UpdateView):
-    """
-    Esta vista invoca a generar un csv de reporte de la campana.
-    """
-
-    model = Campana
-    context_object_name = 'campana'
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        service_csv = ReporteCampanaContactadosCSV()
-        url = service_csv.obtener_url_reporte_csv_descargar(
-            self.object, "calificados")
-
-        return redirect(url)
-
-
-class ExportaReporteContactadosView(UpdateView):
-    """
-    Esta vista invoca a generar un csv de reporte de la campana.
-    """
-
-    model = Campana
-    context_object_name = 'campana'
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        service_csv = ReporteCampanaContactadosCSV()
-        url = service_csv.obtener_url_reporte_csv_descargar(
-            self.object, "contactados")
-
-        return redirect(url)
 
 
 class CampanaDialerDetailView(DetailView):
