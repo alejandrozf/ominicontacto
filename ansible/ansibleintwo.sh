@@ -145,7 +145,7 @@ while true; do
         tag=$tag
         break
     else
-        if [ $nva_tag == "postinstall" ] || [ $nva_tag == "all" ]; then
+        if [ $nva_tag == "postinstall" ] || [ $nva_tag == "all" ] || [ $nva_tag == "asterisk" ] || [ $nva_tag == "kamailio" ]; then
             tag=$nva_tag
             break
         else

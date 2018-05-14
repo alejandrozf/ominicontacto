@@ -17,33 +17,33 @@
   command: test -d /etc/asterisk
   ignore_errors: true
   register: asterisk_etc_installed
-  tags: postinstall
+  tags: ['postinstall','asterisk']
   become: true
   become_method: sudo
 
 - set_fact: asterisk_location={{ install_prefix }}asterisk
   when: asterisk_etc_installed|failed
-  tags: postinstall
+  tags: ['postinstall','asterisk']
 
 - set_fact: asterisk_location=
   when: asterisk_etc_installed|succeeded
-  tags: postinstall
+  tags: ['postinstall','asterisk']
 
 - name: Check if Kamailio is installed in /opt
   command: test -d /opt/kamailio
   ignore_errors: true
   register: kamailio_opt_installed
-  tags: postinstall
+  tags: ['postinstall','kamailio']
   become: true
   become_method: sudo
 
 - set_fact: kamailio_location={{ install_prefix }}kamailio
   when: kamailio_opt_installed|failed
-  tags: postinstall
+  tags: ['postinstall','kamailio']
 
 - set_fact: kamailio_location=
   when: kamailio_opt_installed|succeeded
-  tags: postinstall
+  tags: ['postinstall','kamailio']
 
 - name: Creation of {{ usuario }} group
   group: name={{ usuario }} state=present
