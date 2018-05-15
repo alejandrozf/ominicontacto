@@ -1,5 +1,5 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
+//include $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
 include_once entities . '/Phpagi_asmanager.php';
 
 class Agente_Model {
@@ -15,9 +15,10 @@ class Agente_Model {
     }
 
     function getAgents($campName) {
-        $sql = "SELECT AP.id, AP.sip_extension, AP.grupo_id, AP.user_id
+        $sql = "SELECT AP.id, AU.username, AP.sip_extension, AP.grupo_id, AP.user_id
         FROM ominicontacto_app_agenteprofile AP JOIN ominicontacto_app_campana AC
-        ON AP.is_inactive = 'f' AND AP.borrado = 'f' AND AC.nombre LIKE :cpname AND AP.reported_by_id = AC.reported_by_id";
+        ON AP.reported_by_id = AC.reported_by_id JOIN ominicontacto_app_user AU ON AP.user_id = AU.id
+        AND  AP.is_inactive = 'f' AND AP.borrado = 'f' AND AC.nombre LIKE :cpname";
         try {
           $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
           $query = $cnn->prepare($sql);
@@ -30,7 +31,7 @@ class Agente_Model {
         }
         return $result;
     }
-    //function getCampaign($CampName) {
+
     function getAgentStatus($agentId) {
         try {
             $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASWORD);
@@ -38,8 +39,8 @@ class Agente_Model {
             return "problemas de Conexion AMI: " . $ex;
         }
         $this->agi->Events('off');
-        $this->command = "database show OML/AGENT/" . $agt . "/STATUS";
-        $data = $this->agi->Command($this->command);
+        $this->command = "OML/AGENT/" . $agentId . "/STATUS";
+        $data = $this->agi->database_show($this->command);
         return $data;
     }
 
@@ -100,6 +101,3 @@ class Agente_Model {
         $this->agi->disconnect();
     }
 }
-$a = new Agente_Model();
-$res = $a->getAgents("IN01");
-var_dump($res);

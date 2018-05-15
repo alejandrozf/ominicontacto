@@ -1,7 +1,6 @@
 <?php
-
+include $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
 include models . '/Campana_Model.php';
-include entities. '/QueueMember.php';
 include entities. '/NumState.php';
 
 class Campana {

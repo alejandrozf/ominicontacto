@@ -1,5 +1,6 @@
 <?php
-
+include $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
+include entities. '/QueueMember.php';
 include models . '/Agente_Model.php';
 
 class Agente {
@@ -14,56 +15,45 @@ class Agente {
 
     function traerAgentes($campName) {
         $result = $this->Agente_Model->getAgents($campName);
-        return $result;
-        // $arrClaves = $arrExtSip = $arrUserId = $arrGrupoId = array();
-        // foreach ($result as $clave => $valor) {
-        //     if ($clave == "id") {
-        //         $arrClaves[] = 2;
-        //     }
-        //     if ($clave == "sip_extension") {
-        //         $arrExtSip[] = $valor;
-        //     }
-        //     if ($clave == "grupo_id") {
-        //         $arrGrupoId[] = $valor;
-        //     }
-        //     if ($clave == "user_id") {
-        //         $arrUserId[] = $valor;
-        //     }
-        // }
-        // $arrResult['ids'] = $arrClaves;
-        // $arrResult['extesiones'] = $arrExtSip;
-        // $arrResult['ids_grupo'] = $arrGrupoId;
-        // $arrResult['ids_user'] = $arrUserId;
-        // return $arrResult;
+        $arrClaves = $arrUsername = $arrUserId = $arrGrupoId = array();
+        foreach ($result as $clave => $valor) {
+            if(is_array($valor)) {
+                foreach ($valor as $key => $value) {
+                    if ($key == "id") {
+                        $arrClaves[] = $value;
+                    }
+                    if ($key == "username") {
+                        $arrUsername[] = $value;
+                    }
+                    if ($key == "grupo_id") {
+                        $arrGrupoId[] = $value;
+                    }
+                    if ($key == "user_id") {
+                        $arrUserId[] = $value;
+                    }
+                }
+            }
+        }
+        $arrResult['ids'] = $arrClaves;
+        $arrResult['nombres_usuario'] = $arrUsername;
+        $arrResult['ids_grupo'] = $arrGrupoId;
+        $arrResult['ids_user'] = $arrUserId;
+        return $arrResult;
     }
 
 
     function traerEstadoAgente($idAgent) {
-        $agente = $this->Agente_Model->getAgentStatus($idAgent);
-        return $agente;
-      	// $rawArrayData = array();
-      	// $agente = explode(PHP_EOL, $agente);
-      	// foreach($agente as $clave => $valor) {
-      	//     $Qm = new QueueMember();
-      	//     $valor = explode("(", $valor);
-      	//     $name = str_replace(")","",$valor[0]);
-      	//     if($name) {
-      	//         $Qm->setName($name);
-      	//     }
-      	//     $val = explode(" ", $valor[1]);
-      	//     $exten = str_replace("SIP/","",$val[0]);
-      	//     if($exten) {
-      	//         $Qm->setExten($exten);
-      	//     }
-      	//     $val = str_replace("(","",$valor[2]);
-      	//     $val = str_replace(")","",$valor[2]);
-      	//     $status = $val;
-      	//     if($status) {
-      	//         $Qm->setStatus($status);
-      	//     }
-      	//     $rawArrayData[] = $Qm;
-      	// }
-        // return $rawArrayData;
+        $statusResult = $this->Agente_Model->getAgentStatus($idAgent);
+      	$rawArrayData = array();
+      	foreach($statusResult as $clave => $valor) {
+      	    $Qm = new QueueMember();
+      	    $valor = explode(":", $valor);//settear nombre y extension
+      	    $Qm->setStatus($valor[0]);
+            $Qm->setTime($valor[1]);
+            $Qm->setId($idAgent);
+      	    $rawArrayData[] = $Qm;
+      	}
+        return $rawArrayData;
     }
 
     function traerTipoPausa($agent) {
@@ -97,3 +87,6 @@ class Agente {
     }
 
 }
+// $aa = new Agente();
+// $res = $aa->traerEstadoAgente(9);
+// var_dump($res);
