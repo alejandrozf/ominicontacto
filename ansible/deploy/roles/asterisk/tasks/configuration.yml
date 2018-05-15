@@ -143,7 +143,7 @@
   become_method: sudo
 
 - name: Link the conversor.sh file
-  file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/extra-files/conversor.sh dest=/usr/local/parselog/conversor.sh owner={{ usuario }} group={{ usuario }} mode=755
+  template: src=templates/conversor.sh dest=/usr/local/parselog/conversor.sh owner={{ usuario }} group={{ usuario }} mode=755
   when: asterisk_location != ""
 
 - name: Asterisk crontab modification

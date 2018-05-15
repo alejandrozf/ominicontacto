@@ -6,14 +6,15 @@ Lame="`which lame`"
 Ano="`${Date} +%Y -d today`"
 Mes="`${Date} +%m -d today`"
 Dia="`${Date} +%d -d yesterday`"
-Convertir=0
-Mover_interno=0
-Mover_externo=0
-IP="172.16.20.12"
+Convertir=$1
+Mover_interno=$2
+Mover_externo=$3
+IP=$4
+Path_remoto=$5
 
 #Path donde estan las grabaciones en .wav, verlo en el nginx.conf, alias grabaciones
-Path_origen=/opt/omnileads/asterisk/var/spool/asterisk/monitor
-Path_destino=/opt/omnileads/asterisk/var/spool/asterisk/oml
+Path_origen={{ asterisk_location }}/var/spool/asterisk/monitor
+Path_destino={{ asterisk_location }}/var/spool/asterisk/oml
 
 if [ ! -d ${Path_destino} ]; then
     mkdir -p ${Path_destino}
@@ -40,7 +41,6 @@ if [ $Convertir == 1 ]; then
 
     for File in ${Files};do
         if [ -f $Lame ]; then
-            #$Lame --silent -m m -b 8 --tt ${NombreSinMP3}.${sufijo} --add-id3v2 ${File} ${NombreSinMP3}.${sufijo}
             Sufijo="`ls ${File}|cut -d "." -f 3,3`"
             if [ $Sufijo == "mp3" ]; then
                 echo -n
@@ -62,9 +62,9 @@ if [ $Mover_interno == 1 ] || [ $Mover_interno == 0 ]; then
     cd ${Path_origen}
     Files="`ls -ltr|awk '{print $9}'`"
     for File in ${Files};do
-        if [ $Mover_externo == 1 ]; then
-                ssh-copy-id -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$IP
-            scp ${Path_origen}/${File} root@${IP}:${Path_destino}/${Ano}-${Mes}-${Dia}
+        if [ $Mover_externo == 1 ] && [ -z "$4" ] && [ -z "$5" ]; then
+            ssh-copy-id -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$IP
+            scp ${Path_origen}/${File} root@${IP}:${Path_remoto}
             ResultadoCopia=`echo $?`
                 if [ ${ResultadoCopia} -ne 0 ];then
                     echo "Falló al copiar el audio, favor verificar conexion o si la carpeta destino existe"
@@ -73,6 +73,7 @@ if [ $Mover_interno == 1 ] || [ $Mover_interno == 0 ]; then
                     rm -rf $File
                 fi
         else
+            echo  "no se especificó IP o path remoto, se procede a hacer copiado interno"
             cd ${Path_destino}
             Fecha="${Ano}-${Mes}-${Dia}"
             if [ ! -d ${Fecha} ]; then
@@ -90,5 +91,6 @@ if [ $Mover_interno == 1 ] || [ $Mover_interno == 0 ]; then
         fi
     done
 fi
+
 echo "Se realizó el procedimiento con éxito"
 echo "Fin: "`${Date} +%A\ %d\ "de"\ %B\ "de"\ %Y\ %T\ %Z"."`

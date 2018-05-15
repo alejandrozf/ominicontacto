@@ -9,30 +9,13 @@ Backup() {
 
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup
 
-    #System Files
-    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cd /etc/systemd/system
-    cp kamailio.service rtpengine.service /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cp /etc/default/kamailio /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cd /etc/init.d
-    cp asterisk ominicontacto-daemon /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cp /etc/nginx/nginx.conf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cp /etc/nginx/conf.d/* /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cp /etc/sysconfig/rtpengine /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cp /etc/pki/tls/openssl.cnf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cp /etc/rsyslog.conf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cp /var/lib/pgsql/9.6/data/pg_hba.conf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    cp /etc/logrotate.d/omnileads /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files/*
-    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/system-files
-
     #Asterisk Files
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
     cp -L {{ asterisk_location }}/etc/asterisk/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
     cp {{ asterisk_location }}/var/lib/asterisk/agi-bin/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
-    cd {{ asterisk_location }}/var/lib/asterisk/sounds/ /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
+    cp {{ asterisk_location }}/var/lib/asterisk/sounds/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
     cp /usr/local/parselog/conversor.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/*
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/
@@ -45,13 +28,13 @@ Backup() {
 
     #Django Files
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/django
-    rsync -L -av --exclude=asterisk --exclude=kamailio --exclude=virtualenv {{ install_prefix }}/ /tmp/omnileads-backup/$FECHA-omnileads-backup/django
+    rsync -L -av --exclude=asterisk --exclude=kamailio --exclude=virtualenv --exclude=backup {{ install_prefix }}/ /tmp/omnileads-backup/$FECHA-omnileads-backup/django
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/django.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/django/.
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/django
 
     #Databases
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database
-    pg_dump -Fc -U kamailio -w -h 127.0.0.1 kamailio > /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup.sql
+    pg_dump -U kamailio -w -h 127.0.0.1 kamailio -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup.sql
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/*
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/
 
@@ -59,18 +42,51 @@ Backup() {
     mkdir -p {{ install_prefix }}/backup
     #tar czvf $FECHA-omnileads-backup.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/
     cd /tmp/omnileads-backup && tar czvf $FECHA-omnileads-backup.tgz $FECHA-omnileads-backup
-    mv /tmp/omnileads-backup/$FECHA-omnileads-backup.tgz {{ install_prefix }}/backup
+    mv /tmp/omnileads-backup/$FECHA-omnileads-backup.tgz {{ install_prefix }}backup
     rm -rf /tmp/omnileads-backup/
     }
 
 Restore() {
-    echo -n
+    set -e
+    ARRAY=(asterisk.tgz django.tgz kamailio.tgz postgres_database.tgz)
+    tar_backup=$1
+    tar_directory=`echo $1 | awk -F "." '{print $1}'`
+    cd {{ install_prefix }}backup
+    tar xzvf $tar_backup
+    cd $tar_directory
+    for counter in {0..3}; do
+        tar xzvf ${ARRAY[counter]}
+    done
+    cd tmp/omnileads-backup/$tar_directory/
+
+    #Restore of asterisk files
+    cd asterisk
+    cp -a agi-bin/* {{ asterisk_location }}/var/lib/asterisk/agi-bin/
+    cp -a etc/* {{ asterisk_location }}/etc/asterisk/
+    cp -a conversor.sh /usr/local/parselog
+    cp -a sounds/* {{ asterisk_location }}/var/lib/asterisk/sounds/
+
+    #Restore of kamailio files
+    cd ../kamailio/etc
+    cp -a certs {{ kamailio_location}}/etc/certs
+    cp -a kamailio {{ kamailio_location}}/etc/kamailio
+
+    #Restore of Django files
+    cd ../../django
+    cp -a * {{ install_prefix }}ominicontacto
+
+    #Restore of Database
+    cd ../postgres_database
+    psql -U kamailio -w -h 127.0.0.1 -d kamailio -f base_backup.sql
+
+    rm -rf /opt/omnileads/backup/tar_directory
+
 }
 
 while getopts "r:b" OPTION;do
 	case "${OPTION}" in
 		r) # Rama a deployar
-            Restore
+            Restore $OPTARG
 		;;
 		b) #Realizar pasos y agregar opciones preliminares
 		    Backup
