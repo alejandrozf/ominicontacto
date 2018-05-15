@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% load static %}
+
+{% block head_js %}
+<script type="text/javascript">
+  $(function() {
+    var date_format = 'DD/MM/YYYY';
+
+    function set_daterange_input_values(start, end) {
+        $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
+
+    $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format(date_format) + ' - ' + picker.endDate.format(date_format));
+    });
+
+    $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    // Init daterange plugin
+    $('#id_fecha').daterangepicker(
+      {
+
+        locale: {
+          format: date_format
+        },
+
+        ranges: {
+          'Hoy': [moment(), moment()],
+          'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+          'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+          'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+          'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+      },
+      set_daterange_input_values
+    );
+  });
+
+  function exportarReporte(tipo_reporte){
+    $('#tipo_reporte').val(tipo_reporte);
+    $('#exportar_reporte').submit();
+  };
+
+</script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<form id="exportar_reporte" action="{% url 'exportar_reporte_llamadas' %}" method="POST">
+    {% csrf_token %}
+    <input class="hidden" name="estadisticas" type="text" value="{{ estadisticas_json }}"/>
+    <input class="hidden" name="tipo_reporte" id="tipo_reporte" type="text" value=""/>
+</form>
+<div class="col-md-6">
+
+  <form role="form" method="post" enctype="multipart/form-data" >
+    {% csrf_token %}
+    <table class="table">
+      <tr>
+        <td>
+          <div class="input-group date pull-right active" id="">
+            {{form.fecha.errors}}
+            {{form.fecha}}
+            <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
+            </span>
+          </div>
+          <div>
+            {{form.finalizadas.label_tag}} {{form.finalizadas}}
+          </div>
+        </td>
+        <td>
+          <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+            {% trans 'Filtrar por esa fecha' %}
+          </button>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+</div>
+
+<div>
+  <h2>{% trans 'Período evaluado' %} {{desde|date:"d/m/Y"}} - {{hasta|date:"d/m/Y"}}</h2>
+</div>
+
+{% if user.get_is_administrador %}
+  <div>
+    <table class="table table-bordered">
+      <tr>
+        <td><strong>{% trans 'Total llamadas procesadas por OmniLeads' %}</strong></td>
+        <td width="10%">{{estadisticas.total_llamadas_procesadas}}</td>
+      </tr>
+    </table>
+
+    {% with llamadas_por_tipo=estadisticas.llamadas_por_tipo %}
+    <table class="table table-bordered">
+      <tr>
+        <td><strong>{% trans 'Tipos de llamadas salientes por Discador' %}</strong></td>
+        <td width="10%">{{llamadas_por_tipo.Dialer.total}}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas atendidas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Dialer.atendidas }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas no atendidas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Dialer.no_atendidas }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas perdidas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Dialer.perdidas }}</td>
+      </tr>
+    </table>
+    <table class="table table-bordered">
+      <tr>
+        <td><strong>{% trans 'Tipos de llamadas Entrantes' %}</strong></td>
+        <td width="10%">{{ llamadas_por_tipo.Entrante.total }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas atendidas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Entrante.atendidas }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas expiradas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Entrante.expiradas }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas abandonadas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Entrante.abandonadas }}</td>
+      </tr>
+    </table>
+    <table class="table table-bordered">
+      <tr>
+        <td><strong>{% trans 'Tipos de llamadas salientes Manuales' %}</strong></td>
+        <td width="10%">{{ llamadas_por_tipo.Manual.total }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas conectadas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Manual.conectadas }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas no conectadas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Manual.no_conectadas }}</td>
+      </tr>
+    </table>
+    <table class="table table-bordered">
+      <tr>
+        <td><strong>{% trans 'Tipos de llamadas salientes Preview' %}</strong></td>
+        <td width="10%">{{ llamadas_por_tipo.Preview.total }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas conectadas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Preview.conectadas }}</td>
+      </tr>
+      <tr>
+        <td>{% trans 'Cantidad de llamadas no conectadas' %}</td>
+        <td width="10%">{{ llamadas_por_tipo.Preview.no_conectadas }}</td>
+      </tr>
+    </table>
+
+    {% endwith %}
+    <button class="btn btn-outline-primary" onclick="exportarReporte('llamadas_por_tipo');">
+      {% trans 'Exportar totales llamadas(CSV)' %}
+    </button>
+
+<!--
+  <br>
+  <div>
+      <form action="{% url 'exportar_zip_reportes' %}" method="POST">
+          {% csrf_token %}
+          <input class="hidden" name="total_llamadas" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas_json }}"/>
+          <input class="hidden" name="llamadas_campanas" type="text" value="{{ graficos_estadisticas.dict_campana_counter_json }}"/>
+          <input class="hidden" name="llamadas_campanas_dialer" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_dialer_json }}"/>
+          <input class="hidden" name="llamadas_campanas_entrantes" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_entrantes_json }}"/>
+          <input class="hidden" name="llamadas_campanas_manuales" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_manuales_json }}"/>
+          <button class="btn btn-outline-primary">Exportar a CSV todos los reportes</button>
+          <br>
+      </form>
+  </div>
+-->
+  </div>
+  <br>
+{% endif %}
+
+  <hr>
+  <div>
+      <h2>{% trans 'Totales por tipos de llamadas' %}</h2>
+      <br>
+      <div class="form-row">
+          <div class="col-lg-6">
+            <h3>{% trans 'Totales de llamadas por tipo de llamada y forma de finalización' %}</h3>
+            <div class="graficos-avances">
+              <figure>
+                {{ graficos.barras_llamadas_por_tipo.render|safe }}
+              </figure>
+            </div>          
+          </div>
+          <div class="col-lg-6">
+            <h3>{% trans 'Porcentaje de llamadas por tipo de llamada' %}</h3>
+            <div class="graficos-avances">
+              <figure>
+                {{ graficos.torta_porcentajes_por_tipo.render|safe }}
+              </figure>
+            </div>          
+          </div>        
+      </div>      
+  </div>
+
+<hr>
+<div>
+  <h2>{% trans 'Cantidad de llamadas por campaña' %}</h2>
+  <br>
+  <div class="form-row">
+    <div class="col-lg-6">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{% trans 'Campaña' %}</th>
+            <th>{% trans 'Total' %}</th>
+            <th>{% trans 'Manuales' %}</th>
+            <th>{% trans 'Tipo' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for id, estadisticas_campana in estadisticas.llamadas_por_campana.items %}
+            <tr>
+              <td>{{ estadisticas_campana.nombre }}</td>
+              <td>{{ estadisticas_campana.total }}</td>
+              <td>{{ estadisticas_campana.manuales }}</td>
+              <td>{{ estadisticas_campana.tipo }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>         
+    </div>
+    <div class="col-lg-6">
+        <div class="graficos-avances">
+            <figure>
+                {{ graficos.barra_llamada_por_campana.render|safe }}
+            </figure>
+        </div>          
+    </div>
+  </div>      
+</div>
+    <button class="btn btn-outline-primary" onclick="exportarReporte('llamadas_por_campana');">
+      {% trans 'Exportar llamadas por campaña (CSV)' %}
+    </button>
+
+<hr>
+<div>
+  <div id="seccion-llamadas-dialer">
+    <h2>{% trans 'Distribución de tipos de llamadas en campañas salientes discador' %}</h2>
+    <br>
+    <div style="overflow: auto; height: 200px">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>{% trans 'Campaña' %}</th>
+            <th>{% trans 'Efectuadas' %}</th>
+            <th>{% trans 'Atendidas' %}</th>
+            <th>{% trans 'Conectadas' %}</th>
+            <th>{% trans 'Expiradas' %}</th>
+            <th>{% trans 'Abandonadas' %}</th>
+            <th>{% trans 'Tiempo de espera de conexión medio' %}</th>
+            <th>{% trans 'Tiempo de espera de atención medio' %}</th>
+            <th>{% trans 'Tiempo medio de abandono' %}</th>
+            <th>{% trans 'Manuales Efectuadas' %}</th>
+            <th>{% trans 'Manuales Conectadas' %}</th>
+            <th>{% trans 'Manuales no Conectadas' %}</th>
+            <th>{% trans 'Tiempo de espera de conexión medio Manuales' %}</th>
+          </tr>
+        </thead>
+        {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Dialer.items %}
+        <tr>
+          <td>{{ campana.nombre }}</td>
+          <td>{{ campana.efectuadas }}</td>
+          <td>{{ campana.atendidas }}</td>
+          <td>{{ campana.conectadas }}</td>
+          <td>{{ campana.expiradas }}</td>
+          <td>{{ campana.abandonadas }}</td>
+          <td>{{ campana.t_espera_conexion }}</td>
+          <td>{{ campana.t_espera_atencion }}</td>
+          <td>{{ campana.t_abandono }}</td>
+          <td>{{ campana.efectuadas_manuales }}</td>
+          <td>{{ campana.conectadas_manuales }}</td>
+          <td>{{ campana.no_conectadas_manuales }}</td>
+          <td>{{ campana.t_espera_conexion_manuales }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <div class="graficos-avances">
+      <figure>
+        {{ graficos.barra_campana_llamadas_dialer.render|safe }}
+      </figure>
+    <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_dialer');">
+      {% trans 'Exportar tipo de llamadas de Campañas Dialer (CSV)' %}
+    </button>
+    </div>
+  </div>
+</div>
+
+<hr>
+<div id="seccion-llamadas-entrantes">
+  <h2>{% trans 'Distribucion de tipos de llamadas en campañas entrantes' %}</h2>
+  <br>
+  <div style="overflow: auto; height: 200px">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>{% trans 'Nombre' %}</th>
+          <th>{% trans 'Recibidas' %}</th>
+          <th>{% trans 'Atendidas' %}</th>
+          <th>{% trans 'Expiradas' %}</th>
+          <th>{% trans 'Abandonadas' %}</th>
+          <th>{% trans 'Tiempo de espera de conexión medio' %}</th>
+          <th>{% trans 'Tiempo medio de abandono' %}</th>
+          <th>{% trans 'Manuales Efectuadas' %}</th>
+          <th>{% trans 'Manuales Conectadas' %}</th>
+          <th>{% trans 'Manuales no Conectadas' %}</th>
+          <th>{% trans 'Tiempo de espera de conexión medio Manuales' %}</th>
+        </tr>
+      </thead>
+      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Entrante.items %}
+      <tr>
+        <td>{{ campana.nombre }}</td>
+        <td>{{ campana.recibidas }}</td>
+        <td>{{ campana.atendidas }}</td>
+        <td>{{ campana.expiradas }}</td>
+        <td>{{ campana.abandonadas }}</td>
+        <td>{{ campana.t_espera_conexion }}</td>
+        <td>{{ campana.t_abandono }}</td>
+        <td>{{ campana.efectuadas_manuales }}</td>
+        <td>{{ campana.conectadas_manuales }}</td>
+        <td>{{ campana.no_conectadas_manuales }}</td>
+        <td>{{ campana.t_espera_conexion_manuales }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="graficos-avances">
+    <figure>
+      {{ graficos.barra_campana_llamadas_entrantes.render|safe }}
+    </figure>
+    <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_entrante');">
+      {% trans 'Exportar tipo de llamadas de Campañas Entrantes (CSV)' %}
+    </button>
+  </div>
+</div>
+
+<hr>
+<div id="seccion-llamadas-manuales">
+  <h2>{% trans 'Distribucion de tipos de llamadas en campañas manuales' %}</h2>
+  <br>
+  <div style="overflow: auto; height: 200px">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>{% trans 'Nombre' %}</th>
+          <th>{% trans 'Efectuadas' %}</th>
+          <th>{% trans 'Conectadas' %}</th>
+          <th>{% trans 'No Conectadas' %}</th>
+          <th>{% trans 'Tiempo de espera de conexión medio' %}</th>
+        </tr>
+      </thead>
+      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Manual.items %}
+      <tr>
+        <td>{{ campana.nombre }}</td>
+        <td>{{ campana.efectuadas }}</td>
+        <td>{{ campana.conectadas }}</td>
+        <td>{{ campana.no_conectadas }}</td>
+        <td>{{ campana.t_espera_conexion }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="graficos-avances">
+    <figure>
+      {{ graficos.barra_campana_llamadas_manuales.render|safe }}
+    </figure>
+    <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_manual');">
+      {% trans 'Exportar tipo de llamadas de Campañas Manuales (CSV)' %}
+    </button>
+  </div>
+</div>
+
+<hr>
+<div id="seccion-llamadas-preview">
+  <h2>{% trans 'Distribucion de tipos de llamadas en campañas Preview' %}</h2>
+  <br>
+  <div style="overflow: auto; height: 200px">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>{% trans 'Nombre' %}</th>
+          <th>{% trans 'Efectuadas' %}</th>
+          <th>{% trans 'Conectadas' %}</th>
+          <th>{% trans 'No Conectadas' %}</th>
+          <th>{% trans 'Tiempo de espera de conexión medio' %}</th>
+          <th>{% trans 'Manuales Efectuadas' %}</th>
+          <th>{% trans 'Manuales Conectadas' %}</th>
+          <th>{% trans 'Manuales no Conectadas' %}</th>
+          <th>{% trans 'Tiempo de espera de conexión medio Manuales' %}</th>
+        </tr>
+      </thead>
+      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Preview.items %}
+      <tr>
+        <td>{{ campana.nombre }}</td>
+        <td>{{ campana.efectuadas }}</td>
+        <td>{{ campana.conectadas }}</td>
+        <td>{{ campana.no_conectadas }}</td>
+        <td>{{ campana.t_espera_conexion }}</td>
+        <td>{{ campana.efectuadas_manuales }}</td>
+        <td>{{ campana.conectadas_manuales }}</td>
+        <td>{{ campana.no_conectadas_manuales }}</td>
+        <td>{{ campana.t_espera_conexion_manuales }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="graficos-avances">
+    <figure>
+      {{ graficos.barra_campana_llamadas_preview.render|safe }}
+    </figure>
+    <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_preview');">
+      {% trans 'Exportar tipo de llamadas de Campañas Preview (CSV)' %}
+    </button>
+  </div>
+</div>
+
+{% endblock %}
