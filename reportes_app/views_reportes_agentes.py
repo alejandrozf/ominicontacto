@@ -3,10 +3,12 @@
 from __future__ import unicode_literals
 
 from django.views.generic import FormView
+from django.shortcuts import redirect
 from ominicontacto_app.models import AgenteProfile, Grupo
 from reportes_app.forms import ReporteAgentesForm
 from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.reporte_agente_tiempos import TiemposAgente
+from reportes_app.reporte_agente_tiempos_csv import ReporteAgenteCSVService
 
 
 class ReportesTiemposAgente(FormView):
@@ -45,5 +47,19 @@ class ReportesTiemposAgente(FormView):
         tiempos_agentes = TiemposAgente()
         graficos_estadisticas = tiempos_agentes.generar_reportes(
             agentes, fecha_desde, fecha_hasta, self.request.user)
+
+        # generar reporte csv
+        reporte_csv = ReporteAgenteCSVService()
+        reporte_csv.crea_reporte_csv(graficos_estadisticas)
+
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
+
+
+def exporta_reporte_agente_llamada_view(request, tipo_reporte):
+    """
+    Esta vista invoca a generar un csv de reporte de los tiempos del agente
+    """
+    service = ReporteAgenteCSVService()
+    url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
+    return redirect(url)

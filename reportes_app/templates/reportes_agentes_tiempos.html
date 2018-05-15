@@ -187,7 +187,7 @@
     </tbody>
 </table>
 
-    <a class="btn btn-outline-primary" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='tiempos_agentes' %}">Exportar reporte de tiempos(CSV)</a>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='tiempos_agentes' %}">Exportar reporte de tiempos(CSV)</a>
 </div>
 <hr>
 <div>
@@ -213,7 +213,7 @@
 
     </tbody>
 </table>
-    <a class="btn btn-outline-primary" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='pausas_agentes' %}">Exportar reporte de pausas(CSV)</a>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='pausas_agentes' %}">Exportar reporte de pausas(CSV)</a>
 
 </div>
 <hr>
@@ -241,7 +241,7 @@
 
     </tbody>
 </table>
-<a class="btn btn-outline-primary" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_agentes' %}">Exportar reporte cantidad llamadas(CSV)</a>
+<a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_agentes' %}">Exportar reporte cantidad llamadas(CSV)</a>
 </div>
 <hr>
 <div>
@@ -282,7 +282,7 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-outline-primary" target="_blank" href="{% url 'agente_llamada_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a>
 
 </div>
 {% endif %}

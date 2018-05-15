@@ -8,4 +8,7 @@ urlpatterns = [
         url(r'^reportes/agentes_tiempos/$',
             login_required(views_reportes_agentes.ReportesTiemposAgente.as_view()),
             name='reportes_agentes_tiempos'),
+        url(r'^reportes/agentes_export/(?P<tipo_reporte>[\w\-]+)/$',
+            login_required(views_reportes_agentes.exporta_reporte_agente_llamada_view),
+            name='reportes_agentes_exporta'),
 ]
