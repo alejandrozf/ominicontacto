@@ -21,8 +21,7 @@ class AgenteTiemposReporte(object):
     """
 
     def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada,
-                 cantidad_llamadas_procesadas, cantidad_intentos_fallidos,
-                 tiempo_llamada_saliente, cantidad_llamadas_saliente):
+                 cantidad_llamadas_procesadas, cantidad_intentos_fallidos):
 
         self._agente = agente
         self._tiempo_sesion = tiempo_sesion
@@ -30,8 +29,6 @@ class AgenteTiemposReporte(object):
         self._tiempo_llamada = tiempo_llamada
         self._cantidad_llamadas_procesadas = cantidad_llamadas_procesadas
         self._cantidad_intentos_fallidos = cantidad_intentos_fallidos
-        self._tiempo_llamada_saliente = tiempo_llamada_saliente
-        self._cantidad_llamadas_saliente = cantidad_llamadas_saliente
 
     @property
     def agente(self):
