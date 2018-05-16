@@ -11,7 +11,7 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 from ominicontacto_app.models import Campana, AgenteProfile
 from ominicontacto_app.tests.factories import (
-    CampanaFactory, ContactoFactory, ActividadAgenteLogFactory
+    CampanaFactory, ContactoFactory, ActividadAgenteLogFactory, PausaFactory
 
 )
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
@@ -68,10 +68,22 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             print agente.agente
             if agente.agente.id is self.agente.id:
                 self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
-                print "ok1"
             elif agente.agente.id is agente1.id:
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
-                print "ok2"
             else:
                 self.assertEqual(-1, agente.tiempo_sesion, "Agente no calculado"
                                                            " revisar test")
+
+    def test_genera_correctamente_tiempo_pausa(self):
+        """test que controla que los tiempos de pausas de los agentes
+         se generen correcamente"""
+        pausa = PausaFactory.create()
+        inicio_pausa = self.inicio_sesion.time + timezone.timedelta(
+            hours=1)
+        ActividadAgenteLogFactory.create(
+            event='PAUSEALL', agente_id=self.agente.id, time=inicio_pausa,
+            pausa_id=pausa.id)
+        fin_pausa = inicio_pausa + timezone.timedelta(minutes=19)
+        ActividadAgenteLogFactory.create(
+            event='UNPAUSEALL', agente_id=self.agente.id, time=fin_pausa,
+            pausa_id=pausa.id)
