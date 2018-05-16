@@ -73,7 +73,10 @@ if [ $Mover_interno == 1 ] || [ $Mover_interno == 0 ]; then
                     rm -rf $File
                 fi
         else
-            echo  "no se especificó IP o path remoto, se procede a hacer copiado interno"
+            if [ $Mover_interno == 0 ] && [ $Mover_externo == 1 ]; then
+                echo  "no se especificó IP o path remoto, se sale del script"
+                exit 1
+            fi
             cd ${Path_destino}
             Fecha="${Ano}-${Mes}-${Dia}"
             if [ ! -d ${Fecha} ]; then

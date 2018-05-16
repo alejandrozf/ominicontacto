@@ -7,13 +7,13 @@ export PGPASSWORD=""
 
 Backup() {
 
-    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup
 
     #Asterisk Files
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
-    cp -L {{ asterisk_location }}/etc/asterisk/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
+    cp -a --preserve=links {{ asterisk_location }}/etc/asterisk/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
     cp {{ asterisk_location }}/var/lib/asterisk/agi-bin/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
     cp {{ asterisk_location }}/var/lib/asterisk/sounds/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
     cp /usr/local/parselog/conversor.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk
@@ -22,13 +22,13 @@ Backup() {
 
     #Kamailio Files
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
-    cp -La {{ kamailio_location}}/etc/ /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
+    cp -a --preserve=links {{ kamailio_location }}/etc/ /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/*
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/
 
     #Django Files
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/django
-    rsync -L -av --exclude=asterisk --exclude=kamailio --exclude=virtualenv --exclude=backup {{ install_prefix }}/ /tmp/omnileads-backup/$FECHA-omnileads-backup/django
+    rsync -K -a --exclude=asterisk --exclude=kamailio --exclude=log --exclude=virtualenv --exclude=backup {{ install_prefix }} /tmp/omnileads-backup/$FECHA-omnileads-backup/django
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/django.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/django/.
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/django
 
@@ -62,18 +62,18 @@ Restore() {
     #Restore of asterisk files
     cd asterisk
     cp -a agi-bin/* {{ asterisk_location }}/var/lib/asterisk/agi-bin/
-    cp -a etc/* {{ asterisk_location }}/etc/asterisk/
+    cp -a --preserve=links etc/* {{ asterisk_location }}/etc/asterisk/
     cp -a conversor.sh /usr/local/parselog
     cp -a sounds/* {{ asterisk_location }}/var/lib/asterisk/sounds/
 
     #Restore of kamailio files
     cd ../kamailio/etc
-    cp -a certs {{ kamailio_location}}/etc/certs
-    cp -a kamailio {{ kamailio_location}}/etc/kamailio
+    cp -a certs {{ kamailio_location }}/etc/certs
+    cp -a --preserve=links kamailio {{ kamailio_location }}/etc/kamailio
 
     #Restore of Django files
     cd ../../django
-    cp -a * {{ install_prefix }}ominicontacto
+    cp -a --preserve=links * {{ install_prefix }}
 
     #Restore of Database
     cd ../postgres_database
@@ -85,10 +85,10 @@ Restore() {
 
 while getopts "r:b" OPTION;do
 	case "${OPTION}" in
-		r) # Rama a deployar
+		r) # Opcion para realizar restore, argumento: Nombre del tgz
             Restore $OPTARG
 		;;
-		b) #Realizar pasos y agregar opciones preliminares
+		b) #Opcion para realizar backup
 		    Backup
 		;;
 	esac
