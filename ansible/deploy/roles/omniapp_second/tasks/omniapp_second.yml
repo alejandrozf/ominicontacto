@@ -30,7 +30,7 @@
   become_method: sudo
 
 - name: Copy of the certificates in nginx
-  copy: "src={{ install_prefix }}kamailio/etc/certs/{{ item }} dest={{ install_prefix }}nginx_certs/ remote_src=yes"
+  copy: "src={{ kamailio_location }}/etc/certs/{{ item }} dest={{ install_prefix }}nginx_certs/ remote_src=yes"
   with_items:
       - cert.pem
       - key.pem
@@ -93,3 +93,6 @@
 
 - name: Generate manage.sh script
   template: src=templates/manage.sh.j2 dest={{ install_prefix }}bin/manage.sh owner={{ usuario }} group={{ usuario }} mode=755
+
+- name: Generate backup-restore.sh script
+  template: src=templates/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
