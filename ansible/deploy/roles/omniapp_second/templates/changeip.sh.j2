@@ -44,12 +44,6 @@ if [ "$VIRTUAL_ENV" = "" ] ; then
   exit 1
 fi
 
-source {{ install_prefix }}virtualenv/bin/activate
-cd {{ install_prefix }}ominicontacto
-python manage.py collectstatic
-python manage.py compress
-python manage.py regenerar_asterisk
-
 echo "Restarteando servicios"
 echo "Parando kamailio"
 sudo service kamailio stop
@@ -72,3 +66,9 @@ sudo service asterisk stop
 sleep 5
 echo "Empezando asterisk"
 sudo service asterisk start
+
+source {{ install_prefix }}virtualenv/bin/activate
+cd {{ install_prefix }}ominicontacto
+python manage.py collectstatic
+python manage.py compress
+python manage.py regenerar_asterisk

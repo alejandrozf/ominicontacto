@@ -26,12 +26,6 @@ Backup() {
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/*
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/
 
-    #Django Files
-    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/django
-    rsync -K -a --exclude=asterisk --exclude=kamailio --exclude=log --exclude=virtualenv --exclude=backup {{ install_prefix }} /tmp/omnileads-backup/$FECHA-omnileads-backup/django
-    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/django.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/django/.
-    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/django
-
     #Databases
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database
     pg_dump -F c -U kamailio -w -h 127.0.0.1 kamailio -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup.sql
@@ -47,13 +41,13 @@ Backup() {
 
 Restore() {
     set -e
-    ARRAY=(asterisk.tgz django.tgz kamailio.tgz postgres_database.tgz)
+    ARRAY=(asterisk.tgz kamailio.tgz postgres_database.tgz)
     tar_backup=$1
     tar_directory=`echo $1 | awk -F "." '{print $1}'`
     cd {{ install_prefix }}backup
     tar xzvf $tar_backup
     cd $tar_directory
-    for counter in {0..3}; do
+    for counter in {0..2}; do
         tar xzvf ${ARRAY[counter]}
     done
     cd tmp/omnileads-backup/$tar_directory/
@@ -70,12 +64,8 @@ Restore() {
     cp -a certs {{ kamailio_location }}/etc/certs
     cp -a --preserve=links kamailio {{ kamailio_location }}/etc/kamailio
 
-    #Restore of Django files
-    cd ../../django
-    cp -a --preserve=links * {{ install_prefix }}
-
     #Restore of Database
-    cd ../postgres_database
+    cd ../../postgres_database
     pg_restore -U kamailio -c -C -w -h 127.0.0.1 base_backup.sql
 
     rm -rf {{ install_prefix }}backup/tar_directory
