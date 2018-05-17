@@ -9,12 +9,12 @@ set_time_limit(30) ;
 $tipo_llamada=$argv[1];
 $id_cliente=$argv[2];
 $tel_cliente=$argv[3];
-$grabacion=$argv[5];
-$sip_agente=$argv[4];
+$grabacion=$argv[4];
+$sip_agente=$argv[5];
 $campana=$argv[6];
 $fecha=$argv[7];
 $uid=$argv[8];
-$duracion=0;
+$duracion=$argv[9];
 
 $connection=pg_connect("host=127.0.0.1 port=5432 password=kamailiorw user=kamailio")
 or die('NO HAY CONEXION: ' . pg_last_error()); 
