@@ -15,7 +15,7 @@ Backup() {
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
     cp -a --preserve=links {{ asterisk_location }}/etc/asterisk/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
     cp {{ asterisk_location }}/var/lib/asterisk/agi-bin/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
-    cp {{ asterisk_location }}/var/lib/asterisk/sounds/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
+    cp -a {{ asterisk_location }}/var/lib/asterisk/sounds/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
     cp /usr/local/parselog/conversor.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/*
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/
@@ -34,12 +34,11 @@ Backup() {
 
     #Databases
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database
-    pg_dump -U kamailio -w -h 127.0.0.1 kamailio -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup.sql
+    pg_dump -F c -U kamailio -w -h 127.0.0.1 kamailio -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup.sql
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/*
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/
 
     # Tar the last directory
-    mkdir -p {{ install_prefix }}/backup
     #tar czvf $FECHA-omnileads-backup.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/
     cd /tmp/omnileads-backup && tar czvf $FECHA-omnileads-backup.tgz $FECHA-omnileads-backup
     mv /tmp/omnileads-backup/$FECHA-omnileads-backup.tgz {{ install_prefix }}backup
@@ -77,9 +76,9 @@ Restore() {
 
     #Restore of Database
     cd ../postgres_database
-    psql -U kamailio -w -h 127.0.0.1 -d kamailio -f base_backup.sql
+    pg_restore -U kamailio -c -C -w -h 127.0.0.1 base_backup.sql
 
-    rm -rf /opt/omnileads/backup/tar_directory
+    rm -rf {{ install_prefix }}backup/tar_directory
 
 }
 
