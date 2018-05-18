@@ -122,7 +122,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         agentes = AgenteProfile.objects.obtener_activos()
         fecha_hoy = timezone.now() + timezone.timedelta(days=1)
         fecha_ayer = fecha_hoy - timezone.timedelta(days=2)
-        reportes_estadisticas.calcular_tiempo_pausa_tipo(
+        reportes_estadisticas.calcular_tiempo_pausa(
             agentes, fecha_ayer, fecha_hoy)
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
