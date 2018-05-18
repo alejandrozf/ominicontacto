@@ -38,6 +38,13 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         self.fin_sesion_agente1 = ActividadAgenteLogFactory.create(
             time=fin_sesion, event='REMOVEMEMBER', agente_id=self.agente1.id)
 
+        self.manual = CampanaFactory.create(type=Campana.TYPE_MANUAL)
+        self.dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
+        self.contacto_d = ContactoFactory(bd_contacto=self.dialer.bd_contacto)
+        self.entrante = CampanaFactory.create(type=Campana.TYPE_ENTRANTE)
+        self.preview = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
+        self.contacto_p = ContactoFactory(bd_contacto=self.preview.bd_contacto)
+
     def test_genera_correctamente_tiempo_inicio_sesion(self):
         """test que controla que los tiempo de sesion de los agentes
          se generen correcamente"""
@@ -125,5 +132,34 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             elif agente.agente.id is self.agente1.id:
                 self.assertEqual(total_pausa_agente1, agente.tiempo_pausa)
             else:
-                self.assertEqual(-1, agente.tiempo_sesion, "Agente no calculado"
-                                                           " revisar test")
+                self.assertEqual(-1, agente.tiempo_pausa,
+                                 "Agente no calculado revisar test")
+
+    def test_genera_correctamente_duracion_llamada(self):
+        generador = GeneradorDeLlamadaLogs()
+        generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
+                              self.agente, duracion_llamada=44)
+        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+                              self.agente, self.contacto_d, duracion_llamada=105,
+                              )
+        generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
+                              self.agente1, self.contacto_p, duracion_llamada=58
+                              )
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        agentes = AgenteProfile.objects.obtener_activos()
+        fecha_hoy = timezone.now() + timezone.timedelta(days=1)
+        fecha_ayer = fecha_hoy - timezone.timedelta(days=2)
+        reportes_estadisticas.calcular_tiempo_llamada(
+            agentes, fecha_ayer, fecha_hoy)
+        agentes_tiempo = reportes_estadisticas.agentes_tiempo
+
+        for agente in agentes_tiempo:
+            if agente.agente.id is self.agente.id:
+                self.assertEqual(149, agente.tiempo_llamada)
+            elif agente.agente.id is self.agente1.id:
+                self.assertEqual(58, agente.tiempo_llamada)
+            else:
+                self.assertEqual(-1, agente.tiempo_llamada,
+                                 "Agente no calculado revisar test")
