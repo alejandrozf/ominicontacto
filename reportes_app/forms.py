@@ -58,6 +58,18 @@ class ReporteLlamadasForm(forms.Form):
         return fecha
 
 
+class EstadisticasJSONForm(forms.Form):
+    estadisticas = forms.CharField()
+
+    def clean_estadisticas(self):
+        estadisticas = self.cleaned_data.get('estadisticas')
+        try:
+            json_data = json.loads(estadisticas)
+        except ValueError:
+            raise forms.ValidationError(_(u'Formato JSON invalido'))
+        return json_data
+
+
 TIPO_REPORTE_CHOICES = (
     ('llamadas_por_tipo', ''),
     ('llamadas_por_campana', ''),
@@ -68,14 +80,5 @@ TIPO_REPORTE_CHOICES = (
 )
 
 
-class ExportarReporteLlamadasForm(forms.Form):
-    estadisticas = forms.CharField()
+class ExportarReporteLlamadasForm(EstadisticasJSONForm):
     tipo_reporte = forms.ChoiceField(choices=TIPO_REPORTE_CHOICES, required=True)
-
-    def clean_estadisticas(self):
-        estadisticas = self.cleaned_data.get('estadisticas')
-        try:
-            json_data = json.loads(estadisticas)
-        except ValueError:
-            raise forms.ValidationError(_(u'Formato JSON invalido'))
-        return json_data

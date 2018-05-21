@@ -502,19 +502,33 @@ class GeneradorReportesLlamadasCSV(object):
 
     def obtener_filas_reporte(self, estadisticas, tipo_reporte):
         if tipo_reporte == 'llamadas_por_tipo':
-            return self.obtener_filas_llamadas_por_tipo(estadisticas)
+            return self._obtener_filas_llamadas_por_tipo(estadisticas)
         if tipo_reporte == 'llamadas_por_campana':
-            return self.obtener_filas_llamadas_por_campana(estadisticas)
+            return self._obtener_filas_llamadas_por_campana(estadisticas)
         if tipo_reporte == 'tipos_de_llamada_manual':
-            return self.obtener_filas_manual(estadisticas)
+            return self._obtener_filas_manual(estadisticas)
         if tipo_reporte == 'tipos_de_llamada_dialer':
-            return self.obtener_filas_dialer(estadisticas)
+            return self._obtener_filas_dialer(estadisticas)
         if tipo_reporte == 'tipos_de_llamada_entrante':
-            return self.obtener_filas_entrante(estadisticas)
+            return self._obtener_filas_entrante(estadisticas)
         if tipo_reporte == 'tipos_de_llamada_preview':
-            return self.obtener_filas_preview(estadisticas)
+            return self._obtener_filas_preview(estadisticas)
 
-    def obtener_filas_llamadas_por_tipo(self, estadisticas):
+    def obtener_filas_de_todos_los_reportes(self, estadisticas):
+        llamadas_por_tipo = self._obtener_filas_llamadas_por_tipo(estadisticas)
+        llamadas_por_campana = self._obtener_filas_llamadas_por_campana(estadisticas)
+        tipos_de_llamada_manual = self._obtener_filas_manual(estadisticas)
+        tipos_de_llamada_dialer = self._obtener_filas_dialer(estadisticas)
+        tipos_de_llamada_entrante = self._obtener_filas_entrante(estadisticas)
+        tipos_de_llamada_preview = self._obtener_filas_preview(estadisticas)
+        return (llamadas_por_tipo,
+                llamadas_por_campana,
+                tipos_de_llamada_manual,
+                tipos_de_llamada_dialer,
+                tipos_de_llamada_entrante,
+                tipos_de_llamada_preview)
+
+    def _obtener_filas_llamadas_por_tipo(self, estadisticas):
         por_tipo = estadisticas['llamadas_por_tipo']
         filas = [['Tipo', 'Total', 'Conectadas', 'No conectadas',
                  'Atendidas', 'No Atendidas', 'Perdidas', 'Expiradas', 'Abandonadas'], ]
@@ -552,7 +566,7 @@ class GeneradorReportesLlamadasCSV(object):
         ])
         return filas
 
-    def obtener_filas_llamadas_por_campana(self, estadisticas):
+    def _obtener_filas_llamadas_por_campana(self, estadisticas):
         por_campana = estadisticas['llamadas_por_campana']
         filas = [['Nombre', 'Tipo', 'Total', 'Manuales'], ]
         for id, estadisticas_campana in por_campana.items():
@@ -563,7 +577,7 @@ class GeneradorReportesLlamadasCSV(object):
                           ])
         return filas
 
-    def obtener_filas_manual(self, estadisticas):
+    def _obtener_filas_manual(self, estadisticas):
         por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_MANUAL_DISPLAY]
         filas = [['Nombre', 'Efectuadas', 'Conectadas', 'No conectadas', 'T. Espera Conexion'], ]
         for id, estadisticas_campana in por_campana.items():
@@ -575,7 +589,7 @@ class GeneradorReportesLlamadasCSV(object):
                           ])
         return filas
 
-    def obtener_filas_dialer(self, estadisticas):
+    def _obtener_filas_dialer(self, estadisticas):
         por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_DIALER_DISPLAY]
         filas = [['Nombre', 'Efectuadas', 'Conectadas', 'Atendidas', 'Expiradas', 'Abandonadas',
                   'T. Abandono', 'T. Espera Atención', 'T. Espera Conexion', 'Manuales Efectuadas',
@@ -598,7 +612,7 @@ class GeneradorReportesLlamadasCSV(object):
                           ])
         return filas
 
-    def obtener_filas_entrante(self, estadisticas):
+    def _obtener_filas_entrante(self, estadisticas):
         por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_ENTRANTE_DISPLAY]
         filas = [['Nombre', 'Recibidas', 'Atendidas', 'Expiradas', 'Abandonadas',
                   'T. Abandono', 'T. Espera Conexion', 'Manuales Efectuadas',
@@ -618,7 +632,7 @@ class GeneradorReportesLlamadasCSV(object):
                           ])
         return filas
 
-    def obtener_filas_preview(self, estadisticas):
+    def _obtener_filas_preview(self, estadisticas):
         por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_PREVIEW_DISPLAY]
         filas = [['Nombre', 'Efectuadas', 'Conectadas', 'No conectadas', 'T. Espera Conexion',
                   'Manuales Efectuadas', 'Manuales Conectadas', 'Manuales No Conectadas',

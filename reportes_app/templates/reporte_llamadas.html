@@ -169,21 +169,17 @@
       {% trans 'Exportar totales llamadas(CSV)' %}
     </button>
 
-<!--
+
   <br>
   <div>
-      <form action="{% url 'exportar_zip_reportes' %}" method="POST">
+      <form action="{% url 'zip_reporte_llamadas' %}" method="POST">
           {% csrf_token %}
-          <input class="hidden" name="total_llamadas" type="text" value="{{ graficos_estadisticas.estadisticas.total_llamadas_json }}"/>
-          <input class="hidden" name="llamadas_campanas" type="text" value="{{ graficos_estadisticas.dict_campana_counter_json }}"/>
-          <input class="hidden" name="llamadas_campanas_dialer" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_dialer_json }}"/>
-          <input class="hidden" name="llamadas_campanas_entrantes" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_entrantes_json }}"/>
-          <input class="hidden" name="llamadas_campanas_manuales" type="text" value="{{ graficos_estadisticas.estadisticas.queues_llamadas_manuales_json }}"/>
-          <button class="btn btn-outline-primary">Exportar a CSV todos los reportes</button>
+          <input class="hidden" name="estadisticas" type="text" value="{{ estadisticas_json }}"/>
+          <button class="btn btn-outline-primary">{% trans 'Exportar a CSV todos los reportes' %}</button>
           <br>
       </form>
   </div>
--->
+
   </div>
   <br>
 {% endif %}
@@ -257,7 +253,7 @@
   <div id="seccion-llamadas-dialer">
     <h2>{% trans 'Distribución de tipos de llamadas en campañas salientes discador' %}</h2>
     <br>
-    <div style="overflow: auto; height: 200px">
+    <div style="overflow: auto; min-height: 200px; max-height: 400px">
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -267,13 +263,13 @@
             <th>{% trans 'Conectadas' %}</th>
             <th>{% trans 'Expiradas' %}</th>
             <th>{% trans 'Abandonadas' %}</th>
-            <th>{% trans 'Tiempo de espera de conexión medio' %}</th>
-            <th>{% trans 'Tiempo de espera de atención medio' %}</th>
-            <th>{% trans 'Tiempo medio de abandono' %}</th>
+            <th>{% trans 'T. de espera de conexión medio' %}</th>
+            <th>{% trans 'T. de espera de atención medio' %}</th>
+            <th>{% trans 'T. medio de abandono' %}</th>
             <th>{% trans 'Manuales Efectuadas' %}</th>
             <th>{% trans 'Manuales Conectadas' %}</th>
             <th>{% trans 'Manuales no Conectadas' %}</th>
-            <th>{% trans 'Tiempo de espera de conexión medio Manuales' %}</th>
+            <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
           </tr>
         </thead>
         {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Dialer.items %}
@@ -310,7 +306,7 @@
 <div id="seccion-llamadas-entrantes">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas entrantes' %}</h2>
   <br>
-  <div style="overflow: auto; height: 200px">
+  <div style="overflow: auto; min-height: 200px; max-height: 400px">
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -319,12 +315,12 @@
           <th>{% trans 'Atendidas' %}</th>
           <th>{% trans 'Expiradas' %}</th>
           <th>{% trans 'Abandonadas' %}</th>
-          <th>{% trans 'Tiempo de espera de conexión medio' %}</th>
-          <th>{% trans 'Tiempo medio de abandono' %}</th>
+          <th>{% trans 'T. de espera de conexión medio' %}</th>
+          <th>{% trans 'T. medio de abandono' %}</th>
           <th>{% trans 'Manuales Efectuadas' %}</th>
           <th>{% trans 'Manuales Conectadas' %}</th>
           <th>{% trans 'Manuales no Conectadas' %}</th>
-          <th>{% trans 'Tiempo de espera de conexión medio Manuales' %}</th>
+          <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Entrante.items %}
@@ -358,7 +354,7 @@
 <div id="seccion-llamadas-manuales">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas manuales' %}</h2>
   <br>
-  <div style="overflow: auto; height: 200px">
+  <div style="overflow: auto; min-height: 200px; max-height: 400px">
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -366,7 +362,7 @@
           <th>{% trans 'Efectuadas' %}</th>
           <th>{% trans 'Conectadas' %}</th>
           <th>{% trans 'No Conectadas' %}</th>
-          <th>{% trans 'Tiempo de espera de conexión medio' %}</th>
+          <th>{% trans 'T. de espera de conexión medio' %}</th>
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Manual.items %}
@@ -394,7 +390,7 @@
 <div id="seccion-llamadas-preview">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas Preview' %}</h2>
   <br>
-  <div style="overflow: auto; height: 200px">
+  <div style="overflow: auto; min-height: 200px; max-height: 400px">
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -402,11 +398,11 @@
           <th>{% trans 'Efectuadas' %}</th>
           <th>{% trans 'Conectadas' %}</th>
           <th>{% trans 'No Conectadas' %}</th>
-          <th>{% trans 'Tiempo de espera de conexión medio' %}</th>
+          <th>{% trans 'T. de espera de conexión medio' %}</th>
           <th>{% trans 'Manuales Efectuadas' %}</th>
           <th>{% trans 'Manuales Conectadas' %}</th>
           <th>{% trans 'Manuales no Conectadas' %}</th>
-          <th>{% trans 'Tiempo de espera de conexión medio Manuales' %}</th>
+          <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Preview.items %}
