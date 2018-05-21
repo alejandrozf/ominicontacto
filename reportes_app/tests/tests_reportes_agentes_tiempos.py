@@ -77,8 +77,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             elif agente.agente.id is self.agente1.id:
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
             else:
-                self.assertEqual(-1, agente.tiempo_sesion, "Agente no calculado"
-                                                           " revisar test")
+                self.fail("Agente no calculado revisar test")
 
     def test_genera_correctamente_tiempo_pausa(self):
         """test que controla que los tiempos de pausas de los agentes
@@ -132,8 +131,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             elif agente.agente.id is self.agente1.id:
                 self.assertEqual(total_pausa_agente1, agente.tiempo_pausa)
             else:
-                self.assertEqual(-1, agente.tiempo_pausa,
-                                 "Agente no calculado revisar test")
+                self.fail("Agente no calculado revisar test")
 
     def test_genera_correctamente_duracion_llamada(self):
         generador = GeneradorDeLlamadaLogs()
@@ -161,5 +159,4 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             elif agente.agente.id is self.agente1.id:
                 self.assertEqual(58, agente.tiempo_llamada)
             else:
-                self.assertEqual(-1, agente.tiempo_llamada,
-                                 "Agente no calculado revisar test")
+                self.fail("Agente no calculado revisar test")
