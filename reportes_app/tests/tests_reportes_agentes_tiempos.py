@@ -22,14 +22,14 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
 
     def setUp(self):
         super(ReportesAgenteTiemposTest, self).setUp()
-        user_agente = self.crear_user_agente()
+        user_agente = self.crear_user_agente(first_name="Leo", last_name="Messi")
         self.agente = self.crear_agente_profile(user_agente)
         self.inicio_sesion_agente = ActividadAgenteLogFactory.create(
             event='ADDMEMBER', agente_id=self.agente.id)
         hora_fin_sesion = self.inicio_sesion_agente.time + timezone.timedelta(hours=8)
         self.fin_sesion_agente = ActividadAgenteLogFactory.create(
             time=hora_fin_sesion, event='REMOVEMEMBER', agente_id=self.agente.id)
-        user_agente = self.crear_user_agente()
+        user_agente = self.crear_user_agente(first_name="Frank", last_name="Kudelca")
         self.agente1 = self.crear_agente_profile(user_agente)
         inicio_sesion = self.inicio_sesion_agente.time - timezone.timedelta(minutes=13)
         self.inicio_sesion_agente1 = ActividadAgenteLogFactory.create(
@@ -38,12 +38,17 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         self.fin_sesion_agente1 = ActividadAgenteLogFactory.create(
             time=fin_sesion, event='REMOVEMEMBER', agente_id=self.agente1.id)
 
-        self.manual = CampanaFactory.create(type=Campana.TYPE_MANUAL)
-        self.dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
+        self.user_supervisor = self.crear_user_supervisor()
+        self.manual = CampanaFactory.create(
+            type=Campana.TYPE_MANUAL, reported_by=self.user_supervisor, estado=Campana.ESTADO_ACTIVA)
+        self.dialer = CampanaFactory.create(
+            type=Campana.TYPE_DIALER, reported_by=self.user_supervisor, estado=Campana.ESTADO_ACTIVA)
         self.contacto_d = ContactoFactory(bd_contacto=self.dialer.bd_contacto)
-        self.entrante = CampanaFactory.create(type=Campana.TYPE_ENTRANTE)
+        self.entrante = CampanaFactory.create(
+            type=Campana.TYPE_ENTRANTE, reported_by=self.user_supervisor, estado=Campana.ESTADO_ACTIVA)
         self.contacto_e = ContactoFactory(bd_contacto=self.entrante.bd_contacto)
-        self.preview = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
+        self.preview = CampanaFactory.create(
+            type=Campana.TYPE_PREVIEW, reported_by=self.user_supervisor, estado=Campana.ESTADO_ACTIVA)
         self.contacto_p = ContactoFactory(bd_contacto=self.preview.bd_contacto)
 
     def test_genera_correctamente_tiempo_inicio_sesion(self):
@@ -387,5 +392,59 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                     self.fail("pausa no calculada revisar test")
             elif agente['id'] is self.agente1.id:
                 self.assertEqual(str(total_pausa_agente1), agente['tiempo'])
+            else:
+                self.fail("Agente no calculado revisar test")
+
+    def test_genera_correctamente_llamadas_procesadas_por_campana(self):
+        """test que controla que la cantidad de llamadas procesadas por
+        campana y el promedio de las mismas se genere correctamente"""
+
+        generador = GeneradorDeLlamadaLogs()
+        generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
+                              self.agente, duracion_llamada=76)
+        generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
+                              self.agente, duracion_llamada=61)
+        generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
+                              self.agente, duracion_llamada=44)
+        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+                              self.agente, self.contacto_d, duracion_llamada=105,
+                              )
+        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+                              self.agente, self.contacto_d, duracion_llamada=65,
+                              )
+        generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
+                              self.agente1, self.contacto_p, duracion_llamada=58
+                              )
+        generador.generar_log(self.entrante, False, 'COMPLETEAGENT', '123',
+                              self.agente1, self.contacto_e, duracion_llamada=29
+                              )
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        agentes = AgenteProfile.objects.obtener_activos()
+        fecha_hoy = timezone.now() + timezone.timedelta(days=1)
+        fecha_ayer = fecha_hoy - timezone.timedelta(days=2)
+        agentes_tiempo = reportes_estadisticas.obtener_count_llamadas_campana(
+            agentes, fecha_ayer, fecha_hoy, self.user_supervisor)
+
+        for agente in agentes_tiempo:
+            if agente[0] == self.agente.user.get_full_name():
+                if agente[1] == self.manual.nombre:
+                    self.assertEqual(str(timezone.timedelta(0, 181)), agente[2])
+                    self.assertEqual(3, agente[3])
+                elif agente[1] == self.dialer.nombre:
+                    self.assertEqual(str(timezone.timedelta(0, 170)), agente[2])
+                    self.assertEqual(2, agente[3])
+                else:
+                    self.fail("Calculo de campana no calculado revisar test")
+            elif agente[0] == self.agente1.user.get_full_name():
+                if agente[1] == self.preview.nombre:
+                    self.assertEqual(str(timezone.timedelta(0, 58)), agente[2])
+                    self.assertEqual(1, agente[3])
+                elif agente[1] == self.entrante.nombre:
+                    self.assertEqual(str(timezone.timedelta(0, 29)), agente[2])
+                    self.assertEqual(1, agente[3])
+                else:
+                    self.fail("Calculo de campana no calculado revisar test")
             else:
                 self.fail("Agente no calculado revisar test")
