@@ -42,6 +42,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         self.dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
         self.contacto_d = ContactoFactory(bd_contacto=self.dialer.bd_contacto)
         self.entrante = CampanaFactory.create(type=Campana.TYPE_ENTRANTE)
+        self.contacto_e = ContactoFactory(bd_contacto=self.entrante.bd_contacto)
         self.preview = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
         self.contacto_p = ContactoFactory(bd_contacto=self.preview.bd_contacto)
 
@@ -285,5 +286,38 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                                  agente.tiempo_porcentaje_wait)
                 self.assertEqual(1, agente.cantidad_llamadas_procesadas)
                 self.assertEqual(promedio_agente1, agente.get_promedio_llamadas())
+            else:
+                self.fail("Agente no calculado revisar test")
+
+    def test_genera_correctamente_intentos_fallidos(self):
+        """test que controla que la cantidad de intentos fallidos se genere
+        correcamente"""
+        generador = GeneradorDeLlamadaLogs()
+        generador.generar_log(self.manual, True, 'BUSY', '1234',
+                              self.agente, bridge_wait_time=5)
+        generador.generar_log(self.preview, False, 'NOANSWER', '12334645',
+                              self.agente, self.contacto_p,
+                              bridge_wait_time=5
+                              )
+        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+                              self.agente, self.contacto_d, duracion_llamada=105,
+                              )
+        generador.generar_log(self.preview, False, 'FAIL', '12334645',
+                              self.agente1, self.contacto_p, duracion_llamada=58
+                              )
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        agentes = AgenteProfile.objects.obtener_activos()
+        fecha_hoy = timezone.now() + timezone.timedelta(days=1)
+        fecha_ayer = fecha_hoy - timezone.timedelta(days=2)
+        reportes_estadisticas.calcular_intentos_fallidos(
+            agentes, fecha_ayer, fecha_hoy)
+        agentes_tiempo = reportes_estadisticas.agentes_tiempo
+
+        for agente in agentes_tiempo:
+            if agente.agente.id is self.agente.id:
+                self.assertEqual(2, agente.cantidad_intentos_fallidos)
+            elif agente.agente.id is self.agente1.id:
+                self.assertEqual(1, agente.cantidad_intentos_fallidos)
             else:
                 self.fail("Agente no calculado revisar test")
