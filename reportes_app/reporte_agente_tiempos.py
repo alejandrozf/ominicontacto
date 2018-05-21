@@ -2,13 +2,14 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import pygal
 
+from django.utils import timezone
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog
 from ominicontacto_app.models import AgenteProfile, Pausa, Campana
 from pygal.style import Style
+from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
 
 
 ESTILO_AZUL_ROJO_AMARILLO = Style(
@@ -266,7 +267,7 @@ class TiemposAgente(object):
                     is_unpause = True
             for id_pausa in tiempos_pausa:
                 datos_de_pausa = self._obtener_datos_de_pausa(id_pausa)
-                tiempo = str(datetime.timedelta(seconds=tiempos_pausa[id_pausa].seconds))
+                tiempo = str(timezone.timedelta(seconds=tiempos_pausa[id_pausa].seconds))
                 tiempo_agente = {
                     'id': agente.id,
                     'nombre_agente': agente.user.get_full_name(),
@@ -300,7 +301,7 @@ class TiemposAgente(object):
                 tiempo_agente = []
                 tiempo_agente.append(agente.user.get_full_name())
                 tiempo_agente.append(self._get_nombre_campana(campanas, log[1]))
-                tiempo_agente.append(str(datetime.timedelta(0, log[2])))
+                tiempo_agente.append(str(timezone.timedelta(0, log[2])))
                 tiempo_agente.append(log[3])
                 agentes_tiempo.append(tiempo_agente)
 
@@ -313,10 +314,8 @@ class TiemposAgente(object):
         :param fecha_superior: fecha hasta el cual se obtendran las grabaciones
         :return: queryset con las cantidades totales por agente
         """
-        fecha_inferior = datetime.datetime.combine(fecha_inferior,
-                                                   datetime.time.min)
-        fecha_superior = datetime.datetime.combine(fecha_superior,
-                                                   datetime.time.max)
+        fecha_inferior = datetime_hora_minima_dia(fecha_inferior)
+        fecha_superior = datetime_hora_maxima_dia(fecha_superior)
         agentes_id = [agente.id for agente in agentes]
         dict_agentes = LlamadaLog.objects.obtener_count_agente().filter(
             time__range=(fecha_inferior, fecha_superior),
