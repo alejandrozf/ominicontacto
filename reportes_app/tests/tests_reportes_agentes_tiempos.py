@@ -163,7 +163,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
 
     def test_genera_correctamente_tiempos_porcentajes_agentes(self):
         """test que controla que los tiempo de sesion, tiempo pausa, tiempo en
-        llamada, porcentajes de los tiempo en pausa, en espera y llamada
+        llamada, porcentajes de los tiempo en pausa, en espera y llamada,
+        cantidad de llamadas procesadas y promedios en llamadas
         de los agentes se generen correcamente"""
         # inicio de sesion de los agentes
         inicio_sesion_agente = self.inicio_sesion_agente.time - timezone.timedelta(
@@ -226,7 +227,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                               self.agente1, self.contacto_p, duracion_llamada=58
                               )
 
-        # calculo de porcentajes
+        # calculamos los porcentajes
         porcentaje_llamada_agente = 149 / tiempo_sesion_agente.total_seconds() * 100
         porcentaje_llamada_agente1 = 58 / tiempo_sesion_agente1.total_seconds() * 100
         porcentaje_pausa_agente = total_pausa_agente.total_seconds() /\
@@ -240,6 +241,10 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         porcentaje_wait_agente = tiempo_wait_agente / tiempo_sesion_agente.total_seconds() * 100
         porcentaje_wait_agente1 = tiempo_wait_agente1 / tiempo_sesion_agente1.total_seconds() * 100
 
+        # calculamos los promedios
+        promedio_agente = 149 / 2
+        promedio_agente1 = 58 / 1
+
         # realizamos calculo con el modulo
         reportes_estadisticas = TiemposAgente()
         agentes = AgenteProfile.objects.obtener_activos()
@@ -250,6 +255,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         reportes_estadisticas.calcular_tiempo_pausa(
             agentes, fecha_ayer, fecha_hoy)
         reportes_estadisticas.calcular_tiempo_llamada(
+            agentes, fecha_ayer, fecha_hoy)
+        reportes_estadisticas.calcular_cantidad_llamadas(
             agentes, fecha_ayer, fecha_hoy)
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
@@ -264,7 +271,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                                  agente.tiempo_porcentaje_pausa)
                 self.assertEqual(porcentaje_wait_agente,
                                  agente.tiempo_porcentaje_wait)
-
+                self.assertEqual(2, agente.cantidad_llamadas_procesadas)
+                self.assertEqual(promedio_agente, agente.get_promedio_llamadas())
             elif agente.agente.id is self.agente1.id:
                 self.assertEqual(58, agente.tiempo_llamada)
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
@@ -275,5 +283,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                                  agente.tiempo_porcentaje_pausa)
                 self.assertEqual(porcentaje_wait_agente1,
                                  agente.tiempo_porcentaje_wait)
+                self.assertEqual(1, agente.cantidad_llamadas_procesadas)
+                self.assertEqual(promedio_agente1, agente.get_promedio_llamadas())
             else:
                 self.fail("Agente no calculado revisar test")
