@@ -52,7 +52,7 @@
 {% endblock %}
 
 {% block content %}
-<form id="exportar_reporte" action="{% url 'exportar_reporte_llamadas' %}" method="POST">
+<form id="exportar_reporte" action="{% url 'csv_reporte_llamadas' %}" method="POST">
     {% csrf_token %}
     <input class="hidden" name="estadisticas" type="text" value="{{ estadisticas_json }}"/>
     <input class="hidden" name="tipo_reporte" id="tipo_reporte" type="text" value=""/>
@@ -172,7 +172,7 @@
 
   <br>
   <div>
-      <form action="{% url 'zip_reporte_llamadas' %}" method="POST">
+      <form action="{% url 'zip_reportes_llamadas' %}" method="POST">
           {% csrf_token %}
           <input class="hidden" name="estadisticas" type="text" value="{{ estadisticas_json }}"/>
           <button class="btn btn-outline-primary">{% trans 'Exportar a CSV todos los reportes' %}</button>

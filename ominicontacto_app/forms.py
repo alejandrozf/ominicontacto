@@ -551,15 +551,6 @@ class GrupoAgenteForm(forms.Form):
         self.fields['grupo'].choices = grupo_choice
 
 
-class GrabacionReporteForm(forms.Form):
-    """
-    El form para reporte de grabaciones
-    """
-    fecha = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control'}))
-    finalizadas = forms.BooleanField(required=False)
-
-
 class AgendaBusquedaForm(forms.Form):
     """
     El busquedad form poara agente

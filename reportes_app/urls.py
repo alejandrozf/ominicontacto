@@ -20,10 +20,10 @@ urlpatterns = [
         ),
     url(r'^reporte/llamadas/exportar/$',
         login_required(ExportarReporteLlamadasFormView.as_view()),
-        name='exportar_reporte_llamadas',
+        name='csv_reporte_llamadas',
         ),
     url(r'^reporte/llamadas/zip/$',
         login_required(ExportarZipReportesLlamadasFormView.as_view()),
-        name='zip_reporte_llamadas',
+        name='zip_reportes_llamadas',
         ),
 ]

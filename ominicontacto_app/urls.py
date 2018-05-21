@@ -368,13 +368,6 @@ urlpatterns = [
         name='agente_llamar_contacto',
         ),
     # ==========================================================================
-    # Reportes
-    # ==========================================================================
-    url(r'^reportes/exportar/todos/$',
-        login_required(views_grabacion.exportar_zip_reportes_view), name='exportar_zip_reportes'),
-    url(r'^reportes/exportar/(?P<tipo_reporte>[\w\-]+)/$',
-        login_required(views_grabacion.exportar_llamadas_view), name='exportar_llamadas'),
-    # ==========================================================================
     # Calificacion
     # ==========================================================================
     url(r'^calificacion/nuevo/$',

@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from django.test import TestCase
 from django.utils.timezone import now
+from django.core.urlresolvers import reverse
 
 from ominicontacto_app.utiles import datetime_hora_minima_dia
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import SupervisorProfileFactory, AgenteProfileFactory,\
-    CampanaFactory, ContactoFactory
+    CampanaFactory, ContactoFactory, UserFactory
 
 from reportes_app.reporte_llamadas import ReporteDeLlamadas
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
@@ -569,3 +572,76 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['conectadas_manuales'], 1)
         self.assertEqual(tipos[campana.id]['no_conectadas_manuales'], 1)
         self.assertEqual(tipos[campana.id]['t_espera_conexion_manuales'], 6)
+
+
+class AccesoReportesTests(TestCase):
+    PWD = u'admin123'
+
+    def setUp(self):
+        self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
+        self.usuario_admin_supervisor.set_password(self.PWD)
+        self.usuario_admin_supervisor.save()
+        self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
+
+        hasta = now()
+        desde = datetime_hora_minima_dia(hasta)
+        reporte = ReporteDeLlamadas(desde, hasta, True, self.usuario_admin_supervisor)
+        self.estadisticas = reporte.estadisticas
+
+    def test_usuario_logueado_accede_a_pagina_ppal_reportes_llamadas(self):
+        url = reverse('reporte_llamadas')
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, 'reporte_llamadas.html')
+
+    def test_usuario_no_logueado_no_accede_a_pagina_ppal_reportes_llamadas(self):
+        url = reverse('reporte_llamadas')
+        self.client.logout()
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_usuario_logueado_accede_a_realizar_reporte_llamadas_por_tipo_csv(self):
+        url = reverse('csv_reporte_llamadas')
+        data = {'tipo_reporte': 'llamadas_por_tipo', 'estadisticas': json.dumps(self.estadisticas)}
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.serialize().find('llamadas_por_tipo.csv') > -1)
+
+    def test_usuario_logueado_con_mal_parametro_tira_400(self):
+        url = reverse('csv_reporte_llamadas')
+        data = {'tipo_reporte': 'reporte_inexistente',
+                'estadisticas': json.dumps(self.estadisticas)}
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, u'400.html')
+
+    def test_usuario_no_logueado_no_accede_a_realizar_reporte_total_llamadas_csv(self):
+        url = reverse('csv_reporte_llamadas')
+        data = {'tipo_reporte': 'llamadas_por_tipo', 'estadisticas': json.dumps(self.estadisticas)}
+        self.client.logout()
+        response = self.client.post(url, data=data, follow=True)
+        self.assertFalse(response.serialize().find('llamadas_por_tipo.csv') > -1)
+
+    def test_usuario_logueado_accede_a_zip_reportes_llamadas(self):
+        url = reverse('zip_reportes_llamadas')
+        data = {'estadisticas': json.dumps(self.estadisticas)}
+        response = self.client.post(url, data=data, follow=True)
+        self.assertTrue(response.serialize().find('llamadas_por_tipo.csv') > -1)
+        self.assertTrue(response.serialize().find('llamadas_por_campana.csv') > -1)
+        self.assertTrue(response.serialize().find('tipos_de_llamada_manual.csv') > -1)
+        self.assertTrue(response.serialize().find('tipos_de_llamada_dialer.csv') > -1)
+        self.assertTrue(response.serialize().find('tipos_de_llamada_entrante.csv') > -1)
+        self.assertTrue(response.serialize().find('tipos_de_llamada_preview.csv') > -1)
+
+    def test_usuario_no_logueado_no_accede_a_zip_reportes_llamadas(self):
+        url = reverse('zip_reportes_llamadas')
+        data = {'estadisticas': json.dumps(self.estadisticas)}
+        self.client.logout()
+        response = self.client.post(url, data=data, follow=True)
+        self.assertFalse(response.serialize().find('total_llamadas.csv') > -1)
+
+    def test_usuario_logueado_con_mal_parametro_tira_400_zip(self):
+        url = reverse('zip_reportes_llamadas')
+        data = {'estadisticas': self.estadisticas}
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, u'400.html')

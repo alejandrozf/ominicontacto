@@ -33,7 +33,6 @@ class ReporteDeLlamadas(object):
             campanas = Campana.objects.obtener_all_dialplan_asterisk()
 
         if not user.get_is_administrador():
-            #TODO: Verificar que pasa con las finalizadas
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         return campanas

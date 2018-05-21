@@ -12,8 +12,10 @@ from django.views.generic import FormView
 from django.http import HttpResponse
 
 from ominicontacto_app.utiles import datetime_hora_minima_dia, UnicodeWriter
+from ominicontacto_app.views_utils import handler400
 
-from reportes_app.forms import ReporteLlamadasForm, ExportarReporteLlamadasForm, EstadisticasJSONForm
+from reportes_app.forms import (ReporteLlamadasForm, ExportarReporteLlamadasForm,
+                                EstadisticasJSONForm)
 from reportes_app.reporte_llamadas import ReporteDeLlamadas, GeneradorReportesLlamadasCSV
 
 
@@ -69,11 +71,13 @@ class ExportarReporteLlamadasFormView(FormView):
 
         generador = GeneradorReportesLlamadasCSV()
         filas_csv = generador.obtener_filas_reporte(estadisticas, tipo_reporte)
-        print filas_csv
         writer.writerows(filas_csv)
         # writer.writerow(REPORTE_SIN_DATOS)
 
         return response
+
+    def form_invalid(self, form):
+        return handler400(self.request)
 
 
 class ExportarZipReportesLlamadasFormView(FormView):
@@ -95,6 +99,9 @@ class ExportarZipReportesLlamadasFormView(FormView):
         response.write(buffer.read())
 
         return response
+
+    def form_invalid(self, form):
+        return handler400(self.request)
 
     def _generar_buffer_archivo_zip(self, estadisticas):
 
