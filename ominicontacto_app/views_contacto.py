@@ -49,8 +49,7 @@ class ContactoListView(FormView):
 
     def _obtener_campanas(self):
         agente = self.request.user.get_agente_profile()
-        campanas_queues = agente.get_campanas_activas_miembro().exclude(
-            queue_name__campana__type__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW])
+        campanas_queues = agente.get_campanas_activas_miembro()
         ids_campanas = []
         for id_nombre in campanas_queues.values_list('id_campana', flat=True):
             split_id_nombre = id_nombre.split('_')
