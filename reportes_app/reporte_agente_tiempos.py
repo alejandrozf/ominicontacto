@@ -268,10 +268,12 @@ class TiemposAgente(object):
                 datos_de_pausa = self._obtener_datos_de_pausa(id_pausa)
                 tiempo = str(datetime.timedelta(seconds=tiempos_pausa[id_pausa].seconds))
                 tiempo_agente = {
+                    'id': agente.id,
                     'nombre_agente': agente.user.get_full_name(),
                     'pausa': datos_de_pausa['nombre'],
                     'tipo_de_pausa': datos_de_pausa['tipo'],
                     'tiempo': tiempo,
+                    'pausa_id': id_pausa
                 }
                 agentes_tiempo.append(tiempo_agente)
 

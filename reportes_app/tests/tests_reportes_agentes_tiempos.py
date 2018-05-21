@@ -321,3 +321,71 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                 self.assertEqual(1, agente.cantidad_intentos_fallidos)
             else:
                 self.fail("Agente no calculado revisar test")
+
+    def test_genera_correctamente_tiempo_pausa_tipo(self):
+        """test que controla que los tiempos de pausas por tipo de pausa de los
+        agentes se generen correcamente"""
+        pausa = PausaFactory.create()
+
+        inicio_pausa = self.inicio_sesion_agente.time + timezone.timedelta(
+            hours=1)
+        ActividadAgenteLogFactory.create(
+            event='PAUSEALL', agente_id=self.agente.id, time=inicio_pausa,
+            pausa_id=pausa.id)
+        fin_pausa = inicio_pausa + timezone.timedelta(minutes=19)
+        total_pausa_agente = fin_pausa - inicio_pausa
+        ActividadAgenteLogFactory.create(
+            event='UNPAUSEALL', agente_id=self.agente.id, time=fin_pausa,
+            pausa_id=pausa.id)
+        inicio_pausa = fin_pausa + timezone.timedelta(
+            hours=1)
+        ActividadAgenteLogFactory.create(
+            event='PAUSEALL', agente_id=self.agente.id, time=inicio_pausa,
+            pausa_id=pausa.id)
+        fin_pausa = inicio_pausa + timezone.timedelta(minutes=23)
+        total_pausa_agente += fin_pausa - inicio_pausa
+        ActividadAgenteLogFactory.create(
+            event='UNPAUSEALL', agente_id=self.agente.id, time=fin_pausa,
+            pausa_id=pausa.id)
+        pausa1 = PausaFactory.create()
+        inicio_pausa = self.inicio_sesion_agente.time + timezone.timedelta(
+            hours=2)
+        ActividadAgenteLogFactory.create(
+            event='PAUSEALL', agente_id=self.agente.id, time=inicio_pausa,
+            pausa_id=pausa1.id)
+        fin_pausa = inicio_pausa + timezone.timedelta(minutes=7)
+        total_pausa_agente_1 = fin_pausa - inicio_pausa
+        ActividadAgenteLogFactory.create(
+            event='UNPAUSEALL', agente_id=self.agente.id, time=fin_pausa,
+            pausa_id=pausa1.id)
+        inicio_pausa = self.inicio_sesion_agente1.time + timezone.timedelta(
+            hours=1)
+        ActividadAgenteLogFactory.create(
+            event='PAUSEALL', agente_id=self.agente1.id, time=inicio_pausa,
+            pausa_id=pausa.id)
+        fin_pausa = inicio_pausa + timezone.timedelta(minutes=8)
+        total_pausa_agente1 = fin_pausa - inicio_pausa
+        ActividadAgenteLogFactory.create(
+            event='UNPAUSEALL', agente_id=self.agente1.id, time=fin_pausa,
+            pausa_id=pausa.id)
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        agentes = AgenteProfile.objects.obtener_activos()
+        fecha_hoy = timezone.now() + timezone.timedelta(days=1)
+        fecha_ayer = fecha_hoy - timezone.timedelta(days=2)
+        agentes_tiempo = reportes_estadisticas.calcular_tiempo_pausa_tipo(
+            agentes, fecha_ayer, fecha_hoy)
+
+        for agente in agentes_tiempo:
+            if agente['id'] is self.agente.id:
+                if int(agente['pausa_id']) is pausa.id:
+                    self.assertEqual(str(total_pausa_agente), agente['tiempo'])
+                elif int(agente['pausa_id']) is pausa1.id:
+                    self.assertEqual(str(total_pausa_agente_1), agente['tiempo'])
+                else:
+                    self.fail("pausa no calculada revisar test")
+            elif agente['id'] is self.agente1.id:
+                self.assertEqual(str(total_pausa_agente1), agente['tiempo'])
+            else:
+                self.fail("Agente no calculado revisar test")
