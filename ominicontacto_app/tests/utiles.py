@@ -77,6 +77,13 @@ class OMLTestUtilsMixin(object):
 
     def crear_user_agente(self, first_name=None, last_name=None):
         """Crea un user"""
+
+        if first_name is None:
+            first_name = ''
+
+        if last_name is None:
+            last_name = ''
+
         user = User.objects.create_user(
             username='user_test_agente',
             email='user_agente@gmail.com',
