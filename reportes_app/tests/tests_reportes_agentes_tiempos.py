@@ -448,3 +448,62 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                     self.fail("Calculo de campana no calculado revisar test")
             else:
                 self.fail("Agente no calculado revisar test")
+
+    def test_genera_correctamente_por_tipo_llamada_agente(self):
+        """test que controla que la cantidad por tipo de llamadas y por cada
+        agente"""
+
+        generador = GeneradorDeLlamadaLogs()
+        generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
+                              self.agente, duracion_llamada=76)
+        generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
+                              self.agente, duracion_llamada=61)
+        generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
+                              self.agente, duracion_llamada=44)
+        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+                              self.agente, self.contacto_d, duracion_llamada=105,
+                              )
+        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+                              self.agente, self.contacto_d, duracion_llamada=65,
+                              )
+        generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
+                              self.agente, self.contacto_p, duracion_llamada=58
+                              )
+        generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
+                              self.agente, self.contacto_p, duracion_llamada=58
+                              )
+        generador.generar_log(self.entrante, False, 'COMPLETEAGENT', '123',
+                              self.agente, self.contacto_e, duracion_llamada=29
+                              )
+        generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
+                              self.agente1, self.contacto_p, duracion_llamada=58
+                              )
+        generador.generar_log(self.entrante, False, 'COMPLETEAGENT', '123',
+                              self.agente1, self.contacto_e, duracion_llamada=29
+                              )
+        generador.generar_log(self.entrante, False, 'COMPLETEAGENT', '123',
+                              self.agente1, self.contacto_e, duracion_llamada=29
+                              )
+        generador.generar_log(self.entrante, False, 'COMPLETEAGENT', '123',
+                              self.agente1, self.contacto_e, duracion_llamada=29
+                              )
+        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+                              self.agente1, self.contacto_d, duracion_llamada=65,
+                              )
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        agentes = AgenteProfile.objects.obtener_activos()
+        fecha_hoy = timezone.now() + timezone.timedelta(days=1)
+        fecha_ayer = fecha_hoy - timezone.timedelta(days=2)
+        dict_agentes = reportes_estadisticas._obtener_total_agentes_tipos_llamadas(
+            agentes, fecha_ayer, fecha_hoy)
+
+        self.assertEqual([2, 1], dict_agentes['total_agente_preview'])
+        self.assertEqual([3, 0], dict_agentes['total_agente_manual'])
+        self.assertEqual([1, 3], dict_agentes['total_agente_inbound'])
+        self.assertEqual([2, 1], dict_agentes['total_agente_dialer'])
+        self.assertEqual([8, 5], dict_agentes['total_agentes'])
+        self.assertEqual([self.agente.user.get_full_name(),
+                          self.agente1.user.get_full_name()],
+                         dict_agentes['nombres_agentes'])
