@@ -317,9 +317,11 @@ class TiemposAgente(object):
         fecha_inferior = datetime_hora_minima_dia(fecha_inferior)
         fecha_superior = datetime_hora_maxima_dia(fecha_superior)
         agentes_id = [agente.id for agente in agentes]
+        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
         dict_agentes = LlamadaLog.objects.obtener_count_agente().filter(
             time__range=(fecha_inferior, fecha_superior),
-            agente_id__in=agentes_id)
+            agente_id__in=agentes_id,
+            event__in=eventos_llamadas)
 
         agentes = []
         ids_agentes = []
