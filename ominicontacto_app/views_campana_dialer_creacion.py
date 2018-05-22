@@ -4,12 +4,9 @@
 
 from __future__ import unicode_literals
 
-# from django.contrib import messages
 from django import forms
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-# from django.shortcuts import redirect
-# from django.views.generic import CreateView, UpdateView, FormView
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
                                      ReglasIncidenciaFormSet, CampanaDialerForm,
                                      OpcionCalificacionFormSet, ParametroExtraParaWebformFormSet)
