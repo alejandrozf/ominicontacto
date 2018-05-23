@@ -592,6 +592,11 @@ class AccesoReportesTests(TestCase):
         url = reverse('reporte_llamadas')
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'reporte_llamadas.html')
+        self.assertIn('estadisticas', response.context)
+        self.assertIn('graficos', response.context)
+        self.assertIn('estadisticas_json', response.context)
+        self.assertIn('desde', response.context)
+        self.assertIn('hasta', response.context)
 
     def test_usuario_no_logueado_no_accede_a_pagina_ppal_reportes_llamadas(self):
         url = reverse('reporte_llamadas')
