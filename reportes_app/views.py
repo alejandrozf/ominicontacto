@@ -34,28 +34,26 @@ class ReporteLlamadasFormView(FormView):
         hoy_ahora = now()
         hoy_inicio = datetime_hora_minima_dia(hoy_ahora)
         reporte = ReporteDeLlamadas(hoy_inicio, hoy_ahora, False, request.user)
-        estadisticas = reporte.estadisticas
-        graficos = reporte.graficos
         return self.render_to_response(self.get_context_data(
             desde=hoy_inicio,
             hasta=hoy_ahora,
-            estadisticas=estadisticas,
-            graficos=graficos,
-            estadisticas_json=json.dumps(estadisticas)))
+            estadisticas=reporte.estadisticas,
+            graficos=reporte.graficos,
+            estadisticas_por_fecha=reporte.estadisticas_por_fecha,
+            estadisticas_json=json.dumps(reporte.estadisticas)))
 
     def form_valid(self, form):
         desde = form.desde
         hasta = form.hasta
         finalizadas = form.cleaned_data['finalizadas']
         reporte = ReporteDeLlamadas(desde, hasta, finalizadas, self.request.user)
-        estadisticas = reporte.estadisticas
-        graficos = reporte.graficos
         return self.render_to_response(self.get_context_data(
             desde=desde,
             hasta=hasta,
-            estadisticas=estadisticas,
-            graficos=graficos,
-            estadisticas_json=json.dumps(estadisticas)))
+            estadisticas=reporte.estadisticas,
+            graficos=reporte.graficos,
+            estadisticas_por_fecha=reporte.estadisticas_por_fecha,
+            estadisticas_json=json.dumps(reporte.estadisticas)))
 
 
 class ExportarReporteLlamadasFormView(FormView):

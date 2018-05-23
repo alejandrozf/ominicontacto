@@ -142,6 +142,21 @@ class ReporteDeLlamadas(object):
             }
         }
 
+        self.estadisticas_por_fecha = {
+            'llamadas_por_tipo': {
+                Campana.TYPE_MANUAL_DISPLAY: {},
+                Campana.TYPE_DIALER_DISPLAY: {},
+                Campana.TYPE_ENTRANTE_DISPLAY: {},
+                Campana.TYPE_PREVIEW_DISPLAY: {},
+            },
+            'tipos_de_llamada_por_campana': {
+                Campana.TYPE_MANUAL_DISPLAY: {},
+                Campana.TYPE_DIALER_DISPLAY: {},
+                Campana.TYPE_ENTRANTE_DISPLAY: {},
+                Campana.TYPE_PREVIEW_DISPLAY: {},
+            },
+        }
+
         for campana in self.campanas:
             self._inicializar_conteo_de_estadisticas_de_campana(campana)
 
@@ -160,23 +175,30 @@ class ReporteDeLlamadas(object):
         tipos_por_campana = INICIALES_POR_CAMPANA[tipo].copy()
         tipos_por_campana['nombre'] = campana.nombre
         self.estadisticas['tipos_de_llamada_por_campana'][tipo][campana.id] = tipos_por_campana
+        self.estadisticas_por_fecha['tipos_de_llamada_por_campana'][tipo][campana.id] = {}
 
     def _contabilizar_estadisticas(self):
         for log in self.logs:
+            fecha = log.time.strftime('%Y%m%d')
             tipo_campana = self._get_campana_type_display(log.tipo_campana)
             tipo_llamada = self._get_campana_type_display(log.tipo_llamada)
             self._contabilizar_total_llamadas_procesadas(log)
 
             estadisticas_tipo = self.estadisticas['llamadas_por_tipo'][tipo_llamada]
             self._contabilizar_llamada_por_tipo(estadisticas_tipo, log)
+            llamadas_por_fecha = self._get_llamadas_de_tipo_en_fecha(tipo_llamada, fecha)
+            self._contabilizar_llamada_por_tipo(llamadas_por_fecha, log)
 
             self._contabilizar_llamadas_por_campana(log)
 
             tipos_por_campana = self.estadisticas['tipos_de_llamada_por_campana']
             estadisticas_campana = tipos_por_campana[tipo_campana][log.campana_id]
             self._contabilizar_tipos_de_llamada_por_campana(estadisticas_campana, log)
-        self._aplicar_promedios_a_tiempos()
+            tipos_por_fecha = self._get_llamadas_de_campana_en_fecha(
+                tipo_campana, log.campana_id, fecha)
+            self._contabilizar_tipos_de_llamada_por_campana(tipos_por_fecha, log)
 
+        self._aplicar_promedios_a_tiempos()
         self._generar_graficos()
 
     def _contabilizar_total_llamadas_procesadas(self, log):
@@ -293,8 +315,12 @@ class ReporteDeLlamadas(object):
 
     def _aplicar_promedios_a_tiempos(self):
         for tipo, datos_tipo in self.estadisticas['tipos_de_llamada_por_campana'].iteritems():
-            for datos_campana in datos_tipo.itervalues():
+            for id_campana, datos_campana in datos_tipo.iteritems():
                 self._aplicar_promedios_a_tiempos_de_campana(tipo, datos_campana)
+
+                datos_por_tipo = self.estadisticas_por_fecha['tipos_de_llamada_por_campana'][tipo]
+                for fecha, datos_fecha in datos_por_tipo[id_campana].iteritems():
+                    self._aplicar_promedios_a_tiempos_de_campana(tipo, datos_fecha)
 
     def _aplicar_promedios_a_tiempos_de_campana(self, tipo, datos_campana):
         if tipo in [Campana.TYPE_MANUAL_DISPLAY, Campana.TYPE_PREVIEW_DISPLAY]:
@@ -325,6 +351,19 @@ class ReporteDeLlamadas(object):
             if efectuadas > 0:
                 suma_esperas = datos_campana['t_espera_conexion_manuales']
                 datos_campana['t_espera_conexion_manuales'] = suma_esperas / efectuadas
+
+    def _get_llamadas_de_tipo_en_fecha(self, tipo_llamada, fecha):
+        llamadas_de_tipo = self.estadisticas_por_fecha['llamadas_por_tipo'][tipo_llamada]
+        if fecha not in llamadas_de_tipo:
+            llamadas_de_tipo[fecha] = INICIALES_POR_TIPO[tipo_llamada].copy()
+        return llamadas_de_tipo[fecha]
+
+    def _get_llamadas_de_campana_en_fecha(self, tipo_campana, campana_id, fecha):
+        tipos_por_campana = self.estadisticas_por_fecha['tipos_de_llamada_por_campana']
+        fechas_por_campana = tipos_por_campana[tipo_campana][campana_id]
+        if fecha not in fechas_por_campana:
+            fechas_por_campana[fecha] = INICIALES_POR_CAMPANA[tipo_campana].copy()
+        return fechas_por_campana[fecha]
 
     def _generar_graficos(self):
         graficador = GraficosReporteDeLlamadas(self.estadisticas)

@@ -3,7 +3,7 @@
 import json
 
 from django.test import TestCase
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.utiles import datetime_hora_minima_dia
@@ -20,7 +20,8 @@ class BaseReporteDeLlamadasTests(TestCase):
     def setUp(self):
         super(BaseReporteDeLlamadasTests, self).setUp()
         self.hasta = now()
-        self.desde = datetime_hora_minima_dia(self.hasta)
+        self.durante = now() - timedelta(days=1)
+        self.desde = datetime_hora_minima_dia(self.hasta) - timedelta(days=1)
 
         self.supervisor = SupervisorProfileFactory(is_administrador=True)
 
@@ -593,6 +594,7 @@ class AccesoReportesTests(TestCase):
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'reporte_llamadas.html')
         self.assertIn('estadisticas', response.context)
+        self.assertIn('estadisticas_por_fecha', response.context)
         self.assertIn('graficos', response.context)
         self.assertIn('estadisticas_json', response.context)
         self.assertIn('desde', response.context)
@@ -650,3 +652,45 @@ class AccesoReportesTests(TestCase):
         response = self.client.post(url, data=data, follow=True)
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, u'400.html')
+
+
+class DatosPorFechaReporteLlamadasTests(BaseReporteDeLlamadasTests):
+
+    def test_llamadas_de_tipo_por_fecha(self):
+        tipo = Campana.TYPE_ENTRANTE_DISPLAY
+        campana = self.entrante
+        generador = GeneradorDeLlamadaLogs()
+        for i in range(5):
+            generador.generar_log(campana, False, 'COMPLETECALLER', '123',
+                                  self.agente1, bridge_wait_time=4, time=self.durante)
+        for i in range(3):
+            generador.generar_log(campana, False, 'COMPLETEAGENT', '123',
+                                  self.agente1, bridge_wait_time=6)
+
+        str_ayer = self.durante.strftime('%Y%m%d')
+        str_hoy = self.hasta.strftime('%Y%m%d')
+
+        self.hasta = now()
+        reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
+        self.assertIn(tipo, reporte.estadisticas_por_fecha['llamadas_por_tipo'])
+        self.assertIn(str_ayer, reporte.estadisticas_por_fecha['llamadas_por_tipo'][tipo])
+        self.assertIn(str_hoy, reporte.estadisticas_por_fecha['llamadas_por_tipo'][tipo])
+        datos_ayer = reporte.estadisticas_por_fecha['llamadas_por_tipo'][tipo][str_ayer]
+        datos_hoy = reporte.estadisticas_por_fecha['llamadas_por_tipo'][tipo][str_hoy]
+        self.assertEqual(datos_ayer['atendidas'], 5)
+        self.assertEqual(datos_ayer['total'], 5)
+        self.assertEqual(datos_hoy['atendidas'], 3)
+        self.assertEqual(datos_hoy['total'], 3)
+
+        self.assertIn(tipo, reporte.estadisticas_por_fecha['tipos_de_llamada_por_campana'])
+        tipos_por_campana = reporte.estadisticas_por_fecha['tipos_de_llamada_por_campana'][tipo]
+        self.assertIn(str_ayer, tipos_por_campana[self.entrante.id])
+        self.assertIn(str_hoy, tipos_por_campana[self.entrante.id])
+        datos_ayer = tipos_por_campana[self.entrante.id][str_ayer]
+        datos_hoy = tipos_por_campana[self.entrante.id][str_hoy]
+        self.assertEqual(datos_ayer['atendidas'], 5)
+        self.assertEqual(datos_ayer['recibidas'], 5)
+        self.assertEqual(datos_ayer['t_espera_conexion'], 4)
+        self.assertEqual(datos_hoy['atendidas'], 3)
+        self.assertEqual(datos_hoy['recibidas'], 3)
+        self.assertEqual(datos_hoy['t_espera_conexion'], 6)

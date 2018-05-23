@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% load static %}
+{% load util_tags %}
 
 {% block head_js %}
 <script type="text/javascript">
@@ -44,6 +45,14 @@
   function exportarReporte(tipo_reporte){
     $('#tipo_reporte').val(tipo_reporte);
     $('#exportar_reporte').submit();
+  };
+
+  function mostrarLlamadasPorFecha(tipo){
+    $('#modalLlamadas' + tipo).modal('show')
+  };
+
+  function mostrarTiposDeLlamadaPorFecha(tipo, id){
+    $('#modalTipos' + tipo + '_' + id).modal('show')
   };
 
 </script>
@@ -117,6 +126,12 @@
         <td width="10%">{{ llamadas_por_tipo.Dialer.perdidas }}</td>
       </tr>
     </table>
+    {% if estadisticas_por_fecha.llamadas_por_tipo.Dialer %}
+      <button class="btn btn-default" onclick="mostrarLlamadasPorFecha('Dialer');">
+        {% trans 'Desglosar por fecha' %}
+      </button><br><br>
+    {% endif %}
+
     <table class="table table-bordered">
       <tr>
         <td><strong>{% trans 'Tipos de llamadas Entrantes' %}</strong></td>
@@ -135,6 +150,12 @@
         <td width="10%">{{ llamadas_por_tipo.Entrante.abandonadas }}</td>
       </tr>
     </table>
+    {% if estadisticas_por_fecha.llamadas_por_tipo.Entrante %}
+      <button class="btn btn-default" onclick="mostrarLlamadasPorFecha('Entrante');">
+        {% trans 'Desglosar por fecha' %}
+      </button><br><br>
+    {% endif %}
+
     <table class="table table-bordered">
       <tr>
         <td><strong>{% trans 'Tipos de llamadas salientes Manuales' %}</strong></td>
@@ -149,6 +170,12 @@
         <td width="10%">{{ llamadas_por_tipo.Manual.no_conectadas }}</td>
       </tr>
     </table>
+    {% if estadisticas_por_fecha.llamadas_por_tipo.Manual %}
+      <button class="btn btn-default" onclick="mostrarLlamadasPorFecha('Manual');">
+        {% trans 'Desglosar por fecha' %}
+      </button><br><br>
+    {% endif %}
+
     <table class="table table-bordered">
       <tr>
         <td><strong>{% trans 'Tipos de llamadas salientes Preview' %}</strong></td>
@@ -163,6 +190,11 @@
         <td width="10%">{{ llamadas_por_tipo.Preview.no_conectadas }}</td>
       </tr>
     </table>
+    {% if estadisticas_por_fecha.llamadas_por_tipo.Preview %}
+      <button class="btn btn-default" onclick="mostrarLlamadasPorFecha('Preview');">
+        {% trans 'Desglosar por fecha' %}
+      </button><br><br>
+    {% endif %}
 
     {% endwith %}
     <button class="btn btn-outline-primary" onclick="exportarReporte('llamadas_por_tipo');">
@@ -274,7 +306,17 @@
         </thead>
         {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Dialer.items %}
         <tr>
-          <td>{{ campana.nombre }}</td>
+          <td>
+            {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Dialer|get_item:id %}
+              {% if tipos_por_fecha %}
+                <a href="javascript:;" onclick="mostrarTiposDeLlamadaPorFecha('Dialer', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+                  {{ campana.nombre }}
+                </a>
+              {% else %}
+                {{ campana.nombre }}
+              {% endif %}
+            {% endwith %}
+          </td>
           <td>{{ campana.efectuadas }}</td>
           <td>{{ campana.atendidas }}</td>
           <td>{{ campana.conectadas }}</td>
@@ -325,7 +367,17 @@
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Entrante.items %}
       <tr>
-        <td>{{ campana.nombre }}</td>
+        <td>
+          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Entrante|get_item:id %}
+            {% if tipos_por_fecha %}
+              <a href="javascript:;" onclick="mostrarTiposDeLlamadaPorFecha('Entrante', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+                {{ campana.nombre }}
+              </a>
+            {% else %}
+              {{ campana.nombre }}
+            {% endif %}
+          {% endwith %}
+        </td>
         <td>{{ campana.recibidas }}</td>
         <td>{{ campana.atendidas }}</td>
         <td>{{ campana.expiradas }}</td>
@@ -367,7 +419,17 @@
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Manual.items %}
       <tr>
-        <td>{{ campana.nombre }}</td>
+        <td>
+          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Manual|get_item:id %}
+            {% if tipos_por_fecha %}
+              <a href="javascript:;" onclick="mostrarTiposDeLlamadaPorFecha('Manual', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+                {{ campana.nombre }}
+              </a>
+            {% else %}
+              {{ campana.nombre }}
+            {% endif %}
+          {% endwith %}
+        </td>
         <td>{{ campana.efectuadas }}</td>
         <td>{{ campana.conectadas }}</td>
         <td>{{ campana.no_conectadas }}</td>
@@ -407,7 +469,17 @@
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Preview.items %}
       <tr>
-        <td>{{ campana.nombre }}</td>
+        <td>
+          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Preview|get_item:id %}
+            {% if tipos_por_fecha %}
+              <a href="javascript:;" onclick="mostrarTiposDeLlamadaPorFecha('Preview', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+                {{ campana.nombre }}
+              </a>
+            {% else %}
+              {{ campana.nombre }}
+            {% endif %}
+          {% endwith %}
+        </td>
         <td>{{ campana.efectuadas }}</td>
         <td>{{ campana.conectadas }}</td>
         <td>{{ campana.no_conectadas }}</td>
@@ -430,4 +502,342 @@
   </div>
 </div>
 
+<!-- MODALES de Llamadas por tipo desglosadas en fechas -->
+{% with llamadas_por_tipo=estadisticas_por_fecha.llamadas_por_tipo %}
+  <div class="modal" id="modalLlamadasDialer" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title">{% trans 'Tipos de llamadas salientes por Discador' %}</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <tr>
+              <td><strong>{% trans 'Fecha' %}</strong></td>
+              <td>{% trans 'Cantidad de llamadas atendidas' %}</td>
+              <td>{% trans 'Cantidad de llamadas no atendidas' %}</td>
+              <td>{% trans 'Cantidad de llamadas perdidas' %}</td>
+              <td><strong>{% trans 'Total' %}</strong></td>
+            </tr>
+            {% for fecha, llamadas in llamadas_por_tipo.Dialer.items %}
+              <tr>
+                <td>{{ fecha }}</td>
+                <td>{{ llamadas.atendidas }}</td>
+                <td>{{ llamadas.no_atendidas }}</td>
+                <td>{{ llamadas.perdidas }}</td>
+                <td>{{llamadas.total}}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+  <div class="modal" id="modalLlamadasManual" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title">{% trans 'Tipos de llamadas salientes Manuales' %}</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <tr>
+              <td>{% trans 'Fecha' %}</td>
+              <td>{% trans 'Cantidad de llamadas conectadas' %}</td>
+              <td>{% trans 'Cantidad de llamadas no conectadas' %}</td>
+              <td><strong>{% trans 'Total' %}</strong></td>
+            </tr>
+            {% for fecha, llamadas in llamadas_por_tipo.Manual.items %}
+              <tr>
+                <td>{{ fecha }}</td>
+                <td>{{ llamadas.conectadas }}</td>
+                <td>{{ llamadas.no_conectadas }}</td>
+                <td>{{ llamadas.total }}</td>
+              </tr>
+            {% endfor %}
+            <tr>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+  <div class="modal" id="modalLlamadasEntrante" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title">{% trans 'Tipos de llamadas Entrantes' %}</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <tr>
+              <td>{% trans 'Fecha' %}</td>
+              <td>{% trans 'Cantidad de llamadas atendidas' %}</td>
+              <td>{% trans 'Cantidad de llamadas expiradas' %}</td>
+              <td>{% trans 'Cantidad de llamadas abandonadas' %}</td>
+              <td><strong>{% trans 'Total' %}</strong></td>
+            </tr>
+            {% for fecha, llamadas in llamadas_por_tipo.Entrante.items %}
+              <tr>
+                <td>{{ fecha }}</td>
+                <td>{{ llamadas.atendidas }}</td>
+                <td>{{ llamadas.expiradas }}</td>
+                <td>{{ llamadas.abandonadas }}</td>
+                <td>{{ llamadas.total }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+  <div class="modal" id="modalLlamadasPreview" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title">{% trans 'Tipos de llamadas salientes Preview' %}</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <tr>
+              <td>{% trans 'Fecha' %}</td>
+              <td>{% trans 'Cantidad de llamadas conectadas' %}</td>
+              <td>{% trans 'Cantidad de llamadas no conectadas' %}</td>
+              <td><strong>{% trans 'Total' %}</strong></td>
+            </tr>
+            {% for fecha, llamadas in llamadas_por_tipo.Preview.items %}
+              <tr>
+                <td>{{ fecha }}</td>
+                <td>{{ llamadas.conectadas }}</td>
+                <td>{{ llamadas.no_conectadas }}</td>
+                <td>{{ llamadas.total }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+{% endwith %}
+
+<!-- MODALES de tipos de llamadas por campaña desglosadas en fechas -->
+{% for id, tipos_por_fecha in estadisticas_por_fecha.tipos_de_llamada_por_campana.Dialer.items %}
+  {% if tipos_por_fecha %}
+    <div class="modal" id="modalTiposDialer_{{ id }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">{% trans 'Tipos de llamada de campaña por fecha' %}</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>{% trans 'Fecha' %}</th>
+                        <th>{% trans 'Efectuadas' %}</th>
+                        <th>{% trans 'Atendidas' %}</th>
+                        <th>{% trans 'Conectadas' %}</th>
+                        <th>{% trans 'Expiradas' %}</th>
+                        <th>{% trans 'Abandonadas' %}</th>
+                        <th>{% trans 'T. de espera de conexión medio' %}</th>
+                        <th>{% trans 'T. de espera de atención medio' %}</th>
+                        <th>{% trans 'T. medio de abandono' %}</th>
+                        <th>{% trans 'Manuales Efectuadas' %}</th>
+                        <th>{% trans 'Manuales Conectadas' %}</th>
+                        <th>{% trans 'Manuales no Conectadas' %}</th>
+                        <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
+                      </tr>
+                    </thead>
+                    {% for fecha, llamadas in tipos_por_fecha.items %}
+                      <tr>
+                        <td>{{ fecha }}</td>
+                        <td>{{ llamadas.efectuadas }}</td>
+                        <td>{{ llamadas.atendidas }}</td>
+                        <td>{{ llamadas.conectadas }}</td>
+                        <td>{{ llamadas.expiradas }}</td>
+                        <td>{{ llamadas.abandonadas }}</td>
+                        <td>{{ llamadas.t_espera_conexion }}</td>
+                        <td>{{ llamadas.t_espera_atencion }}</td>
+                        <td>{{ llamadas.t_abandono }}</td>
+                        <td>{{ llamadas.efectuadas_manuales }}</td>
+                        <td>{{ llamadas.conectadas_manuales }}</td>
+                        <td>{{ llamadas.no_conectadas_manuales }}</td>
+                        <td>{{ llamadas.t_espera_conexion_manuales }}</td>
+                      </tr>
+                    {% endfor %}
+                  </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+  {% endif %}
+{% endfor %}
+
+{% for id, tipos_por_fecha in estadisticas_por_fecha.tipos_de_llamada_por_campana.Manual.items %}
+  {% if tipos_por_fecha %}
+    <div class="modal" id="modalTiposManual_{{ id }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">{% trans 'Tipos de llamada de campaña por fecha' %}</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>{% trans 'Fecha' %}</th>
+                        <th>{% trans 'Efectuadas' %}</th>
+                        <th>{% trans 'Conectadas' %}</th>
+                        <th>{% trans 'No Conectadas' %}</th>
+                        <th>{% trans 'T. de espera de conexión medio' %}</th>
+                      </tr>
+                    </thead>
+                    {% for fecha, llamadas in tipos_por_fecha.items %}
+                      <tr>
+                        <td>{{ fecha }}</td>
+                        <td>{{ llamadas.efectuadas }}</td>
+                        <td>{{ llamadas.conectadas }}</td>
+                        <td>{{ llamadas.no_conectadas }}</td>
+                        <td>{{ llamadas.t_espera_conexion }}</td>
+                      </tr>
+                    {% endfor %}
+                  </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+  {% endif %}
+{% endfor %}
+
+{% for id, tipos_por_fecha in estadisticas_por_fecha.tipos_de_llamada_por_campana.Entrante.items %}
+  {% if tipos_por_fecha %}
+    <div class="modal" id="modalTiposEntrante_{{ id }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">{% trans 'Tipos de llamada de campaña por fecha' %}</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>{% trans 'Recibidas' %}</th>
+                        <th>{% trans 'Atendidas' %}</th>
+                        <th>{% trans 'Expiradas' %}</th>
+                        <th>{% trans 'Abandonadas' %}</th>
+                        <th>{% trans 'T. de espera de conexión medio' %}</th>
+                        <th>{% trans 'T. medio de abandono' %}</th>
+                        <th>{% trans 'Manuales Efectuadas' %}</th>
+                        <th>{% trans 'Manuales Conectadas' %}</th>
+                        <th>{% trans 'Manuales no Conectadas' %}</th>
+                        <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
+                      </tr>
+                    {% for fecha, llamadas in tipos_por_fecha.items %}
+                      <tr>
+                        <td>{{ fecha }}</td>
+                        <td>{{ llamadas.recibidas }}</td>
+                        <td>{{ llamadas.atendidas }}</td>
+                        <td>{{ llamadas.expiradas }}</td>
+                        <td>{{ llamadas.abandonadas }}</td>
+                        <td>{{ llamadas.t_espera_conexion }}</td>
+                        <td>{{ llamadas.t_abandono }}</td>
+                        <td>{{ llamadas.efectuadas_manuales }}</td>
+                        <td>{{ llamadas.conectadas_manuales }}</td>
+                        <td>{{ llamadas.no_conectadas_manuales }}</td>
+                        <td>{{ llamadas.t_espera_conexion_manuales }}</td>
+                      </tr>
+                    {% endfor %}
+                    </thead>
+                  </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+  {% endif %}
+{% endfor %}
+
+{% for id, tipos_por_fecha in estadisticas_por_fecha.tipos_de_llamada_por_campana.Preview.items %}
+  {% if tipos_por_fecha %}
+    <div class="modal" id="modalTiposPreview_{{ id }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">{% trans 'Tipos de llamada de campaña por fecha' %}</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>{% trans 'Fecha' %}</th>
+                        <th>{% trans 'Efectuadas' %}</th>
+                        <th>{% trans 'Conectadas' %}</th>
+                        <th>{% trans 'No Conectadas' %}</th>
+                        <th>{% trans 'T. de espera de conexión medio' %}</th>
+                        <th>{% trans 'Manuales Efectuadas' %}</th>
+                        <th>{% trans 'Manuales Conectadas' %}</th>
+                        <th>{% trans 'Manuales no Conectadas' %}</th>
+                        <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
+                      </tr>
+                    </thead>
+                    {% for fecha, llamadas in tipos_por_fecha.items %}
+                      <tr>
+                        <td>{{ fecha }}</td>
+                        <td>{{ llamadas.efectuadas }}</td>
+                        <td>{{ llamadas.conectadas }}</td>
+                        <td>{{ llamadas.no_conectadas }}</td>
+                        <td>{{ llamadas.t_espera_conexion }}</td>
+                        <td>{{ llamadas.efectuadas_manuales }}</td>
+                        <td>{{ llamadas.conectadas_manuales }}</td>
+                        <td>{{ llamadas.no_conectadas_manuales }}</td>
+                        <td>{{ llamadas.t_espera_conexion_manuales }}</td>
+                      </tr>
+                    {% endfor %}
+                  </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+  {% endif %}
+{% endfor %}
+<!-- -->
 {% endblock %}
