@@ -256,6 +256,11 @@ def convertir_ascii_string(cadena):
     return cadena.encode('ascii', errors='ignore')
 
 
+def cast_datetime_part_date(fecha):
+    """ Devuelve un datetime part date """
+    return fecha.replace(hour=0, minute=0, second=0, microsecond=0)
+
+
 class UnicodeWriter:            # tomado de https://docs.python.org/2/library/csv.html
     """
     A CSV writer which will write rows to CSV file "f",

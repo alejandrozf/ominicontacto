@@ -9,7 +9,9 @@ from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog
 from ominicontacto_app.models import AgenteProfile, Pausa, Campana
 from pygal.style import Style
-from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
+from ominicontacto_app.utiles import (
+    datetime_hora_minima_dia, datetime_hora_maxima_dia, cast_datetime_part_date
+)
 
 
 ESTILO_AZUL_ROJO_AMARILLO = Style(
@@ -500,3 +502,52 @@ class TiemposAgente(object):
                                        dict_agentes_llamadas['total_agente_manual']),
             'barra_agente_total': barra_agente_total,
         }
+
+    def calcular_tiempo_session_fecha_agente(self, agente, fecha_inferior,
+                                             fecha_superior, agente_fecha):
+        """ Calcula el tiempo de session teniendo en cuenta los eventos
+        ADDMEMBER, REMOVEMEMBER por fecha dia a dia"""
+
+        eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
+
+        logs_time = ActividadAgenteLog.objects.obtener_tiempos_event_agentes(
+            eventos_sesion,
+            fecha_inferior,
+            fecha_superior,
+            # [agente.id])
+            [4])
+        time_actual = None
+        is_remove = False
+        for logs in logs_time:
+            agente_nuevo = None
+            if is_remove and logs[2] == 'ADDMEMBER':
+                if cast_datetime_part_date(time_actual) == cast_datetime_part_date(logs[1]):
+
+                    resta = time_actual - logs[1]
+                    agente_en_lista = filter(lambda x: x.agente == time_actual,
+                                             agente_fecha)
+                    if agente_en_lista:
+                        agente_nuevo = agente_en_lista[0]
+                        if agente_nuevo.tiempo_sesion:
+                            agente_nuevo._tiempo_sesion += resta
+                        else:
+                            agente_nuevo._tiempo_sesion = resta
+                    else:
+                        agente_nuevo = AgenteTiemposReporte(
+                            time_actual, resta, 0, 0, 0, 0)
+                        agente_fecha.append(agente_nuevo)
+                    agente_nuevo = None
+                    is_remove = False
+                    time_actual = None
+                else:
+                    agente_nuevo = None
+                    is_remove = False
+                    time_actual = None
+            if logs[2] == 'REMOVEMEMBER':
+                time_actual = logs[1]
+                is_remove = True
+        return agente_fecha
+
+    def _generar_por_fecha_agente(self, agente, fecha_inferior, fecha_superior):
+        agente_fecha = []
+        a = self.calcular_tiempo_session_fecha_agente(agente, fecha_inferior, fecha_superior, agente_fecha)
