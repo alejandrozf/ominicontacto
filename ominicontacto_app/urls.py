@@ -359,11 +359,6 @@ urlpatterns = [
             views_agente.ExportaReporteFormularioVentaView.as_view()),
         name='exporta_reporte_formularios',
         ),
-    url(r'^agente/tiempos/$',
-        login_required(
-            views_agente.AgenteReporteListView.as_view()),
-        name='agente_tiempos',
-        ),
     url(r'^agente/logout/$',
         login_required(views_agente.logout_view), name='agente_logout',
         ),
@@ -372,8 +367,6 @@ urlpatterns = [
             views_agente.LlamarContactoView.as_view()),
         name='agente_llamar_contacto',
         ),
-    url(r'^agente/llamadas_exporta/(?P<tipo_reporte>[\w\-]+)/$',
-        views_agente.exporta_reporte_agente_llamada_view, name='agente_llamada_exporta'),
     # ==========================================================================
     # Reportes
     # ==========================================================================

@@ -21,18 +21,14 @@ class AgenteTiemposReporte(object):
     """
 
     def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada,
-                 cantidad_llamadas_procesadas, cantidad_llamadas_perdidas,
-                 tiempo_llamada_saliente, cantidad_llamadas_saliente):
+                 cantidad_llamadas_procesadas, cantidad_intentos_fallidos):
 
         self._agente = agente
         self._tiempo_sesion = tiempo_sesion
         self._tiempo_pausa = tiempo_pausa
         self._tiempo_llamada = tiempo_llamada
         self._cantidad_llamadas_procesadas = cantidad_llamadas_procesadas
-        self._cantidad_llamadas_perdidas = cantidad_llamadas_perdidas
-        self._tiempo_llamada_saliente = tiempo_llamada_saliente
-        self._cantidad_llamadas_saliente = cantidad_llamadas_saliente
-
+        self._cantidad_intentos_fallidos = cantidad_intentos_fallidos
 
     @property
     def agente(self):
@@ -55,31 +51,20 @@ class AgenteTiemposReporte(object):
         return self._cantidad_llamadas_procesadas
 
     @property
-    def cantidad_llamadas_perdidas(self):
-        return self._cantidad_llamadas_perdidas
-
-    @property
-    def tiempo_llamada_saliente(self):
-        return self._tiempo_llamada_saliente
-
-    @property
-    def cantidad_llamadas_saliente(self):
-        return self._cantidad_llamadas_saliente
+    def cantidad_intentos_fallidos(self):
+        return self._cantidad_intentos_fallidos
 
     @property
     def tiempo_porcentaje_llamada(self):
-        if self.tiempo_llamada and  self.tiempo_sesion:
-            return float('%.2f' % (self.tiempo_llamada /
-                                   self.tiempo_sesion.total_seconds())
-                         )* 100
+
+        if self.tiempo_llamada and self.tiempo_sesion:
+            return self.tiempo_llamada / self.tiempo_sesion.total_seconds() * 100
         return None
 
     @property
     def tiempo_porcentaje_pausa(self):
-        if self.tiempo_pausa and  self.tiempo_sesion:
-            return  float('%.2f' % (self.tiempo_pausa.total_seconds() /
-                             self.tiempo_sesion.total_seconds())
-                          ) * 100
+        if self.tiempo_pausa and self.tiempo_sesion:
+            return self.tiempo_pausa.total_seconds() / self.tiempo_sesion.total_seconds() * 100
         return None
 
     @property
@@ -97,9 +82,7 @@ class AgenteTiemposReporte(object):
     @property
     def tiempo_porcentaje_wait(self):
         if self.tiempo_wait > 0 and self.tiempo_sesion:
-            return float('%.2f' % (self.tiempo_wait /
-                                   self.tiempo_sesion.total_seconds())
-                         ) * 100
+            return self.tiempo_wait / self.tiempo_sesion.total_seconds() * 100
         return None
 
     def get_string_tiempo_sesion(self):
@@ -117,34 +100,11 @@ class AgenteTiemposReporte(object):
             return datetime.timedelta(0, self.tiempo_llamada)
         return self.tiempo_llamada
 
-    def get_nombre_agente_sin_id(self):
-        agente = self.agente.split('_')
-        try:
-            agente_nombre = agente[1]
-        except ValueError:
-            agente_nombre = self.agente
-        return agente_nombre
+    def get_promedio_llamadas(self):
+        if self.tiempo_llamada and self.tiempo_llamada > 0:
+            promedio_llamadas = self.tiempo_llamada / self.cantidad_llamadas_procesadas
+            return promedio_llamadas
+        return 0
 
     def get_nombre_agente(self):
         return self.agente.user.get_full_name()
-
-    def get_media_asignada(self):
-        if self.tiempo_llamada and self.tiempo_llamada_saliente:
-
-            tiempo_asignadas = self.tiempo_llamada - self.tiempo_llamada_saliente
-            media_asignadas = 0
-            cantidad_asignadas = self._cantidad_llamadas_procesadas -\
-                                 self._cantidad_llamadas_saliente
-            if tiempo_asignadas > 0:
-                media_asignadas = tiempo_asignadas / cantidad_asignadas
-            return media_asignadas
-        return 0
-
-    def get_media_salientes(self):
-        if self.tiempo_llamada_saliente:
-            media_salientes = 0
-            if self.tiempo_llamada_saliente > 0:
-                media_salientes = self.tiempo_llamada_saliente /\
-                                  self._cantidad_llamadas_saliente
-            return media_salientes
-        return 0

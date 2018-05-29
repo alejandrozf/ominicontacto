@@ -2,13 +2,99 @@
 
 from __future__ import unicode_literals
 
-from django.db import models
+from django.db import models, connection
+from django.db.models import Count
+from django.core.exceptions import SuspiciousOperation
+from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
+
+
+class LlamadaLogManager(models.Manager):
+
+    def obtener_tiempo_llamadas_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
+        cursor = connection.cursor()
+        sql = """select agente_id, SUM(duracion_llamada::integer)
+                 from reportes_app_llamadalog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
+                 GROUP BY agente_id order by agente_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
+    def obtener_count_evento_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
+        cursor = connection.cursor()
+        sql = """select agente_id, count(*)
+                 from reportes_app_llamadalog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
+                 GROUP BY agente_id order by agente_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
+    def obtener_agentes_campanas_total(self, eventos, fecha_desde, fecha_hasta, agentes,
+                                       campanas):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
+        cursor = connection.cursor()
+        sql = """select agente_id, campana_id, SUM(duracion_llamada::integer), Count(*)
+                 from reportes_app_llamadalog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
+                 and campana_id = ANY(%(campanas)s) GROUP BY agente_id, campana_id order by
+                 agente_id, campana_id
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+            'campanas': [campana.id for campana in campanas],
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
+    def obtener_count_agente(self):
+        try:
+            return self.values('agente_id').annotate(
+                cantidad=Count('agente_id')).order_by('agente_id')
+        except LlamadaLog.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro llamadas "))
 
 
 class LlamadaLog(models.Model):
     """
     Define la estructura de un evento de log de cola relacionado con una llamada
     """
+
+    objects = LlamadaLogManager()
+
     time = models.DateTimeField(db_index=True)
     callid = models.CharField(max_length=32, blank=True, null=True)
     campana_id = models.IntegerField(db_index=True, blank=True, null=True)
@@ -28,10 +114,45 @@ class LlamadaLog(models.Model):
                                            self.agente_id, self.event)
 
 
+class ActividadAgenteLogManager(models.Manager):
+    """
+    Manager de actividadAgenteLog
+    """
+
+    def obtener_tiempos_event_agentes(self, eventos, fecha_desde, fecha_hasta,
+                                      agentes):
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
+        cursor = connection.cursor()
+        sql = """select agente_id, time, event, pausa_id
+                 from reportes_app_actividadagentelog where
+                 time between %(fecha_desde)s and %(fecha_hasta)s and
+                 event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
+                 order by agente_id, time desc
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agentes': agentes,
+
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
+
 class ActividadAgenteLog(models.Model):
     """
     Define la estructura de un evento de log de cola relacionado con la actividad de un agente
     """
+
+    objects = ActividadAgenteLogManager()
+
     time = models.DateTimeField(db_index=True)
     agente_id = models.IntegerField(db_index=True, blank=True, null=True)
     event = models.CharField(max_length=32, blank=True, null=True)

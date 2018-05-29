@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import faker
 
 from uuid import uuid4
-
+import random
 from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, post_generation
 
 from django.utils import timezone
@@ -15,7 +15,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       SitioExterno, User, Contacto, SupervisorProfile,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametroExtraParaWebform,
-                                      ActuacionVigente)
+                                      ActuacionVigente, Pausa)
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
 faker = faker.Factory.create()
@@ -280,3 +280,11 @@ class ActuacionVigenteFactory(DjangoModelFactory):
     sabado = False
     hora_desde = timezone.now()
     hora_hasta = timezone.now() + timezone.timedelta(hours=3)
+
+
+class PausaFactory(DjangoModelFactory):
+    class Meta:
+        model = Pausa
+
+    nombre = lazy_attribute(lambda a: faker.text(15))
+    tipo = lazy_attribute(lambda a: random.choice(('P', 'R')))

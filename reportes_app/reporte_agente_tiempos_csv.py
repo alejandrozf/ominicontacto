@@ -9,7 +9,6 @@ from __future__ import unicode_literals
 import csv
 import logging
 import os
-import json
 import datetime
 
 from django.conf import settings
@@ -25,7 +24,6 @@ class ArchivoDeReporteCsv(object):
         self._nombre_reporte = nombre_reporte
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        hoy
         self.nombre_del_directorio = 'reporte_agente'
         self.prefijo_nombre_de_archivo = "{0}-{1}".format(hoy, nombre_reporte)
         self.sufijo_nombre_de_archivo = ".csv"
@@ -66,9 +64,8 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Porcentaje en pausa")
             encabezado.append("Porcentaje en espera")
             encabezado.append("Cantidad de llamadas procesadas")
-            encabezado.append("Cantidad de llamadas perdidas")
-            encabezado.append("Media de llamadas asignadas")
-            encabezado.append("Media de llamadas salientes manuales")
+            encabezado.append("Tiempo promedio de llamadas")
+            encabezado.append("Cantidad de intentos fallidos")
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -79,7 +76,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for agente in estadisticas["estadisticas"]["agentes_tiempos"]:
+            for agente in estadisticas["agentes_tiempos"]:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -110,12 +107,10 @@ class ArchivoDeReporteCsv(object):
                     porcentaje_wait = str(agente.tiempo_porcentaje_wait) + "%"
                 lista_opciones.append(porcentaje_wait)
                 lista_opciones.append(agente.cantidad_llamadas_procesadas)
-                lista_opciones.append(agente.cantidad_llamadas_perdidas)
-                lista_opciones.append(str(agente.get_media_asignada()) + "s")
-                lista_opciones.append(str(agente.get_media_salientes()) + "s")
+                lista_opciones.append(str(agente.get_promedio_llamadas()) + "s")
+                lista_opciones.append(agente.cantidad_intentos_fallidos)
 
                 # --- Finalmente, escribimos la linea
-
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
@@ -140,7 +135,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for agente in estadisticas["estadisticas"]["agentes_pausa"]:
+            for agente in estadisticas["agente_pausa"]:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -151,7 +146,6 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(agente['tiempo'] + "hs")
 
                 # --- Finalmente, escribimos la linea
-
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
@@ -176,7 +170,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for agente in estadisticas["estadisticas"]["count_llamada_campana"]:
+            for agente in estadisticas["count_llamada_campana"]:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -187,7 +181,6 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(agente[3])
 
                 # --- Finalmente, escribimos la linea
-
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
@@ -214,7 +207,8 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for agente, total_campana, total_ics, total_dialer, total_inbound, total_manual in estadisticas["dict_agente_counter"]:
+            for (agente, total_campana, total_ics, total_dialer, total_inbound,
+                 total_manual) in estadisticas["dict_agente_counter"]:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -227,7 +221,6 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(total_manual)
 
                 # --- Finalmente, escribimos la linea
-
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')
                                        for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
@@ -261,7 +254,6 @@ class ReporteAgenteCSVService(object):
         archivo_de_reporte.escribir_archivo_llamadas_tipo_csv(estadisticas)
 
     def obtener_url_reporte_csv_descargar(self, nombre_reporte):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
 
         archivo_de_reporte = ArchivoDeReporteCsv(nombre_reporte)
         if archivo_de_reporte.ya_existe():

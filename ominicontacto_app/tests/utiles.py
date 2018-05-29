@@ -75,13 +75,22 @@ class OMLTestUtilsMixin(object):
             shutil.copy(tmp, settings.MEDIA_ROOT)
         return new_path
 
-    def crear_user_agente(self):
+    def crear_user_agente(self, first_name=None, last_name=None):
         """Crea un user"""
+
+        if first_name is None:
+            first_name = ''
+
+        if last_name is None:
+            last_name = ''
+
         user = User.objects.create_user(
             username='user_test_agente',
             email='user_agente@gmail.com',
             password='admin123',
-            is_agente=True
+            is_agente=True,
+            first_name=first_name,
+            last_name=last_name,
         )
         user.username = "user_test_agente" + str(user.id)
         user.save()
