@@ -667,8 +667,8 @@ class DatosPorFechaReporteLlamadasTests(BaseReporteDeLlamadasTests):
             generador.generar_log(campana, False, 'COMPLETEAGENT', '123',
                                   self.agente1, bridge_wait_time=6)
 
-        str_ayer = self.durante.strftime('%Y%m%d')
-        str_hoy = self.hasta.strftime('%Y%m%d')
+        str_ayer = self.durante.strftime('%d-%m-%Y')
+        str_hoy = self.hasta.strftime('%d-%m-%Y')
 
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)

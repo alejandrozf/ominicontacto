@@ -179,7 +179,7 @@ class ReporteDeLlamadas(object):
 
     def _contabilizar_estadisticas(self):
         for log in self.logs:
-            fecha = log.time.strftime('%Y%m%d')
+            fecha = log.time.strftime('%d-%m-%Y')
             tipo_campana = self._get_campana_type_display(log.tipo_campana)
             tipo_llamada = self._get_campana_type_display(log.tipo_llamada)
             self._contabilizar_total_llamadas_procesadas(log)

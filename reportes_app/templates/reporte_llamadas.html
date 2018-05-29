@@ -51,8 +51,8 @@
     $('#modalLlamadas' + tipo).modal('show')
   };
 
-  function mostrarTiposDeLlamadaPorFecha(tipo, id){
-    $('#modalTipos' + tipo + '_' + id).modal('show')
+  function toggleTiposDeLlamadaPorFecha(tipo, id){
+    $('tr[fechas=Fechas' + tipo + '_' + id + ']').toggle();
   };
 
 </script>
@@ -305,31 +305,51 @@
           </tr>
         </thead>
         {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Dialer.items %}
-        <tr>
-          <td>
-            {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Dialer|get_item:id %}
-              {% if tipos_por_fecha %}
-                <a href="javascript:;" onclick="mostrarTiposDeLlamadaPorFecha('Dialer', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Dialer|get_item:id %}
+            <tr>
+              <td>
+                {% if tipos_por_fecha %}
+                  <a href="javascript:;" onclick="toggleTiposDeLlamadaPorFecha('Dialer', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+                    {{ campana.nombre }}
+                  </a>
+                {% else %}
                   {{ campana.nombre }}
-                </a>
-              {% else %}
-                {{ campana.nombre }}
-              {% endif %}
-            {% endwith %}
-          </td>
-          <td>{{ campana.efectuadas }}</td>
-          <td>{{ campana.atendidas }}</td>
-          <td>{{ campana.conectadas }}</td>
-          <td>{{ campana.expiradas }}</td>
-          <td>{{ campana.abandonadas }}</td>
-          <td>{{ campana.t_espera_conexion }}</td>
-          <td>{{ campana.t_espera_atencion }}</td>
-          <td>{{ campana.t_abandono }}</td>
-          <td>{{ campana.efectuadas_manuales }}</td>
-          <td>{{ campana.conectadas_manuales }}</td>
-          <td>{{ campana.no_conectadas_manuales }}</td>
-          <td>{{ campana.t_espera_conexion_manuales }}</td>
-        </tr>
+                {% endif %}
+              </td>
+              <td>{{ campana.efectuadas }}</td>
+              <td>{{ campana.atendidas }}</td>
+              <td>{{ campana.conectadas }}</td>
+              <td>{{ campana.expiradas }}</td>
+              <td>{{ campana.abandonadas }}</td>
+              <td>{{ campana.t_espera_conexion|format_seconds }}</td>
+              <td>{{ campana.t_espera_atencion|format_seconds }}</td>
+              <td>{{ campana.t_abandono|format_seconds }}</td>
+              <td>{{ campana.efectuadas_manuales }}</td>
+              <td>{{ campana.conectadas_manuales }}</td>
+              <td>{{ campana.no_conectadas_manuales }}</td>
+              <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
+            </tr>
+            {% if tipos_por_fecha %}
+              {% for fecha, llamadas in tipos_por_fecha.items %}
+                <tr fechas="FechasDialer_{{ id }}" style="display:none; background-color:aliceblue;">
+                  <td style="text-align:center;">{{ fecha }}</td>
+                  <td>{{ llamadas.efectuadas }}</td>
+                  <td>{{ llamadas.atendidas }}</td>
+                  <td>{{ llamadas.conectadas }}</td>
+                  <td>{{ llamadas.expiradas }}</td>
+                  <td>{{ llamadas.abandonadas }}</td>
+                  <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
+                  <td>{{ llamadas.t_espera_atencion|format_seconds }}</td>
+                  <td>{{ llamadas.t_abandono|format_seconds }}</td>
+                  <td>{{ llamadas.efectuadas_manuales }}</td>
+                  <td>{{ llamadas.conectadas_manuales }}</td>
+                  <td>{{ llamadas.no_conectadas_manuales }}</td>
+                  <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
+                </tr>
+              {% endfor %}
+            {% endif %}
+
+          {% endwith %}
         {% endfor %}
       </table>
     </div>
@@ -366,29 +386,47 @@
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Entrante.items %}
-      <tr>
-        <td>
-          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Entrante|get_item:id %}
-            {% if tipos_por_fecha %}
-              <a href="javascript:;" onclick="mostrarTiposDeLlamadaPorFecha('Entrante', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+        {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Entrante|get_item:id %}
+          <tr>
+            <td>
+              {% if tipos_por_fecha %}
+                <a href="javascript:;" onclick="toggleTiposDeLlamadaPorFecha('Entrante', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+                  {{ campana.nombre }}
+                </a>
+              {% else %}
                 {{ campana.nombre }}
-              </a>
-            {% else %}
-              {{ campana.nombre }}
-            {% endif %}
-          {% endwith %}
-        </td>
-        <td>{{ campana.recibidas }}</td>
-        <td>{{ campana.atendidas }}</td>
-        <td>{{ campana.expiradas }}</td>
-        <td>{{ campana.abandonadas }}</td>
-        <td>{{ campana.t_espera_conexion }}</td>
-        <td>{{ campana.t_abandono }}</td>
-        <td>{{ campana.efectuadas_manuales }}</td>
-        <td>{{ campana.conectadas_manuales }}</td>
-        <td>{{ campana.no_conectadas_manuales }}</td>
-        <td>{{ campana.t_espera_conexion_manuales }}</td>
-      </tr>
+              {% endif %}
+            </td>
+            <td>{{ campana.recibidas }}</td>
+            <td>{{ campana.atendidas }}</td>
+            <td>{{ campana.expiradas }}</td>
+            <td>{{ campana.abandonadas }}</td>
+            <td>{{ campana.t_espera_conexion|format_seconds }}</td>
+            <td>{{ campana.t_abandono|format_seconds }}</td>
+            <td>{{ campana.efectuadas_manuales }}</td>
+            <td>{{ campana.conectadas_manuales }}</td>
+            <td>{{ campana.no_conectadas_manuales }}</td>
+            <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
+          </tr>
+          {% if tipos_por_fecha %}
+            {% for fecha, llamadas in tipos_por_fecha.items %}
+              <tr fechas="FechasEntrante_{{ id }}" style="display:none; background-color:aliceblue;">
+                <td style="text-align:center;">{{ fecha }}</td>
+                <td>{{ llamadas.recibidas }}</td>
+                <td>{{ llamadas.atendidas }}</td>
+                <td>{{ llamadas.expiradas }}</td>
+                <td>{{ llamadas.abandonadas }}</td>
+                <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
+                <td>{{ llamadas.t_abandono|format_seconds }}</td>
+                <td>{{ llamadas.efectuadas_manuales }}</td>
+                <td>{{ llamadas.conectadas_manuales }}</td>
+                <td>{{ llamadas.no_conectadas_manuales }}</td>
+                <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+
+        {% endwith %}
       {% endfor %}
     </table>
   </div>
@@ -418,23 +456,35 @@
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Manual.items %}
-      <tr>
-        <td>
-          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Manual|get_item:id %}
-            {% if tipos_por_fecha %}
-              <a href="javascript:;" onclick="mostrarTiposDeLlamadaPorFecha('Manual', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+        {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Manual|get_item:id %}
+          <tr>
+            <td>
+              {% if tipos_por_fecha %}
+                <a href="javascript:;" onclick="toggleTiposDeLlamadaPorFecha('Manual', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
+                  {{ campana.nombre }}
+                </a>
+              {% else %}
                 {{ campana.nombre }}
-              </a>
-            {% else %}
-              {{ campana.nombre }}
-            {% endif %}
-          {% endwith %}
-        </td>
-        <td>{{ campana.efectuadas }}</td>
-        <td>{{ campana.conectadas }}</td>
-        <td>{{ campana.no_conectadas }}</td>
-        <td>{{ campana.t_espera_conexion }}</td>
-      </tr>
+              {% endif %}
+            </td>
+            <td>{{ campana.efectuadas }}</td>
+            <td>{{ campana.conectadas }}</td>
+            <td>{{ campana.no_conectadas }}</td>
+            <td>{{ campana.t_espera_conexion|format_seconds }}</td>
+          </tr>
+          {% if tipos_por_fecha %}
+            {% for fecha, llamadas in tipos_por_fecha.items %}
+              <tr fechas="FechasManual_{{ id }}" style="display:none; background-color:aliceblue;">
+                <td style="text-align:center;">{{ fecha }}</td>
+                <td>{{ llamadas.efectuadas }}</td>
+                <td>{{ llamadas.conectadas }}</td>
+                <td>{{ llamadas.no_conectadas }}</td>
+                <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+
+        {% endwith %}
       {% endfor %}
     </table>
   </div>
@@ -468,27 +518,43 @@
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Preview.items %}
+      {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Preview|get_item:id %}
       <tr>
         <td>
-          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Preview|get_item:id %}
-            {% if tipos_por_fecha %}
-              <a href="javascript:;" onclick="mostrarTiposDeLlamadaPorFecha('Preview', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
-                {{ campana.nombre }}
-              </a>
-            {% else %}
+          {% if tipos_por_fecha %}
+            <a href="javascript:;" onclick="toggleTiposDeLlamadaPorFecha('Preview', '{{id}}');" title="{% trans 'Ver llamadas por fecha' %}">
               {{ campana.nombre }}
-            {% endif %}
-          {% endwith %}
+            </a>
+          {% else %}
+            {{ campana.nombre }}
+          {% endif %}
         </td>
         <td>{{ campana.efectuadas }}</td>
         <td>{{ campana.conectadas }}</td>
         <td>{{ campana.no_conectadas }}</td>
-        <td>{{ campana.t_espera_conexion }}</td>
+        <td>{{ campana.t_espera_conexion|format_seconds }}</td>
         <td>{{ campana.efectuadas_manuales }}</td>
         <td>{{ campana.conectadas_manuales }}</td>
         <td>{{ campana.no_conectadas_manuales }}</td>
-        <td>{{ campana.t_espera_conexion_manuales }}</td>
+        <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
       </tr>
+      {% if tipos_por_fecha %}
+        {% for fecha, llamadas in tipos_por_fecha.items %}
+          <tr fechas="FechasPreview_{{ id }}" style="display:none; background-color:aliceblue;">
+            <td style="text-align:center;">{{ fecha }}</td>
+            <td>{{ llamadas.efectuadas }}</td>
+            <td>{{ llamadas.conectadas }}</td>
+            <td>{{ llamadas.no_conectadas }}</td>
+            <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
+            <td>{{ llamadas.efectuadas_manuales }}</td>
+            <td>{{ llamadas.conectadas_manuales }}</td>
+            <td>{{ llamadas.no_conectadas_manuales }}</td>
+            <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+
+      {% endwith %}
       {% endfor %}
     </table>
   </div>
@@ -640,204 +706,4 @@
 
 {% endwith %}
 
-<!-- MODALES de tipos de llamadas por campaña desglosadas en fechas -->
-{% for id, tipos_por_fecha in estadisticas_por_fecha.tipos_de_llamada_por_campana.Dialer.items %}
-  {% if tipos_por_fecha %}
-    <div class="modal" id="modalTiposDialer_{{ id }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">{% trans 'Tipos de llamada de campaña por fecha' %}</h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>{% trans 'Fecha' %}</th>
-                        <th>{% trans 'Efectuadas' %}</th>
-                        <th>{% trans 'Atendidas' %}</th>
-                        <th>{% trans 'Conectadas' %}</th>
-                        <th>{% trans 'Expiradas' %}</th>
-                        <th>{% trans 'Abandonadas' %}</th>
-                        <th>{% trans 'T. de espera de conexión medio' %}</th>
-                        <th>{% trans 'T. de espera de atención medio' %}</th>
-                        <th>{% trans 'T. medio de abandono' %}</th>
-                        <th>{% trans 'Manuales Efectuadas' %}</th>
-                        <th>{% trans 'Manuales Conectadas' %}</th>
-                        <th>{% trans 'Manuales no Conectadas' %}</th>
-                        <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
-                      </tr>
-                    </thead>
-                    {% for fecha, llamadas in tipos_por_fecha.items %}
-                      <tr>
-                        <td>{{ fecha }}</td>
-                        <td>{{ llamadas.efectuadas }}</td>
-                        <td>{{ llamadas.atendidas }}</td>
-                        <td>{{ llamadas.conectadas }}</td>
-                        <td>{{ llamadas.expiradas }}</td>
-                        <td>{{ llamadas.abandonadas }}</td>
-                        <td>{{ llamadas.t_espera_conexion }}</td>
-                        <td>{{ llamadas.t_espera_atencion }}</td>
-                        <td>{{ llamadas.t_abandono }}</td>
-                        <td>{{ llamadas.efectuadas_manuales }}</td>
-                        <td>{{ llamadas.conectadas_manuales }}</td>
-                        <td>{{ llamadas.no_conectadas_manuales }}</td>
-                        <td>{{ llamadas.t_espera_conexion_manuales }}</td>
-                      </tr>
-                    {% endfor %}
-                  </table>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
-  {% endif %}
-{% endfor %}
-
-{% for id, tipos_por_fecha in estadisticas_por_fecha.tipos_de_llamada_por_campana.Manual.items %}
-  {% if tipos_por_fecha %}
-    <div class="modal" id="modalTiposManual_{{ id }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">{% trans 'Tipos de llamada de campaña por fecha' %}</h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>{% trans 'Fecha' %}</th>
-                        <th>{% trans 'Efectuadas' %}</th>
-                        <th>{% trans 'Conectadas' %}</th>
-                        <th>{% trans 'No Conectadas' %}</th>
-                        <th>{% trans 'T. de espera de conexión medio' %}</th>
-                      </tr>
-                    </thead>
-                    {% for fecha, llamadas in tipos_por_fecha.items %}
-                      <tr>
-                        <td>{{ fecha }}</td>
-                        <td>{{ llamadas.efectuadas }}</td>
-                        <td>{{ llamadas.conectadas }}</td>
-                        <td>{{ llamadas.no_conectadas }}</td>
-                        <td>{{ llamadas.t_espera_conexion }}</td>
-                      </tr>
-                    {% endfor %}
-                  </table>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
-  {% endif %}
-{% endfor %}
-
-{% for id, tipos_por_fecha in estadisticas_por_fecha.tipos_de_llamada_por_campana.Entrante.items %}
-  {% if tipos_por_fecha %}
-    <div class="modal" id="modalTiposEntrante_{{ id }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">{% trans 'Tipos de llamada de campaña por fecha' %}</h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>{% trans 'Recibidas' %}</th>
-                        <th>{% trans 'Atendidas' %}</th>
-                        <th>{% trans 'Expiradas' %}</th>
-                        <th>{% trans 'Abandonadas' %}</th>
-                        <th>{% trans 'T. de espera de conexión medio' %}</th>
-                        <th>{% trans 'T. medio de abandono' %}</th>
-                        <th>{% trans 'Manuales Efectuadas' %}</th>
-                        <th>{% trans 'Manuales Conectadas' %}</th>
-                        <th>{% trans 'Manuales no Conectadas' %}</th>
-                        <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
-                      </tr>
-                    {% for fecha, llamadas in tipos_por_fecha.items %}
-                      <tr>
-                        <td>{{ fecha }}</td>
-                        <td>{{ llamadas.recibidas }}</td>
-                        <td>{{ llamadas.atendidas }}</td>
-                        <td>{{ llamadas.expiradas }}</td>
-                        <td>{{ llamadas.abandonadas }}</td>
-                        <td>{{ llamadas.t_espera_conexion }}</td>
-                        <td>{{ llamadas.t_abandono }}</td>
-                        <td>{{ llamadas.efectuadas_manuales }}</td>
-                        <td>{{ llamadas.conectadas_manuales }}</td>
-                        <td>{{ llamadas.no_conectadas_manuales }}</td>
-                        <td>{{ llamadas.t_espera_conexion_manuales }}</td>
-                      </tr>
-                    {% endfor %}
-                    </thead>
-                  </table>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
-  {% endif %}
-{% endfor %}
-
-{% for id, tipos_por_fecha in estadisticas_por_fecha.tipos_de_llamada_por_campana.Preview.items %}
-  {% if tipos_por_fecha %}
-    <div class="modal" id="modalTiposPreview_{{ id }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">{% trans 'Tipos de llamada de campaña por fecha' %}</h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>{% trans 'Fecha' %}</th>
-                        <th>{% trans 'Efectuadas' %}</th>
-                        <th>{% trans 'Conectadas' %}</th>
-                        <th>{% trans 'No Conectadas' %}</th>
-                        <th>{% trans 'T. de espera de conexión medio' %}</th>
-                        <th>{% trans 'Manuales Efectuadas' %}</th>
-                        <th>{% trans 'Manuales Conectadas' %}</th>
-                        <th>{% trans 'Manuales no Conectadas' %}</th>
-                        <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
-                      </tr>
-                    </thead>
-                    {% for fecha, llamadas in tipos_por_fecha.items %}
-                      <tr>
-                        <td>{{ fecha }}</td>
-                        <td>{{ llamadas.efectuadas }}</td>
-                        <td>{{ llamadas.conectadas }}</td>
-                        <td>{{ llamadas.no_conectadas }}</td>
-                        <td>{{ llamadas.t_espera_conexion }}</td>
-                        <td>{{ llamadas.efectuadas_manuales }}</td>
-                        <td>{{ llamadas.conectadas_manuales }}</td>
-                        <td>{{ llamadas.no_conectadas_manuales }}</td>
-                        <td>{{ llamadas.t_espera_conexion_manuales }}</td>
-                      </tr>
-                    {% endfor %}
-                  </table>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
-  {% endif %}
-{% endfor %}
-<!-- -->
 {% endblock %}
