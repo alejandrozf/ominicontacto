@@ -586,7 +586,6 @@ class TiemposAgente(object):
                             cast_datetime_part_date(
                                 time_actual), None, resta, 0, 0, 0)
                         agente_fecha.append(agente_nuevo)
-                agente_nuevo = None
                 is_unpause = False
                 time_actual = None
 
@@ -595,9 +594,45 @@ class TiemposAgente(object):
                 is_unpause = True
         return agente_fecha
 
+    def calcular_tiempo_llamada_agente_fecha(self, agente, fecha_inferior,
+                                             fecha_superior, agente_fecha):
+        """ Calcula el tiempo de llamada teniendo en cuenta los eventos
+        COMPLETECALLER y COMPLETEAGENT, por fecha dia a dia para el agente"""
+
+        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+
+        logs_time = LlamadaLog.objects.obtener_tiempo_llamada_agente(
+            eventos_llamadas,
+            fecha_inferior,
+            fecha_superior,
+            agente.id)
+
+        for log in logs_time:
+
+            date_time_actual = cast_datetime_part_date(log.time)
+            agente_en_lista = filter(lambda x: x.agente == date_time_actual,
+                                     agente_fecha)
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                if agente_nuevo._tiempo_llamada:
+                    agente_nuevo._tiempo_llamada += log.duracion_llamada
+                    agente_nuevo._cantidad_llamadas_procesadas += 1
+                else:
+                    agente_nuevo._tiempo_llamada = log.duracion_llamada
+                    agente_nuevo._cantidad_llamadas_procesadas = 1
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    agente, None, None, log.duracion_llamada, 1, 0)
+                agente_fecha.append(agente_nuevo)
+        return agente_fecha
+
     def _generar_por_fecha_agente(self, agente, fecha_inferior, fecha_superior):
         agente_fecha = []
         agente_fecha = self.calcular_tiempo_session_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha)
         agente_fecha = self.calcular_tiempo_pausa_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha)
+        agente = AgenteProfile.objects.get(pk=4)
+        agente_fecha = self.calcular_tiempo_llamada_agente_fecha(
+            agente, fecha_inferior, fecha_superior, agente_fecha
+        )

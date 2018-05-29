@@ -87,6 +87,18 @@ class LlamadaLogManager(models.Manager):
         except LlamadaLog.DoesNotExist:
             raise (SuspiciousOperation("No se encontro llamadas "))
 
+    def obtener_tiempo_llamada_agente(self, eventos, fecha_desde, fecha_hasta, agente_id):
+        """devuelve la duracion de llamadas y fecha"""
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
+        try:
+            return self.filter(agente_id=agente_id, event__in=eventos,
+                               time__range=(fecha_desde, fecha_hasta))
+        except LlamadaLog.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro llamadas "))
+
 
 class LlamadaLog(models.Model):
     """
