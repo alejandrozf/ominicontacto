@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.utils.timezone import now
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import LlamadaLogFactory
 
@@ -13,7 +14,10 @@ FINALIZACIONES = NOCONNECT + CONNECT + NO_DIALOG
 class GeneradorDeLlamadaLogs():
 
     def generar_log(self, campana, es_manual, finalizacion, numero_marcado, agente=None,
-                    contacto=None, bridge_wait_time=-1, duracion_llamada=-1, archivo_grabacion=''):
+                    contacto=None, bridge_wait_time=-1, duracion_llamada=-1, archivo_grabacion='',
+                    time=None):
+        if time is None:
+            time = now()
 
         tipo_llamada = Campana.TYPE_MANUAL if es_manual else campana.type
         agente_id = -1 if agente is None else agente.id
@@ -27,7 +31,8 @@ class GeneradorDeLlamadaLogs():
                                     agente_id, contacto_id=contacto_id,
                                     bridge_wait_time=bridge_wait_time,
                                     duracion_llamada=duracion_llamada,
-                                    archivo_grabacion=archivo_grabacion)
+                                    archivo_grabacion=archivo_grabacion,
+                                    time=time)
 
         elif campana.type == Campana.TYPE_DIALER:
             assert finalizacion in FINALIZACIONES, 'Finalizacion incorrecta: %s' % finalizacion
@@ -35,19 +40,22 @@ class GeneradorDeLlamadaLogs():
                                     agente_id=-1, contacto_id=contacto_id,
                                     bridge_wait_time=bridge_wait_time,
                                     duracion_llamada=duracion_llamada,
-                                    archivo_grabacion=archivo_grabacion)
+                                    archivo_grabacion=archivo_grabacion,
+                                    time=time)
             if finalizacion not in NOCONNECT:
                 self._generar_logs_queue(campana, tipo_llamada, finalizacion, numero_marcado,
                                          agente_id, contacto_id, bridge_wait_time,
-                                         duracion_llamada, archivo_grabacion)
+                                         duracion_llamada, archivo_grabacion,
+                                         time=time)
         elif campana.type == Campana.TYPE_ENTRANTE:
             assert finalizacion in CONNECT or finalizacion in NO_DIALOG
             self._generar_logs_queue(campana, tipo_llamada, finalizacion, numero_marcado,
                                      agente_id, contacto_id, bridge_wait_time,
-                                     duracion_llamada, archivo_grabacion)
+                                     duracion_llamada, archivo_grabacion, time=time)
 
     def _generar_logs_dial(self, campana, tipo_llamada, finalizacion, numero_marcado, agente_id,
-                           contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion):
+                           contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion,
+                           time):
         """
         Genera logs para la pata de la conexion desde el DIAL
         """
@@ -60,7 +68,8 @@ class GeneradorDeLlamadaLogs():
                           contacto_id=contacto_id,
                           bridge_wait_time=-1,
                           duracion_llamada=-1,
-                          archivo_grabacion='')
+                          archivo_grabacion='',
+                          time=time)
 
         if finalizacion in NOCONNECT:
             LlamadaLogFactory(event=finalizacion,
@@ -72,7 +81,8 @@ class GeneradorDeLlamadaLogs():
                               contacto_id=contacto_id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=-1,
-                              archivo_grabacion='')
+                              archivo_grabacion='',
+                              time=time)
         else:
             LlamadaLogFactory(event='ANSWER',
                               campana_id=campana.id,
@@ -83,7 +93,8 @@ class GeneradorDeLlamadaLogs():
                               contacto_id=contacto_id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=-1,
-                              archivo_grabacion='')
+                              archivo_grabacion='',
+                              time=time)
             if tipo_llamada in [Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]:
                 assert finalizacion in CONNECT, \
                     'Una llamada Manual con ANSWER debe terminar en COMPLETEAGENT o COMPLETECALLER'
@@ -96,7 +107,8 @@ class GeneradorDeLlamadaLogs():
                                   contacto_id=contacto_id,
                                   bridge_wait_time=bridge_wait_time,
                                   duracion_llamada=duracion_llamada,
-                                  archivo_grabacion=archivo_grabacion)
+                                  archivo_grabacion=archivo_grabacion,
+                                  time=time)
             else:
                 # Evento extra de Finalizacion para la pata de dial en el caso DIALER
                 assert tipo_llamada == Campana.TYPE_DIALER, \
@@ -115,7 +127,8 @@ class GeneradorDeLlamadaLogs():
                                       contacto_id=contacto_id,
                                       bridge_wait_time=bridge_wait_time,
                                       duracion_llamada=duracion_llamada,
-                                      archivo_grabacion='')
+                                      archivo_grabacion='',
+                                      time=time)
                 else:
                     assert finalizacion in CONNECT, \
                         'Finalizacion incorrecta para campaña Dialer:%s' % finalizacion
@@ -128,10 +141,12 @@ class GeneradorDeLlamadaLogs():
                                       contacto_id=contacto_id,
                                       bridge_wait_time=bridge_wait_time,
                                       duracion_llamada=duracion_llamada,
-                                      archivo_grabacion='')
+                                      archivo_grabacion='',
+                                      time=time)
 
     def _generar_logs_queue(self, campana, tipo_llamada, finalizacion, numero_marcado, agente_id,
-                            contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion):
+                            contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion,
+                            time):
 
         """
         Genera logs para la pata de la conexion desde el ENTERQUEUE
@@ -145,7 +160,8 @@ class GeneradorDeLlamadaLogs():
                           contacto_id=contacto_id,
                           bridge_wait_time=-1,
                           duracion_llamada=-1,
-                          archivo_grabacion='')
+                          archivo_grabacion='',
+                          time=time)
         if finalizacion in NO_DIALOG:
             # No se establece el Dialogo con el Agente
             LlamadaLogFactory(event=finalizacion,
@@ -157,7 +173,8 @@ class GeneradorDeLlamadaLogs():
                               contacto_id=contacto_id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=-1,
-                              archivo_grabacion='')
+                              archivo_grabacion='',
+                              time=time)
         else:
             # Se establece el Dialogo con el Agente
             assert agente_id is not None and agente_id is not -1, 'Una llamada conectada debe '
@@ -173,7 +190,8 @@ class GeneradorDeLlamadaLogs():
                               contacto_id=contacto_id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=-1,
-                              archivo_grabacion='')
+                              archivo_grabacion='',
+                              time=time)
             LlamadaLogFactory(event=finalizacion,
                               campana_id=campana.id,
                               tipo_campana=campana.type,
@@ -183,4 +201,5 @@ class GeneradorDeLlamadaLogs():
                               contacto_id=contacto_id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=duracion_llamada,
-                              archivo_grabacion=archivo_grabacion)
+                              archivo_grabacion=archivo_grabacion,
+                              time=time)

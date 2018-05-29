@@ -6,27 +6,17 @@ ya que el insert lo hace kamailio-debian/asterisk(hablar con fabian como hace el
 """
 
 from django.utils import timezone
-import json
-
-from StringIO import StringIO
-from zipfile import ZipFile
 
 from django.conf import settings
 from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 
-from ominicontacto_app.forms import (
-    GrabacionBusquedaForm, GrabacionReporteForm
-)
+from ominicontacto_app.forms import GrabacionBusquedaForm
 from ominicontacto_app.models import (
     Grabacion, GrabacionMarca, Campana
 )
-from ominicontacto_app.services.reporte_grafico import GraficoService
-from utiles import convert_fecha_datetime, UnicodeWriter
-from ominicontacto_app.services.reporte_campana_csv import (obtener_filas_reporte,
-                                                            obtener_datos_reporte_general,
-                                                            REPORTE_SIN_DATOS)
+from utiles import convert_fecha_datetime
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -109,110 +99,6 @@ class BusquedaGrabacionFormView(FormView):
 
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
-
-
-class GrabacionReporteFormView(FormView):
-    """Vista que despliega reporte de las grabaciones de las llamadas"""
-    template_name = 'grabaciones/total_llamadas.html'
-    context_object_name = 'grabacion'
-    model = Grabacion
-    form_class = GrabacionReporteForm
-
-    def get(self, request, *args, **kwargs):
-        # obtener_estadisticas_render_graficos_supervision()
-        service = GraficoService()
-        hoy_ahora = timezone.now()
-        hoy_inicio = timezone.datetime(hoy_ahora.year, hoy_ahora.month, hoy_ahora.day,
-                                       tzinfo=timezone.get_current_timezone())
-        graficos_estadisticas = service.general_llamadas_hoy(
-            hoy_inicio, hoy_ahora, request.user, False)
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas))
-
-    def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        fecha_desde, fecha_hasta = fecha.split('-')
-        fecha_desde = convert_fecha_datetime(fecha_desde)
-        fecha_hasta = convert_fecha_datetime(fecha_hasta, final_dia=True)
-        finalizadas = form.cleaned_data.get('finalizadas')
-        # obtener_estadisticas_render_graficos_supervision()
-        service = GraficoService()
-        graficos_estadisticas = service.general_llamadas_hoy(
-            fecha_desde, fecha_hasta, self.request.user, finalizadas)
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas))
-
-
-def exportar_llamadas_view(request, tipo_reporte):
-    """
-    Realiza el reporte a formato .csv del reporte recibido como parámetro
-    """
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(tipo_reporte)
-    writer = UnicodeWriter(response)
-    datos_json = request.POST.get(tipo_reporte, False)
-
-    if datos_json:
-        datos_reporte = json.loads(datos_json)
-        filas_csv = obtener_filas_reporte(tipo_reporte, datos_reporte)
-        writer.writerows(filas_csv)
-    else:
-        writer.writerow(REPORTE_SIN_DATOS)
-
-    return response
-
-
-def exportar_zip_reportes_view(request):
-    """
-    Realiza la exportación de todos los reportes de llamadas a .csv y los devuelve
-    comprimidos dentro de un zip
-    """
-    (filas_reporte_total_llamadas, filas_reporte_llamadas_campanas,
-     filas_reporte_campanas_dialer, filas_reporte_campanas_entrantes,
-     filas_reporte_campanas_manuales) = obtener_datos_reporte_general(request)
-
-    in_memory = StringIO()
-
-    zip = ZipFile(in_memory, "a")
-
-    total_llamadas_file = StringIO()
-    total_llamadas_writer = UnicodeWriter(total_llamadas_file)
-    total_llamadas_writer.writerows(filas_reporte_total_llamadas)
-
-    llamadas_campanas_file = StringIO()
-    llamadas_campanas_writer = UnicodeWriter(llamadas_campanas_file)
-    llamadas_campanas_writer.writerows(filas_reporte_llamadas_campanas)
-
-    campanas_dialer_file = StringIO()
-    campanas_dialer_writer = UnicodeWriter(campanas_dialer_file)
-    campanas_dialer_writer.writerows(filas_reporte_campanas_dialer)
-
-    campanas_entrantes_file = StringIO()
-    campanas_entrantes_writer = UnicodeWriter(campanas_entrantes_file)
-    campanas_entrantes_writer.writerows(filas_reporte_campanas_entrantes)
-
-    campanas_manuales_file = StringIO()
-    campanas_manuales_writer = UnicodeWriter(campanas_manuales_file)
-    campanas_manuales_writer.writerows(filas_reporte_campanas_manuales)
-
-    zip.writestr("total_llamadas.csv", total_llamadas_file.getvalue())
-    zip.writestr("llamadas_campanas.csv", llamadas_campanas_file.getvalue())
-    zip.writestr("llamadas_campanas_dialer.csv", campanas_dialer_file.getvalue())
-    zip.writestr("llamadas_campanas_entrantes.csv", campanas_entrantes_file.getvalue())
-    zip.writestr("llamadas_campanas_manuales.csv", campanas_manuales_file.getvalue())
-
-    # fix for Linux zip files read in Windows
-    for file in zip.filelist:
-        file.create_system = 0
-    zip.close()
-
-    response = HttpResponse(content_type="application/zip")
-    response["Content-Disposition"] = "attachment; filename=reporte-general.zip"
-
-    in_memory.seek(0)
-    response.write(in_memory.read())
-
-    return response
 
 
 class MarcarGrabacionView(View):

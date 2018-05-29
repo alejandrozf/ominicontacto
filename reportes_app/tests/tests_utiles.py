@@ -3,7 +3,8 @@
 from django.test import TestCase
 
 from ominicontacto_app.models import Campana
-from ominicontacto_app.tests.factories import *
+from ominicontacto_app.tests.factories import (UserFactory, CampanaFactory, AgenteProfileFactory,
+                                               ContactoFactory)
 
 from reportes_app.models import LlamadaLog
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
