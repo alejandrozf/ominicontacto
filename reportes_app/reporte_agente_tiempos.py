@@ -622,7 +622,34 @@ class TiemposAgente(object):
                     agente_nuevo._cantidad_llamadas_procesadas = 1
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, log.duracion_llamada, 1, 0)
+                    date_time_actual, None, None, log.duracion_llamada, 1, 0)
+                agente_fecha.append(agente_nuevo)
+        return agente_fecha
+
+    def calcular_intentos_fallidos_fecha_agente(self, agente, fecha_inferior,
+                                                fecha_superior, agente_fecha):
+        """ Calcula la cantidad de intentos fallido para el tipo de llamada
+        Manual NO CONNECT(NOANSWER, CANCEL, BUSY, CHANUNAVAIL, FAIL, OTHER,
+        AMD, BLACKLIST) por fecha dia a dia para el agente"""
+
+        eventos_llamadas = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL',
+                            'FAIL', 'OTHER', 'AMD', 'BLACKLIST']
+
+        logs_time = LlamadaLog.objects.obtener_count_evento_agente_agrupado_fecha(
+            eventos_llamadas,
+            fecha_inferior,
+            fecha_superior,
+            agente.id)
+        for log in logs_time:
+            date_time_actual = log[0]
+            agente_en_lista = filter(lambda x: x.agente == date_time_actual,
+                                     agente_fecha)
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                agente_nuevo._cantidad_intentos_fallidos = int(log[1])
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    date_time_actual, None, 0, 0, 0, int(log[1]))
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
@@ -634,5 +661,8 @@ class TiemposAgente(object):
             agente, fecha_inferior, fecha_superior, agente_fecha)
         agente = AgenteProfile.objects.get(pk=4)
         agente_fecha = self.calcular_tiempo_llamada_agente_fecha(
+            agente, fecha_inferior, fecha_superior, agente_fecha
+        )
+        agente_fecha = self.calcular_intentos_fallidos_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha
         )

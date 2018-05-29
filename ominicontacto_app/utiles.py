@@ -258,7 +258,7 @@ def convertir_ascii_string(cadena):
 
 def cast_datetime_part_date(fecha):
     """ Devuelve un datetime part date """
-    return fecha.replace(hour=0, minute=0, second=0, microsecond=0)
+    return fecha.date()
 
 
 class UnicodeWriter:            # tomado de https://docs.python.org/2/library/csv.html
