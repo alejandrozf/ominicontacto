@@ -524,7 +524,8 @@ class TiemposAgente(object):
                 if cast_datetime_part_date(time_actual) == cast_datetime_part_date(logs[1]):
 
                     resta = time_actual - logs[1]
-                    agente_en_lista = filter(lambda x: x.agente == time_actual,
+                    date_time_actual = cast_datetime_part_date(time_actual)
+                    agente_en_lista = filter(lambda x: x.agente == date_time_actual,
                                              agente_fecha)
                     if agente_en_lista:
                         agente_nuevo = agente_en_lista[0]
@@ -534,7 +535,8 @@ class TiemposAgente(object):
                             agente_nuevo._tiempo_sesion = resta
                     else:
                         agente_nuevo = AgenteTiemposReporte(
-                            time_actual, resta, 0, 0, 0, 0)
+                            cast_datetime_part_date(
+                                time_actual), resta, 0, 0, 0, 0)
                         agente_fecha.append(agente_nuevo)
                     agente_nuevo = None
                     is_remove = False
@@ -548,6 +550,54 @@ class TiemposAgente(object):
                 is_remove = True
         return agente_fecha
 
+    def calcular_tiempo_pausa_fecha_agente(self, agente, fecha_inferior,
+                                           fecha_superior, agente_fecha):
+        """ Calcula el tiempo de pausa teniendo en cuenta los eventos PAUSEALL,
+        UNPAUSEALL y REMOVEMEMBER por fecha dia a dia para el agente"""
+
+        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
+
+        logs_time = ActividadAgenteLog.objects.obtener_tiempos_event_agentes(
+            eventos_pausa,
+            fecha_inferior,
+            fecha_superior,
+            # [agente.id])
+            [4])
+        time_actual = None
+        is_unpause = False
+        for logs in logs_time:
+            agente_nuevo = None
+
+            if is_unpause and logs[2] == 'PAUSEALL':
+                if cast_datetime_part_date(
+                        time_actual) == cast_datetime_part_date(logs[1]):
+                    resta = time_actual - logs[1]
+                    date_time_actual = cast_datetime_part_date(time_actual)
+                    agente_en_lista = filter(lambda x: x.agente == date_time_actual,
+                                             agente_fecha)
+                    if agente_en_lista:
+                        agente_nuevo = agente_en_lista[0]
+                        if agente_nuevo.tiempo_pausa:
+                            agente_nuevo._tiempo_pausa += resta
+                        else:
+                            agente_nuevo._tiempo_pausa = resta
+                    else:
+                        agente_nuevo = AgenteTiemposReporte(
+                            cast_datetime_part_date(
+                                time_actual), None, resta, 0, 0, 0)
+                        agente_fecha.append(agente_nuevo)
+                agente_nuevo = None
+                is_unpause = False
+                time_actual = None
+
+            if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
+                time_actual = logs[1]
+                is_unpause = True
+        return agente_fecha
+
     def _generar_por_fecha_agente(self, agente, fecha_inferior, fecha_superior):
         agente_fecha = []
-        a = self.calcular_tiempo_session_fecha_agente(agente, fecha_inferior, fecha_superior, agente_fecha)
+        agente_fecha = self.calcular_tiempo_session_fecha_agente(
+            agente, fecha_inferior, fecha_superior, agente_fecha)
+        agente_fecha = self.calcular_tiempo_pausa_fecha_agente(
+            agente, fecha_inferior, fecha_superior, agente_fecha)
