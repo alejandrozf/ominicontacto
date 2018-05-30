@@ -109,7 +109,7 @@ class LlamadaLogManager(models.Manager):
         sql = """select DATE(time), count(*)
                  from reportes_app_llamadalog where time between %(fecha_desde)s and
                  %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = %(agente_id)s
-                 GROUP BY DATE(time) order by DATE(time)
+                 GROUP BY DATE(time) order by DATE(time) desc
         """
         params = {
             'fecha_desde': fecha_desde,

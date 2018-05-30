@@ -71,9 +71,36 @@
                     $("#id_grupo_agente").removeAttr('disabled');
                 }
             });
-
+    $('.tiemposAgenteModal').click(function(){
+    event.preventDefault();
+    var id_agente;
+    id_agente = $(this).attr("id_agente");
+    var fecha_desde = $(this).attr("fecha_desde");
+    var fecha_hasta = $(this).attr("fecha_hasta");
+    debugger;;
+    $.ajax(
+    {
+        type:"POST",
+        url: "/reportes/agente_por_fecha/",
+        data:{
+                 'id_agente': id_agente,
+                 'fecha_desde': fecha_desde,
+                 'fecha_hasta': fecha_hasta,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function (data, textStatus) {
+            //alert(data, textStatus);
+            $('#output').html(data); // append to inner html
+        },
+        error: function(xhr, status, e) {
+            alert(status, e);
+        }
+     })
+});
 
 });
+
+
     </script>
 {% endblock %}
 {% block content %}
@@ -140,7 +167,12 @@
     </thead>
     {% for agente in graficos_estadisticas.agentes_tiempos %}
         <tr>
-            <td>{{agente.get_nombre_agente}}</td>
+            <td>{{agente.get_nombre_agente}}
+                <a href="#" role="button" class="tiemposAgenteModal" id_agente="{{agente.agente.id}}" data-toggle="modal" data-target="#reporteFechaModal"
+                fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}">
+ ver por fechas</a>
+
+            </td>
             <td>
                 {% if agente.get_string_tiempo_sesion %}
                     {{agente.get_string_tiempo_sesion}}hs
@@ -284,6 +316,43 @@
     </div>
     <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a>
 
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="reporteFechaModal" tabindex="-1" role="dialog" aria-labelledby="reporteFechaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reporteFechaModalLabel">Agente</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tiempo de session</th>
+                        <th>Tiempo de pausa</th>
+                        <th>Tiempos en llamada</th>
+                        <th>Porcentaje en llamada</th>
+                        <th>Porcentaje en pausa</th>
+                        <th>Porcentaje en espera</th>
+                        <th>Cantidad de llamadas procesadas</th>
+                        <th>Tiempo promedio de llamadas</th>
+                        <th>Cantidad de intentos fallidos</th>
+                    </tr>
+                </thead>
+                <tbody id="output">
+                </tbody>
+            </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 {% endif %}
 {% endblock %}

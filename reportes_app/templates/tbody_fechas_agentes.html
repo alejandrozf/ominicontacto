@@ -1,0 +1,46 @@
+{% for agente in agentes %}
+        <tr>
+            <td>
+                 {{agente.agente}}
+            </td>
+            <td>
+                {% if agente.get_string_tiempo_sesion %}
+                    {{agente.get_string_tiempo_sesion}}hs
+                {% else %}
+                    0hs
+                {% endif %}
+            </td>
+            <td>
+                {% if agente.get_string_tiempo_pausa %}
+                    {{agente.get_string_tiempo_pausa}}hs
+                {% else %}
+                    0hs
+                {% endif %}
+            </td>
+            <td>{{agente.get_string_tiempo_llamada}}hs</td>
+            <td>
+                {% if agente.tiempo_porcentaje_llamada %}
+                    {{agente.tiempo_porcentaje_llamada|floatformat:4}}%
+                {% else %}
+                    0%
+                {% endif %}
+            </td>
+            <td>
+                {% if agente.tiempo_porcentaje_pausa %}
+                    {{agente.tiempo_porcentaje_pausa|floatformat:4}}%
+                {% else %}
+                    0%
+                {% endif %}
+            </td>
+            <td>
+                {% if agente.tiempo_porcentaje_wait %}
+                    {{agente.tiempo_porcentaje_wait|floatformat:4}}%
+                {% else %}
+                    0%
+                {% endif %}
+            </td>
+            <td>{{agente.cantidad_llamadas_procesadas}}</td>
+            <td>{{agente.get_promedio_llamadas}}s</td>
+            <td>{{agente.cantidad_intentos_fallidos}}</td>
+        </tr>
+{% endfor %}

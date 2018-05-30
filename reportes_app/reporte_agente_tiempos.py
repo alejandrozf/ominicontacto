@@ -514,8 +514,8 @@ class TiemposAgente(object):
             eventos_sesion,
             fecha_inferior,
             fecha_superior,
-            # [agente.id])
-            [4])
+            [agente.id])
+
         time_actual = None
         is_remove = False
         for logs in logs_time:
@@ -561,8 +561,8 @@ class TiemposAgente(object):
             eventos_pausa,
             fecha_inferior,
             fecha_superior,
-            # [agente.id])
-            [4])
+            [agente.id])
+
         time_actual = None
         is_unpause = False
         for logs in logs_time:
@@ -653,16 +653,17 @@ class TiemposAgente(object):
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
-    def _generar_por_fecha_agente(self, agente, fecha_inferior, fecha_superior):
+    def generar_por_fecha_agente(self, agente, fecha_inferior, fecha_superior):
+        """generar las estadisticas de los tiempos del agente"""
         agente_fecha = []
         agente_fecha = self.calcular_tiempo_session_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha)
         agente_fecha = self.calcular_tiempo_pausa_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha)
-        agente = AgenteProfile.objects.get(pk=4)
         agente_fecha = self.calcular_tiempo_llamada_agente_fecha(
             agente, fecha_inferior, fecha_superior, agente_fecha
         )
         agente_fecha = self.calcular_intentos_fallidos_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha
         )
+        return agente_fecha

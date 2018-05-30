@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.views.generic import FormView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from ominicontacto_app.models import AgenteProfile, Grupo
 from reportes_app.forms import ReporteAgentesForm
 from ominicontacto_app.utiles import convert_fecha_datetime
@@ -47,7 +47,6 @@ class ReportesTiemposAgente(FormView):
         tiempos_agentes = TiemposAgente()
         graficos_estadisticas = tiempos_agentes.generar_reportes(
             agentes, fecha_desde, fecha_hasta, self.request.user)
-
         # generar reporte csv
         reporte_csv = ReporteAgenteCSVService()
         reporte_csv.crea_reporte_csv(graficos_estadisticas)
@@ -63,3 +62,25 @@ def exporta_reporte_agente_llamada_view(request, tipo_reporte):
     service = ReporteAgenteCSVService()
     url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
     return redirect(url)
+
+
+def reporte_por_fecha_modal_agente_view(request):
+    """esta vista es invocada por una ajax para mostrar los datos por fechas
+    de los agentes en una ventana modal"""
+    if request.method == 'POST':
+        if request.is_ajax():
+
+            id_agente = request.POST['id_agente']
+            fecha_desde = request.POST['fecha_desde']
+            fecha_hasta = request.POST['fecha_hasta']
+            fecha_desde = convert_fecha_datetime(fecha_desde)
+            fecha_hasta = convert_fecha_datetime(fecha_hasta)
+
+            tiempos_agentes = TiemposAgente()
+            agente = AgenteProfile.objects.get(pk=int(id_agente))
+            agentes = tiempos_agentes.generar_por_fecha_agente(
+                agente, fecha_desde, fecha_hasta)
+            ctx = {'agentes': agentes}
+            return render(request, 'tbody_fechas_agentes.html', ctx)
+
+    return render(request)
