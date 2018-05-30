@@ -115,6 +115,7 @@ class CampanaDeleteView(CampanasDeleteMixin, DeleteView):
         return reverse('campana_list')
 
 
+# TODO: DEPRECATED? Verificar si se debe eliminar
 class FormularioSeleccionCampanaFormView(FormView):
     """Vista para seleccionar una campana a la cual se le agregar un nuevo contacto"""
     form_class = FormularioCampanaContacto

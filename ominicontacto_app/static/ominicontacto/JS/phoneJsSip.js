@@ -356,7 +356,8 @@ $(function() {
 						}
         	} else {
         		if(fromUser !== "Unknown") {
-        	    processCallid(fromUser);
+              getFormManualCalls(CampIdHeader, $("#idagt").val(), fromUser);
+              //processCallid(fromUser);
         		} else {
         			getBlankFormCamp(CampIdHeader);
         		}
@@ -1031,6 +1032,7 @@ $(function() {
     $("#dataView").attr('src', url);
   }
 
+  /** DEPRECATED?? **/
 	function processCallid(callerid) {
   	var url = "/campana/selecciona/";
   	$("#dataView").attr('src', url);
@@ -1042,7 +1044,10 @@ $(function() {
   }
 
 	function getFormManualCalls(idcamp, idagt, tel) {
-		var url = "/campana_manual/" + idcamp + "/calificacion/" + idagt + "/create/" + tel + "/";
+    // Elimino los caracteres no numericos
+    var telephone = tel.replace( /\D+/g, '');
+    telephone = telephone == ''? 0 : telephone;
+		var url = "/campana_manual/" + idcamp + "/calificacion/" + idagt + "/create/" + telephone + "/";
 		$("#dataView").attr('src', url);
 	}
 
