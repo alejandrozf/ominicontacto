@@ -77,7 +77,6 @@
     id_agente = $(this).attr("id_agente");
     var fecha_desde = $(this).attr("fecha_desde");
     var fecha_hasta = $(this).attr("fecha_hasta");
-    debugger;;
     $.ajax(
     {
         type:"POST",
@@ -91,6 +90,32 @@
         success: function (data, textStatus) {
             //alert(data, textStatus);
             $('#output').html(data); // append to inner html
+        },
+        error: function(xhr, status, e) {
+            alert(status, e);
+        }
+     })
+});
+
+    $('.tiemposPausaModal').click(function(){
+    event.preventDefault();
+    var id_agente;
+    id_agente = $(this).attr("id_agente");
+    var fecha_desde = $(this).attr("fecha_desde");
+    var fecha_hasta = $(this).attr("fecha_hasta");
+    $.ajax(
+    {
+        type:"POST",
+        url: "/reportes/pausa_por_fecha/",
+        data:{
+                 'id_agente': id_agente,
+                 'fecha_desde': fecha_desde,
+                 'fecha_hasta': fecha_hasta,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function (data, textStatus) {
+            //alert(data, textStatus);
+            $('#output_pausa').html(data); // append to inner html
         },
         error: function(xhr, status, e) {
             alert(status, e);
@@ -235,7 +260,11 @@
     </thead>
     {% for agente in graficos_estadisticas.agente_pausa %}
         <tr>
-            <td>{{agente.nombre_agente}}</td>
+            <td>{{agente.nombre_agente}}
+                <a href="#" role="button" class="tiemposPausaModal" id_agente="{{agente.id}}" data-toggle="modal" data-target="#reportePausaModal"
+                fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}">
+                ver por fechas</a>
+            </td>
             <td>{{agente.pausa}}</td>
             <td>{{agente.tipo_de_pausa}}</td>
             <td>{{agente.tiempo}}hs</td>
@@ -345,6 +374,36 @@
                     </tr>
                 </thead>
                 <tbody id="output">
+                </tbody>
+            </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="reportePausaModal" tabindex="-1" role="dialog" aria-labelledby="reportePausaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reportePausaModalLabel">Agente</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Pausa</th>
+                        <th>Tipo de pausa</th>
+                        <th>Tiempo de pausa</th>
+                    </tr>
+                </thead>
+                <tbody id="output_pausa">
                 </tbody>
             </table>
       </div>

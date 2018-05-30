@@ -84,3 +84,25 @@ def reporte_por_fecha_modal_agente_view(request):
             return render(request, 'tbody_fechas_agentes.html', ctx)
 
     return render(request)
+
+
+def reporte_por_fecha_pausa_modal_agente_view(request):
+    """esta vista es invocada por una ajax para mostrar las pausas por fechas
+    de los agentes en una ventana modal"""
+    if request.method == 'POST':
+        if request.is_ajax():
+
+            id_agente = request.POST['id_agente']
+            fecha_desde = request.POST['fecha_desde']
+            fecha_hasta = request.POST['fecha_hasta']
+            fecha_desde = convert_fecha_datetime(fecha_desde)
+            fecha_hasta = convert_fecha_datetime(fecha_hasta)
+
+            tiempos_agentes = TiemposAgente()
+            agente = AgenteProfile.objects.get(pk=int(id_agente))
+            agentes = tiempos_agentes.calcular_tiempo_pausa_tipo_fecha(
+                agente, fecha_desde, fecha_hasta)
+            ctx = {'fechas_agente': agentes}
+            return render(request, 'tbody_pausa_fechas_agentes.html', ctx)
+
+    return render(request)
