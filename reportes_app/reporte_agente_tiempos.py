@@ -702,9 +702,6 @@ class TiemposAgente(object):
                     tiempos_pausa.update({time_actual: resta})
                 is_unpause = False
                 time_actual = None
-                # else:
-                #     is_unpause = False
-                #     time_actual = None
             if logs.event == 'UNPAUSEALL' or logs.event == 'REMOVEMEMBER':
                 time_actual = logs.time
                 is_unpause = True
