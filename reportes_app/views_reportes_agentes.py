@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+from django.http import JsonResponse
 from django.views.generic import FormView
 from django.shortcuts import redirect, render
 from ominicontacto_app.models import AgenteProfile, Grupo
@@ -102,7 +103,6 @@ def reporte_por_fecha_pausa_modal_agente_view(request):
             agente = AgenteProfile.objects.get(pk=int(id_agente))
             agentes = tiempos_agentes.calcular_tiempo_pausa_tipo_fecha(
                 agente, fecha_desde, fecha_hasta, pausa_id)
-            ctx = {'fechas_agente': agentes}
-            return render(request, 'tbody_pausa_fechas_agentes.html', ctx)
+            return JsonResponse(agentes, safe=False)
 
     return render(request)
