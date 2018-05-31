@@ -180,6 +180,19 @@ class ActividadAgenteLogManager(models.Manager):
         values = cursor.fetchall()
         return values
 
+    def obtener_pausas_por_agente_fechas_pausa(self, eventos, fecha_desde,
+                                               fecha_hasta, agente_id, pausa_id):
+        """Devuelve todas las pausas del agente por una pausa en particular"""
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+        try:
+            return self.filter(agente_id=agente_id, event__in=eventos,
+                               time__range=(fecha_desde, fecha_hasta),
+                               pausa_id=pausa_id).order_by('-time')
+        except ActividadAgenteLog.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro pausas "))
+
 
 class ActividadAgenteLog(models.Model):
     """

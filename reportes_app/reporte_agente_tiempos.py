@@ -668,7 +668,8 @@ class TiemposAgente(object):
         )
         return agente_fecha
 
-    def calcular_tiempo_pausa_tipo_fecha(self, agente, fecha_inferior, fecha_superior):
+    def calcular_tiempo_pausa_tipo_fecha(self, agente, fecha_inferior,
+                                         fecha_superior, pausa_id):
         """
         Calcula el tiempo de pausa de los agentes en el periodo evaluado
         :return: un listado de agentes con el tiempo de pausa
@@ -677,11 +678,12 @@ class TiemposAgente(object):
 
         agentes_tiempo = []
         # iterar por agente evaluando los eventos de pausa
-        logs_time = ActividadAgenteLog.objects.obtener_tiempos_event_agentes(
+        logs_time = ActividadAgenteLog.objects.obtener_pausas_por_agente_fechas_pausa(
             eventos_pausa,
             fecha_inferior,
             fecha_superior,
-            [agente.id])
+            agente.id,
+            pausa_id)
 
         is_unpause = False
         time_actual = None
@@ -691,32 +693,29 @@ class TiemposAgente(object):
         # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
 
         for logs in logs_time:
-            if is_unpause and logs[2] == 'PAUSEALL':
-                if cast_datetime_part_date(time_actual) == cast_datetime_part_date(logs[1]):
-                    resta = time_actual - logs[1]
-                    id_pausa = logs[3]
-                    time_actual = cast_datetime_part_date(time_actual)
-                    if (id_pausa, time_actual) in tiempos_pausa.keys():
-                        tiempos_pausa[id_pausa] += resta
-                    else:
-                        tiempos_pausa.update({(time_actual, id_pausa): resta})
-                    is_unpause = False
-                    time_actual = None
+            if is_unpause and logs.event == 'PAUSEALL':
+                resta = time_actual - logs.time
+                time_actual = cast_datetime_part_date(time_actual)
+                if time_actual in tiempos_pausa.keys():
+                    tiempos_pausa[time_actual] += resta
                 else:
-                    is_unpause = False
-                    time_actual = None
-            if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
-                time_actual = logs[1]
+                    tiempos_pausa.update({time_actual: resta})
+                is_unpause = False
+                time_actual = None
+                # else:
+                #     is_unpause = False
+                #     time_actual = None
+            if logs.event == 'UNPAUSEALL' or logs.event == 'REMOVEMEMBER':
+                time_actual = logs.time
                 is_unpause = True
         for item in tiempos_pausa:
-            datos_de_pausa = self._obtener_datos_de_pausa(item[1])
+            datos_de_pausa = self._obtener_datos_de_pausa(pausa_id)
             tiempo = str(timezone.timedelta(seconds=tiempos_pausa[item].seconds))
             tiempo_agente = {
-                'fecha': item[0],
+                'fecha': item,
                 'pausa': datos_de_pausa['nombre'],
                 'tipo_de_pausa': datos_de_pausa['tipo'],
                 'tiempo': tiempo,
-                'pausa_id': item[1]
             }
             agentes_tiempo.append(tiempo_agente)
 

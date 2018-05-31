@@ -97,11 +97,11 @@ def reporte_por_fecha_pausa_modal_agente_view(request):
             fecha_hasta = request.POST['fecha_hasta']
             fecha_desde = convert_fecha_datetime(fecha_desde)
             fecha_hasta = convert_fecha_datetime(fecha_hasta)
-
+            pausa_id = int(request.POST['pausa_id'])
             tiempos_agentes = TiemposAgente()
             agente = AgenteProfile.objects.get(pk=int(id_agente))
             agentes = tiempos_agentes.calcular_tiempo_pausa_tipo_fecha(
-                agente, fecha_desde, fecha_hasta)
+                agente, fecha_desde, fecha_hasta, pausa_id)
             ctx = {'fechas_agente': agentes}
             return render(request, 'tbody_pausa_fechas_agentes.html', ctx)
 

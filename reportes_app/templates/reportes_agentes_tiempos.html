@@ -99,10 +99,10 @@
 
     $('.tiemposPausaModal').click(function(){
     event.preventDefault();
-    var id_agente;
-    id_agente = $(this).attr("id_agente");
+    var id_agente = $(this).attr("id_agente");
     var fecha_desde = $(this).attr("fecha_desde");
     var fecha_hasta = $(this).attr("fecha_hasta");
+    var pausa_id = $(this).attr("pausa_id");
     $.ajax(
     {
         type:"POST",
@@ -111,6 +111,7 @@
                  'id_agente': id_agente,
                  'fecha_desde': fecha_desde,
                  'fecha_hasta': fecha_hasta,
+                 'pausa_id': pausa_id,
                   'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         success: function (data, textStatus) {
@@ -262,7 +263,8 @@
         <tr>
             <td>{{agente.nombre_agente}}
                 <a href="#" role="button" class="tiemposPausaModal" id_agente="{{agente.id}}" data-toggle="modal" data-target="#reportePausaModal"
-                fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}">
+                fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}"
+                pausa_id="{{agente.pausa_id}}">
                 ver por fechas</a>
             </td>
             <td>{{agente.pausa}}</td>
