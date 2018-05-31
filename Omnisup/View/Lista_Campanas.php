@@ -24,7 +24,7 @@ if($SupervId) {
             foreach ($resul as $clave => $valor) {
             ?>
             <tr>
-                <td style='color:green'><a href="index.php?page=Detalle_Campana&nomcamp=<?= $clave . "_" . $valor ?>&supervId=<?= $SupervId ?>&es_admin=<?= $admin ?>&campId=<?= $clave ?>"><?= $valor ?></a></td>
+                <td style='color:green'><a href="index.php?page=Detalle_Campana&nomcamp=<?= $valor ?>&supervId=<?= $SupervId ?>&es_admin=<?= $admin ?>&campId=<?= $clave ?>"><?= $valor ?></a></td>
             </tr>
             <?php
             }

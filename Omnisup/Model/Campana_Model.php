@@ -1,14 +1,18 @@
 <?php
 // ini_set('display_errors', 'On');
 // error_reporting(E_ALL | E_STRICT);
-include $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
+//include $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
+include_once entities . '/Phpagi_asmanager.php';
 
 class Campana_Model {
 
+    private $command;
+    private $agi;
     private $argPdo;
 
     function __construct() {
         $this->argPdo = 'pgsql:host=' . PG_HOST . ';dbname=kamailio;port=5432';
+        $this->agi = new Phpagi_asmanager();
     }
 
     function getCampaignsForAdm() {
@@ -44,13 +48,6 @@ class Campana_Model {
           $result= "Database Error: " . $e;
       }
       return $result;
-    }
-
-    function getCampaign($CampName) {
-        //$cmd = "asterisk  -rx 'queue show " . $CampName . "' |grep 'from ' |awk '{print $1}' FS='has taken'|awk '{print $1, $2}' FS='\(ringinuse disabled\)' |awk '{print $1, $2}' FS='\(dynamic\)'";
-        $cmd = "sudo asterisk  -rx 'queue show " . $CampName . "' |awk '{print $1}' FS='has taken'|awk '{print $1, $2}' FS='\\\(ringinuse disabled\\\)' |awk '{print $1, $2}' FS='\\\(dynamic\\\)' |grep --color=never 'SIP'";
-	$data = shell_exec($cmd);
-        return $data;
     }
 
     function getReceivedCalls($IdCamp) {

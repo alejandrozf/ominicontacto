@@ -1,7 +1,6 @@
 <?php
-
+include $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
 include models . '/Campana_Model.php';
-include entities. '/QueueMember.php';
 include entities. '/NumState.php';
 
 class Campana {
@@ -33,33 +32,6 @@ class Campana {
             }
         }
         return $arrData;
-    }
-
-    function traerCampanaDet($nomCamp) {
-        $campana = $this->Campana_Model->getCampaign($nomCamp);
-      	$rawArrayData = array();
-      	$campana = explode(PHP_EOL, $campana);
-      	foreach($campana as $clave => $valor) {
-      	    $Qm = new QueueMember();
-      	    $valor = explode("(", $valor);
-      	    $name = str_replace(")","",$valor[0]);
-      	    if($name) {
-      	        $Qm->setName($name);
-      	    }
-      	    $val = explode(" ", $valor[1]);
-      	    $exten = str_replace("SIP/","",$val[0]);
-      	    if($exten) {
-      	        $Qm->setExten($exten);
-      	    }
-      	    $val = str_replace("(","",$valor[2]);
-      	    $val = str_replace(")","",$valor[2]);
-      	    $status = $val;
-      	    if($status) {
-      	        $Qm->setStatus($status);
-      	    }
-      	    $rawArrayData[] = $Qm;
-      	}
-        return $rawArrayData;
     }
 
     function traerInfoReporteRealTimeCamp($NomCamp, $IdCamp) {

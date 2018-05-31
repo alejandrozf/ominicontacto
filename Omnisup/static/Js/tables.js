@@ -2,10 +2,12 @@ var tabagt;
 $(function () {
   tabagt = $('#tableAgt').DataTable({
     createdRow: function (row, data, dataIndex) {
-      if (data.estado === "Libre") {
+      if (data.estado === "READY") {
         $(row).css("background-color", "rgb(164, 235, 143)");
-      } else if (data.estado === "Llamada") {
+      } else if (data.estado === "ONCALL") {
         $(row).css("background-color", "rgb(44, 169, 231)");
+      } else if (data.estado === "DIALING") {
+        $(row).css("background-color", "rgb(249, 224, 60)");
       } else {//esta en pausa
         $(row).css("background-color", "rgb(249, 159, 157)");
       }
