@@ -126,7 +126,7 @@ class ArchivoDeReporteCsv(object):
                     contacto.fecha_hora.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
                 lista_opciones.append(contacto.telefono)
-                lista_opciones.append("AGENTE NO CALIFICO")
+                lista_opciones.append("Llamadas Atendidas sin calificacion")
                 lista_opciones.append("")
                 lista_opciones.append(contacto.agente)
                 lista_opciones.append(contacto.contacto.bd_contacto)
@@ -156,8 +156,6 @@ class ReporteCampanaCalificadosCSV(object):
         archivo_de_reporte.escribir_archivo_csv(campana, calificados, no_calificados)
 
     def obtener_url_reporte_csv_descargar(self, campana):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
-
         archivo_de_reporte = ArchivoDeReporteCsv(campana)
         if archivo_de_reporte.ya_existe():
             return archivo_de_reporte.url_descarga

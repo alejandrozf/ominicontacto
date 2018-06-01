@@ -65,19 +65,19 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignActive">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>Agregar agentes
-                            </a>   
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>Dar permiso para ver
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'reporte_campana' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                                 <span class="icon icon-list"></span>Calificaciones
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'reporte_campana_grafico' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>Reportes
-                            </a> 
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
-                            </a>                                 
+                            </a>
                         </div>
                     </div>
                 </td>
@@ -118,19 +118,19 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignPaused">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>Agregar agentes
-                            </a>     
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>Dar permisos para ver
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'reporte_campana' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                                 <span class="icon icon-list"></span>Calificaciones
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'reporte_campana_grafico' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>Reportes
-                            </a> 
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
-                            </a>                                            
+                            </a>
                         </div>
                     </div>
                 </td>
@@ -171,19 +171,19 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignInactive">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>Agregar agentes
-                            </a>     
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>Dar permisos para ver
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'reporte_campana' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                                 <span class="icon icon-list"></span>Calificaciones
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'reporte_campana_grafico' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>Reportes
-                            </a> 
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
-                            </a>                                            
+                            </a>
                         </div>
                     </div>
                 </td>
@@ -199,8 +199,8 @@
     <h2>Campañas Eliminadas</h2>
     <a href="#" class="btn btn-light btn-sm" onclick="mostrar_campanas_ocultas()" >
         Mostrar ocultas
-    </a>    
-    <hr>    
+    </a>
+    <hr>
     <table class="table">
         <thead>
             <tr>
@@ -228,16 +228,16 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignDeleted">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>Agregar agentes
-                            </a>     
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>Dar permisos para ver
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'reporte_campana' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                                 <span class="icon icon-list"></span>Calificaciones
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'reporte_campana_grafico' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>Reportes
-                            </a> 
+                            </a>
                             {% if campana.oculto %}
                             <a class="dropdown-item" href="{% url 'desoculta_campana' campana.pk %}">
                                 <span class="icon icon-eye"></span>Hacer visible
@@ -249,7 +249,7 @@
                             {% endif %}
                             <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">
                                 <span class="icon icon-trash"></span>Eliminar
-                            </a>                                            
+                            </a>
                         </div>
                     </div>
                 </td>

@@ -145,17 +145,6 @@ class CampanaFactory(DjangoModelFactory):
                 self.supervisors.add(supervisor)
 
 
-# class QueuelogFactory(DjangoModelFactory):
-#     class Meta:
-#         model = Queuelog
-
-#     time = lazy_attribute(lambda a: timezone.now())
-#     callid = lazy_attribute(lambda a: faker.text(32))
-#     queuename = lazy_attribute(lambda a: faker.text(32))
-#     campana_id = lazy_attribute(lambda a: faker.random_number(7))
-#     agent = lazy_attribute(lambda a: faker.text(32))
-
-
 class GrabacionFactory(DjangoModelFactory):
     class Meta:
         model = Grabacion

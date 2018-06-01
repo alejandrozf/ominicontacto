@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_js %}
 <script type="text/javascript">
    $(function() {
@@ -51,18 +52,25 @@
 
 {% with graficos_estadisticas=graficos_estadisticas %}
 
-<h1>Campaña {{campana.nombre}}</h1>
+<h1>Campaña: {{campana.nombre}}</h1>
 <div class="form-row">
-    <h3 class="col-md-6">Llamadas Pendientes: <strong>{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</strong></h3>
-    <h3 class="col-md-6">Llamadas Realizadas: <strong>{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</strong></h3>
+    {% if graficos_estadisticas.estadisticas.llamadas_pendientes != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Pendientes' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</strong></h3>
+    {% endif %}
+    {% if graficos_estadisticas.estadisticas.llamadas_realizadas != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Realizadas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</strong></h3>
+    {% endif %}
+    {% if graficos_estadisticas.estadisticas.llamadas_recibidas != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Recibidas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_recibidas}}</strong></h3>
+    {% endif %}
 </div>
 <br>
 <div>
-    <a class="btn btn-primary" href="{% url 'exporta_campana_reporte_pdf' campana.pk %}" target="_blank">Exportar Reporte(PDF)</a>    
+    <a class="btn btn-primary" href="{% url 'campana_reporte_pdf' campana.pk %}" target="_blank">{% trans 'Exportar Reporte(PDF)' %}</a>
 </div>
 <br>
 <div id="wrapper-search">
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>Buscar</button>
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>{% trans 'Buscar' %}</button>
     <div id="wrapperSearchForm" class="show">
         <form role="form" method="post" enctype="multipart/form-data" >
             {% csrf_token %}
@@ -77,16 +85,20 @@
         </form>
     </div>
 </div>
+
 <div>
-    <h2>Cantidad de calificación por campaña</h2>    
-    <br>
+    <h2>Reportes de contactados</h2>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_contactados' campana.pk %}">Exportar Reporte de contactadas(CSV)</a>
+    <hr>
+    <h3>Cantidad de calificación por campaña</h3>
     <div class="form-row">
+        <div class="col-md-6">
             <table class="table">
                 <thead>
-                <tr>
-                    <th>Calificacion</th>
-                    <th>cantidad </th>
-                </tr>
+                    <tr>
+                        <th>Calificacion</th>
+                        <th>Cantidad</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for calificaciones_nombre, calificaciones_cantidad in graficos_estadisticas.dict_campana_counter %}
@@ -110,19 +122,22 @@
             </div>
         </div>
     </div>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_calificados' campana.pk %}">Exportar Reporte llamadas calificadas(CSV)</a>
 </div>
+<br>
 <hr>
+<br>
 <div>
-    <h2>Cantidad de llamados no atendido</h2>    
+    <h2>Cantidad de llamados no atendidos</h2>
     <br>
     <div class="form-row">
         <div class="col-md-6">
             <table class="table">
                 <thead>
-                <tr>
-                    <th>Resultado</th>
-                    <th>cantidad </th>
-                </tr>
+                    <tr>
+                        <th>Resultado</th>
+                        <th>Cantidad</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for resultado_nombre, resultado_cantidad in graficos_estadisticas.dict_no_atendido_counter %}
@@ -146,46 +161,47 @@
             </div>
         </div>
     </div>
+    <div>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">Exportar Reporte llamadas no atendidas(CSV)</a>
+    </div>
+    <br>
+</div>
 
+<div>
     <table class="table">
         <thead>
             <tr>
-                <th>Agente</th>
-                <th>Ventas</th>
+                <th>{% trans 'Agente' %}</th>
+                <th>{% trans 'Total gestiones' %}</th>
                 {% for calificacion in graficos_estadisticas.calificaciones %}
-                <th>{{calificacion.nombre}}</th>
+                    <th>{{ calificacion }}</th>
                 {% endfor %}
-                <th>Contactos calificados</th>
+                <th>{% trans 'Contactos calificados' %}</th>
             </tr>
         </thead>
         <tbody>
-            {% for agente in graficos_estadisticas.agentes_venta %}
+            {% for agente_pk, estadisticas_agente in graficos_estadisticas.agentes_venta.items %}
                 <tr>
-                    <td><a href="{% url 'reporte_agente_grafico' pk_campana agente.0.pk %}">{{agente.0}}</a></td>
-                    <td>{{agente.3}}</td>
-
-                    {% for calificacion in graficos_estadisticas.calificaciones %}
-                        <td>
-                            {% for item in agente.2.items %}
-                            {% ifequal calificacion.pk item.0 %}
-                               {{ item.1}}
-                            {% endifequal %}
-                            {% endfor %}
-                        </td>
+                    <td><a href="{% url 'campana_reporte_agente' pk_campana agente_pk %}">{{ estadisticas_agente.nombre }}</a></td>
+                    <td>{{ estadisticas_agente.total_gestionados  }}</td>
+                    {% for calificados_opcion in estadisticas_agente.totales_calificaciones.values %}
+                        <td>{{ calificados_opcion }}</td>
                     {% endfor %}
-                        <td>{{agente.1}}</td>
+                    <td>{{ estadisticas_agente.total_calificados }}</td>
                 </tr>
             {% endfor %}
             <tr>
                 <td>Totales</td>
                 <td>{{graficos_estadisticas.total_ventas}}</td>
-                <td colspan="{{graficos_estadisticas.calificaciones.count}}"></td>
+                <td colspan="{{ graficos_estadisticas.calificaciones|length }}"></td>
                 <td>{{graficos_estadisticas.total_calificados}}</td>
             </tr>
         </tbody>
-    </table>    
+    </table>
 </div>
+<br>
 <hr>
+<br>
 <div>
     <h2>Detalle de las llamadas</h2>
     <br>
@@ -193,10 +209,10 @@
         <div class="col-md-6">
             <table class="table">
                 <thead>
-                <tr>
-                    <th>Llamadas</th>
-                    <th>cantidad </th>
-                </tr>
+                    <tr>
+                        <th>Llamadas</th>
+                        <th>Cantidad </th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for llamadas_nombre, llamadas_cantidad in graficos_estadisticas.dict_llamadas_counter %}
@@ -208,7 +224,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" align="center">
             <div class="graficos-avances">
                 <figure>
                     {{ graficos_estadisticas.barra_campana_llamadas.render|safe }}

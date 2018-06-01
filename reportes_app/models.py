@@ -93,6 +93,11 @@ class LlamadaLog(models.Model):
     Define la estructura de un evento de log de cola relacionado con una llamada
     """
 
+    LLAMADA_MANUAL = 1
+
+    EVENTOS_NO_CONEXION = ('NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER', 'AMD',
+                           'BLACKLIST', 'ABANDON', 'EXITWITHTIMEOUT')
+
     objects = LlamadaLogManager()
 
     time = models.DateTimeField(db_index=True)
@@ -160,5 +165,5 @@ class ActividadAgenteLog(models.Model):
 
     def __unicode__(self):
         return "Log de actividad agente con fecha {0} para agente de id {1} con el evento {2} " \
-               "con data1 {3}".format(self.time, self.agente_id,
-                                      self.event, self.pausa_id)
+               "con id de pausa {3}".format(self.time, self.agente_id,
+                                            self.event, self.pausa_id)
