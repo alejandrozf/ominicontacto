@@ -15,7 +15,7 @@ from django.utils.translation import ugettext as _
 from django.utils import timezone
 
 from ominicontacto_app.models import CalificacionCliente
-from ominicontacto_app.services.queue_log_service import AgenteTiemposReporte
+from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
 logger = _logging.getLogger(__name__)

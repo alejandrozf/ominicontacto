@@ -316,7 +316,7 @@ class ReportesCampanasTests(TestCase):
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         agente_data = estadisticas['agente_tiempo']
         self.assertEqual(agente_data.cantidad_llamadas_procesadas, 3)
-        self.assertEqual(agente_data.cantidad_llamadas_perdidas, 1)
+        self.assertEqual(agente_data.cantidad_intentos_fallidos, 1)
         self.assertEqual(agente_data.tiempo_llamada, 2 * self.DURACION_LLAMADA)
 
     def test_datos_reporte_agente_detalle_actividad_coinciden_estadisticas_sistema(self):
