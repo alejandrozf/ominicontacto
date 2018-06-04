@@ -87,7 +87,6 @@ class TiemposAgente(object):
             log_agente = self._filter_query_por_agente(logs_time, agente.id)
             len_log_agente = len(log_agente) - 1
             for logs in log_agente:
-                #print log_agente.index(logs)
                 calculo_ok = False
                 # primer elemento addmember
                 if log_agente.index(logs) == 0 and logs[2] == 'ADDMEMBER':
@@ -535,36 +534,50 @@ class TiemposAgente(object):
 
         time_actual = None
         is_remove = False
-        for logs in logs_time:
-            agente_nuevo = None
-            if is_remove and logs[2] == 'ADDMEMBER':
-                if cast_datetime_part_date(time_actual) == cast_datetime_part_date(logs[1]):
+        len_log_agente = len(logs_time) - 1
 
-                    resta = time_actual - logs[1]
-                    date_time_actual = cast_datetime_part_date(time_actual)
-                    agente_en_lista = filter(lambda x: x.agente == date_time_actual,
-                                             agente_fecha)
-                    if agente_en_lista:
-                        agente_nuevo = agente_en_lista[0]
-                        if agente_nuevo.tiempo_sesion:
-                            agente_nuevo._tiempo_sesion += resta
-                        else:
-                            agente_nuevo._tiempo_sesion = resta
-                    else:
-                        agente_nuevo = AgenteTiemposReporte(
-                            cast_datetime_part_date(
-                                time_actual), resta, 0, 0, 0, 0)
-                        agente_fecha.append(agente_nuevo)
-                    agente_nuevo = None
-                    is_remove = False
-                    time_actual = None
-                else:
-                    agente_nuevo = None
-                    is_remove = False
-                    time_actual = None
+        for logs in logs_time:
+            calculo_ok = False
+            # primer elemento addmember
+            if logs_time.index(logs) == 0 and logs[2] == 'ADDMEMBER':
+                agente_nuevo = None
+                is_remove = False
+                time_actual = None
+                print "error 1"
+            # ultimo elemento removemember
+            if len_log_agente == logs_time.index(logs) and logs[2] == 'REMOVEMEMBER':
+                agente_nuevo = None
+                is_remove = False
+                time_actual = None
+                print "error 2"
+
+            if is_remove and logs[2] == 'ADDMEMBER':
+                resta = time_actual - logs[1]
+                calculo_ok = True
+
             if logs[2] == 'REMOVEMEMBER':
                 time_actual = logs[1]
                 is_remove = True
+            if calculo_ok:
+                date_time_actual = cast_datetime_part_date(time_actual)
+                agente_en_lista = filter(
+                    lambda x: x.agente == date_time_actual,
+                    agente_fecha)
+                if agente_en_lista:
+                    agente_nuevo = agente_en_lista[0]
+                    if agente_nuevo.tiempo_sesion:
+                        agente_nuevo._tiempo_sesion += resta
+                    else:
+                        agente_nuevo._tiempo_sesion = resta
+                else:
+                    agente_nuevo = AgenteTiemposReporte(
+                        cast_datetime_part_date(
+                            time_actual), resta, 0, 0, 0, 0)
+                    agente_fecha.append(agente_nuevo)
+                agente_nuevo = None
+                is_remove = False
+                time_actual = None
+
         return agente_fecha
 
     def calcular_tiempo_pausa_fecha_agente(self, agente, fecha_inferior,
@@ -586,23 +599,22 @@ class TiemposAgente(object):
             agente_nuevo = None
 
             if is_unpause and logs[2] == 'PAUSEALL':
-                if cast_datetime_part_date(
-                        time_actual) == cast_datetime_part_date(logs[1]):
-                    resta = time_actual - logs[1]
-                    date_time_actual = cast_datetime_part_date(time_actual)
-                    agente_en_lista = filter(lambda x: x.agente == date_time_actual,
-                                             agente_fecha)
-                    if agente_en_lista:
-                        agente_nuevo = agente_en_lista[0]
-                        if agente_nuevo.tiempo_pausa:
-                            agente_nuevo._tiempo_pausa += resta
-                        else:
-                            agente_nuevo._tiempo_pausa = resta
+
+                resta = time_actual - logs[1]
+                date_time_actual = cast_datetime_part_date(time_actual)
+                agente_en_lista = filter(lambda x: x.agente == date_time_actual,
+                                         agente_fecha)
+                if agente_en_lista:
+                    agente_nuevo = agente_en_lista[0]
+                    if agente_nuevo.tiempo_pausa:
+                        agente_nuevo._tiempo_pausa += resta
                     else:
-                        agente_nuevo = AgenteTiemposReporte(
-                            cast_datetime_part_date(
-                                time_actual), None, resta, 0, 0, 0)
-                        agente_fecha.append(agente_nuevo)
+                        agente_nuevo._tiempo_pausa = resta
+                else:
+                    agente_nuevo = AgenteTiemposReporte(
+                        cast_datetime_part_date(
+                            time_actual), None, resta, 0, 0, 0)
+                    agente_fecha.append(agente_nuevo)
                 is_unpause = False
                 time_actual = None
 
