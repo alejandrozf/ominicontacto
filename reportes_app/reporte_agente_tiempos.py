@@ -85,9 +85,29 @@ class TiemposAgente(object):
             is_remove = False
             time_actual = None
             log_agente = self._filter_query_por_agente(logs_time, agente.id)
+            len_log_agente = len(log_agente) - 1
             for logs in log_agente:
+                #print log_agente.index(logs)
+                calculo_ok = False
+                # primer elemento addmember
+                if log_agente.index(logs) == 0 and logs[2] == 'ADDMEMBER':
+                    time_actual = datetime_hora_maxima_dia(logs[1])
+                    resta = time_actual - logs[1]
+                    calculo_ok = True
+                # ultimo elemento removemember
+                if len_log_agente == log_agente.index(logs) and logs[2] == 'REMOVEMEMBER':
+                    time_actual = datetime_hora_minima_dia(logs[1])
+                    resta = logs[1] - time_actual
+                    calculo_ok = True
+
                 if is_remove and logs[2] == 'ADDMEMBER':
                     resta = time_actual - logs[1]
+                    calculo_ok = True
+
+                if logs[2] == 'REMOVEMEMBER':
+                    time_actual = logs[1]
+                    is_remove = True
+                if calculo_ok:
                     agente_en_lista = filter(lambda x: x.agente == agente,
                                              self.agentes_tiempo)
                     if agente_en_lista:
@@ -103,9 +123,6 @@ class TiemposAgente(object):
                     agente_nuevo = None
                     is_remove = False
                     time_actual = None
-                if logs[2] == 'REMOVEMEMBER':
-                    time_actual = logs[1]
-                    is_remove = True
 
     def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
         """ Calcula el tiempo de pausa teniendo en cuenta los eventos PAUSEALL,
