@@ -16,6 +16,7 @@ from ominicontacto_app.tests.factories import (
 )
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 from reportes_app.reporte_agente_tiempos import TiemposAgente
+from ominicontacto_app.utiles import cast_datetime_part_date
 
 
 class ReportesAgenteTiemposTest(OMLBaseTest):
@@ -507,3 +508,37 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         self.assertEqual([self.agente.user.get_full_name(),
                           self.agente1.user.get_full_name()],
                          dict_agentes['nombres_agentes'])
+
+    def test_genera_correctamente_tiempo_inicio_sesion_fecha(self):
+        """test que controla que los tiempo de sesion de los agentes
+         se generen correcamente"""
+        inicio_sesion_agente = self.inicio_sesion_agente.time - timezone.timedelta(
+            minutes=17) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            event='ADDMEMBER', agente_id=self.agente.id, time=inicio_sesion_agente)
+        fin_sesion_agente = self.fin_sesion_agente.time + timezone.timedelta(
+            minutes=79) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            time=fin_sesion_agente, event='REMOVEMEMBER', agente_id=self.agente.id)
+
+        # calculo el tiempo de sesion del agente
+        tiempo_sesion_agente = self.fin_sesion_agente.time - self.inicio_sesion_agente.time
+        tiempo_sesion_agente1 = fin_sesion_agente - inicio_sesion_agente
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        fecha_hoy = timezone.now() + timezone.timedelta(days=1)
+        fecha_inferior = fecha_hoy - timezone.timedelta(days=20)
+        agentes_tiempo = reportes_estadisticas.calcular_tiempo_session_fecha_agente(
+            self.agente, fecha_inferior, fecha_hoy, [])
+
+        time_sesion = cast_datetime_part_date(self.inicio_sesion_agente.time)
+        time_sesion1 = cast_datetime_part_date(inicio_sesion_agente)
+
+        for agente in agentes_tiempo:
+            if time_sesion == agente.agente:
+                self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
+            elif time_sesion1 == agente.agente:
+                self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
+            else:
+                self.fail("Fecha no calculado para agente revisar test")
