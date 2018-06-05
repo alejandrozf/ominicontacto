@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from django.template import loader, Context
+from django.template import loader
 from django.http import JsonResponse
 from django.views.generic import FormView
 from django.shortcuts import redirect, render
@@ -83,7 +83,7 @@ def reporte_por_fecha_modal_agente_view(request):
 
             agentes, error = tiempos_agentes.generar_por_fecha_agente(
                 agente, fecha_desde, fecha_hasta)
-            ctx = Context({'agentes': agentes})
+            ctx = {'agentes': agentes}
             t = loader.get_template('tbody_fechas_agentes.html')
             html = t.render(ctx)
             data = {
