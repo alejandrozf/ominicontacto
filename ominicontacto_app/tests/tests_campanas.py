@@ -911,9 +911,10 @@ class CampanasTests(OMLBaseTest):
     @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'update_endpoint')
     @patch.object(ActivacionQueueService, '_generar_y_recargar_configuracion_asterisk')
+    @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
     def test_usuario_logueado_puede_modificar_campana_dialer(
             self, activar, crear_campana_wombat, update_endpoint,
-            _generar_y_recargar_configuracion_asterisk):
+            _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas):
         url = reverse('campana_dialer_update', args=[self.campana_dialer.pk])
         nuevo_objetivo = 3
         audio_ingreso = ArchivoDeAudioFactory.create()
@@ -1127,11 +1128,12 @@ class CampanasTests(OMLBaseTest):
     @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
     def test_usuario_logueado_puede_crear_campana_dialer_desde_template(
             self, crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
             crear_lista_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
-            _generar_y_recargar_configuracion_asterisk):
+            _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas):
         url = reverse('crea_campana_dialer_template', args=[self.campana_dialer.pk, 1])
         nombre_campana = 'campana_dialer_clonada'
         audio_ingreso = ArchivoDeAudioFactory.create()
