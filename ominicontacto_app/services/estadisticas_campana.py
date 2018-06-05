@@ -5,7 +5,6 @@ Servicio para generar reporte grafico de una campana
 """
 
 import pygal
-import datetime
 import os
 
 from collections import OrderedDict
@@ -15,6 +14,7 @@ from django.conf import settings
 from django.db.models import Count
 from django.utils.translation import ugettext as _
 
+from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
 from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Campana,
                                       OpcionCalificacion)
 from ominicontacto_app.services.campana_service import CampanaService
@@ -65,8 +65,6 @@ class EstadisticasService():
         calificaciones_cantidad - cantidad de llamadas por calificacion
         total_asignados - cantidad total de calificaciones
         """
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         calificaciones_query = CalificacionCliente.objects.filter(
             opcion_calificacion__campana=campana,
             fecha__range=(fecha_desde, fecha_hasta)).values('opcion_calificacion__nombre').annotate(
@@ -96,8 +94,6 @@ class EstadisticasService():
         :return: nombre del evento no atendidos, la cantidad por ese evento y el total
         de  llamados no atendidos
         """
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
 
         reporte = OrderedDict(
             # se cuentan todos los eventos NOANSWER
@@ -184,8 +180,6 @@ class EstadisticasService():
         :return: agentes_venta, un dicionario con el total des las calificaciones,
         una lista con el total de las calificaciones y las calificaciones
         """
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         total_calificados = 0
         total_ventas = 0
 
@@ -387,16 +381,17 @@ class EstadisticasService():
                 reporte[_('Discadas')] = cantidad
         return reporte
 
-    def calcular_cantidad_llamadas(self, campana, fecha_inferior, fecha_superior):
+    def calcular_cantidad_llamadas(self, campana, fecha_desde, fecha_hasta):
         """
         Obtiene las cantidades toteles detalladas como resultado de las llamadas
         :param campana: campana la cuales se obtendran el detalle de la llamada
-        :param fecha_inferior: fecha desde la cual se obtendran las llamadas
-        :param fecha_superior: fecha hasta la cual se obtendran las llamadas
+        :param fecha_desde: fecha desde la cual se obtendran las llamadas
+        :param fecha_hasta: fecha hasta la cual se obtendran las llamadas
         :return: los eventos de llamadas con sus cantidades totales
         """
-        fecha_desde = datetime.datetime.combine(fecha_inferior, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_superior, datetime.time.max)
+        fecha_desde = datetime_hora_minima_dia(fecha_desde)
+        fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
         logs_llamadas_campana = LlamadaLog.objects.filter(
             campana_id=campana.pk, time__range=(fecha_desde, fecha_hasta))
 
@@ -411,6 +406,9 @@ class EstadisticasService():
         return reporte
 
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
+        fecha_desde = datetime_hora_minima_dia(fecha_desde)
+        fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
         # obtener cantidad de calificaciones por campana
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
@@ -453,8 +451,7 @@ class EstadisticasService():
         return dic_estadisticas
 
     def general_campana(self, campana, fecha_inferior, fecha_superior):
-        estadisticas = self._calcular_estadisticas(campana, fecha_inferior,
-                                                   fecha_superior)
+        estadisticas = self._calcular_estadisticas(campana, fecha_inferior, fecha_superior)
 
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")

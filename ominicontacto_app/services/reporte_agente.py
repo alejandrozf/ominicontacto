@@ -14,6 +14,7 @@ from django.db.models import Count
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
+from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
 from ominicontacto_app.models import CalificacionCliente
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
@@ -52,14 +53,12 @@ class EstadisticasAgenteService():
         """
         Obtiene el total por calificacipn para el agente por la campana
         :param campana: campana las cual se obtendran las calificaciones
-        :param fecha_desde: fecha desde la cual se obtendran las calificaciones
-        :param fecha_hasta: fecha hasta la cual se obtendran las calificaciones
+        :param fecha_desde: fecha/hora desde la cual se obtendran las calificaciones
+        :param fecha_hasta: fecha/hora hasta la cual se obtendran las calificaciones
         :param agente: agente el cual se evaluara
         :return: retorna el nombre y cantidades de la calificaiones y el total de
         calificaciones
         """
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         calificaciones_query = CalificacionCliente.objects.filter(
             agente=agente, opcion_calificacion__campana=campana, fecha__range=(
                 fecha_desde, fecha_hasta))
@@ -144,14 +143,9 @@ class EstadisticasAgenteService():
         return (tiempo_en_llamada, tiempo_en_llamada_manual, cantidad_llamadas_procesadas,
                 cantidad_llamadas_perdidas, cantidad_llamadas_manuales)
 
-    def calcular_tiempo_agente(self, agente, fecha_inferior, fecha_superior, campana):
-        if fecha_inferior and fecha_superior:
-            # se obtienen las fechas en formato datetime desde el inicio y hasta el final
-            # respectivamente
-            fecha_desde = datetime.datetime.combine(fecha_inferior, datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_superior, datetime.time.max)
+    def calcular_tiempo_agente(self, agente, fecha_desde, fecha_hasta, campana):
         ahora = timezone.now()
-        if fecha_superior.date() == ahora.date():
+        if fecha_hasta.date() == ahora.date():
             # estamos calculando hasta el día actual
             fecha_hasta = ahora
         logs_actividad_agente = ActividadAgenteLog.objects.filter(
@@ -172,6 +166,9 @@ class EstadisticasAgenteService():
         return agente_tiempos
 
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta, agente):
+        fecha_desde = datetime_hora_minima_dia(fecha_desde)
+        fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde, fecha_hasta, agente)
 
