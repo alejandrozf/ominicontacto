@@ -693,3 +693,23 @@ class GeneradorReportesLlamadasCSV(object):
                           force_text(estadisticas_campana['t_espera_conexion_manuales']),
                           ])
         return filas
+
+
+class ReporteTipoDeLlamadasDeCampana(ReporteDeLlamadas):
+
+    def __init__(self, desde, hasta, id_campana):
+        self.logs = LlamadaLog.objects.filter(time__gte=desde,
+                                              time__lte=hasta,
+                                              campana_id=id_campana)
+
+        self.campana = Campana.objects.get(id=id_campana)
+        tipo = self._get_campana_type_display(self.campana.type)
+        self.estadisticas = INICIALES_POR_CAMPANA[tipo].copy()
+
+        self._contabilizar_estadisticas()
+
+    def _contabilizar_estadisticas(self):
+        tipo = self._get_campana_type_display(self.campana.type)
+        for log in self.logs:
+            self._contabilizar_tipos_de_llamada_por_campana(self.estadisticas, log)
+        self._aplicar_promedios_a_tiempos_de_campana(tipo, self.estadisticas)
