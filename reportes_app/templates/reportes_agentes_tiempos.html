@@ -87,9 +87,18 @@
                  'fecha_hasta': fecha_hasta,
                   'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
-        success: function (data, textStatus) {
-            //alert(data, textStatus);
-            $('#output').html(data); // append to inner html
+                success: function (data, textStatus) {
+            $('#output').html(data.tbody); // append to inner html
+            if (data.error)
+            {   mensaje = "Hubo un error en el calculo del tiempo de sesion contacte con el adminsitrador del sistema"
+                txt = '<div id="error" class="alert alert-warning" role="alert">'
+                txt +=  $("<div>").text(mensaje).html() + "</div>";
+               $('#error').html(txt);
+            }
+            else
+            {
+                $('#error').html('');
+            }
         },
         error: function(xhr, status, e) {
             alert(status, e);
@@ -375,6 +384,9 @@
         </button>
       </div>
       <div class="modal-body">
+
+          <div id="error">
+          </div>
             <table class="table table-bordered table-sm">
                 <thead>
                     <tr>

@@ -535,6 +535,7 @@ class TiemposAgente(object):
         time_actual = None
         is_remove = False
         len_log_agente = len(logs_time) - 1
+        error = False
 
         for logs in logs_time:
             calculo_ok = False
@@ -543,13 +544,13 @@ class TiemposAgente(object):
                 agente_nuevo = None
                 is_remove = False
                 time_actual = None
-                print "error 1"
+                error = True
             # ultimo elemento removemember
             if len_log_agente == logs_time.index(logs) and logs[2] == 'REMOVEMEMBER':
                 agente_nuevo = None
                 is_remove = False
                 time_actual = None
-                print "error 2"
+                error = True
 
             if is_remove and logs[2] == 'ADDMEMBER':
                 resta = time_actual - logs[1]
@@ -578,7 +579,7 @@ class TiemposAgente(object):
                 is_remove = False
                 time_actual = None
 
-        return agente_fecha
+        return agente_fecha, error
 
     def calcular_tiempo_pausa_fecha_agente(self, agente, fecha_inferior,
                                            fecha_superior, agente_fecha):
@@ -685,7 +686,7 @@ class TiemposAgente(object):
     def generar_por_fecha_agente(self, agente, fecha_inferior, fecha_superior):
         """generar las estadisticas de los tiempos del agente"""
         agente_fecha = []
-        agente_fecha = self.calcular_tiempo_session_fecha_agente(
+        agente_fecha, error = self.calcular_tiempo_session_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha)
         agente_fecha = self.calcular_tiempo_pausa_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha)
@@ -695,7 +696,7 @@ class TiemposAgente(object):
         agente_fecha = self.calcular_intentos_fallidos_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha
         )
-        return agente_fecha
+        return agente_fecha, error
 
     def calcular_tiempo_pausa_tipo_fecha(self, agente, fecha_inferior,
                                          fecha_superior, pausa_id):
