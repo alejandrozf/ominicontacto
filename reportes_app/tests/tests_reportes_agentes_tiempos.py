@@ -529,7 +529,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         reportes_estadisticas = TiemposAgente()
         fecha_hoy = timezone.now()
         fecha_inferior = fecha_hoy - timezone.timedelta(days=20)
-        agentes_tiempo = reportes_estadisticas.calcular_tiempo_session_fecha_agente(
+        agentes_tiempo, error = reportes_estadisticas.calcular_tiempo_session_fecha_agente(
             self.agente, fecha_inferior, fecha_hoy, [])
 
         time_sesion = cast_datetime_part_date(self.fin_sesion_agente.time)
