@@ -159,19 +159,21 @@ function mostrarUserPassSip($userID) {
   $jsonString .= '{"sipuser": "' . $user . '", "sippass": "' . $pass .'"}';
   return $jsonString;
 }
+
 if ($_GET['nomcamp']) {
+
     if($_GET['op'] == 'agstatus') {
+
         echo mostrarEstadoAgentes($_GET['nomcamp']);
-    } else if ($_GET['op'] == 'campstatus') {
-        echo mostrarEstadoCampana($_GET['nomcamp'], $_GET['CampId']);
     } else if ($_GET['op'] == 'queuedcalls') {
+
         echo mostrarLlamadasEnCola($_GET['nomcamp']);
     } else if($_GET['op'] == 'wdstatus') {
+
         echo mostrarEstadoCanalesWombat($_GET['nomcamp']);
-    } else if($_GET['op'] == 'scorestatus') {
-        echo mostrarCalificaciones($_GET['CampId']);
     }
 }
+
 if($_GET['supId']) {
     echo mostrarUserPassSip($_GET['supId']);
 }
