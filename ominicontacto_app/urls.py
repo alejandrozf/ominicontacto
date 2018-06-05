@@ -281,11 +281,13 @@ urlpatterns = [
         login_required(views_campana.CampanaDeleteView.as_view()),
         name='campana_elimina',
         ),
+    # TODO: DEPRECATED? Verificar si se debe eliminar
     url(r'^campana/selecciona/$',
         login_required(
             views_campana.FormularioSeleccionCampanaFormView.as_view()),
         name='seleccion_campana',
         ),
+
     url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
         login_required(
             views_campana.FormularioNuevoContactoFormView.as_view()),
