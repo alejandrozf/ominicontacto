@@ -403,33 +403,35 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['t_espera_atencion'], 4)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
 
-        # Genero una llamada DIALER que termina en COMPLETEAGENT
+        # Genero dos llamadas DIALER que terminan en COMPLETEAGENT y COMPLETECALLER
         generador.generar_log(campana, False, 'COMPLETEAGENT', '123', self.agente1,
-                              bridge_wait_time=6, duracion_llamada=20)
+                              bridge_wait_time=8, duracion_llamada=18)
+        generador.generar_log(campana, False, 'COMPLETECALLER', '123', self.agente1,
+                              bridge_wait_time=10, duracion_llamada=22)
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
         estadisticas = reporte.estadisticas
 
-        self.assertEqual(estadisticas['total_llamadas_procesadas'], 4)
+        self.assertEqual(estadisticas['total_llamadas_procesadas'], 5)
         por_tipo = estadisticas['llamadas_por_tipo'][tipo]
-        self.assertEqual(por_tipo['total'], 4)
-        self.assertEqual(por_tipo['atendidas'], 3)
+        self.assertEqual(por_tipo['total'], 5)
+        self.assertEqual(por_tipo['atendidas'], 4)
         self.assertEqual(por_tipo['no_atendidas'], 1)
         self.assertEqual(por_tipo['perdidas'], 2)
         llamadas = estadisticas['llamadas_por_campana'][campana.id]
-        self.assertEqual(llamadas['total'], 4)
+        self.assertEqual(llamadas['total'], 5)
         self.assertEqual(llamadas['manuales'], 0)
         tipos = estadisticas['tipos_de_llamada_por_campana'][tipo]
-        self.assertEqual(tipos[campana.id]['efectuadas'], 4)
-        self.assertEqual(tipos[campana.id]['atendidas'], 3)
-        self.assertEqual(tipos[campana.id]['conectadas'], 1)
+        self.assertEqual(tipos[campana.id]['efectuadas'], 5)
+        self.assertEqual(tipos[campana.id]['atendidas'], 4)
+        self.assertEqual(tipos[campana.id]['conectadas'], 2)
         self.assertEqual(tipos[campana.id]['expiradas'], 1)
         self.assertEqual(tipos[campana.id]['abandonadas'], 1)
-        self.assertEqual(tipos[campana.id]['t_espera_conexion'], 6)
-        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 5)
+        self.assertEqual(tipos[campana.id]['t_espera_conexion'], 9)
+        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 6)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
 
-        # Genero llamadas diaer manuales CANCEL, COMPLETECALLER
+        # Genero llamadas dialer Manuales CANCEL, COMPLETECALLER
         generador.generar_log(campana, True, 'CANCEL', '123', self.agente1,
                               bridge_wait_time=4)
         generador.generar_log(campana, True, 'COMPLETECALLER', '123', self.agente1,
@@ -438,10 +440,10 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
         estadisticas = reporte.estadisticas
 
-        self.assertEqual(estadisticas['total_llamadas_procesadas'], 6)
+        self.assertEqual(estadisticas['total_llamadas_procesadas'], 7)
         por_tipo_dialer = estadisticas['llamadas_por_tipo'][tipo]
-        self.assertEqual(por_tipo_dialer['total'], 4)
-        self.assertEqual(por_tipo_dialer['atendidas'], 3)
+        self.assertEqual(por_tipo_dialer['total'], 5)
+        self.assertEqual(por_tipo_dialer['atendidas'], 4)
         self.assertEqual(por_tipo_dialer['no_atendidas'], 1)
         self.assertEqual(por_tipo_dialer['perdidas'], 2)
         por_tipo_manual = estadisticas['llamadas_por_tipo'][Campana.TYPE_MANUAL_DISPLAY]
@@ -449,16 +451,16 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(por_tipo_manual['conectadas'], 1)
         self.assertEqual(por_tipo_manual['no_conectadas'], 1)
         llamadas = estadisticas['llamadas_por_campana'][campana.id]
-        self.assertEqual(llamadas['total'], 6)
+        self.assertEqual(llamadas['total'], 7)
         self.assertEqual(llamadas['manuales'], 2)
         tipos = estadisticas['tipos_de_llamada_por_campana'][tipo]
-        self.assertEqual(tipos[campana.id]['efectuadas'], 4)
-        self.assertEqual(tipos[campana.id]['atendidas'], 3)
-        self.assertEqual(tipos[campana.id]['conectadas'], 1)
+        self.assertEqual(tipos[campana.id]['efectuadas'], 5)
+        self.assertEqual(tipos[campana.id]['atendidas'], 4)
+        self.assertEqual(tipos[campana.id]['conectadas'], 2)
         self.assertEqual(tipos[campana.id]['expiradas'], 1)
         self.assertEqual(tipos[campana.id]['abandonadas'], 1)
-        self.assertEqual(tipos[campana.id]['t_espera_conexion'], 6)
-        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 5)
+        self.assertEqual(tipos[campana.id]['t_espera_conexion'], 9)
+        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 6)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
         self.assertEqual(tipos[campana.id]['efectuadas_manuales'], 2)
         self.assertEqual(tipos[campana.id]['conectadas_manuales'], 1)

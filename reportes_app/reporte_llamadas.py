@@ -334,7 +334,7 @@ class ReporteDeLlamadas(object):
                 datos_campana['t_abandono'] = datos_campana['t_abandono'] / abandonadas
             conectadas = datos_campana['conectadas']
             if conectadas > 0:
-                datos_campana['t_espera_atencion'] = datos_campana['t_espera_atencion'] / conectadas
+                datos_campana['t_espera_conexion'] = datos_campana['t_espera_conexion'] / conectadas
             atendidas = datos_campana['atendidas']
             if abandonadas > 0:
                 datos_campana['t_espera_atencion'] = datos_campana['t_espera_atencion'] / atendidas

@@ -21,20 +21,20 @@ class LlamadasDeCampanaView(View):
     Devuelve un JSON con cantidades de tipos de llamadas de la campaña para el dia de la fecha
     """
     TIPOS = {
-        "t_abandono": _(u'Tiempo de Abandono'),
-        "atendidas": _(u'Atendidas'),
-        "abandonadas": _(u'Abandonadas'),
-        "expiradas": _(u'Expiradas'),
-        "recibidas": _(u'Recibidas'),
-        "t_espera_conexion": _(u'Tiempo de Espera de Conexión'),
-        't_espera_atencion': _(u'Tiempo de Espera de Atención'),
-        "efectuadas_manuales": _(u'Efectuadas Manuales'),
-        "conectadas_manuales": _(u'Conectadas Manuales'),
-        "no_conectadas_manuales": _(u'No Conectadas Manuales'),
-        "t_espera_conexion_manuales": _(u'Tiempo de Espera de Conexión Manuales'),
-        'conectadas': _(u'Conectadas'),
-        'efectuadas': _(u'Efectuadas'),
-        'no_conectadas': _(u'No Conectadas'),
+        "t_abandono": _(u'Tiempo de Abandono(prom.)'),
+        "atendidas": _(u'Llamadas Atendidas'),
+        "abandonadas": _(u'Llamadas Abandonadas'),
+        "expiradas": _(u'Llamadas Expiradas'),
+        "recibidas": _(u'Llamadas Recibidas'),
+        "t_espera_conexion": _(u'Tiempo de Espera de Conexión(prom.)'),
+        't_espera_atencion': _(u'Tiempo de Espera de Atención(prom.)'),
+        "efectuadas_manuales": _(u'Llamadas Efectuadas Manuales'),
+        "conectadas_manuales": _(u'Llamadas Conectadas Manuales'),
+        "no_conectadas_manuales": _(u'Llamadas No Conectadas Manuales'),
+        "t_espera_conexion_manuales": _(u'Tiempo de Espera de Conexión Manuales(prom.)'),
+        'conectadas': _(u'Llamadas Conectadas'),
+        'efectuadas': _(u'Llamadas Efectuadas'),
+        'no_conectadas': _(u'Llamadas No Conectadas'),
     }
 
     def get(self, request, pk_campana):
