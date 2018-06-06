@@ -71,7 +71,7 @@
                     $("#id_grupo_agente").removeAttr('disabled');
                 }
             });
-    $('.tiemposAgenteModal').click(function(){
+    $('.tiemposAgenteModal').click(function(event){
     event.preventDefault();
     var id_agente;
     id_agente = $(this).attr("id_agente");
@@ -106,7 +106,7 @@
      })
 });
 
-    $('.tiemposPausaModal').click(function(){
+    $('.tiemposPausaModal').click(function(event){
     event.preventDefault();
     var id_agente = $(this).attr("id_agente");
     var fecha_desde = $(this).attr("fecha_desde");
