@@ -111,6 +111,12 @@ def reporte_por_fecha_pausa_modal_agente_view(request):
             agente = AgenteProfile.objects.get(pk=int(id_agente))
             agentes = tiempos_agentes.calcular_tiempo_pausa_tipo_fecha(
                 agente, fecha_desde, fecha_hasta, pausa_id)
-            return JsonResponse(agentes, safe=False)
+            ctx = {'agentes': agentes}
+            t = loader.get_template('tbody_pausa_fechas_agentes.html')
+            html = t.render(ctx)
+            data = {
+                'tbody': html,
+                  }
+            return JsonResponse(data, safe=True)
 
     return render(request)

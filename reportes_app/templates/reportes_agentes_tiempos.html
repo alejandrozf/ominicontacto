@@ -125,16 +125,7 @@
         },
         success: function (data, textStatus) {
             //alert(data, textStatus);
-            txt = "";
-            for (x in data) {
-            txt += "<tr>";
-            txt += "<td>" + $("<div>").text(data[x].fecha).html() + "</td>";
-            txt += "<td>" + $("<div>").text(data[x].pausa).html() + "</td>";
-            txt += "<td>" + $("<div>").text(data[x].tipo_de_pausa).html() + "</td>";
-            txt += "<td>" + $("<div>").text(data[x].tiempo).html() + "</td>";
-            txt += "</tr>";
-            }
-            $('#output_pausa').html(txt); // append to inner html
+            $('#output_pausa').html(data.tbody); // append to inner html
         },
         error: function(xhr, status, e) {
             alert(status, e);
