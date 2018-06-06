@@ -24,8 +24,10 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         super(ReportesAgenteTiemposTest, self).setUp()
         user_agente = self.crear_user_agente(first_name="Leo", last_name="Messi")
         self.agente = self.crear_agente_profile(user_agente)
+        fecha_hoy = timezone.now()
+        fecha_hoy = fecha_hoy.replace(hour=8)
         self.inicio_sesion_agente = ActividadAgenteLogFactory.create(
-            event='ADDMEMBER', agente_id=self.agente.id)
+            event='ADDMEMBER', agente_id=self.agente.id, time=fecha_hoy)
         hora_fin_sesion = self.inicio_sesion_agente.time + timezone.timedelta(hours=8)
         self.fin_sesion_agente = ActividadAgenteLogFactory.create(
             time=hora_fin_sesion, event='REMOVEMEMBER', agente_id=self.agente.id)
@@ -600,7 +602,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
     def test_genera_correctamente_duracion_llamada_fecha(self):
         """ Test controla los tiempos de duracion de llamadas por fecha
         para un agente"""
-        fecha_llamada = timezone.now()
+        fecha_llamada = self.inicio_sesion_agente.time + timezone.timedelta(hours=2)
         LlamadaLogFactory(
             time=fecha_llamada, event='COMPLETEAGENT', campana_id=self.dialer.id,
             numero_marcado='456892344', tipo_campana=self.dialer.type,
@@ -641,7 +643,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
     def test_genera_correctamente_intentos_fallidos_llamada_fecha(self):
         """ Test controla los cantidad de intentos fallidos por fecha
         para un agente"""
-        fecha_llamada = timezone.now()
+        fecha_llamada = self.inicio_sesion_agente.time + timezone.timedelta(
+            hours=2)
         LlamadaLogFactory(
             time=fecha_llamada, event='BUSY', campana_id=self.dialer.id,
             numero_marcado='456892344', tipo_campana=self.dialer.type,
@@ -675,6 +678,114 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             if time_llamada == agente.agente:
                 self.assertEqual(2, agente.cantidad_intentos_fallidos)
             elif time_llamada1 == agente.agente:
+                self.assertEqual(1, agente.cantidad_intentos_fallidos)
+            else:
+                self.fail("Fecha no calculado para agente revisar test")
+
+    def test_genera_correctamente_generar_por_fecha_agente(self):
+        """test que controla que los tiempo para el agente por fecha
+         se generen correcamente"""
+        fecha_llamada = self.inicio_sesion_agente.time + timezone.timedelta(
+            hours=1)
+        inicio_sesion_agente = self.inicio_sesion_agente.time - timezone.timedelta(
+            minutes=17) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            event='ADDMEMBER', agente_id=self.agente.id, time=inicio_sesion_agente)
+        fin_sesion_agente = fecha_llamada + timezone.timedelta(
+            minutes=79) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            time=fin_sesion_agente, event='REMOVEMEMBER', agente_id=self.agente.id)
+
+        pausa = PausaFactory.create()
+
+        inicio_pausa = self.inicio_sesion_agente.time + timezone.timedelta(
+            hours=1)
+        ActividadAgenteLogFactory.create(
+            event='PAUSEALL', agente_id=self.agente.id, time=inicio_pausa,
+            pausa_id=pausa.id)
+        fin_pausa_p = inicio_pausa + timezone.timedelta(minutes=19)
+        total_pausa_agente = fin_pausa_p - inicio_pausa
+        ActividadAgenteLogFactory.create(
+            event='UNPAUSEALL', agente_id=self.agente.id, time=fin_pausa_p,
+            pausa_id=pausa.id)
+        pausa1 = PausaFactory.create()
+        inicio_pausa = self.inicio_sesion_agente.time + timezone.timedelta(
+            hours=2)
+        ActividadAgenteLogFactory.create(
+            event='PAUSEALL', agente_id=self.agente.id, time=inicio_pausa,
+            pausa_id=pausa1.id)
+        fin_pausa = inicio_pausa + timezone.timedelta(minutes=7)
+        total_pausa_agente += fin_pausa - inicio_pausa
+        ActividadAgenteLogFactory.create(
+            event='UNPAUSEALL', agente_id=self.agente.id, time=fin_pausa,
+            pausa_id=pausa1.id)
+        inicio_pausa = self.inicio_sesion_agente.time + timezone.timedelta(
+            hours=4) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            event='PAUSEALL', agente_id=self.agente.id, time=inicio_pausa,
+            pausa_id=pausa1.id)
+        fin_pausa = inicio_pausa + timezone.timedelta(minutes=7)
+        total_pausa_agente1 = fin_pausa - inicio_pausa
+        ActividadAgenteLogFactory.create(
+            event='UNPAUSEALL', agente_id=self.agente.id, time=fin_pausa,
+            pausa_id=pausa1.id)
+
+        fecha_llamada = self.inicio_sesion_agente.time
+        LlamadaLogFactory(
+            time=fecha_llamada, event='COMPLETEAGENT', campana_id=self.dialer.id,
+            numero_marcado='456892344', tipo_campana=self.dialer.type,
+            tipo_llamada=self.dialer.type, agente_id=self.agente.id,
+            duracion_llamada=44)
+        LlamadaLogFactory(
+            time=fecha_llamada, event='COMPLETECALLER', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id,
+            duracion_llamada=62)
+        LlamadaLogFactory(
+            time=fecha_llamada, event='BUSY', campana_id=self.dialer.id,
+            numero_marcado='456892344', tipo_campana=self.dialer.type,
+            tipo_llamada=self.dialer.type, agente_id=self.agente.id)
+        LlamadaLogFactory(
+            time=fecha_llamada, event='NOANSWER', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id)
+        fecha_anterior = fecha_llamada - timezone.timedelta(days=10)
+        LlamadaLogFactory(
+            time=fecha_anterior, event='COMPLETEAGENT', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id,
+            duracion_llamada=88)
+        LlamadaLogFactory(
+            time=fecha_anterior, event='FAIL', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id)
+
+        # calculo el tiempo de sesion del agente
+        tiempo_sesion_agente = self.fin_sesion_agente.time - self.inicio_sesion_agente.time
+        tiempo_sesion_agente1 = fin_sesion_agente - inicio_sesion_agente
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        fecha_hoy = timezone.now()
+        fecha_inferior = fecha_hoy - timezone.timedelta(days=20)
+        agentes_tiempo, error = reportes_estadisticas.generar_por_fecha_agente(
+            self.agente, fecha_inferior, fecha_hoy)
+
+        time_sesion = cast_datetime_part_date(self.fin_sesion_agente.time)
+        time_sesion1 = cast_datetime_part_date(fin_sesion_agente)
+
+        for agente in agentes_tiempo:
+            if time_sesion == agente.agente:
+                self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
+                self.assertEqual(total_pausa_agente, agente.tiempo_pausa)
+                self.assertEqual(106, agente.tiempo_llamada)
+                self.assertEqual(2, agente.cantidad_llamadas_procesadas)
+                self.assertEqual(2, agente.cantidad_intentos_fallidos)
+            elif time_sesion1 == agente.agente:
+                self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
+                self.assertEqual(total_pausa_agente1, agente.tiempo_pausa)
+                self.assertEqual(88, agente.tiempo_llamada)
+                self.assertEqual(1, agente.cantidad_llamadas_procesadas)
                 self.assertEqual(1, agente.cantidad_intentos_fallidos)
             else:
                 self.fail("Fecha no calculado para agente revisar test")
