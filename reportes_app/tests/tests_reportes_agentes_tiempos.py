@@ -637,3 +637,44 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                 self.assertEqual(1, agente.cantidad_llamadas_procesadas)
             else:
                 self.fail("Fecha no calculado para agente revisar test")
+
+    def test_genera_correctamente_intentos_fallidos_llamada_fecha(self):
+        """ Test controla los cantidad de intentos fallidos por fecha
+        para un agente"""
+        fecha_llamada = timezone.now()
+        LlamadaLogFactory(
+            time=fecha_llamada, event='BUSY', campana_id=self.dialer.id,
+            numero_marcado='456892344', tipo_campana=self.dialer.type,
+            tipo_llamada=self.dialer.type, agente_id=self.agente.id)
+        LlamadaLogFactory(
+            time=fecha_llamada, event='NOANSWER', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id)
+        LlamadaLogFactory(
+            time=fecha_llamada, event='COMPLETECALLER', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id,
+            duracion_llamada=62)
+        fecha_anterior = fecha_llamada - timezone.timedelta(days=5)
+        LlamadaLogFactory(
+            time=fecha_anterior, event='FAIL', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id)
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        fecha_hoy = timezone.now() + timezone.timedelta(days=1)
+        fecha_inferior = fecha_hoy - timezone.timedelta(days=10)
+        agentes_tiempo = reportes_estadisticas.calcular_intentos_fallidos_fecha_agente(
+            self.agente, fecha_inferior, fecha_hoy, [])
+
+        time_llamada = cast_datetime_part_date(fecha_llamada)
+        time_llamada1 = cast_datetime_part_date(fecha_anterior)
+
+        for agente in agentes_tiempo:
+            if time_llamada == agente.agente:
+                self.assertEqual(2, agente.cantidad_intentos_fallidos)
+            elif time_llamada1 == agente.agente:
+                self.assertEqual(1, agente.cantidad_intentos_fallidos)
+            else:
+                self.fail("Fecha no calculado para agente revisar test")
