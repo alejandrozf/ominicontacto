@@ -11,10 +11,9 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 from ominicontacto_app.models import Campana, AgenteProfile
 from ominicontacto_app.tests.factories import (
-    CampanaFactory, ContactoFactory, ActividadAgenteLogFactory, PausaFactory
-
+    CampanaFactory, ContactoFactory, ActividadAgenteLogFactory, PausaFactory,
+    LlamadaLogFactory
 )
-from reportes_app.models import LlamadaLog, ActividadAgenteLog
 from reportes_app.reporte_agente_tiempos import TiemposAgente
 from ominicontacto_app.utiles import cast_datetime_part_date
 
@@ -582,7 +581,6 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
 
         # realizamos calculo con el modulo
         reportes_estadisticas = TiemposAgente()
-        agentes = AgenteProfile.objects.obtener_activos()
         fecha_hoy = timezone.now() + timezone.timedelta(days=1)
         fecha_inferior = fecha_hoy - timezone.timedelta(days=5)
         agentes_tiempo = reportes_estadisticas.calcular_tiempo_pausa_fecha_agente(
@@ -594,9 +592,48 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         for agente in agentes_tiempo:
             if time_pausa == agente.agente:
                 self.assertEqual(total_pausa_agente, agente.tiempo_pausa)
-                print "ok"
             elif time_pausa1 == agente.agente:
                 self.assertEqual(total_pausa_agente1, agente.tiempo_pausa)
-                print "ok1"
+            else:
+                self.fail("Fecha no calculado para agente revisar test")
+
+    def test_genera_correctamente_duracion_llamada_fecha(self):
+        """ Test controla los tiempos de duracion de llamadas por fecha
+        para un agente"""
+        fecha_llamada = timezone.now()
+        LlamadaLogFactory(
+            time=fecha_llamada, event='COMPLETEAGENT', campana_id=self.dialer.id,
+            numero_marcado='456892344', tipo_campana=self.dialer.type,
+            tipo_llamada=self.dialer.type, agente_id=self.agente.id,
+            duracion_llamada=44)
+        LlamadaLogFactory(
+            time=fecha_llamada, event='COMPLETECALLER', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id,
+            duracion_llamada=62)
+        fecha_anterior = fecha_llamada - timezone.timedelta(days=5)
+        LlamadaLogFactory(
+            time=fecha_anterior, event='COMPLETEAGENT', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente.id,
+            duracion_llamada=88)
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        fecha_hoy = timezone.now() + timezone.timedelta(days=1)
+        fecha_inferior = fecha_hoy - timezone.timedelta(days=10)
+        agentes_tiempo = reportes_estadisticas.calcular_tiempo_llamada_agente_fecha(
+            self.agente, fecha_inferior, fecha_hoy, [])
+
+        time_llamada = cast_datetime_part_date(fecha_llamada)
+        time_llamada1 = cast_datetime_part_date(fecha_anterior)
+
+        for agente in agentes_tiempo:
+            if time_llamada == agente.agente:
+                self.assertEqual(106, agente.tiempo_llamada)
+                self.assertEqual(2, agente.cantidad_llamadas_procesadas)
+            elif time_llamada1 == agente.agente:
+                self.assertEqual(88, agente.tiempo_llamada)
+                self.assertEqual(1, agente.cantidad_llamadas_procesadas)
             else:
                 self.fail("Fecha no calculado para agente revisar test")
