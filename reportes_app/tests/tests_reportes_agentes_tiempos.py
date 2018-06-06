@@ -129,10 +129,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         for agente in agentes_tiempo:
             if agente.agente.id is self.agente.id:
                 self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
-                print "ok"
             elif agente.agente.id is self.agente1.id:
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
-                print "ok1"
             else:
                 self.fail("Agente no calculado revisar test")
 
@@ -593,6 +591,87 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             else:
                 self.fail("Fecha no calculado para agente revisar test")
 
+        # verificamos que no de error
+        self.assertFalse(error, "Se verifico que no haya ningun error")
+
+    def test_genera_correctamente_tiempo_inicio_sesion_fecha_con_removemember(self):
+        """test que controla que los tiempo de sesion de los agentes
+         se generen correcamente pero notifica error"""
+        inicio_sesion_agente = self.inicio_sesion_agente.time - timezone.timedelta(
+            minutes=17) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            event='ADDMEMBER', agente_id=self.agente.id, time=inicio_sesion_agente)
+        fin_sesion_agente = self.fin_sesion_agente.time + timezone.timedelta(
+            minutes=79) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            time=fin_sesion_agente, event='REMOVEMEMBER', agente_id=self.agente.id)
+        fin_sesion_agente1 = inicio_sesion_agente.replace(hour=1, minute=5)
+        ActividadAgenteLogFactory.create(
+            time=fin_sesion_agente1, event='REMOVEMEMBER', agente_id=self.agente.id)
+        # calculo el tiempo de sesion del agente
+        tiempo_sesion_agente = self.fin_sesion_agente.time - self.inicio_sesion_agente.time
+        tiempo_sesion_agente1 = fin_sesion_agente - inicio_sesion_agente
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        fecha_hoy = timezone.now()
+        fecha_inferior = fecha_hoy - timezone.timedelta(days=20)
+        agentes_tiempo, error = reportes_estadisticas.calcular_tiempo_session_fecha_agente(
+            self.agente, fecha_inferior, fecha_hoy, [])
+
+        time_sesion = cast_datetime_part_date(self.fin_sesion_agente.time)
+        time_sesion1 = cast_datetime_part_date(fin_sesion_agente)
+
+        for agente in agentes_tiempo:
+            if time_sesion == agente.agente:
+                self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
+            elif time_sesion1 == agente.agente:
+                self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
+            else:
+                self.fail("Fecha no calculado para agente revisar test")
+
+        # verificamos que de error debido un removemember sin addmember
+        self.assertTrue(error, "Se verifico un removember sin addmember")
+
+    def test_genera_correctamente_tiempo_inicio_sesion_fecha_con_addmember(self):
+        """test que controla que los tiempo de sesion de los agentes
+         se generen correcamente pero notifica error"""
+        inicio_sesion_agente = self.inicio_sesion_agente.time - timezone.timedelta(
+            minutes=17) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            event='ADDMEMBER', agente_id=self.agente.id, time=inicio_sesion_agente)
+        fin_sesion_agente = self.fin_sesion_agente.time + timezone.timedelta(
+            minutes=79) - timezone.timedelta(days=10)
+        ActividadAgenteLogFactory.create(
+            time=fin_sesion_agente, event='REMOVEMEMBER', agente_id=self.agente.id)
+        inicio_sesion_agente1 = self.inicio_sesion_agente.time.replace(hour=23, minute=00)
+        ActividadAgenteLogFactory.create(
+            time=inicio_sesion_agente1, event='ADDMEMBER', agente_id=self.agente.id)
+        # calculo el tiempo de sesion del agente
+        tiempo_sesion_agente = self.fin_sesion_agente.time - self.inicio_sesion_agente.time
+        tiempo_sesion_agente1 = fin_sesion_agente - inicio_sesion_agente
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        fecha_hoy = timezone.now()
+        fecha_inferior = fecha_hoy - timezone.timedelta(days=20)
+        agentes_tiempo, error = reportes_estadisticas.calcular_tiempo_session_fecha_agente(
+            self.agente, fecha_inferior, fecha_hoy, [])
+
+        time_sesion = cast_datetime_part_date(self.fin_sesion_agente.time)
+        time_sesion1 = cast_datetime_part_date(fin_sesion_agente)
+
+        for agente in agentes_tiempo:
+            if time_sesion == agente.agente:
+                self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
+            elif time_sesion1 == agente.agente:
+                self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
+            else:
+                self.fail("Fecha no calculado para agente revisar test")
+
+        # verificamos que de error debido un removemember sin addmember
+        self.assertTrue(error, "Se verifico un removember sin addmember")
+
     def test_genera_correctamente_tiempo_pausa_fecha(self):
         """test que controla que los tiempos de pausas del agente por fecha
          se generen correcamente"""
@@ -838,3 +917,6 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                 self.assertEqual(1, agente.cantidad_intentos_fallidos)
             else:
                 self.fail("Fecha no calculado para agente revisar test")
+
+        # verificamos que no de error
+        self.assertFalse(error, "Se verifico que no haya ningun error")
