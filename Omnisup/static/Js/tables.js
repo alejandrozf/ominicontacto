@@ -21,16 +21,7 @@ $(function () {
     ordering: false,
     searching: false,
     bLengthChange: false,
-    paging: false/*,
-    language: {
-      "info": "pagina _PAGE_ de _PAGES_",
-      "paginate": {
-        "first":      "Primero",
-        "last":       "Ultimo",
-        "next":       "Siguiente",
-        "previous":   "Anterior"
-      },
-    }*/
+    paging: false
   });
   var url = window.location.href;
   if(url.indexOf('Detalle_Campana') !== -1) {
@@ -63,73 +54,42 @@ function actualiza_contenido_agt() {
   });
 }
 
+
 function actualiza_contenido_camp() {
   var nomcamp = $("#nombreCamp").html();
   var campid = $("#campId").val();
   var tabla = document.getElementById('bodyTableCampSummary');
   $.ajax({
-    url: 'Controller/Detalle_Campana_Contenido.php',
+    url: 'https://' + OmlIp + ':' + OmlPort + '/api_supervision/llamadas_campana/' + campid + '/',
     type: 'GET',
     dataType: 'html',
-    data: 'nomcamp='+nomcamp+'&op=campstatus&CampId=' + campid,
     success: function (msg) {
-      if(msg!=="]") {
-        var mje = JSON.parse(msg);
-        $("#received").html(mje.recibidas);
-        $("#attended").html(mje.atendidas);
-        $("#abandoned").html(mje.abandonadas);
-        $("#expired").html(mje.expiradas);
-        $("#manuals").html(mje.manuales);
-        $("#manualsa").html(mje.manualesatendidas);
-        $("#manualsna").html(mje.manualesnoatendidas);
-        $("#answererdetected").html(mje.contestador_detectado);
-        $("#objcampana").html(mje.objetivo_campana);
-        $("#gestioncampana").html(mje.gestion_campana);
-        a = mje.objetivo_campana;
-        b = mje.gestion_campana;
-        n = (b / a) * 100;
-        n = n.toFixed(2);
-        if(n != "NaN") {
-          $("#percent").html(n+" %");
-        } else {
-          $("#percent").html("0 %");
+      $("#bodyScore").html("");
+      var mje = $.parseJSON(msg), trHTML = '';
+      $.each (mje, function (i, item) {
+        if (i !== 'status') {
+          trHTML += '<tr><td>' + i + '</td><td>' + item + '</td></tr>';
         }
-
-      }
+      });
+      $("#bodyScore").append(trHTML);
     },
     error: function (jqXHR, textStatus, errorThrown) {
       console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
     }
   });
   $.ajax({
-    url: 'Controller/Detalle_Campana_Contenido.php',
+    url: 'https://' + OmlIp + ':' + OmlPort + '/api_supervision/calificaciones_campana/'+ campid + '/',
     type: 'GET',
     dataType: 'html',
-    data: 'op=scorestatus&CampId=' + campid + '&nomcamp=' + nomcamp,
     success: function (msg) {
-      if($("#bodyTableCampSummary").children().length > 0) {
-        while(tabla.firstChild) {
-          tabla.removeChild(tabla.firstChild);
+      $("#bodySummary").html("");
+      var mje = $.parseJSON(msg), trHTML = '';
+      $.each (mje, function (i, item) {
+        if (i !== 'status') {
+          trHTML += '<tr><td>' + i + '</td><td>' + item + '</td></tr>';
         }
-      }
-      if(msg !== "]") {
-        var mje = JSON.parse(msg);
-        for (var i = 0; i < mje.length; i++){
-          var tdScoreContainer = document.createElement('td');
-          var tdScoreLabel = document.createElement('td');
-          var rowScore = document.createElement('tr');
-
-          var textScoreContainer = document.createTextNode(mje[i].cantidad);
-          var textScoreLabel = document.createTextNode(mje[i].calificacion);
-
-          tdScoreLabel.id = mje[i].tagId;
-          tdScoreContainer.appendChild(textScoreContainer);
-          tdScoreLabel.appendChild(textScoreLabel);
-          rowScore.appendChild(tdScoreLabel);
-          rowScore.appendChild(tdScoreContainer);
-          tabla.appendChild(rowScore);
-        }
-      }
+      });
+      $("#bodySummary").append(trHTML);
     },
     error: function (jqXHR, textStatus, errorThrown) {
       console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);

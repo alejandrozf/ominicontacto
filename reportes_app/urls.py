@@ -7,7 +7,7 @@ from reportes_app import views_reportes_agentes
 from reportes_app.views import (ReporteLlamadasFormView, ExportarReporteLlamadasFormView,
                                 ExportarZipReportesLlamadasFormView)
 from reportes_app import (views_campanas_preview_reportes, views_campanas_dialer_reportes,
-                          views_reportes)
+                          views_reportes, views_api_supervision)
 
 urlpatterns = [
     # ==========================================================================
@@ -96,5 +96,16 @@ urlpatterns = [
         login_required(
             views_campanas_dialer_reportes.CampanaDialerDetailView.as_view()),
         name='campana_dialer_detalle',
+        ),
+    # ==========================================================================
+    # Api Supervision
+    # ==========================================================================
+    url(r'^api_supervision/llamadas_campana/(?P<pk_campana>\d+)/$',
+        views_api_supervision.LlamadasDeCampanaView.as_view(),
+        name='api_supervision_llamadas_campana',
+        ),
+    url(r'^api_supervision/calificaciones_campana/(?P<pk_campana>\d+)/$',
+        views_api_supervision.CalificacionesDeCampanaView.as_view(),
+        name='api_supervision_calificaciones_campana',
         ),
 ]
