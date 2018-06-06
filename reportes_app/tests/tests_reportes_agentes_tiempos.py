@@ -15,7 +15,9 @@ from ominicontacto_app.tests.factories import (
     LlamadaLogFactory
 )
 from reportes_app.reporte_agente_tiempos import TiemposAgente
-from ominicontacto_app.utiles import cast_datetime_part_date
+from ominicontacto_app.utiles import (
+    cast_datetime_part_date, datetime_hora_maxima_dia, datetime_hora_minima_dia
+)
 
 
 class ReportesAgenteTiemposTest(OMLBaseTest):
@@ -84,6 +86,53 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                 self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
             elif agente.agente.id is self.agente1.id:
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
+            else:
+                self.fail("Agente no calculado revisar test")
+
+    def test_genera_correctamente_tiempo_inicio_sesion_limites(self):
+        """test que controla que los tiempo de sesion de los agentes
+         se generen correcamente teniendo en cuenta los limites de las fechas
+         en periodo"""
+        inicio_sesion_agente = self.inicio_sesion_agente.time - timezone.timedelta(
+            minutes=17) - timezone.timedelta(days=1)
+        ActividadAgenteLogFactory.create(
+            event='ADDMEMBER', agente_id=self.agente.id, time=inicio_sesion_agente)
+        fin_sesion_agente = self.fin_sesion_agente.time + timezone.timedelta(
+            minutes=79) - timezone.timedelta(days=1)
+        ActividadAgenteLogFactory.create(
+            time=fin_sesion_agente, event='REMOVEMEMBER', agente_id=self.agente.id)
+        fin_sesion_agente1 = inicio_sesion_agente.replace(hour=1, minute=5)
+        ActividadAgenteLogFactory.create(
+            time=fin_sesion_agente1, event='REMOVEMEMBER', agente_id=self.agente.id)
+        inicio_sesion_agente1 = self.inicio_sesion_agente.time.replace(hour=23, minute=00)
+        ActividadAgenteLogFactory.create(
+            time=inicio_sesion_agente1, event='ADDMEMBER', agente_id=self.agente.id)
+
+        # calculo el tiempo de sesion del agente
+        tiempo_sesion_agente = self.fin_sesion_agente.time - self.inicio_sesion_agente.time
+        tiempo_sesion_agente += fin_sesion_agente - inicio_sesion_agente
+        tiempo_sesion_agente += fin_sesion_agente1 - datetime_hora_minima_dia(
+            fin_sesion_agente1)
+        tiempo_sesion_agente += datetime_hora_maxima_dia(
+            inicio_sesion_agente1) - inicio_sesion_agente1
+        # calculo el tiempo de sesion agente1
+        tiempo_sesion_agente1 = self.fin_sesion_agente1.time - self.inicio_sesion_agente1.time
+
+        # realizamos calculo con el modulo
+        reportes_estadisticas = TiemposAgente()
+        agentes = AgenteProfile.objects.obtener_activos()
+        fecha_hoy = timezone.now()
+        fecha_ayer = fecha_hoy - timezone.timedelta(days=3)
+        reportes_estadisticas.calcular_tiempo_session(agentes, fecha_ayer, fecha_hoy)
+        agentes_tiempo = reportes_estadisticas.agentes_tiempo
+
+        for agente in agentes_tiempo:
+            if agente.agente.id is self.agente.id:
+                self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
+                print "ok"
+            elif agente.agente.id is self.agente1.id:
+                self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
+                print "ok1"
             else:
                 self.fail("Agente no calculado revisar test")
 
