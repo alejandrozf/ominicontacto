@@ -652,7 +652,7 @@ class TiemposAgente(object):
                     agente_nuevo._cantidad_llamadas_procesadas = 1
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    date_time_actual, None, None, log.duracion_llamada, 1, 0)
+                    date_time_actual, None, None, log.duracion_llamada, 1, 0, 0, 0)
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
