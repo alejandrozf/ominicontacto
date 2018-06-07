@@ -11,11 +11,10 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """
-    Sincroniza la tabla 'miscdests' de la base de datos de Asterisk.
-    Esta tabla tiene informacion de las Queues de Campañas Entrantes no eliminadas.
+    Se regeneran los archivos de configuracion para Asterisk
     """
 
-    help = u"Actualiza la tabla 'miscdests' de la base de datos de Asterisk"
+    help = u"Se regeneran los archivos de configuracion para Asterisk"
 
     def _regenerar_asterisk(self):
         regenerar_service = RegeneracionAsteriskService()

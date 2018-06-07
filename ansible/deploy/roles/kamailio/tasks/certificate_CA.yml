@@ -1,40 +1,26 @@
 ---
 
-#- name: Creacion de estructura de directorios de CA de Kamailio
-#  command: "{{ item }} chdir={{ install_prefix }}kamailio/etc/"
-#  with_items:
-#          - mkdir {{ install_prefix }}kamailio/etc/certs/
-#          - chmod 0700 {{ install_prefix }}kamailio/etc/certs/
-#          - mkdir {{ install_prefix }}kamailio/etc/certs/demoCA
-#          - mkdir {{ install_prefix }}kamailio/etc/certs/demoCA/newcerts
-#          - touch {{ install_prefix }}kamailio/etc/certs/demoCA/index.txt
-
-- name: Delete /kamailio/certs if already exists
-  file: state=absent path={{ install_prefix }}kamailio/etc/certs/
-  become: true
-  become_method: sudo
-
 - name: Modificacion del /etc/pki/tls/openssl.cnf
   template: src=templates/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
   become: true
   become_method: sudo
 
-- name: Creacion de {{ install_prefix }}kamailio/etc/certs
-  file: path={{ install_prefix }}kamailio/etc/certs state=directory mode=0700
+- name: Creacion de {{ kamailio_location }}/etc/certs
+  file: path={{ kamailio_location }}/etc/certs state=directory mode=0700
   become: true
   become_method: sudo
 
-- name: Creacion de {{ install_prefix }}kamailio/etc/certs/demoCA y /newcerts
+- name: Creacion de {{ kamailio_location }}/etc/certs/demoCA y /newcerts
   file: "path={{ item }} state=directory mode=0700"
   with_items:
-      - "{{ install_prefix }}kamailio/etc/certs/demoCA"
-      - "{{ install_prefix }}kamailio/etc/certs/demoCA/newcerts"
-- file: path={{ install_prefix }}kamailio/etc/certs/demoCA/index.txt state=touch mode=0755
+      - "{{ kamailio_location }}/etc/certs/demoCA"
+      - "{{ kamailio_location }}/etc/certs/demoCA/newcerts"
+- file: path={{ kamailio_location }}/etc/certs/demoCA/index.txt state=touch mode=0755
   become: true
   become_method: sudo
 
 #crear path de serial
-- set_fact: serial_file_path={{ install_prefix }}kamailio/etc/certs/demoCA/serial
+- set_fact: serial_file_path={{ kamailio_location }}/etc/certs/demoCA/serial
 #crear el archivo serial
 - file: path={{ serial_file_path }} state=touch
   become: true
@@ -60,21 +46,21 @@
 - name: Generar la clave privada y crear los archivos del CA
   shell: "openssl req -new -x509 -extensions v3_ca -keyout key.pem -out cert.pem -days 3650 -passout pass:toor123 -subj \"{{ ca_subject_ca }}\""
   args:
-          chdir: "{{ install_prefix }}kamailio/etc/certs/demoCA/"
+          chdir: "{{ kamailio_location }}/etc/certs/demoCA/"
   become: true
   become_method: sudo
 
 - name: Generar certificado de los nodos
   shell: "openssl req -new -nodes -keyout key.pem -out req.pem -subj \"{{ ca_subject_node }}\""
   args:
-          chdir: "{{ install_prefix }}kamailio/etc/certs/"
+          chdir: "{{ kamailio_location }}/etc/certs/"
   become: true
   become_method: sudo
 
 - name: Firmar el certificado de los nodos con el del CA
   shell: "openssl ca -extensions v3_req  -batch -days 1460 -out cert.pem -keyfile demoCA/key.pem -cert demoCA/cert.pem -passin pass:toor123 -infiles req.pem"
   args:
-          chdir: "{{ install_prefix }}kamailio/etc/certs"
+          chdir: "{{ kamailio_location }}/etc/certs"
   register: command_result
   failed_when:
     - "'already been issued' not in command_result.stderr"
@@ -83,8 +69,8 @@
   become_method: sudo
 #- set_fact: static_route=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto
 
-- name: Set permission to {{ install_prefix }}kamailio/etc/certs
-  shell: "chown {{ usuario }}:{{ usuario }} -R {{ install_prefix }}kamailio/etc/certs/"
+- name: Set permission to {{ kamailio_location }}/etc/certs
+  shell: "chown {{ usuario }}:{{ usuario }} -R {{ kamailio_location }}/etc/certs/"
   become: true
   become_method: sudo
 

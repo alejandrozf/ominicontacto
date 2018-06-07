@@ -17,15 +17,20 @@ from crontab import CronTab
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
-from django.db import models, connection
+from django.db import (models,
+                       # connection
+                       )
 from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra, datetime_hora_minima_dia, \
-    datetime_hora_maxima_dia
+from simple_history.models import HistoricalRecords
 
+from ominicontacto_app.utiles import (ValidadorDeNombreDeCampoExtra,
+                                      # datetime_hora_minima_dia,
+                                      # datetime_hora_maxima_dia,
+                                      )
 logger = logging.getLogger(__name__)
 
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
@@ -134,6 +139,12 @@ class AgenteProfileManager(models.Manager):
 
     def obtener_activos(self):
         return self.filter(is_inactive=False, borrado=False, user__borrado=False)
+
+    def obtener_agentes_campana(self, campana):
+        """
+        Obtiene todos los agentes que estan asignados a una campana
+        """
+        return self.filter(queue__campana=campana)
 
 
 class AgenteProfile(models.Model):
@@ -396,6 +407,15 @@ class ArchivoDeAudio(models.Model):
         self.borrado = True
         self.save()
 
+    def get_filename_audio_asterisk(self):
+        """
+        Returna el filename del audio asterisl
+        """
+        if self.audio_asterisk:
+            filepath = self.audio_asterisk.path
+            return os.path.splitext(os.path.basename(filepath))[0]
+        return None
+
 
 class CampanaManager(models.Manager):
 
@@ -591,7 +611,6 @@ class CampanaManager(models.Manager):
             ringinuse=campana.queue_campana.ringinuse,
             setinterfacevar=campana.queue_campana.setinterfacevar,
             wait=campana.queue_campana.wait,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
             announce=campana.queue_campana.announce,
@@ -668,7 +687,6 @@ class CampanaManager(models.Manager):
             ringinuse=campana.queue_campana.ringinuse,
             setinterfacevar=campana.queue_campana.setinterfacevar,
             wait=campana.queue_campana.wait,
-            queue_asterisk=Queue.objects.ultimo_queue_asterisk(),
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
         )
@@ -745,12 +763,12 @@ class Campana(models.Model):
         (ESTADO_TEMPLATE_BORRADO, 'Template Borrado'),
     )
 
-    TYPE_ENTRANTE = 1
-    TYPE_ENTRANTE_DISPLAY = 'Entrante'
+    TYPE_MANUAL = 1
+    TYPE_MANUAL_DISPLAY = 'Manual'
     TYPE_DIALER = 2
     TYPE_DIALER_DISPLAY = 'Dialer'
-    TYPE_MANUAL = 3
-    TYPE_MANUAL_DISPLAY = 'Manual'
+    TYPE_ENTRANTE = 3
+    TYPE_ENTRANTE_DISPLAY = 'Entrante'
     TYPE_PREVIEW = 4
     TYPE_PREVIEW_DISPLAY = 'Preview'
 
@@ -986,10 +1004,6 @@ class Campana(models.Model):
             contactos_campana.delete()
             self.finalizar()
 
-    def get_string_queue_asterisk(self):
-        if self.queue_campana:
-            return self.queue_campana.get_string_queue_asterisk()
-
     def gestionar_opcion_calificacion_agenda(self):
         """
         Devuelve la opción de calificación de agenda para la campaña.
@@ -1056,13 +1070,6 @@ class OpcionCalificacion(models.Model):
 
 
 class QueueManager(models.Manager):
-
-    def ultimo_queue_asterisk(self):
-        number = Queue.objects.all().aggregate(Max('queue_asterisk'))
-        if number['queue_asterisk__max'] is None:
-            return 1
-        else:
-            return number['queue_asterisk__max'] + 1
 
     def obtener_all_except_borradas(self):
         """
@@ -1134,7 +1141,6 @@ class Queue(models.Model):
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
 
     wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
-    queue_asterisk = models.PositiveIntegerField(unique=True)
     auto_grabacion = models.BooleanField(default=False,
                                          verbose_name='Grabar llamados')
     detectar_contestadores = models.BooleanField(default=False)
@@ -1184,9 +1190,6 @@ class Queue(models.Model):
     def guardar_ep_id_wombat(self, ep_id_wombat):
         self.ep_id_wombat = ep_id_wombat
         self.save()
-
-    def get_string_queue_asterisk(self):
-        return '0078' + str(self.queue_asterisk)
 
     def get_string_initial_predictive_model(self):
         if self.initial_predictive_model:
@@ -2160,8 +2163,8 @@ class Grabacion(models.Model):
     # managers que se creen.
 
     objects = GrabacionManager()
-    TYPE_ICS = 1
-    """Tipo de llamada ICS"""
+    TYPE_MANUAL = 1
+    """Tipo de llamada manual"""
 
     TYPE_DIALER = 2
     """Tipo de llamada DIALER"""
@@ -2169,14 +2172,9 @@ class Grabacion(models.Model):
     TYPE_INBOUND = 3
     """Tipo de llamada inbound"""
 
-    TYPE_MANUAL = 4
-    """Tipo de llamada manual"""
-
-    TYPE_PREVIEW = 5
-    # tipo de llamada preview
-
+    TYPE_PREVIEW = 4
+    """Tipo de llamada preview"""
     TYPE_LLAMADA_CHOICES = (
-        (TYPE_ICS, 'ICS'),
         (TYPE_DIALER, 'DIALER'),
         (TYPE_INBOUND, 'INBOUND'),
         (TYPE_MANUAL, 'MANUAL'),
@@ -2304,6 +2302,7 @@ class CalificacionCliente(models.Model):
 
     # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
     es_calificacion_manual = models.BooleanField(default=False)
+    history = HistoricalRecords()
 
     def __unicode__(self):
         return "Calificacion para la campana {0} para el contacto " \
@@ -2334,8 +2333,8 @@ class DuracionDeLlamada(models.Model):
     """Representa la duración de las llamdas de las campanas, con el fin
         de contar con los datos para búsquedas y estadísticas"""
 
-    TYPE_ICS = 1
-    """Tipo de llamada ICS"""
+    TYPE_MANUAL = 1
+    """Tipo de llamada manual"""
 
     TYPE_DIALER = 2
     """Tipo de llamada DIALER"""
@@ -2343,11 +2342,11 @@ class DuracionDeLlamada(models.Model):
     TYPE_INBOUND = 3
     """Tipo de llamada inbound"""
 
-    TYPE_MANUAL = 4
-    """Tipo de llamada manual"""
+    TYPE_PREVIEW = 4
+    """Tipo de llamada inbound"""
 
     TYPE_LLAMADA_CHOICES = (
-        (TYPE_ICS, 'ICS'),
+        (TYPE_PREVIEW, 'PREVIEW'),
         (TYPE_DIALER, 'DIALER'),
         (TYPE_INBOUND, 'INBOUND'),
         (TYPE_MANUAL, 'MANUAL'),
@@ -2362,6 +2361,7 @@ class DuracionDeLlamada(models.Model):
 
 class MetadataCliente(models.Model):
     # Información del formulario de gestión completado en una Calificacion.
+    # FIXME: este modelo debería tener una relación directa con CalificacionCliente (ver OML-434)
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
     campana = models.ForeignKey(Campana, related_name="metadatacliente")
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
@@ -2426,285 +2426,6 @@ class WombatLog(models.Model):
     timeout = models.IntegerField(default=0)
     metadata = models.TextField(default='')
     fecha_hora = models.DateTimeField(auto_now=True)
-
-
-class QueuelogManager(models.Manager):
-
-    def llamadas_iniciadas(self):
-        return Queuelog.objects.filter(event='ENTERQUEUE')
-
-    def obtener_log_agente_event_periodo_all(
-            self, eventos, fecha_desde, fecha_hasta, agente):
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-        try:
-            return self.filter(queuename='ALL', event__in=eventos, agent=agente,
-                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-        except Queuelog.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
-
-    def obtener_log_agente_pk_event_periodo_all(
-            self, eventos, fecha_desde, fecha_hasta, agente_pk):
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-        try:
-            return self.filter(queuename='ALL', event__in=eventos, agent_id=agente_pk,
-                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-        except Queuelog.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
-
-    def obtener_log_agente_event_periodo(
-            self, eventos, fecha_desde, fecha_hasta, agente):
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-        try:
-            return self.filter(event__in=eventos, agent=agente,
-                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-        except Queuelog.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
-
-    def obtener_log_agente_pk_event_periodo(
-            self, eventos, fecha_desde, fecha_hasta, agente_pk):
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-        try:
-            return self.filter(event__in=eventos, agent_id=agente_pk,
-                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-        except Queuelog.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
-
-    def obtener_log_agente_campana_event_periodo(
-            self, eventos, fecha_desde, fecha_hasta, agente_pk, campana_pk):
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-        try:
-            return self.filter(event__in=eventos, agent_id=agente_pk,
-                               campana_id=campana_pk,
-                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-        except Queuelog.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
-
-    def obtener_log_campana_id_event_periodo(
-            self, eventos, fecha_desde, fecha_hasta, campana_pk):
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-        try:
-            return self.filter(event__in=eventos, campana_id=campana_pk,
-                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-        except Queuelog.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
-
-    def obtener_log_event_periodo(self, eventos, fecha_desde, fecha_hasta):
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-        try:
-            return self.filter(event__in=eventos,
-                               time__range=(fecha_desde, fecha_hasta)).order_by('-time')
-        except Queuelog.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro agente con esos filtros "))
-
-    def obtener_agentes_campanas_total(self, eventos, fecha_desde, fecha_hasta, agentes,
-                                       campanas):
-
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-
-        cursor = connection.cursor()
-        sql = """select agent, queuename, SUM(data2::integer), Count(*)
-                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
-                 and queuename = ANY(%(campanas)s) GROUP BY agent, queuename order by
-                 agent, queuename
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-            'campanas': ["{0}_{1}".format(campana.id, campana.nombre)
-                         for campana in campanas],
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
-
-    def obtener_tiempo_llamadas_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
-
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-
-        cursor = connection.cursor()
-        sql = """select agent_id, SUM(data2::integer)
-                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
-                 GROUP BY agent_id order by agent_id
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
-
-    def obtener_count_evento_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
-
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-
-        cursor = connection.cursor()
-        sql = """select agent_id, count(*)
-                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
-                 GROUP BY agent_id order by agent_id
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
-
-    def obtener_tiempo_llamadas_saliente_agente(self, eventos, fecha_desde, fecha_hasta,
-                                                agentes):
-
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-
-        cursor = connection.cursor()
-        sql = """select agent_id, SUM(data2::integer)
-                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
-                 and data4='saliente'
-                 GROUP BY agent_id order by agent_id
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
-
-    def obtener_count_saliente_evento_agente(self, eventos, fecha_desde, fecha_hasta,
-                                             agentes):
-
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
-
-        cursor = connection.cursor()
-        sql = """select agent_id, count(*)
-                 from ominicontacto_app_queuelog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
-                 and data4='saliente'
-                 GROUP BY agent_id order by agent_id
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
-
-    def obtener_tiempos_event_agentes(self, eventos, fecha_desde, fecha_hasta,
-                                      agentes):
-
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime_hora_minima_dia(fecha_desde)
-            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
-
-        cursor = connection.cursor()
-        sql = """select agent_id, time, event, data1
-                 from ominicontacto_app_queuelog where
-                 time between %(fecha_desde)s and %(fecha_hasta)s and
-                 event = ANY(%(eventos)s) and agent_id = ANY(%(agentes)s)
-                 and queuename = 'ALL'  order by agent_id, time desc
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
-
-
-class Queuelog(models.Model):
-
-    objects = QueuelogManager()
-
-    time = models.DateTimeField()
-    callid = models.CharField(max_length=32, blank=True, null=True)
-    queuename = models.CharField(max_length=32, blank=True, null=True)
-    campana_id = models.IntegerField(blank=True, null=True)
-    agent = models.CharField(max_length=32, blank=True, null=True)
-    agent_id = models.IntegerField(blank=True, null=True)
-    event = models.CharField(max_length=32, blank=True, null=True)
-    data1 = models.CharField(max_length=128, blank=True, null=True)
-    data2 = models.CharField(max_length=128, blank=True, null=True)
-    data3 = models.CharField(max_length=128, blank=True, null=True)
-    data4 = models.CharField(max_length=128, blank=True, null=True)
-    data5 = models.CharField(max_length=128, blank=True, null=True)
-
-    def __unicode__(self):
-        return "Log queue en la fecha {0} de la queue {1} del agente {2} " \
-               "con el evento {3} ".format(self.time, self.queuename,
-                                           self.agent, self.event)
 
 
 class AgendaContactoManager(models.Manager):
@@ -2883,27 +2604,6 @@ class AbstractActuacion(models.Model):
                     'hora_hasta': ["Ya esta cubierto el rango horario\
                         en ese día semanal."],
                 })
-
-
-# class Actuacion(AbstractActuacion):
-#     """
-#     Representa los días de la semana y los
-#     horarios en que una campaña se ejecuta.
-#     """
-#
-#     campana = models.ForeignKey(
-#         'CampanaDialer',
-#         related_name='actuacionesdialer'
-#     )
-#
-#     def __unicode__(self):
-#         return "Campaña {0} - Actuación: {1}".format(
-#             self.campana,
-#             self.get_dia_semanal_display(),
-#         )
-#
-#     def get_campana(self):
-#         return self.campana
 
 
 class ActuacionVigente(models.Model):

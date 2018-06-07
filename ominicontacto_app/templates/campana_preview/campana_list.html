@@ -72,8 +72,6 @@
                         &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                     </a>
                 </td>
-            <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
-
             <td> {{campana.get_estado_display}}  </td>
             <td width="14%">
                 <div class="dropdown">
@@ -90,22 +88,22 @@
                         <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
                             <span class="icon icon-eye"></span>Dar permiso para ver
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                             <span class="icon icon-list"></span>Calificaciones
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                             <span class="icon icon-graph"></span>Reportes
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>Eliminar
-                        </a>                            
+                        </a>
                     </div>
-                </div>              
+                </div>
             </td>
         </tr>
     {% empty %}
         <tr>
-            <td colspan="4">No existen campañas</td>
+            <td colspan="3">No existen campañas</td>
         </tr>
     {% endfor %}
 {% endblock %}
@@ -116,7 +114,6 @@
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Número</th>
                 <th>Estado</th>
                 <th>Acciones&nbsp;&nbsp;</th>
             </tr>
@@ -130,8 +127,6 @@
                             &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                         </a>
                     </td>
-                    <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
-
                     <td> {{campana.get_estado_display}}  </td>
                     <td width="14%">
                         <div class="dropdown">
@@ -142,22 +137,22 @@
                                 <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
                                     <span class="icon icon-eye"></span>Dar permiso para ver
                                 </a>
-                                <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
+                                <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                                     <span class="icon icon-list"></span>Calificaciones
                                 </a>
-                                <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
+                                <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                     <span class="icon icon-graph"></span>Reportes
                                 </a>
                                 <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                                     <span class="icon icon-trash"></span>Eliminar
-                                </a>                            
+                                </a>
                             </div>
-                        </div>      
+                        </div>
                     </td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4">No existen campañas</td>
+                    <td colspan="3">No existen campañas</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -174,8 +169,6 @@
                     &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                 </a>
             </td>
-            <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
-
             <td> {{campana.get_estado_display}} </td>
             <td width="14%">
                 <div class="dropdown">
@@ -186,12 +179,12 @@
                         <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
                             <span class="icon icon-eye"></span>Dar permiso para ver
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_preview_calificacion_reporte_calificacion' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                             <span class="icon icon-list"></span>Calificaciones
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_preview_reporte_grafico' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                             <span class="icon icon-graph"></span>Reportes
-                        </a> 
+                        </a>
                         {% if campana.oculto %}
                         <a class="dropdown-item campana-mostrar-esconder" data="visible" href="">
                             <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
@@ -204,12 +197,12 @@
                         </a>
                         {% endif %}
                     </div>
-                </div>  
+                </div>
             </td>
         </tr>
     {% empty %}
         <tr>
-            <td colspan="4">No existen campañas</td>
+            <td colspan="3">No existen campañas</td>
         </tr>
     {% endfor %}
 
@@ -217,7 +210,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title">Usuario desconectado</h1>                  
+                    <h1 class="modal-title">Usuario desconectado</h1>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">

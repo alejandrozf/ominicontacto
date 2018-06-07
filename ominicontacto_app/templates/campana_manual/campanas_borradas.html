@@ -3,8 +3,6 @@
                 <td width="25%">
                     <a href="{% url 'campana_manual_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
-                <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
-
                 <td> {{campana.get_estado_display}}  </td>
                 <td width="14%">
                     <div class="dropdown">
@@ -14,31 +12,31 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>Agregar agentes
-                            </a>     
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_manual_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>Dar permisos para ver
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'campana_manual_calificacion_reporte_calificacion' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                                 <span class="icon icon-list"></span>Calificaciones
-                            </a> 
-                            <a class="dropdown-item" href="{% url 'campana_manual_reporte_grafico' campana.pk %}">
+                            </a>
+                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>Reportes
-                            </a> 
+                            </a>
                             {% if campana.oculto %}
                             <a class="dropdown-item" href="{% url 'campana_manual_desocultar' campana.pk %}">
                                 <span class="icon icon-eye"></span>Hacer visible
-                            </a>  
-                            {% else %}  
+                            </a>
+                            {% else %}
                             <a class="dropdown-item" href="{% url 'campana_manual_ocultar' campana.pk %}">
                                 <span class="icon icon-eye-slash"></span>Ocultar
-                            </a>                             
-                            {% endif %}                                        
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
                 </td>
             </tr>
        {% empty %}
         <tr>
-            <td colspan="4">No existen campañas</td>
+            <td colspan="3">No existen campañas</td>
         </tr>
         {% endfor %}

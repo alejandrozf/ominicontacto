@@ -40,3 +40,6 @@
 	overflow: scroll;
   height: 140px;
 }
+#modalTransfer .modal-content {
+  left: -60px;
+}

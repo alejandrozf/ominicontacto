@@ -21,15 +21,13 @@ from django.db.models.functions import Concat
 from ominicontacto_app.models import (
     AgenteProfile, Contacto, CalificacionCliente, Grupo, Campana
 )
-from ominicontacto_app.forms import ReporteForm, ReporteAgenteForm
+from ominicontacto_app.forms import ReporteForm
 from ominicontacto_app.services.reporte_agente_calificacion import ReporteAgenteService
 from ominicontacto_app.services.reporte_agente_venta import ReporteFormularioVentaService
 from ominicontacto_app.utiles import convert_fecha_datetime
-from ominicontacto_app.services.reporte_llamadas import EstadisticasService
 from ominicontacto_app.services.asterisk_ami_http import (
     AsteriskHttpClient, AsteriskHttpOriginateError
 )
-from ominicontacto_app.services.reporte_llamada_csv import ReporteAgenteCSVService
 import logging as _logging
 
 
@@ -120,56 +118,6 @@ class ExportaReporteCalificacionView(UpdateView):
         return redirect(url)
 
 
-class AgenteReporteListView(FormView):
-    """
-    Esta vista lista los tiempo de los agentes
-
-    """
-
-    template_name = 'agente/tiempos.html'
-    context_object_name = 'agentes'
-    model = AgenteProfile
-    form_class = ReporteAgenteForm
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(AgenteReporteListView, self).get_context_data(
-    #        **kwargs)
-    #     agente_service = EstadisticasService()
-    #     context['estadisticas'] = agente_service._calcular_estadisticas()
-    #     return context
-
-    def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        fecha_desde, fecha_hasta = fecha.split('-')
-        fecha_desde = convert_fecha_datetime(fecha_desde)
-        fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        grupo_id = form.cleaned_data.get('grupo_agente')
-        agentes_pk = form.cleaned_data.get('agente')
-        todos_agentes = form.cleaned_data.get('todos_agentes')
-
-        agentes = []
-        if agentes_pk:
-            for agente_pk in agentes_pk:
-                agente = AgenteProfile.objects.get(pk=agente_pk)
-                agentes.append(agente)
-        if grupo_id:
-            grupo = Grupo.objects.get(pk=int(grupo_id))
-            agentes = grupo.agentes.filter(is_inactive=False)
-
-        if todos_agentes:
-            agentes = []
-
-        agente_service = EstadisticasService()
-        graficos_estadisticas = agente_service.general_campana(
-            fecha_desde, fecha_hasta, agentes, self.request.user)
-
-        service_csv = ReporteAgenteCSVService()
-        service_csv.crea_reporte_csv(graficos_estadisticas)
-
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas))
-
-
 def cambiar_estado_agente_view(request):
     """Vista GET para cambiar el estado del agente"""
     pk_agente = request.GET['pk_agente']
@@ -255,15 +203,6 @@ class LlamarContactoView(RedirectView):
         self._call_originate(
             request, campana_id, campana_nombre, agente, contacto, click2call_type, tipo_campana)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
-
-
-def exporta_reporte_agente_llamada_view(request, tipo_reporte):
-    """
-    Esta vista invoca a generar un csv de reporte de la campana.
-    """
-    service = ReporteAgenteCSVService()
-    url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
-    return redirect(url)
 
 
 class DesactivarAgenteView(RedirectView):

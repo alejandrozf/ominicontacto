@@ -1,0 +1,85 @@
+#!/bin/bash
+# Script para realizar backup/restore de la herramienta
+
+# Inicialización de variables
+FECHA=`date +%Y%m%d`
+export PGPASSWORD=""
+
+Backup() {
+
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup
+
+    #Asterisk Files
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
+    cp -a --preserve=links {{ asterisk_location }}/etc/asterisk/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
+    cp {{ asterisk_location }}/var/lib/asterisk/agi-bin/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
+    cp -a {{ asterisk_location }}/var/lib/asterisk/sounds/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
+    cp /usr/local/parselog/conversor.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/*
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/
+
+    #Kamailio Files
+    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
+    cp -a --preserve=links {{ kamailio_location }}/etc/ /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/*
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/
+
+    #Databases
+    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database
+    pg_dump -F c -U kamailio -w -h 127.0.0.1 kamailio -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup.sql
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/*
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/
+
+    # Tar the last directory
+    #tar czvf $FECHA-omnileads-backup.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/
+    cd /tmp/omnileads-backup && tar czvf $FECHA-omnileads-backup.tgz $FECHA-omnileads-backup
+    mv /tmp/omnileads-backup/$FECHA-omnileads-backup.tgz {{ install_prefix }}backup
+    rm -rf /tmp/omnileads-backup/
+    }
+
+Restore() {
+    set -e
+    ARRAY=(asterisk.tgz kamailio.tgz postgres_database.tgz)
+    tar_backup=$1
+    tar_directory=`echo $1 | awk -F "." '{print $1}'`
+    cd {{ install_prefix }}backup
+    tar xzvf $tar_backup
+    cd $tar_directory
+    for counter in {0..2}; do
+        tar xzvf ${ARRAY[counter]}
+    done
+    cd tmp/omnileads-backup/$tar_directory/
+
+    #Restore of asterisk files
+    cd asterisk
+    cp -a agi-bin/* {{ asterisk_location }}/var/lib/asterisk/agi-bin/
+    cp -a --preserve=links etc/* {{ asterisk_location }}/etc/asterisk/
+    cp -a conversor.sh /usr/local/parselog
+    cp -a sounds/* {{ asterisk_location }}/var/lib/asterisk/sounds/
+
+    #Restore of kamailio files
+    cd ../kamailio/etc
+    cp -a certs {{ kamailio_location }}/etc/certs
+    cp -a --preserve=links kamailio {{ kamailio_location }}/etc/kamailio
+
+    #Restore of Database
+    cd ../../postgres_database
+    pg_restore -U kamailio -c -C -w -h 127.0.0.1 base_backup.sql
+
+    rm -rf {{ install_prefix }}backup/tar_directory
+
+}
+
+while getopts "r:b" OPTION;do
+	case "${OPTION}" in
+		r) # Opcion para realizar restore, argumento: Nombre del tgz
+            Restore $OPTARG
+		;;
+		b) #Opcion para realizar backup
+		    Backup
+		;;
+	esac
+done
+if [ $# -eq 0  ]; then echo -n; fi

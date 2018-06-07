@@ -22,7 +22,6 @@ from ominicontacto_app.models import Campana, Queue, ArchivoDeAudio
 
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
-from ominicontacto_app.services.asterisk_service import AsteriskService
 
 from ominicontacto_app.tests.factories import BaseDatosContactoFactory
 
@@ -171,10 +170,7 @@ class CampanaWizardMixin(object):
             # vista de creación de campaña
             super(CampanaWizardMixin, self).get_form_instance(step)
 
-    def _insert_queue_asterisk(self, queue, solo_activar=False):
-        if not solo_activar:
-            servicio_asterisk = AsteriskService()
-            servicio_asterisk.insertar_cola_asterisk(queue)
+    def _insert_queue_asterisk(self, queue):
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
@@ -233,7 +229,6 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
         queue_form.instance.wrapuptime = 0
-        queue_form.instance.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
         audio_pk = queue_form.cleaned_data['audios']
         if audio_pk:
             audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
@@ -294,7 +289,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         parametros_extra_web_formset.instance = campana
         parametros_extra_web_formset.save()
-        self._insert_queue_asterisk(queue_form.instance, solo_activar=True)
+        self._insert_queue_asterisk(queue_form.instance)
         return HttpResponseRedirect(reverse('campana_list'))
 
 

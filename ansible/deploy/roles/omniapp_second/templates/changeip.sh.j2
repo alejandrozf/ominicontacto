@@ -20,7 +20,7 @@ OPTIONS=\"-i $nueva_ip -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=
 EOF"
 
 echo "Cambiando IP en kamailio-local.cfg"
-cd {{ install_prefix }}kamailio/etc/kamailio/
+cd {{ kamailio_location }}/etc/kamailio/
 sudo sed -i "s/$ip_actual.*/$nueva_ip!g\"/" kamailio-local.cfg
 
 cd {{ install_prefix }}local
@@ -44,12 +44,6 @@ if [ "$VIRTUAL_ENV" = "" ] ; then
   exit 1
 fi
 
-source {{ install_prefix }}virtualenv/bin/activate
-cd {{ install_prefix }}ominicontacto
-python manage.py collectstatic
-python manage.py compress
-python manage.py regenerar_asterisk
-
 echo "Restarteando servicios"
 echo "Parando kamailio"
 sudo service kamailio stop
@@ -72,3 +66,9 @@ sudo service asterisk stop
 sleep 5
 echo "Empezando asterisk"
 sudo service asterisk start
+
+source {{ install_prefix }}virtualenv/bin/activate
+cd {{ install_prefix }}ominicontacto
+python manage.py collectstatic
+python manage.py compress
+python manage.py regenerar_asterisk

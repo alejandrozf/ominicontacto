@@ -17,11 +17,11 @@
   with_items:
           - "{{ install_prefix }}"
           - "{{ install_prefix }}.pip"
-          - "{{ install_prefix }}ominicontacto/"
+          - "{{ install_prefix }}ominicontacto"
           - "{{ install_prefix }}local"
-          - "{{ install_prefix }}conf"
           - "{{ install_prefix }}wombat-json"
           - "{{ install_prefix }}bin"
+          - "{{ install_prefix }}backup"
           - "{{ install_prefix }}nginx_certs"
           - "{{ install_prefix }}media_root/reporte_campana"
           - "{{ install_prefix }}static"

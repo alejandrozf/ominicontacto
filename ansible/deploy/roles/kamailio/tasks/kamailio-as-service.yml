@@ -3,15 +3,15 @@
 - name: Creation of kamamailio run directories
   file: "path={{ item }} state=directory mode=0755"
   with_items:
-      - "{{ install_prefix }}kamailio/run/"
-      - "{{ install_prefix }}kamailio/run/kamailio/"
+      - "{{ kamailio_location }}/run/"
+      - "{{ kamailio_location }}/run/kamailio/"
   become: true
   become_method: sudo
 
 #- name: Creation of kamailio user and group
 #  shell: "{{ item }}"
 #  with_items:
-      #- mkdir -p {{ install_prefix }}kamailio/run/kamailio
+      #- mkdir -p {{ kamailio_location }}/run/kamailio
 #      - groupadd -g 5000 kamailio
 #      - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
 #  ignore_errors: yes
@@ -36,35 +36,24 @@
       - systemctl restart rsyslog
       - systemctl enable kamailio
       - systemctl daemon-reload
-      - "chown {{ usuario }}:{{ usuario }} -R {{ install_prefix }}kamailio"
+      - "chown {{ usuario }}:{{ usuario }} -R {{ kamailio_location }}"
   become: true
   become_method: sudo
 
 - name: Execution of kamdbctl script
-  shell: "{{ install_prefix }}kamailio/sbin/kamdbctl restore {{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamdb.sql"
+  shell: "{{ kamailio_location }}/sbin/kamdbctl restore {{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamdb.sql"
   when: kamailio_installed|failed
   become: true
   become_method: sudo
 
-- name: Creation of kamailio.cfg file
-  template: src=templates/kamailio-local.cfg dest={{ install_prefix }}kamailio/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
+- name: Creation of kamailio-local.cfg file
+  template: src=templates/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
   tags: postinstall
   become: true
   become_method: sudo
 
-- name: Link kamailio.cfg repo file to {{ install_prefix }}kamailio
-  file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ install_prefix }}kamailio/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }}
+- name: Link kamailio.cfg repo file to {{ kamailio_location }}
+  file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }} mode=644
   tags: postinstall
   become: true
   become_method: sudo
-
-- name: Change the path of files in kamailio.cfg
-  replace: path={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg regexp=\"/opt/omnileads/kamailio\" replace=\"{{ install_prefix }}kamailio\"
-  become: true
-  become_method: sudo
-  tags:
-    - postinstall
-    - test
-
-
-

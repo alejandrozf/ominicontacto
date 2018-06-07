@@ -77,8 +77,7 @@ class AsteriskXmlParser(object):
         raise NotImplementedError()
 
     def _parse_and_check(self, xml, check_errors=True,
-        exception_for_error=None,
-        check_success=False):
+                         exception_for_error=None, check_success=False):
         """Parses the XML string, and do basic checks.
         The root is saved on `self.root`.
         The response dict is saved on `self.response_dict`
@@ -102,7 +101,7 @@ class AsteriskXmlParser(object):
             self.root = ET.fromstring(xml)
         except ExpatError as e:
             logger.exception("Error al parsear XML. "
-                "ExpatError.code: {0.code}. XML:\n{1}".format(e, xml))
+                             "ExpatError.code: {0.code}. XML:\n{1}".format(e, xml))
             raise
         logger.debug("Parseo finalizado")
 
@@ -116,16 +115,14 @@ class AsteriskXmlParser(object):
 
             if self.response_value == 'error':
                 logger.info("_parse_and_check(): found 'response' == 'Error'. "
-                    " response_dict: '%s' - XML:\n%s", str(self.response_dict),
-                    xml)
+                            " response_dict: '%s' - XML:\n%s", str(self.response_dict), xml)
                 if check_errors:
                     raise exception_for_error()
             elif self.response_value == 'success':
                 pass
             else:
                 logger.warn("_parse_and_check(): unknown 'response'. "
-                    "response_dict: '%s' - XML:\n%s", str(self.response_dict),
-                    xml)
+                            "response_dict: '%s' - XML:\n%s", str(self.response_dict), xml)
 
         # if check_success is True, check `response_value`
         # and raise exception in case of error
@@ -148,8 +145,7 @@ class AsteriskXmlParserForPing(AsteriskXmlParser):
 
         self._parse_and_check(xml, check_success=True)
         if not self.response_dict.get('timestamp', ''):
-            raise AsteriskHttpPingError("Attribute 'timestamp' "
-                "not found in XML response")
+            raise AsteriskHttpPingError("Attribute 'timestamp' not found in XML response")
 
 
 class AsteriskXmlParserForLogin(AsteriskXmlParser):
@@ -171,8 +167,8 @@ class AsteriskXmlParserForLogin(AsteriskXmlParser):
         # <generic response="Error" message="Authentication failed"/>
 
         self._parse_and_check(xml,
-            exception_for_error=AsteriskHttpAuthenticationFailedError,
-            check_success=True)
+                              exception_for_error=AsteriskHttpAuthenticationFailedError,
+                              check_success=True)
 
 
 class AsteriskXmlParserForOriginate(AsteriskXmlParser):
@@ -189,8 +185,8 @@ class AsteriskXmlParserForOriginate(AsteriskXmlParser):
         #        message='Originate successfully queued' />
 
         self._parse_and_check(xml,
-            exception_for_error=AsteriskHttpOriginateError,
-            check_success=True)
+                              exception_for_error=AsteriskHttpOriginateError,
+                              check_success=True)
 
 
 class AsteriskXmlParserForStatus(AsteriskXmlParser):
@@ -207,8 +203,7 @@ class AsteriskXmlParserForStatus(AsteriskXmlParser):
         #    'message': 'Channel status will follow',
         #    'response': 'Success'
         # }
-        if elem.attrib.get('response', '') == 'Success' and \
-            'message' in elem.attrib:
+        if elem.attrib.get('response', '') == 'Success' and 'message' in elem.attrib:
             return True
         return False
 
@@ -255,8 +250,7 @@ class AsteriskXmlParserForStatus(AsteriskXmlParser):
         #    'uniqueid': '1398522103.5'
         # }
 
-        if elem.attrib.get('event', '') == 'Status' and \
-            elem.attrib.get('privilege', '') == 'Call':
+        if elem.attrib.get('event', '') == 'Status' and elem.attrib.get('privilege', '') == 'Call':
             return True
         return False
 
@@ -312,7 +306,7 @@ class AsteriskXmlParserForStatus(AsteriskXmlParser):
                 self.root.findall("./response/generic"))
         except AssertionError:
             logger.warn("AsteriskXmlParserForStatus.parser(): AssertionError. "
-                "XML: %s", xml)
+                        "XML: %s", xml)
             raise
 
 
@@ -325,6 +319,18 @@ class AsteriskXmlParserForQueueRemove(AsteriskXmlParser):
         """Parsea XML."""
         self._parse_and_check(xml,
                               exception_for_error=AsteriskHttpQueueRemoveError,
+                              check_success=True)
+
+
+class AsteriskXmlParserForAsteriskDB(AsteriskXmlParser):
+    """Parses the XML returned by Asterisk when
+    requesting `/mxml?action=DBDel/DBdelTree/DBGet/DBPut`
+    """
+
+    def parse(self, xml):
+        """Parsea XML."""
+        self._parse_and_check(xml,
+                              exception_for_error=AsteriskHttpAsteriskDBError,
                               check_success=True)
 
 
@@ -361,26 +367,22 @@ class AsteriskHttpClient(object):
             "Timeout must be GREATER than 0. Timeout: {0}".format(timeout)
 
         query_as_string = "&".join(["{0}={1}".format(k, v)
-            for k, v in params.iteritems()])
+                                    for k, v in params.iteritems()])
         full_url = "{0}{1}".format(settings.ASTERISK['HTTP_AMI_URL'], url)
-        logger.debug("AsteriskHttpClient: request a '%s?%s'",
-            full_url, query_as_string)
+        logger.debug("AsteriskHttpClient: request a '%s?%s'", full_url, query_as_string)
         response = self.session.get(full_url, params=params, timeout=timeout)
         logger.debug("AsteriskHttpClient - Status: %s", response.status_code)
-        logger.debug("AsteriskHttpClient - Got http response:\n%s",
-            response.content)
+        logger.debug("AsteriskHttpClient - Got http response:\n%s", response.content)
 
         if settings.OML_DUMP_HTTP_AMI_RESPONSES:
             prefix = "http-ami-respones-"
             try:
-                tmp_fd, tmp_filename = tempfile.mkstemp(".xml",
-                    prefix=prefix)
+                tmp_fd, tmp_filename = tempfile.mkstemp(".xml", prefix=prefix)
                 tmp_file_obj = os.fdopen(tmp_fd, 'w')
                 tmp_file_obj.write(response.content)
                 logger.info("AsteriskHttpClient - Dump: %s", tmp_filename)
             except:
-                logger.exception("No se pudo hacer dump de respuesta "
-                    "a archivo")
+                logger.exception("No se pudo hacer dump de respuesta a archivo")
 
         return response.content, response
 
@@ -427,7 +429,7 @@ class AsteriskHttpClient(object):
         Raises:
             - AsteriskHttpOriginateError: if originate failed
         """
-        #assert type(timeout) == int
+        # assert type(timeout) == int
 
         # FIXME: esto se hizo asi para detectar intentos de realizacion de
         #  originates con async=False. Una vez q' finalicemos la refactori-
@@ -438,11 +440,11 @@ class AsteriskHttpClient(object):
 
         request_timeout = 5
         logger.debug("AsteriskHttpClient.originate(): async=True - "
-            "timeout: %s - request_timeout: %s", timeout, request_timeout)
+                     "timeout: %s - request_timeout: %s", timeout, request_timeout)
 
         logger.info("originate(): channel: '%s' - context: '%s' "
-            "- exten: '%s' - priority: '%s' - timeout: '%s'",
-            channel, context, exten, priority, timeout)
+                    "- exten: '%s' - priority: '%s' - timeout: '%s'",
+                    channel, context, exten, priority, timeout)
 
         # variables: separadas por ',', con formato NOMBRE=VALOR
         # Asterisk 11 soporta HASTA 64 variables. Si hay mas de 64,
@@ -489,7 +491,7 @@ class AsteriskHttpClient(object):
                 'timeout': timeout,
                 'async': async,
                 'Callerid': exten,
-                    'variable': ",".join(lista_de_variables),
+                'variable': ",".join(lista_de_variables),
             }, timeout=request_timeout)
 
         parser = AsteriskXmlParserForOriginate()
@@ -506,6 +508,41 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
+    def asterisk_db(self, action, family, key, val=None):
+        """
+        para interactuar con Asterisk database
+        :param action: DBDel, DBdelTree, DBGet, DBPut
+        :param family: grupo de datos
+        :param key: identificador
+        :param value: valor
+        """
+        dict_response = {
+            'action': action,
+            'family': family,
+            'key': key,
+        }
+        if action == 'DBPut' and val:
+            dict_response.update({'val': val})
+        response_body, _ = self._request("/mxml", dict_response)
+        parser = AsteriskXmlParserForAsteriskDB()
+        parser.parse(response_body)
+        return parser
+
+    def asterisk_db_deltree(self, family):
+        """
+        Realizar el DbDelTree en database de asterisk
+        :param family: grupo de datos
+        """
+        dict_response = {
+            'action': 'DBdelTree',
+            'family': family,
+        }
+
+        response_body, _ = self._request("/mxml", dict_response)
+        parser = AsteriskXmlParserForAsteriskDB()
+        parser.parse(response_body)
+        return parser
+
 #==============================================================================
 # AmiStatusTracker
 #==============================================================================
@@ -513,7 +550,7 @@ class AsteriskHttpClient(object):
 class AmiStatusTracker(object):
 
     REGEX = re.compile("^Local/([0-9]+)-([0-9]+)-([0-9]+)@"
-        "FTS_local_campana_([0-9]+)")
+                       "FTS_local_campana_([0-9]+)")
 
     REGEX_NO_LOCAL_CHANNEL_CONTEXT = re.compile("^campania_([0-9]+)$")
 
@@ -620,8 +657,8 @@ class AmiStatusTracker(object):
         parseados, no_parseados = self._parse(calls_dicts)
         if no_parseados:
             logger.warn("get_status_por_campana(): %s registros de %s "
-                "no fueron parseados", len(no_parseados),
-                len(no_parseados) + len(parseados))
+                        "no fueron parseados", len(no_parseados),
+                        len(no_parseados) + len(parseados))
 
             # info(), porque son potenciales problemas... Y para quedarnos
             # tranquilos, tambien mostramos los que SI se parsearon...
@@ -639,7 +676,7 @@ class AmiStatusTracker(object):
             for campana_id, datos in campanas.iteritems():
                 contactos = [x[0] for x in datos]
                 logger.info("SI parseado - campana: %s - contactos: %s",
-                    campana_id, contactos)
+                            campana_id, contactos)
 
         return campanas
 
@@ -678,3 +715,7 @@ class AsteriskHttpOriginateError(AsteriskHttpAmiError):
 
 class AsteriskHttpQueueRemoveError(AsteriskHttpAmiError):
     """The queueremove command failed"""
+
+
+class AsteriskHttpAsteriskDBError(AsteriskHttpAmiError):
+    """The asterisk db command failed"""

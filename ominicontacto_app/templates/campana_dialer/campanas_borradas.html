@@ -6,7 +6,6 @@
                         <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
                     </a>
                 </td>
-               <td> {{ campana.queue_campana.get_string_queue_asterisk }} </td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -27,30 +26,30 @@
                         <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
                             <span class="icon icon-eye"></span>Dar permiso para ver
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_dialer_reporte_calificacion' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                             <span class="icon icon-list"></span>Calificaciones
                         </a>
-                        <a class="dropdown-item" href="{% url 'campana_dialer_reporte_grafico' campana.pk %}">
+                        <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                             <span class="icon icon-graph"></span>Reportes
                         </a>
                         {% if campana.oculto %}
                         <a class="dropdown-item" href="{% url 'campana_dialer_desocultar' campana.pk %}">
                             <span class="icon icon-eye"></span>Hacer visible
-                        </a>   
-                        {% else %} 
+                        </a>
+                        {% else %}
                         <a class="dropdown-item" href="{% url 'campana_dialer_ocultar' campana.pk %}">
                             <span class="icon icon-eye-slash"></span>Ocultar
-                        </a>                                                  
+                        </a>
                         {% endif %}
                         <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
                             <span class="icon icon-refresh"></span>Reciclar
-                        </a>                          
+                        </a>
                     </div>
                 </div>
                 </td>
             </tr>
        {% empty %}
         <tr>
-            <td colspan="7">No existen campañas</td>
+            <td colspan="6">No existen campañas</td>
         </tr>
         {% endfor %}

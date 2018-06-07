@@ -22,37 +22,37 @@
   become: yes
   become_method: sudo
 
-- name: Delete of asterisk files managed by omnileads
-  shell: "rm -rf {{ item }} chdir={{ asterisk_location }}/etc/asterisk/"
-  with_items:
-      - extensions_custom.conf
-      - extensions_fts.conf
-      - sip_custom.conf
-      - extconfig.conf
-      - amd.conf
-      - func_odbc.conf
-      - http_custom.conf
-      - func_odbc.conf
-      - cdr_adaptive_odbc.conf
-      - manager_custom.conf
-      - queues_custom.conf
-      - globals_custom.conf
-      - pjsip.transports_custom.conf
-      - res_odbc_custom.conf
-  tags:
-    - issabel
-    - postinstall
+#- name: Delete of asterisk files managed by omnileads
+#  shell: "rm -rf {{ item }} chdir={{ asterisk_location }}/etc/asterisk/"
+#  with_items:
+#      - extensions_custom.conf
+#      - extensions_fts.conf
+#      - sip_custom.conf
+#      - extconfig.conf
+#      - amd.conf
+#      - func_odbc.conf
+#      - http_custom.conf
+#      - func_odbc.conf
+#      - cdr_adaptive_odbc.conf
+#      - manager_custom.conf
+#      - queues_custom.conf
+#      - globals_custom.conf
+#      - pjsip.transports_custom.conf
+#      - res_odbc_custom.conf
+#  tags:
+#    - issabel
+#    - postinstall
 
-- shell: "rm -rf {{ item}} chdir={{ asterisk_location }}/var/lib/asterisk/agi-bin/"
-  with_items:
-      - omni-asterisk-logout.php
-      - omni-blacklist.php
-      - omni-grabaciones.php
-      - omni-dialednum.php
-      - generate_outbound_route_context.php
-  tags:
-    - issabel
-    - postinstall
+#- shell: "rm -rf {{ item}} chdir={{ asterisk_location }}/var/lib/asterisk/agi-bin/"
+#  with_items:
+#      - omni-asterisk-logout.php
+#      - omni-blacklist.php
+#      - omni-grabaciones.php
+#      - omni-dialednum.php
+#      - generate_outbound_route_context.php
+#  tags:
+#    - issabel
+#    - postinstall
 
 - name: Config of asterisk-freepbx for OML
   file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
@@ -71,51 +71,88 @@
       - http_custom.conf
       - pjsip.transports_custom.conf
       - res_odbc_custom.conf
-  tags:
-    - issabel
-    - postinstall
+  become: yes
+  become_method: sudo
+  when: asterisk_location == "" or ansible_os_family == "Sangoma"
 
-- copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner={{ usuario }} group={{ usuario }}"
+- name: Config of asterisk-freepbx for OML
+  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
+  with_items:
+      - amd.conf
+      - chan_dahdi.conf
+      - extconfig.conf
+      - extensions.conf
+      - features.conf
+      - func_odbc.conf
+      - http.conf
+      - indications.conf
+      - logger.conf
+      - manager.conf
+      - modules.conf
+      - musiconhold.conf
+      - oml_extensions.conf
+      - oml_extensions_sub.conf
+      - oml_func_odbc.conf
+      - oml_manager.conf
+      - oml_res_odbc.conf
+      - queues.conf
+      - res_odbc.conf
+      - sip.conf
+      - udptl.conf
+  become: yes
+  become_method: sudo
+  when: asterisk_location != ""
+
+- name: Copy of all asterisk config files
+  shell: "mv *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/archivos-no-enlaces/"
+  when: asterisk_location != ""
+
+- name: Copy of the php agis
+  copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner={{ usuario }} group={{ usuario }}"
   with_items:
       - omni-asterisk-logout.php
 #      - omni-blacklist.php
 #      - omni-dialednum.php
       - omni-grabaciones.php
-      - generate_outbound_route_context.php
-  tags:
-    - issabel
-    - postinstall
+  become: yes
+  become_method: sudo
 
-- template: "src=templates/agi-bin/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 owner={{ usuario }} group={{ usuario }}"
+- name: Creation of generate_outbound_route_context.php script
+  template: "src=templates/agi-bin/generate_outbound_route_context.php dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/generate_outbound_route_context.php mode=755 owner={{ usuario }} group={{ usuario }}"
+  become: yes
+  become_method: sudo
+  when: asterisk_location == ""
+
+- name: Creation of the agis omni-blackist and omni-dialednum
+  template: "src=templates/agi-bin/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 owner={{ usuario }} group={{ usuario }}"
   with_items:
       - omni-blacklist.php
       - omni-dialednum.php
-  tags:
-    - issabel
-    - postinstall
+  become: yes
+  become_method: sudo
 
 - name: Create /usr/local/parselog
   file: dest=/usr/local/parselog state=directory mode=0755 owner={{ usuario }} group={{ usuario }}
+  become: yes
+  become_method: sudo
 
 - name: Create of update_mix_mixmonitor.pl script
   template: src=templates/update_mix_mixmonitor.pl.j2 dest=/usr/local/parselog/update_mix_mixmonitor.pl mode=755 owner={{ usuario }} group={{ usuario }}
+  when: asterisk_location == ""
   become: true
   become_method: sudo
 
-- name: Change permissions to asterisk user
-  file: path={{ item }} owner=asterisk group=asterisk state=directory recurse=yes
-  with_items:
-      - /etc/asterisk
-      - /var/lib/asterisk/agi-bin
-      - /usr/local/parselog
-  when: asterisk_location == ""
-
-- name: Create of asterisk cron
-  file: path=/var/spool/cron/asterisk state=touch owner={{ usuario }} group={{ usuario }} mode=755
+- name: Link the conversor.sh file
+  template: src=templates/conversor.sh dest=/usr/local/parselog/conversor.sh owner={{ usuario }} group={{ usuario }} mode=755
   when: asterisk_location != ""
 
 - name: Asterisk crontab modification
-  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * {{ asterisk_location }}/var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
+  lineinfile: "dest=/var/spool/cron/asterisk line=\"*/5 * * * * root {{ asterisk_location }}/var/lib/asterisk/agi-bin/omni-asterisk-logout.php\""
+  when: asterisk_location == ""
+
+- name: Copy the cron-omnileads file
+  template: src=templates/cron-omnileads dest=/etc/cron.d/cron-omnileads owner=root group=root
+  when: asterisk_location != ""
 
 - name: Copy of odbc files and omnileads sounds
   shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files"
@@ -136,16 +173,24 @@
 
 - name: Install Mysql-python DB module
   pip: name=MySQL-python
-  when: ansible_os_family == "Sangoma"
+  when: ansible_os_family == "Sangoma" or asterisk_location == ""
 
 - name: Add user of MySQL {{ usuario }}
   mysql_user: "name={{ usuario }} host={{ item }} login_user=root login_password={{ mysql_root_password }} password=admin123 priv=\"asterisk.*:ALL,GRANT\""
   with_items:
       - "localhost"
       - "127.0.0.1"
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  when: ansible_os_family == "Sangoma" or asterisk_location == ""
 
-- name: Set up permissiond and raise up service
+- name: Change permissions to asterisk user
+  file: path={{ item }} owner=asterisk group=asterisk state=directory recurse=yes
+  with_items:
+      - /etc/asterisk
+      - /var/lib/asterisk/agi-bin
+      - /usr/local/parselog
+  when: asterisk_location == ""
+
+- name: Set up permissions of asterisk
   shell: "{{ item }}"
   with_items:
           - "chown -R {{ usuario }}.{{ usuario }} {{ asterisk_location }}"
@@ -161,7 +206,7 @@
 
 - name: Add start of asterisk to rc.local
   shell: "chkconfig asterisk on"
-  when: ansible_os_family == "RedHat"
+  when: asterisk_location != ""
   become: yes
   become_method: sudo
 
@@ -185,3 +230,6 @@
   become: yes
   become_method: sudo
   ignore_errors: yes
+
+- name: Configuration of logrotate
+  template: src=templates/omnileads dest=/etc/logrotate.d/omnileads owner=root group=root mode=644

@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'reciclado_app',
     'formtools',
     'widget_tweaks',
+    'reportes_app',
+    'simple_history',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -188,7 +190,6 @@ DATABASE_MYSQL_ASTERISK = {
     'PASSWORD': None,
 }
 
-OML_QUEUE_FILENAME = None
 OML_ASTERISK_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
@@ -201,7 +202,6 @@ Ejemplos:
 
 .. code-block:: python
 
-    OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
     OML_ASTERISK_HOSTNAME = "root@192.168.1.23"
     OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
     OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
@@ -350,11 +350,6 @@ except ImportError as e:
     print "#       `oml_settings_local`"
     print "# "
     raise Exception("No se pudo importar oml_settings_local")
-
-# ~~~~~ Check OML_QUEUE_FILENAME
-
-assert OML_QUEUE_FILENAME is not None, \
-    "Falta definir setting para OML_QUEUE_FILENAME"
 
 # ~~~~~ Check OML_ASTERISK_HOSTNAME
 

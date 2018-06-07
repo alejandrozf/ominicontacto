@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block head_js %}
+<script type="text/javascript">
+   $(function() {
+                var start = moment();
+                var end = moment();
+                function cb(start, end) {
+                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                }
+
+ $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+
+  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+});
+
+            // Init daterange plugin
+            $('#id_fecha').daterangepicker(
+                {
+
+                locale: {
+                    format: 'DD/MM/YYYY'
+                 },
+
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+        }, cb);
+
+        cb(start, end);
+
+});
+    </script>
+{% endblock %}
+{% block content %}
+ <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
+
+
+
+{% with graficos_estadisticas=graficos_estadisticas %}
+
+<h1>Campaña: {{campana.nombre}}</h1>
+<div class="form-row">
+    {% if graficos_estadisticas.estadisticas.llamadas_pendientes != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Pendientes' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</strong></h3>
+    {% endif %}
+    {% if graficos_estadisticas.estadisticas.llamadas_realizadas != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Realizadas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</strong></h3>
+    {% endif %}
+    {% if graficos_estadisticas.estadisticas.llamadas_recibidas != None %}
+        <h3 class="col-md-6">{% trans 'Llamadas Recibidas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_recibidas}}</strong></h3>
+    {% endif %}
+</div>
+<br>
+<div>
+    <a class="btn btn-primary" href="{% url 'campana_reporte_pdf' campana.pk %}" target="_blank">{% trans 'Exportar Reporte(PDF)' %}</a>
+</div>
+<br>
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>{% trans 'Buscar' %}</button>
+    <div id="wrapperSearchForm" class="show">
+        <form role="form" method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-6">
+                    {{form.fecha}}
+                </div>
+            </div>
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Filtrar por esa fecha
+            </button>
+        </form>
+    </div>
+</div>
+
+<div>
+    <h2>Reportes de contactados</h2>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_contactados' campana.pk %}">Exportar Reporte de contactadas(CSV)</a>
+    <hr>
+    <h3>Cantidad de calificación por campaña</h3>
+    <div class="form-row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Calificacion</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for calificaciones_nombre, calificaciones_cantidad in graficos_estadisticas.dict_campana_counter %}
+                        <tr>
+                            <td>{{ calificaciones_nombre }}</td>
+                            <td>{{ calificaciones_cantidad }}</td>
+                        </tr>
+                    {% endfor %}
+                        <tr>
+                            <td>Total asignados</td>
+                            <td>{{graficos_estadisticas.total_asignados}}</td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <div class="graficos-avances">
+                <figure>
+                    {{ graficos_estadisticas.barra_campana_calificacion.render|safe }}
+                </figure>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_calificados' campana.pk %}">Exportar Reporte llamadas calificadas(CSV)</a>
+</div>
+<br>
+<hr>
+<br>
+<div>
+    <h2>Cantidad de llamados no atendidos</h2>
+    <br>
+    <div class="form-row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Resultado</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resultado_nombre, resultado_cantidad in graficos_estadisticas.dict_no_atendido_counter %}
+                        <tr>
+                            <td>{{ resultado_nombre }}</td>
+                            <td>{{ resultado_cantidad }}</td>
+                        </tr>
+                    {% endfor %}
+                        <tr>
+                            <td>Total no atendidos</td>
+                            <td>{{graficos_estadisticas.total_no_atendidos}}</td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <div class="graficos-avances">
+                <figure>
+                    {{ graficos_estadisticas.barra_campana_no_atendido.render|safe }}
+                </figure>
+            </div>
+        </div>
+    </div>
+    <div>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">Exportar Reporte llamadas no atendidas(CSV)</a>
+    </div>
+    <br>
+</div>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans 'Agente' %}</th>
+                <th>{% trans 'Total gestiones' %}</th>
+                {% for calificacion in graficos_estadisticas.calificaciones %}
+                    <th>{{ calificacion }}</th>
+                {% endfor %}
+                <th>{% trans 'Contactos calificados' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agente_pk, estadisticas_agente in graficos_estadisticas.agentes_venta.items %}
+                <tr>
+                    <td><a href="{% url 'campana_reporte_agente' pk_campana agente_pk %}">{{ estadisticas_agente.nombre }}</a></td>
+                    <td>{{ estadisticas_agente.total_gestionados  }}</td>
+                    {% for calificados_opcion in estadisticas_agente.totales_calificaciones.values %}
+                        <td>{{ calificados_opcion }}</td>
+                    {% endfor %}
+                    <td>{{ estadisticas_agente.total_calificados }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>Totales</td>
+                <td>{{graficos_estadisticas.total_ventas}}</td>
+                <td colspan="{{ graficos_estadisticas.calificaciones|length }}"></td>
+                <td>{{graficos_estadisticas.total_calificados}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<hr>
+<br>
+<div>
+    <h2>Detalle de las llamadas</h2>
+    <br>
+    <div class="form-row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Llamadas</th>
+                        <th>Cantidad </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for llamadas_nombre, llamadas_cantidad in graficos_estadisticas.dict_llamadas_counter %}
+                        <tr>
+                            <td>{{ llamadas_nombre }}</td>
+                            <td>{{ llamadas_cantidad }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6" align="center">
+            <div class="graficos-avances">
+                <figure>
+                    {{ graficos_estadisticas.barra_campana_llamadas.render|safe }}
+                </figure>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endwith %}
+{% endblock %}
