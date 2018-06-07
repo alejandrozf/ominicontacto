@@ -573,7 +573,7 @@ class TiemposAgente(object):
                 else:
                     agente_nuevo = AgenteTiemposReporte(
                         cast_datetime_part_date(
-                            time_actual), resta, 0, 0, 0, 0)
+                            time_actual), resta, 0, 0, 0, 0, 0, 0)
                     agente_fecha.append(agente_nuevo)
                 agente_nuevo = None
                 is_remove = False
@@ -614,7 +614,7 @@ class TiemposAgente(object):
                 else:
                     agente_nuevo = AgenteTiemposReporte(
                         cast_datetime_part_date(
-                            time_actual), None, resta, 0, 0, 0)
+                            time_actual), None, resta, 0, 0, 0, 0, 0)
                     agente_fecha.append(agente_nuevo)
                 is_unpause = False
                 time_actual = None
@@ -679,7 +679,7 @@ class TiemposAgente(object):
                 agente_nuevo._cantidad_intentos_fallidos = int(log[1])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    date_time_actual, None, 0, 0, 0, int(log[1]))
+                    date_time_actual, None, 0, 0, 0, int(log[1]), 0, 0)
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
