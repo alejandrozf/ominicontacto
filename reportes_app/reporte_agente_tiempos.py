@@ -9,7 +9,9 @@ from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog
 from ominicontacto_app.models import AgenteProfile, Pausa, Campana
 from pygal.style import Style
-from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
+from ominicontacto_app.utiles import (
+    datetime_hora_minima_dia, datetime_hora_maxima_dia, cast_datetime_part_date
+)
 
 
 ESTILO_AZUL_ROJO_AMARILLO = Style(
@@ -83,9 +85,28 @@ class TiemposAgente(object):
             is_remove = False
             time_actual = None
             log_agente = self._filter_query_por_agente(logs_time, agente.id)
+            len_log_agente = len(log_agente) - 1
             for logs in log_agente:
+                calculo_ok = False
+                # primer elemento addmember
+                if log_agente.index(logs) == 0 and logs[2] == 'ADDMEMBER':
+                    time_actual = datetime_hora_maxima_dia(logs[1])
+                    resta = time_actual - logs[1]
+                    calculo_ok = True
+                # ultimo elemento removemember
+                if len_log_agente == log_agente.index(logs) and logs[2] == 'REMOVEMEMBER':
+                    time_actual = datetime_hora_minima_dia(logs[1])
+                    resta = logs[1] - time_actual
+                    calculo_ok = True
+
                 if is_remove and logs[2] == 'ADDMEMBER':
                     resta = time_actual - logs[1]
+                    calculo_ok = True
+
+                if logs[2] == 'REMOVEMEMBER':
+                    time_actual = logs[1]
+                    is_remove = True
+                if calculo_ok:
                     agente_en_lista = filter(lambda x: x.agente == agente,
                                              self.agentes_tiempo)
                     if agente_en_lista:
@@ -101,9 +122,6 @@ class TiemposAgente(object):
                     agente_nuevo = None
                     is_remove = False
                     time_actual = None
-                if logs[2] == 'REMOVEMEMBER':
-                    time_actual = logs[1]
-                    is_remove = True
 
     def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
         """ Calcula el tiempo de pausa teniendo en cuenta los eventos PAUSEALL,
@@ -500,3 +518,232 @@ class TiemposAgente(object):
                                        dict_agentes_llamadas['total_agente_manual']),
             'barra_agente_total': barra_agente_total,
         }
+
+    def calcular_tiempo_session_fecha_agente(self, agente, fecha_inferior,
+                                             fecha_superior, agente_fecha):
+        """ Calcula el tiempo de session teniendo en cuenta los eventos
+        ADDMEMBER, REMOVEMEMBER por fecha dia a dia"""
+
+        eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
+
+        logs_time = ActividadAgenteLog.objects.obtener_tiempos_event_agentes(
+            eventos_sesion,
+            fecha_inferior,
+            fecha_superior,
+            [agente.id])
+
+        time_actual = None
+        is_remove = False
+        len_log_agente = len(logs_time) - 1
+        error = False
+
+        for logs in logs_time:
+            calculo_ok = False
+            # primer elemento addmember
+            if logs_time.index(logs) == 0 and logs[2] == 'ADDMEMBER':
+                agente_nuevo = None
+                is_remove = False
+                time_actual = None
+                error = True
+            # ultimo elemento removemember
+            if len_log_agente == logs_time.index(logs) and logs[2] == 'REMOVEMEMBER':
+                agente_nuevo = None
+                is_remove = False
+                time_actual = None
+                error = True
+
+            if is_remove and logs[2] == 'ADDMEMBER':
+                resta = time_actual - logs[1]
+                calculo_ok = True
+
+            if logs[2] == 'REMOVEMEMBER':
+                time_actual = logs[1]
+                is_remove = True
+            if calculo_ok:
+                date_time_actual = cast_datetime_part_date(time_actual)
+                agente_en_lista = filter(
+                    lambda x: x.agente == date_time_actual,
+                    agente_fecha)
+                if agente_en_lista:
+                    agente_nuevo = agente_en_lista[0]
+                    if agente_nuevo.tiempo_sesion:
+                        agente_nuevo._tiempo_sesion += resta
+                    else:
+                        agente_nuevo._tiempo_sesion = resta
+                else:
+                    agente_nuevo = AgenteTiemposReporte(
+                        cast_datetime_part_date(
+                            time_actual), resta, 0, 0, 0, 0)
+                    agente_fecha.append(agente_nuevo)
+                agente_nuevo = None
+                is_remove = False
+                time_actual = None
+
+        return agente_fecha, error
+
+    def calcular_tiempo_pausa_fecha_agente(self, agente, fecha_inferior,
+                                           fecha_superior, agente_fecha):
+        """ Calcula el tiempo de pausa teniendo en cuenta los eventos PAUSEALL,
+        UNPAUSEALL y REMOVEMEMBER por fecha dia a dia para el agente"""
+
+        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
+
+        logs_time = ActividadAgenteLog.objects.obtener_tiempos_event_agentes(
+            eventos_pausa,
+            fecha_inferior,
+            fecha_superior,
+            [agente.id])
+
+        time_actual = None
+        is_unpause = False
+        for logs in logs_time:
+            agente_nuevo = None
+
+            if is_unpause and logs[2] == 'PAUSEALL':
+
+                resta = time_actual - logs[1]
+                date_time_actual = cast_datetime_part_date(time_actual)
+                agente_en_lista = filter(lambda x: x.agente == date_time_actual,
+                                         agente_fecha)
+                if agente_en_lista:
+                    agente_nuevo = agente_en_lista[0]
+                    if agente_nuevo.tiempo_pausa:
+                        agente_nuevo._tiempo_pausa += resta
+                    else:
+                        agente_nuevo._tiempo_pausa = resta
+                else:
+                    agente_nuevo = AgenteTiemposReporte(
+                        cast_datetime_part_date(
+                            time_actual), None, resta, 0, 0, 0)
+                    agente_fecha.append(agente_nuevo)
+                is_unpause = False
+                time_actual = None
+
+            if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
+                time_actual = logs[1]
+                is_unpause = True
+        return agente_fecha
+
+    def calcular_tiempo_llamada_agente_fecha(self, agente, fecha_inferior,
+                                             fecha_superior, agente_fecha):
+        """ Calcula el tiempo de llamada teniendo en cuenta los eventos
+        COMPLETECALLER y COMPLETEAGENT, por fecha dia a dia para el agente"""
+
+        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+
+        logs_time = LlamadaLog.objects.obtener_tiempo_llamada_agente(
+            eventos_llamadas,
+            fecha_inferior,
+            fecha_superior,
+            agente.id)
+
+        for log in logs_time:
+
+            date_time_actual = cast_datetime_part_date(log.time)
+            agente_en_lista = filter(lambda x: x.agente == date_time_actual,
+                                     agente_fecha)
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                if agente_nuevo._tiempo_llamada:
+                    agente_nuevo._tiempo_llamada += log.duracion_llamada
+                    agente_nuevo._cantidad_llamadas_procesadas += 1
+                else:
+                    agente_nuevo._tiempo_llamada = log.duracion_llamada
+                    agente_nuevo._cantidad_llamadas_procesadas = 1
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    date_time_actual, None, None, log.duracion_llamada, 1, 0)
+                agente_fecha.append(agente_nuevo)
+        return agente_fecha
+
+    def calcular_intentos_fallidos_fecha_agente(self, agente, fecha_inferior,
+                                                fecha_superior, agente_fecha):
+        """ Calcula la cantidad de intentos fallido para el tipo de llamada
+        Manual NO CONNECT(NOANSWER, CANCEL, BUSY, CHANUNAVAIL, FAIL, OTHER,
+        AMD, BLACKLIST) por fecha dia a dia para el agente"""
+
+        eventos_llamadas = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL',
+                            'FAIL', 'OTHER', 'AMD', 'BLACKLIST']
+
+        logs_time = LlamadaLog.objects.obtener_count_evento_agente_agrupado_fecha(
+            eventos_llamadas,
+            fecha_inferior,
+            fecha_superior,
+            agente.id)
+        for log in logs_time:
+            date_time_actual = log[0]
+            agente_en_lista = filter(lambda x: x.agente == date_time_actual,
+                                     agente_fecha)
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                agente_nuevo._cantidad_intentos_fallidos = int(log[1])
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    date_time_actual, None, 0, 0, 0, int(log[1]))
+                agente_fecha.append(agente_nuevo)
+        return agente_fecha
+
+    def generar_por_fecha_agente(self, agente, fecha_inferior, fecha_superior):
+        """generar las estadisticas de los tiempos del agente"""
+        agente_fecha = []
+        agente_fecha, error = self.calcular_tiempo_session_fecha_agente(
+            agente, fecha_inferior, fecha_superior, agente_fecha)
+        agente_fecha = self.calcular_tiempo_pausa_fecha_agente(
+            agente, fecha_inferior, fecha_superior, agente_fecha)
+        agente_fecha = self.calcular_tiempo_llamada_agente_fecha(
+            agente, fecha_inferior, fecha_superior, agente_fecha
+        )
+        agente_fecha = self.calcular_intentos_fallidos_fecha_agente(
+            agente, fecha_inferior, fecha_superior, agente_fecha
+        )
+        return agente_fecha, error
+
+    def calcular_tiempo_pausa_tipo_fecha(self, agente, fecha_inferior,
+                                         fecha_superior, pausa_id):
+        """
+        Calcula el tiempo de pausa de los agentes en el periodo evaluado
+        :return: un listado de agentes con el tiempo de pausa
+        """
+        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
+
+        agentes_tiempo = []
+        # iterar por agente evaluando los eventos de pausa
+        logs_time = ActividadAgenteLog.objects.obtener_pausas_por_agente_fechas_pausa(
+            eventos_pausa,
+            fecha_inferior,
+            fecha_superior,
+            agente.id,
+            pausa_id)
+
+        is_unpause = False
+        time_actual = None
+        tiempos_pausa = {}
+
+        # iterar los log teniendo en cuenta que si encuentra un evento
+        # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
+
+        for logs in logs_time:
+            if is_unpause and logs.event == 'PAUSEALL':
+                resta = time_actual - logs.time
+                time_actual = cast_datetime_part_date(time_actual)
+                if time_actual in tiempos_pausa.keys():
+                    tiempos_pausa[time_actual] += resta
+                else:
+                    tiempos_pausa.update({time_actual: resta})
+                is_unpause = False
+                time_actual = None
+            if logs.event == 'UNPAUSEALL' or logs.event == 'REMOVEMEMBER':
+                time_actual = logs.time
+                is_unpause = True
+        for item in tiempos_pausa:
+            datos_de_pausa = self._obtener_datos_de_pausa(pausa_id)
+            tiempo = str(timezone.timedelta(seconds=tiempos_pausa[item].seconds))
+            tiempo_agente = {
+                'fecha': item,
+                'pausa': datos_de_pausa['nombre'],
+                'tipo_de_pausa': datos_de_pausa['tipo'],
+                'tiempo': tiempo,
+            }
+            agentes_tiempo.append(tiempo_agente)
+
+        return agentes_tiempo

@@ -87,6 +87,41 @@ class LlamadaLogManager(models.Manager):
         except LlamadaLog.DoesNotExist:
             raise (SuspiciousOperation("No se encontro llamadas "))
 
+    def obtener_tiempo_llamada_agente(self, eventos, fecha_desde, fecha_hasta, agente_id):
+        """devuelve la duracion de llamadas y fecha"""
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
+        try:
+            return self.filter(agente_id=agente_id, event__in=eventos,
+                               time__range=(fecha_desde, fecha_hasta))
+        except LlamadaLog.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro llamadas "))
+
+    def obtener_count_evento_agente_agrupado_fecha(self, eventos, fecha_desde,
+                                                   fecha_hasta, agente_id):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
+        cursor = connection.cursor()
+        sql = """select DATE(time), count(*)
+                 from reportes_app_llamadalog where time between %(fecha_desde)s and
+                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = %(agente_id)s
+                 GROUP BY DATE(time) order by DATE(time) desc
+        """
+        params = {
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'eventos': eventos,
+            'agente_id': agente_id,
+        }
+
+        cursor.execute(sql, params)
+        values = cursor.fetchall()
+        return values
+
 
 class LlamadaLog(models.Model):
     """
@@ -149,6 +184,19 @@ class ActividadAgenteLogManager(models.Manager):
         cursor.execute(sql, params)
         values = cursor.fetchall()
         return values
+
+    def obtener_pausas_por_agente_fechas_pausa(self, eventos, fecha_desde,
+                                               fecha_hasta, agente_id, pausa_id):
+        """Devuelve todas las pausas del agente por una pausa en particular"""
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+        try:
+            return self.filter(agente_id=agente_id, event__in=eventos,
+                               time__range=(fecha_desde, fecha_hasta),
+                               pausa_id=pausa_id).order_by('-time')
+        except ActividadAgenteLog.DoesNotExist:
+            raise (SuspiciousOperation("No se encontro pausas "))
 
 
 class ActividadAgenteLog(models.Model):

@@ -19,6 +19,14 @@ urlpatterns = [
     url(r'^reportes/agentes_export/(?P<tipo_reporte>[\w\-]+)/$',
         login_required(views_reportes_agentes.exporta_reporte_agente_llamada_view),
         name='reportes_agentes_exporta'),
+    url(r'^reportes/agente_por_fecha/$',
+        login_required(
+            views_reportes_agentes.reporte_por_fecha_modal_agente_view),
+        name='reportes_agente_por_fecha'),
+    url(r'^reportes/pausa_por_fecha/$',
+        login_required(
+            views_reportes_agentes.reporte_por_fecha_pausa_modal_agente_view),
+        name='reportes_pausa_por_fecha'),
     # ==========================================================================
     # Reportes generales llamadas
     # ==========================================================================
