@@ -60,15 +60,9 @@ http {
         }
 
         location /coverage {
-<<<<<<< HEAD
             alias /tmp/oml-coverity;
             autoindex off;
             index /tmp/oml-coverity/index.html;
-=======
-            alias /tmp/oml-coverity
-            autoindex off
-            index /tmp/oml-coverity/index.html
->>>>>>> cambios hechos: del puerto 11443 a 443 y del 1180 al 80, agrego el comando manage.py que pidio ale,ahora la idea es que el home del usuario omnileads sea /opt/omnileads/,modifico run_coverage_tests.sh, quedó re canchero
         }
 
         error_page 404 /404.html;
