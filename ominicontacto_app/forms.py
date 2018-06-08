@@ -823,11 +823,12 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
 
-        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
-        self.fields['fecha_inicio'].required = True
+        es_template = self.initial.get('es_template', False)
 
+        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
-        self.fields['fecha_fin'].required = True
+        self.fields['fecha_inicio'].required = not es_template
+        self.fields['fecha_fin'].required = not es_template
 
         if self.instance.pk:
             self.fields['bd_contacto'].disabled = True
@@ -1016,50 +1017,6 @@ class QueueDialerForm(forms.ModelForm):
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
 
 
-class QueueDialerUpdateForm(forms.ModelForm):
-    """
-    El form para actualizar la cola para las llamadas
-    """
-
-    class Meta:
-        model = Queue
-        fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores',
-                  'initial_predictive_model', 'initial_boost_factor')
-        widgets = {
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
-            'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
-            "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(QueueDialerUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
-
-    def clean(self):
-        maxlen = self.cleaned_data.get('maxlen')
-        if not maxlen > 0:
-            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
-                                        ' mayor a cero')
-
-        initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
-        if initial_boost_factor and initial_boost_factor < 1.0:
-            raise forms.ValidationError('El factor boost inicial no debe ser'
-                                        ' menor a 1.0')
-
-        initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
-        if initial_predictive_model and not initial_boost_factor:
-            raise forms.ValidationError('El factor boost inicial no deber ser'
-                                        ' none si la predicitvidad está activa')
-
-        return self.cleaned_data
-
-
 class UserApiCrmForm(forms.ModelForm):
 
     class Meta:
@@ -1108,21 +1065,6 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('supervisors',)
-
-
-class CampanaDialerTemplateForm(forms.ModelForm):
-
-    class Meta:
-        model = Campana
-        fields = ('nombre_template', 'formulario',
-                  'sitio_externo', 'tipo_interaccion')
-
-        widgets = {
-            "nombre_template": forms.TextInput(attrs={'class': 'form-control'}),
-            'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
-            "tipo_interaccion": forms.RadioSelect(),
-        }
 
 
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):

@@ -23,7 +23,9 @@
         {% if not form.instance.pk %}
             <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
             <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
-            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+            {% if not es_template %}
+                <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+            {% endif %}
         {% endif %}
     </ul>
 {% endblock %}
@@ -34,22 +36,24 @@
         <div class="form-row">
             <div class="col-md-6">
                 <label for="{{ form.nombre.id_for_label }}">Nombre: </label>
-                {{ form.nombre|add_class:"form-control" }}                
+                {{ form.nombre|add_class:"form-control" }}
                 <small id="nameHelpBlock" class="form-text text-muted">
                     Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos.
-                </small>    
-                {{ form.nombre.errors }} 
+                </small>
+                {{ form.nombre.errors }}
             </div>
-            <div class="col-md-6">
-                <label for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>       
-                {{ form.fecha_inicio|attr:"id:id_fecha_inicio" }}                         
-                {{ form.fecha_inicio.errors }}
-            </div>
-            <div class="col-md-6">
-                <label for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
-                {{ form.fecha_fin|attr:"id:id_fecha_fin" }}
-                {{ form.fecha_fin.errors }}
-            </div>
+            {% if not form.initial.es_template %}
+                <div class="col-md-6">
+                    <label for="{{ form.fecha_inicio.id_for_label }}">Fecha inicio: </label>
+                    {{ form.fecha_inicio|attr:"id:id_fecha_inicio" }}
+                    {{ form.fecha_inicio.errors }}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.fecha_fin.id_for_label }}">Fecha fin: </label>
+                    {{ form.fecha_fin|attr:"id:id_fecha_fin" }}
+                    {{ form.fecha_fin.errors }}
+                </div>
+            {% endif %}
             <div class="col-md-6">
                 <label for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos: </label>
                 {{ form.bd_contacto }}

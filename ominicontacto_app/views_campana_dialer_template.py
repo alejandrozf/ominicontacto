@@ -48,6 +48,12 @@ class CampanaDialerTemplateCreateView(CampanaTemplateCreateMixin, CampanaDialerC
     template base para agilizar la creación de las campañas dialer
     """
 
+    # FIXME: esto debería hacerse de forma más elegante usando herencia,
+    # pero necesita un refactor
+    FORMS = CampanaDialerCreateView.FORMS[:-1]
+
+    form_list = FORMS
+
     def done(self, form_list, *args, **kwargs):
         self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO)
         return HttpResponseRedirect(reverse('lista_campana_dialer_template'))
