@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans 'Troncales SIP' %}</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>{% trans 'Nombre' %}</th>
+            <th>{% trans 'Caller ID' %}</th>
+            <th>{% trans 'Canales Máximos' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for sip_trunk in page_obj %}
+        <tr>
+            <td>{{ sip_trunk.id }}</td>
+            <td><a href="{% url 'editar_troncal_sip' sip_trunk.id %}">{{ sip_trunk.nombre }}</a></td>
+            <td>{{ sip_trunk.caller_id }}</td>
+            <td>{{ sip_trunk.canales_maximos }}</td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td>{% trans 'No hay Troncales SIP configuradas' %}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<a class="btn btn-light btn-sm" href="{% url 'crear_troncal_sip' %}" >{% trans 'Agregar' %}</a>
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="{% url 'user_list' page=page_obj.previous_page_number%}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">{% trans 'Anterior' %}</span>
+                </a>
+            </li>
+        {% endif %}
+
+        <li class="page-item current">
+            Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
+        </li>
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{% url 'user_list' page=page_obj.next_page_number %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">{% trans 'Siguiente' %}</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}

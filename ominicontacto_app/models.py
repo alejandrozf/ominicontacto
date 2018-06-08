@@ -48,6 +48,11 @@ class User(AbstractUser):
             agente_profile = self.agenteprofile
         return agente_profile
 
+    def get_is_agente(self):
+        if self.is_agente and self.get_agente_profile():
+            return True
+        return False
+
     def get_supervisor_profile(self):
         supervisor_profile = None
         if hasattr(self, 'supervisorprofile'):

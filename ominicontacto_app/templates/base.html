@@ -310,6 +310,15 @@
                     </ul>
                 </li>
                 <li class="main-menu-li">
+                    <span class="icon icon-headset"></span>
+                    <a class="menu-header" href="#menuTelefonia" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Telefonía' %}</a>
+                    <ul class="collapse list-unstyled submenu" id="menuTelefonia" data-parent="#nav-main-menu">
+                        <li>
+                            <a href="{% url 'lista_troncal_sip' %}">Troncales SIP</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="main-menu-li">
                     <span class="icon icon-info"></span>
                     <a class="menu-link" href="{% url 'acerca' %}">Acerca de</a>
                 </li>
