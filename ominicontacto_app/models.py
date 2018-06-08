@@ -1161,6 +1161,9 @@ class Queue(models.Model):
     audio_de_ingreso = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
                                          on_delete=models.SET_NULL,
                                          related_name='queues_ingreso')
+    audios = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
+                               on_delete=models.SET_NULL,
+                               related_name='queues_anuncio_periodico')
 
     # Predictiva
     initial_predictive_model = models.BooleanField(default=False)

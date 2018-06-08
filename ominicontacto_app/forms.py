@@ -132,17 +132,12 @@ class QueueEntranteForm(forms.ModelForm):
     El form de cola para las colas
     """
 
-    audios = forms.ChoiceField(choices=[], required=False)
-
     def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = False
-        audios_choices = [(audio.id, audio.descripcion)
-                          for audio in audios_choices]
-        audios_choices.insert(0, EMPTY_CHOICE)
-        self.fields['audios'].choices = audios_choices
+        self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
