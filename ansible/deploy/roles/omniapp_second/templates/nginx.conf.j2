@@ -37,8 +37,8 @@ http {
     include /etc/nginx/conf.d/*.conf;
 
     server {
-        listen       1180 default_server;
-        listen       [::]:1180 default_server;
+        listen       80 default_server;
+        listen       [::]:80 default_server;
         server_name  _;
         root         /usr/share/nginx/html;
 
@@ -57,6 +57,12 @@ http {
         {% endif %}
             autoindex on;
             allow all;
+        }
+
+        location /coverage {
+            alias /tmp/oml-coverity
+            autoindex off
+            index /tmp/oml-coverity/index.html
         }
 
         error_page 404 /404.html;
