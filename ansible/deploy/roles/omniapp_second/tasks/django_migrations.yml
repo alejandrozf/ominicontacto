@@ -27,6 +27,7 @@
           - collectstatic
           - compress
           - regenerar_asterisk
+          - populate_history --auto
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: yes

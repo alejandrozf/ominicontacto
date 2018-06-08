@@ -7,7 +7,7 @@
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
 - name: Change permissions on id_rsa
-  shell: "chmod 700 /home/{{ usuario }}/.ssh/id_rsa"
+  shell: "chmod 700 {{ install_prefix }}/.ssh/id_rsa"
   tags: postinstall
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
