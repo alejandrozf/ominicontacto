@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'formtools',
     'widget_tweaks',
     'reportes_app',
+    'configuracion_telefonia_app',
     'simple_history',
 ]
 
