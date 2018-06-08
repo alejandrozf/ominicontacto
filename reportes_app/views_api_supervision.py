@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict
+
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
@@ -20,22 +22,24 @@ class LlamadasDeCampanaView(View):
     """
     Devuelve un JSON con cantidades de tipos de llamadas de la campaña para el dia de la fecha
     """
-    TIPOS = {
-        "t_abandono": _(u'Tiempo de Abandono(prom.)'),
-        "atendidas": _(u'Llamadas Atendidas'),
-        "abandonadas": _(u'Llamadas Abandonadas'),
-        "expiradas": _(u'Llamadas Expiradas'),
-        "recibidas": _(u'Llamadas Recibidas'),
-        "t_espera_conexion": _(u'Tiempo de Espera de Conexión(prom.)'),
-        't_espera_atencion': _(u'Tiempo de Espera de Atención(prom.)'),
-        "efectuadas_manuales": _(u'Llamadas Efectuadas Manuales'),
-        "conectadas_manuales": _(u'Llamadas Conectadas Manuales'),
-        "no_conectadas_manuales": _(u'Llamadas No Conectadas Manuales'),
-        "t_espera_conexion_manuales": _(u'Tiempo de Espera de Conexión Manuales(prom.)'),
-        'conectadas': _(u'Llamadas Conectadas'),
-        'efectuadas': _(u'Llamadas Efectuadas'),
-        'no_conectadas': _(u'Llamadas No Conectadas'),
-    }
+    TIPOS = OrderedDict([
+        ("recibidas", _(u'Recibidas')),
+        ('efectuadas', _(u'Efectuadas')),
+        ("atendidas", _(u'Atendidas')),
+        ('conectadas', _(u'Conectadas')),
+        ('no_conectadas', _(u'No Conectadas')),
+        ("abandonadas", _(u'Abandonadas')),
+        ("expiradas", _(u'Expiradas')),
+        ("t_espera_conexion", _(u'Tiempo de Espera de Conexión(prom.)')),
+        ('t_espera_atencion', _(u'Tiempo de Espera de Atención(prom.)')),
+        ("t_abandono", _(u'Tiempo de Abandono(prom.)')),
+    ])
+    TIPOS_MANUALES = OrderedDict([
+        ("efectuadas_manuales", _(u'Efectuadas Manuales')),
+        ("conectadas_manuales", _(u'Conectadas Manuales')),
+        ("no_conectadas_manuales", _(u'No Conectadas Manuales')),
+        ("t_espera_conexion_manuales", _(u'Tiempo de Espera de Conexión Manuales(prom.)')),
+    ])
 
     def get(self, request, pk_campana):
         hoy_ahora = now()
@@ -43,9 +47,15 @@ class LlamadasDeCampanaView(View):
         try:
             reporte = ReporteTipoDeLlamadasDeCampana(hoy_inicio, hoy_ahora, pk_campana)
             reporte.estadisticas.pop('nombre')
-            data = {'status': 'OK'}
-            for nombre_campo, value in reporte.estadisticas.iteritems():
-                data[self.TIPOS[nombre_campo]] = value
+            data = {'status': 'OK', 'llamadas': []}
+            for campo, nombre in self.TIPOS.iteritems():
+                if campo in reporte.estadisticas:
+                    data['llamadas'].append((nombre, reporte.estadisticas[campo]))
+            for campo, nombre in self.TIPOS_MANUALES.iteritems():
+                if campo in reporte.estadisticas:
+                    if 'manuales' not in data:
+                        data['manuales'] = []
+                    data['manuales'].append((nombre, reporte.estadisticas[campo]))
 
         except ObjectDoesNotExist:
             data = {'status': 'Error', 'error_message': _(u'No existe la campaña')}
