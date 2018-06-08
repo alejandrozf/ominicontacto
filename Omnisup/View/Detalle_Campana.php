@@ -97,7 +97,7 @@
                 <tr><td>Manuales NO atendidas</td><td id="manualsna"></td></tr>
                 <tr><td>Contestador detectado</td><td id="answererdetected"></td></tr> -->
               </tbody>
-              <tr><td><b>Otros:</b></td><td></td></tr>
+              <tr><td><b>Llamadas:</b></td><td></td></tr>
               <tbody id="bodyScore">
               </tbody>
           </table>

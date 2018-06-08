@@ -66,11 +66,21 @@ function actualiza_contenido_camp() {
     success: function (msg) {
       $("#bodyScore").html("");
       var mje = $.parseJSON(msg), trHTML = '';
-      $.each (mje, function (i, item) {
+      var llamadas = mje['llamadas'];
+      $.each (llamadas, function (i, item) {
         if (i !== 'status') {
-          trHTML += '<tr><td>' + i + '</td><td>' + item + '</td></tr>';
+          trHTML += '<tr><td>' + item[0] + '</td><td>' + item[1] + '</td></tr>';
         }
       });
+      if (mje.hasOwnProperty('manuales')){
+        var manuales = mje['manuales'];
+        trHTML += '<tr><td><b>Llamadas Manuales:</b></td><td></td></tr>';
+        $.each (manuales, function (i, item) {
+          if (i !== 'status') {
+            trHTML += '<tr><td>' + item[0] + '</td><td>' + item[1] + '</td></tr>';
+          }
+        });
+      }
       $("#bodyScore").append(trHTML);
     },
     error: function (jqXHR, textStatus, errorThrown) {
