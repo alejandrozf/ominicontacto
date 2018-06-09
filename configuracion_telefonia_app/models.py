@@ -45,7 +45,8 @@ class RutaSaliente(models.Model):
 
 class PatronDeDiscado(models.Model):
     """Configuración de Patron de Discado para una Ruta Saliente"""
-    ruta_saliente = models.ForeignKey(RutaSaliente, related_name='patrones_de_discado')
+    ruta_saliente = models.ForeignKey(RutaSaliente, related_name='patrones_de_discado',
+                                      on_delete=models.CASCADE)
     prepend = models.PositiveIntegerField(blank=True, null=True)
     prefix = models.PositiveIntegerField(blank=True, null=True)
     match_pattern = models.CharField(max_length=100, validators=[RegexValidator(R_MATCH_PATTERN)])
@@ -57,9 +58,11 @@ class PatronDeDiscado(models.Model):
 
 class OrdenTroncal(models.Model):
     """Posición ordenada de un Troncal Sip en una Ruta Saliente"""
-    ruta_saliente = models.ForeignKey(RutaSaliente, related_name='secuencia_troncales')
+    ruta_saliente = models.ForeignKey(RutaSaliente, related_name='secuencia_troncales',
+                                      on_delete=models.CASCADE)
     orden = models.PositiveIntegerField()
-    troncal = models.ForeignKey(TroncalSIP, related_name='orden_en_ruta_saliente')
+    troncal = models.ForeignKey(TroncalSIP, related_name='ordenes_en_rutas_salientes',
+                                on_delete=models.PROTECT)
 
     class Meta:
         unique_together = ('orden', 'ruta_saliente')

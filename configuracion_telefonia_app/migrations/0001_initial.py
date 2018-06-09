@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ordentroncal',
             name='troncal',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orden_en_ruta_saliente', to='configuracion_telefonia_app.TroncalSIP'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='ordenes_en_rutas_salientes', to='configuracion_telefonia_app.TroncalSIP'),
         ),
         migrations.AlterUniqueTogether(
             name='ordentroncal',

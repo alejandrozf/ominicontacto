@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
@@ -46,7 +46,7 @@ class TroncalSIPUpdateView(TroncalSIPMixin, UpdateView):
 
 class TroncalSIPDeleteView(DeleteView):
     """
-    Esta vista se encarga de la eliminación de una campana
+    Esta vista se encarga de la eliminación de un troncal sip
     """
     model = TroncalSIP
     template_name = 'delete_troncal_sip.html'
@@ -157,3 +157,40 @@ class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
         context['patrondiscado_formset'] = patrondiscado_formset
         context['ordentroncal_formset'] = ordentroncal_formset
         return context
+    template_name = 'lista_troncal_sip.html'
+
+
+class EliminarRutaSaliente(DeleteView):
+    model = RutaSaliente
+    success_url = reverse_lazy('lista_troncal_sip')
+    template_name = 'eliminar_ruta_saliente.html'
+    context_object_name = 'ruta_saliente'
+
+    def get_context_data(self, **kwargs):
+        context = super(EliminarRutaSaliente, self).get_context_data(**kwargs)
+        huerfanos = []
+        ruta_saliente = self.object
+        for orden in ruta_saliente.secuencia_troncales.all():
+            troncal = orden.troncal
+            if troncal.ordenes_en_rutas_salientes.count() <= 1:
+                huerfanos.append(orden.troncal)
+        context['troncales_huerfanos'] = huerfanos
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        print("TODO: Capturar bien las excepciones correspondientes.")
+        try:
+            eliminar_ruta_saliente_config(self.get_object())
+        except Exception as e:
+            messages.error(request, _(u'No se ha podido eliminar la Ruta Saliente.'))
+            return redirect('eliminar_ruta_saliente', pk=kwargs['pk'])
+
+        messages.success(request, _(u'Se ha eliminado la Ruta Saliente.'))
+        return super(EliminarRutaSaliente, self).delete(request, *args, **kwargs)
+
+
+def eliminar_ruta_saliente_config(ruta_saliente):
+    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
+    print ("TODO: IMPLEMENTAR!!!")
+    # Exception('No se pudo eliminar bien.')
+    pass
