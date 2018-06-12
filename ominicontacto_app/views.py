@@ -215,17 +215,15 @@ class AgenteProfileCreateView(CreateView):
                 reverse('user_list', kwargs={"page": 1}))
         return super(AgenteProfileCreateView, self).dispatch(request, *args,
                                                              **kwargs)
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         usuario = User.objects.get(pk=self.kwargs['pk_user'])
         self.object.user = usuario
         self.object.sip_extension = 1000 + usuario.id
-        # generar un sip_password aleatorio
-        self.object.sip_password = User.objects.make_random_password()
-        self.object.reported_by = self.request.user
+        self.object.sip_password = self.object.generar_contrasena()
+	self.object.reported_by = self.request.user
         self.object.save()
-        # insertar agente en kamailio-debian
+        # insertar agente en kamailio
         kamailio_service = KamailioService()
         kamailio_service.crear_agente_kamailio(self.object)
         # generar archivos sip en asterisk
@@ -479,6 +477,14 @@ class PausaToggleDeleteView(TemplateView):
         pausa.save()
         return redirect('pausa_list')
 
+def get_new_credentials(request):
+    agente_profile = request.user.get_agente_profile()
+    if request.user.is_authenticated() and agente_profile:
+	user_ephemeral = agente_profile.generar_usuario()
+	pass_ephemeral = agente_profile.generar_contrasena()
+    response = JsonResponse({'sipExt': user_ephemeral, 'sipSec': pass_ephemeral})
+    return response
+ 
 
 def node_view(request):
     """Esta vista renderiza la pantalla del agente"""
@@ -486,7 +492,10 @@ def node_view(request):
     campanas_preview_activas = []
     agente_profile = request.user.get_agente_profile()
     if request.user.is_authenticated() and agente_profile:
-        registro = DuracionDeLlamada.objects.filter(
+	
+	# Regenera credendiales cada vez que se loguea el agente
+	#agente_profile.regenerar_credenciales()
+	registro = DuracionDeLlamada.objects.filter(
             agente=request.user.get_agente_profile(),
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)

@@ -15,14 +15,16 @@ class KamailioService():
     def crear_agente_kamailio(self, agente):
         """
         insert agente en subscriber
+	añado timestamp en columna email-address, para no alterar la tabla
         """
         with connection.cursor() as cursor:
-            sql = """INSERT INTO subscriber (id, username, password)
-            VALUES (%(id)s, %(name)s, %(kamailiopass)s)
+            sql = """INSERT INTO subscriber (id, email_address, username, password)
+            VALUES (%(id)s, %(timestamp)s, %(name)s, %(kamailiopass)s)
             """
             params = {
                 'id': agente.user.id,
                 'name': agente.sip_extension,
+		'timestamp': agente.timestamp,
                 'kamailiopass': agente.sip_password
             }
             cursor.execute(sql, params)
@@ -34,17 +36,19 @@ class KamailioService():
 
         with connection.cursor() as cursor:
             sql = """UPDATE subscriber SET username=%(name)s,
-                  password=%(kamailiopass)s
+                  password=%(kamailiopass)s,
+		  email_address=%(timestamp)s
                   WHERE id=%(id)s"""
             params = {
                 'id': agente.user.id,
                 'name': agente.sip_extension,
+		'timestamp': agente.timestamp,
                 'kamailiopass': agente.sip_password
             }
             cursor.execute(sql, params)
-            row = cursor.fetchone()
+            #row = cursor.fetchone()
 
-        return row
+        #return row
 
     def delete_agente_kamailio(self, agente):
         """

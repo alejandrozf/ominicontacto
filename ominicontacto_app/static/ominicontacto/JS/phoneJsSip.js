@@ -7,6 +7,7 @@ var local = document.getElementById('localAudio');
 var remoto = document.getElementById('remoteAudio');
 var displayNumber = document.getElementById("numberToCall");
 var pauseButton = document.getElementById("Pause");
+var var1, var2;
 
 function updateButton(btn,clsnm,inht) {
 	 	 btn.className = clsnm;
@@ -114,19 +115,51 @@ $(function() {
     makeCall();
   });
 
-  if($("#sipExt").val() && $("#sipSec").val()) {
-    config = {
-      uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
+function consult() {
+        $.ajax({
+                type: "GET",
+                url: "/get_new_credentials/",
+                contentType: "html",
+                success: function(msg) {
+//                        var mje = JSON.parse(msg);
+                  var1 = msg.sipExt;
+                  var2 = msg.sipSec;
+                  config = {
+                    uri : "sip:"+var1+"@"+KamailioIp,
+                    ws_servers : "wss://"+KamailioIp+":"+ KamailioPort,
+                    password : var2,
+                    realm: KamailioIp,
+                    hack_ip_in_contact: true,
+                    session_timers: false,
+                    pcConfig: {
+                      rtcpMuxPolicy: 'negotiate'
+                    }
+                  };
+
+                  userAgent = new JsSIP.UA(config);
+                  sesion = userAgent.start();
+                },
+                error: function() {
+                        console.log("Hubo un error al renderizar las credenciales"); }
+        });
+}
+consult();
+setInterval(consult,29000);
+
+
+  //if(var1 && var2) {
+/*    config = {
+      uri : "sip:"+var1+"@"+KamailioIp,
       ws_servers : "wss://"+KamailioIp+":"+ KamailioPort,
-      password : $("#sipSec").val(),
+      password : var2,
+      realm: KamailioIp,
       hack_ip_in_contact: true,
       session_timers: false,
 			pcConfig: {
 				rtcpMuxPolicy: 'negotiate'}
-    };
-    userAgent = new JsSIP.UA(config);
-    sesion = userAgent.start();
-  }
+    };*/
+
+  //}
 
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');

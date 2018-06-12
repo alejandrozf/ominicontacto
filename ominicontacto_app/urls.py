@@ -107,6 +107,7 @@ urlpatterns = [
         name='pausa_delete',
         ),
     url(r'^node/$', login_required(views.node_view), name='view_node'),
+    url(r'^get_new_credentials/$', login_required(views.get_new_credentials), name='get_new_credentials'),
     url(r'^smsThread/$',
         login_required(views.mensajes_recibidos_enviado_remitente_view),
         name='view_sms_thread'),
