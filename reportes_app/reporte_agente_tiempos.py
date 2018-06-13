@@ -736,7 +736,7 @@ class TiemposAgente(object):
                 time_actual = logs.time
                 is_unpause = True
         for item in tiempos_pausa:
-            datos_de_pausa = self._obtener_datos_de_pausa(pausa_id)
+            datos_de_pausa = self._obtener_datos_de_pausa(str(pausa_id))
             tiempo = str(timezone.timedelta(seconds=tiempos_pausa[item].seconds))
             tiempo_agente = {
                 'fecha': item,
