@@ -859,8 +859,8 @@ def cargar_base_datos_view(request):
         try:
             usuario = UserApiCrm.objects.get(
                 usuario=received_json_data['user_api'])
-
-            if usuario.password == received_json_data['password_api']:
+            received_password = received_json_data['password_api']
+            if check_password(received_password,usuario.password):
                service = CreacionBaseDatosApiService()
                base_datos = service.crear_base_datos_api(
                    received_json_data['nombre'])

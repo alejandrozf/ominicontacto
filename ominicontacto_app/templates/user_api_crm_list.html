@@ -8,14 +8,12 @@
     <thead>
         <tr>
             <th>usuario</th>
-            <th>password</th>
         </tr>
     </thead>
     <tbody>
     {% for user in object_list %}
         <tr>
             <td>{{ user.usuario }}</td>
-            <td>{{ user.password}}</td>
             <td>
                 <a class="btn btn-light btn-sm" href="{% url 'user_api_crm_update' user.id %}">
                     Editar
