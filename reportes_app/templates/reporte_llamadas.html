@@ -61,159 +61,162 @@
 {% endblock %}
 
 {% block content %}
+<h1>{% trans 'Llamadas' %}</h1>
+
 <form id="exportar_reporte" action="{% url 'csv_reporte_llamadas' %}" method="POST">
     {% csrf_token %}
     <input class="hidden" name="estadisticas" type="text" value="{{ estadisticas_json }}"/>
     <input class="hidden" name="tipo_reporte" id="tipo_reporte" type="text" value=""/>
 </form>
-<div class="col-md-6">
 
-  <form role="form" method="post" enctype="multipart/form-data" >
-    {% csrf_token %}
-    <table class="table">
-      <tr>
-        <td>
-          <div class="input-group date pull-right active" id="">
-            {{form.fecha.errors}}
-            {{form.fecha}}
-            <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
-            </span>
-          </div>
-          <div>
-            {{form.finalizadas.label_tag}} {{form.finalizadas}}
-          </div>
-        </td>
-        <td>
-          <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-            {% trans 'Filtrar por esa fecha' %}
-          </button>
-        </td>
-      </tr>
-    </table>
-  </form>
-
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>{% trans 'Buscar' %}</button>
+    <div id="wrapperSearchForm" class="show">
+        <form role="form" method="post" enctype="multipart/form-data" >
+          {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-6 date active" id="">
+                    <label>{% trans 'Fecha' %}:</label>
+                    {{form.fecha}}
+                    {{form.fecha.errors}}
+                </div>
+                <div class="col-md-6">
+                  {{form.finalizadas.label_tag}} 
+                  {{form.finalizadas}}
+                </div>
+            </div>
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+              {% trans 'Filtrar por esa fecha' %}
+            </button>
+        </form>
+    </div>
 </div>
 
-<div>
-  <h2>{% trans 'Período evaluado' %} {{desde|date:"d/m/Y"}} - {{hasta|date:"d/m/Y"}}</h2>
-</div>
-
+<h2>{% trans 'Período evaluado' %} {{desde|date:"d/m/Y"}} - {{hasta|date:"d/m/Y"}}</h2>
+<hr>
 {% if user.get_is_administrador %}
   <div>
-    <table class="table table-bordered">
-      <tr>
-        <td><strong>{% trans 'Total llamadas procesadas por OmniLeads' %}</strong></td>
-        <td width="10%">{{estadisticas.total_llamadas_procesadas}}</td>
-      </tr>
-    </table>
+      <div class="jumbotron">
+        <h1 class="display-2">{{estadisticas.total_llamadas_procesadas}}</h1>
+        <h3>{% trans 'Llamadas procesadas' %}</h3>
+      </div>
 
     {% with llamadas_por_tipo=estadisticas.llamadas_por_tipo %}
-    <table class="table table-bordered">
-      <tr>
-        <td><strong>{% trans 'Tipos de llamadas salientes por Discador' %}</strong></td>
-        <td width="10%">{{llamadas_por_tipo.Dialer.total}}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas atendidas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Dialer.atendidas }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas no atendidas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Dialer.no_atendidas }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas perdidas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Dialer.perdidas }}</td>
-      </tr>
-    </table>
-    {% if estadisticas_por_fecha.llamadas_por_tipo.Dialer %}
-      <button class="btn btn-default" onclick="mostrarLlamadasPorFecha('Dialer');">
-        {% trans 'Desglosar por fecha' %}
-      </button><br><br>
-    {% endif %}
-
-    <table class="table table-bordered">
-      <tr>
-        <td><strong>{% trans 'Tipos de llamadas Entrantes' %}</strong></td>
-        <td width="10%">{{ llamadas_por_tipo.Entrante.total }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas atendidas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Entrante.atendidas }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas expiradas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Entrante.expiradas }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas abandonadas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Entrante.abandonadas }}</td>
-      </tr>
-    </table>
-    {% if estadisticas_por_fecha.llamadas_por_tipo.Entrante %}
-      <button class="btn btn-default" onclick="mostrarLlamadasPorFecha('Entrante');">
-        {% trans 'Desglosar por fecha' %}
-      </button><br><br>
-    {% endif %}
-
-    <table class="table table-bordered">
-      <tr>
-        <td><strong>{% trans 'Tipos de llamadas salientes Manuales' %}</strong></td>
-        <td width="10%">{{ llamadas_por_tipo.Manual.total }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas conectadas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Manual.conectadas }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas no conectadas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Manual.no_conectadas }}</td>
-      </tr>
-    </table>
-    {% if estadisticas_por_fecha.llamadas_por_tipo.Manual %}
-      <button class="btn btn-default" onclick="mostrarLlamadasPorFecha('Manual');">
-        {% trans 'Desglosar por fecha' %}
-      </button><br><br>
-    {% endif %}
-
-    <table class="table table-bordered">
-      <tr>
-        <td><strong>{% trans 'Tipos de llamadas salientes Preview' %}</strong></td>
-        <td width="10%">{{ llamadas_por_tipo.Preview.total }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas conectadas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Preview.conectadas }}</td>
-      </tr>
-      <tr>
-        <td>{% trans 'Cantidad de llamadas no conectadas' %}</td>
-        <td width="10%">{{ llamadas_por_tipo.Preview.no_conectadas }}</td>
-      </tr>
-    </table>
-    {% if estadisticas_por_fecha.llamadas_por_tipo.Preview %}
-      <button class="btn btn-default" onclick="mostrarLlamadasPorFecha('Preview');">
-        {% trans 'Desglosar por fecha' %}
-      </button><br><br>
-    {% endif %}
-
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-bordered table-sm">
+              <tr>
+                <td><strong>{% trans 'Llamadas salientes por Discador' %}</strong></td>
+                <td width="10%">{{llamadas_por_tipo.Dialer.total}}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'Atendidas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Dialer.atendidas }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'No atendidas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Dialer.no_atendidas }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'Perdidas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Dialer.perdidas }}</td>
+              </tr>
+            </table>
+            {% if estadisticas_por_fecha.llamadas_por_tipo.Dialer %}
+              <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Dialer');">
+                {% trans 'Desglosar por fecha' %}
+              </button>
+            {% endif %}
+            <hr class="hr-space">
+        </div>
+        <div class="col-md-6">
+            <table class="table table-bordered table-sm">
+              <tr>
+                <td><strong>{% trans 'Llamadas Entrantes' %}</strong></td>
+                <td width="10%">{{ llamadas_por_tipo.Entrante.total }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'Atendidas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Entrante.atendidas }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'Expiradas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Entrante.expiradas }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'Abandonadas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Entrante.abandonadas }}</td>
+              </tr>
+            </table>
+            {% if estadisticas_por_fecha.llamadas_por_tipo.Entrante %}
+              <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Entrante');">
+                {% trans 'Desglosar por fecha' %}
+              </button>
+            {% endif %}
+            <hr class="hr-space">
+        </div>
+        <div class="col-md-6">
+            <table class="table table-bordered table-sm">
+              <tr>
+                <td><strong>{% trans 'Llamadas salientes Manuales' %}</strong></td>
+                <td width="10%">{{ llamadas_por_tipo.Manual.total }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'Conectadas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Manual.conectadas }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'No conectadas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Manual.no_conectadas }}</td>
+              </tr>
+            </table>
+            {% if estadisticas_por_fecha.llamadas_por_tipo.Manual %}
+              <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Manual');">
+                {% trans 'Desglosar por fecha' %}
+              </button>
+            {% endif %}
+            <hr class="hr-space">
+        </div>
+        <div class="col-md-6">
+            <table class="table table-bordered table-sm">
+              <tr>
+                <td><strong>{% trans 'Llamadas salientes Preview' %}</strong></td>
+                <td width="10%">{{ llamadas_por_tipo.Preview.total }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'Conectadas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Preview.conectadas }}</td>
+              </tr>
+              <tr>
+                <td>{% trans 'No conectadas' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.Preview.no_conectadas }}</td>
+              </tr>
+            </table>
+            {% if estadisticas_por_fecha.llamadas_por_tipo.Preview %}
+              <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Preview');">
+                {% trans 'Desglosar por fecha' %}
+              </button>
+            {% endif %}
+            <hr class="hr-space">
+        </div>
+    </div>
     {% endwith %}
-    <button class="btn btn-outline-primary" onclick="exportarReporte('llamadas_por_tipo');">
-      {% trans 'Exportar totales llamadas(CSV)' %}
-    </button>
-
-
-  <br>
-  <div>
-      <form action="{% url 'zip_reportes_llamadas' %}" method="POST">
-          {% csrf_token %}
-          <input class="hidden" name="estadisticas" type="text" value="{{ estadisticas_json }}"/>
-          <button class="btn btn-outline-primary">{% trans 'Exportar a CSV todos los reportes' %}</button>
-          <br>
-      </form>
-  </div>
-
-  </div>
-  <br>
+    <div class="row">
+        <div class="col-md-6">
+            <button class="btn btn-outline-primary" onclick="exportarReporte('llamadas_por_tipo');">
+              {% trans 'Exportar totales llamadas(CSV)' %}
+            </button>
+        </div>
+        <div class="col-md-6">
+            <form action="{% url 'zip_reportes_llamadas' %}" method="POST">
+                {% csrf_token %}
+                <input class="hidden" name="estadisticas" type="text" value="{{ estadisticas_json }}"/>
+                <button class="btn btn-outline-primary">{% trans 'Exportar a CSV todos los reportes' %}</button>
+                <br>
+            </form>          
+        </div>
+    </div>
+</div>
 {% endif %}
 
   <hr>
@@ -285,8 +288,8 @@
   <div id="seccion-llamadas-dialer">
     <h2>{% trans 'Distribución de tipos de llamadas en campañas salientes discador' %}</h2>
     <br>
-    <div style="overflow: auto; min-height: 200px; max-height: 400px">
-      <table class="table table-bordered">
+    <div class="table-responsive">
+      <table class="table">
         <thead>
           <tr>
             <th>{% trans 'Campaña' %}</th>
@@ -295,13 +298,13 @@
             <th>{% trans 'Conectadas' %}</th>
             <th>{% trans 'Expiradas' %}</th>
             <th>{% trans 'Abandonadas' %}</th>
-            <th>{% trans 'T. de espera de conexión medio' %}</th>
-            <th>{% trans 'T. de espera de atención medio' %}</th>
+            <th>{% trans 'Espera de conexión medio' %}</th>
+            <th>{% trans 'Espera de atención medio' %}</th>
             <th>{% trans 'T. medio de abandono' %}</th>
             <th>{% trans 'Manuales Efectuadas' %}</th>
             <th>{% trans 'Manuales Conectadas' %}</th>
             <th>{% trans 'Manuales no Conectadas' %}</th>
-            <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
+            <th>{% trans 'Espera de conexión medio Manuales' %}</th>
           </tr>
         </thead>
         {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Dialer.items %}
@@ -368,8 +371,8 @@
 <div id="seccion-llamadas-entrantes">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas entrantes' %}</h2>
   <br>
-  <div style="overflow: auto; min-height: 200px; max-height: 400px">
-    <table class="table table-bordered">
+  <div class="table-responsive">
+    <table class="table">
       <thead>
         <tr>
           <th>{% trans 'Nombre' %}</th>
@@ -444,15 +447,14 @@
 <div id="seccion-llamadas-manuales">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas manuales' %}</h2>
   <br>
-  <div style="overflow: auto; min-height: 200px; max-height: 400px">
-    <table class="table table-bordered">
+  <div class="table-responsive">
+    <table class="table">
       <thead>
         <tr>
           <th>{% trans 'Nombre' %}</th>
           <th>{% trans 'Efectuadas' %}</th>
-          <th>{% trans 'Conectadas' %}</th>
-          <th>{% trans 'No Conectadas' %}</th>
-          <th>{% trans 'T. de espera de conexión medio' %}</th>
+          <th>{% trans 'Conexiones' %}</th>
+          <th>{% trans 'T. conexión' %}</th>
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Manual.items %}
@@ -468,8 +470,7 @@
               {% endif %}
             </td>
             <td>{{ campana.efectuadas }}</td>
-            <td>{{ campana.conectadas }}</td>
-            <td>{{ campana.no_conectadas }}</td>
+            <td width="14%"><span class="icon report icon-check"></span>{{ campana.conectadas }} <span class="icon report icon-cancel"></span>{{ campana.no_conectadas }}</td>
             <td>{{ campana.t_espera_conexion|format_seconds }}</td>
           </tr>
           {% if tipos_por_fecha %}
@@ -502,8 +503,8 @@
 <div id="seccion-llamadas-preview">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas Preview' %}</h2>
   <br>
-  <div style="overflow: auto; min-height: 200px; max-height: 400px">
-    <table class="table table-bordered">
+  <div class="table-responsive">
+    <table class="table">
       <thead>
         <tr>
           <th>{% trans 'Nombre' %}</th>
@@ -571,19 +572,19 @@
 <!-- MODALES de Llamadas por tipo desglosadas en fechas -->
 {% with llamadas_por_tipo=estadisticas_por_fecha.llamadas_por_tipo %}
   <div class="modal" id="modalLlamadasDialer" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
             <h1 class="modal-title">{% trans 'Tipos de llamadas salientes por Discador' %}</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <table class="table table-bordered">
+          <table class="table">
             <tr>
-              <td><strong>{% trans 'Fecha' %}</strong></td>
-              <td>{% trans 'Cantidad de llamadas atendidas' %}</td>
-              <td>{% trans 'Cantidad de llamadas no atendidas' %}</td>
-              <td>{% trans 'Cantidad de llamadas perdidas' %}</td>
+              <td>{% trans 'Fecha' %}</td>
+              <td>{% trans 'Atendidas' %}</td>
+              <td>{% trans 'No atendidas' %}</td>
+              <td>{% trans 'Perdidas' %}</td>
               <td><strong>{% trans 'Total' %}</strong></td>
             </tr>
             {% for fecha, llamadas in llamadas_por_tipo.Dialer.items %}
@@ -605,18 +606,18 @@
   </div>
 
   <div class="modal" id="modalLlamadasManual" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
             <h1 class="modal-title">{% trans 'Tipos de llamadas salientes Manuales' %}</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <table class="table table-bordered">
+          <table class="table">
             <tr>
               <td>{% trans 'Fecha' %}</td>
-              <td>{% trans 'Cantidad de llamadas conectadas' %}</td>
-              <td>{% trans 'Cantidad de llamadas no conectadas' %}</td>
+              <td>{% trans 'Conectadas' %}</td>
+              <td>{% trans 'No conectadas' %}</td>
               <td><strong>{% trans 'Total' %}</strong></td>
             </tr>
             {% for fecha, llamadas in llamadas_por_tipo.Manual.items %}
@@ -639,19 +640,19 @@
   </div>
 
   <div class="modal" id="modalLlamadasEntrante" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
             <h1 class="modal-title">{% trans 'Tipos de llamadas Entrantes' %}</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <table class="table table-bordered">
+          <table class="table">
             <tr>
               <td>{% trans 'Fecha' %}</td>
-              <td>{% trans 'Cantidad de llamadas atendidas' %}</td>
-              <td>{% trans 'Cantidad de llamadas expiradas' %}</td>
-              <td>{% trans 'Cantidad de llamadas abandonadas' %}</td>
+              <td>{% trans 'Atendidas' %}</td>
+              <td>{% trans 'Expiradas' %}</td>
+              <td>{% trans 'Abandonadas' %}</td>
               <td><strong>{% trans 'Total' %}</strong></td>
             </tr>
             {% for fecha, llamadas in llamadas_por_tipo.Entrante.items %}
@@ -673,18 +674,18 @@
   </div>
 
   <div class="modal" id="modalLlamadasPreview" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
             <h1 class="modal-title">{% trans 'Tipos de llamadas salientes Preview' %}</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <table class="table table-bordered">
+          <table class="table">
             <tr>
               <td>{% trans 'Fecha' %}</td>
-              <td>{% trans 'Cantidad de llamadas conectadas' %}</td>
-              <td>{% trans 'Cantidad de llamadas no conectadas' %}</td>
+              <td>{% trans 'Conectadas' %}</td>
+              <td>{% trans 'No conectadas' %}</td>
               <td><strong>{% trans 'Total' %}</strong></td>
             </tr>
             {% for fecha, llamadas in llamadas_por_tipo.Preview.items %}
