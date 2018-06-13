@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% load widget_tweaks %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+     /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
+        en un formset  */
+     debugger;
+     $('.patronesDiscado').formset({
+       addText: 'Agregar patron de discado',
+       deleteText: 'Remover',
+       prefix: '{{ patrondiscado_formset.prefix }}',
+       addCssClass: 'addFormset btn btn-outline-primary',
+       deleteCssClass: 'deleteFormset btn btn-outline-danger',
+     });
+     $('.troncalesOrdenados').formset({
+       addText: 'Agregar troncal',
+       deleteText: 'Remover',
+       prefix: '{{ ordentroncal_formset.prefix }}',
+       addCssClass: 'addFormset btn btn-outline-primary',
+       deleteCssClass: 'deleteFormset btn btn-outline-danger',
+     });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <form action="" role="form" method="POST">
+        {% csrf_token  %}
+        {{ form }}
+        <div class="row">
+            <div class="column-md-5">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        {% if patrondiscado_formset.non_form_errors %}
+                            {% for error in patrondiscado_formset.non_form_errors %}
+                                <div class="alert alert-warning">{{ error|escape }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        {% for patrondiscado_form in patrondiscado_formset.forms %}
+                            <tr class="patronesDiscado">
+                                <td>
+                                    {% if patrondiscado_form.instance.pk %}
+                                        {{ patrondiscado_form.DELETE }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ patrondiscado_form.prepend.errors }}
+                                    {{ patrondiscado_form.prepend|add_class:"form-control" }}
+                                </td>
+                                <td>
+                                    {{ patrondiscado_form.prefix.errors }}
+                                    {{ patrondiscado_form.prefix|add_class:"form-control" }}
+                                </td>
+                                <td>
+                                    {{ patrondiscado_form.match_pattern.errors }}
+                                    {{ patrondiscado_form.match_pattern|add_class:"form-control" }}
+                                </td>
+                                <td>{{ patrondiscado_form.id }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="column-md-5 col-md-offset-2">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        {% if ordentroncal_formset.non_form_errors %}
+                            {% for error in ordentroncal_formset.non_form_errors %}
+                                <div class="alert alert-warning">{{ error|escape }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        {% for ordentroncal_form in ordentroncal_formset.forms %}
+                            <tr class="troncalesOrdenados">
+                                <td>
+                                    {% if ordentroncal_form.instance.pk %}
+                                        {{ ordentroncal_form.DELETE }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ ordentroncal_form.troncal.errors }}
+                                    {{ ordentroncal_form.troncal|add_class:"form-control" }}
+                                </td>
+                                <td>{{ ordentroncal_form.id }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{ patrondiscado_formset.management_form }}
+        {{ ordentroncal_formset.management_form }}
+        <button type="submit" id="id_registrar" class="btn btn-primary">
+            {% trans 'Guardar' %}
+        </button>
+    </form>
+{% endblock %}

@@ -24,7 +24,7 @@ class TroncalSIP(models.Model):
 class RutaSaliente(models.Model):
     """
     Configuración de Ruta Saliente.
-    Forzar que tenga al menos un patron de discado y un troncal en su secuencia de troncales.
+    Debe tener al menos un patron de discado y un troncal en su secuencia de troncales.
     """
     nombre = models.CharField(
         max_length=128, unique=True, validators=[RegexValidator(R_ALFANUMERICO)])
