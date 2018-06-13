@@ -24,6 +24,9 @@ from django.contrib.auth import authenticate, login
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView
 )
+
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
     Chat, MensajeChat, WombatLog, Campana, Contacto, QueueMember
@@ -299,6 +302,16 @@ class ModuloDeleteView(DeleteView):
     """
     model = Modulo
     template_name = 'delete_modulo.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        modulo = Modulo.objects.get(pk=self.kwargs['pk'])
+        agentes_relacionados = modulo.agenteprofile_set.exists()
+        if agentes_relacionados:
+            message = _("No está permitido eliminar un módulo con agentes relacionados")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(
+                reverse('modulo_list'))
+        return super(ModuloDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('modulo_list')
