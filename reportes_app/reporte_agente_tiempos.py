@@ -90,7 +90,10 @@ class TiemposAgente(object):
                 calculo_ok = False
                 # primer elemento addmember
                 if log_agente.index(logs) == 0 and logs[2] == 'ADDMEMBER':
+                    fecha_hoy = timezone.now()
                     time_actual = datetime_hora_maxima_dia(logs[1])
+                    if cast_datetime_part_date(logs[1]) == cast_datetime_part_date(fecha_hoy):
+                        time_actual = fecha_hoy
                     resta = time_actual - logs[1]
                     calculo_ok = True
                 # ultimo elemento removemember
