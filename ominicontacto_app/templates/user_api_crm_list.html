@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+{% trans 'TEXTO TRADUCIBLE' %}
 
 {% block content %}
 <h1>Usuarios Api Crm</h1>
@@ -15,9 +17,24 @@
         <tr>
             <td>{{ user.usuario }}</td>
             <td>
-                <a class="btn btn-light btn-sm" href="{% url 'user_api_crm_update' user.id %}">
+              <!--  <a class="btn btn-light btn-sm" href="{% url 'user_api_crm_update' user.id %}">
                     Editar
-                </a>
+                </a> -->
+              <div class="dropdown">
+                  <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Opciones
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                      <a class="dropdown-item" href="{% url 'user_api_crm_update' user.id %}">
+                         <span class="icon icon-pencil"></span>Editar
+                      </a>
+                      {% if usuario.id != 1 %}
+                      <a class="dropdown-item" href="{% url 'user_api_crm_delete' user.id %}">
+                          <span class="icon icon-trash"></span>Eliminar
+                      </a>
+                      {% endif %}
+                  </div>
+                </div>
             </td>
         </tr>
    {% empty %}

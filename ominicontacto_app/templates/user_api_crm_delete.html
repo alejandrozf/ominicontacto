@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% trans 'TEXTO TRADUCIBLE' %}
+
+{% block content %}
+<div>
+    <form method="post">{% csrf_token %}
+        <h1>Usuario "{{ object.usuario}}" </h1>
+        <p>¿Esta seguro que desea eliminar este usuario? </p>
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a class="btn btn-outline-danger" href="{% url 'user_api_crm_list' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

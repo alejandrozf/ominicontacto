@@ -9,8 +9,8 @@ modulo views_calificacion_cliente
 from __future__ import unicode_literals
 
 
-from django.core.urlresolvers import reverse
-from django.views.generic import CreateView, UpdateView, ListView
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 from django.contrib.auth.hashers import make_password
 from ominicontacto_app.forms import UserApiCrmForm
 from ominicontacto_app.models import UserApiCrm
@@ -48,8 +48,13 @@ class UserApiCrmUpdateView(PaswordHasherMixin, UpdateView):
     def get_success_url(self):
         return reverse('user_api_crm_list')
 
-
 class UserApiCrmListView(ListView):
     """Vista para listar los userapicrm"""
     model = UserApiCrm
     template_name = 'user_api_crm_list.html'
+
+class UserApiCrmDeleteView(DeleteView):
+    """Vista para eliminar el userapicrm"""
+    model = UserApiCrm
+    success_url = reverse_lazy('user_api_crm_list')
+    template_name = 'user_api_crm_delete.html'
