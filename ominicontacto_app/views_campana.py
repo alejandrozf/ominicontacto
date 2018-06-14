@@ -88,8 +88,6 @@ class CampanaListView(ListView):
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         context['campanas'] = campanas
-        context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
-        context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
                                               oculto=False)
