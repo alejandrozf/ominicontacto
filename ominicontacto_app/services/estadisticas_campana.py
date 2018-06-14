@@ -11,7 +11,7 @@ from collections import OrderedDict
 from pygal.style import Style
 
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
@@ -47,7 +47,8 @@ class EstadisticasService():
         Devuelve la cantidad de llamadas recibidas por agentes pero no calificadas por estos
         """
         total_llamadas_campanas_qs = LlamadaLog.objects.filter(
-            time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk, event='DIAL')
+            time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk).filter(
+                Q(event='DIAL') | Q(event='ENTERQUEUE', tipo_campana=Campana.TYPE_ENTRANTE))
         total_llamadas_campanas = total_llamadas_campanas_qs.count()
         total_calificados = CalificacionCliente.history.filter(
             fecha__range=(fecha_desde, fecha_hasta),
