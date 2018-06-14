@@ -26,7 +26,9 @@
         <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
         <li class="active"><a>{% trans 'Actuacion' %}</a></li>
         <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
-        <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% if not es_template %}
+            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 

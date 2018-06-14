@@ -41,7 +41,9 @@
         <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
         <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
         <li class="active"><a>{% trans 'Reglas Incidencias' %}</a></li>
-        <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% if not es_template %}
+            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 
@@ -85,8 +87,8 @@
                     {% if form.instance.pk %}
                         <td>{{ form.get_en_modo_display}}</td>
                     {% endif %}
-                    <td>{{ form.intento_max }}</td>               
-                    <td class="td-remove"></td>               
+                    <td>{{ form.intento_max }}</td>
+                    <td class="td-remove"></td>
                 </tr>
             {% endfor %}
         </tbody>

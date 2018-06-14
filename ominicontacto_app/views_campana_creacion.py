@@ -18,7 +18,7 @@ from formtools.wizard.views import SessionWizardView
 
 from ominicontacto_app.forms import (CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet,
                                      ParametroExtraParaWebformFormSet)
-from ominicontacto_app.models import Campana, Queue, ArchivoDeAudio
+from ominicontacto_app.models import Campana, ArchivoDeAudio
 
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
@@ -56,6 +56,11 @@ class CampanaTemplateCreateMixin(object):
             name = step_cleaned_data['nombre']
             initial_data.update({'name': name})
         return initial_data
+
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(CampanaTemplateCreateMixin, self).get_context_data(form=form, **kwargs)
+        context['es_template'] = True
+        return context
 
 
 class CampanaTemplateCreateCampanaMixin(object):
