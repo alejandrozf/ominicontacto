@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 import json
 
 from django.contrib import messages
+from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import JsonResponse
