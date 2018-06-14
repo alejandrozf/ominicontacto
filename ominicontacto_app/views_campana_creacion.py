@@ -234,12 +234,9 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
         queue_form.instance.wrapuptime = 0
-        audio_pk = queue_form.cleaned_data['audios']
-        if audio_pk:
-            audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
-            queue_form.instance.announce = audio.audio_asterisk
-        else:
-            queue_form.instance.announce = None
+        audio_anuncio_periodico = queue_form.cleaned_data['audios']
+        if audio_anuncio_periodico:
+            queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
         queue_form.instance.save()
         return queue_form.instance
 
