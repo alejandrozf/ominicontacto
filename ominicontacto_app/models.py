@@ -1009,6 +1009,23 @@ class Campana(models.Model):
             contactos_campana.delete()
             self.finalizar()
 
+    def adicionar_agente_en_contacto(self, contacto):
+        """Crea una nueva entrada para relacionar un agentes y un contactos
+        de una campaña preview
+        """
+        campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
+        datos_contacto = literal_eval(contacto.datos)
+        datos_contacto = dict(zip(campos_contacto, datos_contacto))
+        datos_contacto_json = json.dumps(datos_contacto)
+        AgenteEnContacto.objects.create(
+            agente_id=-1, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
+            telefono_contacto=contacto.telefono, campana_id=self.pk,
+            estado=AgenteEnContacto.ESTADO_INICIAL)
+
+    def get_string_queue_asterisk(self):
+        if self.queue_campana:
+            return self.queue_campana.get_string_queue_asterisk()
+
     def gestionar_opcion_calificacion_agenda(self):
         """
         Devuelve la opción de calificación de agenda para la campaña.

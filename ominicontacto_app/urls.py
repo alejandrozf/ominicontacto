@@ -239,6 +239,25 @@ urlpatterns = [
         login_required(views_base_de_datos_contacto.
                        mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
+
+    # ==========================================================================
+    #  Vistas de manipulación de contactos de una campaña
+    # ==========================================================================
+    url(r'^campana/selecciona/$',
+        login_required(
+            views_contacto.FormularioSeleccionCampanaFormView.as_view()),
+        name='seleccion_campana_adicion_contacto',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
+        login_required(
+            views_contacto.FormularioNuevoContactoFormView.as_view()),
+        name='nuevo_contacto_campana',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/busqueda_contacto/$',
+        login_required(
+            views_contacto.CampanaBusquedaContactoFormView.as_view()),
+        name="campana_busqueda_contacto"),
+
     # ==========================================================================
     #  Templates Campana Entrante
     # ==========================================================================
@@ -280,18 +299,6 @@ urlpatterns = [
     url(r'^campana/elimina/(?P<pk_campana>\d+)/$',
         login_required(views_campana.CampanaDeleteView.as_view()),
         name='campana_elimina',
-        ),
-    # TODO: DEPRECATED? Verificar si se debe eliminar
-    url(r'^campana/selecciona/$',
-        login_required(
-            views_campana.FormularioSeleccionCampanaFormView.as_view()),
-        name='seleccion_campana',
-        ),
-
-    url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
-        login_required(
-            views_campana.FormularioNuevoContactoFormView.as_view()),
-        name='nuevo_contacto_campana',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/ocultar/$',
         login_required(views_campana.OcultarCampanaView.as_view()),
@@ -529,18 +536,6 @@ urlpatterns = [
         login_required(
             views_campana_dialer.UpdateBaseDatosDialerView.as_view()),
         name="campana_dialer_update_base"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/busqueda_contacto/$',
-        login_required(
-            views_campana_dialer.CampanaDialerBusquedaContactoFormView.as_view()),
-        name="campana_dialer_busqueda_contacto"),
-    url(r'^campana_dialer/seleciona_campana/$',
-        login_required(
-            views_campana_dialer.FormularioSeleccionCampanaDialerFormView.as_view()),
-        name="campana_dialer_selecciona_campana"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/nuevo_contacto/$',
-        login_required(
-            views_campana_dialer.FormularioNuevoContactoFormView.as_view()),
-        name="nuevo_contacto_campana_dialer"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/supervisors/$',
         login_required(
             views_campana_dialer.CampanaDialerSupervisorUpdateView.as_view()),

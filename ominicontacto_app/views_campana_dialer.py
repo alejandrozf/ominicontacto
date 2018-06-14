@@ -7,22 +7,16 @@ Observacion se copiaron varias vistas del modulo views_campana
 
 from __future__ import unicode_literals
 
-import json
-
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
-from ominicontacto_app.models import Contacto, Campana
 from django.views.generic import ListView, DeleteView, FormView
 from django.views.generic.base import RedirectView
-from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.forms import (
-    UpdateBaseDatosForm, BusquedaContactoForm, FormularioCampanaContacto,
-    FormularioNuevoContacto
-)
 
-from ominicontacto_app.utiles import convertir_ascii_string
+from ominicontacto_app.models import Campana
+from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.forms import UpdateBaseDatosForm
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
 
 import logging as logging_
@@ -300,135 +294,6 @@ class UpdateBaseDatosDialerView(FormView):
 
     def get_success_url(self):
         return reverse('campana_dialer_list')
-
-
-class CampanaDialerBusquedaContactoFormView(FormView):
-    """Vista realiza la busqueda de contacto en una campana dialer
-    Copiada del modulo views_campana actualmente se usa esta vista, revisar la otra
-    vista si se usa
-    """
-    form_class = BusquedaContactoForm
-    template_name = 'campana_dialer/busqueda_contacto.html'
-
-    def get(self, request, *args, **kwargs):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
-            campana.bd_contacto)
-        return self.render_to_response(self.get_context_data(
-            listado_de_contacto=listado_de_contacto))
-
-    def get_context_data(self, **kwargs):
-        context = super(CampanaDialerBusquedaContactoFormView, self).get_context_data(
-            **kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        context['campana'] = campana
-        return context
-
-    def form_valid(self, form):
-        filtro = form.cleaned_data.get('buscar')
-        try:
-            campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-            listado_de_contacto = Contacto.objects.\
-                contactos_by_filtro_bd_contacto(campana.bd_contacto, filtro)
-        except Contacto.DoesNotExist:
-            listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
-                campana.bd_contacto)
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-
-        if listado_de_contacto:
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-        else:
-            listado_de_contacto = Contacto.objects.contactos_by_bd_contacto(
-                campana.bd_contacto)
-            return self.render_to_response(self.get_context_data(
-                form=form, listado_de_contacto=listado_de_contacto))
-
-
-class FormularioSeleccionCampanaDialerFormView(FormView):
-    """Vista para seleccionar una campana a la cual se le agregar un nuevo contacto
-    Copiada del modulo views_campana actualmente se usa esta vista, revisar la otra
-    vista si se usa
-    """
-    form_class = FormularioCampanaContacto
-    template_name = 'campana_dialer/seleccion_campana_form.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated()\
-                and self.request.user.get_agente_profile():
-            agente = self.request.user.get_agente_profile()
-        if not agente.campana_member.all():
-            message = ("Este agente no esta asignado a ninguna campaña ")
-            messages.warning(self.request, message)
-        return super(FormularioSeleccionCampanaDialerFormView,
-                     self).dispatch(request, *args, **kwargs)
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        if self.request.user.is_authenticated()\
-                and self.request.user.get_agente_profile():
-            agente = self.request.user.get_agente_profile()
-            campanas = [queue.queue_name.campana
-                        for queue in agente.get_campanas_activas_miembro()]
-
-        campana_choice = [(campana.id, campana.nombre) for campana in
-                          campanas if campana.type is Campana.TYPE_DIALER]
-        return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
-
-    def form_valid(self, form):
-        campana = form.cleaned_data.get('campana')
-        return HttpResponseRedirect(
-            reverse('nuevo_contacto_campana_dialer',
-                    kwargs={"pk_campana": campana}))
-
-    def get_success_url(self):
-        reverse('view_blanco')
-
-
-class FormularioNuevoContactoFormView(FormView):
-    """Esta vista agrega un nuevo contacto para la campana seleccionada
-    Copiada del modulo views_campana actualmente se usa esta vista, revisar la otra
-    vista si se usa
-    """
-    form_class = FormularioNuevoContacto
-    template_name = 'campana_dialer/nuevo_contacto_campana.html'
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        base_datos = campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return self.form_class(campos=campos, **self.get_form_kwargs())
-
-    def form_valid(self, form):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        base_datos = campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        telefono = form.cleaned_data.get('telefono')
-
-        datos = []
-        nombres.remove('telefono')
-
-        for nombre in nombres:
-            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        contacto = Contacto.objects.create(
-            telefono=telefono, datos=json.dumps(datos),
-            bd_contacto=base_datos)
-        agente = self.request.user.get_agente_profile()
-
-        return HttpResponseRedirect(
-            reverse('calificacion_formulario_update_or_create',
-                    kwargs={"pk_campana": self.kwargs['pk_campana'],
-                            "pk_contacto": contacto.pk,
-                            "id_agente": agente.pk,
-                            "wombat_id": 0}))
-
-    def get_success_url(self):
-        reverse('view_blanco')
 
 
 class CampanaDialerSupervisorUpdateView(CampanaSupervisorUpdateView):
