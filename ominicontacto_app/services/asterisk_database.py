@@ -203,7 +203,7 @@ class RutaSalienteFamily(object):
     def _genera_dict_ruta(self, ruta):
 
         dict_ruta = {
-            'NAME': ruta.sip_extension,
+            'NAME': ruta.nombre,
             'RINGTIME': ruta.ring_time,
             'OPTIONS': ruta.dial_options,
             'TRUNKS': len(ruta.secuencia_troncales.all())
