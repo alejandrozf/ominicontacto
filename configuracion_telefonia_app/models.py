@@ -20,6 +20,9 @@ class TroncalSIP(models.Model):
     register_string = models.CharField(max_length=100, validators=[RegexValidator(R_ALFANUMERICO)])
     text_config = models.TextField()
 
+    def __unicode__(self):
+        return self.nombre
+
 
 class RutaSaliente(models.Model):
     """
@@ -32,6 +35,9 @@ class RutaSaliente(models.Model):
         validators=[MaxValueValidator(3600), MinValueValidator(1)])
     dial_options = models.CharField(max_length=512, validators=[RegexValidator(R_DIAL_OPT)])
 
+    def __unicode__(self):
+        return self.nombre
+
 
 class PatronDeDiscado(models.Model):
     """Configuración de Patron de Discado para una Ruta Saliente"""
@@ -39,6 +45,10 @@ class PatronDeDiscado(models.Model):
     prepend = models.PositiveIntegerField(blank=True)
     prefix = models.PositiveIntegerField(blank=True)
     match_pattern = models.CharField(max_length=100, validators=[RegexValidator(R_MATCH_PATTERN)])
+
+    def __unicode__(self):
+        return "Patrón de ruta saliente {0}, prepend:{1}, prefix:{2}, match_pattern: {3}".format(
+            self.ruta_saliente.nombre, self.prepend, self.match_pattern)
 
 
 class OrdenTroncal(models.Model):
@@ -49,3 +59,7 @@ class OrdenTroncal(models.Model):
 
     class Meta:
         unique_together = ('orden', 'ruta_saliente')
+
+    def __unicode__(self):
+        return "Troncal {0} con orden {1} para ruta saliente {2}".format(
+            self.troncal.nombre, self.orden, self.ruta_saliente.nombre)

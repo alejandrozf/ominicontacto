@@ -40,4 +40,4 @@ PatronDeDiscadoFormset = inlineformset_factory(
     RutaSaliente, PatronDeDiscado, form=PatronDeDiscadoForm, can_delete=True, extra=0, min_num=1)
 
 OrdenTroncalFormset = inlineformset_factory(
-    RutaSaliente, OrdenTroncal, exclude=('orden',), can_delete=True, extra=0, min_num=1)
+    RutaSaliente, OrdenTroncal, fields=('troncal',), can_delete=True, extra=0, min_num=1)
