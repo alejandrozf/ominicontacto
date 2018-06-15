@@ -34,6 +34,11 @@ class RutaSalienteForm(forms.ModelForm):
     class Meta:
         model = RutaSaliente
         exclude = ()
+        widgets = {
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
+            "ring_time": forms.NumberInput(attrs={'class': 'form-control'}),
+            "dial_options": forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 
 PatronDeDiscadoFormset = inlineformset_factory(

@@ -28,11 +28,19 @@
 {% endblock %}
 
 {% block content %}
+
+    {% block header %}{% endblock %}
+
     <form action="" role="form" method="POST">
         {% csrf_token  %}
-        {{ form }}
         <div class="row">
-            <div class="column-md-5">
+            <div class="column-md-2">
+                {% include "base_form_fields.html" with form=form %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-md-offset-1">
                 <table border="0" cellpadding="0" cellspacing="0">
                     <tbody>
                         {% if patrondiscado_formset.non_form_errors %}
@@ -65,7 +73,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="column-md-5 col-md-offset-2">
+            <div class="col-md-3 col-md-offset-3">
                 <table border="0" cellpadding="0" cellspacing="0">
                     <tbody>
                         {% if ordentroncal_formset.non_form_errors %}
@@ -83,10 +91,6 @@
                                 <td>
                                     {{ ordentroncal_form.troncal.errors }}
                                     {{ ordentroncal_form.troncal|add_class:"form-control" }}
-                                </td>
-                                <td>
-                                    {{ ordentroncal_form.orden.errors }}
-                                    {{ ordentroncal_form.orden|add_class:"form-control" }}
                                 </td>
                                 <td>{{ ordentroncal_form.id }}</td>
                             </tr>

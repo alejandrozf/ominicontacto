@@ -70,7 +70,7 @@ class RutaSalienteMixin(object):
 
 class RutaSalienteCreateView(RutaSalienteMixin, CreateView):
     model = RutaSaliente
-    template_name = 'ruta_saliente.html'
+    template_name = 'crear_ruta_saliente.html'
     form_class = RutaSalienteForm
     message = _('Ruta saliente creada con éxito')
 
@@ -104,7 +104,7 @@ class RutaSalienteCreateView(RutaSalienteMixin, CreateView):
 
 class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
     model = RutaSaliente
-    template_name = 'ruta_saliente.html'
+    template_name = 'editar_ruta_saliente.html'
     form_class = RutaSalienteForm
     message = _('Ruta saliente modificada con éxito')
 
