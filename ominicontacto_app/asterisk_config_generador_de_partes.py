@@ -90,7 +90,7 @@ class GeneradorParaFailedRutaSaliente(GeneradorDePedazoDeDialplanParaFailed):
         return """
 
         ;----------------------------------------------------------------------
-        ; TEMPLATE_FAILED-{oml_queue_name}
+        ; TEMPLATE_FAILED-{oml_ruta_name}
         ;   Autogenerado {date}
         ;
         ; La generacion de configuracion para la ruta {oml_ruta_name}
@@ -155,19 +155,10 @@ class GeneradorDePedazoDePausaFactory(object):
 
 # Factory para las Rutas Salientes
 
-class GeneradorDePedazoDePausaFactory(object):
-
-    def crear_generador_para_encabezado_ruta_saliente(self, parametros):
-        return GeneradorParaEncabezadoRuta(parametros)
-
-    def crear_generador_para_include_ruta_saliente(self, parametros):
-        return GeneradorParaIncludeRuta(parametros)
-
-    def crear_generador_para_patrones_ruta_saliente(self, parametros):
-        return GeneradorParaPatronesRuta(parametros)
+class GeneradorDePedazoDeRutasSalientesFactory(object):
 
     def crear_generador_para_patron_ruta_saliente(self, parametros):
-        return GeneradorParaEncabezadoRuta(parametros)
+        return GeneradorParaPatronRuta(parametros)
 
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailedRutaSaliente(parametros)
@@ -331,10 +322,6 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
     def get_parametros(self):
         return self._parametros
 
-
-
-
-
 # ==============================================================================
 # Agente SIP
 # ==============================================================================
@@ -386,6 +373,7 @@ class GeneradorParaAgenteGlobal(GeneradorDePedazoDeAgenteSip):
 # Pausa
 # ==============================================================================
 
+
 class GeneradorParaPausaGlobal(GeneradorDePedazo):
 
     def __init__(self, parametros):
@@ -424,44 +412,15 @@ class GeneradorParaEncabezadoRuta(GeneradorDePedazoDeRutaSaliente):
         return self._parametros
 
 
-class GeneradorParaIncludeRuta(GeneradorDePedazoDeRutaSaliente):
-
-    def get_template(self):
-        return """
-        include => oml-outr-{oml-ruta-id}
-        """
-
-    def get_parametros(self):
-        return self._parametros
-
-
-class GeneradorParaPatronesRuta(GeneradorDePedazoDeRutaSaliente):
-
-    def get_template(self):
-        return """
-        [oml-outr-{oml-ruta-id}]
-        include => oml-outr-{oml-ruta-id}-custom
-
-        exten => {oml-ruta-dialpatern},1,Verbose(2, OUT-R ${DB(OML/OUTR/{oml-ruta-id}/NAME)})
-        same => n,Set(OMLOUTRID={oml-ruta-id})
-        same => n,Gosub(sub-oml-dialout,s,1({oml-ruta-id}))
-        same => n,Gosub(sub-oml-hangup,s,1(OUTR-FAIL))
-
-        """
-
-    def get_parametros(self):
-        return self._parametros
-
-
 class GeneradorParaPatronRuta(GeneradorDePedazoDeRutaSaliente):
 
     def get_template(self):
         return """
-        exten => {oml-ruta-dialpatern},1,Verbose(2, OUT-R ${DB(OML/OUTR/{oml-ruta-id}/NAME)})
+
+        exten => {oml-ruta-dialpatern},1,Verbose(2, OUT-R ${{DB(OML/OUTR/{oml-ruta-id}/NAME)}})
         same => n,Set(OMLOUTRID={oml-ruta-id})
         same => n,Gosub(sub-oml-dialout,s,1({oml-ruta-id}))
         same => n,Gosub(sub-oml-hangup,s,1(OUTR-FAIL))
-
         """
 
     def get_parametros(self):
