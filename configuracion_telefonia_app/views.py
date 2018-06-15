@@ -60,15 +60,7 @@ def escribir_ruta_saliente_config(ruta_saliente):
     pass
 
 
-class RutaSalienteMixin(object):
-
-    def _asignar_orden_troncales(self, ordentroncal_formset):
-        """Escribe orden en troncales"""
-        for i, form in enumerate(ordentroncal_formset.forms):
-            form.instance.orden = i
-
-
-class RutaSalienteCreateView(RutaSalienteMixin, CreateView):
+class RutaSalienteCreateView(CreateView):
     model = RutaSaliente
     template_name = 'crear_ruta_saliente.html'
     form_class = RutaSalienteForm
@@ -89,7 +81,6 @@ class RutaSalienteCreateView(RutaSalienteMixin, CreateView):
         if patrondiscado_formset.is_valid() and ordentroncal_formset.is_valid():
             patrondiscado_formset.instance = ruta_saliente
             patrondiscado_formset.save()
-            self._asignar_orden_troncales(ordentroncal_formset)
             ordentroncal_formset.instance = ruta_saliente
             ordentroncal_formset.save()
             # muestra mensaje de éxito
@@ -102,7 +93,7 @@ class RutaSalienteCreateView(RutaSalienteMixin, CreateView):
                        'ordentroncal_formset': ordentroncal_formset})
 
 
-class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
+class RutaSalienteUpdateView(UpdateView):
     model = RutaSaliente
     template_name = 'editar_ruta_saliente.html'
     form_class = RutaSalienteForm
@@ -140,7 +131,6 @@ class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
             self.request.POST, instance=ruta_saliente, prefix='orden_troncal')
         if patrondiscado_formset.is_valid() and ordentroncal_formset.is_valid():
             patrondiscado_formset.save()
-            self._asignar_orden_troncales(ordentroncal_formset)
             ordentroncal_formset.save()
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)

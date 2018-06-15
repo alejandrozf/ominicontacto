@@ -4,12 +4,15 @@
 
 {% load widget_tweaks %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ruta-saliente.css' %}"></link>
+{% endblock %}
+
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script type="text/javascript">
      /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
         en un formset  */
-     debugger;
      $('.patronesDiscado').formset({
        addText: 'Agregar patron de discado',
        deleteText: 'Remover',
@@ -56,14 +59,17 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    {{ patrondiscado_form.prepend.label_tag }}
                                     {{ patrondiscado_form.prepend.errors }}
                                     {{ patrondiscado_form.prepend|add_class:"form-control" }}
                                 </td>
                                 <td>
+                                    {{ patrondiscado_form.prefix.label_tag }}
                                     {{ patrondiscado_form.prefix.errors }}
                                     {{ patrondiscado_form.prefix|add_class:"form-control" }}
                                 </td>
                                 <td>
+                                    {{ patrondiscado_form.match_pattern.label_tag }}
                                     {{ patrondiscado_form.match_pattern.errors }}
                                     {{ patrondiscado_form.match_pattern|add_class:"form-control" }}
                                 </td>
@@ -73,7 +79,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-3 col-md-offset-3">
+            <div class="col-md-5 col-md-offset-1">
                 <table border="0" cellpadding="0" cellspacing="0">
                     <tbody>
                         {% if ordentroncal_formset.non_form_errors %}
@@ -82,6 +88,7 @@
                             {% endfor %}
                         {% endif %}
                         {% for ordentroncal_form in ordentroncal_formset.forms %}
+                            <div class="row">
                             <tr class="troncalesOrdenados">
                                 <td>
                                     {% if ordentroncal_form.instance.pk %}
@@ -89,16 +96,24 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    {{ ordentroncal_form.troncal.label_tag }}
                                     {{ ordentroncal_form.troncal.errors }}
                                     {{ ordentroncal_form.troncal|add_class:"form-control" }}
                                 </td>
+                                <td>
+                                    {{ ordentroncal_form.orden.label_tag }}
+                                    {{ ordentroncal_form.orden.errors }}
+                                    {{ ordentroncal_form.orden|add_class:"form-control" }}
+                                </td>
                                 <td>{{ ordentroncal_form.id }}</td>
                             </tr>
+                            </div>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+        <br/>
         {{ patrondiscado_formset.management_form }}
         {{ ordentroncal_formset.management_form }}
         <button type="submit" id="id_registrar" class="btn btn-primary">

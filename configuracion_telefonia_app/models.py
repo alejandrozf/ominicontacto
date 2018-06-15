@@ -59,6 +59,7 @@ class OrdenTroncal(models.Model):
 
     class Meta:
         unique_together = ('orden', 'ruta_saliente')
+        ordering = ['orden']
 
     def __unicode__(self):
         return "Troncal {0} con orden {1} para ruta saliente {2}".format(
