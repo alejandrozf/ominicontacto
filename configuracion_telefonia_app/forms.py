@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from django import forms
 
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
@@ -42,11 +44,26 @@ class RutaSalienteForm(forms.ModelForm):
         }
 
 
+class PatronDeDiscadoBaseFormset(BaseInlineFormSet):
+
+        def clean(self):
+            """
+            Realiza los validaciones relacionadas con los patrones de discado asignados a una ruta
+            saliente
+            """
+            if any(self.errors):
+                return
+            deleted_forms = self.deleted_forms
+            save_candidates_forms = set(self.forms) - set(deleted_forms)
+            if len(save_candidates_forms) == 0:
+                raise forms.ValidationError(
+                    _("Debe ingresar al menos un patrón de discado"), code="invalid")
+
+
 class OrdenTroncalBaseFormset(BaseInlineFormSet):
 
     def clean(self):
-        """
-        Realiza los validaciones relacionadas con los troncales asignados a una ruta saliente
+        """Realiza los validaciones relacionadas con los troncales asignados a una ruta saliente
         """
         if any(self.errors):
             return
@@ -54,6 +71,10 @@ class OrdenTroncalBaseFormset(BaseInlineFormSet):
         ordenes = []
         deleted_forms = self.deleted_forms
         save_candidates_forms = set(self.forms) - set(deleted_forms)
+        if len(save_candidates_forms) == 0:
+            raise forms.ValidationError(
+                _("Debe ingresar al menos un troncal"), code="invalid")
+
         for form in save_candidates_forms:
             troncal = form.cleaned_data.get('troncal', None)
             orden = form.cleaned_data.get('orden', None)
@@ -67,7 +88,8 @@ class OrdenTroncalBaseFormset(BaseInlineFormSet):
 
 
 PatronDeDiscadoFormset = inlineformset_factory(
-    RutaSaliente, PatronDeDiscado, form=PatronDeDiscadoForm, can_delete=True, extra=0, min_num=1)
+    RutaSaliente, PatronDeDiscado, form=PatronDeDiscadoForm,
+    formset=PatronDeDiscadoBaseFormset, can_delete=True, extra=0, min_num=1)
 
 OrdenTroncalFormset = inlineformset_factory(
     RutaSaliente, OrdenTroncal, fields=('troncal', 'orden'), formset=OrdenTroncalBaseFormset,
