@@ -42,8 +42,8 @@ class RutaSaliente(models.Model):
 class PatronDeDiscado(models.Model):
     """Configuración de Patron de Discado para una Ruta Saliente"""
     ruta_saliente = models.ForeignKey(RutaSaliente, related_name='patrones_de_discado')
-    prepend = models.PositiveIntegerField(blank=True)
-    prefix = models.PositiveIntegerField(blank=True)
+    prepend = models.PositiveIntegerField(blank=True, null=True)
+    prefix = models.PositiveIntegerField(blank=True, null=True)
     match_pattern = models.CharField(max_length=100, validators=[RegexValidator(R_MATCH_PATTERN)])
 
     def __unicode__(self):
