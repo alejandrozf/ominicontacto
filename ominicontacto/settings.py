@@ -197,6 +197,7 @@ OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
 OML_BACKLIST_REMOTEPATH = None
 OML_GLOBALS_VARIABLES_FILENAME = None
+OML_RUTAS_SALIENTES_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
@@ -209,7 +210,7 @@ Ejemplos:
     OML_QUEUES_FILENAME = "/etc/asterisk/queues_fts.conf"
     OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
     OML_GLOBALS_VARIABLES_FILENAME = "/etc/asterisk/extensions_fts_globals.conf"
-
+    OML_RUTAS_SALIENTES_FILENAME = "/etc/asterisk/oml_extensions_outr.conf"
 """
 
 OML_RELOAD_CMD = None
@@ -416,11 +417,15 @@ assert OML_KAMAILIO_IP is not None, \
 assert OML_WOMBAT_URL is not None, \
     "Falta definir setting para OML_WOMBAT_URL"
 
-# ~~~~~ Check OML_WOMBAT_URL
+# ~~~~~ Check OML_WOMBAT_FILENAME
 
 assert OML_WOMBAT_FILENAME is not None, \
     "Falta definir setting para OML_WOMBAT_FILENAME"
 
+# ~~~~~ Check OML_RUTAS_SALIENTES_FILENAME
+
+assert OML_RUTAS_SALIENTES_FILENAME is not None, \
+    "Falta definir setting para OML_RUTAS_SALIENTES_FILENAME"
 
 # ~~~~~ Check OML_WOMBAT_USER
 
