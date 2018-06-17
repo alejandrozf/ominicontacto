@@ -186,6 +186,21 @@ Formato(){
     echo -en "Ingrese el formato de audio en el que quiere las grabaciones (ej: wav, mp3. Default:mp3): "; read audio
 }
 
+Docker(){
+    while true; do
+      echo -en "Desea correr kamailio y asterisk en containers? [si/no]: "; read pregunta
+      if [ $pregunta == "si" ] || [ $pregunta == "Si" ]; then
+        sed -i "s/\(^DOCKER\).*/DOCKER=true/" $TMP_ANSIBLE/hosts
+        break
+      elif [ $pregunta == "no" ] || [ $pregunta == "No" ]; then
+        sed -i "s/\(^DOCKER\).*/DOCKER=false/" $TMP_ANSIBLE/hosts
+        break
+      else
+        echo "Opción inválida ingrese si o no"
+      fi
+    done
+}
+
 Preliminar() {
     echo ""
     echo "########################################"
@@ -219,6 +234,8 @@ Preliminar() {
             break
         fi
     done
+    Docker
+
 }
 
 Desarrollo() {

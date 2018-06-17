@@ -3,6 +3,7 @@ localhost ansible_connection=local ansible_user=omnileads
 
 [omnileads:vars]
 LOCALHOST=false
+DOCKER=false
 ################ Puerto SSH ##################
 ssh_port="{{ ansible_ssh_port }}"
 install_prefix=/opt/omnileads/

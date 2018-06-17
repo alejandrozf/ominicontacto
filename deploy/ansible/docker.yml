@@ -1,0 +1,16 @@
+---
+- name: Instalacion de Omnileads en CentOS con Asterisk y Kamailio en containers
+  hosts: omnileads
+  # Siempre 'gather_facts' ya q' lo usaoms en varios 'when'
+  # gather_facts: '{{ lookup("env","DO_CHECKS") }}'
+  vars:
+          build_dir: "{{ BUILD_DIR }}"
+          rama: "{{ RAMA }}"
+  gather_facts: True
+
+  roles:
+          - prerequisitos
+          - {role: oml_server, tags: ['virtualenv']}
+          - docker
+          - {role: omniapp_second, tags: ['omniapp']}
+          - deploy_supervision

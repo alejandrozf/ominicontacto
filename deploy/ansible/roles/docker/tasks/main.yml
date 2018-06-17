@@ -1,0 +1,107 @@
+---
+
+- name: Check if Rtpengine is installed
+  command: test -f /usr/local/bin/rtpengine
+  ignore_errors: True
+  register: rtpengine_installed
+  tags: rtpengine
+  become: true
+  become_method: sudo
+
+- debug: msg="RTPengine no está instalado, se procede a la instalación"
+  when: rtpengine_installed|failed
+  tags: rtpengine
+
+- debug: msg="RTPengine ya se encuentra instalado se omite instalación"
+  when: rtpengine_installed|succeeded
+  tags: rtpengine
+
+- include: rtpengine.yml
+  tags: rtpengine
+  when: rtpengine_installed|failed
+
+- name: Check if Kamailio is installed
+  shell: test -f {{ kamailio_location }}/sbin/kamailio
+  ignore_errors: True
+  register: kamailio_installed
+  tags: kamailio
+  become: true
+  become_method: sudo
+
+- debug: msg="Kamailio no está instalado, se procede a la instalación"
+  tags: kamailio
+  when: kamailio_installed|failed
+
+- debug: msg="Kamailio ya se encuentra instalado se omite instalación"
+  tags: kamailio
+  when: kamailio_installed|succeeded
+
+- name: Check if Asterisk is installed
+  shell: "test -f {{ install_prefix }}asterisk/sbin/asterisk || test -f /usr/sbin/asterisk"
+  register: asterisk_installed
+  ignore_errors: yes
+  tags: asterisk
+  become: true
+  become_method: sudo
+
+- debug: msg="Asterisk no está instalado, se procede a la instalación"
+  when: asterisk_installed|failed
+  tags: asterisk
+
+- debug: msg="Asterisk ya se encuentra instalado se omite instalación"
+  when: asterisk_installed|succeeded
+  tags: asterisk
+
+- name: Installation of docker-engine required packages
+  yum: name={{ item }} state=present
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+  when: ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
+
+- name: Add of docker repository
+  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  when: ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
+
+- name: Docker Installation
+  yum: name=docker-ce state=present
+  when: ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
+
+- name: Start docker
+  service: name=docker state=started enabled=yes
+  become: true
+  become_method: sudo
+
+- name: Installation of Docker-Compose
+  command: {{ item }}
+  with_items:
+    - curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+    - chmod +x /usr/local/bin/docker-compose
+
+- name: Creation of init scripts of containers
+  template: src=templates/{{ item }} dest={{ install_prefix }}bin mode=755
+  with_items:
+    - run-docker.sh
+    - exec-containers.sh
+    - docker-compose.yml
+
+- name: Creation of openssl.cnf
+  template: src=roles/kamailio/templates/openssl.cnf.j2 dest=/tmp/openssl.cnf mode=755
+
+- name: Creation of kamailio.service
+  template: src=roles/kamailio/templates/kamailio.service.j2 dest=/tmp/kamailio.service mode=700
+
+- name: Creation of kamailio in /etc/default
+  template: src=roles/kamailio/templates/kamailio.j2 dest=/tmp/kamailio mode=700
+
+- name: Execution of run-docker.sh init script
+  shell: ./run-docker.sh
+
+- include: roles/kamailio/tasks/postgresusers.yml 

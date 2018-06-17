@@ -34,31 +34,38 @@
        - lynx
        - tftp-server
        - unixODBC
-       - ncurses-devel
-       - sendmail
-       - sendmail-cf
-       - sox
-       - newt-devel
-       - libxml2-devel
-       - libtiff-devel
-       - audiofile-devel
-       - gtk2-devel
-       - subversion
        - kernel-devel
        - git
        - crontabs
        - cronie
+       - openssl-devel
        - cronie-anacron
+       - make
        - wget
+       - gdb
+       - git
+       - which
        - vim
        - uuid-devel
-       - sqlite-devel
        - net-tools
        - gnutls-devel
        - python-devel
        - texinfo
        - mariadb
        - mariadb-server
+      - expect.x86_64
+      - expect-devel.x86_64
+      - MySQL-python.x86_64
+      - lame
+      - sngrep
+      - kernel-devel
+      - kernel-headers
+      - acl
+      - webkitgtk3-devel.x86_64
+      - perl*
+      - librabbitmq*
+      - pcre-devel
+      - libpcap-devel
   become: true
   become_method: sudo
 

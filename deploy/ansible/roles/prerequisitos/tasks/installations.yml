@@ -34,70 +34,62 @@
   become: true
   become_method: sudo
 
-- name: Install the voip packages
+- name: Installation of asterisk packages
   yum: name={{ item }} state=present
   with_items:
-      - libevent*
-      - json-*
-      - libunistring-devel.x86_64
-      - webkitgtk3-devel.x86_64
-      - perl*
-      - librabbitmq*
-      - bison
-      - pcre-devel
-      - libpcap-devel
-      - flex
-      - git
-      - gcc
-      - gcc-c++
-      - bison-devel
-      - make
-      - expat
-      - expat-devel
-      - net-snmp-devel
-      - libxml2
-      - libxml2-devel
-      - openssl-devel
-      - xmlrpc-c-devel
-      - lynx
-      - pcre
-      - pcre-devel
       - ncurses-devel
       - ncurses-libs
-      - gdb
-      - unixODBC
-      - unixODBC-devel
-      - libtool-ltdl-devel
-      - xmlrpc-c-devel
-      - lynx
-      - pcre
-      - pcre-devel
-      - iptables-devel
-      - iptables-services
-      - xmlrpc-c-devel
-      - libpcap-devel
-      - glib2-devel
-      - json-glib-devel
-      - libevent-devel
-      - redis
-      - hiredis
-      - hiredis-devel
-      - kernel-devel
-      - kernel-headers
-      - xmlrpc-c-devel
-      - python-devel
+      - libxml2
+      - libxml2-devel
+      - sqlite-devel
+      - newt-devel
       - libuuid
       - libuuid-devel
-      - expect.x86_64
-      - expect-devel.x86_64
-      - MySQL-python.x86_64
-      - lame
-      - sngrep
-      - acl
+      - net-snmp-devel
+      - unixODBC
+      - unixODBC-devel
+      - sox
+      - libtiff-devel
+      - audiofile-devel
+      - gtk2-devel
+      - subversion
+      - sendmail
+      - sendmail-cf
   become: true
   become_method: sudo
-- meta: clear_host_errors
+  when: DOCKER == "false"
 
+- name: Installation of kamailio packages
+  yum: name={{ item }} state=present
+  with_items:
+    - gcc
+    - gcc-c++
+    - bison
+    - bison-devel
+    - flex
+    - expat
+    - expat-devel
+    - xmlrpc-c-devel
+    - lynx
+    - pcre
+    - pcre-devel
+    - libtool-ltdl-devel
+    - iptables-devel
+    - iptables-services
+    - libpcap-devel
+    - glib2-devel
+    - json-glib-devel
+    - redis
+    - hiredis
+    - hiredis-devel
+    - libevent*
+    - json-*
+    - libunistring-devel.x86_64
+  become: true
+  become_method: sudo
+  when: DOCKER == "false"
+
+- meta: clear_host_errors
 
 - name: Install of postgresql 9.6
   yum: "name={{ postgresql_url }} state=present validate_certs=no "
@@ -105,7 +97,6 @@
   become_method: sudo
 
 - yum: name=postgresql96* state=present
-
   become: yes
   become_method: sudo
 
@@ -144,7 +135,6 @@
       - libsass-devel
       - libsass
       - python2-pip.noarch
-
   become: yes
   become_method: sudo
 - meta: clear_host_errors
@@ -155,13 +145,11 @@
   become: yes
   become_method: sudo
 
-- name: install phppgsql
-  yum: name=php-pgsql state=present
-- meta: clear_host_errors
-
-  become: yes
-  become_method: sudo
-
+#- name: install phppgsql
+#  yum: name=php-pgsql state=present
+#- meta: clear_host_errors
+#  become: yes
+#  become_method: sudo
 
 - name: Change /etc/hostname
   template: src=templates/hostname.j2 dest=/etc/hostname

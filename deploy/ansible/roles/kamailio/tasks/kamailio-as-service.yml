@@ -30,6 +30,17 @@
   become: true
   become_method: sudo
 
+- name: Copy of oml-freepbx/kamailio-files to the desired destinations
+  shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip"
+  with_items:
+      - cp kamailio-files/kamctlrc {{ kamailio_location }}/etc/kamailio/
+
+- name: Creation of kamailio file in /etc/default
+  template: src=templates/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
+
+- name: Creation of kamailio.service file in systemd
+  template: src=templates/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=655
+
 - name: Run kamailio as a service
   shell: "{{ item }}"
   with_items:
@@ -56,6 +67,10 @@
   tags: postinstall
   become: true
   become_method: sudo
+
+- name: Erase of default kamailio.cfg file
+  shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
+  tags: postinstall
 
 - name: Link kamailio.cfg repo file to {{ kamailio_location }}
   file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }} mode=644

@@ -1,0 +1,100 @@
+version: '3'
+services:
+  asterisk:
+    #build:
+    #  context: ./build
+    #  dockerfile: Dockerfile-asterisk
+    #config:
+    container_name: asterisk
+    #depends_on:
+    dns: 8.8.8.8
+    #env_file
+    #environment
+    #expose
+    #extra_hosts
+    healtcheck:
+      test: ["CMD", "asterisk", "-rx", "'core show version'"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    image: lionite/asterisk-omnileads:v1
+    #isolation:
+    labels: asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20M"
+        max-file: "10"
+    network_mode: host
+    #pid:
+    ports:
+     - "5060:5060/udp"
+     - "4569:4569/udp"
+     - "5038:5038/tcp"
+     - "7088:7088/tcp"
+     - "10000-20000:10000-20000/udp"
+     - "5160:5160/udp"
+    restart: on-failure
+    #secrets
+    #security_opt:
+    stop_grace_period:
+    #stop:
+    #sysctls:
+    #tmpfs:
+     #- /run
+     #- /tmp
+    userns_mode: "host"
+    volumes:
+     - {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf:/opt/omnileads/asterisk/etc/asterisk/
+     - {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis:/opt/omnileads/asterisk/var/lib/asterisk/agi-bin/
+     - /var:/var
+  kamailio:
+    #build:
+    #  context: ./build
+    #  dockerfile: Dockerfile-asterisk
+    #config:
+    container_name: kamailio
+    #depends_on:
+    dns: 8.8.8.8
+    #env_file
+    #environment
+    #expose
+    #extra_hosts
+    #healtcheck:
+    #  test: ["CMD", "kamctl", "-rx", "'core show version'"]
+    #  interval: 1m30s
+    #  timeout: 10s
+    #  retries: 3
+    #  start_period: 40s
+    image: lionite/rtpengine-kamailio:v1
+    #isolation:
+    labels: kamailio
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20M"
+        max-file: "10"
+    network_mode: host
+    #pid:
+    ports:
+     - "14443:14443/tcp"
+     - "5432:5432"
+     - "5060:5060"
+     - "5061:5061"
+     - "6060:6060"
+     - "6061:6061"
+     - "1080:1080"
+     - "10000-20000:10000-20000/udp"
+    restart: on-failure
+    #secrets
+    #security_opt:
+    stop_grace_period:
+    #stop:
+    #sysctls:
+    #tmpfs:
+     #- /run
+     #- /tmp
+    userns_mode: "host"
+    volumes:
+     -  {{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files:/opt/omnileads/kamailio/etc

@@ -75,8 +75,8 @@
   become_method: sudo
   when: asterisk_location == "" or ansible_os_family == "Sangoma"
 
-- name: Config of asterisk-freepbx for OML
-  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
+- name: Config of asterisk for OML
+  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
   with_items:
       - amd.conf
       - chan_dahdi.conf
@@ -104,11 +104,11 @@
   when: asterisk_location != ""
 
 - name: Copy of all asterisk config files
-  shell: "mv *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/archivos-no-enlaces/"
+  shell: "mv *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/archivos-no-enlaces/"
   when: asterisk_location != ""
 
 - name: Copy of the php agis
-  copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner={{ usuario }} group={{ usuario }}"
+  copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner={{ usuario }} group={{ usuario }}"
   with_items:
       - omni-asterisk-logout.php
 #      - omni-blacklist.php
@@ -163,8 +163,8 @@
       - cp {{ install_prefix }}ominicontacto/ominicontacto_voip/extra-files/odbc.ini /etc/
       - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/es
       - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/en
-      - tar xzvf es-oml.tgz -C {{ asterisk_location }}/var/lib/asterisk/sounds/es/
-      - tar xzvf en-oml.tgz -C {{ asterisk_location }}/var/lib/asterisk/sounds/en/
+      - tar xzvf sounds/es-oml.tgz -C {{ asterisk_location }}/var/lib/asterisk/sounds/es/
+      - tar xzvf sounds/en-oml.tgz -C {{ asterisk_location }}/var/lib/asterisk/sounds/en/
   ignore_errors: yes
 
 - name: Add web enabled in /etc/asterisk/manager.conf
