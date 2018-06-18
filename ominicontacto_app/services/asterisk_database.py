@@ -294,8 +294,8 @@ class RutaSalienteFamily(object):
         except AsteriskHttpAsteriskDBError:
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
-    def regenerar_familys_agente(self):
-        """regenera la family de los agentes"""
+    def regenerar_familys_rutas(self):
+        """regenera la family de las rutas"""
         self.delete_tree_family("OML/OUTR")
         self.create_familys()
 
