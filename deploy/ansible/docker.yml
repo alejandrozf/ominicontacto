@@ -11,6 +11,7 @@
   roles:
           - prerequisitos
           - {role: oml_server, tags: ['virtualenv']}
-          - docker
+          #- docker
+          - {role: docker, tags: ['docker']}
           - {role: omniapp_second, tags: ['omniapp']}
           - deploy_supervision

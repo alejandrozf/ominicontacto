@@ -8,8 +8,8 @@
 . /etc/rc.d/init.d/functions
 
 RETVAL=0
-USER={{ usuario }}
-GROUP={{ usuario }}
+USER=omnileads
+GROUP=omnileads
 CMD=/usr/sbin/asterisk
 
 # $ wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-current.tar.gz

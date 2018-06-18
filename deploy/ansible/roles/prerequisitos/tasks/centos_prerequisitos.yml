@@ -28,36 +28,51 @@
   become: true
   become_method: sudo
 
+- name: Creation of sngrep repo
+  template: src=templates/irontec.repo dest=/etc/yum.repos.d/irontec.repo
+  become: true
+  become_method: sudo
+  when: DOCKER == "false"
+
+- name: Import of irontec public key
+  shell: "rpm --import http://packages.irontec.com/public.key"
+  become: true
+  become_method: sudo
+  when: DOCKER == "false"
+
+- name: Install of sngrep
+  yum: name=sngrep state=present
+  when: DOCKER == "false"
+
 - name: Install of dependencies
   yum: name={{ item }} state=present
   with_items:
-       - lynx
-       - tftp-server
-       - unixODBC
-       - kernel-devel
-       - git
-       - crontabs
-       - cronie
-       - openssl-devel
-       - cronie-anacron
-       - make
-       - wget
-       - gdb
-       - git
-       - which
-       - vim
-       - uuid-devel
-       - net-tools
-       - gnutls-devel
-       - python-devel
-       - texinfo
-       - mariadb
-       - mariadb-server
+      - lynx
+      - tftp-server
+      - unixODBC
+      - kernel-devel
+      - git
+      - crontabs
+      - cronie
+      - openssl-devel
+      - cronie-anacron
+      - make
+      - wget
+      - gdb
+      - git
+      - which
+      - vim
+      - uuid-devel
+      - net-tools
+      - gnutls-devel
+      - python-devel
+      - texinfo
+      - mariadb
+      - mariadb-server
       - expect.x86_64
       - expect-devel.x86_64
       - MySQL-python.x86_64
       - lame
-      - sngrep
       - kernel-devel
       - kernel-headers
       - acl
@@ -68,7 +83,6 @@
       - libpcap-devel
   become: true
   become_method: sudo
-
 
 - name: Download of epel-release repo
   command: "{{ item }}"
@@ -117,25 +131,6 @@
   when: asterisk_location != ""
 - meta: clear_host_errors
 
-- name: Install of php
-  yum: name={{ item }} state=present
-  with_items:
-      - php
-      - php-pdo
-      - php-mysql
-      - php-mbstring
-      - php-pear
-      - php-process
-      - php-xml
-      - php-opcache
-      - php-ldap
-      - php-intl
-      - php-soap
-  become: true
-  become_method: sudo
-  when: asterisk_location == ""
-- meta: clear_host_errors
-
 - name: Download NodeJS setup script
   shell: "curl -sL https://rpm.nodesource.com/setup_8.x | bash -"
   become: true
@@ -145,7 +140,6 @@
   yum: name=nodejs state=present
   become: true
   become_method: sudo
-
 
 - name: Install Console_Getopt
   pear: name=Console_Getopt state=present

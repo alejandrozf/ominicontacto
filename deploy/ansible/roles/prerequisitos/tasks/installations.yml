@@ -24,16 +24,6 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
-- name: Creation of sngrep repo
-  template: src=templates/irontec.repo dest=/etc/yum.repos.d/irontec.repo
-  become: true
-  become_method: sudo
-
-- name: Import of irontec public key
-  shell: "rpm --import http://packages.irontec.com/public.key"
-  become: true
-  become_method: sudo
-
 - name: Installation of asterisk packages
   yum: name={{ item }} state=present
   with_items:

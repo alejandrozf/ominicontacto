@@ -78,7 +78,7 @@ Rama() {
     mkdir -p /var/tmp/log
     touch /var/tmp/log/oml_install
     #sleep 2
-    cd ..
+    cd ../..
     echo "Chequeando y copiando el código a deployar"
     set -e
     echo ""
@@ -87,7 +87,7 @@ Rama() {
     echo "      Version: $1"
     echo ""
 
-    git checkout ansible/hosts
+    git checkout deploy/ansible/hosts
     git checkout $1 1> /dev/null
 
     ################### Build.sh #####################
@@ -190,10 +190,12 @@ Docker(){
     while true; do
       echo -en "Desea correr kamailio y asterisk en containers? [si/no]: "; read pregunta
       if [ $pregunta == "si" ] || [ $pregunta == "Si" ]; then
+        DOCKER="true"
         sed -i "s/\(^DOCKER\).*/DOCKER=true/" $TMP_ANSIBLE/hosts
         break
       elif [ $pregunta == "no" ] || [ $pregunta == "No" ]; then
         sed -i "s/\(^DOCKER\).*/DOCKER=false/" $TMP_ANSIBLE/hosts
+        DOCKER="false"
         break
       else
         echo "Opción inválida ingrese si o no"
@@ -255,7 +257,11 @@ Tag() {
     echo "El servicio sin humildad es egoísmo"
     echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
-    ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/deploy/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
+    if [ DOCKER == "true" ]; then
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
+    else
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
+    fi
     ResultadoAnsible=`echo $?`
     echo "Finalizó la instalación Omnileads"
     echo ""

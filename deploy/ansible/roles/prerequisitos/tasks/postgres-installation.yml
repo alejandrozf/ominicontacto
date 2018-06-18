@@ -10,12 +10,13 @@
   become_method: sudo
 
 
-- name: Start and enable redis and postgres services
-  service: name={{ item }} state=restarted enabled=yes
-  with_items:
-      - postgresql-9.6.service
-      - redis
+- name: Start and enable postgres service
+  service: name=postgresql-9.6.service state=restarted enabled=yes
   become: yes
   become_method: sudo
 
-
+- name: Start and enable redis service
+  service: name=redis state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+  when: DOCKER == "false"

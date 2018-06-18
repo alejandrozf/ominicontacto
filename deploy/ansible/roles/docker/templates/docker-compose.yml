@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 services:
   asterisk:
     #build:
@@ -12,15 +12,15 @@ services:
     #environment
     #expose
     #extra_hosts
-    healtcheck:
+    healthcheck:
       test: ["CMD", "asterisk", "-rx", "'core show version'"]
       interval: 1m30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      #start_period: 40s
     image: lionite/asterisk-omnileads:v1
     #isolation:
-    labels: asterisk
+    #labels: asterisk
     logging:
       driver: "json-file"
       options:
@@ -38,7 +38,7 @@ services:
     restart: on-failure
     #secrets
     #security_opt:
-    stop_grace_period:
+    stop_grace_period: 1m30s
     #stop:
     #sysctls:
     #tmpfs:
@@ -46,9 +46,18 @@ services:
      #- /tmp
     userns_mode: "host"
     volumes:
-     - {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf:/opt/omnileads/asterisk/etc/asterisk/
-     - {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis:/opt/omnileads/asterisk/var/lib/asterisk/agi-bin/
-     - /var:/var
+      - type: bind
+        source: {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf
+        target: {{ asterisk_location }}/etc/asterisk/
+      - type: bind
+        source: {{ asterisk_location }}/var/log/
+        target: /var/log/asterisk
+      - type: bind
+        source: {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis
+        target: {{ asterisk_location }}/var/lib/asterisk/agi-bin/
+      - type: volume
+        source: grabaciones
+        target: {{ asterisk_location }}/var/spool/asterisk/asternic
   kamailio:
     #build:
     #  context: ./build
@@ -69,7 +78,7 @@ services:
     #  start_period: 40s
     image: lionite/rtpengine-kamailio:v1
     #isolation:
-    labels: kamailio
+    #labels: kamailio
     logging:
       driver: "json-file"
       options:
@@ -89,7 +98,7 @@ services:
     restart: on-failure
     #secrets
     #security_opt:
-    stop_grace_period:
+    stop_grace_period: 1m30s
     #stop:
     #sysctls:
     #tmpfs:
@@ -97,4 +106,14 @@ services:
      #- /tmp
     userns_mode: "host"
     volumes:
-     -  {{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files:/opt/omnileads/kamailio/etc
+      - type: bind
+        source: {{ install_prefix}}ominicontacto/ominicontacto_voip/kamailio-files
+        target: {{ kamailio_location }}/etc/kamailio/
+      - type: bind
+        source: {{ kamailio_location }}/var/log/
+        target: /var/log/kamailio
+      #- type: volume
+      #  source: certificados
+      #  target: /opt/omnileads/kamailio/etc/certs/
+volumes:
+  grabaciones:

@@ -3,9 +3,6 @@ MAINTAINER Felipe Macias <felipe.macias@freetechsolutions.com.ar>
 
 ENV build-date 2018
 ENV asterisk_location /opt/omnileads/asterisk
-#Disable SELINUX
-#RUN sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
-#RUN sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
 
 RUN yum update -y
 RUN yum -y groupinstall core base "Development Tools"
@@ -58,7 +55,7 @@ RUN rm -rf /usr/src/iksemel-master
 #RUN rm -rf *.tar.gz
 #RUN mv dahdi-linux-* dahdi-linux/
 #WORKDIR /usr/src/dahdi-linux
-#RUN make all 
+#RUN make all
 #RUN make install
 #RUN make config
 
@@ -98,7 +95,7 @@ RUN rm -rf *.tar.gz
 RUN mv asterisk-* asterisk/
 WORKDIR /usr/src/asterisk
 RUN contrib/scripts/install_prereq install
-RUN contrib/scripts/get_mp3_source.sh   
+RUN contrib/scripts/get_mp3_source.sh
 RUN ./configure --libdir=$asterisk_location/usr/lib64 --prefix=$asterisk_location --with-externals-cache=/tmp/downloads
 RUN make menuselect.makeopts
 RUN menuselect/menuselect --enable format_mp3
@@ -120,8 +117,14 @@ RUN tar xzvf en-oml.tgz -C $asterisk_location/var/lib/asterisk/sounds/en/
 COPY asterisk-files/asterisk-omnileads /etc/init.d/asterisk
 RUN ln -s $asterisk_location/sbin/asterisk /usr/sbin/asterisk
 
+#Disable SELINUX
+RUN sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
+RUN sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
+
+#Creation of omnileads user
+RUN useradd omnileads
+
 # Make ports available to the world outside this container
 EXPOSE 4569/udp 5038/tcp 5060/udp 7088/tcp 10000-20000/udp 5160/udp
 
 CMD ["/usr/sbin/init"]
-

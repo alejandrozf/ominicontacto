@@ -36,22 +36,22 @@ RUN yum install ffmpeg ffmpeg -y
 
 #Installation and configuration of rtpengine
 WORKDIR /usr/src/
-RUN wget https://github.com/sipwise/rtpengine/archive/mr5.5.3.1.tar.gz    
+RUN wget https://github.com/sipwise/rtpengine/archive/mr5.5.3.1.tar.gz
 RUN tar xzvf mr5.5.3.1.tar.gz && mv rtpengine-* rtpengine
 RUN yum install hiredis hiredis-devel -y
 WORKDIR /usr/src/rtpengine/daemon/
 RUN make && \
-    cp -u rtpengine /usr/local/bin/ 
-WORKDIR /usr/src/rtpengine/iptables-extension/    
+    cp -u rtpengine /usr/local/bin/
+WORKDIR /usr/src/rtpengine/iptables-extension/
 RUN make && \
     cp -u libxt_RTPENGINE.so /lib64/xtables
     #if [ ! -d "/usr/src/kernels/$(uname -r)" ]; then \
 #	echo "Could Not Find the Kernel Headers For The current Kernel.\n"; \
 #	exit 0 ; \
  #   fi && \
-WORKDIR /usr/src/rtpengine/kernel-module/  
+WORKDIR /usr/src/rtpengine/kernel-module/
 RUN sed -i 's/\(^KSRC\).*/\KSRC   ?= \/usr\/src\/kernels\/$(shell uname -r)/' Makefile && \
-    make 
+    make
 #    insmod xt_RTPENGINE.ko
 RUN ls /lib/ && find / -name extra
 RUN cp -u xt_RTPENGINE.ko "/lib/modules/$(uname -r)/extra/"
@@ -71,11 +71,13 @@ RUN git clone --depth 1 --no-single-branch git://git.kamailio.org/kamailio kamai
 WORKDIR /usr/src/kamailio
 RUN git checkout -b 4.4 origin/4.4 && make PREFIX=$kamailio_location cfg
 RUN sed -i "10s/.*/include_modules= presence presence_xml app_python auth_ephemeral db_postgres ndb_redis presence tls uuid websocket/" /usr/src/kamailio/modules.lst
-COPY kamailio-files/Makefile /usr/src/kamailio/modules/db_postgres/ 
+COPY kamailio-files/Makefile /usr/src/kamailio/modules/db_postgres/
 RUN make all && make install
+
+#Creation of omnileads user
+RUN useradd omnileads
 
 # Make ports available to the world outside this container
 EXPOSE 14443 5432 5060 5061 6060 6061 1080 10000-20000/udp
 
 CMD ["/usr/sbin/init"]
-

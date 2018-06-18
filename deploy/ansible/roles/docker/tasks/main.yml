@@ -16,9 +16,21 @@
   when: rtpengine_installed|succeeded
   tags: rtpengine
 
-- include: rtpengine.yml
-  tags: rtpengine
-  when: rtpengine_installed|failed
+- name: Check if Kamailio is installed in /opt
+  command: test -d /opt/kamailio
+  ignore_errors: true
+  register: kamailio_opt_installed
+  tags: ['postinstall','kamailio']
+  become: true
+  become_method: sudo
+
+- set_fact: kamailio_location={{ install_prefix }}kamailio
+  when: kamailio_opt_installed|failed
+  tags: ['postinstall','kamailio']
+
+- set_fact: kamailio_location=/opt/kamailio
+  when: kamailio_opt_installed|succeeded
+  tags: ['postinstall','kamailio']
 
 - name: Check if Kamailio is installed
   shell: test -f {{ kamailio_location }}/sbin/kamailio
@@ -35,6 +47,22 @@
 - debug: msg="Kamailio ya se encuentra instalado se omite instalación"
   tags: kamailio
   when: kamailio_installed|succeeded
+
+- name: Check if Asterisk is installed in /etc
+  command: test -d /etc/asterisk
+  ignore_errors: true
+  register: asterisk_etc_installed
+  tags: ['postinstall','asterisk']
+  become: true
+  become_method: sudo
+
+- set_fact: asterisk_location={{ install_prefix }}asterisk
+  when: asterisk_etc_installed|failed
+  tags: ['postinstall','asterisk']
+
+- set_fact: asterisk_location=
+  when: asterisk_etc_installed|succeeded
+  tags: ['postinstall','asterisk']
 
 - name: Check if Asterisk is installed
   shell: "test -f {{ install_prefix }}asterisk/sbin/asterisk || test -f /usr/sbin/asterisk"
@@ -80,7 +108,7 @@
   become_method: sudo
 
 - name: Installation of Docker-Compose
-  command: {{ item }}
+  shell: "{{ item }}"
   with_items:
     - curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
     - chmod +x /usr/local/bin/docker-compose
@@ -91,6 +119,8 @@
     - run-docker.sh
     - exec-containers.sh
     - docker-compose.yml
+    - certificate-create.sh
+  tags: docker
 
 - name: Creation of openssl.cnf
   template: src=roles/kamailio/templates/openssl.cnf.j2 dest=/tmp/openssl.cnf mode=755
@@ -101,7 +131,17 @@
 - name: Creation of kamailio in /etc/default
   template: src=roles/kamailio/templates/kamailio.j2 dest=/tmp/kamailio mode=700
 
-- name: Execution of run-docker.sh init script
-  shell: ./run-docker.sh
+- name: Creation of script conversor.sh
+  template: src=roles/asterisk/templates/conversor.sh dest=/tmp/conversor.sh mode=700
 
-- include: roles/kamailio/tasks/postgresusers.yml 
+- name: Creation of logs folders in /var/log/
+  file: dest=/var/log/{{ item }} state=directory owner={{ usuario }} group={{ usuario }} mode=755
+  with_items:
+    - kamailio
+    - asterisk
+    
+- name: Execution of run-docker.sh init script
+  shell: "sh -x run-docker.sh chdir={{ install_prefix }}bin"
+  tags: docker
+
+- include: roles/kamailio/tasks/postgresusers.yml
