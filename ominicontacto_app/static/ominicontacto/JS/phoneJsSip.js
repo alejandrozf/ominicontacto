@@ -433,7 +433,7 @@ $(function() {
 				} else {
 					var typeTransfer = "Transf.";
 					switch (TransferedCall) {
-							case "1": typeTransfer += " ciega"; break;
+							case "1": typeTransfer += " directa"; break;
 							case "2": typeTransfer += " asistida"; break;
 							case "3": typeTransfer += " a campaña"; break;
 					}
