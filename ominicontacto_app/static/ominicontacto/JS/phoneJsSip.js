@@ -17,6 +17,8 @@ function updateButton(btn,clsnm,inht) {
 }
 
 $(function() {
+	var1 = $("#sipExt").val();
+	var2 = $("#sipSec").val();
 
 	var idTipoCamp = $("#cmpList option:selected").attr('campana_type');
 	$("#modalWebCall").modal('show');
@@ -115,40 +117,39 @@ $(function() {
     makeCall();
   });
 
-function consult() {
-        $.ajax({
-                type: "GET",
-                url: "/get_new_credentials/",
-                contentType: "html",
-                success: function(msg) {
-//                        var mje = JSON.parse(msg);
-                  var1 = msg.sipExt;
-                  var2 = msg.sipSec;
-                  config = {
-                    uri : "sip:"+var1+"@"+KamailioIp,
-                    ws_servers : "wss://"+KamailioIp+":"+ KamailioPort,
-                    password : var2,
-                    realm: KamailioIp,
-                    hack_ip_in_contact: true,
-                    session_timers: false,
-                    pcConfig: {
-                      rtcpMuxPolicy: 'negotiate'
-                    }
-                  };
+	function consult() {
+		$.ajax({
+			type: "GET",
+			url: "/get_new_credentials/",
+			contentType: "html",
+			success: function(msg) {
+				var1 = msg.sipExt;
+				var2 = msg.sipSec;
+				config = {
+					uri : "sip:"+var1+"@"+KamailioIp,
+					ws_servers : "wss://"+KamailioIp+":"+ KamailioPort,
+					password : var2,
+					realm: KamailioIp,
+					hack_ip_in_contact: true,
+					session_timers: false,
+					pcConfig: {
+						rtcpMuxPolicy: 'negotiate'
+					}
+				};
 
-                  userAgent = new JsSIP.UA(config);
-                  sesion = userAgent.start();
-                },
-                error: function() {
-                        console.log("Hubo un error al renderizar las credenciales"); }
-        });
-}
-consult();
-setInterval(consult,29000);
+				userAgent = new JsSIP.UA(config);
+		//		sesion = userAgent.start();
+			},
+			error: function() {
+				console.log("Hubo un error al renderizar las credenciales"); 
+			}
+		});
+	}
+	setInterval(consult,29000);
 
 
-  //if(var1 && var2) {
-/*    config = {
+  if(var1 && var2) {
+    config = {
       uri : "sip:"+var1+"@"+KamailioIp,
       ws_servers : "wss://"+KamailioIp+":"+ KamailioPort,
       password : var2,
@@ -156,10 +157,12 @@ setInterval(consult,29000);
       hack_ip_in_contact: true,
       session_timers: false,
 			pcConfig: {
-				rtcpMuxPolicy: 'negotiate'}
-    };*/
-
-  //}
+				rtcpMuxPolicy: 'negotiate'
+			}
+		};
+		userAgent = new JsSIP.UA(config);
+		sesion = userAgent.start();
+  }
 
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
