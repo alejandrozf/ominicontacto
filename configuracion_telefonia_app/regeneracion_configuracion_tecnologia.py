@@ -10,7 +10,7 @@ import logging
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
-    RutasSalientesConfigCreator, RutasSalientesConfigFile
+    AsteriskConfigReloader, RutasSalientesConfigCreator, RutasSalientesConfigFile
 )
 from ominicontacto_app.services.asterisk_database import RutaSalienteFamily
 
@@ -28,6 +28,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAstDB(object):
         self.generador_rutas_en_astdb = RutaSalienteFamily()
         self.generador_rutas_en_asterisk_conf = RutasSalientesConfigCreator()
         self.config_rutas_file = RutasSalientesConfigFile()
+        self.reload_asterisk_config = AsteriskConfigReloader()
 
     def _generar_y_recargar_archivos_conf_asterisk(self):
         proceso_ok = True
@@ -46,7 +47,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAstDB(object):
             raise(RestablecerConfiguracionTelefonicaError(mensaje_error))
         else:
             self.config_rutas_file.copy_asterisk()
-            self.config_rutas_file.reload_asterisk()
+            self.reload_asterisk_config.reload_asterisk()
 
     def _generar_e_insertar_en_astdb(self):
         proceso_ok = True
