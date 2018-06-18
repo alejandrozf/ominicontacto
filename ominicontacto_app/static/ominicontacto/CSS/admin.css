@@ -23,6 +23,9 @@ hr {
 hr.hr-space {
     border: transparent;
 }
+table hr {
+    margin: 6px 0 6px 0;
+}
 .hidden {
     display: none;
 }
@@ -182,6 +185,10 @@ button.dropdown-toggle {
 }
 .table-striped td, .table-striped th  {
     border-top: none;
+}
+table span.label {
+    font-size: 0.8rem;
+    opacity: 0.8;
 }
 
 /* ///// Tables small 
@@ -655,14 +662,25 @@ table.campana-reglas .td-remove .btn {
     color: #DB5941;
 }
 
-/* ///// Grafics 
+/* ///// Graphics 
 */
 
 .graficos-avances svg {
     min-height: 100px;
     max-height: 450px;
 }
-
+.graficos-avances text {
+    font-family: 'Asap', sans-serif !important;
+}
+.graficos-avances .titles text {
+    font-size: 1.5rem !important;
+}
+.graficos-avances .legends text {
+    font-size: 1rem !important;
+}
+.graficos-avances .guides text {
+    font-size: 0.8rem !important;
+}
 .oml-table-bg {
     background: #c3c3c3 !important;
     color: #222;

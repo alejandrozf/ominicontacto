@@ -86,13 +86,13 @@
                 </div>
             </div>
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-              {% trans 'Filtrar por esa fecha' %}
+              {% trans 'Buscar' %}
             </button>
         </form>
     </div>
 </div>
 
-<h2>{% trans 'Período evaluado' %} {{desde|date:"d/m/Y"}} - {{hasta|date:"d/m/Y"}}</h2>
+<h2>{% trans 'Período' %}: {{desde|date:"d/m/Y"}} - {{hasta|date:"d/m/Y"}}</h2>
 <hr>
 {% if user.get_is_administrador %}
   <div>
@@ -298,13 +298,12 @@
             <th>{% trans 'Conectadas' %}</th>
             <th>{% trans 'Expiradas' %}</th>
             <th>{% trans 'Abandonadas' %}</th>
-            <th>{% trans 'Espera de conexión medio' %}</th>
-            <th>{% trans 'Espera de atención medio' %}</th>
-            <th>{% trans 'T. medio de abandono' %}</th>
-            <th>{% trans 'Manuales Efectuadas' %}</th>
-            <th>{% trans 'Manuales Conectadas' %}</th>
-            <th>{% trans 'Manuales no Conectadas' %}</th>
-            <th>{% trans 'Espera de conexión medio Manuales' %}</th>
+            <th>{% trans 'Conexión' %}</th>
+            <th>{% trans 'Atención' %}</th>
+            <th>{% trans 'Abandono' %}</th>
+            <th>{% trans 'Manuales' %}</th>
+            <th>{% trans 'Conectadas' %}</th>
+            <th>{% trans 'Espera' %}</th>
           </tr>
         </thead>
         {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Dialer.items %}
@@ -328,8 +327,10 @@
               <td>{{ campana.t_espera_atencion|format_seconds }}</td>
               <td>{{ campana.t_abandono|format_seconds }}</td>
               <td>{{ campana.efectuadas_manuales }}</td>
-              <td>{{ campana.conectadas_manuales }}</td>
-              <td>{{ campana.no_conectadas_manuales }}</td>
+              <td>
+                  <span class="icon report icon-check"></span>{{ campana.conectadas_manuales }}
+                  <span class="icon report icon-cancel"></span>{{ campana.no_conectadas_manuales }}
+              </td>
               <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
             </tr>
             {% if tipos_por_fecha %}
@@ -345,8 +346,10 @@
                   <td>{{ llamadas.t_espera_atencion|format_seconds }}</td>
                   <td>{{ llamadas.t_abandono|format_seconds }}</td>
                   <td>{{ llamadas.efectuadas_manuales }}</td>
-                  <td>{{ llamadas.conectadas_manuales }}</td>
-                  <td>{{ llamadas.no_conectadas_manuales }}</td>
+                  <td>
+                      <span class="icon report icon-check"></span>{{ llamadas.conectadas_manuales }}
+                      <span class="icon report icon-cancel"></span>{{ llamadas.no_conectadas_manuales }}
+                  </td>
                   <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
                 </tr>
               {% endfor %}
@@ -380,12 +383,11 @@
           <th>{% trans 'Atendidas' %}</th>
           <th>{% trans 'Expiradas' %}</th>
           <th>{% trans 'Abandonadas' %}</th>
-          <th>{% trans 'T. de espera de conexión medio' %}</th>
-          <th>{% trans 'T. medio de abandono' %}</th>
-          <th>{% trans 'Manuales Efectuadas' %}</th>
-          <th>{% trans 'Manuales Conectadas' %}</th>
-          <th>{% trans 'Manuales no Conectadas' %}</th>
-          <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
+          <th>{% trans 'Espera' %}</th>
+          <th>{% trans 'Abandono' %}</th>
+          <th>{% trans 'Manuales' %}</th>
+          <th>{% trans 'Conectadas' %}</th>          
+          <th>{% trans 'Espera' %}</th>
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Entrante.items %}
@@ -407,8 +409,10 @@
             <td>{{ campana.t_espera_conexion|format_seconds }}</td>
             <td>{{ campana.t_abandono|format_seconds }}</td>
             <td>{{ campana.efectuadas_manuales }}</td>
-            <td>{{ campana.conectadas_manuales }}</td>
-            <td>{{ campana.no_conectadas_manuales }}</td>
+            <td>
+                <span class="icon report icon-check"></span>{{ campana.conectadas_manuales }}
+                <span class="icon report icon-cancel"></span>{{ campana.no_conectadas_manuales }}
+            </td>
             <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
           </tr>
           {% if tipos_por_fecha %}
@@ -422,8 +426,10 @@
                 <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
                 <td>{{ llamadas.t_abandono|format_seconds }}</td>
                 <td>{{ llamadas.efectuadas_manuales }}</td>
-                <td>{{ llamadas.conectadas_manuales }}</td>
-                <td>{{ llamadas.no_conectadas_manuales }}</td>
+                <td>
+                    <span class="icon report icon-check"></span>{{ llamadas.conectadas_manuales }}
+                    <span class="icon report icon-cancel"></span>{{ llamadas.no_conectadas_manuales }}
+                </td>
                 <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
               </tr>
             {% endfor %}
@@ -453,8 +459,8 @@
         <tr>
           <th>{% trans 'Nombre' %}</th>
           <th>{% trans 'Efectuadas' %}</th>
-          <th>{% trans 'Conexiones' %}</th>
-          <th>{% trans 'T. conexión' %}</th>
+          <th>{% trans 'Conectadas' %}</th>
+          <th>{% trans 'Conexión' %}</th>
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Manual.items %}
@@ -470,7 +476,10 @@
               {% endif %}
             </td>
             <td>{{ campana.efectuadas }}</td>
-            <td width="14%"><span class="icon report icon-check"></span>{{ campana.conectadas }} <span class="icon report icon-cancel"></span>{{ campana.no_conectadas }}</td>
+            <td width="14%">
+                <span class="icon report icon-check"></span>{{ campana.conectadas }} 
+                <span class="icon report icon-cancel"></span>{{ campana.no_conectadas }}
+            </td>
             <td>{{ campana.t_espera_conexion|format_seconds }}</td>
           </tr>
           {% if tipos_por_fecha %}
@@ -510,12 +519,10 @@
           <th>{% trans 'Nombre' %}</th>
           <th>{% trans 'Efectuadas' %}</th>
           <th>{% trans 'Conectadas' %}</th>
-          <th>{% trans 'No Conectadas' %}</th>
-          <th>{% trans 'T. de espera de conexión medio' %}</th>
-          <th>{% trans 'Manuales Efectuadas' %}</th>
-          <th>{% trans 'Manuales Conectadas' %}</th>
-          <th>{% trans 'Manuales no Conectadas' %}</th>
-          <th>{% trans 'T. de espera de conexión medio Manuales' %}</th>
+          <th>{% trans 'Conexión' %}</th>
+          <th>{% trans 'Manuales' %}</th>
+          <th>{% trans 'Conectadas' %}</th>
+          <th>{% trans 'Conexión' %}</th>
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Preview.items %}
@@ -531,12 +538,16 @@
           {% endif %}
         </td>
         <td>{{ campana.efectuadas }}</td>
-        <td>{{ campana.conectadas }}</td>
-        <td>{{ campana.no_conectadas }}</td>
+        <td>
+            <span class="icon report icon-check"></span>{{ campana.conectadas }}
+            <span class="icon report icon-cancel"></span>{{ campana.no_conectadas }}
+        </td>
         <td>{{ campana.t_espera_conexion|format_seconds }}</td>
         <td>{{ campana.efectuadas_manuales }}</td>
-        <td>{{ campana.conectadas_manuales }}</td>
-        <td>{{ campana.no_conectadas_manuales }}</td>
+        <td>
+            <span class="icon report icon-check"></span>{{ campana.conectadas_manuales }}
+            <span class="icon report icon-cancel"></span>{{ campana.no_conectadas_manuales }}
+        </td>
         <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
       </tr>
       {% if tipos_por_fecha %}
@@ -544,12 +555,16 @@
           <tr fechas="FechasPreview_{{ id }}" style="display:none; background-color:aliceblue;">
             <td style="text-align:center;">{{ fecha }}</td>
             <td>{{ llamadas.efectuadas }}</td>
-            <td>{{ llamadas.conectadas }}</td>
-            <td>{{ llamadas.no_conectadas }}</td>
+            <td>
+                <span class="icon report icon-check"></span>{{ llamadas.conectadas }}
+                <span class="icon report icon-cancel"></span>{{ llamadas.no_conectadas }}
+            </td>
             <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
             <td>{{ llamadas.efectuadas_manuales }}</td>
-            <td>{{ llamadas.conectadas_manuales }}</td>
-            <td>{{ llamadas.no_conectadas_manuales }}</td>
+            <td>
+                <span class="icon report icon-check"></span>{{ llamadas.conectadas_manuales }}
+                <span class="icon report icon-cancel"></span>{{ llamadas.no_conectadas_manuales }}
+            </td>
             <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
           </tr>
         {% endfor %}

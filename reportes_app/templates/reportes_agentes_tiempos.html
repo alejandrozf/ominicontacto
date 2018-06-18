@@ -189,66 +189,65 @@
 {% if graficos_estadisticas  %}
 
 <div>
-    <h2>Periodo evaluado {{graficos_estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
+    <h2>Periodo: {{graficos_estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
     <hr>
     <table class="table">
     <thead>
         <tr>
             <th>Agente</th>
             <th>Tiempo de session</th>
-            <th>Tiempo de pausa</th>
-            <th>Tiempos en llamada</th>
             <th>Porcentaje en llamada</th>
-            <th>Porcentaje en pausa</th>
-            <th>Porcentaje en espera</th>
-            <th>Cantidad de llamadas procesadas</th>
-            <th>Tiempo promedio de llamadas</th>
-            <th>Cantidad de intentos fallidos</th>
+            <th>Llamadas procesadas</th>
+            <th>Tiempo promedio</th>
+            <th>Intentos fallidos</th>
         </tr>
     </thead>
     {% for agente in graficos_estadisticas.agentes_tiempos %}
         <tr>
             <td>{{agente.get_nombre_agente}}
+                <br>
                 <a href="#" role="button" class="tiemposAgenteModal" id_agente="{{agente.agente.id}}" data-toggle="modal" data-target="#reporteFechaModal"
                 fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}">
  ver por fechas</a>
 
             </td>
-            <td>
+            <td width="25%">
                 {% if agente.get_string_tiempo_sesion %}
                     {{agente.get_string_tiempo_sesion}}hs
                 {% else %}
                     0hs
                 {% endif %}
-            </td>
-            <td>
+                <hr>
                 {% if agente.get_string_tiempo_pausa %}
                     {{agente.get_string_tiempo_pausa}}hs
                 {% else %}
                     0hs
                 {% endif %}
+                <span class="label">pausa</span>,
+                {{agente.get_string_tiempo_llamada}}hs     
+                <span class="label">llamada</span>
             </td>
-            <td>{{agente.get_string_tiempo_llamada}}hs</td>
             <td>
                 {% if agente.tiempo_porcentaje_llamada %}
                     {{agente.tiempo_porcentaje_llamada|floatformat:4}}%
                 {% else %}
                     0%
                 {% endif %}
-            </td>
-            <td>
+                <hr>
+                <span>
                 {% if agente.tiempo_porcentaje_pausa %}
                     {{agente.tiempo_porcentaje_pausa|floatformat:4}}%
                 {% else %}
                     0%
-                {% endif %}
-            </td>
-            <td>
+                {% endif %}                
+                <span class="label">pausa</span>,
                 {% if agente.tiempo_porcentaje_wait %}
                     {{agente.tiempo_porcentaje_wait|floatformat:4}}%
                 {% else %}
                     0%
-                {% endif %}
+                {% endif %}                
+                <span class="label">espera</span>                    
+                </span>               
             </td>
             <td>{{agente.cantidad_llamadas_procesadas}}</td>
             <td>{{agente.get_promedio_llamadas}}s</td>
@@ -269,8 +268,8 @@
         <tr>
             <th>Agente</th>
             <th>Pausa</th>
-            <th>Tipo de pausa</th>
-            <th>Tiempo de pausa</th>
+            <th>Tipo</th>
+            <th>Tiempo</th>
 
         </tr>
     </thead>
@@ -301,8 +300,8 @@
         <tr>
             <th>Agente</th>
             <th>Cola</th>
-            <th>Tiempos de llamadas</th>
-            <th>Cantidad de llamadas procesadas</th>
+            <th>Tiempo de llamadas</th>
+            <th>Llamadas procesadas</th>
 
         </tr>
     </thead>
@@ -325,7 +324,7 @@
 <div>
     <h2>Cantidad de llamadas por agente</h2>
     <br>
-    <div class="form-row">
+    <div class="row">
         <div class="col-lg-6">
             <table class="table">
                 <thead>
