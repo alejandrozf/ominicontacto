@@ -17,9 +17,8 @@ from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm,
 class TroncalSIPMixin(object):
 
     def form_valid(self, form):
-        # self.object = form.save(commit=False)
-        # self.object.save()
         # Hacer los cambios en AstDB, oml_sip_trunks.conf y oml_sip_registrations.conf
+        print("Implementar escritura de troncal en AstDB y *.conf relacionados!!!")
         return super(TroncalSIPMixin, self).form_valid(form)
 
     def get_success_url(self):
@@ -60,7 +59,28 @@ def escribir_ruta_saliente_config(ruta_saliente):
     pass
 
 
-class RutaSalienteCreateView(CreateView):
+class RutaSalienteMixin(object):
+
+    def form_valid(self, form):
+        ruta_saliente = form.save()
+        patrondiscado_formset = PatronDeDiscadoFormset(
+            self.request.POST, instance=ruta_saliente, prefix='patron_discado')
+        ordentroncal_formset = OrdenTroncalFormset(
+            self.request.POST, instance=ruta_saliente, prefix='orden_troncal')
+        if patrondiscado_formset.is_valid() and ordentroncal_formset.is_valid():
+            patrondiscado_formset.save()
+            ordentroncal_formset.save()
+            # muestra mensaje de éxito
+            messages.add_message(self.request, messages.SUCCESS, self.message)
+            # inserta la configuración de la ruta saliente en asterisk
+            escribir_ruta_saliente_config(ruta_saliente)
+            return redirect('lista_rutas_salientes')
+        return render(self.request, 'ruta_saliente.html',
+                      {'form': form, 'patrondiscado_formset': patrondiscado_formset,
+                       'ordentroncal_formset': ordentroncal_formset})
+
+
+class RutaSalienteCreateView(RutaSalienteMixin, CreateView):
     model = RutaSaliente
     template_name = 'crear_ruta_saliente.html'
     form_class = RutaSalienteForm
@@ -72,28 +92,8 @@ class RutaSalienteCreateView(CreateView):
         context['ordentroncal_formset'] = OrdenTroncalFormset(prefix='orden_troncal')
         return context
 
-    def form_valid(self, form):
-        ruta_saliente = form.save()
-        patrondiscado_formset = PatronDeDiscadoFormset(
-            self.request.POST, instance=ruta_saliente, prefix='patron_discado')
-        ordentroncal_formset = OrdenTroncalFormset(
-            self.request.POST, instance=ruta_saliente, prefix='orden_troncal')
-        if patrondiscado_formset.is_valid() and ordentroncal_formset.is_valid():
-            patrondiscado_formset.instance = ruta_saliente
-            patrondiscado_formset.save()
-            ordentroncal_formset.instance = ruta_saliente
-            ordentroncal_formset.save()
-            # muestra mensaje de éxito
-            messages.add_message(self.request, messages.SUCCESS, self.message)
-            # inserta la configuración de la ruta saliente en asterisk
-            escribir_ruta_saliente_config(ruta_saliente)
-            return redirect('lista_rutas_salientes')
-        return render(self.request, 'ruta_saliente.html',
-                      {'form': form, 'patrondiscado_formset': patrondiscado_formset,
-                       'ordentroncal_formset': ordentroncal_formset})
 
-
-class RutaSalienteUpdateView(UpdateView):
+class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
     model = RutaSaliente
     template_name = 'editar_ruta_saliente.html'
     form_class = RutaSalienteForm
@@ -103,14 +103,12 @@ class RutaSalienteUpdateView(UpdateView):
         initial_data = ruta_saliente.patrones_de_discado.values()
         patrondiscado_formset = PatronDeDiscadoFormset(
             initial=initial_data, instance=ruta_saliente, prefix='patron_discado')
-        # patrondiscado_formset.extra = len(initial_data)
         return patrondiscado_formset
 
     def _inicializar_troncales(self, ruta_saliente):
         initial_data = ruta_saliente.secuencia_troncales.values()
         ordentroncal_formset = OrdenTroncalFormset(
             initial=initial_data, instance=ruta_saliente, prefix='orden_troncal')
-        # ordentroncal_formset.extra = len(initial_data)
         return ordentroncal_formset
 
     def get_context_data(self, **kwargs):
@@ -122,21 +120,3 @@ class RutaSalienteUpdateView(UpdateView):
         context['patrondiscado_formset'] = patrondiscado_formset
         context['ordentroncal_formset'] = ordentroncal_formset
         return context
-
-    def form_valid(self, form):
-        ruta_saliente = form.save()
-        patrondiscado_formset = PatronDeDiscadoFormset(
-            self.request.POST, instance=ruta_saliente, prefix='patron_discado')
-        ordentroncal_formset = OrdenTroncalFormset(
-            self.request.POST, instance=ruta_saliente, prefix='orden_troncal')
-        if patrondiscado_formset.is_valid() and ordentroncal_formset.is_valid():
-            patrondiscado_formset.save()
-            ordentroncal_formset.save()
-            # muestra mensaje de éxito
-            messages.add_message(self.request, messages.SUCCESS, self.message)
-            # inserta la configuración de la ruta saliente en asterisk
-            escribir_ruta_saliente_config(ruta_saliente)
-            return redirect('lista_rutas_salientes')
-        return render(self.request, 'ruta_saliente.html',
-                      {'form': form, 'patrondiscado_formset': patrondiscado_formset,
-                       'ordentroncal_formset': ordentroncal_formset})

@@ -118,12 +118,35 @@ class OMLTestUtilsMixin(object):
             reported_by=user
         )
 
-    def crear_supervisor_profile(self, user):
+    def crear_supervisor_profile(self, user, is_administrador=False):
         return SupervisorProfile.objects.create(
             user=user,
             sip_extension=1000 + user.id,
             sip_password="sdsfhdfhfdhfd",
+            is_administrador=is_administrador,
         )
+
+    def crear_administrador(self, username='admin_', first_name='', last_name=''):
+        """Crea un user administrador con su perfil de supervisor"""
+        user = User.objects.create_user(
+            username=username,
+            email='user_admin@gmail.com',
+            password='admin123',
+            is_agente=False,
+            is_supervisor=True,
+            first_name=first_name,
+            last_name=last_name,
+            borrado=False,
+        )
+        if username == 'admin_':
+            user.username = "admin_" + str(user.id)
+        user.save()
+
+        profile = self.crear_supervisor_profile(user)
+        profile.is_administrador = True
+        profile.save()
+
+        return user
 
     def crear_lista_datos_extras(self):
         """Devuelve lista con datos extras.

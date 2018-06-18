@@ -30,6 +30,10 @@ class PatronDeDiscadoForm(forms.ModelForm):
     class Meta:
         model = PatronDeDiscado
         exclude = ()
+        labels = {
+            "match_pattern": _("Patrón de discado"),
+            "prefix": _("Prefijo"),
+        }
 
 
 class RutaSalienteForm(forms.ModelForm):
@@ -93,7 +97,10 @@ class OrdenTroncalBaseFormset(BaseInlineFormSet):
         """Salva el formset de los troncales actualizando el orden de acuerdo a los
         cambios realizados en la interfaz
         """
-        max_orden = self.instance.secuencia_troncales.aggregate(max=Max('orden'))['max']
+        if not self.instance.secuencia_troncales.exists():
+            max_orden = 0
+        else:
+            max_orden = self.instance.secuencia_troncales.aggregate(max=Max('orden'))['max']
         forms = self.forms
         for i, form in enumerate(forms, max_orden + 1):
             # asignamos nuevos ordenes a partir del máximo número de orden para

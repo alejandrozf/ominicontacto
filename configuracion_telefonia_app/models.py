@@ -47,8 +47,8 @@ class PatronDeDiscado(models.Model):
     match_pattern = models.CharField(max_length=100, validators=[RegexValidator(R_MATCH_PATTERN)])
 
     def __unicode__(self):
-        return "Patrón de ruta saliente {0}, prepend:{1}, prefix:{2}, match_pattern: {3}".format(
-            self.ruta_saliente.nombre, self.prepend, self.match_pattern)
+        return "Patrón de ruta saliente {0} con match_pattern: {1}".format(
+            self.ruta_saliente.nombre, self.match_pattern)
 
 
 class OrdenTroncal(models.Model):
