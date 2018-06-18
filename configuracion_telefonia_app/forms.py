@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django import forms
-
+from django.db.models import Max
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils.translation import ugettext as _
 
@@ -59,6 +59,14 @@ class PatronDeDiscadoBaseFormset(BaseInlineFormSet):
                 raise forms.ValidationError(
                     _("Debe ingresar al menos un patrón de discado"), code="invalid")
 
+            patrones_discado = []
+            for form in save_candidates_forms:
+                patron_discado = form.cleaned_data.get('match_pattern', False)
+                if patron_discado in patrones_discado:
+                    raise forms.ValidationError(
+                        _("Los patrones de discado deben ser diferentes"), code="invalid")
+                patrones_discado.append(patron_discado)
+
 
 class OrdenTroncalBaseFormset(BaseInlineFormSet):
 
@@ -67,24 +75,31 @@ class OrdenTroncalBaseFormset(BaseInlineFormSet):
         """
         if any(self.errors):
             return
-        troncales = []
-        ordenes = []
+
         deleted_forms = self.deleted_forms
         save_candidates_forms = set(self.forms) - set(deleted_forms)
         if len(save_candidates_forms) == 0:
             raise forms.ValidationError(
                 _("Debe ingresar al menos un troncal"), code="invalid")
 
+        troncales = []
         for form in save_candidates_forms:
             troncal = form.cleaned_data.get('troncal', None)
-            orden = form.cleaned_data.get('orden', None)
             if troncal in troncales:
                 raise forms.ValidationError(_("Los troncales deben ser distintos"), code="invalid")
-            if orden in ordenes:
-                raise forms.ValidationError(
-                    _("El valor de orden no debe repetirse"), code="invalid")
             troncales.append(troncal)
-            ordenes.append(orden)
+
+    def save(self):
+        """Salva el formset de los troncales actualizando el orden de acuerdo a los
+        cambios realizados en la interfaz
+        """
+        max_orden = self.instance.secuencia_troncales.aggregate(max=Max('orden'))['max']
+        forms = self.forms
+        for i, form in enumerate(forms, max_orden + 1):
+            # asignamos nuevos ordenes a partir del máximo número de orden para
+            # evitar clashes de integridad al salvar los formsets
+            form.instance.orden = i
+        super(OrdenTroncalBaseFormset, self).save()
 
 
 PatronDeDiscadoFormset = inlineformset_factory(
@@ -92,5 +107,5 @@ PatronDeDiscadoFormset = inlineformset_factory(
     formset=PatronDeDiscadoBaseFormset, can_delete=True, extra=0, min_num=1)
 
 OrdenTroncalFormset = inlineformset_factory(
-    RutaSaliente, OrdenTroncal, fields=('troncal', 'orden'), formset=OrdenTroncalBaseFormset,
+    RutaSaliente, OrdenTroncal, fields=('troncal',), formset=OrdenTroncalBaseFormset,
     can_delete=True, extra=0, min_num=1)

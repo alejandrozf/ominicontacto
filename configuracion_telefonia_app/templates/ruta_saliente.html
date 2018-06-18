@@ -65,20 +65,20 @@
                                         {{ patrondiscado_form.DELETE }}
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="fieldFormset">
                                     {{ patrondiscado_form.prepend.label_tag }}
                                     {{ patrondiscado_form.prepend.errors }}
                                     {{ patrondiscado_form.prepend|add_class:"form-control" }}
                                 </td>
-                                <td>
+                                <td class="fieldFormset">
                                     {{ patrondiscado_form.prefix.label_tag }}
                                     {{ patrondiscado_form.prefix.errors }}
-                                    {{ patrondiscado_form.prefix|add_class:"form-control fieldsFormset" }}
+                                    {{ patrondiscado_form.prefix|add_class:"form-control" }}
                                 </td>
-                                <td>
+                                <td class="fieldFormset">
                                     {{ patrondiscado_form.match_pattern.label_tag }}
                                     {{ patrondiscado_form.match_pattern.errors }}
-                                    {{ patrondiscado_form.match_pattern|add_class:"form-control fieldsFormset" }}
+                                    {{ patrondiscado_form.match_pattern|add_class:"form-control" }}
                                 </td>
                                 <td>{{ patrondiscado_form.id }}</td>
                             </tr>
@@ -105,11 +105,6 @@
                                     {{ ordentroncal_form.troncal.label_tag }}
                                     {{ ordentroncal_form.troncal.errors }}
                                     {{ ordentroncal_form.troncal|add_class:"form-control" }}
-                                </td>
-                                <td>
-                                    {{ ordentroncal_form.orden.label_tag }}
-                                    {{ ordentroncal_form.orden.errors }}
-                                    {{ ordentroncal_form.orden|add_class:"form-control fieldsFormset"}}
                                 </td>
                                 <td>{{ ordentroncal_form.id }}</td>
                             </tr>

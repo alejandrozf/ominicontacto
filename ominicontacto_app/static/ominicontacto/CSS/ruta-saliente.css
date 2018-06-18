@@ -1,5 +1,5 @@
-.patronesDiscado {
-    margin: 20px;
+.addFormset {
+    margin: 10px;
 }
 
 .deleteFormset {
@@ -11,6 +11,10 @@
     margin-bottom: 5px;
 }
 
-.fieldsFormset {
-    margin-left: 5px;
+.fieldFormset {
+    margin: 5px;
+}
+
+patronesDiscado {
+    margin: 10px;
 }
