@@ -401,17 +401,6 @@ class GeneradorDePedazoDeRutaSaliente(GeneradorDePedazo):
         self._parametros = parametros
 
 
-class GeneradorParaEncabezadoRuta(GeneradorDePedazoDeRutaSaliente):
-
-    def get_template(self):
-        return """
-        [oml-outr]
-        """
-
-    def get_parametros(self):
-        return self._parametros
-
-
 class GeneradorParaPatronRuta(GeneradorDePedazoDeRutaSaliente):
 
     def get_template(self):

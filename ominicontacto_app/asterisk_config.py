@@ -499,9 +499,6 @@ class RutasSalientesConfigCreator(object):
                 'oml-ruta-dialpatern': ''.join(("_", str(patron.prefix), patron.match_pattern)),
             }
 
-        #partes.append("[oml-outr-{0}]".format(ruta.id))
-        #partes.append("include => oml-outr-{0}-custom)".format(ruta.id))
-
             generador_ruta = self._generador_factory.crear_generador_para_patron_ruta_saliente(
                 param_generales)
             partes.append(generador_ruta.generar_pedazo())
@@ -528,11 +525,13 @@ class RutasSalientesConfigCreator(object):
         rutas_file = []
 
         # agrego el encabezado de las rutas
-        #generador_ruta = self._generador_factory.crear_generador_para_encabezado_ruta_saliente({})
         rutas_file.append("[oml-outr]\n")
+
         # agrego los include
         for ruta in rutas:
             rutas_file.append("include => oml-outr-{0}\n".format(ruta.id))
+
+        # agrego las rutas con los patrones de discado
         for ruta in rutas:
             logger.info("Creando config sip para ruta saliente %s", ruta.id)
             rutas_file.append("\n[oml-outr-{0}]\n".format(ruta.id))
@@ -609,7 +608,8 @@ class AsteriskConfigReloader(object):
             stderr_file.close()
 
     def reload_asterisk(self):
-        subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx', '\'core reload\''])
+        subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx',
+                         '\'core reload\''])
 
 
 class ConfigFile(object):
