@@ -46,6 +46,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAstDB(object):
             raise(RestablecerConfiguracionTelefonicaError(mensaje_error))
         else:
             self.config_rutas_file.copy_asterisk()
+            self.config_rutas_file.reload_asterisk()
 
     def _generar_e_insertar_en_astdb(self):
         proceso_ok = True
