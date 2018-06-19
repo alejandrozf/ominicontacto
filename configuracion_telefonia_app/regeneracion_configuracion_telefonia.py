@@ -18,7 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 class RestablecerConfiguracionTelefonicaError(OmlError):
-    """Indica que se produjo un error al crear regenerar archivos de asterisk ó insetar en asterisk."""
+    """Indica que se produjo un error al crear regenerar archivos de asterisk ó insetar en
+    asterisk."""
     pass
 
 
