@@ -20,7 +20,7 @@ from django.test.utils import override_settings
 from ominicontacto_app.models import (
     User, AgenteProfile, Grupo, SupervisorProfile, Contacto,
     BaseDatosContacto, NombreCalificacion, Campana, Queue, OpcionCalificacion,
-    ActuacionVigente, ReglasIncidencia, CalificacionCliente, WombatLog,
+    ActuacionVigente, ReglasIncidencia, CalificacionCliente,
     ArchivoDeAudio
 )
 from ominicontacto_app.tests.factories import NombreCalificacionFactory
@@ -453,21 +453,9 @@ class OMLTestUtilsMixin(object):
             agente=agente,
             contacto=contacto,
             es_venta=es_venta,
-            wombat_id=0,
             opcion_calificacion=opcion_calificacion
         )
         calificacioncliente.save()
-
-    def crear_wombat_log(self, campana, agente, contacto, estado, calificacion):
-        metadata = {
-            'reschedule': 0,
-            'retry': 1
-        }
-        WombatLog.objects.create(campana=campana, agente=agente,
-                                 telefono=rtel(),
-                                 estado=estado, calificacion=calificacion,
-                                 timeout=15, contacto=contacto,
-                                 metadata=json.dumps(metadata))
 
     @override_settings(MEDIA_ROOT=_tmpdir())
     def crear_arhivo_de_audio(self):

@@ -14,7 +14,7 @@ class SmsManager():
         mensajes_recibidos = []
         for mensaje in MensajeRecibido.objects.mensaje_recibido_por_remitente():
             mensajes_recibidos.append(MensajeRecibido.objects.
-                mensaje_remitente_fecha(mensaje['remitente'],
+                                      mensaje_remitente_fecha(mensaje['remitente'],
                                         mensaje['timestamp__max']))
         return mensajes_recibidos
 
