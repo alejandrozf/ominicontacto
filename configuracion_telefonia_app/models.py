@@ -5,9 +5,10 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 
-R_ALFANUMERICO = r'^[ \wáéíóúÁÉÍÓÚàèìòùÀÈÌÒÙâêîôûÂÊÎÔÛäëïöüÄËÏÖÜçÇ-]+$'
-R_DIAL_OPT = r'^[\w]+$'
-R_MATCH_PATTERN = r'^[\w]+$'
+R_ALFANUMERICO = r'^[\w]+$'
+R_REGISTER_STRING = r'^[\w|\.|\/|@:-]+$'
+R_DIAL_OPT = r'^[HhKkL():MATtWw]+$'
+R_MATCH_PATTERN = r'^[\w|\.|\[|\]|-]+$'
 
 
 class TroncalSIP(models.Model):
@@ -17,7 +18,8 @@ class TroncalSIP(models.Model):
     canales_maximos = models.PositiveIntegerField(
         validators=[MaxValueValidator(1000), MinValueValidator(1)])
     caller_id = models.CharField(max_length=100, validators=[RegexValidator(R_ALFANUMERICO)])
-    register_string = models.CharField(max_length=100, validators=[RegexValidator(R_ALFANUMERICO)])
+    register_string = models.CharField(
+        max_length=100, validators=[RegexValidator(R_REGISTER_STRING)])
     text_config = models.TextField()
 
     def __unicode__(self):
