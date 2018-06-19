@@ -379,7 +379,7 @@ class GraficosReporteDeLlamadas(object):
         foreground_light='#555',
         foreground_dark='#555',
         opacity='1',
-        opacity_hover='.6',
+        opacity_hover='1',
         transition='400ms ease-in',
         colors=('#428bca', '#5cb85c', '#f0ad4e', '#5bc0de', '#d9534f',
                 '#a95cb8', '#5cb8b5', '#caca43', '#96ac43', '#ca43ca')
