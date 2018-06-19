@@ -173,7 +173,12 @@ button.dropdown-toggle {
 
 /* ///// Tables styles 
 */
-
+.wrapper-table {
+    margin-bottom: 40px;
+}
+.table-tall {
+    max-height: 440px;
+}
 .table thead th {
     background-color: #F7F7F7;
     border-top: 0;
@@ -189,8 +194,29 @@ button.dropdown-toggle {
 table span.label {
     font-size: 0.8rem;
     opacity: 0.8;
+    margin-left: 4px;
+}
+.btn-collapse-table[data-toggle="collapse"] {
+    text-align: left;
+    position: relative;
+    padding-right: 40px;
+}
+.btn-collapse-table[aria-expanded="false"]::before, .btn-collapse-table[aria-expanded="true"]::before {
+    content: '\e904';
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 6px;    
+    font-family: 'icomoon';
+    font-size: 0.8rem;
+}
+.btn-collapse-table[aria-expanded="true"]::before {
+    content: '\e907';
 }
 
+table .collapse {
+    opacity: 0.7;
+}
 /* ///// Tables small 
 */
 
@@ -685,11 +711,12 @@ table.campana-reglas .td-remove .btn {
     background: #c3c3c3 !important;
     color: #222;
 }
-figure text {
-    font-size: 1rem;
+.graficos-avances .tooltip-overlay {
+    background-color: black !important;
 }
-
-
+.graficos-avances .reactive {
+    background-color: black !important;
+}
 
 
 /* ///// Media queries 

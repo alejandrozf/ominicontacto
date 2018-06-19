@@ -191,174 +191,182 @@
 <div>
     <h2>Periodo: {{graficos_estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
     <hr>
-    <table class="table">
-    <thead>
-        <tr>
-            <th>Agente</th>
-            <th>Tiempo de session</th>
-            <th>Porcentaje en llamada</th>
-            <th>Llamadas procesadas</th>
-            <th>Tiempo promedio</th>
-            <th>Intentos fallidos</th>
-        </tr>
-    </thead>
-    {% for agente in graficos_estadisticas.agentes_tiempos %}
-        <tr>
-            <td>{{agente.get_nombre_agente}}
-                <br>
-                <a href="#" role="button" class="tiemposAgenteModal" id_agente="{{agente.agente.id}}" data-toggle="modal" data-target="#reporteFechaModal"
-                fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}">
- ver por fechas</a>
+    <div class="wrapper-table table-responsive">
+        <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-stats" aria-expanded="false">Información completa</button>
+        <hr class="hr-space">
+        <div class="wrapper-table table-responsive">
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Agente</th>
+                    <th>Tiempo de session</th>
+                    <th>Porcentaje en llamada</th>
+                    <th>Llamadas procesadas</th>
+                    <th>Tiempo promedio</th>
+                    <th>Intentos fallidos</th>
+                </tr>
+            </thead>
+            {% for agente in graficos_estadisticas.agentes_tiempos %}
+                <tr>
+                    <td>{{agente.get_nombre_agente}}
+                        <br>
+                        <a href="#" role="button" class="tiemposAgenteModal" id_agente="{{agente.agente.id}}" data-toggle="modal" data-target="#reporteFechaModal"
+                        fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}">
+         ver por fechas</a>
 
-            </td>
-            <td width="25%">
-                {% if agente.get_string_tiempo_sesion %}
-                    {{agente.get_string_tiempo_sesion}}hs
-                {% else %}
-                    0hs
-                {% endif %}
-                <hr>
-                {% if agente.get_string_tiempo_pausa %}
-                    {{agente.get_string_tiempo_pausa}}hs
-                {% else %}
-                    0hs
-                {% endif %}
-                <span class="label">pausa</span>,
-                {{agente.get_string_tiempo_llamada}}hs     
-                <span class="label">llamada</span>
-            </td>
-            <td>
-                {% if agente.tiempo_porcentaje_llamada %}
-                    {{agente.tiempo_porcentaje_llamada|floatformat:4}}%
-                {% else %}
-                    0%
-                {% endif %}
-                <hr>
-                <span>
-                {% if agente.tiempo_porcentaje_pausa %}
-                    {{agente.tiempo_porcentaje_pausa|floatformat:4}}%
-                {% else %}
-                    0%
-                {% endif %}                
-                <span class="label">pausa</span>,
-                {% if agente.tiempo_porcentaje_wait %}
-                    {{agente.tiempo_porcentaje_wait|floatformat:4}}%
-                {% else %}
-                    0%
-                {% endif %}                
-                <span class="label">espera</span>                    
-                </span>               
-            </td>
-            <td>{{agente.cantidad_llamadas_procesadas}}</td>
-            <td>{{agente.get_promedio_llamadas}}s</td>
-            <td>{{agente.cantidad_intentos_fallidos}}</td>
-        </tr>
-    {% endfor %}
-    <tbody>
+                    </td>
+                    <td>
+                        {% if agente.get_string_tiempo_sesion %}
+                            {{agente.get_string_tiempo_sesion}}hs
+                        {% else %}
+                            0hs
+                        {% endif %}
+                        <div class="collapse multi-collapse-stats">
+                            <hr>
+                            {% if agente.get_string_tiempo_pausa %}
+                                {{agente.get_string_tiempo_pausa}}hs
+                            {% else %}
+                                0hs
+                            {% endif %}
+                            <span class="label">pausa</span>,
+                            {{agente.get_string_tiempo_llamada}}hs     
+                            <span class="label">llamada</span>
+                        </div>
+                    </td>
+                    <td>
+                        {% if agente.tiempo_porcentaje_llamada %}
+                            {{agente.tiempo_porcentaje_llamada|floatformat:4}}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                        <div class="collapse multi-collapse-stats">
+                        <hr>
+                        <span>
+                        {% if agente.tiempo_porcentaje_pausa %}
+                            {{agente.tiempo_porcentaje_pausa|floatformat:4}}%
+                        {% else %}
+                            0%
+                        {% endif %}                
+                        <span class="label">pausa</span>,
+                        {% if agente.tiempo_porcentaje_wait %}
+                            {{agente.tiempo_porcentaje_wait|floatformat:4}}%
+                        {% else %}
+                            0%
+                        {% endif %}                
+                        <span class="label">espera</span>                    
+                        </span> 
+                        </div>              
+                    </td>
+                    <td>{{agente.cantidad_llamadas_procesadas}}</td>
+                    <td>{{agente.get_promedio_llamadas}}s</td>
+                    <td>{{agente.cantidad_intentos_fallidos}}</td>
+                </tr>
+            {% endfor %}
+            <tbody>
 
-    </tbody>
-</table>
-
+            </tbody>
+        </table>
+    </div>
     <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='tiempos_agentes' %}">Exportar reporte de tiempos(CSV)</a>
 </div>
 <hr>
 <div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Agente</th>
-            <th>Pausa</th>
-            <th>Tipo</th>
-            <th>Tiempo</th>
+<div class="wrapper-table table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Agente</th>
+                    <th>Pausa</th>
+                    <th>Tipo</th>
+                    <th>Tiempo</th>
+                </tr>
+            </thead>
+            {% for agente in graficos_estadisticas.agente_pausa %}
+                <tr>
+                    <td>{{agente.nombre_agente}}
+                        <a href="#" role="button" class="tiemposPausaModal" id_agente="{{agente.id}}" data-toggle="modal" data-target="#reportePausaModal"
+                        fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}"
+                        pausa_id="{{agente.pausa_id}}">
+                        ver por fechas</a>
+                    </td>
+                    <td>{{agente.pausa}}</td>
+                    <td>{{agente.tipo_de_pausa}}</td>
+                    <td>{{agente.tiempo}}hs</td>
+                </tr>
+            {% endfor %}
+            <tbody>
 
-        </tr>
-    </thead>
-    {% for agente in graficos_estadisticas.agente_pausa %}
-        <tr>
-            <td>{{agente.nombre_agente}}
-                <a href="#" role="button" class="tiemposPausaModal" id_agente="{{agente.id}}" data-toggle="modal" data-target="#reportePausaModal"
-                fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}"
-                pausa_id="{{agente.pausa_id}}">
-                ver por fechas</a>
-            </td>
-            <td>{{agente.pausa}}</td>
-            <td>{{agente.tipo_de_pausa}}</td>
-            <td>{{agente.tiempo}}hs</td>
-        </tr>
-    {% endfor %}
-    <tbody>
-
-    </tbody>
-</table>
+            </tbody>
+        </table>
+</div>        
     <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='pausas_agentes' %}">Exportar reporte de pausas(CSV)</a>
 
 </div>
 <hr>
 <div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Agente</th>
-            <th>Cola</th>
-            <th>Tiempo de llamadas</th>
-            <th>Llamadas procesadas</th>
+<div class="wrapper-table table-tall table-responsive">    
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Agente</th>
+                    <th>Cola</th>
+                    <th>Tiempo de llamadas</th>
+                    <th>Llamadas procesadas</th>
 
-        </tr>
-    </thead>
-    {% for agente in graficos_estadisticas.count_llamada_campana %}
-        <tr>
-            <td>{{agente.0}}</td>
-            <td>{{agente.1}}</td>
-            <td>{{agente.2}}hs</td>
-            <td>{{agente.3}}</td>
+                </tr>
+            </thead>
+            {% for agente in graficos_estadisticas.count_llamada_campana %}
+                <tr>
+                    <td>{{agente.0}}</td>
+                    <td>{{agente.1}}</td>
+                    <td>{{agente.2}}hs</td>
+                    <td>{{agente.3}}</td>
 
-        </tr>
-    {% endfor %}
-    <tbody>
+                </tr>
+            {% endfor %}
+            <tbody>
 
-    </tbody>
-</table>
+            </tbody>
+        </table>
+</div>
 <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_agentes' %}">Exportar reporte cantidad llamadas(CSV)</a>
 </div>
 <hr>
 <div>
     <h2>Cantidad de llamadas por agente</h2>
     <br>
-    <div class="row">
-        <div class="col-lg-6">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Agente</th>
-                    <th>Total </th>
-                    <th>PREVIEW</th>
-                    <th>DIALER</th>
-                    <th>INBOUND</th>
-                    <th>MANUAL</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
-                        <tr>
-                            <td>{{ agente }}</td>
-                            <td>{{ total_campana }}</td>
-                            <td>{{ total_preview }}</td>
-                            <td>{{ total_dialer }}</td>
-                            <td>{{ total_inbound }}</td>
-                            <td>{{ total_manual }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="col-lg-6">
-            <div class="graficos-avances">
-                <figure>
-                    {{ graficos_estadisticas.barra_agente_total.render|safe }}
-                </figure>
-            </div>
-        </div>
+    <div class="wrapper-table table-tall table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Agente</th>
+                <th>Total </th>
+                <th>PREVIEW</th>
+                <th>DIALER</th>
+                <th>INBOUND</th>
+                <th>MANUAL</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
+                    <tr>
+                        <td>{{ agente }}</td>
+                        <td>{{ total_campana }}</td>
+                        <td>{{ total_preview }}</td>
+                        <td>{{ total_dialer }}</td>
+                        <td>{{ total_inbound }}</td>
+                        <td>{{ total_manual }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    <div class="graficos-avances">
+        <figure>
+            {{ graficos_estadisticas.barra_agente_total.render|safe }}
+        </figure>
+    </div>
+
     <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a>
 
 </div>
@@ -368,36 +376,33 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="reporteFechaModalLabel">Agente</h5>
+        <h1 class="modal-title" id="reporteFechaModalLabel">Agente</h1>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-
           <div id="error">
           </div>
-            <table class="table table-bordered table-sm">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Tiempo de session</th>
-                        <th>Tiempo de pausa</th>
-                        <th>Tiempos en llamada</th>
-                        <th>Porcentaje en llamada</th>
-                        <th>Porcentaje en pausa</th>
-                        <th>Porcentaje en espera</th>
-                        <th>Cantidad de llamadas procesadas</th>
-                        <th>Tiempo promedio de llamadas</th>
-                        <th>Cantidad de intentos fallidos</th>
-                    </tr>
-                </thead>
+            <table class="table">
+                <tr>
+                    <td>Fecha</td>
+                    <td>Sesión</td>
+                    <td>Pausa</td>
+                    <td>Llamada</td>
+                    <td>% En llamada</td>
+                    <td>% En pausa</td>
+                    <td>% En espera</td>
+                    <td>Llamadas procesadas</td>
+                    <td>Tiempo promedio</td>
+                    <td>Intentos fallidos</td>
+                </tr>
                 <tbody id="output">
                 </tbody>
             </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -407,27 +412,25 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="reportePausaModalLabel">Agente</h5>
+        <h1 class="modal-title" id="reportePausaModalLabel">Agente</h1>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-            <table class="table table-bordered table-sm">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Pausa</th>
-                        <th>Tipo de pausa</th>
-                        <th>Tiempo de pausa</th>
-                    </tr>
-                </thead>
+            <table class="table">
+                <tr>
+                    <td>Fecha</td>
+                    <td>Pausa</td>
+                    <td>Tipo</td>
+                    <td>Tiempo</td>
+                </tr>
                 <tbody id="output_pausa">
                 </tbody>
             </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

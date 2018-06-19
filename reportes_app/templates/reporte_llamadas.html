@@ -166,7 +166,7 @@
                 <td width="10%">{{ llamadas_por_tipo.Manual.conectadas }}</td>
               </tr>
               <tr>
-                <td>{% trans 'No conectadas' %}</td>
+                <td>{% trans 'no conec.' %}</td>
                 <td width="10%">{{ llamadas_por_tipo.Manual.no_conectadas }}</td>
               </tr>
             </table>
@@ -188,7 +188,7 @@
                 <td width="10%">{{ llamadas_por_tipo.Preview.conectadas }}</td>
               </tr>
               <tr>
-                <td>{% trans 'No conectadas' %}</td>
+                <td>{% trans 'no conec.' %}</td>
                 <td width="10%">{{ llamadas_por_tipo.Preview.no_conectadas }}</td>
               </tr>
             </table>
@@ -247,8 +247,7 @@
 <div>
   <h2>{% trans 'Cantidad de llamadas por campaña' %}</h2>
   <br>
-  <div class="form-row">
-    <div class="col-lg-6">
+    <div class="wrapper-table table-tall table-responsive">
       <table class="table">
         <thead>
           <tr>
@@ -270,14 +269,11 @@
         </tbody>
       </table>         
     </div>
-    <div class="col-lg-6">
-        <div class="graficos-avances">
-            <figure>
-                {{ graficos.barra_llamada_por_campana.render|safe }}
-            </figure>
-        </div>          
-    </div>
-  </div>      
+    <div class="graficos-avances">
+        <figure>
+            {{ graficos.barra_llamada_por_campana.render|safe }}
+        </figure>
+    </div>   
 </div>
     <button class="btn btn-outline-primary" onclick="exportarReporte('llamadas_por_campana');">
       {% trans 'Exportar llamadas por campaña (CSV)' %}
@@ -288,22 +284,16 @@
   <div id="seccion-llamadas-dialer">
     <h2>{% trans 'Distribución de tipos de llamadas en campañas salientes discador' %}</h2>
     <br>
-    <div class="table-responsive">
+    <div class="wrapper-table table-responsive">
+        <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-dialer" aria-expanded="false">{% trans 'Información completa' %}</button>
+        <hr class="hr-space"> 
       <table class="table">
         <thead>
           <tr>
             <th>{% trans 'Campaña' %}</th>
             <th>{% trans 'Efectuadas' %}</th>
-            <th>{% trans 'Atendidas' %}</th>
-            <th>{% trans 'Conectadas' %}</th>
-            <th>{% trans 'Expiradas' %}</th>
-            <th>{% trans 'Abandonadas' %}</th>
             <th>{% trans 'Conexión' %}</th>
-            <th>{% trans 'Atención' %}</th>
-            <th>{% trans 'Abandono' %}</th>
             <th>{% trans 'Manuales' %}</th>
-            <th>{% trans 'Conectadas' %}</th>
-            <th>{% trans 'Espera' %}</th>
           </tr>
         </thead>
         {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Dialer.items %}
@@ -318,20 +308,33 @@
                   {{ campana.nombre }}
                 {% endif %}
               </td>
-              <td>{{ campana.efectuadas }}</td>
-              <td>{{ campana.atendidas }}</td>
-              <td>{{ campana.conectadas }}</td>
-              <td>{{ campana.expiradas }}</td>
-              <td>{{ campana.abandonadas }}</td>
-              <td>{{ campana.t_espera_conexion|format_seconds }}</td>
-              <td>{{ campana.t_espera_atencion|format_seconds }}</td>
-              <td>{{ campana.t_abandono|format_seconds }}</td>
-              <td>{{ campana.efectuadas_manuales }}</td>
               <td>
-                  <span class="icon report icon-check"></span>{{ campana.conectadas_manuales }}
-                  <span class="icon report icon-cancel"></span>{{ campana.no_conectadas_manuales }}
+                  {{ campana.efectuadas }}
+                  <div class="collapse multi-collapse-dialer">
+                      <hr>
+                      {{ campana.atendidas }}<span class="label">atendidas</span>,
+                      {{ campana.conectadas }}<span class="label">conectadas</span>,
+                      {{ campana.expiradas }}<span class="label">expiradas</span>,
+                      {{ campana.abandonadas }}<span class="label">abandonadas</span>
+                  </div>                  
               </td>
-              <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
+              <td>
+                  {{ campana.t_espera_conexion|format_seconds }}
+                  <div class="collapse multi-collapse-dialer">
+                      <hr>
+                      {{ campana.t_espera_atencion|format_seconds }}<span class="label">atención</span>,
+                      {{ campana.t_abandono|format_seconds }}<span class="label">abandono</span>
+                  </div>
+              </td>
+              <td>
+                  {{ campana.efectuadas_manuales }}
+                  <div class="collapse multi-collapse-dialer">
+                      <hr>
+                      {{ campana.conectadas_manuales }}<span class="label">conectadas</span>,
+                      </span>{{ campana.no_conectadas_manuales }}<span class="label">no conec.</span>,
+                      {{ campana.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span> 
+                  </div>                 
+              </td>
             </tr>
             {% if tipos_por_fecha %}
               {% for fecha, llamadas in tipos_por_fecha.items %}
@@ -374,20 +377,16 @@
 <div id="seccion-llamadas-entrantes">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas entrantes' %}</h2>
   <br>
-  <div class="table-responsive">
+  <div class="wrapper-table table-responsive">
+    <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-incoming" aria-expanded="false">Información completa</button>    
+    <hr class="hr-space"> 
     <table class="table">
       <thead>
         <tr>
           <th>{% trans 'Nombre' %}</th>
           <th>{% trans 'Recibidas' %}</th>
-          <th>{% trans 'Atendidas' %}</th>
-          <th>{% trans 'Expiradas' %}</th>
-          <th>{% trans 'Abandonadas' %}</th>
           <th>{% trans 'Espera' %}</th>
-          <th>{% trans 'Abandono' %}</th>
           <th>{% trans 'Manuales' %}</th>
-          <th>{% trans 'Conectadas' %}</th>          
-          <th>{% trans 'Espera' %}</th>
         </tr>
       </thead>
       {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Entrante.items %}
@@ -402,18 +401,31 @@
                 {{ campana.nombre }}
               {% endif %}
             </td>
-            <td>{{ campana.recibidas }}</td>
-            <td>{{ campana.atendidas }}</td>
-            <td>{{ campana.expiradas }}</td>
-            <td>{{ campana.abandonadas }}</td>
-            <td>{{ campana.t_espera_conexion|format_seconds }}</td>
-            <td>{{ campana.t_abandono|format_seconds }}</td>
-            <td>{{ campana.efectuadas_manuales }}</td>
             <td>
-                <span class="icon report icon-check"></span>{{ campana.conectadas_manuales }}
-                <span class="icon report icon-cancel"></span>{{ campana.no_conectadas_manuales }}
+                {{ campana.recibidas }}
+                <div class="collapse multi-collapse-incoming">
+                    <hr>
+                    {{ campana.atendidas }}<span class="label">atendidas</span>,
+                    {{ campana.expiradas }}<span class="label">expiradas</span>,
+                    {{ campana.abandonadas }}<span class="label">abandonadas</span>
+                </div>
             </td>
-            <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
+            <td>
+                {{ campana.t_espera_conexion|format_seconds }}
+                <div class="collapse multi-collapse-incoming">
+                    <hr>
+                    {{ campana.t_abandono|format_seconds }}<span class="label">abandono</span>
+                </div>
+            </td>
+            <td>
+                {{ campana.efectuadas_manuales }}
+                <div class="collapse multi-collapse-incoming">
+                    <hr>
+                    {{ campana.conectadas_manuales }}<span class="label">conectadas</span>,
+                    {{ campana.no_conectadas_manuales }}<span class="label">no conec.</span>,
+                    {{ campana.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
+                </div>
+            </td>
           </tr>
           {% if tipos_por_fecha %}
             {% for fecha, llamadas in tipos_por_fecha.items %}
@@ -453,13 +465,14 @@
 <div id="seccion-llamadas-manuales">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas manuales' %}</h2>
   <br>
-  <div class="table-responsive">
+  <div class="wrapper-table table-responsive">
+      <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-manual" aria-expanded="false">{% trans 'Información completa' %}</button>  
+      <hr class="hr-space">   
     <table class="table">
       <thead>
         <tr>
           <th>{% trans 'Nombre' %}</th>
           <th>{% trans 'Efectuadas' %}</th>
-          <th>{% trans 'Conectadas' %}</th>
           <th>{% trans 'Conexión' %}</th>
         </tr>
       </thead>
@@ -475,10 +488,13 @@
                 {{ campana.nombre }}
               {% endif %}
             </td>
-            <td>{{ campana.efectuadas }}</td>
-            <td width="14%">
-                <span class="icon report icon-check"></span>{{ campana.conectadas }} 
-                <span class="icon report icon-cancel"></span>{{ campana.no_conectadas }}
+            <td>
+                {{ campana.efectuadas }}
+                <div class="collapse multi-collapse-manual">
+                    <hr>
+                    {{ campana.conectadas }}<span class="label">conectadas</span>,
+                    {{ campana.no_conectadas }}<span class="label">no conec.</span>
+                </div>
             </td>
             <td>{{ campana.t_espera_conexion|format_seconds }}</td>
           </tr>
@@ -512,16 +528,16 @@
 <div id="seccion-llamadas-preview">
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas Preview' %}</h2>
   <br>
-  <div class="table-responsive">
+  <div class="wrapper-table table-responsive">
+      <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-preview" aria-expanded="false">{% trans 'Información completa' %}</button>  
+      <hr class="hr-space">      
     <table class="table">
       <thead>
         <tr>
           <th>{% trans 'Nombre' %}</th>
           <th>{% trans 'Efectuadas' %}</th>
-          <th>{% trans 'Conectadas' %}</th>
           <th>{% trans 'Conexión' %}</th>
           <th>{% trans 'Manuales' %}</th>
-          <th>{% trans 'Conectadas' %}</th>
           <th>{% trans 'Conexión' %}</th>
         </tr>
       </thead>
@@ -537,16 +553,22 @@
             {{ campana.nombre }}
           {% endif %}
         </td>
-        <td>{{ campana.efectuadas }}</td>
         <td>
-            <span class="icon report icon-check"></span>{{ campana.conectadas }}
-            <span class="icon report icon-cancel"></span>{{ campana.no_conectadas }}
+            {{ campana.efectuadas }}
+            <div class="collapse multi-collapse-preview">
+                <hr>
+                {{ campana.conectadas }}<span class="label">conectadas</span>,
+                {{ campana.no_conectadas }}<span class="label">no conec.</span>
+            </div>
         </td>
         <td>{{ campana.t_espera_conexion|format_seconds }}</td>
-        <td>{{ campana.efectuadas_manuales }}</td>
         <td>
-            <span class="icon report icon-check"></span>{{ campana.conectadas_manuales }}
-            <span class="icon report icon-cancel"></span>{{ campana.no_conectadas_manuales }}
+            {{ campana.efectuadas_manuales }}
+            <div class="collapse multi-collapse-preview">
+                <hr>
+                {{ campana.conectadas_manuales }}<span class="label">conectadas</span>,
+                {{ campana.no_conectadas_manuales }}<span class="label">no conec.</span>
+            </div>
         </td>
         <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
       </tr>
@@ -632,7 +654,7 @@
             <tr>
               <td>{% trans 'Fecha' %}</td>
               <td>{% trans 'Conectadas' %}</td>
-              <td>{% trans 'No conectadas' %}</td>
+              <td>{% trans 'no conec.' %}</td>
               <td><strong>{% trans 'Total' %}</strong></td>
             </tr>
             {% for fecha, llamadas in llamadas_por_tipo.Manual.items %}
@@ -700,7 +722,7 @@
             <tr>
               <td>{% trans 'Fecha' %}</td>
               <td>{% trans 'Conectadas' %}</td>
-              <td>{% trans 'No conectadas' %}</td>
+              <td>{% trans 'no conec.' %}</td>
               <td><strong>{% trans 'Total' %}</strong></td>
             </tr>
             {% for fecha, llamadas in llamadas_por_tipo.Preview.items %}
