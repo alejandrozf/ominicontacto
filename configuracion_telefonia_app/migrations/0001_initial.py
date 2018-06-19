@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=128, unique=True, validators=[django.core.validators.RegexValidator('^[\\w]+$')])),
                 ('ring_time', models.PositiveIntegerField(validators=[django.core.validators.MaxValueValidator(3600), django.core.validators.MinValueValidator(1)])),
-                ('dial_options', models.CharField(max_length=512, validators=[django.core.validators.RegexValidator('^[HhKkL():MATtWw]+$')])),
+                ('dial_options', models.CharField(max_length=512, validators=[django.core.validators.RegexValidator('^[HhKkRrL():MATtWw]+$')])),
             ],
         ),
         migrations.CreateModel(

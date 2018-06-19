@@ -7,9 +7,9 @@ from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, OrdenTroncal
 from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm,
                                                PatronDeDiscadoFormset, OrdenTroncalFormset)
 
@@ -42,6 +42,43 @@ class TroncalSIPUpdateView(TroncalSIPMixin, UpdateView):
     model = TroncalSIP
     form_class = TroncalSIPForm
     template_name = 'base_create_update_form.html'
+
+
+class TroncalSIPDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación de una campana
+    """
+    model = TroncalSIP
+    template_name = 'delete_troncal_sip.html'
+
+    def get_success_url(self):
+        return reverse('lista_troncal_sip')
+
+    def dispatch(self, request, *args, **kwargs):
+        troncal_sip = self.get_object()
+        if OrdenTroncal.objects.filter(troncal=troncal_sip).exists():
+            message = (_('No se puede eliminar un troncal que está siendo usado en una ruta'
+                         'saliente'))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return redirect(self.get_success_url())
+        return super(TroncalSIPDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        super(TroncalSIPDeleteView, self).delete(request, *args, **kwargs)
+        message = (_('Troncal Sip eliminado con éxito'))
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return redirect(self.get_success_url())
+
+    def get_object(self, queryset=None):
+        return TroncalSIP.objects.get(pk=self.kwargs['pk'])
 
 
 class RutaSalienteListView(ListView):

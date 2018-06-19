@@ -11,7 +11,7 @@
             <th>ID</th>
             <th>{% trans 'Nombre' %}</th>
             <th>{% trans 'Caller ID' %}</th>
-            <th>{% trans 'Canales Máximos' %}</th>
+            <th colspan="2">{% trans 'Canales Máximos' %}</th>
         </tr>
     </thead>
     <tbody>
@@ -21,6 +21,11 @@
             <td><a href="{% url 'editar_troncal_sip' sip_trunk.id %}">{{ sip_trunk.nombre }}</a></td>
             <td>{{ sip_trunk.caller_id }}</td>
             <td>{{ sip_trunk.canales_maximos }}</td>
+            <td>
+                <a class="dropdown-item" href="{% url 'eliminar_troncal_sip' sip_trunk.pk %}">
+                    <span class="icon icon-trash"></span>
+                </a>
+            </td>
         </tr>
    {% empty %}
     <tr>

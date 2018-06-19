@@ -7,7 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 
 R_ALFANUMERICO = r'^[\w]+$'
 R_REGISTER_STRING = r'^[\w|\.|\/|@:-]+$'
-R_DIAL_OPT = r'^[HhKkL():MATtWw]+$'
+R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
 R_MATCH_PATTERN = r'^[\w|\.|\[|\]|-]+$'
 
 
