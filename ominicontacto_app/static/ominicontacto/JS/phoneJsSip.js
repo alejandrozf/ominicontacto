@@ -316,7 +316,9 @@ $(function() {
       Sounds("","stop");
     });
       if(e.originator=="remote") {         // Origen de llamada Remoto
-        entrante = true;
+				entrante = true;
+				
+				var TransferedCall = e.request.headers.Transfer ? e.request.headers.Transfer[0].raw : 0;
       	if(e.request.headers.Wombatid) {
       		wId = e.request.headers.Wombatid[0].raw;
       	}
@@ -349,10 +351,9 @@ $(function() {
 						} else if (originHeader === "DIALER-JSON") {
 
 						} else if (originHeader === "CLICK2CALL") {
-                                                    getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
-                                                }
-                                                 else if (originHeader === "CLICK2CALLPREVIEW") {
-                                                   getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+             getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
+            } else if (originHeader === "CLICK2CALLPREVIEW") {
+              getData(CampIdHeader, leadIdHeader, $("#idagt").val(), 0);
 						}
         	} else {
         		if(fromUser !== "Unknown") {
@@ -407,49 +408,37 @@ $(function() {
         };
 
         function processOrigin(origin, opt, from) {
-	  var options = opt;
-	  var origin = origin;
-	  if(origin) {
-	    if(origin.search("DIALER") === 0) {
-	      origin = "DIALER";
-	    }
-	  }
-  	  switch(origin) {
-  	  case "DIALER":
-  	    var dialerTag = document.getElementById("auto_attend_DIALER");
-  	    if(dialerTag.value === "True") {
-  	      $("#modalReceiveCalls").modal('hide');
-  	      session_incoming.answer(options);
-              setCallState("Connected to " + from, "orange");
-              Sounds("","stop");
-  	    }
-  	    break;
-  	  case "IN":
-  	    var inboundTag = document.getElementById("auto_attend_IN");
-  	    if(inboundTag.value === "True") {
-  	      $("#modalReceiveCalls").modal('hide');
-  	      session_incoming.answer(options);
-              setCallState("Connected to " + from, "orange");
-              Sounds("","stop");
-  	    }
-  	    break;
-	  case "ICS":
-  	    var icsTag = document.getElementById("auto_attend_ICS");
-  	    if(icsTag.value === "True") {
-	      $("#modalReceiveCalls").modal('hide');
-  	      session_incoming.answer(options);
-              setCallState("Connected to " + from, "orange");
-              Sounds("","stop");
-  	    }
-  	    break;
-	  case "CLICK2CALL":
-          case"CLICK2CALLPREVIEW":
-	    $("#modalReceiveCalls").modal('hide');
-	    session_incoming.answer(options);
-	    setCallState("Connected to " + from, "orange");
-	    Sounds("","stop");
-	    break;
-          }
+	      var options = opt;
+	      var origin = origin;
+				if(origin) {
+					if(origin.search("DIALER") === 0) {
+						origin = "DIALER";
+					}
+				}
+				if (TransferedCall === 0) {
+					if (origin == "DIALER" || origin == "IN" || origin == "ICS") {
+						
+						if ($("#auto_attend_"+origin).val() === "True") {
+							$("#modalReceiveCalls").modal('hide');
+							session_incoming.answer(options);
+							setCallState("Connected to " + from, "orange");
+							Sounds("","stop");
+						}
+					} else if (origin == "CLICK2CALL" || origin == "CLICK2CALLPREVIEW") {
+						$("#modalReceiveCalls").modal('hide');
+						session_incoming.answer(options);
+						setCallState("Connected to " + from, "orange");
+						Sounds("","stop");
+					}
+				} else {
+					var typeTransfer = "Transf.";
+					switch (TransferedCall) {
+							case "1": typeTransfer += " directa"; break;
+							case "2": typeTransfer += " asistida"; break;
+							case "3": typeTransfer += " a campaña"; break;
+					}
+					$("#extraInfo").html(typeTransfer);
+			  }
   	}
 
       } else {
@@ -657,6 +646,7 @@ $(function() {
 					}
 				}
 			}
+			$("#modalTransfer").modal('hide');
 		};
 
     function transferir(objRTCsession, transferDst) {
