@@ -477,15 +477,6 @@ class PausaToggleDeleteView(TemplateView):
         pausa.save()
         return redirect('pausa_list')
 
-def get_new_credentials(request):
-    agente_profile = request.user.get_agente_profile()
-    if request.user.is_authenticated() and agente_profile:
-	user_ephemeral = agente_profile.generar_usuario()
-	pass_ephemeral = agente_profile.generar_contrasena()
-    response = JsonResponse({'sipExt': user_ephemeral, 'sipSec': pass_ephemeral})
-    return response
- 
-
 def node_view(request):
     """Esta vista renderiza la pantalla del agente"""
     registro = []
@@ -493,8 +484,8 @@ def node_view(request):
     agente_profile = request.user.get_agente_profile()
     if request.user.is_authenticated() and agente_profile:
 	
-	# Regenera credendiales cada vez que se loguea el agente
-	#agente_profile.regenerar_credenciales()
+	#Genera credendiales cada vez que se loguea el agente
+	agente_profile.regenerar_credenciales()
 	registro = DuracionDeLlamada.objects.filter(
             agente=request.user.get_agente_profile(),
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,

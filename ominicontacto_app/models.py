@@ -16,6 +16,7 @@ from hashlib import sha1
 from ast import literal_eval
 
 from crontab import CronTab
+from StringIO import StringIO
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
@@ -25,6 +26,7 @@ from django.db import (models,
 from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
+from django.core.management import call_command
 from django.utils.translation import ugettext as _
 from simple_history.models import HistoricalRecords
 from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra, datetime_hora_minima_dia, \
@@ -236,7 +238,7 @@ class AgenteProfile(models.Model):
 	#Hago el import aqui para no generar conflicto con el import datetime
 	from datetime import datetime
         #genero un  timestamp
-        ttl=10861 + 80
+        ttl=10861 + 36000
         date = datetime.now()
         unix_timestamp = str((date - datetime(1970, 1, 1)).total_seconds()).split('.')[0]
         #voy a insertar timestamp en tabla subscriber
@@ -247,20 +249,24 @@ class AgenteProfile(models.Model):
 	return user_ephemeral
 
     def generar_contrasena(self):
-        secret_key = "12345"
-	#secret_key = regenerar_sk()
-	password_hashed = hmac.new(str(secret_key), self.generar_usuario(), sha1)
+        #ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
+        #ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
+	#secret_key = '{0} {1} generar_secretkey'.format(ruta_python_virtualenv, ruta_manage_py))
+	#with open('/path/to/command_output') as out:
+	out = StringIO()
+	#with open('/tmp/secret_key', "w") as out:	
+	call_command('generar_secretkey', False, stdout=out)
+	secret_key = hex(out.getvalue())[:-1]
+	logger.info("length: " + str(len(secret_key)))
+	password_hashed = hmac.new(secret_key, self.generar_usuario(), sha1)
         password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
-        #logger.info("Pass generada: " + password_ephemeral)
+        logger.info("Secret Key: " + str(secret_key))
+        logger.info("Pass generada: " + password_ephemeral)
 	return password_ephemeral
 
     def regenerar_credenciales(self):
-        #self.object = form.save(commit=False)
-        self.generar_usuario()
         self.sip_password = self.generar_contrasena()
         self.save()
-        #kamailioservice = kamailio_service.KamailioService()
-        #kamailioservice.update_agente_kamailio(self)
 
 class SupervisorProfileManager(models.Manager):
 
