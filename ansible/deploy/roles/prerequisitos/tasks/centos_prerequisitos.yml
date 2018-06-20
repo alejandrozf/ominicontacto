@@ -8,6 +8,15 @@
   become: true
   become_method: sudo
 
+- name: Exclude librabbitmq in list of repositories
+  ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=librabbitmq* state=present"
+  with_items:
+      - base
+      - updates
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
 - name: Update/upgrade of centos
   yum: name='*' state=latest update_cache=yes
   become: true
@@ -136,5 +145,3 @@
   become: true
   become_method: sudo
 - meta: clear_host_errors
-
-
