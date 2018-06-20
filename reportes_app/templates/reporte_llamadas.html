@@ -339,21 +339,34 @@
             {% if tipos_por_fecha %}
               {% for fecha, llamadas in tipos_por_fecha.items %}
                 <tr fechas="FechasDialer_{{ id }}" style="display:none; background-color:aliceblue;">
-                  <td style="text-align:center;">{{ fecha }}</td>
-                  <td>{{ llamadas.efectuadas }}</td>
-                  <td>{{ llamadas.atendidas }}</td>
-                  <td>{{ llamadas.conectadas }}</td>
-                  <td>{{ llamadas.expiradas }}</td>
-                  <td>{{ llamadas.abandonadas }}</td>
-                  <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
-                  <td>{{ llamadas.t_espera_atencion|format_seconds }}</td>
-                  <td>{{ llamadas.t_abandono|format_seconds }}</td>
-                  <td>{{ llamadas.efectuadas_manuales }}</td>
+                  <td>{{ fecha }}</td>
                   <td>
-                      <span class="icon report icon-check"></span>{{ llamadas.conectadas_manuales }}
-                      <span class="icon report icon-cancel"></span>{{ llamadas.no_conectadas_manuales }}
+                      {{ llamadas.efectuadas }}
+                      <div class="collapse multi-collapse-dialer">
+                          <hr>
+                          {{ llamadas.atendidas }}<span class="label">atendidas</span>,
+                          {{ llamadas.conectadas }}<span class="label">conectadas</span>,
+                          {{ llamadas.expiradas }}<span class="label">expiradas</span>,
+                          {{ llamadas.abandonadas }}<span class="label">expiradas</span>
+                    </div>
                   </td>
-                  <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
+                  <td>
+                      {{ llamadas.t_espera_conexion|format_seconds }}
+                      <div class="collapse multi-collapse-dialer">
+                          <hr>
+                          {{ llamadas.t_espera_atencion|format_seconds }}<span class="label">atención</span>,
+                          {{ llamadas.t_abandono|format_seconds }}<span class="label">abandono</span>
+                      </div>
+                  </td>
+                  <td>
+                      {{ llamadas.efectuadas_manuales }}
+                      <div class="collapse multi-collapse-dialer">
+                          <hr>
+                          {{ llamadas.conectadas_manuales }}<span class="label">conectadas</span>,
+                          {{ llamadas.no_conectadas_manuales }}<span class="label">no conectadas</span>,
+                          {{ llamadas.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
+                      </div>
+                  </td>
                 </tr>
               {% endfor %}
             {% endif %}
@@ -430,19 +443,32 @@
           {% if tipos_por_fecha %}
             {% for fecha, llamadas in tipos_por_fecha.items %}
               <tr fechas="FechasEntrante_{{ id }}" style="display:none; background-color:aliceblue;">
-                <td style="text-align:center;">{{ fecha }}</td>
-                <td>{{ llamadas.recibidas }}</td>
-                <td>{{ llamadas.atendidas }}</td>
-                <td>{{ llamadas.expiradas }}</td>
-                <td>{{ llamadas.abandonadas }}</td>
-                <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
-                <td>{{ llamadas.t_abandono|format_seconds }}</td>
-                <td>{{ llamadas.efectuadas_manuales }}</td>
+                <td>{{ fecha }}</td>
                 <td>
-                    <span class="icon report icon-check"></span>{{ llamadas.conectadas_manuales }}
-                    <span class="icon report icon-cancel"></span>{{ llamadas.no_conectadas_manuales }}
+                    {{ llamadas.recibidas }}
+                    <div class="collapse multi-collapse-incoming">
+                        <hr>
+                        {{ llamadas.atendidas }}<span class="label">atendidas</span>,
+                        {{ llamadas.expiradas }}<span class="label">expiradas</span>,
+                        {{ llamadas.abandonadas }}<span class="label">abandonadas</span>
+                    </div>                    
                 </td>
-                <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
+                <td>
+                    {{ llamadas.t_espera_conexion|format_seconds }}
+                    <div class="collapse multi-collapse-incoming">
+                        <hr>
+                        {{ llamadas.t_abandono|format_seconds }}<span class="label">abandono</span>
+                    </div>                    
+                </td>
+                <td>
+                    {{ llamadas.efectuadas_manuales }}
+                    <div class="collapse multi-collapse-incoming">
+                        <hr>
+                        {{ llamadas.conectadas_manuales }}<span class="label">conectadas</span>,
+                        {{ llamadas.no_conectadas_manuales }}<span class="label">no conec.</span>,
+                        {{ llamadas.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
+                    </div>                    
+                </td>
               </tr>
             {% endfor %}
           {% endif %}
@@ -501,10 +527,15 @@
           {% if tipos_por_fecha %}
             {% for fecha, llamadas in tipos_por_fecha.items %}
               <tr fechas="FechasManual_{{ id }}" style="display:none; background-color:aliceblue;">
-                <td style="text-align:center;">{{ fecha }}</td>
-                <td>{{ llamadas.efectuadas }}</td>
-                <td>{{ llamadas.conectadas }}</td>
-                <td>{{ llamadas.no_conectadas }}</td>
+                <td>{{ fecha }}</td>
+                <td>
+                    {{ llamadas.efectuadas }}
+                    <div class="collapse multi-collapse-manual">
+                        <hr>
+                        {{ llamadas.conectadas }}<span class="label">conectadas</span>,
+                        {{ llamadas.no_conectadas }}<span class="label">no conec.</span>
+                    </div>                    
+                </td>
                 <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
               </tr>
             {% endfor %}
@@ -575,17 +606,23 @@
       {% if tipos_por_fecha %}
         {% for fecha, llamadas in tipos_por_fecha.items %}
           <tr fechas="FechasPreview_{{ id }}" style="display:none; background-color:aliceblue;">
-            <td style="text-align:center;">{{ fecha }}</td>
-            <td>{{ llamadas.efectuadas }}</td>
+            <td>{{ fecha }}</td>
             <td>
-                <span class="icon report icon-check"></span>{{ llamadas.conectadas }}
-                <span class="icon report icon-cancel"></span>{{ llamadas.no_conectadas }}
+                {{ llamadas.efectuadas }}
+                <div class="collapse multi-collapse-preview">
+                    <hr>
+                    {{ llamadas.conectadas }}<span class="label">conectadas</span>,
+                    {{ llamadas.no_conectadas }}<span class="label">no conec.</span>
+                </div>                
             </td>
             <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
-            <td>{{ llamadas.efectuadas_manuales }}</td>
             <td>
-                <span class="icon report icon-check"></span>{{ llamadas.conectadas_manuales }}
-                <span class="icon report icon-cancel"></span>{{ llamadas.no_conectadas_manuales }}
+                {{ llamadas.efectuadas_manuales }}
+                <div class="collapse multi-collapse-preview">
+                    <hr>
+                    {{ llamadas.conectadas_manuales }}<span class="label">conectadas</span>,
+                    {{ llamadas.no_conectadas_manuales }}<span class="label">no conec.</span>
+                </div>                
             </td>
             <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
           </tr>
@@ -616,24 +653,26 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <table class="table">
-            <tr>
-              <td>{% trans 'Fecha' %}</td>
-              <td>{% trans 'Atendidas' %}</td>
-              <td>{% trans 'No atendidas' %}</td>
-              <td>{% trans 'Perdidas' %}</td>
-              <td><strong>{% trans 'Total' %}</strong></td>
-            </tr>
-            {% for fecha, llamadas in llamadas_por_tipo.Dialer.items %}
-              <tr>
-                <td>{{ fecha }}</td>
-                <td>{{ llamadas.atendidas }}</td>
-                <td>{{ llamadas.no_atendidas }}</td>
-                <td>{{ llamadas.perdidas }}</td>
-                <td>{{llamadas.total}}</td>
-              </tr>
-            {% endfor %}
-          </table>
+            <div class="table-responsive">
+                <table class="table">
+                  <tr>
+                    <td>{% trans 'Fecha' %}</td>
+                    <td>{% trans 'Atendidas' %}</td>
+                    <td>{% trans 'No atendidas' %}</td>
+                    <td>{% trans 'Perdidas' %}</td>
+                    <td><strong>{% trans 'Total' %}</strong></td>
+                  </tr>
+                  {% for fecha, llamadas in llamadas_por_tipo.Dialer.items %}
+                    <tr>
+                      <td>{{ fecha }}</td>
+                      <td>{{ llamadas.atendidas }}</td>
+                      <td>{{ llamadas.no_atendidas }}</td>
+                      <td>{{ llamadas.perdidas }}</td>
+                      <td>{{llamadas.total}}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -650,24 +689,26 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <table class="table">
-            <tr>
-              <td>{% trans 'Fecha' %}</td>
-              <td>{% trans 'Conectadas' %}</td>
-              <td>{% trans 'no conec.' %}</td>
-              <td><strong>{% trans 'Total' %}</strong></td>
-            </tr>
-            {% for fecha, llamadas in llamadas_por_tipo.Manual.items %}
-              <tr>
-                <td>{{ fecha }}</td>
-                <td>{{ llamadas.conectadas }}</td>
-                <td>{{ llamadas.no_conectadas }}</td>
-                <td>{{ llamadas.total }}</td>
-              </tr>
-            {% endfor %}
-            <tr>
-            </tr>
-          </table>
+            <div class="table-responsive">
+                <table class="table">
+                  <tr>
+                    <td>{% trans 'Fecha' %}</td>
+                    <td>{% trans 'Conectadas' %}</td>
+                    <td>{% trans 'no conec.' %}</td>
+                    <td><strong>{% trans 'Total' %}</strong></td>
+                  </tr>
+                  {% for fecha, llamadas in llamadas_por_tipo.Manual.items %}
+                    <tr>
+                      <td>{{ fecha }}</td>
+                      <td>{{ llamadas.conectadas }}</td>
+                      <td>{{ llamadas.no_conectadas }}</td>
+                      <td>{{ llamadas.total }}</td>
+                    </tr>
+                  {% endfor %}
+                  <tr>
+                  </tr>
+                </table>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -684,24 +725,26 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <table class="table">
-            <tr>
-              <td>{% trans 'Fecha' %}</td>
-              <td>{% trans 'Atendidas' %}</td>
-              <td>{% trans 'Expiradas' %}</td>
-              <td>{% trans 'Abandonadas' %}</td>
-              <td><strong>{% trans 'Total' %}</strong></td>
-            </tr>
-            {% for fecha, llamadas in llamadas_por_tipo.Entrante.items %}
-              <tr>
-                <td>{{ fecha }}</td>
-                <td>{{ llamadas.atendidas }}</td>
-                <td>{{ llamadas.expiradas }}</td>
-                <td>{{ llamadas.abandonadas }}</td>
-                <td>{{ llamadas.total }}</td>
-              </tr>
-            {% endfor %}
-          </table>
+            <div class="table-responsive">
+                <table class="table">
+                  <tr>
+                    <td>{% trans 'Fecha' %}</td>
+                    <td>{% trans 'Atendidas' %}</td>
+                    <td>{% trans 'Expiradas' %}</td>
+                    <td>{% trans 'Abandonadas' %}</td>
+                    <td><strong>{% trans 'Total' %}</strong></td>
+                  </tr>
+                  {% for fecha, llamadas in llamadas_por_tipo.Entrante.items %}
+                    <tr>
+                      <td>{{ fecha }}</td>
+                      <td>{{ llamadas.atendidas }}</td>
+                      <td>{{ llamadas.expiradas }}</td>
+                      <td>{{ llamadas.abandonadas }}</td>
+                      <td>{{ llamadas.total }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -718,22 +761,24 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <table class="table">
-            <tr>
-              <td>{% trans 'Fecha' %}</td>
-              <td>{% trans 'Conectadas' %}</td>
-              <td>{% trans 'no conec.' %}</td>
-              <td><strong>{% trans 'Total' %}</strong></td>
-            </tr>
-            {% for fecha, llamadas in llamadas_por_tipo.Preview.items %}
-              <tr>
-                <td>{{ fecha }}</td>
-                <td>{{ llamadas.conectadas }}</td>
-                <td>{{ llamadas.no_conectadas }}</td>
-                <td>{{ llamadas.total }}</td>
-              </tr>
-            {% endfor %}
-          </table>
+          <div class="table-responsive">
+              <table class="table">
+                <tr>
+                  <td>{% trans 'Fecha' %}</td>
+                  <td>{% trans 'Conectadas' %}</td>
+                  <td>{% trans 'no conec.' %}</td>
+                  <td><strong>{% trans 'Total' %}</strong></td>
+                </tr>
+                {% for fecha, llamadas in llamadas_por_tipo.Preview.items %}
+                  <tr>
+                    <td>{{ fecha }}</td>
+                    <td>{{ llamadas.conectadas }}</td>
+                    <td>{{ llamadas.no_conectadas }}</td>
+                    <td>{{ llamadas.total }}</td>
+                  </tr>
+                {% endfor %}
+              </table>
+          </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
