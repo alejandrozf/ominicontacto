@@ -6,7 +6,7 @@ from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
-from configuracion_telefonia_app.models import RutaSaliente
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -297,6 +297,67 @@ class RutaSalienteFamily(object):
     def regenerar_familys_rutas(self):
         """regenera la family de las rutas"""
         self.delete_tree_family("OML/OUTR")
+        self.create_familys()
+
+
+class TrunkFamily(object):
+
+    def _genera_dict(self, trunk):
+
+        dict_trunk = {
+            'NAME': trunk.nombre,
+            'CHANNELS': trunk.canales_maximos,
+            'CALLERID': trunk.caller_id,
+        }
+
+        return dict_trunk
+
+    def create_dict(self, trunk):
+        dict_trunk = self._genera_dict(trunk)
+        return dict_trunk
+
+    def _obtener_todas_trunks_para_generar_family(self):
+        """Obtengo todos los troncales sip para generar family"""
+        return TroncalSIP.objects.all()
+
+    def create_familys(self, trunk=None, trunks=None):
+        """Crea familys en database de asterisk
+        """
+
+        if trunks:
+            pass
+        elif trunk:
+            trunk = [trunk]
+        else:
+            trunks = self._obtener_todas_trunks_para_generar_family()
+        client = AsteriskHttpClient()
+        client.login()
+        for trunk in trunks:
+            # agrego lo datos basico de la ruta saliente
+            logger.info("Creando familys para troncal sip %s", trunk.id)
+            variables = self.create_dict(trunk)
+
+            for key, val in variables.items():
+                try:
+                    family = "OML/TRUNK/{0}".format(trunk.id)
+                    client.asterisk_db("DBPut", family, key, val=val)
+                except AsteriskHttpAsteriskDBError:
+                    logger.exception("Error al intentar DBPut al insertar"
+                                     " en la family {0} la siguiente key={1}"
+                                     " y val={2}".format(family, key, val))
+
+    def delete_tree_family(self, family):
+        """Elimina el tree de la family pasada por parametro"""
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.asterisk_db_deltree(family)
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBDelTree de {0}".format(family))
+
+    def regenerar_familys_trunks(self):
+        """regenera la family de las troncales"""
+        self.delete_tree_family("OML/TRUNK")
         self.create_familys()
 
 
