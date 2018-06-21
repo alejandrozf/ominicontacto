@@ -16,13 +16,12 @@ from django.utils.translation import ugettext as _
 
 from formtools.wizard.views import SessionWizardView
 
+from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.forms import (CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet,
                                      ParametroExtraParaWebformFormSet)
 from ominicontacto_app.models import Campana, ArchivoDeAudio
-
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
-
 from ominicontacto_app.tests.factories import BaseDatosContactoFactory
 
 import logging as logging_
@@ -261,6 +260,10 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA)
+        # creamos un nodo destino de ruta entrante para ser que a la campaña se le pueda
+        # configurar un acceso en alguna ruta entrante
+        DestinoEntrante.crear_nodo_ruta_entrante(queue.campana)
+        # se insertan los datos de la campaña en asterisk
         self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_list'))
 

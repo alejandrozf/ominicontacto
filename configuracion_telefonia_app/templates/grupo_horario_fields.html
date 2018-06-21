@@ -1,0 +1,50 @@
+{% load widget_tweaks %}
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <label >{{ form.tiempo_inicial.label_tag }}</label>
+        {{ form.tiempo_inicial|add_class:"form-control tiempo" }}
+        {{ form.tiempo_inicial.errors }}
+    </div>
+    <div class="col-md-6">
+        <label >{{ form.tiempo_final.label_tag }}</label>
+        {{ form.tiempo_final|add_class:"form-control tiempo" }}
+        {{ form.tiempo_final.errors }}
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-6">
+        <label >{{ form.dia_semana_inicial.label_tag }}</label>
+        {{ form.dia_semana_inicial|add_class:"form-control" }}
+        {{ form.dia_semana_inicial.errors }}
+    </div>
+    <div class="col-md-6">
+        <label >{{ form.dia_semana_final.label_tag }}</label>
+        {{ form.dia_semana_final|add_class:"form-control" }}
+        {{ form.dia_semana_final.errors }}
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-6">
+        <label >{{ form.dia_mes_inicio.label_tag }}</label>
+        {{ form.dia_mes_inicio|add_class:"form-control" }}
+        {{ form.dia_mes_inicio.errors }}
+    </div>
+    <div class="col-md-6">
+        <label >{{ form.dia_mes_final.label_tag }}</label>
+        {{ form.dia_mes_final|add_class:"form-control" }}
+        {{ form.dia_mes_final.errors }}
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-6">
+        <label >{{ form.mes_inicio.label_tag }}</label>
+        {{ form.mes_inicio|add_class:"form-control" }}
+        {{ form.mes_inicio.errors }}
+    </div>
+    <div class="col-md-6">
+        <label >{{ form.mes_final.label_tag }}</label>
+        {{ form.mes_final|add_class:"form-control" }}
+        {{ form.mes_final.errors }}
+    </div>
+</div>

@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import ArchivoDeAudio
+from ominicontacto_app.models import ArchivoDeAudio, Campana
 
 R_ALFANUMERICO = r'^[\w]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
@@ -81,98 +81,117 @@ class OrdenTroncal(models.Model):
             self.troncal.nombre, self.orden, self.ruta_saliente.nombre)
 
 
-class RutaEntrante(models.Model):
-    """Representa el nodo inicial de la ruta de una llamada entrante"""
-    # solo tiene un único destino
-    # no puede ser destino de ningún nodo
-    EN = 1
-    ES = 2
-
-    TIPOS_IDIOMAS = (
-        (EN, _('Inglés')),
-        (ES, _('Español')),)
-
-    nombre = models.CharField(max_length=30)
-    telefono = models.CharField(max_length=30)
-    prefijo_caller_id = models.CharField(max_length=30)
-    idioma = models.PositiveIntegerField(choices=TIPOS_IDIOMAS)
-
-
 class IVR(models.Model):
-    """Representa un nodo de Respuesta de Voz Interactiva en la ruta de una llamada
-    entrante
+    """Representa la información de un nodo de Respuesta de Voz Interactiva en la ruta de una
+    llamada entrante
     """
-    nombre = models.CharField(max_length=30)
-    audio_principal = models.ForeignKey(ArchivoDeAudio, related_name="audio_principal_ivrs")
+
+    VALOR_TIME_OUT = 'time_out'
+    VALOR_DESTINO_INVALIDO = 'invalid_destination'
+
+    nombre = models.CharField(max_length=30, unique=True)
+    descripcion = models.CharField(max_length=30)
+    audio_principal = models.ForeignKey(
+        ArchivoDeAudio, blank=True, null=True, related_name="audio_principal_ivrs")
     time_out = models.PositiveIntegerField()
     time_out_retries = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(99)])
-    time_out_audio = models.ForeignKey(ArchivoDeAudio, related_name="audio_time_out_ivrs")
+    time_out_audio = models.ForeignKey(
+        ArchivoDeAudio, blank=True, null=True, related_name="audio_time_out_ivrs")
     invalid_retries = models.PositiveIntegerField()
-    invalid_audio = models.ForeignKey(ArchivoDeAudio, related_name="audio_invalid_ivrs")
-    # hay que definir un nodo destino para cuando ocurre el time-out
-    # hay que definir un nodo destino para cuando ocurre una entrada inválida
-    # hay que validar que los valores de los nodos destinos desde los DMFs de los IVR sean [0-9|-#*]
+    invalid_audio = models.ForeignKey(
+        ArchivoDeAudio, blank=True, null=True, related_name="audio_invalid_ivrs")
+
+    def __unicode__(self):
+        return "IVR {0}".format(self.nombre)
 
 
-class ValidacionFechaHora(models.Model):
-    """Representa un nodo de validación por fecha y/o hora
+class GrupoHorario(models.Model):
+    """Representa un grupo de condiciones de tiempo que debe cumplir un nodo de
+    ruta entrante de tipo validación de fecha horario
     """
+    nombre = models.CharField(max_length=50, unique=True)
+
+    def __unicode__(self):
+        return self.nombre
+
+
+class ValidacionTiempo(models.Model):
+    """Representa una condición unitaria de tiempo para un grupo horario"""
     (LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO, DOMINGO) = range(7)
     (ENERO, FEBRERO, MARZO, ABRIL, MAYO, JUNIO, JULIO, AGOSTO, SEPTIEMBRE, OCTUBRE, NOVIEMBRE,
      DICIEMBRE) = range(1, 13)
 
     DIAS_SEMANA = (
-        (LUNES, 0),
-        (MARTES, 1),
-        (MIERCOLES, 2),
-        (JUEVES, 3),
-        (VIERNES, 4),
-        (SABADO, 5),
-        (DOMINGO, 6),
+        (LUNES, _('Lunes')),
+        (MARTES, _('Martes')),
+        (MIERCOLES, _('Miércoles')),
+        (JUEVES, _('Jueves')),
+        (VIERNES, _('Viernes')),
+        (SABADO, _('Sábado')),
+        (DOMINGO, _('Domingo')),
     )
+
+    DIAS_MES = [(dia, str(dia)) for dia in range(1, 32)]
 
     MESES = (
-        (ENERO, 1),
-        (FEBRERO, 2),
-        (MARZO, 3),
-        (ABRIL, 4),
-        (MAYO, 5),
-        (JUNIO, 6),
-        (JULIO, 7),
-        (AGOSTO, 8),
-        (SEPTIEMBRE, 9),
-        (OCTUBRE, 10),
-        (NOVIEMBRE, 11),
-        (DICIEMBRE, 12),
+        (ENERO, _('Enero')),
+        (FEBRERO, _('Febrero')),
+        (MARZO, _('Marzo')),
+        (ABRIL, _('Abril')),
+        (MAYO, _('Mayo')),
+        (JUNIO, _('Junio')),
+        (JULIO, _('Julio')),
+        (AGOSTO, _('Agosto')),
+        (SEPTIEMBRE, _('Septiembre')),
+        (OCTUBRE, _('Octubre')),
+        (NOVIEMBRE, _('Noviembre')),
+        (DICIEMBRE, _('Diciembre')),
     )
-
-    nombre = models.CharField(max_length=30)
-    tiempo_inicial = models.TimeField(_('Tiempo inicio'))
-    fecha_final = models.TimeField(_('Tiempo final'))
+    grupo_horario = models.ForeignKey(
+        GrupoHorario, related_name='validaciones_tiempo', on_delete=models.CASCADE)
+    tiempo_inicial = models.TimeField(help_text=_('Tiempo inicio'))
+    tiempo_final = models.TimeField(help_text=_('Tiempo final'))
     dia_semana_inicial = models.PositiveIntegerField(
-        choices=DIAS_SEMANA, help_text=_('Día de la semana inicio'))
+        choices=DIAS_SEMANA, help_text=_('Día de la semana inicio'), blank=True, null=True)
     dia_semana_final = models.PositiveIntegerField(
-        choices=DIAS_SEMANA, help_text=_('Día de la semana final'))
+        choices=DIAS_SEMANA, help_text=_('Día de la semana final'), blank=True, null=True)
     dia_mes_inicio = models.PositiveIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(31)], help_text=_('Día del mes inicio'))
+        choices=DIAS_MES, help_text=_('Día del mes inicio'), blank=True, null=True)
     dia_mes_final = models.PositiveIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(31)],
-        help_text=_('Día de la mes final'))
-    mes_inicio = models.PositiveIntegerField(choices=MESES, help_text=_('Mes inicio'))
-    mes_final = models.PositiveIntegerField(choices=MESES, help_text=_('Mes final'))
+        choices=DIAS_MES, help_text=_('Día del mes final'), blank=True, null=True)
+    mes_inicio = models.PositiveIntegerField(
+        choices=MESES, help_text=_('Mes inicio'), blank=True, null=True)
+    mes_final = models.PositiveIntegerField(
+        choices=MESES, help_text=_('Mes final'), blank=True, null=True)
+
+    # Notar que todos los campos de validación temporal, excepto 'tiempo_inicial' no son requeridos
+    # si se guardan vacíos esto significa por defecto TODOS (los días de la semana, los meses, etc.)
+
+    def __unicode__(self):
+        return "Validación fecha/hora {0}".format(self.nombre)
 
 
-class Extension(models.Model):
-    pass
+class ValidacionFechaHora(models.Model):
+    """Representa la información de un nodo de Validación Fecha/Hora de una ruta entrante"""
+    DESTINO_MATCH = 'True'
+    DESTINO_NO_MATCH = 'False'
+    nombre = models.CharField(max_length=50, unique=True)
+    grupo_horario = models.ForeignKey(
+        GrupoHorario, related_name='validaciones_fecha_hora', on_delete=models.PROTECT)
 
 
-class Hangup(models.Model):
-    pass
+# TODO: implementar el resto de los modelos de los nodos entrantes según sean especificados
+# class Extension(models.Model):
+#     pass
 
 
-class Encuesta(models.Model):
-    pass
+# class Hangup(models.Model):
+#     pass
+
+
+# class Encuesta(models.Model):
+#     pass
 
 
 class DestinoEntrante(models.Model):
@@ -189,11 +208,8 @@ class DestinoEntrante(models.Model):
         (CAMPANA, _('Campaña entrante')),
         (VALIDACION_FECHA_HORA, _('Validación de fecha/hora')),
         (IVR, _('IVR')),
-        (EXTENSION, _('Extensión')),
-        (HANGUP, _('Colgar')),
-        (SURVEY, _('Encuesta')),
     )
-    nombre = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=30, unique=True)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -201,7 +217,26 @@ class DestinoEntrante(models.Model):
     destinos = models.ManyToManyField('DestinoEntrante', through='OpcionDestino')
 
     def __unicode__(self):
-        return _("Nodo de ruta entrante: {0}".format(self.nombre))
+        return _("{0}: {1}".format(self.get_tipo_display(), self.nombre))
+
+    @classmethod
+    def crear_nodo_ruta_entrante(cls, info_nodo_entrante, commit=True):
+        # el campo 'tipo' debe corresponderse con los campos 'content_type' y
+        # 'content_object'
+        if isinstance(info_nodo_entrante, Campana):
+            tipo = cls.CAMPANA
+        elif isinstance(info_nodo_entrante, IVR):
+            tipo = cls.IVR
+        elif isinstance(info_nodo_entrante, ValidacionFechaHora):
+            tipo = cls.VALIDACION_FECHA_HORA
+        kwargs = {
+            'nombre': info_nodo_entrante.nombre,
+            'tipo': tipo,
+            'content_object': info_nodo_entrante
+        }
+        if not commit:
+            return DestinoEntrante(**kwargs)
+        return cls.objects.create(**kwargs)
 
 
 class OpcionDestino(models.Model):
@@ -211,5 +246,31 @@ class OpcionDestino(models.Model):
     destino_siguiente = models.ForeignKey(DestinoEntrante, related_name='destinos_anteriores')
 
     def __unicode__(self):
-        return _("OpcionDestino de nodo {0} a nodo {1}".format(
+        return _("Desde nodo {0} a nodo {1}".format(
             self.destino_anterior.nombre, self.destino_siguiente.nombre))
+
+    @classmethod
+    def crear_opcion_destino(cls, destino_anterior, destino_siguiente, valor):
+        kwargs = {'destino_anterior': destino_anterior,
+                  'destino_siguiente': destino_siguiente,
+                  'valor': valor}
+        cls.objects.create(**kwargs)
+
+    class Meta:
+        unique_together = ('destino_anterior', 'valor')
+
+
+class RutaEntrante(models.Model):
+    """Representa el nodo inicial de la ruta de una llamada entrante"""
+    EN = 1
+    ES = 2
+
+    TIPOS_IDIOMAS = (
+        (EN, _('Inglés')),
+        (ES, _('Español')),)
+
+    nombre = models.CharField(max_length=30, unique=True)
+    telefono = models.CharField(max_length=30, validators=[RegexValidator(R_MATCH_PATTERN)])
+    prefijo_caller_id = models.CharField(max_length=30, blank=True, null=True)
+    idioma = models.PositiveIntegerField(choices=TIPOS_IDIOMAS)
+    destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes')
