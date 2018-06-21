@@ -310,7 +310,8 @@ $(function() {
    }
 	 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     e.session.on("failed",function(e) {  // cuando falla el establecimiento de la llamada
-      $("#Transfer").prop('disabled', true);
+			$("#Transfer").prop('disabled', true);
+			$("#EndTransfer").prop('disabled', true);
       $("#onHold").prop('disabled', true);
       $("#modalReceiveCalls").modal('hide');
       Sounds("","stop");
@@ -449,7 +450,7 @@ $(function() {
 
       e.session.on("accepted", function() { 			// cuando se establece una llamada
         Sounds("", "stop");
-        $("#Transfer").prop('disabled', false);
+				$("#Transfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
 
         if(num.substring(4,0) != "0077") {
@@ -537,6 +538,11 @@ $(function() {
 		var transfToCamp = document.getElementById("transfToCamp");
 		$("#Transfer").click(function () {
 			$("#modalTransfer").modal("show");
+		});
+
+		$("#EndTransfer").click(function () {
+			e.session.sendDTMF("*");
+			e.session.sendDTMF("1");
 		});
 
 		$("#blindTransf").change(function () {
@@ -646,6 +652,7 @@ $(function() {
 					}
 				}
 			}
+			$("#EndTransfer").prop('disabled', false);
 			$("#modalTransfer").modal('hide');
 		};
 
@@ -764,7 +771,8 @@ $(function() {
 			//		   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
 			    }
-		    }
+				}
+		$("#EndTransfer").prop('disabled', true);
 		defaultCallState();
     });
 
@@ -967,7 +975,8 @@ $(function() {
 		callSipStatus.id = "dial_status";
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
-    $("#Transfer").prop('disabled', true);
+		$("#Transfer").prop('disabled', true);
+		$("#EndTransfer").prop('disabled', true);
     $("#onHold").prop('disabled', false);
   }
 

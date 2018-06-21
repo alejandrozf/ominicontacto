@@ -176,6 +176,7 @@
                     <div class="row">
                        <div class="filaBotonesDiscar2">
                            <button id="Transfer" class="btn btn-warning btn-xs" disabled="disabled">Transferir</button>
+                           <button id="EndTransfer" class="btn btn-danger btn-xs" disabled="disabled">Fin Transf.</button>
                            <button id="onHold" value="*198" class="btn btn-warning btn-xs" disabled="disabled">Hold</button>
                            <span id="sumTime" class="label label-default">
                     			     <label id="horaC"></label><label id="minsC"></label><label id="segsC"></label>
@@ -251,10 +252,10 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4>Transferir</h4>
                     </div>
-                    <div class="modal-body container form-inline">
-                        <div class="form-group row col-xs-6">
+                    <div class="modal-body container form-inline col-xs-12">
+                        <div class="form-group row col-xs-12">
                             <label class="col-xs-4">Tipo de transferencia:</label>
-                            <div class="radio col-xs-2">
+                            <div class="radio col-xs-3">
                                 <label>
                                     <input type="radio" name="tipotransf" id="blindTransf"/>&nbsp;Directa
                                 </label>
@@ -267,7 +268,7 @@
                         </div>
                         <br>
                         <br>
-                        <div class="form-group row col-xs-6">
+                        <div class="form-group row col-xs-12">
                             <div class="radio col-xs-3 col-xs-offset-4">
                                 <label>
                                     <input type="radio" name="dstTransf" id="transfToNum"/>&nbsp;a Número
@@ -277,7 +278,7 @@
                         </div>
                         <br>
                         <br>
-                        <div class="form-group row col-xs-6">
+                        <div class="form-group row col-xs-12">
                             <div class="radio col-xs-3 col-xs-offset-4">
                                 <label>
                                     <input type="radio" name="dstTransf" id="transfToCamp"/>&nbsp;a Campaña
