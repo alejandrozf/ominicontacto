@@ -1,29 +1,35 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from django.core.urlresolvers import reverse
+from django.contrib import messages
+from django.shortcuts import redirect, render, get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from configuracion_telefonia_app.models import TroncalSIP
-from configuracion_telefonia_app.forms import TroncalSIPForm
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, OrdenTroncal
+from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm,
+                                               PatronDeDiscadoFormset, OrdenTroncalFormset)
 
 
 class TroncalSIPMixin(object):
 
     def form_valid(self, form):
-        # self.object = form.save(commit=False)
-        # self.object.save()
         # Hacer los cambios en AstDB, oml_sip_trunks.conf y oml_sip_registrations.conf
+        print("Implementar escritura de troncal en AstDB y *.conf relacionados!!!")
         return super(TroncalSIPMixin, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('lista_troncal_sip')
 
 
-class TroncalSIPUpdateView(TroncalSIPMixin, UpdateView):
+class TroncalSIPListView(ListView):
+    """Vista para listar los Sip Trunks"""
     model = TroncalSIP
-    form_class = TroncalSIPForm
-    template_name = 'base_create_update_form.html'
+    paginate_by = 40
+    template_name = 'lista_troncal_sip.html'
 
 
 class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
@@ -32,8 +38,122 @@ class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
     template_name = 'base_create_update_form.html'
 
 
-class TroncalSIPListView(ListView):
-    """Vista para listar los Sip Trunks"""
+class TroncalSIPUpdateView(TroncalSIPMixin, UpdateView):
     model = TroncalSIP
+    form_class = TroncalSIPForm
+    template_name = 'base_create_update_form.html'
+
+
+class TroncalSIPDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación de una campana
+    """
+    model = TroncalSIP
+    template_name = 'delete_troncal_sip.html'
+
+    def get_success_url(self):
+        return reverse('lista_troncal_sip')
+
+    def dispatch(self, request, *args, **kwargs):
+        troncal_sip = self.get_object()
+        if OrdenTroncal.objects.filter(troncal=troncal_sip).exists():
+            message = (_('No se puede eliminar un troncal que está siendo usado en una ruta'
+                         'saliente'))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return redirect(self.get_success_url())
+        return super(TroncalSIPDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        super(TroncalSIPDeleteView, self).delete(request, *args, **kwargs)
+        message = (_('Troncal Sip eliminado con éxito'))
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return redirect(self.get_success_url())
+
+    def get_object(self, queryset=None):
+        return TroncalSIP.objects.get(pk=self.kwargs['pk'])
+
+
+class RutaSalienteListView(ListView):
+    """Vista para listar las rutas salientes"""
+    model = RutaSaliente
     paginate_by = 40
-    template_name = 'lista_troncal_sip.html'
+    context_object_name = 'rutas_salientes'
+    template_name = 'lista_rutas_salientes.html'
+
+
+def escribir_ruta_saliente_config(ruta_saliente):
+    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
+    print ("TODO: IMPLEMENTAR!!!")
+    # Exception('No se pudieron escribir bien los datos de la ruta saliente.')
+    pass
+
+
+class RutaSalienteMixin(object):
+
+    def form_valid(self, form):
+        ruta_saliente = form.save()
+        patrondiscado_formset = PatronDeDiscadoFormset(
+            self.request.POST, instance=ruta_saliente, prefix='patron_discado')
+        ordentroncal_formset = OrdenTroncalFormset(
+            self.request.POST, instance=ruta_saliente, prefix='orden_troncal')
+        if patrondiscado_formset.is_valid() and ordentroncal_formset.is_valid():
+            patrondiscado_formset.save()
+            ordentroncal_formset.save()
+            # muestra mensaje de éxito
+            messages.add_message(self.request, messages.SUCCESS, self.message)
+            # inserta la configuración de la ruta saliente en asterisk
+            escribir_ruta_saliente_config(ruta_saliente)
+            return redirect('lista_rutas_salientes')
+        return render(self.request, 'ruta_saliente.html',
+                      {'form': form, 'patrondiscado_formset': patrondiscado_formset,
+                       'ordentroncal_formset': ordentroncal_formset})
+
+
+class RutaSalienteCreateView(RutaSalienteMixin, CreateView):
+    model = RutaSaliente
+    template_name = 'crear_ruta_saliente.html'
+    form_class = RutaSalienteForm
+    message = _('Ruta saliente creada con éxito')
+
+    def get_context_data(self, **kwargs):
+        context = super(RutaSalienteCreateView, self).get_context_data()
+        context['patrondiscado_formset'] = PatronDeDiscadoFormset(prefix='patron_discado')
+        context['ordentroncal_formset'] = OrdenTroncalFormset(prefix='orden_troncal')
+        return context
+
+
+class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
+    model = RutaSaliente
+    template_name = 'editar_ruta_saliente.html'
+    form_class = RutaSalienteForm
+    message = _('Ruta saliente modificada con éxito')
+
+    def _inicializar_patrones_discado(self, ruta_saliente):
+        initial_data = ruta_saliente.patrones_de_discado.values()
+        patrondiscado_formset = PatronDeDiscadoFormset(
+            initial=initial_data, instance=ruta_saliente, prefix='patron_discado')
+        return patrondiscado_formset
+
+    def _inicializar_troncales(self, ruta_saliente):
+        initial_data = ruta_saliente.secuencia_troncales.values()
+        ordentroncal_formset = OrdenTroncalFormset(
+            initial=initial_data, instance=ruta_saliente, prefix='orden_troncal')
+        return ordentroncal_formset
+
+    def get_context_data(self, **kwargs):
+        pk_ruta_saliente = self.kwargs.get('pk')
+        ruta_saliente = get_object_or_404(RutaSaliente, pk=pk_ruta_saliente)
+        patrondiscado_formset = self._inicializar_patrones_discado(ruta_saliente)
+        ordentroncal_formset = self._inicializar_troncales(ruta_saliente)
+        context = super(RutaSalienteUpdateView, self).get_context_data()
+        context['patrondiscado_formset'] = patrondiscado_formset
+        context['ordentroncal_formset'] = ordentroncal_formset
+        return context

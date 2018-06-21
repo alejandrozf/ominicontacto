@@ -37,8 +37,8 @@ class PatronDeDiscadoFactory(DjangoModelFactory):
         model = PatronDeDiscado
 
     ruta_saliente = SubFactory(RutaSalienteFactory)
-    prepend = ""
-    prefix = ""
+    prepend = None
+    prefix = None
     match_pattern = ""
 
 
