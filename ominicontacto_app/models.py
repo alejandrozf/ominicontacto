@@ -236,11 +236,11 @@ class AgenteProfile(models.Model):
 
     def generar_usuario(self):
 	#Hago el import aqui para no generar conflicto con el import datetime
-        from datetime import datetime
+        #from datetime import datetime
         #genero un  timestamp
         ttl=10861 + 36000
-        date = datetime.now()
-        unix_timestamp = str((date - datetime(1970, 1, 1)).total_seconds()).split('.')[0]
+        date = datetime.datetime.now()
+        unix_timestamp = str((date - datetime.datetime(1970, 1, 1)).total_seconds()).split('.')[0]
         #voy a insertar timestamp en tabla subscriber
         self.timestamp = str(int(unix_timestamp) + ttl)
         #genero usuario como me lo pide auth_ephemeral para crear password

@@ -153,18 +153,11 @@ class UserDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        # DEUDA TECNICA: separar todo esto en un servicio o app aparte
         if self.object.is_agente and self.object.get_agente_profile():
-            kamailio_service = KamailioService()
-            kamailio_service.delete_agente_kamailio(
-                self.object.get_agente_profile())
             self.object.get_agente_profile().borrar()
             QueueMember.objects.borrar_member_queue(
                 self.object.get_agente_profile())
         if self.object.is_supervisor and self.object.get_supervisor_profile():
-            kamailio_service = KamailioService()
-            kamailio_service.delete_agente_kamailio(
-                self.object.get_supervisor_profile())
             self.object.get_supervisor_profile().borrar()
         self.object.borrar()
         return HttpResponseRedirect(self.get_success_url())
@@ -220,12 +213,8 @@ class AgenteProfileCreateView(CreateView):
         usuario = User.objects.get(pk=self.kwargs['pk_user'])
         self.object.user = usuario
         self.object.sip_extension = 1000 + usuario.id
-        self.object.sip_password = self.object.generar_contrasena()
-	self.object.reported_by = self.request.user
+        self.object.reported_by = self.request.user
         self.object.save()
-        # insertar agente en kamailio
-        kamailio_service = KamailioService()
-        kamailio_service.crear_agente_kamailio(self.object)
         # generar archivos sip en asterisk
         asterisk_sip_service = ActivacionAgenteService()
         try:
@@ -483,7 +472,7 @@ def node_view(request):
     campanas_preview_activas = []
     agente_profile = request.user.get_agente_profile()
     if request.user.is_authenticated() and agente_profile:
-	
+
 	#Genera credendiales cada vez que se loguea el agente
 	agente_profile.regenerar_credenciales()
 	registro = DuracionDeLlamada.objects.filter(
