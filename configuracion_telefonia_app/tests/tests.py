@@ -60,7 +60,7 @@ class TestEliminaRutaSalienteView(OMLBaseTest):
         post_data = {
             'nombre': 'test',
             'ring_time': 1,
-            'dial_options': 2,
+            'dial_options': 'Tt',
             'patron_discado-0-prepend': 3,
             'patron_discado-0-prefix': 4,
             'patron_discado-0-match_pattern': '5',
@@ -89,7 +89,7 @@ class TestEliminaRutaSalienteView(OMLBaseTest):
         post_data = {
             'nombre': nuevo_nombre,
             'ring_time': 4,
-            'dial_options': 5,
+            'dial_options': 'Tt',
             'patron_discado-0-prepend': 23,
             'patron_discado-0-prefix': 2,
             'patron_discado-0-match_pattern': '3',

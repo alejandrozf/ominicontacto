@@ -17,16 +17,16 @@
        addText: 'Agregar patron de discado',
        deleteText: 'Remover',
        prefix: '{{ patrondiscado_formset.prefix }}',
-       addCssClass: 'addFormset btn btn-outline-primary patronesDiscado',
-       deleteCssClass: 'deleteFormset btn btn-outline-danger patronesDiscado',
+       addCssClass: 'btn btn-outline-primary patronesDiscado',
+       deleteCssClass: 'btn btn-outline-danger patronesDiscado',
        formCssClass: 'dynamic-formset1',
      });
      $('.troncalesOrdenados').formset({
        addText: 'Agregar troncal',
        deleteText: 'Remover',
        prefix: '{{ ordentroncal_formset.prefix }}',
-       addCssClass: 'addFormset btn btn-outline-primary troncalesOrdenados',
-       deleteCssClass: 'deleteFormset btn btn-outline-danger troncalesOrdenados',
+       addCssClass: 'btn btn-outline-primary troncalesOrdenados',
+       deleteCssClass: 'btn btn-outline-danger troncalesOrdenados',
        formCssClass: 'dynamic-formset2',
      });
     </script>
@@ -37,16 +37,14 @@
     {% block header %}{% endblock %}
 
     <form action="" role="form" method="POST">
-        {% csrf_token  %}
         <div class="row">
-            <div class="column-md-2">
-                {% include "base_form_fields.html" with form=form %}
-            </div>
+            {% include "base_form_fields.html" with form=form %}
         </div>
 
         <div class="row">
-            <div class="col-md-6 col-md-offset-1">
-                <table border="0" cellpadding="0" cellspacing="0" id="myFormset1Table">
+            <div class="col-md-6 col-md-offset-3">
+                <h3>{% trans 'Patrones de discado' %}</h3>
+                <table class="form-control" id="myFormset1Table">
                     <tbody>
                         {% if patrondiscado_formset.non_form_errors %}
                             {% for error in patrondiscado_formset.non_form_errors %}
@@ -65,17 +63,17 @@
                                         {{ patrondiscado_form.DELETE }}
                                     {% endif %}
                                 </td>
-                                <td class="fieldFormset">
+                                <td>
                                     {{ patrondiscado_form.prepend.label_tag }}
                                     {{ patrondiscado_form.prepend.errors }}
                                     {{ patrondiscado_form.prepend|add_class:"form-control" }}
                                 </td>
-                                <td class="fieldFormset">
+                                <td>
                                     {{ patrondiscado_form.prefix.label_tag }}
                                     {{ patrondiscado_form.prefix.errors }}
                                     {{ patrondiscado_form.prefix|add_class:"form-control" }}
                                 </td>
-                                <td class="fieldFormset">
+                                <td>
                                     {{ patrondiscado_form.match_pattern.label_tag }}
                                     {{ patrondiscado_form.match_pattern.errors }}
                                     {{ patrondiscado_form.match_pattern|add_class:"form-control" }}
@@ -86,8 +84,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-4 col-md-offset-1">
-                <table border="0" cellpadding="0" cellspacing="0" id="myFormset2Table">
+            <div class="col-md-3">
+                <h3>{% trans 'Secuencia de troncales' %}</h3>
+                <table class="form-control" id="myFormset2Table">
                     <tbody>
                         {% if ordentroncal_formset.non_form_errors %}
                             {% for error in ordentroncal_formset.non_form_errors %}
@@ -102,7 +101,6 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {{ ordentroncal_form.troncal.label_tag }}
                                     {{ ordentroncal_form.troncal.errors }}
                                     {{ ordentroncal_form.troncal|add_class:"form-control" }}
                                 </td>

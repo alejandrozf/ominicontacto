@@ -16,10 +16,11 @@ class TroncalSIP(models.Model):
     nombre = models.CharField(
         max_length=128, unique=True, validators=[RegexValidator(R_ALFANUMERICO)])
     canales_maximos = models.PositiveIntegerField(
-        validators=[MaxValueValidator(1000), MinValueValidator(1)])
-    caller_id = models.CharField(max_length=100, validators=[RegexValidator(R_ALFANUMERICO)])
+        validators=[MinValueValidator(0), MaxValueValidator(1000)], default=1000)
+    caller_id = models.CharField(
+        max_length=100, validators=[RegexValidator(R_ALFANUMERICO)], blank=True, null=True)
     register_string = models.CharField(
-        max_length=100, validators=[RegexValidator(R_REGISTER_STRING)])
+        max_length=100, validators=[RegexValidator(R_REGISTER_STRING)], blank=True, null=True)
     text_config = models.TextField()
 
     def __unicode__(self):
@@ -34,8 +35,9 @@ class RutaSaliente(models.Model):
     nombre = models.CharField(
         max_length=128, unique=True, validators=[RegexValidator(R_ALFANUMERICO)])
     ring_time = models.PositiveIntegerField(
-        validators=[MaxValueValidator(3600), MinValueValidator(1)])
-    dial_options = models.CharField(max_length=512, validators=[RegexValidator(R_DIAL_OPT)])
+        validators=[MaxValueValidator(3600), MinValueValidator(1)], default=25)
+    dial_options = models.CharField(
+        max_length=512, validators=[RegexValidator(R_DIAL_OPT)], default='Tt')
 
     def __unicode__(self):
         return self.nombre
