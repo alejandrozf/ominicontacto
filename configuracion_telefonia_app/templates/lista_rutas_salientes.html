@@ -22,7 +22,7 @@
             <td>{{ ruta_saliente.ring_time }}</td>
             <td>{{ ruta_saliente.dial_options }}</td>
             <td>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{% url 'eliminar_ruta_saliente' ruta_saliente.pk %}">
                     <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                 </a>
             </td>
