@@ -98,7 +98,7 @@ class CalificacionClienteFormView(FormView):
         self.contacto = self.get_contacto()
         self.wombat_id = self.kwargs.get('wombat_id', '0')
         if self.contacto is None and self.campana.type == Campana.TYPE_DIALER:
-            return HttpResponseRedirect(reverse('campana_dialer_busqueda_contacto',
+            return HttpResponseRedirect(reverse('campana_busqueda_contacto',
                                                 kwargs={"pk_campana": self.campana.id}))
 
         self.object = self.get_object()
