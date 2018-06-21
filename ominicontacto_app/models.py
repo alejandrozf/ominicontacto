@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-import datetime 
+import datetime
 import getpass
 import json
 import logging
@@ -236,7 +236,7 @@ class AgenteProfile(models.Model):
 
     def generar_usuario(self):
 	#Hago el import aqui para no generar conflicto con el import datetime
-	from datetime import datetime
+        from datetime import datetime
         #genero un  timestamp
         ttl=10861 + 36000
         date = datetime.now()
@@ -246,23 +246,24 @@ class AgenteProfile(models.Model):
         #genero usuario como me lo pide auth_ephemeral para crear password
         user_ephemeral = self.timestamp + ":" + str(self.sip_extension)
         #logger.info("User generado: " + user_ephemeral)
-	return user_ephemeral
+        return user_ephemeral
 
     def generar_contrasena(self):
         #ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
         #ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
 	#secret_key = '{0} {1} generar_secretkey'.format(ruta_python_virtualenv, ruta_manage_py))
 	#with open('/path/to/command_output') as out:
-	out = StringIO()
-	#with open('/tmp/secret_key', "w") as out:	
-	call_command('generar_secretkey', False, stdout=out)
-	secret_key = hex(out.getvalue())[:-1]
-	logger.info("length: " + str(len(secret_key)))
-	password_hashed = hmac.new(secret_key, self.generar_usuario(), sha1)
+    	out = StringIO()
+    	#with open('/tmp/secret_key', "w") as out:
+    	call_command('generar_secretkey', 'consultar', stdout=out)
+    	secret_key = out.getvalue()[:-1]
+        var = ':'.join(x.encode('hex') for x in secret_key)
+    	logger.info("length: " + str(len(secret_key)))
+    	password_hashed = hmac.new(secret_key, self.generar_usuario(), sha1)
         password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
-        logger.info("Secret Key: " + str(secret_key))
+        logger.info("Secret Key: " + var)
         logger.info("Pass generada: " + password_ephemeral)
-	return password_ephemeral
+        return password_ephemeral
 
     def regenerar_credenciales(self):
         self.sip_password = self.generar_contrasena()

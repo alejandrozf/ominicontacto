@@ -57,3 +57,6 @@
   tags: postinstall
   become: true
   become_method: sudo
+
+- name: Link kamctl binarie to /usr/sbin
+  file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/ mode=755 force=true
