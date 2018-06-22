@@ -78,7 +78,7 @@ class SupervisorProfileUpdateView(UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.timestamp = self.object.user.generar_usuario(self.object.sip_extension).split(':')[0]
-        self.object.timestamp = self.object.timestamp.split('.')[0]
+        self.object.timestamp = self.object.timestamp
         sip_usuario = self.object.timestamp + ":" + str(self.object.sip_extension)
         self.object.sip_password = self.object.user.generar_contrasena(sip_usuario)
         self.object.save()

@@ -117,10 +117,10 @@ class User(AbstractUser):
         self.save()
 
     def generar_usuario(self, sip_extension):
-        ttl = 36000
+        ttl = 43200
         date = time.time()
         self.timestamp = date + ttl
-        user_ephemeral = str(self.timestamp) + ":" + str(sip_extension)
+        user_ephemeral = str(self.timestamp).split('.')[0] + ":" + str(sip_extension)
         return user_ephemeral
 
     def generar_contrasena(self, sip_extension):
@@ -134,13 +134,10 @@ class User(AbstractUser):
         secret_key = out.getvalue()[:-1]
         var = ':'.join(x.encode('hex') for x in secret_key)
         logger.info("length: " + str(len(secret_key)))
-        if self.get_agente_profile():
-            password_hashed = hmac.new(secret_key, self.generar_usuario(sip_extension), sha1)
-        elif self.get_supervisor_profile():
-            password_hashed = hmac.new(secret_key, sip_extension, sha1)
+        password_hashed = hmac.new(secret_key, sip_extension, sha1)
         password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
+        logger.info("Pass generada: " + sip_extension)
         logger.info("Secret Key: " + var)
-        logger.info("Pass generada: " + password_ephemeral)
         return password_ephemeral
 
     def regenerar_credenciales(self, sip_extension):
