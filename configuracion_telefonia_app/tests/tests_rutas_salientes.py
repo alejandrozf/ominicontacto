@@ -12,11 +12,11 @@ from configuracion_telefonia_app.models import (
     TroncalSIP, RutaSaliente, OrdenTroncal, PatronDeDiscado)
 
 
-class TestEliminaRutaSalienteView(OMLBaseTest):
+class TestEliminaRutasSalientes(OMLBaseTest):
     PWD = u'admin123'
 
     def setUp(self, *args, **kwargs):
-        super(TestEliminaRutaSalienteView, self).setUp(*args, **kwargs)
+        super(TestEliminaRutasSalientes, self).setUp(*args, **kwargs)
         self._crear_troncales_y_rutas()
 
         self.admin = self.crear_administrador()
