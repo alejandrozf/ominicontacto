@@ -47,7 +47,7 @@
         {% endif %}
 
         <li class="page-item current">
-            Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
+            {%trans 'Pagina' %} {{ page_obj.number }} {% trans 'de' %} {{ paginator.num_pages }}.
         </li>
 
         {% if page_obj.has_next %}

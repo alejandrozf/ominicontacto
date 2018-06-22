@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans 'Eliminar Ruta Saliente' %}</h1>
+
+<form action="" method="post">{% csrf_token %}
+    {% if troncales_huerfanos %}
+        <p>{% trans 'Al eliminar la ruta saliente los siguientes Troncales Sip quedarán sin ser usados por rutas Salientes' %}</p>
+        {% for troncal in troncales_huerfanos %}
+            <ul>
+                <li>{{ troncal.nombre }}</li>
+            </ul>
+        {% endfor %}
+    {% endif %}
+    <p>{% trans '¿Está seguro que quiere eliminar la ruta saliente:' %} "{{ ruta_saliente.nombre }}"?</p>
+    <input type="submit" value="{% trans 'Confirmar' %}" />
+</form>
+
+{% endblock %}

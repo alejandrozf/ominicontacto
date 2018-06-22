@@ -33,6 +33,9 @@ urlpatterns = [
         ),
     url(r'^configuracion_telefonia/ruta_saliente/(?P<pk>\d+)/editar/$',
         administrador_requerido(views.RutaSalienteUpdateView.as_view()),
-        name='editar_ruta_saliente',
+        name='editar_ruta_saliente'),
+    url(r'^configuracion_telefonia/ruta_saliente/eliminar/(?P<pk>\d+)/$',
+        administrador_requerido(views.EliminarRutaSaliente.as_view()),
+        name='eliminar_ruta_saliente',
         ),
 ]
