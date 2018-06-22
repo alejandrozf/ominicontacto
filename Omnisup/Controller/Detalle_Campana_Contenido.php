@@ -154,15 +154,14 @@ function mostrarUserPassSip($userID) {
   $Controller_Campana = new Campana();
   $resul = $Controller_Campana->traerUserClaveSIP($userID);
   $jsonString = '';
-  $user = $pass = "";
-  $fecha = date_create();
-  $timestamp = date_timestamp_get($fecha) + 36000;
-  //$timestamp = time() + 10861 + 36000;
+  $user = $pass = $timestamp = "";
   foreach ($resul as $key => $value) {
       if(is_array($value)) {
           foreach($value as $cla => $val) {
               if($cla == "sip_extension") {
                   $user = $val;
+              } elseif($cla == "timestamp") {
+                $timestamp = $val;
               } else {
                   $pass = $val;
               }

@@ -117,18 +117,10 @@ class User(AbstractUser):
         self.save()
 
     def generar_usuario(self, sip_extension):
-        #genero un  timestamp
-        #ttl=10861 + 36000
         ttl = 36000
-        #date = datetime.datetime.now()
-        #unix_timestamp = str((date - datetime.datetime(1970, 1, 1)).total_seconds()).split('.')[0]
-        #voy a insertar timestamp en tabla subscriber
-        #self.timestamp = str(int(unix_timestamp) + ttl)
         date = time.time()
         self.timestamp = date + ttl
-        #genero usuario como me lo pide auth_ephemeral para crear password
         user_ephemeral = str(self.timestamp) + ":" + str(sip_extension)
-        #logger.info("User generado: " + user_ephemeral)
         return user_ephemeral
 
     def generar_contrasena(self, sip_extension):
@@ -142,7 +134,10 @@ class User(AbstractUser):
         secret_key = out.getvalue()[:-1]
         var = ':'.join(x.encode('hex') for x in secret_key)
         logger.info("length: " + str(len(secret_key)))
-        password_hashed = hmac.new(secret_key, self.generar_usuario(sip_extension), sha1)
+        if self.get_agente_profile():
+            password_hashed = hmac.new(secret_key, self.generar_usuario(sip_extension), sha1)
+        elif self.get_supervisor_profile():
+            password_hashed = hmac.new(secret_key, sip_extension, sha1)
         password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
         logger.info("Secret Key: " + var)
         logger.info("Pass generada: " + password_ephemeral)
