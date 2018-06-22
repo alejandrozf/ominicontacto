@@ -472,10 +472,11 @@ def node_view(request):
     campanas_preview_activas = []
     agente_profile = request.user.get_agente_profile()
     if request.user.is_authenticated() and agente_profile:
-
 	#Genera credendiales cada vez que se loguea el agente
-	agente_profile.regenerar_credenciales()
-	registro = DuracionDeLlamada.objects.filter(
+        #import ipdb;ipdb.set_trace()
+        sip_usuario = request.user.generar_usuario(agente_profile.sip_extension)
+        sip_password = request.user.generar_contrasena(sip_usuario)
+        registro = DuracionDeLlamada.objects.filter(
             agente=request.user.get_agente_profile(),
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)
@@ -487,6 +488,8 @@ def node_view(request):
             'registro': registro,
             'campanas_preview_activas': campanas_preview_activas,
             'agente_profile': agente_profile,
+            'sip_usuario': sip_usuario,
+            'sip_password': sip_password,
         }
         return render_to_response(
             'agente/base_agente.html',

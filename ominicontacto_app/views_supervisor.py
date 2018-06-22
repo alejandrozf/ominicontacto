@@ -46,6 +46,9 @@ class SupervisorProfileCreateView(CreateView):
         usuario = User.objects.get(pk=self.kwargs['pk_user'])
         self.object.user = usuario
         self.object.sip_extension = 1000 + usuario.id
+        #sip_extension = 1000 + usuario.id
+        #self.object.sip_extension = self.object.user.generar_usuario(sip_extension)
+        self.object.sip_password = self.object.user.generar_contrasena(self.object.sip_extension)
         self.object.save()
         asterisk_sip_service = ActivacionAgenteService()
         try:
@@ -70,9 +73,14 @@ class SupervisorProfileUpdateView(UpdateView):
     template_name = 'base_create_update_form.html'
     form_class = SupervisorProfileForm
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.sip_password = self.object.user.generar_contrasena(self.object.sip_extension)
+        self.object.save()
+        return super(SupervisorProfileUpdateView, self).form_valid(form)
+
     def get_success_url(self):
         return reverse('supervisor_list')
-
 
 class SupervisorListView(ListView):
     """Vista lista los supervisores """
