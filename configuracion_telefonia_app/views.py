@@ -161,7 +161,7 @@ class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
 
 class EliminarRutaSaliente(DeleteView):
     model = RutaSaliente
-    success_url = reverse_lazy('lista_troncal_sip')
+    success_url = reverse_lazy('lista_rutas_salientes')
     template_name = 'eliminar_ruta_saliente.html'
     context_object_name = 'ruta_saliente'
 
