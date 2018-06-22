@@ -327,7 +327,7 @@ class TrunkFamily(object):
         if trunks:
             pass
         elif trunk:
-            trunk = [trunk]
+            trunks = [trunk]
         else:
             trunks = self._obtener_todas_trunks_para_generar_family()
         client = AsteriskHttpClient()
