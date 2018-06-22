@@ -152,6 +152,7 @@ class User(AbstractUser):
         self.sip_password = self.generar_contrasena(sip_extension)
         self.save()
 
+
 class Modulo(models.Model):
     nombre = models.CharField(max_length=20)
 
@@ -283,6 +284,7 @@ class SupervisorProfile(models.Model):
     is_administrador = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
     borrado = models.BooleanField(default=False, editable=False)
+    timestamp = models.CharField(max_length=64, blank=True, null=True)
 
     def __unicode__(self):
         return self.user.get_full_name()
