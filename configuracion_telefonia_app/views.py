@@ -12,13 +12,28 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, OrdenTroncal
 from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm,
                                                PatronDeDiscadoFormset, OrdenTroncalFormset)
+from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
+    SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError
+)
 
 
 class TroncalSIPMixin(object):
 
     def form_valid(self, form):
-        # Hacer los cambios en AstDB, oml_sip_trunks.conf y oml_sip_registrations.conf
-        print("Implementar escritura de troncal en AstDB y *.conf relacionados!!!")
+        self.object = form.save(commit=False)
+        try:
+            sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
+            sincronizador.regenerar_troncales(self.object)
+        except RestablecerConfiguracionTelefonicaError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error{0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+            return self.form_invalid(form)
+        self.object.save()
         return super(TroncalSIPMixin, self).form_valid(form)
 
     def get_success_url(self):
