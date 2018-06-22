@@ -20,7 +20,7 @@ from ominicontacto_app.utiles import (
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, Campana, Pausa
 )
-from configuracion_telefonia_app.models import RutaSaliente
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
     GeneradorDePedazoDePausaFactory, GeneradorDePedazoDeRutasSalientesFactory
@@ -479,7 +479,7 @@ class GlobalsVariableConfigCreator(object):
 class RutasSalientesConfigCreator(object):
 
     def __init__(self):
-        self._sip_config_file = RutasSalientesConfigFile()
+        self._rutas_config_file = RutasSalientesConfigFile()
         self._generador_factory = GeneradorDePedazoDeRutasSalientesFactory()
 
     def _generar_config(self, ruta):
@@ -564,7 +564,38 @@ class RutasSalientesConfigCreator(object):
 
             rutas_file.append(config_chunk)
 
-        self._sip_config_file.write(rutas_file)
+        self._rutas_config_file.write(rutas_file)
+
+
+class TrunksConfigCreator(object):
+
+    def __init__(self):
+        self._sip_trunks_config_file = TrunksConfigFile()
+
+    def _obtener_todas_para_generar_config_rutas(self):
+        """Devuelve todas para config troncales
+        """
+        return TroncalSIP.objects.all()
+
+    def create_config_asterisk(self, trunk=None, trunks=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `trunk` es pasada por parametro,
+        se genera solo para dicha trunl.
+        """
+
+        if trunks:
+            pass
+        elif trunk:
+            trunks = [trunk]
+        else:
+            trunks = self._obtener_todas_para_generar_config_rutas()
+        trunk_file = []
+
+        for trunk in trunks:
+            logger.info("Creando config troncal sip %s", trunk.id)
+            trunk_file.append("\n{0}\n".format(trunk.text_config))
+
+        self._sip_trunks_config_file.write(trunk_file)
 
 
 class AsteriskConfigReloader(object):
@@ -667,6 +698,15 @@ class RutasSalientesConfigFile(ConfigFile):
         hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
         super(RutasSalientesConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class TrunksConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
+                                "oml_sip_trunks.conf")
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(TrunksConfigFile, self).__init__(filename, hostname, remote_path)
 
 
 class BackListConfigFile(ConfigFile):
