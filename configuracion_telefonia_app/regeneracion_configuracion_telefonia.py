@@ -118,7 +118,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_trunk_en_astdb.create_familys(trunk)
+            self.generador_trunk_en_astdb.create_familys(trunk=trunk)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar regenerar_familys_rutas()")
