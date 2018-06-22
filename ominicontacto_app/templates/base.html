@@ -314,7 +314,10 @@
                     <a class="menu-header" href="#menuTelefonia" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Telefonía' %}</a>
                     <ul class="collapse list-unstyled submenu" id="menuTelefonia" data-parent="#nav-main-menu">
                         <li>
-                            <a href="{% url 'lista_troncal_sip' %}">Troncales SIP</a>
+                            <a href="{% url 'lista_troncal_sip' %}">{% trans 'Troncales SIP' %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'lista_rutas_salientes' %}">{% trans 'Rutas salientes' %}</a>
                         </li>
                     </ul>
                 </li>
