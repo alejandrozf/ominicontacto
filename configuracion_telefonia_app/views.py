@@ -157,7 +157,6 @@ class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
         context['patrondiscado_formset'] = patrondiscado_formset
         context['ordentroncal_formset'] = ordentroncal_formset
         return context
-    template_name = 'lista_troncal_sip.html'
 
 
 class EliminarRutaSaliente(DeleteView):
