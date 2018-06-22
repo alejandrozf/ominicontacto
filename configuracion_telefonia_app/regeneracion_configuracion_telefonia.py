@@ -10,9 +10,11 @@ import logging
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
-    AsteriskConfigReloader, RutasSalientesConfigCreator, RutasSalientesConfigFile
+    AsteriskConfigReloader, RutasSalientesConfigCreator, RutasSalientesConfigFile,
+    SipTrunksConfigCreator, SipRegistrationsConfigCreator, SipTrunksConfigFile,
+    SipRegistrationsConfigFile
 )
-from ominicontacto_app.services.asterisk_database import RutaSalienteFamily
+from ominicontacto_app.services.asterisk_database import RutaSalienteFamily, TrunkFamily
 
 logger = logging.getLogger(__name__)
 
@@ -68,3 +70,64 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAstDB(object):
     def regenerar_rutas_salientes(self):
         self._generar_y_recargar_archivos_conf_asterisk()
         self._generar_e_insertar_en_astdb()
+
+
+class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
+
+    def __init__(self):
+        self.generador_trunk_en_astdb = TrunkFamily()
+        self.generador_trunk_sip_en_asterisk_conf = SipTrunksConfigCreator()
+        self.config_trunk_file = SipTrunksConfigFile()
+        self.generador_trunks_registration_en_asterisk_conf = SipRegistrationsConfigCreator()
+        self.config_trunk_registration_file = SipRegistrationsConfigFile()
+        self.reload_asterisk_config = AsteriskConfigReloader()
+
+    def _generar_y_recargar_archivos_conf_asterisk(self):
+        proceso_ok = True
+        mensaje_error = ""
+
+        try:
+            self.generador_trunk_sip_en_asterisk_conf.create_config_asterisk()
+        except:
+            logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
+                             "intentar create_config_asterisk()")
+
+            proceso_ok = False
+            mensaje_error += ("Hubo un inconveniente al crear el archivo de "
+                              "configuracion de trunks de Asterisk. ")
+
+        try:
+            self.generador_trunks_registration_en_asterisk_conf.create_config_asterisk()
+        except:
+            logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
+                             "intentar create_config_asterisk()")
+
+            proceso_ok = False
+            mensaje_error += ("Hubo un inconveniente al crear el archivo de "
+                              "configuracion de trunks registration de Asterisk. ")
+
+        if not proceso_ok:
+            raise(RestablecerConfiguracionTelefonicaError(mensaje_error))
+        else:
+            self.config_trunk_file.copy_asterisk()
+            self.config_trunk_registration_file.copy_asterisk()
+            self.reload_asterisk_config.reload_asterisk()
+
+    def _generar_e_insertar_en_astdb(self, trunk):
+        proceso_ok = True
+        mensaje_error = ""
+
+        try:
+            self.generador_trunk_en_astdb.create_familys(trunk)
+        except:
+            logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
+                             "intentar regenerar_familys_rutas()")
+
+            proceso_ok = False
+            mensaje_error += ("Hubo un inconveniente al insertar los registros del troncal en "
+                              "la base de datos de Asterisk. ")
+            raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
+
+    def regenerar_troncales(self, trunk=None):
+        self._generar_y_recargar_archivos_conf_asterisk()
+        self._generar_e_insertar_en_astdb(trunk)
