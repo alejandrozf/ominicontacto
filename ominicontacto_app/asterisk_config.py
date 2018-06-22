@@ -624,7 +624,7 @@ class SipRegistrationsConfigCreator(object):
 
         for trunk in trunks:
             logger.info("Creando config troncal sip %s", trunk.id)
-            trunk_file.append("\n{0}\n".format(trunk.register_string))
+            trunk_file.append("{0}\n".format(trunk.register_string))
 
         self._sip_registrations_config_file.write(trunk_file)
 
