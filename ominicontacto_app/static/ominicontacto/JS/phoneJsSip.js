@@ -540,11 +540,6 @@ $(function() {
 			$("#modalTransfer").modal("show");
 		});
 
-		$("#EndTransfer").click(function () {
-			e.session.sendDTMF("*");
-			e.session.sendDTMF("1");
-		});
-
 		$("#blindTransf").change(function () {
 			if (this.checked) {
 				$("#campToTransfer").prop('disabled', false);
@@ -587,6 +582,11 @@ $(function() {
 				$("#numberToTransfer").prop('disabled', true);
 			}
 		});
+
+		document.getElementById("EndTransfer").onclick = function () {
+			e.session.sendDTMF("*");
+			e.session.sendDTMF("1");
+		};
 
 		makeTransfer.onclick = function () {
 		  flagTransf = true;
