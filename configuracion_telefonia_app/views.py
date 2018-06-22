@@ -180,7 +180,7 @@ class EliminarRutaSaliente(DeleteView):
         print("TODO: Capturar bien las excepciones correspondientes.")
         try:
             eliminar_ruta_saliente_config(self.get_object())
-        except Exception as e:
+        except Exception:
             messages.error(request, _(u'No se ha podido eliminar la Ruta Saliente.'))
             return redirect('eliminar_ruta_saliente', pk=kwargs['pk'])
 
