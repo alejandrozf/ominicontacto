@@ -13,7 +13,8 @@ from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, OrdenTr
 from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm,
                                                PatronDeDiscadoFormset, OrdenTroncalFormset)
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
-    SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError
+    SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
+    SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk
 )
 
 
@@ -104,11 +105,18 @@ class RutaSalienteListView(ListView):
     template_name = 'lista_rutas_salientes.html'
 
 
-def escribir_ruta_saliente_config(ruta_saliente):
-    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
-    print ("TODO: IMPLEMENTAR!!!")
-    # Exception('No se pudieron escribir bien los datos de la ruta saliente.')
-    pass
+def escribir_ruta_saliente_config(self, ruta_saliente):
+    try:
+        sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
+        sincronizador.regenerar_rutas_salientes(ruta_saliente)
+    except RestablecerConfiguracionTelefonicaError, e:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "con el siguiente error: {0} .".format(e))
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
 
 
 class RutaSalienteMixin(object):
@@ -125,7 +133,7 @@ class RutaSalienteMixin(object):
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             # inserta la configuración de la ruta saliente en asterisk
-            escribir_ruta_saliente_config(ruta_saliente)
+            escribir_ruta_saliente_config(self, ruta_saliente)
             return redirect('lista_rutas_salientes')
         return render(self.request, 'ruta_saliente.html',
                       {'form': form, 'patrondiscado_formset': patrondiscado_formset,
