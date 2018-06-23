@@ -26,7 +26,7 @@ class TroncalSIPMixin(object):
             sincronizador.regenerar_troncales(self.object)
         except RestablecerConfiguracionTelefonicaError, e:
             message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error{0} .".format(e))
+                       "con el siguiente error: {0} .".format(e))
             messages.add_message(
                 self.request,
                 messages.WARNING,
