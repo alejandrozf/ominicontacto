@@ -25,7 +25,7 @@ class RestablecerConfiguracionTelefonicaError(OmlError):
     pass
 
 
-class SincronizadorDeConfiguracionDeRutaSalienteEnAstDB(object):
+class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
 
     def __init__(self):
         self.generador_rutas_en_astdb = RutaSalienteFamily()
@@ -52,12 +52,12 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAstDB(object):
             self.config_rutas_file.copy_asterisk()
             self.reload_asterisk_config.reload_asterisk()
 
-    def _generar_e_insertar_en_astdb(self):
+    def _generar_e_insertar_en_astdb(self, ruta):
         proceso_ok = True
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_astdb.regenerar_familys_rutas()
+            self.generador_rutas_en_astdb.regenerar_familys_rutas(ruta=ruta)
         except:
             logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
                              "intentar regenerar_familys_rutas()")
@@ -67,9 +67,9 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAstDB(object):
                               "la base de datos de Asterisk. ")
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
-    def regenerar_rutas_salientes(self):
+    def regenerar_rutas_salientes(self, ruta=None):
         self._generar_y_recargar_archivos_conf_asterisk()
-        self._generar_e_insertar_en_astdb()
+        self._generar_e_insertar_en_astdb(ruta)
 
 
 class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
