@@ -491,12 +491,13 @@ class RutasSalientesConfigCreator(object):
         """
 
         partes = []
-
+        index_patron = 0
         for patron in ruta.patrones_de_discado.all():
-
+            index_patron += 1
             param_generales = {
                 'oml-ruta-id': ruta.id,
                 'oml-ruta-dialpatern': ''.join(("_", str(patron.prefix), patron.match_pattern)),
+                'oml-ruta-orden-patern': index_patron
             }
 
             generador_ruta = self._generador_factory.crear_generador_para_patron_ruta_saliente(

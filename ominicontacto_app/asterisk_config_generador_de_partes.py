@@ -408,7 +408,7 @@ class GeneradorParaPatronRuta(GeneradorDePedazoDeRutaSaliente):
 
         exten => {oml-ruta-dialpatern},1,Verbose(2, OUT-R ${{DB(OML/OUTR/{oml-ruta-id}/NAME)}})
         same => n,Set(OMLOUTRID={oml-ruta-id})
-        same => n,Gosub(sub-oml-dialout,s,1({oml-ruta-id}))
+        same => n,Gosub(sub-oml-dialout,s,1({oml-ruta-id},{oml-ruta-orden-patern}))
         same => n,Gosub(sub-oml-hangup,s,1(OUTR-FAIL))
         """
 
