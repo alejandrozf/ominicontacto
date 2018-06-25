@@ -22,6 +22,7 @@ class TroncalSIPMixin(object):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        self.object.save()
         try:
             sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
             sincronizador.regenerar_troncales(self.object)
@@ -34,7 +35,6 @@ class TroncalSIPMixin(object):
                 message,
             )
             return self.form_invalid(form)
-        self.object.save()
         return super(TroncalSIPMixin, self).form_valid(form)
 
     def get_success_url(self):
