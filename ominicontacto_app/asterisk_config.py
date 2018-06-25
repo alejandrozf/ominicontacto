@@ -535,7 +535,7 @@ class RutasSalientesConfigCreator(object):
         for ruta in rutas:
             logger.info("Creando config sip para ruta saliente %s", ruta.id)
             rutas_file.append("\n[oml-outr-{0}]\n".format(ruta.id))
-            rutas_file.append("include => oml-outr-{0}-custom)".format(ruta.id))
+            rutas_file.append("include => oml-outr-{0}-custom".format(ruta.id))
             try:
                 config_chunk = self._generar_config(ruta)
                 logger.info("Config generado OK para ruta saliente %s", ruta.id)
