@@ -1,7 +1,7 @@
 ---
 
 - name: Transfer ssh key from {{ usuario }}'s user to root's user
-  shell: cat /home/{{ usuario }}/.ssh/id_rsa.pub
+  shell: cat {{ install_prefix }}.ssh/id_rsa.pub
   register: ssh_key
 - authorized_key: "user=root key={{ ssh_key.stdout }} state=present manage_dir=yes"
   when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
