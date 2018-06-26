@@ -6,7 +6,6 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 
 R_ALFANUMERICO = r'^[\w]+$'
-R_REGISTER_STRING = r'^[\w|\.|\/|@:-]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
 R_MATCH_PATTERN = r'^[\w|\.|\[|\]|-]+$'
 
@@ -19,8 +18,7 @@ class TroncalSIP(models.Model):
         validators=[MinValueValidator(0), MaxValueValidator(1000)], default=1000)
     caller_id = models.CharField(
         max_length=100, validators=[RegexValidator(R_ALFANUMERICO)], blank=True, null=True)
-    register_string = models.CharField(
-        max_length=100, validators=[RegexValidator(R_REGISTER_STRING)], blank=True, null=True)
+    register_string = models.CharField(max_length=100, blank=True, null=True)
     text_config = models.TextField()
 
     def __unicode__(self):
