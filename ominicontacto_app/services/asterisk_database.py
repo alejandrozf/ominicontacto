@@ -214,8 +214,8 @@ class RutaSalienteFamily(object):
     def _genera_dict_patron_discado(self, patron):
 
         dict_patron = {
-            'PREFIX': patron.prefix,
-            'PREPEND': patron.prepend,
+            'PREFIX': len(str(patron.prefix)),
+            'PREPEND': len(str(patron.prepend)),
         }
 
         return dict_patron
