@@ -40,6 +40,7 @@ class PatronDeDiscadoFactory(DjangoModelFactory):
     prepend = None
     prefix = None
     match_pattern = ""
+    orden = Sequence(lambda n: n)
 
 
 class OrdenTroncalFactory(DjangoModelFactory):
