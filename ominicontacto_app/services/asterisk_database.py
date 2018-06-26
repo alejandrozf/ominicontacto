@@ -266,6 +266,7 @@ class RutaSalienteFamily(object):
                 for key, val in variables.items():
                     try:
                         family = "OML/OUTR/{0}".format(ruta.id)
+                        key = "{0}/{1}".format(key, patron.id)
                         client.asterisk_db("DBPut", family, key, val=val)
                     except AsteriskHttpAsteriskDBError:
                         logger.exception("Error al intentar DBPut al insertar"
