@@ -670,7 +670,7 @@ $(function() {
 				if(fromUser) { // fromUser es para entrantes
 					if(lastPause === "Online" && fromUser.substring(4,0) != "0077") {
 						parar3();
-						reinicio3();
+						reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 						saveCall(fromUser);
 						num = '';
 						fromUser = "";
@@ -700,43 +700,40 @@ $(function() {
 					if(fromUser.substring(4,0) != "0077") {
 						parar3();
 						reinicio3();
-							if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
-								changeStatus(3, $("#idagt").val());
-						    num = "00770";
-						    makeCall();
-						    entrante = false;
-								$("#Pause").prop('disabled',true);
-								$("#Resume").prop('disabled',false);
-								$("#sipLogout").prop('disabled',false);
-								updateButton(modifyUserStat, "label label-danger", "ACW");
-								inicio2();
-					//			parar3();
-								if($("#auto_unpause").val() != 0) {
-							    var timeoutACW = $("#auto_unpause").val();
-							    timeoutACW = timeoutACW * 1000;
-							    var toOnline = function() {
-							      num = "0077UNPAUSE";
-							      if($("#UserStatus").html() === "ACW") {
-                      if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling")
-							        {
-                        makeCall();
-							          $("#Resume").trigger('click');
-                      }
-							      }
-							    };
-
-							    setTimeout(toOnline, timeoutACW);
-							  }
-							} // si no es agente predictivo....
-					} else {
-//					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+						if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
+							changeStatus(3, $("#idagt").val());
+							num = "00770";
+							makeCall();
+							entrante = false;
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", "ACW");
+							inicio2();
+				//			parar3();
+							if($("#auto_unpause").val() != 0) {
+								var timeoutACW = $("#auto_unpause").val();
+								timeoutACW = timeoutACW * 1000;
+								var toOnline = function() {
+									num = "0077UNPAUSE";
+									if($("#UserStatus").html() === "ACW") {
+										if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling")
+										{
+											makeCall();
+											$("#Resume").trigger('click');
+										}
+									}
+								};
+								setTimeout(toOnline, timeoutACW);
+							}
+						} // si no es agente predictivo....
 					}
 				}
 			} else { // si NO es una llamada entrante
 				if (num) { // num para salientes
 					if (num.substring(4,0) != "0077") {
 						parar3();
-						reinicio3();
+						reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 						saveCall(num);
 						if (lastPause != "Online") {
 							num = '';
@@ -752,38 +749,36 @@ $(function() {
 						}
             if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
               //if (entrante == false) { funcionalidad oml-52
-							  changeStatus(3, $("#idagt").val());
-					      num = "00770";
-					      makeCall();
-					      entrante = false;
-							  $("#Pause").prop('disabled',true);
-							  $("#Resume").prop('disabled',false);
-							  $("#sipLogout").prop('disabled',false);
-							  updateButton(modifyUserStat, "label label-danger", "ACW");
-		//			        inicio2();
-                if($("#auto_unpause").val() != 0) {
-								  var timeoutACW = $("#auto_unpause").val();
-								  timeoutACW = timeoutACW * 1000;
-                  var toOnline = function() {
-									  num = "0077UNPAUSE";
-									  if($("#UserStatus").html() === "ACW") {
-										  if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling") {
-										    makeCall();
-										    $("#Resume").trigger('click');
-									    }
-									  }
-                  };
-								  setTimeout(toOnline, timeoutACW);
-                }
+							changeStatus(3, $("#idagt").val());
+							num = "00770";
+							makeCall();
+							entrante = false;
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", "ACW");
+	//			        inicio2();
+							if ($("#auto_unpause").val() != 0) {
+								var timeoutACW = $("#auto_unpause").val();
+								timeoutACW = timeoutACW * 1000;
+								var toOnline = function() {
+									num = "0077UNPAUSE";
+									if ($("#UserStatus").html() === "ACW") {
+										if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling") {
+											makeCall();
+											$("#Resume").trigger('click');
+										}
+									}
+								};
+								setTimeout(toOnline, timeoutACW);
+							}
               //} funcionalidad oml-52
             }
-					} else {
-			//		   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
-			    }
-				}
-		$("#EndTransfer").prop('disabled', true);
-		defaultCallState();
+			  }
+			}
+		  $("#EndTransfer").prop('disabled', true);
+		  defaultCallState();
     });
 
   });
