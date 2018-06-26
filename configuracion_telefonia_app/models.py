@@ -48,6 +48,11 @@ class PatronDeDiscado(models.Model):
     prepend = models.PositiveIntegerField(blank=True, null=True)
     prefix = models.PositiveIntegerField(blank=True, null=True)
     match_pattern = models.CharField(max_length=100, validators=[RegexValidator(R_MATCH_PATTERN)])
+    orden = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ('orden', 'ruta_saliente')
+        ordering = ['orden']
 
     def __unicode__(self):
         return "Patrón de ruta saliente {0} con match_pattern: {1}".format(
