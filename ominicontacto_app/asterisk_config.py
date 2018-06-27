@@ -492,9 +492,13 @@ class RutasSalientesConfigCreator(object):
 
         partes = []
         for patron in ruta.patrones_de_discado.all():
+            if patron.prefix:
+                dialpatern = ''.join(("_", str(patron.prefix), patron.match_pattern))
+            else:
+                dialpatern = ''.join(("_", patron.match_pattern))
             param_generales = {
                 'oml-ruta-id': ruta.id,
-                'oml-ruta-dialpatern': ''.join(("_", str(patron.prefix), patron.match_pattern)),
+                'oml-ruta-dialpatern': dialpatern,
                 'oml-ruta-orden-patern': patron.orden
             }
 
