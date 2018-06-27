@@ -216,7 +216,7 @@ class RutaSalienteFamily(object):
         if patron.prefix:
             prefix = len(str(patron.prefix))
         else:
-            prefix = 0
+            prefix = None
         dict_patron = {
             'PREFIX': prefix,
             'PREPEND': patron.prepend,
