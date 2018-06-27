@@ -491,7 +491,8 @@ class RutasSalientesConfigCreator(object):
         """
 
         partes = []
-        for patron in ruta.patrones_de_discado.all():
+        patrones = self._obtener_patrones_ordenados(ruta)
+        for orden, patron in patrones:
             if patron.prefix:
                 dialpatern = ''.join(("_", str(patron.prefix), patron.match_pattern))
             else:
@@ -499,7 +500,7 @@ class RutasSalientesConfigCreator(object):
             param_generales = {
                 'oml-ruta-id': ruta.id,
                 'oml-ruta-dialpatern': dialpatern,
-                'oml-ruta-orden-patern': patron.orden
+                'oml-ruta-orden-patern': orden
             }
 
             generador_ruta = self._generador_factory.crear_generador_para_patron_ruta_saliente(
@@ -507,6 +508,10 @@ class RutasSalientesConfigCreator(object):
             partes.append(generador_ruta.generar_pedazo())
 
         return ''.join(partes)
+
+    def _obtener_patrones_ordenados(self, ruta):
+        """ devuelve patrones ordenados con enumerate"""
+        return list(enumerate(ruta.patrones_de_discado.all().order_by('orden'), start=1))
 
     def _obtener_todas_para_generar_config_rutas(self):
         """Devuelve las rutas salientes para config rutas

@@ -232,6 +232,10 @@ class RutaSalienteFamily(object):
         """Obtengo todos las rutas salientes para generar family"""
         return RutaSaliente.objects.all()
 
+    def _obtener_patrones_ordenados(self, ruta):
+        """ devuelve patrones ordenados con enumerate"""
+        return list(enumerate(ruta.patrones_de_discado.all().order_by('orden'), start=1))
+
     def create_familys(self, ruta=None, rutas=None):
         """Crea familys en database de asterisk
         """
@@ -259,14 +263,15 @@ class RutaSalienteFamily(object):
                                      " y val={2}".format(family, key, val))
 
             # agrego los datos de los patrones de de discado
-            for patron in ruta.patrones_de_discado.all():
+            patrones = self._obtener_patrones_ordenados(ruta)
+            for orden, patron in patrones:
                 logger.info("Creando familys para patrones de discado %s", patron.id)
                 variables = self.create_dict_patron(patron)
 
                 for key, val in variables.items():
                     try:
                         family = "OML/OUTR/{0}".format(ruta.id)
-                        key = "{0}/{1}".format(key, patron.orden)
+                        key = "{0}/{1}".format(key, orden)
                         client.asterisk_db("DBPut", family, key, val=val)
                     except AsteriskHttpAsteriskDBError:
                         logger.exception("Error al intentar DBPut al insertar"
