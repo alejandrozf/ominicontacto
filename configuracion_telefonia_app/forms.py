@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.db.models import Max
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils.translation import ugettext as _
 
@@ -29,7 +28,7 @@ class PatronDeDiscadoForm(forms.ModelForm):
 
     class Meta:
         model = PatronDeDiscado
-        exclude = ()
+        exclude = ('orden',)
         labels = {
             "match_pattern": _("Patrón de discado"),
             "prefix": _("Prefijo"),
@@ -71,6 +70,21 @@ class PatronDeDiscadoBaseFormset(BaseInlineFormSet):
                         _("Los patrones de discado deben ser diferentes"), code="invalid")
                 patrones_discado.append(patron_discado)
 
+        def save(self):
+            """Salva el formset de los troncales actualizando el orden de acuerdo a los
+            cambios realizados en la interfaz
+            """
+            if not self.instance.patrones_de_discado.exists():
+                max_orden = 0
+            else:
+                max_orden = self.instance.patrones_de_discado.last().orden
+            forms = self.forms
+            for i, form in enumerate(forms, max_orden + 1):
+                # asignamos nuevos ordenes a partir del máximo número de orden para
+                # evitar clashes de integridad al salvar los formsets
+                form.instance.orden = i
+            super(PatronDeDiscadoBaseFormset, self).save()
+
 
 class OrdenTroncalBaseFormset(BaseInlineFormSet):
 
@@ -100,7 +114,7 @@ class OrdenTroncalBaseFormset(BaseInlineFormSet):
         if not self.instance.secuencia_troncales.exists():
             max_orden = 0
         else:
-            max_orden = self.instance.secuencia_troncales.aggregate(max=Max('orden'))['max']
+            max_orden = self.instance.secuencia_troncales.last().orden
         forms = self.forms
         for i, form in enumerate(forms, max_orden + 1):
             # asignamos nuevos ordenes a partir del máximo número de orden para
