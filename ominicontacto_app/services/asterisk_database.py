@@ -288,7 +288,7 @@ class RutaSalienteFamily(object):
 
                 try:
                     family = "OML/OUTR/{0}".format(ruta.id)
-                    key = "TRUNK/{0}".format(troncal.troncal.id)
+                    key = "TRUNK/{0}".format(troncal.orden)
                     client.asterisk_db("DBPut", family, key=key, val=troncal.troncal.nombre)
                 except AsteriskHttpAsteriskDBError:
                     logger.exception("Error al intentar DBPut al insertar"
