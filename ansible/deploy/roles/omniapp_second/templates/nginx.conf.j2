@@ -60,9 +60,9 @@ http {
         }
 
         location /coverage {
-            alias /tmp/oml-coverity
-            autoindex off
-            index /tmp/oml-coverity/index.html
+            alias /tmp/oml-coverity;
+            autoindex off;
+            index /tmp/oml-coverity/index.html;
         }
 
         error_page 404 /404.html;
@@ -106,4 +106,3 @@ http {
 #    }
 
 }
-
