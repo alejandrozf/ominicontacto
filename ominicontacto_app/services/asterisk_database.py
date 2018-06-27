@@ -234,7 +234,7 @@ class RutaSalienteFamily(object):
 
     def _obtener_patrones_ordenados(self, ruta):
         """ devuelve patrones ordenados con enumerate"""
-        return list(enumerate(ruta.patrones_de_discado.all().order_by('orden'), start=1))
+        return list(enumerate(ruta.patrones_de_discado.all(), start=1))
 
     def create_familys(self, ruta=None, rutas=None):
         """Crea familys en database de asterisk
