@@ -1,5 +1,5 @@
 var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus, userAgent, sesion, opciones, eventHandlers, flagHold = true;
-var flagTransf = false,flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
+var flagTransf = false, flagAttended = false, flagInit = true, num = null, headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0, fromUser, wId, lastPause, uid = "";
 var agentIdHeaderVal, campaignIdHeaderVal;
 var sipStatus = document.getElementById('SipStatus');
 var callStatus = document.getElementById('CallStatus');
@@ -454,7 +454,8 @@ $(function() {
         $("#onHold").prop('disabled', false);
 
         if(num.substring(4,0) != "0077") {
-			//		inicio3();
+					flagAttended = true;
+					inicio3();
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
 	       	$("#sipLogout").prop('disabled',true);
@@ -668,6 +669,8 @@ $(function() {
 			if(entrante) {
 				if(fromUser) { // fromUser es para entrantes
 					if(lastPause === "Online" && fromUser.substring(4,0) != "0077") {
+						parar3();
+						reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 						saveCall(fromUser);
 						num = '';
 						fromUser = "";
@@ -676,6 +679,8 @@ $(function() {
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-success", "Online");
 					} else if(lastPause === "OnCall") {
+						parar3();
+						reinicio3();
 						saveCall(fromUser);
 						num = '';
 						fromUser = "";
@@ -684,7 +689,8 @@ $(function() {
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-success", "Online");
 					} else {
-						//reinicio3();
+						parar3();
+						reinicio3();
 						fromUser = "";
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
@@ -692,41 +698,42 @@ $(function() {
 						updateButton(modifyUserStat, "label label-danger", lastPause);
 					}
 					if(fromUser.substring(4,0) != "0077") {
-							if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
-								changeStatus(3, $("#idagt").val());
-						    num = "00770";
-						    makeCall();
-						    entrante = false;
-								$("#Pause").prop('disabled',true);
-								$("#Resume").prop('disabled',false);
-								$("#sipLogout").prop('disabled',false);
-								updateButton(modifyUserStat, "label label-danger", "ACW");
-								inicio2();
-					//			parar3();
-								if($("#auto_unpause").val() != 0) {
-							    var timeoutACW = $("#auto_unpause").val();
-							    timeoutACW = timeoutACW * 1000;
-							    var toOnline = function() {
-							      num = "0077UNPAUSE";
-							      if($("#UserStatus").html() === "ACW") {
-                      if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling")
-							        {
-                        makeCall();
-							          $("#Resume").trigger('click');
-                      }
-							      }
-							    };
-
-							    setTimeout(toOnline, timeoutACW);
-							  }
-							} // si no es agente predictivo....
-					} else {
-//					    reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
+						parar3();
+						reinicio3();
+						if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
+							changeStatus(3, $("#idagt").val());
+							num = "00770";
+							makeCall();
+							entrante = false;
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", "ACW");
+							inicio2();
+				//			parar3();
+							if($("#auto_unpause").val() != 0) {
+								var timeoutACW = $("#auto_unpause").val();
+								timeoutACW = timeoutACW * 1000;
+								var toOnline = function() {
+									num = "0077UNPAUSE";
+									if($("#UserStatus").html() === "ACW") {
+										if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling")
+										{
+											makeCall();
+											$("#Resume").trigger('click');
+										}
+									}
+								};
+								setTimeout(toOnline, timeoutACW);
+							}
+						} // si no es agente predictivo....
 					}
 				}
 			} else { // si NO es una llamada entrante
 				if (num) { // num para salientes
 					if (num.substring(4,0) != "0077") {
+						parar3();
+						reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 						saveCall(num);
 						if (lastPause != "Online") {
 							num = '';
@@ -742,38 +749,36 @@ $(function() {
 						}
             if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
               //if (entrante == false) { funcionalidad oml-52
-							  changeStatus(3, $("#idagt").val());
-					      num = "00770";
-					      makeCall();
-					      entrante = false;
-							  $("#Pause").prop('disabled',true);
-							  $("#Resume").prop('disabled',false);
-							  $("#sipLogout").prop('disabled',false);
-							  updateButton(modifyUserStat, "label label-danger", "ACW");
-		//			        inicio2();
-                if($("#auto_unpause").val() != 0) {
-								  var timeoutACW = $("#auto_unpause").val();
-								  timeoutACW = timeoutACW * 1000;
-                  var toOnline = function() {
-									  num = "0077UNPAUSE";
-									  if($("#UserStatus").html() === "ACW") {
-										  if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling") {
-										    makeCall();
-										    $("#Resume").trigger('click');
-									    }
-									  }
-                  };
-								  setTimeout(toOnline, timeoutACW);
-                }
+							changeStatus(3, $("#idagt").val());
+							num = "00770";
+							makeCall();
+							entrante = false;
+							$("#Pause").prop('disabled',true);
+							$("#Resume").prop('disabled',false);
+							$("#sipLogout").prop('disabled',false);
+							updateButton(modifyUserStat, "label label-danger", "ACW");
+	//			        inicio2();
+							if ($("#auto_unpause").val() != 0) {
+								var timeoutACW = $("#auto_unpause").val();
+								timeoutACW = timeoutACW * 1000;
+								var toOnline = function() {
+									num = "0077UNPAUSE";
+									if ($("#UserStatus").html() === "ACW") {
+										if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling") {
+											makeCall();
+											$("#Resume").trigger('click');
+										}
+									}
+								};
+								setTimeout(toOnline, timeoutACW);
+							}
               //} funcionalidad oml-52
             }
-					} else {
-			//		   reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 					}
-			    }
-				}
-		$("#EndTransfer").prop('disabled', true);
-		defaultCallState();
+			  }
+			}
+		  $("#EndTransfer").prop('disabled', true);
+		  defaultCallState();
     });
 
   });
@@ -812,9 +817,14 @@ $(function() {
 			makeCall();
 			Sounds("Out", "play");
 			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
-				Sounds("", "stop");
-				userAgent.terminateSessions();
-				defaultCallState();
+				
+				if (flagAttended == false) {
+					Sounds("", "stop");
+					userAgent.terminateSessions();
+					defaultCallState();
+				} else {
+					flagAttended = false;
+				}
 			}, 61000);
 		}
   });
@@ -843,9 +853,14 @@ $(function() {
 		  	makeCall();
 				getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
 				setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
-					Sounds("", "stop");
-			    userAgent.terminateSessions();
-			    defaultCallState();
+					
+					if (flagAttended == false) {
+						Sounds("", "stop");
+						userAgent.terminateSessions();
+						defaultCallState();
+					} else {
+						flagAttended = false;
+					}
 				}, 61000);
 			}
 		} else {
@@ -871,9 +886,14 @@ $(function() {
 			getFormManualCalls($("#idCamp").val(), $("#idagt").val(), displayNumber.value);
 	  	makeCall();
 			setTimeout(function () {//luego de 60 segundos, stop al ringback y cuelga discado
-				Sounds("", "stop");
-		    userAgent.terminateSessions();
-		    defaultCallState();
+
+				if (flagAttended == false) {
+					Sounds("", "stop");
+					userAgent.terminateSessions();
+					defaultCallState();
+				} else {
+					flagAttended = false;
+				}
 			}, 61000);
     } else {
 			$("#modalSelectCmp").modal("hide");
