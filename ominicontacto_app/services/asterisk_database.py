@@ -215,7 +215,7 @@ class RutaSalienteFamily(object):
 
         dict_patron = {
             'PREFIX': len(str(patron.prefix)),
-            'PREPEND': len(str(patron.prepend)),
+            'PREPEND': patron.prepend,
         }
 
         return dict_patron
@@ -266,7 +266,7 @@ class RutaSalienteFamily(object):
                 for key, val in variables.items():
                     try:
                         family = "OML/OUTR/{0}".format(ruta.id)
-                        key = "{0}/{1}".format(key, patron.id)
+                        key = "{0}/{1}".format(key, patron.orden)
                         client.asterisk_db("DBPut", family, key, val=val)
                     except AsteriskHttpAsteriskDBError:
                         logger.exception("Error al intentar DBPut al insertar"
