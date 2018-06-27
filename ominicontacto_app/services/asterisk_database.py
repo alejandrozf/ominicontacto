@@ -213,8 +213,12 @@ class RutaSalienteFamily(object):
 
     def _genera_dict_patron_discado(self, patron):
 
+        if patron.prefix:
+            prefix = len(str(patron.prefix))
+        else:
+            prefix = 0
         dict_patron = {
-            'PREFIX': len(str(patron.prefix)),
+            'PREFIX': prefix,
             'PREPEND': patron.prepend,
         }
 
