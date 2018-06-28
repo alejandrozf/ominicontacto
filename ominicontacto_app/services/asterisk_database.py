@@ -287,7 +287,7 @@ class RutaSalienteFamily(object):
                                          " y val={2}".format(family, key, val))
 
             # agrego lo datos de los troncales
-            troncales = self._obtener_troncales_ordenados()
+            troncales = self._obtener_troncales_ordenados(ruta)
             for orden, troncal in troncales:
                 logger.info("Creando familys para troncales %s", troncal.troncal.id)
 
