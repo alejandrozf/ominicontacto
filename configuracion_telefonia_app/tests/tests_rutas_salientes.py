@@ -115,7 +115,7 @@ class TestsRutasSalientes(OMLBaseTest):
         self.assertTemplateUsed(response, 'registration/login.html')
 
     @patch('configuracion_telefonia_app.views.escribir_ruta_saliente_config')
-    def test_administrador_puede_crear_ruta_saliente(self):
+    def test_administrador_puede_crear_ruta_saliente(self, mock_sincronizacion):
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = {
             'nombre': 'test',
@@ -146,7 +146,7 @@ class TestsRutasSalientes(OMLBaseTest):
         self.assertEqual(RutaSaliente.objects.count(), n_rutas_salientes + 1)
 
     @patch('configuracion_telefonia_app.views.escribir_ruta_saliente_config')
-    def test_administrador_puede_modificar_ruta_saliente(self):
+    def test_administrador_puede_modificar_ruta_saliente(self, mock_sincronizacion):
         self.client.login(username=self.admin.username, password=self.PWD)
         nuevo_nombre = 'ruta_1_modificada'
         post_data = {
