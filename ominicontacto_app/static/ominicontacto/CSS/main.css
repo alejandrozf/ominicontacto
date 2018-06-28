@@ -14,7 +14,7 @@ a, a:hover, a:focus {
     transition: all 0.3s;
 }
 button:hover {
-    background-color: rgba(0,0,0,0.05);    
+    background-color: rgba(0,0,0,0.05);
     cursor: pointer;
 }
 hr {
@@ -40,36 +40,36 @@ h4 {
     font-size: 0.8rem;
 }
 
-/* ///// Button styles 
+/* ///// Button styles
 */
 
 .btn-primary {
-    color: #FFFFFF;    
+    color: #FFFFFF;
     background-color: #8FC641;
     border-color: #8FC641;
 }
 .btn-primary:hover {
     background-color: #9FD84E;
-    border-color: #8FC641;    
+    border-color: #8FC641;
 }
 .btn-primary.disabled, .btn-primary:disabled {
   color: #8D938D;
   background-color: #E5E7E3;
-  border-color: #E5E7E3;   
+  border-color: #E5E7E3;
 }
 .btn-secondary {
-    color: #FFFFFF;    
+    color: #FFFFFF;
     background-color: #6A716A;
     border-color: #6A716A;
 }
 .btn-secondary:hover {
     background-color: #848C85;
-    border-color: #848C85;    
+    border-color: #848C85;
 }
 .btn-secondary.disabled, .btn-secondary:disabled {
   color: #8D938D;
   background-color: #E5E7E3;
-  border-color: #E5E7E3;   
+  border-color: #E5E7E3;
 }
 .btn-light {
     background-color: #FFFFFF;
@@ -80,7 +80,7 @@ h4 {
 }
 .btn-light.disabled, .btn-light:disabled {
   color: #8D938D;
-  border-color: #E5E7E3;   
+  border-color: #E5E7E3;
 }
 .btn-outline-primary {
     color: #8FC641;
@@ -93,7 +93,7 @@ h4 {
 }
 .btn-outline-primary.disabled, .btn-outline-primary:disabled {
   color: #A7ABA6;
-  border-color: #E5E7E3;   
+  border-color: #E5E7E3;
 }
 .btn-outline-secondary {
     color: #6A716A;
@@ -106,7 +106,7 @@ h4 {
 }
 .btn-outline-secondary.disabled, .btn-outline-secondary:disabled {
   color: #A7ABA6;
-  border-color: #E5E7E3;   
+  border-color: #E5E7E3;
 }
 .btn-outline-danger {
     color: #D25836;
@@ -119,24 +119,24 @@ h4 {
 }
 .btn-outline-danger.disabled, .btn-outline-danger:disabled {
   color: #A7ABA6;
-  border-color: #E5E7E3;   
+  border-color: #E5E7E3;
 }
 .btn-warning {
-    color: #FFFFFF;    
+    color: #FFFFFF;
     background-color: #FF9A3C;
     border-color: #FF9A3C;
 }
 .btn-warning:hover {
-    color: #FFFFFF;   
+    color: #FFFFFF;
     background-color: #FFAA5B;
-    border-color: #FFAA5B;    
+    border-color: #FFAA5B;
 }
 .btn-warning.disabled, .btn-warning:disabled {
   color: #A7ABA6;
-  border-color: #E5E7E3;   
+  border-color: #E5E7E3;
 }
 a.btn .icon {
-    color: #6A716A;    
+    color: #6A716A;
     margin-right: 10px;
 }
 
@@ -147,16 +147,16 @@ a.btn .icon {
     margin-bottom: 30px;
 }
 
-/* ///// Navigation steps 
+/* ///// Navigation steps
 */
 
 ul.nav-indicators {
     margin: 22px 0 30px 0;
-    padding: 8px;    
-    background-color: #F5F5F5; 
-    border-radius: 6px;   
+    padding: 8px;
+    background-color: #F5F5F5;
+    border-radius: 6px;
 }
-ul.nav-indicators a {   
+ul.nav-indicators a {
     padding: 4px;
     margin: 6px;
     display: inline-block;
@@ -164,7 +164,7 @@ ul.nav-indicators a {
 ul.nav-indicators li.active a {
     color: #8FC641;
     font-weight: 500;
-    border-bottom: 4px solid #8FC641;   
+    border-bottom: 4px solid #8FC641;
 }
 ul.nav-indicators li.active a:hover {
     color: #8FC641;
@@ -175,10 +175,10 @@ ul.nav-indicators li.disabled a {
 }
 ul.nav-indicators li.disabled a:hover {
     color: #A7ACA7;
-    background-color: transparent;    
+    background-color: transparent;
 }
 
-/* ///// Dropdown 
+/* ///// Dropdown
 */
 
 button.dropdown-toggle {
@@ -195,7 +195,7 @@ button.dropdown-toggle {
     cursor: pointer;
 }
 
-/* ///// Tables styles 
+/* ///// Tables styles
 */
 
 .table thead th {
@@ -211,7 +211,7 @@ button.dropdown-toggle {
     border-top: none;
 }
 
-/* ///// Form styles 
+/* ///// Form styles
 */
 
 label {
@@ -236,7 +236,7 @@ ul.errorlist li {
     padding: 5px 0;
 }
 
-/* ///// Select widget 
+/* ///// Select widget
 */
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
@@ -244,7 +244,7 @@ ul.errorlist li {
     color: white;
 }
 
-/* ///// date-range widget 
+/* ///// date-range widget
 */
 
 .daterangepicker .ranges li {
@@ -252,7 +252,7 @@ ul.errorlist li {
     border: 1px solid transparent;
     color: #2F342F;
     padding: 6px 12px;
-    margin-bottom: 2px;    
+    margin-bottom: 2px;
 }
 .daterangepicker .range_inputs {
     margin-top: 8px;
@@ -263,7 +263,7 @@ ul.errorlist li {
 }
 .daterangepicker .btn-success:hover {
     background-color: #9FD84E;
-    border-color: #8FC641;    
+    border-color: #8FC641;
 }
 .daterangepicker .ranges li.active {
     background: #8FC641;
@@ -297,7 +297,7 @@ ul.errorlist li {
     background-color: #8FC641;
 }
 
-/* ///// Modals 
+/* ///// Modals
 */
 
 .modal-title {
@@ -305,22 +305,22 @@ ul.errorlist li {
 }
 .modal-title .icon {
     margin-right: 10px;
-} 
+}
 
 @media (min-width: 768px) {
 
     /* ///// Main menu/navBar
     */
 
-    #navBar {       
-        background-color: #FFFFFF;  
-        border-bottom: 2px solid rgba(0,0,0,0.15); 
-        padding-top: 10px; 
-        padding-left: 10px;  
+    #navBar {
+        background-color: #FFFFFF;
+        border-bottom: 2px solid rgba(0,0,0,0.15);
+        padding-top: 10px;
+        padding-left: 10px;
     }
     #navBar .main-menu-li {
         display: inline-block;
-    } 
+    }
     #navBar ul li a {
         padding: 8px 12px 8px 2px;
         color: #2F342F;
@@ -328,12 +328,12 @@ ul.errorlist li {
     }
     #navBar .icon {
         font-size: 14px;
-        color: #6A716A;  
-    } 
+        color: #6A716A;
+    }
     #navBar > ul > li {
         padding: 10px;
         position: relative;
-    }       
+    }
     #navBar > ul > li:hover {
         background-color: rgba(0,0,0,0.05);
         cursor: pointer;
@@ -346,25 +346,25 @@ ul.errorlist li {
         position: absolute;
         left: 0px;
         top: 44px;
-        display: none; 
+        display: none;
         border-radius: 6px;
         box-shadow: 1px 1px 1px rgba(0,0,0,0.15);
-        z-index: 100;    
+        z-index: 100;
     }
     #navBar ul.submenu a {
         display: block;
-        padding: 8px 10px 8px 28px; 
-        text-transform: initial;  
+        padding: 8px 10px 8px 28px;
+        text-transform: initial;
     }
     #navBar ul.submenu a:hover {
-        background-color: rgba(0,0,0,0.05); 
+        background-color: rgba(0,0,0,0.05);
     }
     #navBar > ul > li:hover ul.submenu {
         display: block;
-    }  
+    }
 }
 
-/* ///// Navbar chevron icons 
+/* ///// Navbar chevron icons
 */
 
 #navBar a[data-toggle="collapse"] {
@@ -390,7 +390,7 @@ ul.errorlist li {
     height: auto;
     padding: 0;
     display: initial;
-    align-items: initial;      
+    align-items: initial;
     position: absolute;
     top: 14px;
     right: 10px;
@@ -405,7 +405,7 @@ ul.errorlist li {
   display: none;
 }
 
-/* ///// Content 
+/* ///// Content
 */
 
 iframe {
@@ -423,7 +423,7 @@ body > h1 {
   margin-bottom: 100px;
 }
 
-/* ///// Other 
+/* ///// Other
 */
 
 .infoAjax {
@@ -451,6 +451,9 @@ body > h1 {
   padding: 14px 20px;
   display: flex;
   align-items: center;
+}
+#timers  div {
+  display: inline;
 }
 #timers label {
   margin: 0;
@@ -488,6 +491,9 @@ body > h1 {
 
 /* ///// Phone
 */
+#modalWebCall .modal-content {
+  width: 350px;
+}
 #phoneStatus {
   text-align: center;
   color: #6A716A;
@@ -496,7 +502,7 @@ body > h1 {
   margin-top: 10px;
   display: flex;
   padding: 0 30px 10px 30px;
-  border-bottom: 1px solid rgba(0,0,0,0.15); 
+  border-bottom: 1px solid rgba(0,0,0,0.15);
 }
 #phoneKeys button {
   width: 50px;
@@ -505,7 +511,7 @@ body > h1 {
   font-weight: 500;
   margin: 4px;
   border-width: 2px;
-  border-radius: 50px;   
+  border-radius: 50px;
 }
 
 #phoneKeysNumbers button {
@@ -513,21 +519,21 @@ body > h1 {
 }
 #phoneKeysNumbers .astBtn {
   font-size: 3rem;
-  line-height: 3.5rem;  
+  line-height: 3.5rem;
 }
 #phoneKeysActions {
   margin-left: auto;
 }
 #phoneKeysActions button {
   display: block;
-  margin-bottom: 8px;  
+  margin-bottom: 8px;
 }
 #phoneOptions {
   text-align: center;
   margin-top: 10px;
 }
 #phoneOptions .btn-group {
-  margin-bottom: 16px;
+  margin: 16px 0;
 }
 
 .filaCampoNroDiscar {
@@ -571,7 +577,7 @@ body > h1 {
   flex: 2;
   background-color: #ECEEEA;
   border-radius: 4px;
-  margin-right: 20px;  
+  margin-right: 20px;
 }
 #modalFacebook .modal-body > div:last-of-type {
   flex: 1;
@@ -583,14 +589,14 @@ body > h1 {
 .chatWindow {
   height: 410px;
   width: 400px;
-  margin-bottom: 10px;  
+  margin-bottom: 10px;
   border-radius: 4px;
   border: 1px solid #CBCEC7;
   overflow-y: scroll;
 }
 .chatWindowActions {
   display: flex;
-  align-items: center;  
+  align-items: center;
 }
 .chatWindowActions > div:first-of-type {
   flex: 1;
@@ -632,7 +638,7 @@ body > h1 {
   border-radius: 100px;
   background-color: #FFFFFF;
   font-size: 1.6rem;
-  line-height: 3.2rem; 
+  line-height: 3.2rem;
   cursor: pointer;
 }
 #bottomBar #txtSms {
@@ -653,7 +659,7 @@ body > h1 {
 
 #bottomBar > div > div:last-of-type {
   color: #FFFFFF;
-  text-transform: uppercase;  
+  text-transform: uppercase;
   font-size: 0.6rem;
   opacity: 0.7;
   margin-top: 5px;
@@ -663,10 +669,6 @@ body > h1 {
   bottom: 3%;
   /*position: absolute;*/
   z-index: 1;
-}
-.Modal-Content{
-	left: 130%;
-	width: 360px;
 }
 .iconApp:hover {
   position: relative;
@@ -685,7 +687,7 @@ body > h1 {
     100% {left:0px; top:0px;}
 }
 
-/* ///// Media queries 
+/* ///// Media queries
 /////////////////////////////
 */
 
@@ -693,7 +695,7 @@ body > h1 {
     .wrapper-main {
         display: flex;
         align-items: stretch;
-    }  
+    }
     .wrapper-info {
         padding: 30px;
     }
@@ -706,13 +708,13 @@ body > h1 {
         max-width: 220px;
         min-height: 100vh;
         margin-left: -220px;
-        padding-top: initial;         
+        padding-top: initial;
         background-color: #ECEEEA;
-        transition: 0.3s;    
+        transition: 0.3s;
     }
     #navBar .main-menu-li {
         display: initial;
-    }        
+    }
     #navBar > ul > li {
         padding: initial;
         position: relative;
@@ -728,11 +730,11 @@ body > h1 {
         color: #6A716A;
         position: absolute;
         left: 10px;
-        top: 12px;    
+        top: 12px;
     }
     #navBar .icon.active {
         color: #000000;
-    }  
+    }
     #navBar ul li a:hover {
         background-color: rgba(0,0,0,0.05);
     }
@@ -752,10 +754,10 @@ body > h1 {
     #navBar.active {
         margin-left: 0;
         min-width: 220px;
-        max-width: 220px;     
+        max-width: 220px;
     }
 
-    /* ///// Navbar chevron icons 
+    /* ///// Navbar chevron icons
     */
 
     #navBar a[aria-expanded="false"]::before, #navBar a[aria-expanded="true"]::before {
@@ -772,17 +774,17 @@ body > h1 {
         height: 60px;
         padding: 0 20px;
         display: flex;
-        align-items: center;      
+        align-items: center;
         position: relative;
         border-bottom: 2px solid rgba(0,0,0,0.15);
         top: initial;
         right: initial;
-    }      
+    }
     #topBar .dropdown {
       position: absolute;
       right: 20px;
       top: 10px;
-    }    
+    }
     #topBar .user-name {
         display: none;
     }
@@ -790,7 +792,7 @@ body > h1 {
     /* ///// Time bar
     */
 
-    #timers span {
+    #timers div {
       display: block;
     }
 

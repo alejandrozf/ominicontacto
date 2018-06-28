@@ -1,5 +1,6 @@
-{% load static %}
+{% load staticfiles %}
 {% load compress %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html lang='es'>
@@ -9,319 +10,319 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >     
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">       
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-agent.css' %}">   
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-agent.css' %}">
     <!-- Scripts -->
-    <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  -->
-    {% compress js %}    
+    {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
-    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>       
+    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
     {% endcompress %}
-    <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>        
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
 </head>
 
 <body>
-    <div>
-        <!-- Modal de Pausa -->
-        <div class="modal fade" id="modalPause" role="dialog">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title">Tomar Pausa</h1>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <select class="form-control" id="pauseType">
-                            {% for pausa in pausas %}
-                                <option id="" value="{{ pausa.id }}">{{ pausa.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                    		<button type="button" id="setPause" class="btn btn-primary">Iniciar</button>
-                    </div>
-                </div>
+
+<!-- Modal de Pausa -->
+<div class="modal fade" id="modalPause" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">Tomar Pausa</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <select class="form-control" id="pauseType">
+                    {% for pausa in pausas %}
+                        <option id="" value="{{ pausa.id }}">{{ pausa.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="modal-footer">
+            		<button type="button" id="setPause" class="btn btn-primary">Iniciar</button>
             </div>
         </div>
-        <!-- FIN Pausa -->
-
-        <!-- Modal de Webphone -->
-        <div class="modal fade" id="modalWebCall" role="dialog" tabindex="-1">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content Modal-Content">
-                    <div class="modal-header">
-                        <h1 class="modal-title">
-                          <span class="icon icon-solid-phone"></span>WebPhone
-                        </h1>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>                      
-                    </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <!-- modal que se muestra cuando entra una llamada -->
-            								    <div id="modalReceiveCalls" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-             										    <div class="modal-dialog modal-sm">
-               											    <div class="modal-content">
-                 												    <div class="modal-header">
-                   													    <em><b class="tituloLlamEntrante">Llamada Entrante</b></em>
-                   													    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                 												    </div>
-                 												    <div class="modal-body">
-                   													    <h4 class="cuerpoLlamEntrante">
-                                                <span class="label label-info">De:</span>
-                     														<label name="callerid" id="callerid"></label><br>
-                     														<span class="label label-info">Info extra:</span>
-                     														<label name="extraInfo" id="extraInfo">.....</label>
-                   													</h4>
-                												</div>
-                												<div class="modal-footer">
-                  													<button type="button" id="answer" class="btn btn-success btn-sm">Responder</button>
-                  													<button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">Rechazar</button>
-                												</div>
-              											</div>
-            										</div>
-          									</div>
-          									<!-- modal que se muestra cuando quiere realizarse una llamada manual -->
-     			 							<div id="modalSelectCmp" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-             								<div class="modal-dialog modal-sm">
-               									<div class="modal-content">
-                 										<div class="modal-header">
-                   											<h2 class="modal-title">Llam. Manual a Campaña</h2>
-                   											<button type="button" class="close" data-dismiss="modal">&times;</button>
-                 										</div>
-                 										<div class="modal-body">
-                 												<select class="form-control" id="cmpList">
-                 														{% for queue_member in user.get_agente_profile.get_campanas_activas_miembro %}
-        																		<option value = "{{ queue_member.queue_name.campana.pk }}"
-                                            campana_type="{{ queue_member.queue_name.campana.type }}"> {{ queue_member.queue_name.campana.nombre }} </option>
-        				 														{% endfor %}
-                 												</select>
-                										</div>
-                                    <div class="modal-footer">
-                                        <button type="button" id="SelectCamp" class="btn btn-primary">Ok</button>
-                                    </div>                                    
-              									</div>
-            								</div>
-          							</div>
-          							<!-- Modal que se despliega al dar clic en Marcar Llamada -->
-          							<div id="modalSignCall" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-             								<div class="modal-dialog modal-sm">
-               									<div class="modal-content">
-                 										<div class="modal-header">
-                   											<h2 class="modal-title">Marcacion de Llamada</h2>
-                   											<button type="button" class="close" data-dismiss="modal">&times;</button>
-                 										</div>
-                 										<div class="modal-body">
-                 												<input type="hidden" id="idCamp"/>
-                 												<textarea id="SignDescription" placeholder="Motivo de marca" class="form-control"></textarea>
-                 										</div>
-                										<div class="modal-footer">
-                  											<button type="button" id="SaveSignedCall" class="btn btn-primary">Guardar</button>
-                										</div>
-              									</div>
-            								</div>
-          							</div>
-          							<!-- Fin de Modal -->
-        						</div>
-
-        						<div id="phoneStatus">
-            						<div id="CallStatus"></div>
-        	
-            						<div id="SipStatus"></div>
-        		
-                        <div class="filaCampoNroDiscar">
-                            <input type="text" class="form-control" id="numberToCall" name="numberToCall">
-                        </div>
-                    </div>                            
-        						<div id="phoneKeys">
-                        <div id="phoneKeysNumbers">
-                          <div>
-                              <button id="1" class="btn key">1</button>
-                              <button id="2" class="btn key">2</button>
-                              <button id="3" class="btn key">3</button>
-                          </div>
-                          <div>
-                              <button id="4" class="btn key">4</button>
-                              <button id="5" class="btn key">5</button>
-                              <button id="6" class="btn key">6</button>     
-                          </div>
-                          <div>
-                              <button id="7" class="btn key">7</button>
-                              <button id="8" class="btn key">8</button>
-                              <button id="9" class="btn key">9</button>
-                          </div>
-                          <div>
-                              <button id="#" class="btn key">#</button>
-                              <button id="0" class="btn key">0</button>
-                              <button id="*" class="btn key astBtn">*</button>
-                          </div> 
-                        </div>
-                        <div id="phoneKeysActions">
-                            <button type="button" id="call" class="btn btn-outline-primary">
-                                <span class="icon icon-solid-phone-call"></span>
-                            </button>
-                            <button type="button" id="endCall" class="btn btn-outline-danger">
-                                <span class="icon icon-solid-phone-end"></span>
-                            </button>
-                            <button type="button" id="redial" class="btn btn-outline-secondary">
-                                <span class="icon icon-solid-phone-redial"></span>
-                            </button>
-                            <button type="button" id="SignCall" class="btn btn-outline-secondary" title="Marcar Llamada">
-                                <span class="icon icon-solid-phone-save"></span>
-                            </button>                                
-                        </div>
-                    </div>
-
-                    <div id="phoneOptions">
-                      <div id="sumTime">
-                        <label id="horaC"></label><label id="minsC"></label><label id="segsC"></label>
-                      </div>
-                      <div class="btn-group" data-toggle="buttons">
-                        <button id="Transfer" class="btn btn-outline-secondary" disabled="disabled">Transferir</button>
-                        <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">Hold</button>
-                      </div>
-                      <button id="changeCampAssocManualCall" class="btn btn-outline-secondary">Seleccionar campaña</button>
-                      <br>
-                      <span class="label label-primary">
-                        <label id="campAssocManualCall"></label>
-                      </span>
-                    </div>
-
-                    <table class="table table-condensed table-hover table-striped">
-                        <thead>
-                            <th>tipo</th><th>numero</th><th>fecha</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
-                        </thead>
-                        <tbody id="call_list">
-                            {% for regs in registro %}
-                            <tr>
-
-                                <td><img height='15' width='15'
-                                {%if regs.tipo_llamada == 3 %}
-                                src="{% static 'ominicontacto/Img/incomingCall.png' %}"
-        												{% else %}
-        												src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
-        												{% endif %}
-                                /></td>
-                                <td>{{ regs.numero_telefono }}</td>
-                                <td>{{ regs.fecha_hora_llamada | date:"d-m" }}</td>
-                                <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td>
-                                <!--<td style="align:right">
-                                    <button type="button" class="btn btn-success btn-xs call">
-                                        <span class="glyphicon glyphicon-earphone"></span>
-                                    </button>
-                                </td>-->
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-
     </div>
+</div> <!-- FIN Pausa -->
 
-        <audio id="remoteAudio" autoplay="autoplay"></audio>
-        <audio id="localAudio" muted="muted"></audio>
-        <audio id="RingIn">
-          <source id="fuenteIn" src="{% static 'ominicontacto/ring/Kuma.mp3' %}" type="audio/mpeg">
-        </audio>
-        <audio id="RingOut">
-          <source id="fuenteOut" src="{% static 'ominicontacto/ring/tonoallamar.mp3' %}" type="audio/mpeg">
-        </audio>
-        <audio id="RingBusy">
-          <source id="fuentebOut" src="{% static 'ominicontacto/ring/busy.mp3' %}" type="audio/mpeg">
-        </audio>
-        </div>
-      </div>
-    </div>
-<!-- FIN WEBPHONE -->
+<!-- Modal de Webphone -->
+<div class="modal fade" id="modalWebCall" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">
+                  <span class="icon icon-solid-phone"></span>WebPhone
+                </h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <!-- modal que se muestra cuando entra una llamada -->
+    								    <div id="modalReceiveCalls" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     										    <div class="modal-dialog modal-sm">
+       											    <div class="modal-content">
+         												    <div class="modal-header">
+           													    <em><b class="tituloLlamEntrante">Llamada Entrante</b></em>
+           													    <button type="button" class="close" data-dismiss="modal">&times;</button>
+         												    </div>
+         												    <div class="modal-body">
+           													    <h4 class="cuerpoLlamEntrante">
+                                        <span class="label label-info">De:</span>
+             														<label name="callerid" id="callerid"></label><br>
+             														<span class="label label-info">Info extra:</span>
+             														<label name="extraInfo" id="extraInfo">.....</label>
+           													</h4>
+        												</div>
+        												<div class="modal-footer">
+          													<button type="button" id="answer" class="btn btn-success btn-sm">Responder</button>
+          													<button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">Rechazar</button>
+        												</div>
+      											</div>
+    										</div>
+  									</div>
+  									<!-- modal que se muestra cuando quiere realizarse una llamada manual -->
+		 							<div id="modalSelectCmp" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     								<div class="modal-dialog modal-sm">
+       									<div class="modal-content">
+         										<div class="modal-header">
+           											<h2 class="modal-title">Llam. Manual a Campaña</h2>
+           											<button type="button" class="close" data-dismiss="modal">&times;</button>
+         										</div>
+         										<div class="modal-body">
+         												<select class="form-control" id="cmpList">
+         														{% for queue_member in user.get_agente_profile.get_campanas_activas_miembro %}
+																		<option value = "{{ queue_member.queue_name.campana.pk }}"
+                                    campana_type="{{ queue_member.queue_name.campana.type }}"> {{ queue_member.queue_name.campana.nombre }} </option>
+				 														{% endfor %}
+         												</select>
+        										</div>
+                            <div class="modal-footer">
+                                <button type="button" id="SelectCamp" class="btn btn-primary">Ok</button>
+                            </div>
+      									</div>
+    								</div>
+  							</div>
+  							<!-- Modal que se despliega al dar clic en Marcar Llamada -->
+  							<div id="modalSignCall" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     								<div class="modal-dialog modal-sm">
+       									<div class="modal-content">
+         										<div class="modal-header">
+           											<h2 class="modal-title">Marcacion de Llamada</h2>
+           											<button type="button" class="close" data-dismiss="modal">&times;</button>
+         										</div>
+         										<div class="modal-body">
+         												<input type="hidden" id="idCamp"/>
+         												<textarea id="SignDescription" placeholder="Motivo de marca" class="form-control"></textarea>
+         										</div>
+        										<div class="modal-footer">
+          											<button type="button" id="SaveSignedCall" class="btn btn-primary">Guardar</button>
+        										</div>
+      									</div>
+    								</div>
+  							</div>
+  							<!-- Fin de Modal -->
+						</div>
+						<div id="phoneStatus">
+    						<div id="CallStatus"></div>
+
+    						<div id="SipStatus"></div>
+
+                <div class="filaCampoNroDiscar">
+                    <input type="text" class="form-control" id="numberToCall" name="numberToCall">
+                </div>
+            </div>
+						<div id="phoneKeys">
+                <div id="phoneKeysNumbers">
+                  <div>
+                      <button id="1" class="btn key">1</button>
+                      <button id="2" class="btn key">2</button>
+                      <button id="3" class="btn key">3</button>
+                  </div>
+                  <div>
+                      <button id="4" class="btn key">4</button>
+                      <button id="5" class="btn key">5</button>
+                      <button id="6" class="btn key">6</button>
+                  </div>
+                  <div>
+                      <button id="7" class="btn key">7</button>
+                      <button id="8" class="btn key">8</button>
+                      <button id="9" class="btn key">9</button>
+                  </div>
+                  <div>
+                      <button id="#" class="btn key">#</button>
+                      <button id="0" class="btn key">0</button>
+                      <button id="*" class="btn key astBtn">*</button>
+                  </div>
+                </div>
+                <div id="phoneKeysActions">
+                    <button type="button" id="call" class="btn btn-outline-primary">
+                        <span class="icon icon-solid-phone-call"></span>
+                    </button>
+                    <button type="button" id="endCall" class="btn btn-outline-danger">
+                        <span class="icon icon-solid-phone-end"></span>
+                    </button>
+                    <button type="button" id="redial" class="btn btn-outline-secondary">
+                        <span class="icon icon-solid-phone-redial"></span>
+                    </button>
+                    <button type="button" id="SignCall" class="btn btn-outline-secondary" title="Marcar Llamada">
+                        <span class="icon icon-solid-phone-save"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="phoneOptions">
+              <div id="sumTime">
+                <span id="horaC"></span>
+                <span id="minsC"></span>
+                <span id="segsC"></span>
+              </div>
+              <div class="btn-group" data-toggle="buttons">
+                <button id="Transfer" class="btn btn-outline-secondary" disabled="disabled">Transferir</button>
+                <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">Hold</button>
+              </div>
+              <button id="changeCampAssocManualCall" class="btn btn-outline-secondary">Seleccionar campaña</button>
+              <hr>
+              <span class="label label-primary">
+                <label id="campAssocManualCall"></label>
+              </span>
+            </div>
+
+            <table class="table table-condensed table-hover table-striped">
+                <thead>
+                    <th>tipo</th><th>numero</th><th>fecha</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
+                </thead>
+                <tbody id="call_list">
+                    {% for regs in registro %}
+                    <tr>
+
+                        <td><img height='15' width='15'
+                        {%if regs.tipo_llamada == 3 %}
+                        src="{% static 'ominicontacto/Img/incomingCall.png' %}"
+												{% else %}
+												src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
+												{% endif %}
+                        /></td>
+                        <td>{{ regs.numero_telefono }}</td>
+                        <td>{{ regs.fecha_hora_llamada | date:"d-m" }}</td>
+                        <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td>
+                        <!--<td style="align:right">
+                            <button type="button" class="btn btn-success btn-xs call">
+                                <span class="glyphicon glyphicon-earphone"></span>
+                            </button>
+                        </td>-->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+</div>
+
+<audio id="remoteAudio" autoplay="autoplay"></audio>
+<audio id="localAudio" muted="muted"></audio>
+<audio id="RingIn">
+  <source id="fuenteIn" src="{% static 'ominicontacto/ring/Kuma.mp3' %}" type="audio/mpeg">
+</audio>
+<audio id="RingOut">
+  <source id="fuenteOut" src="{% static 'ominicontacto/ring/tonoallamar.mp3' %}" type="audio/mpeg">
+</audio>
+<audio id="RingBusy">
+  <source id="fuentebOut" src="{% static 'ominicontacto/ring/busy.mp3' %}" type="audio/mpeg">
+</audio>
+</div>
+</div>
+</div> <!-- FIN WEBPHONE -->
+
 <!-- modal que se despliega al clicar transferir -->
-        <div class="modal fade" id="modalTransfer" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4>Transferir</h4>
+<div class="modal fade" id="modalTransfer" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Transferir</h4>
+            </div>
+            <div class="modal-body container form-inline">
+                <div class="form-group row col-xs-6">
+                    <label class="col-xs-4">Tipo de transferencia:</label>
+                    <div class="radio col-xs-2">
+                        <label>
+                            <input type="radio" name="tipotransf" id="blindTransf"/>&nbsp;Ciega
+                        </label>
                     </div>
-                    <div class="modal-body container form-inline">
-                        <div class="form-group row col-xs-6">
-                            <label class="col-xs-4">Tipo de transferencia:</label>
-                            <div class="radio col-xs-2">
-                                <label>
-                                    <input type="radio" name="tipotransf" id="blindTransf"/>&nbsp;Ciega
-                                </label>
-                            </div>
-                            <div class="radio col-xs-3">
-                                <label>
-                                    <input type="radio" name="tipotransf" id="consultTransf"/>&nbsp;Asistida
-                                </label>
-                            </div>
-                        </div>
-                        <br>
-                        <br>
-                        <div class="form-group row col-xs-6">
-                            <div class="radio col-xs-3 col-xs-offset-4">
-                                <label>
-                                    <input type="radio" name="dstTransf" id="transfToNum"/>&nbsp;a Número
-                                </label>
-                            </div>
-                            <input type="text" class="form-control col-xs-2" id="numberToTransfer" disabled/>
-                        </div>
-                        <br>
-                        <br>
-                        <div class="form-group row col-xs-6">
-                            <div class="radio col-xs-3 col-xs-offset-4">
-                                <label>
-                                    <input type="radio" name="dstTransf" id="transfToCamp"/>&nbsp;a Campaña
-                                </label>
-                            </div>
-                            <select class="form-control col-xs-2" id="campToTransfer" disabled>
-                            </select>
-                        </div>
-                        <br>
-                        <br>
-                        <div class="form-inline form-group row col-xs-6">
-                            <div class="radio col-xs-3 col-xs-offset-4">
-                                <label>
-                                    <input type="radio" name="dstTransf" id="transfToAgent"/>&nbsp;a Agente
-                                </label>
-                            </div>
-                            <select class="form-control col-xs-2" id="agentToTransfer" disabled>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="makeTransfer" class="btn btn-success btn-sm">Hecho</button>
+                    <div class="radio col-xs-3">
+                        <label>
+                            <input type="radio" name="tipotransf" id="consultTransf"/>&nbsp;Asistida
+                        </label>
                     </div>
                 </div>
+                <br>
+                <br>
+                <div class="form-group row col-xs-6">
+                    <div class="radio col-xs-3 col-xs-offset-4">
+                        <label>
+                            <input type="radio" name="dstTransf" id="transfToNum"/>&nbsp;a Número
+                        </label>
+                    </div>
+                    <input type="text" class="form-control col-xs-2" id="numberToTransfer" disabled/>
+                </div>
+                <br>
+                <br>
+                <div class="form-group row col-xs-6">
+                    <div class="radio col-xs-3 col-xs-offset-4">
+                        <label>
+                            <input type="radio" name="dstTransf" id="transfToCamp"/>&nbsp;a Campaña
+                        </label>
+                    </div>
+                    <select class="form-control col-xs-2" id="campToTransfer" disabled>
+                    </select>
+                </div>
+                <br>
+                <br>
+                <div class="form-inline form-group row col-xs-6">
+                    <div class="radio col-xs-3 col-xs-offset-4">
+                        <label>
+                            <input type="radio" name="dstTransf" id="transfToAgent"/>&nbsp;a Agente
+                        </label>
+                    </div>
+                    <select class="form-control col-xs-2" id="agentToTransfer" disabled>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="makeTransfer" class="btn btn-success btn-sm">Hecho</button>
             </div>
         </div>
+    </div>
+</div>
 <!-- FIN transferencias -->
 
 <!-- WEBCHAT -->
-<div class="modal fade" id="modalwebChat" role="dialog">
+<!-- <div class="modal fade" id="modalwebChat" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4>WebChat</h4>
+          <h1>WebChat</h1>
+          <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+          </button>
       </div>
       <div class="modal-body">
         <div class="container-fluid">
@@ -331,12 +332,12 @@
               <textarea class="form-control" rows="2" id="chatMessage" autocomplete="off" disabled="disabled"/></textarea>
             </div>
             <input type="hidden" value="">
-            <button class="btn btn-md btn-success" disabled="disabled" id="sendMessage">Enviar</button>
+            <button class="btn btn-md btn-success" disabled="disabled" id="sendMessage">Enviar</button> -->
             <!--<button type="button" id="conf" class="btn btn-info btn-sm">
               <span class="glyphicon glyphicon-cog"></span>
             </button>-->
-          </div><br>
-            <div class="row">
+          <!-- </div><br>
+          <div class="row">
             <input type="hidden" id="conversationId"/>
             <div class="col-md-4 col-md-offset-1 chatWindow">
               <ul id="messages"></ul>
@@ -351,346 +352,346 @@
               </table>
             </div>
           </div>
-        </div> <!-- Fin Modal Webphone -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div> <!-- Fin Modal Webchat -->
 
-        <!-- Modal Webchat -->
-        <div class="modal fade" id="modalwebChat" role="dialog">
-        <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title">
-                    <span class="icon icon-solid-chat"></span>WebChat
-                </h1>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="webchatWindow">
-                    <input type="hidden" id="conversationId"/>
-                    <div class="chatWindow">
-                        <ul id="messages"></ul>
-                    </div> 
-                    <div class="chatWindowActions">
-                        <div>
-                            <input type="hidden" value="{{user}}" id="user">
-                            <textarea class="form-control" rows="1" id="chatMessage" autocomplete="off" placeholder="Escribe un mensaje..." disabled="disabled"/></textarea>
+<!-- Modal Webchat -->
+<div class="modal fade" id="modalwebChat" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title">
+                <span class="icon icon-solid-chat"></span>WebChat
+            </h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="webchatWindow">
+                <input type="hidden" id="conversationId"/>
+                <div class="chatWindow">
+                    <ul id="messages"></ul>
+                </div>
+                <div class="chatWindowActions">
+                    <div>
+                        <input type="hidden" value="{{user}}" id="user">
+                        <textarea class="form-control" rows="1" id="chatMessage" autocomplete="off" placeholder="Escribe un mensaje..." disabled="disabled"/></textarea>
+                    </div>
+                    <div>
+                        <input type="hidden" value="">
+                        <button class="btn btn-primary" disabled="disabled" id="sendMessage">Enviar</button>
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownWebchatActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <span class="icon icon-cog"></span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownWebchatActions">
+                                <button class="dropdown-item" type="button">Action</button>
+                            </div>
                         </div>
-                        <div>
-                            <input type="hidden" value="">
-                            <button class="btn btn-primary" disabled="disabled" id="sendMessage">Enviar</button>
-                            <div class="dropdown">
-                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownWebchatActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span class="icon icon-cog"></span>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownWebchatActions">
-                                    <button class="dropdown-item" type="button">Action</button>
-                                </div>
-                            </div>
-                        </div>                      
-                    </div>               
-                </div>
-                <div id="webchatInfo">
-                    <table class="table table-compressed table-hover">
-                        <thead>
-                            <th>Estado</th>
-                            <th>Usuario</th>
-                            <th>Chatear</th>
-                        </thead>
-                        <tbody id="tbodyContacts">
-                        </tbody>
-                    </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
-        </div> <!-- Fin Modal Webchat -->
-
-        <!-- SMS -->
-        <div class="modal fade" id="modalSMS" role="dialog">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title">
-                    <span class="icon icon-solid-messages"></span>Mensajes
-                </h1>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div id="webchatInfo">
+                <table class="table table-compressed table-hover">
+                    <thead>
+                        <th>Estado</th>
+                        <th>Usuario</th>
+                        <th>Chatear</th>
+                    </thead>
+                    <tbody id="tbodyContacts">
+                    </tbody>
+                </table>
             </div>
-            <div class="modal-body">
-                <ul class="nav nav-tabs" id="messagesTabBar" role="tablist">
-                  <li class="nav-item">
-                    <a class="nav-link active" id="messagesTab" data-toggle="tab" href="#messagesContent" role="tab" aria-controls="home" aria-selected="true">Mensajes</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" id="registryTab" data-toggle="tab" href="#regitryContent" role="tab" aria-controls="profile" aria-selected="false">Registro</a>
-                  </li>
-                </ul>
+        </div>
+    </div>
+  </div>
+</div> <!-- Fin Modal Webchat -->
 
-                <div class="tab-content" id="messagesTabContent">
+<!-- SMS -->
+<div class="modal fade" id="modalSMS" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h1 class="modal-title">
+              <span class="icon icon-solid-messages"></span>Mensajes
+          </h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+          <ul class="nav nav-tabs" id="messagesTabBar" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="messagesTab" data-toggle="tab" href="#messagesContent" role="tab" aria-controls="home" aria-selected="true">Mensajes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="registryTab" data-toggle="tab" href="#regitryContent" role="tab" aria-controls="profile" aria-selected="false">Registro</a>
+            </li>
+          </ul>
 
-                  <div class="tab-pane fade show active" id="messagesContent" role="tabpanel" aria-labelledby="messagesTab">
-                    <table class="table table-compressed" id="threadMsgsTable">
-                      <thead>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Mensaje</th>
-                        <th>Fecha</th>
-                      </thead>
-                      <tbody id="bodyThreadMsgTable">
-                      </tbody>
-                    </table>
+          <div class="tab-content" id="messagesTabContent">
 
-                    <input type="hidden" id="phoneSendThread" value="">
+            <div class="tab-pane fade show active" id="messagesContent" role="tabpanel" aria-labelledby="messagesTab">
+              <table class="table table-compressed" id="threadMsgsTable">
+                <thead>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Mensaje</th>
+                  <th>Fecha</th>
+                </thead>
+                <tbody id="bodyThreadMsgTable">
+                </tbody>
+              </table>
 
-                    <textarea cols="12" rows="1" name='textSend' id="textSendThread" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea><br>
-                    <button type="button" class="btn btn-primary" id="sendMessageFromThread" data-dismiss="modal">Enviar</button>
-                  </div>
+              <input type="hidden" id="phoneSendThread" value="">
 
-                  <div class="tab-pane fade" id="regitryContent" role="tabpanel" aria-labelledby="registryTab">
-                    <form role="form">
-                            <div class="row">
-                              <div class="col-md-7">
-                                <div class="form-group">
-                                  <table class="table table-compressed" id="messagesTable">
-                                      <thead>
-                                      <th>Tel</th>
-                                      <th>Mensaje</th>
-                                      <th>Acciones</th>
-                                    </thead>
-                                    <tbody id="cuerpoTabla">
+              <textarea cols="12" rows="1" name='textSend' id="textSendThread" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea><br>
+              <button type="button" class="btn btn-primary" id="sendMessageFromThread" data-dismiss="modal">Enviar</button>
+            </div>
 
-                                    </tbody>
-                                    <tr>
-                                    </tr>
-                                  </table>
-                                </div>
-                              </div>
-                                <div>
-                                    <div class="form-group col-md-11">
-                                        <label for="phoneSend">Tel</label>
-                                        <input type="text" name="phoneSend" id="phoneSend" placeholder="ej: 351 6543422" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="textSend">Mensaje</label>
-                                        <textarea cols="19" rows="2" name='textSend' id="textSend" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <button id="sendMessage" type="button" name="Enviar" class="btn btn-primary">Enviar</button>
-                                        &nbsp;&nbsp;&nbsp;<label for="newSMS">Nuevos:&nbsp;</label><label id="newSMS">0</label>
-                                    </div>
-                                </div>
+            <div class="tab-pane fade" id="regitryContent" role="tabpanel" aria-labelledby="registryTab">
+              <form role="form">
+                      <div class="row">
+                        <div class="col-md-7">
+                          <div class="form-group">
+                            <table class="table table-compressed" id="messagesTable">
+                                <thead>
+                                <th>Tel</th>
+                                <th>Mensaje</th>
+                                <th>Acciones</th>
+                              </thead>
+                              <tbody id="cuerpoTabla">
+
+                              </tbody>
+                              <tr>
+                              </tr>
+                            </table>
                           </div>
-                      </form>
-                  </div>
-
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            </div>
-
-          </div>
-        </div>
-        </div> <!-- FIN SMS -->
-
-        <!-- FACEBOOK CHAT -->
-        <div class="modal fade" id="modalFacebook" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">
-                        <span class="icon icon-solid-fb-chat"></span>Facebook chat
-                    </h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <table class="table table-compressed" id="messagesTable">
-                            <thead>
-                            <th>Conversaciones</th>
-                          </thead>
-                          <tbody id="cuerpoTablaFb">
-                          </tbody>
-                          <tr>
-                          </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <form role="form">
-                              <div class="chatWindow">
-                                  <div id="messagesFb"></div>
+                        </div>
+                          <div>
+                              <div class="form-group col-md-11">
+                                  <label for="phoneSend">Tel</label>
+                                  <input type="text" name="phoneSend" id="phoneSend" placeholder="ej: 351 6543422" class="form-control" required>
                               </div>
-                              <div class="chatWindowActions">
-                                <div>
-                                    <textarea cols="42" rows="1" name='textSend' id="textSendFb" placeholder="Escribe un mensaje..." class="form-control" required></textarea>                     
-                                </div>
-                                <div>
-                                    <button id="sendMessageFb" type="button" name="Enviar" class="btn btn-primary">Enviar</button>
-                                    <div class="dropdown">
-                                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownFbActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <span class="icon icon-cog"></span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownFbActions">
-                                            <button id="endDialogFb" class="dropdown-item" type="button">Fin</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                          </form>                      
+                              <div class="form-group">
+                                  <label for="textSend">Mensaje</label>
+                                  <textarea cols="19" rows="2" name='textSend' id="textSend" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea>
+                              </div>
+                              <div class="form-group">
+                                  <button id="sendMessage" type="button" name="Enviar" class="btn btn-primary">Enviar</button>
+                                  &nbsp;&nbsp;&nbsp;<label for="newSMS">Nuevos:&nbsp;</label><label id="newSMS">0</label>
+                              </div>
+                          </div>
                     </div>
-                </div>
+                </form>
             </div>
-        </div>
-        </div> <!-- FIN FACEBOOK CHAT -->
 
-        <!-- modal informacion -->
-        <div class="modal fade" id="modalMensaje" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <!-- Modal content-->
-            <div class="modal-content">
-              <div class="modal-body">
-              	<label class="infoAjax" id="infoAjax"></label>
-              </div>
-            </div>
           </div>
-        </div> <!-- fin modal info -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div> <!-- FIN SMS -->
 
-    <!-- Contendio -->
+<!-- FACEBOOK CHAT -->
+<div class="modal fade" id="modalFacebook" role="dialog">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h1 class="modal-title">
+                  <span class="icon icon-solid-fb-chat"></span>Facebook chat
+              </h1>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <div>
+                  <table class="table table-compressed" id="messagesTable">
+                      <thead>
+                      <th>Conversaciones</th>
+                    </thead>
+                    <tbody id="cuerpoTablaFb">
+                    </tbody>
+                    <tr>
+                    </tr>
+                  </table>
+              </div>
+              <div>
+                  <form role="form">
+                        <div class="chatWindow">
+                            <div id="messagesFb"></div>
+                        </div>
+                        <div class="chatWindowActions">
+                          <div>
+                              <textarea cols="42" rows="1" name='textSend' id="textSendFb" placeholder="Escribe un mensaje..." class="form-control" required></textarea>
+                          </div>
+                          <div>
+                              <button id="sendMessageFb" type="button" name="Enviar" class="btn btn-primary">Enviar</button>
+                              <div class="dropdown">
+                                  <button class="btn btn-light dropdown-toggle" type="button" id="dropdownFbActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="icon icon-cog"></span>
+                                  </button>
+                                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownFbActions">
+                                      <button id="endDialogFb" class="dropdown-item" type="button">Fin</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</div> <!-- FIN FACEBOOK CHAT -->
 
-    <div class="wrapper-main">
-        <nav id="navBar">
-            <ul id="navMainMenu" class="list-unstyled">
-                <li class="main-menu-li">
-                    <span class="icon icon-notebook"></span>
-                    <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">Contactos</a>
-                    <ul class="collapse list-unstyled submenu" id="menuContacts" data-parent="#navMainMenu">
-                        <li id="wombatId"></li>
-                        <li>
-                            <a href="{% url 'campana_dialer_selecciona_campana' %}" target="crm">Nuevo contacto</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'contacto_list' %}" target="crm">Lista de contactos</a>
-                        </li>                        
-                    </ul>
-                </li>
-                <li class="main-menu-li">
-                    <span class="icon icon-agenda"></span>
-                    <a class="menu-link" href="{% url 'agenda_contacto_listado' %}" target="crm">Agendas</a>
-                </li>
-                <li class="main-menu-li">
-                    <span class="icon icon-ratings"></span>
-                    <a class="menu-link" href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
-                </li>
-                {% if campanas_preview_activas %}
-                <li class="main-menu-li">
-                    <span class="icon icon-agenda"></span>
-                    <a class="menu-link" href="{% url 'campana_preview_activas_miembro' %}" target="crm">Campañas preview</a>
-                </li>                
-                {% endif %}
+<!-- modal informacion -->
+<div class="modal fade" id="modalMensaje" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body">
+      	<label class="infoAjax" id="infoAjax"></label>
+      </div>
+    </div>
+  </div>
+</div> <!-- fin modal info -->
+
+<!-- Contendio -->
+<div class="wrapper-main">
+    <nav id="navBar">
+        <ul id="navMainMenu" class="list-unstyled">
+            <li class="main-menu-li">
+                <span class="icon icon-notebook"></span>
+                <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">Contactos</a>
+                <ul class="collapse list-unstyled submenu" id="menuContacts" data-parent="#navMainMenu">
+                    <li id="wombatId"></li>
+                    <li>
+                        <a href="{% url 'campana_dialer_selecciona_campana' %}" target="crm">Nuevo contacto</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'contacto_list' %}" target="crm">Lista de contactos</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="main-menu-li">
+                <span class="icon icon-agenda"></span>
+                <a class="menu-link" href="{% url 'agenda_contacto_listado' %}" target="crm">Agendas</a>
+            </li>
+            <li class="main-menu-li">
+                <span class="icon icon-ratings"></span>
+                <a class="menu-link" href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
+            </li>
+            {% if campanas_preview_activas %}
+            <li class="main-menu-li">
+                <span class="icon icon-agenda"></span>
+                <a class="menu-link" href="{% url 'campana_preview_activas_miembro' %}" target="crm">Campañas preview</a>
+            </li>
+            {% endif %}
 
 <!--                 <li class="main-menu-li">
-                    <span class="icon icon-user"></span>
-                    <a href="#" role="button" aria-expanded="false">
-                        Contactos <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li id="wombatId"></li>
-                        <li>
-                            <a href="{% url 'campana_dialer_selecciona_campana' %}" target="crm">Nuevo contacto</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'contacto_list' %}" target="crm">Lista de contactos</a>
-                        </li>
-                    </ul>
-                </li>
-
-              <li role="presentation" class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                        Agendas <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="{% url 'agenda_contacto_listado' %}" target="crm">Agenda</a>
-                        </li>
-                    </ul>
-                </li> 
-
-                <li>
-                    <a href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
-                </li>
-
-                {% if campanas_preview_activas %}
+                <span class="icon icon-user"></span>
+                <a href="#" role="button" aria-expanded="false">
+                    Contactos <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li id="wombatId"></li>
                     <li>
-                        <a href="{% url 'campana_preview_activas_miembro' %}" target="crm">Campañas preview</a>
+                        <a href="{% url 'campana_dialer_selecciona_campana' %}" target="crm">Nuevo contacto</a>
                     </li>
-                {% endif %} -->
+                    <li>
+                        <a href="{% url 'contacto_list' %}" target="crm">Lista de contactos</a>
+                    </li>
+                </ul>
+            </li>
 
-            </ul>          
-        </nav>
+          <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                    Agendas <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <a href="{% url 'agenda_contacto_listado' %}" target="crm">Agenda</a>
+                    </li>
+                </ul>
+            </li>
 
-        <div class="wrapper-content">
-            <div id="topBar">
-                <button type="button" id="sidebarCollapse" class="btn">
-                    <span class="fas fa-bars"></span>
-                </button>              
-                <div class="dropdown">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="icon icon-user"></span>
-                    <span class="user-name">{{ user.get_full_name }}</span>
-                  </button>
-                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser">
-                    <a id="logout" class="dropdown-item" href="{% url 'agente_logout' %}">Salir</a>
-                  </div>
-                </div>
+            <li>
+                <a href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
+            </li>
+
+            {% if campanas_preview_activas %}
+                <li>
+                    <a href="{% url 'campana_preview_activas_miembro' %}" target="crm">Campañas preview</a>
+                </li>
+            {% endif %} -->
+
+        </ul>
+    </nav>
+
+    <div class="wrapper-content">
+        <div id="topBar">
+            <button type="button" id="sidebarCollapse" class="btn">
+                <span class="fas fa-bars"></span>
+            </button>
+            <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="icon icon-user"></span>
+                <span class="user-name">{{ user.get_full_name }}</span>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser">
+                <a id="logout" class="dropdown-item" href="{% url 'agente_logout' %}">Salir</a>
+              </div>
             </div>
-
-            <div id="timeBar">
-                <div id="timers">
-                    <span id="operationTime" class="label label-default">
-                        Operación:
-                        <span id="horaO"></span><span id="minsO"></span><span id="segsO"></span>
-                    </span>
-                    <span id="pauseTime" class="label label-default">
-                        Pausa:
-                        <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
-                    </span>
-                    <span id="sumTime" class="label label-default">
-                        Total:
-                        <span id="horaT"></span><span id="minsT"></span><span id="segsT"></span>
-                    </span>
-                </div>
-                <div id="timersControls">
-                    <span id="UserStatus"></span>
-                    <button type="button" id="Pause" class="btn btn-warning btn-sm">
-                      <span class="icon icon-pause"></span>Pausar
-                    </button>
-                    <button type="button" id="Resume" class="btn btn-primary btn-sm">
-                      <span class="icon icon-play"></span>Reaundar
-                    </button>                  
-                </div>
-            </div>
-
-            <input type="hidden" value="{{ agente_profile.id }}" id="idagt"/>
-                  <input type="hidden" value="{{ agente_profile.sip_extension }}" id="sipExt"/>
-                  <input value="{{ agente_profile.sip_password}}" id="sipSec" type="hidden"/>
-
-
-            <div class="wrapper-info">
-                <input type="hidden" value="{{ agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
-                <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
-                <input type="hidden" value="{{ agente_profile.grupo.auto_attend_ics }}" id="auto_attend_ICS"/>
-                <input type="hidden" value="{{ agente_profile.grupo.auto_pause }}" id="auto_pause"/>
-                <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
-                <iframe src="{% url 'agenda_agente_list' %}" id="dataView" class="crm" name="crm">
-                </iframe>
-            </div>
-
         </div>
-    </div> <!-- Main Wrapper -->
+
+        <div id="timeBar">
+            <div id="timers">
+                <div id="operationTime" class="label label-default">
+                    Operación:
+                    <span id="horaO"></span><span id="minsO"></span><span id="segsO"></span>
+                </div>
+                <div id="pauseTime" class="label label-default">
+                    Pausa:
+                    <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
+                </div>
+                <div id="sumTime" class="label label-default">
+                    Total:
+                    <span id="horaT"></span><span id="minsT"></span><span id="segsT"></span>
+                </div>
+            </div>
+            <div id="timersControls">
+                <span id="UserStatus"></span>
+                <button type="button" id="Pause" class="btn btn-warning btn-sm">
+                  <span class="icon icon-pause"></span>Pausar
+                </button>
+                <button type="button" id="Resume" class="btn btn-primary btn-sm">
+                  <span class="icon icon-play"></span>Reaundar
+                </button>
+            </div>
+        </div>
+
+        <input type="hidden" value="{{ agente_profile.id }}" id="idagt"/>
+            <input type="hidden" value="{{ agente_profile.sip_extension }}" id="sipExt"/>
+            <input value="{{ agente_profile.sip_password}}" id="sipSec" type="hidden"/>
+
+
+        <div class="wrapper-info">
+            <input type="hidden" value="{{ agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
+            <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
+            <input type="hidden" value="{{ agente_profile.grupo.auto_attend_ics }}" id="auto_attend_ICS"/>
+            <input type="hidden" value="{{ agente_profile.grupo.auto_pause }}" id="auto_pause"/>
+            <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
+            <iframe src="{% url 'agenda_agente_list' %}" id="dataView" class="crm" name="crm">
+            </iframe>
+        </div>
+    </div>
+</div> <!-- Main Wrapper -->
 
 <!-- container que une la agenda con el crm-->
 <div id="bottomBar">
@@ -699,31 +700,31 @@
         <span class="icon icon-solid-messages"></span>
       </div>
       <div>Mensajes</div>
-    </div> 
+    </div>
     <div>
       <div class="iconApp" id="webCall">
         <span class="icon icon-solid-phone"></span>
-      </div>       
+      </div>
       <div>Webphone</div>
     </div>
     <div>
       <div class="iconApp" id="webChat">
         <span class="icon icon-solid-chat"></span>
-      </div>          
+      </div>
       <div>Chat</div>
     </div>
     <div>
       <div class="iconApp" id="facebookChat">
         <span class="icon icon-solid-fb-chat"></span>
-      </div>                  
-      <div>Facebook chat</div>        
-    </div>                
+      </div>
+      <div>Facebook chat</div>
+    </div>
     <div>
       <div class="iconApp" id="facebookChat">
         <i id="fbNotReadMessagesCounter" class="material-icons"></i>
         <span class="icon icon-solid-mail"></span>
       </div>
-      <div>Email</div>          
+      <div>Email</div>
     </div>
 </div>
 
