@@ -20,6 +20,12 @@ button:hover {
 hr {
     margin: 26px 0 26px 0;
 }
+hr.hr-space {
+    border: transparent;
+}
+table hr {
+    margin: 6px 0 6px 0;
+}
 .hidden {
     display: none;
 }
@@ -93,6 +99,30 @@ a.btn .icon {
     margin-bottom: 30px;
 }
 
+/*///// Jumbotron
+*/
+
+.jumbotron {
+    padding: 1rem 1.5rem;
+    background-color: rgba(0,0,0,0.05);
+}
+
+/*///// Text style
+*/
+
+.display-1 {
+    font-size: 3rem;
+}
+.display-2 {
+    font-size: 2.5rem;
+}
+.display-3 {
+    font-size: 2rem;
+}
+.display-4 {
+    font-size: 1.8rem;
+}
+
 /* ///// Navigation steps 
 */
 
@@ -143,7 +173,12 @@ button.dropdown-toggle {
 
 /* ///// Tables styles 
 */
-
+.wrapper-table {
+    margin-bottom: 40px;
+}
+.table-tall {
+    max-height: 440px;
+}
 .table thead th {
     background-color: #F7F7F7;
     border-top: 0;
@@ -155,6 +190,38 @@ button.dropdown-toggle {
 }
 .table-striped td, .table-striped th  {
     border-top: none;
+}
+table span.label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-left: 4px;
+}
+.btn-collapse-table[data-toggle="collapse"] {
+    text-align: left;
+    position: relative;
+    padding-right: 40px;
+}
+.btn-collapse-table[aria-expanded="false"]::before, .btn-collapse-table[aria-expanded="true"]::before {
+    content: '\e904';
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 6px;    
+    font-family: 'icomoon';
+    font-size: 0.8rem;
+}
+.btn-collapse-table[aria-expanded="true"]::before {
+    content: '\e907';
+}
+
+table .collapse {
+    opacity: 0.7;
+}
+/* ///// Tables small 
+*/
+
+.table-sm td, .table-sm th {
+    padding: .6rem;
 }
 
 /* ///// Form styles 
@@ -359,7 +426,7 @@ input[type=file].form-control {
     transition: 0.1s;   
 }
 #sidebar {
-	min-width: 220px;
+    min-width: 220px;
     max-width: 220px;
     min-height: 100vh;
     background-color: #ECEEEA;
@@ -600,21 +667,57 @@ table.campana-reglas .td-remove .btn {
     margin: 0;
 }
 
-/* ///// Grafics 
+
+/* ///// Tabs
+*/
+.icon.report {
+    font-size: 0.8rem;
+    margin: 0 4px 0 8px;
+}
+.icon.report:first-of-type {
+    margin-left: 0;
+}
+.icon.report {
+    font-size: 0.8rem;
+    margin-right: 4px;
+}
+.icon.report.icon-check {
+    color: #67C167;
+}
+.icon.report.icon-cancel {
+    color: #DB5941;
+}
+
+/* ///// Graphics 
 */
 
 .graficos-avances svg {
     min-height: 100px;
     max-height: 450px;
 }
-
+.graficos-avances text {
+    font-family: 'Asap', sans-serif !important;
+}
+.graficos-avances .titles text {
+    font-size: 1.5rem !important;
+}
+.graficos-avances .legends text {
+    font-size: 1rem !important;
+}
+.graficos-avances .guides text {
+    font-size: 0.8rem !important;
+}
 .oml-table-bg {
     background: #c3c3c3 !important;
     color: #222;
 }
-figure text {
-    font-size: 1rem;
+.graficos-avances .tooltip-overlay {
+    background-color: black !important;
 }
+.graficos-avances .reactive {
+    background-color: black !important;
+}
+
 
 /* ///// Media queries 
 /////////////////////////////

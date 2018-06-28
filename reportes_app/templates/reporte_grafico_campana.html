@@ -53,20 +53,30 @@
 {% with graficos_estadisticas=graficos_estadisticas %}
 
 <h1>Campaña: {{campana.nombre}}</h1>
-<div class="form-row">
-    {% if graficos_estadisticas.estadisticas.llamadas_pendientes != None %}
-        <h3 class="col-md-6">{% trans 'Llamadas Pendientes' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</strong></h3>
-    {% endif %}
-    {% if graficos_estadisticas.estadisticas.llamadas_realizadas != None %}
-        <h3 class="col-md-6">{% trans 'Llamadas Realizadas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</strong></h3>
-    {% endif %}
-    {% if graficos_estadisticas.estadisticas.llamadas_recibidas != None %}
-        <h3 class="col-md-6">{% trans 'Llamadas Recibidas' %}: <strong>{{graficos_estadisticas.estadisticas.llamadas_recibidas}}</strong></h3>
-    {% endif %}
-</div>
-<br>
-<div>
-    <a class="btn btn-primary" href="{% url 'campana_reporte_pdf' campana.pk %}" target="_blank">{% trans 'Exportar Reporte(PDF)' %}</a>
+<div class="jumbotron">
+    <div class="form-row">
+        {% if graficos_estadisticas.estadisticas.llamadas_pendientes != None %}   
+            <div class="col-md-6">
+                <h1 class="display-2">{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</h1>
+                <h3>{% trans 'Llamadas Pendientes' %}</h3>                 
+            </div>
+        {% endif %}
+        {% if graficos_estadisticas.estadisticas.llamadas_realizadas != None %}
+            <div class="col-md-6">
+                <h1 class="display-2">{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</h1>
+                <h3>{% trans 'Llamadas Realizadas' %}</h3>
+            </div>
+        {% endif %}
+        {% if graficos_estadisticas.estadisticas.llamadas_recibidas != None %}
+            <div class="col-md-6">
+                <h1 class="display-2">{{graficos_estadisticas.estadisticas.llamadas_recibidas}}</h1>
+                <h3>{% trans 'Llamadas Recibidas' %}</h3>
+            </div>
+        {% endif %}
+    </div>
+    <div>
+        <a class="btn btn-outline-primary" href="{% url 'campana_reporte_pdf' campana.pk %}" target="_blank">{% trans 'Exportar Reporte(PDF)' %}</a>
+    </div>    
 </div>
 <br>
 <div id="wrapper-search">
@@ -91,9 +101,10 @@
     <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_contactados' campana.pk %}">Exportar Reporte de contactadas(CSV)</a>
     <hr>
     <h3>Cantidad de calificación por campaña</h3>
+    <br>
     <div class="form-row">
         <div class="col-md-6">
-            <table class="table">
+            <table class="table table-sm">
                 <thead>
                     <tr>
                         <th>Calificacion</th>
@@ -132,7 +143,7 @@
     <br>
     <div class="form-row">
         <div class="col-md-6">
-            <table class="table">
+            <table class="table table-sm">
                 <thead>
                     <tr>
                         <th>Resultado</th>
@@ -172,11 +183,12 @@
         <thead>
             <tr>
                 <th>{% trans 'Agente' %}</th>
-                <th>{% trans 'Total gestiones' %}</th>
+                <th>{% trans 'Gestiones' %}</th>
                 {% for calificacion in graficos_estadisticas.calificaciones %}
                     <th>{{ calificacion }}</th>
                 {% endfor %}
                 <th>{% trans 'Contactos calificados' %}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -207,7 +219,7 @@
     <br>
     <div class="form-row">
         <div class="col-md-6">
-            <table class="table">
+            <table class="table table-sm">
                 <thead>
                     <tr>
                         <th>Llamadas</th>
