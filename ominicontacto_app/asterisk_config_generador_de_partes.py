@@ -85,6 +85,28 @@ class GeneradorParaFailed(GeneradorDePedazoDeDialplanParaFailed):
         return self._parametros
 
 
+class GeneradorParaFailedRutaSaliente(GeneradorDePedazoDeDialplanParaFailed):
+    def get_template(self):
+        return """
+
+        ;----------------------------------------------------------------------
+        ; TEMPLATE_FAILED-{oml_ruta_name}
+        ;   Autogenerado {date}
+        ;
+        ; La generacion de configuracion para la ruta {oml_ruta_name}
+        ;   a fallado.
+        ;
+        ; {traceback_lines}
+        ;
+        ;----------------------------------------------------------------------
+
+
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
 # ########################################################################### #
 # Factory para las Queue.
 
@@ -129,6 +151,17 @@ class GeneradorDePedazoDePausaFactory(object):
 
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
+
+
+# Factory para las Rutas Salientes
+
+class GeneradorDePedazoDeRutasSalientesFactory(object):
+
+    def crear_generador_para_patron_ruta_saliente(self, parametros):
+        return GeneradorParaPatronRuta(parametros)
+
+    def crear_generador_para_failed(self, parametros):
+        return GeneradorParaFailedRutaSaliente(parametros)
 
 # ==============================================================================
 # Queue
@@ -289,10 +322,6 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
     def get_parametros(self):
         return self._parametros
 
-
-
-
-
 # ==============================================================================
 # Agente SIP
 # ==============================================================================
@@ -344,6 +373,7 @@ class GeneradorParaAgenteGlobal(GeneradorDePedazoDeAgenteSip):
 # Pausa
 # ==============================================================================
 
+
 class GeneradorParaPausaGlobal(GeneradorDePedazo):
 
     def __init__(self, parametros):
@@ -352,6 +382,34 @@ class GeneradorParaPausaGlobal(GeneradorDePedazo):
     def get_template(self):
         return """
         PAUSA{oml_pausa_pk} = {oml_pausa_nombre}
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+# ==============================================================================
+# Rutas Salientes
+# ==============================================================================
+
+
+class GeneradorDePedazoDeRutaSaliente(GeneradorDePedazo):
+    """Interfaz / Clase abstracta para generar el pedazo de ruta.
+    """
+
+    def __init__(self, parametros):
+        self._parametros = parametros
+
+
+class GeneradorParaPatronRuta(GeneradorDePedazoDeRutaSaliente):
+
+    def get_template(self):
+        return """
+
+        exten => {oml-ruta-dialpatern},1,Verbose(2, OUT-R ${{DB(OML/OUTR/{oml-ruta-id}/NAME)}})
+        same => n,Set(OMLOUTRID={oml-ruta-id})
+        same => n,Gosub(sub-oml-dialout,s,1({oml-ruta-id},{oml-ruta-orden-patern}))
+        same => n,Gosub(sub-oml-hangup,s,1(OUTR-FAIL))
         """
 
     def get_parametros(self):

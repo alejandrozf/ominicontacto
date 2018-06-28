@@ -9,9 +9,11 @@ from __future__ import unicode_literals
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.services.asterisk_database import (
-    CampanaFamily, AgenteFamily
+    CampanaFamily, AgenteFamily, RutaSalienteFamily, TrunkFamily
 )
 from ominicontacto_app.utiles import elimina_espacios
+from configuracion_telefonia_app.tests.factories import (
+    TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory)
 
 
 class AsteriskDatabaseTest(OMLBaseTest):
@@ -132,3 +134,49 @@ class AsteriskDatabaseTest(OMLBaseTest):
 
         self.assertEqual(dict_agente['SIP'], self.agente.sip_extension)
         self.assertEqual(dict_agente['STATUS'], "")
+
+    def test_devuelve_correctamente_values_ruta(self):
+        """
+        este test los values del diccionario para la family de la ruta
+        """
+        ruta = RutaSalienteFactory()
+        patron_1_1 = PatronDeDiscadoFactory(ruta_saliente=ruta)
+        patron_1_2 = PatronDeDiscadoFactory(ruta_saliente=ruta)
+
+        servicio = RutaSalienteFamily()
+
+        # verifico que genere correctamente el dict de la ruta
+        dict_ruta = servicio.create_dict_ruta(ruta)
+
+        self.assertEqual(dict_ruta['NAME'], ruta.nombre)
+        self.assertEqual(dict_ruta['RINGTIME'], ruta.ring_time)
+        self.assertEqual(dict_ruta['OPTIONS'], ruta.dial_options)
+        self.assertEqual(dict_ruta['TRUNKS'], len(ruta.secuencia_troncales.all()))
+
+        # verifico que genere correctamente el dict de los patrones de desicado
+        dict_patron = servicio.create_dict_patron(patron_1_1)
+        self.assertEqual(dict_patron['PREFIX'], len(str(patron_1_1.prefix)))
+        self.assertEqual(dict_patron['PREPEND'], patron_1_1.prepend)
+        dict_patron = servicio.create_dict_patron(patron_1_1)
+        self.assertEqual(dict_patron['PREFIX'], len(str(patron_1_2.prefix)))
+        self.assertEqual(dict_patron['PREPEND'], patron_1_2.prepen)
+
+    def test_devuelve_correctamente_values_troncales(self):
+        """
+        este test los values del diccionario para la family de los troncales
+        """
+        troncal_1 = TroncalSIPFactory()
+        troncal_2 = TroncalSIPFactory()
+
+        servicio = TrunkFamily()
+
+        # verifico que genere correctamente el dict de los troncales
+        dict_troncal = servicio.create_dict(troncal_1)
+        self.assertEqual(dict_troncal['NAME'], troncal_1.nombre)
+        self.assertEqual(dict_troncal['CHANNELS'], troncal_1.canales_maximos)
+        self.assertEqual(dict_troncal['CALLERID'], troncal_1.caller_id)
+
+        dict_troncal = servicio.create_dict(troncal_2)
+        self.assertEqual(dict_troncal['NAME'], troncal_2.nombre)
+        self.assertEqual(dict_troncal['CHANNELS'], troncal_2.canales_maximos)
+        self.assertEqual(dict_troncal['CALLERID'], troncal_2.caller_id)

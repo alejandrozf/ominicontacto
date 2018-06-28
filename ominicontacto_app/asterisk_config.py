@@ -20,12 +20,13 @@ from ominicontacto_app.utiles import (
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, Campana, Pausa
 )
-import logging as _logging
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
-    GeneradorDePedazoDePausaFactory,
+    GeneradorDePedazoDePausaFactory, GeneradorDePedazoDeRutasSalientesFactory
 )
 
+import logging as _logging
 
 logger = _logging.getLogger(__name__)
 
@@ -475,6 +476,166 @@ class GlobalsVariableConfigCreator(object):
         self._globals_config_file.write(configuracion)
 
 
+class RutasSalientesConfigCreator(object):
+
+    def __init__(self):
+        self._rutas_config_file = RutasSalientesConfigFile()
+        self._generador_factory = GeneradorDePedazoDeRutasSalientesFactory()
+
+    def _generar_config(self, ruta):
+        """Genera el dialplan para una ruta.
+
+        :param ruta: ruta para la cual hay crear config asterisk
+        :type RutaSaliente: configuracion_telefonia_app.models.RutaSaliente
+        :returns: str -- config para las rutas
+        """
+
+        partes = []
+        patrones = self._obtener_patrones_ordenados(ruta)
+        for orden, patron in patrones:
+            if patron.prefix:
+                dialpatern = ''.join(("_", str(patron.prefix), patron.match_pattern))
+            else:
+                dialpatern = ''.join(("_", patron.match_pattern))
+            param_generales = {
+                'oml-ruta-id': ruta.id,
+                'oml-ruta-dialpatern': dialpatern,
+                'oml-ruta-orden-patern': orden
+            }
+
+            generador_ruta = self._generador_factory.crear_generador_para_patron_ruta_saliente(
+                param_generales)
+            partes.append(generador_ruta.generar_pedazo())
+
+        return ''.join(partes)
+
+    def _obtener_patrones_ordenados(self, ruta):
+        """ devuelve patrones ordenados con enumerate"""
+        return list(enumerate(ruta.patrones_de_discado.all(), start=1))
+
+    def _obtener_todas_para_generar_config_rutas(self):
+        """Devuelve las rutas salientes para config rutas
+        """
+        return RutaSaliente.objects.all()
+
+    def create_config_asterisk(self, ruta=None, rutas=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `ruta` es pasada por parametro,
+        se genera solo para dicha ruta.
+        """
+
+        if rutas:
+            pass
+        elif ruta:
+            rutas = [ruta]
+        else:
+            rutas = self._obtener_todas_para_generar_config_rutas()
+        rutas_file = []
+
+        # agrego el encabezado de las rutas
+        rutas_file.append("[oml-outr]\n")
+
+        # agrego los include
+        for ruta in rutas:
+            rutas_file.append("include => oml-outr-{0}\n".format(ruta.id))
+
+        # agrego las rutas con los patrones de discado
+        for ruta in rutas:
+            logger.info("Creando config sip para ruta saliente %s", ruta.id)
+            rutas_file.append("\n[oml-outr-{0}]\n".format(ruta.id))
+            rutas_file.append("include => oml-outr-{0}-custom".format(ruta.id))
+            try:
+                config_chunk = self._generar_config(ruta)
+                logger.info("Config generado OK para ruta saliente %s", ruta.id)
+            except:
+                logger.exception(
+                    "No se pudo generar configuracion de "
+                    "Asterisk para la ruta {0}".format(ruta.id))
+
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except:
+                    traceback_lines = "Error al intentar generar traceback"
+                    logger.exception("Error al intentar generar traceback")
+
+                # FAILED: Creamos la porción para el fallo del config sip.
+                param_failed = {'oml_ruta_name': ruta.nombre,
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+
+            rutas_file.append(config_chunk)
+
+        self._rutas_config_file.write(rutas_file)
+
+
+class SipTrunksConfigCreator(object):
+
+    def __init__(self):
+        self._sip_trunks_config_file = SipTrunksConfigFile()
+
+    def _obtener_todas_para_generar_config_rutas(self):
+        """Devuelve todas para config troncales
+        """
+        return TroncalSIP.objects.all()
+
+    def create_config_asterisk(self, trunk=None, trunks=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `trunk` es pasada por parametro,
+        se genera solo para dicha trunk.
+        """
+
+        if trunks:
+            pass
+        elif trunk:
+            trunks = [trunk]
+        else:
+            trunks = self._obtener_todas_para_generar_config_rutas()
+        trunk_file = []
+
+        for trunk in trunks:
+            logger.info("Creando config troncal sip %s", trunk.id)
+            trunk_file.append("\n{0}\n".format(trunk.text_config.replace("\r", "")))
+        self._sip_trunks_config_file.write(trunk_file)
+
+
+class SipRegistrationsConfigCreator(object):
+
+    def __init__(self):
+        self._sip_registrations_config_file = SipRegistrationsConfigFile()
+
+    def _obtener_todas_para_generar_config_rutas(self):
+        """Devuelve todas para config troncales
+        """
+        return TroncalSIP.objects.all()
+
+    def create_config_asterisk(self, trunk=None, trunks=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `trunk` es pasada por parametro,
+        se genera solo para dicha trunk.
+        """
+
+        if trunks:
+            pass
+        elif trunk:
+            trunks = [trunk]
+        else:
+            trunks = self._obtener_todas_para_generar_config_rutas()
+        trunk_file = []
+
+        for trunk in trunks:
+            logger.info("Creando config troncal sip %s", trunk.id)
+            trunk_file.append("{0}\n".format(trunk.register_string))
+
+        self._sip_registrations_config_file.write(trunk_file)
+
+
 class AsteriskConfigReloader(object):
 
     def reload_config(self):
@@ -516,7 +677,8 @@ class AsteriskConfigReloader(object):
             stderr_file.close()
 
     def reload_asterisk(self):
-        subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx', '\'core reload\''])
+        subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx',
+                         '\'core reload\''])
 
 
 class ConfigFile(object):
@@ -566,6 +728,32 @@ class QueuesConfigFile(ConfigFile):
         hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
         super(QueuesConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class RutasSalientesConfigFile(ConfigFile):
+    def __init__(self):
+        filename = settings.OML_RUTAS_SALIENTES_FILENAME.strip()
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(RutasSalientesConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class SipTrunksConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
+                                "oml_sip_trunks.conf")
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(SipTrunksConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class SipRegistrationsConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
+                                "oml_sip_registrations.conf")
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(SipRegistrationsConfigFile, self).__init__(filename, hostname, remote_path)
 
 
 class BackListConfigFile(ConfigFile):
