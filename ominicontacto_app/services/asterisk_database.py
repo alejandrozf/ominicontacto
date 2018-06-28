@@ -240,6 +240,10 @@ class RutaSalienteFamily(object):
         """ devuelve patrones ordenados con enumerate"""
         return list(enumerate(ruta.patrones_de_discado.all(), start=1))
 
+    def _obtener_troncales_ordenados(self, ruta):
+        """ devuelve troncales ordenados con enumerate"""
+        return list(enumerate(ruta.secuencia_troncales.all().order_by("orden"), start=1))
+
     def create_familys(self, ruta=None, rutas=None):
         """Crea familys en database de asterisk
         """
@@ -283,12 +287,13 @@ class RutaSalienteFamily(object):
                                          " y val={2}".format(family, key, val))
 
             # agrego lo datos de los troncales
-            for troncal in ruta.secuencia_troncales.all():
+            troncales = self._obtener_troncales_ordenados()
+            for orden, troncal in troncales:
                 logger.info("Creando familys para troncales %s", troncal.troncal.id)
 
                 try:
                     family = "OML/OUTR/{0}".format(ruta.id)
-                    key = "TRUNK/{0}".format(troncal.orden)
+                    key = "TRUNK/{0}".format(orden)
                     client.asterisk_db("DBPut", family, key=key, val=troncal.troncal.nombre)
                 except AsteriskHttpAsteriskDBError:
                     logger.exception("Error al intentar DBPut al insertar"
