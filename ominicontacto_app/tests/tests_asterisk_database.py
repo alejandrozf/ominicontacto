@@ -154,12 +154,20 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_ruta['TRUNKS'], len(ruta.secuencia_troncales.all()))
 
         # verifico que genere correctamente el dict de los patrones de desicado
+        if patron_1_1.prefix:
+            prefix = len(str(patron_1_1.prefix))
+        else:
+            prefix = None
         dict_patron = servicio.create_dict_patron(patron_1_1)
-        self.assertEqual(dict_patron['PREFIX'], len(str(patron_1_1.prefix)))
+        self.assertEqual(dict_patron['PREFIX'], prefix)
         self.assertEqual(dict_patron['PREPEND'], patron_1_1.prepend)
         dict_patron = servicio.create_dict_patron(patron_1_1)
-        self.assertEqual(dict_patron['PREFIX'], len(str(patron_1_2.prefix)))
-        self.assertEqual(dict_patron['PREPEND'], patron_1_2.prepen)
+        if patron_1_1.prefix:
+            prefix = len(str(patron_1_1.prefix))
+        else:
+            prefix = None
+        self.assertEqual(dict_patron['PREFIX'], prefix)
+        self.assertEqual(dict_patron['PREPEND'], patron_1_2.prepend)
 
     def test_devuelve_correctamente_values_troncales(self):
         """
