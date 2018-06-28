@@ -87,6 +87,7 @@ class RutaSalienteListView(ListView):
     paginate_by = 40
     context_object_name = 'rutas_salientes'
     template_name = 'lista_rutas_salientes.html'
+    ordering = ['id']
 
 
 def escribir_ruta_saliente_config(ruta_saliente):
