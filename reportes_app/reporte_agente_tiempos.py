@@ -21,7 +21,7 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
     foreground_light='#555',
     foreground_dark='#555',
     opacity='1',
-    opacity_hover='1',
+    opacity_hover='.6',
     transition='400ms ease-in',
     colors=('#428bca', '#5cb85c', '#5bc0de', '#f0ad4e', '#d9534f',
             '#a95cb8', '#5cb8b5', '#caca43', '#96ac43', '#ca43ca')
