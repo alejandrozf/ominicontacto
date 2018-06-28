@@ -123,12 +123,13 @@ def escribir_ruta_saliente_config(self, ruta_saliente):
 class RutaSalienteMixin(object):
 
     def form_valid(self, form):
-        ruta_saliente = form.save()
+        ruta_saliente = form.save(commit=False)
         patrondiscado_formset = PatronDeDiscadoFormset(
             self.request.POST, instance=ruta_saliente, prefix='patron_discado')
         ordentroncal_formset = OrdenTroncalFormset(
             self.request.POST, instance=ruta_saliente, prefix='orden_troncal')
         if patrondiscado_formset.is_valid() and ordentroncal_formset.is_valid():
+            form.save()
             patrondiscado_formset.save()
             ordentroncal_formset.save()
             # muestra mensaje de éxito
