@@ -300,6 +300,21 @@ class RutaSalienteFamily(object):
                                      " en la family {0} la siguiente key={1}"
                                      " y val={2}".format(family, key, val))
 
+    def _existe_family_key(self, family, key):
+        """Consulta en la base de datos si existe la family y clave"""
+
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            db_get = client.asterisk_db("DBGet", family, key=key)
+            response_dict = db_get.response_dict
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBGet al consultar con la family {0} y "
+                             "la siguiente key={1}".format(family, key))
+            return False
+        if response_dict['response'] == 'Success':
+            return True
+
     def delete_tree_family(self, family):
         """Elimina el tree de la family pasada por parametro"""
         try:
@@ -308,6 +323,15 @@ class RutaSalienteFamily(object):
             client.asterisk_db_deltree(family)
         except AsteriskHttpAsteriskDBError:
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
+
+    def delete_family_ruta(self, ruta):
+        """Elimina una la family de una ruta"""
+        # primero chequeo si existe la family
+        family = "OML/OUTR/{0}".format(ruta.id)
+        key = "NAME"
+        existe_family = self._existe_family_key(family, key)
+        if existe_family:
+            self.delete_tree_family(family)
 
     def regenerar_familys_rutas(self, ruta):
         """regenera la family de las rutas"""
