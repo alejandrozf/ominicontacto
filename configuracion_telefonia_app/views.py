@@ -204,7 +204,7 @@ class EliminarRutaSaliente(DeleteView):
     def delete(self, request, *args, **kwargs):
         print("TODO: Capturar bien las excepciones correspondientes.")
         try:
-            eliminar_ruta_saliente_config(self.get_object())
+            eliminar_ruta_saliente_config(self, self.get_object())
         except Exception:
             messages.error(request, _(u'No se ha podido eliminar la Ruta Saliente.'))
             return redirect('eliminar_ruta_saliente', pk=kwargs['pk'])
@@ -213,8 +213,16 @@ class EliminarRutaSaliente(DeleteView):
         return super(EliminarRutaSaliente, self).delete(request, *args, **kwargs)
 
 
-def eliminar_ruta_saliente_config(ruta_saliente):
-    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
-    print ("TODO: IMPLEMENTAR!!!")
-    # Exception('No se pudo eliminar bien.')
-    pass
+def eliminar_ruta_saliente_config(self, ruta_saliente):
+    """Elimina las ruta en asterisk"""
+    try:
+        sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
+        sincronizador.eliminar_ruta_y_regenerar_asterisk(ruta_saliente)
+    except RestablecerConfiguracionTelefonicaError, e:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "con el siguiente error: {0} .".format(e))
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
