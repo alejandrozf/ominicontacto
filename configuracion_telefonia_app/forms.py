@@ -64,11 +64,12 @@ class PatronDeDiscadoBaseFormset(BaseInlineFormSet):
 
             patrones_discado = []
             for form in save_candidates_forms:
+                prefix = form.cleaned_data.get('prefix', False)
                 patron_discado = form.cleaned_data.get('match_pattern', False)
-                if patron_discado in patrones_discado:
+                if (prefix, patron_discado) in patrones_discado:
                     raise forms.ValidationError(
                         _("Los patrones de discado deben ser diferentes"), code="invalid")
-                patrones_discado.append(patron_discado)
+                patrones_discado.append((prefix, patron_discado))
 
         def save(self):
             """Salva el formset de los troncales actualizando el orden de acuerdo a los
