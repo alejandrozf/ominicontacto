@@ -84,6 +84,11 @@ class PatronDeDiscadoBaseFormset(BaseInlineFormSet):
                 # asignamos nuevos ordenes a partir del máximo número de orden para
                 # evitar clashes de integridad al salvar los formsets
                 form.instance.orden = i
+                if (form.instance.pk is not None) and not form.has_changed():
+                    # si algun patrón no ha sufrido cambios en una edición se fuerza
+                    # el salvado del numero de orden desde la instancia para evitar
+                    # problemas de orden
+                    form.instance.save()
             super(PatronDeDiscadoBaseFormset, self).save()
 
 
@@ -121,6 +126,11 @@ class OrdenTroncalBaseFormset(BaseInlineFormSet):
             # asignamos nuevos ordenes a partir del máximo número de orden para
             # evitar clashes de integridad al salvar los formsets
             form.instance.orden = i
+            if (form.instance.pk is not None) and not form.has_changed():
+                # si algun patrón no ha sufrido cambios en una edición se fuerza
+                # el salvado del numero de orden desde la instancia para evitar
+                # problemas de orden
+                form.instance.save()
         super(OrdenTroncalBaseFormset, self).save()
 
 
