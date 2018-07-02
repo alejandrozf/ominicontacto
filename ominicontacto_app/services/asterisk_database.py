@@ -466,3 +466,67 @@ class RegenerarAsteriskFamilysOML(object):
         self.campana_family.regenerar_familys_campana()
         self.agente_family.regenerar_familys_agente()
         self.pausa_family.regenerar_familys_pausa()
+
+
+class GlobalsFamily(object):
+
+    def _genera_dict(self):
+
+        dict_globals = {
+            'DEFAULTQUEUETIME': 90,
+            'DEFAULTRINGTIME': 45,
+            'LANG': 'es',
+            'OBJ/1': 'sub-oml-in-check-set,s,1',
+            'OBJ/2': 'sub-oml-module-tc,s,1',
+            'OBJ/3': 'sub-oml-module-ivr,s,1',
+            'OBJ/4': 'sub-oml-module-ext,s,1',
+            'OBJ/5': 'sub-oml-hangup,s,1',
+            'OBJ/6': 'sub-oml-module-survey,s,1',
+            'RECFILEPATH': '/var/spool/asterisk/monitor',
+            'TYPECALL/1': 'manualCall',
+            'TYPECALL/2': 'dialerCall',
+            'TYPECALL/3': 'inboundCall',
+            'TYPECALL/4': 'previewCall',
+            'TYPECALL/5': 'icsCall',
+            'TYPECALL/7': 'internalCall',
+            'TYPECALL/8': 'transferCall',
+            'TYPECALL/9': 'transferOutNumCall',
+        }
+
+        return dict_globals
+
+    def create_dict(self):
+        dict_globals = self._genera_dict()
+        return dict_globals
+
+    def create_familys(self):
+        """Crea familys en database de asterisk
+        """
+
+        client = AsteriskHttpClient()
+        client.login()
+        variables = self.create_dict()
+
+        for key, val in variables.items():
+            try:
+                family = "OML/GLOBALS"
+                client.asterisk_db("DBPut", family, key, val=val)
+            except AsteriskHttpAsteriskDBError:
+                logger.exception("Error al intentar DBPut al insertar"
+                                 " en la family {0} la siguiente key={1}"
+                                 " y val={2}".format(family, key, val))
+
+    def _existe_family_key(self, family, key):
+        """Consulta en la base de datos si existe la family y clave"""
+
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            db_get = client.asterisk_db("DBGet", family, key=key)
+            response_dict = db_get.response_dict
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBGet al consultar con la family {0} y "
+                             "la siguiente key={1}".format(family, key))
+            return False
+        if response_dict['response'] == 'Success':
+            return True
