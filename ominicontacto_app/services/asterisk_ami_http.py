@@ -78,12 +78,11 @@ def get_event_any_element(root):
 
         if 'event' in element.attrib and element.attrib['event'] == 'DBGetResponse':
             return dict(element.attrib)
-        else:
-            return None
 
-#==============================================================================
+
+# ==============================================================================
 # Parser of XML responses
-#==============================================================================
+# ==============================================================================
 
 class AsteriskXmlParser(object):
     """Base class for parsing various responses from Asterisk"""
@@ -371,9 +370,9 @@ class AsteriskXmlParserForAsteriskDB(AsteriskXmlParser):
                               check_success=True)
 
 
-#==============================================================================
+# ==============================================================================
 # Asterisk Http Ami Client
-#==============================================================================
+# ==============================================================================
 
 class AsteriskHttpClient(object):
     """Class to interact with Asterisk using it's http interface"""
@@ -580,9 +579,10 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
-#==============================================================================
+
+# ==============================================================================
 # AmiStatusTracker
-#==============================================================================
+# ==============================================================================
 
 class AmiStatusTracker(object):
 
@@ -718,9 +718,9 @@ class AmiStatusTracker(object):
         return campanas
 
 
-#==============================================================================
+# ==============================================================================
 # Errors
-#==============================================================================
+# ==============================================================================
 
 class AsteriskHttpAmiError(OmlError):
     """Base class for exceptions related to the retrieval of information
