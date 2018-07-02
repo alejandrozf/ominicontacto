@@ -518,7 +518,12 @@ class RutasSalientesConfigCreator(object):
         """
         return RutaSaliente.objects.all()
 
-    def create_config_asterisk(self, ruta=None, rutas=None):
+    def _obtener_todas_menos_una_ruta_para_generar_config_rutas(self, ruta):
+        """Devuelve las rutas salientes para config rutas menos la ruta pasada por parametro
+        """
+        return RutaSaliente.objects.exclude(pk=ruta.id)
+
+    def create_config_asterisk(self, ruta=None, rutas=None, ruta_exclude=None):
         """Crea el archivo de dialplan para queue existentes
         (si `queue` es None). Si `ruta` es pasada por parametro,
         se genera solo para dicha ruta.
@@ -528,6 +533,8 @@ class RutasSalientesConfigCreator(object):
             pass
         elif ruta:
             rutas = [ruta]
+        elif ruta_exclude:
+            rutas = self._obtener_todas_menos_una_ruta_para_generar_config_rutas(ruta_exclude)
         else:
             rutas = self._obtener_todas_para_generar_config_rutas()
         rutas_file = []

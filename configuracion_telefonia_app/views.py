@@ -202,7 +202,6 @@ class EliminarRutaSaliente(DeleteView):
         return context
 
     def delete(self, request, *args, **kwargs):
-        print("TODO: Capturar bien las excepciones correspondientes.")
         try:
             eliminar_ruta_saliente_config(self, self.get_object())
         except Exception:

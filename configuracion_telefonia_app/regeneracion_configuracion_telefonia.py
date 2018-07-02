@@ -33,12 +33,12 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         self.config_rutas_file = RutasSalientesConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()
 
-    def _generar_y_recargar_archivos_conf_asterisk(self):
+    def _generar_y_recargar_archivos_conf_asterisk(self, ruta_exclude=None):
         proceso_ok = True
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_asterisk_conf.create_config_asterisk()
+            self.generador_rutas_en_asterisk_conf.create_config_asterisk(ruta_exclude=ruta_exclude)
         except:
             logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
                              "intentar create_config_asterisk()")
@@ -83,7 +83,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         self._generar_e_insertar_en_astdb(ruta)
 
     def eliminar_ruta_y_regenerar_asterisk(self, ruta):
-        self._generar_y_recargar_archivos_conf_asterisk()
+        self._generar_y_recargar_archivos_conf_asterisk(ruta_exclude=ruta)
         self._eliminar_ruta_en_astdb(ruta)
 
 
