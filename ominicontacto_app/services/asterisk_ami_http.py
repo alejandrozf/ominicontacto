@@ -47,6 +47,40 @@ def get_response_on_first_element(root):
         return None
 
 
+def get_event_any_element(root):
+    """Returns attributes of tag 'generic' if an 'event' attribute
+    exists any child of root.
+
+    For example, for the folowing response
+    # <ajax-response>
+    # <response type='object' id='unknown'>
+    #    <generic response='Success' eventlist='start' message='Result will follow' />
+    # </response>
+    # <response type='object' id='unknown'>
+    #	<generic event='DBGetResponse' family='OML/OUTR/1' key='NAME' val='ruta_saliente' />
+    # </response>
+        # <response type='object' id='unknown'>
+    #	<generic event='DBGetComplete' eventlist='Complete' listitems='1' />
+    # </response>
+    # </ajax-response>
+
+    this method should return a dict with:
+
+    { response:'Error', message='Permission denied'}
+
+    Returns: a dict (if 'response' found) or `None`
+    """
+    elements = root.findall("./response/generic")
+    if not elements:
+        return None
+
+    for element in elements:
+
+        if 'event' in element.attrib and element.attrib['event'] == 'DBGetResponse':
+            return dict(element.attrib)
+        else:
+            return None
+
 #==============================================================================
 # Parser of XML responses
 #==============================================================================
@@ -124,6 +158,9 @@ class AsteriskXmlParser(object):
                 logger.warn("_parse_and_check(): unknown 'response'. "
                             "response_dict: '%s' - XML:\n%s", str(self.response_dict), xml)
 
+        response_dict_get = get_event_any_element(self.root)
+        if response_dict_get:
+            response_dict_value = response_dict_get.get('val', '').lower()
         # if check_success is True, check `response_value`
         # and raise exception in case of error
         if check_success and self.response_value != 'success':
