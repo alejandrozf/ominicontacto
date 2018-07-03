@@ -294,7 +294,8 @@ class RutaSalienteFamily(object):
                 try:
                     family = "OML/OUTR/{0}".format(ruta.id)
                     key = "TRUNK/{0}".format(orden)
-                    client.asterisk_db("DBPut", family, key=key, val=troncal.troncal.nombre)
+                    val = troncal.troncal.nombre
+                    client.asterisk_db("DBPut", family, key=key, val=val)
                 except AsteriskHttpAsteriskDBError:
                     logger.exception("Error al intentar DBPut al insertar"
                                      " en la family {0} la siguiente key={1}"
@@ -337,6 +338,37 @@ class RutaSalienteFamily(object):
         family = "OML/OUTR/{0}".format(ruta.id)
         self.delete_tree_family(family)
         self.create_familys(ruta=ruta)
+
+    def _regenero_trunks_ruta(self, ruta):
+        """
+        Regenero las entradas para los trunks en la ruta
+            /OML/OUTR/XX/TRUNK/N donde xx es la id de la ruta y N el numero de troncal
+        """
+
+        # regenero lo datos de los troncales
+        troncales = self._obtener_troncales_ordenados(ruta)
+        for orden, troncal in troncales:
+            logger.info("Creando familys para troncales %s", troncal.troncal.id)
+
+            try:
+                client = AsteriskHttpClient()
+                client.login()
+                family = "OML/OUTR/{0}".format(ruta.id)
+                key = "TRUNK/{0}".format(orden)
+                val = troncal.troncal.nombre
+                client.asterisk_db("DBPut", family, key=key, val=val)
+            except AsteriskHttpAsteriskDBError:
+                logger.exception("Error al intentar DBPut al insertar"
+                                 " en la family {0} la siguiente key={1}"
+                                 " y val={2}".format(family, key, val))
+
+    def regenerar_family_trunk_ruta(self, ruta):
+        """regeneros lso troncales de la ruta"""
+        family = "OML/OUTR/{0}".format(ruta.id)
+        key = "NAME"
+        existe_family = self._existe_family_key(family, key)
+        if existe_family:
+            self._regenero_trunks_ruta(ruta)
 
 
 class TrunkFamily(object):
