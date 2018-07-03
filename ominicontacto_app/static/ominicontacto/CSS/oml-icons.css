@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('../../fonts/icomoon.eot?s7185d');
-  src:  url('../../fonts/icomoon.eot?s7185d#iefix') format('embedded-opentype'),
-    url('../../fonts/icomoon.ttf?s7185d') format('truetype'),
-    url('../../fonts/icomoon.woff?s7185d') format('woff'),
-    url('../../fonts/icomoon.svg?s7185d#icomoon') format('svg');
+  src:  url('../../fonts/icomoon.eot?7u0qcx');
+  src:  url('../../fonts/icomoon.eot?7u0qcx#iefix') format('embedded-opentype'),
+    url('../../fonts/icomoon.ttf?7u0qcx') format('truetype'),
+    url('../../fonts/icomoon.woff?7u0qcx') format('woff'),
+    url('../../fonts/icomoon.svg?7u0qcx#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -84,18 +84,21 @@
 .icon-pencil:before {
   content: "\e913";
 }
-.icon-plus:before {
+.icon-phone:before {
   content: "\e914";
 }
-.icon-refresh:before {
+.icon-plus:before {
   content: "\e915";
 }
-.icon-search:before {
+.icon-refresh:before {
   content: "\e916";
 }
-.icon-trash:before {
+.icon-search:before {
   content: "\e917";
 }
-.icon-user:before {
+.icon-trash:before {
   content: "\e918";
+}
+.icon-user:before {
+  content: "\e919";
 }
