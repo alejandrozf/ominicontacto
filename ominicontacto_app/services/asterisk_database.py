@@ -307,12 +307,11 @@ class RutaSalienteFamily(object):
             client = AsteriskHttpClient()
             client.login()
             db_get = client.asterisk_db("DBGet", family, key=key)
-            response_dict = db_get.response_dict
         except AsteriskHttpAsteriskDBError:
             logger.exception("Error al intentar DBGet al consultar con la family {0} y "
                              "la siguiente key={1}".format(family, key))
             return False
-        if response_dict['response'] == 'Success':
+        if db_get.response_value == 'Success':
             return True
 
     def delete_tree_family(self, family):
