@@ -63,7 +63,7 @@ class Agente_Model {
         } catch (Exception $ex) {
             return "problemas de Conexion AMI: " . $ex;
         }
-        $this->agi->Originate("SIP/$exten", "001$agt", 'fts-sup', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
+        $this->agi->Originate("SIP/$exten", "001$agt", 'from-oml', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
         $this->agi->disconnect();
     }
 
@@ -73,7 +73,7 @@ class Agente_Model {
         } catch (Exception $ex) {
             return "problemas de Conexion AMI: " . $ex;
         }
-        $this->agi->Originate('SIP/' . $exten, "002$agt", 'fts-sup', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
+        $this->agi->Originate('SIP/' . $exten, "002$agt", 'from-oml', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
         $this->agi->disconnect();
     }
 
@@ -83,7 +83,7 @@ class Agente_Model {
         } catch (Exception $ex) {
             return "problemas de Conexion AMI: " . $ex;
         }
-        $this->agi->Originate('SIP/' . $exten, "006$agt", 'fts-sup', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
+        $this->agi->Originate('SIP/' . $exten, "006$agt", 'from-oml', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
         $this->agi->disconnect();
     }
 
