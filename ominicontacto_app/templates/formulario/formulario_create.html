@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,15 +28,15 @@
 {% include 'messages.html' %}
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
-    <div class="row">
-        <div class="col-md-5 offset-md-2">
+    <div class="form-row">
+        <div class="col-md-6">
             {{form.as_table}}
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
             {{venta_form.as_table}}
         </div>
     </div>
-    <br/>
+    <hr>
     <button type="submit"  class="btn btn-primary">
         Guardar
     </button>

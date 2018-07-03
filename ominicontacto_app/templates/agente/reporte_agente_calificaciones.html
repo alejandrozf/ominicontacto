@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}"></link>    
-    <!-- Custom CSS -->       
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}"></link>
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-agent.css' %}">    
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-agent.css' %}">
     <!-- Scripts -->
-    {% compress js %}    
+    {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
@@ -102,10 +102,10 @@
           Exportar
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownExportActions">
-            <a class="dropdown-item" href="{% url 'exporta_reporte_calificaciones' agente.pk %}">Exportar Calificacion(CSV)</a>          
-            <a class="dropdown-item" href="{% url 'exporta_reporte_formularios' agente.pk %}">Exportar Gestion(CSV)</a>             
+            <a class="dropdown-item" href="{% url 'exporta_reporte_calificaciones' agente.pk %}">Exportar Calificacion(CSV)</a>
+            <a class="dropdown-item" href="{% url 'exporta_reporte_formularios' agente.pk %}">Exportar Gestion(CSV)</a>
         </div>
-    </div>  
+    </div>
 </div>
 <form role="form" method="post" enctype="multipart/form-data" class="form-inline">
     {% csrf_token %}
@@ -113,7 +113,7 @@
        {{form.fecha}}
         <button type="submit" id="id_buscar_btn" class="btn btn-primary">
             Filtrar
-        </button>       
+        </button>
     </div>
 </form>
 <hr>
@@ -128,23 +128,23 @@
                 <table class="table">
                     <thead>
                       <tr class="fts-table-bg">
-                        <th>Telefono</th>
+                        <th>Teléfono</th>
                         <th>Datos</th>
                         <th>Gestionado</th>
-                        <th>Calificacion no gestion</th>
+                        <th>Calificación</th>
                         <th>Observaciones</th>
-                        <th>acciones</th>
+                        <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
                         {% for calificacion_cliente in listado_calificaciones %}
                             <tr>
                                 <td>
-                                    <a type="button" pk_contacto="{{ calificacion_cliente.contacto.pk }}"
+                                    <button type="button" class="btn btn-outline-primary" pk_contacto="{{ calificacion_cliente.contacto.pk }}"
                                        tipo_campana="{{ calificacion_cliente.opcion_calificacion.campana.type }}"
                                        campana_nombre="{{ calificacion_cliente.opcion_calificacion.campana.nombre }}"
                                        pk_campana="{{ calificacion_cliente.opcion_calificacion.campana.pk }}"
-                                       agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}" class="btn-submit">{{ calificacion_cliente.contacto.telefono }}</a>
+                                       agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}">{{ calificacion_cliente.contacto.telefono }}</button>
                                 </td>
                                 <td>
                                     {{ calificacion_cliente.contacto.datos}}
@@ -165,13 +165,23 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id agente.pk calificacion_cliente.wombat_id %}">editar calificacion</a>
-                                    {% if calificacion_cliente.get_venta %}
-                                        <a href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">editar gestion</a>
-                                    {% endif %}
+                                  <div class="dropdown">
+                                      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Opciones
+                                      </button>
+                                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                                          <a class="dropdown-item" href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id agente.pk calificacion_cliente.wombat_id %}">
+                                            <span class="icon icon-pencil"></span>Calificación
+                                          </a>
+                                          {% if calificacion_cliente.get_venta %}
+                                              <a class="dropdown-item" href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">
+                                                <span class="icon icon-pencil"></span>Gestión
+                                              </a>
+                                          {% endif %}
+                                      </div>
+                                  </div>
                                 </td>
                             </tr>
-
                         {% endfor %}
                     </tbody>
                 </table>
