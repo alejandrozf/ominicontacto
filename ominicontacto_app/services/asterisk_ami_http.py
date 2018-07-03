@@ -376,7 +376,8 @@ class AsteriskXmlParserForAsteriskDB(AsteriskXmlParser):
         response_dict_get = get_event_any_element(self.root, event)
         if response_dict_get:
             self.event_value = response_dict_get.get('val', '').lower()
-        raise AsteriskHttpResponseWithError
+        else:
+            raise AsteriskHttpResponseWithError
 
 
 # ==============================================================================
