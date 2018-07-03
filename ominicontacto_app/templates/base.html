@@ -126,7 +126,7 @@
                 {% if user.get_is_supervisor_normal or user.get_is_administrador %}
                 <li class="main-menu-li">
                     <span class="icon icon-campaign"></span>
-                    <a class="menu-header" href="#menuCampaign" role="button" data-toggle="collapse" aria-expanded="false">Campaña</a>
+                    <a class="menu-header" href="#menuCampaign" role="button" data-toggle="collapse" aria-expanded="false">Campañas</a>
                     <ul class="nav-submenu collapse list-unstyled submenu" id="menuCampaign" data-parent="#nav-main-menu">
                         <li>
                             <a href="#menuCampaignDialer" role="button" data-toggle="collapse" aria-expanded="false">Campañas dialer</a>
@@ -282,7 +282,7 @@
                     <a class="menu-link" href="{% url 'grabacion_buscar' 1 %}">Buscar Grabación</a>
                 </li>
                 <li class="main-menu-li">
-                    <span class="icon far fa-chart-bar"></span>
+                    <span class="icon icon-graph"></span>
                     <a class="menu-header"class="menu-header" href="#menuReports" role="button" data-toggle="collapse" aria-expanded="false">Reportes</a>
                     <ul class="collapse list-unstyled submenu" id="menuReports" data-parent="#nav-main-menu">
                         {% if user.get_is_administrador %}
@@ -310,7 +310,7 @@
                     </ul>
                 </li>
                 <li class="main-menu-li">
-                    <span class="icon icon-headset"></span>
+                    <span class="icon icon-phone"></span>
                     <a class="menu-header" href="#menuTelefonia" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Telefonía' %}</a>
                     <ul class="collapse list-unstyled submenu" id="menuTelefonia" data-parent="#nav-main-menu">
                         <li>
