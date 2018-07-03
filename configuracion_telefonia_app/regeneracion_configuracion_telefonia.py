@@ -78,6 +78,19 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
                               "la base de datos de Asterisk. ")
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
+    def _regenerar_troncales_ruta_en_astdb(self, ruta):
+        mensaje_error = ""
+
+        try:
+            self.generador_rutas_en_astdb.regenerar_family_trunk_ruta(ruta)
+        except:
+            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
+                             "intentar delete_family_ruta()")
+
+            mensaje_error += ("Hubo un inconveniente al eliminar los registros de las rutas en "
+                              "la base de datos de Asterisk. ")
+            raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
+
     def regenerar_rutas_salientes(self, ruta=None):
         self._generar_y_recargar_archivos_conf_asterisk()
         self._generar_e_insertar_en_astdb(ruta)
@@ -85,6 +98,9 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
     def eliminar_ruta_y_regenerar_asterisk(self, ruta):
         self._generar_y_recargar_archivos_conf_asterisk(ruta_exclude=ruta)
         self._eliminar_ruta_en_astdb(ruta)
+
+    def regenerar_troncales_en_ruta_asterisk(self, ruta):
+        self._regenerar_troncales_ruta_en_astdb(ruta)
 
 
 class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):

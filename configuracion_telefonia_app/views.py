@@ -20,7 +20,7 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
 
 class TroncalSIPMixin(object):
 
-    def form_valid(self, form):
+    def process_in_form_valid(self, form, update=False):
         self.object = form.save(commit=False)
         self.object.save()
         try:
@@ -35,6 +35,24 @@ class TroncalSIPMixin(object):
                 message,
             )
             return self.form_invalid(form)
+        # en caso de un update de un troncal vamos a verificar si el troncal se encuentra en una
+        # ruta y actualizar astdb
+        if update:
+            ordenes_troncales = self.object.ordenes_en_rutas_salientes.all()
+            if ordenes_troncales:
+                for orden in ordenes_troncales:
+                    ruta = orden.ruta_saliente
+                    try:
+                        sincronizador_ruta = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
+                        sincronizador_ruta.regenerar_troncales_en_ruta_asterisk(ruta)
+                    except RestablecerConfiguracionTelefonicaError, e:
+                        message = ("<strong>¡Cuidado!</strong> "
+                                   "con el siguiente error: {0} .".format(e))
+                        messages.add_message(
+                            self.request,
+                            messages.WARNING,
+                            message,
+                        )
         return super(TroncalSIPMixin, self).form_valid(form)
 
     def get_success_url(self):
@@ -53,11 +71,17 @@ class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
     form_class = TroncalSIPForm
     template_name = 'base_create_update_form.html'
 
+    def form_valid(self, form):
+        return self.process_in_form_valid(form)
+
 
 class TroncalSIPUpdateView(TroncalSIPMixin, UpdateView):
     model = TroncalSIP
     form_class = TroncalSIPForm
     template_name = 'base_create_update_form.html'
+
+    def form_valid(self, form):
+        return self.process_in_form_valid(form, update=True)
 
 
 class TroncalSIPDeleteView(DeleteView):
