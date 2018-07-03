@@ -47,7 +47,7 @@ def get_response_on_first_element(root):
         return None
 
 
-def get_event_any_element(root):
+def get_event_any_element(root, event):
     """Returns attributes of tag 'generic' if an 'event' attribute
     exists any child of root.
 
@@ -76,7 +76,7 @@ def get_event_any_element(root):
 
     for element in elements:
 
-        if 'event' in element.attrib and element.attrib['event'] == 'DBGetResponse':
+        if 'event' in element.attrib and element.attrib['event'] == event:
             return dict(element.attrib)
 
 
@@ -157,9 +157,6 @@ class AsteriskXmlParser(object):
                 logger.warn("_parse_and_check(): unknown 'response'. "
                             "response_dict: '%s' - XML:\n%s", str(self.response_dict), xml)
 
-        response_dict_get = get_event_any_element(self.root)
-        if response_dict_get:
-            response_dict_value = response_dict_get.get('val', '').lower()
         # if check_success is True, check `response_value`
         # and raise exception in case of error
         if check_success and self.response_value != 'success':
@@ -363,11 +360,23 @@ class AsteriskXmlParserForAsteriskDB(AsteriskXmlParser):
     requesting `/mxml?action=DBDel/DBdelTree/DBGet/DBPut`
     """
 
+    def __init__(self):
+
+        # This attribute is setted in parse_event()
+        self.event_value = None
+
     def parse(self, xml):
         """Parsea XML."""
         self._parse_and_check(xml,
                               exception_for_error=AsteriskHttpAsteriskDBError,
                               check_success=True)
+
+    def parse_event(self, event):
+        """Parser event DBGetResponse returned by Asterisk in xml"""
+        response_dict_get = get_event_any_element(self.root, event)
+        if response_dict_get:
+            self.event_value = response_dict_get.get('val', '').lower()
+        raise AsteriskHttpResponseWithError
 
 
 # ==============================================================================
@@ -562,6 +571,8 @@ class AsteriskHttpClient(object):
         response_body, _ = self._request("/mxml", dict_response)
         parser = AsteriskXmlParserForAsteriskDB()
         parser.parse(response_body)
+        if action == 'DBGet':
+            parser.parse_event('DBGetResponse')
         return parser
 
     def asterisk_db_deltree(self, family):
