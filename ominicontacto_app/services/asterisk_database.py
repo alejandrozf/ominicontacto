@@ -461,11 +461,13 @@ class RegenerarAsteriskFamilysOML(object):
         self.campana_family = CampanaFamily()
         self.agente_family = AgenteFamily()
         self.pausa_family = PausaFamily()
+        self.globals_family = GlobalsFamily()
 
     def regenerar_asterisk(self):
         self.campana_family.regenerar_familys_campana()
         self.agente_family.regenerar_familys_agente()
         self.pausa_family.regenerar_familys_pausa()
+        self.globals_family.regenerar_familys_globals()
 
 
 class GlobalsFamily(object):
