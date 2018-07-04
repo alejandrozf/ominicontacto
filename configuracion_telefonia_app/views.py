@@ -108,17 +108,7 @@ class TroncalSIPDeleteView(DeleteView):
         return super(TroncalSIPDeleteView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        try:
-            sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
-            sincronizador.eliminar_troncal_y_regenerar_asterisk(self.get_object())
-        except RestablecerConfiguracionTelefonicaError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
+        eliminar_troncal_config(self.get_object())
         super(TroncalSIPDeleteView, self).delete(request, *args, **kwargs)
         message = (_('Troncal Sip eliminado con éxito'))
         messages.add_message(
@@ -130,6 +120,21 @@ class TroncalSIPDeleteView(DeleteView):
 
     def get_object(self, queryset=None):
         return TroncalSIP.objects.get(pk=self.kwargs['pk'])
+
+
+def eliminar_troncal_config(self, trunk):
+    """Elimina trunk de asterisk"""
+    try:
+        sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
+        sincronizador.eliminar_troncal_y_regenerar_asterisk(trunk)
+    except RestablecerConfiguracionTelefonicaError, e:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "con el siguiente error: {0} .".format(e))
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
 
 
 class RutaSalienteListView(ListView):

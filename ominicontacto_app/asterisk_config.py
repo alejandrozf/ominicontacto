@@ -592,7 +592,12 @@ class SipTrunksConfigCreator(object):
         """
         return TroncalSIP.objects.all()
 
-    def create_config_asterisk(self, trunk=None, trunks=None):
+    def _obtener_todas_menos_un_troncal_para_generar_config_troncales(self, trunk):
+        """Devuelve los troncales para configmenos el troncal pasada por parametro
+        """
+        return TroncalSIP.objects.exclude(pk=trunk.id)
+
+    def create_config_asterisk(self, trunk=None, trunks=None, trunk_exclude=None):
         """Crea el archivo de dialplan para queue existentes
         (si `queue` es None). Si `trunk` es pasada por parametro,
         se genera solo para dicha trunk.
@@ -602,6 +607,9 @@ class SipTrunksConfigCreator(object):
             pass
         elif trunk:
             trunks = [trunk]
+        elif trunk_exclude:
+            trunks = self._obtener_todas_menos_un_troncal_para_generar_config_troncales(
+                trunk_exclude)
         else:
             trunks = self._obtener_todas_para_generar_config_rutas()
         trunk_file = []
@@ -622,7 +630,12 @@ class SipRegistrationsConfigCreator(object):
         """
         return TroncalSIP.objects.all()
 
-    def create_config_asterisk(self, trunk=None, trunks=None):
+    def _obtener_todas_menos_un_troncal_para_generar_config_troncales(self, trunk):
+        """Devuelve los troncales para configmenos el troncal pasada por parametro
+        """
+        return TroncalSIP.objects.exclude(pk=trunk.id)
+
+    def create_config_asterisk(self, trunk=None, trunks=None, trunk_exclude=None):
         """Crea el archivo de dialplan para queue existentes
         (si `queue` es None). Si `trunk` es pasada por parametro,
         se genera solo para dicha trunk.
@@ -632,6 +645,9 @@ class SipRegistrationsConfigCreator(object):
             pass
         elif trunk:
             trunks = [trunk]
+        elif trunk_exclude:
+            trunks = self._obtener_todas_menos_un_troncal_para_generar_config_troncales(
+                trunk_exclude)
         else:
             trunks = self._obtener_todas_para_generar_config_rutas()
         trunk_file = []

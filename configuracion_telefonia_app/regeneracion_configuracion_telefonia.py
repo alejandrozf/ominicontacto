@@ -113,12 +113,12 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         self.config_trunk_registration_file = SipRegistrationsConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()
 
-    def _generar_y_recargar_archivos_conf_asterisk(self):
+    def _generar_y_recargar_archivos_conf_asterisk(self, trunk_exclude=None):
         proceso_ok = True
         mensaje_error = ""
 
         try:
-            self.generador_trunk_sip_en_asterisk_conf.create_config_asterisk()
+            self.generador_trunk_sip_en_asterisk_conf.create_config_asterisk(trunk_exclude=trunk_exclude)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar create_config_asterisk()")
@@ -128,7 +128,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
                               "configuracion de trunks de Asterisk. ")
 
         try:
-            self.generador_trunks_registration_en_asterisk_conf.create_config_asterisk()
+            self.generador_trunks_registration_en_asterisk_conf.create_config_asterisk(trunk_exclude=trunk_exclude)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar create_config_asterisk()")
@@ -177,5 +177,5 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         self._generar_e_insertar_en_astdb(trunk)
 
     def eliminar_troncal_y_regenerar_asterisk(self, trunk):
-        self._generar_y_recargar_archivos_conf_asterisk()
+        self._generar_y_recargar_archivos_conf_asterisk(trunk_exclude=trunk)
         self._eliminar_trunk_en_astdb(trunk)
