@@ -118,7 +118,8 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_trunk_sip_en_asterisk_conf.create_config_asterisk(trunk_exclude=trunk_exclude)
+            self.generador_trunk_sip_en_asterisk_conf.create_config_asterisk(
+                trunk_exclude=trunk_exclude)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar create_config_asterisk()")
@@ -128,7 +129,8 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
                               "configuracion de trunks de Asterisk. ")
 
         try:
-            self.generador_trunks_registration_en_asterisk_conf.create_config_asterisk(trunk_exclude=trunk_exclude)
+            self.generador_trunks_registration_en_asterisk_conf.create_config_asterisk(
+                trunk_exclude=trunk_exclude)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar create_config_asterisk()")
