@@ -108,13 +108,6 @@ class TroncalSIPDeleteView(DeleteView):
         return super(TroncalSIPDeleteView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        super(TroncalSIPDeleteView, self).delete(request, *args, **kwargs)
-        message = (_('Troncal Sip eliminado con éxito'))
-        messages.add_message(
-            self.request,
-            messages.SUCCESS,
-            message,
-        )
         try:
             sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
             sincronizador.eliminar_troncal_y_regenerar_asterisk(self.object)
@@ -126,6 +119,13 @@ class TroncalSIPDeleteView(DeleteView):
                 messages.WARNING,
                 message,
             )
+        super(TroncalSIPDeleteView, self).delete(request, *args, **kwargs)
+        message = (_('Troncal Sip eliminado con éxito'))
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
         return redirect(self.get_success_url())
 
     def get_object(self, queryset=None):
