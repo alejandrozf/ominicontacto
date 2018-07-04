@@ -147,6 +147,15 @@ a.btn .icon {
     margin-bottom: 30px;
 }
 
+/* ///// Pills
+*/
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: #2F342F;
+  background: #ECEEEA;
+}
+.nav-pills .nav-link .icon {
+  margin-right: 6px;
+}
 /* ///// Navigation steps
 */
 
@@ -270,7 +279,7 @@ ul.errorlist li {
     position: absolute;
     right: 16px;
     top: 14px;
-    font-family: 'icomoon';
+    font-family: 'oml-icons';
     font-size: 1rem;
 }
 #btnCollapse[aria-expanded="true"]::before {
@@ -416,16 +425,16 @@ ul.errorlist li {
     position: relative;
 }
 #navBar a[aria-expanded="false"]::before, #navBar a[aria-expanded="true"]::before {
-    content: '\e903';
+    content: '\e904';
     display: block;
     position: absolute;
     right: -6px;
     top: 12px;
-    font-family: 'oml-agent';
+    font-family: 'oml-icons';
     font-size: 0.6em;
 }
 #navBar a[aria-expanded="true"]::before {
-    content: '\e906';
+    content: '\e907';
 }
 
 /* ///// top bar
@@ -575,10 +584,21 @@ body > h1 {
 }
 #phoneOptions {
   text-align: center;
-  margin-top: 10px;
+  padding: 10px 0;
+}
+#phoneOptions #sumTime {
+  margin-right: 0;
+  margin-bottom: 16px;
 }
 #phoneOptions .btn-group {
-  margin: 10px 0 16px 0;
+  margin-right: 10px;
+  margin-bottom: 18px;
+}
+#changeCampAssocManualCall {
+  width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .filaCampoNroDiscar {

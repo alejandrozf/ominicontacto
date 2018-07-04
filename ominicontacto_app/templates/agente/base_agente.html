@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-agent.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
     <!-- Scripts -->
     {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
@@ -67,189 +67,197 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">
-                  <span class="icon icon-solid-phone"></span>WebPhone
-                </h1>
+                <ul class="nav nav-pills" id="webphoneTabBar" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="phoneTab" data-toggle="tab" href="#phoneContent" role="tab" aria-controls="phone" aria-selected="true"><span class="icon icon-solid-phone"></span>Teléfono</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="phoneRegistryTab" data-toggle="tab" href="#phoneRegistryContent" role="tab" aria-controls="registry" aria-selected="false">Registro</a>
+                  </li>
+                </ul>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="container-fluid">
-                    <!-- modal que se muestra cuando entra una llamada -->
-    								    <div id="modalReceiveCalls" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     										    <div class="modal-dialog modal-sm">
-       											    <div class="modal-content">
-         												    <div class="modal-header">
-           													    <em><b class="tituloLlamEntrante">Llamada Entrante</b></em>
-           													    <button type="button" class="close" data-dismiss="modal">&times;</button>
-         												    </div>
-         												    <div class="modal-body">
-           													    <h4 class="cuerpoLlamEntrante">
-                                        <span class="label label-info">De:</span>
-             														<label name="callerid" id="callerid"></label><br>
-             														<span class="label label-info">Info extra:</span>
-             														<label name="extraInfo" id="extraInfo">.....</label>
-           													</h4>
-        												</div>
-        												<div class="modal-footer">
-          													<button type="button" id="answer" class="btn btn-success btn-sm">Responder</button>
-          													<button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">Rechazar</button>
-        												</div>
-      											</div>
-    										</div>
-  									</div>
-  									<!-- modal que se muestra cuando quiere realizarse una llamada manual -->
-		 							<div id="modalSelectCmp" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     								<div class="modal-dialog modal-sm">
-       									<div class="modal-content">
-         										<div class="modal-header">
-           											<h2 class="modal-title">Llam. Manual a Campaña</h2>
-           											<button type="button" class="close" data-dismiss="modal">&times;</button>
-         										</div>
-         										<div class="modal-body">
-         												<select class="form-control" id="cmpList">
-         														{% for queue_member in user.get_agente_profile.get_campanas_activas_miembro %}
-																		<option value = "{{ queue_member.queue_name.campana.pk }}"
-                                    campana_type="{{ queue_member.queue_name.campana.type }}"> {{ queue_member.queue_name.campana.nombre }} </option>
-				 														{% endfor %}
-         												</select>
-        										</div>
-                            <div class="modal-footer">
-                                <button type="button" id="SelectCamp" class="btn btn-primary">Ok</button>
+                <div class="tab-content" id="webphoneTabContent">
+                    <div class="tab-pane fade show active" id="phoneContent" role="tabpanel" aria-labelledby="phoneTab">
+            						<div id="phoneStatus">
+                						<div id="CallStatus"></div>
+
+                						<div id="SipStatus"></div>
+
+                            <div class="filaCampoNroDiscar">
+                                <input type="text" class="form-control" id="numberToCall" name="numberToCall">
                             </div>
-      									</div>
-    								</div>
-  							</div>
-  							<!-- Modal que se despliega al dar clic en Marcar Llamada -->
-  							<div id="modalSignCall" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     								<div class="modal-dialog modal-sm">
-       									<div class="modal-content">
-         										<div class="modal-header">
-           											<h2 class="modal-title">Marcacion de Llamada</h2>
-           											<button type="button" class="close" data-dismiss="modal">&times;</button>
-         										</div>
-         										<div class="modal-body">
-         												<input type="hidden" id="idCamp"/>
-         												<textarea id="SignDescription" placeholder="Motivo de marca" class="form-control"></textarea>
-         										</div>
-        										<div class="modal-footer">
-          											<button type="button" id="SaveSignedCall" class="btn btn-primary">Guardar</button>
-        										</div>
-      									</div>
-    								</div>
-  							</div>
-  							<!-- Fin de Modal -->
-						</div>
-						<div id="phoneStatus">
-    						<div id="CallStatus"></div>
+                        </div>
+            						<div id="phoneKeys">
+                            <div id="phoneKeysNumbers">
+                              <div>
+                                  <button id="1" class="btn key">1</button>
+                                  <button id="2" class="btn key">2</button>
+                                  <button id="3" class="btn key">3</button>
+                              </div>
+                              <div>
+                                  <button id="4" class="btn key">4</button>
+                                  <button id="5" class="btn key">5</button>
+                                  <button id="6" class="btn key">6</button>
+                              </div>
+                              <div>
+                                  <button id="7" class="btn key">7</button>
+                                  <button id="8" class="btn key">8</button>
+                                  <button id="9" class="btn key">9</button>
+                              </div>
+                              <div>
+                                  <button id="#" class="btn key">#</button>
+                                  <button id="0" class="btn key">0</button>
+                                  <button id="*" class="btn key astBtn">*</button>
+                              </div>
+                            </div>
+                            <div id="phoneKeysActions">
+                                <button type="button" id="call" class="btn btn-outline-primary">
+                                    <span class="icon icon-solid-phone-call"></span>
+                                </button>
+                                <button type="button" id="endCall" class="btn btn-outline-danger">
+                                    <span class="icon icon-solid-phone-end"></span>
+                                </button>
+                                <button type="button" id="redial" class="btn btn-outline-secondary">
+                                    <span class="icon icon-solid-phone-redial"></span>
+                                </button>
+                                <button type="button" id="SignCall" class="btn btn-outline-secondary" title="Marcar Llamada">
+                                    <span class="icon icon-solid-phone-save"></span>
+                                </button>
+                            </div>
+                        </div>
 
-    						<div id="SipStatus"></div>
+                        <div id="phoneOptions">
+                          <div id="sumTime">
+                            <span id="horaC"></span>
+                            <span id="minsC"></span>
+                            <span id="segsC"></span>
+                          </div>
+                          <div class="btn-group" data-toggle="buttons">
+                            <button id="Transfer" class="btn btn-outline-secondary" disabled="disabled">Transferir</button>
+                            <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">Hold</button>
+                          </div>
+                          <button id="changeCampAssocManualCall" class="btn btn-outline-secondary btn-sm">
+                            campaña : <span id="campAssocManualCall"></span>
+                          </button>
+                        </div>
+                    </div>
 
-                <div class="filaCampoNroDiscar">
-                    <input type="text" class="form-control" id="numberToCall" name="numberToCall">
+                    <div class="tab-pane fade" id="phoneRegistryContent" role="tabpanel" aria-labelledby="phoneRegistryTab">
+                        <table class="table table-condensed table-hover table-striped">
+                            <thead>
+                                <th>tipo</th><th>numero</th><th>fecha</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
+                            </thead>
+                            <tbody id="call_list">
+                                {% for regs in registro %}
+                                <tr>
+
+                                    <td><img height='15' width='15'
+                                    {%if regs.tipo_llamada == 3 %}
+                                    src="{% static 'ominicontacto/Img/incomingCall.png' %}"
+            												{% else %}
+            												src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
+            												{% endif %}
+                                    /></td>
+                                    <td>{{ regs.numero_telefono }}</td>
+                                    <td>{{ regs.fecha_hora_llamada | date:"d-m" }}</td>
+                                    <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td>
+                                    <!--<td style="align:right">
+                                        <button type="button" class="btn btn-success btn-xs call">
+                                            <span class="glyphicon glyphicon-earphone"></span>
+                                        </button>
+                                    </td>-->
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-						<div id="phoneKeys">
-                <div id="phoneKeysNumbers">
-                  <div>
-                      <button id="1" class="btn key">1</button>
-                      <button id="2" class="btn key">2</button>
-                      <button id="3" class="btn key">3</button>
-                  </div>
-                  <div>
-                      <button id="4" class="btn key">4</button>
-                      <button id="5" class="btn key">5</button>
-                      <button id="6" class="btn key">6</button>
-                  </div>
-                  <div>
-                      <button id="7" class="btn key">7</button>
-                      <button id="8" class="btn key">8</button>
-                      <button id="9" class="btn key">9</button>
-                  </div>
-                  <div>
-                      <button id="#" class="btn key">#</button>
-                      <button id="0" class="btn key">0</button>
-                      <button id="*" class="btn key astBtn">*</button>
-                  </div>
-                </div>
-                <div id="phoneKeysActions">
-                    <button type="button" id="call" class="btn btn-outline-primary">
-                        <span class="icon icon-solid-phone-call"></span>
-                    </button>
-                    <button type="button" id="endCall" class="btn btn-outline-danger">
-                        <span class="icon icon-solid-phone-end"></span>
-                    </button>
-                    <button type="button" id="redial" class="btn btn-outline-secondary">
-                        <span class="icon icon-solid-phone-redial"></span>
-                    </button>
-                    <button type="button" id="SignCall" class="btn btn-outline-secondary" title="Marcar Llamada">
-                        <span class="icon icon-solid-phone-save"></span>
-                    </button>
-                </div>
-            </div>
+        </div>
 
-            <div id="phoneOptions">
-              <div id="sumTime">
-                <span id="horaC"></span>
-                <span id="minsC"></span>
-                <span id="segsC"></span>
-              </div>
-              <div class="btn-group" data-toggle="buttons">
-                <button id="Transfer" class="btn btn-outline-secondary" disabled="disabled">Transferir</button>
-                <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">Hold</button>
-              </div>
-              <button id="changeCampAssocManualCall" class="btn btn-outline-secondary">Seleccionar campaña</button>
-              <hr>
-              <span class="label label-primary">
-                <label id="campAssocManualCall"></label>
-              </span>
-            </div>
-
-            <table class="table table-condensed table-hover table-striped">
-                <thead>
-                    <th>tipo</th><th>numero</th><th>fecha</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
-                </thead>
-                <tbody id="call_list">
-                    {% for regs in registro %}
-                    <tr>
-
-                        <td><img height='15' width='15'
-                        {%if regs.tipo_llamada == 3 %}
-                        src="{% static 'ominicontacto/Img/incomingCall.png' %}"
-												{% else %}
-												src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
-												{% endif %}
-                        /></td>
-                        <td>{{ regs.numero_telefono }}</td>
-                        <td>{{ regs.fecha_hora_llamada | date:"d-m" }}</td>
-                        <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td>
-                        <!--<td style="align:right">
-                            <button type="button" class="btn btn-success btn-xs call">
-                                <span class="glyphicon glyphicon-earphone"></span>
-                            </button>
-                        </td>-->
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-</div>
-
-<audio id="remoteAudio" autoplay="autoplay"></audio>
-<audio id="localAudio" muted="muted"></audio>
-<audio id="RingIn">
-  <source id="fuenteIn" src="{% static 'ominicontacto/ring/Kuma.mp3' %}" type="audio/mpeg">
-</audio>
-<audio id="RingOut">
-  <source id="fuenteOut" src="{% static 'ominicontacto/ring/tonoallamar.mp3' %}" type="audio/mpeg">
-</audio>
-<audio id="RingBusy">
-  <source id="fuentebOut" src="{% static 'ominicontacto/ring/busy.mp3' %}" type="audio/mpeg">
-</audio>
-</div>
-</div>
+        <audio id="remoteAudio" autoplay="autoplay"></audio>
+        <audio id="localAudio" muted="muted"></audio>
+        <audio id="RingIn">
+          <source id="fuenteIn" src="{% static 'ominicontacto/ring/Kuma.mp3' %}" type="audio/mpeg">
+        </audio>
+        <audio id="RingOut">
+          <source id="fuenteOut" src="{% static 'ominicontacto/ring/tonoallamar.mp3' %}" type="audio/mpeg">
+        </audio>
+        <audio id="RingBusy">
+          <source id="fuentebOut" src="{% static 'ominicontacto/ring/busy.mp3' %}" type="audio/mpeg">
+        </audio>
+        </div>
+    </div>
 </div> <!-- FIN WEBPHONE -->
+
+<!-- modal que se muestra cuando entra una llamada -->
+<div id="modalReceiveCalls" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <em><b class="tituloLlamEntrante">Llamada Entrante</b></em>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4 class="cuerpoLlamEntrante">
+                <span class="label label-info">De:</span>
+                <label name="callerid" id="callerid"></label><br>
+                <span class="label label-info">Info extra:</span>
+                <label name="extraInfo" id="extraInfo">.....</label>
+                </h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="answer" class="btn btn-success btn-sm">Responder</button>
+                <button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">Rechazar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal que se despliega al dar clic en Marcar Llamada -->
+<div id="modalSignCall" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Marcacion de Llamada</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="idCamp"/>
+                <textarea id="SignDescription" placeholder="Motivo de marca" class="form-control"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="SaveSignedCall" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal que se muestra cuando quiere realizarse una llamada manual -->
+<div id="modalSelectCmp" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Llam. Manual a Campaña</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <select class="form-control" id="cmpList">
+                    {% for queue_member in user.get_agente_profile.get_campanas_activas_miembro %}
+                    <option value = "{{ queue_member.queue_name.campana.pk }}"
+                    campana_type="{{ queue_member.queue_name.campana.type }}"> {{ queue_member.queue_name.campana.nombre }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="SelectCamp" class="btn btn-primary">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- modal que se despliega al clicar transferir -->
 <div class="modal fade" id="modalTransfer" role="dialog">
@@ -429,7 +437,7 @@
               <a class="nav-link active" id="messagesTab" data-toggle="tab" href="#messagesContent" role="tab" aria-controls="home" aria-selected="true">Mensajes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="registryTab" data-toggle="tab" href="#regitryContent" role="tab" aria-controls="profile" aria-selected="false">Registro</a>
+              <a class="nav-link" id="registryTab" data-toggle="tab" href="#registryContent" role="tab" aria-controls="profile" aria-selected="false">Registro</a>
             </li>
           </ul>
 
@@ -453,7 +461,7 @@
               <button type="button" class="btn btn-primary" id="sendMessageFromThread" data-dismiss="modal">Enviar</button>
             </div>
 
-            <div class="tab-pane fade" id="regitryContent" role="tabpanel" aria-labelledby="registryTab">
+            <div class="tab-pane fade" id="registryContent" role="tabpanel" aria-labelledby="registryTab">
               <form role="form">
                       <div class="row">
                         <div class="col-md-7">
