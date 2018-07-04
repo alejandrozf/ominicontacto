@@ -20,7 +20,7 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
 
 class TroncalSIPMixin(object):
 
-    def form_valid(self, form):
+    def process_in_form_valid(self, form, update=False):
         self.object = form.save(commit=False)
         self.object.save()
         try:
@@ -35,6 +35,24 @@ class TroncalSIPMixin(object):
                 message,
             )
             return self.form_invalid(form)
+        # en caso de un update de un troncal vamos a verificar si el troncal se encuentra en una
+        # ruta y actualizar astdb
+        if update:
+            ordenes_troncales = self.object.ordenes_en_rutas_salientes.all()
+            if ordenes_troncales:
+                for orden in ordenes_troncales:
+                    ruta = orden.ruta_saliente
+                    try:
+                        sincronizador_ruta = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
+                        sincronizador_ruta.regenerar_troncales_en_ruta_asterisk(ruta)
+                    except RestablecerConfiguracionTelefonicaError, e:
+                        message = ("<strong>¡Cuidado!</strong> "
+                                   "con el siguiente error: {0} .".format(e))
+                        messages.add_message(
+                            self.request,
+                            messages.WARNING,
+                            message,
+                        )
         return super(TroncalSIPMixin, self).form_valid(form)
 
     def get_success_url(self):
@@ -53,11 +71,17 @@ class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
     form_class = TroncalSIPForm
     template_name = 'base_create_update_form.html'
 
+    def form_valid(self, form):
+        return self.process_in_form_valid(form)
+
 
 class TroncalSIPUpdateView(TroncalSIPMixin, UpdateView):
     model = TroncalSIP
     form_class = TroncalSIPForm
     template_name = 'base_create_update_form.html'
+
+    def form_valid(self, form):
+        return self.process_in_form_valid(form, update=True)
 
 
 class TroncalSIPDeleteView(DeleteView):
@@ -84,6 +108,7 @@ class TroncalSIPDeleteView(DeleteView):
         return super(TroncalSIPDeleteView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        eliminar_troncal_config(self, self.get_object())
         super(TroncalSIPDeleteView, self).delete(request, *args, **kwargs)
         message = (_('Troncal Sip eliminado con éxito'))
         messages.add_message(
@@ -95,6 +120,21 @@ class TroncalSIPDeleteView(DeleteView):
 
     def get_object(self, queryset=None):
         return TroncalSIP.objects.get(pk=self.kwargs['pk'])
+
+
+def eliminar_troncal_config(self, trunk):
+    """Elimina trunk de asterisk"""
+    try:
+        sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
+        sincronizador.eliminar_troncal_y_regenerar_asterisk(trunk)
+    except RestablecerConfiguracionTelefonicaError, e:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "con el siguiente error: {0} .".format(e))
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
 
 
 class RutaSalienteListView(ListView):
@@ -202,9 +242,8 @@ class EliminarRutaSaliente(DeleteView):
         return context
 
     def delete(self, request, *args, **kwargs):
-        print("TODO: Capturar bien las excepciones correspondientes.")
         try:
-            eliminar_ruta_saliente_config(self.get_object())
+            eliminar_ruta_saliente_config(self, self.get_object())
         except Exception:
             messages.error(request, _(u'No se ha podido eliminar la Ruta Saliente.'))
             return redirect('eliminar_ruta_saliente', pk=kwargs['pk'])
@@ -213,8 +252,16 @@ class EliminarRutaSaliente(DeleteView):
         return super(EliminarRutaSaliente, self).delete(request, *args, **kwargs)
 
 
-def eliminar_ruta_saliente_config(ruta_saliente):
-    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
-    print ("TODO: IMPLEMENTAR!!!")
-    # Exception('No se pudo eliminar bien.')
-    pass
+def eliminar_ruta_saliente_config(self, ruta_saliente):
+    """Elimina las ruta en asterisk"""
+    try:
+        sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
+        sincronizador.eliminar_ruta_y_regenerar_asterisk(ruta_saliente)
+    except RestablecerConfiguracionTelefonicaError, e:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "con el siguiente error: {0} .".format(e))
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )

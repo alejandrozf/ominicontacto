@@ -294,11 +294,26 @@ class RutaSalienteFamily(object):
                 try:
                     family = "OML/OUTR/{0}".format(ruta.id)
                     key = "TRUNK/{0}".format(orden)
-                    client.asterisk_db("DBPut", family, key=key, val=troncal.troncal.nombre)
+                    val = troncal.troncal.nombre
+                    client.asterisk_db("DBPut", family, key=key, val=val)
                 except AsteriskHttpAsteriskDBError:
                     logger.exception("Error al intentar DBPut al insertar"
                                      " en la family {0} la siguiente key={1}"
                                      " y val={2}".format(family, key, val))
+
+    def _existe_family_key(self, family, key):
+        """Consulta en la base de datos si existe la family y clave"""
+
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            db_get = client.asterisk_db("DBGet", family, key=key)
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBGet al consultar con la family {0} y "
+                             "la siguiente key={1}".format(family, key))
+            return False
+        if db_get.response_value == 'success':
+            return True
 
     def delete_tree_family(self, family):
         """Elimina el tree de la family pasada por parametro"""
@@ -309,11 +324,51 @@ class RutaSalienteFamily(object):
         except AsteriskHttpAsteriskDBError:
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
+    def delete_family_ruta(self, ruta):
+        """Elimina una la family de una ruta"""
+        # primero chequeo si existe la family
+        family = "OML/OUTR/{0}".format(ruta.id)
+        key = "NAME"
+        existe_family = self._existe_family_key(family, key)
+        if existe_family:
+            self.delete_tree_family(family)
+
     def regenerar_familys_rutas(self, ruta):
         """regenera la family de las rutas"""
         family = "OML/OUTR/{0}".format(ruta.id)
         self.delete_tree_family(family)
         self.create_familys(ruta=ruta)
+
+    def _regenero_trunks_ruta(self, ruta):
+        """
+        Regenero las entradas para los trunks en la ruta
+            /OML/OUTR/XX/TRUNK/N donde xx es la id de la ruta y N el numero de troncal
+        """
+
+        # regenero lo datos de los troncales
+        troncales = self._obtener_troncales_ordenados(ruta)
+        for orden, troncal in troncales:
+            logger.info("Creando familys para troncales %s", troncal.troncal.id)
+
+            try:
+                client = AsteriskHttpClient()
+                client.login()
+                family = "OML/OUTR/{0}".format(ruta.id)
+                key = "TRUNK/{0}".format(orden)
+                val = troncal.troncal.nombre
+                client.asterisk_db("DBPut", family, key=key, val=val)
+            except AsteriskHttpAsteriskDBError:
+                logger.exception("Error al intentar DBPut al insertar"
+                                 " en la family {0} la siguiente key={1}"
+                                 " y val={2}".format(family, key, val))
+
+    def regenerar_family_trunk_ruta(self, ruta):
+        """regeneros lso troncales de la ruta"""
+        family = "OML/OUTR/{0}".format(ruta.id)
+        key = "NAME"
+        existe_family = self._existe_family_key(family, key)
+        if existe_family:
+            self._regenero_trunks_ruta(ruta)
 
 
 class TrunkFamily(object):
@@ -362,6 +417,20 @@ class TrunkFamily(object):
                                      " en la family {0} la siguiente key={1}"
                                      " y val={2}".format(family, key, val))
 
+    def _existe_family_key(self, family, key):
+        """Consulta en la base de datos si existe la family y clave"""
+
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            db_get = client.asterisk_db("DBGet", family, key=key)
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBGet al consultar con la family {0} y "
+                             "la siguiente key={1}".format(family, key))
+            return False
+        if db_get.response_value == 'success':
+            return True
+
     def delete_tree_family(self, family):
         """Elimina el tree de la family pasada por parametro"""
         try:
@@ -370,6 +439,15 @@ class TrunkFamily(object):
             client.asterisk_db_deltree(family)
         except AsteriskHttpAsteriskDBError:
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
+
+    def delete_family_trunk(self, trunk):
+        """Elimina una la family de una ruta"""
+        # primero chequeo si existe la family
+        family = "OML/TRUNK/{0}".format(trunk.id)
+        key = "NAME"
+        existe_family = self._existe_family_key(family, key)
+        if existe_family:
+            self.delete_tree_family(family)
 
     def regenerar_familys_trunks(self):
         """regenera la family de las troncales"""

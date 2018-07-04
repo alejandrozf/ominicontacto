@@ -47,9 +47,42 @@ def get_response_on_first_element(root):
         return None
 
 
-#==============================================================================
+def get_event_any_element(root, event):
+    """Returns attributes of tag 'generic' if an 'event' attribute
+    exists any child of root.
+
+    For example, for the folowing response
+    # <ajax-response>
+    # <response type='object' id='unknown'>
+    #    <generic response='Success' eventlist='start' message='Result will follow' />
+    # </response>
+    # <response type='object' id='unknown'>
+    #	<generic event='DBGetResponse' family='OML/OUTR/1' key='NAME' val='ruta_saliente' />
+    # </response>
+        # <response type='object' id='unknown'>
+    #	<generic event='DBGetComplete' eventlist='Complete' listitems='1' />
+    # </response>
+    # </ajax-response>
+
+    this method should return a dict with:
+
+    { response:'Error', message='Permission denied'}
+
+    Returns: a dict (if 'response' found) or `None`
+    """
+    elements = root.findall("./response/generic")
+    if not elements:
+        return None
+
+    for element in elements:
+
+        if 'event' in element.attrib and element.attrib['event'] == event:
+            return dict(element.attrib)
+
+
+# ==============================================================================
 # Parser of XML responses
-#==============================================================================
+# ==============================================================================
 
 class AsteriskXmlParser(object):
     """Base class for parsing various responses from Asterisk"""
@@ -327,16 +360,29 @@ class AsteriskXmlParserForAsteriskDB(AsteriskXmlParser):
     requesting `/mxml?action=DBDel/DBdelTree/DBGet/DBPut`
     """
 
+    def __init__(self):
+
+        # This attribute is setted in parse_event()
+        self.event_value = None
+
     def parse(self, xml):
         """Parsea XML."""
         self._parse_and_check(xml,
                               exception_for_error=AsteriskHttpAsteriskDBError,
                               check_success=True)
 
+    def parse_event(self, event):
+        """Parser event DBGetResponse returned by Asterisk in xml"""
+        response_dict_get = get_event_any_element(self.root, event)
+        if response_dict_get:
+            self.event_value = response_dict_get.get('val', '').lower()
+        else:
+            raise AsteriskHttpResponseWithError
 
-#==============================================================================
+
+# ==============================================================================
 # Asterisk Http Ami Client
-#==============================================================================
+# ==============================================================================
 
 class AsteriskHttpClient(object):
     """Class to interact with Asterisk using it's http interface"""
@@ -526,6 +572,8 @@ class AsteriskHttpClient(object):
         response_body, _ = self._request("/mxml", dict_response)
         parser = AsteriskXmlParserForAsteriskDB()
         parser.parse(response_body)
+        if action == 'DBGet':
+            parser.parse_event('DBGetResponse')
         return parser
 
     def asterisk_db_deltree(self, family):
@@ -543,9 +591,10 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
-#==============================================================================
+
+# ==============================================================================
 # AmiStatusTracker
-#==============================================================================
+# ==============================================================================
 
 class AmiStatusTracker(object):
 
@@ -681,9 +730,9 @@ class AmiStatusTracker(object):
         return campanas
 
 
-#==============================================================================
+# ==============================================================================
 # Errors
-#==============================================================================
+# ==============================================================================
 
 class AsteriskHttpAmiError(OmlError):
     """Base class for exceptions related to the retrieval of information
