@@ -58,5 +58,8 @@
   become: true
   become_method: sudo
 
+- name: Link kamcmd binarie to /usr/sbin
+  file: state=link src={{ kamailio_location }}/sbin/kamcmd dest=/usr/sbin/kamcmd mode=755 force=true
+
 - name: Link kamctl binarie to /usr/sbin
-  file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/ mode=755 force=true
+  file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/kamctl mode=755 force=true

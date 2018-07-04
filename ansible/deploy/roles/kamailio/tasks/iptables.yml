@@ -1,10 +1,7 @@
 ---
 
-  become: true
-  become_method: sudo
-
 - name: Set the iptables rules for kamailio
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
     - iptables -A INPUT -i lo -j ACCEPT
     - iptables -A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT
