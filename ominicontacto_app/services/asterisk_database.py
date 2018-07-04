@@ -530,3 +530,17 @@ class GlobalsFamily(object):
             return False
         if response_dict['response'] == 'Success':
             return True
+
+    def delete_tree_family(self, family):
+        """Elimina el tree de la family pasada por parametro"""
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.asterisk_db_deltree(family)
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBDelTree de {0}".format(family))
+
+    def regenerar_familys_trunks(self):
+        """regenera la family de las troncales"""
+        self.delete_tree_family("OML/GLOBALS")
+        self.create_familys()
