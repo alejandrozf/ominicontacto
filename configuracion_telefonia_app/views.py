@@ -115,6 +115,17 @@ class TroncalSIPDeleteView(DeleteView):
             messages.SUCCESS,
             message,
         )
+        try:
+            sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
+            sincronizador.eliminar_troncal_y_regenerar_asterisk(self.object)
+        except RestablecerConfiguracionTelefonicaError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
         return redirect(self.get_success_url())
 
     def get_object(self, queryset=None):

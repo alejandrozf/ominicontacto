@@ -159,6 +159,23 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
                               "la base de datos de Asterisk. ")
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
+    def _eliminar_trunk_en_astdb(self, trunk):
+        mensaje_error = ""
+
+        try:
+            self.generador_trunk_en_astdb.delete_family_trunk(trunk)
+        except:
+            logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
+                             "intentar delete_family_trunk()")
+
+            mensaje_error += ("Hubo un inconveniente al eliminar los registros de los troncales en "
+                              "la base de datos de Asterisk. ")
+            raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
+
     def regenerar_troncales(self, trunk=None):
         self._generar_y_recargar_archivos_conf_asterisk()
         self._generar_e_insertar_en_astdb(trunk)
+
+    def eliminar_troncal_y_regenerar_asterisk(self, trunk):
+        self._generar_y_recargar_archivos_conf_asterisk()
+        self._eliminar_trunk_en_astdb(trunk)
