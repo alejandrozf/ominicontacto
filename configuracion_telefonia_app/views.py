@@ -108,7 +108,7 @@ class TroncalSIPDeleteView(DeleteView):
         return super(TroncalSIPDeleteView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        eliminar_troncal_config(self.get_object())
+        eliminar_troncal_config(self, self.get_object())
         super(TroncalSIPDeleteView, self).delete(request, *args, **kwargs)
         message = (_('Troncal Sip eliminado con éxito'))
         messages.add_message(
