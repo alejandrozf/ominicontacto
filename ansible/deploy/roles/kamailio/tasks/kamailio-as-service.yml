@@ -63,3 +63,7 @@
 
 - name: Link kamctl binarie to /usr/sbin
   file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/kamctl mode=755 force=true
+
+- name: Template of omnileads-iptables
+  template: src=templates/omnileads-iptables dest={{ install_prefix }}bin/omnileads-iptables mode=755
+  

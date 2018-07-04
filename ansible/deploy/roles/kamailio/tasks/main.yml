@@ -56,6 +56,3 @@
 - include: certificate_CA.yml
   tags: kamailio-cert
   when: certs_exists|failed
-
-- include: iptables.yml
-  tags: kamailio
