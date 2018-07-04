@@ -540,7 +540,7 @@ class GlobalsFamily(object):
         except AsteriskHttpAsteriskDBError:
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
-    def regenerar_familys_trunks(self):
+    def regenerar_familys_globals(self):
         """regenera la family de las troncales"""
         self.delete_tree_family("OML/GLOBALS")
         self.create_familys()
