@@ -269,7 +269,7 @@ class RutaSalienteFamily(AbstractFamily):
         for ruta in rutas:
             # agrego lo datos basico de la ruta saliente
             logger.info("Creando familys para ruta saliente %s", ruta.id)
-            variables = self.create_dict_ruta(ruta)
+            variables = self.create_dict(ruta)
 
             for key, val in variables.items():
                 try:
