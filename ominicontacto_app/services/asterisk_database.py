@@ -12,7 +12,29 @@ import logging as _logging
 logger = _logging.getLogger(__name__)
 
 
-class CampanaFamily(object):
+class AbstractFamily(object):
+    """class abstract de family de asterisk"""
+
+    def _genera_dict(self):
+        pass
+
+    def create_dict(self):
+        pass
+
+    def create_familys(self):
+        pass
+
+    def delete_tree_family(self, family):
+        """Elimina el tree de la family pasada por parametro"""
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.asterisk_db_deltree(family)
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBDelTree de {0}".format(family))
+
+
+class CampanaFamily(AbstractFamily):
 
     def _genera_dict(self, campana):
 
@@ -86,15 +108,6 @@ class CampanaFamily(object):
                     logger.exception("Error al intentar DBPut al insertar"
                                      " en la family {0} la siguiente key={1}"
                                      " y val={2}".format(family, key, val))
-
-    def delete_tree_family(self, family):
-        """Elimina el tree de la family pasada por parametro"""
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
     def regenerar_familys_campana(self):
         """regenera la family de las campana"""
