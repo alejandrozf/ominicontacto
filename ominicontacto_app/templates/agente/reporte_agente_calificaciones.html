@@ -1,3 +1,4 @@
+{% load staticfiles %}
 {% load static %}
 {% load compress %}
 
@@ -107,16 +108,24 @@
         </div>
     </div>
 </div>
-<form role="form" method="post" enctype="multipart/form-data" class="form-inline">
-    {% csrf_token %}
-    <div class="date active" id="">
-       {{form.fecha}}
-        <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-            Filtrar
-        </button>
+
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <div id="wrapperSearchForm" class="show">
+        <form role="form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-6">
+                   {{form.fecha}}
+                </div>
+            </div>
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Filtrar
+            </button>
+        </form>
     </div>
-</form>
-<hr>
+</div>
+
  <form id="form_llamar" role="form" method="post" >
         {% csrf_token %}
      <input type="hidden" id="pk_agente" name="pk_agente">
@@ -140,11 +149,11 @@
                         {% for calificacion_cliente in listado_calificaciones %}
                             <tr>
                                 <td>
-                                    <button type="button" class="btn btn-outline-primary" pk_contacto="{{ calificacion_cliente.contacto.pk }}"
+                                    <a class="btn btn-outline-primary" pk_contacto="{{ calificacion_cliente.contacto.pk }}"
                                        tipo_campana="{{ calificacion_cliente.opcion_calificacion.campana.type }}"
                                        campana_nombre="{{ calificacion_cliente.opcion_calificacion.campana.nombre }}"
                                        pk_campana="{{ calificacion_cliente.opcion_calificacion.campana.pk }}"
-                                       agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}">{{ calificacion_cliente.contacto.telefono }}</button>
+                                       agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}">{{ calificacion_cliente.contacto.telefono }}</a>
                                 </td>
                                 <td>
                                     {{ calificacion_cliente.contacto.datos}}

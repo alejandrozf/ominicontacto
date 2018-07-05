@@ -973,7 +973,6 @@ $(function() {
     }
     callSipStatus = document.createElement("em");
     textCallSipStatus = document.createTextNode("Idle");
-    callSipStatus.style.color = "#80FF00";
 		callSipStatus.id = "dial_status";
     callSipStatus.appendChild(textCallSipStatus);
     callStatus.appendChild(callSipStatus);
