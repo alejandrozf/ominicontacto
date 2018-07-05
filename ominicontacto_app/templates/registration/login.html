@@ -8,14 +8,18 @@
     {% if not user.is_authenticated %}
         {% if form.errors %}
             <div class="alert alert-danger">
+              {% if user_is_blocked %}
+                <p> {{ detail }} </p>
+              {% else %}
                 <p> Username/password incorrecto ingrese nuevamente los datos </p>
+              {% endif %}
             </div>
         {% endif %}
         <div class="wrapper-content login">
             <form role="form" method="post" action="">
                 {% csrf_token %}
                 <div>
-                    <img src="{% static 'ominicontacto/Img/ic_logo_full.svg' %}" alt="FtsLogo" width="240">                    
+                    <img src="{% static 'ominicontacto/Img/ic_logo_full.svg' %}" alt="FtsLogo" width="240">
                 </div>
 
                 <div class="form-group">
@@ -41,10 +45,10 @@
                 <br>
 
                 <button class="btn btn-outline-primary" type="submit" >Ingresar</button>
-            </form>            
+            </form>
         </div>
 
- 
+
 
     {% endif %}
 {% endblock %}

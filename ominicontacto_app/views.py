@@ -47,6 +47,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from ominicontacto_app import version
 
+#Defender imports
+import base64
+import binascii
+
+from defender import utils
+from defender import config
+from django.utils.translation import ugettext_lazy as _
+import django.core.exceptions
+
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +72,7 @@ def index_view(request):
     return render_to_response('index.html',
                               context_instance=RequestContext(request))
 
-
+'''
 def login_view(request):
     """
     Vista login, si el user es un agente lo redirijo a la vista del
@@ -90,7 +99,47 @@ def login_view(request):
     }
     template_name = 'registration/login.html'
     return TemplateResponse(request, template_name, context)
+'''
 
+def login_view(request):
+    detail = None
+    user_is_blocked = False
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        login_unsuccessful = False
+        if utils.is_already_locked(request, username=username):
+            import ipdb;ipdb.set_trace()
+            detail = "You have attempted to login {failure_limit} times, with no success." \
+                     "Your account is locked for {cooloff_time_seconds} seconds" \
+                     "".format(
+                        failure_limit=config.FAILURE_LIMIT,
+                        cooloff_time_seconds=config.COOLOFF_TIME
+                     )
+            user_is_blocked = True
+        user = authenticate(username=username, password=password)
+        form = AuthenticationForm(request, data=request.POST)
+        if not form.is_valid():
+            login_unsuccessful = True
+        utils.add_login_attempt_to_db(request, login_valid=not login_unsuccessful, username=username)
+        user_not_blocked = utils.check_request(request, login_unsuccessful=login_unsuccessful, username=username)
+        if user_not_blocked and not login_unsuccessful:
+            if form.is_valid():
+                login(request, user)
+                user.set_session_key(request.session.session_key)
+                if user.is_agente:
+                    return HttpResponseRedirect(reverse('view_node'))
+                else:
+                    return HttpResponseRedirect(reverse('index'))
+    else:
+        form = AuthenticationForm(request)
+    context = {
+        'form': form,
+        'detail': detail,
+        'user_is_blocked': user_is_blocked,
+    }
+    template_name = 'registration/login.html'
+    return TemplateResponse(request, template_name, context)
 
 class CustomerUserCreateView(CreateView):
     """Vista para crear un usuario"""
