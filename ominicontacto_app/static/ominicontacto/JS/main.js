@@ -74,9 +74,9 @@ $(function () {
 	 });
 	// como informo a un servidro de presencia que mi endpoint camibia de status
 	 //$("#modalWebCall").modal('show');
-	 $("#webCall").click(function () {
-	     $("#modalWebCall").modal('show');
-	 });
+	 // $("#webCall").click(function () {
+	 //     $("#modalWebCall").modal('show');
+	 // });
 	 function updateButton(btn,clsnm,inht) {
 	 	 btn.className = clsnm;
 	 	 var lastval = btn.innerHTML;

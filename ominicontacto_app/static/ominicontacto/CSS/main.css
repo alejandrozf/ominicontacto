@@ -11,6 +11,7 @@ a {
 a, a:hover, a:focus {
     color: #76AA2E;
     text-decoration: none;
+    -webkit-transition: all 0.3s;
     transition: all 0.3s;
 }
 button:hover {
@@ -409,7 +410,8 @@ ul.errorlist li {
         top: 44px;
         display: none;
         border-radius: 6px;
-        box-shadow: 1px 1px 1px rgba(0,0,0,0.15);
+        -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,0.15);
+                box-shadow: 1px 1px 1px rgba(0,0,0,0.15);
         z-index: 100;
     }
     #navBar ul.submenu a {
@@ -451,6 +453,8 @@ ul.errorlist li {
     height: auto;
     padding: 0;
     display: initial;
+    -webkit-box-align: initial;
+    -ms-flex-align: initial;
     align-items: initial;
     position: absolute;
     top: 14px;
@@ -510,8 +514,12 @@ body > h1 {
 #timeBar {
   background-color: #ECEEEA;
   padding: 14px 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 #timers  div {
   display: inline;
@@ -544,10 +552,54 @@ body > h1 {
     width: 100%;
 }
 .wrapper-info {
-    padding: 34px 50px 30px 50px;
+    padding: 34px 20px 30px 20px;
 }
 .wrapper-info h2 {
     margin-bottom: 14px;
+}
+
+#wrapperInner {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+}
+#wrapperInnerContent {
+    width: 100%;
+}
+#wrapperWebphone {
+    min-width: 300px;
+    max-width: 300px;
+    margin-right: -300px;
+    background: #FFFFFF;
+    -webkit-box-shadow: inset 3px -1px 3px 0 rgba(0,0,0,0.20);
+    box-shadow: inset 3px -1px 3px 0 rgba(0,0,0,0.20);
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    display: none;
+}
+#wrapperWebphone.active {
+    min-width: 300px;
+    max-width: 300px;
+    margin-right: 0;
+    display: inline-block;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+.webphone-header {
+    padding: 10px 12px;
+    position: relative;
+}
+#btnCloseWebphone {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    padding: 8px 14px;
+}
+.webphone-body {
+    padding: 0 12px;
 }
 
 /* ///// Phone
@@ -561,8 +613,10 @@ body > h1 {
 }
 #phoneKeys {
   margin-top: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  padding: 0 30px 10px 30px;
+  padding: 0 10px 10px 10px;
   border-bottom: 1px solid rgba(0,0,0,0.15);
 }
 #phoneKeys button {
@@ -626,33 +680,45 @@ body > h1 {
 */
 
 #modalwebChat .modal-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 #webchatWindow {
-  flex: 1;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
 #webchatInfo {
   background-color: #ECEEEA;
   border-radius: 4px;
   padding: 8px;
   margin-left: 20px;
-  flex: 1;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
 
 /* ///// Modal facebook chat
 */
 
 #modalFacebook .modal-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 #modalFacebook .modal-body > div:first-of-type {
-  flex: 2;
+  -webkit-box-flex: 2;
+      -ms-flex: 2;
+          flex: 2;
   background-color: #ECEEEA;
   border-radius: 4px;
   margin-right: 20px;
 }
 #modalFacebook .modal-body > div:last-of-type {
-  flex: 1;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
 
 /* ///// Chat windows
@@ -667,11 +733,17 @@ body > h1 {
   overflow-y: scroll;
 }
 .chatWindowActions {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 .chatWindowActions > div:first-of-type {
-  flex: 1;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
   margin-right: 10px;
 }
 .chatWindowActions .dropdown {
@@ -753,6 +825,11 @@ body > h1 {
   -moz-animation-iteration-count: infinite;
   -moz-animation-direction: alternate;
 }
+@-webkit-keyframes example {
+    0%   {left:0px; top:0px;}
+    75%  {left:0px; top:5px;}
+    100% {left:0px; top:0px;}
+}
 @keyframes example {
     0%   {left:0px; top:0px;}
     75%  {left:0px; top:5px;}
@@ -765,8 +842,12 @@ body > h1 {
 
 @media (max-width: 768px) {
     .wrapper-main {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: stretch;
+        -webkit-box-align: stretch;
+            -ms-flex-align: stretch;
+                align-items: stretch;
     }
     .wrapper-info {
         padding: 30px;
@@ -782,6 +863,7 @@ body > h1 {
         margin-left: -220px;
         padding-top: initial;
         background-color: #ECEEEA;
+        -webkit-transition: 0.3s;
         transition: 0.3s;
     }
     #navBar .main-menu-li {
@@ -845,8 +927,12 @@ body > h1 {
     #topBar {
         height: 60px;
         padding: 0 20px;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
         position: relative;
         border-bottom: 2px solid rgba(0,0,0,0.15);
         top: initial;
