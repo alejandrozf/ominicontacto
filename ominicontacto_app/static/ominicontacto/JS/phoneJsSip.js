@@ -395,16 +395,15 @@ $(function() {
           session_incoming.answer(options);
           setCallState("Connected to " +fromUser , "orange");
           Sounds("","stop");
-        };
+				};
 
         atiendoNo.onclick = function() {
           $("#modalReceiveCalls").modal('hide');
           if($("#autopause").val() === "True") {
-
           }
           userAgent.terminateSessions();
           defaultCallState();
-        };
+				};
 
         function processOrigin(origin, opt, from) {
 	  var options = opt;
