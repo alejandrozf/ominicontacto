@@ -47,7 +47,8 @@ class TestsRutasSalientes(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
-    def test_administrador_puede_eliminar(self):
+    @patch('configuracion_telefonia_app.views.eliminar_ruta_saliente_config')
+    def test_administrador_puede_eliminar(self, mock_sincronizacion):
         self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('eliminar_ruta_saliente', args=[self.ruta_1.id])
         self.assertEqual(TroncalSIP.objects.count(), 2)
