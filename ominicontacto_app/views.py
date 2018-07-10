@@ -72,35 +72,6 @@ def index_view(request):
     return render_to_response('index.html',
                               context_instance=RequestContext(request))
 
-'''
-def login_view(request):
-    """
-    Vista login, si el user es un agente lo redirijo a la vista del
-    agente(view_node)
-    """
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            login(request, user)
-            user.set_session_key(request.session.session_key)
-            if user.is_agente:
-                return HttpResponseRedirect(reverse('view_node'))
-            else:
-                return HttpResponseRedirect(reverse('index'))
-
-    else:
-        form = AuthenticationForm(request)
-
-    context = {
-        'form': form,
-    }
-    template_name = 'registration/login.html'
-    return TemplateResponse(request, template_name, context)
-'''
-
 def login_view(request):
     detail = None
     user_is_blocked = False
@@ -109,7 +80,6 @@ def login_view(request):
         password = request.POST['password']
         login_unsuccessful = False
         if utils.is_already_locked(request, username=username):
-            import ipdb;ipdb.set_trace()
             detail = "You have attempted to login {failure_limit} times, with no success." \
                      "Your account is locked for {cooloff_time_seconds} seconds" \
                      "".format(
