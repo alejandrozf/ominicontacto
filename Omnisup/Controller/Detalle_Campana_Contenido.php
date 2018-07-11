@@ -39,8 +39,13 @@ function mostrarEstadoAgentes($camp) {
                      $jsonString .= '"estado": "' . $value->getStatus() . '", ';
                      $jsonString .= '"tiempo": "' . $tiempo . '",';
                      $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
-                                   . '                  <button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
-                                   . '                  <button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
+                                   . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
+
+                                   . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs pause\' title=\'pausar agente\'><span class=\'glyphicon glyphicon-pause\'></span></button>&nbsp;'
+                                   . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs logoff\' title=\'logoff agente\'><span class=\'glyphicon glyphicon-off\'></span></button>&nbsp;'
+                                   . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs takecall\' title=\'tomar llamada\'><span class=\'glyphicon glyphicon-share-alt\'></span></button>&nbsp;'
+
+                                   . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
                      $i++;
                  }
          }

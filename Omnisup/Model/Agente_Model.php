@@ -57,47 +57,14 @@ class Agente_Model {
         return $data;
     }
 
-    function ChanSpy($agt, $exten) {
+    function ExecAction($agt, $exten, $action) {
         try {
             $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASWORD);
         } catch (Exception $ex) {
             return "problemas de Conexion AMI: " . $ex;
         }
-        $this->agi->Originate("SIP/$exten", "001$agt", 'from-oml', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
-        $this->agi->disconnect();
-    }
-
-    function ChanSpyWhisper($agt, $exten) {
-        try {
-            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASWORD);
-        } catch (Exception $ex) {
-            return "problemas de Conexion AMI: " . $ex;
-        }
-        $this->agi->Originate('SIP/' . $exten, "002$agt", 'from-oml', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
-        $this->agi->disconnect();
-    }
-
-    function Conference($agt, $exten) {
-        try {
-            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASWORD);
-        } catch (Exception $ex) {
-            return "problemas de Conexion AMI: " . $ex;
-        }
-        $this->agi->Originate('SIP/' . $exten, "006$agt", 'from-oml', 1, NULL, NULL, '25000', "supervision", NULL, NULL);
-        $this->agi->disconnect();
-    }
-
-    function AgentLogoff($agt, $queueName) {
-        try {
-            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASWORD);
-        } catch (Exception $ex) {
-            return "problemas de Conexion AMI: " . $ex;
-        }
-        foreach ($queueName as $value) {
-            $this->agi->Events('off');
-            $this->command = "queue remove member sip/" . $agt . " from ". $value;
-            $this->agi->Command($this->command);
-        }
+        //"AGENTLOGOUT"/"AGENTUNPAUSE"/"AGENTPAUSE"/"CHANTAKECALL"/"CHANSPYWISHPER"/"CHANSPY"/"CHANCONFER"
+        $this->agi->Originate("SIP/$exten", $action, 'oml-sup-actions', 1, NULL, NULL, '25000', NULL, $agt, NULL);
         $this->agi->disconnect();
     }
 }

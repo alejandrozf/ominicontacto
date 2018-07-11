@@ -106,8 +106,6 @@ $(function () {
             lastPause = $("#UserStatus").html();
           });
         });
-        /*$("#sipUser").val(msg.sipuser);
-        $("#sipPass").val(msg.sippass);*/
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -137,10 +135,10 @@ $(function () {
     var id = this.id;
     var sipExt = $("#sipUser").val();
     $.ajax({
-      url: 'Controller/ChanSpy.php',
+      url: 'Controller/actionListener.php',
       type: 'GET',
       dataType: 'html',
-      data: 'sip='+id+'&sipext='+sipExt,
+      data: 'sip=' + id + '&sipext=' + sipExt + "&action=spy",
       success: function (msg) {
       },
       error: function (jqXHR, textStatus, errorThrown) {
@@ -154,10 +152,10 @@ $(function () {
     var id = this.id;
     var sipExt = $("#sipUser").val();
     $.ajax({
-      url: 'Controller/ChanSpyWhisper.php',
+      url: 'Controller/actionListener.php',
       type: 'GET',
       dataType: 'html',
-      data: 'sip='+id+'&sipext='+sipExt,
+      data: 'sip=' + id + '&sipext=' + sipExt + "&action=spywhisper",
       success: function (msg) {
       },
       error: function (jqXHR, textStatus, errorThrown) {
@@ -171,10 +169,10 @@ $(function () {
     var id = this.id;
     var sipExt = $("#sipUser").val();
     $.ajax({
-      url: 'Controller/Conference.php',
+      url: 'Controller/actionListener.php',
       type: 'GET',
       dataType: 'html',
-      data: 'sip='+id+'&sipext='+sipExt,
+      data: 'sip=' + id + '&sipext=' + sipExt + "&action=confer",
       success: function (msg) {
       },
       error: function (jqXHR, textStatus, errorThrown) {
@@ -185,13 +183,75 @@ $(function () {
   });
 
   $("#tableAgBody").on('click', '.agentlogoff', function () {
-    debugger;
     var id = this.id;
-    num = '003'+id;
-    var ag = this.html();
-    ag = 'nombreAgente: '+ ag;
-    makeCall(ag);
-    num = null;
+    var sipExt = $("#sipUser").val();
+    $.ajax({
+      url: 'Controller/actionListener.php',
+      type: 'GET',
+      dataType: 'html',
+      data: 'sip=' + id + '&sipext=' + sipExt + "&action=logoutagent",
+      success: function (msg) {
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        debugger;
+        console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+      }
+    });
+  });
+
+  $("#tableAgBody").on('click', '.pause', function () {
+    var id = this.id;
+    var sipExt = $("#sipUser").val();
+    $.ajax({
+      url: 'Controller/actionListener.php',
+      type: 'GET',
+      dataType: 'html',
+      data: 'sip=' + id + '&sipext=' + sipExt + "&action=pauseagent",
+      success: function (msg) {
+        $(".btn.btn-primary.btn-xs.pause").removeClass("pause").addClass("unpause");
+        $(".glyphicon.glyphicon-pause").removeClass("glyphicon-pause").addClass("glyphicon-play");
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        debugger;
+        console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+      }
+    });
+  });
+
+  $("#tableAgBody").on('click', '.unpause', function () {
+    var id = this.id;
+    var sipExt = $("#sipUser").val();
+    $.ajax({
+      url: 'Controller/actionListener.php',
+      type: 'GET',
+      dataType: 'html',
+      data: 'sip=' + id + '&sipext=' + sipExt + "&action=unpauseagent",
+      success: function (msg) {
+        $(".btn.btn-primary.btn-xs.unpause").removeClass("unpause").addClass("pause");
+        $(".glyphicon.glyphicon-play").removeClass("glyphicon-play").addClass("glyphicon-pause");
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        debugger;
+        console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+      }
+    });
+  });
+
+  $("#tableAgBody").on('click', '.takecall', function () {
+    var id = this.id;
+    var sipExt = $("#sipUser").val();
+    $.ajax({
+      url: 'Controller/actionListener.php',
+      type: 'GET',
+      dataType: 'html',
+      data: 'sip=' + id + '&sipext=' + sipExt + "&action=takecall",
+      success: function (msg) {
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        debugger;
+        console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+      }
+    });
   });
 
   $("#endCall").click(function() {
