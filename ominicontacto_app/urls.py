@@ -27,6 +27,7 @@ handler500 = handler500
 
 
 urlpatterns = [
+    url(r'^admin/defender/', include('defender.urls')), # defender admin
     url(r'^ajax/mensaje_recibidos/',
         views.mensajes_recibidos_view,
         name='ajax_mensaje_recibidos'),

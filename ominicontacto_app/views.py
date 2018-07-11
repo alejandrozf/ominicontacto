@@ -80,20 +80,20 @@ def login_view(request):
         password = request.POST['password']
         login_unsuccessful = False
         if utils.is_already_locked(request, username=username):
-            detail = "You have attempted to login {failure_limit} times, with no success." \
-                     "Your account is locked for {cooloff_time_seconds} seconds" \
+            detail = "Haz tratado de loguearte cuatro veces, sin exito." \
+                     "Tu cuenta e IP han sido bloqueada por {cooloff_time_seconds} segundos. Contacta tu administrador de sistemas" \
                      "".format(
-                        failure_limit=config.FAILURE_LIMIT,
                         cooloff_time_seconds=config.COOLOFF_TIME
                      )
             user_is_blocked = True
+            login_unsuccessful = True
         user = authenticate(username=username, password=password)
         form = AuthenticationForm(request, data=request.POST)
         if not form.is_valid():
             login_unsuccessful = True
         utils.add_login_attempt_to_db(request, login_valid=not login_unsuccessful, username=username)
         user_not_blocked = utils.check_request(request, login_unsuccessful=login_unsuccessful, username=username)
-        if user_not_blocked and not login_unsuccessful:
+        if not user_is_blocked and not login_unsuccessful:
             if form.is_valid():
                 login(request, user)
                 user.set_session_key(request.session.session_key)
