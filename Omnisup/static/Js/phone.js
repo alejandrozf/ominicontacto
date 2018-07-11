@@ -68,18 +68,16 @@ $(function () {
             var endPos = fromUser.indexOf("@");
             var startPos = fromUser.indexOf(":");
             fromUser = fromUser.substring(startPos+1,endPos);
-            $("#callerid").text(fromUser);
-            if($("#modalWebCall").is(':visible')) {
-              $("#modalReceiveCalls").modal('show');
-            } else {
-              $("#modalWebCall").modal('show');
-              $("#modalReceiveCalls").modal('show');
-            }
             Sounds("In", "play");
             var atiendoSi = document.getElementById('answer');
             var atiendoNo = document.getElementById('doNotAnswer');
             var session_incoming = e.session;
-
+            //atiende automaticamente
+            $("#modalReceiveCalls").modal('hide');
+            session_incoming.answer(options);
+            setCallState("Connected", "orange");
+            Sounds("","stop");
+            //-----------------------
             session_incoming.on('addstream',function(e) {       // al cerrar el canal de audio entre los peers
               lastPause = $("#UserStatus").html();
               remote_stream = e.stream;
@@ -111,24 +109,6 @@ $(function () {
     error: function (jqXHR, textStatus, errorThrown) {
       console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
     }
-  });
-
-  $("#tableAgBody").on('click', '.info', function () {
-    var id = this.id;
-    var sipExt = $("#sipUser").val();
-    $.ajax({
-      url: 'Controller/GetInfo.php',
-      type: 'GET',
-      dataType: 'html',
-      data: 'sip='+id+'&sipext='+sipExt,
-      success: function (msg) {
-        window.location.href = "index.php?page=agentInfo";
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        debugger;
-        console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-      }
-    });
   });
 
   $("#tableAgBody").on('click', '.chanspy', function () {
@@ -246,7 +226,7 @@ $(function () {
       dataType: 'html',
       data: 'sip=' + id + '&sipext=' + sipExt + "&action=takecall",
       success: function (msg) {
-        debugger;
+        
       },
       error: function (jqXHR, textStatus, errorThrown) {
         debugger;
