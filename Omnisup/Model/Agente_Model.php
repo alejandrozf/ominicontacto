@@ -64,7 +64,8 @@ class Agente_Model {
             return "problemas de Conexion AMI: " . $ex;
         }
         //"AGENTLOGOUT"/"AGENTUNPAUSE"/"AGENTPAUSE"/"CHANTAKECALL"/"CHANSPYWISHPER"/"CHANSPY"/"CHANCONFER"
-        $this->agi->Originate("SIP/$exten", $action, 'oml-sup-actions', 1, NULL, NULL, '25000', NULL, "OMLAGENTID=".$agt, NULL, NULL, NULl);
+        $res = $this->agi->Originate("SIP/$exten", $action, 'oml-sup-actions', 1, NULL, NULL, '25000', NULL, "OMLAGENTID=".$agt, NULL, NULL, NULL);
         $this->agi->disconnect();
+        return $res;
     }
 }
