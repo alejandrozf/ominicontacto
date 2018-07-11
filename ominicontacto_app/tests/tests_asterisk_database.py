@@ -99,7 +99,8 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['MAXQCALLS'], self.campana_dialer.queue_campana.maxlen)
         self.assertEqual(dict_campana['SL'], self.campana_dialer.queue_campana.servicelevel)
         audio = "oml/{0}".format(
-            self.campana_dialer.queue_campana.audio_para_contestadores.get_filename_audio_asterisk())
+            self.campana_dialer.queue_campana.audio_para_contestadores.
+                get_filename_audio_asterisk())
         self.assertEqual(dict_campana['AMDPLAY'], audio)
         self.assertEqual(dict_campana['TC'], "")
         self.assertEqual(dict_campana['IDJSON'], "")
@@ -114,7 +115,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = AgenteFamily()
         dict_agente = servicio.create_dict(self.agente)
 
-        self.assertItemsEqual(['SIP', 'STATUS'], dict_agente.keys())
+        self.assertItemsEqual(['NAME', 'SIP', 'STATUS'], dict_agente.keys())
 
     def test_falla_dict_agente_asterisk(self):
         """
@@ -132,6 +133,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = AgenteFamily()
         dict_agente = servicio.create_dict(self.agente)
 
+        self.assertEqual(dict_agente['NAME'], self.agente.user.get_full_name())
         self.assertEqual(dict_agente['SIP'], self.agente.sip_extension)
         self.assertEqual(dict_agente['STATUS'], "")
 
@@ -196,7 +198,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         """
         servicio = GlobalsFamily()
 
-        dict_globals =  servicio.create_dict()
+        dict_globals = servicio.create_dict()
         self.assertTrue(dict_globals['DEFAULTQUEUETIME'], 90)
         self.assertTrue(dict_globals['DEFAULTRINGTIME'], 45)
         self.assertTrue(dict_globals['LANG'], 'es')

@@ -107,6 +107,7 @@ class AgenteFamily(object):
     def _genera_dict(self, agente):
 
         dict_agente = {
+            'NAME': agente.user.get_full_name(),
             'SIP': agente.sip_extension,
             'STATUS': ""
         }
