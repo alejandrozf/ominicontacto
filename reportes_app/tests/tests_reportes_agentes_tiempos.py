@@ -101,20 +101,10 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             minutes=79) - timezone.timedelta(days=1)
         ActividadAgenteLogFactory.create(
             time=fin_sesion_agente, event='REMOVEMEMBER', agente_id=self.agente.id)
-        fin_sesion_agente1 = inicio_sesion_agente.replace(hour=1, minute=5)
-        ActividadAgenteLogFactory.create(
-            time=fin_sesion_agente1, event='REMOVEMEMBER', agente_id=self.agente.id)
-        inicio_sesion_agente1 = self.inicio_sesion_agente.time.replace(hour=23, minute=00)
-        ActividadAgenteLogFactory.create(
-            time=inicio_sesion_agente1, event='ADDMEMBER', agente_id=self.agente.id)
 
         # calculo el tiempo de sesion del agente
         tiempo_sesion_agente = self.fin_sesion_agente.time - self.inicio_sesion_agente.time
         tiempo_sesion_agente += fin_sesion_agente - inicio_sesion_agente
-        tiempo_sesion_agente += fin_sesion_agente1 - datetime_hora_minima_dia(
-            fin_sesion_agente1)
-        tiempo_sesion_agente += datetime_hora_maxima_dia(
-            inicio_sesion_agente1) - inicio_sesion_agente1
         # calculo el tiempo de sesion agente1
         tiempo_sesion_agente1 = self.fin_sesion_agente1.time - self.inicio_sesion_agente1.time
 
@@ -122,7 +112,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         reportes_estadisticas = TiemposAgente()
         agentes = AgenteProfile.objects.obtener_activos()
         fecha_hoy = timezone.now()
-        fecha_ayer = fecha_hoy - timezone.timedelta(days=3)
+        fecha_ayer = fecha_hoy - timezone.timedelta(days=1)
         reportes_estadisticas.calcular_tiempo_session(agentes, fecha_ayer, fecha_hoy)
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
