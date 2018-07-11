@@ -16,13 +16,13 @@ class AbstractFamily(object):
     """class abstract de family de asterisk"""
 
     def _genera_dict(self):
-        pass
+        raise (NotImplementedError())
 
     def create_dict(self):
-        pass
+        raise (NotImplementedError())
 
     def create_familys(self):
-        pass
+        raise (NotImplementedError())
 
     def delete_tree_family(self, family):
         """Elimina el tree de la family pasada por parametro"""
@@ -182,6 +182,18 @@ class AgenteFamily(AbstractFamily):
 
 class PausaFamily(AbstractFamily):
 
+    def _genera_dict(self, pausa):
+
+        dict_pausa = {
+            'NAME': pausa.nombre,
+        }
+
+        return dict_pausa
+
+    def create_dict(self, pausa):
+        dict_pausa = self._genera_dict(pausa)
+        return dict_pausa
+
     def _obtener_todas_pausas_para_generar_family(self):
         """Obtener todas pausas"""
         return Pausa.objects.activas()
@@ -192,15 +204,18 @@ class PausaFamily(AbstractFamily):
         pausas = self._obtener_todas_pausas_para_generar_family()
         for pausa in pausas:
             logger.info("Creando familys para pausa %s", pausa.nombre)
-            try:
-                client = AsteriskHttpClient()
-                client.login()
-                family = "OML/PAUSE/{0}".format(pausa.id)
-                client.asterisk_db("DBPut", family, "NAME", val=pausa.nombre)
-            except AsteriskHttpAsteriskDBError:
-                logger.exception("Error al intentar DBPut al insertar"
-                                 " en la family {0} la siguiente ket=NAME"
-                                 " y val={1}".format(family, pausa.nombre))
+            variables = self.create_dict(pausa)
+
+            for key, val in variables.items():
+                try:
+                    client = AsteriskHttpClient()
+                    client.login()
+                    family = "OML/PAUSE/{0}".format(pausa.id)
+                    client.asterisk_db("DBPut", family, key, val=val)
+                except AsteriskHttpAsteriskDBError:
+                    logger.exception("Error al intentar DBPut al insertar"
+                                     " en la family {0} la siguiente ket=NAME"
+                                     " y val={1}".format(family, pausa.nombre))
 
     def regenerar_familys_pausa(self):
         """regenera la family de las pausas"""
