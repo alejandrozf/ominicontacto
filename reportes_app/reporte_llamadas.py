@@ -88,6 +88,13 @@ INICIALES_POR_CAMPANA = {
     }
 }
 
+CAMPANA_TYPES = {
+    Campana.TYPE_ENTRANTE: Campana.TYPE_ENTRANTE_DISPLAY,
+    Campana.TYPE_DIALER: Campana.TYPE_DIALER_DISPLAY,
+    Campana.TYPE_MANUAL: Campana.TYPE_MANUAL_DISPLAY,
+    Campana.TYPE_PREVIEW: Campana.TYPE_PREVIEW_DISPLAY,
+}
+
 
 class ReporteDeLlamadas(object):
 
@@ -113,7 +120,8 @@ class ReporteDeLlamadas(object):
         return campanas
 
     def _get_campana_type_display(self, campana_type):
-        return (i[1] for i in Campana.TYPES_CAMPANA if i[0] == campana_type).next()
+        if campana_type in CAMPANA_TYPES:
+            return CAMPANA_TYPES[campana_type]
 
     def _inicializar_conteo_de_estadisticas(self, desde, hasta):
 
@@ -184,10 +192,11 @@ class ReporteDeLlamadas(object):
             tipo_llamada = self._get_campana_type_display(log.tipo_llamada)
             self._contabilizar_total_llamadas_procesadas(log)
 
-            estadisticas_tipo = self.estadisticas['llamadas_por_tipo'][tipo_llamada]
-            self._contabilizar_llamada_por_tipo(estadisticas_tipo, log)
-            llamadas_por_fecha = self._get_llamadas_de_tipo_en_fecha(tipo_llamada, fecha)
-            self._contabilizar_llamada_por_tipo(llamadas_por_fecha, log)
+            if tipo_llamada:
+                estadisticas_tipo = self.estadisticas['llamadas_por_tipo'][tipo_llamada]
+                self._contabilizar_llamada_por_tipo(estadisticas_tipo, log)
+                llamadas_por_fecha = self._get_llamadas_de_tipo_en_fecha(tipo_llamada, fecha)
+                self._contabilizar_llamada_por_tipo(llamadas_por_fecha, log)
 
             self._contabilizar_llamadas_por_campana(log)
 
