@@ -246,7 +246,6 @@ $(function () {
       dataType: 'html',
       data: 'sip=' + id + '&sipext=' + sipExt + "&action=takecall",
       success: function (msg) {
-        debugger;
       },
       error: function (jqXHR, textStatus, errorThrown) {
         debugger;
