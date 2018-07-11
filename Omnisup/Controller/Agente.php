@@ -68,7 +68,7 @@ class Agente {
 
     function ejecutarAccion($agt, $ext, $accion) {//"AGENTLOGOUT"/"AGENTUNPAUSE"/"AGENTPAUSE"/"CHANTAKECALL"/"CHANSPYWISHPER"/"CHANSPY"/"CHANCONFER"
         $res = $this->Agente_Model->ExecAction($agt, $ext, $accion);
-        echo $res;
+        return $res;
     }
 
 }
