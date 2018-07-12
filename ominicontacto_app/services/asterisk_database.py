@@ -206,10 +206,16 @@ class PausaFamily(AbstractFamily):
     def _get_nombre_family(self, pausa):
         return "OML/PAUSE/{0}".format(pausa.id)
 
-    def create_families(self):
+    def create_families(self, pausa=None, pausas=None):
         """Crea family en database asterisk"""
 
-        pausas = self._obtener_todas_pausas_para_generar_family()
+        if pausas:
+            pass
+        elif pausa:
+            pausas = [pausa]
+        else:
+            pausas = self._obtener_todas_pausas_para_generar_family()
+
         for pausa in pausas:
             self.create_family(pausa)
 
