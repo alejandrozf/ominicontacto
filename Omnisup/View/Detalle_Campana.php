@@ -87,15 +87,6 @@
           <br>
           <table id="tableCampSummary" class="table table-striped table-condensed">
               <tbody id="bodySummary">
-                <!-- <tr><td><b>Llamadas:</b></td><td></td></tr>
-                <tr><td>Recibidas</td><td id="received"></td></tr>
-                <tr><td>Atendidas</td><td id="attended"></td></tr>
-                <tr><td>Abandonadas</td><td id="abandoned"></td></tr>
-                <tr><td>Expiradas</td><td id="expired"></td></tr>
-                <tr><td>Manuales</td><td id="manuals"></td></tr>
-                <tr><td>Manuales atendidas</td><td id="manualsa"></td></tr>
-                <tr><td>Manuales NO atendidas</td><td id="manualsna"></td></tr>
-                <tr><td>Contestador detectado</td><td id="answererdetected"></td></tr> -->
               </tbody>
               <tr><td><b>Llamadas:</b></td><td></td></tr>
               <tbody id="bodyScore">
@@ -107,7 +98,7 @@
             <table id="tableAgt" class="table table-striped table-condensed">
                 <thead>
                     <tr>
-                        <th>Agentes</th><th>Estado</th><th>Tiempo</th><th>Acciones</th>
+                        <th>Agentes</th><th>Estado</th><th style="width: 50px">Tiempo</th><th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tableAgBody">

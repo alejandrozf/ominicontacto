@@ -66,27 +66,9 @@ class Agente {
         return $arrData;
     }
 
-    function espiarAgente($agt, $ext) {
-        $res = $this->Agente_Model->ChanSpy($agt, $ext);
-        echo $res;
-    }
-
-    function espiaryHablarAgente($agt, $ext) {
-        $res = $this->Agente_Model->ChanSpyWhisper($agt, $ext);
-        echo $res;
-    }
-
-    function Conferencia($agt, $ext) {
-        $res = $this->Agente_Model->Conference($agt, $ext);
-        echo $res;
-    }
-
-    function Desregistrar($agt, $arrNomsColas) {
-        $res = $this->Agente_Model->AgentLogoff($agt, $arrNomsColas);
-        echo $res;
+    function ejecutarAccion($agt, $ext, $accion) {//"AGENTLOGOUT"/"AGENTUNPAUSE"/"AGENTPAUSE"/"CHANTAKECALL"/"CHANSPYWISHPER"/"CHANSPY"/"CHANCONFER"
+        $res = $this->Agente_Model->ExecAction($agt, $ext, $accion);
+        return $res;
     }
 
 }
-// $aa = new Agente();
-// $res = $aa->traerEstadoAgente(9);
-// var_dump($res);

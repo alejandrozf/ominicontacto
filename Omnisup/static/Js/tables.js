@@ -4,12 +4,17 @@ $(function () {
     createdRow: function (row, data, dataIndex) {
       if (data.estado === "READY") {
         $(row).css("background-color", "rgb(164, 235, 143)");
-      } else if (data.estado === "ONCALL") {
-        $(row).css("background-color", "rgb(44, 169, 231)");
       } else if (data.estado === "DIALING") {
         $(row).css("background-color", "rgb(249, 224, 60)");
+      } else if (data.estado === "OFFLINE") {
+        $(row).css("background-color", "#BDBDBD");
       } else {//esta en pausa
-        $(row).css("background-color", "rgb(249, 159, 157)");
+        var status = data.estado.split("-");
+        if (status[0] === "ONCALL") {
+          $(row).css("background-color", "rgb(44, 169, 231)");
+        } else {
+          $(row).css("background-color", "rgb(249, 159, 157)");
+        }
       }
     },
     columns: [

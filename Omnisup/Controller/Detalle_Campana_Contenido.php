@@ -35,12 +35,28 @@ function mostrarEstadoAgentes($camp) {
          foreach ($resul as $key => $value) {
                  $tiempo = RestarHoras(date('H:i:s', $value->getTime()), date('H:i:s'));
                  if($value->getStatus() != "" && $tiempo != "" && $value->getId() != "") {
-                     $jsonString .= '{"agente": "' . $arrAgtNoms[$i] . '", ';
-                     $jsonString .= '"estado": "' . $value->getStatus() . '", ';
-                     $jsonString .= '"tiempo": "' . $tiempo . '",';
-                     $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
-                                   . '                  <button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
-                                   . '                  <button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
+                    $status = explode("-", $value->getStatus());
+
+                    $jsonString .= '{"agente": "' . $arrAgtNoms[$i] . '", ';
+                    $jsonString .= '"tiempo": "' . $tiempo . '",';
+                        
+                    if ($status[0] !== "PAUSE") {
+                        $jsonString .= '"estado": "' . $value->getStatus() . '", ';
+                        $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs pause\' title=\'pausar agente\'><span class=\'glyphicon glyphicon-pause\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs agentlogoff\' title=\'logoff agente\'><span class=\'glyphicon glyphicon-off\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs takecall\' title=\'tomar llamada\'><span class=\'glyphicon glyphicon-share-alt\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
+                    } else {
+                        $jsonString .= '"estado": "' . $status[1] . '", ';
+                        $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs unpause\' title=\'despausar agente\'><span class=\'glyphicon glyphicon-play\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs agentlogoff\' title=\'logoff agente\'><span class=\'glyphicon glyphicon-off\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs takecall\' title=\'tomar llamada\'><span class=\'glyphicon glyphicon-share-alt\'></span></button>&nbsp;'
+                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
+                     }
                      $i++;
                  }
          }
