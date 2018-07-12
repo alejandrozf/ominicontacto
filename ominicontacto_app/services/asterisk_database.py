@@ -394,7 +394,7 @@ class TrunkFamily(AbstractFamily):
         return TroncalSIP.objects.all()
 
     def _get_nombre_family(self, trunk):
-        raise "OML/TRUNK/{0}".format(trunk.id)
+        return "OML/TRUNK/{0}".format(trunk.id)
 
     def create_families(self, trunk=None, trunks=None):
         """Crea familys en database de asterisk
