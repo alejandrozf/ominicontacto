@@ -421,7 +421,7 @@ class GlobalsFamily(AbstractFamily):
 
         return dict_globals
 
-    def create_dict(self):
+    def create_dict(self, family_member):
         dict_globals = self._genera_dict()
         return dict_globals
 
@@ -431,19 +431,7 @@ class GlobalsFamily(AbstractFamily):
     def create_families(self):
         """Crea familys en database de asterisk
         """
-
-        client = AsteriskHttpClient()
-        client.login()
-        variables = self.create_dict()
-
-        for key, val in variables.items():
-            try:
-                family = self._get_nombre_family("")
-                client.asterisk_db("DBPut", family, key, val=val)
-            except AsteriskHttpAsteriskDBError:
-                logger.exception("Error al intentar DBPut al insertar"
-                                 " en la family {0} la siguiente key={1}"
-                                 " y val={2}".format(family, key, val))
+        self.create_family("")
 
     def regenerar_familys_globals(self):
         """regenera la family de las troncales"""
