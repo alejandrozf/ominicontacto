@@ -233,27 +233,24 @@ class RutaSalienteFamily(AbstractFamily):
             'TRUNKS': len(ruta.secuencia_troncales.all())
         }
 
+        patrones = self._obtener_patrones_ordenados(ruta)
+        for orden, patron in patrones:
+            if patron.prefix:
+                prefix = len(str(patron.prefix))
+            else:
+                prefix = None
+            clave_prefix = "PREFIX/{0}".format(orden)
+            clave_prepend = "PREPEND/{0}".format(orden)
+            dict_ruta.update({clave_prefix: prefix, clave_prepend: patron.prepend})
+
+        troncales = self._obtener_troncales_ordenados(ruta)
+        for orden, troncal in troncales:
+            dict_ruta.update({"TRUNK/{0}".format(orden): troncal.troncal.nombre})
+
         return dict_ruta
-
-    def _genera_dict_patron_discado(self, patron):
-
-        if patron.prefix:
-            prefix = len(str(patron.prefix))
-        else:
-            prefix = None
-        dict_patron = {
-            'PREFIX': prefix,
-            'PREPEND': patron.prepend,
-        }
-
-        return dict_patron
 
     def create_dict(self, ruta):
         dict_ruta = self._genera_dict(ruta)
-        return dict_ruta
-
-    def create_dict_patron(self, patron):
-        dict_ruta = self._genera_dict_patron_discado(patron)
         return dict_ruta
 
     def _obtener_todas_rutas_para_generar_family(self):
@@ -271,7 +268,7 @@ class RutaSalienteFamily(AbstractFamily):
     def _get_nombre_family(self, ruta):
         raise "OML/OUTR/{0}".format(ruta.id)
 
-    def create_familys(self, ruta=None, rutas=None):
+    def create_families(self, ruta=None, rutas=None):
         """Crea familys en database de asterisk
         """
 
@@ -284,47 +281,7 @@ class RutaSalienteFamily(AbstractFamily):
         client = AsteriskHttpClient()
         client.login()
         for ruta in rutas:
-            family = self._get_nombre_family(ruta)
-            # agrego lo datos basico de la ruta saliente
-            logger.info("Creando familys para ruta saliente %s", ruta.id)
-            variables = self.create_dict(ruta)
-
-            for key, val in variables.items():
-                try:
-                    client.asterisk_db("DBPut", family, key, val=val)
-                except AsteriskHttpAsteriskDBError:
-                    logger.exception("Error al intentar DBPut al insertar"
-                                     " en la family {0} la siguiente key={1}"
-                                     " y val={2}".format(family, key, val))
-
-            # agrego los datos de los patrones de de discado
-            patrones = self._obtener_patrones_ordenados(ruta)
-            for orden, patron in patrones:
-                logger.info("Creando familys para patrones de discado %s", patron.id)
-                variables = self.create_dict_patron(patron)
-
-                for key, val in variables.items():
-                    try:
-                        key = "{0}/{1}".format(key, orden)
-                        client.asterisk_db("DBPut", family, key, val=val)
-                    except AsteriskHttpAsteriskDBError:
-                        logger.exception("Error al intentar DBPut al insertar"
-                                         " en la family {0} la siguiente key={1}"
-                                         " y val={2}".format(family, key, val))
-
-            # agrego lo datos de los troncales
-            troncales = self._obtener_troncales_ordenados(ruta)
-            for orden, troncal in troncales:
-                logger.info("Creando familys para troncales %s", troncal.troncal.id)
-
-                try:
-                    key = "TRUNK/{0}".format(orden)
-                    val = troncal.troncal.nombre
-                    client.asterisk_db("DBPut", family, key=key, val=val)
-                except AsteriskHttpAsteriskDBError:
-                    logger.exception("Error al intentar DBPut al insertar"
-                                     " en la family {0} la siguiente key={1}"
-                                     " y val={2}".format(family, key, val))
+            self.create_family(ruta)
 
     def delete_family_ruta(self, ruta):
         """Elimina una la family de una ruta"""
