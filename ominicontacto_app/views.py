@@ -683,7 +683,6 @@ def supervision_url_externa(request):
     if request.user.is_authenticated() and \
             request.user.get_supervisor_profile():
         sip_extension = request.user.get_supervisor_profile().sip_extension
-        timestamp = request.user.get_supervisor_profile().timestamp
         timestamp = request.user.generar_usuario(sip_extension).split(':')[0]
         sip_usuario = timestamp + ":" + str(sip_extension)
         request.user.get_supervisor_profile().timestamp = timestamp
