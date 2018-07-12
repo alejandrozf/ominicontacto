@@ -67,6 +67,15 @@ class AbstractFamily(object):
         if db_get.response_value == 'success':
             return True
 
+    def _get_family_instance(self):
+        if isinstance(self, RutaSalienteFamily):
+            return "OML/CAMP"
+
+    def regenerar_families(self):
+        """regenera la family"""
+        self.delete_tree_family(self._get_family_instance())
+        self.create_families()
+
 
 class CampanaFamily(AbstractFamily):
 
@@ -392,7 +401,7 @@ class RegenerarAsteriskFamilysOML(object):
         self.globals_family = GlobalsFamily()
 
     def regenerar_asterisk(self):
-        self.campana_family.regenerar_familys_campana()
+        self.campana_family.regenerar_families()
         self.agente_family.regenerar_familys_agente()
         self.pausa_family.regenerar_familys_pausa()
         self.globals_family.regenerar_familys_globals()
