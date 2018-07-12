@@ -148,7 +148,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = RutaSalienteFamily()
 
         # verifico que genere correctamente el dict de la ruta
-        dict_ruta = servicio.create_dict_ruta(ruta)
+        dict_ruta = servicio.create_dict(ruta)
 
         self.assertEqual(dict_ruta['NAME'], ruta.nombre)
         self.assertEqual(dict_ruta['RINGTIME'], ruta.ring_time)
@@ -160,16 +160,14 @@ class AsteriskDatabaseTest(OMLBaseTest):
             prefix = len(str(patron_1_1.prefix))
         else:
             prefix = None
-        dict_patron = servicio.create_dict_patron(patron_1_1)
-        self.assertEqual(dict_patron['PREFIX'], prefix)
-        self.assertEqual(dict_patron['PREPEND'], patron_1_1.prepend)
-        dict_patron = servicio.create_dict_patron(patron_1_1)
+        self.assertEqual(dict_ruta['PREFIX/1'], prefix)
+        self.assertEqual(dict_ruta['PREPEND/1'], patron_1_1.prepend)
         if patron_1_1.prefix:
             prefix = len(str(patron_1_1.prefix))
         else:
             prefix = None
-        self.assertEqual(dict_patron['PREFIX'], prefix)
-        self.assertEqual(dict_patron['PREPEND'], patron_1_2.prepend)
+        self.assertEqual(dict_ruta['PREFIX/2'], prefix)
+        self.assertEqual(dict_ruta['PREPEND/2'], patron_1_2.prepend)
 
     def test_devuelve_correctamente_values_troncales(self):
         """
