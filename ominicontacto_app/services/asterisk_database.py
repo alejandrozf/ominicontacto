@@ -38,11 +38,8 @@ class AbstractFamily(object):
                                  " en la family {0} la siguiente key={1}"
                                  " y val={2}".format(family, key, val))
 
-    def create_familys(self):
-        raise (NotImplementedError())
-
     def create_families(self):
-        pass
+        raise (NotImplementedError())
 
     def _get_nombre_family(self, family_member):
         raise (NotImplementedError())
@@ -185,7 +182,7 @@ class AgenteFamily(AbstractFamily):
     def regenerar_familys_agente(self):
         """regenera la family de los agentes"""
         self.delete_tree_family("OML/AGENT")
-        self.create_familys()
+        self.create_families()
 
 
 class PausaFamily(AbstractFamily):
@@ -219,7 +216,7 @@ class PausaFamily(AbstractFamily):
     def regenerar_familys_pausa(self):
         """regenera la family de las pausas"""
         self.delete_tree_family("OML/PAUSE")
-        self.create_familys()
+        self.create_families()
 
 
 class RutaSalienteFamily(AbstractFamily):
@@ -431,7 +428,7 @@ class GlobalsFamily(AbstractFamily):
     def _get_nombre_family(self, globales):
         raise "OML/GLOBALS"
 
-    def create_familys(self):
+    def create_families(self):
         """Crea familys en database de asterisk
         """
 
@@ -451,4 +448,4 @@ class GlobalsFamily(AbstractFamily):
     def regenerar_familys_globals(self):
         """regenera la family de las troncales"""
         self.delete_tree_family("OML/GLOBALS")
-        self.create_familys()
+        self.create_families()
