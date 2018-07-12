@@ -18,11 +18,34 @@ class AbstractFamily(object):
     def _genera_dict(self):
         raise (NotImplementedError())
 
-    def create_dict(self):
+    def create_dict(self, family_member):
         raise (NotImplementedError())
+
+    def create_family(self, family_member):
+        """Crea family en database de asterisk
+        """
+
+        client = AsteriskHttpClient()
+        client.login()
+        family = self._get_nombre_family(family_member)
+        logger.info("Creando familys para la family  %s", family)
+        variables = self.create_dict(family_member)
+        for key, val in variables.items():
+            try:
+                client.asterisk_db("DBPut", family, key, val=val)
+            except AsteriskHttpAsteriskDBError:
+                logger.exception("Error al intentar DBPut al insertar"
+                                 " en la family {0} la siguiente key={1}"
+                                 " y val={2}".format(family, key, val))
 
     def create_familys(self):
         raise (NotImplementedError())
+
+    def create_families(self):
+        pass
+
+    def _get_nombre_family(self, campana):
+        pass
 
     def delete_tree_family(self, family):
         """Elimina el tree de la family pasada por parametro"""
@@ -123,10 +146,27 @@ class CampanaFamily(AbstractFamily):
                                      " en la family {0} la siguiente key={1}"
                                      " y val={2}".format(family, key, val))
 
+    def _get_nombre_family(self, campana):
+        return "OML/CAMP/{0}".format(campana.id)
+
+    def create_families(self, campana=None, campanas=None):
+        """Crea familys en database de asterisk
+        """
+
+        if campanas:
+            pass
+        elif campana:
+            campanas = [campana]
+        else:
+            campanas = self._obtener_todas_campana_para_generar_familys()
+
+        for campana in campanas:
+            self.create_family(campana)
+
     def regenerar_familys_campana(self):
         """regenera la family de las campana"""
         self.delete_tree_family("OML/CAMP")
-        self.create_familys()
+        self.create_families()
 
 
 class AgenteFamily(AbstractFamily):
