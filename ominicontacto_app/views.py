@@ -10,8 +10,13 @@ from __future__ import unicode_literals
 
 import json
 import logging
+import base64
+import binascii
 
 from services.sms_services import SmsManager
+from defender import utils
+from defender import config
+from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render_to_response, redirect
@@ -47,16 +52,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from ominicontacto_app import version
 
-#Defender imports
-import base64
-import binascii
-
-from defender import utils
-from defender import config
-from django.utils.translation import ugettext_lazy as _
-import django.core.exceptions
-
-
 logger = logging.getLogger(__name__)
 
 # def mensajes_recibidos_view(request):
@@ -81,7 +76,7 @@ def login_view(request):
         login_unsuccessful = False
         if utils.is_already_locked(request, username=username):
             detail = "Haz tratado de loguearte cuatro veces, sin exito." \
-                     "Tu cuenta e IP han sido bloqueada por {cooloff_time_seconds} segundos. Contacta tu administrador de sistemas" \
+                     "Tu cuenta y dirección IP permanecerán bloqueadas por {cooloff_time_seconds} segundos. Contacta al Administrador" \
                      "".format(
                         cooloff_time_seconds=config.COOLOFF_TIME
                      )
