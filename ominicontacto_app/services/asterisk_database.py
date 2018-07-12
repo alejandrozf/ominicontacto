@@ -150,7 +150,6 @@ class AgenteFamily(AbstractFamily):
             'SIP': agente.sip_extension,
             'STATUS': ""
         }
-
         return dict_agente
 
     def create_dict(self, agente):
@@ -192,7 +191,6 @@ class PausaFamily(AbstractFamily):
         dict_pausa = {
             'NAME': pausa.nombre,
         }
-
         return dict_pausa
 
     def create_dict(self, pausa):
@@ -297,7 +295,7 @@ class RutaSalienteFamily(AbstractFamily):
 
     def regenerar_familys_rutas(self, ruta):
         """regenera la family de las rutas"""
-        family = "OML/OUTR/{0}".format(ruta.id)
+        family = self._get_nombre_family(ruta)
         self.delete_tree_family(family)
         self.create_families(ruta=ruta)
 
@@ -373,7 +371,7 @@ class TrunkFamily(AbstractFamily):
     def delete_family_trunk(self, trunk):
         """Elimina una la family de una ruta"""
         # primero chequeo si existe la family
-        family = "OML/TRUNK/{0}".format(trunk.id)
+        family = self._get_nombre_family(trunk)
         key = "NAME"
         existe_family = self._existe_family_key(family, key)
         if existe_family:
