@@ -296,7 +296,7 @@ class RutaSalienteFamily(AbstractFamily):
         """regenera la family de las rutas"""
         family = "OML/OUTR/{0}".format(ruta.id)
         self.delete_tree_family(family)
-        self.create_familys(ruta=ruta)
+        self.create_families(ruta=ruta)
 
     def _regenero_trunks_ruta(self, ruta):
         """
