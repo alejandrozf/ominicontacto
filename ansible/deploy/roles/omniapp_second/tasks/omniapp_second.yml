@@ -43,19 +43,19 @@
 - name: Create of oml_uwgsi.ini script
   template: src=templates/oml_uwsgi.ini.j2 dest={{ install_prefix }}bin/oml_uwsgi.ini mode=755 owner={{ usuario }} group={{ usuario }}
 
-- name: Create ominicontacto-daemon service
-  template: src=templates/ominicontacto-daemon.j2 dest=/etc/init.d/ominicontacto-daemon mode=755 owner=root group=root
+- name: Create omnileads-daemon service
+  template: src=templates/ominicontacto-daemon.j2 dest=/etc/init.d/omnileads mode=755 owner=root group=root
   become: true
   become_method: sudo
 
-- name: Start the ominicontacto-daemon service
+- name: Start the omnileads-daemon service
   command: "{{ item }}"
   with_items:
           - yum install '/lib/lsb/init-functions' -y
-          - "service ominicontacto-daemon start"
-          - "service ominicontacto-daemon stop"
-          - "chkconfig ominicontacto-daemon on"
-          - "service ominicontacto-daemon start"
+          - "service omnileads start"
+          - "service omnileads stop"
+          - "chkconfig omnileads on"
+          - "service omnileads start"
   become: true
   become_method: sudo
   ignore_errors: yes
