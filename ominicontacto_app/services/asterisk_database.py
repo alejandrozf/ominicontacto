@@ -266,7 +266,7 @@ class RutaSalienteFamily(AbstractFamily):
         return list(enumerate(ruta.secuencia_troncales.all().order_by("orden"), start=1))
 
     def _get_nombre_family(self, ruta):
-        raise "OML/OUTR/{0}".format(ruta.id)
+        return "OML/OUTR/{0}".format(ruta.id)
 
     def create_families(self, ruta=None, rutas=None):
         """Crea familys en database de asterisk
