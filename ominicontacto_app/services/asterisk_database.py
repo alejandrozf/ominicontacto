@@ -426,7 +426,7 @@ class GlobalsFamily(AbstractFamily):
         return dict_globals
 
     def _get_nombre_family(self, globales):
-        raise "OML/GLOBALS"
+        return "OML/GLOBALS"
 
     def create_families(self):
         """Crea familys en database de asterisk
