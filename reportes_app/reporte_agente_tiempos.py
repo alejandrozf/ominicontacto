@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import pygal
 
+from django.utils.translation import ugettext as _
 from django.utils import timezone
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog
@@ -52,7 +53,10 @@ class TiemposAgente(object):
     def _obtener_datos_de_pausa(self, id_pausa):
         datos = {'nombre': 'n/d', 'tipo': 'n/d'}
         if id_pausa == '0':
-            datos['nombre'] = 'ACW'
+            datos['nombre'] = _(u'ACW')
+            datos['tipo'] = Pausa.CHOICE_PRODUCTIVA
+        elif id_pausa == '00':
+            datos['nombre'] = _(u'Supervisión')
             datos['tipo'] = Pausa.CHOICE_PRODUCTIVA
         else:
             try:
