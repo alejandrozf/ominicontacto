@@ -2322,7 +2322,6 @@ class CalificacionCliente(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
     observaciones = models.TextField(blank=True, null=True)
-    wombat_id = models.IntegerField(default=0)
     agendado = models.BooleanField(default=False)
 
     # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
@@ -2414,43 +2413,6 @@ class MensajeChat(models.Model):
     mensaje = models.TextField()
     fecha_hora = models.DateTimeField(auto_now=True)
     chat = models.ForeignKey(Chat, related_name="mensajeschat")
-
-
-class WombatLogManager(models.Manager):
-
-    def actualizar_wombat_log_para_calificacion(self, calificacion):
-        """
-        Actualiza la calificacion del WombatLog. (Por haber creado/actualizado la calificación)
-        Si no existe crea una temporal.
-        """
-        try:
-            WombatLog.objects.update_or_create(
-                campana=calificacion.opcion_calificacion.campana, contacto=calificacion.contacto,
-                defaults={
-                    'agente': calificacion.agente,
-                    'estado': 'TERMINATED',
-                    'calificacion': calificacion.opcion_calificacion.nombre,
-                })
-        except WombatLog.MultipleObjectsReturned:
-            # Error, no debeía haber otro WombatLog. Puede deberse a una race condition entre la
-            # vista que califica, y la vista que recibe el POST de Wombat.
-            pass
-
-
-class WombatLog(models.Model):
-    # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
-    objects = WombatLogManager()
-
-    campana = models.ForeignKey(Campana, related_name="logswombat")
-    contacto = models.ForeignKey(Contacto)
-    agente = models.ForeignKey(AgenteProfile, related_name="logsaagente",
-                               blank=True, null=True)
-    telefono = models.CharField(max_length=128, blank=True)
-    estado = models.CharField(max_length=128)
-    calificacion = models.CharField(max_length=128, blank=True)
-    timeout = models.IntegerField(default=0)
-    metadata = models.TextField(default='')
-    fecha_hora = models.DateTimeField(auto_now=True)
 
 
 class AgendaContactoManager(models.Manager):

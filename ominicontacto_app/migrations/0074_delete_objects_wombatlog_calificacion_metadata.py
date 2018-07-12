@@ -6,11 +6,10 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-from ominicontacto_app.models import WombatLog, MetadataCliente
+from ominicontacto_app.models import MetadataCliente
 
 
 def create_delete_objects_models(apps, schema_editor):
-    WombatLog.objects.all().delete()
     MetadataCliente.objects.all().delete()
 
 

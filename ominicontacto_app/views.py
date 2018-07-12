@@ -26,7 +26,7 @@ from django.views.generic import (
 )
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, WombatLog, Campana, Contacto, QueueMember
+    Chat, MensajeChat, Campana, Contacto, QueueMember
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
@@ -656,66 +656,6 @@ def crear_chat_view(request):
     user = User.objects.get(pk=int(user))
     chat = Chat.objects.create(agente=agente, user=user)
     response = JsonResponse({'status': 'OK', 'chat': chat.pk})
-    return response
-
-
-@csrf_exempt
-def wombat_log_view(request):
-    """
-    Log de wombat insertar los log q devuelve los log de las campana de wombat
-    """
-    dict_post = request.POST
-
-    id_contacto = int(dict_post['I_ID_CLIENTE'])
-    telefono = dict_post['num']
-    estado = dict_post['state']
-    calificacion = dict_post['extstate']
-    timeout = 0
-    if 'I_TIMEOUT' in dict_post.keys():
-        timeout = int(dict_post['I_TIMEOUT'])
-    id_campana = int(dict_post['I_ID_CAMPANA'])
-    id_agente = None
-    if 'O_id_agente' in dict_post.keys():
-        id_agente = int(dict_post['O_id_agente'])
-
-    metadata = {
-        'reschedule': dict_post['reschedule'],
-        'retry': dict_post['retry']
-    }
-    agente = None
-    try:
-        campana = Campana.objects.get(pk=id_campana)
-        contacto = Contacto.objects.get(pk=id_contacto)
-        if id_agente:
-            agente = AgenteProfile.objects.get(pk=id_agente)
-    except Campana.DoesNotExist:
-        campana = None
-        logger.exception("Excepcion detectada al obtener campana "
-                         "con la id {0} no existe ".format(id_campana))
-    except Contacto.DoesNotExist:
-        contacto = None
-        logger.exception("Excepcion detectada al obtener contacto "
-                         "con la id {0} no existe ".format(id_contacto))
-    except AgenteProfile.DoesNotExist:
-        agente = None
-        logger.exception("Excepcion detectada al obtener agente "
-                         "con la id {0} no existe ".format(id_agente))
-
-    defaults = {
-        'agente': agente,
-        'telefono': telefono,
-        'estado': estado,
-        'timeout': timeout,
-        'metadata': json.dumps(metadata),
-    }
-    # Si la calificacion viene vacía, puede ser que ya se haya creado el WombatLog
-    # correspondiente. Entonces no corresponde sobreescribirla.
-    if not calificacion == '':
-        defaults['calificacion'] = calificacion
-
-    WombatLog.objects.update_or_create(campana=campana, contacto=contacto, defaults=defaults)
-
-    response = JsonResponse({'status': 'OK'})
     return response
 
 

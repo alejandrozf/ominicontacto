@@ -236,7 +236,6 @@ class CalificacionClienteFactory(DjangoModelFactory):
     contacto = SubFactory(ContactoFactory)
     agente = SubFactory(AgenteProfileFactory)
     fecha = lazy_attribute(lambda a: timezone.now())
-    wombat_id = Sequence(lambda n: n)
 
 
 class ArchivoDeAudioFactory(DjangoModelFactory):
