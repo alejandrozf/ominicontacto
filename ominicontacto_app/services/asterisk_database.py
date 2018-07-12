@@ -68,8 +68,20 @@ class AbstractFamily(object):
             return True
 
     def _get_family_instance(self):
-        if isinstance(self, RutaSalienteFamily):
+        if isinstance(self, CampanaFamily):
             return "OML/CAMP"
+        elif isinstance(self, AgenteFamily):
+            return "OML/AGENT"
+        elif isinstance(self, PausaFamily):
+            return "OML/PAUSE"
+        elif isinstance(self, RutaSalienteFamily):
+            return "OML/OUTR"
+        elif isinstance(self, TrunkFamily):
+            return "OML/TRUNK"
+        elif isinstance(self, GlobalsFamily):
+            return "OML/GLOBALS"
+        else:
+            raise (NotImplementedError())
 
     def regenerar_families(self):
         """regenera la family"""
@@ -402,9 +414,9 @@ class RegenerarAsteriskFamilysOML(object):
 
     def regenerar_asterisk(self):
         self.campana_family.regenerar_families()
-        self.agente_family.regenerar_familys_agente()
-        self.pausa_family.regenerar_familys_pausa()
-        self.globals_family.regenerar_familys_globals()
+        self.agente_family.regenerar_families()
+        self.pausa_family.regenerar_families()
+        self.globals_family.regenerar_families()
 
 
 class GlobalsFamily(AbstractFamily):
