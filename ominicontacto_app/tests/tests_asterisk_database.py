@@ -196,7 +196,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         """
         servicio = GlobalsFamily()
 
-        dict_globals = servicio.create_dict()
+        dict_globals = servicio.create_dict("")
         self.assertTrue(dict_globals['DEFAULTQUEUETIME'], 90)
         self.assertTrue(dict_globals['DEFAULTRINGTIME'], 45)
         self.assertTrue(dict_globals['LANG'], 'es')
