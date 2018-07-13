@@ -18,7 +18,7 @@ class AbstractFamily(object):
     def _create_dict(self, family_member):
         raise (NotImplementedError())
 
-    def create_family(self, family_member):
+    def _create_family(self, family_member):
         """Crea family en database de asterisk
         """
 
@@ -38,7 +38,7 @@ class AbstractFamily(object):
     def _obtener_todos(self):
         raise (NotImplementedError())
 
-    def create_families(self, modelo=None, modelos=None):
+    def _create_families(self, modelo=None, modelos=None):
         """Crea familys en database de asterisk
         """
 
@@ -50,12 +50,12 @@ class AbstractFamily(object):
             modelos = self._obtener_todos()
 
         for familia_member in modelos:
-            self.create_family(familia_member)
+            self._create_family(familia_member)
 
     def _get_nombre_family(self, family_member):
         raise (NotImplementedError())
 
-    def delete_tree_family(self, family):
+    def _delete_tree_family(self, family):
         """Elimina el tree de la family pasada por parametro"""
         try:
             client = AsteriskHttpClient()
@@ -74,7 +74,7 @@ class AbstractFamily(object):
         key = self._obtener_key_cero_dict(family_member)
         existe_family = self._existe_family_key(family, key)
         if existe_family:
-            self.delete_tree_family(family)
+            self._delete_tree_family(family)
 
     def _existe_family_key(self, family, key):
         """Consulta en la base de datos si existe la family y clave"""
@@ -95,8 +95,12 @@ class AbstractFamily(object):
 
     def regenerar_families(self):
         """regenera la family"""
-        self.delete_tree_family(self._get_nombre_families())
-        self.create_families()
+        self._delete_tree_family(self._get_nombre_families())
+        self._create_families()
+
+    def regenerar_family(self, family_member):
+        """regenera una family"""
+        self._create_families(modelo=family_member)
 
 
 class CampanaFamily(AbstractFamily):
@@ -265,7 +269,7 @@ class RutaSalienteFamily(AbstractFamily):
             try:
                 client = AsteriskHttpClient()
                 client.login()
-                family = "OML/OUTR/{0}".format(ruta.id)
+                family = self._get_nombre_family(ruta)
                 key = "TRUNK/{0}".format(orden)
                 val = troncal.troncal.nombre
                 client.asterisk_db("DBPut", family, key=key, val=val)
@@ -357,10 +361,10 @@ class GlobalsFamily(AbstractFamily):
     def _get_nombre_families(self):
         return "OML/GLOBALS"
 
-    def create_families(self):
+    def _create_families(self):
         """Crea familys en database de asterisk
         """
-        self.create_family("")
+        self._create_family("")
 
     def _obtener_key_cero_dict(self, family_member):
         return self._create_dict("").keys()[0]

@@ -56,7 +56,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_astdb.create_families(modelo=ruta)
+            self.generador_rutas_en_astdb.regenerar_family(ruta)
         except:
             logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
                              "intentar regenerar_familys_rutas()")
@@ -151,7 +151,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_trunk_en_astdb.create_families(modelo=trunk)
+            self.generador_trunk_en_astdb.regenerar_family(trunk)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar regenerar_familys_rutas()")
