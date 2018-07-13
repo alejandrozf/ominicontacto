@@ -84,8 +84,6 @@ class AbstractFamily(object):
             client.login()
             db_get = client.asterisk_db("DBGet", family, key=key)
         except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBGet al consultar con la family {0} y "
-                             "la siguiente key={1}".format(family, key))
             return False
         if db_get.response_value == 'success':
             return True
