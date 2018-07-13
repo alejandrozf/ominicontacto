@@ -38,7 +38,6 @@
       - net-snmp-devel
       - unixODBC
       - unixODBC-devel
-      - sox
       - libtiff-devel
       - audiofile-devel
       - gtk2-devel

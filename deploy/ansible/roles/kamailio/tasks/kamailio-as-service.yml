@@ -30,7 +30,7 @@
   become: true
   become_method: sudo
 
-- name: Copy of oml-freepbx/kamailio-files to the desired destinations
+- name: Copy of oml/kamailio-files to the desired destinations
   shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip"
   with_items:
       - cp kamailio-files/kamctlrc {{ kamailio_location }}/etc/kamailio/
@@ -51,6 +51,7 @@
   become: true
   become_method: sudo
 
+<<<<<<< HEAD
 - name: Execution of kamdbctl script
   shell: "echo 'y' | {{ kamailio_location }}/sbin/kamdbctl create"
   #when: kamailio_installed|failed
@@ -62,6 +63,8 @@
     - "'ya existe' not in command_result.stderr"
     - "command_result.rc != 0"
 
+=======
+>>>>>>> sigo puliendo esto todavía falta mucho
 - name: Creation of kamailio-local.cfg file
   template: src=templates/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
   tags: postinstall

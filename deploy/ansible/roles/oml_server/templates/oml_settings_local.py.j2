@@ -62,14 +62,25 @@ SESSION_COOKIE_AGE = {{ session_cookie_age }}
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 
 OML_ASTERISK_HOSTNAME = "root@{{ localhost }}"
+{% if DOCKER == 0 %}
 OML_SIP_FILENAME = "{{ asterisk_location }}/etc/asterisk/oml_sip_endpoints.conf"
 OML_QUEUES_FILENAME = "{{ asterisk_location }}/etc/asterisk/oml_queues.conf"
 OML_GLOBALS_VARIABLES_FILENAME = "{{ asterisk_location }}/etc/asterisk/oml_extensions_globals.conf"
+<<<<<<< HEAD
 OML_RUTAS_SALIENTES_FILENAME="{{ asterisk_location }}/etc/asterisk/oml_extensions_outr.conf"
 
 
+=======
+>>>>>>> sigo puliendo esto todavía falta mucho
 OML_ASTERISK_REMOTEPATH = "{{ asterisk_location }}/etc/asterisk/"
 OML_BACKLIST_REMOTEPATH  = "{{ asterisk_location }}/var/spool/asterisk/"
+{% else %}
+OML_SIP_FILENAME = "{{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/oml_sip_endpoints.conf"
+OML_QUEUES_FILENAME = "{{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/oml_queues.conf"
+OML_GLOBALS_VARIABLES_FILENAME = "{{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/oml_extensions_globals.conf"
+OML_ASTERISK_REMOTEPATH = "{{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf"
+OML_BACKLIST_REMOTEPATH  = "/var/lib/docker/volumes/bin_grabaciones/_data"
+{% endif %}
 
 OML_KAMAILIO_LOCATION = "{{ kamailio_location }}/etc/kamailio/"
 
@@ -93,8 +104,11 @@ ASTERISK = {
 
 # 'OML_RELOAD_CMD': comando a ejecutar para realizar el reload de la configuracion de Asterisk
 # **** RECORDAR: revisar permisos, usuario, etc.
-
+{% if DOCKER == 0 %}
 OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "{{ asterisk_location }}/usr/sbin/asterisk", "-rx", "core reload"]'
+{% else %}
+OML_RELOAD_CMD = '["sudo docker exec ", "-i", "asterisk", "/bin/bash", "-c",  "asterisk -rx 'core reload'"]'
+{% endif %}
 
 # 'OML_GRABACIONES_URL': url donde se encuentra las grabaciones en elastix
 # ejemplo "https://172.16.20.222/grabaciones"

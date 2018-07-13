@@ -76,7 +76,7 @@ RUN make all && make install
 
 #Creation of omnileads user
 RUN useradd omnileads
-
+RUN yum install openssl
 # Make ports available to the world outside this container
 EXPOSE 14443 5432 5060 5061 6060 6061 1080 10000-20000/udp
 

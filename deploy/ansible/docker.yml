@@ -13,5 +13,6 @@
           - {role: oml_server, tags: ['virtualenv']}
           #- docker
           - {role: docker, tags: ['docker']}
+          #- kamailio
           - {role: omniapp_second, tags: ['omniapp']}
           - deploy_supervision

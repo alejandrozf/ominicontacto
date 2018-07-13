@@ -16,22 +16,6 @@
   when: rtpengine_installed|succeeded
   tags: rtpengine
 
-- name: Check if Kamailio is installed in /opt
-  command: test -d /opt/kamailio
-  ignore_errors: true
-  register: kamailio_opt_installed
-  tags: ['postinstall','kamailio']
-  become: true
-  become_method: sudo
-
-- set_fact: kamailio_location={{ install_prefix }}kamailio
-  when: kamailio_opt_installed|failed
-  tags: ['postinstall','kamailio']
-
-- set_fact: kamailio_location=/opt/kamailio
-  when: kamailio_opt_installed|succeeded
-  tags: ['postinstall','kamailio']
-
 - name: Check if Kamailio is installed
   shell: test -f {{ kamailio_location }}/sbin/kamailio
   ignore_errors: True
@@ -48,22 +32,6 @@
   tags: kamailio
   when: kamailio_installed|succeeded
 
-- name: Check if Asterisk is installed in /etc
-  command: test -d /etc/asterisk
-  ignore_errors: true
-  register: asterisk_etc_installed
-  tags: ['postinstall','asterisk']
-  become: true
-  become_method: sudo
-
-- set_fact: asterisk_location={{ install_prefix }}asterisk
-  when: asterisk_etc_installed|failed
-  tags: ['postinstall','asterisk']
-
-- set_fact: asterisk_location=
-  when: asterisk_etc_installed|succeeded
-  tags: ['postinstall','asterisk']
-
 - name: Check if Asterisk is installed
   shell: "test -f {{ install_prefix }}asterisk/sbin/asterisk || test -f /usr/sbin/asterisk"
   register: asterisk_installed
@@ -79,6 +47,8 @@
 - debug: msg="Asterisk ya se encuentra instalado se omite instalación"
   when: asterisk_installed|succeeded
   tags: asterisk
+
+- include: roles/kamailio/tasks/postgresusers.yml
 
 - name: Installation of docker-engine required packages
   yum: name={{ item }} state=present
@@ -125,12 +95,6 @@
 - name: Creation of openssl.cnf
   template: src=roles/kamailio/templates/openssl.cnf.j2 dest=/tmp/openssl.cnf mode=755
 
-- name: Creation of kamailio.service
-  template: src=roles/kamailio/templates/kamailio.service.j2 dest=/tmp/kamailio.service mode=700
-
-- name: Creation of kamailio in /etc/default
-  template: src=roles/kamailio/templates/kamailio.j2 dest=/tmp/kamailio mode=700
-
 - name: Creation of script conversor.sh
   template: src=roles/asterisk/templates/conversor.sh dest=/tmp/conversor.sh mode=700
 
@@ -139,9 +103,7 @@
   with_items:
     - kamailio
     - asterisk
-    
-- name: Execution of run-docker.sh init script
-  shell: "sh -x run-docker.sh chdir={{ install_prefix }}bin"
-  tags: docker
 
-- include: roles/kamailio/tasks/postgresusers.yml
+- name: Execution of run-docker.sh init script
+  shell: "./run-docker.sh chdir={{ install_prefix }}bin"
+  tags: docker

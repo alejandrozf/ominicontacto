@@ -1,0 +1,68 @@
+---
+- set_fact: omnisup_dir={{ install_prefix }}
+
+
+- file: path={{ install_prefix }}Omnisup state=absent
+
+- name: Install of php56-fpm
+  yum: name=php56w-fpm.x86_64 state=present
+  become: yes
+  become_method: sudo
+  when: asterisk_location != ""
+
+- name: Install of php-fpm
+  yum: name=php-fpm.x86_64 state=present
+  become: yes
+  become_method: sudo
+  when: asterisk_location == ""
+
+- name: Modify of php.ini
+  lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
+  become: yes
+  become_method: sudo
+
+#- name: Edit sudoers to permit apache users to run asterisk commands
+#  lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL = NOPASSWD: {{ install_prefix }}asterisk/sbin/asterisk\""
+#  become: yes
+#  become_method: sudo
+
+- name: Modify of /php-fpm.d/php-fpm.sock
+  template: src=templates/www.conf.j2 dest=/etc/php-fpm.d/www.conf
+  become: yes
+  become_method: sudo
+
+- name: Enable and start of php-fpm service
+  shell: "{{ item }}"
+  with_items:
+      - systemctl start php-fpm
+      - systemctl enable php-fpm
+
+- name: Modify of config.js in /static/Js
+  template: "src=templates/config.js.j2 dest={{ omnisup_dir }}ominicontacto/Omnisup/static/Js/config.js"
+
+- name: Create simbolic link of Omnisup directory
+  file: src={{ omnisup_dir }}/ominicontacto/Omnisup dest={{ omnisup_dir }}Omnisup state=link owner={{ usuario }} group={{ usuario }} mode=755
+
+- name: Restart php-fpm service
+  service: name=php-fpm state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+
+- name: Set permissions of required to {{ usuario }}'s user
+  shell: "{{ item }}"
+  with_items:
+      - "chown {{ usuario }}:{{ usuario }} -R /var/run/php-fpm/php-fpm.sock"
+      - "chown {{ usuario }}:{{ usuario }} -R {{ omnisup_dir }}Omnisup"
+      - "chown {{ usuario }}:{{ usuario }} -R /var/lib/nginx/"
+  become: yes
+  become_method: sudo
+
+- name: Creation of /etc/nginx/conf.d/supervision.conf
+  template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
+  become: yes
+  become_method: sudo
+
+- name: Restart of nginx
+  service: name=nginx state=restarted enabled=yes
+  become: yes
+  become_method: sudo

@@ -52,6 +52,7 @@
       - unixODBC
       - kernel-devel
       - git
+      - sox
       - crontabs
       - cronie
       - openssl-devel

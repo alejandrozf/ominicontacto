@@ -26,7 +26,7 @@ services:
       options:
         max-size: "20M"
         max-file: "10"
-    network_mode: host
+    #network_mode: host
     #pid:
     ports:
      - "5060:5060/udp"
@@ -55,6 +55,9 @@ services:
       - type: bind
         source: {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis
         target: {{ asterisk_location }}/var/lib/asterisk/agi-bin/
+      - type: bind
+        source: /usr/pgsql-9.6/lib/
+        target: /usr/pgsql-9.6/lib/
       - type: volume
         source: grabaciones
         target: {{ asterisk_location }}/var/spool/asterisk/asternic
@@ -84,7 +87,7 @@ services:
       options:
         max-size: "20M"
         max-file: "10"
-    network_mode: host
+    #network_mode: host
     #pid:
     ports:
      - "14443:14443/tcp"
@@ -112,8 +115,9 @@ services:
       - type: bind
         source: {{ kamailio_location }}/var/log/
         target: /var/log/kamailio
-      #- type: volume
-      #  source: certificados
-      #  target: /opt/omnileads/kamailio/etc/certs/
+      - type: volume
+        source: certificados
+        target: /opt/omnileads/kamailio/etc/certs/
 volumes:
   grabaciones:
+  certificados:
