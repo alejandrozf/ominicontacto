@@ -256,12 +256,6 @@ class RutaSalienteFamily(AbstractFamily):
         if existe_family:
             self.delete_tree_family(family)
 
-    def regenerar_familys_rutas(self, ruta):
-        """regenera la family de las rutas"""
-        family = self._get_nombre_family(ruta)
-        self.delete_tree_family(family)
-        self.create_families(modelo=ruta)
-
     def _regenero_trunks_ruta(self, ruta):
         """
         Regenero las entradas para los trunks en la ruta
@@ -318,7 +312,7 @@ class TrunkFamily(AbstractFamily):
         return "OML/TRUNK/{0}".format(trunk.id)
 
     def delete_family_trunk(self, trunk):
-        """Elimina una la family de una ruta"""
+        """Elimina una la family de un troncal"""
         # primero chequeo si existe la family
         family = self._get_nombre_family(trunk)
         key = "NAME"
