@@ -260,7 +260,7 @@ class RutaSalienteFamily(AbstractFamily):
         """regenera la family de las rutas"""
         family = self._get_nombre_family(ruta)
         self.delete_tree_family(family)
-        self.create_families(ruta=ruta)
+        self.create_families(modelo=ruta)
 
     def _regenero_trunks_ruta(self, ruta):
         """
