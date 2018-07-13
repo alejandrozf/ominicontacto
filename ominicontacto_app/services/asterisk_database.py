@@ -64,6 +64,18 @@ class AbstractFamily(object):
         except AsteriskHttpAsteriskDBError:
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
+    def _obtener_key_cero_dict(self, family_member):
+        pass
+
+    def delete_family(self, family_member):
+        """Elimina una la family de astdb"""
+        # primero chequeo si existe la family
+        family = self._get_nombre_family(family_member)
+        key = self._obtener_key_cero_dict()
+        existe_family = self._existe_family_key(family, key)
+        if existe_family:
+            self.delete_tree_family(family)
+
     def _existe_family_key(self, family, key):
         """Consulta en la base de datos si existe la family y clave"""
 
@@ -287,14 +299,8 @@ class TrunkFamily(AbstractFamily):
     def _get_nombre_family(self, trunk):
         return "OML/TRUNK/{0}".format(trunk.id)
 
-    def delete_family_trunk(self, trunk):
-        """Elimina una la family de un troncal"""
-        # primero chequeo si existe la family
-        family = self._get_nombre_family(trunk)
-        key = "NAME"
-        existe_family = self._existe_family_key(family, key)
-        if existe_family:
-            self.delete_tree_family(family)
+    def _obtener_key_cero_dict(self, trunk):
+        return self._create_dict(trunk)
 
     def _get_nombre_families(self):
         return "OML/TRUNK"

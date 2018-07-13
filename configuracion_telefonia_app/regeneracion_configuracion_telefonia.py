@@ -165,7 +165,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_trunk_en_astdb.delete_family_trunk(trunk)
+            self.generador_trunk_en_astdb.delete_family(trunk)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar delete_family_trunk()")
