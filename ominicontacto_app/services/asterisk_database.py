@@ -82,20 +82,7 @@ class AbstractFamily(object):
             return True
 
     def _get_family_instance(self):
-        if isinstance(self, CampanaFamily):
-            return "OML/CAMP"
-        elif isinstance(self, AgenteFamily):
-            return "OML/AGENT"
-        elif isinstance(self, PausaFamily):
-            return "OML/PAUSE"
-        elif isinstance(self, RutaSalienteFamily):
-            return "OML/OUTR"
-        elif isinstance(self, TrunkFamily):
-            return "OML/TRUNK"
-        elif isinstance(self, GlobalsFamily):
-            return "OML/GLOBALS"
-        else:
-            raise (NotImplementedError())
+        raise (NotImplementedError())
 
     def regenerar_families(self):
         """regenera la family"""
@@ -156,6 +143,12 @@ class CampanaFamily(AbstractFamily):
     def _get_nombre_family(self, campana):
         return "OML/CAMP/{0}".format(campana.id)
 
+    def _get_family_instance(self):
+        if isinstance(self, CampanaFamily):
+            return "OML/CAMP"
+        else:
+            raise TypeError('Se esperaba una CampanaFamily es otro tipo AbstractFamily')
+
 
 class AgenteFamily(AbstractFamily):
 
@@ -179,6 +172,12 @@ class AgenteFamily(AbstractFamily):
     def _get_nombre_family(self, agente):
         return "OML/AGENT/{0}".format(agente.id)
 
+    def _get_family_instance(self):
+        if isinstance(self, AgenteFamily):
+            return "OML/AGENT"
+        else:
+            raise TypeError('Se esperaba una AgenteFamily es otro tipo AbstractFamily')
+
 
 class PausaFamily(AbstractFamily):
 
@@ -199,6 +198,12 @@ class PausaFamily(AbstractFamily):
 
     def _get_nombre_family(self, pausa):
         return "OML/PAUSE/{0}".format(pausa.id)
+
+    def _get_family_instance(self):
+        if isinstance(self, PausaFamily):
+            return "OML/PAUSE"
+        else:
+            raise TypeError('Se esperaba una AgenteFamily es otro tipo AbstractFamily')
 
 
 class RutaSalienteFamily(AbstractFamily):
@@ -246,6 +251,12 @@ class RutaSalienteFamily(AbstractFamily):
 
     def _get_nombre_family(self, ruta):
         return "OML/OUTR/{0}".format(ruta.id)
+
+    def _get_family_instance(self):
+        if isinstance(self, RutaSalienteFamily):
+            return "OML/OUTR"
+        else:
+            raise TypeError('Se esperaba una RutaSalienteFamily es otro tipo AbstractFamily')
 
     def delete_family_ruta(self, ruta):
         """Elimina una la family de una ruta"""
@@ -320,6 +331,12 @@ class TrunkFamily(AbstractFamily):
         if existe_family:
             self.delete_tree_family(family)
 
+    def _get_family_instance(self):
+        if isinstance(self, TrunkFamily):
+            return "OML/TRUNK"
+        else:
+            raise TypeError('Se esperaba una TrunkFamily es otro tipo AbstractFamily')
+
 
 class RegenerarAsteriskFamilysOML(object):
 
@@ -369,6 +386,12 @@ class GlobalsFamily(AbstractFamily):
 
     def _get_nombre_family(self, globales):
         return "OML/GLOBALS"
+
+    def _get_family_instance(self):
+        if isinstance(self, GlobalsFamily):
+            return "OML/GLOBALS"
+        else:
+            raise TypeError('Se esperaba una GlobalsFamily es otro tipo AbstractFamily')
 
     def create_families(self):
         """Crea familys en database de asterisk
