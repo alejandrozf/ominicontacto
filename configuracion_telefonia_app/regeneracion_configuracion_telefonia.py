@@ -56,7 +56,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_astdb.regenerar_familys_rutas(ruta)
+            self.generador_rutas_en_astdb.create_families(modelo=ruta)
         except:
             logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
                              "intentar regenerar_familys_rutas()")
@@ -82,7 +82,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_astdb.create_families(modelo=ruta)
+            self.generador_rutas_en_astdb.regenerar_family_trunk_ruta(ruta)
         except:
             logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
                              "intentar delete_family_ruta()")
