@@ -232,7 +232,7 @@ class RutaSalienteFamily(AbstractFamily):
         dict_ruta = self._genera_dict(ruta)
         return dict_ruta
 
-    def _obtener_todas_rutas_para_generar_family(self):
+    def _obtener_todos(self):
         """Obtengo todos las rutas salientes para generar family"""
         return RutaSaliente.objects.all()
 
@@ -246,21 +246,6 @@ class RutaSalienteFamily(AbstractFamily):
 
     def _get_nombre_family(self, ruta):
         return "OML/OUTR/{0}".format(ruta.id)
-
-    def create_families(self, ruta=None, rutas=None):
-        """Crea familys en database de asterisk
-        """
-
-        if rutas:
-            pass
-        elif ruta:
-            rutas = [ruta]
-        else:
-            rutas = self._obtener_todas_rutas_para_generar_family()
-        client = AsteriskHttpClient()
-        client.login()
-        for ruta in rutas:
-            self.create_family(ruta)
 
     def delete_family_ruta(self, ruta):
         """Elimina una la family de una ruta"""
