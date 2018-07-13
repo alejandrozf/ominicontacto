@@ -15,10 +15,7 @@ logger = _logging.getLogger(__name__)
 class AbstractFamily(object):
     """class abstract de family de asterisk"""
 
-    def _genera_dict(self):
-        raise (NotImplementedError())
-
-    def create_dict(self, family_member):
+    def _create_dict(self, family_member):
         raise (NotImplementedError())
 
     def create_family(self, family_member):
@@ -29,7 +26,7 @@ class AbstractFamily(object):
         client.login()
         family = self._get_nombre_family(family_member)
         logger.info("Creando familys para la family  %s", family)
-        variables = self.create_dict(family_member)
+        variables = self._create_dict(family_member)
         for key, val in variables.items():
             try:
                 client.asterisk_db("DBPut", family, key, val=val)
@@ -92,7 +89,7 @@ class AbstractFamily(object):
 
 class CampanaFamily(AbstractFamily):
 
-    def _genera_dict(self, campana):
+    def _create_dict(self, campana):
 
         dict_campana = {
             'QNAME': "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
@@ -131,10 +128,6 @@ class CampanaFamily(AbstractFamily):
 
         return dict_campana
 
-    def create_dict(self, campana):
-        dict_campana = self._genera_dict(campana)
-        return dict_campana
-
     def _obtener_todos(self):
         """Devuelve las campanas para generar .
         """
@@ -152,17 +145,13 @@ class CampanaFamily(AbstractFamily):
 
 class AgenteFamily(AbstractFamily):
 
-    def _genera_dict(self, agente):
+    def _create_dict(self, agente):
 
         dict_agente = {
             'NAME': agente.user.get_full_name(),
             'SIP': agente.sip_extension,
             'STATUS': ""
         }
-        return dict_agente
-
-    def create_dict(self, agente):
-        dict_agente = self._genera_dict(agente)
         return dict_agente
 
     def _obtener_todos(self):
@@ -181,15 +170,11 @@ class AgenteFamily(AbstractFamily):
 
 class PausaFamily(AbstractFamily):
 
-    def _genera_dict(self, pausa):
+    def _create_dict(self, pausa):
 
         dict_pausa = {
             'NAME': pausa.nombre,
         }
-        return dict_pausa
-
-    def create_dict(self, pausa):
-        dict_pausa = self._genera_dict(pausa)
         return dict_pausa
 
     def _obtener_todos(self):
@@ -203,12 +188,12 @@ class PausaFamily(AbstractFamily):
         if isinstance(self, PausaFamily):
             return "OML/PAUSE"
         else:
-            raise TypeError('Se esperaba una AgenteFamily es otro tipo AbstractFamily')
+            raise TypeError('Se esperaba una PausaFamily es otro tipo AbstractFamily')
 
 
 class RutaSalienteFamily(AbstractFamily):
 
-    def _genera_dict(self, ruta):
+    def _create_dict(self, ruta):
 
         dict_ruta = {
             'NAME': ruta.nombre,
@@ -231,10 +216,6 @@ class RutaSalienteFamily(AbstractFamily):
         for orden, troncal in troncales:
             dict_ruta.update({"TRUNK/{0}".format(orden): troncal.troncal.nombre})
 
-        return dict_ruta
-
-    def create_dict(self, ruta):
-        dict_ruta = self._genera_dict(ruta)
         return dict_ruta
 
     def _obtener_todos(self):
@@ -301,7 +282,7 @@ class RutaSalienteFamily(AbstractFamily):
 
 class TrunkFamily(AbstractFamily):
 
-    def _genera_dict(self, trunk):
+    def _create_dict(self, trunk):
 
         dict_trunk = {
             'NAME': trunk.nombre,
@@ -309,10 +290,6 @@ class TrunkFamily(AbstractFamily):
             'CALLERID': trunk.caller_id,
         }
 
-        return dict_trunk
-
-    def create_dict(self, trunk):
-        dict_trunk = self._genera_dict(trunk)
         return dict_trunk
 
     def _obtener_todos(self):
@@ -355,7 +332,7 @@ class RegenerarAsteriskFamilysOML(object):
 
 class GlobalsFamily(AbstractFamily):
 
-    def _genera_dict(self):
+    def _create_dict(self, family_member):
 
         dict_globals = {
             'DEFAULTQUEUETIME': 90,
@@ -378,10 +355,6 @@ class GlobalsFamily(AbstractFamily):
             'TYPECALL/9': 'transferOutNumCall',
         }
 
-        return dict_globals
-
-    def create_dict(self, family_member):
-        dict_globals = self._genera_dict()
         return dict_globals
 
     def _get_nombre_family(self, globales):

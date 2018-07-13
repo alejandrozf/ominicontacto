@@ -29,7 +29,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         este test testea el diccionario de la family de la campana
         """
         servicio = CampanaFamily()
-        dict_campana = servicio.create_dict(self.campana_entrante)
+        dict_campana = servicio._create_dict(self.campana_entrante)
 
         keys_asterisk = ['QNAME', 'TYPE', 'REC', 'AMD', 'CALLAGENTACTION',
                          'RINGTIME', 'QUEUETIME', 'MAXQCALLS', 'SL', 'TC',
@@ -43,7 +43,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
          no encuentra key
         """
         servicio = CampanaFamily()
-        dict_campana = servicio.create_dict(self.campana_entrante)
+        dict_campana = servicio._create_dict(self.campana_entrante)
 
         self.assertNotIn('WAITTIME', dict_campana.keys())
 
@@ -55,7 +55,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         entrante
         """
         servicio = CampanaFamily()
-        dict_campana = servicio.create_dict(self.campana_entrante)
+        dict_campana = servicio._create_dict(self.campana_entrante)
 
         nombre_campana = "{0}_{1}".format(self.campana_entrante.id,
                                           elimina_espacios(self.campana_entrante.nombre))
@@ -84,7 +84,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         dialer
         """
         servicio = CampanaFamily()
-        dict_campana = servicio.create_dict(self.campana_dialer)
+        dict_campana = servicio._create_dict(self.campana_dialer)
 
         nombre_campana = "{0}_{1}".format(self.campana_dialer.id,
                                           elimina_espacios(self.campana_dialer.nombre))
@@ -113,7 +113,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         este test testea el diccionario de la family del agente
         """
         servicio = AgenteFamily()
-        dict_agente = servicio.create_dict(self.agente)
+        dict_agente = servicio._create_dict(self.agente)
 
         self.assertItemsEqual(['NAME', 'SIP', 'STATUS'], dict_agente.keys())
 
@@ -122,7 +122,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         este test testea el diccionario de la family del agente
         """
         servicio = AgenteFamily()
-        dict_agente = servicio.create_dict(self.agente)
+        dict_agente = servicio._create_dict(self.agente)
 
         self.assertNotIn('PASS', dict_agente.keys())
 
@@ -131,7 +131,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         este test testea los values del diccionario de la family del agente
         """
         servicio = AgenteFamily()
-        dict_agente = servicio.create_dict(self.agente)
+        dict_agente = servicio._create_dict(self.agente)
 
         self.assertEqual(dict_agente['NAME'], self.agente.user.get_full_name())
         self.assertEqual(dict_agente['SIP'], self.agente.sip_extension)
@@ -148,7 +148,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = RutaSalienteFamily()
 
         # verifico que genere correctamente el dict de la ruta
-        dict_ruta = servicio.create_dict(ruta)
+        dict_ruta = servicio._create_dict(ruta)
 
         self.assertEqual(dict_ruta['NAME'], ruta.nombre)
         self.assertEqual(dict_ruta['RINGTIME'], ruta.ring_time)
@@ -179,12 +179,12 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = TrunkFamily()
 
         # verifico que genere correctamente el dict de los troncales
-        dict_troncal = servicio.create_dict(troncal_1)
+        dict_troncal = servicio._create_dict(troncal_1)
         self.assertEqual(dict_troncal['NAME'], troncal_1.nombre)
         self.assertEqual(dict_troncal['CHANNELS'], troncal_1.canales_maximos)
         self.assertEqual(dict_troncal['CALLERID'], troncal_1.caller_id)
 
-        dict_troncal = servicio.create_dict(troncal_2)
+        dict_troncal = servicio._create_dict(troncal_2)
         self.assertEqual(dict_troncal['NAME'], troncal_2.nombre)
         self.assertEqual(dict_troncal['CHANNELS'], troncal_2.canales_maximos)
         self.assertEqual(dict_troncal['CALLERID'], troncal_2.caller_id)
@@ -196,7 +196,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         """
         servicio = GlobalsFamily()
 
-        dict_globals = servicio.create_dict("")
+        dict_globals = servicio._create_dict("")
         self.assertTrue(dict_globals['DEFAULTQUEUETIME'], 90)
         self.assertTrue(dict_globals['DEFAULTRINGTIME'], 45)
         self.assertTrue(dict_globals['LANG'], 'es')
