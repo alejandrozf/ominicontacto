@@ -71,7 +71,7 @@ class AbstractFamily(object):
         """Elimina una la family de astdb"""
         # primero chequeo si existe la family
         family = self._get_nombre_family(family_member)
-        key = self._obtener_key_cero_dict()
+        key = self._obtener_key_cero_dict(family_member)
         existe_family = self._existe_family_key(family, key)
         if existe_family:
             self.delete_tree_family(family)
