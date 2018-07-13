@@ -38,8 +38,22 @@ class AbstractFamily(object):
                                  " en la family {0} la siguiente key={1}"
                                  " y val={2}".format(family, key, val))
 
-    def create_families(self):
+    def _obtener_todos(self):
         raise (NotImplementedError())
+
+    def create_families(self, modelo=None, modelos=None):
+        """Crea familys en database de asterisk
+        """
+
+        if modelos:
+            pass
+        elif modelo:
+            modelos = [modelo]
+        else:
+            modelos = self._obtener_todos()
+
+        for familia_member in modelos:
+            self.create_family(familia_member)
 
     def _get_nombre_family(self, family_member):
         raise (NotImplementedError())
@@ -134,27 +148,13 @@ class CampanaFamily(AbstractFamily):
         dict_campana = self._genera_dict(campana)
         return dict_campana
 
-    def _obtener_todas_campana_para_generar_familys(self):
+    def _obtener_todos(self):
         """Devuelve las campanas para generar .
         """
         return Campana.objects.obtener_all_dialplan_asterisk()
 
     def _get_nombre_family(self, campana):
         return "OML/CAMP/{0}".format(campana.id)
-
-    def create_families(self, campana=None, campanas=None):
-        """Crea familys en database de asterisk
-        """
-
-        if campanas:
-            pass
-        elif campana:
-            campanas = [campana]
-        else:
-            campanas = self._obtener_todas_campana_para_generar_familys()
-
-        for campana in campanas:
-            self.create_family(campana)
 
 
 class AgenteFamily(AbstractFamily):
@@ -172,27 +172,12 @@ class AgenteFamily(AbstractFamily):
         dict_agente = self._genera_dict(agente)
         return dict_agente
 
-    def _obtener_todos_agentes_para_generar_family(self):
+    def _obtener_todos(self):
         """Obtengo todos los agentes activos"""
         return AgenteProfile.objects.obtener_activos()
 
     def _get_nombre_family(self, agente):
         return "OML/AGENT/{0}".format(agente.id)
-
-    def create_families(self, agente=None, agentes=None):
-        """Crea familys en database de asterisk
-        """
-
-        if agentes:
-            pass
-        elif agente:
-            agentes = [agente]
-        else:
-            agentes = self._obtener_todos_agentes_para_generar_family()
-        client = AsteriskHttpClient()
-        client.login()
-        for agente in agentes:
-            self.create_family(agente)
 
 
 class PausaFamily(AbstractFamily):
@@ -208,25 +193,12 @@ class PausaFamily(AbstractFamily):
         dict_pausa = self._genera_dict(pausa)
         return dict_pausa
 
-    def _obtener_todas_pausas_para_generar_family(self):
+    def _obtener_todos(self):
         """Obtener todas pausas"""
         return Pausa.objects.activas()
 
     def _get_nombre_family(self, pausa):
         return "OML/PAUSE/{0}".format(pausa.id)
-
-    def create_families(self, pausa=None, pausas=None):
-        """Crea family en database asterisk"""
-
-        if pausas:
-            pass
-        elif pausa:
-            pausas = [pausa]
-        else:
-            pausas = self._obtener_todas_pausas_para_generar_family()
-
-        for pausa in pausas:
-            self.create_family(pausa)
 
 
 class RutaSalienteFamily(AbstractFamily):
@@ -353,26 +325,12 @@ class TrunkFamily(AbstractFamily):
         dict_trunk = self._genera_dict(trunk)
         return dict_trunk
 
-    def _obtener_todas_trunks_para_generar_family(self):
+    def _obtener_todos(self):
         """Obtengo todos los troncales sip para generar family"""
         return TroncalSIP.objects.all()
 
     def _get_nombre_family(self, trunk):
         return "OML/TRUNK/{0}".format(trunk.id)
-
-    def create_families(self, trunk=None, trunks=None):
-        """Crea familys en database de asterisk
-        """
-
-        if trunks:
-            pass
-        elif trunk:
-            trunks = [trunk]
-        else:
-            trunks = self._obtener_todas_trunks_para_generar_family()
-
-        for trunk in trunks:
-            self.create_family(trunk)
 
     def delete_family_trunk(self, trunk):
         """Elimina una la family de una ruta"""
