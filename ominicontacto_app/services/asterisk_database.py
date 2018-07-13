@@ -156,11 +156,6 @@ class CampanaFamily(AbstractFamily):
         for campana in campanas:
             self.create_family(campana)
 
-    def regenerar_familys_campana(self):
-        """regenera la family de las campana"""
-        self.delete_tree_family("OML/CAMP")
-        self.create_families()
-
 
 class AgenteFamily(AbstractFamily):
 
@@ -199,11 +194,6 @@ class AgenteFamily(AbstractFamily):
         for agente in agentes:
             self.create_family(agente)
 
-    def regenerar_familys_agente(self):
-        """regenera la family de los agentes"""
-        self.delete_tree_family("OML/AGENT")
-        self.create_families()
-
 
 class PausaFamily(AbstractFamily):
 
@@ -237,11 +227,6 @@ class PausaFamily(AbstractFamily):
 
         for pausa in pausas:
             self.create_family(pausa)
-
-    def regenerar_familys_pausa(self):
-        """regenera la family de las pausas"""
-        self.delete_tree_family("OML/PAUSE")
-        self.create_families()
 
 
 class RutaSalienteFamily(AbstractFamily):
@@ -398,11 +383,6 @@ class TrunkFamily(AbstractFamily):
         if existe_family:
             self.delete_tree_family(family)
 
-    def regenerar_familys_trunks(self):
-        """regenera la family de las troncales"""
-        self.delete_tree_family("OML/TRUNK")
-        self.create_families()
-
 
 class RegenerarAsteriskFamilysOML(object):
 
@@ -457,8 +437,3 @@ class GlobalsFamily(AbstractFamily):
         """Crea familys en database de asterisk
         """
         self.create_family("")
-
-    def regenerar_familys_globals(self):
-        """regenera la family de las troncales"""
-        self.delete_tree_family("OML/GLOBALS")
-        self.create_families()
