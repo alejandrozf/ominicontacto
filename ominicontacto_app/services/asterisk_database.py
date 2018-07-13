@@ -65,7 +65,7 @@ class AbstractFamily(object):
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
     def _obtener_key_cero_dict(self, family_member):
-        pass
+        raise (NotImplementedError())
 
     def delete_family(self, family_member):
         """Elimina una la family de astdb"""
@@ -151,6 +151,9 @@ class CampanaFamily(AbstractFamily):
     def _get_nombre_families(self):
         return "OML/CAMP"
 
+    def _obtener_key_cero_dict(self, campana):
+        return self._create_dict(campana).keys()[0]
+
 
 class AgenteFamily(AbstractFamily):
 
@@ -173,6 +176,9 @@ class AgenteFamily(AbstractFamily):
     def _get_nombre_families(self):
         return "OML/AGENT"
 
+    def _obtener_key_cero_dict(self, agente):
+        return self._create_dict(agente).keys()[0]
+
 
 class PausaFamily(AbstractFamily):
 
@@ -192,6 +198,9 @@ class PausaFamily(AbstractFamily):
 
     def _get_nombre_families(self):
         return "OML/PAUSE"
+
+    def _obtener_key_cero_dict(self, pausa):
+        return self._create_dict(pausa).keys()[0]
 
 
 class RutaSalienteFamily(AbstractFamily):
@@ -239,14 +248,8 @@ class RutaSalienteFamily(AbstractFamily):
     def _get_nombre_families(self):
         return "OML/OUTR"
 
-    def delete_family_ruta(self, ruta):
-        """Elimina una la family de una ruta"""
-        # primero chequeo si existe la family
-        family = "OML/OUTR/{0}".format(ruta.id)
-        key = "NAME"
-        existe_family = self._existe_family_key(family, key)
-        if existe_family:
-            self.delete_tree_family(family)
+    def _obtener_key_cero_dict(self, ruta):
+        return self._create_dict(ruta).keys()[0]
 
     def _regenero_trunks_ruta(self, ruta):
         """
@@ -273,8 +276,8 @@ class RutaSalienteFamily(AbstractFamily):
 
     def regenerar_family_trunk_ruta(self, ruta):
         """regeneros lso troncales de la ruta"""
-        family = "OML/OUTR/{0}".format(ruta.id)
-        key = "NAME"
+        family = self._get_nombre_family(ruta)
+        key = self._obtener_key_cero_dict(ruta)
         existe_family = self._existe_family_key(family, key)
         if existe_family:
             self._regenero_trunks_ruta(ruta)
@@ -300,7 +303,7 @@ class TrunkFamily(AbstractFamily):
         return "OML/TRUNK/{0}".format(trunk.id)
 
     def _obtener_key_cero_dict(self, trunk):
-        return self._create_dict(trunk)
+        return self._create_dict(trunk).keys()[0]
 
     def _get_nombre_families(self):
         return "OML/TRUNK"
@@ -358,3 +361,6 @@ class GlobalsFamily(AbstractFamily):
         """Crea familys en database de asterisk
         """
         self.create_family("")
+
+    def _obtener_key_cero_dict(self, family_member):
+        return self._create_dict("").keys()[0]

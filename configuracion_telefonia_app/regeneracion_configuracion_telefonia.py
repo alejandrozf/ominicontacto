@@ -69,7 +69,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_astdb.delete_family_ruta(ruta)
+            self.generador_rutas_en_astdb.delete_family(ruta)
         except:
             logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
                              "intentar delete_family_ruta()")
