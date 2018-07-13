@@ -49,7 +49,7 @@ class ActivacionQueueService(object):
         else:
             self.config_queues_file.copy_asterisk()
             self.reload_asterisk_config.reload_asterisk()
-            self.asterisk_database.regenerar_familys_campana()
+            self.asterisk_database.regenerar_families()
 
     def activar(self):
         self._generar_y_recargar_configuracion_asterisk()

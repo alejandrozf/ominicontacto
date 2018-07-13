@@ -12,9 +12,98 @@ import logging as _logging
 logger = _logging.getLogger(__name__)
 
 
-class CampanaFamily(object):
+class AbstractFamily(object):
+    """class abstract de family de asterisk"""
 
-    def _genera_dict(self, campana):
+    def _create_dict(self, family_member):
+        raise (NotImplementedError())
+
+    def _create_family(self, family_member):
+        """Crea family en database de asterisk
+        """
+
+        client = AsteriskHttpClient()
+        client.login()
+        family = self._get_nombre_family(family_member)
+        logger.info("Creando familys para la family  %s", family)
+        variables = self._create_dict(family_member)
+        for key, val in variables.items():
+            try:
+                client.asterisk_db("DBPut", family, key, val=val)
+            except AsteriskHttpAsteriskDBError:
+                logger.exception("Error al intentar DBPut al insertar"
+                                 " en la family {0} la siguiente key={1}"
+                                 " y val={2}".format(family, key, val))
+
+    def _obtener_todos(self):
+        raise (NotImplementedError())
+
+    def _create_families(self, modelo=None, modelos=None):
+        """Crea familys en database de asterisk
+        """
+
+        if modelos:
+            pass
+        elif modelo:
+            modelos = [modelo]
+        else:
+            modelos = self._obtener_todos()
+
+        for familia_member in modelos:
+            self._create_family(familia_member)
+
+    def _get_nombre_family(self, family_member):
+        raise (NotImplementedError())
+
+    def _delete_tree_family(self, family):
+        """Elimina el tree de la family pasada por parametro"""
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.asterisk_db_deltree(family)
+        except AsteriskHttpAsteriskDBError:
+            logger.exception("Error al intentar DBDelTree de {0}".format(family))
+
+    def _obtener_key_cero_dict(self, family_member):
+        raise (NotImplementedError())
+
+    def delete_family(self, family_member):
+        """Elimina una la family de astdb"""
+        # primero chequeo si existe la family
+        family = self._get_nombre_family(family_member)
+        key = self._obtener_key_cero_dict(family_member)
+        existe_family = self._existe_family_key(family, key)
+        if existe_family:
+            self._delete_tree_family(family)
+
+    def _existe_family_key(self, family, key):
+        """Consulta en la base de datos si existe la family y clave"""
+
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            db_get = client.asterisk_db("DBGet", family, key=key)
+        except AsteriskHttpAsteriskDBError:
+            return False
+        if db_get.response_value == 'success':
+            return True
+
+    def _get_nombre_families(self):
+        raise (NotImplementedError())
+
+    def regenerar_families(self):
+        """regenera la family"""
+        self._delete_tree_family(self._get_nombre_families())
+        self._create_families()
+
+    def regenerar_family(self, family_member):
+        """regenera una family"""
+        self._create_families(modelo=family_member)
+
+
+class CampanaFamily(AbstractFamily):
+
+    def _create_dict(self, campana):
 
         dict_campana = {
             'QNAME': "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
@@ -53,155 +142,72 @@ class CampanaFamily(object):
 
         return dict_campana
 
-    def create_dict(self, campana):
-        dict_campana = self._genera_dict(campana)
-        return dict_campana
-
-    def _obtener_todas_campana_para_generar_familys(self):
+    def _obtener_todos(self):
         """Devuelve las campanas para generar .
         """
         return Campana.objects.obtener_all_dialplan_asterisk()
 
-    def create_familys(self, campana=None, campanas=None):
-        """Crea familys en database de asterisk
-        """
+    def _get_nombre_family(self, campana):
+        return "OML/CAMP/{0}".format(campana.id)
 
-        if campanas:
-            pass
-        elif campana:
-            campanas = [campana]
-        else:
-            campanas = self._obtener_todas_campana_para_generar_familys()
-        client = AsteriskHttpClient()
-        client.login()
-        for campana in campanas:
-            logger.info("Creando familys para campana %s", campana.nombre)
-            variables = self.create_dict(campana)
+    def _get_nombre_families(self):
+        return "OML/CAMP"
 
-            for key, val in variables.items():
-                try:
-                    family = "OML/CAMP/{0}".format(campana.id)
-                    client.asterisk_db("DBPut", family, key, val=val)
-                except AsteriskHttpAsteriskDBError:
-                    logger.exception("Error al intentar DBPut al insertar"
-                                     " en la family {0} la siguiente key={1}"
-                                     " y val={2}".format(family, key, val))
-
-    def delete_tree_family(self, family):
-        """Elimina el tree de la family pasada por parametro"""
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de {0}".format(family))
-
-    def regenerar_familys_campana(self):
-        """regenera la family de las campana"""
-        self.delete_tree_family("OML/CAMP")
-        self.create_familys()
+    def _obtener_key_cero_dict(self, campana):
+        return self._create_dict(campana).keys()[0]
 
 
-class AgenteFamily(object):
+class AgenteFamily(AbstractFamily):
 
-    def _genera_dict(self, agente):
+    def _create_dict(self, agente):
 
         dict_agente = {
             'NAME': agente.user.get_full_name(),
             'SIP': agente.sip_extension,
             'STATUS': ""
         }
-
         return dict_agente
 
-    def create_dict(self, agente):
-        dict_agente = self._genera_dict(agente)
-        return dict_agente
-
-    def _obtener_todos_agentes_para_generar_family(self):
+    def _obtener_todos(self):
         """Obtengo todos los agentes activos"""
         return AgenteProfile.objects.obtener_activos()
 
-    def create_familys(self, agente=None, agentes=None):
-        """Crea familys en database de asterisk
-        """
+    def _get_nombre_family(self, agente):
+        return "OML/AGENT/{0}".format(agente.id)
 
-        if agentes:
-            pass
-        elif agente:
-            agentes = [agente]
-        else:
-            agentes = self._obtener_todos_agentes_para_generar_family()
-        client = AsteriskHttpClient()
-        client.login()
-        for agente in agentes:
-            logger.info("Creando familys para agente %s", agente.id)
-            variables = self.create_dict(agente)
+    def _get_nombre_families(self):
+        return "OML/AGENT"
 
-            for key, val in variables.items():
-                try:
-                    family = "OML/AGENT/{0}".format(agente.id)
-                    client.asterisk_db("DBPut", family, key, val=val)
-                except AsteriskHttpAsteriskDBError:
-                    logger.exception("Error al intentar DBPut al insertar"
-                                     " en la family {0} la siguiente key={1}"
-                                     " y val={2}".format(family, key, val))
-
-    def delete_tree_family(self, family):
-        """Elimina el tree de la family pasada por parametro"""
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de {0}".format(family))
-
-    def regenerar_familys_agente(self):
-        """regenera la family de los agentes"""
-        self.delete_tree_family("OML/AGENT")
-        self.create_familys()
+    def _obtener_key_cero_dict(self, agente):
+        return self._create_dict(agente).keys()[0]
 
 
-class PausaFamily(object):
+class PausaFamily(AbstractFamily):
 
-    def _obtener_todas_pausas_para_generar_family(self):
+    def _create_dict(self, pausa):
+
+        dict_pausa = {
+            'NAME': pausa.nombre,
+        }
+        return dict_pausa
+
+    def _obtener_todos(self):
         """Obtener todas pausas"""
         return Pausa.objects.activas()
 
-    def create_familys(self):
-        """Crea family en database asterisk"""
+    def _get_nombre_family(self, pausa):
+        return "OML/PAUSE/{0}".format(pausa.id)
 
-        pausas = self._obtener_todas_pausas_para_generar_family()
-        for pausa in pausas:
-            logger.info("Creando familys para pausa %s", pausa.nombre)
-            try:
-                client = AsteriskHttpClient()
-                client.login()
-                family = "OML/PAUSE/{0}".format(pausa.id)
-                client.asterisk_db("DBPut", family, "NAME", val=pausa.nombre)
-            except AsteriskHttpAsteriskDBError:
-                logger.exception("Error al intentar DBPut al insertar"
-                                 " en la family {0} la siguiente ket=NAME"
-                                 " y val={1}".format(family, pausa.nombre))
+    def _get_nombre_families(self):
+        return "OML/PAUSE"
 
-    def delete_tree_family(self, family):
-        """Elimina el tree de la family pasada por parametro"""
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de {0}".format(family))
-
-    def regenerar_familys_pausa(self):
-        """regenera la family de las pausas"""
-        self.delete_tree_family("OML/PAUSE")
-        self.create_familys()
+    def _obtener_key_cero_dict(self, pausa):
+        return self._create_dict(pausa).keys()[0]
 
 
-class RutaSalienteFamily(object):
+class RutaSalienteFamily(AbstractFamily):
 
-    def _genera_dict_ruta(self, ruta):
+    def _create_dict(self, ruta):
 
         dict_ruta = {
             'NAME': ruta.nombre,
@@ -210,30 +216,23 @@ class RutaSalienteFamily(object):
             'TRUNKS': len(ruta.secuencia_troncales.all())
         }
 
+        patrones = self._obtener_patrones_ordenados(ruta)
+        for orden, patron in patrones:
+            if patron.prefix:
+                prefix = len(str(patron.prefix))
+            else:
+                prefix = None
+            clave_prefix = "PREFIX/{0}".format(orden)
+            clave_prepend = "PREPEND/{0}".format(orden)
+            dict_ruta.update({clave_prefix: prefix, clave_prepend: patron.prepend})
+
+        troncales = self._obtener_troncales_ordenados(ruta)
+        for orden, troncal in troncales:
+            dict_ruta.update({"TRUNK/{0}".format(orden): troncal.troncal.nombre})
+
         return dict_ruta
 
-    def _genera_dict_patron_discado(self, patron):
-
-        if patron.prefix:
-            prefix = len(str(patron.prefix))
-        else:
-            prefix = None
-        dict_patron = {
-            'PREFIX': prefix,
-            'PREPEND': patron.prepend,
-        }
-
-        return dict_patron
-
-    def create_dict_ruta(self, ruta):
-        dict_ruta = self._genera_dict_ruta(ruta)
-        return dict_ruta
-
-    def create_dict_patron(self, patron):
-        dict_ruta = self._genera_dict_patron_discado(patron)
-        return dict_ruta
-
-    def _obtener_todas_rutas_para_generar_family(self):
+    def _obtener_todos(self):
         """Obtengo todos las rutas salientes para generar family"""
         return RutaSaliente.objects.all()
 
@@ -245,100 +244,14 @@ class RutaSalienteFamily(object):
         """ devuelve troncales ordenados con enumerate"""
         return list(enumerate(ruta.secuencia_troncales.all().order_by("orden"), start=1))
 
-    def create_familys(self, ruta=None, rutas=None):
-        """Crea familys en database de asterisk
-        """
+    def _get_nombre_family(self, ruta):
+        return "OML/OUTR/{0}".format(ruta.id)
 
-        if rutas:
-            pass
-        elif ruta:
-            rutas = [ruta]
-        else:
-            rutas = self._obtener_todas_rutas_para_generar_family()
-        client = AsteriskHttpClient()
-        client.login()
-        for ruta in rutas:
-            # agrego lo datos basico de la ruta saliente
-            logger.info("Creando familys para ruta saliente %s", ruta.id)
-            variables = self.create_dict_ruta(ruta)
+    def _get_nombre_families(self):
+        return "OML/OUTR"
 
-            for key, val in variables.items():
-                try:
-                    family = "OML/OUTR/{0}".format(ruta.id)
-                    client.asterisk_db("DBPut", family, key, val=val)
-                except AsteriskHttpAsteriskDBError:
-                    logger.exception("Error al intentar DBPut al insertar"
-                                     " en la family {0} la siguiente key={1}"
-                                     " y val={2}".format(family, key, val))
-
-            # agrego los datos de los patrones de de discado
-            patrones = self._obtener_patrones_ordenados(ruta)
-            for orden, patron in patrones:
-                logger.info("Creando familys para patrones de discado %s", patron.id)
-                variables = self.create_dict_patron(patron)
-
-                for key, val in variables.items():
-                    try:
-                        family = "OML/OUTR/{0}".format(ruta.id)
-                        key = "{0}/{1}".format(key, orden)
-                        client.asterisk_db("DBPut", family, key, val=val)
-                    except AsteriskHttpAsteriskDBError:
-                        logger.exception("Error al intentar DBPut al insertar"
-                                         " en la family {0} la siguiente key={1}"
-                                         " y val={2}".format(family, key, val))
-
-            # agrego lo datos de los troncales
-            troncales = self._obtener_troncales_ordenados(ruta)
-            for orden, troncal in troncales:
-                logger.info("Creando familys para troncales %s", troncal.troncal.id)
-
-                try:
-                    family = "OML/OUTR/{0}".format(ruta.id)
-                    key = "TRUNK/{0}".format(orden)
-                    val = troncal.troncal.nombre
-                    client.asterisk_db("DBPut", family, key=key, val=val)
-                except AsteriskHttpAsteriskDBError:
-                    logger.exception("Error al intentar DBPut al insertar"
-                                     " en la family {0} la siguiente key={1}"
-                                     " y val={2}".format(family, key, val))
-
-    def _existe_family_key(self, family, key):
-        """Consulta en la base de datos si existe la family y clave"""
-
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            db_get = client.asterisk_db("DBGet", family, key=key)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBGet al consultar con la family {0} y "
-                             "la siguiente key={1}".format(family, key))
-            return False
-        if db_get.response_value == 'success':
-            return True
-
-    def delete_tree_family(self, family):
-        """Elimina el tree de la family pasada por parametro"""
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de {0}".format(family))
-
-    def delete_family_ruta(self, ruta):
-        """Elimina una la family de una ruta"""
-        # primero chequeo si existe la family
-        family = "OML/OUTR/{0}".format(ruta.id)
-        key = "NAME"
-        existe_family = self._existe_family_key(family, key)
-        if existe_family:
-            self.delete_tree_family(family)
-
-    def regenerar_familys_rutas(self, ruta):
-        """regenera la family de las rutas"""
-        family = "OML/OUTR/{0}".format(ruta.id)
-        self.delete_tree_family(family)
-        self.create_familys(ruta=ruta)
+    def _obtener_key_cero_dict(self, ruta):
+        return self._create_dict(ruta).keys()[0]
 
     def _regenero_trunks_ruta(self, ruta):
         """
@@ -354,7 +267,7 @@ class RutaSalienteFamily(object):
             try:
                 client = AsteriskHttpClient()
                 client.login()
-                family = "OML/OUTR/{0}".format(ruta.id)
+                family = self._get_nombre_family(ruta)
                 key = "TRUNK/{0}".format(orden)
                 val = troncal.troncal.nombre
                 client.asterisk_db("DBPut", family, key=key, val=val)
@@ -365,16 +278,16 @@ class RutaSalienteFamily(object):
 
     def regenerar_family_trunk_ruta(self, ruta):
         """regeneros lso troncales de la ruta"""
-        family = "OML/OUTR/{0}".format(ruta.id)
-        key = "NAME"
+        family = self._get_nombre_family(ruta)
+        key = self._obtener_key_cero_dict(ruta)
         existe_family = self._existe_family_key(family, key)
         if existe_family:
             self._regenero_trunks_ruta(ruta)
 
 
-class TrunkFamily(object):
+class TrunkFamily(AbstractFamily):
 
-    def _genera_dict(self, trunk):
+    def _create_dict(self, trunk):
 
         dict_trunk = {
             'NAME': trunk.nombre,
@@ -384,76 +297,18 @@ class TrunkFamily(object):
 
         return dict_trunk
 
-    def create_dict(self, trunk):
-        dict_trunk = self._genera_dict(trunk)
-        return dict_trunk
-
-    def _obtener_todas_trunks_para_generar_family(self):
+    def _obtener_todos(self):
         """Obtengo todos los troncales sip para generar family"""
         return TroncalSIP.objects.all()
 
-    def create_familys(self, trunk=None, trunks=None):
-        """Crea familys en database de asterisk
-        """
+    def _get_nombre_family(self, trunk):
+        return "OML/TRUNK/{0}".format(trunk.id)
 
-        if trunks:
-            pass
-        elif trunk:
-            trunks = [trunk]
-        else:
-            trunks = self._obtener_todas_trunks_para_generar_family()
-        client = AsteriskHttpClient()
-        client.login()
-        for trunk in trunks:
-            # agrego lo datos basico de la ruta saliente
-            logger.info("Creando familys para troncal sip %s", trunk.id)
-            variables = self.create_dict(trunk)
+    def _obtener_key_cero_dict(self, trunk):
+        return self._create_dict(trunk).keys()[0]
 
-            for key, val in variables.items():
-                try:
-                    family = "OML/TRUNK/{0}".format(trunk.id)
-                    client.asterisk_db("DBPut", family, key, val=val)
-                except AsteriskHttpAsteriskDBError:
-                    logger.exception("Error al intentar DBPut al insertar"
-                                     " en la family {0} la siguiente key={1}"
-                                     " y val={2}".format(family, key, val))
-
-    def _existe_family_key(self, family, key):
-        """Consulta en la base de datos si existe la family y clave"""
-
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            db_get = client.asterisk_db("DBGet", family, key=key)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBGet al consultar con la family {0} y "
-                             "la siguiente key={1}".format(family, key))
-            return False
-        if db_get.response_value == 'success':
-            return True
-
-    def delete_tree_family(self, family):
-        """Elimina el tree de la family pasada por parametro"""
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de {0}".format(family))
-
-    def delete_family_trunk(self, trunk):
-        """Elimina una la family de una ruta"""
-        # primero chequeo si existe la family
-        family = "OML/TRUNK/{0}".format(trunk.id)
-        key = "NAME"
-        existe_family = self._existe_family_key(family, key)
-        if existe_family:
-            self.delete_tree_family(family)
-
-    def regenerar_familys_trunks(self):
-        """regenera la family de las troncales"""
-        self.delete_tree_family("OML/TRUNK")
-        self.create_familys()
+    def _get_nombre_families(self):
+        return "OML/TRUNK"
 
 
 class RegenerarAsteriskFamilysOML(object):
@@ -465,15 +320,15 @@ class RegenerarAsteriskFamilysOML(object):
         self.globals_family = GlobalsFamily()
 
     def regenerar_asterisk(self):
-        self.campana_family.regenerar_familys_campana()
-        self.agente_family.regenerar_familys_agente()
-        self.pausa_family.regenerar_familys_pausa()
-        self.globals_family.regenerar_familys_globals()
+        self.campana_family.regenerar_families()
+        self.agente_family.regenerar_families()
+        self.pausa_family.regenerar_families()
+        self.globals_family.regenerar_families()
 
 
-class GlobalsFamily(object):
+class GlobalsFamily(AbstractFamily):
 
-    def _genera_dict(self):
+    def _create_dict(self, family_member):
 
         dict_globals = {
             'DEFAULTQUEUETIME': 90,
@@ -498,52 +353,16 @@ class GlobalsFamily(object):
 
         return dict_globals
 
-    def create_dict(self):
-        dict_globals = self._genera_dict()
-        return dict_globals
+    def _get_nombre_family(self, globales):
+        return "OML/GLOBALS"
 
-    def create_familys(self):
+    def _get_nombre_families(self):
+        return "OML/GLOBALS"
+
+    def _create_families(self):
         """Crea familys en database de asterisk
         """
+        self._create_family("")
 
-        client = AsteriskHttpClient()
-        client.login()
-        variables = self.create_dict()
-
-        for key, val in variables.items():
-            try:
-                family = "OML/GLOBALS"
-                client.asterisk_db("DBPut", family, key, val=val)
-            except AsteriskHttpAsteriskDBError:
-                logger.exception("Error al intentar DBPut al insertar"
-                                 " en la family {0} la siguiente key={1}"
-                                 " y val={2}".format(family, key, val))
-
-    def _existe_family_key(self, family, key):
-        """Consulta en la base de datos si existe la family y clave"""
-
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            db_get = client.asterisk_db("DBGet", family, key=key)
-            response_dict = db_get.response_dict
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBGet al consultar con la family {0} y "
-                             "la siguiente key={1}".format(family, key))
-            return False
-        if response_dict['response'] == 'Success':
-            return True
-
-    def delete_tree_family(self, family):
-        """Elimina el tree de la family pasada por parametro"""
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de {0}".format(family))
-
-    def regenerar_familys_globals(self):
-        """regenera la family de las troncales"""
-        self.delete_tree_family("OML/GLOBALS")
-        self.create_familys()
+    def _obtener_key_cero_dict(self, family_member):
+        return self._create_dict("").keys()[0]
