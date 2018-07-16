@@ -365,12 +365,6 @@ $(function() {
         }
 
         $("#callerid").text(fromUser);
-        if($("#modalWebCall").is(':visible')) {
-          $("#modalReceiveCalls").modal('show');
-        } else {
-          $("#modalWebCall").modal('show');
-          $("#modalReceiveCalls").modal('show');
-        }
         Sounds("In", "play");
         var atiendoSi = document.getElementById('answer');
         var atiendoNo = document.getElementById('doNotAnswer');
@@ -405,7 +399,7 @@ $(function() {
           defaultCallState();
 				};
 
-        function processOrigin(origin, opt, from) {
+  function processOrigin(origin, opt, from) {
 	  var options = opt;
 	  var origin = origin;
 	  if(origin) {
@@ -426,11 +420,12 @@ $(function() {
   	  case "IN":
   	    var inboundTag = document.getElementById("auto_attend_IN");
   	    if(inboundTag.value === "True") {
-  	      $("#modalReceiveCalls").modal('hide');
   	      session_incoming.answer(options);
-              setCallState("Connected to " + from, "orange");
-              Sounds("","stop");
-  	    }
+          setCallState("Connected to " + from, "orange");
+          Sounds("","stop");
+  	    } else {
+					$("#modalReceiveCalls").modal('show');
+				}
   	    break;
 	  case "ICS":
   	    var icsTag = document.getElementById("auto_attend_ICS");
@@ -463,7 +458,7 @@ $(function() {
         $("#onHold").prop('disabled', false);
 
         if(num.substring(4,0) != "0077") {
-			//		inicio3();
+
 	       	$("#Pause").prop('disabled',true);
 	       	$("#Resume").prop('disabled',true);
 	       	$("#sipLogout").prop('disabled',true);
