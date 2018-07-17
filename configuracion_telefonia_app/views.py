@@ -355,10 +355,10 @@ class RutaEntranteDeleteView(DeleteView):
         try:
             eliminar_ruta_entrante_config(self.get_object())
         except Exception:
-            messages.error(request, _(u'No se ha podido eliminar la Ruta Saliente.'))
+            messages.error(request, _(u'No se ha podido eliminar la Ruta Entrante.'))
             return redirect('eliminar_ruta_saliente', pk=kwargs['pk'])
 
-        messages.success(request, _(u'Se ha eliminado la Ruta Saliente.'))
+        messages.success(request, _(u'Se ha eliminado la Ruta Entrante.'))
         return super(RutaEntranteDeleteView, self).delete(request, *args, **kwargs)
 
 
@@ -593,7 +593,7 @@ class ValidacionFechaHoraCreateView(CreateView):
     template_name = "crear_validacion_fecha_hora.html"
     fields = ('nombre', 'grupo_horario')
     success_url = reverse_lazy('lista_validaciones_fecha_hora')
-    message = _('Se ha creado la validacion de fecha/hora con éxito')
+    message = _('Se ha creado la validacion horaria con éxito')
 
     def get_context_data(self, **kwargs):
         context = super(ValidacionFechaHoraCreateView, self).get_context_data(**kwargs)
@@ -629,7 +629,7 @@ class ValidacionFechaHoraUpdateView(UpdateView):
     template_name = "crear_validacion_fecha_hora.html"
     fields = ('nombre', 'grupo_horario')
     success_url = reverse_lazy('lista_validaciones_fecha_hora')
-    message = _('Se ha modificado la validacion fecha/hora con éxito')
+    message = _('Se ha modificado la validacion horaria con éxito')
 
     def get_context_data(self, **kwargs):
         context = super(ValidacionFechaHoraUpdateView, self).get_context_data(**kwargs)
