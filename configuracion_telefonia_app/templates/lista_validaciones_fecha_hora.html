@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{% trans 'Validaciones Horarias' %}</h1>
+    <div class="row">
+        <div class="column-md-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th colspan="2">{% trans 'Nombre' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for validacion_fecha_hora in validaciones_fecha_hora %}
+                        <tr>
+                            <td>{{ validacion_fecha_hora.id }}</td>
+                            <td><a href="{% url 'editar_validacion_fecha_hora' validacion_fecha_hora.id %}">{{ validacion_fecha_hora.nombre }}</a></td>
+                            <td>
+                                <a class="dropdown-item" href="{% url 'eliminar_validacion_fecha_hora' validacion_fecha_hora.pk %}">
+                                    <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td>{% trans 'No hay validaciones horarias configurados' %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a class="btn btn-light btn-sm" href="{% url 'crear_validacion_fecha_hora' %}" >{% trans 'Agregar validación horaria' %}</a>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'user_list' page=page_obj.previous_page_number%}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">{% trans 'Anterior' %}</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            <li class="page-item current">
+                Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'user_list' page=page_obj.next_page_number %}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">{% trans 'Siguiente' %}</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endblock %}

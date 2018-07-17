@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% load widget_tweaks %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/rutas-entrantes-lib.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/validacion-fecha-hora.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    {% block header %}{% endblock %}
+    <form action="" role="form" method="POST">
+        {% csrf_token %}
+        <div class="row mt-3">
+            <div class="col-md-6">
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-warning">{{ error|escape }}</div>
+                    {% endfor %}
+                {% endif %}
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-row">
+                            <label >{{ form.nombre.label_tag }}</label>
+                            {{ form.nombre|add_class:"form-control" }}
+                            {{ form.nombre.errors }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-row">
+                            <label >{{ form.grupo_horario.label_tag }}</label>
+                            {{ form.grupo_horario|add_class:"form-control" }}
+                            {{ form.grupo_horario.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="form-inline">
+                    {% if validacion_fecha_hora_formset.non_form_errors %}
+                        {% for error in validacion_fecha_hora_formset.non_form_errors %}
+                            <div class="alert alert-warning">{{ error|escape }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6 form-control">
+                        <h3>{% trans 'Destino si cumple la condición de tiempo'  %}</h3>
+                        {% with form=validacion_fecha_hora_formset.forms.0 %}
+                            {{ form.valor }}
+                            {{ form.id }}
+                            <div class="form-row mt-3">
+                                <label >{{ form.tipo_destino.label_tag }}</label>
+                                {{ form.tipo_destino|add_class:"form-control"|attr:"id:tipoDestinoMatch" }}
+                                {{ form.tipo_destino.errors }}
+                            </div>
+                            <div class="form-row mt-3">
+                                <label>{{ form.destino_siguiente.label_tag }}</label>
+                                {{ form.destino_siguiente|add_class:"form-control"|attr:"id:destinoMatch" }}
+                                {{ form.destino_siguiente.errors }}
+                            </div>
+                        {% endwith %}
+                    </div>
+                    <div class="col-md-6 form-control">
+                        <h3>{% trans 'Destino si NO cumple la condición de tiempo'  %}</h3>
+                        {% with form=validacion_fecha_hora_formset.forms.1 %}
+                            {{ form.valor }}
+                            {{ form.id }}
+                            <div class="form-row mt-3">
+                                <label >{{ form.tipo_destino.label_tag }}</label>
+                                {{ form.tipo_destino|add_class:"form-control"|attr:"id:tipoDestinoNoMatch" }}
+                                {{ form.tipo_destino.errors }}
+                            </div>
+                            <div class="form-row mt-3">
+                                <label>{{ form.destino_siguiente.label_tag }}</label>
+                                {{ form.destino_siguiente|add_class:"form-control"|attr:"id:destinoNoMatch" }}
+                                {{ form.destino_siguiente.errors }}
+                            </div>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+            {{ validacion_fecha_hora_formset.management_form }}
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <button type="submit" id="id_registrar" class="btn btn-primary">
+                    {% trans 'Guardar' %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

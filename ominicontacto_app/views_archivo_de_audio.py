@@ -19,6 +19,16 @@ import logging as logging_
 logger = logging_.getLogger(__name__)
 
 
+def convertir_archivo_audio(archivo_de_audio):
+    """Convierte un archivo usando el conversor especificado, actualiza sus rutas"""
+    conversor_audio = ConversorDeAudioService()
+    conversor_audio.convertir_audio_de_archivo_de_audio_globales(archivo_de_audio)
+    audio_asterisk = archivo_de_audio.audio_asterisk.name
+    if audio_asterisk:
+        audio_file_asterisk = AudioConfigFile(audio_asterisk)
+        audio_file_asterisk.copy_asterisk()
+
+
 class ArchivoAudioListView(ListView):
     """
     Esta vista lista los archivos de audios.
@@ -43,14 +53,7 @@ class ArchivoAudioCreateView(CreateView):
         self.object = form.save()
 
         try:
-            conversor_audio = ConversorDeAudioService()
-            conversor_audio.convertir_audio_de_archivo_de_audio_globales(
-                self.object)
-            audio_asterisk = self.object.audio_asterisk.name
-
-            if audio_asterisk:
-                audio_file_asterisk = AudioConfigFile(audio_asterisk)
-                audio_file_asterisk.copy_asterisk()
+            convertir_archivo_audio(self.object)
             return redirect(self.get_success_url())
 
         except OmlAudioConversionError:
@@ -100,15 +103,7 @@ class ArchivoAudioUpdateView(UpdateView):
 
         if self.request.FILES.get('audio_original'):
             try:
-                conversor_audio = ConversorDeAudioService()
-                conversor_audio.convertir_audio_de_archivo_de_audio_globales(
-                    self.object)
-
-                audio_asterisk = self.object.audio_asterisk.name
-
-                if audio_asterisk:
-                    audio_file_asterisk = AudioConfigFile(audio_asterisk)
-                    audio_file_asterisk.copy_asterisk()
+                convertir_archivo_audio(self.object)
                 return redirect(self.get_success_url())
             except OmlAudioConversionError:
                 self.object.audio_original = None

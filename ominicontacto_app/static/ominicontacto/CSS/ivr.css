@@ -1,0 +1,21 @@
+.deleteFormset {
+    margin-top: 28px;
+}
+
+ul {
+    /*TODO: buscar una manera de aplicar el estilo al field RadioSelect
+      de django por id o por clase*/
+    list-style-type: none;
+}
+
+.escogerAudioPpal {
+    margin: 20px;
+}
+
+.escogerAudioTimeOut {
+    margin: 40px;
+}
+
+.escogerAudioDestInvalido {
+    margin: 40px;
+}

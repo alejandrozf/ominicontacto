@@ -1,0 +1,167 @@
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% for hidden in form.hidden_fields %}
+    {{ hidden }}
+{% endfor %}
+
+<div class="col-md-12">
+    <div class="row mt-3">
+        <div class="col-md-6 form-control">
+            <h3>{% trans 'Sección general' %}</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-row">
+                        <div class="">
+                            <label >{{ form.nombre.label_tag }}</label>
+                            {{ form.nombre }}
+                            {{ form.nombre.errors }}
+                        </div>
+                        <div class="">
+                            <label >{{ form.descripcion.label_tag }}</label>
+                            {{ form.descripcion }}
+                            {{ form.descripcion.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-inline">
+                        <div class="">
+                            {{ form.audio_ppal_escoger }}
+                            {{ form.audio_ppal_escoger.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-row">
+                        <div class="">
+                            {{ form.audio_principal }}
+                            {{ form.audio_principal.errors }}
+                        </div>
+                        <div class="">
+                            {{ form.audio_ppal_ext_audio|add_class:"form-control" }}
+                            {{ form.audio_ppal_ext_audio.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-6 form-control">
+            <h3>{% trans 'Configuración time out' %}</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="">
+                            <label >{{ form.time_out.label_tag }}</label>
+                            {{ form.time_out }}
+                            {{ form.time_out.errors }}
+                        </div>
+                        <div class="">
+                            <label >{{ form.time_out_retries.label_tag }}</label>
+                            {{ form.time_out_retries }}
+                            {{ form.time_out_retries.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-inline">
+                        <div class="">
+                            {{ form.time_out_audio_escoger }}
+                            {{ form.time_out_audio_escoger.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-row">
+                        <div class="">
+                            <label >{{ form.time_out_audio.label_tag }}</label>
+                            {{ form.time_out_audio }}
+                            {{ form.time_out_audio.errors }}
+                        </div>
+                        <div class="">
+                            <label >{{ form.time_out_ext_audio.label_tag }}</label>
+                            {{ form.time_out_ext_audio|add_class:"form-control" }}
+                            {{ form.time_out_ext_audio.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="">
+                            <label >{{ form.time_out_destination_type.label_tag }}</label>
+                            {{ form.time_out_destination_type }}
+                            {{ form.time_out_destination_type.errors }}
+                        </div>
+                        <div class="">
+                            <label >{{ form.time_out_destination.label_tag }}</label>
+                            {{ form.time_out_destination }}
+                            {{ form.time_out_destination.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 form-control">
+            <h3>{% trans 'Configuración destino inválido' %}</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="">
+                            <label >{{ form.invalid_retries.label_tag }}</label>
+                            {{ form.invalid_retries }}
+                            {{ form.invalid_retries.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-inline">
+                        <div class="">
+                            {{ form.invalid_destination_audio_escoger }}
+                            {{ form.invalid_destination_audio_escoger.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-row">
+                        <div class="">
+                            <label >{{ form.invalid_audio.label_tag }}</label>
+                            {{ form.invalid_audio }}
+                            {{ form.invalid_audio.errors }}
+                        </div>
+                        <div class="">
+                            <label >{{ form.invalid_destination_ext_audio.label_tag }}</label>
+                            {{ form.invalid_destination_ext_audio|add_class:"form-control" }}
+                            {{ form.invalid_destination_ext_audio.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="">
+                            <label >{{ form.invalid_destination_type.label_tag }}</label>
+                            {{ form.invalid_destination_type }}
+                            {{ form.invalid_destination_type.errors }}
+                        </div>
+                        <div class="">
+                            <label >{{ form.invalid_destination.label_tag }}</label>
+                            {{ form.invalid_destination }}
+                            {{ form.invalid_destination.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
