@@ -14,7 +14,9 @@ from ominicontacto_app.asterisk_config import (
     SipTrunksConfigCreator, SipRegistrationsConfigCreator, SipTrunksConfigFile,
     SipRegistrationsConfigFile
 )
-from ominicontacto_app.services.asterisk_database import RutaSalienteFamily, TrunkFamily
+from ominicontacto_app.services.asterisk_database import (
+    RutaSalienteFamily, TrunkFamily, RutaEntranteFamily, IVRFamily
+)
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +94,8 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
     def regenerar_rutas_salientes(self, ruta=None):
+        """regenera la ruta saliente pasada por parametro y si la ruta es none regenera todas las
+        rutas salientes """
         self._generar_y_recargar_archivos_conf_asterisk()
         self._generar_e_insertar_en_astdb(ruta)
 
@@ -147,7 +151,6 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
             self.reload_asterisk_config.reload_asterisk()
 
     def _generar_e_insertar_en_astdb(self, trunk):
-        proceso_ok = True
         mensaje_error = ""
 
         try:
@@ -155,8 +158,6 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar regenerar_familys_rutas()")
-
-            proceso_ok = False
             mensaje_error += ("Hubo un inconveniente al insertar los registros del troncal en "
                               "la base de datos de Asterisk. ")
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
@@ -181,3 +182,55 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
     def eliminar_troncal_y_regenerar_asterisk(self, trunk):
         self._generar_y_recargar_archivos_conf_asterisk(trunk_exclude=trunk)
         self._eliminar_trunk_en_astdb(trunk)
+
+
+class AbstractConfiguracionAsterisk(object):
+
+    def _obtener_generador_family(self):
+        raise (NotImplementedError())
+
+    def _generar_e_insertar_en_astdb(self, family_member):
+        mensaje_error = ""
+        nombre_families = self._obtener_generador_family().get_nombre_families()
+        try:
+            self._obtener_generador_family().regenerar_family(family_member)
+        except:
+            logger.exception("Error en la families {0} "
+                             "intentar regenerar_family()".format(nombre_families))
+            mensaje_error += ("Hubo un inconveniente al insertar los registros de la familie {0} "
+                              "la base de datos de Asterisk. ".format(nombre_families))
+            raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
+
+    def _eliminar_family_en_astdb(self, family_member):
+        mensaje_error = ""
+        nombre_families = self._obtener_generador_family().get_nombre_families()
+        try:
+            self._obtener_generador_family().delete_family(family_member)
+        except:
+            logger.exception("Error en la families {0} "
+                             "intentar delete_family()".format(nombre_families))
+
+            mensaje_error += ("Hubo un inconveniente al eliminar los registros de la families {0}"
+                              "la base de datos de Asterisk. ".format(nombre_families))
+            raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
+
+    def regenerar_asterisk(self, family_member=None):
+        # self._generar_y_recargar_archivos_conf_asterisk()
+        self._generar_e_insertar_en_astdb(family_member)
+
+    def eliminar_y_regenerar_asterisk(self, family_member):
+        self._eliminar_family_en_astdb(family_member)
+
+
+class SincronizadorDeConfiguracionRutaEntranteAsterisk(AbstractConfiguracionAsterisk):
+
+    def _obtener_generador_family(self):
+        generador = RutaEntranteFamily()
+        return generador
+
+
+class SincronizadorDeConfiguracionIVRAsterisk(AbstractConfiguracionAsterisk):
+
+    def _obtener_generador_family(self):
+        generador = IVRFamily()
+        return generador
