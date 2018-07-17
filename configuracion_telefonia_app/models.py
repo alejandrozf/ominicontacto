@@ -209,7 +209,7 @@ class DestinoEntrante(models.Model):
         (VALIDACION_FECHA_HORA, _('Validación de fecha/hora')),
         (IVR, _('IVR')),
     )
-    nombre = models.CharField(max_length=30, unique=True)
+    nombre = models.CharField(max_length=128, unique=True)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
