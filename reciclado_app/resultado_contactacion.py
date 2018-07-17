@@ -7,29 +7,112 @@ contactados(RS_BUSY, RS_NOANSWER, etc)
 contactados(hoy en dia por las calificaciones(calificacioncliente))
 """
 
+from django.utils.translation import ugettext as _
+from django.db import connection
 from django.db.models import Count
+from ominicontacto_app.models import Campana, CalificacionCliente
+from reportes_app.models import LlamadaLog
 
 
 class EstadisticasContactacion():
 
-    AGENTE_NO_DISPONIBLE = 1
-    OCUPADO = 2
-    NO_CONTESTA = 3
-    NUMERO_ERRONEO = 4
-    ERROR_DE_SISTEMA = 5
-    CONGESTION = 6
-    CONTESTADOR = 7
-    AGENTE_NO_CALIFICO = 8
-    MAP_LOG_WOMBAT = {
-        AGENTE_NO_DISPONIBLE: "RS_LOST",
-        OCUPADO: "RS_BUSY",
-        NO_CONTESTA: "RS_NOANSWER",
-        NUMERO_ERRONEO: "RS_NUMBER",
-        ERROR_DE_SISTEMA: "RS_ERROR",
-        CONGESTION: "RS_REJECTED",
-        CONTESTADOR: "CONTESTADOR",
-        AGENTE_NO_CALIFICO: AGENTE_NO_CALIFICO,
+    MAP_ESTADO_ID = {
+        'NOANSWER': 0,
+        'CANCEL': 1,
+        'BUSY': 2,
+        'CHANUNAVAIL': 3,
+        'OTHER': 4,
+        'FAIL': 5,
+        'AMD': 6,
+        'BLACKLIST': 7,
+        'EXITWITHTIMEOUT': 8,
+        'ABANDON': 9,
     }
+    MAP_ID_ESTADO = dict(zip(MAP_ESTADO_ID.values(), MAP_ESTADO_ID.keys()))
+    TXT_ESTADO = {
+        0: _('No Contesta'),
+        1: _('Cancelado'),
+        2: _('Ocupado'),
+        3: _('Canal no disponible'),
+        4: _('Otro'),
+        5: _('Falla'),
+        6: _('Contestador'),
+        7: _('Blacklist'),
+        8: _('Expiradas'),
+        9: _('Abandono'),
+    }
+    AGENTE_NO_CALIFICO = 20
+    NO_LLAMADO = 21
+
+    def _contabilizar_llamados_no_calificados(self, count_estados, campana, contactados):
+        # Calculo cantidad de Llamados Contactados No Calificados
+        id_calificados = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana_id=campana.id).values_list('contacto_id', flat=True)
+        no_calificados = contactados.exclude(contacto_id__in=id_calificados).count()
+        if no_calificados > 0:
+            estado = _(u"Agente no califico")
+            id_estado = EstadisticasContactacion.AGENTE_NO_CALIFICO
+            cantidad_contactacion = CantidadContactacion(id_estado, estado, no_calificados)
+            count_estados.update({id_estado: cantidad_contactacion})
+
+    def _contabilizar_no_llamados(self, count_estados, campana):
+        # Calculo la Cantidad de No llamados
+        llamados = LlamadaLog.objects.filter(campana_id=campana.id,
+                                             tipo_campana=Campana.TYPE_DIALER,
+                                             tipo_llamada=Campana.TYPE_DIALER,
+                                             event='DIAL').values_list('contacto_id',
+                                                                       flat=True)
+        no_llamados = campana.bd_contacto.contactos.exclude(id__in=llamados).count()
+        if no_llamados > 0:
+            estado = _(u"No llamados")
+            id_estado = EstadisticasContactacion.NO_LLAMADO
+            cantidad_contactacion = CantidadContactacion(id_estado, estado, no_llamados)
+            count_estados.update({id_estado: cantidad_contactacion})
+
+    def _contabilizar_llamados_no_contactados(self, count_estados, campana, contactados):
+        # Cantidades de llamados no contactados por EVENTO FINAL
+        # Asumo que Los logs con mayor id son los mas nuevos
+        filtro_contactados = ""
+        filtro_contactados_r1 = ""
+        if len(contactados) > 0:
+            filtro_contactados = "AND contacto_id NOT in ('"
+            filtro_contactados += "','".join([str(x) for x in contactados])
+            filtro_contactados += "')"
+            filtro_contactados_r1 = "AND r1.contacto_id NOT in ('"
+            filtro_contactados_r1 += "','".join([str(x) for x in contactados])
+            filtro_contactados_r1 += "')"
+
+        params = {'campana_id': campana.id, 'tipo_dialer': Campana.TYPE_DIALER,
+                  'filtro_contactados': filtro_contactados,
+                  'filtro_contactados_r1': filtro_contactados_r1, }
+        sql = """
+        SELECT r1.event, COUNT(r1.event)
+            FROM "reportes_app_llamadalog" r1
+            INNER JOIN (
+                SELECT contacto_id, MAX(id) AS id__max
+                FROM "reportes_app_llamadalog"
+                WHERE campana_id = {campana_id} AND
+                      tipo_llamada = {tipo_dialer} AND
+                      tipo_campana = {tipo_dialer} {filtro_contactados}
+                GROUP BY contacto_id
+            ) r2
+            ON r1.id = r2.id__max
+            WHERE r1.campana_id = {campana_id} AND
+                  r1.tipo_llamada = {tipo_dialer} AND
+                  r1.tipo_campana = {tipo_dialer} {filtro_contactados_r1}
+            GROUP BY r1.event
+        """.format(**params)
+
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        values = cursor.fetchall()
+        for evento, cantidad in values:
+            # Me interesan solo los contactos cuya ultima conexion ha fallado.
+            if evento in EstadisticasContactacion.MAP_ESTADO_ID:
+                id_estado = EstadisticasContactacion.MAP_ESTADO_ID[evento]
+                estado = EstadisticasContactacion.TXT_ESTADO[id_estado]
+                cantidad_contactacion = CantidadContactacion(id_estado, estado, cantidad)
+                count_estados.update({id_estado: cantidad_contactacion})
 
     def obtener_cantidad_no_contactados(self, campana):
         """
@@ -37,51 +120,20 @@ class EstadisticasContactacion():
         :param campana: campana a la cual se van obtener los llamados no contactados
         :return: un dicionario con la cantidad por eventos de no contactados
         """
-
-        campana_log_wombat = campana.logswombat.values(
-            'estado', 'calificacion').annotate(Count('estado'))
+        # llamados no calificados  Tienen CONNECT pero no tienen Calificacion
+        # no llamados     No tienen ni DIAL
 
         count_estados = {}
 
-        for resultado in campana_log_wombat:
-            estado = resultado['estado']
-            if estado == "RS_LOST" and resultado['calificacion'] == "":
-                estado = "Agente no disponible"
-                id_estado = EstadisticasContactacion.AGENTE_NO_DISPONIBLE
-            elif estado == "RS_BUSY":
-                estado = "Ocupado"
-                id_estado = EstadisticasContactacion.OCUPADO
-            elif estado == "RS_NOANSWER":
-                estado = "No contesta"
-                id_estado = EstadisticasContactacion.NO_CONTESTA
-            elif estado == "RS_NUMBER":
-                estado = "Numero erroneo"
-                id_estado = EstadisticasContactacion.NUMERO_ERRONEO
-            elif estado == "RS_ERROR":
-                estado = "Error de sistema"
-                id_estado = EstadisticasContactacion.ERROR_DE_SISTEMA
-            elif estado == "RS_REJECTED":
-                estado = "Congestion"
-                id_estado = EstadisticasContactacion.CONGESTION
-            elif estado == "TERMINATED" and resultado['calificacion'] == "CONTESTADOR":
-                estado = "Contestador Detectado"
-                id_estado = EstadisticasContactacion.CONTESTADOR
-            elif estado == "TERMINATED" and resultado['calificacion'] == "":
-                estado = "Agente no califico"
-                id_estado = EstadisticasContactacion.AGENTE_NO_CALIFICO
-            else:
-                estado = None
-                id_estado = None
-            # se ignoran los demas estados no antes mappeados
-            if id_estado in count_estados.keys() and id_estado:
-                cantidad_contactacion = count_estados[id_estado]
-                cantidad_contactacion.cantidad = resultado['estado__count']
-                count_estados[id_estado] = cantidad_contactacion
-            elif id_estado:
-                cantidad_contactacion = CantidadContactacion(
-                    id_estado, estado, resultado['estado__count']
-                )
-                count_estados.update({id_estado: cantidad_contactacion})
+        contactados = LlamadaLog.objects.filter(campana_id=campana.id,
+                                                tipo_campana=Campana.TYPE_DIALER,
+                                                tipo_llamada=Campana.TYPE_DIALER,
+                                                event='CONNECT').values_list('contacto_id',
+                                                                             flat=True)
+
+        self._contabilizar_llamados_no_calificados(count_estados, campana, contactados)
+        self._contabilizar_no_llamados(count_estados, campana)
+        self._contabilizar_llamados_no_contactados(count_estados, campana, contactados)
 
         return count_estados
 
@@ -179,26 +231,87 @@ class RecicladorContactosCampanaDIALER():
              acuerdo a los estados seleccionados
 
         """
-        reciclado_no_contactacion = map(int, reciclado_no_contactacion)
-        no_contactados = set()
-        if EstadisticasContactacion.CONTESTADOR in reciclado_no_contactacion:
-            reciclado_no_contactacion.remove(EstadisticasContactacion.CONTESTADOR)
-            no_contactados.update(campana.logswombat.filter(
-                estado="TERMINATED", calificacion='CONTESTADOR'))
-        if EstadisticasContactacion.AGENTE_NO_CALIFICO in reciclado_no_contactacion:
-            reciclado_no_contactacion.remove(EstadisticasContactacion.AGENTE_NO_CALIFICO)
-            no_contactados.update(campana.logswombat.filter(
-                estado='TERMINATED', calificacion=''))
-        if EstadisticasContactacion.AGENTE_NO_DISPONIBLE in reciclado_no_contactacion:
-            reciclado_no_contactacion.remove(EstadisticasContactacion.AGENTE_NO_DISPONIBLE)
-            no_contactados.update(campana.logswombat.filter(
-                estado=EstadisticasContactacion.AGENTE_NO_DISPONIBLE, calificacion=''))
+        id_contactos = []
+        filtrar_no_calificados = False
+        filtrar_no_llamados = False
+        filtro_eventos = ''
+        for evento_id in reciclado_no_contactacion:
+            evento_id = int(evento_id)
+            if evento_id == EstadisticasContactacion.AGENTE_NO_CALIFICO:
+                filtrar_no_calificados = True
+            elif evento_id == EstadisticasContactacion.NO_LLAMADO:
+                filtrar_no_llamados = True
+            else:
+                evento = EstadisticasContactacion.MAP_ID_ESTADO[evento_id]
+                if filtro_eventos:
+                    filtro_eventos += ","
+                filtro_eventos += "'%s'" % evento
 
-        estados = [EstadisticasContactacion.MAP_LOG_WOMBAT[estado]
-                   for estado in reciclado_no_contactacion]
-        no_contactados.update(campana.logswombat.filter(estado__in=estados))
-        contactos = [wombat_log.contacto for wombat_log in no_contactados]
-        return contactos
+        contactados = LlamadaLog.objects.filter(campana_id=campana.id,
+                                                tipo_campana=Campana.TYPE_DIALER,
+                                                tipo_llamada=Campana.TYPE_DIALER,
+                                                event='CONNECT').values_list('contacto_id',
+                                                                             flat=True)
+
+        # Filtrar los contactos Llamados no Calificados
+        if filtrar_no_calificados:
+            id_calificados = CalificacionCliente.objects.filter(
+                opcion_calificacion__campana_id=campana.id).values_list('contacto_id', flat=True)
+            no_calificados = contactados.exclude(contacto_id__in=id_calificados)
+            id_contactos += no_calificados
+
+        # Filtrar contactos no llamados
+        if filtrar_no_llamados:
+            # Calculo la Cantidad de No llamados
+            llamados = LlamadaLog.objects.filter(campana_id=campana.id,
+                                                 tipo_campana=Campana.TYPE_DIALER,
+                                                 tipo_llamada=Campana.TYPE_DIALER,
+                                                 event='DIAL').values_list('contacto_id',
+                                                                           flat=True)
+            no_llamados = campana.bd_contacto.contactos.exclude(id__in=llamados).values_list(
+                'id', flat=True)
+            id_contactos += no_llamados
+
+        # Filtrar los llamados no contactados
+        if filtro_eventos:
+            filtro_contactados = ""
+            filtro_contactados_r1 = ""
+            if len(contactados) > 0:
+                filtro_contactados_r1 = "AND r1.contacto_id NOT in ('"
+                filtro_contactados_r1 += "','".join([str(x) for x in contactados])
+                filtro_contactados_r1 += "')"
+                filtro_contactados = "AND contacto_id NOT in ('"
+                filtro_contactados += "','".join([str(x) for x in contactados])
+                filtro_contactados += "')"
+
+            params = {'campana_id': campana.id, 'tipo_dialer': Campana.TYPE_DIALER,
+                      'filtro_contactados': filtro_contactados,
+                      'filtro_contactados_r1': filtro_contactados_r1,
+                      'filtro_eventos': filtro_eventos}
+            sql = """
+            SELECT r1.contacto_id
+                FROM "reportes_app_llamadalog" r1
+                INNER JOIN (
+                    SELECT contacto_id, MAX(id) AS id__max
+                    FROM "reportes_app_llamadalog"
+                    WHERE campana_id = {campana_id} AND
+                          tipo_llamada = {tipo_dialer} AND
+                          tipo_campana = {tipo_dialer} {filtro_contactados}
+                    GROUP BY contacto_id
+                ) r2
+                ON r1.id = r2.id__max
+                WHERE r1.campana_id = {campana_id} AND
+                      r1.tipo_llamada = {tipo_dialer} AND
+                      r1.tipo_campana = {tipo_dialer} {filtro_contactados_r1}
+                      AND event IN ({filtro_eventos})
+            """.format(**params)
+
+            cursor = connection.cursor()
+            cursor.execute(sql)
+            values = cursor.fetchall()
+            id_contactos += [x[0] for x in values]
+
+        return campana.bd_contacto.contactos.filter(id__in=id_contactos)
 
     def reciclar(self, campana, reciclado_calificacion, reciclado_no_contactacion):
 

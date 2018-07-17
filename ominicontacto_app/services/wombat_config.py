@@ -59,7 +59,7 @@ class CampanaCreator(object):
             "campaignVars": "",
 
             "initialPredictiveModel": campana.queue_campana.get_string_initial_predictive_model(),
-            "initialBoostFactor":  float(campana.queue_campana.initial_boost_factor),
+            "initialBoostFactor": float(campana.queue_campana.initial_boost_factor),
             "amdTracking": "OFF",
             "amdParams": "AMD_MODE & AMD_EXTRA",
             "amdAudioFile": "AMD_FILE",
@@ -68,8 +68,7 @@ class CampanaCreator(object):
             "addlLogging": "QM_COMPATIBLE",
             "loggingAlias": "alias_nombre",
             "loggingQmVars": "",
-            "httpNotify": "http://{0}:8000/wombat/logs/".format(
-                settings.OML_OMNILEADS_IP),
+            "httpNotify": "",
             "emailEvents": "NO",
             "emailAddresses": ""
         }
@@ -95,9 +94,9 @@ class TrunkCreator(object):
         """
 
         dict_trunk = {
-           "trunkId": {
+            "trunkId": {
                 "trunkId": 1
-           }
+            }
         }
 
         return json.dumps(dict_trunk)

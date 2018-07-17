@@ -56,7 +56,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_astdb.regenerar_familys_rutas(ruta)
+            self.generador_rutas_en_astdb.regenerar_family(ruta)
         except:
             logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
                              "intentar regenerar_familys_rutas()")
@@ -69,7 +69,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_astdb.delete_family_ruta(ruta)
+            self.generador_rutas_en_astdb.delete_family(ruta)
         except:
             logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
                              "intentar delete_family_ruta()")
@@ -151,7 +151,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_trunk_en_astdb.create_familys(trunk=trunk)
+            self.generador_trunk_en_astdb.regenerar_family(trunk)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar regenerar_familys_rutas()")
@@ -165,7 +165,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_trunk_en_astdb.delete_family_trunk(trunk)
+            self.generador_trunk_en_astdb.delete_family(trunk)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar delete_family_trunk()")
