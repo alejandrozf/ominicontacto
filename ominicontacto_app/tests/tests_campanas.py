@@ -19,6 +19,8 @@ from django.forms import ValidationError
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
+from configuracion_telefonia_app.models import DestinoEntrante
+
 from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember, OpcionCalificacion
 from ominicontacto_app.forms import CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION
 
@@ -840,6 +842,52 @@ class CampanasTests(OMLBaseTest):
         self.contacto = ContactoFactory.create(bd_contacto=campana.bd_contacto)
         campana.bd_contacto.contactos.add(self.contacto)
         self.assertEqual(campana.bd_contacto.contactos.count(), 1)
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_creacion_campana_entrante_crea_nodo_ruta_entrante(
+            self, _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_nuevo')
+        nombre_campana = 'campana_name'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
+             nombre_campana, audio_ingreso)
+
+        self.assertFalse(DestinoEntrante.objects.all().exists())
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.assertTrue(DestinoEntrante.objects.all().exists())
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_creacion_campana_entrante_desde_template_crea_nodo_ruta_entrante(
+            self, _generar_y_recargar_configuracion_asterisk):
+        campana_entrante_template = CampanaFactory.create(
+            type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+        nombre_campana = 'campana_entrante_clonada'
+        url = reverse(
+            'campana_entrante_template_create_campana', args=[campana_entrante_template.pk])
+        QueueFactory.create(campana=campana_entrante_template, pk=campana_entrante_template.nombre)
+        OpcionCalificacionFactory.create(
+            tipo=OpcionCalificacion.GESTION, nombre=self.calificacion.nombre,
+            campana=campana_entrante_template)
+        ParametroExtraParaWebformFactory(campana=campana_entrante_template)
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante_desde_template(
+             campana_entrante_template, audio_ingreso)
+        post_step0_data['0-nombre'] = nombre_campana
+        post_step1_data['1-name'] = nombre_campana
+        self.assertFalse(DestinoEntrante.objects.all().exists())
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.assertTrue(DestinoEntrante.objects.all().exists())
 
     def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(self):
         url = reverse('campana_manual_create')
