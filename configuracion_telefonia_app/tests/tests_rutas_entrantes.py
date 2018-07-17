@@ -8,7 +8,6 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def setUp(self, *args, **kwargs):
         super(TestsRutasEntrantes, self).setUp(*args, **kwargs)
-        self._crear_troncales_y_rutas()
 
         self.admin = self.crear_administrador()
         self.admin.set_password(self.PWD)
