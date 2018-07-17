@@ -24,6 +24,14 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
 )
 
 
+class SincronizadorDummy(object):
+    def regenerar_configuracion(self, objeto):
+        pass
+
+    def eliminar_configuracion(self, objeto):
+        pass
+
+
 def _asignar_destino_anterior(opcion_destino_formset, nodo_entrante):
     """Asigna un nodo entrante como anterior en la creación/modificación de sus opciones de
     destinos siguientes
@@ -74,13 +82,13 @@ def eliminar_ruta_entrante_config(ruta_entrante):
     # Exception('No se pudo eliminar bien.')
 
 
-def escribir_nodo_entrante_config(nodo_destino_entrante):
+def escribir_nodo_entrante_config(nodo_destino_entrante, sincronizador):
     # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
     print ("TODO: IMPLEMENTAR!!!")
     # Exception('No se pudo eliminar bien.')
 
 
-def eliminar_nodo_entrante_config(nodo_destino_entrante):
+def eliminar_nodo_entrante_config(nodo_destino_entrante, sincronizador):
     # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
     print ("TODO: IMPLEMENTAR!!!")
     # Exception('No se pudo eliminar bien.')
@@ -297,6 +305,7 @@ class EliminarRutaSaliente(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         try:
+            # TODO: usar el sincronizador correspondiente
             eliminar_ruta_saliente_config(self, self.get_object())
         except Exception:
             messages.error(request, _(u'No se ha podido eliminar la Ruta Saliente.'))
@@ -322,6 +331,7 @@ class RutaEntranteMixin(object):
     def form_valid(self, form):
         form.save()
         # escribe ruta entrante en asterisk
+        # TODO: usar el sincronizador correspondiente
         escribir_ruta_entrante_config(form.instance)
         return super(RutaEntranteMixin, self).form_valid(form)
 
@@ -353,6 +363,7 @@ class RutaEntranteDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         print("TODO: Capturar bien las excepciones correspondientes.")
         try:
+            # TODO: usar el sincronizador correspondiente
             eliminar_ruta_entrante_config(self.get_object())
         except Exception:
             messages.error(request, _(u'No se ha podido eliminar la Ruta Entrante.'))
@@ -429,7 +440,8 @@ class IVRCreateView(IVRMixin, CreateView):
             # e 'invalid_destination'
             self._crear_destinos_fijos(form, nodo_ivr)
             # inserta la configuración de la ruta saliente en asterisk
-            escribir_nodo_entrante_config(nodo_ivr)
+            # TODO: usar el sincronizador correspondiente
+            escribir_nodo_entrante_config(nodo_ivr, None)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect('lista_ivrs')
@@ -491,7 +503,8 @@ class IVRUpdateView(IVRMixin, UpdateView):
             # 'time_out_destination' e 'invalid_destination'
             self._modificar_opciones_destino_fijas(form, nodo_ivr)
             # inserta la configuración de la ruta saliente en asterisk
-            escribir_nodo_entrante_config(nodo_ivr)
+            # TODO: usar el sincronizador correspondiente
+            escribir_nodo_entrante_config(nodo_ivr, None)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect('lista_ivrs')
@@ -530,8 +543,17 @@ class GrupoHorarioMixin(object):
         validacion_tiempo_formset = ValidacionTiempoFormset(
             self.request.POST, instance=form.instance, prefix='validacion_tiempo')
         if form.is_valid() and validacion_tiempo_formset.is_valid():
-            form.save()
+            grupo_horario = form.save()
             validacion_tiempo_formset.save()
+
+            try:
+                # TODO: Utilizar el Sincronizador Correspondiente
+                sincronizador = SincronizadorDummy()
+                sincronizador.regenerar_configuracion(grupo_horario)
+            except RestablecerConfiguracionTelefonicaError, e:
+                message = ("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
+                messages.add_message(self.request, messages.WARNING, message)
+
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect(self.success_url)
         return render(
@@ -577,6 +599,32 @@ class GrupoHorarioDeleteView(DeleteView):
     context_object_name = 'grupo_horario'
     success_url = reverse_lazy('lista_grupos_horarios')
 
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.validaciones_fecha_hora.count() > 0:
+            message = (
+                _('No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora'))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+
+            return redirect(self.get_success_url())
+
+            try:
+                # TODO: Utilizar el Sincronizador Correspondiente
+                sincronizador = SincronizadorDummy()
+                sincronizador.eliminar_configuracion(self.object)
+            except RestablecerConfiguracionTelefonicaError, e:
+                message = ("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
+                messages.add_message(self.request, messages.WARNING, message)
+
+        message = _(u"Se ha eliminado el Grupo Horario.")
+        messages.add_message(self.request, messages.SUCCESS, message)
+
+        return super(GrupoHorarioDeleteView, self).dispatch(request, *args, **kwargs)
+
 
 class ValidacionFechaHoraListView(ListView):
     """Lista los nodos de validación fecha/hora existentes"""
@@ -614,7 +662,8 @@ class ValidacionFechaHoraCreateView(CreateView):
             _asignar_destino_anterior(validacion_fecha_hora_formset, nodo_validacion)
             validacion_fecha_hora_formset.save()
             # escribe el nodo creado y sus relaciones en asterisk
-            escribir_nodo_entrante_config(nodo_validacion)
+            # TODO: usar el sincronizador correspondiente
+            escribir_nodo_entrante_config(nodo_validacion, None)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect(self.success_url)
@@ -651,7 +700,8 @@ class ValidacionFechaHoraUpdateView(UpdateView):
             nodo_validacion = DestinoEntrante.objects.get(
                 object_id=validacion.pk, content_type=ContentType.objects.get_for_model(validacion))
             # escribe el nodo creado y sus relaciones en asterisk
-            escribir_nodo_entrante_config(nodo_validacion)
+            # TODO: usar el sincronizador correspondiente
+            escribir_nodo_entrante_config(nodo_validacion, None)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect(self.success_url)
@@ -660,9 +710,80 @@ class ValidacionFechaHoraUpdateView(UpdateView):
             {'form': form, 'validacion_fecha_hora_formset': validacion_fecha_hora_formset})
 
 
-class ValidacionFechaHoraDeleteView(DeleteView):
-    """Elimina un grupo horario"""
+class DeleteNodoDestinoView(DeleteView):
+    """
+    Vista genérica para ser implementada por cada Nodo de Flujos de llamada
+    """
+    imposible_eliminar = _('No se puede eliminar un objeto que es destino en un flujo de llamada')
+    nodo_eliminado = _(u'Se ha eliminado el Nodo.')
+
+    def eliminar_nodos_y_asociaciones(self):
+        nodo = self.get_object()
+        destino_entrante = DestinoEntrante.get_nodo_ruta_entrante(nodo)
+        # Eliminar OpcionDestino que lo tienen como destino_anterior
+        destino_entrante.destinos_siguientes.all().delete()
+        # Eliminar DestinoEntrante
+        destino_entrante.delete()
+
+    @property
+    def url_eliminar_name(self):
+        raise NotImplemented()
+
+    def get_sincronizador_de_configuracion(self):
+        raise NotImplemented()
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
+        if nodo.es_destino_en_flujo_de_llamada():
+            message = (self.imposible_eliminar)
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return redirect(self.get_success_url())
+        return super(DeleteNodoDestinoView, self).dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
+        if nodo.es_destino_en_flujo_de_llamada():
+            messages.error(request, self.imposible_eliminar)
+            return redirect(self.url_eliminar_name, pk=kwargs['pk'])
+
+        print("TODO: Capturar bien las excepciones correspondientes.")
+        try:
+            self.eliminar_nodos_y_asociaciones()
+            eliminar_nodo_entrante_config(self.get_object(),
+                                          self.get_sincronizador_de_configuracion())
+        except Exception:
+            messages.error(request, _(u'No se ha podido eliminar el elemento.'))
+            return redirect(self.url_eliminar_name, pk=kwargs['pk'])
+
+        messages.success(request, self.nodo_eliminado)
+        return super(DeleteNodoDestinoView, self).delete(request, *args, **kwargs)
+
+
+class IVRDeleteView(DeleteNodoDestinoView):
+    model = IVR
+    success_url = reverse_lazy('lista_ivrs')
+    template_name = 'eliminar_ivr.html'
+    url_eliminar_name = 'eliminar_ivr'
+
+    def get_sincronizador_de_configuracion(self):
+        # TODO: usar el sincronizador correspondiente
+        # return SincronizadorDeConfiguracionDeIVREnAsterisk()
+        return None
+
+
+class ValidacionFechaHoraDeleteView(DeleteNodoDestinoView):
+    """ Elimina una validacion Fecha Hora """
     model = ValidacionFechaHora
-    template_name = 'eliminar_grupo_horario.html'
-    context_object_name = 'grupo_horario'
-    success_url = reverse_lazy('lista_grupos_horarios')
+    success_url = reverse_lazy('lista_validaciones_fecha_hora')
+    template_name = 'eliminar_validacion_fecha_hora.html'
+    url_eliminar_name = 'eliminar_validacion_fecha_hora'
+
+    def get_sincronizador_de_configuracion(self):
+        # TODO: usar el sincronizador correspondiente
+        # return SincronizadorDeConfiguracionDeValidacionFechaHoraEnAsterisk()
+        return None
