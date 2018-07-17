@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script>
+     $(function() {
+       $('.tiempo').datetimepicker({format: 'HH:mm'});
+     });
+     $('.validacionTiempoTr').formset({
+       addText: 'Agregar validación',
+       deleteText: 'Remover',
+       prefix: '{{ validacion_tiempo_formset.prefix }}',
+       addCssClass: 'btn btn-outline-primary',
+       deleteCssClass: 'btn btn-outline-danger deleteFormset',
+       formCssClass: 'dynamic-formset',
+       added: function (row) {
+         $(row.find('.tiempo')).each(function () {
+           $(this).datetimepicker({format: 'HH:mm'});
+         });
+       }
+     });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% block header %}{% endblock %}
+    <form action="" role="form" method="POST">
+        {% csrf_token %}
+        <div class="row mt-3">
+            <div class="col-md-3">
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-warning">{{ error|escape }}</div>
+                    {% endfor %}
+                {% endif %}
+                {{ form }}
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="form-control">
+                    <h3>{% trans 'Condiciones de tiempo' %}</h3>
+                    <table id="myFormsetTable">
+                        <tbody>
+                            {% if validacion_tiempo_formset.non_form_errors %}
+                                {% for error in validacion_tiempo_formset.non_form_errors %}
+                                    <div class="alert alert-warning">{{ error|escape }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            {% for validacion_tiempo_form in validacion_tiempo_formset.forms %}
+                                <tr class="validacionTiempoTr">
+                                    {% if validacion_tiempo_form.non_field_errors %}
+                                        {% for error in validacion_tiempo_form.non_field_errors %}
+                                            <div class="alert alert-warning">{{ error|escape }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <td>
+                                        {% if validacion_tiempo_form.instance.pk %}
+                                            {{ validacion_tiempo_form.DELETE }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="form-control">{% include 'grupo_horario_fields.html' with form=validacion_tiempo_form %}</td>
+                                    <td>{{ validacion_tiempo_form.id }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {{ validacion_tiempo_formset.management_form }}
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <button type="submit" id="id_registrar" class="btn btn-primary">
+                    {% trans 'Guardar' %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

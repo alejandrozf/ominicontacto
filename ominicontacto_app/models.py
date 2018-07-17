@@ -421,6 +421,10 @@ class ArchivoDeAudio(models.Model):
             return os.path.splitext(os.path.basename(filepath))[0]
         return None
 
+    @classmethod
+    def crear_archivo(cls, descripcion, audio_original):
+        return cls.objects.create(descripcion=descripcion, audio_original=audio_original)
+
 
 class CampanaManager(models.Manager):
 
