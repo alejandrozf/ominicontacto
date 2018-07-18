@@ -431,7 +431,7 @@ $(function() {
 	        origin = "DIALER";
 	      }
 
-				if (origin !== "CLICK2CALL" || origin !== "CLICK2CALLPREVIEW") {
+				if (origin !== "CLICK2CALL" && origin !== "CLICK2CALLPREVIEW") {
 				  if (document.querySelector("#auto_attend_" + origin).value == "True") {
 					  session_incoming.answer(options);
 					  setCallState("Connected to " + from, "orange");
