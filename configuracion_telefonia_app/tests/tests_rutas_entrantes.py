@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.core.urlresolvers import reverse
 
 from configuracion_telefonia_app.models import RutaEntrante, DestinoEntrante
+from configuracion_telefonia_app.tests.factories import RutaEntranteFactory
 
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import CampanaFactory
@@ -26,6 +27,8 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE)
         self.destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
             self.campana_entrante)
+
+        self.ruta_entrante = RutaEntranteFactory(destino=self.destino_campana_entrante)
 
     def _obtener_post_data_ruta_entrante(self):
         return {
@@ -54,10 +57,24 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes + 1)
 
     def test_usuario_sin_administracion_no_puede_modificar_ruta_entrante(self):
-        pass
+        url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
+        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        post_data = self._obtener_post_data_ruta_entrante()
+        post_data['id'] = self.ruta_entrante.pk
+        n_rutas_entrantes = RutaEntrante.objects.count()
+        self.client.post(url, post_data, follow=True)
+        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
     def test_usuario_administrador_puede_modificar_ruta_entrante(self):
-        pass
+        nuevo_nombre = 'ruta_entrante_modificada'
+        url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = self._obtener_post_data_ruta_entrante()
+        post_data['id'] = self.ruta_entrante.pk
+        post_data['nombre'] = nuevo_nombre
+        response = self.client.post(url, post_data, follow=True)
+        self.ruta_entrante.refresh_from_db()
+        self.assertEqual(self.ruta_entrante.nombre, nuevo_nombre)
 
     def test_usuario_sin_administracion_no_puede_eliminar_ruta_entrante(self):
         pass
