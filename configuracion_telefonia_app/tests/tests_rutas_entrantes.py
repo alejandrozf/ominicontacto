@@ -8,7 +8,7 @@ from configuracion_telefonia_app.models import RutaEntrante, DestinoEntrante, IV
 from configuracion_telefonia_app.tests.factories import RutaEntranteFactory, IVRFactory
 
 from ominicontacto_app.models import Campana
-from ominicontacto_app.tests.factories import CampanaFactory
+from ominicontacto_app.tests.factories import CampanaFactory, ArchivoDeAudioFactory
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 
@@ -30,6 +30,8 @@ class TestsRutasEntrantes(OMLBaseTest):
 
         self.ivr = IVRFactory()
         self.destino_ivr = DestinoEntrante.crear_nodo_ruta_entrante(self.ivr)
+
+        self.archivo_audio = ArchivoDeAudioFactory()
 
         self.ruta_entrante = RutaEntranteFactory(destino=self.destino_campana_entrante)
 
@@ -98,18 +100,18 @@ class TestsRutasEntrantes(OMLBaseTest):
             'nombre': 'nombre',
             'descripcion': 'descripcion',
             'audio_ppal_escoger': 1,
-            'audio_principal': 1,
+            'audio_principal': self.archivo_audio.pk,
             'audio_ppal_ext_audio': '',
             'time_out': 1,
             'time_out_retries': 1,
             'time_out_audio_escoger': 1,
-            'time_out_audio': 1,
+            'time_out_audio': self.archivo_audio.pk,
             'time_out_ext_audio': '',
             'time_out_destination_type': self.destino_campana_entrante.tipo,
             'time_out_destination': self.destino_campana_entrante.pk,
             'invalid_retries': 1,
             'invalid_destination_audio_escoger': 1,
-            'invalid_audio': 1,
+            'invalid_audio': self.archivo_audio.pk,
             'invalid_destination_ext_audio': '',
             'invalid_destination_type': self.destino_ivr.tipo,
             'invalid_destination': self.destino_ivr.pk,
