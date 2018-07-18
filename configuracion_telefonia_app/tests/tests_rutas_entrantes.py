@@ -77,10 +77,18 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(self.ruta_entrante.nombre, nuevo_nombre)
 
     def test_usuario_sin_administracion_no_puede_eliminar_ruta_entrante(self):
-        pass
+        url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
+        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        n_rutas_entrantes = RutaEntrante.objects.count()
+        self.client.post(url, follow=True)
+        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
     def test_usuario_administrador_puede_eliminar_ruta_entrante(self):
-        pass
+        url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
+        self.client.login(username=self.admin.username, password=self.PWD)
+        n_rutas_entrantes = RutaEntrante.objects.count()
+        self.client.post(url, follow=True)
+        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes - 1)
 
     def test_usuario_sin_administracion_no_puede_crear_ivr(self):
         pass
