@@ -290,7 +290,18 @@ ul.errorlist li {
     font-size: 0.8rem;
     margin-right: 10px;
 }
-
+.typetransf-secondcolumn {
+  margin-left: 20px;
+}
+.typetransf-secondcolumn-number {
+  margin-left: 29px;
+}
+.typetransf-secondcolumn-agent {
+  margin-left: 34px;
+}
+.typetransf-firstcolumn {
+  margin-left: 80px;
+}
 /* ///// Select widget
 */
 

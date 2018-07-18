@@ -133,20 +133,20 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                <h3 class="title-transfer">Transferir</h3>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4>Transferir</h4>
             </div>
             <div class="modal-body container form-inline">
                 <div class="form-group row col-xs-6">
-                    <label class="col-xs-4">Tipo de transferencia:</label>
+                    <label class="typetransf-firstcolumn">Tipo de transferencia:</label>
                     <div class="radio col-xs-2">
                         <label>
-                            <input type="radio" name="tipotransf" id="blindTransf"/>&nbsp;Ciega
+                            <input type="radio" name="tipotransf" id="blindTransf" class="typetransf-secondcolumn"/>&nbsp;Ciega
                         </label>
                     </div>
                     <div class="radio col-xs-3">
                         <label>
-                            <input type="radio" name="tipotransf" id="consultTransf"/>&nbsp;Asistida
+                            <input type="radio" name="tipotransf" id="consultTransf" class="typetransf-secondcolumn"/>&nbsp;Asistida
                         </label>
                     </div>
                 </div>
@@ -155,20 +155,20 @@
                 <div class="form-group row col-xs-6">
                     <div class="radio col-xs-3 col-xs-offset-4">
                         <label>
-                            <input type="radio" name="dstTransf" id="transfToNum"/>&nbsp;a Número
+                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToNum"/>&nbsp;a Número
                         </label>
                     </div>
-                    <input type="text" class="form-control col-xs-2" id="numberToTransfer" disabled/>
+                    <input type="text" class="form-control typetransf-secondcolumn-number" id="numberToTransfer" disabled/>
                 </div>
                 <br>
                 <br>
                 <div class="form-group row col-xs-6">
                     <div class="radio col-xs-3 col-xs-offset-4">
                         <label>
-                            <input type="radio" name="dstTransf" id="transfToCamp"/>&nbsp;a Campaña
+                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToCamp"/>&nbsp;a Campaña
                         </label>
                     </div>
-                    <select class="form-control col-xs-2" id="campToTransfer" disabled>
+                    <select class="form-control typetransf-secondcolumn" id="campToTransfer" disabled>
                     </select>
                 </div>
                 <br>
@@ -176,10 +176,10 @@
                 <div class="form-inline form-group row col-xs-6">
                     <div class="radio col-xs-3 col-xs-offset-4">
                         <label>
-                            <input type="radio" name="dstTransf" id="transfToAgent"/>&nbsp;a Agente
+                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToAgent"/>&nbsp;a Agente
                         </label>
                     </div>
-                    <select class="form-control col-xs-2" id="agentToTransfer" disabled>
+                    <select class="form-control typetransf-secondcolumn-agent" id="agentToTransfer" disabled>
                     </select>
                 </div>
             </div>
