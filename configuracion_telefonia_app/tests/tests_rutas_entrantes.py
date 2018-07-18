@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 
-from configuracion_telefonia_app.models import RutaEntrante, DestinoEntrante
-from configuracion_telefonia_app.tests.factories import RutaEntranteFactory
+from configuracion_telefonia_app.models import RutaEntrante, DestinoEntrante, IVR
+from configuracion_telefonia_app.tests.factories import RutaEntranteFactory, IVRFactory
 
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import CampanaFactory
@@ -27,6 +27,9 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE)
         self.destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
             self.campana_entrante)
+
+        self.ivr = IVRFactory()
+        self.destino_ivr = DestinoEntrante.crear_nodo_ruta_entrante(self.ivr)
 
         self.ruta_entrante = RutaEntranteFactory(destino=self.destino_campana_entrante)
 
@@ -90,11 +93,55 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes - 1)
 
+    def _obtener_post_data_ivr(self):
+        return {
+            'nombre': 'nombre',
+            'descripcion': 'descripcion',
+            'audio_ppal_escoger': 1,
+            'audio_principal': 1,
+            'audio_ppal_ext_audio': '',
+            'time_out': 1,
+            'time_out_retries': 1,
+            'time_out_audio_escoger': 1,
+            'time_out_audio': 1,
+            'time_out_ext_audio': '',
+            'time_out_destination_type': self.destino_campana_entrante.tipo,
+            'time_out_destination': self.destino_campana_entrante.pk,
+            'invalid_retries': 1,
+            'invalid_destination_audio_escoger': 1,
+            'invalid_audio': 1,
+            'invalid_destination_ext_audio': '',
+            'invalid_destination_type': self.destino_ivr.tipo,
+            'invalid_destination': self.destino_ivr.pk,
+            'ivr-0-valor': 1,
+            'ivr-0-tipo_destino': self.destino_campana_entrante.tipo,
+            'ivr-0-destino_siguiente': self.destino_campana_entrante.pk,
+            'ivr-0-id': '',
+            'ivr-1-valor': '*',
+            'ivr-1-tipo_destino': self.destino_ivr.tipo,
+            'ivr-1-destino_siguiente': self.destino_ivr.pk,
+            'ivr-1-id': '',
+            'ivr-TOTAL_FORMS': 2,
+            'ivr-INITIAL_FORMS': 0,
+            'ivr-MIN_NUM_FORMS': 0,
+            'ivr-MAX_NUM_FORMS': 1000
+        }
+
     def test_usuario_sin_administracion_no_puede_crear_ivr(self):
-        pass
+        url = reverse('crear_ivr')
+        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        post_data = self._obtener_post_data_ivr()
+        n_ivrs = IVR.objects.count()
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(IVR.objects.count(), n_ivrs)
 
     def test_usuario_administrador_puede_crear_ivr(self):
-        pass
+        url = reverse('crear_ivr')
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = self._obtener_post_data_ivr()
+        n_ivrs = IVR.objects.count()
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(IVR.objects.count(), n_ivrs + 1)
 
     def test_usuario_sin_administracion_no_puede_modificar_ivr(self):
         pass
