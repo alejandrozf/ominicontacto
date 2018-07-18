@@ -106,7 +106,7 @@ class TestsRutasSalientes(OMLBaseTest):
         usr_sup.set_password(self.PWD)
         self.client.login(username=usr_sup.username, password=self.PWD)
         url = reverse('crear_ruta_saliente')
-        response = self.client.get(url, follow=True)
+        response = self.client.post(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
     def test_supervisor_normal_no_puede_modificar_ruta_saliente(self):
