@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
+from django.core.urlresolvers import reverse
+
+from configuracion_telefonia_app.models import RutaEntrante, DestinoEntrante
+
+from ominicontacto_app.models import Campana
+from ominicontacto_app.tests.factories import CampanaFactory
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 
@@ -15,14 +23,35 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.usr_sup = self.crear_user_supervisor()
         self.crear_supervisor_profile(self.usr_sup)
 
-    def test_creacion_campana_entrante_crea_nodo_ruta_entrante(self):
-        pass
+        self.campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE)
+        self.destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
+            self.campana_entrante)
+
+    def _obtener_post_data_ruta_entrante(self):
+        return {
+            'nombre': 'test_ruta_entrante',
+            'telefono': '123456',
+            'prefijo': '351',
+            'idioma': RutaEntrante.ES,
+            'tipo_destino': self.destino_campana_entrante.tipo,
+            'destino': self.destino_campana_entrante.pk
+        }
 
     def test_usuario_sin_administracion_no_puede_crear_ruta_entrante(self):
-        pass
+        url = reverse('crear_ruta_entrante')
+        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        post_data = self._obtener_post_data_ruta_entrante()
+        n_rutas_entrantes = RutaEntrante.objects.count()
+        self.client.post(url, post_data, follow=True)
+        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
     def test_usuario_administrador_puede_crear_ruta_entrante(self):
-        pass
+        url = reverse('crear_ruta_entrante')
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = self._obtener_post_data_ruta_entrante()
+        n_rutas_entrantes = RutaEntrante.objects.count()
+        self.client.post(url, post_data, follow=True)
+        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes + 1)
 
     def test_usuario_sin_administracion_no_puede_modificar_ruta_entrante(self):
         pass
@@ -120,40 +149,4 @@ class TestsRutasEntrantes(OMLBaseTest):
         pass
 
     def test_form_validacion_fecha_hora_destinos_iguales_es_invalido(self):
-        pass
-
-    def test_form_validacion_tiempo_hora_inicio_mayor_hora_final_es_invalido(self):
-        pass
-
-    def test_form_validacion_tiempo_hora_inicio_igual_hora_final_es_invalido(self):
-        pass
-
-    def test_form_validacion_tiempo_hora_inicio_menor_hora_final_es_valido(self):
-        pass
-
-    def test_form_validacion_tiempo_dia_semana_inicio_menor_dia_semana_final_es_valido(self):
-        pass
-
-    def test_form_validacion_tiempo_dia_semana_inicio_igual_dia_semana_final_es_valido(self):
-        pass
-
-    def test_form_validacion_tiempo_dia_semana_inicio_mayor_dia_semana_final_es_invalido(self):
-        pass
-
-    def test_form_validacion_tiempo_dia_mes_inicio_menor_dia_mes_final_es_valido(self):
-        pass
-
-    def test_form_validacion_tiempo_dia_mes_inicio_igual_dia_mes_final_es_valido(self):
-        pass
-
-    def test_form_validacion_tiempo_dia_mes_inicio_mayor_dia_mes_final_es_invalido(self):
-        pass
-
-    def test_form_validacion_tiempo_mes_inicio_menor_mes_final_es_valido(self):
-        pass
-
-    def test_form_validacion_tiempo_mes_inicio_igual_mes_final_es_valido(self):
-        pass
-
-    def test_form_validacion_tiempo_mes_inicio_mayor_mes_final_es_invalido(self):
         pass
