@@ -238,6 +238,24 @@ class DestinoEntrante(models.Model):
             return DestinoEntrante(**kwargs)
         return cls.objects.create(**kwargs)
 
+    @classmethod
+    def get_nodo_ruta_entrante(cls, content_object):
+        return cls.objects.get(object_id=content_object.pk,
+                               content_type=ContentType.objects.get_for_model(content_object))
+
+    def _es_destino_siguiente(self):
+        return self.destinos_anteriores.count() > 0
+
+    def _es_destino_de_ruta_entrante(self):
+        return RutaEntrante.objects.filter(destino=self).count() > 0
+
+    def es_destino_en_flujo_de_llamada(self):
+        return self._es_destino_siguiente() or self._es_destino_de_ruta_entrante()
+
+    def get_opcion_destino_por_valor(self, valor):
+        """ Obtiene el nodo destino correspondiente al valor de una relacion entre dos nodos """
+        return self.destinos_siguientes.get(valor=valor)
+
 
 class OpcionDestino(models.Model):
     """Representa una relación entre dos nodos de una ruta entrante de una llamada"""

@@ -20,7 +20,7 @@
                             <td>{{ ivr.pk }}</td>
                             <td><a href="{% url 'editar_ivr' ivr.id %}">{{ ivr.nombre }}</a></td>
                             <td>
-                                <a class="dropdown-item" href="#{#% url 'eliminar_nodo_entrante' ivr.pk %#}">
+                                <a class="dropdown-item" href="{% url 'eliminar_ivr' ivr.pk %}">
                                     <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                                 </a>
                             </td>

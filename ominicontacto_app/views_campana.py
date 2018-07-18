@@ -13,6 +13,8 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import (
     ListView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import RedirectView
+from django.utils.translation import ugettext_lazy as _
+
 from ominicontacto_app.forms import (
     ReporteForm, FormularioNuevoContacto,
     FormularioCampanaContacto, CampanaSupervisorUpdateForm
@@ -26,7 +28,7 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
 from ominicontacto_app.utiles import convert_fecha_datetime, convertir_ascii_string
 from ominicontacto_app.services.reporte_llamadas_campana import \
     EstadisticasCampanaLlamadasService
-
+from configuracion_telefonia_app.views import DeleteNodoDestinoView
 
 import logging as logging_
 
@@ -95,12 +97,13 @@ class CampanaListView(ListView):
         return context
 
 
-class CampanaDeleteView(CampanasDeleteMixin, DeleteView):
+class CampanaDeleteView(CampanasDeleteMixin, DeleteNodoDestinoView):
     """
     Esta vista se encarga de la eliminación de una campana
     """
     model = Queue
     template_name = 'campana/delete_campana.html'
+    imposible_eliminar = _('No se puede eliminar una Campaña que es destino en un flujo de llamada')
 
     def delete(self, request, *args, **kwargs):
         super(CampanaDeleteView, self).delete(request, *args, **kwargs)

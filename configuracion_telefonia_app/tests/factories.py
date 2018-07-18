@@ -85,7 +85,6 @@ class ValidacionTiempoFactory(DjangoModelFactory):
         model = ValidacionTiempo
 
     grupo_horario = SubFactory(GrupoHorarioFactory)
-    nombre = Sequence(lambda n: "ValidacionTiempo {0}".format(n))
     tiempo_inicial = lazy_attribute(lambda a: timezone.now())
     tiempo_final = lazy_attribute(lambda a: timezone.now() + timezone.timedelta(hours=8))
     dia_semana_inicial = 0

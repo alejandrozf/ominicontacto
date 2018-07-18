@@ -43,8 +43,12 @@ class TestsRutasSalientes(OMLBaseTest):
     def test_supervisor_normal_no_puede_eliminar(self):
         usr_sup = self.crear_user_supervisor()
         self.crear_supervisor_profile(usr_sup)
+        self.client.login(username=usr_sup, password=self.PWD)
         url = reverse('eliminar_ruta_saliente', args=[self.ruta_1.id])
         response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, 'registration/login.html')
+        self.client.login(username=usr_sup, password=self.PWD)
+        self.client.post(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
     @patch('configuracion_telefonia_app.views.eliminar_ruta_saliente_config')
