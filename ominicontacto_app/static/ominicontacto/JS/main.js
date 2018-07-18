@@ -10,28 +10,13 @@ var centesimasT = 0;
 var segundosT = 0;
 var minutosT = 0;
 var flagPause = 0;
-var control = control2 = control3 = '';
+var control1 = control2 = control3 = control4 = '';
 var modifyUserStat = document.getElementById("UserStatus");
 $(function () {
 	$("#Resume").prop("disabled",true);
-	 /*$("#id_registrar").click(function () {
-	 	 $.ajax({
-	 	 	 type: "post",
-	 	 	 url: "/contacto/nuevo",
-	 	 	 contentType: "application/json",
-	 	 	 data: "",
-	 	 	 success: function (msg) {
-	   	 	 debugger;
-	   	 	 $("#crm").html(msg);
-	   	 },
-	   	 error: function (jqXHR, textStatus, errorThrown) {
-	       debugger;
-	       console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
-	     }
-	 	 });
-	 });*/
 	 changeStatus(2, $("#idagt").val());
-
+	 inicio1();//cronometro de operacion
+	 inicio4();// cronometro del total
 	 /*
 	 ESTADO_OFFLINE = 1    """Agente en estado offline"""
 	 ESTADO_ONLINE = 2    """Agente en estado online"""
@@ -72,11 +57,6 @@ $(function () {
 	 $("#webChat").click(function () {
 	     $("#modalwebChat").modal('show');
 	 });
-	// como informo a un servidro de presencia que mi endpoint camibia de status
-	 //$("#modalWebCall").modal('show');
-	 // $("#webCall").click(function () {
-	 //     $("#modalWebCall").modal('show');
-	 // });
 	 function updateButton(btn,clsnm,inht) {
 	 	 btn.className = clsnm;
 	 	 var lastval = btn.innerHTML;
@@ -89,65 +69,67 @@ $(function () {
 	   $("#Pause").prop('disabled', true);
 	   $("#Resume").prop('disabled', false);
 	   $("#modalPause").modal('hide');
-	   inicio2();
+	   inicio2();// inicio cronometro pausa
+		 parar1();// pauso cronometro operacion
 	   updateButton(modifyUserStat, "label label-danger", $("#pauseType option:selected").text());
 	 });
-	 
+
 	 $("#logout").click(function () {
 	   changeStatus(3, $("#idagt").val());
 	 });
 
 	 $("#Resume").click(function () {
-	    parar2();
-	    changeStatus(1, $("#idagt").val());
-	    $("#Pause").prop('disabled', false);
-	    $("#Resume").prop('disabled', true);
-	    var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
-	    var containerTag = document.getElementById("timers");
-	    var pausas = document.getElementsByClassName("pausa");
-	    if (pausas.length) { // Si ya existe pausa
-	      var arrPausas = [];
-	      for (var i = 0; i < pausas.length; i++) {
-	        arrPausas[i] = pausas[i].id;
-	      }
-	      var found = arrPausas.indexOf(lastPause);
-	      if (found != -1) { // Si se repite, suma los tiempos
-	          horaToSum = $("#horaP").html();
-	          minsToSum = $("#minsP").html().replace(":", "");
-	          segsToSum = $("#segsP").html().replace(":", "");
-	          horap = document.getElementById("hora" + lastPause);
-	          minsp = document.getElementById("mins" + lastPause);
-	          segsp = document.getElementById("segs" + lastPause);
-	          horap = horap.innerHTML;
-	          minsp = minsp.innerHTML.replace(":", "");
-	          segsp = segsp.innerHTML.replace(":", "");
-	          horap = Number(horap) + Number(horaToSum);
-	          minsp = Number(minsp) + Number(minsToSum);
-	          segsp = Number(segsp) + Number(segsToSum);
-	          if (horap < 10) {
-	            horap = String(horap) + "0";
-	          }
-	          if (minsp < 10) {
-	            minsp = ":0" + String(minsp);
-	          } else {
-	            minsp = ":" + String(minsp);
-	          }
-	          if (segsp < 10) {
-	            segsp = ":0" + String(segsp);
-	          } else {
-	            segsp = ":" + String(segsp);
-	          }
-	          document.getElementById("hora" + lastPause).innerHTML = horap;
-	          document.getElementById("mins" + lastPause).innerHTML = minsp;
-	          document.getElementById("segs" + lastPause).innerHTML = segsp;
-	          lastPause = "";
-	        }
-	      }
-	  });
+		 inicio1();
+	   parar2();
+	   changeStatus(1, $("#idagt").val());
+	   $("#Pause").prop('disabled', false);
+	   $("#Resume").prop('disabled', true);
+	   var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
+	   var containerTag = document.getElementById("timers");
+	   var pausas = document.getElementsByClassName("pausa");
+	   if (pausas.length) { // Si ya existe pausa
+	     var arrPausas = [];
+	     for (var i = 0; i < pausas.length; i++) {
+	       arrPausas[i] = pausas[i].id;
+	     }
+	     var found = arrPausas.indexOf(lastPause);
+	     if (found != -1) { // Si se repite, suma los tiempos
+	       horaToSum = $("#horaP").html();
+	       minsToSum = $("#minsP").html().replace(":", "");
+	       segsToSum = $("#segsP").html().replace(":", "");
+	       horap = document.getElementById("hora" + lastPause);
+	       minsp = document.getElementById("mins" + lastPause);
+	       segsp = document.getElementById("segs" + lastPause);
+	       horap = horap.innerHTML;
+	       minsp = minsp.innerHTML.replace(":", "");
+	       segsp = segsp.innerHTML.replace(":", "");
+	       horap = Number(horap) + Number(horaToSum);
+	       minsp = Number(minsp) + Number(minsToSum);
+	       segsp = Number(segsp) + Number(segsToSum);
+	       if (horap < 10) {
+	         horap = String(horap) + "0";
+	       }
+	       if (minsp < 10) {
+	         minsp = ":0" + String(minsp);
+	       } else {
+	         minsp = ":" + String(minsp);
+	       }
+	       if (segsp < 10) {
+	         segsp = ":0" + String(segsp);
+	       } else {
+	         segsp = ":" + String(segsp);
+	       }
+	       document.getElementById("hora" + lastPause).innerHTML = horap;
+	       document.getElementById("mins" + lastPause).innerHTML = minsp;
+	       document.getElementById("segs" + lastPause).innerHTML = segsp;
+	       lastPause = "";
+	     }
+	   }
+	 });
 
 	 $("#Pause").click(function () {
-	 	$("#modalPause").modal('show');
-	  $("#pauseTime").html();
+	   $("#modalPause").modal('show');
+	   $("#pauseTime").html();
 	 });
 	 $("#onHold").click(function (){
 	 	 if(holdFlag === false) {
@@ -182,7 +164,7 @@ $(function () {
 	     $("#modalSMS").modal("show");
 	 });
 
-	       $("#threadMsgsTable").DataTable({
+	   $("#threadMsgsTable").DataTable({
 	     paging:false,
 	     searching:false,
 	     ordering:false,
@@ -241,14 +223,25 @@ $(function () {
 	 $("#minsP").html(":00");
 	 $("#horaP").html("00");
 
+	 function parar1() {
+	 		clearInterval(control1);
+	 }
+	 function inicio1() {
+	 		control1 = setInterval(cronometro1, 1000);
+	 }
 	 function parar2() {
 	     clearInterval(control2);
 	 }
 	 function inicio2() {
 	     control2 = setInterval(cronometro2, 1000);
 	 }
-
-//************************************CRONOMETRO DE PAUSAS----------------------------
+	 function parar4() {
+	     clearInterval(control4);
+	 }
+	 function inicio4() {
+	     control2 = setInterval(cronometro4, 1000);
+	 }
+	 //************************************CRONOMETRO DE PAUSAS----------------------------
 	 function cronometro2() {
 	     if (centesimasP < 59) {
 	         centesimasP++;
@@ -278,15 +271,74 @@ $(function () {
 	         $("#horaP").html("" + minutosP);
 	     }
 	 }
-
-	 function reinicio(horaDOM, minDOM, segDOM) {
-	     clearInterval(control);
-	     centesimasP = 0;
-	     segundosP = 0;
-	     minutosP = 0;
+	 //*************************************CRONOMETRO DE  OPERACION***********************
+	 function cronometro1() {
+	     if (centesimasO < 59) {
+	         centesimasO++;
+	         if (centesimasO < 10) {
+	             centesimasO = "0" + centesimasO;
+	         }
+	         $("#segsO").html(":" + centesimasO);
+	     }
+	     if (centesimasO == 59) {
+	         centesimasO = -1;
+	     }
+	     if (centesimasO == 0) {
+	         segundosO++;
+	         if (segundosO < 10) {
+	             segundosO = "0" + segundosO;
+	         }
+	         $("#minsO").html(":" + segundosO);
+	     }
+	     if (segundosO == 59) {
+	         segundosO = -1;
+	     }
+	     if ((centesimasO == 0) && (segundosO == 0)) {
+	         minutosO++;
+	         if (minutosO < 10) {
+	             minutosO = "0" + minutosO;
+	         }
+	         $("#horaO").html("" + minutosO);
+	     }
+	 }
+	 //************************************CRONOMETRO DEL TOTAL----------------------------
+ 	 function cronometro4() {
+ 	     if (centesimasT < 59) {
+ 	         centesimasT++;
+ 	         if (centesimasT < 10) {
+ 	             centesimasT = "0" + centesimasT;
+ 	         }
+ 	         $("#segsT").html(":" + centesimasT);
+ 	     }
+ 	     if (centesimasT == 59) {
+ 	         centesimasT = -1;
+ 	     }
+ 	     if (centesimasT == 0) {
+ 	         segundosT++;
+ 	         if (segundosT < 10) {
+ 	             segundosT = "0" + segundosT;
+ 	         }
+ 	         $("#minsT").html(":" + segundosT);
+ 	     }
+ 	     if (segundosT == 59) {
+ 	         segundosT = -1;
+ 	     }
+ 	     if ((centesimasT == 0) && (segundosT == 0)) {
+ 	         minutosT++;
+ 	         if (minutosT < 10) {
+ 	             minutosT = "0" + minutosT;
+ 	         }
+ 	         $("#horaT").html("" + minutosT);
+ 	     }
+ 	 }
+   //-------------------------------------------------------------------------
+	 function reinicio(horaDOM, minDOM, segDOM, controlX, cent, seg, min) {
+	     clearInterval(controlX);
+	     cent = 0;
+	     seg = 0;
+	     min = 0;
 	     segDOM.html(":00");
 	     minDOM.html(":00");
 	     horaDOM.html("00");
 	 }
-
 });
