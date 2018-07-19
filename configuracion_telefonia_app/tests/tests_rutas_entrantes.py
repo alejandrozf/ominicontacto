@@ -9,9 +9,9 @@ from django.core.urlresolvers import reverse
 from configuracion_telefonia_app.forms import IVRForm
 from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR, GrupoHorario,
                                                 ValidacionFechaHora)
-from configuracion_telefonia_app.tests.factories import (RutaEntranteFactory, IVRFactory,
-                                                         OpcionDestinoFactory, ValidacionTiempoFactory,
-                                                         ValidacionFechaHoraFactory)
+from configuracion_telefonia_app.tests.factories import (
+    RutaEntranteFactory, IVRFactory, OpcionDestinoFactory, ValidacionTiempoFactory,
+    ValidacionFechaHoraFactory)
 
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import CampanaFactory, ArchivoDeAudioFactory
@@ -53,12 +53,14 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.grupo_horario = self.validacion_tiempo.grupo_horario
 
         self.validacion_fecha_hora = ValidacionFechaHoraFactory(grupo_horario=self.grupo_horario)
-        self.destino_val_fecha_hora = DestinoEntrante.crear_nodo_ruta_entrante(self.validacion_fecha_hora)
+        self.destino_val_fecha_hora = DestinoEntrante.crear_nodo_ruta_entrante(
+            self.validacion_fecha_hora)
         self.opc_dest_val_fecha_hora_true = OpcionDestinoFactory(
             valor=ValidacionFechaHora.DESTINO_MATCH, destino_anterior=self.destino_val_fecha_hora,
             destino_siguiente=self.destino_campana_entrante)
         self.opc_dest_val_fecha_hora_false = OpcionDestinoFactory(
-            valor=ValidacionFechaHora.DESTINO_NO_MATCH, destino_anterior=self.destino_val_fecha_hora,
+            valor=ValidacionFechaHora.DESTINO_NO_MATCH,
+            destino_anterior=self.destino_val_fecha_hora,
             destino_siguiente=self.destino_ivr)
 
         self.archivo_audio = ArchivoDeAudioFactory()
@@ -104,7 +106,8 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertNotEqual(self.ruta_entrante.nombre, nuevo_nombre)
 
     @patch('configuracion_telefonia_app.views.escribir_ruta_entrante_config')
-    def test_usuario_administrador_puede_modificar_ruta_entrante(self, escribir_ruta_entrante_config):
+    def test_usuario_administrador_puede_modificar_ruta_entrante(
+            self, escribir_ruta_entrante_config):
         nuevo_nombre = 'ruta_entrante_modificada'
         url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -112,6 +115,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         post_data['id'] = self.ruta_entrante.pk
         post_data['nombre'] = nuevo_nombre
         response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.ruta_entrante.refresh_from_db()
         self.assertEqual(self.ruta_entrante.nombre, nuevo_nombre)
 
@@ -122,9 +126,9 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
-
-    @patch('configuracion_telefonia_app.views.eliminar_ruta_entrante_config')
-    def test_usuario_administrador_puede_eliminar_ruta_entrante(self, eliminar_ruta_entrante_config):
+    @patch('ominicontacto_app.services.asterisk_database.RutaEntranteFamily.delete_family')
+    def test_usuario_administrador_puede_eliminar_ruta_entrante(
+            self, eliminar_ruta_entrante_config):
         url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
         n_rutas_entrantes = RutaEntrante.objects.count()
@@ -171,8 +175,8 @@ class TestsRutasEntrantes(OMLBaseTest):
         post_data = self._obtener_post_data_ivr()
         n_ivrs = IVR.objects.count()
         response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(IVR.objects.count(), n_ivrs)
-
 
     @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
     def test_usuario_administrador_puede_crear_ivr(self, escribir_nodo_entrante_config):
@@ -181,6 +185,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         post_data = self._obtener_post_data_ivr()
         n_ivrs = IVR.objects.count()
         response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(IVR.objects.count(), n_ivrs + 1)
 
     def test_usuario_sin_administracion_no_puede_modificar_ivr(self):
@@ -217,6 +222,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         post_data = self._obtener_post_data_ivr()
         n_dests_ivrs = DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count()
         response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count(), n_dests_ivrs + 1)
 
@@ -275,6 +281,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
         post_data['validacion_tiempo-INITIAL_FORMS'] = 1
         response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.grupo_horario.refresh_from_db()
         self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
 
@@ -305,12 +312,14 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora)
 
     @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
-    def test_usuario_administrador_puede_crear_validacion_fecha_hora(self, escribir_nodo_entrante_config):
+    def test_usuario_administrador_puede_crear_validacion_fecha_hora(
+            self, escribir_nodo_entrante_config):
         url = reverse('crear_validacion_fecha_hora')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         n_validaciones_fecha_hora = ValidacionFechaHora.objects.count()
         response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora + 1)
 
     def test_usuario_sin_administracion_no_puede_modificar_validacion_fecha_hora(self):
@@ -326,7 +335,8 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertNotEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
 
     @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
-    def test_usuario_administrar_puede_modificar_validacion_fecha_hora(self, escribir_nodo_entrante_config):
+    def test_usuario_administrar_puede_modificar_validacion_fecha_hora(
+            self, escribir_nodo_entrante_config):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -340,13 +350,15 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
 
     @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
-    def test_creacion_validacion_fecha_hora_crea_nodo_generico_correspondiente(self, escribir_nodo_entrante_config):
+    def test_creacion_validacion_fecha_hora_crea_nodo_generico_correspondiente(
+            self, escribir_nodo_entrante_config):
         url = reverse('crear_validacion_fecha_hora')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         n_dests_validaciones_fecha_hora = DestinoEntrante.objects.filter(
             tipo=DestinoEntrante.VALIDACION_FECHA_HORA).count()
         response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             DestinoEntrante.objects.filter(tipo=DestinoEntrante.VALIDACION_FECHA_HORA).count(),
             n_dests_validaciones_fecha_hora + 1)
