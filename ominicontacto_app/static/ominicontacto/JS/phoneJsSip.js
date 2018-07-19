@@ -423,6 +423,7 @@ $(function() {
           }
           userAgent.terminateSessions();
           defaultCallState();
+        }
 					function processOrigin(origin, opt, from) {
 						var options = opt;
 						var origin = origin;
