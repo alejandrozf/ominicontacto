@@ -22,15 +22,17 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
     SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk,
     SincronizadorDeConfiguracionRutaEntranteAsterisk,
-    SincronizadorDeConfiguracionIVRAsterisk
+    SincronizadorDeConfiguracionIVRAsterisk,
+    SincronizadorDeConfiguracionValidacionFechaHoraAsterisk
 )
 
 
+# Debería extender del AbstractConfiguracionAsterisk
 class SincronizadorDummy(object):
-    def regenerar_configuracion(self, objeto):
+    def regenerar_asterisk(self, objeto):
         pass
 
-    def eliminar_configuracion(self, objeto):
+    def eliminar_y_regenerar_asterisk(self, objeto):
         pass
 
 
@@ -532,14 +534,6 @@ class IVRContentCreateView(IVRCreateView):
     template_name = "content_ivr.html"
 
 
-class DestinoEntranteDeleteView(DeleteView):
-    """Elimina un nodo de ruta entrante"""
-    # TODO: implementar para los ABMs de IVR y Grupos Horarios
-    model = DestinoEntrante
-    template_name = 'eliminar_nodo_entrante.html'
-    context_object_name = 'nodo_entrante'
-
-
 class GrupoHorarioListView(ListView):
     """Lista los grupos horarios existentes"""
     model = GrupoHorario
@@ -561,7 +555,7 @@ class GrupoHorarioMixin(object):
             try:
                 # TODO: Utilizar el Sincronizador Correspondiente
                 sincronizador = SincronizadorDummy()
-                sincronizador.regenerar_configuracion(grupo_horario)
+                sincronizador.regenerar_asterisk(grupo_horario)
             except RestablecerConfiguracionTelefonicaError, e:
                 message = ("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
                 messages.add_message(self.request, messages.WARNING, message)
@@ -647,12 +641,21 @@ class ValidacionFechaHoraListView(ListView):
     ordering = ['id']
 
 
-class ValidacionFechaHoraCreateView(CreateView):
+class ValidacionFechaHoraMixin(object):
+
+    def get_success_url(self):
+        return reverse('lista_validaciones_fecha_hora')
+
+    def get_sincronizador_de_configuracion(self):
+        sincronizador = SincronizadorDeConfiguracionValidacionFechaHoraAsterisk()
+        return sincronizador
+
+
+class ValidacionFechaHoraCreateView(ValidacionFechaHoraMixin, CreateView):
     """Crea una validación de fecha/hora"""
     model = ValidacionFechaHora
     template_name = "crear_validacion_fecha_hora.html"
     fields = ('nombre', 'grupo_horario')
-    success_url = reverse_lazy('lista_validaciones_fecha_hora')
     message = _('Se ha creado la validacion horaria con éxito')
 
     def get_context_data(self, **kwargs):
@@ -674,22 +677,21 @@ class ValidacionFechaHoraCreateView(CreateView):
             _asignar_destino_anterior(validacion_fecha_hora_formset, nodo_validacion)
             validacion_fecha_hora_formset.save()
             # escribe el nodo creado y sus relaciones en asterisk
-            sincronizador = SincronizadorDeConfiguracionIVRAsterisk()
-            escribir_nodo_entrante_config(self, nodo_validacion, sincronizador)
+            sincronizador = self.get_sincronizador_de_configuracion()
+            escribir_nodo_entrante_config(self, validacion, sincronizador)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
-            return redirect(self.success_url)
+            return redirect(self.get_success_url())
         return render(
             self.request, self.template_name,
             {'form': form, 'validacion_fecha_hora_formset': validacion_fecha_hora_formset})
 
 
-class ValidacionFechaHoraUpdateView(UpdateView):
+class ValidacionFechaHoraUpdateView(ValidacionFechaHoraMixin, UpdateView):
     """Edita una validación de fecha/hora"""
     model = ValidacionFechaHora
     template_name = "crear_validacion_fecha_hora.html"
     fields = ('nombre', 'grupo_horario')
-    success_url = reverse_lazy('lista_validaciones_fecha_hora')
     message = _('Se ha modificado la validacion horaria con éxito')
 
     def get_context_data(self, **kwargs):
@@ -712,11 +714,11 @@ class ValidacionFechaHoraUpdateView(UpdateView):
             nodo_validacion = DestinoEntrante.objects.get(
                 object_id=validacion.pk, content_type=ContentType.objects.get_for_model(validacion))
             # escribe el nodo creado y sus relaciones en asterisk
-            sincronizador = SincronizadorDeConfiguracionIVRAsterisk()
-            escribir_nodo_entrante_config(self, nodo_validacion, sincronizador)
+            sincronizador = self.get_sincronizador_de_configuracion()
+            escribir_nodo_entrante_config(self, validacion, sincronizador)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
-            return redirect(self.success_url)
+            return redirect(self.get_success_url())
         return render(
             self.request, self.template_name,
             {'form': form, 'validacion_fecha_hora_formset': validacion_fecha_hora_formset})
@@ -784,24 +786,17 @@ class DeleteNodoDestinoMixin(object):
 
 class IVRDeleteView(IVRMixin, DeleteNodoDestinoMixin, DeleteView):
     model = IVR
-    success_url = reverse_lazy('lista_ivrs')
     template_name = 'eliminar_ivr.html'
     url_eliminar_name = 'eliminar_ivr'
     imposible_eliminar = _('No se puede eliminar un IVR que es destino en un flujo de llamada.')
     nodo_eliminado = _(u'Se ha eliminado el IVR.')
 
 
-class ValidacionFechaHoraDeleteView(DeleteNodoDestinoMixin, DeleteView):
+class ValidacionFechaHoraDeleteView(ValidacionFechaHoraMixin, DeleteNodoDestinoMixin, DeleteView):
     """ Elimina una validacion Fecha Hora """
     model = ValidacionFechaHora
-    success_url = reverse_lazy('lista_validaciones_fecha_hora')
     template_name = 'eliminar_validacion_fecha_hora.html'
     url_eliminar_name = 'eliminar_validacion_fecha_hora'
     imposible_eliminar = _('No se puede eliminar una Validación Fecha Hora mientras sea'
                            ' destino en un flujo de llamada.')
     nodo_eliminado = _(u'Se ha eliminado la Validación Fecha Hora.')
-
-    def get_sincronizador_de_configuracion(self):
-        # TODO: usar el sincronizador correspondiente
-        # return SincronizadorDeConfiguracionDeValidacionFechaHoraEnAsterisk()
-        return None

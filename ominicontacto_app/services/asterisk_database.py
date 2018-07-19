@@ -8,7 +8,7 @@ from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 from configuracion_telefonia_app.models import (
-    RutaSaliente, TroncalSIP, IVR, RutaEntrante, ContentType, DestinoEntrante
+    RutaSaliente, TroncalSIP, IVR, RutaEntrante, ContentType, DestinoEntrante, ValidacionFechaHora
 )
 import logging as _logging
 
@@ -68,6 +68,7 @@ class AbstractFamily(object):
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
     def _obtener_key_cero_dict(self, family_member):
+        """ Método sólo necesario para testear que existe el Family """
         raise (NotImplementedError())
 
     def delete_family(self, family_member):
@@ -456,3 +457,36 @@ class RutaEntranteFamily(AbstractFamily):
 
     def get_nombre_families(self):
         return "OML/INR"
+
+
+class ValidacionFechaHoraFamily(AbstractFamily):
+
+    def _create_dict(self, family_member):
+        nodo = DestinoEntrante.get_nodo_ruta_entrante(family_member)
+        dict_ivr = {
+            'NAME': family_member.nombre,
+            'TGID': family_member.grupo_horario.id,
+        }
+
+        for opcion in nodo.destinos_siguientes.all():
+            dst = "{0},{1}".format(
+                opcion.destino_siguiente.tipo, opcion.destino_siguiente.object_id)
+            if opcion.valor == ValidacionFechaHora.DESTINO_MATCH:
+                dict_ivr.update({'TRUEDST': dst})
+            elif opcion.valor == ValidacionFechaHora.DESTINO_NO_MATCH:
+                dict_ivr.update({'FALSEDST': dst})
+
+        return dict_ivr
+
+    def _obtener_todos(self):
+        """Obtengo todas las ValidacionFechaHora para generar family"""
+        return ValidacionFechaHora.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "OML/TC/{0}".format(family_member.id)
+
+    def _obtener_key_cero_dict(self, family_member):
+        return self._create_dict(family_member).keys()[0]
+
+    def get_nombre_families(self):
+        return "OML/TC"

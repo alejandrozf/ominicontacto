@@ -169,7 +169,7 @@ class ValidacionTiempo(models.Model):
     # si se guardan vacíos esto significa por defecto TODOS (los días de la semana, los meses, etc.)
 
     def __unicode__(self):
-        return "Validación fecha/hora {0}".format(self.nombre)
+        return "Validación fecha/hora id:{0} para {1}".format(self.id, self.grupo_horario)
 
 
 class ValidacionFechaHora(models.Model):

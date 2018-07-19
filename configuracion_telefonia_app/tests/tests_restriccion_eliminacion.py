@@ -36,7 +36,7 @@ class BaseTestRestriccionEliminacion(OMLBaseTest):
 
 class TestRestriccionEliminacionGrupoHorario(BaseTestRestriccionEliminacion):
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_asterisk')
     def test_elimina_grupo_horario_ok(self, mock_sincronizacion):
         # Creo un Grupo Horario sin asignarlo a ninguna Validacion Fecha Hora
         grupo_horario = GrupoHorarioFactory()
@@ -49,7 +49,7 @@ class TestRestriccionEliminacionGrupoHorario(BaseTestRestriccionEliminacion):
         self.assertEqual(GrupoHorario.objects.count(), 0)
         self.assertEqual(ValidacionTiempo.objects.count(), 0)
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_asterisk')
     def test_no_elimina_grupo_horario_utilizado(self, mock_sincronizacion):
         # Creo un Grupo Horario y lo asigno a una Validacion Fecha Hora
         grupo_horario = GrupoHorarioFactory()
@@ -66,7 +66,7 @@ class TestRestriccionEliminacionGrupoHorario(BaseTestRestriccionEliminacion):
 
 class TestRestriccionEliminacionIVR(BaseTestRestriccionEliminacion):
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_asterisk')
     def test_elimina_ivr_ok(self, mock_sincronizacion):
         # Creo un IVR que no es destino
         destinos_iniciales = DestinoEntrante.objects.count()
@@ -80,7 +80,7 @@ class TestRestriccionEliminacionIVR(BaseTestRestriccionEliminacion):
         self.assertEqual(IVR.objects.count(), 0)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_asterisk')
     def test_no_elimina_ivr_utilizado_en_ruta_entrante(self, mock_sincronizacion):
         # Creo un IVR y lo pongo como destino de una Ruta Entrante
         destinos_iniciales = DestinoEntrante.objects.count()
@@ -97,7 +97,7 @@ class TestRestriccionEliminacionIVR(BaseTestRestriccionEliminacion):
         self.assertEqual(IVR.objects.count(), 1)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales + 1)
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_asterisk')
     def test_no_elimina_ivr_destino_de_otro_nodo(self, mock_sincronizacion):
         # Creo un IVR y lo pongo como destino de una Validacion Fecha Hora
         ivr = IVRFactory()
@@ -124,7 +124,8 @@ class TestRestriccionEliminacionIVR(BaseTestRestriccionEliminacion):
 
 class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminacion):
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    @patch('ominicontacto_app.services.asterisk_database.'
+           'ValidacionFechaHoraFamily.delete_family')
     def test_elimina_validacion_fecha_hora_ok(self, mock_sincronizacion):
         # Creo una Validacion Fecha Hora que no es destino
         destinos_iniciales = DestinoEntrante.objects.count()
@@ -139,13 +140,15 @@ class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminaci
         self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('eliminar_validacion_fecha_hora', args=[validacion_fh.id])
         response = self.client.post(url, follow=True)
+        mock_sincronizacion.assert_called_with(validacion_fh)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, ValidacionFechaHoraDeleteView.nodo_eliminado)
         self.assertEqual(ValidacionFechaHora.objects.count(), 0)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
         self.assertEqual(OpcionDestino.objects.count(), 0)
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    @patch('ominicontacto_app.services.asterisk_database.'
+           'ValidacionFechaHoraFamily.delete_family')
     def test_no_elimina_validacion_fecha_hora_utilizado_en_ruta_entrante(self, mock_sincronizacion):
         # Creo una validacion fecha hora y la pongo como destino de una Ruta Entrante
         destinos_iniciales = DestinoEntrante.objects.count()
@@ -163,12 +166,15 @@ class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminaci
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
         list_url = reverse('lista_validaciones_fecha_hora')
+        self.assertFalse(mock_sincronizacion.called)
+        mock_sincronizacion.assert_not_called()
         self.assertRedirects(response, list_url)
         self.assertContains(response, ValidacionFechaHoraDeleteView.imposible_eliminar)
         self.assertEqual(ValidacionFechaHora.objects.count(), 1)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales + 1)
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    @patch('ominicontacto_app.services.asterisk_database.'
+           'ValidacionFechaHoraFamily.delete_family')
     def test_no_elimina_validacion_fecha_hora_destino_de_otro_nodo(self, mock_sincronizacion):
         # Creo un Validacion Fecha Hora y lo pongo como destino de un IVR
         ivr = IVRFactory()
@@ -183,6 +189,7 @@ class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminaci
         url = reverse('eliminar_validacion_fecha_hora', args=[validacion_fh.id])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
+        self.assertFalse(mock_sincronizacion.called)
         list_url = reverse('lista_validaciones_fecha_hora')
         self.assertRedirects(response, list_url)
         self.assertContains(response, ValidacionFechaHoraDeleteView.imposible_eliminar)
@@ -225,8 +232,8 @@ class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
                          campanas_iniciales)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
 
-    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
-    def test_no_elimina_validacion_fecha_hora_destino_de_otro_nodo(self, mock_sincronizacion):
+    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
+    def test_no_elimina_campana_destino_de_otro_nodo(self, mock_sincronizacion):
         # Pongo la campaña entrante 1 como destino de un IVR
         ivr = IVRFactory()
         nodo_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr)
