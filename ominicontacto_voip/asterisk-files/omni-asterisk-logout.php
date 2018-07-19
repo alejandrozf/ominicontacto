@@ -39,7 +39,7 @@ foreach($listado as $valor)
 		echo "numero-sip: $numero \n";
 		
 		$aResponse = $astman->Originate(
-							    'Local/066LOGOUT@fts-pausas/n',
+							    'Local/066LOGOUT@oml-agent-actions/n',
                                 NULL,
                                 NULL,
                                 NULL,

@@ -285,16 +285,12 @@
                     <span class="icon icon-graph"></span>
                     <a class="menu-header"class="menu-header" href="#menuReports" role="button" data-toggle="collapse" aria-expanded="false">Reportes</a>
                     <ul class="collapse list-unstyled submenu" id="menuReports" data-parent="#nav-main-menu">
-                        {% if user.get_is_administrador %}
                         <li>
                             <a href="{% url 'reporte_llamadas' %}">Llamadas</a>
                         </li>
-                         {% endif %}
-                         {% if user.get_is_supervisor_normal or user.get_is_administrador %}
                         <li>
                             <a href="{% url 'reportes_agentes_tiempos' %}">Agentes</a>
                         </li>
-                        {% endif %}
                         <li>
                             {# <a href="#">IM</a> #}
                         </li>

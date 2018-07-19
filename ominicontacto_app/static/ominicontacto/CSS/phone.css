@@ -6,6 +6,9 @@
   background-color: #2E2E2E;
   box-shadow: 10px 10px 5px grey;
 }
+.title-transfer {
+  margin-top: 6px;
+}
 .key {
   margin-top: 2%;
 }
