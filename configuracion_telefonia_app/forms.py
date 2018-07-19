@@ -262,6 +262,13 @@ class IVRForm(forms.ModelForm):
                                                      for dest_entr in DestinoEntrante.objects.all()]
         self.fields['time_out_destination'].choices = DESTINO_ENTRANTE_CHOICES
         self.fields['invalid_destination'].choices = DESTINO_ENTRANTE_CHOICES
+        # TODO: revisar por qué si el queryset por defecto de ArchivoDeAudio está modificado
+        # para no mostrar los audios marcados como eliminados, dichos audios se muestran como
+        # opciones para los campos listados a continuación
+        audios_queryset = ArchivoDeAudio.objects.all()
+        self.fields['audio_principal'].queryset = audios_queryset
+        self.fields['time_out_audio'].queryset = audios_queryset
+        self.fields['invalid_audio'].queryset = audios_queryset
 
         instance = getattr(self, 'instance', None)
         if instance.pk is not None:
