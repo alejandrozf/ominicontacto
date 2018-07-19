@@ -507,14 +507,14 @@ class GrupoHorarioFamily(AbstractFamily):
             contador_orden += 1
             entry = "ENTRY/{0}/".format(contador_orden)
             dict_validacion = {
-                entry + 'HOURF': validacion.tiempo_inicial,
-                entry + 'HOURT': validacion.tiempo_final,
-                entry + 'DAYF': validacion.dia_semana_inicial,
-                entry + 'DAYT': validacion.dia_semana_final,
-                entry + 'DAYNUMF': validacion.dia_mes_inicio,
-                entry + 'DAYNUMT': validacion.dia_mes_final,
-                entry + 'MONTHF': validacion.mes_inicio,
-                entry + 'MONTHT': validacion.mes_final,
+                entry + 'HOURF': validacion.tiempo_inicial.strftime('%H:%M'),
+                entry + 'HOURT': validacion.tiempo_final.strftime('%H:%M'),
+                entry + 'DAYF': validacion.dia_semana_inicial_str,
+                entry + 'DAYT': validacion.dia_semana_final_str,
+                entry + 'DAYNUMF': validacion.dia_mes_inicio_str,
+                entry + 'DAYNUMT': validacion.dia_mes_final_str,
+                entry + 'MONTHF': validacion.mes_inicio_str,
+                entry + 'MONTHT': validacion.mes_final_str,
             }
             dict_grupo.update(dict_validacion)
 
