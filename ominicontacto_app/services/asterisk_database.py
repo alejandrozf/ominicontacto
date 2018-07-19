@@ -8,7 +8,7 @@ from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 from configuracion_telefonia_app.models import (
-    RutaSaliente, TroncalSIP, IVR, RutaEntrante, ContentType, DestinoEntrante, ValidacionFechaHora
+    RutaSaliente, TroncalSIP, IVR, RutaEntrante, DestinoEntrante, ValidacionFechaHora, GrupoHorario
 )
 import logging as _logging
 
@@ -490,3 +490,45 @@ class ValidacionFechaHoraFamily(AbstractFamily):
 
     def get_nombre_families(self):
         return "OML/TC"
+
+
+class GrupoHorarioFamily(AbstractFamily):
+
+    def _create_dict(self, grupo):
+
+        validaciones_tiempo = grupo.validaciones_tiempo.all()
+        dict_grupo = {
+            'NAME': grupo.nombre,
+            'ENTRIES': len(validaciones_tiempo)
+        }
+
+        contador_orden = 0
+        for validacion in validaciones_tiempo:
+            contador_orden += 1
+            entry = "/ENTRY/{0}".format(contador_orden)
+            dict_validacion = {
+                'HOURF' + entry: validacion.tiempo_inicial,
+                'HOURT' + entry: validacion.tiempo_final,
+                'DAYF' + entry: validacion.dia_semana_inicial,
+                'DAYT' + entry: validacion.dia_semana_final,
+                'DAYNUMF' + entry: validacion.dia_mes_inicio,
+                'DAYNUMT' + entry: validacion.dia_mes_final,
+                'MONTHF' + entry: validacion.mes_inicio,
+                'MONTHT' + entry: validacion.mes_final,
+            }
+            dict_grupo.update(dict_validacion)
+
+        return dict_grupo
+
+    def _obtener_todos(self):
+        """Obtengo todos los grupos horarios para generar family"""
+        return GrupoHorario.objects.all()
+
+    def _get_nombre_family(self, ruta):
+        return "OML/TG/{0}".format(ruta.id)
+
+    def _obtener_key_cero_dict(self, ruta):
+        return self._create_dict(ruta).keys()[0]
+
+    def get_nombre_families(self):
+        return "OML/TG"

@@ -23,7 +23,8 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk,
     SincronizadorDeConfiguracionRutaEntranteAsterisk,
     SincronizadorDeConfiguracionIVRAsterisk,
-    SincronizadorDeConfiguracionValidacionFechaHoraAsterisk
+    SincronizadorDeConfiguracionValidacionFechaHoraAsterisk,
+    SincronizadorDeConfiguracionGrupoHorarioAsterisk
 )
 
 
@@ -553,8 +554,7 @@ class GrupoHorarioMixin(object):
             validacion_tiempo_formset.save()
 
             try:
-                # TODO: Utilizar el Sincronizador Correspondiente
-                sincronizador = SincronizadorDummy()
+                sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
                 sincronizador.regenerar_asterisk(grupo_horario)
             except RestablecerConfiguracionTelefonicaError, e:
                 message = ("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
@@ -607,6 +607,12 @@ class GrupoHorarioDeleteView(DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
+        try:
+            sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
+            sincronizador.eliminar_y_regenerar_asterisk(self.object)
+        except RestablecerConfiguracionTelefonicaError, e:
+            message = ("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
+            messages.add_message(self.request, messages.WARNING, message)
         if self.object.validaciones_fecha_hora.count() > 0:
             message = (
                 _('No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora'))
@@ -615,20 +621,10 @@ class GrupoHorarioDeleteView(DeleteView):
                 messages.ERROR,
                 message,
             )
-
             return redirect(self.get_success_url())
-
-            try:
-                # TODO: Utilizar el Sincronizador Correspondiente
-                sincronizador = SincronizadorDummy()
-                sincronizador.eliminar_configuracion(self.object)
-            except RestablecerConfiguracionTelefonicaError, e:
-                message = ("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
-                messages.add_message(self.request, messages.WARNING, message)
 
         message = _(u"Se ha eliminado el Grupo Horario.")
         messages.add_message(self.request, messages.SUCCESS, message)
-
         return super(GrupoHorarioDeleteView, self).dispatch(request, *args, **kwargs)
 
 
