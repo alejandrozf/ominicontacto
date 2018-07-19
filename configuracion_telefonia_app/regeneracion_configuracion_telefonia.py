@@ -15,7 +15,7 @@ from ominicontacto_app.asterisk_config import (
     SipRegistrationsConfigFile
 )
 from ominicontacto_app.services.asterisk_database import (
-    RutaSalienteFamily, TrunkFamily, RutaEntranteFamily, IVRFamily
+    RutaSalienteFamily, TrunkFamily, RutaEntranteFamily, IVRFamily, ValidacionFechaHoraFamily
 )
 
 logger = logging.getLogger(__name__)
@@ -233,4 +233,10 @@ class SincronizadorDeConfiguracionIVRAsterisk(AbstractConfiguracionAsterisk):
 
     def _obtener_generador_family(self):
         generador = IVRFamily()
+        return generador
+
+
+class SincronizadorDeConfiguracionValidacionFechaHoraAsterisk(AbstractConfiguracionAsterisk):
+    def _obtener_generador_family(self):
+        generador = ValidacionFechaHoraFamily()
         return generador
