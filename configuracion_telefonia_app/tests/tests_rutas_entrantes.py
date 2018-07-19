@@ -252,7 +252,8 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios)
 
-    def test_usuario_administrador_puede_crear_grupo_horario(self):
+    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    def test_usuario_administrador_puede_crear_grupo_horario(self, regenerar_family):
         url = reverse('crear_grupo_horario')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_grupo_horario()
@@ -260,7 +261,8 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
 
-    def test_usuario_sin_administracion_no_puede_modificar_grupo_horario(self):
+    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    def test_usuario_sin_administracion_no_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'
         self.client.login(username=self.usr_sup.username, password=self.PWD)
@@ -272,7 +274,8 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.grupo_horario.refresh_from_db()
         self.assertNotEqual(self.grupo_horario.nombre, nuevo_nombre)
 
-    def test_usuario_administrador_puede_modificar_grupo_horario(self):
+    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    def test_usuario_administrador_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'
         self.client.login(username=self.admin.username, password=self.PWD)

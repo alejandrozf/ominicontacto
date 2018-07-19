@@ -8,7 +8,7 @@ from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 from configuracion_telefonia_app.models import (
-    RutaSaliente, TroncalSIP, IVR, RutaEntrante, ContentType, DestinoEntrante, ValidacionFechaHora
+    RutaSaliente, TroncalSIP, IVR, RutaEntrante, DestinoEntrante, ValidacionFechaHora, GrupoHorario
 )
 import logging as _logging
 
@@ -490,3 +490,45 @@ class ValidacionFechaHoraFamily(AbstractFamily):
 
     def get_nombre_families(self):
         return "OML/TC"
+
+
+class GrupoHorarioFamily(AbstractFamily):
+
+    def _create_dict(self, grupo):
+
+        validaciones_tiempo = grupo.validaciones_tiempo.all()
+        dict_grupo = {
+            'NAME': grupo.nombre,
+            'ENTRIES': len(validaciones_tiempo)
+        }
+
+        contador_orden = 0
+        for validacion in validaciones_tiempo:
+            contador_orden += 1
+            entry = "ENTRY/{0}/".format(contador_orden)
+            dict_validacion = {
+                entry + 'HOURF': validacion.tiempo_inicial.strftime('%H:%M'),
+                entry + 'HOURT': validacion.tiempo_final.strftime('%H:%M'),
+                entry + 'DAYF': validacion.dia_semana_inicial_str,
+                entry + 'DAYT': validacion.dia_semana_final_str,
+                entry + 'DAYNUMF': validacion.dia_mes_inicio_str,
+                entry + 'DAYNUMT': validacion.dia_mes_final_str,
+                entry + 'MONTHF': validacion.mes_inicio_str,
+                entry + 'MONTHT': validacion.mes_final_str,
+            }
+            dict_grupo.update(dict_validacion)
+
+        return dict_grupo
+
+    def _obtener_todos(self):
+        """Obtengo todos los grupos horarios para generar family"""
+        return GrupoHorario.objects.all()
+
+    def _get_nombre_family(self, ruta):
+        return "OML/TG/{0}".format(ruta.id)
+
+    def _obtener_key_cero_dict(self, ruta):
+        return self._create_dict(ruta).keys()[0]
+
+    def get_nombre_families(self):
+        return "OML/TG"

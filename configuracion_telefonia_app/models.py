@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import calendar
 
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -170,6 +171,45 @@ class ValidacionTiempo(models.Model):
 
     def __unicode__(self):
         return "Validación fecha/hora id:{0} para {1}".format(self.id, self.grupo_horario)
+
+    @property
+    def dia_semana_inicial_str(self):
+        return self.dia_semana_str(self.dia_semana_inicial)
+
+    @property
+    def dia_semana_final_str(self):
+        return self.dia_semana_str(self.dia_semana_final)
+
+    def dia_semana_str(self, dia):
+        if dia in range(7):
+            return calendar.day_abbr[dia]
+        return '*'
+
+    @property
+    def dia_mes_inicio_str(self):
+        return self.dia_mes_str(self.dia_mes_inicio)
+
+    @property
+    def dia_mes_final_str(self):
+        return self.dia_mes_str(self.dia_mes_final)
+
+    def dia_mes_str(self, dia):
+        if dia in range(1, 32):
+            return str(dia)
+        return '*'
+
+    @property
+    def mes_inicio_str(self):
+        return self.mes_str(self.mes_inicio)
+
+    @property
+    def mes_final_str(self):
+        return self.mes_str(self.mes_final)
+
+    def mes_str(self, mes):
+        if mes in range(1, 13):
+            return calendar.month_abbr[mes]
+        return '*'
 
 
 class ValidacionFechaHora(models.Model):
