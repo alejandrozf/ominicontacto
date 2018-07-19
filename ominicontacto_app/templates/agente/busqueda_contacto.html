@@ -1,52 +1,77 @@
+{% load staticfiles %}
+{% load compress %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">    
 </head>
 <body>
-<form role="form" method="post" enctype="multipart/form-data" >
-{% csrf_token %}
-		<table>
-				<td>
-						{{ form.as_p }}&nbsp;
-				</td>
-        <td>&nbsp;
+
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <div id="wrapperSearchForm" class="show">
+        <form role="form" method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-6">
+                    {{ form.as_p }}
+                </div>
+            </div>
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
                 Buscar
             </button>
-				</td>
-	  </table>        
+        </form>
+    </div>
+</div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID de Contacto</th>
-                <th>Telefono</th>
-                <th>Acciones</th>
-
-            </tr>
-        </thead>
-        <tbody>
-        {% for contacto in listado_de_contacto %}
-            <tr>
-                <td>{{ contacto.pk }}</td>
-                <td>{{ contacto.telefono }}</td>
-                <td><a href="{% url 'contacto_update' contacto.pk %}" >
-                    <span class=" glyphicon glyphicon-tasks" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="" >
-                    <span class=" glyphicon glyphicon-earphone" aria-hidden="true" title="Llamar"></span></a>
-                    <a href="" >
-                    <span class=" glyphicon glyphicon-envelope" aria-hidden="true" title="Email"></span></a>
-                </td>
-            </tr>
-       {% empty %}
+<table class="table">
+    <thead>
         <tr>
-            <td colspan="3">No existen contactos</td>
+            <th>ID de Contacto</th>
+            <th>Telefono</th>
+            <th>Acciones</th>
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</form>
+    </thead>
+    <tbody>
+    {% for contacto in listado_de_contacto %}
+        <tr>
+            <td>{{ contacto.pk }}</td>
+            <td>{{ contacto.telefono }}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Opciones
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                        <a class="dropdown-item" href="{% url 'contacto_update' contacto.pk %}">
+                            <span class="icon icon-pencil"></span>Modificar
+                        </a>
+                        <a class="dropdown-item" href="">
+                            <span class="icon icon-phone"></span>Llamar
+                        </a>
+                        <a class="dropdown-item" href="">
+                            <span class="icon icon-solid-mail"></span>Enviar e-mail
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td colspan="3">No existen contactos</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 </body>
 </html>

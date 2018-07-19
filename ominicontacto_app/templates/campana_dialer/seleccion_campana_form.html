@@ -1,76 +1,85 @@
+{% load staticfiles %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Stylesheets -->  
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" > 
+    <!-- Custom CSS -->       
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
 </head>
 <body>
    {% for message in messages %}
 
         {% if "error" in message.tags %}
 
-        <div class="alert alert-danger">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Error!</h4>
-            {{ message }}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <button type="button" class="close" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <h1>Error!</h1>
+            <p>{{ message }}</p>
         </div>
 
         {% elif "warning" in message.tags %}
 
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Atencion!</h4>
-            {{ message }}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <button type="button" class="close" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <h1>Atencion!</h1>
+            <p>{{ message }}</p>
         </div>
 
         {% elif "success" in message.tags %}
 
-        <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Finalizado:</h4>
-            {{ message }}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <button type="button" class="close" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <h1>Finalizado:</h1>
+            <p>{{ message }}</p>
         </div>
 
         {% elif "info" in message.tags %}
 
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
-            {{ message }}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <button type="button" class="close" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <h1>Informacion:</h1>
+            <p>{{ message }}</p>
         </div>
 
         {% elif "debug" in message.tags %} {# the same as "INFO" #}
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
-            {{ message }}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <button type="button" class="close" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <h1>Informacion:</h1>
+            <p>{{ message }}</p>
         </div>
 
         {% else %} {# the same as "INFO" #}
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
-            {{ message }}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <button type="button" class="close" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <h1>Informacion:</h1>
+            <p>{{ message }}</p>
         </div>
 
         {% endif %}
        {% endfor %}
-   <h4>Seleccione la campana para la cual desea agregar un nuevo contacto</h4>
-   <div class="col-md-6">
+
+    <h1>{% trans 'Nuevo contacto' %}</h1>
+    <p>{% trans 'Seleccione la campana para la cual desea agregar un nuevo contacto' %}</p>
+
 <form target="crm" action = "" method = "post"> {% csrf_token %}
     {% csrf_token %}
     {{ form.non_field_errors }}
-    <div class="form-group row">
-        {{ form.campana.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.campana.id_for_label }}">Campana: </label>
-        <div class="col-sm-6">
-              {{ form.campana }}
+    <div class="form-row">
+        <div class="col-md-6">
+            <label for="{{ form.campana.id_for_label }}">Campaña: </label>
+            {{ form.campana }}
+            {{ form.campana.errors }}          
         </div>
     </div>
-    <button type="submit"  class="btn btn-success btn-lg">
+    <hr>
+    <button type="submit"  class="btn btn-primary">
         Continuar
     </button>
 </form>
-   </div>
+
 </body>
 </html>

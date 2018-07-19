@@ -15,10 +15,12 @@ $(document).ready(function(){
 
     // se crean los nodos que permiten el acceso a la modificación del contacto
     var $modificar_contacto = create_node('a', {
+          'class': 'btn btn-light btn-sm',
+          'role': 'button',
           'href': '/contacto/'+ pk_contacto + '/update/',
         });
     var $span_modificar_contacto = create_node('span', {
-          'class': 'glyphicon glyphicon-tasks',
+          'class': 'icon-pencil',
           'aria-hidden': 'true',
           'title': 'Modificar',
         });
@@ -28,10 +30,10 @@ $(document).ready(function(){
     // se crean los nodos que permiten llamar al contacto
     if (tipo_campana != 'Preview') {
       var $llamar_contacto = create_node('button', {
-        'class': 'contacto-lista btn btn-link',
+        'class': 'contacto-lista btn btn-light btn-sm',
       });
       var $span_llamar_contacto = create_node('span', {
-        'class': 'glyphicon glyphicon-earphone',
+        'class': 'icon-phone',
         'aria-hidden': 'true',
         'title': 'Llamar',
       });
@@ -44,7 +46,7 @@ $(document).ready(function(){
     }
     else {
       var $llamar_contacto = create_node('button', {
-        'class': 'contacto-lista btn btn-link',
+        'class': 'contacto-lista btn btn-light btn-sm',
       });
     }
     nodos_acciones.push($llamar_contacto);
@@ -52,10 +54,12 @@ $(document).ready(function(){
     // se crean los nodos que permiten mandar un mail al contacto
     // (actualmente esta funcionalidad está sin implementar)
     var $mailto_contacto = create_node('a', {
+          'class': 'btn btn-light btn-sm',
+          'role': 'button',
           'href': '#',
         });
     var $span_mailto_contacto = create_node('span', {
-          'class': 'glyphicon glyphicon-envelope',
+          'class': 'icon-solid-mail',
           'aria-hidden': 'true',
           'title': 'Email',
         });

@@ -1,18 +1,25 @@
+{% load static %}
+{% load compress %}
 {% load i18n %}
 
 <div id="contactos">
-    <div class="col-md-3">
-        <div class="well well-sm">
+    <div id="wrapper-search">
+        <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+        <div id="wrapperSearchForm" class="show">
             <form action="{% url 'contacto_list' %}" method="post">{% csrf_token %}
-                <table class="table" data-toggle="tooltip" data-placement="bottom"
-                       title="{% trans 'No se muestran las campañas de tipo preview a las cuales Ud. está asignado' %}">
-                    {{ form }}
-                </table>
-                <button type="submit" class="btn btn-primary">{% trans "Mostrar contactos" %}</button>
+              <div class="form-row">
+                <div class="col-md-6">
+                  {{ form }}
+                  <small class="form-text text-muted">
+                      {% trans 'No se muestran las campañas de tipo preview a las cuales Ud. está asignado' %}
+                  </small>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">{% trans "Mostrar contactos" %}</button>
             </form>
         </div>
     </div>
-    <div class="col-md-9">
+    <div>
         <form action="{% url 'agente_llamar_contacto' %}" method="POST" role="form">
             {% csrf_token %}
             <input type="hidden" id="pk_agente" name="pk_agente" value="{{ user.get_agente_profile.pk }}">
@@ -25,7 +32,7 @@
             <button id="lista_llamar_contacto" type="submit" class="hidden"></button>
         </form>
         {% if campana %}
-            <h4> {% trans 'Se muestran los contactos de la campaña' %}: {{ campana.nombre }}</h4>
+            <h2> {% trans 'Contactos de la campaña' %}: {{ campana.nombre }}</h2>
             <table id="agenteContactosTable">
                 <thead>
                     <tr>
