@@ -20,7 +20,9 @@ from configuracion_telefonia_app.models import (RutaSaliente, RutaEntrante, Tron
                                                 GrupoHorario, ValidacionFechaHora)
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
-    SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk
+    SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk,
+    SincronizadorDeConfiguracionRutaEntranteAsterisk,
+    SincronizadorDeConfiguracionIVRAsterisk
 )
 
 
@@ -70,28 +72,31 @@ def eliminar_ruta_saliente_config(self, ruta_saliente):
         )
 
 
-def escribir_ruta_entrante_config(ruta_entrante):
-    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
-    print ("TODO: IMPLEMENTAR!!!")
-    # Exception('No se pudo eliminar bien.')
+def escribir_ruta_entrante_config(self, ruta_entrante):
+    try:
+        sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
+        sincronizador.regenerar_asterisk(ruta_entrante)
+    except RestablecerConfiguracionTelefonicaError, e:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "con el siguiente error: {0} .".format(e))
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
 
 
-def eliminar_ruta_entrante_config(ruta_entrante):
-    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
-    print ("TODO: IMPLEMENTAR!!!")
-    # Exception('No se pudo eliminar bien.')
-
-
-def escribir_nodo_entrante_config(nodo_destino_entrante, sincronizador):
-    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
-    print ("TODO: IMPLEMENTAR!!!")
-    # Exception('No se pudo eliminar bien.')
-
-
-def eliminar_nodo_entrante_config(nodo_destino_entrante, sincronizador):
-    # TODO: Modelar e implementar bien el objeto que tendrá esta responsabilidad
-    print ("TODO: IMPLEMENTAR!!!")
-    # Exception('No se pudo eliminar bien.')
+def escribir_nodo_entrante_config(self, nodo_destino_entrante, sincronizador):
+    try:
+        sincronizador.regenerar_asterisk(nodo_destino_entrante)
+    except RestablecerConfiguracionTelefonicaError, e:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "con el siguiente error: {0} .".format(e))
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
 
 
 def eliminar_troncal_config(self, trunk):
@@ -331,8 +336,7 @@ class RutaEntranteMixin(object):
     def form_valid(self, form):
         form.save()
         # escribe ruta entrante en asterisk
-        # TODO: usar el sincronizador correspondiente
-        escribir_ruta_entrante_config(form.instance)
+        escribir_ruta_entrante_config(self, form.instance)
         return super(RutaEntranteMixin, self).form_valid(form)
 
 
@@ -361,13 +365,17 @@ class RutaEntranteDeleteView(DeleteView):
         return RutaEntrante.objects.get(pk=self.kwargs['pk'])
 
     def delete(self, request, *args, **kwargs):
-        print("TODO: Capturar bien las excepciones correspondientes.")
         try:
-            # TODO: usar el sincronizador correspondiente
-            eliminar_ruta_entrante_config(self.get_object())
-        except Exception:
-            messages.error(request, _(u'No se ha podido eliminar la Ruta Entrante.'))
-            return redirect('eliminar_ruta_saliente', pk=kwargs['pk'])
+            sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
+            sincronizador.eliminar_y_regenerar_asterisk(self.get_object())
+        except RestablecerConfiguracionTelefonicaError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
 
         messages.success(request, _(u'Se ha eliminado la Ruta Entrante.'))
         return super(RutaEntranteDeleteView, self).delete(request, *args, **kwargs)
@@ -389,6 +397,10 @@ class ApiObtenerDestinosEntrantes(View):
 class IVRMixin(object):
     def get_success_url(self):
         return reverse('lista_ivrs')
+
+    def get_sincronizador_de_configuracion(self):
+        sincronizador = SincronizadorDeConfiguracionIVRAsterisk()
+        return sincronizador
 
 
 class IVRListView(ListView):
@@ -440,8 +452,8 @@ class IVRCreateView(IVRMixin, CreateView):
             # e 'invalid_destination'
             self._crear_destinos_fijos(form, nodo_ivr)
             # inserta la configuración de la ruta saliente en asterisk
-            # TODO: usar el sincronizador correspondiente
-            escribir_nodo_entrante_config(nodo_ivr, None)
+            sincronizador = self.get_sincronizador_de_configuracion()
+            escribir_nodo_entrante_config(self, ivr, sincronizador)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect('lista_ivrs')
@@ -503,8 +515,8 @@ class IVRUpdateView(IVRMixin, UpdateView):
             # 'time_out_destination' e 'invalid_destination'
             self._modificar_opciones_destino_fijas(form, nodo_ivr)
             # inserta la configuración de la ruta saliente en asterisk
-            # TODO: usar el sincronizador correspondiente
-            escribir_nodo_entrante_config(nodo_ivr, None)
+            sincronizador = self.get_sincronizador_de_configuracion()
+            escribir_nodo_entrante_config(self, ivr, sincronizador)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect('lista_ivrs')
@@ -662,8 +674,8 @@ class ValidacionFechaHoraCreateView(CreateView):
             _asignar_destino_anterior(validacion_fecha_hora_formset, nodo_validacion)
             validacion_fecha_hora_formset.save()
             # escribe el nodo creado y sus relaciones en asterisk
-            # TODO: usar el sincronizador correspondiente
-            escribir_nodo_entrante_config(nodo_validacion, None)
+            sincronizador = SincronizadorDeConfiguracionIVRAsterisk()
+            escribir_nodo_entrante_config(self, nodo_validacion, sincronizador)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect(self.success_url)
@@ -700,8 +712,8 @@ class ValidacionFechaHoraUpdateView(UpdateView):
             nodo_validacion = DestinoEntrante.objects.get(
                 object_id=validacion.pk, content_type=ContentType.objects.get_for_model(validacion))
             # escribe el nodo creado y sus relaciones en asterisk
-            # TODO: usar el sincronizador correspondiente
-            escribir_nodo_entrante_config(nodo_validacion, None)
+            sincronizador = SincronizadorDeConfiguracionIVRAsterisk()
+            escribir_nodo_entrante_config(self, nodo_validacion, sincronizador)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
             return redirect(self.success_url)
@@ -751,31 +763,32 @@ class DeleteNodoDestinoMixin(object):
             messages.error(request, self.imposible_eliminar)
             return redirect(self.url_eliminar_name, self.get_object().id)
 
-        print("TODO: Capturar bien las excepciones correspondientes.")
         try:
-            self.eliminar_nodos_y_asociaciones()
-            eliminar_nodo_entrante_config(self.get_object(),
-                                          self.get_sincronizador_de_configuracion())
-        except Exception:
-            messages.error(request, _(u'No se ha podido eliminar el elemento.'))
+            sincronizador = self.get_sincronizador_de_configuracion()
+
+            sincronizador.eliminar_y_regenerar_asterisk(self.get_object())
+        except RestablecerConfiguracionTelefonicaError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
             return redirect(self.url_eliminar_name, self.get_object().id)
+        self.eliminar_nodos_y_asociaciones()
 
         messages.success(request, self.nodo_eliminado)
         return super(DeleteNodoDestinoMixin, self).delete(request, *args, **kwargs)
 
 
-class IVRDeleteView(DeleteNodoDestinoMixin, DeleteView):
+class IVRDeleteView(IVRMixin, DeleteNodoDestinoMixin, DeleteView):
     model = IVR
     success_url = reverse_lazy('lista_ivrs')
     template_name = 'eliminar_ivr.html'
     url_eliminar_name = 'eliminar_ivr'
     imposible_eliminar = _('No se puede eliminar un IVR que es destino en un flujo de llamada.')
     nodo_eliminado = _(u'Se ha eliminado el IVR.')
-
-    def get_sincronizador_de_configuracion(self):
-        # TODO: usar el sincronizador correspondiente
-        # return SincronizadorDeConfiguracionDeIVREnAsterisk()
-        return None
 
 
 class ValidacionFechaHoraDeleteView(DeleteNodoDestinoMixin, DeleteView):

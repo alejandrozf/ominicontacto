@@ -2,11 +2,14 @@
 
 from __future__ import unicode_literals
 
+from django.conf import settings
 from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
-from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
+from configuracion_telefonia_app.models import (
+    RutaSaliente, TroncalSIP, IVR, RutaEntrante, ContentType, DestinoEntrante
+)
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -88,16 +91,17 @@ class AbstractFamily(object):
         if db_get.response_value == 'success':
             return True
 
-    def _get_nombre_families(self):
+    def get_nombre_families(self):
         raise (NotImplementedError())
 
     def regenerar_families(self):
         """regenera la family"""
-        self._delete_tree_family(self._get_nombre_families())
+        self._delete_tree_family(self.get_nombre_families())
         self._create_families()
 
     def regenerar_family(self, family_member):
         """regenera una family"""
+        self.delete_family(family_member)
         self._create_families(modelo=family_member)
 
 
@@ -150,7 +154,7 @@ class CampanaFamily(AbstractFamily):
     def _get_nombre_family(self, campana):
         return "OML/CAMP/{0}".format(campana.id)
 
-    def _get_nombre_families(self):
+    def get_nombre_families(self):
         return "OML/CAMP"
 
     def _obtener_key_cero_dict(self, campana):
@@ -175,7 +179,7 @@ class AgenteFamily(AbstractFamily):
     def _get_nombre_family(self, agente):
         return "OML/AGENT/{0}".format(agente.id)
 
-    def _get_nombre_families(self):
+    def get_nombre_families(self):
         return "OML/AGENT"
 
     def _obtener_key_cero_dict(self, agente):
@@ -198,7 +202,7 @@ class PausaFamily(AbstractFamily):
     def _get_nombre_family(self, pausa):
         return "OML/PAUSE/{0}".format(pausa.id)
 
-    def _get_nombre_families(self):
+    def get_nombre_families(self):
         return "OML/PAUSE"
 
     def _obtener_key_cero_dict(self, pausa):
@@ -247,7 +251,7 @@ class RutaSalienteFamily(AbstractFamily):
     def _get_nombre_family(self, ruta):
         return "OML/OUTR/{0}".format(ruta.id)
 
-    def _get_nombre_families(self):
+    def get_nombre_families(self):
         return "OML/OUTR"
 
     def _obtener_key_cero_dict(self, ruta):
@@ -307,7 +311,7 @@ class TrunkFamily(AbstractFamily):
     def _obtener_key_cero_dict(self, trunk):
         return self._create_dict(trunk).keys()[0]
 
-    def _get_nombre_families(self):
+    def get_nombre_families(self):
         return "OML/TRUNK"
 
 
@@ -356,7 +360,7 @@ class GlobalsFamily(AbstractFamily):
     def _get_nombre_family(self, globales):
         return "OML/GLOBALS"
 
-    def _get_nombre_families(self):
+    def get_nombre_families(self):
         return "OML/GLOBALS"
 
     def _create_families(self):
@@ -366,3 +370,89 @@ class GlobalsFamily(AbstractFamily):
 
     def _obtener_key_cero_dict(self, family_member):
         return self._create_dict("").keys()[0]
+
+
+class IVRFamily(AbstractFamily):
+
+    def _create_dict(self, ivr):
+        destinos_siguientes = self._obtener_destinos_siguientes(ivr)
+        ivr_audio = "{0}{1}".format(
+            settings.OML_AUDIO_PATH_ASTERISK, ivr.audio_principal.audio_asterisk)
+        timeout_audio = "{0}{1}".format(
+            settings.OML_AUDIO_PATH_ASTERISK, ivr.time_out_audio.audio_asterisk)
+        invalid_audio = "{0}{1}".format(
+            settings.OML_AUDIO_PATH_ASTERISK, ivr.invalid_audio.audio_asterisk)
+        dict_ivr = {
+            'NAME': ivr.nombre,
+            'AUDIO': ivr_audio,
+            'TIMEOUT/SECONDS': ivr.time_out,
+            'TIMEOUT/RETRIES': ivr.time_out_retries,
+            'TIMEOUT/AUDIO': timeout_audio,
+            'INVALID/RETRIES': ivr.invalid_retries,
+            'INVALID/AUDIO': invalid_audio,
+            'OPTION/CANTIDAD': len(destinos_siguientes) - 2
+        }
+
+        contador_orden = 0
+        for opcion in destinos_siguientes:
+            # cambiar por contante de la clase ivr
+            dst = "{0},{1}".format(
+                opcion.destino_siguiente.tipo, opcion.destino_siguiente.object_id)
+            if opcion.valor == IVR.VALOR_TIME_OUT:
+                dict_ivr.update({'TIMEOUT/DST': dst})
+            elif opcion.valor == IVR.VALOR_DESTINO_INVALIDO:
+                dict_ivr.update({'INVALID/DST': dst})
+            else:
+                contador_orden += 1
+                clave_dst = "OPTION/{0}/DST".format(contador_orden)
+                clave_dmtf = "OPTION/{0}/DTMF".format(contador_orden)
+                dict_ivr.update({clave_dst: dst})
+                dict_ivr.update({clave_dmtf: opcion.valor})
+
+        return dict_ivr
+
+    def _obtener_todos(self):
+        """Obtengo todos los ivr para generar family"""
+        return IVR.objects.all()
+
+    def _obtener_destinos_siguientes(self, ivr):
+        return DestinoEntrante.get_nodo_ruta_entrante(ivr).destinos_siguientes.all()
+
+    def _get_nombre_family(self, ivr):
+        return "OML/IVR/{0}".format(ivr.id)
+
+    def _obtener_key_cero_dict(self, ivr):
+        return self._create_dict(ivr).keys()[0]
+
+    def get_nombre_families(self):
+        return "OML/IVR"
+
+
+class RutaEntranteFamily(AbstractFamily):
+
+    def _create_dict(self, ruta):
+
+        clave_name = "{0}/NAME".format(ruta.telefono)
+        clave_dst = "{0}/DST".format(ruta.telefono)
+        clave_id = "{0}/ID".format(ruta.telefono)
+        dst = "{0},{1}".format(ruta.destino.tipo, ruta.destino.object_id)
+        dict_ruta = {
+            clave_name: ruta.nombre,
+            clave_dst: dst,
+            clave_id: ruta.id,
+
+        }
+        return dict_ruta
+
+    def _obtener_todos(self):
+        """Obtengo todas las rutas entrantes para generar family"""
+        return RutaEntrante.objects.all()
+
+    def _get_nombre_family(self, ruta):
+        return "OML/INR/{0}".format(ruta.id)
+
+    def _obtener_key_cero_dict(self, ruta):
+        return self._create_dict(ruta).keys()[0]
+
+    def get_nombre_families(self):
+        return "OML/INR"
