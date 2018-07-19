@@ -505,16 +505,16 @@ class GrupoHorarioFamily(AbstractFamily):
         contador_orden = 0
         for validacion in validaciones_tiempo:
             contador_orden += 1
-            entry = "/ENTRY/{0}".format(contador_orden)
+            entry = "ENTRY/{0}/".format(contador_orden)
             dict_validacion = {
-                'HOURF' + entry: validacion.tiempo_inicial,
-                'HOURT' + entry: validacion.tiempo_final,
-                'DAYF' + entry: validacion.dia_semana_inicial,
-                'DAYT' + entry: validacion.dia_semana_final,
-                'DAYNUMF' + entry: validacion.dia_mes_inicio,
-                'DAYNUMT' + entry: validacion.dia_mes_final,
-                'MONTHF' + entry: validacion.mes_inicio,
-                'MONTHT' + entry: validacion.mes_final,
+                entry + 'HOURF': validacion.tiempo_inicial,
+                entry + 'HOURT': validacion.tiempo_final,
+                entry + 'DAYF': validacion.dia_semana_inicial,
+                entry + 'DAYT': validacion.dia_semana_final,
+                entry + 'DAYNUMF': validacion.dia_mes_inicio,
+                entry + 'DAYNUMT': validacion.dia_mes_final,
+                entry + 'MONTHF': validacion.mes_inicio,
+                entry + 'MONTHT': validacion.mes_final,
             }
             dict_grupo.update(dict_validacion)
 
