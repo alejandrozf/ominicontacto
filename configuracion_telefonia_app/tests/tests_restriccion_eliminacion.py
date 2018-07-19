@@ -7,13 +7,14 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import CampanaFactory
 from ominicontacto_app.models import Campana
+from ominicontacto_app.views_campana import CampanaDeleteView
 
 from configuracion_telefonia_app.tests.factories import (
     RutaEntranteFactory, IVRFactory,
-    ValidacionFechaHoraFactory, GrupoHorarioFactory, ValidacionTiempoFactory)
+    ValidacionFechaHoraFactory, GrupoHorarioFactory, ValidacionTiempoFactory, OpcionDestinoFactory)
 from configuracion_telefonia_app.models import (
-    RutaEntrante, GrupoHorario, ValidacionTiempo, IVR, ValidacionFechaHora, DestinoEntrante)
-from configuracion_telefonia_app.views import IVRDeleteView
+    GrupoHorario, ValidacionTiempo, IVR, ValidacionFechaHora, DestinoEntrante, OpcionDestino)
+from configuracion_telefonia_app.views import IVRDeleteView, ValidacionFechaHoraDeleteView
 
 
 class BaseTestRestriccionEliminacion(OMLBaseTest):
@@ -21,18 +22,17 @@ class BaseTestRestriccionEliminacion(OMLBaseTest):
 
     def setUp(self, *args, **kwargs):
         super(BaseTestRestriccionEliminacion, self).setUp(*args, **kwargs)
-        # self._crear_campanas_entrantes()
+        self._crear_campanas_entrantes()
 
         self.admin = self.crear_administrador()
         self.admin.set_password(self.PWD)
 
     def _crear_campanas_entrantes(self):
-        campana_entrante_1 = CampanaFactory(type=Campana.TYPE_ENTRANTE)
-        campana_entrante_2 = CampanaFactory(type=Campana.TYPE_ENTRANTE)
-        DestinoEntrante.crear_nodo_ruta_entrante(campana_entrante_1)
-        DestinoEntrante.crear_nodo_ruta_entrante(campana_entrante_2)
-        self.camp_1 = campana_entrante_1
-        self.camp_2 = campana_entrante_2
+        self.camp_1 = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
+        self.camp_2 = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
+        self.nodo_camp_1 = DestinoEntrante.crear_nodo_ruta_entrante(self.camp_1)
+        self.nodo_camp_2 = DestinoEntrante.crear_nodo_ruta_entrante(self.camp_2)
+
 
 class TestRestriccionEliminacionGrupoHorario(BaseTestRestriccionEliminacion):
 
@@ -64,6 +64,8 @@ class TestRestriccionEliminacionGrupoHorario(BaseTestRestriccionEliminacion):
         self.assertEqual(GrupoHorario.objects.count(), 1)
         self.assertEqual(ValidacionTiempo.objects.count(), 1)
 
+class TestRestriccionEliminacionIVR(BaseTestRestriccionEliminacion):
+
     @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
     def test_elimina_ivr_ok(self, mock_sincronizacion):
         # Creo un IVR que no es destino
@@ -94,3 +96,152 @@ class TestRestriccionEliminacionGrupoHorario(BaseTestRestriccionEliminacion):
         self.assertContains(response, IVRDeleteView.imposible_eliminar)
         self.assertEqual(IVR.objects.count(), 1)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales + 1)
+
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    def test_no_elimina_ivr_destino_de_otro_nodo(self, mock_sincronizacion):
+        # Creo un IVR y lo pongo como destino de una Validacion Fecha Hora
+        ivr = IVRFactory()
+        nodo_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr)
+        validacion_fh = ValidacionFechaHoraFactory()
+        nodo_validacion = DestinoEntrante.crear_nodo_ruta_entrante(validacion_fh)
+        OpcionDestinoFactory(valor='True',
+                             destino_anterior=nodo_validacion,
+                             destino_siguiente=nodo_ivr)
+        OpcionDestinoFactory(valor='False',
+                             destino_anterior=nodo_validacion,
+                             destino_siguiente=self.nodo_camp_1)
+        destinos_iniciales = DestinoEntrante.objects.count()
+        self.client.login(username=self.admin.username, password=self.PWD)
+        url = reverse('eliminar_ivr', args=[ivr.id])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        list_url = reverse('lista_ivrs')
+        self.assertRedirects(response, list_url)
+        self.assertContains(response, IVRDeleteView.imposible_eliminar)
+        self.assertEqual(IVR.objects.count(), 1)
+        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
+
+
+class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminacion):
+
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    def test_elimina_validacion_fecha_hora_ok(self, mock_sincronizacion):
+        # Creo una Validacion Fecha Hora que no es destino
+        destinos_iniciales = DestinoEntrante.objects.count()
+        validacion_fh = ValidacionFechaHoraFactory()
+        nodo_validacion = DestinoEntrante.crear_nodo_ruta_entrante(validacion_fh)
+        OpcionDestinoFactory(valor='True',
+                             destino_anterior=nodo_validacion,
+                             destino_siguiente=self.nodo_camp_1)
+        OpcionDestinoFactory(valor='False',
+                             destino_anterior=nodo_validacion,
+                             destino_siguiente=self.nodo_camp_2)
+        self.client.login(username=self.admin.username, password=self.PWD)
+        url = reverse('eliminar_validacion_fecha_hora', args=[validacion_fh.id])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, ValidacionFechaHoraDeleteView.nodo_eliminado)
+        self.assertEqual(ValidacionFechaHora.objects.count(), 0)
+        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
+        self.assertEqual(OpcionDestino.objects.count(), 0)
+
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    def test_no_elimina_validacion_fecha_hora_utilizado_en_ruta_entrante(self, mock_sincronizacion):
+        # Creo una validacion fecha hora y la pongo como destino de una Ruta Entrante
+        destinos_iniciales = DestinoEntrante.objects.count()
+        validacion_fh = ValidacionFechaHoraFactory()
+        nodo_validacion = DestinoEntrante.crear_nodo_ruta_entrante(validacion_fh)
+        OpcionDestinoFactory(valor='True',
+                             destino_anterior=nodo_validacion,
+                             destino_siguiente=self.nodo_camp_1)
+        OpcionDestinoFactory(valor='False',
+                             destino_anterior=nodo_validacion,
+                             destino_siguiente=self.nodo_camp_2)
+        RutaEntranteFactory(destino=nodo_validacion)
+        self.client.login(username=self.admin.username, password=self.PWD)
+        url = reverse('eliminar_validacion_fecha_hora', args=[validacion_fh.id])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        list_url = reverse('lista_validaciones_fecha_hora')
+        self.assertRedirects(response, list_url)
+        self.assertContains(response, ValidacionFechaHoraDeleteView.imposible_eliminar)
+        self.assertEqual(ValidacionFechaHora.objects.count(), 1)
+        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales + 1)
+
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    def test_no_elimina_validacion_fecha_hora_destino_de_otro_nodo(self, mock_sincronizacion):
+        # Creo un Validacion Fecha Hora y lo pongo como destino de un IVR
+        ivr = IVRFactory()
+        nodo_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr)
+        validacion_fh = ValidacionFechaHoraFactory()
+        nodo_validacion = DestinoEntrante.crear_nodo_ruta_entrante(validacion_fh)
+        OpcionDestinoFactory(valor='False',
+                             destino_anterior=nodo_ivr,
+                             destino_siguiente=nodo_validacion)
+        destinos_iniciales = DestinoEntrante.objects.count()
+        self.client.login(username=self.admin.username, password=self.PWD)
+        url = reverse('eliminar_validacion_fecha_hora', args=[validacion_fh.id])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        list_url = reverse('lista_validaciones_fecha_hora')
+        self.assertRedirects(response, list_url)
+        self.assertContains(response, ValidacionFechaHoraDeleteView.imposible_eliminar)
+        self.assertEqual(ValidacionFechaHora.objects.count(), 1)
+        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
+
+
+class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
+
+    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
+    def test_elimina_campana_ok(self, mock_activacion):
+        # Intento Eliminar una Campaña que no es destino
+        total_campanas = Campana.objects.count()
+        campanas_iniciales = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count()
+        destinos_iniciales = DestinoEntrante.objects.count()
+        self.client.login(username=self.admin.username, password=self.PWD)
+        url = reverse('campana_elimina', args=[self.camp_1.id])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, u'Se llevó a cabo con éxito la eliminación de la campana')
+        self.assertEqual(Campana.objects.count(), total_campanas)
+        self.assertEqual(Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count(),
+                         campanas_iniciales - 1)
+        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales - 1)
+
+    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
+    def test_no_elimina_campana_utilizado_en_ruta_entrante(self, mock_sincronizacion):
+        # Pongo la campaña entrante 1 como destino de una Ruta Entrante
+        destinos_iniciales = DestinoEntrante.objects.count()
+        campanas_iniciales = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count()
+        RutaEntranteFactory(destino=self.nodo_camp_1)
+        self.client.login(username=self.admin.username, password=self.PWD)
+        url = reverse('campana_elimina', args=[self.camp_1.id])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        list_url = reverse('campana_list')
+        self.assertRedirects(response, list_url)
+        self.assertContains(response, CampanaDeleteView.imposible_eliminar)
+        self.assertEqual(Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count(),
+                         campanas_iniciales)
+        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
+
+    @patch('configuracion_telefonia_app.views.SincronizadorDummy.regenerar_configuracion')
+    def test_no_elimina_validacion_fecha_hora_destino_de_otro_nodo(self, mock_sincronizacion):
+        # Pongo la campaña entrante 1 como destino de un IVR
+        ivr = IVRFactory()
+        nodo_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr)
+        OpcionDestinoFactory(valor='False',
+                             destino_anterior=nodo_ivr,
+                             destino_siguiente=self.nodo_camp_1)
+        destinos_iniciales = DestinoEntrante.objects.count()
+        campanas_iniciales = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count()
+        self.client.login(username=self.admin.username, password=self.PWD)
+        url = reverse('campana_elimina', args=[self.camp_1.id])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        list_url = reverse('campana_list')
+        self.assertRedirects(response, list_url)
+        self.assertContains(response, CampanaDeleteView.imposible_eliminar)
+        self.assertEqual(Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count(),
+                         campanas_iniciales)
+        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)

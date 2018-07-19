@@ -710,11 +710,11 @@ class ValidacionFechaHoraUpdateView(UpdateView):
             {'form': form, 'validacion_fecha_hora_formset': validacion_fecha_hora_formset})
 
 
-class DeleteNodoDestinoView(DeleteView):
+class DeleteNodoDestinoMixin(object):
     """
     Vista genérica para ser implementada por cada Nodo de Flujos de llamada
     """
-    imposible_eliminar = _('No se puede eliminar un objeto que es destino en un flujo de llamada')
+    imposible_eliminar = _('No se puede eliminar un objeto que es destino en un flujo de llamada.')
     nodo_eliminado = _(u'Se ha eliminado el Nodo.')
 
     def eliminar_nodos_y_asociaciones(self):
@@ -743,13 +743,13 @@ class DeleteNodoDestinoView(DeleteView):
                 message,
             )
             return redirect(self.get_success_url())
-        return super(DeleteNodoDestinoView, self).dispatch(request, *args, **kwargs)
+        return super(DeleteNodoDestinoMixin, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
         if nodo.es_destino_en_flujo_de_llamada():
             messages.error(request, self.imposible_eliminar)
-            return redirect(self.url_eliminar_name, pk=kwargs['pk'])
+            return redirect(self.url_eliminar_name, self.get_object().id)
 
         print("TODO: Capturar bien las excepciones correspondientes.")
         try:
@@ -758,17 +758,19 @@ class DeleteNodoDestinoView(DeleteView):
                                           self.get_sincronizador_de_configuracion())
         except Exception:
             messages.error(request, _(u'No se ha podido eliminar el elemento.'))
-            return redirect(self.url_eliminar_name, pk=kwargs['pk'])
+            return redirect(self.url_eliminar_name, self.get_object().id)
 
         messages.success(request, self.nodo_eliminado)
-        return super(DeleteNodoDestinoView, self).delete(request, *args, **kwargs)
+        return super(DeleteNodoDestinoMixin, self).delete(request, *args, **kwargs)
 
 
-class IVRDeleteView(DeleteNodoDestinoView):
+class IVRDeleteView(DeleteNodoDestinoMixin, DeleteView):
     model = IVR
     success_url = reverse_lazy('lista_ivrs')
     template_name = 'eliminar_ivr.html'
     url_eliminar_name = 'eliminar_ivr'
+    imposible_eliminar = _('No se puede eliminar un IVR que es destino en un flujo de llamada.')
+    nodo_eliminado = _(u'Se ha eliminado el IVR.')
 
     def get_sincronizador_de_configuracion(self):
         # TODO: usar el sincronizador correspondiente
@@ -776,12 +778,15 @@ class IVRDeleteView(DeleteNodoDestinoView):
         return None
 
 
-class ValidacionFechaHoraDeleteView(DeleteNodoDestinoView):
+class ValidacionFechaHoraDeleteView(DeleteNodoDestinoMixin, DeleteView):
     """ Elimina una validacion Fecha Hora """
     model = ValidacionFechaHora
     success_url = reverse_lazy('lista_validaciones_fecha_hora')
     template_name = 'eliminar_validacion_fecha_hora.html'
     url_eliminar_name = 'eliminar_validacion_fecha_hora'
+    imposible_eliminar = _('No se puede eliminar una Validación Fecha Hora mientras sea'
+                           ' destino en un flujo de llamada.')
+    nodo_eliminado = _(u'Se ha eliminado la Validación Fecha Hora.')
 
     def get_sincronizador_de_configuracion(self):
         # TODO: usar el sincronizador correspondiente

@@ -28,7 +28,7 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
 from ominicontacto_app.utiles import convert_fecha_datetime, convertir_ascii_string
 from ominicontacto_app.services.reporte_llamadas_campana import \
     EstadisticasCampanaLlamadasService
-from configuracion_telefonia_app.views import DeleteNodoDestinoView
+from configuracion_telefonia_app.views import DeleteNodoDestinoMixin, SincronizadorDummy
 
 import logging as logging_
 
@@ -40,6 +40,8 @@ class CampanasDeleteMixin(object):
     Encapsula comportamiento común a todas las campanas en el momento de
     eliminar
     """
+    nodo_eliminado = _(u'<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la campana.')
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -60,13 +62,10 @@ class CampanasDeleteMixin(object):
                 message,
             )
 
-        message = '<strong>Operación Exitosa!</strong>\
-        Se llevó a cabo con éxito la eliminación de la campana.'
-
         messages.add_message(
             self.request,
             messages.SUCCESS,
-            message,
+            self.nodo_eliminado,
         )
 
 
@@ -97,13 +96,16 @@ class CampanaListView(ListView):
         return context
 
 
-class CampanaDeleteView(CampanasDeleteMixin, DeleteNodoDestinoView):
+class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView):
     """
     Esta vista se encarga de la eliminación de una campana
     """
     model = Queue
     template_name = 'campana/delete_campana.html'
     imposible_eliminar = _('No se puede eliminar una Campaña que es destino en un flujo de llamada')
+    nodo_eliminado = _(u'<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la campana.')
+    url_eliminar_name = 'campana_elimina'
 
     def delete(self, request, *args, **kwargs):
         super(CampanaDeleteView, self).delete(request, *args, **kwargs)
@@ -115,6 +117,9 @@ class CampanaDeleteView(CampanasDeleteMixin, DeleteNodoDestinoView):
 
     def get_success_url(self):
         return reverse('campana_list')
+
+    def get_sincronizador_de_configuracion(self):
+        return SincronizadorDummy()
 
 
 # TODO: DEPRECATED? Verificar si se debe eliminar
