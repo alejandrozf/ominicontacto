@@ -283,6 +283,11 @@ class DestinoEntrante(models.Model):
         return cls.objects.get(object_id=content_object.pk,
                                content_type=ContentType.objects.get_for_model(content_object))
 
+    @classmethod
+    def get_destinos_por_tipo(cls, tipo):
+        """Devuelve un queryset con los nodos destinos de un tipo determinado"""
+        return cls.objects.filter(tipo=tipo)
+
     def _es_destino_siguiente(self):
         return self.destinos_anteriores.count() > 0
 

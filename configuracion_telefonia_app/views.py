@@ -429,12 +429,8 @@ class IVRCreateView(IVRMixin, CreateView):
         return context
 
     def _crear_destinos_fijos(self, form, nodo_ivr):
-        # FIXME: obtener los valores de los nodos entrantes a asignar al nodo ivr en
-        # una sola query
-        pk_time_out_destination = form.cleaned_data['time_out_destination']
-        pk_invalid_destination = form.cleaned_data['invalid_destination']
-        time_out_destination = DestinoEntrante.objects.get(pk=pk_time_out_destination)
-        invalid_destination = DestinoEntrante.objects.get(pk=pk_invalid_destination)
+        time_out_destination = form.cleaned_data['time_out_destination']
+        invalid_destination = form.cleaned_data['invalid_destination']
         OpcionDestino.crear_opcion_destino(nodo_ivr, time_out_destination, IVR.VALOR_TIME_OUT)
         OpcionDestino.crear_opcion_destino(
             nodo_ivr, invalid_destination, IVR.VALOR_DESTINO_INVALIDO)
@@ -492,16 +488,14 @@ class IVRUpdateView(IVRMixin, UpdateView):
         # se modifican los valores de las opciones destino fijas si han sufrido cambios
         # TODO: refactorizar los bloques de código hacia un sólo método
         if 'time_out_destination' in form.changed_data:
-            pk_time_out_destination = form.cleaned_data['time_out_destination']
+            new_time_out_destination = form.cleaned_data['time_out_destination']
             opcion_destino_time_out = nodo_ivr.destinos_siguientes.get(valor=IVR.VALOR_TIME_OUT)
-            new_time_out_destination = DestinoEntrante.objects.get(pk=pk_time_out_destination)
             opcion_destino_time_out.destino_siguiente = new_time_out_destination
             opcion_destino_time_out.save()
         if 'invalid_destination' in form.changed_data:
-            pk_invalid_destination = form.cleaned_data['invalid_destination']
+            new_invalid_destination = form.cleaned_data['invalid_destination']
             opcion_destino_invalid_destination = nodo_ivr.destinos_siguientes.get(
                 valor=IVR.VALOR_DESTINO_INVALIDO)
-            new_invalid_destination = DestinoEntrante.objects.get(pk=pk_invalid_destination)
             opcion_destino_invalid_destination.destino_siguiente = new_invalid_destination
             opcion_destino_invalid_destination.save()
 
