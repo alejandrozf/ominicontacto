@@ -433,14 +433,11 @@ class RutaEntranteFamily(AbstractFamily):
 
     def _create_dict(self, ruta):
 
-        clave_name = "{0}/NAME".format(ruta.telefono)
-        clave_dst = "{0}/DST".format(ruta.telefono)
-        clave_id = "{0}/ID".format(ruta.telefono)
         dst = "{0},{1}".format(ruta.destino.tipo, ruta.destino.object_id)
         dict_ruta = {
-            clave_name: ruta.nombre,
-            clave_dst: dst,
-            clave_id: ruta.id,
+            "NAME": ruta.nombre,
+            "DST": dst,
+            "ID": ruta.id,
 
         }
         return dict_ruta
@@ -450,7 +447,7 @@ class RutaEntranteFamily(AbstractFamily):
         return RutaEntrante.objects.all()
 
     def _get_nombre_family(self, ruta):
-        return "OML/INR/{0}".format(ruta.id)
+        return "OML/INR/{0}".format(ruta.telefono)
 
     def _obtener_key_cero_dict(self, ruta):
         return self._create_dict(ruta).keys()[0]
