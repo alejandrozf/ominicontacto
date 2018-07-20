@@ -180,7 +180,12 @@ class RutaEntranteForm(forms.ModelForm):
         self.fields['tipo_destino'].choices = tipo_destino_choices
         instance = getattr(self, 'instance', None)
         if instance.pk is not None:
-            self.initial['tipo_destino'] = instance.destino.tipo
+            tipo = instance.destino.tipo
+            self.initial['tipo_destino'] = tipo
+            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+                                                         for dest_entr in destinos_qs]
+            self.fields['destino'].choices = destino_entrante_choices
         else:
             self.fields['destino'].choices = ()
 
@@ -195,8 +200,8 @@ class IVRForm(forms.ModelForm):
         choices=AUDIO_TIPO_CHOICES, widget=forms.RadioSelect(
             attrs={'class': 'form-control escogerAudioPpal'}))
     audio_ppal_ext_audio = forms.FileField(required=False)
-    time_out_destination = forms.ChoiceField(
-        label=_('Destino para time out:'), choices=(), widget=forms.Select(
+    time_out_destination = forms.ModelChoiceField(
+        queryset=DestinoEntrante.objects.all(), label=_('Destino time out:'), widget=forms.Select(
             attrs={'class': 'form-control', 'id': 'destinoTimeOut'}))
     time_out_destination_type = forms.ChoiceField(
         label=_('Tipo de destino para time out:'), choices=TIPOS_DESTINOS_CHOICES,
@@ -205,8 +210,8 @@ class IVRForm(forms.ModelForm):
         choices=AUDIO_TIPO_CHOICES, widget=forms.RadioSelect(
             attrs={'class': 'form-control escogerAudioTimeOut'}))
     time_out_ext_audio = forms.FileField(required=False)
-    invalid_destination = forms.ChoiceField(
-        label=_('Destino inválido:'), choices=(), widget=forms.Select(
+    invalid_destination = forms.ModelChoiceField(
+        queryset=DestinoEntrante.objects.all(), label=_('Destino inválido:'), widget=forms.Select(
             attrs={'class': 'form-control', 'id': 'destinoInvalido'}))
     invalid_destination_type = forms.ChoiceField(
         label=_('Tipo de destino para destino inválido:'), choices=TIPOS_DESTINOS_CHOICES,
@@ -249,6 +254,10 @@ class IVRForm(forms.ModelForm):
             destino_field_tipo = valor_opcion_field[destino_valor] + '_type'
             self.initial[destino_field] = destino.pk
             self.initial[destino_field_tipo] = destino.tipo
+            destinos_qs = DestinoEntrante.get_destinos_por_tipo(destino.tipo)
+            destinos_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+                                                 for dest_entr in destinos_qs]
+            self.fields[destino_field].choices = destinos_choices
 
     def __init__(self, *args, **kwargs):
         super(IVRForm, self).__init__(*args, **kwargs)
@@ -258,10 +267,10 @@ class IVRForm(forms.ModelForm):
         self.initial['time_out_audio_escoger'] = self.AUDIO_OML
         self.initial['invalid_destination_audio_escoger'] = self.AUDIO_OML
 
-        DESTINO_ENTRANTE_CHOICES = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
-                                                     for dest_entr in DestinoEntrante.objects.all()]
-        self.fields['time_out_destination'].choices = DESTINO_ENTRANTE_CHOICES
-        self.fields['invalid_destination'].choices = DESTINO_ENTRANTE_CHOICES
+        destinos_qs = DestinoEntrante.objects.all()
+        self.fields['time_out_destination'].queryset = destinos_qs
+        self.fields['invalid_destination'].queryset = destinos_qs
+
         # TODO: revisar por qué si el queryset por defecto de ArchivoDeAudio está modificado
         # para no mostrar los audios marcados como eliminados, dichos audios se muestran como
         # opciones para los campos listados a continuación
@@ -269,7 +278,7 @@ class IVRForm(forms.ModelForm):
         self.fields['audio_principal'].queryset = audios_queryset
         self.fields['time_out_audio'].queryset = audios_queryset
         self.fields['invalid_audio'].queryset = audios_queryset
-
+        self.fields['invalid_audio'].queryset = audios_queryset
         instance = getattr(self, 'instance', None)
         if instance.pk is not None:
             self._inicializar_ivr_a_modificar(self, *args, **kwargs)
@@ -376,7 +385,12 @@ class OpcionDestinoIVRForm(forms.ModelForm):
         super(OpcionDestinoIVRForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance.pk is not None:
-            self.initial['tipo_destino'] = instance.destino_siguiente.tipo
+            tipo_destino = instance.destino_siguiente.tipo
+            self.initial['tipo_destino'] = tipo_destino
+            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo_destino)
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+                                                         for dest_entr in destinos_qs]
+            self.fields['destino_siguiente'].choices = destino_entrante_choices
 
     def clean_valor(self):
         valor = self.cleaned_data['valor']
@@ -414,7 +428,12 @@ class OpcionDestinoValidacionFechaHoraForm(forms.ModelForm):
         super(OpcionDestinoValidacionFechaHoraForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance.pk is not None:
-            self.initial['tipo_destino'] = instance.destino_siguiente.tipo
+            tipo_destino = instance.destino_siguiente.tipo
+            self.initial['tipo_destino'] = tipo_destino
+            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo_destino)
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+                                                         for dest_entr in destinos_qs]
+            self.fields['destino_siguiente'].choices = destino_entrante_choices
 
 
 class OpcionDestinoValidacionFechaHoraFormSet(BaseModelFormSet):
