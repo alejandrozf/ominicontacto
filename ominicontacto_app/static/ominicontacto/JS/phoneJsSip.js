@@ -453,6 +453,7 @@ $(function() {
 										case "3": typeTransfer += " a campaña"; break;
 								}
 								$("#extraInfo").html(typeTransfer);
+								$("#modalReceiveCalls").modal('show');
 							}
 						}
 					}
@@ -688,8 +689,6 @@ $(function() {
 			if(entrante) {
 				if(fromUser) { // fromUser es para entrantes
 					if(lastPause === "Online" && fromUser.substring(4,0) != "0077") {
-						parar3();
-						reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 						saveCall(fromUser);
 						num = '';
 						fromUser = "";
@@ -699,7 +698,7 @@ $(function() {
 						updateButton(modifyUserStat, "label label-success", "Online");
 					} else if(lastPause === "OnCall") {
 						parar3();
-						reinicio3();
+						//reinicio3();
 						saveCall(fromUser);
 						num = '';
 						fromUser = "";
@@ -709,7 +708,7 @@ $(function() {
 						updateButton(modifyUserStat, "label label-success", "Online");
 					} else {
 						parar3();
-						reinicio3();
+						//reinicio3();
 						fromUser = "";
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
@@ -718,7 +717,7 @@ $(function() {
 					}
 					if(fromUser.substring(4,0) != "0077") {
 						parar3();
-						reinicio3();
+						//reinicio3();
 						if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
 							changeStatus(3, $("#idagt").val());
 							num = "00770";
@@ -747,12 +746,12 @@ $(function() {
 							}
 						} // si no es agente predictivo....
 					}
+					defaultCallState();
 				}
 			} else { // si NO es una llamada entrante
 				if (num) { // num para salientes
 					if (num.substring(4,0) != "0077") {
 						parar3();
-						reinicio3($("#horaC"), $("#minsC"), $("#segsC"));
 						saveCall(num);
 						if (lastPause != "Online") {
 							num = '';
@@ -1028,7 +1027,6 @@ $(function() {
     textSipStatus = document.createTextNode(state);
     iconStatus.id = "imgStatus";
     textSipStatus.id = "textSipStatus";
-    elem.style.color="white";
     iconStatus.src = "../static/ominicontacto/Img/"+img;
     elem.appendChild(iconStatus);
     elem.appendChild(textSipStatus);
