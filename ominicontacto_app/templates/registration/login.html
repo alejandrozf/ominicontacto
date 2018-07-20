@@ -4,17 +4,16 @@
 {% block title %} Logueo Usuario {% endblock %}
 
 {% block logueo %}
-{% if user_is_blocked %}
-  <div class="alert alert-danger">
-    <p> {{ detail }} </p>
-  </div>
-        {% elif not user.is_authenticated %}
-
-            {% if form.errors and not user_is_blocked%}
-              <div class="alert alert-danger">
-                <p> Username/password incorrecto ingrese nuevamente los datos </p>
-            {% endif %}
-                </div>
+  {% if user_is_blocked %}
+    <div class="alert alert-danger">
+      <p> {{ detail }} </p>
+    </div>
+  {% elif not user.is_authenticated %}
+    {% if form.errors and not user_is_blocked%}
+        <div class="alert alert-danger">
+          <p> Username/password incorrecto ingrese nuevamente los datos </p>
+    {% endif %}
+        </div>
         <div class="wrapper-content login">
             <form role="form" method="post" action="">
                 {% csrf_token %}
@@ -47,5 +46,5 @@
                 <button class="btn btn-outline-primary" type="submit" >Ingresar</button>
             </form>
         </div>
-    {% endif %}
+  {% endif %}
 {% endblock %}

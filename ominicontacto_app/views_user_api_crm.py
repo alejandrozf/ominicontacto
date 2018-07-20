@@ -20,14 +20,16 @@ import logging as logging_
 
 logger = logging_.getLogger(__name__)
 
+
 class PaswordHasherMixin(object):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.password = make_password(self.object.password,salt='Fuck1ngS4lt',hasher='default')
-        #self.object.password = self.object.password.split('$',4)[3]
+        password = make_password(self.object.password, salt='Fuck1ngS4lt', hasher='default')
+        self.object.password = password
         self.object.save()
         return super(PaswordHasherMixin, self).form_valid(form)
+
 
 class UserApiCrmCreateView(PaswordHasherMixin, CreateView):
     """Vista para crear un nuevo userapicrm"""
@@ -48,10 +50,12 @@ class UserApiCrmUpdateView(PaswordHasherMixin, UpdateView):
     def get_success_url(self):
         return reverse('user_api_crm_list')
 
+
 class UserApiCrmListView(ListView):
     """Vista para listar los userapicrm"""
     model = UserApiCrm
     template_name = 'user_api_crm_list.html'
+
 
 class UserApiCrmDeleteView(DeleteView):
     """Vista para eliminar el userapicrm"""

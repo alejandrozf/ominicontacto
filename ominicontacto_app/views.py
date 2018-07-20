@@ -8,14 +8,9 @@ DT:Mover la creacion de agente a otra vista
 
 from __future__ import unicode_literals
 
-import json
 import logging
-import base64
-import binascii
 
 from services.sms_services import SmsManager
-from defender import utils
-from defender import config
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.http import JsonResponse
@@ -29,26 +24,23 @@ from django.contrib.auth import authenticate, login
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView
 )
-
-from django.utils.translation import ugettext as _
-
+from defender import utils
+from defender import config
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, Campana, Contacto, QueueMember
+    Chat, MensajeChat, QueueMember
 )
 from ominicontacto_app.forms import (
     CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
     AgendaBusquedaForm, PausaForm, GrupoForm
 )
 from django.contrib.auth.forms import AuthenticationForm
-from services.kamailio_service import KamailioService
 from services.asterisk_service import ActivacionAgenteService,\
     RestablecerConfigSipError
 from services.regeneracion_asterisk import RegeneracionAsteriskService,\
     RestablecerDialplanError
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from ominicontacto_app import version
 
@@ -67,6 +59,7 @@ def index_view(request):
     return render_to_response('index.html',
                               context_instance=RequestContext(request))
 
+
 def login_view(request):
     detail = None
     user_is_blocked = False
@@ -75,19 +68,21 @@ def login_view(request):
         password = request.POST['password']
         login_unsuccessful = False
         if utils.is_already_locked(request, username=username):
-            detail = "Haz tratado de loguearte cuatro veces, sin exito." \
-                     "Tu cuenta y dirección IP permanecerán bloqueadas por {cooloff_time_seconds} segundos. Contacta al Administrador" \
-                     "".format(
-                        cooloff_time_seconds=config.COOLOFF_TIME
-                     )
+            detail = _("Haz tratado de loguearte cuatro veces,"
+                       " sin exito. Tu cuenta y dirección IP"
+                       " permanecerán bloqueadas por {cooloff_time_seconds} segundos."
+                       " Contacta al Administrador".format(cooloff_time_seconds=config.COOLOFF_TIME)
+                       )
             user_is_blocked = True
             login_unsuccessful = True
         user = authenticate(username=username, password=password)
         form = AuthenticationForm(request, data=request.POST)
         if not form.is_valid():
             login_unsuccessful = True
-        utils.add_login_attempt_to_db(request, login_valid=not login_unsuccessful, username=username)
-        user_not_blocked = utils.check_request(request, login_unsuccessful=login_unsuccessful, username=username)
+        utils.add_login_attempt_to_db(request, login_valid=not login_unsuccessful,
+                                      username=username)
+#        user_not_blocked = utils.check_request(request, login_unsuccessful=login_unsuccessful,
+#                                               username=username)
         if not user_is_blocked and not login_unsuccessful:
             if form.is_valid():
                 login(request, user)
@@ -105,6 +100,7 @@ def login_view(request):
     }
     template_name = 'registration/login.html'
     return TemplateResponse(request, template_name, context)
+
 
 class CustomerUserCreateView(CreateView):
     """Vista para crear un usuario"""
@@ -222,6 +218,7 @@ class AgenteProfileCreateView(CreateView):
                 reverse('user_list', kwargs={"page": 1}))
         return super(AgenteProfileCreateView, self).dispatch(request, *args,
                                                              **kwargs)
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         usuario = User.objects.get(pk=self.kwargs['pk_user'])
@@ -480,14 +477,13 @@ class PausaToggleDeleteView(TemplateView):
         pausa.save()
         return redirect('pausa_list')
 
+
 def node_view(request):
     """Esta vista renderiza la pantalla del agente"""
     registro = []
     campanas_preview_activas = []
     agente_profile = request.user.get_agente_profile()
     if request.user.is_authenticated() and agente_profile:
-	#Genera credendiales cada vez que se loguea el agente
-        #import ipdb;ipdb.set_trace()
         sip_usuario = request.user.generar_usuario(agente_profile.sip_extension)
         sip_password = request.user.generar_contrasena(sip_usuario)
         registro = DuracionDeLlamada.objects.filter(
@@ -685,10 +681,11 @@ def supervision_url_externa(request):
         sip_extension = request.user.get_supervisor_profile().sip_extension
         timestamp = request.user.generar_usuario(sip_extension).split(':')[0]
         sip_usuario = timestamp + ":" + str(sip_extension)
-        request.user.get_supervisor_profile().timestamp = timestamp
-        request.user.get_supervisor_profile().sip_password = request.user.generar_contrasena(sip_usuario)
-        request.user.get_supervisor_profile().save()
-        supervisor = request.user.get_supervisor_profile()
+        supervisor_profile = request.user.get_supervisor_profile()
+        supervisor_profile.timestamp = timestamp
+        supervisor_profile.sip_password = request.user.generar_contrasena(sip_usuario)
+        supervisor_profile.save()
+        supervisor = supervisor_profile
         url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
         if supervisor.is_administrador:
             url += "&es_admin=t"

@@ -11,7 +11,7 @@ import os
 import re
 import sys
 import uuid
-import base64, hmac
+import hmac
 from hashlib import sha1
 
 from ast import literal_eval
@@ -30,12 +30,8 @@ from django.core.exceptions import ValidationError, SuspiciousOperation
 from django.core.management import call_command
 from django.utils.translation import ugettext as _
 from simple_history.models import HistoricalRecords
-from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra, datetime_hora_minima_dia, \
-    datetime_hora_maxima_dia
-from ominicontacto_app.utiles import (ValidadorDeNombreDeCampoExtra,
-                                      # datetime_hora_minima_dia,
-                                      # datetime_hora_maxima_dia,
-                                      )
+from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
+
 logger = logging.getLogger(__name__)
 
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
@@ -125,9 +121,9 @@ class User(AbstractUser):
 
     def generar_contrasena(self, sip_extension):
         out = StringIO()
-        call_command('generar_secretkey', 'consultar', stdout=out)
+        call_command('service_secretkey', 'consultar', stdout=out)
         secret_key = out.getvalue()[:-1]
-        var = ':'.join(x.encode('hex') for x in secret_key)
+#        var = ':'.join(x.encode('hex') for x in secret_key)
         password_hashed = hmac.new(secret_key, sip_extension, sha1)
         password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
         return password_ephemeral
@@ -246,14 +242,6 @@ class AgenteProfile(models.Model):
         self.borrado = True
         self.is_inactive = True
         self.save()
-
-    def regenerar_sk(self):
-        crontab = CronTab(user=getpass.getuser())
-        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
-        ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
-        job = crontab.new(
-            sk='{0} {1} generar_secretkey'.format(ruta_python_virtualenv, ruta_manage_py))
-        return sk
 
 
 class SupervisorProfileManager(models.Manager):
