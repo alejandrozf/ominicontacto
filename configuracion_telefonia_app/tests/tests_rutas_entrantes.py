@@ -177,7 +177,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         post_data = self._obtener_post_data_ivr()
         n_ivrs = IVR.objects.count()
         response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(IVR.objects.count(), n_ivrs)
 
     @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')

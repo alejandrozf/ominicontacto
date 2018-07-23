@@ -1,8 +1,9 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Omnileads - Permission Denied</title>
+<title>{% trans 'Omnileads - Permission Denied' %}</title>
 <!-- <link href="/static/lumina/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"> -->
 <style type="text/css">
 /* reset5 © 2011 opensource.736cs.com MIT */
@@ -15,8 +16,8 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 </style>
 </head>
 <body>
-    <h1>Permiso denegado</h1>
-    <p>Ud. no posee los permisos requeridos para acceder a esta pagina.</p>
-    <p>Ud. puede <a href="javascript:history.go(0);">reintentar</a> o <a href="/">volver a inicio</a>.</p>
+    <h1>{% trans 'Permiso denegado' %}</h1>
+    <p>{% trans 'Ud. no posee los permisos requeridos para acceder a esta pagina.' %}</p>
+    <p>{% trans 'Ud. puede <a href="javascript:history.go(0);">reintentar</a> o <a href="/">volver a inicio' %}</a>.</p>
 </body>
 </html>

@@ -53,6 +53,7 @@
      function mostrar_detalle_campana(pk_campana) {
        var $reporteModal = $('#reporteModal');
        var $modalContent = $reporteModal.find(".modal-body");
+       var url = "{% url 'campana_preview_detalle_express' '0000000' %}";
        $.get('/campana_preview/' + pk_campana + '/detalle_express/',
              function (data) {
                $modalContent.html(data);
