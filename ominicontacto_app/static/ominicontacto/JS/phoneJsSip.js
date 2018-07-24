@@ -707,7 +707,7 @@ if(var1 && var2) {
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-success", lastPause);
 					}
-					if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
+					if ($("#auto_pause").val() == "True" && entrante !== false) {//Si es un agente predictivo
 						//if (entrante == false) { funcionalidad oml-52
 							changeStatus(3, $("#idagt").val());
 							num = "00770";
