@@ -491,13 +491,15 @@ if(var1 && var2) {
 	  	clickHold.onclick = function () {
 				if(flagHold) {
 	  	 		flagHold = false;
-					e.session.sendDTMF("*");
-		      e.session.sendDTMF("2");
-		      setTimeout(transferirHold(e), 1000);
+					e.session.hold()
+					//e.session.sendDTMF("*");
+		      //e.session.sendDTMF("2");
+		      //setTimeout(transferirHold(e), 1000);
 	  	 	} else {
 	  	 	  flagHold = true;
-					e.session.sendDTMF("*");
-		      e.session.sendDTMF("1");
+					e.session.unhold()
+					//e.session.sendDTMF("*");
+		      //e.session.sendDTMF("1");
 	  	 	}
 			};
 

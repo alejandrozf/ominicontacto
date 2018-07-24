@@ -353,6 +353,7 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         secret=
         deny=0.0.0.0/0.0.0.0
         permit={oml_kamailio_ip}
+        rtcp_mux=yes
         """
 
     def get_parametros(self):
