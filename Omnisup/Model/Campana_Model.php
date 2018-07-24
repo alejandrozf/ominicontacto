@@ -93,7 +93,7 @@ class Campana_Model {
     }
 
     function getSIPcredentialsByUserId($userId) {
-        $sql = "select sip_extension, sip_password FROM ominicontacto_app_supervisorprofile where id = :id";
+        $sql = "select sip_extension, sip_password, timestamp FROM ominicontacto_app_supervisorprofile where id = :id";
         try {
             $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
             $query = $cnn->prepare($sql);

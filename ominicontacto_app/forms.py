@@ -1020,7 +1020,7 @@ class UserApiCrmForm(forms.ModelForm):
 
         widgets = {
             "usuario": forms.TextInput(attrs={'class': 'form-control'}),
-            "password": forms.TextInput(attrs={'class': 'form-control'}),
+            "password": forms.PasswordInput(attrs={'class': 'form-control'}),
         }
 
     def clean_usuario(self):

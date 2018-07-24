@@ -10,6 +10,7 @@ import json
 import logging as logging_
 
 from django.contrib import messages
+from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import JsonResponse
@@ -225,10 +226,11 @@ def calificacion_cliente_externa_view(request):
                 return JsonResponse({'status': 'Error en falta {0}'.format(data)})
 
         try:
+            #import ipdb;ipdb.set_trace()
             usuario = UserApiCrm.objects.get(
                 usuario=received_json_data['user_api'])
-
-            if usuario.password == received_json_data['password_api']:
+            received_password = received_json_data['password_api']
+            if check_password(received_password,usuario.password):
                 campana = Campana.objects.get(pk=received_json_data['pk_campana'])
                 contacto = Contacto.objects.get(pk=received_json_data['id_cliente'])
                 opcion_calificacion = OpcionCalificacion.objects.get(

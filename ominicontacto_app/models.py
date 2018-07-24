@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import time
 import getpass
 import json
 import logging
@@ -10,10 +11,13 @@ import os
 import re
 import sys
 import uuid
+import hmac
+from hashlib import sha1
 
 from ast import literal_eval
 
 from crontab import CronTab
+from StringIO import StringIO
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
@@ -23,14 +27,11 @@ from django.db import (models,
 from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
+from django.core.management import call_command
 from django.utils.translation import ugettext as _
-
 from simple_history.models import HistoricalRecords
+from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 
-from ominicontacto_app.utiles import (ValidadorDeNombreDeCampoExtra,
-                                      # datetime_hora_minima_dia,
-                                      # datetime_hora_maxima_dia,
-                                      )
 logger = logging.getLogger(__name__)
 
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
@@ -109,6 +110,26 @@ class User(AbstractUser):
 
         self.borrado = True
         self.is_active = False
+        self.save()
+
+    def generar_usuario(self, sip_extension):
+        ttl = 28800
+        date = time.time()
+        self.timestamp = date + ttl
+        user_ephemeral = str(self.timestamp).split('.')[0] + ":" + str(sip_extension)
+        return user_ephemeral
+
+    def generar_contrasena(self, sip_extension):
+        out = StringIO()
+        call_command('service_secretkey', 'consultar', stdout=out)
+        secret_key = out.getvalue()[:-1]
+#        var = ':'.join(x.encode('hex') for x in secret_key)
+        password_hashed = hmac.new(secret_key, sip_extension, sha1)
+        password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
+        return password_ephemeral
+
+    def regenerar_credenciales(self, sip_extension):
+        self.sip_password = self.generar_contrasena(sip_extension)
         self.save()
 
 
@@ -236,6 +257,7 @@ class SupervisorProfile(models.Model):
     is_administrador = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
     borrado = models.BooleanField(default=False, editable=False)
+    timestamp = models.CharField(max_length=64, blank=True, null=True)
 
     def __unicode__(self):
         return self.user.get_full_name()

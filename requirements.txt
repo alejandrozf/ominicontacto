@@ -7,6 +7,7 @@ decorator==4.0.10
 Django==1.9.7
 django-compressor==2.2
 django-crispy-forms==1.6.0
+django-defender==0.5.5
 django-formtools==2.1
 django-simple-history==1.9.1
 django-widget-tweaks==1.4.1

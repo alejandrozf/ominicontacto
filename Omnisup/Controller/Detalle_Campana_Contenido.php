@@ -154,12 +154,14 @@ function mostrarUserPassSip($userID) {
   $Controller_Campana = new Campana();
   $resul = $Controller_Campana->traerUserClaveSIP($userID);
   $jsonString = '';
-  $user = $pass = "";
+  $user = $pass = $timestamp = "";
   foreach ($resul as $key => $value) {
       if(is_array($value)) {
           foreach($value as $cla => $val) {
               if($cla == "sip_extension") {
                   $user = $val;
+              } elseif($cla == "timestamp") {
+                $timestamp = $val;
               } else {
                   $pass = $val;
               }
@@ -172,7 +174,7 @@ function mostrarUserPassSip($userID) {
           }
       }
   }
-  $jsonString .= '{"sipuser": "' . $user . '", "sippass": "' . $pass .'"}';
+  $jsonString .= '{"sipuser": "' . $timestamp .':' . $user . '", "sippass": "' . $pass .'"}';
   return $jsonString;
 }
 

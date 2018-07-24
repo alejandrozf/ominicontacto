@@ -29,7 +29,7 @@ class KamailioService():
 
     def update_agente_kamailio(self, agente):
         """
-        update subscriber 
+        update subscriber
         """
 
         with connection.cursor() as cursor:

@@ -13,8 +13,8 @@ def update_username_alto_in_subscriber(apps, schema_editor):
     para que no coincida con ningun valor de id de usuario
     """
 
-    if settings.OML_TESTING_MODE:
-        print("Ignorando migracion 0148_update_username_subscriber")
+    if True:
+        print("Ignorando migracion 0148_update_username_subscriber, no se usa mas tabla subscriber")
         return
 
     cursor = connection.cursor()
@@ -28,8 +28,8 @@ def update_username_real_in_subscriber(apps, schema_editor):
     Actualiza la tabla subscriber con un valor real
     """
 
-    if settings.OML_TESTING_MODE:
-        print("Ignorando migracion 0148_update_username_subscriber")
+    if True:
+        print("Ignorando migracion 0148_update_username_subscriber, no se usa mas tabla subscriber")
         return
 
     cursor = connection.cursor()

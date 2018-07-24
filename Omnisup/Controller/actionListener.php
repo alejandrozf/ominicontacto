@@ -4,6 +4,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
 include controllers . '/Agente.php';
 
 if (isset($_GET['sip']) && isset($_GET['sipext']) && isset($_GET['action'])) {
+    $sipext = explode(":", $_GET['sipext']);
     $accion = "";
     switch($_GET['action']) {
         case 'spy':
@@ -29,7 +30,7 @@ if (isset($_GET['sip']) && isset($_GET['sipext']) && isset($_GET['action'])) {
         break;
     }
     $Controller_Agente = new Agente();//"AGENTLOGOUT"/"AGENTUNPAUSE"/"AGENTPAUSE"/"CHANTAKECALL"/"CHANSPYWISHPER"/"CHANSPY"/"CHANCONFER"
-    $res = $Controller_Agente->ejecutarAccion($_GET['sip'], $_GET['sipext'], $accion);
+    $res = $Controller_Agente->ejecutarAccion($_GET['sip'], $sipext[1], $accion);
     echo $res;
 }
 header('location: ../index.php?page=Lista_Agentes');

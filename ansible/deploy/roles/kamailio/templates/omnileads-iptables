@@ -1,0 +1,20 @@
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -j ACCEPT
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "friendly-scanner" --algo bm -j DROP
+iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "sipcli" --algo bm -j DROP
+iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "VaxSIPUserAgent" --algo bm -j DROP
+iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "sipvicious" --algo bm -j DROP
+iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "sundayddr" --algo bm -j DROP
+iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "iWar" --algo bm -j DROP
+iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "sipsak" --algo bm -j DROP
+iptables -A INPUT -p udp --dport 5060 -j ACCEPT
+iptables -A INPUT -p udp --dport 10000:30000 -j ACCEPT
+iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport 14443 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport 10443 -j ACCEPT
+iptables -A INPUT -p udp -m udp --dport 5160 -j ACCEPT
+iptables -A INPUT -j REJECT

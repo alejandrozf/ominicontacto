@@ -27,6 +27,7 @@ handler500 = handler500
 
 
 urlpatterns = [
+    url(r'^admin/defender/', include('defender.urls')),  # defender admin
     url(r'^ajax/mensaje_recibidos/',
         views.mensajes_recibidos_view,
         name='ajax_mensaje_recibidos'),
@@ -598,6 +599,10 @@ urlpatterns = [
     url(r'^user_api_crm/(?P<pk>\d+)/update/$',
         login_required(views_user_api_crm.UserApiCrmUpdateView.as_view()),
         name='user_api_crm_update',
+        ),
+    url(r'^user_api_crm/(?P<pk>\d+)/delete/$',
+        login_required(views_user_api_crm.UserApiCrmDeleteView.as_view()),
+        name='user_api_crm_delete',
         ),
     url(r'^user_api_crm/list/$',
         login_required(views_user_api_crm.UserApiCrmListView.as_view()),

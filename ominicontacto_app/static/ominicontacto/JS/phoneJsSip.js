@@ -7,6 +7,7 @@ var local = document.getElementById('localAudio');
 var remoto = document.getElementById('remoteAudio');
 var displayNumber = document.getElementById("numberToCall");
 var pauseButton = document.getElementById("Pause");
+var var1, var2;
 
 function updateButton(btn,clsnm,inht) {
 	 	 btn.className = clsnm;
@@ -16,6 +17,8 @@ function updateButton(btn,clsnm,inht) {
 }
 
 $(function() {
+	var1 = $("#sipExt").val();
+	var2 = $("#sipSec").val();
 
 	var idTipoCamp = $("#cmpList option:selected").attr('campana_type');
 	$("#modalWebCall").modal('show');
@@ -114,18 +117,20 @@ $(function() {
     makeCall();
   });
 
-  if($("#sipExt").val() && $("#sipSec").val()) {
+if(var1 && var2) {
     config = {
-      uri : "sip:"+$("#sipExt").val()+"@"+KamailioIp,
+      uri : "sip:"+var1+"@"+KamailioIp,
       ws_servers : "wss://"+KamailioIp+":"+ KamailioPort,
-      password : $("#sipSec").val(),
+      password : var2,
+      realm: KamailioIp,
       hack_ip_in_contact: true,
       session_timers: false,
 			pcConfig: {
-				rtcpMuxPolicy: 'negotiate'}
-    };
-    userAgent = new JsSIP.UA(config);
-    sesion = userAgent.start();
+				rtcpMuxPolicy: 'negotiate'
+			}
+		};
+		userAgent = new JsSIP.UA(config);
+		sesion = userAgent.start();
   }
 
   $("#CallList").click(function() {

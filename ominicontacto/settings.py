@@ -39,15 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ominicontacto_app',
+    'configuracion_telefonia_app',
     'crispy_forms',
     'compressor',
-    'reciclado_app',
+    'defender',
     'formtools',
-    'widget_tweaks',
+    'ominicontacto_app',
+    'reciclado_app',
     'reportes_app',
-    'configuracion_telefonia_app',
     'simple_history',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -59,6 +60,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'defender.middleware.FailedLoginMiddleware',
 ]
 
 
@@ -91,6 +93,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ominicontacto.wsgi.application'
+
+# Password hashers available
+# https://docs.djangoproject.com/en/1.9/topics/auth/passwords/
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
