@@ -317,9 +317,12 @@ class CampanaMixinForm(object):
         if self.fields.get('bd_contacto', False):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
+    def requiere_bd_contacto(self):
+        raise NotImplemented
+
     def clean(self):
         bd_contacto_field = self.fields.get('bd_contacto', False)
-        if bd_contacto_field and not bd_contacto_field.queryset:
+        if bd_contacto_field and not bd_contacto_field.queryset.filter and self.requiere_bd_contacto():
             message = _("Debe cargar una base de datos antes de comenzar a "
                         "configurar una campana")
             self.add_error('bd_contacto', message)
@@ -351,6 +354,9 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
             self.fields['bd_contacto'].required = False
         else:
             self.fields['bd_contacto'].required = True
+
+    def requiere_bd_contacto(self):
+        return False
 
     def clean_bd_contacto(self):
         bd_contacto = self.cleaned_data.get('bd_contacto')
@@ -830,6 +836,9 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             self.fields['formulario'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
+    def requiere_bd_contacto(self):
+        return True
+
     def clean_bd_contacto(self):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
@@ -1087,6 +1096,9 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def requiere_bd_contacto(self):
+        return False
+
 
 class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
@@ -1112,6 +1124,9 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+    def requiere_bd_contacto(self):
+        return True
 
     def clean_tiempo_desconexion(self):
         tiempo_desconexion = self.cleaned_data['tiempo_desconexion']
