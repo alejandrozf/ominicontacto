@@ -114,6 +114,8 @@
 #      - omni-blacklist.php
 #      - omni-dialednum.php
       - omni-grabaciones.php
+      - phpagi-asmanager.php
+      - php-agi.php 
   become: yes
   become_method: sudo
 
