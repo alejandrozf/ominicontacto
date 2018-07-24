@@ -113,7 +113,7 @@ class User(AbstractUser):
         self.save()
 
     def generar_usuario(self, sip_extension):
-        ttl = 43200
+        ttl = 28800
         date = time.time()
         self.timestamp = date + ttl
         user_ephemeral = str(self.timestamp).split('.')[0] + ":" + str(sip_extension)
