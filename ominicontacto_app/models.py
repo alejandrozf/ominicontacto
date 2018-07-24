@@ -284,11 +284,6 @@ class AgenteProfile(models.Model):
         self.save()
 
 
-class SupervisorProfileManager(models.Manager):
-
-    pass
-
-
 class SupervisorProfile(models.Model):
 
     ROL_ADMINISTRADOR = '1'
@@ -296,7 +291,6 @@ class SupervisorProfile(models.Model):
     ROL_SUPERVISOR = '3'
     ROL_CLIENTE = '4'
 
-    objects = SupervisorProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
@@ -316,6 +310,11 @@ class SupervisorProfile(models.Model):
 
         self.borrado = True
         self.save()
+
+    @classmethod
+    def obtener_campanas_asignadas(cls, id_supervisor, es_admin):
+        superv = cls.objects.get(pk=id_supervisor)
+        return superv.user.campanasupervisors.all()
 
 
 class NombreCalificacionManager(models.Manager):
