@@ -80,6 +80,7 @@ $(function () {
 
 	 $("#Resume").click(function () {
 	   parar2();
+		 inicio1();
 	   changeStatus(1, $("#idagt").val());
 	   $("#Pause").prop('disabled', false);
 	   $("#Resume").prop('disabled', true);
