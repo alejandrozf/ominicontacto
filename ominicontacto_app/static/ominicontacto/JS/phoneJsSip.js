@@ -473,7 +473,7 @@ if(var1 && var2) {
 				$("#Transfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
 
-        if(num.substring(4,0) != "0077") {
+        if ((num && num.substring(4,0) != "0077") || fromUser) {
 					flagAttended = true;
 					inicio3();
 	       	$("#Pause").prop('disabled',true);
@@ -482,9 +482,6 @@ if(var1 && var2) {
 	       	lastPause = $("#UserStatus").html();
 	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
 		    }
-				if (fromUser) {
-					inicio3();
-				}
       });
 
 			var clickHold = document.getElementById("onHold");
@@ -691,9 +688,9 @@ if(var1 && var2) {
     }
 
 		e.session.on("ended", function() {               // Cuando Finaliza la llamada
-			parar3();
-			reinicio($("#horaC"), $("#minsC"), $("#segsC"));
 			if (num && num.substring(4,0) != "0077") {// es saliente
+					parar3();
+					reinicio($("#horaC"), $("#minsC"), $("#segsC"));
 					saveCall(num);
 					if (lastPause != "Online") {
 						num = '';
@@ -735,6 +732,8 @@ if(var1 && var2) {
 					}
 
 			} else if (fromUser && fromUser.substring(4,0) != "0077") {// es entrante
+				parar3();
+				reinicio($("#horaC"), $("#minsC"), $("#segsC"));
 				if (lastPause == "Online" || lastPause == "OnCall") {
 					saveCall(fromUser);
 					updateButton(modifyUserStat, "label label-success", "Online");
