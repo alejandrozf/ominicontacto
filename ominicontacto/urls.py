@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^', include('reciclado_app.urls')),
     url(r'^', include('reportes_app.urls')),
     url(r'^', include('configuracion_telefonia_app.urls')),
+    url(r'^', include('api_app.urls')),
     url(r'^accounts/logout/$', auth_views.logout,
         {'next_page': '/accounts/login/'}, name="logout"),
 

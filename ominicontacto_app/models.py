@@ -311,10 +311,8 @@ class SupervisorProfile(models.Model):
         self.borrado = True
         self.save()
 
-    @classmethod
-    def obtener_campanas_asignadas(cls, id_supervisor, es_admin):
-        superv = cls.objects.get(pk=id_supervisor)
-        return superv.user.campanasupervisors.all()
+    def obtener_campanas_activas_asignadas(self):
+        return self.user.campanasupervisors.filter(estado=Campana.ESTADO_ACTIVA)
 
 
 class NombreCalificacionManager(models.Manager):
