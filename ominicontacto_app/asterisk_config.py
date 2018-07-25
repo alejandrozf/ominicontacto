@@ -546,6 +546,11 @@ class RutasSalientesConfigCreator(object):
         for ruta in rutas:
             rutas_file.append("include => oml-outr-{0}\n".format(ruta.id))
 
+        # Agrega parametros
+        rutas_file.append("exten => i,1,Verbose(2, no existe patron)\n")
+        rutas_file.append("same => n,Set(__DIALSTATUS=NONDIALPLANMATCH)\n")
+        rutas_file.append("same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${OMLOUTNUM})\n")
+
         # agrego las rutas con los patrones de discado
         for ruta in rutas:
             logger.info("Creando config sip para ruta saliente %s", ruta.id)
