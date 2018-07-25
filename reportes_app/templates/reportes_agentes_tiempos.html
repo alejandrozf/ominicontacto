@@ -92,7 +92,7 @@
             $('#output').html(data.tbody); // append to inner html
              $('#nombre_agente').html(data.nombre_agente);
             if (data.error)
-            {   mensaje = "Hubo un error en el calculo del tiempo de sesion contacte con el adminsitrador del sistema"
+            {   mensaje = "Advertencia: se detectan que el agente que ha finalizado la sesión correctamente."
                 txt = '<div id="error" class="alert alert-warning" role="alert">'
                 txt +=  $("<div>").text(mensaje).html() + "</div>";
                $('#error').html(txt);
