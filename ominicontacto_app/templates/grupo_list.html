@@ -12,7 +12,7 @@
             <th>Auto attend ics</th>
             <th>Auto attend inbound</th>
             <th>Auto attend dialer</th>
-            <th>Auto pause</th>
+            <!--<th>Auto pause</th>-->
             <th>Auto unpause</th>
             {% if user.get_is_administrador %}
             <th>acciones</th>
@@ -45,13 +45,13 @@
                     <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
             </td>
-            <td>
+<!--            <td>
                 {% if grupo.auto_pause %}
                     <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
                     <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
-            </td>
+            </td> -->
             <td>{{grupo.auto_unpause}}</td>
             {% if user.get_is_administrador %}
             <td>
@@ -65,7 +65,7 @@
                         </a>
                         <a class="dropdown-item" href="{% url 'grupo_delete' grupo.id %}">
                             <span class="icon icon-trash"></span>Eliminar
-                        </a>                       
+                        </a>
                     </div>
                 </div>
             </td>
