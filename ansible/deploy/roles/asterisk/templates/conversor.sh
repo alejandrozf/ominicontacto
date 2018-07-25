@@ -1,16 +1,18 @@
 #!/bin/bash
 # Script para convertir grabaciones a mp3 pensado para correr diariamente en horas de la noche
+# Modo de uso: tiene 3 argumentos que son obligatorias poner. Los argumentos pueden ser 1 o 0
+# Ejemplo: ./convertir.sh 1 1 0
 
 Date="`which date`"
 Lame="`which lame`"
 Ano="`${Date} +%Y -d today`"
 Mes="`${Date} +%m -d today`"
 Dia="`${Date} +%d -d yesterday`"
-Convertir=$1
-Mover_interno=$2
-Mover_externo=$3
-IP=$4
-Path_remoto=$5
+Convertir=$1 # primer argumento, poner 1 si se quiere convertir a mp3 los audios, 0 si se quieren en wav
+Mover_interno=$2 # segundo argumento, 1 si se quiere mover a la carpeta /var/spool/oml, 0 si se quiere mantener en /var/spool/monitor
+Mover_externo=$3 # tercer argumento, 1 si se quiere mover a una carpeta fuera del server, 0 para dejarla dentro del server
+IP=$4 # cuarto argumento, IP del server al que se quiere pasar los audios
+Path_remoto=$5 #quinto argumento carpeta remota a la que se quieren pasar los audios
 
 #Path donde estan las grabaciones en .wav, verlo en el nginx.conf, alias grabaciones
 Path_origen={{ asterisk_location }}/var/spool/asterisk/monitor
