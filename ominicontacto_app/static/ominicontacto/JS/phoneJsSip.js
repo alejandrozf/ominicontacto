@@ -220,11 +220,11 @@ if(var1 && var2) {
   		}
   	  return id;
     }
-    function reinicio(horaDOM, minDOM, segDOM, controlX, cent, seg, min) {
-	    clearInterval(controlX);
-	    cent = 0;
-	    seg = 0;
-	    min = 0;
+    function reinicio(horaDOM, minDOM, segDOM) {
+	    clearInterval(control3);
+	    centesimasC = 0;
+	    segundosC = 0;
+	    minutosC = 0;
 	    segDOM.html(":00");
 	    minDOM.html(":00");
 	    horaDOM.html("00");
@@ -473,17 +473,24 @@ if(var1 && var2) {
 				$("#Transfer").prop('disabled', false);
         $("#onHold").prop('disabled', false);
 
-        if(num.substring(4,0) != "0077") {
+        if (num && num.substring(4,0) != "0077") {
+					//if ($("#auto_pause").val() !== "True") {
+						flagAttended = true;
+						inicio3();
+		       	$("#Pause").prop('disabled',true);
+		       	$("#Resume").prop('disabled',true);
+		       	$("#sipLogout").prop('disabled',true);
+		       	lastPause = $("#UserStatus").html();
+	       	  updateButton(modifyUserStat, "label label-primary", "OnCall");
+		      //}
+				} else if (fromUser) {
 					flagAttended = true;
 					inicio3();
-	       	$("#Pause").prop('disabled',true);
-	       	$("#Resume").prop('disabled',true);
-	       	$("#sipLogout").prop('disabled',true);
-	       	lastPause = $("#UserStatus").html();
-	       	updateButton(modifyUserStat, "label label-primary", "OnCall");
-		    }
-				if (fromUser) {
-					inicio3();
+					$("#Pause").prop('disabled',true);
+					$("#Resume").prop('disabled',true);
+					$("#sipLogout").prop('disabled',true);
+					lastPause = $("#UserStatus").html();
+					updateButton(modifyUserStat, "label label-primary", "OnCall");
 				}
       });
 
@@ -692,117 +699,67 @@ if(var1 && var2) {
 
 		e.session.on("ended", function() {               // Cuando Finaliza la llamada
 			parar3();
-			reinicio($("#horaC"), $("#minsC"), $("#segsC"), control3, centesimasC, segundosC, minutosC);
-			if(entrante) {
-				if(fromUser) { // fromUser es para entrantes
-					if(lastPause === "Online" && fromUser.substring(4,0) != "0077") {
-						saveCall(fromUser);
+			if (num && num.substring(4,0) != "0077") {// es saliente
+					reinicio($("#horaC"), $("#minsC"), $("#segsC"));
+					saveCall(num);
+					if (lastPause != "Online") {
 						num = '';
-						fromUser = "";
-						$("#Pause").prop('disabled',false);
-						$("#Resume").prop('disabled',true);
-						$("#sipLogout").prop('disabled',false);
-						updateButton(modifyUserStat, "label label-success", "Online");
-					} else if(lastPause === "OnCall") {
-						parar3();
-						//reinicio3();
-						saveCall(fromUser);
-						num = '';
-						fromUser = "";
-						$("#Pause").prop('disabled',false);
-						$("#Resume").prop('disabled',true);
-						$("#sipLogout").prop('disabled',false);
-						updateButton(modifyUserStat, "label label-success", "Online");
-					} else {
-						parar3();
-						//reinicio3();
-						fromUser = "";
 						$("#Pause").prop('disabled',true);
 						$("#Resume").prop('disabled',false);
 						$("#sipLogout").prop('disabled',false);
 						updateButton(modifyUserStat, "label label-danger", lastPause);
+					} else {
+						$("#Pause").prop('disabled',false);
+						$("#Resume").prop('disabled',true);
+						$("#sipLogout").prop('disabled',false);
+						updateButton(modifyUserStat, "label label-success", lastPause);
 					}
-					if(fromUser.substring(4,0) != "0077") {
-						parar3();
-						//reinicio3();
-						if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
-							changeStatus(3, $("#idagt").val());
-							num = "00770";
-							makeCall();
-							entrante = false;
-							$("#Pause").prop('disabled',true);
-							$("#Resume").prop('disabled',false);
-							$("#sipLogout").prop('disabled',false);
-							updateButton(modifyUserStat, "label label-danger", "ACW");
-							parar1();
-							inicio2();
-							if($("#auto_unpause").val() != 0) {
-								var timeoutACW = $("#auto_unpause").val();
-								timeoutACW = timeoutACW * 1000;
-								var toOnline = function() {
-									num = "0077UNPAUSE";
-									if($("#UserStatus").html() === "ACW") {
-										if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling")
-										{
-											makeCall();
-											$("#Resume").trigger('click');
-										}
+			} else if (fromUser && fromUser.substring(4,0) != "0077") {// es entrante
+				if ($("#auto_pause").val() == "True" && entrante !== false) {//Si es un agente predictivo
+					//if (entrante == false) { funcionalidad oml-52
+					parar1();
+					reinicio($("#horaC"), $("#minsC"), $("#segsC"));
+					inicio2();
+					changeStatus(3, $("#idagt").val());
+					num = "00770";
+					makeCall();
+					entrante = false;
+					$("#Pause").prop('disabled', true);
+					$("#Resume").prop('disabled', false);
+					$("#sipLogout").prop('disabled', false);
+					updateButton(modifyUserStat, "label label-danger", "ACW");
+					if ($("#auto_unpause").val() != 0) {
+					  var timeoutACW = $("#auto_unpause").val();
+						timeoutACW = timeoutACW * 1000;
+						var toOnline = function() {
+							num = "0077UNPAUSE";
+							if ($("#UserStatus").html() === "ACW") {
+									if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling") {
+										makeCall();
+										$("#Resume").trigger('click');
 									}
-								};
-								setTimeout(toOnline, timeoutACW);
 							}
-						} // si no es agente predictivo....
+						};
+						setTimeout(toOnline, timeoutACW);
 					}
-					defaultCallState();
+					//} funcionalidad oml-52
+					fromUser = '';
+				} else if ((num && num.substring(0, 4) !== "0077") && (fromUser && fromUser.substring(4,0) != "0077")) {
+					reinicio($("#horaC"), $("#minsC"), $("#segsC"));
+					if (lastPause == "Online" || lastPause == "OnCall") {
+						saveCall(fromUser);
+						updateButton(modifyUserStat, "label label-success", "Online");
+					} else {
+						updateButton(modifyUserStat, "label label-danger", lastPause);
+					}
+					num = fromUser = "";
+					$("#Pause").prop('disabled',false);
+					$("#Resume").prop('disabled',true);
+					$("#sipLogout").prop('disabled',false);
 				}
-			} else { // si NO es una llamada entrante
-				if (num) { // num para salientes
-					if (num.substring(4,0) != "0077") {
-						parar3();
-						saveCall(num);
-						if (lastPause != "Online") {
-							num = '';
-							$("#Pause").prop('disabled',true);
-							$("#Resume").prop('disabled',false);
-							$("#sipLogout").prop('disabled',false);
-							updateButton(modifyUserStat, "label label-danger", lastPause);
-						} else {
-							$("#Pause").prop('disabled',false);
-							$("#Resume").prop('disabled',true);
-							$("#sipLogout").prop('disabled',false);
-							updateButton(modifyUserStat, "label label-success", lastPause);
-						}
-            if ($("#auto_pause").val() == "True") {//Si es un agente predictivo
-              //if (entrante == false) { funcionalidad oml-52
-							  changeStatus(3, $("#idagt").val());
-					      num = "00770";
-					      makeCall();
-					      entrante = false;
-							  $("#Pause").prop('disabled',true);
-							  $("#Resume").prop('disabled',false);
-							  $("#sipLogout").prop('disabled',false);
-							  updateButton(modifyUserStat, "label label-danger", "ACW");
-                if($("#auto_unpause").val() != 0) {
-								  var timeoutACW = $("#auto_unpause").val();
-								  timeoutACW = timeoutACW * 1000;
-                  var toOnline = function() {
-									  num = "0077UNPAUSE";
-									  if($("#UserStatus").html() === "ACW") {
-										  if ($("#dial_status").html().substring(9,0) !== "Connected" && $("#dial_status").html().substring(7,0) !== "Calling") {
-										    makeCall();
-										    $("#Resume").trigger('click');
-									    }
-									  }
-                  };
-								  setTimeout(toOnline, timeoutACW);
-                }
-              //} funcionalidad oml-52
-            }
-					}
-		   }
-		 }
-		 $("#EndTransfer").prop('disabled', true);
-		 defaultCallState();
+			}
+ 		  $("#EndTransfer").prop('disabled', true);
+ 		  defaultCallState();
     });
 
   });

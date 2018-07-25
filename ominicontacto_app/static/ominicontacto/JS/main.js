@@ -79,52 +79,14 @@ $(function () {
 	 });
 
 	 $("#Resume").click(function () {
-		 inicio1();
 	   parar2();
+		 inicio1();
 	   changeStatus(1, $("#idagt").val());
 	   $("#Pause").prop('disabled', false);
 	   $("#Resume").prop('disabled', true);
 	   var lastPause = updateButton(modifyUserStat, "label label-success", "Online");
 	   var containerTag = document.getElementById("timers");
 	   var pausas = document.getElementsByClassName("pausa");
-	   if (pausas.length) { // Si ya existe pausa
-	     var arrPausas = [];
-	     for (var i = 0; i < pausas.length; i++) {
-	       arrPausas[i] = pausas[i].id;
-	     }
-	     var found = arrPausas.indexOf(lastPause);
-	     if (found != -1) { // Si se repite, suma los tiempos
-	       horaToSum = $("#horaP").html();
-	       minsToSum = $("#minsP").html().replace(":", "");
-	       segsToSum = $("#segsP").html().replace(":", "");
-	       horap = document.getElementById("hora" + lastPause);
-	       minsp = document.getElementById("mins" + lastPause);
-	       segsp = document.getElementById("segs" + lastPause);
-	       horap = horap.innerHTML;
-	       minsp = minsp.innerHTML.replace(":", "");
-	       segsp = segsp.innerHTML.replace(":", "");
-	       horap = Number(horap) + Number(horaToSum);
-	       minsp = Number(minsp) + Number(minsToSum);
-	       segsp = Number(segsp) + Number(segsToSum);
-	       if (horap < 10) {
-	         horap = String(horap) + "0";
-	       }
-	       if (minsp < 10) {
-	         minsp = ":0" + String(minsp);
-	       } else {
-	         minsp = ":" + String(minsp);
-	       }
-	       if (segsp < 10) {
-	         segsp = ":0" + String(segsp);
-	       } else {
-	         segsp = ":" + String(segsp);
-	       }
-	       document.getElementById("hora" + lastPause).innerHTML = horap;
-	       document.getElementById("mins" + lastPause).innerHTML = minsp;
-	       document.getElementById("segs" + lastPause).innerHTML = segsp;
-	       lastPause = "";
-	     }
-	   }
 	 });
 
 	 $("#Pause").click(function () {
