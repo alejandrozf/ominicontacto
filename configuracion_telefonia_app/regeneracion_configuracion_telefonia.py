@@ -192,9 +192,10 @@ class AbstractConfiguracionAsterisk(object):
 
     def _generar_e_insertar_en_astdb(self, family_member):
         mensaje_error = ""
-        nombre_families = self._obtener_generador_family().get_nombre_families()
+        generador_family = self._obtener_generador_family()
+        nombre_families = generador_family.get_nombre_families()
         try:
-            self._obtener_generador_family().regenerar_family(family_member)
+            generador_family.regenerar_family(family_member)
         except:
             logger.exception("Error en la families {0} "
                              "intentar regenerar_family()".format(nombre_families))
@@ -204,9 +205,10 @@ class AbstractConfiguracionAsterisk(object):
 
     def _eliminar_family_en_astdb(self, family_member):
         mensaje_error = ""
-        nombre_families = self._obtener_generador_family().get_nombre_families()
+        generador_family = self._obtener_generador_family()
+        nombre_families = generador_family.get_nombre_families()
         try:
-            self._obtener_generador_family().delete_family(family_member)
+            generador_family.delete_family(family_member)
         except:
             logger.exception("Error en la families {0} "
                              "intentar delete_family()".format(nombre_families))

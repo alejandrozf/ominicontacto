@@ -67,7 +67,7 @@ class AbstractFamily(object):
         except AsteriskHttpAsteriskDBError:
             logger.exception("Error al intentar DBDelTree de {0}".format(family))
 
-    def _obtener_key_cero_dict(self, family_member):
+    def _obtener_una_key(self):
         """ Método sólo necesario para testear que existe el Family """
         raise (NotImplementedError())
 
@@ -75,7 +75,7 @@ class AbstractFamily(object):
         """Elimina una la family de astdb"""
         # primero chequeo si existe la family
         family = self._get_nombre_family(family_member)
-        key = self._obtener_key_cero_dict(family_member)
+        key = self._obtener_una_key()
         existe_family = self._existe_family_key(family, key)
         if existe_family:
             self._delete_tree_family(family)
@@ -158,8 +158,8 @@ class CampanaFamily(AbstractFamily):
     def get_nombre_families(self):
         return "OML/CAMP"
 
-    def _obtener_key_cero_dict(self, campana):
-        return self._create_dict(campana).keys()[0]
+    def _obtener_una_key(self):
+        return "QNAME"
 
 
 class AgenteFamily(AbstractFamily):
@@ -183,8 +183,8 @@ class AgenteFamily(AbstractFamily):
     def get_nombre_families(self):
         return "OML/AGENT"
 
-    def _obtener_key_cero_dict(self, agente):
-        return self._create_dict(agente).keys()[0]
+    def _obtener_una_key(self):
+        return "NAME"
 
 
 class PausaFamily(AbstractFamily):
@@ -206,8 +206,8 @@ class PausaFamily(AbstractFamily):
     def get_nombre_families(self):
         return "OML/PAUSE"
 
-    def _obtener_key_cero_dict(self, pausa):
-        return self._create_dict(pausa).keys()[0]
+    def _obtener_una_key(self):
+        return "NAME"
 
 
 class RutaSalienteFamily(AbstractFamily):
@@ -255,8 +255,8 @@ class RutaSalienteFamily(AbstractFamily):
     def get_nombre_families(self):
         return "OML/OUTR"
 
-    def _obtener_key_cero_dict(self, ruta):
-        return self._create_dict(ruta).keys()[0]
+    def _obtener_una_key(self):
+        return "NAME"
 
     def _regenero_trunks_ruta(self, ruta):
         """
@@ -284,7 +284,7 @@ class RutaSalienteFamily(AbstractFamily):
     def regenerar_family_trunk_ruta(self, ruta):
         """regeneros lso troncales de la ruta"""
         family = self._get_nombre_family(ruta)
-        key = self._obtener_key_cero_dict(ruta)
+        key = self._obtener_una_key()
         existe_family = self._existe_family_key(family, key)
         if existe_family:
             self._regenero_trunks_ruta(ruta)
@@ -309,8 +309,8 @@ class TrunkFamily(AbstractFamily):
     def _get_nombre_family(self, trunk):
         return "OML/TRUNK/{0}".format(trunk.id)
 
-    def _obtener_key_cero_dict(self, trunk):
-        return self._create_dict(trunk).keys()[0]
+    def _obtener_una_key(self):
+        return "NAME"
 
     def get_nombre_families(self):
         return "OML/TRUNK"
@@ -369,8 +369,8 @@ class GlobalsFamily(AbstractFamily):
         """
         self._create_family("")
 
-    def _obtener_key_cero_dict(self, family_member):
-        return self._create_dict("").keys()[0]
+    def _obtener_una_key(self):
+        return "DEFAULTQUEUETIME"
 
 
 class IVRFamily(AbstractFamily):
@@ -422,8 +422,8 @@ class IVRFamily(AbstractFamily):
     def _get_nombre_family(self, ivr):
         return "OML/IVR/{0}".format(ivr.id)
 
-    def _obtener_key_cero_dict(self, ivr):
-        return self._create_dict(ivr).keys()[0]
+    def _obtener_una_key(self):
+        return "NAME"
 
     def get_nombre_families(self):
         return "OML/IVR"
@@ -449,8 +449,8 @@ class RutaEntranteFamily(AbstractFamily):
     def _get_nombre_family(self, ruta):
         return "OML/INR/{0}".format(ruta.telefono)
 
-    def _obtener_key_cero_dict(self, ruta):
-        return self._create_dict(ruta).keys()[0]
+    def _obtener_una_key(self):
+        return "NAME"
 
     def get_nombre_families(self):
         return "OML/INR"
@@ -482,8 +482,8 @@ class ValidacionFechaHoraFamily(AbstractFamily):
     def _get_nombre_family(self, family_member):
         return "OML/TC/{0}".format(family_member.id)
 
-    def _obtener_key_cero_dict(self, family_member):
-        return self._create_dict(family_member).keys()[0]
+    def _obtener_una_key(self):
+        return "NAME"
 
     def get_nombre_families(self):
         return "OML/TC"
@@ -524,8 +524,8 @@ class GrupoHorarioFamily(AbstractFamily):
     def _get_nombre_family(self, ruta):
         return "OML/TG/{0}".format(ruta.id)
 
-    def _obtener_key_cero_dict(self, ruta):
-        return self._create_dict(ruta).keys()[0]
+    def _obtener_una_key(self):
+        return "NAME"
 
     def get_nombre_families(self):
         return "OML/TG"
