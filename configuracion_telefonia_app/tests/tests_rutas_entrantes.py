@@ -29,8 +29,13 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.admin = self.crear_administrador()
         self.admin.set_password(self.PWD)
 
+        # Creo un Supervisor Normal
         self.usr_sup = self.crear_user_supervisor()
         self.crear_supervisor_profile(self.usr_sup)
+
+        # Creo un Supervisor Customer
+        self.usr_customer = self.crear_user_supervisor()
+        self.crear_supervisor_profile(self.usr_customer, is_customer=True)
 
         self.campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE)
         self.destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
@@ -246,13 +251,22 @@ class TestsRutasEntrantes(OMLBaseTest):
             'validacion_tiempo-MAX_NUM_FORMS': '1000',
         }
 
-    def test_usuario_sin_administracion_no_puede_crear_grupo_horario(self):
+    def test_usuario_customer_no_puede_crear_grupo_horario(self):
+        url = reverse('crear_grupo_horario')
+        self.client.login(username=self.usr_customer.username, password=self.PWD)
+        post_data = self._obtener_post_data_grupo_horario()
+        n_grupos_horarios = GrupoHorario.objects.count()
+        self.client.post(url, post_data, follow=True)
+        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios)
+
+    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    def test_usuario_supervisor_puede_crear_grupo_horario(self, regenerar_family):
         url = reverse('crear_grupo_horario')
         self.client.login(username=self.usr_sup.username, password=self.PWD)
         post_data = self._obtener_post_data_grupo_horario()
         n_grupos_horarios = GrupoHorario.objects.count()
         self.client.post(url, post_data, follow=True)
-        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios)
+        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
 
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_administrador_puede_crear_grupo_horario(self, regenerar_family):
@@ -264,10 +278,10 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
 
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_sin_administracion_no_puede_modificar_grupo_horario(self, regenerar_family):
+    def test_usuario_customer_no_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_customer.username, password=self.PWD)
         post_data = self._obtener_post_data_grupo_horario()
         post_data['nombre'] = nuevo_nombre
         post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
@@ -275,6 +289,20 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.grupo_horario.refresh_from_db()
         self.assertNotEqual(self.grupo_horario.nombre, nuevo_nombre)
+
+    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    def test_usuario_supervisor_puede_modificar_grupo_horario(self, regenerar_family):
+        url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
+        nuevo_nombre = 'grupo_horario_modificado'
+        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        post_data = self._obtener_post_data_grupo_horario()
+        post_data['nombre'] = nuevo_nombre
+        post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
+        post_data['validacion_tiempo-INITIAL_FORMS'] = 1
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.grupo_horario.refresh_from_db()
+        self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
 
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_administrador_puede_modificar_grupo_horario(self, regenerar_family):
@@ -308,13 +336,24 @@ class TestsRutasEntrantes(OMLBaseTest):
             'validacion_fecha_hora-MAX_NUM_FORMS': '2',
         }
 
-    def test_usuario_sin_administracion_no_puede_crear_validacion_fecha_hora(self):
+    def test_usuario_customer_no_puede_crear_validacion_fecha_hora(self):
         url = reverse('crear_validacion_fecha_hora')
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_customer.username, password=self.PWD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         n_validaciones_fecha_hora = ValidacionFechaHora.objects.count()
         self.client.post(url, post_data, follow=True)
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora)
+
+    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    def test_usuario_supervisor_puede_crear_validacion_fecha_hora(
+            self, escribir_nodo_entrante_config):
+        url = reverse('crear_validacion_fecha_hora')
+        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        post_data = self._obtener_post_data_validacion_fecha_hora()
+        n_validaciones_fecha_hora = ValidacionFechaHora.objects.count()
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora + 1)
 
     @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
     def test_usuario_administrador_puede_crear_validacion_fecha_hora(
@@ -327,10 +366,10 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora + 1)
 
-    def test_usuario_sin_administracion_no_puede_modificar_validacion_fecha_hora(self):
+    def test_usuario_customer_no_puede_modificar_validacion_fecha_hora(self):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_customer.username, password=self.PWD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         post_data['nombre'] = nuevo_nombre
         post_data['validacion_fecha_hora-0-id'] = self.opc_dest_val_fecha_hora_true.pk
@@ -338,6 +377,21 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.validacion_fecha_hora.refresh_from_db()
         self.assertNotEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
+
+    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    def test_usuario_supervisor_puede_modificar_validacion_fecha_hora(
+            self, escribir_nodo_entrante_config):
+        nuevo_nombre = 'validacion_fecha_hora_modificada'
+        url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
+        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        post_data = self._obtener_post_data_validacion_fecha_hora()
+        post_data['nombre'] = nuevo_nombre
+        post_data['validacion_fecha_hora-0-id'] = self.opc_dest_val_fecha_hora_true.pk
+        post_data['validacion_fecha_hora-1-id'] = self.opc_dest_val_fecha_hora_false.pk
+        post_data['validacion_fecha_hora-INITIAL_FORMS'] = 2
+        self.client.post(url, post_data, follow=True)
+        self.validacion_fecha_hora.refresh_from_db()
+        self.assertEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
 
     @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
     def test_usuario_administrar_puede_modificar_validacion_fecha_hora(

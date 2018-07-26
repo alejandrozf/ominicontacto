@@ -20,14 +20,15 @@ from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
 from ominicontacto_app.utiles import convertir_ascii_string
 
 
-class ContactoCreateView(CreateView):
-    """Vista para crear un contacto"""
-    model = Contacto
-    template_name = 'agente/contacto_create_update_form.html'
-    form_class = ContactoForm
-
-    def get_success_url(self):
-        return reverse('view_blanco')
+# TODO: Verificar que esta vista no va mas y borrarla
+# class ContactoCreateView(CreateView):
+#    """Vista para crear un contacto"""
+#    model = Contacto
+#    template_name = 'agente/contacto_create_update_form.html'
+#    form_class = ContactoForm
+#
+#    def get_success_url(self):
+#        return reverse('view_blanco')
 
 
 class ContactoUpdateView(UpdateView):

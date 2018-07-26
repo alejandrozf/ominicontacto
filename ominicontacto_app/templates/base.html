@@ -37,8 +37,8 @@
 
 </head>
 <body>
-    {% if user.is_authenticated and user.get_tiene_permiso_administracion %}
     <div class="wrapper-main">
+      {% if user.is_authenticated and user.get_tiene_permiso_administracion %}
         <nav id="sidebar">
             <div class="sidebar-header">
                 <a href="{% url 'index' %}">
@@ -48,7 +48,8 @@
             </div>
 
             <ul id="nav-main-menu" class="list-unstyled">
-                {% if user.get_is_supervisor_normal or user.get_is_administrador %}
+
+                {% if user.get_es_administrador_o_supervisor_normal %}
                 <li class="main-menu-li">
                     <span class="icon icon-user"></span>
                     <a class="menu-header" href="#menuUsersGroups" role="button" data-toggle="collapse" aria-expanded="false">Usuarios y grupos</a>
@@ -96,8 +97,9 @@
 
                     </ul>
                 </li>
-                 {% endif %}
-                 {% if user.get_is_administrador %}
+                {% endif %}
+
+                {% if user.get_is_administrador %}
                 <li class="main-menu-li">
                     <span class="icon icon-module"></span>
                     <a class="menu-header" href="#menuModules" role="button" data-toggle="collapse" aria-expanded="false">Módulos</a>
@@ -123,7 +125,7 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if user.get_is_supervisor_normal or user.get_is_administrador %}
+
                 <li class="main-menu-li">
                     <span class="icon icon-campaign"></span>
                     <a class="menu-header" href="#menuCampaign" role="button" data-toggle="collapse" aria-expanded="false">Campañas</a>
@@ -134,6 +136,7 @@
                                 <li>
                                     <a href="{% url 'campana_dialer_list' %}">Listado de campañas</a>
                                 </li>
+                                {% if user.get_es_administrador_o_supervisor_normal %}
                                 <li>
                                     <a href="{% url 'campana_dialer_create' %}">Nueva campaña</a>
                                 </li>
@@ -143,6 +146,7 @@
                                 <li>
                                     <a href="{% url 'campana_dialer_template_create' %}">Nuevo template</a>
                                 </li>
+                                {% endif %}
                             </ul>
                         </li>
                         <li>
@@ -151,6 +155,7 @@
                                 <li>
                                     <a href="{% url 'campana_preview_list' %}">Listado de campañas</a>
                                 </li>
+                                {% if user.get_es_administrador_o_supervisor_normal %}
                                 <li>
                                     <a href="{% url 'campana_preview_create' %}">Nueva campaña</a>
                                 </li>
@@ -160,6 +165,7 @@
                                 <li>
                                     <a href="{% url 'campana_preview_template_create' %}">{% trans 'Nuevo Template'%}</a>
                                 </li>
+                                {% endif %}
                             </ul>
                         </li>
 
@@ -169,6 +175,7 @@
                                 <li>
                                     <a href="{% url 'campana_list' %}">Listado de campañas</a>
                                 </li>
+                                {% if user.get_es_administrador_o_supervisor_normal %}
                                 <li>
                                     <a href="{% url 'campana_nuevo' %}">Nueva campaña</a>
                                 </li>
@@ -178,6 +185,7 @@
                                 <li>
                                     <a href="{% url 'campana_entrante_template_create' %}">{% trans 'Nuevo template'%}</a>
                                 </li>
+                                {% endif %}
                             </ul>
                         </li>
 
@@ -187,6 +195,7 @@
                                 <li>
                                     <a href="{% url 'campana_manual_list' %}">Listado de campañas</a>
                                 </li>
+                                {% if user.get_es_administrador_o_supervisor_normal %}
                                 <li>
                                     <a href="{% url 'campana_manual_create' %}">Nueva campaña</a>
                                 </li>
@@ -196,9 +205,11 @@
                                 <li>
                                     <a href="{% url 'campana_manual_template_create' %}">{% trans 'Nuevo Template'%}</a>
                                 </li>
+                                {% endif %}
                             </ul>
                         </li>
 
+                        {% if user.get_es_administrador_o_supervisor_normal %}
                         <li>
                             <a href="#menuQualifications" role="button" data-toggle="collapse" aria-expanded="false">Calificaciones</a>
                             <ul class="collapse list-unstyled submenu-two" id="menuQualifications" data-parent=".nav-submenu">
@@ -222,7 +233,10 @@
                                 </li>
                             </ul>
                         </li>
+                        {% endif %}
 
+
+                        {% if user.get_is_administrador %}
                         <li>
                             <a href="#menuSites" role="button" data-toggle="collapse" aria-expanded="false">Sitios Externos</a>
                             <ul class="collapse list-unstyled submenu-two" id="menuSites" data-parent=".nav-submenu">
@@ -234,17 +248,11 @@
                                 </li>
                             </ul>
                         </li>
-
-                    <!--
-                    {% if user.get_is_administrador %}
-                        <li>
-                            <a href="{% url 'regenerar_asterisk' %}">Regenerar asterisk</a>
-                       </li>
-                    {% endif %}
-                    -->
-
+                        {% endif %}
                     </ul>
                 </li>
+
+                {% if user.get_es_administrador_o_supervisor_normal %}
                 <li class="main-menu-li">
                     <span class="icon icon-pause"></span>
                     <a class="menu-header" href="#menuBreaks" role="button" data-toggle="collapse" aria-expanded="false">Pausas</a>
@@ -257,6 +265,7 @@
                         </li>
                     </ul>
                 </li>
+
                 <li class="main-menu-li">
                     <span class="icon icon-contacts"></span>
                     <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">Contactos</a>
@@ -267,6 +276,8 @@
                         <li>
                             <a href="{% url 'nueva_base_datos_contacto' %}">Nueva base de datos de contactos</a>
                         </li>
+
+                        {% if user.get_is_administrador %}
                         <hr>
                         <li>
                             <a href="{% url 'back_list_list' %}">Blacklists</a>
@@ -274,13 +285,17 @@
                         <li>
                             <a href="{% url 'back_list_create' %}">Nueva Blacklist</a>
                         </li>
+                        {% endif %}
+
                     </ul>
                 </li>
                 {% endif %}
+
                 <li class="main-menu-li">
                     <span class="icon icon-search"></span>
                     <a class="menu-link" href="{% url 'grabacion_buscar' 1 %}">Buscar Grabación</a>
                 </li>
+                
                 <li class="main-menu-li">
                     <span class="icon icon-graph"></span>
                     <a class="menu-header"class="menu-header" href="#menuReports" role="button" data-toggle="collapse" aria-expanded="false">Reportes</a>
@@ -305,22 +320,26 @@
                         </li>
                     </ul>
                 </li>
+                
+                {% if user.get_es_administrador_o_supervisor_normal %}
                 <li class="main-menu-li">
                     <span class="icon icon-phone"></span>
                     <a class="menu-header" href="#menuTelefonia" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Telefonía' %}</a>
                     <ul class="collapse list-unstyled submenu" id="menuTelefonia" data-parent="#nav-main-menu">
-                        <li>
-                            <a href="{% url 'lista_troncal_sip' %}">{% trans 'Troncales SIP' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'lista_rutas_entrantes' %}">{% trans 'Rutas entrantes' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'lista_rutas_salientes' %}">{% trans 'Rutas salientes' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'lista_ivrs' %}">{% trans 'IVR' %}</a>
-                        </li>
+                        {% if user.get_is_administrador %}
+                            <li>
+                                <a href="{% url 'lista_troncal_sip' %}">{% trans 'Troncales SIP' %}</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'lista_rutas_entrantes' %}">{% trans 'Rutas entrantes' %}</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'lista_rutas_salientes' %}">{% trans 'Rutas salientes' %}</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'lista_ivrs' %}">{% trans 'IVR' %}</a>
+                            </li>
+                        {% endif %}
                         <li>
                             <a href="{% url 'lista_grupos_horarios' %}">{% trans 'Grupos horarios' %}</a>
                         </li>
@@ -329,14 +348,18 @@
                         </li>
                     </ul>
                 </li>
+                {% endif %}
+
                 <li class="main-menu-li">
                     <span class="icon icon-info"></span>
                     <a class="menu-link" href="{% url 'acerca' %}">Acerca de</a>
                 </li>
             </ul>
         </nav>
+      {% endif %}
 
         <div class="wrapper-content">
+            {% if user.is_authenticated %}
             <div id="topbar">
                 <div class="nav">
                     <button type="button" id="sidebarCollapse" class="btn">
@@ -348,8 +371,9 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
+
             <div class="wrapper-info">
-    {% endif %}
             {% include 'messages.html' %}
                 {% if user.is_authenticated  %}
                     {% if user.get_tiene_permiso_administracion  %}

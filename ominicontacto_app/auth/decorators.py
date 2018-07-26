@@ -68,11 +68,11 @@ def supervisor_customer_requerido(function=None, redirect_field_name=REDIRECT_FI
     return actual_decorator
 
 
-def user_con_permiso_administracion_requerido(function=None,
-                                              redirect_field_name=REDIRECT_FIELD_NAME,
-                                              login_url=None):
+def permiso_administracion_requerido(function=None,
+                                     redirect_field_name=REDIRECT_FIELD_NAME,
+                                     login_url=None):
     """
-    Decorator que verifica que el usuario es Supervisor Normal.
+    Decorator que verifica que el usuario es Administrador, Supervisor Normal o Customer.
     """
     def tiene_permiso_administracion(user):
         if not user.is_authenticated():
@@ -83,6 +83,29 @@ def user_con_permiso_administracion_requerido(function=None,
             raise PermissionDenied
     actual_decorator = user_passes_test(
         lambda u: tiene_permiso_administracion(u),
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
+def administrador_o_supervisor_requerido(function=None,
+                                         redirect_field_name=REDIRECT_FIELD_NAME,
+                                         login_url=None):
+    """
+    Decorator que verifica que el usuario es Administrador o Supervisor Normal.
+    """
+    def es_administrador_o_supervisor_normal(user):
+        if not user.is_authenticated():
+            return False
+        elif user.get_es_administrador_o_supervisor_normal():
+            return True
+        else:
+            raise PermissionDenied
+    actual_decorator = user_passes_test(
+        lambda u: es_administrador_o_supervisor_normal(u),
         login_url=login_url,
         redirect_field_name=redirect_field_name
     )

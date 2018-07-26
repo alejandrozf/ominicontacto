@@ -540,7 +540,8 @@ def blanco_view(request):
 
 def nuevo_evento_agenda_view(request):
     """Vista get para insertar un nuevo evento en la agenda
-    REVISAR si se usa esta vista si no es obsoleta"""
+        REVISAR si se usa esta vista si no es obsoleta. Referenciada en Calendar.js
+    """
     agente = request.GET['agente']
     es_personal = request.GET['personal']
     fecha = request.GET['fechaEvento']
@@ -606,25 +607,26 @@ class AgenteEventosFormView(FormView):
             listado_de_eventos=listado_de_eventos))
 
 
-def regenerar_asterisk_view(request):
-    """Vista para regenerar los archivos de asterisk"""
-    activacion_queue_service = RegeneracionAsteriskService()
-    try:
-        activacion_queue_service.regenerar()
-    except RestablecerDialplanError, e:
-        message = ("Operación Errónea! "
-                   "No se realizo de manera correcta la regeneracion de los "
-                   "archivos de asterisk al siguiente error: {0}".format(e))
-        messages.add_message(
-            request,
-            messages.ERROR,
-            message,
-        )
-    messages.success(request,
-                     'La regeneracion de los archivos de configuracion de'
-                     ' asterisk y el reload se hizo de manera correcta')
-    return render_to_response('regenerar_asterisk.html',
-                              context_instance=RequestContext(request))
+# TODO: Se puede Eliminar esta vista?
+# def regenerar_asterisk_view(request):
+#     """Vista para regenerar los archivos de asterisk"""
+#     activacion_queue_service = RegeneracionAsteriskService()
+#     try:
+#         activacion_queue_service.regenerar()
+#     except RestablecerDialplanError, e:
+#         message = ("Operación Errónea! "
+#                    "No se realizo de manera correcta la regeneracion de los "
+#                    "archivos de asterisk al siguiente error: {0}".format(e))
+#         messages.add_message(
+#             request,
+#             messages.ERROR,
+#             message,
+#         )
+#     messages.success(request,
+#                      'La regeneracion de los archivos de configuracion de'
+#                      ' asterisk y el reload se hizo de manera correcta')
+#     return render_to_response('regenerar_asterisk.html',
+#                               context_instance=RequestContext(request))
 
 
 def nuevo_duracion_llamada_view(request):

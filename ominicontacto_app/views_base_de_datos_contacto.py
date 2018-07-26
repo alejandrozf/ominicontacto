@@ -11,9 +11,9 @@ from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import JsonResponse
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect, render
 from django.views.generic.edit import (
-    CreateView, UpdateView, DeleteView, FormView
+    CreateView, UpdateView, DeleteView
 )
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
@@ -30,7 +30,6 @@ from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
     NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
     ContactoExistenteError, CreacionBaseDatosApiService)
-from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 from django.views.decorators.csrf import csrf_exempt
 import logging as logging_
 
@@ -111,7 +110,6 @@ class BaseDatosContactoUpdateView(UpdateView):
     context_object_name = 'base_datos_contacto'
     form_class = BaseDatosContactoForm
 
-
     def get_object(self, queryset=None):
         return BaseDatosContacto.objects.get(pk=self.kwargs['pk_bd_contacto'])
 
@@ -119,7 +117,7 @@ class BaseDatosContactoUpdateView(UpdateView):
 
         self.object = form.save(commit=False)
         self.object.estado = BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA
-        #self.object.nombre_archivo_importacion = nombre_archivo_importacion
+        # self.object.nombre_archivo_importacion = nombre_archivo_importacion
 
         try:
             creacion_base_datos = CreacionBaseDatosService()
@@ -546,21 +544,6 @@ class DepuraBaseDatosContactoView(DeleteView):
         return reverse(
             'lista_base_datos_contacto',
         )
-
-
-class BaseDatosContactoListView(ListView):
-    """
-    Esta vista es para generar el listado de
-    Lista de Contactos.
-    """
-
-    template_name = 'base_datos_contacto/lista_base_datos_contacto.html'
-    context_object_name = 'bases_datos_contacto'
-    model = BaseDatosContacto
-
-    def get_queryset(self):
-        queryset = BaseDatosContacto.objects.obtener_definidas()
-        return queryset
 
 
 class ActualizaBaseDatosContactoView(UpdateView):

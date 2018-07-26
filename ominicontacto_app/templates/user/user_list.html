@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Usuarios</h1>
+<h1>{% trans 'Usuarios' %}</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>id</th>
-            <th>username</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
+            <th>{% trans 'id' %}</th>
+            <th>{% trans 'username' %}</th>
+            <th>{% trans 'Nombre' %}</th>
+            <th>{% trans 'Apellido' %}</th>
             {% if user.get_is_administrador %}
-            <th>&nbsp;agente</th>
-            <th>supervisor</th>
-            <th>acciones</th>
+            <th>&nbsp;{% trans 'agente' %}</th>
+            <th>{% trans 'supervisor' %}</th>
+            <th>{% trans 'acciones' %}</th>
             {% endif %}
         </tr>
     </thead>
@@ -31,10 +32,10 @@
                     <span class="icon icon-check" aria-hidden="true"></span>
                     {%  if not usuario.get_agente_profile %}
                         {%  if not usuario.get_supervisor_profile %}
-                            <a href="{% url 'agenteprofile_nuevo' usuario.id %}">Crear perfil</a>
+                            <a href="{% url 'agenteprofile_nuevo' usuario.id %}">{% trans 'Crear perfil' %}</a>
                         {% endif %}
                     {% else %}
-                        <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">Modificar perfil</a>
+                        <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">{% trans 'Modificar perfil' %}</a>
                     {% endif %}
                     {% else %}
                        <span class="icon icon-cancel" aria-hidden="true"></span>
@@ -46,10 +47,10 @@
                     <span class="icon icon-check" aria-hidden="true"></span>
                 {%  if not usuario.get_supervisor_profile %}
                         {%  if not usuario.get_agente_profile %}
-                            <a href="{% url 'supervisor_create' usuario.id %}">Crear perfil</a>
+                            <a href="{% url 'supervisor_create' usuario.id %}">{% trans 'Crear perfil' %}</a>
                         {% endif %}
                     {% else %}
-                        <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">Modificar perfil</a>
+                        <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">{% trans 'Modificar perfil' %}</a>
                     {% endif %}
                     {% else %}
                        <span class="icon icon-cancel" aria-hidden="true"></span>
@@ -59,15 +60,15 @@
             <td>
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Opciones
+                    {% trans 'Opciones' %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                         <a class="dropdown-item" href="{% url 'user_update' usuario.id %}">
-                            <span class="icon icon-pencil"></span>Editar
+                            <span class="icon icon-pencil"></span>{% trans 'Editar' %}
                         </a>
                         {% if usuario.id != 1 %}
                         <a class="dropdown-item" href="{% url 'user_delete' usuario.id %}">
-                            <span class="icon icon-trash"></span>Eliminar
+                            <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                         </a>  
                         {% endif %}                          
                     </div>
@@ -77,7 +78,7 @@
         </tr>
    {% empty %}
     <tr>
-        <td>No existen usuarios</td>
+        <td>{% trans 'No existen usuarios' %}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -89,20 +90,20 @@
             <li class="page-item">
                 <a class="page-link" href="{% url 'user_list' page=page_obj.previous_page_number%}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Anterior</span>
+                    <span class="sr-only">{% trans 'Anterior' %}</span>
                 </a>
             </li>
         {% endif %}
 
         <li class="page-item current">
-            Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
+            {% trans 'Página' %} {{ page_obj.number }} {% trans 'de' %} {{ paginator.num_pages }}.
         </li>
 
         {% if page_obj.has_next %}
             <li class="page-item">
                 <a class="page-link" href="{% url 'user_list' page=page_obj.next_page_number %}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Siguiente</span>
+                    <span class="sr-only">{% trans 'Siguiente' %}</span>
                 </a>
             </li>
         {% endif %}

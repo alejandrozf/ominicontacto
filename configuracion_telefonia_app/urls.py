@@ -3,7 +3,8 @@
 from django.conf.urls import url
 
 from configuracion_telefonia_app import views
-from ominicontacto_app.auth.decorators import administrador_requerido
+from ominicontacto_app.auth.decorators import (
+    administrador_requerido, administrador_o_supervisor_requerido)
 
 
 urlpatterns = [
@@ -79,35 +80,35 @@ urlpatterns = [
         name='eliminar_ivr',
         ),
     url(r'^configuracion_telefonia/grupo_horario/lista/$',
-        administrador_requerido(views.GrupoHorarioListView.as_view()),
+        administrador_o_supervisor_requerido(views.GrupoHorarioListView.as_view()),
         name='lista_grupos_horarios',
         ),
     url(r'^configuracion_telefonia/grupo_horario/crear/$',
-        administrador_requerido(views.GrupoHorarioCreateView.as_view()),
+        administrador_o_supervisor_requerido(views.GrupoHorarioCreateView.as_view()),
         name='crear_grupo_horario',
         ),
     url(r'^configuracion_telefonia/grupo_horario/(?P<pk>\d+)/editar/$',
-        administrador_requerido(views.GrupoHorarioUpdateView.as_view()),
+        administrador_o_supervisor_requerido(views.GrupoHorarioUpdateView.as_view()),
         name='editar_grupo_horario',
         ),
     url(r'^configuracion_telefonia/grupo_horario/(?P<pk>\d+)/eliminar/$',
-        administrador_requerido(views.GrupoHorarioDeleteView.as_view()),
+        administrador_o_supervisor_requerido(views.GrupoHorarioDeleteView.as_view()),
         name='eliminar_grupo_horario',
         ),
     url(r'^configuracion_telefonia/validacion_fecha_hora/lista/$',
-        administrador_requerido(views.ValidacionFechaHoraListView.as_view()),
+        administrador_o_supervisor_requerido(views.ValidacionFechaHoraListView.as_view()),
         name='lista_validaciones_fecha_hora',
         ),
     url(r'^configuracion_telefonia/validacion_fecha_hora/crear/$',
-        administrador_requerido(views.ValidacionFechaHoraCreateView.as_view()),
+        administrador_o_supervisor_requerido(views.ValidacionFechaHoraCreateView.as_view()),
         name='crear_validacion_fecha_hora',
         ),
     url(r'^configuracion_telefonia/validacion_fecha_hora/(?P<pk>\d+)/editar/$',
-        administrador_requerido(views.ValidacionFechaHoraUpdateView.as_view()),
+        administrador_o_supervisor_requerido(views.ValidacionFechaHoraUpdateView.as_view()),
         name='editar_validacion_fecha_hora',
         ),
     url(r'^configuracion_telefonia/validacion_fecha_hora/(?P<pk>\d+)/eliminar/$',
-        administrador_requerido(views.ValidacionFechaHoraDeleteView.as_view()),
+        administrador_o_supervisor_requerido(views.ValidacionFechaHoraDeleteView.as_view()),
         name='eliminar_validacion_fecha_hora',
         ),
 ]

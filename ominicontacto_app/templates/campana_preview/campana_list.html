@@ -14,6 +14,7 @@
            var $show_node = $(this);
            var $show_state = $show_node.attr('data');
            var campana_pk = $(this).find('input').attr('value');
+           var url = '{% url 'campana_mostrar_ocultar' '00000' %}';
            $.post('/campana/mostrar_ocultar/' + campana_pk + '/')
             .done(function() {
               console.log('Done');
