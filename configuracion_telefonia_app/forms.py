@@ -361,7 +361,7 @@ class OpcionDestinoIVRBaseFormset(BaseModelFormSet):
             dmtf = form.cleaned_data.get('valor', None)
             if dmtf in dmtfs:
                 raise forms.ValidationError(
-                    _('Los valores de DMT deben ser distintos'), code='invalid')
+                    _('Los valores de DTMF deben ser distintos'), code='invalid')
             dmtfs.append(dmtf)
 
 
@@ -377,7 +377,7 @@ class OpcionDestinoIVRForm(forms.ModelForm):
         model = OpcionDestino
         fields = ('valor', 'destino_siguiente',)
         labels = {
-            'valor': _('DMTF'),
+            'valor': _('DTMF'),
             'destino_siguiente': _('Destino'),
         }
 
@@ -397,7 +397,7 @@ class OpcionDestinoIVRForm(forms.ModelForm):
         compiled_regex = re.compile(self.DMFT_REGEX)
         if compiled_regex.match(valor) is None:
             raise forms.ValidationError(
-                _('El valor del DMTF debe ser un dígito o alguno de: #, -, *'))
+                _('El valor del DTMF debe ser un dígito o alguno de: #, -, *'))
         return valor
 
 
