@@ -458,9 +458,7 @@ class GraficosReporteDeLlamadas(object):
 
     def _generar_grafico_de_barras_de_llamadas_por_campana(self, estadisticas):
         # Cantidad de llamadas de las campana
-        grafico = pygal.Bar(show_legend=False, style=self.ESTILO_AZUL_ROJO_AMARILLO)
-
-        grafico.title = _(u'Cantidad de llamadas de las campañas')
+        grafico = pygal.Bar(show_legend=True, style=self.ESTILO_AZUL_ROJO_AMARILLO)
         nombres_campanas = []
         totales_campanas = []
         manuales_campanas = []

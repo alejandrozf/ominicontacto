@@ -269,11 +269,14 @@
         </tbody>
       </table>         
     </div>
-    <div class="graficos-avances">
-        <figure>
-            {{ graficos.barra_llamada_por_campana.render|safe }}
-        </figure>
-    </div>   
+    <div class="col-lg-6">
+        <h3>{% trans 'Cantidad de llamadas de las campañas' %}</h3>
+        <div class="graficos-avances">
+            <figure>
+                {{ graficos.barra_llamada_por_campana.render|safe }}
+            </figure>
+        </div>
+    </div>
 </div>
     <button class="btn btn-outline-primary" onclick="exportarReporte('llamadas_por_campana');">
       {% trans 'Exportar llamadas por campaña (CSV)' %}
