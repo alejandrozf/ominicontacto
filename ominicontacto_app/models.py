@@ -1140,9 +1140,8 @@ class Queue(models.Model):
     RINGALL = 'ringall'
     """ring all available channels until one answers (default)"""
 
-    ROUNDROBIN = 'roundrobin'
-    """take turns ringing each available interface (deprecated in 1.4,
-    use rrmemory)"""
+    RRORDERED = 'rrordered'
+    """same as rrmemory, except the queue member order from config file is preserved"""
 
     LEASTRECENT = 'leastrecent'
     """ring interface which was least recently called by this queue"""
@@ -1158,7 +1157,7 @@ class Queue(models.Model):
 
     STRATEGY_CHOICES = (
         (RINGALL, 'Ringall'),
-        (ROUNDROBIN, 'Roundrobin'),
+        (RRORDERED, 'Rrordered'),
         (LEASTRECENT, 'Leastrecent'),
         (FEWESTCALLS, 'Fewestcalls'),
         (RANDOM, 'Random'),
