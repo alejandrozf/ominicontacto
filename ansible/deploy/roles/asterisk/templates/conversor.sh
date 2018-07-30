@@ -15,7 +15,7 @@ IP=$4 # cuarto argumento, IP del server al que se quiere pasar los audios
 Path_remoto=$5 #quinto argumento carpeta remota a la que se quieren pasar los audios
 
 #Path donde estan las grabaciones en .wav, verlo en el nginx.conf, alias grabaciones
-Path_origen={{ asterisk_location }}/var/spool/asterisk/monitor
+Path_origen={{ asterisk_location }}/var/spool/asterisk/monitor/${Ano}-${Mes}-${Dia}
 Path_destino={{ asterisk_location }}/var/spool/asterisk/oml
 
 if [ ! -d ${Path_destino} ]; then

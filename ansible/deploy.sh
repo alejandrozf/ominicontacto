@@ -154,9 +154,6 @@ EOF
     rama=$1
 }
 
-SessionCokie() {
-    echo -en "Ingrese valor de variable session_cookie_age: (valor numerico, default: 3600) "; read session_cookie
-}
 AdminPass() {
     unset admin_pass
     echo -en "Ingrese la contraseña de superuser de Omnileads: (default: toor123) (contraseña con numeros, letras y caracteres especiales): "; echo ""
@@ -191,19 +188,6 @@ Preliminar() {
     echo "##    Parámetros de la aplicación     ##"
     echo "########################################"
     echo ""
-    SessionCokie
-    while true; do
-        if [ -z $session_cookie ]; then
-            echo "Usando el valor numerico por default"
-            break
-        elif ! [[ "$session_cookie" =~ ^[0-9]+$ ]]; then
-            echo "Ingrese un valor numérico"
-            SessionCokie
-        else
-            sed -i "s/\(^session_\).*/session_cookie_age=$session_cookie/" $TMP_ANSIBLE/hosts
-            break
-        fi
-    done
 
     while true; do
         AdminPass
@@ -289,5 +273,3 @@ while getopts "r::t:ihd:" OPTION;do
 	esac
 done
 if [ $# -eq 0  ]; then Help; fi
-
-
