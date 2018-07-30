@@ -22,16 +22,16 @@
   become_method: sudo
   become_user: postgres
 
-- name: Create kamailio database
-  shell: createdb -O kamailio kamailio
-  become: yes
-  become_method: sudo
-  become_user: postgres
-  register: command_result
-  failed_when:
-    - "'already exists' not in command_result.stderr"
-    - "'ya existe' not in command_result.stderr"
-    - "command_result.rc != 0"
+#- name: Create kamailio database
+#  shell: createdb -O kamailio kamailio
+#  become: yes
+#  become_method: sudo
+#  become_user: postgres
+#  register: command_result
+#  failed_when:
+#    - "'already exists' not in command_result.stderr"
+#    - "'ya existe' not in command_result.stderr"
+#    - "command_result.rc != 0"
 
 - name: Erase of default kamailio.cfg file
   shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
