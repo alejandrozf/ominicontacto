@@ -18,9 +18,9 @@
     <!-- Scripts -->
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
     {% endcompress %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
 
     <!-- TODO: REMOVER - FIX HASTA CAMBIAR BS3 por BS4 -->
     <style type="text/css">
@@ -39,7 +39,7 @@
 {% include 'messages.html' %}
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
-    <div>
+    <div style="position: relative;">
         {{form.as_table}}
         {{venta_form.as_table}}
     </div>
