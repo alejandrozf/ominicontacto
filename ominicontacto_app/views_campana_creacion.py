@@ -284,9 +284,14 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     def done(self, form_list, *args, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
-        queue_form = form_list[int(self.COLA)]
         campana_form.instance.save()
+
+        queue_form = form_list[int(self.COLA)]
+        audio_anuncio_periodico = queue_form.cleaned_data['audios']
+        if audio_anuncio_periodico:
+            queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
         queue_form.instance.save()
+
         campana = campana_form.instance
         opts_calif_init_formset = form_list[int(self.OPCIONES_CALIFICACION)]
         opts_calif_init_formset.instance = campana
