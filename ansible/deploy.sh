@@ -155,21 +155,25 @@ EOF
 }
 
 AdminPass() {
+  while true; do
     unset admin_pass
     echo -en "Ingrese la contraseña de superuser de Omnileads: (default: toor123) (contraseña con numeros, letras y caracteres especiales): "; echo ""
     prompt=`echo -en "Enter password: "`
     read -p "$prompt" -r -s -e admin_pass
     echo ""
-    while true; do
+    pass_length=${#admin_pass}
         if [ -z $admin_pass ]; then
             echo "ATENCION: Favor cambiar la contraseña, no usar la contraseña por default"
             read -p "$prompt" -r -s -e admin_pass
             echo ""
+        elif [ $pass_length -lt 8 ]; then
+          echo "La contraseña que ingresaste es demasiado corta, ingresala de nuevo"
         else
             break
         fi
     done
 }
+
 AdminPass_2() {
     unset admin_pass_2
     echo -en "Ingrese nuevamente la contraseña de superuser de Omnileads: "; echo ""
@@ -189,9 +193,9 @@ Preliminar() {
     echo "########################################"
     echo ""
 
+    AdminPass
+    AdminPass_2
     while true; do
-        AdminPass
-        AdminPass_2
         if [ "$admin_pass" = "$admin_pass_2" ]; then
             echo "Las contraseñas coinciden"
             sed -i "s/\(^admin_pass\).*/admin_pass=$admin_pass/" $TMP_ANSIBLE/hosts
