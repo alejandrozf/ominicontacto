@@ -47,7 +47,6 @@ class BusquedaGrabacionFormView(FormView):
             qs = result_paginator.page(result_paginator.num_pages)
         # ----- </Paginate> -----
         context['listado_de_grabaciones'] = qs
-        context['grabacion_url'] = settings.OML_GRABACIONES_URL
         return context
 
     def get(self, request, *args, **kwargs):

@@ -29,8 +29,9 @@ from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from django.core.management import call_command
 from django.utils.translation import ugettext as _
+from django.utils.timezone import now
 from simple_history.models import HistoricalRecords
-from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
+from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra, fecha_local
 
 logger = logging.getLogger(__name__)
 
@@ -2249,6 +2250,18 @@ class Grabacion(models.Model):
         if agente:
             return agente.user.get_full_name()
         return self.sip_agente
+
+    @property
+    def url(self):
+        hoy = fecha_local(now())
+        dia_grabacion = fecha_local(self.fecha)
+        filename = "/".join([settings.OML_GRABACIONES_URL,
+                             dia_grabacion.strftime("%Y-%m-%d"),
+                             self.grabacion])
+        if dia_grabacion < hoy:
+            return filename + '.' + settings.MONITORFORMAT
+        else:
+            return filename + '.wav'
 
 
 class GrabacionMarca(models.Model):

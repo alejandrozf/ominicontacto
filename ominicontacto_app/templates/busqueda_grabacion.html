@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_js %}
 <script type="text/javascript">
    $(function() {
@@ -50,15 +51,15 @@ function filtrar_pagina(pagina) {
 {% endblock %}
 {% block content %}
 
-<h1>Buscar grabación</h1>
+<h1>{% trans 'Buscar grabación' %}</h1>
 
 <div id="wrapper-search">
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
     <div id="wrapperSearchForm" class="show">
         <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
             {% include "base_form_fields.html" with form=form %}
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                Buscar
+                {% trans 'Buscar' %}
             </button>
         </form>
     </div>
@@ -68,13 +69,13 @@ function filtrar_pagina(pagina) {
     <table class="table table-stripped">
         <thead>
             <tr>
-                <th>Fecha</th>
-                <th>Tipo de llamada</th>
-                <th>tel_cliente</th>
-                <th>Agente</th>
-                <th>Campaña</th>
-                <th>Grabación</th>
-                <th>Descripción</th>
+                <th>{% trans 'Fecha' %}</th>
+                <th>{% trans 'Tipo de llamada' %}</th>
+                <th>{% trans 'tel_cliente' %}</th>
+                <th>{% trans 'Agente' %}</th>
+                <th>{% trans 'Campaña' %}</th>
+                <th>{% trans 'Grabación' %}</th>
+                <th>{% trans 'Descripción' %}</th>
             </tr>
         </thead>
         <tbody>
@@ -87,19 +88,19 @@ function filtrar_pagina(pagina) {
                 <td>{{ grabacion.campana}}</td>
                 <td>
                     <audio controls>
-                        <source src="{{ grabacion_url }}/{{ grabacion.fecha|date:"Y-m-d"}}/{{grabacion.grabacion}}" type='audio/mpeg'>
-                            Escuchar
+                        <source src="{{ grabacion.url }}" type='audio/mpeg'>
+                            {% trans 'Escuchar' %}
                     </audio>
-                    <a href="{{ grabacion_url }}/{{ grabacion.fecha|date:"Y-m-d"}}/{{grabacion.grabacion}}" target="_blank">
-                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="Descargar"></span>
+                    <a href="{{ grabacion.url }}" target="_blank">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
                     </a>
                 </td>
                 <td><button type="button" class="btn btn-light btn-sm" data-toggle="modal"
-                            data-target="#descripcionModal" data-uid="{{ grabacion.uid }}">Descripción</button></td>
+                            data-target="#descripcionModal" data-uid="{{ grabacion.uid }}">{% trans 'Descripción' %}</button></td>
             </tr>
        {% empty %}
         <tr>
-            <td colspan="7">No existen grabaciones</td>
+            <td colspan="7">{% trans 'No existen grabaciones' %}</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -111,7 +112,7 @@ function filtrar_pagina(pagina) {
             <li class="page-item">
               <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">
                 <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Previous</span>
+                <span class="sr-only">{% trans 'Anterior' %}</span>
               </a>
             </li> 
         {% endif %}
@@ -123,7 +124,7 @@ function filtrar_pagina(pagina) {
             <li class="page-item">
               <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">
                 <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Next</span>
+                <span class="sr-only">{% trans 'Siguiente' %}</span>
               </a>
             </li>
         {% endif %}
@@ -144,7 +145,7 @@ function filtrar_pagina(pagina) {
                  </form>
              </div>
              <div class="modal-footer">
-                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                 <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
              </div>
          </div>
      </div>
@@ -180,8 +181,8 @@ function filtrar_pagina(pagina) {
            console.log(data);
          })
           .fail(function( data ){
-            $('#descripcionModalLabel').text("Error");
-            $('#descripcion-text').text("Ha ocurrido un error al intentar conectarse");
+            $('#descripcionModalLabel').text("{% trans 'Error' %}");
+            $('#descripcion-text').text("{% trans 'Ha ocurrido un error al intentar conectarse' %}");
             console.log(data);
           });
        });
