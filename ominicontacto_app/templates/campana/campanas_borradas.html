@@ -1,6 +1,7 @@
-{% for campana in borradas %}
+{% load i18n %}
+        {% for campana in borradas %}
             <tr>
-                <td width="45%">
+                <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
                 <td>
@@ -9,40 +10,37 @@
                 <td> {{campana.get_estado_display}}  </td>
                 <td width="14%">
                     <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Opciones
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignDeleted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans 'Opciones' %}
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignDeleted">
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon icon-plus"></span>Agregar agentes
+                                <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_supervisors' campana.pk %}">
-                                <span class="icon icon-eye"></span>Dar permisos para ver
+                                <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                                <span class="icon icon-list"></span>Calificaciones
+                                <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                                <span class="icon icon-graph"></span>Reportes
+                                <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                             </a>
                             {% if campana.oculto %}
                             <a class="dropdown-item" href="{% url 'desoculta_campana' campana.pk %}">
-                                <span class="icon icon-eye"></span>Hacer visible
+                                <span class="icon icon-eye"></span>{% trans 'Hacer visible' %}
                             </a>
                             {% else %}
-                            <a class="dropdown-item" href="{% url 'oculta_campana' campana.pk %}">
-                                <span class="icon icon-eye-slash"></span>Ocultar
+                            <a class="dropdown-item" href="{% url 'oculta_campana' campana.pk %}" >
+                                <span class="icon icon-eye-slash"></span>{% trans 'Ocultar' %}
                             </a>
                             {% endif %}
-                            <a class="dropdown-item" href="{% url 'campana_elimina' campana.pk %}">
-                                <span class="icon icon-trash"></span>Eliminar
-                            </a>
                         </div>
                     </div>
                 </td>
             </tr>
        {% empty %}
         <tr>
-            <td colspan="4">No existen campañas</td>
+            <td colspan="4">{% trans 'No existen campañas' %}</td>
         </tr>
         {% endfor %}

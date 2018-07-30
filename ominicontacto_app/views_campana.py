@@ -115,7 +115,9 @@ class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView)
         return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+        # No se puede volver a borrar una campaña.
+        return Campana.objects.exclude(
+            estado=Campana.ESTADO_BORRADA).get(pk=self.kwargs['pk_campana'])
 
     def get_success_url(self):
         return reverse('campana_list')
