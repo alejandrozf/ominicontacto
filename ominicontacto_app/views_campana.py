@@ -100,6 +100,8 @@ class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView)
     """
     Esta vista se encarga de la eliminación de una campana
     """
+    # TODO: realizar refactor aquí, la vista de eliminación no debería tener dos métodos
+    # 'delete'
     model = Queue
     template_name = 'campana/delete_campana.html'
     imposible_eliminar = _('No se puede eliminar una Campaña que es destino en un flujo de llamada')
