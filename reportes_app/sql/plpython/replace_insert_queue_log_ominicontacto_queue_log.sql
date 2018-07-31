@@ -1,6 +1,9 @@
 CREATE OR REPLACE FUNCTION insert_queue_log_ominicontacto_queue_log() returns trigger as $$import datetime
 from plpy import spiexceptions
 
+# TODO: refactorizar este código despues del volumen de código añadido con los nuevos eventos
+# de transferencias
+
 tiempo = TD['new']['time']
 fecha = datetime.datetime.strptime(tiempo, '%Y-%m-%d %H:%M:%S.%f')
 callid = TD['new']['callid']
@@ -37,6 +40,9 @@ EVENTOS_LLAMADAS = [
     'RINGNOANSWER',
     'NONDIALPLAN',
     'CONGESTION',
+]
+
+EVENTOS_TRANSFERENCIAS = [
     'BT-TRY',
     'BT-ANSWER',
     'BT-BUSY',
@@ -76,6 +82,43 @@ EVENTOS_LLAMADAS = [
 ]
 
 
+def procesar_datos_transferencias():
+    """Parsea la información de los valores generados desde los campos 'agent', 'data4' y
+    'data5' para obtener los valores de los campos de los logs de transferencias de llamadas:
+    (agente_extra_id, campana_destino_id, numero_destino)
+    """
+    try:
+        valor_transf_1, valor_transf_2 = agente_id.split("-")
+    except ValueError:
+        valor_transf_1 = agente_id
+    elif event in ['BT-TRY', 'CAMPT-COMPLETE', 'CT-TRY']:
+        # agente_id_origen - id_agente_origen
+        agente_id = valor_transf_1
+        agente_extra_id = valor_transf_2
+    elif event == 'CAMPT-TRY':
+        # agente_id - id_camp_destino
+        agente_id = valor_transf_1
+        campana_destino_id = valor_transf_2
+    elif event == 'ENTERQUEUE-TRANSFER':
+        # id_camp_origen - id_agente_origen (en data4, data5)
+        agente_id = duracion_llamada
+        agente_extra_id = archivo_grabacion
+    elif event in ['BTOUT-TRY', 'CTOUT-TRY']:
+        # agente_id_origen - nro_telefono_destino
+        agente_id = valor_transf_1
+        numero_destino = valor_transf_2
+    elif event in ['BTOUT-ANSWER', 'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION',
+                   'BTOUT-CHANUNAVAIL', 'CTOUT-ANSWER', 'CTOUT-ACCEPT', 'CTOUT-DISCARD',
+                   'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION']:
+        agente_id = None
+        numero_destino = valor_transf_1
+    else:
+        # en los eventos de transferencias con un solo valor que contiene el id de un agente
+        # solo se mantiene el valor de 'agente_id'
+        agente_id = valor_transf_1
+    return agente_id, agente_extra_id, campana_destino_id, numero_destino
+
+
 if event in EVENTOS_AGENTE and queuename == 'ALL':
     # es un log de la actividad de un agente
     plan_agente_log = plpy.prepare(
@@ -89,13 +132,20 @@ elif event in EVENTOS_LLAMADAS:
     except ValueError:
         campana_id, tipo_campana, tipo_llamada = (-1, -1, -1)
 
+    if event in EVENTOS_TRANSFERENCIAS:
+        (agente_id, agente_extra_id, campana_destino_id,
+         numero_destino) = procesar_datos_transferencias()
+    else:
+        agente_extra_id, campana_destino_id, numero_destino = (None, None, None)
+
     plan_llamadas_log = plpy.prepare(
         "INSERT INTO reportes_app_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
         ["timestamp with time zone", "text", "int", "int", "int", "int", "text", "text", "int",
-         "int", "int", "text"])
+         "int", "int", "text", "int", "int", "int"])
     plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
                                      agente_id, event, data1, contacto_id, bridge_wait_time,
-                                     duracion_llamada, archivo_grabacion])
+                                     duracion_llamada, archivo_grabacion, agente_extra_id,
+                                     campana_destino_id, numero_destino])
 else:
     # no insertamos logs de estos eventos de momento
     pass
