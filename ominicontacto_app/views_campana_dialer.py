@@ -254,7 +254,7 @@ class UpdateBaseDatosDialerView(FormView):
         evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
         evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
         prefijo_discador = form.cleaned_data.get('prefijo_discador')
-        columnas = form.cleaned_data.get('columnas')
+        columnas = form.cleaned_data.get('telefonos')
         bd_contacto = form.cleaned_data.get('bd_contacto')
         self.object = self.get_object()
         campana_service = CampanaService()
