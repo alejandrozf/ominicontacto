@@ -9,6 +9,10 @@ from django.utils.encoding import force_text
 
 from ominicontacto_app.models import Campana
 from reportes_app.models import LlamadaLog
+from reportes_app.utiles import (
+    ESTILO_AMARILLO_VERDE_GRIS, ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, ESTILO_AZUL_VERDE,
+    ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO
+)
 
 
 NO_CONNECT = ['NOANSWER', 'BUSY', 'CANCEL', 'CHANUNAVAIL', 'OTHER', 'FAIL', 'AMD', 'BLACKLIST']
@@ -381,19 +385,6 @@ class ReporteDeLlamadas(object):
 
 class GraficosReporteDeLlamadas(object):
 
-    ESTILO_AZUL_ROJO_AMARILLO = Style(
-        background='transparent',
-        plot_background='transparent',
-        foreground='#555',
-        foreground_light='#555',
-        foreground_dark='#555',
-        opacity='1',
-        opacity_hover='.6',
-        transition='400ms ease-in',
-        colors=('#428bca', '#5cb85c', '#f0ad4e', '#5bc0de', '#d9534f',
-                '#a95cb8', '#5cb8b5', '#caca43', '#96ac43', '#ca43ca')
-    )
-
     def __init__(self, estadisticas):
         self.graficos = {}
         self._generar_grafico_de_barras_de_llamadas_por_tipo(estadisticas)
@@ -406,37 +397,37 @@ class GraficosReporteDeLlamadas(object):
 
     def _generar_grafico_de_barras_de_llamadas_por_tipo(self, estadisticas):
         # Totales llamadas por tipo de campaña y forma de finalización
-        grafico = pygal.Bar(show_legend=True, style=self.ESTILO_AZUL_ROJO_AMARILLO)
+        grafico = pygal.Bar(show_legend=True, style=ESTILO_AMARILLO_VERDE_GRIS)
         grafico.x_labels = [_('Manuales'), _(u'Dialer'), _(u'Entrantes'), _(u'Preview')]
         por_tipo = estadisticas['llamadas_por_tipo']
         grafico.add(
-            _(u'Ingresadas'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['total'],
-                               por_tipo[Campana.TYPE_DIALER_DISPLAY]['total'],
-                               por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['total'],
-                               por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['total']])
+            _(u'Intentos'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['total'],
+                             por_tipo[Campana.TYPE_DIALER_DISPLAY]['total'],
+                             por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['total'],
+                             por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['total']])
 
         grafico.add(
-            _('Atendidas'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['conectadas'],
-                             por_tipo[Campana.TYPE_DIALER_DISPLAY]['atendidas'],
-                             por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['atendidas'],
-                             por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['conectadas']])
+            _('Conexión'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['conectadas'],
+                            por_tipo[Campana.TYPE_DIALER_DISPLAY]['atendidas'],
+                            por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['atendidas'],
+                            por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['conectadas']])
 
         perdidas_dialer = por_tipo[Campana.TYPE_DIALER_DISPLAY]['no_atendidas'] + \
             por_tipo[Campana.TYPE_DIALER_DISPLAY]['perdidas']
         perdidas_entrantes = por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['expiradas'] + \
             por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['abandonadas']
         grafico.add(
-            _('Perdidas'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['no_conectadas'],
-                            perdidas_dialer,
-                            perdidas_entrantes,
-                            por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['no_conectadas']])
+            _('Fallo'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['no_conectadas'],
+                         perdidas_dialer,
+                         perdidas_entrantes,
+                         por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['no_conectadas']])
 
         self.graficos['barras_llamadas_por_tipo'] = grafico
 
     def _generar_grafico_de_torta_de_porcentajes_por_tipo(self, estadisticas):
         # Porcentajes de llamadas por tipo de llamada
         no_data_text = _("No hay llamadas para ese periodo")
-        grafico = pygal.Pie(style=self.ESTILO_AZUL_ROJO_AMARILLO, no_data_text=no_data_text,
+        grafico = pygal.Pie(style=ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, no_data_text=no_data_text,
                             no_data_font_size=32, legend_font_size=25, truncate_legend=10,
                             tooltip_font_size=50)
         total = float(estadisticas['total_llamadas_procesadas'])
@@ -458,7 +449,8 @@ class GraficosReporteDeLlamadas(object):
 
     def _generar_grafico_de_barras_de_llamadas_por_campana(self, estadisticas):
         # Cantidad de llamadas de las campana
-        grafico = pygal.Bar(show_legend=True, style=self.ESTILO_AZUL_ROJO_AMARILLO)
+        grafico = pygal.Bar(show_legend=True, style=ESTILO_AZUL_VERDE)
+
         nombres_campanas = []
         totales_campanas = []
         manuales_campanas = []
@@ -472,8 +464,8 @@ class GraficosReporteDeLlamadas(object):
         self.graficos['barra_llamada_por_campana'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_dialer(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=False, style=self.ESTILO_AZUL_ROJO_AMARILLO)
-        grafico.title = _(u'Tipos de llamadas por campaña')
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_ROJO_VERDE_GRIS_NEGRO)
+
         nombres_campanas = []
         no_atendidas = []
         conectadas = []
@@ -488,15 +480,15 @@ class GraficosReporteDeLlamadas(object):
             abandonadas.append(datos_campana['abandonadas'])
 
         grafico.x_labels = nombres_campanas
-        grafico.add(_(u'No Atendidas'), no_atendidas)
-        grafico.add(_(u'Conectadas'), conectadas)
+        grafico.add(_(u'No contactadas'), no_atendidas)
+        grafico.add(_(u'Procesadas'), conectadas)
         grafico.add(_(u'Expiradas'), expiradas)
         grafico.add(_(u'Abandonadas'), abandonadas)
         self.graficos['barra_campana_llamadas_dialer'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_entrantes(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=False, style=self.ESTILO_AZUL_ROJO_AMARILLO)
-        grafico.title = _(u'Tipos de llamadas por campaña')
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_VERDE_GRIS_NEGRO)
+
         nombres_campanas = []
         atendidas = []
         expiradas = []
@@ -515,37 +507,38 @@ class GraficosReporteDeLlamadas(object):
         self.graficos['barra_campana_llamadas_entrantes'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_manuales(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=False, style=self.ESTILO_AZUL_ROJO_AMARILLO)
-        grafico.title = _(u'Tipos de llamadas por campaña')
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_AMARILLO_VERDE_GRIS)
+
         nombres_campanas = []
         conectadas = []
         no_conectadas = []
         por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_MANUAL_DISPLAY]
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
-            conectadas.append(datos_campana['conectadas'])
             no_conectadas.append(datos_campana['no_conectadas'])
+            conectadas.append(datos_campana['conectadas'])
 
         grafico.x_labels = nombres_campanas
-        grafico.add(_(u'Conectadas'), conectadas)
         grafico.add(_(u'No conectadas'), no_conectadas)
+        grafico.add(_(u'Conectadas'), conectadas)
+
         self.graficos['barra_campana_llamadas_manuales'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_preview(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=False, style=self.ESTILO_AZUL_ROJO_AMARILLO)
-        grafico.title = _(u'Tipos de llamadas por campaña')
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_AMARILLO_VERDE_GRIS)
+
         nombres_campanas = []
         conectadas = []
         no_conectadas = []
         por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_PREVIEW_DISPLAY]
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
-            conectadas.append(datos_campana['conectadas'])
             no_conectadas.append(datos_campana['no_conectadas'])
+            conectadas.append(datos_campana['conectadas'])
 
         grafico.x_labels = nombres_campanas
-        grafico.add(_(u'Conectadas'), conectadas)
         grafico.add(_(u'No conectadas'), no_conectadas)
+        grafico.add(_(u'Conectadas'), conectadas)
         self.graficos['barra_campana_llamadas_preview'] = grafico
 
 

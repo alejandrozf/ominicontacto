@@ -378,14 +378,17 @@
         {% endfor %}
       </table>
     </div>
-    <div class="graficos-avances">
-      <figure>
-        {{ graficos.barra_campana_llamadas_dialer.render|safe }}
-      </figure>
-    <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_dialer');">
-      {% trans 'Exportar tipo de llamadas de Campañas Dialer (CSV)' %}
-    </button>
-    </div>
+      <div class="col-lg-6">
+        <h3>{% trans 'Tipos de llamadas por campaña' %}</h3>
+        <div class="graficos-avances">
+            <figure>
+                {{ graficos.barra_campana_llamadas_dialer.render|safe }}
+            </figure>
+            <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_dialer');">
+                {% trans 'Exportar tipo de llamadas de Campañas Dialer (CSV)' %}
+            </button>
+        </div>
+      </div>
   </div>
 </div>
 
@@ -394,8 +397,8 @@
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas entrantes' %}</h2>
   <br>
   <div class="wrapper-table table-responsive">
-    <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-incoming" aria-expanded="false">Información completa</button>    
-    <hr class="hr-space"> 
+    <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-incoming" aria-expanded="false">Información completa</button>
+    <hr class="hr-space">
     <table class="table">
       <thead>
         <tr>
@@ -454,14 +457,14 @@
                         {{ llamadas.atendidas }}<span class="label">atendidas</span>,
                         {{ llamadas.expiradas }}<span class="label">expiradas</span>,
                         {{ llamadas.abandonadas }}<span class="label">abandonadas</span>
-                    </div>                    
+                    </div>
                 </td>
                 <td>
                     {{ llamadas.t_espera_conexion|format_seconds }}
                     <div class="collapse multi-collapse-incoming">
                         <hr>
                         {{ llamadas.t_abandono|format_seconds }}<span class="label">abandono</span>
-                    </div>                    
+                    </div>
                 </td>
                 <td>
                     {{ llamadas.efectuadas_manuales }}
@@ -470,7 +473,7 @@
                         {{ llamadas.conectadas_manuales }}<span class="label">conectadas</span>,
                         {{ llamadas.no_conectadas_manuales }}<span class="label">no conec.</span>,
                         {{ llamadas.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
-                    </div>                    
+                    </div>
                 </td>
               </tr>
             {% endfor %}
@@ -480,14 +483,17 @@
       {% endfor %}
     </table>
   </div>
-  <div class="graficos-avances">
-    <figure>
-      {{ graficos.barra_campana_llamadas_entrantes.render|safe }}
-    </figure>
-    <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_entrante');">
-      {% trans 'Exportar tipo de llamadas de Campañas Entrantes (CSV)' %}
-    </button>
-  </div>
+    <div class="col-lg-6">
+        <h3>{% trans 'Tipos de llamadas por campaña' %}</h3>
+        <div class="graficos-avances">
+            <figure>
+                {{ graficos.barra_campana_llamadas_entrantes.render|safe }}
+            </figure>
+            <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_entrante');">
+                {% trans 'Exportar tipo de llamadas de Campañas Entrantes (CSV)' %}
+            </button>
+        </div>
+    </div>
 </div>
 
 <hr>
@@ -495,8 +501,8 @@
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas manuales' %}</h2>
   <br>
   <div class="wrapper-table table-responsive">
-      <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-manual" aria-expanded="false">{% trans 'Información completa' %}</button>  
-      <hr class="hr-space">   
+      <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-manual" aria-expanded="false">{% trans 'Información completa' %}</button>
+      <hr class="hr-space">
     <table class="table">
       <thead>
         <tr>
@@ -537,7 +543,7 @@
                         <hr>
                         {{ llamadas.conectadas }}<span class="label">conectadas</span>,
                         {{ llamadas.no_conectadas }}<span class="label">no conec.</span>
-                    </div>                    
+                    </div>
                 </td>
                 <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
               </tr>
@@ -548,14 +554,17 @@
       {% endfor %}
     </table>
   </div>
-  <div class="graficos-avances">
-    <figure>
-      {{ graficos.barra_campana_llamadas_manuales.render|safe }}
-    </figure>
-    <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_manual');">
-      {% trans 'Exportar tipo de llamadas de Campañas Manuales (CSV)' %}
-    </button>
-  </div>
+    <div class="col-lg-6">
+        <h3>{% trans 'Tipos de llamadas por campaña' %}</h3>
+        <div class="graficos-avances">
+            <figure>
+                {{ graficos.barra_campana_llamadas_manuales.render|safe }}
+            </figure>
+             <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_manual');">
+                {% trans 'Exportar tipo de llamadas de Campañas Manuales (CSV)' %}
+            </button>
+        </div>
+    </div>
 </div>
 
 <hr>
@@ -563,8 +572,8 @@
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas Preview' %}</h2>
   <br>
   <div class="wrapper-table table-responsive">
-      <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-preview" aria-expanded="false">{% trans 'Información completa' %}</button>  
-      <hr class="hr-space">      
+      <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-preview" aria-expanded="false">{% trans 'Información completa' %}</button>
+      <hr class="hr-space">
     <table class="table">
       <thead>
         <tr>
@@ -616,7 +625,7 @@
                     <hr>
                     {{ llamadas.conectadas }}<span class="label">conectadas</span>,
                     {{ llamadas.no_conectadas }}<span class="label">no conec.</span>
-                </div>                
+                </div>
             </td>
             <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
             <td>
@@ -625,7 +634,7 @@
                     <hr>
                     {{ llamadas.conectadas_manuales }}<span class="label">conectadas</span>,
                     {{ llamadas.no_conectadas_manuales }}<span class="label">no conec.</span>
-                </div>                
+                </div>
             </td>
             <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
           </tr>
@@ -636,14 +645,17 @@
       {% endfor %}
     </table>
   </div>
-  <div class="graficos-avances">
-    <figure>
-      {{ graficos.barra_campana_llamadas_preview.render|safe }}
-    </figure>
-    <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_preview');">
-      {% trans 'Exportar tipo de llamadas de Campañas Preview (CSV)' %}
-    </button>
-  </div>
+    <div class="col-lg-6">
+        <h3>{% trans 'Tipos de llamadas por campaña' %}</h3>
+        <div class="graficos-avances">
+            <figure>
+                {{ graficos.barra_campana_llamadas_preview.render|safe }}
+            </figure>
+             <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_preview');">
+                {% trans 'Exportar tipo de llamadas de Campañas Preview (CSV)' %}
+             </button>
+        </div>
+    </div>
 </div>
 
 <!-- MODALES de Llamadas por tipo desglosadas en fechas -->
