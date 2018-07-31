@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block head_js %}
 <script type="text/javascript">
@@ -361,10 +362,13 @@
             </tbody>
         </table>
     </div>
-    <div class="graficos-avances">
-        <figure>
-            {{ graficos_estadisticas.barra_agente_total.render|safe }}
-        </figure>
+    <div class="col-lg-6">
+        <h3>{% trans 'Cantidad de llamadas de los agentes por tipo de llamadas' %}</h3>
+        <div class="graficos-avances col-md-auto">
+            <figure>
+                {{ graficos_estadisticas.barra_agente_total.render|safe }}
+            </figure>
+        </div>
     </div>
 
     <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a>
