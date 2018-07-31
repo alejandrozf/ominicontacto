@@ -13,10 +13,8 @@ import tempfile
 from django.conf import settings
 from django.core.files.storage import default_storage
 from ominicontacto_app.errors import OmlAudioConversionError
-from ominicontacto_app.utiles import crear_archivo_en_media_root
 from ominicontacto_app.models import ArchivoDeAudio
 import logging as _logging
-import uuid
 import re
 
 
@@ -83,8 +81,7 @@ class ConversorDeAudioService(object):
             "El archivo especificado no es un path absoluto: {0}".format(
                 archivo)
         if not os.path.exists(archivo):
-            with open(archivo, "a") as _:
-                pass
+            open(archivo, "a")
             os.chmod(archivo, mode)
             return True
 
@@ -131,7 +128,8 @@ class ConversorDeAudioService(object):
 
         # ejecutamos comando...
         try:
-            logger.info("Iniciando conversion de audio de %s -> %s", input_file_abs, output_filename_abs)
+            logger.info(
+                "Iniciando conversion de audio de %s -> %s", input_file_abs, output_filename_abs)
             subprocess.check_call(FTS_AUDIO_CONVERSOR, stdout=stdout_file, stderr=stderr_file)
             logger.info("Conversion de audio finalizada exitosamente")
 
@@ -149,7 +147,7 @@ class ConversorDeAudioService(object):
                 for line in stderr:
                     if line:
                         logger.warn(" STDERR> %s", line)
-            except:
+            except Exception:
                 logger.exception("Error al intentar reporter STDERR y STDOUT (lo ignoramos)")
 
             raise OmlAudioConversionError("Error detectado al ejecutar "
@@ -202,21 +200,3 @@ class ConversorDeAudioService(object):
         archivo_de_audio.audio_asterisk = os.path.join(
             ConversorDeAudioService.DIR_AUDIO_PREDEFINIDO, filename)
         archivo_de_audio.save()
-
-    def obtener_id_archivo_de_audio_desde_path(self, file_path):
-        """Parsea el path del archivo de audio ya convertido, y
-        devuelve el ID del ArchivoDeAudio al que está asociado,
-        o devuelve None si el path NO correspode a una instancia
-        de ArchivoDeAudio.
-
-        Esta funcion es necesaria para saber si el archivo de
-        audio de una campaña correspodne a un ArchivoDeAudio o
-        fue un audio subido específicamente para la campaña.
-        """
-
-        regex = ConversorDeAudioService.REGEX_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO
-        match_obj = regex.search(file_path)
-        if match_obj is None:
-            return None
-        archivo_id = match_obj.group(1)
-        return int(archivo_id)
