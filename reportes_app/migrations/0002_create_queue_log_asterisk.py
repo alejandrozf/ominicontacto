@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-# Generated Federico Peker
 from __future__ import unicode_literals
 
 from django.db import migrations, connection
 import os
 
 
-def create_procedemiento_trigger(apps, schema_editor):
-    tmp_dir = os.path.abspath(__file__)  # 0060····.py
+def create_queuelog_table(apps, schema_editor):
+    tmp_dir = os.path.abspath(__file__)  # 0002····.py
     tmp_dir = os.path.dirname(tmp_dir)  # migrations
-    tmp_dir = os.path.split(tmp_dir)[0]  # ominicontacto_app
+    tmp_dir = os.path.split(tmp_dir)[0]  # reportes_app
 
     sql_file_path = "sql/queue_log_dump_table.sql"
 
@@ -24,12 +23,21 @@ def create_procedemiento_trigger(apps, schema_editor):
     cursor.execute(sql)
 
 
+def borrar_queuelog_table(apps, schema_editor):
+    sql = """
+    DROP SEQUENCE queue_log_id_seq CASCADE;
+    DROP TABLE queue_log;
+    """
+    cursor = connection.cursor()
+    cursor.execute(sql)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0059_auto_20170412_1035'),
+        ('reportes_app', '0001_initial'),
     ]
 
     operations = [
-        migrations.RunPython(create_procedemiento_trigger),
+        migrations.RunPython(create_queuelog_table, borrar_queuelog_table),
     ]
