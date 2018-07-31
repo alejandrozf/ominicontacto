@@ -10,7 +10,7 @@ from django.utils.encoding import force_text
 from ominicontacto_app.models import Campana
 from reportes_app.models import LlamadaLog
 from reportes_app.utiles import (
-    ESTILO_AMARILLO_VERDE_ROJO, ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, ESTILO_AZUL_VERDE,
+    ESTILO_AMARILLO_VERDE_ROJO, ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, ESTILO_VERDE_AZUL,
     ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO
 )
 
@@ -449,7 +449,7 @@ class GraficosReporteDeLlamadas(object):
 
     def _generar_grafico_de_barras_de_llamadas_por_campana(self, estadisticas):
         # Cantidad de llamadas de las campana
-        grafico = pygal.Bar(show_legend=True, style=ESTILO_AZUL_VERDE)
+        grafico = pygal.Bar(show_legend=True, style=ESTILO_VERDE_AZUL)
 
         nombres_campanas = []
         totales_campanas = []
@@ -476,14 +476,14 @@ class GraficosReporteDeLlamadas(object):
             nombres_campanas.append(datos_campana['nombre'])
             no_atendidas.append(datos_campana['efectuadas'] - datos_campana['atendidas'])
             conectadas.append(datos_campana['conectadas'])
-            expiradas.append(datos_campana['expiradas'])
             abandonadas.append(datos_campana['abandonadas'])
+            expiradas.append(datos_campana['expiradas'])
 
         grafico.x_labels = nombres_campanas
         grafico.add(_(u'No contactadas'), no_atendidas)
         grafico.add(_(u'Procesadas'), conectadas)
-        grafico.add(_(u'Expiradas'), expiradas)
         grafico.add(_(u'Abandonadas'), abandonadas)
+        grafico.add(_(u'Expiradas'), expiradas)
         self.graficos['barra_campana_llamadas_dialer'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_entrantes(self, estadisticas):
@@ -497,13 +497,13 @@ class GraficosReporteDeLlamadas(object):
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
             atendidas.append(datos_campana['atendidas'])
-            expiradas.append(datos_campana['expiradas'])
             abandonadas.append(datos_campana['abandonadas'])
+            expiradas.append(datos_campana['expiradas'])
 
         grafico.x_labels = nombres_campanas
         grafico.add(_(u'Atendidas'), atendidas)
-        grafico.add(_(u'Expiradas'), expiradas)
         grafico.add(_(u'Abandonadas'), abandonadas)
+        grafico.add(_(u'Expiradas'), expiradas)
         self.graficos['barra_campana_llamadas_entrantes'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_manuales(self, estadisticas):
