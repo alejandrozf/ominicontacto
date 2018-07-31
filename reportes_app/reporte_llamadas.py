@@ -10,7 +10,7 @@ from django.utils.encoding import force_text
 from ominicontacto_app.models import Campana
 from reportes_app.models import LlamadaLog
 from reportes_app.utiles import (
-    ESTILO_AMARILLO_VERDE_GRIS, ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, ESTILO_AZUL_VERDE,
+    ESTILO_AMARILLO_VERDE_ROJO, ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, ESTILO_AZUL_VERDE,
     ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO
 )
 
@@ -397,7 +397,7 @@ class GraficosReporteDeLlamadas(object):
 
     def _generar_grafico_de_barras_de_llamadas_por_tipo(self, estadisticas):
         # Totales llamadas por tipo de campaña y forma de finalización
-        grafico = pygal.Bar(show_legend=True, style=ESTILO_AMARILLO_VERDE_GRIS)
+        grafico = pygal.Bar(show_legend=True, style=ESTILO_AMARILLO_VERDE_ROJO)
         grafico.x_labels = [_('Manuales'), _(u'Dialer'), _(u'Entrantes'), _(u'Preview')]
         por_tipo = estadisticas['llamadas_por_tipo']
         grafico.add(
@@ -507,7 +507,7 @@ class GraficosReporteDeLlamadas(object):
         self.graficos['barra_campana_llamadas_entrantes'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_manuales(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_AMARILLO_VERDE_GRIS)
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_AMARILLO_VERDE_ROJO)
 
         nombres_campanas = []
         conectadas = []
@@ -525,7 +525,7 @@ class GraficosReporteDeLlamadas(object):
         self.graficos['barra_campana_llamadas_manuales'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_preview(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_AMARILLO_VERDE_GRIS)
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_AMARILLO_VERDE_ROJO)
 
         nombres_campanas = []
         conectadas = []

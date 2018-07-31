@@ -4,7 +4,7 @@
 
 from pygal.style import Style
 
-ESTILO_AMARILLO_VERDE_GRIS = Style(
+ESTILO_AMARILLO_VERDE_ROJO = Style(
     background='transparent',
     plot_background='transparent',
     foreground='#555',
@@ -13,7 +13,7 @@ ESTILO_AMARILLO_VERDE_GRIS = Style(
     opacity='1',
     opacity_hover='.6',
     transition='400ms ease-in',
-    colors=('#fefd6f', '#5cb85c', '#a2a7a1')
+    colors=('#fefd6f', '#5cb85c', '#b93229')
 )
 
 ESTILO_AZUL_VIOLETA_NARANJA_CELESTE = Style(
