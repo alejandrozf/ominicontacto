@@ -11,7 +11,7 @@ from ominicontacto_app.models import Campana
 from reportes_app.models import LlamadaLog
 from reportes_app.utiles import (
     ESTILO_AMARILLO_VERDE_ROJO, ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, ESTILO_VERDE_AZUL,
-    ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO
+    ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO, ESTILO_VERDE_ROJO
 )
 
 
@@ -507,7 +507,7 @@ class GraficosReporteDeLlamadas(object):
         self.graficos['barra_campana_llamadas_entrantes'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_manuales(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_AMARILLO_VERDE_ROJO)
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_VERDE_ROJO)
 
         nombres_campanas = []
         conectadas = []
@@ -515,17 +515,17 @@ class GraficosReporteDeLlamadas(object):
         por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_MANUAL_DISPLAY]
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
-            no_conectadas.append(datos_campana['no_conectadas'])
             conectadas.append(datos_campana['conectadas'])
+            no_conectadas.append(datos_campana['no_conectadas'])
 
         grafico.x_labels = nombres_campanas
-        grafico.add(_(u'No conectadas'), no_conectadas)
         grafico.add(_(u'Conectadas'), conectadas)
+        grafico.add(_(u'No conectadas'), no_conectadas)
 
         self.graficos['barra_campana_llamadas_manuales'] = grafico
 
     def _generar_grafico_de_barras_de_llamadas_preview(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_AMARILLO_VERDE_ROJO)
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_VERDE_ROJO)
 
         nombres_campanas = []
         conectadas = []
@@ -533,12 +533,12 @@ class GraficosReporteDeLlamadas(object):
         por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_PREVIEW_DISPLAY]
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
-            no_conectadas.append(datos_campana['no_conectadas'])
             conectadas.append(datos_campana['conectadas'])
+            no_conectadas.append(datos_campana['no_conectadas'])
 
         grafico.x_labels = nombres_campanas
-        grafico.add(_(u'No conectadas'), no_conectadas)
         grafico.add(_(u'Conectadas'), conectadas)
+        grafico.add(_(u'No conectadas'), no_conectadas)
         self.graficos['barra_campana_llamadas_preview'] = grafico
 
 
