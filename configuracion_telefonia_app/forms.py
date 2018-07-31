@@ -16,6 +16,7 @@ from configuracion_telefonia_app.models import (PatronDeDiscado, RutaSaliente, R
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.views_archivo_de_audio import convertir_archivo_audio
 
+from utiles_globales import validar_extension_archivo_audio
 
 EMPTY_CHOICE = ('', '---------')
 TIPOS_DESTINOS_CHOICES = (EMPTY_CHOICE,) + DestinoEntrante.TIPOS_DESTINOS
@@ -290,11 +291,6 @@ class IVRForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('Debe escoger un audio como archivo externo'), code='invalid')
 
-    def _validar_extension_audio(self, valor):
-        if (valor is not None and not valor.name.endswith('.wav') and
-                not valor.name.endswith('.mp3')):
-            raise forms.ValidationError(_('Archivos permitidos: .mp3, .wav'), code='invalid')
-
     def clean(self):
         cleaned_data = super(IVRForm, self).clean()
         audio_ppal_escoger = cleaned_data['audio_ppal_escoger']
@@ -310,9 +306,9 @@ class IVRForm(forms.ModelForm):
         self._validar_escoger_audio(time_out_audio_escoger, time_out_audio, time_out_ext_audio)
         self._validar_escoger_audio(
             invalid_destination_audio_escoger, invalid_audio, invalid_destination_ext_audio)
-        self._validar_extension_audio(audio_ppal_ext_audio)
-        self._validar_extension_audio(time_out_ext_audio)
-        self._validar_extension_audio(invalid_destination_ext_audio)
+        validar_extension_archivo_audio(audio_ppal_ext_audio)
+        validar_extension_archivo_audio(time_out_ext_audio)
+        validar_extension_archivo_audio(invalid_destination_ext_audio)
         return cleaned_data
 
     def _asignar_audio_externo(self, escoger_audio, audio_externo, tipo_audio):
