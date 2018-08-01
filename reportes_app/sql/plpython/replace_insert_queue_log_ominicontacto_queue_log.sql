@@ -141,11 +141,10 @@ elif event in EVENTOS:
          numero_destino) = procesar_datos_transferencias()
     else:
         agente_extra_id, campana_destino_id, numero_destino = (None, None, None)
-    plpy.debug("test")
     plan_llamadas_log = plpy.prepare(
-        "INSERT INTO reportes_app_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
+        "INSERT INTO reportes_app_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion, agente_extra_id, campana_destino_id, numero_destino) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
         ["timestamp with time zone", "text", "int", "int", "int", "int", "text", "text", "int",
-         "int", "int", "text", "int", "int", "int"])
+         "int", "int", "text", "int", "int", "text"])
     plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
                                      agente_id, event, data1, contacto_id, bridge_wait_time,
                                      duracion_llamada, archivo_grabacion, agente_extra_id,
