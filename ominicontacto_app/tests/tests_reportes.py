@@ -151,5 +151,9 @@ class TriggerQueuelogTest(OMLBaseTest):
 
         for evento_transferencia in EVENTOS_TRANSFERENCIAS:
             queuename = '1-1-1'
-            self._aplicar_sql_query(queuename, event=evento_transferencia)
-        self.assertEqual(set(LlamadaLog.objects.values_list('event')), set(EVENTOS_TRANSFERENCIAS))
+            if evento_transferencia == 'ENTERQUEUE-TRANSFER':
+                self._aplicar_sql_query(queuename, event=evento_transferencia, data4=1, data5=2)
+            else:
+                self._aplicar_sql_query(queuename, event=evento_transferencia)
+        self.assertEqual(
+            set(LlamadaLog.objects.values_list('event', flat=True)), set(EVENTOS_TRANSFERENCIAS))
