@@ -51,15 +51,9 @@
                     <span class="icon icon-campaign"></span>
                     <a class="menu-header" aria-expanded="true">Campañas</a>
                     <ul class="list-unstyled submenu" id="menuCampaigns">
-                        <li>
-                            <a href="">Campaña 1</a>
-                        </li>
-                        <li>
-                            <a href="">Campaña 2</a>
-                        </li>
-                        <li>
-                            <a href="">Campaña 3</a>
-                        </li>
+                      <?php
+                      include "View/Lista_Campanas.php";
+                      ?>
                     </ul>
                 </li>
             </ul>
