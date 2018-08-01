@@ -1,5 +1,3 @@
-<br>
-<br>
 <?php
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Omnisup/config.php';
 include_once controllers . '/Campana.php';
@@ -14,8 +12,8 @@ if($SupervId) {
     }
 }
 ?>
-<div class="col-md-3 col-lg-offset-4">
-    <table id="tableCamp" class="table table-striped table-condensed">
+<div>
+    <table id="tableCamp" class="table">
         <thead>
             <tr><th>Campañas</th></tr>
         </thead>
@@ -24,7 +22,9 @@ if($SupervId) {
             foreach ($resul as $clave => $valor) {
             ?>
             <tr>
-                <td style='color:green'><a href="index.php?page=Detalle_Campana&nomcamp=<?= $valor ?>&supervId=<?= $SupervId ?>&es_admin=<?= $admin ?>&campId=<?= $clave ?>"><?= $valor ?></a></td>
+                <td>
+                    <a href="index.php?page=Detalle_Campana&nomcamp=<?= $valor ?>&supervId=<?= $SupervId ?>&es_admin=<?= $admin ?>&campId=<?= $clave ?>"><?= $valor ?></a>
+                </td>
             </tr>
             <?php
             }
