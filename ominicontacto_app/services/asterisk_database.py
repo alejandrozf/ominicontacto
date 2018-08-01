@@ -323,12 +323,24 @@ class RegenerarAsteriskFamilysOML(object):
         self.agente_family = AgenteFamily()
         self.pausa_family = PausaFamily()
         self.globals_family = GlobalsFamily()
+        self.ivr_family = IVRFamily()
+        self.ruta_entrante_family = RutaEntranteFamily()
+        self.ruta_saliente_family = RutaSalienteFamily()
+        self.trunk_family = TrunkFamily()
+        self.validacion_fecha_hora_family = ValidacionFechaHoraFamily()
+        self.grupo_horario_family = GrupoHorarioFamily()
 
     def regenerar_asterisk(self):
         self.campana_family.regenerar_families()
         self.agente_family.regenerar_families()
         self.pausa_family.regenerar_families()
         self.globals_family.regenerar_families()
+        self.ivr_family.regenerar_families()
+        self.ruta_entrante_family.regenerar_families()
+        self.ruta_saliente_family.regenerar_families()
+        self.trunk_family.regenerar_families()
+        self.validacion_fecha_hora_family.regenerar_families()
+        self.grupo_horario_family.regenerar_families()
 
 
 class GlobalsFamily(AbstractFamily):
