@@ -1,3 +1,4 @@
+<?php include 'config.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -44,7 +45,7 @@
             <ul id="nav-main-menu" class="list-unstyled">
                 <li class="main-menu-li">
                     <span class="icon icon-chevron-left"></span>
-                    <a class="menu-link" href="https://<?= OMNI_HOST ?>">Volver</a>
+                    <a class="menu-link" href="https://<?php echo OMNI_HOST ?>">Volver</a>
                 </li>
                 <li class="main-menu-li">
                     <span class="icon icon-campaign"></span>
@@ -69,7 +70,7 @@
                             <span class="icon icon-user"></span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser">
-                                <a class="dropdown-item" href="">Salir</a>
+                                <a class="dropdown-item" href="https://<?php echo OMNI_HOST_LOGOUT ?>">Salir</a>
                             </div>
                         </div>
                     </div>
