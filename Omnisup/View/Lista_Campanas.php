@@ -11,24 +11,11 @@ if($SupervId) {
         $resul = $Controller_Campana->traerCampanas($SupervId);
     }
 }
+foreach ($resul as $clave => $valor) {
 ?>
-<div>
-    <table id="tableCamp" class="table">
-        <thead>
-            <tr><th>Campañas</th></tr>
-        </thead>
-        <tbody>
-            <?php
-            foreach ($resul as $clave => $valor) {
-            ?>
-            <tr>
-                <td>
-                    <a href="index.php?page=Detalle_Campana&nomcamp=<?= $valor ?>&supervId=<?= $SupervId ?>&es_admin=<?= $admin ?>&campId=<?= $clave ?>"><?= $valor ?></a>
-                </td>
-            </tr>
-            <?php
-            }
-            ?>
-        </tbody>
-    </table>
-</div>
+<li>
+    <a href="index.php?page=Detalle_Campana&nomcamp=<?= $valor ?>&supervId=<?= $SupervId ?>&es_admin=<?= $admin ?>&campId=<?= $clave ?>"><?= $valor ?></a>
+</li>
+<?php
+}
+?>

@@ -33,9 +33,6 @@
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
 </head>
 <body>
-    <?php /*
-    <?php include 'View/Navbar.php' ?>
-    */ ?>
     <div class="wrapper-main">
         <nav id="sidebar">
             <div class="sidebar-header">
@@ -53,15 +50,9 @@
                     <span class="icon icon-campaign"></span>
                     <a class="menu-header" aria-expanded="true">Campañas</a>
                     <ul class="list-unstyled submenu" id="menuCampaigns">
-                        <li>
-                            <a href="">Campaña 1</a>
-                        </li>
-                        <li>
-                            <a href="">Campaña 2</a>
-                        </li>
-                        <li>
-                            <a href="">Campaña 3</a>
-                        </li>
+                      <?php
+                      include "View/Lista_Campanas.php";
+                      ?>
                     </ul>
                 </li>
             </ul>
