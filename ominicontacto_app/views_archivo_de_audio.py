@@ -103,9 +103,9 @@ class ArchivoAudioUpdateView(ArchivoDeAudioMixin, UpdateView):
     form_class = ArchivoDeAudioForm
 
     def form_valid(self, form):
-        self.object = form.save()
+        form.save()
         if 'audio_original' in form.changed_data:
-            self._procesar_archivo_de_audio(self.object)
+            self._procesar_archivo_de_audio(form)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
