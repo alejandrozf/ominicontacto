@@ -105,3 +105,51 @@ class TriggerQueuelogTest(OMLBaseTest):
         self._aplicar_sql_query(queuename, event=evento_no_logueable)
         self.assertFalse(LlamadaLog.objects.all().exists())
         self.assertFalse(ActividadAgenteLog.objects.all().exists())
+
+    def test_eventos_llamadas_tranferencias_se_insertan_en_logs_llamadas_actividades(self):
+        # TODO: este test documenta la posibilidad de inserción de nuevos eventos de llamadas
+        # pero se debería realizar un testing más profundo del manejo que se hace sobre estos
+        # logs
+        EVENTOS_TRANSFERENCIAS = [
+            'BT-TRY',
+            'BT-ANSWER',
+            'BT-BUSY',
+            'BT-CANCEL',
+            'BT-CHANUNAVAIL',
+            'BT-CONGESTION',
+            'BT-ABANDON',
+            'CAMPT-TRY',
+            'CAMPT-FAIL',
+            'CAMPT-COMPLETE',
+            'ENTERQUEUE-TRANSFER',
+            'CT-TRY',
+            'CT-ANSWER',
+            'CT-ACCEPT',
+            'CT-COMPLETE',
+            'CT-DISCARD',
+            'CT-BUSY',
+            'CT-CANCEL',
+            'CT-CHANUNAVAIL',
+            'CT-CONGESTION',
+            'BTOUT-TRY',
+            'BTOUT-ANSWER',
+            'BTOUT-BUSY',
+            'BTOUT-CANCEL',
+            'BTOUT-CONGESTION',
+            'BTOUT-CHANUNAVAIL',
+            'BTOUT-ABANDON',
+            'CTOUT-TRY',
+            'CTOUT-ANSWER',
+            'CTOUT-ACCEPT',
+            'CTOUT-COMPLETE',
+            'CTOUT-DISCARD',
+            'CTOUT-BUSY',
+            'CTOUT-CANCEL',
+            'CTOUT-CHANUNAVAIL',
+            'CTOUT-CONGESTION',
+        ]
+
+        for evento_transferencia in EVENTOS_TRANSFERENCIAS:
+            queuename = '1-1-1'
+            self._aplicar_sql_query(queuename, event=evento_transferencia)
+        self.assertEqual(set(LlamadaLog.objects.values_list('event')), set(EVENTOS_TRANSFERENCIAS))
