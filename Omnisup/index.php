@@ -45,7 +45,7 @@
             <ul id="nav-main-menu" class="list-unstyled">
                 <li class="main-menu-li">
                     <span class="icon icon-chevron-left"></span>
-                    <a class="menu-link" href="https://<?= OMNI_HOST ?>">Volver</a>
+                    <a class="menu-link" href="https://<?php echo OMNI_HOST ?>">Volver</a>
                 </li>
                 <li class="main-menu-li">
                     <span class="icon icon-campaign"></span>
