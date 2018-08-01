@@ -175,6 +175,7 @@ class CampanaWizardMixin(object):
             super(CampanaWizardMixin, self).get_form_instance(step)
 
     def _insert_queue_asterisk(self, queue):
+        """ Sincronizar informacion de Campaña / Queue """
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
