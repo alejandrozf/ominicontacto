@@ -45,15 +45,21 @@
             <ul id="nav-main-menu" class="list-unstyled">
                 <li class="main-menu-li">
                     <span class="icon icon-chevron-left"></span>
-                    <a class="menu-link" href="https://<?php echo OMNI_HOST ?>">Volver</a>
+                    <a class="menu-link" href="https://<?= OMNI_HOST ?>">Volver</a>
                 </li>
                 <li class="main-menu-li">
                     <span class="icon icon-campaign"></span>
                     <a class="menu-header" aria-expanded="true">Campañas</a>
                     <ul class="list-unstyled submenu" id="menuCampaigns">
-                      <?php
-                      include "View/Lista_Campanas.php";
-                      ?>
+                        <li>
+                            <a href="">Campaña 1</a>
+                        </li>
+                        <li>
+                            <a href="">Campaña 2</a>
+                        </li>
+                        <li>
+                            <a href="">Campaña 3</a>
+                        </li>
                     </ul>
                 </li>
             </ul>

@@ -79,167 +79,81 @@
     </div>
 </div>
 
-<button style="position:absolute; top:30px; right:50px;" type="button" class="btn btn-outline-primary btn-sm" alt="openWebPhone" id="webphone"><span class="icon icon-phone"></span> webphone</button>
-
-<ul class="nav nav-tabs" id="supervisionTabBar" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="stateTab" data-toggle="tab" href="#stateContent" role="tab" aria-controls="home" aria-selected="true">Estado</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="callsTab" data-toggle="tab" href="#callsContent" role="tab" aria-controls="profile" aria-selected="false">Llamadas</a>
-  </li>
-</ul>
-
-<div class="tab-content" id="supervisionTabContent">
-
-    <div class="tab-pane fade show active" id="stateContent" role="tabpanel" aria-labelledby="stateTab">
-        <div class="row">
-            <div class="col-md-6"><!-- CUADRO AGENTES -->
-              <table id="tableAgt" class="table table-sm">
-                <thead>
-                    <tr>
-                        <th>Agentes</th><th>Estado</th><th>Tiempo</th><th>Acciones</th>
-                    </tr>
-                </thead>
-                  <tbody id="tableAgBody">
-                  </tbody>
-              </table>
-              <nav aria-label="Page navigation example">
-                <ul class="pagination pagination-sm">
-                  <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-
-          <div class="col-md-3"><!-- CUADRO CANALES -->
-            <h2>Estado de lineas</h2>
-            <table id="" class="table table-sm">
-                <tbody id="tableChannelsWombat">
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example">
-              <ul class="pagination pagination-sm">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-sm-3">
+            <h1 class="display-2">12<span id="objcampana"></span> <span id="gestioncampana"></span></h1>
+            <h3>Avance de objetivo</h3>
         </div>
-        <div class="col-md-3">
-            <h2>Llamadas en espera</h2>
-            <table class="table table-sm">
-                <tbody id="tableQueuedCalls">
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example">
-              <ul class="pagination pagination-sm">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-      </div>
-  </div>
+        <div class="col-sm-3">
+            <h1 class="display-2">12%<span id="percent"></span></h1>
+            <h3>Porcentaje de objetivo</h3>
+        </div>
+    </div>
+</div>
 
+<div class="row">
+    <button alt="openWebPhone" id="webphone">webphone</button>
+    <hr>
+    <br>
+    <br>
+</div>
 
-  <div class="tab-pane fade" id="callsContent" role="tabpanel" aria-labelledby="callsTab">
-
-      <div class="row">
-          <div class="col-md-6"><!-- CUADRO RESUMEN CAMPANA -->
-            <h2>Resumen y calificaciones</h2>
-            <table id="tableCampSummary" class="table table-sm">
-                <tbody id="bodySummary">
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example">
-              <ul class="pagination pagination-sm">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div class="col-md-6">
-              <div class="row">
-                  <div class="col-sm-6">
-                      <h1 class="display-3"><span id="objcampana"></span><span id="gestioncampana"></span></h1>
-                      <span class="label">Avance de objetivo</span>
-                  </div>
-                  <div class="col-sm-6">
-                      <h1 class="display-3"><span id="percent"></span></h1>
-                      <span class="label">Porcentaje de objetivo</span>
-                  </div>
-              </div>
-              <hr>
-              <h2>Llamadas</h2>
-              <div class="">
-                  <span class="label">Recibidas</span>,
-                  <span class="label">Atendidas</span>,
-                  <span class="label">Abandonadas</span>,
-                  <span class="label">Expiradas</span>,
-                  <span class="label">Espera</span>,
-                  <span class="label">Abandono</span>
-              </div>
-              <hr>
-              <h2>Llamadas Manuales</h2>
-              <div class="">
-                  <span class="label">Efectuadas</span>,
-                  <span class="label">Conectadas</span>,
-                  <span class="label">No conec.</span>,
-                  <span class="label">Espera prom.</span>
-              </div>
-          </div>
-      </div>
-  </div>
+<div class="row">
+    <div class="col-md-6"><!-- CUADRO RESUMEN CAMPANA -->
+      <h2>Resumen y calificaciones</h2>
+      <table id="tableCampSummary" class="table">
+          <tbody id="bodySummary">
+          </tbody>
+          <tr>
+              <td>Llamadas:</td>
+              <td></td>
+          </tr>
+          <tbody id="bodyScore">
+          </tbody>
+      </table>
+    </div>
+    <div class="col-md-6"><!-- CUADRO AGENTES -->
+        <h2>Agentes</h2>
+        <table id="tableAgt" class="table">
+            <thead>
+                <tr>
+                    <th>Agentes</th>
+                    <th>Estado</th>
+                    <th>Tiempo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tableAgBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+<hr class="hr-space">
+<div class="row">
+    <div class="col-md-6"><!-- CUADRO CANALES -->
+      <h2>Estado general de lineas</h2>
+      <table id="" class="table table-striped table-condensed">
+          <thead>
+              <tr>
+                  <th>Estado</th><th>Destino</th>
+              </tr>
+          </thead>
+          <tbody id="tableChannelsWombat">
+          </tbody>
+      </table>
+    </div>
+    <div class="col-md-6"><!-- CUADRO LLAMADAS EN COLA -->
+      <h2>Llamadas en espera</h2>
+      <table class="table">
+          <thead>
+            <tr>
+                <th>Tiempo</th>
+                <th>#</th>
+            </tr>
+          </thead>
+          <tbody id="tableQueuedCalls">
+          </tbody>
+      </table>
+    </div>
 </div>
