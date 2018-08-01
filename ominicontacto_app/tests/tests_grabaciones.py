@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 
 import json
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now, timedelta
 
@@ -18,7 +19,7 @@ from ominicontacto_app.tests.factories import GrabacionFactory, GrabacionMarcaFa
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 
-class GrabacionesTests(OMLBaseTest):
+class BaseGrabacionesTests(OMLBaseTest):
 
     PWD = 'admin123'
 
@@ -39,6 +40,9 @@ class GrabacionesTests(OMLBaseTest):
 
         self.client.login(username=self.usuario_admin_supervisor.username,
                           password=self.PWD)
+
+
+class GrabacionesTests(BaseGrabacionesTests):
 
     def test_vista_creacion_grabaciones_marcadas(self):
         url = reverse('grabacion_marcar')
@@ -83,11 +87,11 @@ class GrabacionesTests(OMLBaseTest):
         hace_mucho = hoy - timedelta(days=3)
         self.grabacion2.fecha = hace_mucho
         self.grabacion1.fecha = hoy
-        self.assertIn('.mp3', self.grabacion2.url)
-        self.assertIn('.wav', self.grabacion1.url)
+        self.assertTrue(self.grabacion2.url.endswith(settings.MONITORFORMAT))
+        self.assertTrue(self.grabacion1.url.endswith('.wav'))
 
 
-class FiltrosGrabacionesTests(GrabacionesTests):
+class FiltrosGrabacionesTests(BaseGrabacionesTests):
 
     def test_filtro_grabaciones_marcadas(self):
         self.assertEqual(Grabacion.objects.marcadas().count(), 2)
