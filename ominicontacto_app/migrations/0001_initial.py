@@ -118,7 +118,7 @@ class Migration(migrations.Migration):
             name='ArchivoDeAudio',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('descripcion', models.CharField(max_length=100)),
+                ('descripcion', models.CharField(max_length=100, unique=True)),
                 ('audio_original', models.FileField(blank=True, null=True, upload_to=ominicontacto_app.models.upload_to_audio_original)),
                 ('audio_asterisk', models.FileField(blank=True, null=True, upload_to=ominicontacto_app.models.upload_to_audio_asterisk)),
                 ('borrado', models.BooleanField(default=False, editable=False)),

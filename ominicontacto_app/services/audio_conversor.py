@@ -13,10 +13,8 @@ import tempfile
 from django.conf import settings
 from django.core.files.storage import default_storage
 from ominicontacto_app.errors import OmlAudioConversionError
-from ominicontacto_app.utiles import crear_archivo_en_media_root
 from ominicontacto_app.models import ArchivoDeAudio
 import logging as _logging
-import uuid
 import re
 
 
@@ -33,7 +31,7 @@ class ConversorDeAudioService(object):
     convertidos para audios globales / predefinidos
     """
 
-    TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = "audio-predefinido-{0}{1}"
+    TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = "{0}{1}"
     """Nombre de archivo para audios ya convertidos, de archivos
     de audios globales / predefinidos.
 
@@ -41,12 +39,6 @@ class ConversorDeAudioService(object):
     1. {0} para el ID de ArchivoDeAudio
     2. {1} para el sufijo del nombre del archivo (ej: '.wav')
     """
-
-    REGEX_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = re.compile(
-        "^" + DIR_AUDIO_PREDEFINIDO + os.path.sep +
-        TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO.format(
-            "(\\d+)", settings.TMPL_OML_AUDIO_CONVERSOR_EXTENSION) +
-        "$")
 
     def _crear_directorios(self, directorio, mode=0755):
         """Crea directorio (recursivamente) si no existen. Es el equivalente
@@ -83,8 +75,7 @@ class ConversorDeAudioService(object):
             "El archivo especificado no es un path absoluto: {0}".format(
                 archivo)
         if not os.path.exists(archivo):
-            with open(archivo, "a") as _:
-                pass
+            open(archivo, "a")
             os.chmod(archivo, mode)
             return True
 
@@ -131,7 +122,8 @@ class ConversorDeAudioService(object):
 
         # ejecutamos comando...
         try:
-            logger.info("Iniciando conversion de audio de %s -> %s", input_file_abs, output_filename_abs)
+            logger.info(
+                "Iniciando conversion de audio de %s -> %s", input_file_abs, output_filename_abs)
             subprocess.check_call(FTS_AUDIO_CONVERSOR, stdout=stdout_file, stderr=stderr_file)
             logger.info("Conversion de audio finalizada exitosamente")
 
@@ -149,7 +141,7 @@ class ConversorDeAudioService(object):
                 for line in stderr:
                     if line:
                         logger.warn(" STDERR> %s", line)
-            except:
+            except Exception:
                 logger.exception("Error al intentar reporter STDERR y STDOUT (lo ignoramos)")
 
             raise OmlAudioConversionError("Error detectado al ejecutar "
@@ -180,7 +172,7 @@ class ConversorDeAudioService(object):
         # genera nombre del archivo de salida
         _template = ConversorDeAudioService.\
             TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO
-        filename = _template.format(archivo_de_audio.id,
+        filename = _template.format(archivo_de_audio.descripcion,
                                     settings.TMPL_OML_AUDIO_CONVERSOR_EXTENSION)
 
         # Creamos directorios si no existen
@@ -202,21 +194,3 @@ class ConversorDeAudioService(object):
         archivo_de_audio.audio_asterisk = os.path.join(
             ConversorDeAudioService.DIR_AUDIO_PREDEFINIDO, filename)
         archivo_de_audio.save()
-
-    def obtener_id_archivo_de_audio_desde_path(self, file_path):
-        """Parsea el path del archivo de audio ya convertido, y
-        devuelve el ID del ArchivoDeAudio al que está asociado,
-        o devuelve None si el path NO correspode a una instancia
-        de ArchivoDeAudio.
-
-        Esta funcion es necesaria para saber si el archivo de
-        audio de una campaña correspodne a un ArchivoDeAudio o
-        fue un audio subido específicamente para la campaña.
-        """
-
-        regex = ConversorDeAudioService.REGEX_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO
-        match_obj = regex.search(file_path)
-        if match_obj is None:
-            return None
-        archivo_id = match_obj.group(1)
-        return int(archivo_id)

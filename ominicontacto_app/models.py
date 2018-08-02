@@ -404,7 +404,7 @@ class ArchivoDeAudio(models.Model):
     objects = ArchivoDeAudioManager()
 
     descripcion = models.CharField(
-        max_length=100,
+        max_length=100, unique=True,
     )
     audio_original = models.FileField(
         upload_to=upload_to_audio_original,
