@@ -1,6 +1,15 @@
 
 
     <div class="modal-content">
+      {% if error_consulta %}
+        <div class="modal-header">
+            <h1 class="modal-title">Advertencia:</h1>                    
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>  
+        <div class="modal-body">
+            <p><strong>{{ error_consulta }}</strong></p>
+        </div> 
+      {% else %}
         <div class="modal-header">
             <h1 class="modal-title">{{ campana.nombre }}</h1>                    
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -16,6 +25,7 @@
                 <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
             {% endfor %}                       
         </div> 
+      {% endif %}
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
         </div>

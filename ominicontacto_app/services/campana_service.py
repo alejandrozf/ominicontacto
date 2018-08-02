@@ -7,9 +7,10 @@ from __future__ import unicode_literals
 import requests
 import time
 
+from django.utils.translation import ugettext as _
+
 from django.conf import settings
-from ominicontacto_app.models import Campana
-from ominicontacto_app.utiles import elimina_coma, elimina_comillas, elimina_espacios
+from ominicontacto_app.utiles import elimina_comillas, elimina_espacios
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
@@ -18,8 +19,6 @@ from ominicontacto_app.services.wombat_config import (
 )
 from ominicontacto_app.services.exportar_base_datos import\
     SincronizarBaseDatosContactosService
-
-import logging
 
 
 class CampanaService():
@@ -127,7 +126,7 @@ class CampanaService():
     def crear_trunk_campana_wombat(self, campana):
         """
         Crea trunk para una campaign en wombat via curl
-        :param campana: campana a la cual se le creara un trunk en wombat 
+        :param campana: campana a la cual se le creara un trunk en wombat
         """
         service_wombat = WombatService()
         # crea json de trunk para crear trunk en wombat
@@ -136,8 +135,7 @@ class CampanaService():
         url_edit = "api/edit/campaign/trunk/?mode=E&parent={0}".format(
             campana.campaign_id_wombat)
         # crea trunk en wombat
-        salida = service_wombat.update_config_wombat(
-            "newcampaign_trunk.json", url_edit)
+        service_wombat.update_config_wombat("newcampaign_trunk.json", url_edit)
 
     def crear_reschedule_campana_wombat(self, campana, parametros):
         """
@@ -152,8 +150,7 @@ class CampanaService():
         url_edit = "api/edit/campaign/reschedule/?mode=E&parent={0}".format(
             campana.campaign_id_wombat)
         # crea reschedule wn wombat
-        salida = service_wombat.update_config_wombat(
-            "newcampaign_reschedule.json", url_edit)
+        service_wombat.update_config_wombat("newcampaign_reschedule.json", url_edit)
 
     def crear_endpoint_campana_wombat(self, campana):
         """
@@ -192,8 +189,7 @@ class CampanaService():
         url_edit = "api/edit/campaign/ep/?mode=E&parent={0}".format(
             campana.campaign_id_wombat)
         # crea asociacion de enpoint con campaign en wombat
-        salida = service_wombat.update_config_wombat(
-            "newcampaign_ep.json", url_edit)
+        service_wombat.update_config_wombat("newcampaign_ep.json", url_edit)
 
     def crear_lista_wombat(self, campana):
         """
@@ -206,8 +202,7 @@ class CampanaService():
         url_edit = "api/lists/?op=addToList&list={0}".format(
             nombre_lista)
         # crea lista en wombat
-        salida = service_wombat.update_lista_wombat("newcampaign_list_contacto.txt",
-                                                    url_edit)
+        service_wombat.update_lista_wombat("newcampaign_list_contacto.txt", url_edit)
 
     def crear_lista_asociacion_campana_wombat(self, campana):
         """
@@ -240,8 +235,7 @@ class CampanaService():
         """
         nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
         url_edit = "api/campaigns/?op=start&campaign={0}".format(nombre_campana)
-        url = '/'.join([settings.OML_WOMBAT_URL,
-                  url_edit])
+        url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         r = requests.post(url)
         if r.status_code == 200:
             return True
@@ -256,8 +250,7 @@ class CampanaService():
         """
         nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
         url_edit = "api/campaigns/?op=pause&campaign={0}".format(nombre_campana)
-        url = '/'.join([settings.OML_WOMBAT_URL,
-                  url_edit])
+        url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         r = requests.post(url)
         if r.status_code == 200:
             return True
@@ -272,8 +265,7 @@ class CampanaService():
         """
         nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
         url_edit = "api/campaigns/?op=unpause&campaign={0}".format(nombre_campana)
-        url = '/'.join([settings.OML_WOMBAT_URL,
-                  url_edit])
+        url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         r = requests.post(url)
         if r.status_code == 200:
             return True
@@ -312,8 +304,7 @@ class CampanaService():
         """
         nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
         url_edit = "api/campaigns/?op=remove&campaign={0}".format(nombre_campana)
-        url = '/'.join([settings.OML_WOMBAT_URL,
-                  url_edit])
+        url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         r = requests.post(url)
 
         if r.status_code == 200:
@@ -324,12 +315,15 @@ class CampanaService():
         """
         obtiene los datos de la campana pasada por parametro
         :param campana: campana a la cual deseo obtener sus datos
-        :return: los datos de la campana 
+        :return: los datos de la campana
         """
         service_wombat = WombatService()
         url_edit = "api/live/runs/"
         salida = service_wombat.list_config_wombat(url_edit)
-        return self.obtener_datos_campana_run(salida, campana)
+        if salida:
+            return self.obtener_datos_campana_run(salida, campana)
+        else:
+            return None
 
     def cambiar_base(self, campana, telefonos, evitar_duplicados, evitar_sin_telefono,
                      prefijo_discador):
@@ -387,6 +381,7 @@ class CampanaService():
         por realizar, si no le quedan las elimino de las campanas corriendo y le cambio
         el estado a eliminadas
         """
+        error = False
         for campana in campanas:
             detalle = self.obtener_dato_campana_run(campana)
             if detalle:
@@ -394,6 +389,10 @@ class CampanaService():
                 if restantes == 0 and not campana.es_manual:
                     self.remove_campana_wombat(campana)
                     campana.finalizar()
+            else:
+                error = _(u"No se pudo consultar el estado actual de la campaña. "
+                          "Consulte con su administrador.")
+        return error
 
     def desasociacion_endpoint_campana_wombat(self, campana):
         """
@@ -408,8 +407,7 @@ class CampanaService():
         url_edit = "api/edit/campaign/ep/?mode=D&parent={0}".format(
             campana.campaign_id_wombat)
         # elimina lista de la campana en wombat
-        salida = service_wombat.update_config_wombat(
-            "deletecampaign_ep.json", url_edit)
+        service_wombat.update_config_wombat("deletecampaign_ep.json", url_edit)
 
     def update_endpoint(self, campana):
         """
