@@ -242,7 +242,7 @@ class ArchivoDeAudioFactory(DjangoModelFactory):
     class Meta:
         model = ArchivoDeAudio
 
-    descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(faker.text(5)))
+    descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(uuid4()))
 
 
 class ParametroExtraParaWebformFactory(DjangoModelFactory):
