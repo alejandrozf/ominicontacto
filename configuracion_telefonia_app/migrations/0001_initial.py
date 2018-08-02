@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
-        ('ominicontacto_app', '0179_supervisorprofile_timestamp'),
+        ('ominicontacto_app', '0001_initial'),
     ]
 
     operations = [
