@@ -7,7 +7,6 @@ ya que el insert lo hace kamailio-debian/asterisk(hablar con fabian como hace el
 
 from django.utils import timezone
 
-from django.conf import settings
 from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
 from django.http import JsonResponse
@@ -16,7 +15,7 @@ from ominicontacto_app.forms import GrabacionBusquedaForm
 from ominicontacto_app.models import (
     Grabacion, GrabacionMarca, Campana
 )
-from utiles import convert_fecha_datetime
+from utiles import convert_fecha_datetime, fecha_local
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -50,8 +49,7 @@ class BusquedaGrabacionFormView(FormView):
         return context
 
     def get(self, request, *args, **kwargs):
-        hoy_ahora = timezone.now()
-        hoy = hoy_ahora.date()
+        hoy = fecha_local(timezone.now())
         campanas = Campana.objects.all()
         if self.request.user.get_is_supervisor_customer():
             user = self.request.user

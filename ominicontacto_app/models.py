@@ -31,7 +31,9 @@ from django.core.management import call_command
 from django.utils.translation import ugettext as _
 from django.utils.timezone import now
 from simple_history.models import HistoricalRecords
-from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra, fecha_local
+from ominicontacto_app.utiles import (
+    ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
+    datetime_hora_minima_dia)
 
 logger = logging.getLogger(__name__)
 
@@ -2113,9 +2115,8 @@ class GrabacionManager(models.Manager):
                                        "fecha"))
 
     def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
-        fecha_inicio = datetime.datetime.combine(fecha_inicio,
-                                                 datetime.time.min)
-        fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)
+        fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
+        fecha_fin = datetime_hora_maxima_dia(fecha_fin)
         try:
             return self.filter(fecha__range=(fecha_inicio, fecha_fin))
         except Grabacion.DoesNotExist:
@@ -2123,9 +2124,8 @@ class GrabacionManager(models.Manager):
                                        "de fechas"))
 
     def grabacion_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
-        fecha_inicio = datetime.datetime.combine(fecha_inicio,
-                                                 datetime.time.min)
-        fecha_fin = datetime.datetime.combine(fecha_fin, datetime.time.max)
+        fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
+        fecha_fin = datetime_hora_maxima_dia(fecha_fin)
         try:
             return self.filter(fecha__range=(fecha_inicio, fecha_fin),
                                campana__in=campanas).order_by('-fecha')
@@ -2166,10 +2166,8 @@ class GrabacionManager(models.Manager):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
             grabaciones = grabaciones.filter(fecha__range=(fecha_desde,
                                                            fecha_hasta))
         if tipo_llamada:
@@ -2283,7 +2281,7 @@ class AgendaManager(models.Manager):
 
     def eventos_fecha_hoy(self):
         try:
-            return self.filter(fecha=datetime.datetime.today())
+            return self.filter(fecha=fecha_local(now()))
         except Agenda.DoesNotExist:
             raise (SuspiciousOperation("No se encontro evenos en el dia de la "
                                        "fecha"))
@@ -2291,10 +2289,8 @@ class AgendaManager(models.Manager):
     def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
         eventos = self.filter()
         if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
             eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
         return eventos.order_by('-fecha')
 
@@ -2457,7 +2453,7 @@ class AgendaContactoManager(models.Manager):
 
     def eventos_fecha_hoy(self):
         try:
-            return self.filter(fecha=datetime.datetime.today())
+            return self.filter(fecha=fecha_local(now()))
         except AgendaContacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro evenos en el dia de la "
                                        "fecha"))
@@ -2465,14 +2461,11 @@ class AgendaContactoManager(models.Manager):
     def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
         eventos = self.filter(tipo_agenda=AgendaContacto.TYPE_PERSONAL)
         if fecha_desde and fecha_hasta:
-            fecha_desde = datetime.datetime.combine(fecha_desde,
-                                                    datetime.time.min)
-            fecha_hasta = datetime.datetime.combine(fecha_hasta,
-                                                    datetime.time.max)
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
             eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
         else:
-            hoy_ahora = datetime.datetime.today()
-            hoy = hoy_ahora.date()
+            hoy = fecha_local(now())
             eventos = eventos.filter(fecha__gte=hoy)
         return eventos.order_by('-fecha')
 
