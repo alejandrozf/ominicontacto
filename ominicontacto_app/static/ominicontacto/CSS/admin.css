@@ -644,6 +644,7 @@ input[type=file].form-control {
 }
 .wrapper-info {
     padding: 34px 50px 30px 50px;
+    position: relative;
 }
 .wrapper-info > h1:first-of-type {
     font-size: 1.2rem;
@@ -671,6 +672,8 @@ table.campana-reglas .td-remove .btn {
     margin: 0;
 }
 
+/*///// Supervision
+*/
 
 /* ///// Tabs
 */
