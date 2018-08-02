@@ -10,6 +10,7 @@ from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
@@ -86,6 +87,7 @@ class UserChangeForm(forms.ModelForm):
     def clean(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
+        validate_password(password1)
         if password1 != password2:
             raise forms.ValidationError(_('Los passwords no concuerdan'))
 
