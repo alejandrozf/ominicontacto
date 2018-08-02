@@ -31,7 +31,7 @@ class ConversorDeAudioService(object):
     convertidos para audios globales / predefinidos
     """
 
-    TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = "audio-predefinido-{0}{1}"
+    TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = "{0}{1}"
     """Nombre de archivo para audios ya convertidos, de archivos
     de audios globales / predefinidos.
 
@@ -39,12 +39,6 @@ class ConversorDeAudioService(object):
     1. {0} para el ID de ArchivoDeAudio
     2. {1} para el sufijo del nombre del archivo (ej: '.wav')
     """
-
-    REGEX_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = re.compile(
-        "^" + DIR_AUDIO_PREDEFINIDO + os.path.sep +
-        TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO.format(
-            "(\\d+)", settings.TMPL_OML_AUDIO_CONVERSOR_EXTENSION) +
-        "$")
 
     def _crear_directorios(self, directorio, mode=0755):
         """Crea directorio (recursivamente) si no existen. Es el equivalente
@@ -178,7 +172,7 @@ class ConversorDeAudioService(object):
         # genera nombre del archivo de salida
         _template = ConversorDeAudioService.\
             TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO
-        filename = _template.format(archivo_de_audio.id,
+        filename = _template.format(archivo_de_audio.descripcion,
                                     settings.TMPL_OML_AUDIO_CONVERSOR_EXTENSION)
 
         # Creamos directorios si no existen
