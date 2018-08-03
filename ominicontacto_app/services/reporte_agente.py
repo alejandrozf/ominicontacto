@@ -128,16 +128,14 @@ class EstadisticasAgenteService():
             evento = log_llamada_agente.event
             duracion_llamada = log_llamada_agente.duracion_llamada
             es_llamada_manual = (log_llamada_agente.tipo_llamada == LlamadaLog.LLAMADA_MANUAL)
-            if evento in ['COMPLETEAGENT', 'COMPLETECALLER'] and not es_llamada_manual:
+            if evento in LlamadaLog.EVENTOS_FIN_CONEXION:
                 tiempo_en_llamada += duracion_llamada
-            if evento in ['COMPLETEAGENT', 'COMPLETECALLER'] and es_llamada_manual:
-                tiempo_en_llamada += duracion_llamada
-                tiempo_en_llamada_manual += duracion_llamada
-            elif evento in ['ANSWER', 'CONNECT'] and not es_llamada_manual:
+                if es_llamada_manual:
+                    tiempo_en_llamada_manual += duracion_llamada
+            elif evento in ['ANSWER', 'CONNECT']:
                 cantidad_llamadas_procesadas += 1
-            elif evento in ['ANSWER', 'CONNECT'] and es_llamada_manual:
-                cantidad_llamadas_procesadas += 1
-                cantidad_llamadas_manuales += 1
+                if es_llamada_manual:
+                    cantidad_llamadas_manuales += 1
             elif evento in LlamadaLog.EVENTOS_NO_CONEXION:
                 cantidad_llamadas_perdidas += 1
         return (tiempo_en_llamada, tiempo_en_llamada_manual, cantidad_llamadas_procesadas,

@@ -701,7 +701,7 @@ class ValidacionFechaHoraUpdateView(ValidacionFechaHoraMixin, UpdateView):
         if form.is_valid() and validacion_fecha_hora_formset.is_valid():
             validacion = form.save()
             validacion_fecha_hora_formset.save()
-            nodo_validacion = DestinoEntrante.objects.get(
+            DestinoEntrante.objects.get(
                 object_id=validacion.pk, content_type=ContentType.objects.get_for_model(validacion))
             # escribe el nodo creado y sus relaciones en asterisk
             sincronizador = self.get_sincronizador_de_configuracion()
@@ -770,7 +770,9 @@ class DeleteNodoDestinoMixin(object):
             return redirect(self.url_eliminar_name, self.get_object().id)
         self.eliminar_nodos_y_asociaciones()
 
-        messages.success(request, self.nodo_eliminado)
+        if nodo.tipo != DestinoEntrante.CAMPANA:
+            # las vistas de eliminación de campañas muestran su propio mensaje satisfactorio
+            messages.success(request, self.nodo_eliminado)
         return super(DeleteNodoDestinoMixin, self).delete(request, *args, **kwargs)
 
 

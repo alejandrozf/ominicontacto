@@ -255,7 +255,9 @@ class CampanasTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_borrada.nombre)
 
-    def test_usuario_logueado_puede_crear_campana_preview(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_crear_campana_preview(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
@@ -267,7 +269,9 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_step2_data, follow=True)
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
-    def test_usuario_logueado_puede_modificar_campana_preview(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_modificar_campana_preview(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
         nuevo_objetivo = 3
         (post_step0_data, post_step1_data,
@@ -331,7 +335,9 @@ class CampanasTests(OMLBaseTest):
         agente_en_contacto = AgenteEnContactoFactory.create()
         self.assertTrue(isinstance(agente_en_contacto, AgenteEnContacto))
 
-    def test_creacion_campana_preview_inicializa_relacion_agente_contacto(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_creacion_campana_preview_inicializa_relacion_agente_contacto(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
@@ -498,7 +504,9 @@ class CampanasTests(OMLBaseTest):
         dict_response = json.loads(response.content)
         self.assertTrue(dict_response['contacto_asignado'])
 
-    def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
@@ -889,7 +897,9 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_step3_data, follow=True)
         self.assertTrue(DestinoEntrante.objects.all().exists())
 
-    def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
@@ -904,7 +914,9 @@ class CampanasTests(OMLBaseTest):
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
 
-    def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_manual(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_manual(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
@@ -1260,7 +1272,9 @@ class CampanasTests(OMLBaseTest):
         post_step2_data.pop('campana_manual_create_view-current_step')
         return post_step0_data, post_step1_data, post_step2_data
 
-    def test_usuario_logueado_puede_crear_campana_manual_desde_template(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_crear_campana_manual_desde_template(
+            self, _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         queue = QueueFactory.create(
             campana=campana, pk=campana.nombre)
@@ -1334,7 +1348,9 @@ class CampanasTests(OMLBaseTest):
         post_step2_data.pop('campana_preview_create_view-current_step')
         return post_step0_data, post_step1_data, post_step2_data
 
-    def test_usuario_logueado_puede_crear_campana_preview_desde_template(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_crear_campana_preview_desde_template(
+        self, _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
         queue = QueueFactory.create(
             campana=campana, pk=campana.nombre)

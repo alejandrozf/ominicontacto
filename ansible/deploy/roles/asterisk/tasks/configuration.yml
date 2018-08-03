@@ -115,7 +115,7 @@
 #      - omni-dialednum.php
       - omni-grabaciones.php
       - phpagi-asmanager.php
-      - php-agi.php 
+      - phpagi.php
   become: yes
   become_method: sudo
 

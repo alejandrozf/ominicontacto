@@ -27,6 +27,8 @@ from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios)
 
+from utiles_globales import validar_extension_archivo_audio
+
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
 
@@ -1165,6 +1167,17 @@ class ArchivoDeAudioForm(forms.ModelForm):
             la Campaña. Si ya existe uno y guarda otro, el audio será
             reemplazado.""",
         }
+
+    def __init__(self, *args, **kwargs):
+        super(ArchivoDeAudioForm, self).__init__(*args, **kwargs)
+        self.fields['audio_original'].required = True
+
+    def clean(self):
+        cleaned_data = super(ArchivoDeAudioForm, self).clean()
+        audio_original = cleaned_data.get('audio_original', False)
+        if audio_original:
+            validar_extension_archivo_audio(audio_original)
+        return cleaned_data
 
 
 class EscogerCampanaForm(forms.Form):

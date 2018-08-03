@@ -46,8 +46,11 @@ class CampanaDialerListView(ListView):
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         campana_service = CampanaService()
-        campana_service.chequear_campanas_finalizada_eliminarlas(
+        error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
             campanas.filter(estado=Campana.ESTADO_ACTIVA))
+        if error_finalizadas:
+            messages.add_message(self.request, messages.WARNING, error_finalizadas)
+
         context['campanas'] = campanas
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
@@ -254,7 +257,7 @@ class UpdateBaseDatosDialerView(FormView):
         evitar_duplicados = form.cleaned_data.get('evitar_duplicados')
         evitar_sin_telefono = form.cleaned_data.get('evitar_sin_telefono')
         prefijo_discador = form.cleaned_data.get('prefijo_discador')
-        columnas = form.cleaned_data.get('columnas')
+        columnas = form.cleaned_data.get('telefonos')
         bd_contacto = form.cleaned_data.get('bd_contacto')
         self.object = self.get_object()
         campana_service = CampanaService()

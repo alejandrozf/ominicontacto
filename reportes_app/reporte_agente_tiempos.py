@@ -174,9 +174,9 @@ class TiemposAgente(object):
 
     def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
         """ Calcula el tiempo de llamada teniendo en cuenta los eventos
-        COMPLETECALLER y COMPLETEAGENT"""
+        de finalizacion de conexion con Cliente"""
 
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
         agentes_id = [agente.id for agente in agentes]
 
         logs_time = LlamadaLog.objects.obtener_tiempo_llamadas_agente(
@@ -200,9 +200,9 @@ class TiemposAgente(object):
 
     def calcular_cantidad_llamadas(self, agentes, fecha_inferior, fecha_superior):
         """ Calcula la cantidad de llamadas procesads teniendo en cuenta los
-        eventos COMPLETECALLER y COMPLETEAGENT"""
+        eventos de fin de conexión con un Cliente """
 
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
         agentes_id = [agente.id for agente in agentes]
 
         logs_time = LlamadaLog.objects.obtener_count_evento_agente(
@@ -307,7 +307,7 @@ class TiemposAgente(object):
 
     def obtener_count_llamadas_campana(self, agentes, fecha_inferior,
                                        fecha_superior, user):
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
 
         campanas = Campana.objects.obtener_all_dialplan_asterisk()
         if not user.get_is_administrador():
@@ -335,14 +335,14 @@ class TiemposAgente(object):
     def _obtener_llamadas_agente(self, agentes, fecha_inferior, fecha_superior):
         """
         Obtiene el totales de llamadas por agente
-        :param fecha_inferior: fecha desde cual se obtendran las grabaciones
-        :param fecha_superior: fecha hasta el cual se obtendran las grabaciones
+        :param fecha_inferior: fecha desde cual se contabilizaran las llamadas
+        :param fecha_superior: fecha hasta el cual se contabilizaran las llamadas
         :return: queryset con las cantidades totales por agente
         """
         fecha_inferior = datetime_hora_minima_dia(fecha_inferior)
         fecha_superior = datetime_hora_maxima_dia(fecha_superior)
         agentes_id = [agente.id for agente in agentes]
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
         dict_agentes = LlamadaLog.objects.obtener_count_agente().filter(
             time__range=(fecha_inferior, fecha_superior),
             agente_id__in=agentes_id,
@@ -631,7 +631,7 @@ class TiemposAgente(object):
         """ Calcula el tiempo de llamada teniendo en cuenta los eventos
         COMPLETECALLER y COMPLETEAGENT, por fecha dia a dia para el agente"""
 
-        eventos_llamadas = ['COMPLETECALLER', 'COMPLETEAGENT']
+        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
 
         logs_time = LlamadaLog.objects.obtener_tiempo_llamada_agente(
             eventos_llamadas,

@@ -23,6 +23,7 @@ class RestablecerDialplanError(OmlError):
 
 
 class ActivacionQueueService(object):
+    """ Sincronizador de configuracion de Campaña / Queue """
 
     def __init__(self):
         self.queues_config_creator = QueuesCreator()

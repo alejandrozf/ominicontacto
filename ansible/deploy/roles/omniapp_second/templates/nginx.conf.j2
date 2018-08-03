@@ -48,17 +48,6 @@ http {
         location / {
         }
 
-        location /grabaciones {
-
-        {% if asterisk_location != "" %}
-            alias {{ install_prefix }}asterisk/var/spool/asterisk/oml;
-        {% else %}
-            alias /var/spool/asterisk/oml;
-        {% endif %}
-            autoindex on;
-            allow all;
-        }
-
         location /coverage {
             alias /tmp/oml-coverity;
             autoindex off;

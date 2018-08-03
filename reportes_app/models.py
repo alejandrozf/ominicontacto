@@ -132,6 +132,11 @@ class LlamadaLog(models.Model):
 
     EVENTOS_NO_CONEXION = ('NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER', 'AMD',
                            'BLACKLIST', 'ABANDON', 'EXITWITHTIMEOUT')
+    
+    # Eventos que marcan el fin de la conexion con un agente. (Puede ser por conectar con otro)
+    EVENTOS_FIN_CONEXION = ['COMPLETEAGENT', 'COMPLETECALLER', 'BT-TRY', 'CAMPT-COMPLETE',
+                            'CT-COMPLETE', 'BTOUT-TRY', 'CTOUT-COMPLETE', 'COMPLETE-BT',
+                            'COMPLETE-CT', 'COMPLETE-CAMPT', 'COMPLETE-BTOUT', 'COMPLETE-CTOUT']
 
     objects = LlamadaLogManager()
 
@@ -147,6 +152,11 @@ class LlamadaLog(models.Model):
     bridge_wait_time = models.IntegerField(blank=True, null=True)
     duracion_llamada = models.IntegerField(blank=True, null=True)
     archivo_grabacion = models.CharField(max_length=50, blank=True, null=True)
+
+    # campos sólo para algunos logs transferencias
+    agente_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
+    campana_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
+    numero_extra = models.CharField(max_length=128, blank=True, null=True)
 
     def __unicode__(self):
         return "Log de llamada con fecha {0} con id de campaña {1} con id de agente {2} " \

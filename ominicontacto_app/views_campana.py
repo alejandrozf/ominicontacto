@@ -100,6 +100,8 @@ class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView)
     """
     Esta vista se encarga de la eliminación de una campana
     """
+    # TODO: realizar refactor aquí, la vista de eliminación no debería tener dos métodos
+    # 'delete'
     model = Queue
     template_name = 'campana/delete_campana.html'
     imposible_eliminar = _('No se puede eliminar una Campaña que es destino en un flujo de llamada')
@@ -113,7 +115,9 @@ class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView)
         return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+        # No se puede volver a borrar una campaña.
+        return Campana.objects.exclude(
+            estado=Campana.ESTADO_BORRADA).get(pk=self.kwargs['pk_campana'])
 
     def get_success_url(self):
         return reverse('campana_list')

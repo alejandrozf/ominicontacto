@@ -9,7 +9,9 @@ from __future__ import unicode_literals
 
 import json
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.utils.timezone import now, timedelta
 
 from ominicontacto_app.models import Grabacion, GrabacionMarca
 
@@ -17,7 +19,7 @@ from ominicontacto_app.tests.factories import GrabacionFactory, GrabacionMarcaFa
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 
-class GrabacionesTests(OMLBaseTest):
+class BaseGrabacionesTests(OMLBaseTest):
 
     PWD = 'admin123'
 
@@ -38,6 +40,9 @@ class GrabacionesTests(OMLBaseTest):
 
         self.client.login(username=self.usuario_admin_supervisor.username,
                           password=self.PWD)
+
+
+class GrabacionesTests(BaseGrabacionesTests):
 
     def test_vista_creacion_grabaciones_marcadas(self):
         url = reverse('grabacion_marcar')
@@ -77,8 +82,16 @@ class GrabacionesTests(OMLBaseTest):
         data_response = json.loads(response.content)
         self.assertEqual(data_response['result'], 'No encontrada')
 
+    def test_url_de_grabacion_segun_fecha(self):
+        hoy = now()
+        hace_mucho = hoy - timedelta(days=3)
+        self.grabacion2.fecha = hace_mucho
+        self.grabacion1.fecha = hoy
+        self.assertTrue(self.grabacion2.url.endswith(settings.MONITORFORMAT))
+        self.assertTrue(self.grabacion1.url.endswith('.wav'))
 
-class FiltrosGrabacionesTests(GrabacionesTests):
+
+class FiltrosGrabacionesTests(BaseGrabacionesTests):
 
     def test_filtro_grabaciones_marcadas(self):
         self.assertEqual(Grabacion.objects.marcadas().count(), 2)
@@ -108,3 +121,36 @@ class FiltrosGrabacionesTests(GrabacionesTests):
         self.assertNotContains(response, '41111111')
         self.assertNotContains(response, '42222222')
         self.assertNotContains(response, '43333333')
+
+    def _obtener_fechas(self):
+        hoy = now()
+        hace_mucho = hoy - timedelta(days=3)
+        ahora = now()
+        return (hoy, hace_mucho, ahora)
+
+    def test_buscar_grabaciones_por_fecha(self):
+        (hoy, hace_mucho, ahora) = self._obtener_fechas()
+        if hoy.date() < ahora.date():
+            (hoy, hace_mucho, ahora) = self._obtener_fechas()
+        Grabacion.objects.filter(id=self.grabacion2.id).update(fecha=hace_mucho,
+                                                               tel_cliente='42222222')
+        Grabacion.objects.filter(id=self.grabacion1.id).update(fecha=hoy, tel_cliente='41111111')
+        Grabacion.objects.filter(id=self.grabacion3.id).update(fecha=hoy, tel_cliente='43333333')
+        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'sip_agente': '',
+                     'campana': '', 'marcadas': '', 'duracion': '0'}
+
+        rango_hace_mucho = hace_mucho.date().strftime('%d/%m/%Y') + ' - ' + \
+            ahora.date().strftime('%d/%m/%Y')
+        post_data['fecha'] = rango_hace_mucho
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, '41111111')
+        self.assertContains(response, '42222222')
+        self.assertContains(response, '43333333')
+
+        rango_hoy = ahora.date().strftime('%d/%m/%Y') + ' - ' + ahora.date().strftime('%d/%m/%Y')
+        post_data['fecha'] = rango_hoy
+        response = self.client.post(url, post_data, follow=True)
+        self.assertNotContains(response, '42222222')
+        self.assertContains(response, '41111111')
+        self.assertContains(response, '43333333')

@@ -20,6 +20,17 @@ server {
          allow all;
     }
 
+    location /grabaciones {
+
+    {% if asterisk_location != "" %}
+    alias {{ install_prefix }}asterisk/var/spool/asterisk/monitor;
+    {% else %}
+    alias /var/spool/asterisk/monitor;
+    {% endif %}
+    autoindex on;
+    allow all;
+    }
+
     location / {
        	if ($request_method ~* "(GET)") {
       		add_header "Access-Control-Allow-Origin"  *;
