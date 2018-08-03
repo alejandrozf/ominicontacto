@@ -114,7 +114,7 @@ def procesar_datos_transferencias():
         agente_id_modificado = TD['new']['data5']
     elif event in ['BTOUT-TRY', 'CTOUT-TRY']:
         # agente_id_origen - nro_telefono_destino
-        agente_id = valor_transf_1
+        agente_id_modificado = valor_transf_1
         numero_extra = valor_transf_2
     elif event in ['BTOUT-ANSWER', 'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION',
                    'BTOUT-CHANUNAVAIL', 'CTOUT-ANSWER', 'CTOUT-ACCEPT', 'CTOUT-DISCARD',
