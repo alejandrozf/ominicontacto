@@ -147,6 +147,11 @@ class TriggerQueuelogTest(OMLBaseTest):
             'CTOUT-CANCEL',
             'CTOUT-CHANUNAVAIL',
             'CTOUT-CONGESTION',
+            'COMPLETE-CTOUT',
+            'COMPLETE-CT',
+            'COMPLETE-BT',
+            'COMPLETE-BTOUT',
+            'COMPLETE-CAMPT',
         ]
 
         for evento_transferencia in EVENTOS_TRANSFERENCIAS:
