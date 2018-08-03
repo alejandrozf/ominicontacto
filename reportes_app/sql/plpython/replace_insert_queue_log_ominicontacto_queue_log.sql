@@ -79,6 +79,11 @@ EVENTOS_TRANSFERENCIAS = [
     'CTOUT-CANCEL',
     'CTOUT-CHANUNAVAIL',
     'CTOUT-CONGESTION',
+    'COMPLETE-CTOUT',
+    'COMPLETE-CT',
+    'COMPLETE-BT',
+    'COMPLETE-BTOUT',
+    'COMPLETE-CAMPT',
 ]
 
 EVENTOS = EVENTOS_LLAMADAS + EVENTOS_TRANSFERENCIAS
@@ -87,10 +92,10 @@ EVENTOS = EVENTOS_LLAMADAS + EVENTOS_TRANSFERENCIAS
 def procesar_datos_transferencias():
     """Parsea la información de los valores generados desde los campos 'agent', 'data4' y
     'data5' para obtener los valores de los campos de los logs de transferencias de llamadas:
-    (agente_extra_id, campana_destino_id, numero_destino)
+    (agente_extra_id, campana_extra_id, numero_extra)
     """
     agente_data = TD['new']['agent']
-    agente_id_modificado, agente_extra_id, campana_destino_id, numero_destino = (None,) * 4
+    agente_id_modificado, agente_extra_id, campana_extra_id, numero_extra = (-1,) * 4
     try:
         valor_transf_1, valor_transf_2 = agente_data.split("-")
     except ValueError:
@@ -102,25 +107,27 @@ def procesar_datos_transferencias():
     elif event == 'CAMPT-TRY':
         # agente_id - id_camp_destino
         agente_id_modificado = valor_transf_1
-        campana_destino_id = valor_transf_2
+        campana_extra_id = valor_transf_2
     elif event == 'ENTERQUEUE-TRANSFER':
         # id_camp_origen - id_agente_origen (en data4, data5)
-        agente_id_modificado = TD['new']['data4']
-        agente_extra_id = TD['new']['data5']
+        campana_extra_id = TD['new']['data4']
+        agente_id_modificado = TD['new']['data5']
     elif event in ['BTOUT-TRY', 'CTOUT-TRY']:
         # agente_id_origen - nro_telefono_destino
         agente_id = valor_transf_1
-        numero_destino = valor_transf_2
+        numero_extra = valor_transf_2
     elif event in ['BTOUT-ANSWER', 'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION',
                    'BTOUT-CHANUNAVAIL', 'CTOUT-ANSWER', 'CTOUT-ACCEPT', 'CTOUT-DISCARD',
-                   'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION']:
-        agente_id_modificado = None
-        numero_destino = valor_transf_1
+                   'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION',
+                   'COMPLETE-BTOUT', 'COMPLETE-CTOUT']:
+        # el valor del campo 'agent' tiene un número de telefono
+        agente_id_modificado = -1
+        numero_extra = valor_transf_1
     else:
         # en los eventos de transferencias con un solo valor que contiene el id de un agente
         # solo se mantiene el valor de 'agente_id'
         agente_id_modificado = valor_transf_1
-    return agente_id_modificado, agente_extra_id, campana_destino_id, numero_destino
+    return agente_id_modificado, agente_extra_id, campana_extra_id, numero_extra
 
 
 if event in EVENTOS_AGENTE and queuename == 'ALL':
@@ -137,18 +144,18 @@ elif event in EVENTOS:
         campana_id, tipo_campana, tipo_llamada = (-1, -1, -1)
 
     if event in EVENTOS_TRANSFERENCIAS:
-        (agente_id, agente_extra_id, campana_destino_id,
-         numero_destino) = procesar_datos_transferencias()
+        (agente_id, agente_extra_id, campana_extra_id,
+         numero_extra) = procesar_datos_transferencias()
     else:
-        agente_extra_id, campana_destino_id, numero_destino = (None, None, None)
+        agente_extra_id, campana_extra_id, numero_extra = (-1, -1, -1)
     plan_llamadas_log = plpy.prepare(
-        "INSERT INTO reportes_app_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion, agente_extra_id, campana_destino_id, numero_destino) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
+        "INSERT INTO reportes_app_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion, agente_extra_id, campana_extra_id, numero_extra) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
         ["timestamp with time zone", "text", "int", "int", "int", "int", "text", "text", "int",
          "int", "int", "text", "int", "int", "text"])
     plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
                                      agente_id, event, data1, contacto_id, bridge_wait_time,
                                      duracion_llamada, archivo_grabacion, agente_extra_id,
-                                     campana_destino_id, numero_destino])
+                                     campana_extra_id, numero_extra])
 else:
     # no insertamos logs de estos eventos de momento
     pass

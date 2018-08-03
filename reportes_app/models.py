@@ -150,8 +150,8 @@ class LlamadaLog(models.Model):
 
     # campos sólo para algunos logs transferencias
     agente_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
-    campana_destino_id = models.IntegerField(db_index=True, blank=True, null=True)
-    numero_destino = models.CharField(max_length=128, blank=True, null=True)
+    campana_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
+    numero_extra = models.CharField(max_length=128, blank=True, null=True)
 
     def __unicode__(self):
         return "Log de llamada con fecha {0} con id de campaña {1} con id de agente {2} " \
