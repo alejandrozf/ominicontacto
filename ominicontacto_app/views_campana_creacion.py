@@ -16,14 +16,12 @@ from django.utils.translation import ugettext as _
 
 from formtools.wizard.views import SessionWizardView
 
+from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.forms import (CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet,
                                      ParametroExtraParaWebformFormSet)
-from ominicontacto_app.models import Campana, Queue, ArchivoDeAudio
-
+from ominicontacto_app.models import Campana, ArchivoDeAudio
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
-from ominicontacto_app.services.asterisk_service import AsteriskService
-
 from ominicontacto_app.tests.factories import BaseDatosContactoFactory
 
 import logging as logging_
@@ -57,6 +55,11 @@ class CampanaTemplateCreateMixin(object):
             name = step_cleaned_data['nombre']
             initial_data.update({'name': name})
         return initial_data
+
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(CampanaTemplateCreateMixin, self).get_context_data(form=form, **kwargs)
+        context['es_template'] = True
+        return context
 
 
 class CampanaTemplateCreateCampanaMixin(object):
@@ -171,10 +174,8 @@ class CampanaWizardMixin(object):
             # vista de creación de campaña
             super(CampanaWizardMixin, self).get_form_instance(step)
 
-    def _insert_queue_asterisk(self, queue, solo_activar=False):
-        if not solo_activar:
-            servicio_asterisk = AsteriskService()
-            servicio_asterisk.insertar_cola_asterisk(queue)
+    def _insert_queue_asterisk(self, queue):
+        """ Sincronizar informacion de Campaña / Queue """
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
@@ -233,13 +234,9 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
         queue_form.instance.wrapuptime = 0
-        queue_form.instance.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
-        audio_pk = queue_form.cleaned_data['audios']
-        if audio_pk:
-            audio = ArchivoDeAudio.objects.get(pk=int(audio_pk))
-            queue_form.instance.announce = audio.audio_asterisk
-        else:
-            queue_form.instance.announce = None
+        audio_anuncio_periodico = queue_form.cleaned_data['audios']
+        if audio_anuncio_periodico:
+            queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
         queue_form.instance.save()
         return queue_form.instance
 
@@ -264,6 +261,10 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA)
+        # creamos un nodo destino de ruta entrante para ser que a la campaña se le pueda
+        # configurar un acceso en alguna ruta entrante
+        DestinoEntrante.crear_nodo_ruta_entrante(queue.campana)
+        # se insertan los datos de la campaña en asterisk
         self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_list'))
 
@@ -284,9 +285,14 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     def done(self, form_list, *args, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
-        queue_form = form_list[int(self.COLA)]
         campana_form.instance.save()
+
+        queue_form = form_list[int(self.COLA)]
+        audio_anuncio_periodico = queue_form.cleaned_data['audios']
+        if audio_anuncio_periodico:
+            queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
         queue_form.instance.save()
+
         campana = campana_form.instance
         opts_calif_init_formset = form_list[int(self.OPCIONES_CALIFICACION)]
         opts_calif_init_formset.instance = campana
@@ -294,7 +300,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         parametros_extra_web_formset.instance = campana
         parametros_extra_web_formset.save()
-        self._insert_queue_asterisk(queue_form.instance, solo_activar=True)
+        self._insert_queue_asterisk(queue_form.instance)
         return HttpResponseRedirect(reverse('campana_list'))
 
 

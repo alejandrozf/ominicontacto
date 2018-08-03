@@ -43,7 +43,7 @@ fi
 IngresaUsuario
 while true; do
     echo "Transifiriendo llave pública al usuario $usuario de Centos (si es la primera vez que haces esto tienes que ingresar la contraseña del usuario $usuario)"
-    ssh-copy-id -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 $usuario@$ip 2> /dev/null
+    ssh-copy-id -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 $usuario@$ip
     if [[ $? == 1 ]]
     then
         echo "Ingresaste una IP o usuario inválidas, favor volver a ingresarlas"
@@ -145,7 +145,7 @@ while true; do
         tag=$tag
         break
     else
-        if [ $nva_tag == "postinstall" ] || [ $nva_tag == "all" ]; then
+        if [ $nva_tag == "postinstall" ] || [ $nva_tag == "all" ] || [ $nva_tag == "asterisk" ] || [ $nva_tag == "kamailio" ]; then
             tag=$nva_tag
             break
         else

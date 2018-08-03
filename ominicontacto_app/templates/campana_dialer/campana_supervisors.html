@@ -2,24 +2,23 @@
 {% load static %}
 
 {% block content %}
-        <h4>Selecciones los supervisores los cuales van tener permiso para ver la campana <strong>{{campana.nombre}}</strong></h4>
 
-    <div class="col-md-4">
-        <form action = "" method = "post"> {% csrf_token %}
-              {{ form.non_field_errors }}
-    <div class="form-group row">
-        {{ form.supervisors.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Supervisores:</label>
-        <div class="col-sm-6">
-              {{ form.supervisors }}
+<h1>Permisos para ver</h1>
+<p>Selecciones los supervisores que tendrán permiso para ver la campana <strong>{{campana.nombre}}</strong></hp>
+
+<form action = "" method = "post"> {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+        <div class="col-md-6">
+            <label for="{{ form.bd_contacto.id_for_label }}">Supervisores:</label>
+            {{ form.supervisors }}
+            {{ form.supervisors.errors }}            
         </div>
     </div>
-
-            <button type="submit" id="id_registrar" class="btn btn-success btn-lg">
-                Guardar
-            </button>
-	    </form>
-
-    </div>
+    <hr>
+    <button type="submit" id="id_registrar" class="btn btn-primary">
+        Guardar
+    </button>
+</form>
 
 {% endblock %}

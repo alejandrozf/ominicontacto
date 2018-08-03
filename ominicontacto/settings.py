@@ -39,11 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ominicontacto_app',
+    'configuracion_telefonia_app',
     'crispy_forms',
     'compressor',
-    'reciclado_app',
+    'defender',
     'formtools',
+    'ominicontacto_app',
+    'reciclado_app',
+    'reportes_app',
+    'simple_history',
     'widget_tweaks',
 ]
 
@@ -56,6 +60,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'defender.middleware.FailedLoginMiddleware',
 ]
 
 
@@ -88,6 +93,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ominicontacto.wsgi.application'
+
+# Password hashers available
+# https://docs.djangoproject.com/en/1.9/topics/auth/passwords/
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -188,27 +201,26 @@ DATABASE_MYSQL_ASTERISK = {
     'PASSWORD': None,
 }
 
-OML_QUEUE_FILENAME = None
 OML_ASTERISK_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
 OML_BACKLIST_REMOTEPATH = None
 OML_GLOBALS_VARIABLES_FILENAME = None
+OML_RUTAS_SALIENTES_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
 Ejemplos:
 
 .. code-block:: python
 
-    OML_QUEUE_FILENAME = "/etc/asterisk/extensions_fts_queues.conf"
     OML_ASTERISK_HOSTNAME = "root@192.168.1.23"
     OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
     OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
     OML_QUEUES_FILENAME = "/etc/asterisk/queues_fts.conf"
     OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
     OML_GLOBALS_VARIABLES_FILENAME = "/etc/asterisk/extensions_fts_globals.conf"
-
+    OML_RUTAS_SALIENTES_FILENAME = "/etc/asterisk/oml_extensions_outr.conf"
 """
 
 OML_RELOAD_CMD = None
@@ -351,11 +363,6 @@ except ImportError as e:
     print "# "
     raise Exception("No se pudo importar oml_settings_local")
 
-# ~~~~~ Check OML_QUEUE_FILENAME
-
-assert OML_QUEUE_FILENAME is not None, \
-    "Falta definir setting para OML_QUEUE_FILENAME"
-
 # ~~~~~ Check OML_ASTERISK_HOSTNAME
 
 assert OML_ASTERISK_HOSTNAME is not None, \
@@ -420,11 +427,15 @@ assert OML_KAMAILIO_IP is not None, \
 assert OML_WOMBAT_URL is not None, \
     "Falta definir setting para OML_WOMBAT_URL"
 
-# ~~~~~ Check OML_WOMBAT_URL
+# ~~~~~ Check OML_WOMBAT_FILENAME
 
 assert OML_WOMBAT_FILENAME is not None, \
     "Falta definir setting para OML_WOMBAT_FILENAME"
 
+# ~~~~~ Check OML_RUTAS_SALIENTES_FILENAME
+
+assert OML_RUTAS_SALIENTES_FILENAME is not None, \
+    "Falta definir setting para OML_RUTAS_SALIENTES_FILENAME"
 
 # ~~~~~ Check OML_WOMBAT_USER
 

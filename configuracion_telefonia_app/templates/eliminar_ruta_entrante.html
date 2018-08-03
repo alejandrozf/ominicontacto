@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+    <form method="post">{% csrf_token %}
+        <h1>{% trans 'Ruta entrante ' %} "{{ ruta_entrante.nombre }}"</h1>
+        <p>{% trans '¿Esta seguro que desea eliminar esta ruta entrante?' %}</p>
+        <button type="submit" class="btn btn-danger">
+            {% trans 'Eliminar' %}
+        </button>
+        <a class="btn btn-outline-danger" href="{% url 'lista_rutas_entrantes' %}">{% trans 'Cancelar' %}</a>
+    </form>
+{% endblock %}

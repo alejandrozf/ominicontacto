@@ -8,13 +8,13 @@
   yum: name=php56w-fpm.x86_64 state=present
   become: yes
   become_method: sudo
-  ignore_errors: yes
+  when: asterisk_location != ""
 
 - name: Install of php-fpm
   yum: name=php-fpm.x86_64 state=present
   become: yes
   become_method: sudo
-  ignore_errors: yes
+  when: asterisk_location == ""
 
 - name: Modify of php.ini
   lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"

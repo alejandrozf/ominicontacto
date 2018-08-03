@@ -1,7 +1,13 @@
+.campSelected {
+  margin-left: 50px;
+}
 .backgroundWebPhone {
   height: 100%;
   background-color: #2E2E2E;
   box-shadow: 10px 10px 5px grey;
+}
+.title-transfer {
+  margin-top: 6px;
 }
 .key {
   margin-top: 2%;
@@ -39,4 +45,7 @@
 .libreta {
 	overflow: scroll;
   height: 140px;
+}
+#modalTransfer .modal-content {
+  left: -60px;
 }

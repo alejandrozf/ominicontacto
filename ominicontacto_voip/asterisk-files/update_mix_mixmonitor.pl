@@ -21,12 +21,11 @@ $config{'dbuser'} = 'qstatsUser';
 $config{'dbpass'} = 'qstatsPassw0rd';
 
 # Destination directory for recordings
-$config{'asterisk_spool'}  = "/opt/asterisk-13/var/spool/asterisk/monitor";
-$config{'destination_dir'} = "/opt/asterisk-13/var/spool/asterisk/asternic";
-
+$config{'asterisk_spool'}  = "/opt/omnileads/asterisk/var/spool/asterisk/monitor";
+$config{'destination_dir'} = "/opt/omnileads/asterisk/var/spool/asterisk/asternic";
 $config{'move_recording'} = true;
 
-# If you want "wav" recordings to be converted to .mp3 
+# If you want "wav" recordings to be converted to .mp3
 # It requires the lame tool to be installed. You also must
 # configure move_recordings above to true, as the mp3 file
 # will be stored in a different path than asterisk defaults (destination_dir)
@@ -71,8 +70,8 @@ $filename =~ s/\+//g;
 
 if($config{'move_recording'} == true) {
 
-    my $firstletter = substr $filename, 0, 1;
-    if ($firstletter ne "q" && $firstletter ne "o" ) { print "skip processing because first letter is $firstletter\n"; exit; }
+#    my $firstletter = substr $filename, 0, 1;
+#    if ($firstletter ne "q" && $firstletter ne "o" ) { print "skip processing because first letter is $firstletter\n"; exit; }
 
 # Set subdate destination directory
     $time = localtime(time);
@@ -118,7 +117,7 @@ if($config{'move_recording'} == true) {
 
     # Use the standard file location as stored in newer systems like FreePBX>=12
     $datesubdir = sprintf ("%4d-%02d-%02d",$year+1900,$mon+1,$mday);
-    $dest_directory = $directories; 
+    $dest_directory = $directories;
 
     $dest_directory     =~ s/$config{'asterisk_spool'}//g;
     $dest_directory     =~ s/^\///g;
@@ -135,11 +134,11 @@ $dbh->disconnect if $dbh;
 
 
 #my $firstletter = substr $filename, 0, 1;
-#if ($firstletter ne "q") { 
+#if ($firstletter ne "q") {
 #    my $query = "UPDATE asteriskcdrdb.cdr SET userfield='$dest_sql' WHERE uniqueid='$uniqueid'";
 #    $dbh->do($query);
 #    $dbh->disconnect if $dbh;
-#    exit; 
+#    exit;
 #
 #} else {
 #    # Update the DB

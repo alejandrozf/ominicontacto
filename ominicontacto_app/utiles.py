@@ -251,9 +251,18 @@ def datetime_hora_maxima_dia(fecha):
     return timezone.make_aware(maxima, timezone.get_current_timezone())
 
 
+def fecha_local(fecha_hora):
+    return fecha_hora.astimezone(timezone.get_current_timezone()).date()
+
+
 def convertir_ascii_string(cadena):
     """ Devuelve ascii ignorando caracteres extraños"""
     return cadena.encode('ascii', errors='ignore')
+
+
+def cast_datetime_part_date(fecha):
+    """ Devuelve un datetime part date """
+    return fecha.date()
 
 
 class UnicodeWriter:            # tomado de https://docs.python.org/2/library/csv.html

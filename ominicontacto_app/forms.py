@@ -26,6 +26,8 @@ from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios)
 
+from utiles_globales import validar_extension_archivo_audio
+
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
 
@@ -132,17 +134,12 @@ class QueueEntranteForm(forms.ModelForm):
     El form de cola para las colas
     """
 
-    audios = forms.ChoiceField(choices=[], required=False)
-
     def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = False
-        audios_choices = [(audio.id, audio.descripcion)
-                          for audio in audios_choices]
-        audios_choices.insert(0, EMPTY_CHOICE)
-        self.fields['audios'].choices = audios_choices
+        self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
 
     class Meta:
@@ -205,6 +202,10 @@ class BaseDatosContactoForm(forms.ModelForm):
     class Meta:
         model = BaseDatosContacto
         fields = ('nombre', 'archivo_importacion')
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'archivo_importacion': forms.FileInput(attrs={'class': 'form-control'}),
+        }
 
 
 class DefineColumnaTelefonoForm(forms.Form):
@@ -547,15 +548,6 @@ class GrupoAgenteForm(forms.Form):
         self.fields['grupo'].choices = grupo_choice
 
 
-class GrabacionReporteForm(forms.Form):
-    """
-    El form para reporte de grabaciones
-    """
-    fecha = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control'}))
-    finalizadas = forms.BooleanField(required=False)
-
-
 class AgendaBusquedaForm(forms.Form):
     """
     El busquedad form poara agente
@@ -801,28 +793,39 @@ class AgendaContactoForm(forms.ModelForm):
 
     class Meta:
         model = AgendaContacto
-        fields = ('contacto', 'agente', 'tipo_agenda', 'fecha', 'hora',
-                  'observaciones', 'campana')
+        fields = ('contacto', 'agente', 'campana', 'tipo_agenda', 'fecha', 'hora', 'observaciones')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
+            'campana': forms.HiddenInput(),
             'tipo_agenda': forms.Select(attrs={'class': 'form-control'}),
             "observaciones": forms.Textarea(attrs={'class': 'form-control'}),
             "fecha": forms.TextInput(attrs={'class': 'form-control'}),
             "hora": forms.TextInput(attrs={'class': 'form-control'}),
-            'campana': forms.HiddenInput(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(AgendaContactoForm, self).__init__(*args, **kwargs)
+        if not kwargs['initial']['campana'].type == Campana.TYPE_DIALER:
+            self.fields['tipo_agenda'].choices = [(AgendaContacto.TYPE_PERSONAL, 'PERSONAL')]
+
+    def clean_tipo_agenda(self):
+        campana = self.cleaned_data.get('campana', None)
+        if not campana and campana.type == Campana.TYPE_DIALER:
+            return AgendaContacto.TYPE_PERSONAL
+        return self.cleaned_data['tipo_agenda']
 
 
 class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
 
-        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
-        self.fields['fecha_inicio'].required = True
+        es_template = self.initial.get('es_template', False)
 
+        self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
-        self.fields['fecha_fin'].required = True
+        self.fields['fecha_inicio'].required = not es_template
+        self.fields['fecha_fin'].required = not es_template
 
         if self.instance.pk:
             self.fields['bd_contacto'].disabled = True
@@ -916,6 +919,10 @@ class BacklistForm(forms.ModelForm):
     class Meta:
         model = Backlist
         fields = ('nombre', 'archivo_importacion')
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'archivo_importacion': forms.FileInput(attrs={'class': 'form-control'}),
+        }
 
 
 class SitioExternoForm(forms.ModelForm):
@@ -1007,50 +1014,6 @@ class QueueDialerForm(forms.ModelForm):
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
 
 
-class QueueDialerUpdateForm(forms.ModelForm):
-    """
-    El form para actualizar la cola para las llamadas
-    """
-
-    class Meta:
-        model = Queue
-        fields = ('maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight', 'wait',
-                  'auto_grabacion', 'detectar_contestadores', 'audio_para_contestadores',
-                  'initial_predictive_model', 'initial_boost_factor')
-        widgets = {
-            "maxlen": forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
-            "servicelevel": forms.TextInput(attrs={'class': 'form-control'}),
-            'strategy': forms.Select(attrs={'class': 'form-control'}),
-            "weight": forms.TextInput(attrs={'class': 'form-control'}),
-            "wait": forms.TextInput(attrs={'class': 'form-control'}),
-            "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
-            "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(QueueDialerUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
-
-    def clean(self):
-        maxlen = self.cleaned_data.get('maxlen')
-        if not maxlen > 0:
-            raise forms.ValidationError('Cantidad Max de llamadas debe ser'
-                                        ' mayor a cero')
-
-        initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
-        if initial_boost_factor and initial_boost_factor < 1.0:
-            raise forms.ValidationError('El factor boost inicial no debe ser'
-                                        ' menor a 1.0')
-
-        initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
-        if initial_predictive_model and not initial_boost_factor:
-            raise forms.ValidationError('El factor boost inicial no deber ser'
-                                        ' none si la predicitvidad está activa')
-
-        return self.cleaned_data
-
-
 class UserApiCrmForm(forms.ModelForm):
 
     class Meta:
@@ -1059,7 +1022,7 @@ class UserApiCrmForm(forms.ModelForm):
 
         widgets = {
             "usuario": forms.TextInput(attrs={'class': 'form-control'}),
-            "password": forms.TextInput(attrs={'class': 'form-control'}),
+            "password": forms.PasswordInput(attrs={'class': 'form-control'}),
         }
 
     def clean_usuario(self):
@@ -1099,44 +1062,6 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('supervisors',)
-
-
-class CampanaDialerTemplateForm(forms.ModelForm):
-
-    class Meta:
-        model = Campana
-        fields = ('nombre_template', 'formulario',
-                  'sitio_externo', 'tipo_interaccion')
-
-        widgets = {
-            "nombre_template": forms.TextInput(attrs={'class': 'form-control'}),
-            'formulario': forms.Select(attrs={'class': 'form-control'}),
-            'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
-            "tipo_interaccion": forms.RadioSelect(),
-        }
-
-
-class ReporteAgenteForm(forms.Form):
-    """
-    El form para reporte con fecha
-    """
-    fecha = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control'}))
-    agente = forms.MultipleChoiceField(required=False, choices=())
-    grupo_agente = forms.ChoiceField(required=False, choices=(), widget=forms.Select(
-        attrs={'class': 'form-control'}))
-    todos_agentes = forms.BooleanField(required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(ReporteAgenteForm, self).__init__(*args, **kwargs)
-
-        agente_choice = [(agente.pk, agente.user.get_full_name())
-                         for agente in AgenteProfile.objects.filter(is_inactive=False)]
-        self.fields['agente'].choices = agente_choice
-        grupo_choice = [(grupo.id, grupo.nombre)
-                        for grupo in Grupo.objects.all()]
-        grupo_choice.insert(0, EMPTY_CHOICE)
-        self.fields['grupo_agente'].choices = grupo_choice
 
 
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
@@ -1226,6 +1151,17 @@ class ArchivoDeAudioForm(forms.ModelForm):
             reemplazado.""",
         }
 
+    def __init__(self, *args, **kwargs):
+        super(ArchivoDeAudioForm, self).__init__(*args, **kwargs)
+        self.fields['audio_original'].required = True
+
+    def clean(self):
+        cleaned_data = super(ArchivoDeAudioForm, self).clean()
+        audio_original = cleaned_data.get('audio_original', False)
+        if audio_original:
+            validar_extension_archivo_audio(audio_original)
+        return cleaned_data
+
 
 class EscogerCampanaForm(forms.Form):
     campana = forms.ChoiceField(
@@ -1243,8 +1179,11 @@ class GrupoForm(forms.ModelForm):
 
     class Meta:
         model = Grupo
-        fields = ('nombre', 'auto_attend_ics', 'auto_attend_inbound',
-                  'auto_attend_dialer', 'auto_pause', 'auto_unpause')
+        fields = ('nombre', 'auto_unpause', 'auto_attend_ics', 'auto_attend_inbound',
+                  'auto_attend_dialer')
+        widgets = {
+            'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(GrupoForm, self).__init__(*args, **kwargs)

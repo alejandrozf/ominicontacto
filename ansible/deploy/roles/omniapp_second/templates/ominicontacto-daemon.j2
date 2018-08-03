@@ -7,6 +7,7 @@
 
 # Source function library.
 . /lib/lsb/init-functions
+#. /etc/rc.d/init.d/functions
 
 RETVAL=0
 USER={{ usuario }}
@@ -17,70 +18,95 @@ export PYTHONPATH={{ install_prefix }}
 
 . {{ install_prefix }}virtualenv/bin/activate
 
+start() {
+    echo -n "Starting Omnileads... "
+    # $CMD --ini {{ install_prefix }}ominicontacto/oml_uwsgi.ini
+    su -l -s /bin/bash -c "$CMD --ini {{ install_prefix }}bin/oml_uwsgi.ini" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            log_success_msg
+    else
+            log_failure_msg
+    fi
+    echo
+}
+
+stop(){
+    echo -n "Stopping Omnileads... "
+    #pgrep -u {{ usuario }} uwsgi > /dev/null || {
+    fuser -k -n tcp 8000 > /dev/null || {
+            echo "Omnileads no esta corriendo..."
+            log_failure_msg
+            exit 1
+}
+
+    su -l -s /bin/bash -c "echo 'q' > {{ install_prefix }}bin/.uwsgi-fifo" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            log_success_msg
+    else
+            log_failure_msg
+    fi
+    echo
+}
+
+reload(){
+    echo -n "Reload de Omnileads... "
+    pgrep -u {{ usuario }} uwsgi > /dev/null || {
+        log_failure_msg
+        echo "Omnileads no esta corriendo..."
+        exit 1
+}
+
+    su -l -s /bin/bash -c "echo 'r' > {{ install_prefix }}bin/.uwsgi-fifo" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            log_success_msg
+    else
+            log_failure_msg
+    fi
+    echo
+}
+
+status(){
+    pgrep -u {{ usuario }} uwsgi > /dev/null || {
+            log_failure_msg
+            echo "Omnileads no esta corriendo..."
+            exit 1
+    }
+    log_success_msg
+    echo "Omnileads esta corriendo..."
+    exit 0
+}
+
+restart() {
+    stop
+    sleep 5
+    start
+}
+
 # See how we were called.
 case "$1" in
   start)
-        echo -n "Starting OminicontactoDaemon... "
-        # $CMD --ini {{ install_prefix }}ominicontacto/oml_uwsgi.ini
-        su -l -s /bin/bash -c "$CMD --ini {{ install_prefix }}bin/oml_uwsgi.ini" $USER
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]
-        then
-                log_success_msg
-        else
-                log_failure_msg
-        fi
-        echo
+        start
         ;;
   stop)
-        echo -n "Stopping OminicontactoDaemon... "
-        #pgrep -u {{ usuario }} uwsgi > /dev/null || {
-        fuser -k -n tcp 8000 > /dev/null || {
-                echo "OminicontactoDaemon no esta corriendo..."
-                log_failure_msg
-                exit 1
-        }
-
-        su -l -s /bin/bash -c "echo 'q' > {{ install_prefix }}bin/.uwsgi-fifo" $USER
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]
-        then
-                log_success_msg
-        else
-                log_failure_msg
-        fi
-        echo
+        stop
         ;;
   reload)
-        echo -n "Reload de OminicontactoDaemon... "
-        pgrep -u {{ usuario }} uwsgi > /dev/null || {
-            log_failure_msg
-			echo "OminicontactoDaemon no esta corriendo..."
-            exit 1
-        }
-
-        su -l -s /bin/bash -c "echo 'r' > {{ install_prefix }}bin/.uwsgi-fifo" $USER
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]
-        then
-                log_success_msg
-        else
-                log_failure_msg
-        fi
-        echo
+        reload
         ;;
   status)
-        pgrep -u {{ usuario }} uwsgi > /dev/null || {
-                log_failure_msg
-                echo "OminicontactoDaemon no esta corriendo..."
-                exit 1
-        }
-        log_success_msg
-        echo "OminicontactoDaemon esta corriendo..."
-        exit 0
+        status
+        ;;
+  restart)
+        restart
         ;;
    *)
-        echo "Usage: $0 start|stop|reload"
+        echo "Usage: $0 start|stop|reload|restart|status"
         exit 1
 esac
 

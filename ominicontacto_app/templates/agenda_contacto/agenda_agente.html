@@ -1,111 +1,59 @@
 {% load staticfiles %}
+{% load compress %}
 {% load i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}">
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+    <!-- Scripts -->
+    {% compress js %}
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
-    <script type="text/javascript">
-   $(function() {
-                var start = moment().subtract(29, 'days');
-                var end = moment();
-                function cb(start, end) {
-                    $('#id_fecha').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
-                }
-
-
- $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
-
-  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-});
-
-            // Init daterange plugin
-            $('#id_fecha').daterangepicker(
-                {
-                locale: {
-                    format: 'DD/MM/YYYY'
-                 },
-
-                autoUpdateInput: false,
-                ranges: {
-                    'Hoy': [moment(), moment()],
-                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-
-        }, cb);
-
-        cb(start, end);
-
-        $(".btn-submit").click(function (){
-          var action = $(this).attr("name");
-          var pk_contacto = $(this).attr("pk_contacto");
-          var pk_agente = $(this).attr("agente");
-          var tipo_campana = $(this).attr("tipo_campana");
-          var campana_nombre = $(this).attr("campana_nombre");
-          var pk_campana = $(this).attr("pk_campana");
-          submit_form(pk_contacto, pk_agente, action, tipo_campana, campana_nombre, pk_campana);
-        })
-
-         function submit_form(pk_contacto, pk_agente, action, tipo_campana, campana_nombre, pk_campana){
-           $("#pk_contacto").val(pk_contacto);
-           $("#pk_agente").val(pk_agente);
-           $("#tipo_campana").val(tipo_campana);
-           $("#pk_campana").val(pk_campana);
-           $("#campana_nombre").val(campana_nombre);
-           $("#form_llamar").attr("action", action);
-           $("#form_llamar").submit();
-         }
-
-});
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/click2call.js' %}"></script>
+    {% endcompress %}
 </head>
 <body>
 
-<div class="col-md-4">
-
-    <form role="form" method="post" enctype="multipart/form-data" >
-        {% csrf_token %}
-        <table class="table">
-           <tr>
-               <td>
-                   <div class="input-group date pull-right active" id="">
-                       {{form.fecha}}
-                        <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
-                        </span>
-                    </div>
-               </td>
-               <td>
-                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                        Filtrar por este rango
-                </button>
-               </td>
-           </tr>
-        </table>
-
-    </form>
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <div id="wrapperSearchForm" class="show">
+        <form role="form" method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-6">
+                    {{form.fecha}}
+                </div>
+            </div>
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                Filtrar por este rango
+            </button>
+        </form>
+    </div>
 </div>
- <form id="form_llamar" role="form" method="post" >
-        {% csrf_token %}
-     <input type="hidden" id="pk_agente" name="pk_agente">
-     <input type="hidden" id="pk_contacto" name="pk_contacto">
-     <input type="hidden" id="pk_campana" name="pk_campana">
-     <input type="hidden" id="campana_nombre" name="campana_nombre">
-     <input type="hidden" id="click2call_type" name="click2call_type" value="agendas">
-     <input type="hidden" id="tipo_campana" name="tipo_campana">
-    <table class="table table-bordered">
+
+<form id="form_llamar" role="form" method="post" >
+    {% csrf_token %}
+    <input type="hidden" id="pk_agente" name="pk_agente">
+    <input type="hidden" id="pk_contacto" name="pk_contacto">
+    <input type="hidden" id="pk_campana" name="pk_campana">
+    <input type="hidden" id="campana_nombre" name="campana_nombre">
+    <input type="hidden" id="click2call_type" name="click2call_type" value="agendas">
+    <input type="hidden" id="tipo_campana" name="tipo_campana">
+    <table class="table">
         <thead>
             <tr>
                 <th>contacto</th>
@@ -118,14 +66,14 @@
         <tbody>
         {% for agenda in listado_de_eventos %}
             <tr>
-                <td>telefono de contacto
-                    <a type="button" pk_contacto="{{agenda.contacto.pk}}"
+                <td>
+                    <a class="btn btn-submit btn-outline-primary" pk_contacto="{{agenda.contacto.pk}}"
                        agente="{{agente.pk}}"
                        tipo_campana="{{ agenda.campana.type }}"
                        campana_nombre="{{ agenda.campana.nombre }}"
                        pk_campana="{{ agenda.campana.pk }}"
-                       name="{% url 'agente_llamar_contacto' %}"
-                       class="btn-submit">{{ agenda.contacto.telefono }}
+                       name="{% url 'agente_llamar_contacto' %}">
+                       {{ agenda.contacto.telefono }}
                     </a>
                 </td>
                 <td>{{ agenda.fecha }}</td>
@@ -140,6 +88,7 @@
         {% endfor %}
         </tbody>
     </table>
-     </form>
+ </form>
+
 </body>
 </html>

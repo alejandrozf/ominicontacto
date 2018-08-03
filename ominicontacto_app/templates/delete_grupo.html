@@ -2,14 +2,12 @@
 {% load static %}
 
 {% block content %}
-<div class="col-md-3">
+<div>
     <form method="post">{% csrf_token %}
-        <h4>Grupo<strong>{{ object.nombre}}</strong></h4>
-        <h4>¿Esta seguro que desea eliminar este grupo? </h4>
-        <button type="submit" class="btn btn-danger btn-sm">
-            <span class="glyphicon glyphicon-remove"></span> Eliminar
-        </button>
-        <a href="{% url 'grupo_list' %}">Cancelar</a>
+        <h1>Grupo "{{ object.nombre}}" </h1>
+        <p>¿Esta seguro que desea eliminar este grupo? </p>
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a class="btn btn-outline-danger" href="{% url 'grupo_list' %}">Cancelar</a>
     </form>
 </div>
 {% endblock %}

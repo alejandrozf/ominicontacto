@@ -19,6 +19,8 @@ from django.forms import ValidationError
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
+from configuracion_telefonia_app.models import DestinoEntrante
+
 from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember, OpcionCalificacion
 from ominicontacto_app.forms import CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION
 
@@ -26,7 +28,6 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,
                                                NombreCalificacionFactory,
-                                               CalificacionClienteFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
                                                ParametroExtraParaWebformFactory,
                                                ActuacionVigenteFactory)
@@ -38,7 +39,6 @@ from ominicontacto_app.utiles import (
     convertir_ascii_string,
 )
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
-from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 
@@ -60,7 +60,7 @@ def test_concurrently(args_list):
             def call_test_func(*args, **kwargs):
                 try:
                     test_func(*args, **kwargs)
-                except Exception, e:
+                except Exception as e:
                     exceptions.append(e)
                     raise
             threads = []
@@ -255,7 +255,9 @@ class CampanasTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_borrada.nombre)
 
-    def test_usuario_logueado_puede_crear_campana_preview(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_crear_campana_preview(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
@@ -267,7 +269,9 @@ class CampanasTests(OMLBaseTest):
         self.client.post(url, post_step2_data, follow=True)
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
-    def test_usuario_logueado_puede_modificar_campana_preview(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_modificar_campana_preview(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
         nuevo_objetivo = 3
         (post_step0_data, post_step1_data,
@@ -331,7 +335,9 @@ class CampanasTests(OMLBaseTest):
         agente_en_contacto = AgenteEnContactoFactory.create()
         self.assertTrue(isinstance(agente_en_contacto, AgenteEnContacto))
 
-    def test_creacion_campana_preview_inicializa_relacion_agente_contacto(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_creacion_campana_preview_inicializa_relacion_agente_contacto(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
@@ -498,7 +504,9 @@ class CampanasTests(OMLBaseTest):
         dict_response = json.loads(response.content)
         self.assertTrue(dict_response['contacto_asignado'])
 
-    def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
@@ -550,54 +558,6 @@ class CampanasTests(OMLBaseTest):
         campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
         message = _('Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION))
         self.assertEqual(campana_preview_form.errors['tiempo_desconexion'], [message])
-
-    def test_usuario_no_logueado_no_accede_a_vista_detalle_campana_preview(self):
-        self.client.logout()
-        url = reverse('campana_preview_detalle', args=[self.campana_activa.pk])
-        response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, u'registration/login.html')
-
-    def test_usuario_no_logueado_no_accede_a_vista_detalle_express_campana_preview(self):
-        self.client.logout()
-        url = reverse('campana_preview_detalle_express', args=[self.campana_activa.pk])
-        response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, u'registration/login.html')
-
-    def _crear_datos_vistas_detalles_campana_preview(self):
-        # ya existe otro contacto para la BD de la campaña creado en el setUp
-        # acá creamos otro
-        ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
-        calif_gestion = CalificacionClienteFactory.create(
-            opcion_calificacion=self.opcion_calificacion_gestion, agente=self.agente_profile)
-        calif_no_accion = CalificacionClienteFactory.create(
-            opcion_calificacion=self.opcion_calificacion_noaccion, agente=self.agente_profile)
-        return calif_gestion, calif_no_accion
-
-    def test_usuario_logueado_accede_a_datos_vista_detalle_campana_preview(self):
-        calif_gestion, calif_no_accion = self._crear_datos_vistas_detalles_campana_preview()
-        url = reverse('campana_preview_detalle', args=[self.campana_activa.pk])
-        response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, u'campana_preview/detalle.html')
-        self.assertEqual(
-            response.context_data['categorias'][calif_gestion.opcion_calificacion.nombre], 1)
-        self.assertEqual(
-            response.context['categorias'][calif_no_accion.opcion_calificacion.nombre], 1)
-
-    def test_usuario_logueado_accede_a_datos_vista_detalle_express_campana_preview(self):
-        calif_gestion, calif_no_accion = self._crear_datos_vistas_detalles_campana_preview()
-        url = reverse('campana_preview_detalle_express', args=[self.campana_activa.pk])
-        response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, u'campana_preview/detalle_express.html')
-        self.assertEqual(
-            response.context_data['categorias'][calif_gestion.opcion_calificacion.nombre], 1)
-        self.assertEqual(
-            response.context['categorias'][calif_no_accion.opcion_calificacion.nombre], 1)
-
-    def test_usuario_logueado_no_accede_a_reporte_grafico_campana_preview(self):
-        self.client.logout()
-        url = reverse('campana_preview_reporte_grafico', args=[self.campana_activa.pk])
-        response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, u'registration/login.html')
 
     def _obtener_post_data_wizard_creacion_campana_entrante(self, nombre_campana, audio_ingreso):
         post_step0_data = {
@@ -891,7 +851,55 @@ class CampanasTests(OMLBaseTest):
         campana.bd_contacto.contactos.add(self.contacto)
         self.assertEqual(campana.bd_contacto.contactos.count(), 1)
 
-    def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_creacion_campana_entrante_crea_nodo_ruta_entrante(
+            self, _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_nuevo')
+        nombre_campana = 'campana_name'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
+             nombre_campana, audio_ingreso)
+
+        self.assertFalse(DestinoEntrante.objects.all().exists())
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.assertTrue(DestinoEntrante.objects.all().exists())
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_creacion_campana_entrante_desde_template_crea_nodo_ruta_entrante(
+            self, _generar_y_recargar_configuracion_asterisk):
+        campana_entrante_template = CampanaFactory.create(
+            type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_TEMPLATE_ACTIVO)
+        nombre_campana = 'campana_entrante_clonada'
+        url = reverse(
+            'campana_entrante_template_create_campana', args=[campana_entrante_template.pk])
+        QueueFactory.create(campana=campana_entrante_template, pk=campana_entrante_template.nombre)
+        OpcionCalificacionFactory.create(
+            tipo=OpcionCalificacion.GESTION, nombre=self.calificacion.nombre,
+            campana=campana_entrante_template)
+        ParametroExtraParaWebformFactory(campana=campana_entrante_template)
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data,
+         post_step2_data,
+         post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante_desde_template(
+             campana_entrante_template, audio_ingreso)
+        post_step0_data['0-nombre'] = nombre_campana
+        post_step1_data['1-name'] = nombre_campana
+        self.assertFalse(DestinoEntrante.objects.all().exists())
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.assertTrue(DestinoEntrante.objects.all().exists())
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
@@ -906,7 +914,9 @@ class CampanasTests(OMLBaseTest):
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
 
-    def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_manual(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_manual(
+            self, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
@@ -922,17 +932,6 @@ class CampanasTests(OMLBaseTest):
         self.contacto = ContactoFactory.create(bd_contacto=campana.bd_contacto)
         campana.bd_contacto.contactos.add(self.contacto)
         self.assertEqual(campana.bd_contacto.contactos.count(), 1)
-
-    @patch.object(WombatService, 'list_config_wombat')
-    def test_reporte_grafico_campana_preview_no_muestra_llamadas_recibidas(
-            self, list_config_wombat):
-        url = reverse('campana_preview_reporte_grafico', args=[self.campana_activa.pk])
-        response = self.client.get(url, follow=True)
-        graficos_estadisticas = response.context_data['graficos_estadisticas']
-        categorias_llamadas = [nombre for nombre, count in
-                               graficos_estadisticas['dict_llamadas_counter']]
-        categoria_recibidas = 'Recibidas'
-        self.assertFalse(categoria_recibidas in categorias_llamadas)
 
     @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'crear_trunk_campana_wombat')
@@ -972,9 +971,10 @@ class CampanasTests(OMLBaseTest):
     @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'update_endpoint')
     @patch.object(ActivacionQueueService, '_generar_y_recargar_configuracion_asterisk')
+    @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
     def test_usuario_logueado_puede_modificar_campana_dialer(
             self, activar, crear_campana_wombat, update_endpoint,
-            _generar_y_recargar_configuracion_asterisk):
+            _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas):
         url = reverse('campana_dialer_update', args=[self.campana_dialer.pk])
         nuevo_objetivo = 3
         audio_ingreso = ArchivoDeAudioFactory.create()
@@ -1188,11 +1188,12 @@ class CampanasTests(OMLBaseTest):
     @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
     def test_usuario_logueado_puede_crear_campana_dialer_desde_template(
             self, crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
             crear_lista_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
-            _generar_y_recargar_configuracion_asterisk):
+            _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas):
         url = reverse('crea_campana_dialer_template', args=[self.campana_dialer.pk, 1])
         nombre_campana = 'campana_dialer_clonada'
         audio_ingreso = ArchivoDeAudioFactory.create()
@@ -1271,7 +1272,9 @@ class CampanasTests(OMLBaseTest):
         post_step2_data.pop('campana_manual_create_view-current_step')
         return post_step0_data, post_step1_data, post_step2_data
 
-    def test_usuario_logueado_puede_crear_campana_manual_desde_template(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_crear_campana_manual_desde_template(
+            self, _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         queue = QueueFactory.create(
             campana=campana, pk=campana.nombre)
@@ -1345,7 +1348,9 @@ class CampanasTests(OMLBaseTest):
         post_step2_data.pop('campana_preview_create_view-current_step')
         return post_step0_data, post_step1_data, post_step2_data
 
-    def test_usuario_logueado_puede_crear_campana_preview_desde_template(self):
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_usuario_logueado_puede_crear_campana_preview_desde_template(
+        self, _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
         queue = QueueFactory.create(
             campana=campana, pk=campana.nombre)

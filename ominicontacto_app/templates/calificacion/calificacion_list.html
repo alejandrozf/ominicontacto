@@ -2,35 +2,39 @@
 {% load static %}
 
 {% block content %}
-<br/>
-<div class="col-md-3 col-md-offset-4">
 
-    <table class="table table-stripped">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Acciones</th>
+<h1>Calificaciones</h1>
 
-            </tr>
-        </thead>
-        <tbody>
-        {% for calificacion in object_list %}
-            <tr>
-                <td>{{ calificacion.nombre }}</td>
-                <td>
-                    <a href="{% url 'calificacion_update' calificacion.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true" title="Modificar"></span></a>
-                    <a href="{% url 'calificacion_delete' calificacion.id %}"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="Eliminar Calificacion"></span></a>
-
-                </td>
-            </tr>
-       {% empty %}
+<table class="table">
+    <thead>
         <tr>
-            <td colspan="2">No existen calificaciones</td>
+            <th>Nombre</th>
+            <th>Acciones</th>
+
         </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    {% for calificacion in object_list %}
+        <tr>
+            <td>{{ calificacion.nombre }}</td>
+            <td>
+                <div class="dropdown">
+                  <button class="btn btn-light dropdown-toggle" type="button" id="dropdownEditMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Opciones
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownEditMenu">
+                    <a class="dropdown-item" href="{% url 'calificacion_update' calificacion.id %}"><span class="icon icon-pencil" aria-hidden="true" title="Modificar"></span>Editar</a>
+                    <a class="dropdown-item" href="{% url 'calificacion_delete' calificacion.id %}"><span class="icon icon-trash" aria-hidden="true" title="Eliminar Calificacion"></span>Eliminar</a>
+                  </div>
+                </div>             
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td colspan="2">No existen calificaciones</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-
-</div>
 {% endblock %}

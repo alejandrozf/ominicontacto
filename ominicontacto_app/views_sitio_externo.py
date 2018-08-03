@@ -2,12 +2,10 @@
 
 """Aca se encuentran las vistas para crear el objecto sitio externo lo cual consite
 nombre y una url externa para crm externo en el momento de crear una campa se selecciona
-el sitio externo el cual va abrirse en una pestaña 
+el sitio externo el cual va abrirse en una pestaña
 """
 
 from __future__ import unicode_literals
-
-from django.contrib import messages
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse

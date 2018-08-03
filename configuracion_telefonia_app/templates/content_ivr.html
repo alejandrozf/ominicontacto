@@ -1,0 +1,68 @@
+{% load static %}
+{% load i18n %}
+
+{% load widget_tweaks %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script>
+     $('.opcionDestino').formset({
+       addText: 'Agregar destino',
+       deleteText: 'Remover',
+       prefix: '{{ ivr_formset.prefix }}',
+       addCssClass: 'btn btn-outline-primary',
+       deleteCssClass: 'btn btn-outline-danger',
+       formCssClass: 'dynamic-formset',
+     });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% block header %}{% endblock %}
+    <form action="" role="form" method="POST">
+        <div class="row">
+            {% include "base_form_fields.html" with form=form %}
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h3>{% trans 'Opciones de destinos' %}</h3>
+                <table class="form-control" id="myFormsetTable">
+                    <tbody>
+                        {% if opcion_destino_formset.non_form_errors %}
+                            {% for error in opcion_destino_formset.non_form_errors %}
+                                <div class="alert alert-warning">{{ error|escape }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        {% for opcion_destino_form in opcion_destino_formset.forms %}
+                            <tr class="opcionDestino">
+                                {% if opcion_destino_form.errors %}
+                                    {% for error in opcion_destino_form.errors %}
+                                        <div class="alert alert-warning">{{ error|escape }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                                <td>
+                                    {% if opcion_destino_form.instance.pk %}
+                                        {{ opcion_destino_form.DELETE }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ opcion_destino_form.valor.label_tag }}
+                                    {{ opcion_destino_form.valor.errors }}
+                                    {{ opcion_destino_form.valor|add_class:"form-control" }}
+                                </td>
+                                <td>
+                                    {{ opcion_destino_form.destino_siguiente.label_tag }}
+                                    {{ opcion_destino_form.destino_siguiente.errors }}
+                                    {{ opcion_destino_form.destino_siguiente|add_class:"form-control" }}
+                                </td>
+                                <td>{{ opcion_destino_form.id }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button type="submit" id="id_registrar" class="btn btn-primary">
+                    {% trans 'Guardar' %}
+                </button>
+            </div>
+    </form>
+{% endblock %}

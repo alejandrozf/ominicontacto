@@ -12,8 +12,10 @@ import os
 import json
 
 from django.conf import settings
-from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
+from django.utils.timezone import localtime
+
+from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 
 logger = logging.getLogger(__name__)
@@ -55,6 +57,8 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
+            encabezado.append("Fecha-Hora Contacto")
+            encabezado.append("Agente")
             encabezado.append("Telefono")
             nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
@@ -78,7 +82,9 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones = []
 
                 # --- Buscamos datos
-
+                metadata_fecha_local = localtime(metadata.fecha)
+                lista_opciones.append(metadata_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
+                lista_opciones.append(metadata.agente)
                 lista_opciones.append(metadata.contacto.telefono)
 
                 datos = json.loads(metadata.contacto.datos)

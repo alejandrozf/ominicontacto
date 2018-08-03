@@ -23,7 +23,7 @@ from ominicontacto_app.models import User, Campana
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 
 
-#Vista utilizada de ejemplo para crear la vista ReporteCampanaPDF
+# Vista utilizada de ejemplo para crear la vista ReporteCampanaPDF
 class ReportePersonasPDF(View):
     def cabecera(self, pdf):
         # Utilizamos el archivo logo_django.png que está guardado en la
@@ -55,7 +55,7 @@ class ReportePersonasPDF(View):
         self.tabla(pdf, y)
         # Con show page hacemos un corte de página para pasar a la siguiente
         archivo_imagen = settings.MEDIA_ROOT +\
-                         '/reporte_campana/barra_campana_calificacion.png'
+            '/reporte_campana/barra_campana_calificacion.png'
         # Definimos el tamaño de la imagen a cargar y las coordenadas
         # correspondientes
         pdf.drawImage(archivo_imagen, 40, 300, 250, 200,
@@ -93,15 +93,15 @@ class ReportePersonasPDF(View):
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 7.5*inch)
+        detalle_orden.drawOn(pdf, 0.75 * inch, 7.5 * inch)
 
 
 class ReporteCampanaPDF(View):
     def cabecera(self, pdf, campana):
 
-        #archivo_imagen = settings.STATIC_ROOT + '/ominicontacto/Img/fts.png'
-        #pdf.drawImage(archivo_imagen, 40, 750, 120, 90,
-         #             preserveAspectRatio=True)
+        # archivo_imagen = settings.STATIC_ROOT + '/ominicontacto/Img/fts.png'
+        # pdf.drawImage(archivo_imagen, 40, 750, 120, 90,
+        #             preserveAspectRatio=True)
         # Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
         pdf.setFont("Helvetica", 16)
         # Dibujamos una cadena en la ubicación X,Y especificada
@@ -116,7 +116,7 @@ class ReporteCampanaPDF(View):
         service = EstadisticasService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        #hoy = datetime.date(2015, 1, 1)
+        # hoy = datetime.date(2015, 1, 1)
         estadisticas = service.general_campana(campana, hoy, hoy_ahora)
         response = HttpResponse(content_type='application/pdf')
         buffer = BytesIO()
@@ -167,7 +167,7 @@ class ReporteCampanaPDF(View):
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 7.5*inch)
+        detalle_orden.drawOn(pdf, 0.75 * inch, 7.5 * inch)
 
     def tabla_calificacion(self, pdf, dict_calificacion, total_asignados):
         # Creamos una tupla de encabezados para neustra tabla
@@ -192,17 +192,17 @@ class ReporteCampanaPDF(View):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75*inch, 740, u"Cantidad por calificacion")
+        pdf.drawString(0.75 * inch, 740, u"Cantidad por calificacion")
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 50, 50)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 7.1*inch)
+        detalle_orden.drawOn(pdf, 0.75 * inch, 7.1 * inch)
         archivo_imagen = settings.MEDIA_ROOT + \
-                         '/reporte_campana/barra_campana_calificacion.png'
+            '/reporte_campana/barra_campana_calificacion.png'
 
-        pdf.drawImage(archivo_imagen, 4*inch, 7.5*inch, 250, 200,
+        pdf.drawImage(archivo_imagen, 4 * inch, 7.5 * inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
 
     def tabla_no_atendidos(self, pdf, dict_no_atendidos, total_no_atendidos):
@@ -212,7 +212,7 @@ class ReporteCampanaPDF(View):
 
         detalles = [(resultado_nombre, resultado_cantidad)
                     for resultado_nombre,
-                        resultado_cantidad in dict_no_atendidos]
+                    resultado_cantidad in dict_no_atendidos]
         detalles.append(('Total no atendidos', total_no_atendidos))
         # Establecemos el tamaño de cada una de las columnas de la tabla
         detalle_orden = Table([encabezados] + detalles)
@@ -228,17 +228,17 @@ class ReporteCampanaPDF(View):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75*inch, 430, u"Cantidad de llamados no atendidos")
+        pdf.drawString(0.75 * inch, 430, u"Cantidad de llamados no atendidos")
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 4.3*inch)
+        detalle_orden.drawOn(pdf, 0.75 * inch, 4.3 * inch)
         archivo_imagen = settings.MEDIA_ROOT + \
-                         '/reporte_campana/barra_campana_no_atendido.png'
+            '/reporte_campana/barra_campana_no_atendido.png'
 
-        pdf.drawImage(archivo_imagen, 4*inch, 3.5*inch, 250, 200,
+        pdf.drawImage(archivo_imagen, 4 * inch, 3.5 * inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
 
     def tabla_agente(self, pdf, agente_venta, calificaciones):
@@ -276,11 +276,10 @@ class ReporteCampanaPDF(View):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        #pdf.drawString(0.75*inch, 9 * inch, u"Calificaciones por agente")
+        # pdf.drawString(0.75*inch, 9 * inch, u"Calificaciones por agente")
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 50, 50)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 7.5 mas cercano del margen TOP
         detalle_orden.drawOn(pdf, 0.75 * inch, 300)
-

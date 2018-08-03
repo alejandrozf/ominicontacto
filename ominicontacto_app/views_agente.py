@@ -7,28 +7,27 @@ Vista relacionada al Agente
 from __future__ import unicode_literals
 
 import datetime
-from django.views.generic import FormView, UpdateView, TemplateView
+from django.views.generic import FormView, UpdateView, TemplateView, View
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from ominicontacto_app.models import (
-    AgenteProfile, Contacto, CalificacionCliente, Grupo
-)
-from ominicontacto_app.forms import ReporteForm, ReporteAgenteForm
-from ominicontacto_app.services.reporte_agente_calificacion import \
-    ReporteAgenteService
-from ominicontacto_app.services.reporte_agente_venta import \
-    ReporteFormularioVentaService
-from ominicontacto_app.utiles import convert_fecha_datetime
-from ominicontacto_app.services.reporte_llamadas import EstadisticasService
 from django.http import JsonResponse
 from django.contrib.auth import logout
 from django.conf import settings
+from django.db.models import F, Value
+from django.db.models.functions import Concat
+
+from ominicontacto_app.models import (
+    AgenteProfile, Contacto, CalificacionCliente, Grupo, Campana
+)
+from ominicontacto_app.forms import ReporteForm
+from ominicontacto_app.services.reporte_agente_calificacion import ReporteAgenteService
+from ominicontacto_app.services.reporte_agente_venta import ReporteFormularioVentaService
+from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.asterisk_ami_http import (
     AsteriskHttpClient, AsteriskHttpOriginateError
 )
-from ominicontacto_app.services.reporte_llamada_csv import ReporteAgenteCSVService
 import logging as _logging
 
 
@@ -119,56 +118,6 @@ class ExportaReporteCalificacionView(UpdateView):
         return redirect(url)
 
 
-class AgenteReporteListView(FormView):
-    """
-    Esta vista lista los tiempo de los agentes
-
-    """
-
-    template_name = 'agente/tiempos.html'
-    context_object_name = 'agentes'
-    model = AgenteProfile
-    form_class = ReporteAgenteForm
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(AgenteReporteListView, self).get_context_data(
-    #        **kwargs)
-    #     agente_service = EstadisticasService()
-    #     context['estadisticas'] = agente_service._calcular_estadisticas()
-    #     return context
-
-    def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        fecha_desde, fecha_hasta = fecha.split('-')
-        fecha_desde = convert_fecha_datetime(fecha_desde)
-        fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        grupo_id = form.cleaned_data.get('grupo_agente')
-        agentes_pk = form.cleaned_data.get('agente')
-        todos_agentes = form.cleaned_data.get('todos_agentes')
-
-        agentes = []
-        if agentes_pk:
-            for agente_pk in agentes_pk:
-                agente = AgenteProfile.objects.get(pk=agente_pk)
-                agentes.append(agente)
-        if grupo_id:
-            grupo = Grupo.objects.get(pk=int(grupo_id))
-            agentes = grupo.agentes.filter(is_inactive=False)
-
-        if todos_agentes:
-            agentes = []
-
-        agente_service = EstadisticasService()
-        graficos_estadisticas = agente_service.general_campana(
-            fecha_desde, fecha_hasta, agentes, self.request.user)
-
-        service_csv = ReporteAgenteCSVService()
-        service_csv.crea_reporte_csv(graficos_estadisticas)
-
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas))
-
-
 def cambiar_estado_agente_view(request):
     """Vista GET para cambiar el estado del agente"""
     pk_agente = request.GET['pk_agente']
@@ -192,7 +141,7 @@ def logout_view(request):
         try:
             client = AsteriskHttpClient()
             client.login()
-            client.originate("Local/066LOGOUT@fts-pausas/n", "ftp-pausas", True,
+            client.originate("Local/066LOGOUT@fts-pausas/n", "oml-agent-actions", True,
                              variables, True, aplication='Hangup')
 
         except AsteriskHttpOriginateError:
@@ -256,15 +205,6 @@ class LlamarContactoView(RedirectView):
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
 
 
-def exporta_reporte_agente_llamada_view(request, tipo_reporte):
-    """
-    Esta vista invoca a generar un csv de reporte de la campana.
-    """
-    service = ReporteAgenteCSVService()
-    url = service.obtener_url_reporte_csv_descargar(tipo_reporte)
-    return redirect(url)
-
-
 class DesactivarAgenteView(RedirectView):
     """
     Esta vista actualiza el agente desactivandolo
@@ -293,8 +233,7 @@ class ActivarAgenteView(RedirectView):
 
 class AgenteCampanasPreviewActivasView(TemplateView):
     """
-    Devuelve un JSON con información de las campañas previews activas de las cuales es miembro
-    un agente
+    Campañas previews activas de las cuales es miembro un agente
     """
     template_name = 'agente/campanas_preview.html'
 
@@ -305,3 +244,26 @@ class AgenteCampanasPreviewActivasView(TemplateView):
         context['campanas_preview_activas'] = campanas_preview_activas.values_list(
             'queue_name__campana', 'queue_name__campana__nombre')
         return context
+
+
+class CampanasActivasView(View):
+    """
+    Devuelve un JSON con información de las campañas activas del sistema
+    """
+    def get(self, request):
+        campanas_activas = Campana.objects.obtener_activas().values('id', 'nombre', 'type')
+        return JsonResponse(data={'campanas': list(campanas_activas)})
+
+
+class AgentesDeGrupoPropioView(View):
+    """
+    Devuelve un JSON con información de los agentes pertenecientes al grupo del agente
+    """
+    def get(self, request):
+        agente_profile = self.request.user.get_agente_profile()
+        agentes_del_grupo = agente_profile.grupo.agentes.obtener_activos() \
+            .exclude(id=agente_profile.id)
+        data_agentes = agentes_del_grupo.annotate(
+            full_name=Concat(F('user__first_name'), Value(' '), F('user__last_name'))) \
+            .values('id', 'full_name', 'sip_extension')
+        return JsonResponse(data={'agentes': list(data_agentes)})

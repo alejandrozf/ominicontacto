@@ -20,242 +20,15 @@ from ominicontacto_app.utiles import (
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, Campana, Pausa
 )
-import logging as _logging
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
-    GeneradorDePedazoDeCampanaDialerFactory,
-    GeneradorDePedazoDePausaFactory,
+    GeneradorDePedazoDePausaFactory, GeneradorDePedazoDeRutasSalientesFactory
 )
 
+import logging as _logging
 
 logger = _logging.getLogger(__name__)
-
-
-class QueueDialplanConfigCreator(object):
-
-    def __init__(self):
-        self._dialplan_config_file = QueueConfigFile()
-        self._generador_factory = GeneradorDePedazoDeQueueFactory()
-        self._generador_dialer_factory = GeneradorDePedazoDeCampanaDialerFactory()
-
-    def _generar_dialplan(self, campana):
-        """Genera el dialplan para una queue.
-
-        :param campana: Campana para la cual hay crear el dialplan
-        :type campana: ominicontacto_app.models.Campana
-        :returns: str -- dialplan para la queue
-        """
-
-        assert campana.queue_campana is not None, "campana.queue_campana == None"
-
-        partes = []
-        param_generales = {
-            'oml_queue_name': "{0}_{1}".format(campana.id,
-                                               elimina_espacios(campana.nombre)),
-            'oml_queue_type': campana.type,
-            'oml_queue_id_asterisk': campana.get_string_queue_asterisk(),
-            'oml_queue_wait': campana.queue_campana.wait,
-            'oml_campana_id': campana.id,
-            'date': str(datetime.datetime.now())
-        }
-
-        # QUEUE: Creamos la porción inicial del Queue.
-        filepath = 'silence/1'
-        if campana.queue_campana.audio_de_ingreso:
-            local_filepath = campana.queue_campana.audio_de_ingreso.audio_asterisk.path
-            filename = os.path.splitext(os.path.basename(local_filepath))[0]
-            filepath = os.path.join('oml', filename)
-        param_generales['filepath_audio_ingreso'] = filepath
-
-        sub_partes = []
-        param_generales['parametros_extra'] = ''
-        # Generador para lineas de Parametros Extra para Webform
-        if campana.parametros_extra_para_webform.count() > 0:
-            for parametro in campana.parametros_extra_para_webform.all():
-                generador_queue = self._generador_dialer_factory. \
-                    crear_generador_para_parametro_extra_para_webform({
-                        'parametro': parametro.parametro,
-                        'columna': parametro.columna})
-                sub_partes.append(generador_queue.generar_pedazo())
-        param_generales['parametros_extra'] = ''.join(sub_partes)
-
-        if campana.queue_campana.auto_grabacion:
-            generador_queue = self._generador_factory.\
-                crear_generador_para_queue_grabacion(param_generales)
-            partes.append(generador_queue.generar_pedazo())
-        else:
-            generador_queue = self._generador_factory. \
-                crear_generador_para_queue_sin_grabacion(param_generales)
-            partes.append(generador_queue.generar_pedazo())
-
-        return ''.join(partes)
-
-    def _generar_dialplan_campana_dialer(self, campana):
-        """Genera el dialplan para una queue.
-
-        :param campana: Campana para la cual hay crear el dialplan
-        :type campana: ominicontacto_app.models.Campana
-        :returns: str -- dialplan para la queue
-        """
-
-        assert campana.queue_campana is not None, "campana.queue_campana == None"
-
-        partes = []
-        param_generales = {
-            'oml_queue_name': "{0}_{1}".format(campana.id,
-                                               elimina_espacios(campana.nombre)),
-            'oml_queue_type': campana.type,
-            'oml_queue_id_asterisk': campana.get_string_queue_asterisk(),
-            'date': str(datetime.datetime.now()),
-        }
-
-        # Generador inicial para campana dialer
-        generador_queue = self._generador_dialer_factory. \
-            crear_generador_para_campana_dialer_start(param_generales)
-        partes.append(generador_queue.generar_pedazo())
-
-        # Generador para lineas de Parametros Extra para Webform
-        if campana.parametros_extra_para_webform.count() > 0:
-            for parametro in campana.parametros_extra_para_webform.all():
-                generador_queue = self._generador_dialer_factory. \
-                    crear_generador_para_parametro_extra_para_webform({
-                        'parametro': parametro.parametro,
-                        'columna': parametro.columna})
-                partes.append(generador_queue.generar_pedazo())
-
-        # Generador para grabacion
-        if campana.queue_campana.auto_grabacion:
-            generador_queue = self._generador_dialer_factory. \
-                crear_generador_para_campana_dialer_grabacion(param_generales)
-            partes.append(generador_queue.generar_pedazo())
-
-        # Generador para contestadores
-        if campana.queue_campana.detectar_contestadores:
-            generador_queue = self._generador_dialer_factory. \
-                crear_generador_para_campana_dialer_contestadores(param_generales)
-            partes.append(generador_queue.generar_pedazo())
-
-        # generador de acuerdo al tipo de interacion
-        if campana.tipo_interaccion is Campana.FORMULARIO:
-            generador_queue = self._generador_dialer_factory. \
-                crear_generador_para_campana_dialer_formulario(param_generales)
-            partes.append(generador_queue.generar_pedazo())
-        elif campana.tipo_interaccion is Campana.SITIO_EXTERNO:
-            param_generales.update({'oml_sitio_externo_url': campana.sitio_externo.url})
-            generador_queue = self._generador_dialer_factory. \
-                crear_generador_para_campana_dialer_sitio_externo(param_generales)
-            partes.append(generador_queue.generar_pedazo())
-
-        # Generador para contestadores para end
-        if campana.queue_campana.detectar_contestadores:
-            if campana.queue_campana.audio_para_contestadores:
-                filepath = campana.queue_campana.audio_para_contestadores.audio_asterisk.path
-                filename = os.path.splitext(os.path.basename(filepath))[0]
-                param_generales['filename_audio_contestadores'] = filename
-                generador_queue = self._generador_dialer_factory. \
-                    crear_generador_para_campana_dialer_contestadores_end_con_audio(param_generales)
-            else:
-                generador_queue = self._generador_dialer_factory. \
-                    crear_generador_para_campana_dialer_contestadores_end(param_generales)
-            partes.append(generador_queue.generar_pedazo())
-
-        return ''.join(partes)
-
-    def _obtener_todas_entrante_para_generar_dialplan(self):
-        """Devuelve las queues para crear el dialplan.
-        """
-        # Ver de obtener activa ya que en este momemento no estamos manejando
-        # estados
-        return Campana.objects.obtener_all_dialplan_asterisk().filter(
-            type=Campana.TYPE_ENTRANTE)
-
-    def _obtener_todas_dialer_para_generar_dialplan(self):
-        """Devuelve las queues para crear el dialplan.
-        """
-        # Ver de obtener activa ya que en este momemento no estamos manejando
-        # estados
-        return Campana.objects.obtener_all_dialplan_asterisk().filter(type=Campana.TYPE_DIALER)
-
-    def create_dialplan(self, campana=None, campanas=None):
-        """Crea el archivo de dialplan para queue existentes
-        (si `queue` es None). Si `queue` es pasada por parametro,
-        se genera solo para dicha queue.
-        """
-
-        if campanas:
-            pass
-        elif campana:
-            campanas = [campana]
-        else:
-            campanas = self._obtener_todas_entrante_para_generar_dialplan()
-        dialplan = []
-        # agrego linea inicial que lleva [from-queue-fts] el archivo de asterisk
-        dialplan.append("[from-queue-fts]")
-        for campana in campanas:
-            logger.info("Creando dialplan para queue %s", campana.nombre)
-            try:
-                config_chunk = self._generar_dialplan(campana)
-                logger.info("Dialplan generado OK para queue %s",
-                            campana.nombre)
-            except:
-                logger.exception(
-                    "No se pudo generar configuracion de "
-                    "Asterisk para la queue {0}".format(campana.nombre))
-
-                try:
-                    traceback_lines = [
-                        "; {0}".format(line)
-                        for line in traceback.format_exc().splitlines()]
-                    traceback_lines = "\n".join(traceback_lines)
-                except:
-                    traceback_lines = "Error al intentar generar traceback"
-                    logger.exception("Error al intentar generar traceback")
-
-                # FAILED: Creamos la porción para el fallo del Dialplan.
-                param_failed = {'oml_queue_name': campana.nombre,
-                                'date': str(datetime.datetime.now()),
-                                'traceback_lines': traceback_lines}
-                generador_failed = \
-                    self._generador_factory.crear_generador_para_failed(
-                        param_failed)
-                config_chunk = generador_failed.generar_pedazo()
-
-            dialplan.append(config_chunk)
-
-        campanas = self._obtener_todas_dialer_para_generar_dialplan()
-
-        for campana in campanas:
-            logger.info("Creando dialplan para queue %s", campana.nombre)
-            try:
-                config_chunk = self._generar_dialplan_campana_dialer(campana)
-                logger.info("Dialplan generado OK para queue %s",
-                            campana.nombre)
-            except:
-                logger.exception(
-                    "No se pudo generar configuracion de "
-                    "Asterisk para la queue {0}".format(campana.nombre))
-
-                try:
-                    traceback_lines = [
-                        "; {0}".format(line)
-                        for line in traceback.format_exc().splitlines()]
-                    traceback_lines = "\n".join(traceback_lines)
-                except:
-                    traceback_lines = "Error al intentar generar traceback"
-                    logger.exception("Error al intentar generar traceback")
-
-                # FAILED: Creamos la porción para el fallo del Dialplan.
-                param_failed = {'oml_queue_name': campana.nombre,
-                                'date': str(datetime.datetime.now()),
-                                'traceback_lines': traceback_lines}
-                generador_failed = \
-                    self._generador_factory.crear_generador_para_failed(
-                        param_failed)
-                config_chunk = generador_failed.generar_pedazo()
-
-            dialplan.append(config_chunk)
-
-        self._dialplan_config_file.write(dialplan)
 
 
 class SipConfigCreator(object):
@@ -703,6 +476,194 @@ class GlobalsVariableConfigCreator(object):
         self._globals_config_file.write(configuracion)
 
 
+class RutasSalientesConfigCreator(object):
+
+    def __init__(self):
+        self._rutas_config_file = RutasSalientesConfigFile()
+        self._generador_factory = GeneradorDePedazoDeRutasSalientesFactory()
+
+    def _generar_config(self, ruta):
+        """Genera el dialplan para una ruta.
+
+        :param ruta: ruta para la cual hay crear config asterisk
+        :type RutaSaliente: configuracion_telefonia_app.models.RutaSaliente
+        :returns: str -- config para las rutas
+        """
+
+        partes = []
+        patrones = self._obtener_patrones_ordenados(ruta)
+        for orden, patron in patrones:
+            if patron.prefix:
+                dialpatern = ''.join(("_", str(patron.prefix), patron.match_pattern))
+            else:
+                dialpatern = ''.join(("_", patron.match_pattern))
+            param_generales = {
+                'oml-ruta-id': ruta.id,
+                'oml-ruta-dialpatern': dialpatern,
+                'oml-ruta-orden-patern': orden
+            }
+
+            generador_ruta = self._generador_factory.crear_generador_para_patron_ruta_saliente(
+                param_generales)
+            partes.append(generador_ruta.generar_pedazo())
+
+        return ''.join(partes)
+
+    def _obtener_patrones_ordenados(self, ruta):
+        """ devuelve patrones ordenados con enumerate"""
+        return list(enumerate(ruta.patrones_de_discado.all(), start=1))
+
+    def _obtener_todas_para_generar_config_rutas(self):
+        """Devuelve las rutas salientes para config rutas
+        """
+        return RutaSaliente.objects.all()
+
+    def _obtener_todas_menos_una_ruta_para_generar_config_rutas(self, ruta):
+        """Devuelve las rutas salientes para config rutas menos la ruta pasada por parametro
+        """
+        return RutaSaliente.objects.exclude(pk=ruta.id)
+
+    def create_config_asterisk(self, ruta=None, rutas=None, ruta_exclude=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `ruta` es pasada por parametro,
+        se genera solo para dicha ruta.
+        """
+
+        if rutas:
+            pass
+        elif ruta:
+            rutas = [ruta]
+        elif ruta_exclude:
+            rutas = self._obtener_todas_menos_una_ruta_para_generar_config_rutas(ruta_exclude)
+        else:
+            rutas = self._obtener_todas_para_generar_config_rutas()
+        rutas_file = []
+
+        # agrego el encabezado de las rutas
+        rutas_file.append("[oml-outr]\n")
+
+        # agrego los include
+        for ruta in rutas:
+            rutas_file.append("include => oml-outr-{0}\n".format(ruta.id))
+
+        # Agrega parametros
+        rutas_file.append("exten => i,1,Verbose(2, no existe patron)\n")
+        rutas_file.append("same => n,Set(__DIALSTATUS=NONDIALPLANMATCH)\n")
+        rutas_file.append("same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${OMLOUTNUM})\n")
+
+        # agrego las rutas con los patrones de discado
+        for ruta in rutas:
+            logger.info("Creando config sip para ruta saliente %s", ruta.id)
+            rutas_file.append("\n[oml-outr-{0}]\n".format(ruta.id))
+            rutas_file.append("include => oml-outr-{0}-custom".format(ruta.id))
+            try:
+                config_chunk = self._generar_config(ruta)
+                logger.info("Config generado OK para ruta saliente %s", ruta.id)
+            except:
+                logger.exception(
+                    "No se pudo generar configuracion de "
+                    "Asterisk para la ruta {0}".format(ruta.id))
+
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except:
+                    traceback_lines = "Error al intentar generar traceback"
+                    logger.exception("Error al intentar generar traceback")
+
+                # FAILED: Creamos la porción para el fallo del config sip.
+                param_failed = {'oml_ruta_name': ruta.nombre,
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+
+            rutas_file.append(config_chunk)
+
+        self._rutas_config_file.write(rutas_file)
+
+
+class SipTrunksConfigCreator(object):
+
+    def __init__(self):
+        self._sip_trunks_config_file = SipTrunksConfigFile()
+
+    def _obtener_todas_para_generar_config_rutas(self):
+        """Devuelve todas para config troncales
+        """
+        return TroncalSIP.objects.all()
+
+    def _obtener_todas_menos_un_troncal_para_generar_config_troncales(self, trunk):
+        """Devuelve los troncales para configmenos el troncal pasada por parametro
+        """
+        return TroncalSIP.objects.exclude(pk=trunk.id)
+
+    def create_config_asterisk(self, trunk=None, trunks=None, trunk_exclude=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `trunk` es pasada por parametro,
+        se genera solo para dicha trunk.
+        """
+
+        if trunks:
+            pass
+        elif trunk:
+            trunks = [trunk]
+        elif trunk_exclude:
+            trunks = self._obtener_todas_menos_un_troncal_para_generar_config_troncales(
+                trunk_exclude)
+        else:
+            trunks = self._obtener_todas_para_generar_config_rutas()
+        trunk_file = []
+
+        for trunk in trunks:
+            logger.info("Creando config troncal sip %s", trunk.id)
+            trunk_file.append("\n{0}\n".format(trunk.text_config.replace("\r", "")))
+        self._sip_trunks_config_file.write(trunk_file)
+
+
+class SipRegistrationsConfigCreator(object):
+
+    def __init__(self):
+        self._sip_registrations_config_file = SipRegistrationsConfigFile()
+
+    def _obtener_todas_para_generar_config_rutas(self):
+        """Devuelve todas para config troncales
+        """
+        return TroncalSIP.objects.all()
+
+    def _obtener_todas_menos_un_troncal_para_generar_config_troncales(self, trunk):
+        """Devuelve los troncales para configmenos el troncal pasada por parametro
+        """
+        return TroncalSIP.objects.exclude(pk=trunk.id)
+
+    def create_config_asterisk(self, trunk=None, trunks=None, trunk_exclude=None):
+        """Crea el archivo de dialplan para queue existentes
+        (si `queue` es None). Si `trunk` es pasada por parametro,
+        se genera solo para dicha trunk.
+        """
+
+        if trunks:
+            pass
+        elif trunk:
+            trunks = [trunk]
+        elif trunk_exclude:
+            trunks = self._obtener_todas_menos_un_troncal_para_generar_config_troncales(
+                trunk_exclude)
+        else:
+            trunks = self._obtener_todas_para_generar_config_rutas()
+        trunk_file = []
+
+        for trunk in trunks:
+            logger.info("Creando config troncal sip %s", trunk.id)
+            trunk_file.append("{0}\n".format(trunk.register_string))
+
+        self._sip_registrations_config_file.write(trunk_file)
+
+
 class AsteriskConfigReloader(object):
 
     def reload_config(self):
@@ -744,7 +705,8 @@ class AsteriskConfigReloader(object):
             stderr_file.close()
 
     def reload_asterisk(self):
-        subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx', '\'core reload\''])
+        subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx',
+                         '\'core reload\''])
 
 
 class ConfigFile(object):
@@ -780,14 +742,6 @@ class ConfigFile(object):
                                                           self._remote_path])])
 
 
-class QueueConfigFile(ConfigFile):
-    def __init__(self):
-        filename = settings.OML_QUEUE_FILENAME.strip()
-        hostname = settings.OML_ASTERISK_HOSTNAME
-        remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(QueueConfigFile, self).__init__(filename, hostname, remote_path)
-
-
 class SipConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_SIP_FILENAME.strip()
@@ -802,6 +756,32 @@ class QueuesConfigFile(ConfigFile):
         hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
         super(QueuesConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class RutasSalientesConfigFile(ConfigFile):
+    def __init__(self):
+        filename = settings.OML_RUTAS_SALIENTES_FILENAME.strip()
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(RutasSalientesConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class SipTrunksConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
+                                "oml_sip_trunks.conf")
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(SipTrunksConfigFile, self).__init__(filename, hostname, remote_path)
+
+
+class SipRegistrationsConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
+                                "oml_sip_registrations.conf")
+        hostname = settings.OML_ASTERISK_HOSTNAME
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(SipRegistrationsConfigFile, self).__init__(filename, hostname, remote_path)
 
 
 class BackListConfigFile(ConfigFile):

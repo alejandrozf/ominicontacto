@@ -1,13 +1,34 @@
+{% load staticfiles %}
+{% load compress %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-<link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
-        <!-- jquery UI -->
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+    {% compress js %}
+    <!-- Scripts -->
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
+    {% endcompress %}
+
+    <!-- TODO: REMOVER - FIX HASTA CAMBIAR BS3 por BS4 -->
+    <style type="text/css">
+      .fade {
+        opacity: 1;
+      }
+    </style>
+
 </head>
 <body>
 <script>
@@ -18,16 +39,12 @@
 {% include 'messages.html' %}
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
-    <div class="row">
-        <div class="col-md-5 offset-md-2">
-            {{form.as_table}}
-        </div>
-        <div class="col-md-5">
-            {{venta_form.as_table}}
-        </div>
+    <div style="position: relative;">
+        {{form.as_table}}
+        {{venta_form.as_table}}
     </div>
-    <br/>
-    <button type="submit"  class="btn btn-success btn-sm">
+    <hr>
+    <button type="submit"  class="btn btn-primary">
         Guardar
     </button>
 </form>

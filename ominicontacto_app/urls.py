@@ -3,17 +3,18 @@
 from django.conf import settings
 from django.conf.urls import url, include
 from django.views.static import serve
+from django.contrib.auth.decorators import login_required
+
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_cliente, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
-    views_campana_dialer_reportes, views_back_list, views_sitio_externo,
-    views_queue_member, views_user_api_crm, views_supervisor,
+    views_back_list, views_sitio_externo, views_queue_member, views_user_api_crm, views_supervisor,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
     views_campana_preview, views_archivo_de_audio
 )
-from django.contrib.auth.decorators import login_required
+
 from ominicontacto_app.views_utils import (
     handler400, handler403, handler404, handler500
 )
@@ -26,6 +27,7 @@ handler500 = handler500
 
 
 urlpatterns = [
+    url(r'^admin/defender/', include('defender.urls')),  # defender admin
     url(r'^ajax/mensaje_recibidos/',
         views.mensajes_recibidos_view,
         name='ajax_mensaje_recibidos'),
@@ -157,6 +159,17 @@ urlpatterns = [
         name='acerca',
         ),
     # ==========================================================================
+    # Servicios para phoneJS
+    # ==========================================================================
+    url(r'^service/campana/activas/$',
+        login_required(
+            views_agente.CampanasActivasView.as_view()),
+        name="service_campanas_activas"),
+    url(r'^service/agente/otros_agentes_de_grupo/$',
+        login_required(
+            views_agente.AgentesDeGrupoPropioView.as_view()),
+        name="service_agentes_de_grupo"),
+    # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
     url(r'^base_datos_contacto/(?P<pk_bd_contacto>\d+)/actualizar/$',
@@ -227,6 +240,25 @@ urlpatterns = [
         login_required(views_base_de_datos_contacto.
                        mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
+
+    # ==========================================================================
+    #  Vistas de manipulación de contactos de una campaña
+    # ==========================================================================
+    url(r'^campana/selecciona/$',
+        login_required(
+            views_contacto.FormularioSeleccionCampanaFormView.as_view()),
+        name='seleccion_campana_adicion_contacto',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
+        login_required(
+            views_contacto.FormularioNuevoContactoFormView.as_view()),
+        name='nuevo_contacto_campana',
+        ),
+    url(r'^campana/(?P<pk_campana>\d+)/busqueda_contacto/$',
+        login_required(
+            views_contacto.CampanaBusquedaContactoFormView.as_view()),
+        name="campana_busqueda_contacto"),
+
     # ==========================================================================
     #  Templates Campana Entrante
     # ==========================================================================
@@ -269,47 +301,12 @@ urlpatterns = [
         login_required(views_campana.CampanaDeleteView.as_view()),
         name='campana_elimina',
         ),
-    url(r'^campana/(?P<pk_campana>\d+)/exporta/$',
-        login_required(
-            views_campana.ExportaReporteCampanaView.as_view()),
-        name='exporta_campana_reporte',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/reporte/$',
-        login_required(
-            views_campana.CampanaReporteListView.as_view()),
-        name='reporte_campana',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/reporte_grafico/$',
-        login_required(
-            views_campana.CampanaReporteGrafico.as_view()),
-        name='reporte_campana_grafico',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/reporte_grafico/(?P<pk_agente>\d+)/agente/$',
-        login_required(
-            views_campana.AgenteCampanaReporteGrafico.as_view()),
-        name='reporte_agente_grafico',
-        ),
-    url(r'^campana/selecciona/$',
-        login_required(
-            views_campana.FormularioSeleccionCampanaFormView.as_view()),
-        name='seleccion_campana',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
-        login_required(
-            views_campana.FormularioNuevoContactoFormView.as_view()),
-        name='nuevo_contacto_campana',
-        ),
     url(r'^campana/(?P<pk_campana>\d+)/ocultar/$',
         login_required(views_campana.OcultarCampanaView.as_view()),
         name='oculta_campana', ),
     url(r'^campana/(?P<pk_campana>\d+)/desocultar/$',
         login_required(views_campana.DesOcultarCampanaView.as_view()),
         name='desoculta_campana', ),
-    url(r'^campana/(?P<pk_campana>\d+)/exporta_pdf/$',
-        login_required(
-            views_campana.ExportaReportePDFView.as_view()),
-        name='exporta_campana_reporte_pdf',
-        ),
     url(r'^campana/llamadas_cola/$',
         login_required(
             views_campana.CampanaReporteQueueListView.as_view()),
@@ -328,11 +325,6 @@ urlpatterns = [
     # ==========================================================================
     # Formulario Weelo
     # ==========================================================================
-    url(r'^formulario/(?P<pk_campana>\d+)/exporta/$',
-        login_required(
-            views_campana.ExportaReporteFormularioVentaView.as_view()),
-        name='exporta_formulario_reporte',
-        ),
     url(r'^agente/(?P<pk_agente>\d+)/reporte/$',
         login_required(
             views_agente.AgenteReporteCalificaciones.as_view()),
@@ -348,11 +340,6 @@ urlpatterns = [
             views_agente.ExportaReporteFormularioVentaView.as_view()),
         name='exporta_reporte_formularios',
         ),
-    url(r'^agente/tiempos/$',
-        login_required(
-            views_agente.AgenteReporteListView.as_view()),
-        name='agente_tiempos',
-        ),
     url(r'^agente/logout/$',
         login_required(views_agente.logout_view), name='agente_logout',
         ),
@@ -361,20 +348,6 @@ urlpatterns = [
             views_agente.LlamarContactoView.as_view()),
         name='agente_llamar_contacto',
         ),
-    url(r'^agente/llamadas_exporta/(?P<tipo_reporte>[\w\-]+)/$',
-        views_agente.exporta_reporte_agente_llamada_view, name='agente_llamada_exporta'),
-    # ==========================================================================
-    # Reportes
-    # ==========================================================================
-    url(r'^reporte/llamadas/$',
-        login_required(
-            views_grabacion.GrabacionReporteFormView.as_view()),
-        name='reporte_llamadas',
-        ),
-    url(r'^reportes/exportar/todos/$',
-        login_required(views_grabacion.exportar_zip_reportes_view), name='exportar_zip_reportes'),
-    url(r'^reportes/exportar/(?P<tipo_reporte>[\w\-]+)/$',
-        login_required(views_grabacion.exportar_llamadas_view), name='exportar_llamadas'),
     # ==========================================================================
     # Calificacion
     # ==========================================================================
@@ -442,6 +415,12 @@ urlpatterns = [
         name='calificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/recalificacion/$',
+        login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'recalificacion'},
+        name='calificacion_formulario_update_or_create'
+        ),
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
         '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/reporte/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'reporte'},
@@ -492,9 +471,6 @@ urlpatterns = [
     url(r'^llamadas/activas/$',
         login_required(views_campana_reportes.LlamadasActivasView.as_view()),
         name='llamadas_activas',
-        ),
-    url(r'^wombat/logs/$', views.wombat_log_view,
-        name='wombat_log',
         ),
     # ==========================================================================
     # Reportes PDF
@@ -554,26 +530,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer.DesOcultarCampanaDialerView.as_view()),
         name="campana_dialer_desocultar"),
-    url(r'^campana_dialer/detalle_wombat/$',
-        login_required(
-            views_campana_dialer.detalle_campana_dialer_view),
-        name="campana_dialer_detalle_wombat"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/update_base/$',
         login_required(
             views_campana_dialer.UpdateBaseDatosDialerView.as_view()),
         name="campana_dialer_update_base"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/busqueda_contacto/$',
-        login_required(
-            views_campana_dialer.CampanaDialerBusquedaContactoFormView.as_view()),
-        name="campana_dialer_busqueda_contacto"),
-    url(r'^campana_dialer/seleciona_campana/$',
-        login_required(
-            views_campana_dialer.FormularioSeleccionCampanaDialerFormView.as_view()),
-        name="campana_dialer_selecciona_campana"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/nuevo_contacto/$',
-        login_required(
-            views_campana_dialer.FormularioNuevoContactoFormView.as_view()),
-        name="nuevo_contacto_campana_dialer"),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/supervisors/$',
         login_required(
             views_campana_dialer.CampanaDialerSupervisorUpdateView.as_view()),
@@ -582,46 +542,7 @@ urlpatterns = [
         views_campana_dialer.CampanaDialerBorradasListView.as_view(),
         name="campana_dialer_mostrar_ocultas"),
     # ==========================================================================
-    # Campana Dialer Reportes
-    # ==========================================================================
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_calificacion/$',
-        login_required(
-            views_campana_dialer_reportes.CampanaDialerReporteCalificacionListView.as_view()),
-        name="campana_dialer_reporte_calificacion"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_grafico/$',
-        login_required(
-            views_campana_dialer_reportes.CampanaDialerReporteGrafico.as_view()),
-        name="campana_dialer_reporte_grafico"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_pdf/$',
-        login_required(
-            views_campana_dialer_reportes.ExportaCampanaDialerReportePDFView.as_view()),
-        name="campana_dialer_reporte_pdf"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/reporte_agente/(?P<pk_agente>\d+)/$',
-        login_required(
-            views_campana_dialer_reportes.AgenteCampanaDialerReporteGrafico.as_view()),
-        name="campana_dialer_reporte_agente"),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/exporta/$',
-        login_required(
-            views_campana_dialer_reportes.ExportaReporteNoAtendidosView.as_view()),
-        name='exporta_reporte_no_atendidos',
-        ),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/detalle/$',
-        login_required(
-            views_campana_dialer_reportes.CampanaDialerDetailView.as_view()),
-        name='campana_dialer_detalle',
-        ),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/exporta_calificados/$',
-        login_required(
-            views_campana_dialer_reportes.ExportaReporteCalificadosView.as_view()),
-        name='exporta_reporte_calificados',
-        ),
-    url(r'^campana_dialer/(?P<pk_campana>\d+)/exporta_contactados/$',
-        login_required(
-            views_campana_dialer_reportes.ExportaReporteContactadosView.as_view()),
-        name='exporta_reporte_contactados',
-        ),
-    # ==========================================================================
-    # Backlist
+    # Blacklist
     # ==========================================================================
     url(r'^backlist/nueva/$',
         login_required(views_back_list.BacklistCreateView.as_view()),
@@ -678,6 +599,10 @@ urlpatterns = [
     url(r'^user_api_crm/(?P<pk>\d+)/update/$',
         login_required(views_user_api_crm.UserApiCrmUpdateView.as_view()),
         name='user_api_crm_update',
+        ),
+    url(r'^user_api_crm/(?P<pk>\d+)/delete/$',
+        login_required(views_user_api_crm.UserApiCrmDeleteView.as_view()),
+        name='user_api_crm_delete',
         ),
     url(r'^user_api_crm/list/$',
         login_required(views_user_api_crm.UserApiCrmListView.as_view()),
@@ -760,27 +685,6 @@ urlpatterns = [
         login_required(
             views_campana_manual.CampanaManualListView.as_view()),
         name="campana_manual_list"),
-
-    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_calificacion/$',
-        login_required(
-            views_campana_manual.CampanaManualReporteCalificacionListView.as_view()),
-        name="campana_manual_calificacion_reporte_calificacion"),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/exporta_gestion/$',
-        login_required(
-            views_campana_manual.ExportaReporteFormularioGestionView.as_view()),
-        name="exporta_csv_gestion"),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/exporta_calificacion/$',
-        login_required(
-            views_campana_manual.ExportaReporteCampanaManualView.as_view()),
-        name="exporta_csv_calificacon"),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_grafico/$',
-        login_required(
-            views_campana_manual.CampanaManualReporteGrafico.as_view()),
-        name="campana_manual_reporte_grafico"),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/reporte_agente/(?P<pk_agente>\d+)/$',
-        login_required(
-            views_campana_manual.AgenteCampanaManualReporteGrafico.as_view()),
-        name="campana_manual_reporte_agente"),
     url(r'^campana_manual/(?P<pk_campana>\d+)/delete/$',
         login_required(
             views_campana_manual.CampanaManualDeleteView.as_view()),
@@ -847,14 +751,6 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewSupervisorUpdateView.as_view()),
         name="campana_preview_supervisors"),
-    url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_calificacion/$',
-        login_required(
-            views_campana_dialer_reportes.CampanaDialerReporteCalificacionListView.as_view()),
-        name="campana_preview_calificacion_reporte_calificacion"),
-    url(r'^campana_preview/(?P<pk_campana>\d+)/reporte_grafico/$',
-        login_required(
-            views_campana_preview.CampanaPreviewReporteGrafico.as_view()),
-        name="campana_preview_reporte_grafico"),
     url(r'^campana_preview/mostrar_ocultas/$',
         views_campana_preview.CampanaPreviewBorradasListView.as_view(),
         name="campana_preview_mostrar_ocultas"),
@@ -870,14 +766,6 @@ urlpatterns = [
         login_required(
             views_campana_preview.campana_validar_contacto_asignado_view),
         name="validar_contacto_asignado"),
-    url(r'^campana_preview/(?P<pk>\d+)/detalle/$',
-        login_required(
-            views_campana_preview.CampanaPreviewDetailView.as_view()),
-        name="campana_preview_detalle"),
-    url(r'^campana_preview/(?P<pk>\d+)/detalle_express/$',
-        login_required(
-            views_campana_preview.CampanaPreviewExpressView.as_view()),
-        name="campana_preview_detalle_express"),
 
     # ==========================================================================
     # API para Base de Datos de Contactos

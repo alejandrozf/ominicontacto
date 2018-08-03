@@ -4,19 +4,13 @@
 
 from __future__ import unicode_literals
 
-# from django.contrib import messages
 from django import forms
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-# from django.shortcuts import redirect
-# from django.views.generic import CreateView, UpdateView, FormView
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
                                      ReglasIncidenciaFormSet, CampanaDialerForm,
                                      OpcionCalificacionFormSet, ParametroExtraParaWebformFormSet)
-from ominicontacto_app.models import (
-    Campana,
-    Queue,
-)
+from ominicontacto_app.models import Campana
 
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
@@ -133,7 +127,6 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         queue_form.instance.eventwhencalled = True
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
-        queue_form.instance.queue_asterisk = Queue.objects.ultimo_queue_asterisk()
         if queue_form.instance.initial_boost_factor is None:
             queue_form.instance.initial_boost_factor = 1.0
         queue_form.save()
@@ -240,7 +233,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
         opciones_calificacion_formset.save()
         parametros_extra_web_formset.save()
 
-        self._insert_queue_asterisk(queue, solo_activar=True)
+        self._insert_queue_asterisk(queue)
         campana_service = CampanaService()
         campana_service.crear_campana_wombat(campana)
         campana_service.update_endpoint(campana)

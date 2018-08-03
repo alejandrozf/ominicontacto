@@ -1,36 +1,34 @@
 
 
-<div class="modal-content">
+    <div class="modal-content">
+      {% if error_consulta %}
+        <div class="modal-header">
+            <h1 class="modal-title">Advertencia:</h1>                    
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>  
+        <div class="modal-body">
+            <p><strong>{{ error_consulta }}</strong></p>
+        </div> 
+      {% else %}
+        <div class="modal-header">
+            <h1 class="modal-title">{{ campana.nombre }}</h1>                    
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>  
+        <div class="modal-body">
+            <p>Nombre: <strong>{{ campana.nombre }}</strong></p>
+            <p>Estado: <strong>{{ campana.get_estado_display}}</strong></p>
+            <hr>
+            <p>Llamadas efectuadas: <strong>{{ efectuadas }}</strong></p>
+            <p>Llamadas Terminadas: <strong>{{ terminadas }}</strong></p>
+            <p>Llamadas restantes estimadas: <strong>{{ estimadas }}</strong></p> 
+            {% for statu in status %}
+                <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
+            {% endfor %}                       
+        </div> 
+      {% endif %}
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div> <!-- /.modal-content -->
 
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-1">
-                        <p>Nombre de la Campana <strong>{{ campana.nombre }}</strong></p>
-                        <p> Estado <strong>{{ campana.get_estado_display}}</strong></p>
-                            </div>
-                    </div>
-                    <hr>
-                        <div class="row">
-                            <div class="col-md-6 ">
 
-                            <p> Llamadas efectuadas <strong>{{ efectuadas }}</strong></p>
-
-
-                            <p> Llamadas Terminadas <strong>{{ terminadas }}</strong></p>
-
-
-                            <p> Llamadas restantes estimadas <strong>{{ estimadas }}</strong></p>
-
-                            </div>
-                            <div class="col-md-6">
-                                {% for statu in status %}
-                                    <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
-                                {% endfor %}
-                            </div>
-                            </div>
-
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div>

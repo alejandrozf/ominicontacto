@@ -17,11 +17,11 @@
   with_items:
           - "{{ install_prefix }}"
           - "{{ install_prefix }}.pip"
-          - "{{ install_prefix }}ominicontacto/"
+          - "{{ install_prefix }}ominicontacto"
           - "{{ install_prefix }}local"
-          - "{{ install_prefix }}conf"
           - "{{ install_prefix }}wombat-json"
           - "{{ install_prefix }}bin"
+          - "{{ install_prefix }}backup"
           - "{{ install_prefix }}nginx_certs"
           - "{{ install_prefix }}media_root/reporte_campana"
           - "{{ install_prefix }}static"
@@ -72,7 +72,7 @@
 
 - name: Setup virtualenv
   pip:
-    requirements={{ install_prefix }}ominicontacto/requeriments.txt
+    requirements={{ install_prefix }}ominicontacto/requirements.txt
     virtualenv={{ install_prefix }}virtualenv
     virtualenv_command=/usr/bin/virtualenv-2.7
   environment:
@@ -98,7 +98,7 @@
 
 - name: Setup virtualenv
   pip: >
-    requirements={{ install_prefix }}ominicontactorequeriments.txt
+    requirements={{ install_prefix }}ominicontacto/requirements.txt
     virtualenv={{ install_prefix }}virtualenv
   when: ansible_os_family == "Debian"
 

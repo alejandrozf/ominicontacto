@@ -12,14 +12,10 @@ import os
 
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
-from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
-from reportlab.lib.pagesizes import cm
 from reportlab.lib.units import inch
 from reportlab.lib import colors
-from ominicontacto_app.models import Campana
-from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 
 
 logger = logging.getLogger(__name__)
@@ -56,9 +52,9 @@ class ArchivoDeReportePDF(object):
 
     def cabecera(self, pdf, campana):
 
-        #archivo_imagen = settings.STATIC_ROOT + '/ominicontacto/Img/fts.png'
-        #pdf.drawImage(archivo_imagen, 40, 750, 120, 90,
-         #             preserveAspectRatio=True)
+        # archivo_imagen = settings.STATIC_ROOT + '/ominicontacto/Img/fts.png'
+        # pdf.drawImage(archivo_imagen, 40, 750, 120, 90,
+        #             preserveAspectRatio=True)
         # Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
         pdf.setFont("Helvetica", 16)
         # Dibujamos una cadena en la ubicación X,Y especificada
@@ -72,16 +68,15 @@ class ArchivoDeReportePDF(object):
 
         pdf = canvas.Canvas(self.ruta)
         self.cabecera(pdf, campana)
-        y = 600
 
         self.tabla_calificacion(pdf, estadisticas['dict_campana_counter'],
-                                estadisticas['total_asignados']
-                                )
-        self.tabla_no_atendidos(pdf, estadisticas['dict_no_atendido_counter'],
-                                estadisticas['total_no_atendidos']
-                                )
-
+                                estadisticas['total_asignados'])
         pdf.showPage()
+
+        self.tabla_no_atendidos(pdf, estadisticas['dict_no_atendido_counter'],
+                                estadisticas['total_no_atendidos'])
+        pdf.showPage()
+
         self.tabla_agente(pdf, estadisticas['agentes_venta'],
                           estadisticas['calificaciones'])
         pdf.showPage()
@@ -110,17 +105,17 @@ class ArchivoDeReportePDF(object):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75*inch, 740, u"Cantidad por calificacion")
+        pdf.drawString(0.75 * inch, 740, u"Cantidad por calificacion")
         # Establecemos el tamaño de la hoja que ocupará la tabla
-        detalle_orden.wrapOn(pdf, 50, 50)
+        detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
-        # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 7.1*inch)
+        # 6.75 mas cercano del margen TOP
+        detalle_orden.drawOn(pdf, 0.75 * inch, 8.75 * inch)
         archivo_imagen = settings.MEDIA_ROOT + \
-                         '/reporte_campana/barra_campana_calificacion.png'
+            '/reporte_campana/barra_campana_calificacion.png'
 
-        pdf.drawImage(archivo_imagen, 4*inch, 7.5*inch, 250, 200,
+        pdf.drawImage(archivo_imagen, 4 * inch, 7.5 * inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
 
     def tabla_no_atendidos(self, pdf, dict_no_atendidos, total_no_atendidos):
@@ -129,8 +124,7 @@ class ArchivoDeReportePDF(object):
         # Creamos una lista de tuplas que van a contener a las personas
 
         detalles = [(resultado_nombre, resultado_cantidad)
-                    for resultado_nombre,
-                        resultado_cantidad in dict_no_atendidos]
+                    for resultado_nombre, resultado_cantidad in dict_no_atendidos]
         detalles.append(('Total no atendidos', total_no_atendidos))
         # Establecemos el tamaño de cada una de las columnas de la tabla
         detalle_orden = Table([encabezados] + detalles)
@@ -146,39 +140,30 @@ class ArchivoDeReportePDF(object):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75*inch, 430, u"Cantidad de llamados no atendidos")
+        pdf.drawString(0.75 * inch, 740, u"Cantidad de llamados no atendidos")
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
-        # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf,  0.75*inch, 4.3*inch)
+        # 6.75 mas cercano del margen TOP
+        detalle_orden.drawOn(pdf, 0.75 * inch, 6.75 * inch)
         archivo_imagen = settings.MEDIA_ROOT + \
-                         '/reporte_campana/barra_campana_no_atendido.png'
+            '/reporte_campana/barra_campana_no_atendido.png'
 
-        pdf.drawImage(archivo_imagen, 4*inch, 3.5*inch, 250, 200,
+        pdf.drawImage(archivo_imagen, 4 * inch, 7.5 * inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
 
-    def tabla_agente(self, pdf, agente_venta, calificaciones):
-        # Creamos una tupla de encabezados para neustra tabla
+    def tabla_agente(self, pdf, agentes_venta, nombres_calificaciones):
+        # Creamos una tupla de encabezados para nuestra tabla
         encabezados = ('Agente', 'Ventas')
-        nombre_calificaciones = [calificacion.nombre for calificacion in calificaciones]
-        nombre_calificaciones = tuple(nombre_calificaciones)
-        encabezados = encabezados + nombre_calificaciones
+        encabezados = encabezados + nombres_calificaciones
 
-        # Creamos una lista de tuplas que van a contener a las personas
-
+        # Creamos una lista de tuplas que va a contener los datos de los agentes
         detalles = []
-
-        for agente in agente_venta:
-            dato = [agente[0], agente[3]]
-            for calificacion in calificaciones:
-                for clave, valor in agente[2].items():
-                    if calificacion.pk == clave:
-                        dato.append(valor)
-                        break
-
-            detalles.append(tuple(dato))
+        for agente in agentes_venta.values():
+            datos_agente = [agente['nombre'], agente['total_gestionados']]
+            datos_agente += agente['totales_calificaciones'].values()
+            detalles.append(tuple(datos_agente))
 
         # Establecemos el tamaño de cada una de las columnas de la tabla
         detalle_orden = Table([encabezados] + detalles)
@@ -194,13 +179,12 @@ class ArchivoDeReportePDF(object):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        #pdf.drawString(0.75*inch, 9 * inch, u"Calificaciones por agente")
         # Establecemos el tamaño de la hoja que ocupará la tabla
-        detalle_orden.wrapOn(pdf, 50, 50)
+        detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
-        # 7.5 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 300)
+        # 6.75 mas cercano del margen TOP
+        detalle_orden.drawOn(pdf, 0.75 * inch, 9.75 * inch)
 
     def ya_existe(self):
         return os.path.exists(self.ruta)
@@ -216,8 +200,6 @@ class ReporteCampanaPDFService(object):
         archivo_de_reporte.get(campana, estadisticas)
 
     def obtener_url_reporte_pdf_descargar(self, campana):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
-
         archivo_de_reporte = ArchivoDeReportePDF(campana)
         if archivo_de_reporte.ya_existe():
             return archivo_de_reporte.url_descarga

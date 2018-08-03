@@ -22,25 +22,25 @@
   become_method: sudo
   become_user: postgres
 
-- name: Create kamailio database
-  shell: createdb -O kamailio kamailio
-  become: yes
-  become_method: sudo
-  become_user: postgres
-  register: command_result
-  failed_when:
-    - "'already exists' not in command_result.stderr"
-    - "'ya existe' not in command_result.stderr"
-    - "command_result.rc != 0"
+#- name: Create kamailio database
+#  shell: createdb -O kamailio kamailio
+#  become: yes
+#  become_method: sudo
+#  become_user: postgres
+#  register: command_result
+#  failed_when:
+#    - "'already exists' not in command_result.stderr"
+#    - "'ya existe' not in command_result.stderr"
+#    - "command_result.rc != 0"
 
 - name: Erase of default kamailio.cfg file
-  shell: rm -rf {{ install_prefix }}kamailio/etc/kamailio/kamailio.cfg
+  shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
   tags: postinstall
 
 - name: Copy of oml-freepbx/kamailio-files to the desired destinations
   shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip"
   with_items:
-      - cp kamailio-files/kamctlrc {{ install_prefix }}kamailio/etc/kamailio/
+      - cp kamailio-files/kamctlrc {{ kamailio_location }}/etc/kamailio/
 
 - name: Creation of kamailio file in /etc/default
   template: src=templates/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755

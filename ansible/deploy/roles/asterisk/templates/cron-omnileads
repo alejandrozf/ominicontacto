@@ -1,0 +1,2 @@
+*/5 * * * * omnileads {{ asterisk_location }}/var/lib/asterisk/agi-bin/omni-asterisk-logout.php
+0 1 * * * omnileads /usr/local/parselog/conversor.sh 1 0 0 >> /tmp/conversor.log

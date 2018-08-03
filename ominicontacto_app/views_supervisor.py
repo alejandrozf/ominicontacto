@@ -12,7 +12,6 @@ from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, UpdateView, ListView
 from ominicontacto_app.forms import SupervisorProfileForm
 from ominicontacto_app.models import SupervisorProfile, User
-from services.kamailio_service import KamailioService
 from services.asterisk_service import ActivacionAgenteService,\
     RestablecerConfigSipError
 
@@ -46,13 +45,12 @@ class SupervisorProfileCreateView(CreateView):
         usuario = User.objects.get(pk=self.kwargs['pk_user'])
         self.object.user = usuario
         self.object.sip_extension = 1000 + usuario.id
-        # se le genera un sip_password aleatorio
-        self.object.sip_password = User.objects.make_random_password()
+        sip_extension = self.object.sip_extension
+        self.object.timestamp = self.object.user.generar_usuario(sip_extension).split(':')[0]
+        timestamp = self.object.timestamp
+        sip_usuario = timestamp + ":" + str(sip_extension)
+        self.object.sip_password = self.object.user.generar_contrasena(sip_usuario)
         self.object.save()
-        kamailio_service = KamailioService()
-        # FIXME = Crear servicio para crer un supervisor en kamailio-debian o
-        # renombrar el metodo
-        kamailio_service.crear_agente_kamailio(self.object)
         asterisk_sip_service = ActivacionAgenteService()
         try:
             asterisk_sip_service.activar()
@@ -75,6 +73,16 @@ class SupervisorProfileUpdateView(UpdateView):
     model = SupervisorProfile
     template_name = 'base_create_update_form.html'
     form_class = SupervisorProfileForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        sip_extension = self.object.sip_extension
+        self.object.timestamp = self.object.user.generar_usuario(sip_extension).split(':')[0]
+        timestamp = self.object.timestamp
+        sip_usuario = timestamp + ":" + str(sip_extension)
+        self.object.sip_password = self.object.user.generar_contrasena(sip_usuario)
+        self.object.save()
+        return super(SupervisorProfileUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('supervisor_list')

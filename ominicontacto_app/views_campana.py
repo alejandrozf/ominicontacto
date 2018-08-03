@@ -4,38 +4,31 @@
 
 from __future__ import unicode_literals
 
-import json
 import datetime
+import json
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect
 from django.views.generic import (
     ListView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import RedirectView
+from django.utils.translation import ugettext_lazy as _
+
 from ominicontacto_app.forms import (
     ReporteForm, FormularioNuevoContacto,
     FormularioCampanaContacto, CampanaSupervisorUpdateForm
 )
 from ominicontacto_app.models import (
-    Campana, Queue, Contacto, AgenteProfile, SupervisorProfile
+    Campana, Queue, Contacto, SupervisorProfile
 )
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
-from ominicontacto_app.services.asterisk_service import AsteriskService
 
-from ominicontacto_app.services.reporte_campana_calificacion import \
-    ReporteCampanaService
-from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.utiles import convert_fecha_datetime, convertir_ascii_string
-from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
-from ominicontacto_app.services.reporte_metadata_cliente import \
-    ReporteMetadataClienteService
-from ominicontacto_app.services.reporte_campana_pdf import \
-    ReporteCampanaPDFService
 from ominicontacto_app.services.reporte_llamadas_campana import \
     EstadisticasCampanaLlamadasService
-
+from configuracion_telefonia_app.views import DeleteNodoDestinoMixin, SincronizadorDummy
 
 import logging as logging_
 
@@ -47,13 +40,12 @@ class CampanasDeleteMixin(object):
     Encapsula comportamiento común a todas las campanas en el momento de
     eliminar
     """
+    nodo_eliminado = _(u'<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la campana.')
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        # Eliminamos el registro de la tabla de asterisk en mysql
-        servicio_asterisk = AsteriskService()
-        servicio_asterisk.delete_cola_asterisk(self.object.queue_campana)
         # realizamos la eliminacion de la queue
         self.object.remover()
         # actualizamos el archivo de dialplan
@@ -70,13 +62,10 @@ class CampanasDeleteMixin(object):
                 message,
             )
 
-        message = '<strong>Operación Exitosa!</strong>\
-        Se llevó a cabo con éxito la eliminación de la campana.'
-
         messages.add_message(
             self.request,
             messages.SUCCESS,
-            message,
+            self.nodo_eliminado,
         )
 
 
@@ -101,20 +90,24 @@ class CampanaListView(ListView):
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
         context['campanas'] = campanas
-        context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
-        context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
                                               oculto=False)
         return context
 
 
-class CampanaDeleteView(CampanasDeleteMixin, DeleteView):
+class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView):
     """
     Esta vista se encarga de la eliminación de una campana
     """
+    # TODO: realizar refactor aquí, la vista de eliminación no debería tener dos métodos
+    # 'delete'
     model = Queue
     template_name = 'campana/delete_campana.html'
+    imposible_eliminar = _('No se puede eliminar una Campaña que es destino en un flujo de llamada')
+    nodo_eliminado = _(u'<strong>Operación Exitosa!</strong>\
+        Se llevó a cabo con éxito la eliminación de la campana.')
+    url_eliminar_name = 'campana_elimina'
 
     def delete(self, request, *args, **kwargs):
         super(CampanaDeleteView, self).delete(request, *args, **kwargs)
@@ -122,190 +115,18 @@ class CampanaDeleteView(CampanasDeleteMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+        # No se puede volver a borrar una campaña.
+        return Campana.objects.exclude(
+            estado=Campana.ESTADO_BORRADA).get(pk=self.kwargs['pk_campana'])
 
     def get_success_url(self):
         return reverse('campana_list')
 
-
-class ExportaReporteCampanaView(UpdateView):
-    """
-    Esta vista invoca a generar un csv de reporte de la campana.
-    """
-
-    model = Campana
-    context_object_name = 'campana'
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        service = ReporteCampanaService()
-        url = service.obtener_url_reporte_csv_descargar(self.object)
-
-        return redirect(url)
+    def get_sincronizador_de_configuracion(self):
+        return SincronizadorDummy()
 
 
-class CampanaReporteListView(ListView):
-    """
-    Vista muetra un listado de listado de las calificaciones de la campana y
-    genera los reportes csv de gestion y de calificacion
-    """
-    template_name = 'reporte/reporte_campana_formulario.html'
-    context_object_name = 'campana'
-    model = Campana
-
-    def get_context_data(self, **kwargs):
-        context = super(CampanaReporteListView, self).get_context_data(
-            **kwargs)
-
-        service = ReporteCampanaService()
-        service_formulario = ReporteMetadataClienteService()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        service.crea_reporte_csv(campana)
-        service_formulario.crea_reporte_csv(campana)
-        context['campana'] = campana
-        return context
-
-
-class ExportaReporteFormularioVentaView(UpdateView):
-    """
-    Esta vista invoca a generar un csv de reporte de la la venta.
-    """
-
-    model = Campana
-    context_object_name = 'campana'
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        service = ReporteMetadataClienteService()
-        url = service.obtener_url_reporte_csv_descargar(self.object)
-
-        return redirect(url)
-
-
-class CampanaReporteGrafico(FormView):
-    """Esta vista genera el reporte grafico de la campana"""
-
-    template_name = 'campana/reporte_campana.html'
-    context_object_name = 'campana'
-    model = Campana
-    form_class = ReporteForm
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get(self, request, *args, **kwargs):
-        # obtener_estadisticas_render_graficos_supervision()
-        service = EstadisticasService()
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
-        # genera los reportes grafico de la campana
-        graficos_estadisticas = service.general_campana(self.get_object(), hoy,
-                                                        hoy_ahora)
-        # generar el reporte pdf
-        service_pdf = ReporteCampanaPDFService()
-        service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas,
-            pk_campana=self.kwargs['pk_campana']))
-
-    def get_context_data(self, **kwargs):
-        context = super(CampanaReporteGrafico, self).get_context_data(
-            **kwargs)
-
-        context['campana'] = self.get_object()
-        return context
-
-    def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        fecha_desde, fecha_hasta = fecha.split('-')
-        fecha_desde = convert_fecha_datetime(fecha_desde)
-        fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        # generar el reporte grafico de acuerdo al periodo de fecha seleccionado
-        service = EstadisticasService()
-        graficos_estadisticas = service.general_campana(
-            self.get_object(), fecha_desde, fecha_hasta)
-        # genera el reporte pdf de la campana
-        service_pdf = ReporteCampanaPDFService()
-        service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas,
-            pk_campana=self.kwargs['pk_campana']))
-
-
-class ExportaReportePDFView(UpdateView):
-    """
-    Esta vista invoca a generar un pdf de reporte de la campana
-    """
-
-    model = Campana
-    context_object_name = 'campana'
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        service = ReporteCampanaPDFService()
-        url = service.obtener_url_reporte_pdf_descargar(self.object)
-        return redirect(url)
-
-
-class AgenteCampanaReporteGrafico(FormView):
-    """Esta vista genera el reporte grafico de la campana para un agente"""
-    template_name = 'campana/reporte_agente.html'
-    context_object_name = 'campana'
-    model = Campana
-    form_class = ReporteForm
-
-    def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
-
-    def get(self, request, *args, **kwargs):
-        service = EstadisticasAgenteService()
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        # generar el reporte para el agente de la campana
-        graficos_estadisticas = service.general_campana(agente,
-                                                        self.get_object(), hoy,
-                                                        hoy_ahora)
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas))
-
-    def get_context_data(self, **kwargs):
-        context = super(AgenteCampanaReporteGrafico, self).get_context_data(
-            **kwargs)
-
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        context['pk_campana'] = self.kwargs['pk_campana']
-
-        context['agente'] = agente
-        return context
-
-    def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        fecha_desde, fecha_hasta = fecha.split('-')
-        fecha_desde = convert_fecha_datetime(fecha_desde)
-        fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        # genera el reporte para el agente de esta campana
-        service = EstadisticasAgenteService()
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        graficos_estadisticas = service.general_campana(agente,
-                                                        self.get_object(),
-                                                        fecha_desde,
-                                                        fecha_hasta)
-        return self.render_to_response(self.get_context_data(
-            graficos_estadisticas=graficos_estadisticas))
-
-
+# TODO: DEPRECATED? Verificar si se debe eliminar
 class FormularioSeleccionCampanaFormView(FormView):
     """Vista para seleccionar una campana a la cual se le agregar un nuevo contacto"""
     form_class = FormularioCampanaContacto

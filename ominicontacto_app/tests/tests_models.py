@@ -8,12 +8,9 @@ from __future__ import unicode_literals
 
 import datetime
 import logging as _logging
-from django.utils import timezone
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.models import Campana, ReglasIncidencia, Queuelog
-from ominicontacto_app.tests.factories import QueuelogFactory
-from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
+from ominicontacto_app.models import Campana, ReglasIncidencia
 
 logger = _logging.getLogger(__name__)
 
@@ -157,31 +154,3 @@ class CampanaTest(OMLBaseTest):
         campanas_pausadas = Campana.objects.obtener_pausadas()
         for c in campanas[:2]:
             self.assertIn(c, campanas_pausadas)
-
-
-class QueuelogManagerTest(OMLBaseTest):
-
-    def test_obtener_tiempos_event_agentes_por_dia(self):
-        id_agente = 2
-        ahora = timezone.now()
-        fecha_hoy = ahora.date()
-        hora_cero = datetime_hora_minima_dia(fecha_hoy)
-        ayer = hora_cero - timezone.timedelta(seconds=1)
-        fin_dia = datetime_hora_maxima_dia(fecha_hoy)
-        manana = fin_dia + timezone.timedelta(seconds=1)
-
-        # Estos son los 3 logs que tiene que levantar
-        QueuelogFactory(event='SARASA', queuename='ALL', time=ahora, agent_id=id_agente)
-        QueuelogFactory(event='SARASA', queuename='ALL', time=hora_cero, agent_id=id_agente)
-        QueuelogFactory(event='SARASA', queuename='ALL', time=fin_dia, agent_id=id_agente)
-
-        # Estos NO tiene que levantar. Duplico por si los toma, asi suma al menos uno de mas.
-        QueuelogFactory(event='SARASA', queuename='ALL', time=ayer, agent_id=id_agente)
-        QueuelogFactory(event='SARASA', queuename='ALL', time=ayer, agent_id=id_agente)
-        QueuelogFactory(event='SARASA', queuename='ALL', time=manana, agent_id=id_agente)
-        QueuelogFactory(event='SARASA', queuename='ALL', time=manana, agent_id=id_agente)
-        logs = Queuelog.objects.obtener_tiempos_event_agentes(['SARASA', ],
-                                                              fecha_hoy,
-                                                              fecha_hoy,
-                                                              [id_agente, ])
-        self.assertEqual(3, len(logs))

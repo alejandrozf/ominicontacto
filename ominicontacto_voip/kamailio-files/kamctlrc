@@ -52,7 +52,7 @@ DBROOTUSER="kamailio"
 
 
 # SQL definitions
-# If you change this definitions here, then you must change them 
+# If you change this definitions here, then you must change them
 # in db/schema/entities.xml too.
 # FIXME
 
@@ -60,7 +60,7 @@ DBROOTUSER="kamailio"
 # DEFAULT_Q="1.0"
 
 
-# Program to calculate a message-digest fingerprint 
+# Program to calculate a message-digest fingerprint
 # MD5="md5sum"
 
 # awk tool
@@ -125,7 +125,7 @@ DBROOTUSER="kamailio"
 # CTLENGINE="FIFO"
 
 ## path to FIFO file
-# FIFOPATH="/var/run/kamailio/kamailio_fifo"
+FIFOPATH="/tmp/kamailio_fifo"
 
 ## check ACL names; default on (1); off (0)
 # VERIFY_ACL=1

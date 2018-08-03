@@ -6,7 +6,7 @@
   template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner={{ usuario }} group={{ usuario }}"
 
 - name: Createlang of the database
-  shell: "createlang plpythonu kamailio"
+  shell: "createlang plpythonu template1"
   become: yes
   become_user: postgres
   register: command_result
@@ -27,6 +27,7 @@
           - collectstatic
           - compress
           - regenerar_asterisk
+          - populate_history --auto
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: yes

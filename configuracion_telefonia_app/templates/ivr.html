@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% load widget_tweaks %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ivr.css' %}"></link>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/rutas-entrantes-lib.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/ivr.js' %}"></script>
+    <script>
+     $('.opcionDestinoTr').formset({
+       addText: 'Agregar destino',
+       deleteText: 'Remover',
+       prefix: '{{ opcion_destino_formset.prefix }}',
+       addCssClass: 'btn btn-outline-primary',
+       deleteCssClass: 'btn btn-outline-danger deleteFormset',
+       formCssClass: 'dynamic-formset',
+       added: function (row) {
+         row.each(function() {
+           var $tipoDestino = $(this).find('.tipoDestino');
+           var $destino = $(this).find('.destino');
+           nodosEntrantesCambioPorTipo($tipoDestino, $destino);
+         });
+       }
+     });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% block header %}{% endblock %}
+    <form action="" role="form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row mt-3">
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-warning">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            {% include "ivr_fields.html" with form=form %}
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12 form-control">
+                <h3>{% trans 'Opciones de destinos' %}</h3>
+                <table id="myFormsetTable">
+                    <tbody>
+                        {% if opcion_destino_formset.non_form_errors %}
+                            {% for error in opcion_destino_formset.non_form_errors %}
+                                <div class="alert alert-warning">{{ error|escape }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        {% for opcion_destino_form in opcion_destino_formset.forms %}
+                            <tr class="opcionDestinoTr form-row">
+                                {% if opcion_destino_form.non_form_errors %}
+                                    {% for error in opcion_destino_form.errors %}
+                                        <div class="alert alert-warning">{{ error|escape }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                                <td>
+                                    {% if opcion_destino_form.instance.pk %}
+                                        {{ opcion_destino_form.DELETE }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ opcion_destino_form.valor.label_tag }}
+                                    {{ opcion_destino_form.valor|add_class:"form-control" }}
+                                    {{ opcion_destino_form.valor.errors }}
+                                </td>
+                                <td>
+                                    {{ opcion_destino_form.tipo_destino.label_tag }}
+                                    {{ opcion_destino_form.tipo_destino|add_class:"form-control tipoDestino" }}
+                                    {{ opcion_destino_form.tipo_destino.errors }}
+                                </td>
+                                <td>
+                                    {{ opcion_destino_form.destino_siguiente.label_tag }}
+                                    {{ opcion_destino_form.destino_siguiente|add_class:"form-control destino" }}
+                                    {{ opcion_destino_form.destino_siguiente.errors }}
+                                </td>
+                                <td>{{ opcion_destino_form.id }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {{ opcion_destino_formset.management_form }}
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <button type="submit" id="id_registrar" class="btn btn-primary">
+                    {% trans 'Guardar' %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

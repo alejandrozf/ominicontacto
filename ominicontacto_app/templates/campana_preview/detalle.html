@@ -1,34 +1,40 @@
 {% extends "base.html" %}
 
-{% load static %}
+{% load i18n %}
 
 {% block content %}
-
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="row">
-                <p>Nombre de la Campana <strong>{{ campana.nombre }}</strong></p>
-                <p> Estado <strong>{{ campana.get_estado_display}}</strong></p>
-                <p> Base de datos <strong>{{ campana.bd_contacto}}</strong></p>
-                <p> Calificaciones <strong>{{ campana.calificacion_campana}}</strong></p>
-                <p> Gestion <strong>{{ campana.gestion}}</strong></p>
-            </div>
-            <div class="row">
-                <p><strong> Resultados de las llamadas de la campaña</strong></p>
-                <p> Contactos atendidos <strong>{{ terminadas }}</strong></p>
-                <p> Contactos restantes por atender <strong>{{ estimadas }}</strong></p>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            {% for categoria, count in categorias.items %}
-                <p>Finalizados por {{ categoria }}:<strong>{{ count }}</strong></p>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div>
-        <a class="btn-sm btn-success" href="{% url 'campana_preview_list' %}">
-            volver a listado
-        </a>
-    </div>
+    <h1>{% trans 'Campaña' %}: {{ campana.nombre }}</h1>
+    <h2>{% trans 'Datos generales' %}</h2>
+    <p>{% trans 'Nombre' %}: <strong>{{ campana.nombre }}</strong></p>
+    <p>{% trans 'Estado' %}: <strong>{{ campana.get_estado_display}}</strong></p>
+    <p>{% trans 'Base de datos' %}: <strong>{{ campana.bd_contacto}}</strong></p>
+    <p>{% trans 'Opciones de calificación' %}:
+        <strong>
+            <ul>
+                {% for opcion_calificacion in opciones_calificacion %}
+                    <li>{{ opcion_calificacion.nombre }}</li>
+                {% endfor %}
+            </ul>
+        </strong>
+    </p>
+    <p>{% trans 'Opciones de calificación de gestión' %}:
+        <strong>
+            <ul>
+                {% for opcion_calificacion in opciones_calificacion_gestion %}
+                    <li>{{ opcion_calificacion.nombre }}</li>
+                {% endfor %}
+            </ul>
+        </strong>
+    </p>
+    <br>
+    <h2>{% trans 'Resultados de las llamadas de la campaña' %}</h2>
+    <p>{% trans 'Contactos atendidos' %}: <strong>{{ terminadas }}</strong></p>
+    <p>{% trans 'Contactos restantes por atender' %}: <strong>{{ estimadas }}</strong></p>
+    {% for categoria, count in categorias.items %}
+        <p>{% trans 'Finalizados por' %} {{ categoria }}:<strong>{{ count }}</strong></p>
+    {% endfor %}
+    <hr>
+    <a class="btn btn-outline-primary" href="{% url 'campana_preview_list' %}">
+        {% trans 'volver a listado' %}
+    </a>
 {% endblock %}

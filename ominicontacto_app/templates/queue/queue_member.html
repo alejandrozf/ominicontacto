@@ -2,76 +2,70 @@
 {% load static %}
 
 {% block content %}
- <div class="panel-body">
 
-     <div class="col-lg-4">
+
+
          {% if campana%}
-                    <p>Campaña <strong>{{ campana.nombre }}</strong></p>
+            <h1>Campaña {{ campana.nombre }}</h1>
                 {% endif %}
-            <form action="{%  url 'queue_member_add' campana.pk %}" role="form" method="post">
-
-                    {% csrf_token %}
-                    <h4>Agrega agente</h4>
-                    <table class="table table-striped">
-		                 {{queue_member_form.as_table}}
-                    </table>
-                    <button type="submit" id="id_guardar" class="btn btn-success">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        Agregar agente
-                    </button>
-            </form>
-              <form action="{%  url 'queue_member_grupo_agente' campana.pk %}" role="form" method="post">
-                    {% csrf_token %}
-                    <h4>Agrega grupos de agentes</h4>
-                    <table class="table table-striped">
-		                 {{grupo_agente_form.as_table}}
-                    </table>
-                    <button type="submit" class="btn btn-success">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        Agregar grupo de agente
-                    </button>
-
-         </form>
-     </div>
-                <div class="col-lg-6">
-                    {% if campana %}
-                        <h4>Agentes</h4>
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Agente</th>
-                                    <th>interface</th>
-                                    <th>Penalty</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for agente in campana.queue_campana.queuemember.all %}
-                                    <tr>
-                                        <td>{{ agente.member}}</td>
-                                        <td>{{ agente.interface }}</td>
-                                        <td>{{ agente.penalty }}</td>
-                                        <td><a href="{% url 'queue_member_elimina' agente.pk campana.pk %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
-
-
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="4">
-                                            <p class="text-center text-danger">
-                                                <em>No hay agentes agreados en está cola</em>
-                                            </p>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% endif %}
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <form action="{%  url 'queue_member_add' campana.pk %}" role="form" method="post">
+                                {% csrf_token %}
+                                <h2>Agentes</h2>
+                                <table class="table">
+                                     {{queue_member_form.as_table}}
+                                </table>
+                                <button type="submit" id="id_guardar" class="btn btn-outline-primary">
+                                    Agregar agente
+                                </button>
+                        </form>                        
+                    </div>
+                    <div class="col-md-6">
+                        <form action="{%  url 'queue_member_grupo_agente' campana.pk %}" role="form" method="post">
+                                {% csrf_token %}
+                                <h2>Grupos</h2>
+                                <table class="table">
+                                     {{grupo_agente_form.as_table}}
+                                </table>
+                                <button type="submit" class="btn btn-outline-primary">
+                                    Agregar grupo
+                                </button>
+                        </form>                        
+                    </div>
                 </div>
-                <div class="col-lg-12">
-                         <a href="{% url url_finalizar %}" class="btn btn-default pull-right" role="button">
-                            Finalizar
-                        </a>
-                </div>
-        </div>
+            <hr>
+            {% if campana %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Agente</th>
+                            <th>interface</th>
+                            <th>Penalty</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for agente in campana.queue_campana.queuemember.all %}
+                            <tr>
+                                <td>{{ agente.member}}</td>
+                                <td>{{ agente.interface }}</td>
+                                <td>{{ agente.penalty }}</td>
+                                <td><a class="btn btn-light" href="{% url 'queue_member_elimina' agente.pk campana.pk %}">Remover</a></td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">
+                                    <p>No hay agentes agreados en está cola.</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            <hr>
+            <a href="{% url url_finalizar %}" class="btn btn-primary" role="button">
+                Finalizar
+            </a>
+
 {% endblock %}

@@ -17,16 +17,18 @@
 {% endblock %}
 
 {% block nav %}
-    <h4 class="inline">{% trans 'Campaña Dialer: Actuación vigente'  %} </h4>
+    <h1>{% trans 'Campaña Dialer: Actuación vigente'  %} </h1>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-indicators">
         <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
         <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
         <li class="active"><a>{% trans 'Actuacion' %}</a></li>
         <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
-        <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% if not es_template %}
+            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 
@@ -34,67 +36,54 @@
     {% with form as form %}
         {{ form.non_field_errors }}
         {{ form.errors }}
-        <div class="form-group row">
-            {{ form.domingo.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.domingo.id_for_label }}">Domingo:</label>
-            <div class="col-sm-6">
+        <div class="form-row">
+            <div class="col-sm-2">
+                <label for="{{ form.domingo.id_for_label }}">Domingo:</label>
                 {{ form.domingo }}
+                {{ form.domingo.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.lunes.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.lunes.id_for_label }}">Lunes: </label>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
+                <label for="{{ form.lunes.id_for_label }}">Lunes: </label>
                 {{ form.lunes }}
+                {{ form.lunes.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.martes.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.martes.id_for_label }}">Martes: </label>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
+                <label for="{{ form.martes.id_for_label }}">Martes: </label>
                 {{ form.martes }}
+                {{ form.martes.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.miercoles.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.miercoles.id_for_label }}">Miercoles: </label>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
+                <label for="{{ form.miercoles.id_for_label }}">Miercoles: </label>
                 {{ form.miercoles }}
+                {{ form.miercoles.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.jueves.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.jueves.id_for_label }}">Jueves: </label>
-            <div class="col-sm-6">
+            <div class="col-sm-2">
+                <label for="{{ form.jueves.id_for_label }}">Jueves: </label>
                 {{ form.jueves }}
+                {{ form.jueves.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.viernes.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.viernes.id_for_label }}">Viernes: </label>
-            <div class="col-sm-6">
+            <div class="col-sm-2">
+                <label for="{{ form.viernes.id_for_label }}">Viernes: </label>
                 {{ form.viernes }}
+                {{ form.viernes.errors }}
             </div>
-        </div>
-        <div class="form-group row">
-            {{ form.sabado.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.sabado.id_for_label }}">Sabado: </label>
-            <div class="col-sm-6">
+            <div class="col-sm-2">
+                <label for="{{ form.sabado.id_for_label }}">Sabado: </label>
                 {{ form.sabado }}
+                {{ form.sabado.errors }}
             </div>
         </div>
-        <div class="form-group row">
-            {{ form.hora_desde.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.hora_desde.id_for_label }}">Hora desde: </label>
-            <div class="col-sm-3">
+        <div class="form-row">
+            <div class="col-md-6">
+                <label for="{{ form.hora_desde.id_for_label }}">Hora desde: </label>
                 {{ form.hora_desde|attr:"id:id_hora_desde" }}
+                {{ form.hora_desde.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.hora_hasta.id_for_label }}">Hora hasta: </label>
+                {{ form.hora_hasta|attr:"id:id_hora_hasta" }}
+                {{ form.hora_hasta.errors }}
             </div>
         </div>
-        <div class="form-group row">
-            {{ form.hora_hasta.errors }}
-            <label class="col-sm-3 control-label" for="{{ form.hora_hasta.id_for_label }}">Hora hasta: </label>
-            <div class="col-sm-3">
-                {{ form.hora_hasta|attr:"id:id_hora_hasta" }}
-            </div>
     {% endwith %}
 {% endblock %}

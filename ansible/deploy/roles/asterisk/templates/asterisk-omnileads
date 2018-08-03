@@ -10,7 +10,7 @@
 RETVAL=0
 USER={{ usuario }}
 GROUP={{ usuario }}
-CMD={{ install_prefix }}asterisk/sbin/asterisk
+CMD=/usr/sbin/asterisk
 
 # $ wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-current.tar.gz
 # $ tar xzf asterisk-current.tar.gz
@@ -21,57 +21,78 @@ CMD={{ install_prefix }}asterisk/sbin/asterisk
 # $ make samples
 
 # See how we were called.
+
+start() {
+    echo -n "Starting asterisk... "
+    $CMD -U $USER -G $GROUP -g
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            echo_success
+    else
+            echo_failure
+    fi
+    echo
+}
+
+stop() {
+    echo -n "Stopping asterisk... "
+    su -l -s /bin/bash -c "$CMD -x 'core stop now'" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            echo_success
+    else
+            echo_failure
+    fi
+    echo
+}
+reload() {
+    echo -n "Reloading asterisk... "
+    su -l -s /bin/bash -c "$CMD -x 'core restart gracefully'" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            echo_success
+    else
+            echo_failure
+    fi
+    echo
+}
+status() {
+    echo -n "Asterisk - Llamadas en curso:"
+    su -l -s /bin/bash -c "$CMD -x 'core show calls'" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            echo_success
+    else
+            echo_failure
+    fi
+    echo
+}
+restart() {
+    stop
+    start
+}
 case "$1" in
   start)
-        echo -n "Starting asterisk... "
-        $CMD -U $USER -G $GROUP -g
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]
-        then
-                echo_success
-        else
-                echo_failure
-        fi
-        echo
+        start
         ;;
   stop)
-        echo -n "Stopping asterisk... "
-        su -l -s /bin/bash -c "$CMD -x 'core stop now'" $USER
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]
-        then
-                echo_success
-        else
-                echo_failure
-        fi
-        echo
+        stop
         ;;
   reload)
-        echo -n "Reloading asterisk... "
-        su -l -s /bin/bash -c "$CMD -x 'core restart gracefully'" $USER
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]
-        then
-                echo_success
-        else
-                echo_failure
-        fi
-        echo
+        reload
         ;;
   status)
-        echo -n "Asterisk 11 - Llamadas en curso:"
-        su -l -s /bin/bash -c "$CMD -x 'core show calls'" $USER
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]
-        then
-                echo_success
-        else
-                echo_failure
-        fi
-        echo
+        status
+        ;;
+  restart)
+        restart
         ;;
   *)
-        echo "Usage: $0 start|stop"
+        echo "Usage: $0 start|stop|status|reload|restart"
         exit 1
 esac
 

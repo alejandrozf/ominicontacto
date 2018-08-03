@@ -16,7 +16,7 @@ import json
 from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
-from ominicontacto_app.models import Contacto, Campana
+from ominicontacto_app.models import Contacto
 from ominicontacto_app.services.base_de_datos_contactos import BaseDatosService
 from ominicontacto_app.services.wombat_config import CampanaListContactoConfigFile
 

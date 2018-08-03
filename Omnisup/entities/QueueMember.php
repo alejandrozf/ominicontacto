@@ -2,11 +2,13 @@
 
 class QueueMember {
 
+    private $id;
     private $exten;
     private $name;
     private $callsTaken;
     private $logoff;
     private $status;
+    private $time;
 
     function __construct() {
         $this->exten = 0;
@@ -36,6 +38,14 @@ class QueueMember {
         return $this->status;
     }
 
+    function getTime() {
+        return $this->time;
+    }
+
+    function getId() {
+        return $this->id;
+    }
+
     function setExten($exten) {
         $this->exten = $exten;
     }
@@ -56,4 +66,11 @@ class QueueMember {
         $this->status = $status;
     }
 
+    function setTime($time) {
+        $this->time = $time;
+    }
+
+    function setId($id) {
+        $this->id = $id;
+    }
 }

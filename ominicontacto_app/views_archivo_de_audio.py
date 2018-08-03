@@ -19,6 +19,16 @@ import logging as logging_
 logger = logging_.getLogger(__name__)
 
 
+def convertir_archivo_audio(archivo_de_audio):
+    """Convierte un archivo usando el conversor especificado, actualiza sus rutas"""
+    conversor_audio = ConversorDeAudioService()
+    conversor_audio.convertir_audio_de_archivo_de_audio_globales(archivo_de_audio)
+    audio_asterisk = archivo_de_audio.audio_asterisk.name
+    if audio_asterisk:
+        audio_file_asterisk = AudioConfigFile(audio_asterisk)
+        audio_file_asterisk.copy_asterisk()
+
+
 class ArchivoAudioListView(ListView):
     """
     Esta vista lista los archivos de audios.
@@ -30,7 +40,42 @@ class ArchivoAudioListView(ListView):
     queryset = ArchivoDeAudio.objects.all()
 
 
-class ArchivoAudioCreateView(CreateView):
+class ArchivoDeAudioMixin(object):
+
+    def _procesar_archivo_de_audio(self, form):
+        try:
+            convertir_archivo_audio(form.instance)
+        except OmlAudioConversionError:
+            form.instance.audio_original = None
+            form.instance.save()
+
+            message = '<strong>Operación Errónea!</strong> \
+            Hubo un inconveniente en la conversión del audio. Por favor \
+            verifique que el archivo subido sea el indicado.'
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.form_invalid(form)
+        except Exception as e:
+            form.instance.audio_original = None
+            form.instance.save()
+
+            logger.warn("convertir_audio_de_archivo_de_audio_globales(): "
+                        "produjo un error inesperado. Detalle: %s", e)
+
+            message = '<strong>Operación Errónea!</strong> \
+            Se produjo un error inesperado en la conversión del audio.'
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.form_invalid(form)
+
+
+class ArchivoAudioCreateView(ArchivoDeAudioMixin, CreateView):
     """
     Esta vista crea un objeto ArchivoDeAudio.
     """
@@ -40,53 +85,15 @@ class ArchivoAudioCreateView(CreateView):
     form_class = ArchivoDeAudioForm
 
     def form_valid(self, form):
-        self.object = form.save()
-
-        try:
-            conversor_audio = ConversorDeAudioService()
-            conversor_audio.convertir_audio_de_archivo_de_audio_globales(
-                self.object)
-            audio_asterisk = self.object.audio_asterisk.name
-
-            if audio_asterisk:
-                audio_file_asterisk = AudioConfigFile(audio_asterisk)
-                audio_file_asterisk.copy_asterisk()
-            return redirect(self.get_success_url())
-
-        except OmlAudioConversionError:
-            self.object.audio_original = None
-            self.object.save()
-
-            message = '<strong>Operación Errónea!</strong> \
-                Hubo un inconveniente en la conversión del audio. Por favor \
-                verifique que el archivo subido sea el indicado.'
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-            return self.form_invalid(form)
-        except Exception, e:
-            self.object.audio_original = None
-            self.object.save()
-
-            logger.warn("convertir_audio_de_archivo_de_audio_globales(): "
-                        "produjo un error inesperado. Detalle: %s", e)
-
-            message = '<strong>Operación Errónea!</strong> \
-                Se produjo un error inesperado en la conversión del audio.'
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-            return self.form_invalid(form)
+        form.save()
+        self._procesar_archivo_de_audio(form)
+        return redirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('lista_archivo_audio')
 
 
-class ArchivoAudioUpdateView(UpdateView):
+class ArchivoAudioUpdateView(ArchivoDeAudioMixin, UpdateView):
     """
     Esta vista edita un objeto ArchivoDeAudio.
     """
@@ -96,49 +103,9 @@ class ArchivoAudioUpdateView(UpdateView):
     form_class = ArchivoDeAudioForm
 
     def form_valid(self, form):
-        self.object = form.save()
-
-        if self.request.FILES.get('audio_original'):
-            try:
-                conversor_audio = ConversorDeAudioService()
-                conversor_audio.convertir_audio_de_archivo_de_audio_globales(
-                    self.object)
-
-                audio_asterisk = self.object.audio_asterisk.name
-
-                if audio_asterisk:
-                    audio_file_asterisk = AudioConfigFile(audio_asterisk)
-                    audio_file_asterisk.copy_asterisk()
-                return redirect(self.get_success_url())
-            except OmlAudioConversionError:
-                self.object.audio_original = None
-                self.object.save()
-
-                message = '<strong>Operación Errónea!</strong> \
-                    Hubo un inconveniente en la conversión del audio. Por favor \
-                    verifique que el archivo subido sea el indicado.'
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    message,
-                )
-                return self.form_invalid(form)
-            except Exception, e:
-                self.object.audio_original = None
-                self.object.save()
-
-                logger.warn("convertir_audio_de_archivo_de_audio_globales(): "
-                            "produjo un error inesperado. Detalle: %s", e)
-
-                message = '<strong>Operación Errónea!</strong> \
-                    Se produjo un error inesperado en la conversión del audio.'
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    message,
-                )
-                return self.form_invalid(form)
-
+        form.save()
+        if 'audio_original' in form.changed_data:
+            self._procesar_archivo_de_audio(form)
         return redirect(self.get_success_url())
 
     def get_success_url(self):

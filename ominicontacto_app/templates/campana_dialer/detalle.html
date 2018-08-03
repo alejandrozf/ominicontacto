@@ -1,32 +1,44 @@
 {% extends "base.html" %}
-{% load static %}
-{% block content %}
-<div class="row">
-    <p>Nombre de la Campana <strong>{{ campana.nombre }}</strong></p>
-    <p> Estado <strong>{{ campana.get_estado_display}}</strong></p>
-    <p> Base de datos <strong>{{ campana.bd_contacto}}</strong></p>
-    <p> Calificaciones <strong>{{ campana.calificacion_campana}}</strong></p>
-    <p> Gestion <strong>{{ campana.gestion}}</strong></p>
-</div>
+{% load i18n %}
 
-{% if resultado %}
-<div class="row">
-        <p> Resultados en discador</p>
-        <p> Llamadas efectuadas <strong>{{ efectuadas }}</strong></p>
-        <p> Llamadas Terminadas <strong>{{ terminadas }}</strong></p>
-        <p> Llamadas restantes estimadas <strong>{{ estimadas }}</strong></p>
+{% block content %}
+    <h1>{% trans 'Campaña' %}: {{ campana.nombre }}</h1>
+    <h2>{% trans  'Datos generales' %}</h2>
+    <p>{% trans 'Nombre' %}: <strong>{{ campana.nombre }}</strong></p>
+    <p>{% trans 'Estado' %}: <strong>{{ campana.get_estado_display}}</strong></p>
+    <p>{% trans 'Base de datos' %}: <strong>{{ campana.bd_contacto}}</strong></p>
+    <p>{% trans 'Opciones de calificación' %}:
+        <strong>
+            <ul>
+                {% for opcion_calificacion in opciones_calificacion %}
+                    <li>{{ opcion_calificacion.nombre }}</li>
+                {% endfor %}
+            </ul>
+        </strong>
+    </p>
+    <p>{% trans 'Opciones de calificación de gestión' %}:
+        <strong>
+            <ul>
+                {% for opcion_calificacion in opciones_calificacion_gestion %}
+                    <li>{{ opcion_calificacion.nombre }}</li>
+                {% endfor %}
+            </ul>
+        </strong>
+    </p>
+    {% if resultado %}
+        <br>
+        <h2>{% trans 'Resultados en discador' %}</h2>
+        <p>{% trans 'Llamadas efectuadas' %}: <strong>{{ efectuadas }}</strong></p>
+        <p>{% trans 'Llamadas Terminadas' %}: <strong>{{ terminadas }}</strong></p>
+        <p>{% trans 'Llamadas restantes estimadas'  %}: <strong>{{ estimadas }}</strong></p>
         {% for statu in status %}
             <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
         {% endfor %}
-</div>
-{% else %}
-<div class="row">
-    <p>no se obtuvieron resultados del discador</p>
-</div>
-{% endif %}
-<div>
-    <a class="btn-sm btn-success" href="{% url 'campana_dialer_list' %}">
-        volver a listado
+    {% else %}
+        <em>{% trans 'No se obtuvieron resultados del discador' %}</em>
+    {% endif %}
+    <hr>
+    <a class="btn btn-outline-primary" href="{% url 'campana_dialer_list' %}">
+        {% trans 'volver a listado' %}
     </a>
-</div>
 {% endblock %}

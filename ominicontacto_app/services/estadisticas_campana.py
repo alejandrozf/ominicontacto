@@ -5,15 +5,20 @@ Servicio para generar reporte grafico de una campana
 """
 
 import pygal
-import datetime
 import os
 
+from collections import OrderedDict
 from pygal.style import Style
 
 from django.conf import settings
-from django.db.models import Count
-from ominicontacto_app.models import CalificacionCliente, Queuelog, OpcionCalificacion
+from django.db.models import Count, Q
+from django.utils.translation import ugettext as _
+
+from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
+from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Campana,
+                                      OpcionCalificacion)
 from ominicontacto_app.services.campana_service import CampanaService
+from reportes_app.models import LlamadaLog
 
 import logging as _logging
 
@@ -36,51 +41,50 @@ ESTILO_AZUL_ROJO_AMARILLO = Style(
 
 class EstadisticasService():
 
+    def _obtener_cantidad_no_calificados(
+            self, campana, fecha_desde, fecha_hasta):
+        """
+        Devuelve la cantidad de llamadas recibidas por agentes pero no calificadas por estos
+        """
+        total_llamadas_campanas_qs = LlamadaLog.objects.filter(
+            time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk).filter(
+                Q(event='DIAL') | Q(event='ENTERQUEUE', tipo_campana=Campana.TYPE_ENTRANTE))
+        total_llamadas_campanas = total_llamadas_campanas_qs.count()
+        total_calificados = CalificacionCliente.history.filter(
+            fecha__range=(fecha_desde, fecha_hasta),
+            opcion_calificacion__campana=campana, history_change_reason='calificacion').count()
+        return total_llamadas_campanas - total_calificados
+
     def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta):
         """
-        Obtiene las cantidad de llamadas por calificacion de la campana y el total de
+        Obtiene las cantidades de llamadas por calificacion de la campana y el total de
         llamadas calificadas
         :param campana: campana la cual se van obtiene las calificaciones
         :param fecha_desde: fecha desde que se va evaluar las calificaciones
         :param fecha_hasta: fecha hasta que se va evaluar las calificaciones
         :return: calificaciones_nombre - nombre de las calificaciones
-        calificaciones_cantidad - cantidad de llamdas por calificacion
+        calificaciones_cantidad - cantidad de llamadas por calificacion
         total_asignados - cantidad total de calificaciones
         """
-        # TODO: debería ser posible optimizar las queries este código
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        opciones_calificaciones = campana.opciones_calificacion.all()
         calificaciones_query = CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
+            opcion_calificacion__campana=campana,
+            fecha__range=(fecha_desde, fecha_hasta)).values('opcion_calificacion__nombre').annotate(
+                cantidad=Count('opcion_calificacion__nombre'))
         calificaciones_nombre = []
         calificaciones_cantidad = []
-        total_asignados = len(calificaciones_query)
-        for opcion_calificacion in opciones_calificaciones:
-            cant = len(calificaciones_query.filter(opcion_calificacion=opcion_calificacion))
-            calificaciones_nombre.append(opcion_calificacion.nombre)
-            calificaciones_cantidad.append(cant)
-        campana_log_wombat = campana.logswombat.filter(
-            fecha_hora__range=(fecha_desde, fecha_hasta))
-        campana_log_terminated = campana_log_wombat.filter(estado="TERMINATED",
-                                                           calificacion='')
-        calificaciones_nombre.append("AGENTE NO CALIFICO")
-        calificaciones_cantidad.append(campana_log_terminated.count())
-        total_asignados += campana_log_terminated.count()
+        total_calificados = 0
+        for opcion_calificacion_cantidad in calificaciones_query:
+            nombre = opcion_calificacion_cantidad['opcion_calificacion__nombre']
+            cantidad = opcion_calificacion_cantidad['cantidad']
+            total_calificados += cantidad
+            calificaciones_nombre.append(nombre)
+            calificaciones_cantidad.append(cantidad)
+        total_no_calificados = self._obtener_cantidad_no_calificados(
+            campana, fecha_desde, fecha_hasta)
+        calificaciones_nombre.append(_("Llamadas Atendidas sin calificacion"))
+        calificaciones_cantidad.append(total_no_calificados)
+        total_asignados = total_calificados + total_no_calificados
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
-
-    def obtener_agentes_campana(self, campana):
-        """
-        Obtiene los agentes asigandos a esta campana
-        :param campana: campana la cual se obtiene los agentes
-        :return: los agentes asigandos a la campana
-        """
-        member_dict = campana.queue_campana.queuemember.all()
-        members_campana = []
-        for member in member_dict:
-            members_campana.append(member.member)
-
-        return members_campana
 
     def obtener_cantidad_no_atendidos(self, campana, fecha_desde, fecha_hasta):
         """
@@ -91,42 +95,53 @@ class EstadisticasService():
         :return: nombre del evento no atendidos, la cantidad por ese evento y el total
         de  llamados no atendidos
         """
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        campana_log_wombat = campana.logswombat.filter(
-            fecha_hora__range=(fecha_desde, fecha_hasta))
-        campana_log_terminated = campana_log_wombat.filter(estado="TERMINATED",
-                                                           calificacion='CONTESTADOR')
-        campana_log_wombat = campana_log_wombat.exclude(estado="TERMINATED")
-        campana_log_wombat = campana_log_wombat.values('estado',
-                                                       'calificacion').annotate(
-            Count('estado'))
 
-        resultado_nombre = []
-        resultado_cantidad = []
+        reporte = OrderedDict(
+            # se cuentan todos los eventos NOANSWER
+            [(_('Cliente no atiende'), 0),
+             # se cuentan todos los eventos CANCEL
+             (_('Cancelado'), 0),
+             # se cuentan todos los eventos AMD
+             (_('Contestador detectado'), 0),
+             # se cuentan todos los eventos BUSY
+             (_('Ocupado'), 0),
+             # se cuentan todos los evento CHANUNAVAIL
+             (_('Canales No disponibles'), 0),
+             # se cuentan todos los eventos FAIL
+             (_('Fallidas'), 0),
+             # se cuentan todos los eventos OTHER
+             (_('Otro'), 0),
+             # se cuentan todos los eventos BLACKLIST
+             (_('Blacklist'), 0),
+             # se cuentan todos los eventos ABANDON
+             (_('Abandonadas por el cliente'), 0),
+             # se cuentan todos los eventos EXITWITHTIMEOUT
+             (_('Expiradas'), 0)]
+        )
+        eventos_headers = {
+            'NOANSWER': _('Cliente no atiende'),
+            'CANCEL': _('Cancelado'),
+            'AMD': _('Contestador detectado'),
+            'BUSY': _('Ocupado'),
+            'CHANUNAVAIL': _('Canales No disponibles'),
+            'FAIL': _('Fallidas'),
+            'OTHER': _('Otro'),
+            'BLACKLIST': _('Blacklist'),
+            'ABANDON': _('Abandonadas por el cliente'),
+            'EXITWITHTIMEOUT': _('Expiradas'),
+        }
+        llamadas_no_atendidas_campana = LlamadaLog.objects.filter(
+            campana_id=campana.pk, time__range=(fecha_desde, fecha_hasta)).values(
+                'event').annotate(cantidad=Count('event'))
         total_no_atendidos = 0
-        for resultado in campana_log_wombat:
-            estado = resultado['estado']
-            if estado == "RS_LOST" and resultado['calificacion'] == "":
-                estado = "Agente no disponible"
-            elif estado == "RS_BUSY":
-                estado = "Ocupado"
-            elif estado == "RS_NOANSWER":
-                estado = "No contesta"
-            elif estado == "RS_NUMBER":
-                estado = "Numero erroneo"
-            elif estado == "RS_ERROR":
-                estado = "Error de sistema"
-            elif estado == "RS_REJECTED":
-                estado = "Congestion"
-            resultado_nombre.append(estado)
-            resultado_cantidad.append(resultado['estado__count'])
-            total_no_atendidos += resultado['estado__count']
-        resultado_nombre.append("Contestador Detectado")
-        cantidad_constestador = campana_log_terminated.count()
-        resultado_cantidad.append(cantidad_constestador)
-        total_no_atendidos += cantidad_constestador
-        return resultado_nombre, resultado_cantidad, total_no_atendidos
+        for evento_cantidad in llamadas_no_atendidas_campana:
+            evento = evento_cantidad['event']
+            cantidad = evento_cantidad['cantidad']
+            evento_header = eventos_headers.get(evento, False)
+            if evento_header:
+                reporte[evento_header] = cantidad
+                total_no_atendidos += cantidad
+        return reporte.keys(), reporte.values(), total_no_atendidos
 
     def obtener_total_llamadas(self, campana):
         """
@@ -134,18 +149,29 @@ class EstadisticasService():
         :param campana: campana la cual se obtiene los totales
         :return: lso totales de llamadas realizadas y pendiente de la campana
         """
-        campana_service = CampanaService()
-        dato_campana = campana_service.obtener_dato_campana_run(campana)
-        llamadas_pendientes = 0
-        if dato_campana and 'n_est_remaining_calls' in dato_campana.keys():
-            llamadas_pendientes = dato_campana['n_est_remaining_calls']
-        llamadas_realizadas = 0
-        if dato_campana and 'n_calls_attempted' in dato_campana.keys():
-            llamadas_realizadas = dato_campana['n_calls_attempted']
-        return llamadas_pendientes, llamadas_realizadas
+        logs_llamadas_campana = LlamadaLog.objects.filter(campana_id=campana.pk).values(
+            'event').annotate(cantidad=Count('event'))
+        dict_eventos_campana = {}
+        for evento_cantidad in logs_llamadas_campana:
+            evento = evento_cantidad['event']
+            cantidad = evento_cantidad['cantidad']
+            dict_eventos_campana[evento] = cantidad
+        llamadas_pendientes, llamadas_realizadas, llamadas_recibidas = (None,) * 3
+        llamadas_realizadas = dict_eventos_campana.get('DIAL', 0)
+        if campana.type == Campana.TYPE_DIALER:
+            campana_service = CampanaService()
+            dato_campana = campana_service.obtener_dato_campana_run(campana)
+            llamadas_pendientes = 0
+            if dato_campana:
+                llamadas_pendientes = dato_campana.get('n_est_remaining_calls', 0)
+        elif campana.type == Campana.TYPE_ENTRANTE:
+            llamadas_recibidas = dict_eventos_campana.get('ENTERQUEUE', 0)
+        elif campana.type == Campana.TYPE_PREVIEW:
+            llamadas_pendientes = AgenteEnContacto.objects.filter(
+                estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana.pk).count()
+        return llamadas_pendientes, llamadas_realizadas, llamadas_recibidas
 
-    def obtener_total_calificacion_agente(self, campana, members_campana,
-                                          fecha_desde, fecha_hasta):
+    def obtener_total_calificacion_agente(self, campana, fecha_desde, fecha_hasta):
         """
         Obtiene el total de las calificaciones por calificacion por agente
         :param campana: campana de las cual se obtiene las campana
@@ -155,91 +181,235 @@ class EstadisticasService():
         :return: agentes_venta, un dicionario con el total des las calificaciones,
         una lista con el total de las calificaciones y las calificaciones
         """
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        agentes_venta = []
         total_calificados = 0
         total_ventas = 0
 
         opciones_calificaciones = campana.opciones_calificacion.all()
 
-        dict_calificaciones = {}
+        dict_calificaciones = OrderedDict({})
         # armo dict de las calificaciones e inicializandolo en 0
         for opcion_calificacion in opciones_calificaciones:
-            dict_calificaciones.update({opcion_calificacion.pk: 0})
+            dict_calificaciones.update({opcion_calificacion.nombre: 0})
 
-        for agente in members_campana:
-            dato_agente = []
-            dato_agente.append(agente)
-            agente_calificaciones = agente.calificaciones.filter(
-                opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
-            total_cal_agente = agente_calificaciones.count()
-            dato_agente.append(total_cal_agente)
-            total_calificados += total_cal_agente
+        calificaciones_campana_qs = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
 
-            dict_total = dict_calificaciones.copy()
+        calificaciones_agentes_dict = calificaciones_campana_qs.values(
+            'agente__user__first_name', 'agente__user__last_name', 'agente',
+            'opcion_calificacion__nombre', 'opcion_calificacion__tipo').annotate(
+                cantidad=Count('pk'))
+        dict_agentes = {}
+        for calificacion_data in calificaciones_agentes_dict:
+            agente_id = calificacion_data['agente']
+            cantidad = calificacion_data['cantidad']
+            opcion_calificacion = calificacion_data['opcion_calificacion__nombre']
+            nombre_completo = "{0} {1}".format(
+                calificacion_data['agente__user__first_name'],
+                calificacion_data['agente__user__last_name'])
+            total_calificados += cantidad
+            if calificacion_data['opcion_calificacion__tipo'] == OpcionCalificacion.GESTION:
+                total_ventas += cantidad
+                parcial_calificados_agente_gestion = cantidad
+            else:
+                parcial_calificados_agente_gestion = 0
+            if not dict_agentes.get(agente_id, False):
+                dict_agentes[agente_id] = OrderedDict({
+                    'nombre': nombre_completo,
+                    'totales_calificaciones': dict_calificaciones.copy(),
+                    'total_calificados': cantidad,
+                    'total_gestionados': parcial_calificados_agente_gestion,
+                })
+            else:
+                dict_agentes[agente_id]['total_calificados'] += cantidad
+                dict_agentes[agente_id]['total_gestionados'] += parcial_calificados_agente_gestion
+            dict_agentes[agente_id]['totales_calificaciones'][opcion_calificacion] = cantidad
+        return dict_agentes, total_calificados, total_ventas, tuple(dict_calificaciones.keys())
 
-            for opcion_calificacion in opciones_calificaciones:
-                cantidad = agente_calificaciones.filter(
-                    opcion_calificacion=opcion_calificacion).count()
-                dict_total[opcion_calificacion.pk] = cantidad
+    def _obtener_detalle_llamadas_entrantes(self, logs_llamadas_campana):
+        """
+        Devuelve los datos para tabla con el detalle de las llamadas recibidas para una
+        campaña de tipo entrante
+        :param logs_llamadas_campana: queryset con los logs de las llamadas entrantes
+        recibidas
+        :return: dicionario con los totales de cada estado de las llamadas recibidas
+        """
+        # se cuentan todos los eventos para cada caso
+        reporte = OrderedDict(
+            [(_('Recibidas'), 0),
+             (_('Atendidas'), 0),
+             (_('Expiradas'), 0),
+             (_('Abandonadas'), 0),
+             (_('Manuales'), 0),
+             (_('Manuales atendidas'), 0)])
+        eventos_headers = {
+            'ENTERQUEUE': _('Recibidas'),
+            'CONNECT': _('Atendidas'),
+            'EXITWITHTIMEOUT': _('Expiradas'),
+            'ABANDON': _('Abandonadas'),
+            'DIAL': _('Manuales'),
+            'ANSWER': _('Manuales atendidas')}
+        logs_campana_agrupados_eventos = logs_llamadas_campana.values('event').annotate(
+            cantidad=Count('event'))
+        manuales_no_atendidas = 0
+        for evento_cantidad in logs_campana_agrupados_eventos:
+            evento = evento_cantidad['event']
+            cantidad = evento_cantidad['cantidad']
+            evento_header = eventos_headers.get(evento, False)
+            if evento_header:
+                reporte[evento_header] = cantidad
+            elif not evento_header and (evento in LlamadaLog.EVENTOS_NO_CONEXION):
+                manuales_no_atendidas += cantidad
+        reporte[_('Manuales no atendidas')] = manuales_no_atendidas
 
-            dato_agente.append(dict_total)
+        return reporte
 
-            total_ven_agente = agente_calificaciones.filter(
-                opcion_calificacion__tipo=OpcionCalificacion.GESTION).count()
-            dato_agente.append(total_ven_agente)
-            total_ventas += total_ven_agente
-            agentes_venta.append(dato_agente)
+    def _obtener_detalle_llamadas_dialer(self, logs_llamadas_campana):
+        """
+        Devuelve los datos para tabla con el detalle de las llamadas recibidas para una
+        campaña de tipo dialer
+        :param logs_llamadas_campana: queryset con los logs de las llamadas dialer
+        recibidas
+        :return: dicionario con los totales de cada estado de las llamadas recibidas
+        """
+        reporte = OrderedDict(
+            # se cuentan todos los eventos DIAL con 'tipo_llamada' no manual
+            [(_('Discadas'), 0),
+             # se cuentan todos los eventos CONNECT con 'tipo_llamada' no manual
+             (_('Conectadas al agente'), 0),
+             # se cuentan todos los eventos ANSWER con 'tipo_llamada' no manual
+             (_('Atendidas'), 0),
+             # se cuentan todos los eventos EXITWITHTIMEOUT y ABANDON con 'tipo_llamada' no manual
+             (_('Perdidas'), 0),
+             # se cuentan todos los eventos DIAL con 'tipo_llamada' manual
+             (_('Manuales'), 0),
+             # se cuentan todos los eventos ANSWER con 'tipo_llamada' manual
+             (_('Manuales atendidas'), 0),
+             # se cuentan todos los eventos de 'no-conexión con 'tipo_llamada' manual
+             (_('Manuales no atendidas'), 0)])
+        logs_campana_agrupados_eventos = logs_llamadas_campana.values(
+            'event', 'tipo_llamada').annotate(
+            cantidad=Count('pk'))
+        for evento_cantidad in logs_campana_agrupados_eventos:
+            evento = evento_cantidad['event']
+            tipo_llamada = evento_cantidad['tipo_llamada']
+            cantidad = evento_cantidad['cantidad']
+            if evento == 'DIAL' and tipo_llamada != LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Discadas')] += cantidad
+            elif evento == 'DIAL' and tipo_llamada == LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Manuales')] = cantidad
+            elif evento == 'CONNECT' and tipo_llamada != LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Conectadas al agente')] += cantidad
+            elif evento == 'ANSWER' and tipo_llamada != LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Atendidas')] += cantidad
+            elif evento == 'ANSWER' and tipo_llamada == LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Manuales atendidas')] = cantidad
+            elif (evento in ['ABANDON', 'EXITWITHTIMEOUT'] and
+                  tipo_llamada != LlamadaLog.LLAMADA_MANUAL):
+                reporte[_('Perdidas')] += cantidad
+            elif ((evento in LlamadaLog.EVENTOS_NO_CONEXION) and
+                  tipo_llamada == LlamadaLog.LLAMADA_MANUAL):
+                reporte[_('Manuales no atendidas')] += cantidad
+        return reporte
 
-        return agentes_venta, total_calificados, total_ventas, opciones_calificaciones
+    def _obtener_detalle_llamadas_manuales(self, logs_llamadas_campana):
+        """
+        Devuelve los datos para tabla con el detalle de las llamadas recibidas para una
+        campaña de tipo manual
+        :param logs_llamadas_campana: queryset con los logs de las llamadas manual
+        recibidas
+        :return: dicionario con los totales de cada estado de las llamadas recibidas
+        """
+        reporte = OrderedDict(
+            # se cuentan todos los eventos DIAL
+            [(_('Discadas'), 0),
+             # se cuentan todos los eventos ANSWER
+             (_('Discadas atendidas'), 0),
+             # se cuentan todos los eventos de 'no-conexión'
+             (_('Discadas no atendidas'), 0)])
+        logs_campana_agrupados_eventos = logs_llamadas_campana.values('event').annotate(
+            cantidad=Count('pk'))
+        for evento_cantidad in logs_campana_agrupados_eventos:
+            evento = evento_cantidad['event']
+            cantidad = evento_cantidad['cantidad']
+            if evento == 'DIAL':
+                reporte[_('Discadas')] = cantidad
+            elif evento == 'ANSWER':
+                reporte[_('Discadas atendidas')] = cantidad
+            elif evento in LlamadaLog.EVENTOS_NO_CONEXION:
+                reporte[_('Discadas no atendidas')] += cantidad
+        return reporte
 
-    def calcular_cantidad_llamadas(self, campana, fecha_inferior, fecha_superior):
+    def _obtener_detalle_llamadas_preview(self, logs_llamadas_campana):
+        """
+        Devuelve los datos para tabla con el detalle de las llamadas recibidas para una
+        campaña de tipo preview
+        :param logs_llamadas_campana: queryset con los logs de las llamadas preview
+        recibidas
+        :return: dicionario con los totales de cada estado de las llamadas recibidas
+        """
+        reporte = OrderedDict(
+            # se cuentan todos los eventos DIAL  con 'tipo_llamada' no manual
+            [(_('Discadas'), 0),
+             # se cuentan todos los eventos ANSWER  con 'tipo_llamada' no manual
+             (_('Conectadas'), 0),
+             # se cuentan todos los eventos 'no-conexión' con 'tipo_llamada' no manual
+             (_('No conectadas'), 0),
+             # se cuentan todos los eventos DIAL con 'tipo_llamada' manual
+             (_('Manuales'), 0),
+             # se cuentan todos los eventos ANSWER con 'tipo_llamada' manual
+             (_('Manuales atendidas'), 0),
+             # se cuentan todos los eventos de 'no-conexión con 'tipo_llamada' manual
+             (_('Manuales no atendidas'), 0)])
+        logs_campana_agrupados_eventos = logs_llamadas_campana.values(
+            'event', 'tipo_llamada').annotate(cantidad=Count('pk'))
+        for evento_cantidad in logs_campana_agrupados_eventos:
+            evento = evento_cantidad['event']
+            tipo_llamada = evento_cantidad['tipo_llamada']
+            cantidad = evento_cantidad['cantidad']
+            if evento == 'ANSWER' and tipo_llamada != LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Conectadas')] += cantidad
+            elif evento == 'ANSWER' and tipo_llamada == LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Manuales atendidas')] = cantidad
+            elif ((evento in LlamadaLog.EVENTOS_NO_CONEXION) and
+                  tipo_llamada != LlamadaLog.LLAMADA_MANUAL):
+                reporte[_('No conectadas')] += cantidad
+            elif ((evento in LlamadaLog.EVENTOS_NO_CONEXION) and
+                  tipo_llamada == LlamadaLog.LLAMADA_MANUAL):
+                reporte[_('Manuales no atendidas')] += cantidad
+            elif evento == 'DIAL' and tipo_llamada == LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Manuales')] = cantidad
+            elif evento == 'DIAL' and tipo_llamada != LlamadaLog.LLAMADA_MANUAL:
+                reporte[_('Discadas')] = cantidad
+        return reporte
+
+    def calcular_cantidad_llamadas(self, campana, fecha_desde, fecha_hasta):
         """
         Obtiene las cantidades toteles detalladas como resultado de las llamadas
         :param campana: campana la cuales se obtendran el detalle de la llamada
-        :param fecha_inferior: fecha desde la cual se obtendran las llamadas
-        :param fecha_superior: fecha hasta la cual se obtendran las llamadas
+        :param fecha_desde: fecha desde la cual se obtendran las llamadas
+        :param fecha_hasta: fecha hasta la cual se obtendran las llamadas
         :return: los eventos de llamadas con sus cantidades totales
         """
-        eventos_llamadas_ingresadas = ['ENTERQUEUE']
-        eventos_llamadas_atendidas = ['CONNECT']
-        eventos_llamadas_abandonadas = ['ABANDON']
-        eventos_llamadas_expiradas = ['EXITWITHTIMEOUT']
+        fecha_desde = datetime_hora_minima_dia(fecha_desde)
+        fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        # obtiene las llamadas recibidas
-        ingresadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-            eventos_llamadas_ingresadas, fecha_inferior, fecha_superior, campana.id)
-        # obtiene las llamadas atendidas
-        atendidas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-            eventos_llamadas_atendidas, fecha_inferior, fecha_superior, campana.id)
-        # obtiene las llamadas abandonadas
-        abandonadas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-            eventos_llamadas_abandonadas, fecha_inferior, fecha_superior, campana.id)
-        # obtiene las llamadas expiradas
-        expiradas = Queuelog.objects.obtener_log_campana_id_event_periodo(
-            eventos_llamadas_expiradas, fecha_inferior, fecha_superior, campana.id)
-        count_llamadas_ingresadas = ingresadas.count()
-        count_llamadas_atendidas = atendidas.count()
-        count_llamadas_abandonadas = abandonadas.count()
-        count_llamadas_expiradas = expiradas.count()
-        count_llamadas_manuales = ingresadas.filter(data4='saliente').count()
-        count_manuales_atendidas = atendidas.filter(data4='saliente').count()
-        count_manuales_abandonadas = abandonadas.filter(data4='saliente').count()
-        cantidad_campana = []
-        nombres_cantidades = ["Recibidas", "Atendidas", "Expiradas", "Abandonadas",
-                              "Manuales", "Manuales atendidas", "Manuales no atendidas"]
-        cantidad_campana.append(count_llamadas_ingresadas)
-        cantidad_campana.append(count_llamadas_atendidas)
-        cantidad_campana.append(count_llamadas_expiradas)
-        cantidad_campana.append(count_llamadas_abandonadas)
-        cantidad_campana.append(count_llamadas_manuales)
-        cantidad_campana.append(count_manuales_atendidas)
-        cantidad_campana.append(count_manuales_abandonadas)
+        logs_llamadas_campana = LlamadaLog.objects.filter(
+            campana_id=campana.pk, time__range=(fecha_desde, fecha_hasta))
 
-        return nombres_cantidades, cantidad_campana
+        if campana.type == Campana.TYPE_ENTRANTE:
+            reporte = self._obtener_detalle_llamadas_entrantes(logs_llamadas_campana)
+        elif campana.type == Campana.TYPE_DIALER:
+            reporte = self._obtener_detalle_llamadas_dialer(logs_llamadas_campana)
+        elif campana.type == Campana.TYPE_MANUAL:
+            reporte = self._obtener_detalle_llamadas_manuales(logs_llamadas_campana)
+        else:
+            reporte = self._obtener_detalle_llamadas_preview(logs_llamadas_campana)
+        return reporte
 
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
+        fecha_desde = datetime_hora_minima_dia(fecha_desde)
+        fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
         # obtener cantidad de calificaciones por campana
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde,
@@ -249,25 +419,19 @@ class EstadisticasService():
         resultado_nombre, resultado_cantidad, total_no_atendidos = \
             self.obtener_cantidad_no_atendidos(campana, fecha_desde,
                                                fecha_hasta)
-        # obtiene los agentes miembros a la campana
-        members_campana = self.obtener_agentes_campana(campana)
 
         # obtiene el total de calificaciones por agente
-        total_calificacion_agente = self.obtener_total_calificacion_agente(
-            campana, members_campana, fecha_desde, fecha_hasta
-        )
-        agentes_venta = total_calificacion_agente[0]
-        total_calificados = total_calificacion_agente[1]
-        total_ventas = total_calificacion_agente[2]
-        calificaciones = total_calificacion_agente[3]
+        (agentes_venta, total_calificados, total_ventas,
+         calificaciones) = self.obtener_total_calificacion_agente(
+             campana, fecha_desde, fecha_hasta)
 
         # obtiene las llamadas pendientes y realizadas por campana
-        llamadas_pendientes, llamadas_realizadas = self.obtener_total_llamadas(
+        llamadas_pendientes, llamadas_realizadas, llamadas_recibidas = self.obtener_total_llamadas(
             campana)
 
         # obtiene las cantidades totales por evento de las llamadas
-        cantidad_llamadas = self.calcular_cantidad_llamadas(
-            campana, fecha_desde, fecha_hasta)
+        reporte = self.calcular_cantidad_llamadas(campana, fecha_desde, fecha_hasta)
+        cantidad_llamadas = (reporte.keys(), reporte.values())
 
         dic_estadisticas = {
             'agentes_venta': agentes_venta,
@@ -281,14 +445,14 @@ class EstadisticasService():
             'total_no_atendidos': total_no_atendidos,
             'llamadas_pendientes': llamadas_pendientes,
             'llamadas_realizadas': llamadas_realizadas,
+            'llamadas_recibidas': llamadas_recibidas,
             'calificaciones': calificaciones,
             'cantidad_llamadas': cantidad_llamadas,
         }
         return dic_estadisticas
 
     def general_campana(self, campana, fecha_inferior, fecha_superior):
-        estadisticas = self._calcular_estadisticas(campana, fecha_inferior,
-                                                   fecha_superior)
+        estadisticas = self._calcular_estadisticas(campana, fecha_inferior, fecha_superior)
 
         if estadisticas:
             logger.info("Generando grafico calificaciones de campana por cliente ")

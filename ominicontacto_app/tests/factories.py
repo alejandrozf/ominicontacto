@@ -5,26 +5,52 @@ from __future__ import unicode_literals
 import faker
 
 from uuid import uuid4
-
+import random
 from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, post_generation
 
 from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
-                                      NombreCalificacion, Formulario,
-                                      Grabacion, GrabacionMarca, Queuelog, SitioExterno, User,
-                                      Contacto, SupervisorProfile, AgenteEnContacto, QueueMember,
-                                      CalificacionCliente, OpcionCalificacion,
-                                      ArchivoDeAudio, ParametroExtraParaWebform, ActuacionVigente)
+                                      NombreCalificacion, Formulario, Grabacion, GrabacionMarca,
+                                      SitioExterno, User, Contacto, SupervisorProfile,
+                                      AgenteEnContacto, QueueMember, CalificacionCliente,
+                                      OpcionCalificacion, ArchivoDeAudio, ParametroExtraParaWebform,
+                                      ActuacionVigente, Pausa)
+from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
 faker = faker.Factory.create()
+
+
+class LlamadaLogFactory(DjangoModelFactory):
+    class Meta:
+        model = LlamadaLog
+    time = lazy_attribute(lambda a: timezone.now())
+    callid = lazy_attribute(lambda a: faker.ean8())
+    campana_id = Sequence(lambda n: n)
+    tipo_campana = lazy_attribute(lambda a: faker.random_int(1, 4))
+    agente_id = Sequence(lambda n: n)
+    event = Sequence(lambda n: "evento_{0}".format(n))
+    numero_marcado = lazy_attribute(lambda a: faker.phone_number())
+    contacto_id = Sequence(lambda n: n)
+    bridge_wait_time = lazy_attribute(lambda a: faker.random_number(3))
+    duracion_llamada = lazy_attribute(lambda a: faker.random_number(3))
+    archivo_grabacion = lazy_attribute(lambda a: faker.text(15))
+
+
+class ActividadAgenteLogFactory(DjangoModelFactory):
+    class Meta:
+        model = ActividadAgenteLog
+    time = lazy_attribute(lambda a: timezone.now())
+    agente_id = Sequence(lambda n: n)
+    event = Sequence(lambda n: "evento_{0}".format(n))
+    pausa_id = Sequence(lambda n: n)
 
 
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
 
-    username = lazy_attribute(lambda a: faker.name())
+    username = Sequence(lambda n: "user_{0}".format(n))
     first_name = lazy_attribute(lambda a: faker.first_name())
     last_name = lazy_attribute(lambda a: faker.last_name())
     last_session_key = Sequence(lambda n: "session_{0}.dat".format(n))
@@ -119,17 +145,6 @@ class CampanaFactory(DjangoModelFactory):
                 self.supervisors.add(supervisor)
 
 
-class QueuelogFactory(DjangoModelFactory):
-    class Meta:
-        model = Queuelog
-
-    time = lazy_attribute(lambda a: timezone.now())
-    callid = lazy_attribute(lambda a: faker.text(32))
-    queuename = lazy_attribute(lambda a: faker.text(32))
-    campana_id = lazy_attribute(lambda a: faker.random_number(7))
-    agent = lazy_attribute(lambda a: faker.text(32))
-
-
 class GrabacionFactory(DjangoModelFactory):
     class Meta:
         model = Grabacion
@@ -179,7 +194,6 @@ class QueueFactory(DjangoModelFactory):
     setinterfacevar = True
 
     wait = lazy_attribute(lambda a: faker.random_number(5))
-    queue_asterisk = lazy_attribute(lambda a: faker.random_int(10))
 
 
 class AgenteEnContactoFactory(DjangoModelFactory):
@@ -222,14 +236,13 @@ class CalificacionClienteFactory(DjangoModelFactory):
     contacto = SubFactory(ContactoFactory)
     agente = SubFactory(AgenteProfileFactory)
     fecha = lazy_attribute(lambda a: timezone.now())
-    wombat_id = Sequence(lambda n: n)
 
 
 class ArchivoDeAudioFactory(DjangoModelFactory):
     class Meta:
         model = ArchivoDeAudio
 
-    descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(faker.text(5)))
+    descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(uuid4()))
 
 
 class ParametroExtraParaWebformFactory(DjangoModelFactory):
@@ -255,3 +268,11 @@ class ActuacionVigenteFactory(DjangoModelFactory):
     sabado = False
     hora_desde = timezone.now()
     hora_hasta = timezone.now() + timezone.timedelta(hours=3)
+
+
+class PausaFactory(DjangoModelFactory):
+    class Meta:
+        model = Pausa
+
+    nombre = lazy_attribute(lambda a: faker.text(15))
+    tipo = lazy_attribute(lambda a: random.choice(('P', 'R')))

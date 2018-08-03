@@ -1,12 +1,12 @@
 server {
-    listen          1180;
+    listen          80;
     server_name     default_server;
     #rewrite ^/(.*)  https://172.16.20.241:8000/$1 permanent;
     rewrite ^ https://$http_host$request_uri? permanent;
 }
 
 server {
-    listen          11443 ssl;
+    listen          443 ssl;
     server_name     default_server;
     access_log      /var/log/nginx/example.com_access.log combined;
     error_log       /var/log/nginx/example.com_error.log error;
@@ -20,7 +20,22 @@ server {
          allow all;
     }
 
+    location /grabaciones {
+
+    {% if asterisk_location != "" %}
+    alias {{ install_prefix }}asterisk/var/spool/asterisk/monitor;
+    {% else %}
+    alias /var/spool/asterisk/monitor;
+    {% endif %}
+    autoindex on;
+    allow all;
+    }
+
     location / {
+       	if ($request_method ~* "(GET)") {
+      		add_header "Access-Control-Allow-Origin"  *;
+    	}
+
         proxy_pass         http://127.0.0.1:8000/;
         #proxy_redirect     off;
 

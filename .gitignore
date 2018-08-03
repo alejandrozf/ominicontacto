@@ -8,3 +8,4 @@ virtualenv/
 *.pyc
 *~
 /.coverage
+atom-sftp-sync.json

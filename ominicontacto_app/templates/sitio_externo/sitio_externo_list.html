@@ -16,56 +16,51 @@
 {% endblock %}
 
 {% block content %}
-<br/>
-<div class="col-md-6 col-md-offset-3">
 
-<table class="table table-stripped">
-                    <thead>
-                      <tr class="fts-table-bg">
-                        <th>Sitio externo</th>
-                        <th>Url</th>
-                        <th>
-                            Acciones
-                            <a  href="#" style="color: black; text-decoration: none;" onclick="mostrar_sitios_ocultos()" >
-                                <span class="glyphicon glyphicon-resize-small" aria-hidden="true" title="Mostrar ocultos"></span>
-                            </a>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody id="t_body_ocultas">
-                        {% for sitio in sitios_externos %}
-                            <tr>
-                                <td>
-                                    {{ sitio.nombre }}
-                                </td>
-                                <td>
-                                    {{ sitio.url }}
-                                </td>
-                                <td>
-                                    {% if sitio.oculto %}
-                                    <a type="button"  href="{% url 'desoculta_sitio_externo' sitio.pk %}" c>
-                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visible"></span>
-                                    </a>
-                                    {% else %}
-                                    <a type="button" href="{% url 'oculta_sitio_externo' sitio.pk %}" >
-                                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true" title="ocultar"></span>
-                                    </a>
-                                    {% endif %}
+<h1>Sitios externos</h1>
+<a class="btn btn-light btn-sm" href="#" onclick="mostrar_sitios_ocultos()" >
+    Mostrar ocultos
+</a>
+<hr>
+<table class="table">
+    <thead>
+      <tr class="fts-table-bg">
+        <th>Sitio externo</th>
+        <th>Url</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="t_body_ocultas">
+        {% for sitio in sitios_externos %}
+            <tr>
+                <td>
+                    {{ sitio.nombre }}
+                </td>
+                <td>
+                    {{ sitio.url }}
+                </td>
+                <td>
+                    {% if sitio.oculto %}
+                    <a class="btn btn-light" href="{% url 'desoculta_sitio_externo' sitio.pk %}" >
+                        <span class="icon icon-eye" aria-hidden="true" title="visible"></span>Hacer visible
+                    </a>
+                    {% else %}
+                    <a class="btn btn-light" href="{% url 'oculta_sitio_externo' sitio.pk %}" >
+                        <span class="icon icon-eye-slash" aria-hidden="true" title="ocultar"></span>Ocultar
+                    </a>
+                    {% endif %}
 
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="3">
-                                    <p class="text-center text-danger">
-                                        <em>No se encontraron sitios externos creados.</em>
-                                    </p>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>
+                    <p>No se encontraron sitios externos creados.</p>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 
-</div>
 {% endblock %}

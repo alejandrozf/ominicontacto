@@ -10,9 +10,12 @@ import random
 
 from django.db.models import Count
 from ominicontacto_app.tests.utiles import OMLBaseTest
+from ominicontacto_app.models import CalificacionCliente
 from reciclado_app.resultado_contactacion import (
     EstadisticasContactacion, RecicladorContactosCampanaDIALER
 )
+from reportes_app.models import LlamadaLog
+from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 
 class RecicladoTest(OMLBaseTest):
@@ -20,7 +23,6 @@ class RecicladoTest(OMLBaseTest):
     def setUp(self):
         base_datos = self.crear_base_datos_contacto(cant_contactos=100)
         self.campana = self.crear_campana_dialer(bd_contactos=base_datos)
-        print self.campana.bd_contacto
         user_agente = self.crear_user_agente()
         self.agente = self.crear_agente_profile(user_agente)
 
@@ -31,63 +33,38 @@ class RecicladoTest(OMLBaseTest):
         """
 
         # estados no contactados:
-        estados = ["RS_LOST", "RS_BUSY", "RS_NOANSWER", "RS_NUMBER",
-                   "RS_ERROR", "RS_REJECTED", "SARASA", "TERMINATED"]
+        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
+                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
 
         contactos = self.campana.bd_contacto.contactos.all()
 
-        for _ in range(0, 100):
+        generador = GeneradorDeLlamadaLogs()
+        cant_llamados = 100
+        for _ in range(0, cant_llamados):
             contacto = random.choice(contactos)
             estado = random.choice(estados)
-            calificacion = ''
-            if estado is "TERMINATED":
-                calificacion = random.choice(["CONTESTADOR", ""])
-            self.crear_wombat_log(self.campana, self.agente, contacto, estado,
-                                  calificacion)
+            generador.generar_log(self.campana, False, estado, contacto.telefono, None, contacto)
+
+        cantidades = {}
+        for estado in estados:
+            cantidades[EstadisticasContactacion.MAP_ESTADO_ID[estado]] = 0
+
+        no_llamados = cant_llamados
+        for contacto in contactos:
+            logs = LlamadaLog.objects.filter(contacto_id=contacto.id).order_by('-id')
+            if logs:
+                log = logs[0]
+                self.assertIn(log.event, estados)
+                cantidades[EstadisticasContactacion.MAP_ESTADO_ID[log.event]] += 1
+                no_llamados -= 1
 
         estadisticas = EstadisticasContactacion()
         no_contactados = estadisticas.obtener_cantidad_no_contactados(self.campana)
-        no_contactados_lista = {}
         for key, value in no_contactados.items():
-            no_contactados_lista.update({key: value.cantidad})
-
-        campana_log_wombat = self.campana.logswombat.filter(estado__in=estados)
-        campana_log_wombat = campana_log_wombat.values(
-            'estado', 'calificacion').annotate(Count('estado'))
-
-        for log in campana_log_wombat:
-            estado = log['estado']
-            if estado == "RS_LOST" and log['calificacion'] == "":
-                id_estado = EstadisticasContactacion.AGENTE_NO_DISPONIBLE
-                self.assertEquals(no_contactados_lista[id_estado], log['estado__count'])
-            elif estado == "RS_BUSY":
-                id_estado = EstadisticasContactacion.OCUPADO
-                self.assertEquals(no_contactados_lista[id_estado],
-                                  log['estado__count'])
-            elif estado == "RS_NOANSWER":
-                id_estado = EstadisticasContactacion.NO_CONTESTA
-                self.assertEquals(no_contactados_lista[id_estado],
-                                  log['estado__count'])
-            elif estado == "RS_NUMBER":
-                id_estado = EstadisticasContactacion.NUMERO_ERRONEO
-                self.assertEquals(no_contactados_lista[id_estado],
-                                  log['estado__count'])
-            elif estado == "RS_ERROR":
-                id_estado = EstadisticasContactacion.ERROR_DE_SISTEMA
-                self.assertEquals(no_contactados_lista[id_estado],
-                                  log['estado__count'])
-            elif estado == "RS_REJECTED":
-                id_estado = EstadisticasContactacion.CONGESTION
-                self.assertEquals(no_contactados_lista[id_estado],
-                                  log['estado__count'])
-            elif estado == "TERMINATED" and log['calificacion'] == "CONTESTADOR":
-                id_estado = EstadisticasContactacion.CONTESTADOR
-                self.assertEquals(no_contactados_lista[id_estado],
-                                  log['estado__count'])
-            elif estado == "TERMINATED" and log['calificacion'] == "":
-                id_estado = EstadisticasContactacion.AGENTE_NO_CALIFICO
-                self.assertEquals(no_contactados_lista[id_estado],
-                                  log['estado__count'])
+            if key == EstadisticasContactacion.NO_LLAMADO:
+                self.assertEqual(no_llamados, value.cantidad)
+            else:
+                self.assertEqual(cantidades[key], value.cantidad)
 
     def test_devuelve_correctamente_calificados(self):
         """
@@ -118,73 +95,95 @@ class RecicladoTest(OMLBaseTest):
             self.assertEquals(contactacion['opcion_calificacion__count'],
                               contactados_dict[contactacion['opcion_calificacion__id']])
 
-    def test_obtiene_contactos_reciclados(self):
-        # estados no contactados:
-        estados = [2, 3, 4, 5, 6]
-
+    def _generar_llamadas_y_calificaciones(self, estados):
         contactos = self.campana.bd_contacto.contactos.all()
         opciones_calificacion = self.campana.opciones_calificacion.all()
 
+        generador = GeneradorDeLlamadaLogs()
         for _ in range(0, 100):
             contacto = random.choice(contactos)
-            es_contactado = random.choice([True, False])
+            contactacion = random.choice(['contacta_califica', 'contacta_no_califica',
+                                          'no_contacta', 'no_llama'])
 
-            if es_contactado:
+            if contactacion == 'contacta_califica':
+                generador.generar_log(self.campana, False, 'COMPLETECALLER', contacto.telefono,
+                                      self.agente, contacto, 1, 1)
                 opcion_calificacion = random.choice(opciones_calificacion)
                 self.crear_calificacion_cliente(self.agente, contacto, opcion_calificacion)
-            else:
+            if contactacion == 'contacta_no_califica':
+                generador.generar_log(self.campana, False, 'COMPLETECALLER', contacto.telefono,
+                                      self.agente, contacto, 1, 1)
+            if contactacion == 'no_contacta':
                 estado = random.choice(estados)
-                calificacion = ''
-                if estado is "TERMINATED":
-                    calificacion = random.choice(["CONTESTADOR", ""])
-                    self.crear_wombat_log(
-                        self.campana, self.agente, contacto, estado, calificacion)
+                generador.generar_log(self.campana, False, estado, contacto.telefono,
+                                      None, contacto)
+            if contactacion == 'no_llama':
+                pass
 
-        estado_elegido = random.choice(estados)
-        calificacion = random.choice(opciones_calificacion)
-        estado_list = []
-        estado_list.append(estado_elegido)
-        calificacion_list = []
-        calificacion_list.append(calificacion)
+    def test_obtiene_contactos_reciclados_contactados_calificados(self):
+        # estados no contactados:
+        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
+                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        self._generar_llamadas_y_calificaciones(estados)
+        reciclador = RecicladorContactosCampanaDIALER()
 
         # vamos a chequear que sea la misma cantidad de contactos reciclados
         # para los calificados
-        calificaciones_query = self.campana.obtener_calificaciones().filter(
-            opcion_calificacion__in=calificacion_list).distinct()
+        for calificacion in self.campana.opciones_calificacion.all():
+            contactos_reciclados = reciclador._obtener_contactos_calificados(
+                self.campana, [calificacion])
+
+            calificaciones_query = self.campana.obtener_calificaciones().filter(
+                opcion_calificacion=calificacion).values_list('contacto_id', flat=True)
+            calificados = set(calificaciones_query)
+            self.assertEquals(calificaciones_query.count(), len(contactos_reciclados))
+
+    def test_obtiene_contactos_reciclados_contactados_no_calificados(self):
+        # estados no contactados:
+        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
+                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        self._generar_llamadas_y_calificaciones(estados)
         reciclador = RecicladorContactosCampanaDIALER()
-        contactos_reciclados = reciclador._obtener_contactos_calificados(
-            self.campana, calificacion_list)
-        self.assertEquals(calificaciones_query.count(), len(contactos_reciclados))
-
-        # ahora vamos a chequear para los no contactados
-        no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
-            self.campana, estado_list)
-        estados = [EstadisticasContactacion.MAP_LOG_WOMBAT[estado]
-                   for estado_contactacion in estado_list]
-        no_contactados = self.campana.logswombat.filter(estado__in=estados)
-
-        self.assertEquals(len(no_contactados_reciclados), no_contactados.count())
-
-        # ahora chequeamos para contestador
-        contestadores = self.campana.logswombat.filter(
-            estado="TERMINATED", calificacion='CONTESTADOR')
-        no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
-            self.campana, [7])
-
-        self.assertEquals(len(no_contactados_reciclados), contestadores.count())
 
         # ahora chequeamos para agente no califico
-        no_califico = self.campana.logswombat.filter(
-            estado="TERMINATED", calificacion='')
-        no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
-            self.campana, [8])
+        calificados = self.campana.obtener_calificaciones().values_list(
+            'contacto_id', flat=True).distinct()
+        contactados_no_calificados = LlamadaLog.objects.filter(event='CONNECT').exclude(
+            contacto_id__in=calificados).values_list('contacto_id', flat=True)
 
-        self.assertEquals(len(no_contactados_reciclados), no_califico.count())
+        no_calificados_reciclados = reciclador._obtener_contactos_no_contactados(
+            self.campana, [EstadisticasContactacion.AGENTE_NO_CALIFICO, ]).values_list(
+            'id', flat=True)
+        self.assertEqual(set(no_calificados_reciclados), set(contactados_no_calificados))
 
-        # ahora chequeamos para agente no disponible
-        no_disponible = self.campana.logswombat.filter(
-            estado="RS_LOST", calificacion='')
-        no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
-            self.campana, [1])
+    def test_obtiene_contactos_reciclados_no_llamados(self):
+        # estados no contactados:
+        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
+                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        self._generar_llamadas_y_calificaciones(estados)
+        reciclador = RecicladorContactosCampanaDIALER()
 
-        self.assertEquals(len(no_contactados_reciclados), no_disponible.count())
+        # Ahora checkeamos para no llamados
+        llamados = LlamadaLog.objects.filter(event='DIAL').values_list('contacto_id', flat=True)
+        no_llamados = self.campana.bd_contacto.contactos.exclude(id__in=llamados)
+        no_llamados_reciclados = reciclador._obtener_contactos_no_contactados(
+            self.campana, [EstadisticasContactacion.NO_LLAMADO, ])
+        self.assertEqual(set(no_llamados), set(no_llamados_reciclados))
+
+    def test_obtiene_contactos_reciclados_no_contactados(self):
+        # estados no contactados:
+        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
+                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        reciclador = RecicladorContactosCampanaDIALER()
+
+        # ahora vamos a chequear para los no contactados
+        for estado in estados:
+            id_estado = EstadisticasContactacion.MAP_ESTADO_ID[estado]
+            no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
+                self.campana, [id_estado, ])
+            for contacto in no_contactados_reciclados:
+                self.assertEqual(CalificacionCliente.objects.filter(
+                    contacto_id=contacto.id).count(), 0)
+                logs = LlamadaLog.objects.filter(contacto_id=contacto.id).order_by('-id')
+                self.assertTrue(logs.count() > 0)
+                self.assertEqual(logs[0].event, estado)
