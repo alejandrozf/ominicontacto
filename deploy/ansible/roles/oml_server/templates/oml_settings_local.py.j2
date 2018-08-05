@@ -107,7 +107,7 @@ ASTERISK = {
 {% if DOCKER == 0 %}
 OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "{{ asterisk_location }}/usr/sbin/asterisk", "-rx", "core reload"]'
 {% else %}
-OML_RELOAD_CMD = '["sudo docker exec ", "-i", "asterisk", "/bin/bash", "-c",  "asterisk -rx 'core reload'"]'
+OML_RELOAD_CMD = '["sudo docker", "exec", "-i", "asterisk", "/bin/bash", "-c", "\"/usr/sbin/asterisk -rx \'core reload\'\""]'
 {% endif %}
 
 # 'OML_GRABACIONES_URL': url donde se encuentra las grabaciones en elastix

@@ -1,2 +1,0 @@
-# Add extra options here
-OPTIONS="--interface 192.168.95.9 --listen-ng 127.0.0.1:22222 -m 50000 -M 55000 -E -L 7"

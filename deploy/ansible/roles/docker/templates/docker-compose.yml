@@ -26,7 +26,7 @@ services:
       options:
         max-size: "20M"
         max-file: "10"
-    #network_mode: host
+    network_mode: host
     #pid:
     ports:
      - "5060:5060/udp"
@@ -61,63 +61,3 @@ services:
       - type: volume
         source: grabaciones
         target: {{ asterisk_location }}/var/spool/asterisk/asternic
-  kamailio:
-    #build:
-    #  context: ./build
-    #  dockerfile: Dockerfile-asterisk
-    #config:
-    container_name: kamailio
-    #depends_on:
-    dns: 8.8.8.8
-    #env_file
-    #environment
-    #expose
-    #extra_hosts
-    #healtcheck:
-    #  test: ["CMD", "kamctl", "-rx", "'core show version'"]
-    #  interval: 1m30s
-    #  timeout: 10s
-    #  retries: 3
-    #  start_period: 40s
-    image: lionite/rtpengine-kamailio:v1
-    #isolation:
-    #labels: kamailio
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "20M"
-        max-file: "10"
-    #network_mode: host
-    #pid:
-    ports:
-     - "14443:14443/tcp"
-     - "5432:5432"
-     - "5060:5060"
-     - "5061:5061"
-     - "6060:6060"
-     - "6061:6061"
-     - "1080:1080"
-     - "10000-20000:10000-20000/udp"
-    restart: on-failure
-    #secrets
-    #security_opt:
-    stop_grace_period: 1m30s
-    #stop:
-    #sysctls:
-    #tmpfs:
-     #- /run
-     #- /tmp
-    userns_mode: "host"
-    volumes:
-      - type: bind
-        source: {{ install_prefix}}ominicontacto/ominicontacto_voip/kamailio-files
-        target: {{ kamailio_location }}/etc/kamailio/
-      - type: bind
-        source: {{ kamailio_location }}/var/log/
-        target: /var/log/kamailio
-      - type: volume
-        source: certificados
-        target: /opt/omnileads/kamailio/etc/certs/
-volumes:
-  grabaciones:
-  certificados:

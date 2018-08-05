@@ -123,6 +123,9 @@ RUN sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
 
 #Creation of omnileads user
 RUN useradd omnileads
+RUN usermod -a -G omnileads omnileads
+RUN chown -R omnileads. /opt/omnileads/asterisk
+RUN service asterisk restart
 
 # Make ports available to the world outside this container
 EXPOSE 4569/udp 5038/tcp 5060/udp 7088/tcp 10000-20000/udp 5160/udp

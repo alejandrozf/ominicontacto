@@ -73,7 +73,6 @@
       - expect.x86_64
       - expect-devel.x86_64
       - MySQL-python.x86_64
-      - lame
       - kernel-devel
       - kernel-headers
       - acl

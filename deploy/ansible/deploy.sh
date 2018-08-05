@@ -154,41 +154,9 @@ EOF
     rama=$1
 }
 
-AdminPass() {
-  while true; do
-    unset admin_pass
-    echo -en "Ingrese la contraseña de superuser de Omnileads: (default: toor123) (contraseña con numeros, letras y caracteres especiales): "; echo ""
-    prompt=`echo -en "Enter password: "`
-    read -p "$prompt" -r -s -e admin_pass
-    echo ""
-    pass_length=${#admin_pass}
-        if [ -z $admin_pass ]; then
-            echo "ATENCION: Favor cambiar la contraseña, no usar la contraseña por default"
-            read -p "$prompt" -r -s -e admin_pass
-            echo ""
-        elif [ $pass_length -lt 8 ]; then
-          echo "La contraseña que ingresaste es demasiado corta, ingresala de nuevo"
-        else
-            break
-        fi
-    done
-}
-
-AdminPass_2() {
-    unset admin_pass_2
-    echo -en "Ingrese nuevamente la contraseña de superuser de Omnileads: "; echo ""
-    prompt=`echo -en "Enter password: "`
-    read -p "$prompt" -r -s -e admin_pass_2
-    echo ""
-}
-
-Formato(){
-    echo -en "Ingrese el formato de audio en el que quiere las grabaciones (ej: wav, mp3. Default:mp3): "; read audio
-}
-
 Docker(){
     while true; do
-      echo -en "Desea correr kamailio y asterisk en containers? [si/no]: "; read pregunta
+      echo -en "Desea correr asterisk en container (no recomendado para producción)? [si/no]: "; read pregunta
       if [ $pregunta == "si" ] || [ $pregunta == "Si" ]; then
         DOCKER="true"
         sed -i "s/\(^DOCKER\).*/DOCKER=true/" $TMP_ANSIBLE/hosts
@@ -204,40 +172,7 @@ Docker(){
 }
 
 Preliminar() {
-    echo ""
-    echo "########################################"
-    echo "##    Parámetros de la aplicación     ##"
-    echo "########################################"
-    echo ""
-
-    AdminPass
-    AdminPass_2
-    while true; do
-        if [ "$admin_pass" = "$admin_pass_2" ]; then
-            echo "Las contraseñas coinciden"
-            sed -i "s/\(^admin_pass\).*/admin_pass=$admin_pass/" $TMP_ANSIBLE/hosts
-            break
-        else
-            echo "Las contraseñas no coinciden, vuelva a ingresarlas"
-            AdminPass
-            AdminPass_2
-        fi
-    done
-    Formato
-    while true; do
-        if  [ -z $audio ]; then
-            echo "Usando valor por default"
-            break
-        elif [ $audio != "wav" ] && [ $audio != "mp3" ]; then
-            echo "Valor ingresa inválido. Ingrese un valor válido"
-            Formato
-        else
-            sed -i "s/\(^formato_conversion\).*/formato_conversion=$audio/" $TMP_ANSIBLE/hosts
-            break
-        fi
-    done
     Docker
-
 }
 
 Desarrollo() {

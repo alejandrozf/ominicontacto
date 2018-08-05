@@ -74,9 +74,15 @@ RUN sed -i "10s/.*/include_modules= presence presence_xml app_python auth_epheme
 COPY kamailio-files/Makefile /usr/src/kamailio/modules/db_postgres/
 RUN make all && make install
 
+#Copy of init scripts and link of binaries
+COPY kamailio-files/kamailio.service /etc/systemd/system/
+COPY kamailio-files/kamailio /etc/default/
+RUN ln -s $kamailio_location/sbin/kamctl /usr/sbin/
+RUN ln -s $kamailio_location/sbin/kamcmd /usr/sbin/
+
 #Creation of omnileads user
 RUN useradd omnileads
-RUN yum install openssl
+RUN yum install openssl -y
 # Make ports available to the world outside this container
 EXPOSE 14443 5432 5060 5061 6060 6061 1080 10000-20000/udp
 

@@ -33,8 +33,6 @@
       - libxml2-devel
       - sqlite-devel
       - newt-devel
-      - libuuid
-      - libuuid-devel
       - net-snmp-devel
       - unixODBC
       - unixODBC-devel
@@ -44,6 +42,7 @@
       - subversion
       - sendmail
       - sendmail-cf
+      - lame
   become: true
   become_method: sudo
   when: DOCKER == "false"
@@ -58,6 +57,8 @@
     - flex
     - expat
     - expat-devel
+    - libuuid
+    - libuuid-devel
     - xmlrpc-c-devel
     - lynx
     - pcre
@@ -71,12 +72,11 @@
     - redis
     - hiredis
     - hiredis-devel
-    - libevent*
+    - libevent-*
     - json-*
     - libunistring-devel.x86_64
   become: true
   become_method: sudo
-  when: DOCKER == "false"
 
 - meta: clear_host_errors
 

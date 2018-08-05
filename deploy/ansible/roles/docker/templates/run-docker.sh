@@ -19,7 +19,7 @@ cat /tmp/conversor.sh  | sudo docker exec -i $ASTERISK_CONTAINER_ID /bin/bash -c
 cat /tmp/openssl.cnf |sudo docker exec -i $KAMAILIO_CONTAINER_ID /bin/bash -c 'cat > /etc/pki/tls/openssl.cnf'
 cat {{ install_prefix }}bin/certificate-create.sh |sudo docker exec -i $KAMAILIO_CONTAINER_ID /bin/bash -c 'cat > /tmp/certificate-create.sh'
 
-docker exec -i $ASTERISK_CONTAINER_ID /bin/bash -c "chown -R omnileads. $asterisk_location && service asterisk stop && service asterisk start "
+#docker exec -i $ASTERISK_CONTAINER_ID /bin/bash -c "chown -R omnileads. $asterisk_location && service asterisk stop && service asterisk start "
 docker exec -i $KAMAILIO_CONTAINER_ID /bin/bash -c "chown -R omnileads. $kamailio_location && cd /tmp/ && \
                                                     echo 'y'| $kamailio_location/sbin/kamdbctl create && \
                                                     chmod +x certificate_create.sh && ./certificate-create.sh && \

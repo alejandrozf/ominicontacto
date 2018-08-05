@@ -54,7 +54,7 @@ stop(){
 
 reload(){
     echo -n "Reload de Omnileads... "
-    pgrep -u {{ usuario }} uwsgi > /dev/null || {
+    $CMD --reload > /dev/null || {
         log_failure_msg
         echo "Omnileads no esta corriendo..."
         exit 1

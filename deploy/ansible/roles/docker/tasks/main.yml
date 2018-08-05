@@ -1,55 +1,5 @@
 ---
 
-- name: Check if Rtpengine is installed
-  command: test -f /usr/local/bin/rtpengine
-  ignore_errors: True
-  register: rtpengine_installed
-  tags: rtpengine
-  become: true
-  become_method: sudo
-
-- debug: msg="RTPengine no está instalado, se procede a la instalación"
-  when: rtpengine_installed|failed
-  tags: rtpengine
-
-- debug: msg="RTPengine ya se encuentra instalado se omite instalación"
-  when: rtpengine_installed|succeeded
-  tags: rtpengine
-
-- name: Check if Kamailio is installed
-  shell: test -f {{ kamailio_location }}/sbin/kamailio
-  ignore_errors: True
-  register: kamailio_installed
-  tags: kamailio
-  become: true
-  become_method: sudo
-
-- debug: msg="Kamailio no está instalado, se procede a la instalación"
-  tags: kamailio
-  when: kamailio_installed|failed
-
-- debug: msg="Kamailio ya se encuentra instalado se omite instalación"
-  tags: kamailio
-  when: kamailio_installed|succeeded
-
-- name: Check if Asterisk is installed
-  shell: "test -f {{ install_prefix }}asterisk/sbin/asterisk || test -f /usr/sbin/asterisk"
-  register: asterisk_installed
-  ignore_errors: yes
-  tags: asterisk
-  become: true
-  become_method: sudo
-
-- debug: msg="Asterisk no está instalado, se procede a la instalación"
-  when: asterisk_installed|failed
-  tags: asterisk
-
-- debug: msg="Asterisk ya se encuentra instalado se omite instalación"
-  when: asterisk_installed|succeeded
-  tags: asterisk
-
-- include: roles/kamailio/tasks/postgresusers.yml
-
 - name: Installation of docker-engine required packages
   yum: name={{ item }} state=present
   with_items:
@@ -99,10 +49,7 @@
   template: src=roles/asterisk/templates/conversor.sh dest=/tmp/conversor.sh mode=700
 
 - name: Creation of logs folders in /var/log/
-  file: dest=/var/log/{{ item }} state=directory owner={{ usuario }} group={{ usuario }} mode=755
-  with_items:
-    - kamailio
-    - asterisk
+  file: dest=/var/log/asterisk state=directory owner={{ usuario }} group={{ usuario }} mode=755
 
 - name: Execution of run-docker.sh init script
   shell: "./run-docker.sh chdir={{ install_prefix }}bin"

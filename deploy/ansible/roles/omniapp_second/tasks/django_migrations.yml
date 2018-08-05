@@ -6,7 +6,10 @@
   template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner={{ usuario }} group={{ usuario }}"
 
 - name: Createlang of the database
-  shell: "createlang plpythonu template1"
+  shell: "createlang plpythonu {{ item }}"
+  with_items:
+    - kamailio
+    - template1
   become: yes
   become_user: postgres
   register: command_result
@@ -50,5 +53,3 @@
 #- name: Change permissions on id_rsa
 #  shell: "chmod 700 {{ install_prefix }}.ssh/id_rsa"
 #  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-
-

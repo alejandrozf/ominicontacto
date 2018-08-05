@@ -51,10 +51,9 @@
   become: true
   become_method: sudo
 
-<<<<<<< HEAD
 - name: Execution of kamdbctl script
   shell: "echo 'y' | {{ kamailio_location }}/sbin/kamdbctl create"
-  #when: kamailio_installed|failed
+  when: kamailio_installed|failed
   become: true
   become_method: sudo
   register: command_result
@@ -63,8 +62,6 @@
     - "'ya existe' not in command_result.stderr"
     - "command_result.rc != 0"
 
-=======
->>>>>>> sigo puliendo esto todavía falta mucho
 - name: Creation of kamailio-local.cfg file
   template: src=templates/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
   tags: postinstall
