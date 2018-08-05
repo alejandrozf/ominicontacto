@@ -1,0 +1,22 @@
+---
+
+- name: Setup of postgresql
+  command: "/usr/pgsql-9.6/bin/postgresql96-setup initdb"
+  register: command_result
+  failed_when:
+    - "'is not empty' not in command_result.stdout"
+    - "command_result.rc != 0"
+  become: yes
+  become_method: sudo
+
+
+- name: Start and enable postgres service
+  service: name=postgresql-9.6.service state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+
+- name: Start and enable redis service
+  service: name=redis state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+  when: DOCKER == "false"

@@ -1,0 +1,8 @@
+RUN_KAMAILIO=yes
+USER=omnileads
+GROUP=omnileads
+SHM_MEMORY=64
+PKG_MEMORY=8
+PIDFILE=/opt/omnileads/kamailio/var/run/kamailio/kamailio.pid
+CFGFILE=/opt/omnileads/kamailio/etc/kamailio/kamailio.cfg
+DUMP_CORE=yes

@@ -1,0 +1,63 @@
+version: '3.2'
+services:
+  asterisk:
+    #build:
+    #  context: ./build
+    #  dockerfile: Dockerfile-asterisk
+    #config:
+    container_name: asterisk
+    #depends_on:
+    dns: 8.8.8.8
+    #env_file
+    #environment
+    #expose
+    #extra_hosts
+    healthcheck:
+      test: ["CMD", "asterisk", "-rx", "'core show version'"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      #start_period: 40s
+    image: lionite/asterisk-omnileads:v1
+    #isolation:
+    #labels: asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20M"
+        max-file: "10"
+    network_mode: host
+    #pid:
+    ports:
+     - "5060:5060/udp"
+     - "4569:4569/udp"
+     - "5038:5038/tcp"
+     - "7088:7088/tcp"
+     - "10000-20000:10000-20000/udp"
+     - "5160:5160/udp"
+    restart: on-failure
+    #secrets
+    #security_opt:
+    stop_grace_period: 1m30s
+    #stop:
+    #sysctls:
+    #tmpfs:
+     #- /run
+     #- /tmp
+    userns_mode: "host"
+    volumes:
+      - type: bind
+        source: {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf
+        target: {{ asterisk_location }}/etc/asterisk/
+      - type: bind
+        source: {{ asterisk_location }}/var/log/
+        target: /var/log/asterisk
+      - type: bind
+        source: {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis
+        target: {{ asterisk_location }}/var/lib/asterisk/agi-bin/
+      - type: bind
+        source: /usr/pgsql-9.6/lib/
+        target: /usr/pgsql-9.6/lib/
+      - type: volume
+        source: grabaciones
+        target: {{ asterisk_location }}/var/spool/asterisk/asternic

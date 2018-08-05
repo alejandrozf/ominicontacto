@@ -1,0 +1,133 @@
+FROM centos:centos7.4.1708
+MAINTAINER Felipe Macias <felipe.macias@freetechsolutions.com.ar>
+
+ENV build-date 2018
+ENV asterisk_location /opt/omnileads/asterisk
+
+RUN yum update -y
+RUN yum -y groupinstall core base "Development Tools"
+RUN yum install initscripts unzip kernel-headers gcc gcc-c++ cpp ncurses ncurses-devel libxml2 libxml2-devel sqlite sqlite-devel \
+                openssl-devel newt-devel kernel-devel libuuid-devel net-snmp-devel \
+                xinetd tar make git linx tftp-server unixODBC sox libtiff-devel audiofile-devel gtk2-devel \
+                subversion crontabs cronie cronie-anacron wget vim uuid-devel net-tools \
+                gnutls-devel texinfo libevent* libunistring-devel.x86_64 webkitgtk3-devel.x86_64 \
+                perl* librabbitmq* bison bison-devel pcre pcre-devel-y libpcap-devel flex expat expat-devel \
+                xmlrpc-c-devel ncurses-libs gdb unixODBC-devel libtool-ltdl-devel iptables-devel \
+                python-devel iptables-services libevent-devel curl curl-devel sendmail sendmail-cf \
+                -y
+
+# Enable systemctl in centos7 dockerized
+COPY systemctl.py /usr/bin/systemctl.py
+RUN cp -f /usr/bin/systemctl /usr/bin/systemctl.original \
+    && chmod +x /usr/bin/systemctl.py \
+    && cp -f /usr/bin/systemctl.py /usr/bin/systemctl
+
+#Disable centos7 firewalld
+RUN systemctl stop firewalld && systemctl disable firewalld
+
+#Install PHP 5.6
+#RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+#RUN rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+#RUN yum install -y php56w php56w-pdo php56w-mysql php56w-mbstring php56w-pear php56w-process php56w-xml php56w-gd php56w-opcache php56w-ldap php56w-intl php56w-soap
+
+#Install nodeJS
+RUN curl -sL https://rpm.nodesource.com/setup_8.x | bash - && sudo yum install -y nodejs
+
+#Create asterisk working directory
+RUN mkdir -p $asterisk_location
+
+# Download and install of Iksemel master
+WORKDIR /usr/src
+RUN wget -O iksemel-master.zip https://github.com/meduketto/iksemel/archive/master.zip
+RUN unzip iksemel-master.zip
+RUN mkdir -p $asterisk_location/iksemel-master
+WORKDIR /usr/src/iksemel-master
+RUN ./autogen.sh
+RUN ./configure --prefix=$asterisk_location/iksemel-master
+RUN make
+RUN make install
+RUN rm -rf /usr/src/iksemel-master
+
+#Download and install Dahdi linux
+#WORKDIR /usr/src
+#RUN wget -O dahdilinux.tar.gz http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-current.tar.gz
+#RUN tar xvfz dahdilinux.tar.gz
+#RUN rm -rf *.tar.gz
+#RUN mv dahdi-linux-* dahdi-linux/
+#WORKDIR /usr/src/dahdi-linux
+#RUN make all
+#RUN make install
+#RUN make config
+
+#Download and listall libpri
+#WORKDIR /usr/src
+#RUN wget -O libpri-current.tar.gz http://downloads.asterisk.org/pub/telephony/libpri/libpri-1.6.0.tar.gz
+#RUN tar xvfz libpri-1.6.0.tar.gz
+#RUN rm -rf *.tar.gz
+#WORKDIR /usr/src/libpri-1.6.0
+#RUN make all
+#RUN make install
+
+#Download and install jansonn
+WORKDIR /usr/src
+RUN wget -O jansson.tar.gz https://github.com/akheron/jansson/archive/v2.7.tar.gz
+RUN tar xvfz jansson.tar.gz
+RUN rm -rf *.tar.gz
+RUN mv jansson-* jansson/
+RUN mkdir -p $asterisk_location/jansson-2.7
+WORKDIR /usr/src/jansson
+RUN autoreconf -i
+RUN ./configure --libdir=$asterisk_location/jansson-2.7/usr/lib64 --prefix=$asterisk_location/jansson-2.7
+RUN make
+RUN make install
+RUN rm -rf /usr/src/jansson
+
+#Download of pjsip project
+WORKDIR /tmp/downloads
+RUN wget -O pjproject-2.6.tar.bz2 http://www.pjsip.org/release/2.6/pjproject-2.6.tar.bz2
+#RUN wget -O pjproject-2.6.md5 http://www.pjsip.org/release/2.6/MD5SUM.txt
+
+#Download and compile asterisk
+WORKDIR /usr/src
+RUN wget -O asterisk.tar.gz http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-13.18.3.tar.gz
+RUN tar xvfz asterisk.tar.gz
+RUN rm -rf *.tar.gz
+RUN mv asterisk-* asterisk/
+WORKDIR /usr/src/asterisk
+RUN contrib/scripts/install_prereq install
+RUN contrib/scripts/get_mp3_source.sh
+RUN ./configure --libdir=$asterisk_location/usr/lib64 --prefix=$asterisk_location --with-externals-cache=/tmp/downloads
+RUN make menuselect.makeopts
+RUN menuselect/menuselect --enable format_mp3
+RUN make
+RUN make install
+RUN make config
+RUN ldconfig
+RUN chkconfig asterisk off
+RUN rm -rf /usr/src/asterisk
+
+#Copy and untar of the omnileads audios
+COPY asterisk-files/*.tgz /tmp/
+WORKDIR /tmp/
+RUN mkdir $asterisk_location/var/lib/asterisk/sounds/es/
+RUN tar xzvf es-oml.tgz -C $asterisk_location/var/lib/asterisk/sounds/es/
+RUN tar xzvf en-oml.tgz -C $asterisk_location/var/lib/asterisk/sounds/en/
+
+#Copy of init script and simbolic link to binarie
+COPY asterisk-files/asterisk-omnileads /etc/init.d/asterisk
+RUN ln -s $asterisk_location/sbin/asterisk /usr/sbin/asterisk
+
+#Disable SELINUX
+RUN sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
+RUN sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
+
+#Creation of omnileads user
+RUN useradd omnileads
+RUN usermod -a -G omnileads omnileads
+RUN chown -R omnileads. /opt/omnileads/asterisk
+RUN service asterisk restart
+
+# Make ports available to the world outside this container
+EXPOSE 4569/udp 5038/tcp 5060/udp 7088/tcp 10000-20000/udp 5160/udp
+
+CMD ["/usr/sbin/init"]

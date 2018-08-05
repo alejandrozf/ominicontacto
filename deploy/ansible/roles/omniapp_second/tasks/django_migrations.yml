@@ -1,0 +1,55 @@
+---
+
+- set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
+
+- name: Change the ip address in config.js
+  template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner={{ usuario }} group={{ usuario }}"
+
+- name: Createlang of the database
+  shell: "createlang plpythonu {{ item }}"
+  with_items:
+    - kamailio
+    - template1
+  become: yes
+  become_user: postgres
+  register: command_result
+  failed_when:
+    - "'ya está instalado' not in command_result.stderr"
+    - "'already installed' not in command_result.stderr"
+    - "command_result.rc != 0"
+
+- name: Run Django migrations
+  django_manage: >
+          command={{ item }}
+          app_path={{ install_prefix }}ominicontacto
+          settings=ominicontacto.settings
+          virtualenv={{ install_prefix }}virtualenv
+  with_items:
+          - migrate
+          - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
+          - collectstatic
+          - compress
+          - regenerar_asterisk
+          - populate_history --auto
+  environment:
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+  become: yes
+  become_method: su
+  become_user: "{{ usuario }}"
+  ignore_errors: yes
+
+- name: Change password of superuser
+  template: "src=templates/changepassword.sh.j2 dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
+
+- name: Change password
+  shell: "./changepassword.sh chdir={{ install_prefix }}ominicontacto"
+  environment:
+          DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
+          PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+
+- name: Erase the script for changing superuser password
+  file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent
+
+#- name: Change permissions on id_rsa
+#  shell: "chmod 700 {{ install_prefix }}.ssh/id_rsa"
+#  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"

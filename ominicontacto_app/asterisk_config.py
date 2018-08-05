@@ -705,8 +705,8 @@ class AsteriskConfigReloader(object):
             stderr_file.close()
 
     def reload_asterisk(self):
-        subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx',
-                         '\'core reload\''])
+        #subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx', '\'core reload\''])
+        subprocess.call(settings.OML_RELOAD_CMD, shell=True)
 
 
 class ConfigFile(object):

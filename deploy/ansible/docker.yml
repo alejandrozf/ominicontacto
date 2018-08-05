@@ -1,0 +1,45 @@
+---
+- name: Instalacion de Omnileads en CentOS con Asterisk en container
+  hosts: omnileads
+  # Siempre 'gather_facts' ya q' lo usaoms en varios 'when'
+  # gather_facts: '{{ lookup("env","DO_CHECKS") }}'
+  vars:
+          build_dir: "{{ BUILD_DIR }}"
+          rama: "{{ RAMA }}"
+  vars_prompt:
+        - name: "admin_pass"
+          prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales)"
+          private: yes
+          default: toor123
+
+        - name: "admin_pass2"
+          prompt: "Ingrese nuevamente contraseña del admin de Omnileads"
+          private: yes
+
+        - name: "formato_conversion"
+          prompt: "Ingrese el formato de conversión de grabaciones (wav o mp3, default wav)"
+          default: mp3
+          private: no
+
+  pre_tasks:
+      - assert:
+          that:
+            - "'{{ admin_pass }}' != 'bad_value' "
+            - "'{{ admin_pass }}' | length > 8"
+          msg: "La contraseña ingresada es demasiado corta. La contraseña no puede ir vacia"
+      - assert:
+          that: "'{{ admin_pass }}' == '{{ admin_pass2 }}'"
+          msg: "Las contraseñas no son iguales"
+      - assert:
+          that: "'{{ formato_conversion }}' == 'wav' or '{{ formato_conversion }}' == 'mp3' "
+          msg: "Formato inválido"
+
+  gather_facts: True
+
+  roles:
+          - prerequisitos
+          - {role: oml_server, tags: ['virtualenv']}
+          - kamailio
+          - {role: docker, tags: ['docker']}
+          - {role: omniapp_second, tags: ['omniapp']}
+          - deploy_supervision

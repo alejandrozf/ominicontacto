@@ -1,0 +1,23 @@
+---
+
+- name: Transfer ssh key from {{ usuario }}'s user to root's user
+<<<<<<< HEAD
+  shell: cat {{ install_prefix }}.ssh/id_rsa.pub
+=======
+  shell: cat {{ install_prefix}}/.ssh/id_rsa.pub
+>>>>>>> sigo puliendo esto todavía falta mucho
+  register: ssh_key
+- authorized_key: "user=root key={{ ssh_key.stdout }} state=present manage_dir=yes"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+- name: Change permissions on id_rsa
+  shell: "chmod 700 {{ install_prefix }}/.ssh/id_rsa"
+  tags: postinstall
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
+
+- name: Try first ssh login
+  shell: "ssh -oStrictHostKeyChecking=no root@127.0.0.1"
+  become: yes
+  become_user: "{{ usuario }}"
+  become_method: su
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
