@@ -1,6 +1,6 @@
 ---
 
-- set_fact: asterisk_tar=asterisk-13.18.3.tar.gz
+- set_fact: asterisk_tar=asterisk-13.22.0.tar.gz
 - set_fact: libpri_tar=libpri-1.6.0.tar.gz
 - set_fact: jansson_tar=jansson-2.7.tar.gz
 - set_fact: dahdi_tar=dahdi-linux-complete-2.11.1+2.11.1.tar.gz
@@ -107,20 +107,20 @@
   become_method: sudo
 
 - name: Instalacion de asterisk
-  shell: "{{ item }} chdir=/usr/src/asterisk-13.18.3"
+  shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - contrib/scripts/install_prereq install
           - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-externals-cache=/tmp/downloads
  # become: yes
  # become_method: sudo
 
-- shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-13.18.3"
+- shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-13.22.0"
   register: command_result
   become: yes
   become_method: sudo
   ignore_errors: yes
 
-- shell: "{{ item }} chdir=/usr/src/asterisk-13.18.3"
+- shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - make menuselect.makeopts
           - menuselect/menuselect --enable format_mp3
@@ -142,10 +142,7 @@
   file: path=/usr/src/{{ item }} state=absent
   with_items:
     - iksemel-master
-    - asterisk-13.18.3
+    - asterisk-13.22.0
     - jansson-2.7
     - libpri-1.6.0
     - dahdi-linux-complete-2.11.1+2.11.1
-
-
-
