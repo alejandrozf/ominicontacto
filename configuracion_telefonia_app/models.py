@@ -97,7 +97,7 @@ class IVR(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
     descripcion = models.CharField(max_length=30)
     audio_principal = models.ForeignKey(
-        ArchivoDeAudio, blank=True, null=True, related_name="audio_principal_ivrs")
+        ArchivoDeAudio, on_delete=models.PROTECT, related_name="audio_principal_ivrs")
     time_out = models.PositiveIntegerField()
     time_out_retries = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(99)])
