@@ -339,7 +339,7 @@ class GlobalsFamily(AbstractFamily):
             'DEFAULTRINGTIME': 45,
             'LANG': 'es',
             'OBJ/1': 'sub-oml-in-check-set,s,1',
-            'OBJ/2': 'sub-oml-module-tc,s,1',
+            'OBJ/2': 'sub-oml-module-time-conditions,s,1',
             'OBJ/3': 'sub-oml-module-ivr,s,1',
             'OBJ/4': 'sub-oml-module-ext,s,1',
             'OBJ/5': 'sub-oml-hangup,s,1',
