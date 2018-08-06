@@ -28,6 +28,7 @@ from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from django.core.management import call_command
+from django.core.validators import RegexValidator
 from django.utils.translation import ugettext as _
 from django.utils.timezone import now
 from simple_history.models import HistoricalRecords
@@ -38,6 +39,8 @@ from ominicontacto_app.utiles import (
 logger = logging.getLogger(__name__)
 
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
+R_ALFANUMERICO = r'^[\w]+$'
+SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 
 
 class User(AbstractUser):
@@ -406,7 +409,7 @@ class ArchivoDeAudio(models.Model):
     objects = ArchivoDeAudioManager()
 
     descripcion = models.CharField(
-        max_length=100, unique=True,
+        max_length=100, unique=True, validators=[RegexValidator(R_ALFANUMERICO)]
     )
     audio_original = models.FileField(
         upload_to=upload_to_audio_original,
@@ -449,6 +452,24 @@ class ArchivoDeAudio(models.Model):
     @classmethod
     def crear_archivo(cls, descripcion, audio_original):
         return cls.objects.create(descripcion=descripcion, audio_original=audio_original)
+
+    @classmethod
+    def calcular_descripcion(cls, descripcion):
+        """
+        Devuelve una descripcion válida y sin repetir. En caso de que ya exista agrega
+        un sufijo.
+        """
+        descripcion = SUBSITUTE_ALFANUMERICO.sub('', descripcion)
+        if cls.objects.filter(descripcion=descripcion).count() > 0:
+            ultimo = 0
+            copias = cls.objects.filter(descripcion__startswith=descripcion + '_')
+            for archivo in copias:
+                sufijo = archivo.descripcion.replace(descripcion + '_', '', 1)
+                if sufijo.isdigit():
+                    ultimo = max(ultimo, int(sufijo))
+            descripcion = descripcion + '_' + str(ultimo + 1)
+
+        return descripcion
 
 
 class CampanaManager(models.Manager):
