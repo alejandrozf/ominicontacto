@@ -131,7 +131,7 @@ if(var1 && var2) {
 		};
 		userAgent = new JsSIP.UA(config);
 		sesion = userAgent.start();
-  }
+		}
 
   $("#CallList").click(function() {
     $("#modalCallList").modal('show');
@@ -164,8 +164,12 @@ if(var1 && var2) {
     defaultCallState();
   });
 
+userAgent.on('disconnected', function(e){
+		setSipStatus("redcross.png", "  SIP Proxy not responding, contact your administrator", sipStatus);
+});
+
   userAgent.on('registrationFailed', function(e) {  // cuando falla la registracion
-    setSipStatus("redcross.png", "  Registration failed", sipStatus);
+    setSipStatus("redcross.png", "  Registration failed, contact your administrator", sipStatus);
   });
 
   userAgent.on('newRTCSession', function(e) {       // cuando se crea una sesion RTC
@@ -898,41 +902,58 @@ if(var1 && var2) {
 										if(num.substring(4,0) != "0077"){
 											setCallState("Connected to " + num, "orange");
 										} else {
-											setCallState("Connected", "orange");
+											setCallState("Agent logged in", "orange");
 										}
                     var stream = e.stream;
                     // Attach remote stream to remoteView
                     remoto.src = window.URL.createObjectURL(stream);
                     },
       'failed': function(data) {
-                  if (data.cause === JsSIP.C.causes.BUSY) {
-                    Sounds("", "stop");
-      					  	Sounds("", "play");
-                  	setCallState("Ocupado, intenta mas tarde", "orange");
-                   	setTimeout(defaultCallState, 5000);
-                  } else if (data.cause === JsSIP.C.causes.REJECTED) {
-                    setCallState("Rechazo, intenta mas tarde", "orange");
-                    setTimeout(defaultCallState, 5000);
-                  } else if (data.cause === JsSIP.C.causes.UNAVAILABLE) {
-                      setCallState("Unavailable", "red");
-                      setTimeout(defaultCallState, 5000);
-                  } else if (data.cause === JsSIP.C.causes.NOT_FOUND) {
-                    setCallState("Error, revisa el numero discado", "red");
-                    setTimeout(defaultCallState, 5000);
-                  } else if (data.cause === JsSIP.C.causes.AUTHENTICATION_ERROR) {
-                    setCallState("Auth error", "red");
-                    setTimeout(defaultCallState, 5000);
-                  } else if (data.cause === JsSIP.C.causes.MISSING_SDP) {
-                    setCallState("Missing sdp", "red");
-                    setTimeout(defaultCallState, 5000);
-                  } else if (data.cause === JsSIP.C.causes.ADDRESS_INCOMPLETE) {
-                    setCallState("Address incomplete", "red");
-                    setTimeout(defaultCallState, 5000);
-                  } else if (data.cause === "SIP Failure Code") {
-      							  setCallState("JsSIP SIP Failure code (500)", "red");
-                    	setTimeout(defaultCallState, 5000);
-                  }
-                }
+										if(num.substring(4,0) != "0077"){
+		                  if (data.cause === JsSIP.C.causes.BUSY) {
+		                    Sounds("", "stop");
+		      					  	Sounds("", "play");
+		                  	setCallState("Number busy, try later", "orange");
+		                   	setTimeout(defaultCallState, 9000);
+		                  } else if (data.cause === JsSIP.C.causes.REJECTED) {
+		                    setCallState("Rejected, try later", "orange");
+		                    setTimeout(defaultCallState, 9000);
+		                  } else if (data.cause === JsSIP.C.causes.UNAVAILABLE) {
+		                      setCallState("Unavailable, contact your administrator", "red");
+		                      setTimeout(defaultCallState, 9000);
+		                  } else if (data.cause === JsSIP.C.causes.NOT_FOUND) {
+		                    setCallState("Error, check the number dialed", "red");
+		                    setTimeout(defaultCallState, 9000);
+		                  } else if (data.cause === JsSIP.C.causes.AUTHENTICATION_ERROR) {
+		                    setCallState("Authentication error, contact your administrator", "red");
+		                    setTimeout(defaultCallState, 9000);
+		                  } else if (data.cause === JsSIP.C.causes.MISSING_SDP) {
+		                    setCallState("Error, Missing sdp", "red");
+		                    setTimeout(defaultCallState, 9000);
+		                  } else if (data.cause === JsSIP.C.causes.ADDRESS_INCOMPLETE) {
+		                    setCallState("Address incomplete", "red");
+		                    setTimeout(defaultCallState, 9000);
+		                  } else if (data.cause === JsSIP.C.causes.JsSIP.C.causes.SIP_FAILURE_CODE) {
+		      							  setCallState("Service Unavailable, contact your administrator", "red");
+		                    	setTimeout(defaultCallState, 9000);
+  										} else if (data.cause === JsSIP.C.causes.USER_DENIED_MEDIA_ACCESS) {
+			      							  setCallState("WebRTC Error: User denied media access", "red");
+			                    	setTimeout(defaultCallState, 9000);
+			                }
+                	}
+									else if(num.substring(4,9) == "LOGIN") {
+										setCallState("Agent not logged in, contact your administrator", "red");
+										setTimeout(defaultCallState, 30000);
+									}
+									else if(num.substring(4,11) == "UNPAUSE") {
+										setCallState("Cannot unpause agent, contact your administrator", "red");
+										setTimeout(defaultCallState, 30000);
+									}
+									else {
+										setCallState("Cannot pause agent, contact your administrator", "red");
+										setTimeout(defaultCallState, 30000);
+									}
+				}
     };
 		idTipoCamp = $("#cmpList option:selected").attr('campana_type');
     opciones = {
@@ -971,13 +992,13 @@ if(var1 && var2) {
       callSipStatus.parentNode.removeChild(callSipStatus);
     }
     callSipStatus = document.createElement("em");
-    textCallSipStatus = document.createTextNode("Idle");
+		textCallSipStatus = document.createTextNode("Idle");
 		callSipStatus.id = "dial_status";
-    callSipStatus.appendChild(textCallSipStatus);
-    callStatus.appendChild(callSipStatus);
+		callSipStatus.appendChild(textCallSipStatus);
+		callStatus.appendChild(callSipStatus);
 		$("#Transfer").prop('disabled', true);
 		$("#EndTransfer").prop('disabled', true);
-    $("#onHold").prop('disabled', false);
+		$("#onHold").prop('disabled', false);
   }
 
   function setSipStatus(img, state, elem) {
