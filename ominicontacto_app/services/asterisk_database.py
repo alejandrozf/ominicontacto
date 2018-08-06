@@ -2,8 +2,7 @@
 
 from __future__ import unicode_literals
 
-from django.conf import settings
-from ominicontacto_app.utiles import elimina_espacios
+from ominicontacto_app.utiles import elimina_espacios, convert_audio_asterisk_path_astdb
 from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
@@ -377,12 +376,9 @@ class IVRFamily(AbstractFamily):
 
     def _create_dict(self, ivr):
         destinos_siguientes = self._obtener_destinos_siguientes(ivr)
-        ivr_audio = "{0}{1}".format(
-            settings.OML_AUDIO_PATH_ASTERISK, ivr.audio_principal.audio_asterisk)
-        timeout_audio = "{0}{1}".format(
-            settings.OML_AUDIO_PATH_ASTERISK, ivr.time_out_audio.audio_asterisk)
-        invalid_audio = "{0}{1}".format(
-            settings.OML_AUDIO_PATH_ASTERISK, ivr.invalid_audio.audio_asterisk)
+        ivr_audio = convert_audio_asterisk_path_astdb(ivr.audio_principal.audio_asterisk)
+        timeout_audio = convert_audio_asterisk_path_astdb(ivr.time_out_audio.audio_asterisk)
+        invalid_audio = convert_audio_asterisk_path_astdb(ivr.invalid_audio.audio_asterisk)
         dict_ivr = {
             'NAME': ivr.nombre,
             'AUDIO': ivr_audio,

@@ -265,6 +265,14 @@ def cast_datetime_part_date(fecha):
     return fecha.date()
 
 
+def convert_audio_asterisk_path_astdb(audio_asterisk):
+    """convert audio_asterisk en oml/audio"""
+    audio_asterisk = audio_asterisk.name.split("/")
+    audio_name = audio_asterisk[1].split(".")
+    audio_asterisk = os.path.join("oml/", audio_name[0])
+    return audio_asterisk
+
+
 class UnicodeWriter:            # tomado de https://docs.python.org/2/library/csv.html
     """
     A CSV writer which will write rows to CSV file "f",
