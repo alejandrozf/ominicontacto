@@ -60,4 +60,6 @@ services:
         target: /usr/pgsql-9.6/lib/
       - type: volume
         source: grabaciones
-        target: {{ asterisk_location }}/var/spool/asterisk/asternic
+        target: {{ asterisk_location }}/var/spool/asterisk/monitor
+volumes:
+  grabaciones:

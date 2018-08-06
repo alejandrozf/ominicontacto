@@ -50,6 +50,7 @@
 - name: Installation of kamailio packages
   yum: name={{ item }} state=present
   with_items:
+    - libevent-devel
     - gcc
     - gcc-c++
     - bison
@@ -72,8 +73,6 @@
     - redis
     - hiredis
     - hiredis-devel
-    - libevent-*
-    - json-*
     - libunistring-devel.x86_64
   become: true
   become_method: sudo
@@ -152,7 +151,7 @@
   become_method: sudo
 
 - name: Edit sudoers to execute binaries withouth password
-  lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/rsync, /usr/sbin/asterisk\""
+  lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/rsync, /usr/sbin/asterisk\""
   when: asterisk_location == ""
   become: yes
   become_method: sudo

@@ -200,12 +200,6 @@
   become: yes
   become_method: sudo
 
-- name: Stop firewalld
-  shell: "{{ item }}"
-  with_items:
-      - systemctl stop firewalld
-      - systemctl disable firewalld
-
 - name: Add start of asterisk to rc.local
   shell: "chkconfig asterisk on"
   when: asterisk_location != ""

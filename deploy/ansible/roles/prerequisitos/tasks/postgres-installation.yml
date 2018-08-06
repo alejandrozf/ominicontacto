@@ -19,4 +19,3 @@
   service: name=redis state=restarted enabled=yes
   become: yes
   become_method: sudo
-  when: DOCKER == "false"

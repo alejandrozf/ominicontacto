@@ -17,6 +17,12 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
+- name: Stop firewalld
+  shell: "{{ item }}"
+  with_items:
+      - systemctl stop firewalld
+      - systemctl disable firewalld
+
 - name: Update/upgrade of centos
   yum: name='*' state=latest update_cache=yes
   become: true
@@ -32,17 +38,26 @@
   template: src=templates/irontec.repo dest=/etc/yum.repos.d/irontec.repo
   become: true
   become_method: sudo
-  when: DOCKER == "false"
 
 - name: Import of irontec public key
   shell: "rpm --import http://packages.irontec.com/public.key"
   become: true
   become_method: sudo
-  when: DOCKER == "false"
 
 - name: Install of sngrep
   yum: name=sngrep state=present
-  when: DOCKER == "false"
+
+- name: Download of epel-release repo
+  command: "{{ item }}"
+  with_items:
+      - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  register: command_result
+  failed_when:
+    - "'transferencia fallida' in command_result.stderr"
+    - "'failed' in command_result.stderr"
+  become: true
+  become_method: sudo
+- meta: clear_host_errors
 
 - name: Install of dependencies
   yum: name={{ item }} state=present
@@ -78,24 +93,18 @@
       - acl
       - webkitgtk3-devel.x86_64
       - perl*
-      - librabbitmq*
+      #- librabbitmq*
       - pcre-devel
       - libpcap-devel
   become: true
   become_method: sudo
 
-- name: Download of epel-release repo
-  command: "{{ item }}"
+- name: Install of librabbitmq
+  yum: "name={{ item }} state=present"
   with_items:
-      - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  register: command_result
-  failed_when:
-    - "'transferencia fallida' in command_result.stderr"
-    - "'failed' in command_result.stderr"
-
+    - http://mirror.centos.org/centos/7/os/x86_64/Packages/librabbitmq-0.8.0-2.el7.x86_64.rpm
   become: true
   become_method: sudo
-- meta: clear_host_errors
 
 - name: Download of webtatic repo
   get_url: url=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm dest=/root/ validate_certs=no

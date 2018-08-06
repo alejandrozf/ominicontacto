@@ -37,7 +37,6 @@
   become: true
   ignore_errors: yes
   become_method: sudo
-  when: DOCKER == "false"
   tags: kamailio-cert
   notify: restart nginx
 
@@ -82,14 +81,12 @@
   tags: kamailio-cert
   become: true
   become_method: sudo
-  when: DOCKER == "false"
 
 - shell: "bash concatenate.sh chdir={{ install_prefix }}bin"
   tags: kamailio-cert
   ignore_errors: yes
   become: true
   become_method: sudo
-  when: DOCKER == "false"
 
 - name: Generate changeip.sh script
   template: src=templates/changeip.sh.j2 dest={{ install_prefix }}bin/changeip.sh owner={{ usuario }} group={{ usuario }} mode=755
