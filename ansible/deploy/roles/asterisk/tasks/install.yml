@@ -91,26 +91,26 @@
   become: yes
   become_method: sudo
 
-- name: Creacion de carpeta /tmp/downloads
-  file: path=/tmp/downloads state=directory mode=755
-  become: yes
-  become_method: sudo
+#- name: Creacion de carpeta /tmp/downloads
+#  file: path=/tmp/downloads state=directory mode=755
+#  become: yes
+#  become_method: sudo
 
-- name: Descarga de pjsip-project
-  shell: "wget -O /tmp/downloads/pjproject-2.6.tar.bz2 http://www.pjsip.org/release/2.6/pjproject-2.6.tar.bz2 chdir=/tmp/downloads"
-- shell: "wget -O /tmp/downloads/pjproject-2.6.md5 http://www.pjsip.org/release/2.6/MD5SUM.txt chdir=/tmp/downloads"
-  register: command_result
-  failed_when:
-    - "'ERROR 404: Not Found' not in command_result.stderr"
-    - "command_result.rc != 0"
-  become: yes
-  become_method: sudo
+#- name: Descarga de pjsip-project
+#  shell: "wget -O /tmp/downloads/pjproject-2.7.2.tar.bz2 http://www.pjsip.org/release/2.7.2/pjproject-2.7.2.tar.bz2 chdir=/tmp/downloads"
+#  - shell: "wget -O /tmp/downloads/pjproject-2.7.2.md5 http://www.pjsip.org/release/2.7.2/MD5SUM.TXT chdir=/tmp/downloads"
+#  register: command_result
+#  failed_when:
+#    - "'ERROR 404: Not Found' not in command_result.stderr"
+#    - "command_result.rc != 0"
+#  become: yes
+#  become_method: sudo
 
 - name: Instalacion de asterisk
   shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - contrib/scripts/install_prereq install
-          - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-externals-cache=/tmp/downloads
+          - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
  # become: yes
  # become_method: sudo
 
