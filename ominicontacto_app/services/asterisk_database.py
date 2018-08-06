@@ -387,7 +387,7 @@ class IVRFamily(AbstractFamily):
             'TIMEOUT/AUDIO': timeout_audio,
             'INVALID/RETRIES': ivr.invalid_retries,
             'INVALID/AUDIO': invalid_audio,
-            'OPTION/CANTIDAD': len(destinos_siguientes) - 2
+            'OPTION/OPTIONS': len(destinos_siguientes) - 2
         }
 
         contador_orden = 0
