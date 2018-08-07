@@ -380,8 +380,15 @@ class IVRFamily(AbstractFamily):
     def _create_dict(self, ivr):
         destinos_siguientes = self._obtener_destinos_siguientes(ivr)
         ivr_audio = convert_audio_asterisk_path_astdb(ivr.audio_principal.audio_asterisk)
-        timeout_audio = convert_audio_asterisk_path_astdb(ivr.time_out_audio.audio_asterisk)
-        invalid_audio = convert_audio_asterisk_path_astdb(ivr.invalid_audio.audio_asterisk)
+
+        timeout_audio = 'NONE'
+        if ivr.time_out_audio:
+            timeout_audio = convert_audio_asterisk_path_astdb(ivr.time_out_audio.audio_asterisk)
+
+        invalid_audio = 'NONE'
+        if ivr.invalid_audio:
+            invalid_audio = convert_audio_asterisk_path_astdb(ivr.invalid_audio.audio_asterisk)
+
         dict_ivr = {
             'NAME': ivr.nombre,
             'AUDIO': ivr_audio,
