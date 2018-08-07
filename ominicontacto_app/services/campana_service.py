@@ -66,9 +66,10 @@ class CampanaService():
 
         return id_lista
 
-    def obtener_datos_campana_run(self, salida, campana):
+    def obtener_datos_campana_json_de_wombat(self, salida, campana):
         """
-        Retorno los datos de la campana activa pasado por parametro
+        Obtiene los datos del json obtenido en wombat formateando los datos que me interesan
+        para la campana pasada por parametro
         :param salida: salida del comando de la campanas corriendo en wombat
         :param campana: campana a la cual desea obtener sus datos
         :return: los datos de la campana
@@ -129,17 +130,17 @@ class CampanaService():
         :param campana: campana a la cual se le creara un trunk en wombat
         """
         service_wombat = WombatService()
-        # crea json de trunk para crear trunk en wombat
+        # crea json de trunk para crear trunk en una campana de wombat
         service_wombat_config = TrunkCreator()
         service_wombat_config.create_json(campana)
         url_edit = "api/edit/campaign/trunk/?mode=E&parent={0}".format(
             campana.campaign_id_wombat)
-        # crea trunk en wombat
+        # crea trunk en la campana en wombat
         service_wombat.update_config_wombat("newcampaign_trunk.json", url_edit)
 
     def crear_reschedule_campana_wombat(self, campana, parametros):
         """
-        Crear reschedule para una campaign wn wombat via curl
+        Crear reschedule(reglas de incidencia) para una campaign wn wombat via curl
         :param campana: campana a la cual se le creara reschudule
         :param parametros: parametros de la reschudule en wombat
         """
@@ -191,9 +192,10 @@ class CampanaService():
         # crea asociacion de enpoint con campaign en wombat
         service_wombat.update_config_wombat("newcampaign_ep.json", url_edit)
 
-    def crear_lista_wombat(self, campana):
+    def crear_lista_contactos_wombat(self, campana):
         """
-        Crea lista en wombat via curl
+        Crea lista de contactos en wombat, se crear una lista tomando los contactos de la base de
+        datos de contactos de la campana
         :param campana: campana de la cual se creara la lista
         """
         service_wombat = WombatService()
@@ -201,28 +203,28 @@ class CampanaService():
                                  elimina_espacios(campana.bd_contacto.nombre)])
         url_edit = "api/lists/?op=addToList&list={0}".format(
             nombre_lista)
-        # crea lista en wombat
+        # crea lista de contactos en wombat
         service_wombat.update_lista_wombat("newcampaign_list_contacto.txt", url_edit)
 
     def crear_lista_asociacion_campana_wombat(self, campana):
         """
-        crea asociacion de lista con campaign en wombat via curl
+        crea asociacion de lista de contactos con campaign en wombat via curl
         :param campana: campana a la cual se le asociara la lista
         """
         service_wombat = WombatService()
         url_edit = "api/edit/list/?mode=L"
-        # Busco el listado de la lista de wombat
+        # Busco el listado de la lista de contactos de wombat
         salida = service_wombat.list_config_wombat(url_edit)
         # obtiene el list_id para la campana
         list_id = self.obtener_list_id_wombat(salida, campana)
         if not list_id:
             list_id = 1
-        # crea json de asociacion campana con lista
+        # crea json de asociacion campana con el id de lista de contactos
         service_wombat_config = CampanaListCreator()
         service_wombat_config.create_json(list_id)
         url_edit = "api/edit/campaign/list/?mode=E&parent={0}".format(
             campana.campaign_id_wombat)
-        # asocia lista con campaign en wombat
+        # asocia lista de contactos con campaign en wombat
         salida = service_wombat.update_config_wombat(
             "newcampaign_list.json", url_edit)
 
@@ -279,19 +281,19 @@ class CampanaService():
         service_wombat = WombatService()
         url_edit = "api/edit/campaign/list/?mode=L&parent={0}".format(
             campana.campaign_id_wombat)
-        # obtiene listado de lista de wombat
+        # obtiene listado de lista de contactos de wombat
         salida = service_wombat.list_config_wombat(url_edit)
         results = salida['results']
         cclId = results[0]['cclId']
         cclId = elimina_comillas(cclId)
         if not cclId:
             cclId = 0
-        # crear json para eliminar lista de la campana en wombat
+        # crear json para eliminar lista de contactos de la campana en wombat
         service_wombat_config = CampanaDeleteListCreator()
         service_wombat_config.create_json(cclId)
         url_edit = "api/edit/campaign/list/?mode=D&parent={0}".format(
             campana.campaign_id_wombat)
-        # elimina lista de la campana en wombat
+        # elimina lista de contactos de la campana en wombat
         salida = service_wombat.update_config_wombat(
             "deletecampaign_list.json", url_edit)
 
@@ -321,14 +323,14 @@ class CampanaService():
         url_edit = "api/live/runs/"
         salida = service_wombat.list_config_wombat(url_edit)
         if salida:
-            return self.obtener_datos_campana_run(salida, campana)
+            return self.obtener_datos_campana_json_de_wombat(salida, campana)
         else:
             return None
 
     def cambiar_base(self, campana, telefonos, evitar_duplicados, evitar_sin_telefono,
                      prefijo_discador):
         """
-        Cambiar base de datos de una campana, list en wombat para la campana
+        Cambiar base de datos de una campana, lista de contactos en wombat para la campana
         :param campana: campana a la cual desea cambiar la base de datos
         :param telefonos: listado de columnas con telefonos
         :param evitar_duplicados: si se desea evitar duplicados
@@ -338,7 +340,7 @@ class CampanaService():
         Deuda Tecnica mover a otro servico la creacion del archivo con  la lista
         """
         service_base = SincronizarBaseDatosContactosService()
-        # crea archivo con lista para crear lista en wombat
+        # crea archivo con lista de contactos para crear lista de contactos en wombat
         service_base.crear_lista(campana, telefonos, evitar_duplicados,
                                  evitar_sin_telefono, prefijo_discador)
 
@@ -347,15 +349,14 @@ class CampanaService():
         if resultado:
             campana.remover()
         time.sleep(30)
-        # elimina la lista de la campana en wombat
-        print self.desasociacion_campana_wombat(campana)
-        # crea la lista en wombat
-        print self.crear_lista_wombat(campana)
-        # asocio la lista a la campana en wombat
-        print self.crear_lista_asociacion_campana_wombat(campana)
+        # elimina la lista de contactos de la campana en wombat
+        self.desasociacion_campana_wombat(campana)
+        # crea la lista de contactos en wombat
+        self.crear_lista_contactos_wombat(campana)
+        # asocio la lista de contactos a la campana en wombat
+        self.crear_lista_asociacion_campana_wombat(campana)
         # doy inicio a la campana en wombat
         resultado_2 = self.start_campana_wombat(campana)
-        print resultado_2
         # cambio el estado de la campana activa
         if resultado_2:
             campana.play()

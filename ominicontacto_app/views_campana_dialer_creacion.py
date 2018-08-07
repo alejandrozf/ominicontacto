@@ -158,7 +158,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         campana_service.crear_endpoint_asociacion_campana_wombat(
             campana)
         # crea lista en wombat
-        campana_service.crear_lista_wombat(campana)
+        campana_service.crear_lista_contactos_wombat(campana)
         # asocia lista a campana en wombat
         campana_service.crear_lista_asociacion_campana_wombat(campana)
 

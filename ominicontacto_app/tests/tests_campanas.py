@@ -938,7 +938,7 @@ class CampanasTests(OMLBaseTest):
     @patch.object(CampanaService, 'crear_reschedule_campana_wombat')
     @patch.object(CampanaService, 'crear_endpoint_campana_wombat')
     @patch.object(CampanaService, 'crear_endpoint_asociacion_campana_wombat')
-    @patch.object(CampanaService, 'crear_lista_wombat')
+    @patch.object(CampanaService, 'crear_lista_contactos_wombat')
     @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
     @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
@@ -946,7 +946,7 @@ class CampanasTests(OMLBaseTest):
     def test_usuario_logueado_puede_crear_campana_dialer(
             self, crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
-            crear_lista_wombat, crear_lista_asociacion_campana_wombat,
+            crear_lista_contactos_wombat, crear_lista_asociacion_campana_wombat,
             chequear_campanas_finalizada_eliminarlas, crear_lista,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_dialer_create')
@@ -1184,7 +1184,7 @@ class CampanasTests(OMLBaseTest):
     @patch.object(CampanaService, 'crear_reschedule_campana_wombat')
     @patch.object(CampanaService, 'crear_endpoint_campana_wombat')
     @patch.object(CampanaService, 'crear_endpoint_asociacion_campana_wombat')
-    @patch.object(CampanaService, 'crear_lista_wombat')
+    @patch.object(CampanaService, 'crear_lista_contactos_wombat')
     @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
@@ -1192,7 +1192,7 @@ class CampanasTests(OMLBaseTest):
     def test_usuario_logueado_puede_crear_campana_dialer_desde_template(
             self, crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
-            crear_lista_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
+            crear_lista_contactos_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
             _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas):
         url = reverse('crea_campana_dialer_template', args=[self.campana_dialer.pk, 1])
         nombre_campana = 'campana_dialer_clonada'
@@ -1350,7 +1350,7 @@ class CampanasTests(OMLBaseTest):
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_usuario_logueado_puede_crear_campana_preview_desde_template(
-        self, _generar_y_recargar_configuracion_asterisk):
+            self, _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
         queue = QueueFactory.create(
             campana=campana, pk=campana.nombre)
