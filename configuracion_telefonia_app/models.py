@@ -11,6 +11,8 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
 
+
+R_DECIMAL = r'^\d+$'
 R_ALFANUMERICO = r'^[\w]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
 R_MATCH_PATTERN = r'^[\w|\.|\[|\]|-]+$'
@@ -51,8 +53,10 @@ class PatronDeDiscado(models.Model):
     """Configuración de Patron de Discado para una Ruta Saliente"""
     ruta_saliente = models.ForeignKey(RutaSaliente, related_name='patrones_de_discado',
                                       on_delete=models.CASCADE)
-    prepend = models.PositiveIntegerField(blank=True, null=True)
-    prefix = models.PositiveIntegerField(blank=True, null=True)
+    prepend = models.CharField(
+        max_length=32, blank=True, null=True, validators=[RegexValidator(R_DECIMAL)])
+    prefix = models.CharField(
+        max_length=32, blank=True, null=True, validators=[RegexValidator(R_DECIMAL)])
     match_pattern = models.CharField(max_length=100, validators=[RegexValidator(R_MATCH_PATTERN)])
     orden = models.PositiveIntegerField()
 
