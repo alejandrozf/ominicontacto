@@ -193,8 +193,8 @@ class RutaEntranteForm(forms.ModelForm):
 
 class IVRForm(forms.ModelForm):
 
-    AUDIO_OML = 1
-    AUDIO_EXTERNO = 2
+    AUDIO_OML = '1'
+    AUDIO_EXTERNO = '2'
     AUDIO_TIPO_CHOICES = ((AUDIO_OML, _('Archivo de OML')), (AUDIO_EXTERNO, _('Archivo externo')))
 
     audio_ppal_escoger = forms.ChoiceField(
