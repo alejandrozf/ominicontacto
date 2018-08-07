@@ -4,9 +4,11 @@ from django.utils.timezone import now
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import LlamadaLogFactory
 
-
-NOCONNECT = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER', 'AMD', 'BLACKLIST']
+# LlamadaLog.EVENTOS_NO_CONTACTACION
+NOCONNECT = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER', 'AMD', 'BLACKLIST',
+             'CONGESTION', 'NONDIALPLAN']
 CONNECT = ['COMPLETEAGENT', 'COMPLETECALLER']
+# LlamadaLog.EVENTOS_NO_DIALOGO
 NO_DIALOG = ['EXITWITHTIMEOUT', 'ABANDON']
 FINALIZACIONES = NOCONNECT + CONNECT + NO_DIALOG
 

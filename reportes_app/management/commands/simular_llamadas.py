@@ -24,6 +24,8 @@ class Command(BaseCommand):
         'FAIL',
         'AMD',
         'BLACKLIST',
+        'CONGESTION',
+        'NONDIALPLAN'
     ]
 
     EVENTOS_NO_DIALOG = ['EXITWITHTIMEOUT', 'ABANDON']
