@@ -176,7 +176,7 @@ class TiemposAgente(object):
         """ Calcula el tiempo de llamada teniendo en cuenta los eventos
         de finalizacion de conexion con Cliente"""
 
-        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
+        eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
         agentes_id = [agente.id for agente in agentes]
 
         logs_time = LlamadaLog.objects.obtener_tiempo_llamadas_agente(
@@ -202,7 +202,7 @@ class TiemposAgente(object):
         """ Calcula la cantidad de llamadas procesads teniendo en cuenta los
         eventos de fin de conexión con un Cliente """
 
-        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
+        eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
         agentes_id = [agente.id for agente in agentes]
 
         logs_time = LlamadaLog.objects.obtener_count_evento_agente(
@@ -227,10 +227,9 @@ class TiemposAgente(object):
     def calcular_intentos_fallidos(self, agentes, fecha_inferior, fecha_superior):
         """ Calcula la cantidad de intentos fallido para el tipo de llamada
         Manual NO CONNECT(NOANSWER, CANCEL, BUSY, CHANUNAVAIL, FAIL, OTHER,
-        AMD, BLACKLIST)"""
+        AMD, BLACKLIST, 'CONGESTION', 'NONDIALPLAN')"""
 
-        eventos_llamadas = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL',
-                            'FAIL', 'OTHER', 'AMD', 'BLACKLIST']
+        eventos_llamadas = list(LlamadaLog.EVENTOS_NO_CONTACTACION)
         agentes_id = [agente.id for agente in agentes]
 
         logs_time = LlamadaLog.objects.obtener_count_evento_agente(
@@ -307,7 +306,7 @@ class TiemposAgente(object):
 
     def obtener_count_llamadas_campana(self, agentes, fecha_inferior,
                                        fecha_superior, user):
-        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
+        eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
 
         campanas = Campana.objects.obtener_all_dialplan_asterisk()
         if not user.get_is_administrador():
@@ -342,7 +341,7 @@ class TiemposAgente(object):
         fecha_inferior = datetime_hora_minima_dia(fecha_inferior)
         fecha_superior = datetime_hora_maxima_dia(fecha_superior)
         agentes_id = [agente.id for agente in agentes]
-        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
+        eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
         dict_agentes = LlamadaLog.objects.obtener_count_agente().filter(
             time__range=(fecha_inferior, fecha_superior),
             agente_id__in=agentes_id,
@@ -636,7 +635,7 @@ class TiemposAgente(object):
         """ Calcula el tiempo de llamada teniendo en cuenta los eventos
         COMPLETECALLER y COMPLETEAGENT, por fecha dia a dia para el agente"""
 
-        eventos_llamadas = LlamadaLog.EVENTOS_FIN_CONEXION
+        eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
 
         logs_time = LlamadaLog.objects.obtener_tiempo_llamada_agente(
             eventos_llamadas,
@@ -667,10 +666,9 @@ class TiemposAgente(object):
                                                 fecha_superior, agente_fecha):
         """ Calcula la cantidad de intentos fallido para el tipo de llamada
         Manual NO CONNECT(NOANSWER, CANCEL, BUSY, CHANUNAVAIL, FAIL, OTHER,
-        AMD, BLACKLIST) por fecha dia a dia para el agente"""
+        AMD, BLACKLIST, 'CONGESTION', 'NONDIALPLAN') por fecha dia a dia para el agente"""
 
-        eventos_llamadas = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL',
-                            'FAIL', 'OTHER', 'AMD', 'BLACKLIST']
+        eventos_llamadas = list(LlamadaLog.EVENTOS_NO_CONTACTACION)
 
         logs_time = LlamadaLog.objects.obtener_count_evento_agente_agrupado_fecha(
             eventos_llamadas,

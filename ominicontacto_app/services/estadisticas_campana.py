@@ -118,6 +118,7 @@ class EstadisticasService():
              # se cuentan todos los eventos EXITWITHTIMEOUT
              (_('Expiradas'), 0)]
         )
+        # LlamadaLog.EVENTOS_NO_CONEXION
         eventos_headers = {
             'NOANSWER': _('Cliente no atiende'),
             'CANCEL': _('Cancelado'),
@@ -129,6 +130,8 @@ class EstadisticasService():
             'BLACKLIST': _('Blacklist'),
             'ABANDON': _('Abandonadas por el cliente'),
             'EXITWITHTIMEOUT': _('Expiradas'),
+            'CONGESTION': _('Canal congestionado'),
+            'NONDIALPLAN': _('Problema de enrutamiento'),
         }
         llamadas_no_atendidas_campana = LlamadaLog.objects.filter(
             campana_id=campana.pk, time__range=(fecha_desde, fecha_hasta)).values(
