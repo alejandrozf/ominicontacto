@@ -176,7 +176,7 @@ $(function() {
     defaultCallState();
   });
 
-userAgent.on('disconnected', function(e){
+	userAgent.on('disconnected', function(e){
 		setSipStatus("redcross.png", "  SIP Proxy not responding, contact your administrator", sipStatus);
 });
 
@@ -184,7 +184,14 @@ userAgent.on('disconnected', function(e){
     setSipStatus("redcross.png", "  Registration failed, contact your administrator", sipStatus);
   });
 
-  userAgent.on('newRTCSession', function(e) { // cuando se crea una sesion RTC
+	document.getElementById("logout").onclick = function () {
+		var options = {
+			all: true
+		};
+		userAgent.unregister(options);
+	}
+
+  userAgent.on('newRTCSession', function(e) {       // cuando se crea una sesion RTC
 
     var objLastPause = {};
     objLastPause.LastStatusAgent = $("#UserStatus").html();
