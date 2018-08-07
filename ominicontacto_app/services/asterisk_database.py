@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+from django.conf import settings
 from ominicontacto_app.utiles import elimina_espacios, convert_audio_asterisk_path_astdb
 from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
@@ -127,11 +128,13 @@ class CampanaFamily(AbstractFamily):
         }
 
         if campana.queue_campana.audio_para_contestadores:
-            dict_campana.update({'AMDPLAY': "oml/{0}".format(
+            dict_campana.update({'AMDPLAY': "{0}{1}".format(
+                settings.OML_AUDIO_FOLDER,
                 campana.queue_campana.audio_para_contestadores.get_filename_audio_asterisk())})
 
         if campana.queue_campana.audio_de_ingreso:
-            dict_campana.update({'WELCOMEPLAY': "oml/{0}".format(
+            dict_campana.update({'WELCOMEPLAY': "{0}{1}".format(
+                settings.OML_AUDIO_FOLDER,
                 campana.queue_campana.audio_de_ingreso.get_filename_audio_asterisk())})
 
         if campana.formulario:

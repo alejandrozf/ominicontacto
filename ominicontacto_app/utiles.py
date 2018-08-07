@@ -269,7 +269,7 @@ def convert_audio_asterisk_path_astdb(audio_asterisk):
     """convert audio_asterisk en oml/audio"""
     audio_asterisk = audio_asterisk.name.split("/")
     audio_name = audio_asterisk[1].split(".")
-    audio_asterisk = os.path.join("oml/", audio_name[0])
+    audio_asterisk = os.path.join(settings.OML_AUDIO_FOLDER, audio_name[0])
     return audio_asterisk
 
 

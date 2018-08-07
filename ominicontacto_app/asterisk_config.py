@@ -216,7 +216,7 @@ class QueuesCreator(object):
             audio_name = audio_split[1]
             audio_name = audio_name.split(".")
             periodic_announce = os.path.join(
-                "oml/", audio_name[0])
+                settings.OML_AUDIO_FOLDER, audio_name[0])
         else:
             periodic_announce = ""
         partes = []

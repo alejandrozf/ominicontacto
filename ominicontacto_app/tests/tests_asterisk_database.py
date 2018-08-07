@@ -6,7 +6,7 @@ Tests del metodo 'ominicontacto_app.services.asterisk_database'
 
 from __future__ import unicode_literals
 
-
+from django.conf import settings
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.services.asterisk_database import (
     CampanaFamily, AgenteFamily, RutaSalienteFamily, TrunkFamily, GlobalsFamily
@@ -69,7 +69,8 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['QUEUETIME'], self.campana_entrante.queue_campana.wait)
         self.assertEqual(dict_campana['MAXQCALLS'], self.campana_entrante.queue_campana.maxlen)
         self.assertEqual(dict_campana['SL'], self.campana_entrante.queue_campana.servicelevel)
-        audio = "oml/{0}".format(
+        audio = "{0}{1}".format(
+            settings.OML_AUDIO_FOLDER,
             self.campana_entrante.queue_campana.audio_de_ingreso.get_filename_audio_asterisk())
         self.assertEqual(dict_campana['WELCOMEPLAY'], audio)
         self.assertEqual(dict_campana['TC'], "")
@@ -98,7 +99,8 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['QUEUETIME'], self.campana_dialer.queue_campana.wait)
         self.assertEqual(dict_campana['MAXQCALLS'], self.campana_dialer.queue_campana.maxlen)
         self.assertEqual(dict_campana['SL'], self.campana_dialer.queue_campana.servicelevel)
-        audio = "oml/{0}".format(
+        audio = "{0}{1}".format(
+            settings.OML_AUDIO_FOLDER,
             self.campana_dialer.queue_campana.audio_para_contestadores.
                 get_filename_audio_asterisk())
         self.assertEqual(dict_campana['AMDPLAY'], audio)
