@@ -20,15 +20,6 @@ button:hover {
     background-color: rgba(0,0,0,0.05);
     cursor: pointer;
 }
-hr {
-    margin: 26px 0 26px 0;
-}
-hr.hr-space {
-    border: transparent;
-}
-table hr {
-    margin: 6px 0 6px 0;
-}
 .hidden {
     display: none;
 }
@@ -93,6 +84,24 @@ h4 {
 a.btn .icon {
     color: #6A716A;
     margin-right: 10px;
+}
+
+/* ///// Others
+*/
+
+hr {
+    margin: 26px 0 26px 0;
+}
+hr.hr-space {
+    border: transparent;
+}
+table hr {
+    margin: 6px 0 6px 0;
+}
+span.label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-left: 4px;
 }
 
 /* ///// Tabs
@@ -194,11 +203,6 @@ button.dropdown-toggle {
 .table-striped td, .table-striped th  {
     border-top: none;
 }
-table span.label {
-    font-size: 0.8rem;
-    opacity: 0.8;
-    margin-left: 4px;
-}
 .btn-collapse-table[data-toggle="collapse"] {
     text-align: left;
     position: relative;
@@ -216,9 +220,11 @@ table span.label {
 .btn-collapse-table[aria-expanded="true"]::before {
     content: '\e907';
 }
-
 table .collapse {
     opacity: 0.7;
+}
+table .icon {
+    margin-right: 6px;
 }
 /* ///// Tables small
 */
@@ -672,11 +678,61 @@ table.campana-reglas .td-remove .btn {
     margin: 0;
 }
 
+/*///// Badges
+*/
+
+.badge {
+    padding: 4px 6px;
+    font-size: 0.8rem;
+    font-weight: normal;
+    color: #ffffff;
+}
+.badge-outline {
+    background: transparent;
+    border: 1px solid;
+}
+
 /*///// Supervision
 */
+#supervisionTabContent .table-title {
+    position: relative;
+}
+#supervisionTabContent nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.badge.agent-dialing {
+    background: #24B3BC;
+}
+.badge.agent-oncall {
+    background: #B665C4;
+}
+.badge.agent-ready {
+    background: #49AE60;
+}
+.badge.agent-pause {
+    background: #E59800;
+}
+.badge.agent-offline {
+    background: #9A9A9A;
+}
+.badge-outline.line-connected {
+    border-color: #67AF00;
+    color: #67AF00;
+}
+.badge-outline.line-calling {
+    border-color: #B565C4;
+    color: #B565C4;
+}
+.badge-outline.line-shortcall {
+    border-color: #24B3BC;
+    color: #24B3BC;
+}
 
 /* ///// Tabs
 */
+
 .icon.report {
     font-size: 0.8rem;
     margin: 0 4px 0 8px;
