@@ -130,9 +130,11 @@ span.label {
 }
 .display-3 {
     font-size: 2rem;
+    margin-bottom: 0;
 }
 .display-4 {
     font-size: 1.8rem;
+    margin-bottom: 0;
 }
 
 /* ///// Navigation steps
@@ -661,7 +663,7 @@ input[type=file].form-control {
     margin-bottom: 14px;
 }
 .wrapper-info .nav-tabs {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 /* ///// Campaign list
@@ -694,13 +696,12 @@ table.campana-reglas .td-remove .btn {
 
 /*///// Supervision
 */
-#supervisionTabContent .table-title {
-    position: relative;
+
+#tableAgBody h3 {
+    margin-bottom: 0;
 }
-#supervisionTabContent nav {
-    position: absolute;
-    top: 0;
-    right: 0;
+#tableAgBody td:nth-child(2), #tableAgBody td:nth-child(3) {
+    vertical-align: bottom;
 }
 .badge.agent-dialing {
     background: #24B3BC;

@@ -94,34 +94,15 @@
 
     <div class="tab-pane fade show active" id="stateContent" role="tabpanel" aria-labelledby="stateTab">
         <div class="row">
-            <div class="col-md-7"><!-- CUADRO AGENTES -->
-                <div class="table-title">
-                    <h2>Agentes</h2>
-                    <nav aria-label="Page navigation example">
-                      <ul class="pagination pagination-sm">
-                        <li class="page-item">
-                          <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                          </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                          <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </nav>
-                </div>
+            <div class="col-md-6"><!-- CUADRO AGENTES -->
+                <h2>Agentes</h2>
               <table id="tableAgt" class="table table-sm">
                   <tbody id="tableAgBody">
                     <tr>
-                      <td>felipem</td>
-                      <td><span class="badge agent-dialing">Llamando</span></td>
+                      <td>
+                          <h3>felipem</h3>
+                          <span class="badge agent-dialing">Llamando</span>
+                      </td>
                       <td><span class="icon far fa-clock"></span>23:28:33</td>
                       <td>
                           <div class="dropdown">
@@ -155,8 +136,10 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>Pepe</td>
-                      <td><span class="badge agent-pause">Pausa: sanitario</span></td>
+                      <td>
+                          <h3>Pepe</h3>
+                          <span class="badge agent-pause">Pausa: sanitario</span>
+                      </td>
                       <td><span class="icon far fa-clock"></span>23:28:33</td>
                       <td>
                           <div class="dropdown">
@@ -190,8 +173,10 @@
                       </td>
                     </tr>
                     <tr role="row" class="odd">
-                      <td>AgenteTest</td>
-                      <td><span class="badge agent-offline">Offline</span></td>
+                      <td>
+                          <h3>AgenteTest</h3>
+                          <span class="badge agent-offline">Offline</span>
+                      </td>
                       <td><span class="icon far fa-clock"></span>23:28:33</td>
                       <td>
                           <div class="dropdown">
@@ -225,8 +210,10 @@
                       </td>
                     </tr>
                     <tr role="row" class="odd">
-                      <td>Fulano</td>
-                      <td><span class="badge agent-ready">Ready</span></td>
+                      <td>
+                          <h3>Fulano</h3>
+                          <span class="badge agent-ready">Ready</span>
+                      </td>
                       <td><span class="icon far fa-clock"></span>23:28:33</td>
                       <td>
                           <div class="dropdown">
@@ -260,8 +247,10 @@
                       </td>
                     </tr>
                     <tr role="row" class="odd">
-                      <td>ABCDEG</td>
-                      <td><span class="badge agent-oncall">On call</span></td>
+                      <td>
+                      <h3>ABCDEG</h3>
+                      <span class="badge agent-oncall">On call</span>
+                      </td>
                       <td><span class="icon far fa-clock"></span>23:28:33</td>
                       <td>
                           <div class="dropdown">
@@ -296,31 +285,29 @@
                     </tr>
                   </tbody>
               </table>
+              <nav aria-label="Page navigation example">
+                <ul class="pagination pagination-sm">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </div>
 
-          <div class="col-md-5"><!-- CUADRO CANALES -->
-              <div class="table-title">
-                  <h2>Estado de lineas</h2>
-                  <nav aria-label="Page navigation example">
-                    <ul class="pagination pagination-sm">
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                          <span aria-hidden="true">&laquo;</span>
-                          <span class="sr-only">Previous</span>
-                        </a>
-                      </li>
-                      <li class="page-item"><a class="page-link" href="#">1</a></li>
-                      <li class="page-item"><a class="page-link" href="#">2</a></li>
-                      <li class="page-item"><a class="page-link" href="#">3</a></li>
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                          <span aria-hidden="true">&raquo;</span>
-                          <span class="sr-only">Next</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </nav>
-              </div>
+          <div class="col-md-3"><!-- CUADRO CANALES -->
+            <h2>Estado de lineas</h2>
             <table id="" class="table table-sm">
                 <tbody id="tableChannelsWombat">
                   <tr>
@@ -340,28 +327,28 @@
                   </tr>
                 </tbody>
             </table>
-            <div class="table-title">
-                <h2>Llamadas en espera</h2>
-                <nav aria-label="Page navigation example">
-                  <ul class="pagination pagination-sm">
-                    <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
-                      </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-            </div>
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-sm">
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+        </div>
+        <div class="col-md-3">
+            <h2>Llamadas en espera</h2>
             <table class="table table-sm">
                 <tbody id="tableQueuedCalls">
                     <tr>
@@ -381,6 +368,25 @@
                     </tr>
                 </tbody>
             </table>
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-sm">
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
       </div>
   </div>
@@ -388,43 +394,9 @@
 
   <div class="tab-pane fade" id="callsContent" role="tabpanel" aria-labelledby="callsTab">
 
-      <div class="jumbotron">
-          <div class="row">
-              <div class="col-sm-3">
-                  <h1 class="display-2">12<span id="objcampana"></span> <span id="gestioncampana"></span></h1>
-                  <h3>Avance de objetivo</h3>
-              </div>
-              <div class="col-sm-3">
-                  <h1 class="display-2">12%<span id="percent"></span></h1>
-                  <h3>Porcentaje de objetivo</h3>
-              </div>
-          </div>
-      </div>
-
       <div class="row">
-          <div class="col-md-7"><!-- CUADRO RESUMEN CAMPANA -->
-              <div class="table-title">
-                  <h2>Resumen y calificaciones</h2>
-                  <nav aria-label="Page navigation example">
-                    <ul class="pagination pagination-sm">
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                          <span aria-hidden="true">&laquo;</span>
-                          <span class="sr-only">Previous</span>
-                        </a>
-                      </li>
-                      <li class="page-item"><a class="page-link" href="#">1</a></li>
-                      <li class="page-item"><a class="page-link" href="#">2</a></li>
-                      <li class="page-item"><a class="page-link" href="#">3</a></li>
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                          <span aria-hidden="true">&raquo;</span>
-                          <span class="sr-only">Next</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </nav>
-              </div>
+          <div class="col-md-6"><!-- CUADRO RESUMEN CAMPANA -->
+            <h2>Resumen y calificaciones</h2>
             <table id="tableCampSummary" class="table table-sm">
                 <tbody id="bodySummary">
                   <tr>
@@ -444,8 +416,38 @@
                   </tr>
                 </tbody>
             </table>
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-sm">
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
-          <div class="col-md-5">
+          <div class="col-md-6">
+              <div class="row">
+                  <div class="col-sm-6">
+                      <h1 class="display-3">12<span id="objcampana"></span> <span id="gestioncampana"></span></h1>
+                      <span class="label">Avance de objetivo</span>
+                  </div>
+                  <div class="col-sm-6">
+                      <h1 class="display-3">12%<span id="percent"></span></h1>
+                      <span class="label">Porcentaje de objetivo</span>
+                  </div>
+              </div>
+              <hr>
               <h2>Llamadas</h2>
               <div class="">
                   0<span class="label">Recibidas</span>,
