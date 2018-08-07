@@ -313,8 +313,11 @@ class IVRForm(forms.ModelForm):
 
     def _asignar_audio_externo(self, escoger_audio, audio_externo, tipo_audio):
         if escoger_audio == str(self.AUDIO_EXTERNO):
+            # Primero saco la extension .wav
+            descripcion = ''.join(audio_externo.name.rsplit('.wav', 1))
+            descripcion = ArchivoDeAudio.calcular_descripcion(descripcion)
             kwargs = {
-                'descripcion': audio_externo.name,
+                'descripcion': descripcion,
                 'audio_original': audio_externo
             }
             archivo_de_audio = ArchivoDeAudio.crear_archivo(**kwargs)
