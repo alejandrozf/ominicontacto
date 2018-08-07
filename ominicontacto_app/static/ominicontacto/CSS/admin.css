@@ -696,6 +696,41 @@ table.campana-reglas .td-remove .btn {
 
 /*///// Supervision
 */
+#supervisionTabContent .table-title {
+    position: relative;
+}
+#supervisionTabContent nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.badge.agent-dialing {
+    background: #24B3BC;
+}
+.badge.agent-oncall {
+    background: #B665C4;
+}
+.badge.agent-ready {
+    background: #49AE60;
+}
+.badge.agent-pause {
+    background: #E59800;
+}
+.badge.agent-offline {
+    background: #9A9A9A;
+}
+.badge-outline.line-connected {
+    border-color: #67AF00;
+    color: #67AF00;
+}
+.badge-outline.line-calling {
+    border-color: #B565C4;
+    color: #B565C4;
+}
+.badge-outline.line-shortcall {
+    border-color: #24B3BC;
+    color: #24B3BC;
+}
 
 #tableAgBody h3 {
     margin-bottom: 0;
