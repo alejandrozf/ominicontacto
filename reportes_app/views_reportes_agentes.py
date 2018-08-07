@@ -87,6 +87,7 @@ def reporte_por_fecha_modal_agente_view(request):
             t = loader.get_template('tbody_fechas_agentes.html')
             html = t.render(ctx)
             data = {
+                'nombre_agente': agente.user.get_full_name(),
                 'tbody': html,
                 'error': error
             }
@@ -108,6 +109,7 @@ def reporte_por_fecha_pausa_modal_agente_view(request):
             fecha_hasta = convert_fecha_datetime(fecha_hasta)
             pausa_id = int(request.POST['pausa_id'])
             tiempos_agentes = TiemposAgente()
+            pausa = tiempos_agentes._obtener_datos_de_pausa(pausa_id)
             agente = AgenteProfile.objects.get(pk=int(id_agente))
             agentes = tiempos_agentes.calcular_tiempo_pausa_tipo_fecha(
                 agente, fecha_desde, fecha_hasta, pausa_id)
@@ -115,7 +117,9 @@ def reporte_por_fecha_pausa_modal_agente_view(request):
             t = loader.get_template('tbody_pausa_fechas_agentes.html')
             html = t.render(ctx)
             data = {
+                'nombre_agente': agente.user.get_full_name(),
                 'tbody': html,
+                'pausa': pausa['nombre']
                   }
             return JsonResponse(data, safe=True)
 
