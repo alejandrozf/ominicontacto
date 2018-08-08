@@ -14,5 +14,5 @@ $("#id_id_cliente").attr("class", "form-control");
 $("#id_tel_cliente").attr("class", "form-control");
 $("#id_tipo_llamada").attr("class", "form-control");
 $("#id_campana").attr("class", "form-control");
-$("#id_sip_agente").attr("class", "form-control");
+$("#id_agente").attr("class", "form-control");
 });

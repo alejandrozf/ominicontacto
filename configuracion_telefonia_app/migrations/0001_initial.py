@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
                                 django.core.validators.MaxValueValidator(99)])),
                 ('invalid_retries', models.PositiveIntegerField()),
                 ('audio_principal', models.ForeignKey(
-                    blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                    on_delete=django.db.models.deletion.PROTECT,
                     related_name='audio_principal_ivrs', to='ominicontacto_app.ArchivoDeAudio')),
                 ('invalid_audio', models.ForeignKey(
                     blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
@@ -92,8 +92,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(
                     auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('prepend', models.PositiveIntegerField(blank=True, null=True)),
-                ('prefix', models.PositiveIntegerField(blank=True, null=True)),
+                ('prepend', models.CharField(
+                    blank=True, max_length=32, null=True,
+                    validators=[django.core.validators.RegexValidator('^\\d+$')])),
+                ('prefix', models.CharField(
+                    blank=True, max_length=32, null=True,
+                    validators=[django.core.validators.RegexValidator('^\\d+$')])),
                 ('match_pattern', models.CharField(
                     max_length=100,
                     validators=[django.core.validators.RegexValidator('^[\\w|\\.|\\[|\\]|-]+$')])),
@@ -186,22 +190,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='patrondediscado',
             name='ruta_saliente',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='patrones_de_discado', to='configuracion_telefonia_app.RutaSaliente'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='patrones_de_discado',
+                to='configuracion_telefonia_app.RutaSaliente'),
         ),
         migrations.AddField(
             model_name='ordentroncal',
             name='ruta_saliente',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='secuencia_troncales', to='configuracion_telefonia_app.RutaSaliente'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='secuencia_troncales',
+                to='configuracion_telefonia_app.RutaSaliente'),
         ),
         migrations.AddField(
             model_name='ordentroncal',
             name='troncal',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='ordenes_en_rutas_salientes', to='configuracion_telefonia_app.TroncalSIP'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='ordenes_en_rutas_salientes',
+                to='configuracion_telefonia_app.TroncalSIP'),
         ),
         migrations.AddField(
             model_name='destinoentrante',
             name='destinos',
-            field=models.ManyToManyField(through='configuracion_telefonia_app.OpcionDestino', to='configuracion_telefonia_app.DestinoEntrante'),
+            field=models.ManyToManyField(
+                through='configuracion_telefonia_app.OpcionDestino',
+                to='configuracion_telefonia_app.DestinoEntrante'),
         ),
         migrations.AlterUniqueTogether(
             name='patrondediscado',

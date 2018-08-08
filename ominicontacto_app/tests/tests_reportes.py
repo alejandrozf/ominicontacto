@@ -58,6 +58,8 @@ class TriggerQueuelogTest(OMLBaseTest):
             'AMD',
             'BLACKLIST',
             'RINGNOANSWER',
+            'CONGESTION',
+            'NONDIALPLAN',
         ]
         evento = choice(EVENTOS_LLAMADAS)
         self._aplicar_sql_query(queuename, event=evento)
@@ -106,6 +108,9 @@ class TriggerQueuelogTest(OMLBaseTest):
         self.assertFalse(LlamadaLog.objects.all().exists())
         self.assertFalse(ActividadAgenteLog.objects.all().exists())
 
+    @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
+            settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
+            'Sin migraciones no existe la tabla ´queue_log´')
     def test_eventos_llamadas_tranferencias_se_insertan_en_logs_llamadas_actividades(self):
         # TODO: este test documenta la posibilidad de inserción de nuevos eventos de llamadas
         # pero se debería realizar un testing más profundo del manejo que se hace sobre estos

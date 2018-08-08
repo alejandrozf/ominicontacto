@@ -30,11 +30,10 @@ class BaseGrabacionesTests(OMLBaseTest):
 
         self.user_agente = self.crear_user_agente()
         self.agente_profile = self.crear_agente_profile(self.user_agente)
-        sip_extension = self.agente_profile.sip_extension
 
-        self.grabacion1 = GrabacionFactory.create(duracion=0, sip_agente=sip_extension)
-        self.grabacion2 = GrabacionFactory.create(duracion=0, sip_agente=sip_extension)
-        self.grabacion3 = GrabacionFactory.create(duracion=0, sip_agente=sip_extension)
+        self.grabacion1 = GrabacionFactory.create(duracion=0, agente=self.agente_profile)
+        self.grabacion2 = GrabacionFactory.create(duracion=0, agente=self.agente_profile)
+        self.grabacion3 = GrabacionFactory.create(duracion=0, agente=self.agente_profile)
         self.marca_campana1 = GrabacionMarcaFactory.create(uid=self.grabacion1.uid)
         self.marca_campana2 = GrabacionMarcaFactory.create(uid=self.grabacion2.uid)
 
@@ -101,7 +100,7 @@ class FiltrosGrabacionesTests(BaseGrabacionesTests):
         Grabacion.objects.filter(id=self.grabacion1.id).update(duracion=15, tel_cliente='41111111')
         Grabacion.objects.filter(id=self.grabacion3.id).update(duracion=12, tel_cliente='43333333')
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'sip_agente': '',
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
                      'campana': '', 'marcadas': '', 'duracion': '0'}
 
         post_data['duracion'] = 12
@@ -137,7 +136,7 @@ class FiltrosGrabacionesTests(BaseGrabacionesTests):
         Grabacion.objects.filter(id=self.grabacion1.id).update(fecha=hoy, tel_cliente='41111111')
         Grabacion.objects.filter(id=self.grabacion3.id).update(fecha=hoy, tel_cliente='43333333')
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'sip_agente': '',
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
                      'campana': '', 'marcadas': '', 'duracion': '0'}
 
         rango_hace_mucho = hace_mucho.date().strftime('%d/%m/%Y') + ' - ' + \

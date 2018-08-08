@@ -28,6 +28,7 @@ from django.db.models import Max, Q, Count, Sum
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from django.core.management import call_command
+from django.core.validators import RegexValidator
 from django.utils.translation import ugettext as _
 from django.utils.timezone import now
 from simple_history.models import HistoricalRecords
@@ -38,6 +39,8 @@ from ominicontacto_app.utiles import (
 logger = logging.getLogger(__name__)
 
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
+R_ALFANUMERICO = r'^[\w]+$'
+SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 
 
 class User(AbstractUser):
@@ -156,15 +159,6 @@ class Grupo(models.Model):
 
 
 class AgenteProfileManager(models.Manager):
-
-    def obtener_agente_por_sip(self, sip_agente):
-
-        try:
-            return self.get(sip_extension=sip_agente)
-        except AgenteProfile.DoesNotExist:
-            logger.exception("Excepcion detectada al obtener_agente_por_sip "
-                             "con el sip {0} no existe ".format(sip_agente))
-            return None
 
     def obtener_activos(self):
         return self.filter(is_inactive=False, borrado=False, user__borrado=False)
@@ -406,7 +400,7 @@ class ArchivoDeAudio(models.Model):
     objects = ArchivoDeAudioManager()
 
     descripcion = models.CharField(
-        max_length=100, unique=True,
+        max_length=100, unique=True, validators=[RegexValidator(R_ALFANUMERICO)]
     )
     audio_original = models.FileField(
         upload_to=upload_to_audio_original,
@@ -449,6 +443,24 @@ class ArchivoDeAudio(models.Model):
     @classmethod
     def crear_archivo(cls, descripcion, audio_original):
         return cls.objects.create(descripcion=descripcion, audio_original=audio_original)
+
+    @classmethod
+    def calcular_descripcion(cls, descripcion):
+        """
+        Devuelve una descripcion válida y sin repetir. En caso de que ya exista agrega
+        un sufijo.
+        """
+        descripcion = SUBSITUTE_ALFANUMERICO.sub('', descripcion)
+        if cls.objects.filter(descripcion=descripcion).count() > 0:
+            ultimo = 0
+            copias = cls.objects.filter(descripcion__startswith=descripcion + '_')
+            for archivo in copias:
+                sufijo = archivo.descripcion.replace(descripcion + '_', '', 1)
+                if sufijo.isdigit():
+                    ultimo = max(ultimo, int(sufijo))
+            descripcion = descripcion + '_' + str(ultimo + 1)
+
+        return descripcion
 
 
 class CampanaManager(models.Manager):
@@ -2154,15 +2166,8 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con esa "
                                        "tel de cliente"))
 
-    def grabacion_by_sip_agente(self, sip_agente):
-        try:
-            return self.filter(sip_agente__contains=sip_agente)
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "sip agente"))
-
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, sip_agente, campana, campanas, marcadas, duracion):
+                            tel_cliente, agente, campana, campanas, marcadas, duracion):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -2174,8 +2179,8 @@ class GrabacionManager(models.Manager):
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
         if tel_cliente:
             grabaciones = grabaciones.filter(tel_cliente__contains=tel_cliente)
-        if sip_agente:
-            grabaciones = grabaciones.filter(sip_agente=sip_agente)
+        if agente:
+            grabaciones = grabaciones.filter(agente=agente)
         if campana:
             grabaciones = grabaciones.filter(campana=campana)
         if duracion and duracion > 0:
@@ -2195,8 +2200,8 @@ class GrabacionManager(models.Manager):
 
     def obtener_count_agente(self):
         try:
-            return self.values('sip_agente').annotate(
-                cantidad=Count('sip_agente')).order_by('sip_agente')
+            return self.values('agente_id').annotate(
+                cantidad=Count('agente_id')).order_by('agente_id')
         except Grabacion.DoesNotExist:
             raise (SuspiciousOperation("No se encontro grabaciones "))
 
@@ -2234,20 +2239,14 @@ class Grabacion(models.Model):
     id_cliente = models.CharField(max_length=255)
     tel_cliente = models.CharField(max_length=255)
     grabacion = models.CharField(max_length=255)
-    sip_agente = models.IntegerField()
+    agente = models.ForeignKey(AgenteProfile, related_name='grabaciones')
     campana = models.ForeignKey(Campana, related_name='grabaciones')
     uid = models.CharField(max_length=45, blank=True, null=True)
     duracion = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return "grabacion del agente con el sip {0} con el cliente {1}".format(
-            self.sip_agente, self.id_cliente)
-
-    def obtener_nombre_agente(self):
-        agente = AgenteProfile.objects.obtener_agente_por_sip(self.sip_agente)
-        if agente:
-            return agente.user.get_full_name()
-        return self.sip_agente
+        return "grabacion del agente {0} con el cliente {1}".format(
+            self.agente.user.get_full_name(), self.id_cliente)
 
     @property
     def url(self):

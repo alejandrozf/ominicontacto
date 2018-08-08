@@ -216,7 +216,7 @@ class QueuesCreator(object):
             audio_name = audio_split[1]
             audio_name = audio_name.split(".")
             periodic_announce = os.path.join(
-                "oml/", audio_name[0])
+                settings.OML_AUDIO_FOLDER, audio_name[0])
         else:
             periodic_announce = ""
         partes = []
@@ -548,7 +548,7 @@ class RutasSalientesConfigCreator(object):
 
         # Agrega parametros
         rutas_file.append("exten => i,1,Verbose(2, no existe patron)\n")
-        rutas_file.append("same => n,Set(__DIALSTATUS=NONDIALPLANMATCH)\n")
+        rutas_file.append("same => n,Set(__DIALSTATUS=NONDIALPLAN)\n")
         rutas_file.append("same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${OMLOUTNUM})\n")
 
         # agrego las rutas con los patrones de discado
@@ -621,7 +621,8 @@ class SipTrunksConfigCreator(object):
 
         for trunk in trunks:
             logger.info("Creando config troncal sip %s", trunk.id)
-            trunk_file.append("\n{0}\n".format(trunk.text_config.replace("\r", "")))
+            trunk_file.append("\n[{0}]\n{1}\n".format(
+                trunk.nombre, trunk.text_config.replace("\r", "")))
         self._sip_trunks_config_file.write(trunk_file)
 
 
@@ -659,7 +660,7 @@ class SipRegistrationsConfigCreator(object):
 
         for trunk in trunks:
             logger.info("Creando config troncal sip %s", trunk.id)
-            trunk_file.append("{0}\n".format(trunk.register_string))
+            trunk_file.append("register=>{0}\n".format(trunk.register_string))
 
         self._sip_registrations_config_file.write(trunk_file)
 
