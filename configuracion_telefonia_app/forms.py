@@ -193,13 +193,16 @@ class RutaEntranteForm(forms.ModelForm):
 
 class IVRForm(forms.ModelForm):
 
-    AUDIO_OML = 1
-    AUDIO_EXTERNO = 2
+    AUDIO_OML = '1'
+    AUDIO_EXTERNO = '2'
     AUDIO_TIPO_CHOICES = ((AUDIO_OML, _('Archivo de OML')), (AUDIO_EXTERNO, _('Archivo externo')))
 
     audio_ppal_escoger = forms.ChoiceField(
         choices=AUDIO_TIPO_CHOICES, widget=forms.RadioSelect(
             attrs={'class': 'form-control escogerAudioPpal'}))
+    audio_principal = forms.ModelChoiceField(
+        required=False, queryset=ArchivoDeAudio.objects.filter(borrado=False),
+        widget=forms.Select(attrs={'class': 'form-control'}))
     audio_ppal_ext_audio = forms.FileField(required=False)
     time_out_destination = forms.ModelChoiceField(
         queryset=DestinoEntrante.objects.all(), label=_('Destino time out:'), widget=forms.Select(
@@ -224,12 +227,18 @@ class IVRForm(forms.ModelForm):
 
     class Meta:
         model = IVR
+        fields = (
+            'nombre', 'descripcion', 'time_out', 'time_out_retries', 'invalid_retries',
+            'audio_ppal_escoger', 'audio_principal', 'audio_ppal_ext_audio',
+            'time_out_destination', 'time_out_destination_type', 'time_out_audio_escoger',
+            'time_out_ext_audio', 'time_out_audio', 'invalid_destination',
+            'invalid_destination_type', 'invalid_destination_audio_escoger',
+            'invalid_destination_ext_audio', 'invalid_audio')
         exclude = ()
 
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
-            'audio_principal': forms.Select(attrs={'class': 'form-control'}),
             'time_out': forms.NumberInput(attrs={'class': 'form-control'}),
             'time_out_retries': forms.NumberInput(attrs={'class': 'form-control'}),
             'time_out_audio': forms.Select(attrs={'class': 'form-control'}),
@@ -284,17 +293,31 @@ class IVRForm(forms.ModelForm):
         if instance.pk is not None:
             self._inicializar_ivr_a_modificar(self, *args, **kwargs)
 
-    def _validar_escoger_audio(self, valor_escoger_audio, valor_audio_oml, valor_audio_externo):
+    def _validar_escoger_audio(self, valor_escoger_audio, valor_audio_oml, valor_audio_externo,
+                               obligatorio=False):
         # valida que el audio escogido concuerde con el valor del selector del tipo de audio
         valor_escoger_audio = int(valor_escoger_audio)
         if valor_escoger_audio == self.AUDIO_EXTERNO and valor_audio_externo is None:
             raise forms.ValidationError(
                 _('Debe escoger un audio como archivo externo'), code='invalid')
+        if obligatorio and valor_escoger_audio == self.AUDIO_OML and valor_audio_oml is None:
+            raise forms.ValidationError(
+                _('Debe escoger un archivo de OML'), code='invalid')
+
+    def clean_audio_principal(self):
+        audio_ppal_escoger = self.cleaned_data['audio_ppal_escoger']
+        if audio_ppal_escoger == self.AUDIO_OML:
+            audio_principal = self.cleaned_data.get('audio_principal', None)
+            if audio_principal is None:
+                raise forms.ValidationError(
+                    _('Debe escoger un archivo de OML'))
+            return audio_principal
+        return None
 
     def clean(self):
         cleaned_data = super(IVRForm, self).clean()
         audio_ppal_escoger = cleaned_data['audio_ppal_escoger']
-        audio_principal = cleaned_data['audio_principal']
+        audio_principal = cleaned_data.get('audio_principal', None)
         audio_ppal_ext_audio = cleaned_data['audio_ppal_ext_audio']
         time_out_audio_escoger = cleaned_data['time_out_audio_escoger']
         time_out_audio = cleaned_data['time_out_audio']
@@ -302,7 +325,8 @@ class IVRForm(forms.ModelForm):
         invalid_destination_audio_escoger = cleaned_data['invalid_destination_audio_escoger']
         invalid_audio = cleaned_data['invalid_audio']
         invalid_destination_ext_audio = cleaned_data['invalid_destination_ext_audio']
-        self._validar_escoger_audio(audio_ppal_escoger, audio_principal, audio_ppal_ext_audio)
+        self._validar_escoger_audio(audio_ppal_escoger, audio_principal, audio_ppal_ext_audio,
+                                    obligatorio=True)
         self._validar_escoger_audio(time_out_audio_escoger, time_out_audio, time_out_ext_audio)
         self._validar_escoger_audio(
             invalid_destination_audio_escoger, invalid_audio, invalid_destination_ext_audio)
@@ -312,9 +336,13 @@ class IVRForm(forms.ModelForm):
         return cleaned_data
 
     def _asignar_audio_externo(self, escoger_audio, audio_externo, tipo_audio):
+        """ En caso que se haya elegido audio externo, lo asigna al IVR """
         if escoger_audio == str(self.AUDIO_EXTERNO):
+            # Primero saco la extension .wav
+            descripcion = ''.join(audio_externo.name.rsplit('.wav', 1))
+            descripcion = ArchivoDeAudio.calcular_descripcion(descripcion)
             kwargs = {
-                'descripcion': audio_externo.name,
+                'descripcion': descripcion,
                 'audio_original': audio_externo
             }
             archivo_de_audio = ArchivoDeAudio.crear_archivo(**kwargs)

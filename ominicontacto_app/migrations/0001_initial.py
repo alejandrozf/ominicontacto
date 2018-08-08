@@ -118,7 +118,7 @@ class Migration(migrations.Migration):
             name='ArchivoDeAudio',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('descripcion', models.CharField(max_length=100, unique=True)),
+                ('descripcion', models.CharField(max_length=100, unique=True, validators=[django.core.validators.RegexValidator('^[\\w]+$')])),
                 ('audio_original', models.FileField(blank=True, null=True, upload_to=ominicontacto_app.models.upload_to_audio_original)),
                 ('audio_asterisk', models.FileField(blank=True, null=True, upload_to=ominicontacto_app.models.upload_to_audio_asterisk)),
                 ('borrado', models.BooleanField(default=False, editable=False)),
@@ -261,7 +261,7 @@ class Migration(migrations.Migration):
                 ('id_cliente', models.CharField(max_length=255)),
                 ('tel_cliente', models.CharField(max_length=255)),
                 ('grabacion', models.CharField(max_length=255)),
-                ('sip_agente', models.IntegerField()),
+                ('agente', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='grabaciones', to='ominicontacto_app.AgenteProfile')),
                 ('uid', models.CharField(blank=True, max_length=45, null=True)),
                 ('duracion', models.IntegerField(default=0)),
                 ('campana', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='grabaciones', to='ominicontacto_app.Campana')),

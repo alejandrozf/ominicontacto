@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from django.utils.translation import ugettext as _
 
+from io import BytesIO
 from mock import patch
 
 from django.core.urlresolvers import reverse
@@ -380,18 +382,24 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_ivr()
         post_data['audio_ppal_escoger'] = IVRForm.AUDIO_EXTERNO
-        post_data['audio_ppal_ext_audio'] = ''
+        img = BytesIO(b'mybinarydata')
+        img.name = 'myimage.jpg'
+        post_data['audio_ppal_ext_audio'] = img
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
+        self.assertContains(response, _('Archivos permitidos: .wav'))
 
     def test_form_ivr_escoger_audio_time_out_externo_no_coincide_tipo_audio_es_invalido(self):
         url = reverse('crear_ivr')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_ivr()
         post_data['time_out_audio_escoger'] = IVRForm.AUDIO_EXTERNO
-        post_data['time_out_ext_audio'] = ''
+        img = BytesIO(b'mybinarydata')
+        img.name = 'myimage.jpg'
+        post_data['time_out_ext_audio'] = img
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
+        self.assertContains(response, _('Archivos permitidos: .wav'))
 
     def test_form_ivr_escoger_audio_destino_invalido_externo_no_coincide_tipo_audio_es_invalido(
             self):
@@ -399,6 +407,9 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_ivr()
         post_data['invalid_destination_audio_escoger'] = IVRForm.AUDIO_EXTERNO
-        post_data['invalid_destination_ext_audio'] = ''
+        img = BytesIO(b'mybinarydata')
+        img.name = 'myimage.jpg'
+        post_data['invalid_destination_ext_audio'] = img
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
+        self.assertContains(response, _('Archivos permitidos: .wav'))

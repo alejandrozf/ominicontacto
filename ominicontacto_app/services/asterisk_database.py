@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from ominicontacto_app.utiles import elimina_espacios
+from ominicontacto_app.utiles import elimina_espacios, convert_audio_asterisk_path_astdb
 from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
@@ -128,11 +128,13 @@ class CampanaFamily(AbstractFamily):
         }
 
         if campana.queue_campana.audio_para_contestadores:
-            dict_campana.update({'AMDPLAY': "oml/{0}".format(
+            dict_campana.update({'AMDPLAY': "{0}{1}".format(
+                settings.OML_AUDIO_FOLDER,
                 campana.queue_campana.audio_para_contestadores.get_filename_audio_asterisk())})
 
         if campana.queue_campana.audio_de_ingreso:
-            dict_campana.update({'WELCOMEPLAY': "oml/{0}".format(
+            dict_campana.update({'WELCOMEPLAY': "{0}{1}".format(
+                settings.OML_AUDIO_FOLDER,
                 campana.queue_campana.audio_de_ingreso.get_filename_audio_asterisk())})
 
         if campana.formulario:
@@ -352,7 +354,7 @@ class GlobalsFamily(AbstractFamily):
             'DEFAULTRINGTIME': 45,
             'LANG': 'es',
             'OBJ/1': 'sub-oml-in-check-set,s,1',
-            'OBJ/2': 'sub-oml-module-tc,s,1',
+            'OBJ/2': 'sub-oml-module-time-conditions,s,1',
             'OBJ/3': 'sub-oml-module-ivr,s,1',
             'OBJ/4': 'sub-oml-module-ext,s,1',
             'OBJ/5': 'sub-oml-hangup,s,1',
@@ -389,12 +391,16 @@ class IVRFamily(AbstractFamily):
 
     def _create_dict(self, ivr):
         destinos_siguientes = self._obtener_destinos_siguientes(ivr)
-        ivr_audio = "{0}{1}".format(
-            settings.OML_AUDIO_PATH_ASTERISK, ivr.audio_principal.audio_asterisk)
-        timeout_audio = "{0}{1}".format(
-            settings.OML_AUDIO_PATH_ASTERISK, ivr.time_out_audio.audio_asterisk)
-        invalid_audio = "{0}{1}".format(
-            settings.OML_AUDIO_PATH_ASTERISK, ivr.invalid_audio.audio_asterisk)
+        ivr_audio = convert_audio_asterisk_path_astdb(ivr.audio_principal.audio_asterisk)
+
+        timeout_audio = 'NONE'
+        if ivr.time_out_audio:
+            timeout_audio = convert_audio_asterisk_path_astdb(ivr.time_out_audio.audio_asterisk)
+
+        invalid_audio = 'NONE'
+        if ivr.invalid_audio:
+            invalid_audio = convert_audio_asterisk_path_astdb(ivr.invalid_audio.audio_asterisk)
+
         dict_ivr = {
             'NAME': ivr.nombre,
             'AUDIO': ivr_audio,
@@ -403,7 +409,7 @@ class IVRFamily(AbstractFamily):
             'TIMEOUT/AUDIO': timeout_audio,
             'INVALID/RETRIES': ivr.invalid_retries,
             'INVALID/AUDIO': invalid_audio,
-            'OPTION/CANTIDAD': len(destinos_siguientes) - 2
+            'OPTION/OPTIONS': len(destinos_siguientes) - 2
         }
 
         contador_orden = 0

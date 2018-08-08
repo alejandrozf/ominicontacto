@@ -491,10 +491,18 @@ assert ret == 0, "No se ha encontrado el ejecutable configurado " +\
 assert TMPL_OML_AUDIO_CONVERSOR_EXTENSION is not None, \
     "Falta definir setting para TMPL_OML_AUDIO_CONVERSOR"
 
-# ~~~~~ Check OML_AUDIO_PATH_ASTERISK
+# ~~~~~ Check ASTERISK_AUDIO_PATH
 
-assert OML_AUDIO_PATH_ASTERISK is not None, \
-    "Falta definir setting para OML_AUDIO_PATH_ASTERISK"
+assert ASTERISK_AUDIO_PATH is not None, \
+    "Falta definir setting para ASTERISK_AUDIO_PATH"
+
+# ~~~~~ Check OML_AUDIO_FOLDER
+
+assert OML_AUDIO_FOLDER is not None, \
+    "Falta definir setting para OML_AUDIO_FOLDER"
+
+# Una vez que tengo ASTERISK_AUDIO_PATH y OML_AUDIO_FOLDER puedo calcular OML_AUDIO_PATH_ASTERISK
+OML_AUDIO_PATH_ASTERISK = ASTERISK_AUDIO_PATH + OML_AUDIO_FOLDER
 
 # ~~~~~ Check CALIFICACION_REAGENDA
 

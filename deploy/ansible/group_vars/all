@@ -34,7 +34,7 @@ omnisup_repo: https://github.com/Pignatar0md/Omnisup
 #URLS para descargar asterisk
 dahdi_linux: http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-2.11.1+2.11.1.tar.gz
 libpri: http://downloads.asterisk.org/pub/telephony/libpri/libpri-1.6.0.tar.gz
-asterisk_v13: http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-13.18.3.tar.gz
+asterisk_v13: https://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-13.22.0.tar.gz
 jansson: https://github.com/akheron/jansson/archive/v2.7.tar.gz
 asternic: http://download.asternic.net/asternic-stats-pro-2.2.0.tgz
 asterisk_centos: https://github.com/meduketto/iksemel/archive/master.zip
@@ -65,4 +65,3 @@ country_code: 54
 
 #Contraseña de mysql en debian
 mysql_root_pass: 098098ZZZ
-

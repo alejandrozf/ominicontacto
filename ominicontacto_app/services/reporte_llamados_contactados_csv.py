@@ -15,6 +15,7 @@ import datetime
 from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.timezone import localtime
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import AgenteProfile, Campana
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -25,16 +26,18 @@ from reportes_app.models import LlamadaLog
 logger = logging.getLogger(__name__)
 
 NO_CONECTADO_DESCRIPCION = {
-    'NOANSWER': 'Cliente no atiende',
-    'CANCEL': 'Se corta antes que atienda el cliente',
-    'BUSY': 'Ocupado',
-    'CHANUNAVAIL': 'Canales Saturados',
-    'OTHER': 'Motivo no especificado',
-    'FAIL': 'Fallo',
-    'AMD': 'Contestador',
-    'BLACKLIST': 'Blacklist',
-    'ABANDON': 'Abandonada por cliente',
-    'EXITWITHTIMEOUT': 'Expirada',
+    'NOANSWER': _('Cliente no atiende'),
+    'CANCEL': _('Se corta antes que atienda el cliente'),
+    'BUSY': _('Ocupado'),
+    'CHANUNAVAIL': _('Canales Saturados'),
+    'OTHER': _('Motivo no especificado'),
+    'FAIL': _('Fallo'),
+    'AMD': _('Contestador'),
+    'BLACKLIST': _('Blacklist'),
+    'ABANDON': _('Abandonada por cliente'),
+    'EXITWITHTIMEOUT': _('Expirada'),
+    'CONGESTION': _('Canal congestionado'),
+    'NONDIALPLAN': _('Problema de enrutamiento'),
 }
 
 

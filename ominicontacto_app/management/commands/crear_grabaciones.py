@@ -17,11 +17,11 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('nro_llamadas', nargs=1, type=int)
 
-    def grabacion_marcada_aleatoria(self, sip_agente):
+    def grabacion_marcada_aleatoria(self, agente):
         """
         Crea un marca de grabación
         """
-        grabacion = GrabacionFactory.create(sip_agente=sip_agente)
+        grabacion = GrabacionFactory.create(agente=agente)
         crear_grabacion_marcada = bool(randint(0, 1))
 
         if crear_grabacion_marcada:
@@ -32,7 +32,7 @@ class Command(BaseCommand):
         agente = AgenteProfileFactory.create()
         for i in range(nro_grabaciones):
             try:
-                self.grabacion_marcada_aleatoria(agente.sip_extension)
+                self.grabacion_marcada_aleatoria(agente)
             except Exception as e:
                 raise CommandError('Fallo del comando: {0}'.format(e.message))
         self.stdout.write(

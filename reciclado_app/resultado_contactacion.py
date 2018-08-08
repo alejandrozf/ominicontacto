@@ -27,6 +27,8 @@ class EstadisticasContactacion():
         'BLACKLIST': 7,
         'EXITWITHTIMEOUT': 8,
         'ABANDON': 9,
+        'CONGESTION': 10,
+        'NONDIALPLAN': 11,
     }
     MAP_ID_ESTADO = dict(zip(MAP_ESTADO_ID.values(), MAP_ESTADO_ID.keys()))
     TXT_ESTADO = {
@@ -40,6 +42,8 @@ class EstadisticasContactacion():
         7: _('Blacklist'),
         8: _('Expiradas'),
         9: _('Abandono'),
+        10: _('Congestion'),
+        11: _('Problema de enrutamiento')
     }
     AGENTE_NO_CALIFICO = 20
     NO_LLAMADO = 21

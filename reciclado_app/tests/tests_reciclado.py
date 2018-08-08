@@ -33,8 +33,7 @@ class RecicladoTest(OMLBaseTest):
         """
 
         # estados no contactados:
-        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
-                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        estados = LlamadaLog.EVENTOS_NO_CONEXION
 
         contactos = self.campana.bd_contacto.contactos.all()
 
@@ -122,8 +121,7 @@ class RecicladoTest(OMLBaseTest):
 
     def test_obtiene_contactos_reciclados_contactados_calificados(self):
         # estados no contactados:
-        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
-                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        estados = LlamadaLog.EVENTOS_NO_CONEXION
         self._generar_llamadas_y_calificaciones(estados)
         reciclador = RecicladorContactosCampanaDIALER()
 
@@ -140,8 +138,7 @@ class RecicladoTest(OMLBaseTest):
 
     def test_obtiene_contactos_reciclados_contactados_no_calificados(self):
         # estados no contactados:
-        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
-                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        estados = LlamadaLog.EVENTOS_NO_CONEXION
         self._generar_llamadas_y_calificaciones(estados)
         reciclador = RecicladorContactosCampanaDIALER()
 
@@ -158,8 +155,7 @@ class RecicladoTest(OMLBaseTest):
 
     def test_obtiene_contactos_reciclados_no_llamados(self):
         # estados no contactados:
-        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
-                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        estados = LlamadaLog.EVENTOS_NO_CONEXION
         self._generar_llamadas_y_calificaciones(estados)
         reciclador = RecicladorContactosCampanaDIALER()
 
@@ -172,8 +168,7 @@ class RecicladoTest(OMLBaseTest):
 
     def test_obtiene_contactos_reciclados_no_contactados(self):
         # estados no contactados:
-        estados = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'OTHER', 'FAIL',
-                   'AMD', 'BLACKLIST', 'EXITWITHTIMEOUT', 'ABANDON']
+        estados = LlamadaLog.EVENTOS_NO_CONEXION
         reciclador = RecicladorContactosCampanaDIALER()
 
         # ahora vamos a chequear para los no contactados

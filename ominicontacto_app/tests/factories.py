@@ -154,7 +154,7 @@ class GrabacionFactory(DjangoModelFactory):
     id_cliente = lazy_attribute(lambda a: faker.text(5))
     tel_cliente = lazy_attribute(lambda a: str(faker.random_number(7)))
     grabacion = lazy_attribute(lambda a: faker.text(max_nb_chars=5))
-    sip_agente = lazy_attribute(lambda a: faker.random_number(5))
+    agente = SubFactory(AgenteProfileFactory)
     campana = SubFactory(CampanaFactory)
     uid = lazy_attribute(lambda a: format(uuid4().int))
 
@@ -274,5 +274,5 @@ class PausaFactory(DjangoModelFactory):
     class Meta:
         model = Pausa
 
-    nombre = lazy_attribute(lambda a: faker.text(15))
+    nombre = Sequence(lambda n: "Pausa_{0}".format(n))
     tipo = lazy_attribute(lambda a: random.choice(('P', 'R')))

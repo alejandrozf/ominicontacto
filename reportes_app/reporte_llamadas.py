@@ -15,8 +15,6 @@ from reportes_app.utiles import (
 )
 
 
-NO_CONNECT = ['NOANSWER', 'BUSY', 'CANCEL', 'CHANUNAVAIL', 'OTHER', 'FAIL', 'AMD', 'BLACKLIST']
-
 INICIALES_POR_TIPO = {
     Campana.TYPE_MANUAL_DISPLAY: {
         'total': 0,  # DIAL(tipo_llamada = Manual:1)
@@ -245,7 +243,7 @@ class ReporteDeLlamadas(object):
                     estadisticas_tipo['perdidas'] += 1
                 if log.tipo_llamada == Campana.TYPE_ENTRANTE:
                     estadisticas_tipo['abandonadas'] += 1
-            elif log.event in NO_CONNECT:
+            elif log.event in LlamadaLog.EVENTOS_NO_CONTACTACION:
                 if log.tipo_llamada == Campana.TYPE_MANUAL or \
                         log.tipo_llamada == Campana.TYPE_PREVIEW:
                     estadisticas_tipo['no_conectadas'] += 1
@@ -281,7 +279,7 @@ class ReporteDeLlamadas(object):
         elif log.event == 'ANSWER':
             datos_campana['conectadas'] += 1
             datos_campana['t_espera_conexion'] += log.bridge_wait_time
-        elif log.event in NO_CONNECT:
+        elif log.event in LlamadaLog.EVENTOS_NO_CONTACTACION:
             datos_campana['no_conectadas'] += 1
             datos_campana['t_espera_conexion'] += log.bridge_wait_time
 
@@ -322,7 +320,7 @@ class ReporteDeLlamadas(object):
         elif log.event == 'ANSWER':
             datos_campana['conectadas_manuales'] += 1
             datos_campana['t_espera_conexion_manuales'] += log.bridge_wait_time
-        elif log.event in NO_CONNECT:
+        elif log.event in LlamadaLog.EVENTOS_NO_CONTACTACION:
             datos_campana['no_conectadas_manuales'] += 1
             datos_campana['t_espera_conexion_manuales'] += log.bridge_wait_time
 

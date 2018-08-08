@@ -296,7 +296,8 @@ class GrabacionBusquedaForm(forms.Form):
     tipo_llamada = forms.ChoiceField(required=False,
                                      choices=tipo_llamada_choice)
     tel_cliente = forms.CharField(required=False)
-    sip_agente = forms.ChoiceField(required=False, label='Agente', choices=())
+    agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
+                                    required=False, label='Agente')
     campana = forms.ChoiceField(required=False, choices=())
     pagina = forms.CharField(required=False, widget=forms.HiddenInput())
     marcadas = forms.BooleanField(required=False)
@@ -306,10 +307,6 @@ class GrabacionBusquedaForm(forms.Form):
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
-        agente_choice = [(agente.sip_extension, agente.user.get_full_name())
-                         for agente in AgenteProfile.objects.filter(is_inactive=False)]
-        agente_choice.insert(0, EMPTY_CHOICE)
-        self.fields['sip_agente'].choices = agente_choice
         campana_choice.insert(0, EMPTY_CHOICE)
         self.fields['campana'].choices = campana_choice
 
