@@ -95,194 +95,13 @@
     <div class="tab-pane fade show active" id="stateContent" role="tabpanel" aria-labelledby="stateTab">
         <div class="row">
             <div class="col-md-6"><!-- CUADRO AGENTES -->
-                <h2>Agentes</h2>
               <table id="tableAgt" class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Agentes</th><th>Estado</th><th>Tiempo</th><th>Acciones</th>
+                    </tr>
+                </thead>
                   <tbody id="tableAgBody">
-                    <tr>
-                      <td>
-                          <h3>felipem</h3>
-                          <span class="badge agent-dialing">Llamando</span>
-                      </td>
-                      <td><span class="icon far fa-clock"></span>23:28:33</td>
-                      <td>
-                          <div class="dropdown">
-                              <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span class="icon icon-cog"></span>
-                              </button>
-                              <div class="dropdown-menu dropdown-menu-right">
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-eye"></span>Monitorear
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Hablar con agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-control-pause"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Log off agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Tomar llamada
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Conferencia
-                                  </a>
-                              </div>
-                          </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                          <h3>Pepe</h3>
-                          <span class="badge agent-pause">Pausa: sanitario</span>
-                      </td>
-                      <td><span class="icon far fa-clock"></span>23:28:33</td>
-                      <td>
-                          <div class="dropdown">
-                              <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span class="icon icon-cog"></span>
-                              </button>
-                              <div class="dropdown-menu dropdown-menu-right">
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-eye"></span>Monitorear
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Hablar con agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-control-pause"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Log off agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Tomar llamada
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Conferencia
-                                  </a>
-                              </div>
-                          </div>
-                      </td>
-                    </tr>
-                    <tr role="row" class="odd">
-                      <td>
-                          <h3>AgenteTest</h3>
-                          <span class="badge agent-offline">Offline</span>
-                      </td>
-                      <td><span class="icon far fa-clock"></span>23:28:33</td>
-                      <td>
-                          <div class="dropdown">
-                              <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span class="icon icon-cog"></span>
-                              </button>
-                              <div class="dropdown-menu dropdown-menu-right">
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-eye"></span>Monitorear
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Hablar con agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-control-pause"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Log off agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Tomar llamada
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Conferencia
-                                  </a>
-                              </div>
-                          </div>
-                      </td>
-                    </tr>
-                    <tr role="row" class="odd">
-                      <td>
-                          <h3>Fulano</h3>
-                          <span class="badge agent-ready">Ready</span>
-                      </td>
-                      <td><span class="icon far fa-clock"></span>23:28:33</td>
-                      <td>
-                          <div class="dropdown">
-                              <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span class="icon icon-cog"></span>
-                              </button>
-                              <div class="dropdown-menu dropdown-menu-right">
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-eye"></span>Monitorear
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Hablar con agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-control-pause"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Log off agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Tomar llamada
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Conferencia
-                                  </a>
-                              </div>
-                          </div>
-                      </td>
-                    </tr>
-                    <tr role="row" class="odd">
-                      <td>
-                      <h3>ABCDEG</h3>
-                      <span class="badge agent-oncall">On call</span>
-                      </td>
-                      <td><span class="icon far fa-clock"></span>23:28:33</td>
-                      <td>
-                          <div class="dropdown">
-                              <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span class="icon icon-cog"></span>
-                              </button>
-                              <div class="dropdown-menu dropdown-menu-right">
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-eye"></span>Monitorear
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Hablar con agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-control-pause"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Pausar agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Log off agente
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Tomar llamada
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                      <span class="icon icon-pencil"></span>Conferencia
-                                  </a>
-                              </div>
-                          </div>
-                      </td>
-                    </tr>
                   </tbody>
               </table>
               <nav aria-label="Page navigation example">
@@ -310,21 +129,6 @@
             <h2>Estado de lineas</h2>
             <table id="" class="table table-sm">
                 <tbody id="tableChannelsWombat">
-                  <tr>
-                    <td><span class="badge badge-outline line-connected">Connected</span></td><td>3516285260</td>
-                  </tr>
-                  <tr>
-                    <td><span class="badge badge-outline line-calling">Calling</span></td><td>3516285260</td>
-                  </tr>
-                  <tr>
-                    <td><span class="badge badge-outline line-shortcall">Short call</span></td><td>3516285260</td>
-                  </tr>
-                  <tr>
-                    <td><span class="badge badge-outline line-connected">Connected</span></td><td>3516285260</td>
-                  </tr>
-                  <tr>
-                    <td><span class="badge badge-outline line-calling">Calling</span></td><td>3514215610</td>
-                  </tr>
                 </tbody>
             </table>
             <nav aria-label="Page navigation example">
@@ -351,21 +155,6 @@
             <h2>Llamadas en espera</h2>
             <table class="table table-sm">
                 <tbody id="tableQueuedCalls">
-                    <tr>
-                      <td><span class="icon far fa-clock"></span>00:02:56</td><td>4553131</td>
-                    </tr>
-                    <tr>
-                      <td><span class="icon far fa-clock"></span>00:00:34</td><td>4328977</td>
-                    </tr>
-                    <tr>
-                      <td><span class="icon far fa-clock"></span>00:01:09</td><td>4149090</td>
-                    </tr>
-                    <tr>
-                      <td><span class="icon far fa-clock"></span>00:05:12</td><td>4287920</td>
-                    </tr>
-                    <tr>
-                      <td><span class="icon far fa-clock"></span>00:05:12</td><td>4287920</td>
-                    </tr>
                 </tbody>
             </table>
             <nav aria-label="Page navigation example">
@@ -399,21 +188,6 @@
             <h2>Resumen y calificaciones</h2>
             <table id="tableCampSummary" class="table table-sm">
                 <tbody id="bodySummary">
-                  <tr>
-                    <td>Agendados</td><td>2374</td>
-                  </tr>
-                  <tr>
-                    <td>bonito</td><td>1148</td>
-                  </tr>
-                  <tr>
-                    <td>Venta</td><td>995</td>
-                  </tr>
-                  <tr>
-                    <td>barato</td><td>3286</td>
-                  </tr>
-                  <tr>
-                    <td>Agendado</td><td>787</td>
-                  </tr>
                 </tbody>
             </table>
             <nav aria-label="Page navigation example">
@@ -439,31 +213,31 @@
           <div class="col-md-6">
               <div class="row">
                   <div class="col-sm-6">
-                      <h1 class="display-3">12<span id="objcampana"></span> <span id="gestioncampana"></span></h1>
+                      <h1 class="display-3"><span id="objcampana"></span><span id="gestioncampana"></span></h1>
                       <span class="label">Avance de objetivo</span>
                   </div>
                   <div class="col-sm-6">
-                      <h1 class="display-3">12%<span id="percent"></span></h1>
+                      <h1 class="display-3"><span id="percent"></span></h1>
                       <span class="label">Porcentaje de objetivo</span>
                   </div>
               </div>
               <hr>
               <h2>Llamadas</h2>
               <div class="">
-                  0<span class="label">Recibidas</span>,
-                  0<span class="label">Atendidas</span>,
-                  0<span class="label">Abandonadas</span>,
-                  0<span class="label">Expiradas</span>,
-                  0<span class="label">Espera</span>,
-                  0<span class="label">Abandono</span>
+                  <span class="label">Recibidas</span>,
+                  <span class="label">Atendidas</span>,
+                  <span class="label">Abandonadas</span>,
+                  <span class="label">Expiradas</span>,
+                  <span class="label">Espera</span>,
+                  <span class="label">Abandono</span>
               </div>
               <hr>
               <h2>Llamadas Manuales</h2>
               <div class="">
-                  0<span class="label">Efectuadas</span>,
-                  0<span class="label">Conectadas</span>,
-                  0<span class="label">No conec.</span>,
-                  0<span class="label">Espera prom.</span>
+                  <span class="label">Efectuadas</span>,
+                  <span class="label">Conectadas</span>,
+                  <span class="label">No conec.</span>,
+                  <span class="label">Espera prom.</span>
               </div>
           </div>
       </div>
