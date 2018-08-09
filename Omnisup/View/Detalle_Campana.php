@@ -254,38 +254,7 @@
               <hr>
               <h2>Llamadas</h2>
               <div id="bodyScore">
-                  <!-- <span class="label">Recibidas</span>,
-                  <span class="label">Atendidas</span>,
-                  <span class="label">Abandonadas</span>,
-                  <span class="label">Expiradas</span>,
-                  <span class="label">Espera</span>,
-                  <span class="label">Abandono</span> -->
-              <!-- <h2>Llamadas Manuales</h2>
-              <div class="">
-                  <span class="label">Efectuadas</span>,
-                  <span class="label">Conectadas</span>,
-                  <span class="label">No conec.</span>,
-                  <span class="label">Espera prom.</span>
-              </div> -->
               </div>
-              <!-- <hr>
-              <h2>Llamadas</h2>
-              <div class="">
-                  <span class="label">Recibidas</span>,
-                  <span class="label">Atendidas</span>,
-                  <span class="label">Abandonadas</span>,
-                  <span class="label">Expiradas</span>,
-                  <span class="label">Espera</span>,
-                  <span class="label">Abandono</span>
-              </div>
-              <hr>
-              <h2>Llamadas Manuales</h2>
-              <div class="">
-                  <span class="label">Efectuadas</span>,
-                  <span class="label">Conectadas</span>,
-                  <span class="label">No conec.</span>,
-                  <span class="label">Espera prom.</span>
-              </div> -->
           </div>
       </div>
   </div>
