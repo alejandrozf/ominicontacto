@@ -17,25 +17,18 @@
                 <input type="hidden" value="<?= $_GET['supervId'] ?>" id="userId"/>
                 <input type="hidden" value="<?= $_GET['campId'] ?>" id="campId"/>
                 <!-- -->
-                <div class="row">
-                    <div class="backgroundWebPhone">
-                        <div class="row">
-                            <div id="CallStatus" class="botonera1">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div id="SipStatus" class="botonera1">
-                            </div>
-                        </div>
-                        <div class="row filaBotonesDiscar">
-                            <button type="button" placeholder='atender' id="call" class="btn btn-success">
-                                <span class="glyphicon glyphicon-earphone"></span>
-                            </button>
-                            <button type="button" placeholder='finalizar' id="endCall" class="btn btn-danger">
-                                <span class="glyphicon glyphicon-phone-alt"></span>
-                            </button>
-                        </div>
-                    </div>
+                <div class="text-center">
+                    <span id="CallStatus" class="px-2 border-right"><span class="icon icon-check"></span> Idle</span>
+                    <span id="SipStatus" class="px-2"><span class="icon icon-cancel"></span> Registered</span>
+                </div>
+                <hr>
+                <div>
+                    <button type="button" placeholder='atender' id="call" class="btn btn-primary btn-block">
+                        Atender
+                    </button>
+                    <button type="button" placeholder='finalizar' id="endCall" class="btn btn-outline-danger btn-block">
+                        Finalizar
+                    </button>
                 </div>
             </div>
         </div>
@@ -72,14 +65,14 @@
                 </h4>
             </div>
             <div class="modal-footer">
-                <button type="button" id="answer" class="btn btn-primary btn-sm">Responder</button>
-                <button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">Rechazar</button>
+                <button type="button" id="answer" class="btn btn-primary">Responder</button>
+                <button type="button" id="doNotAnswer" class="btn btn-outline-danger">Rechazar</button>
             </div>
         </div>
     </div>
 </div>
 
-<button style="position:absolute; top:30px; right:50px;" type="button" class="btn btn-outline-primary btn-sm" alt="openWebPhone" id="webphone"><span class="icon icon-phone"></span> webphone</button>
+<button type="button" id="webphone" class="btn btn-outline-primary" alt="openWebPhone"><span class="icon icon-solid-phone"></span> Phone</button>
 
 <ul class="nav nav-tabs" id="supervisionTabBar" role="tablist">
   <li class="nav-item">

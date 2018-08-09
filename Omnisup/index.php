@@ -8,8 +8,8 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/static/bootstrap-4.0.0/css/bootstrap.min.css" >
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/> -->
-    <link rel="stylesheet" type="text/css" href="static/Css/jquery.dataTables.min.css"/>
-    <link rel="stylesheet" type="text/css" href="static/Css/phone.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="static/Css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="static/Css/phone.css"/> -->
     <link rel="stylesheet" type="text/css" href="static/Css/main.css"/>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/ominicontacto/CSS/admin.css">
@@ -34,7 +34,7 @@
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
 </head>
 <body>
-    <div class="wrapper-main">
+    <div class="wrapper-main wrapper-page-supervision">
         <nav id="sidebar">
             <div class="sidebar-header">
                 <a href="#">
