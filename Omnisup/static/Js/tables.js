@@ -80,15 +80,15 @@ function actualiza_contenido_camp() {
       var llamadas = mje['llamadas'];
       $.each (llamadas, function (i, item) {
         if (i !== 'status') {
-          trHTML += '<span class=\'label\'>' + item[0] + '</span><span>' + item[1] + '</span>';
+          trHTML += '<span class=\'label\'>' + item[0] + '</span>&nbsp;<span>' + item[1] + '</span>.&nbsp;';
         }
       });
       if (mje.hasOwnProperty('manuales')){
         var manuales = mje['manuales'];
-        trHTML += '<h2>Llamadas Manuales</h2>';
+        trHTML += '<br/><br/><h2>Llamadas Manuales</h2>';
         $.each (manuales, function (i, item) {
           if (i !== 'status') {
-            trHTML += '<span class=\'label\'>' + item[0] + '</span><span>' + item[1] + '</span>';
+            trHTML += '<span class=\'label\'>' + item[0] + '</span>&nbsp;<span>' + item[1] + '</span>.&nbsp;';
           }
         });
       }
