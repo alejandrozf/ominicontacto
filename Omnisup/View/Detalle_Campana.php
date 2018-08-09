@@ -129,6 +129,21 @@
             <h2>Estado de lineas</h2>
             <table id="" class="table table-sm">
                 <tbody id="tableChannelsWombat">
+                  <!-- <tr>
+                    <td><span class="badge badge-outline line-connected">Connected</span></td><td>3516285260</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-outline line-calling">Calling</span></td><td>3516285260</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-outline line-shortcall">Short call</span></td><td>3516285260</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-outline line-connected">Connected</span></td><td>3516285260</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-outline line-calling">Calling</span></td><td>3514215610</td>
+                  </tr> -->
                 </tbody>
             </table>
             <nav aria-label="Page navigation example">
@@ -155,6 +170,21 @@
             <h2>Llamadas en espera</h2>
             <table class="table table-sm">
                 <tbody id="tableQueuedCalls">
+                    <!-- <tr>
+                      <td><span class="icon far fa-clock"></span>00:02:56</td><td>4553131</td>
+                    </tr>
+                    <tr>
+                      <td><span class="icon far fa-clock"></span>00:00:34</td><td>4328977</td>
+                    </tr>
+                    <tr>
+                      <td><span class="icon far fa-clock"></span>00:01:09</td><td>4149090</td>
+                    </tr>
+                    <tr>
+                      <td><span class="icon far fa-clock"></span>00:05:12</td><td>4287920</td>
+                    </tr>
+                    <tr>
+                      <td><span class="icon far fa-clock"></span>00:05:12</td><td>4287920</td>
+                    </tr> -->
                 </tbody>
             </table>
             <nav aria-label="Page navigation example">
@@ -223,6 +253,23 @@
               </div>
               <hr>
               <h2>Llamadas</h2>
+              <div id="bodyScore">
+                  <!-- <span class="label">Recibidas</span>,
+                  <span class="label">Atendidas</span>,
+                  <span class="label">Abandonadas</span>,
+                  <span class="label">Expiradas</span>,
+                  <span class="label">Espera</span>,
+                  <span class="label">Abandono</span> -->
+              <!-- <h2>Llamadas Manuales</h2>
+              <div class="">
+                  <span class="label">Efectuadas</span>,
+                  <span class="label">Conectadas</span>,
+                  <span class="label">No conec.</span>,
+                  <span class="label">Espera prom.</span>
+              </div> -->
+              </div>
+              <!-- <hr>
+              <h2>Llamadas</h2>
               <div class="">
                   <span class="label">Recibidas</span>,
                   <span class="label">Atendidas</span>,
@@ -238,7 +285,7 @@
                   <span class="label">Conectadas</span>,
                   <span class="label">No conec.</span>,
                   <span class="label">Espera prom.</span>
-              </div>
+              </div> -->
           </div>
       </div>
   </div>
