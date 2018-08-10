@@ -133,10 +133,11 @@
 
 - name: install php56wpgsql
   yum: name=php56w-pgsql state=present
-- meta: clear_host_errors
   become: yes
   become_method: sudo
   when: ansible_os_family == "RedHat"
+
+- meta: clear_host_errors
 
 - name: Edit sudoers to execute binaries withouth password
   lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/rsync, /usr/sbin/asterisk\""

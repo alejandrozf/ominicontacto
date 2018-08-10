@@ -24,14 +24,17 @@
 
   pre_tasks:
       - assert:
-          that: "{{ admin_pass }} | lenght > 8"
-          msg: "La contraseña ingresada es demasiado corta"
+          that:
+            - "'{{ admin_pass }}' != 'bad_value' "
+            - "'{{ admin_pass }}' | length > 8"
+          msg: "La contraseña ingresada es demasiado corta. La contraseña no puede ir vacia"
       - assert:
-          that: "{{ admin_pass }} == {{ admin_pass2 }}"
+          that: "'{{ admin_pass }}' == '{{ admin_pass2 }}'"
           msg: "Las contraseñas no son iguales"
       - assert:
-          that: "{{ formato_conversion }} == 'wav' or {{ formato_conversion }} == 'mp3' "
+          that: "'{{ formato_conversion }}' == 'wav' or '{{ formato_conversion }}' == 'mp3' "
           msg: "Formato inválido"
+
   gather_facts: True
 
   roles:

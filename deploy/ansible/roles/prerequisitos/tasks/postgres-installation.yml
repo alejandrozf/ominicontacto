@@ -8,11 +8,19 @@
     - "command_result.rc != 0"
   become: yes
   become_method: sudo
+  when: ansible_os_family == "RedHat"
 
 - name: Start and enable postgres service
   service: name=postgresql-9.6.service state=restarted enabled=yes
   become: yes
   become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Start and enable postgres service
+  service: name=postgresql state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "Debian"
 
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes

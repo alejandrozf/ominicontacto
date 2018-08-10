@@ -1,17 +1,26 @@
 ---
 
-- name: Update/upgrade of system
-  apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
+- name: Install apt-transport-https
+  apt: name=apt-transport-https state=present
 
 - name: Creation of sngrep repo
-  template: src=templates/irontec.repo dest=/etc/yum.repos.d/irontec.repo
+  apt_repository:
+    repo: deb http://packages.irontec.com/debian stretch main
+    state: present
+    validate_certs: no
   become: true
   become_method: sudo
 
-- name: Import of irontec public key
-  apt_key: url=http://packages.irontec.com/public.key state=present
+- name: Import of irontec and php5.6 public key
+  apt_key: "url={{ item }} state=present"
+  with_items:
+    - http://packages.irontec.com/public.key
+    - https://packages.sury.org/php/apt.gpg
   become: true
   become_method: sudo
+
+- name: Update/upgrade of system
+  apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
 
 - name: Install of sngrep
   apt: name=sngrep state=present
@@ -30,9 +39,10 @@
   become_method: sudo
 
 - name: Installation of VoIP dependencies
-  apt: {{ item }} state=present
+  apt: "name={{ item }} state=present"
   with_items:
     - build-essential
+    - net-tools
     - debhelper
     - iptables-dev
     - libcurl4-openssl-dev
@@ -62,7 +72,7 @@
     - gcc
     - flex
     - bison
-    - libmysqlclient-dev
+    #- libmariadbclient-dev
     - make
     - libxml2-dev
     - libpcre3-dev
@@ -75,7 +85,6 @@
     - libjson-glib-dev
     - postgresql-client
     - vim
-    - apt-transport-https
     - curl
     - mysql-client
     - sox
@@ -98,7 +107,7 @@
     - libsrtp0-dev
     - libspandsp-dev
     - sudo
-    - libmyodbc
+    #- libmyodbc
     - subversion
     - odbc-postgresql
     - wget
@@ -106,9 +115,8 @@
   become_method: sudo
 
 - name: Installation of app dependencies
-  apt: {{ item }} state=present
+  apt: "name={{ item }} state=present"
   with_items:
-    - apt-transport-https
     - virtualenv
     - libcairo2-dev
     - openssl
@@ -122,23 +130,17 @@
     - postgresql-9.6
     - postgresql-contrib
     - postgresql-server-dev-9.6
-    #- python-mysqldb
+    - python-mysqldb
     - libjpeg-dev
   become: true
   become_method: sudo
 
-- name: Import php5.6 key
-  apt_key: url=http://packages.irontec.com/public.key state=present
-  become: true
-  become_method: sudo
-
-- name: Install the imported key
+- name: Install the imported php5.6 key
   shell: 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php5.list'
   become: true
   become_method: sudo
 
-- name: Update of system
-  apt: "update_cache=yes cache_valid_time=12 upgrade=no dpkg_options='force-confdef'"
-
 - name: Intall php5.6
   apt: name=php5.6 state=present
+  become: true
+  become_method: sudo

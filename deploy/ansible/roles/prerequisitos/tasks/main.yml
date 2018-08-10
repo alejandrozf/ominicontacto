@@ -50,12 +50,14 @@
   become: true
   become_method: sudo
 
-- include: centos_prerequisitos.yml
+- name: Installation of Centos prerequisites
+  include: centos_prerequisitos.yml
   when: ansible_os_family == "RedHat"
 
-- include: debian_prerequisitos.yml
+- name: Installation of Debian prerequisites
+  include: debian_prerequisitos.yml
   when: ansible_os_family == "Debian"
-  
+
 - include: installations.yml
 
 - include: setup_mariadb.yml

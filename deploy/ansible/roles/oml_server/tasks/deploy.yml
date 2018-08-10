@@ -61,7 +61,7 @@
   pip:
     name=setuptools
     virtualenv={{ install_prefix }}virtualenv
-    virtualenv_command=/usr/bin/virtualenv-2.7
+    virtualenv_command=/usr/bin/virtualenv
     extra_args=--upgrade
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin"
@@ -74,7 +74,7 @@
   pip:
     requirements={{ install_prefix }}ominicontacto/requirements.txt
     virtualenv={{ install_prefix }}virtualenv
-    virtualenv_command=/usr/bin/virtualenv-2.7
+    virtualenv_command=/usr/bin/virtualenv
   environment:
       #PATH: /usr/pgsql-9.6/bin/:{{ lookup('env', 'PATH') }}:{{ install_prefix }}ominicontacto/virtualenv/bin
       PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin"

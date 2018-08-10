@@ -44,7 +44,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Update-rc of omnileads service (debian)
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
     - update-rc.d ominicontacto-daemon defaults
     - update-rc.d ominicontacto-daemon enable 2
