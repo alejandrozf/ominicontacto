@@ -60,11 +60,9 @@
                                 <li>
                                     <a href="{% url 'user_list' page=1 %}">Usuarios</a>
                                 </li>
-                                {% if user.get_is_administrador %}
                                 <li>
                                     <a href="{% url 'user_nuevo' %}">Nuevo Usuario</a>
                                 </li>
-                                {% endif %}
                                 <li>
                                     <a href="{% url 'agente_list' %}">Agentes</a>
                                 </li>
@@ -112,6 +110,9 @@
                         </li>
                     </ul>
                 </li>
+                {% endif %}
+
+                {% if user.get_tiene_permiso_administracion %}
                 <li class="main-menu-li">
                     <span class="icon icon-audio-file"></span>
                     <a class="menu-header" href="#menuAudio" role="button" data-toggle="collapse" aria-expanded="false">Audios</a>
@@ -311,6 +312,8 @@
                         </li>
                     </ul>
                 </li>
+
+                {% if user.get_is_supervisor_normal or user.get_is_supervisor_customer  %}
                 <li class="main-menu-li">
                     <span class="icon icon-headset"></span>
                     <a class="menu-header" href="#menuSupervise" role="button" data-toggle="collapse" aria-expanded="false">Supervision</a>
@@ -320,6 +323,7 @@
                         </li>
                     </ul>
                 </li>
+                {% endif %}
                 
                 {% if user.get_es_administrador_o_supervisor_normal %}
                 <li class="main-menu-li">

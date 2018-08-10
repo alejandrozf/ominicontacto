@@ -21,7 +21,7 @@ from ominicontacto_app.views_utils import (
 
 from ominicontacto_app.auth.decorators import (
     administrador_requerido, administrador_o_supervisor_requerido, agente_requerido,
-    permiso_administracion_requerido)
+    permiso_administracion_requerido, supervisor_o_customer_requerido)
 
 handler400 = handler400
 handler403 = handler403
@@ -41,19 +41,19 @@ urlpatterns = [
     # ==========================================================================
     url(r'^accounts/login/$', views.login_view, name='login'),
     url(r'^user/nuevo/$',
-        administrador_requerido(views.CustomerUserCreateView.as_view()),
+        administrador_o_supervisor_requerido(views.CustomerUserCreateView.as_view()),
         name='user_nuevo',
-        ),
-    url(r'^user/delete/(?P<pk>\d+)/$',
-        administrador_requerido(views.UserDeleteView.as_view()),
-        name='user_delete',
         ),
     url(r'^user/list/page(?P<page>[0-9]+)/$',
         administrador_o_supervisor_requerido(views.UserListView.as_view()),
         name='user_list'
         ),
+    url(r'^user/delete/(?P<pk>\d+)/$',
+        administrador_o_supervisor_requerido(views.UserDeleteView.as_view()),
+        name='user_delete',
+        ),
     url(r'^user/update/(?P<pk>\d+)/$',
-        administrador_requerido(views.CustomerUserUpdateView.as_view()),
+        administrador_o_supervisor_requerido(views.CustomerUserUpdateView.as_view()),
         name='user_update',
         ),
     # Perfil Agente  ==========================================================
@@ -189,7 +189,8 @@ urlpatterns = [
         name='chat_create',
         ),
     url(r'^supervision_externa/$',
-        login_required(views.supervision_url_externa), name='supervision_externa_url',
+        supervisor_o_customer_requerido(views.supervision_url_externa),
+        name='supervision_externa_url',
         ),
     url(r'^acerca/$',
         login_required(views.AcercaTemplateView.as_view()),
@@ -813,20 +814,22 @@ urlpatterns = [
     # Archivo de Audio
     # ==========================================================================
     url(r'^audios/$',
-        administrador_requerido(views_archivo_de_audio.ArchivoAudioListView.as_view()),
+        administrador_o_supervisor_requerido(
+            views_archivo_de_audio.ArchivoAudioListView.as_view()),
         name='lista_archivo_audio',
         ),
     url(r'^audios/create/$',
-        administrador_requerido(views_archivo_de_audio.ArchivoAudioCreateView.as_view()),
+        administrador_o_supervisor_requerido(
+            views_archivo_de_audio.ArchivoAudioCreateView.as_view()),
         name='create_archivo_audio',
         ),
     url(r'^audios/(?P<pk>\d+)/update/$',
-        administrador_requerido(
+        administrador_o_supervisor_requerido(
             views_archivo_de_audio.ArchivoAudioUpdateView.as_view()),
         name='edita_archivo_audio',
         ),
     url(r'^audios/(?P<pk>\d+)/eliminar/$',
-        administrador_requerido(
+        administrador_o_supervisor_requerido(
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
         ),

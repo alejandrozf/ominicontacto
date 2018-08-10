@@ -114,6 +114,29 @@ def administrador_o_supervisor_requerido(function=None,
     return actual_decorator
 
 
+def supervisor_o_customer_requerido(function=None,
+                                    redirect_field_name=REDIRECT_FIELD_NAME,
+                                    login_url=None):
+    """
+    Decorator que verifica que el usuario es Supervisor Normal o Customer.
+    """
+    def es_supervisor_normal_o_customer(user):
+        if not user.is_authenticated():
+            return False
+        elif user.get_is_supervisor_normal() or user.get_is_supervisor_customer():
+            return True
+        else:
+            raise PermissionDenied
+    actual_decorator = user_passes_test(
+        lambda u: es_supervisor_normal_o_customer(u),
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
 def agente_requerido(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
     """
     Decorator que verifica que el usuario es un Agente.

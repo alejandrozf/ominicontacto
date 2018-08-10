@@ -681,18 +681,19 @@ def crear_chat_view(request):
 
 def supervision_url_externa(request):
     """Vista que redirect a la supervision externa de marce"""
-    if request.user.is_authenticated() and \
-            request.user.get_supervisor_profile():
-        sip_extension = request.user.get_supervisor_profile().sip_extension
-        timestamp = request.user.generar_usuario(sip_extension).split(':')[0]
+    user = request.user
+    if user.get_is_supervisor_normal() or user.get_is_supervisor_customer():
+        supervisor = user.get_supervisor_profile()
+        sip_extension = supervisor.sip_extension
+        timestamp = user.generar_usuario(sip_extension).split(':')[0]
         sip_usuario = timestamp + ":" + str(sip_extension)
-        supervisor_profile = request.user.get_supervisor_profile()
-        supervisor_profile.timestamp = timestamp
-        supervisor_profile.sip_password = request.user.generar_contrasena(sip_usuario)
-        supervisor_profile.save()
-        supervisor = supervisor_profile
+        supervisor.timestamp = timestamp
+        supervisor.sip_password = request.user.generar_contrasena(sip_usuario)
+        supervisor.save()
         url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
         if supervisor.is_administrador:
+            # TODO: Con los nuevos permisos nunca se puede dar este caso
+            # Discutir si este caso de uso queda descartado
             url += "&es_admin=t"
         else:
             url += "&es_admin=f"
