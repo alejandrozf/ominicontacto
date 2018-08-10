@@ -1,5 +1,5 @@
 ---
-- name: Instalacion de Omnileads en CentOS
+- name: Instalacion de Omnileads
   hosts: omnileads
   # Siempre 'gather_facts' ya q' lo usaoms en varios 'when'
   # gather_facts: '{{ lookup("env","DO_CHECKS") }}'

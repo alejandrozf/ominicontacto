@@ -53,6 +53,9 @@
 - include: centos_prerequisitos.yml
   when: ansible_os_family == "RedHat"
 
+- include: debian_prerequisitos.yml
+  when: ansible_os_family == "Debian"
+  
 - include: installations.yml
 
 - include: setup_mariadb.yml

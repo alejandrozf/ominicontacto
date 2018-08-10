@@ -9,7 +9,6 @@
   become: yes
   become_method: sudo
 
-
 - name: Start and enable postgres service
   service: name=postgresql-9.6.service state=restarted enabled=yes
   become: yes

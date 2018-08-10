@@ -5,6 +5,7 @@
   with_items:
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
+  when: ansible_os_family == "RedHat"
   become: true
   become_method: sudo
 
@@ -149,9 +150,3 @@
   yum: name=nodejs state=present
   become: true
   become_method: sudo
-
-- name: Install Console_Getopt
-  pear: name=Console_Getopt state=present
-  become: true
-  become_method: sudo
-- meta: clear_host_errors

@@ -12,18 +12,6 @@
   become: true
   become_method: sudo
 
-#- name: Copy of the ominicontacto nginx configuration
-#  copy: "src={{ install_prefix }}ominicontacto/nginx/ominicontacto-twohosts.conf dest=/etc/nginx/conf.d/ remote_src=yes"
-#  when: ansible_os_family == "Debian"
-#- shell: "mv /etc/nginx/conf.d/ominicontacto-twohosts.conf /etc/nginx/conf.d/ominicontacto.conf"
-#  when: ansible_os_family == "Debian"
-
-#- name: Copy of the ominicontacto nginx configuration
-#  copy: "src={{ install_prefix }}ominicontacto/nginx/ominicontacto-onehost.conf dest=/etc/nginx/conf.d/ remote_src=yes"
-#  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-#- shell: "mv /etc/nginx/conf.d/ominicontacto-onehost.conf /etc/nginx/conf.d/ominicontacto.conf"
-#  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
-
 - name: Create of ominicontacto.conf
   template: src=templates/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf
   become: true
@@ -48,10 +36,26 @@
   become: true
   become_method: sudo
 
+- name: Instal lsb-initfunctions (centos)
+  command: yum install '/lib/lsb/init-functions' -y
+  become: true
+  become_method: sudo
+  ignore_errors: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Update-rc of omnileads service (debian)
+  command: {{ item }}
+  with_items:
+    - update-rc.d ominicontacto-daemon defaults
+    - update-rc.d ominicontacto-daemon enable 2
+    - update-rc.d ominicontacto-daemon enable 3
+    - update-rc.d ominicontacto-daemon enable 4
+    - update-rc.d ominicontacto-daemon enable 5
+  when: ansible_os_family == "Debian"
+
 - name: Start the omnileads-daemon service
   command: "{{ item }}"
   with_items:
-          - yum install '/lib/lsb/init-functions' -y
           - "service omnileads start"
           - "service omnileads stop"
           - "chkconfig omnileads on"
@@ -60,20 +64,6 @@
   become_method: sudo
   ignore_errors: yes
   when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
-
-- name: Create the ominicontacto-daemon service
-  shell: "{{ item }}"
-  with_items:
-          - "update-rc.d ominicontacto-daemon defaults"
-          - "update-rc.d ominicontacto-daemon enable 2"
-          - "update-rc.d ominicontacto-daemon enable 3"
-          - "update-rc.d ominicontacto-daemon enable 4"
-          - "update-rc.d ominicontacto-daemon enable 5"
-          - "service ominicontacto-daemon start"
-  become: true
-  become_method: sudo
-  ignore_errors: yes
-  when: ansible_os_family == "Debian"
 
 - name: Copy of the Kamailio cert in voip.cert
   template: src=templates/concatenate.sh dest={{ install_prefix }}bin/concatenate.sh mode=755

@@ -1,0 +1,144 @@
+---
+
+- name: Update/upgrade of system
+  apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
+
+- name: Creation of sngrep repo
+  template: src=templates/irontec.repo dest=/etc/yum.repos.d/irontec.repo
+  become: true
+  become_method: sudo
+
+- name: Import of irontec public key
+  apt_key: url=http://packages.irontec.com/public.key state=present
+  become: true
+  become_method: sudo
+
+- name: Install of sngrep
+  apt: name=sngrep state=present
+  become: true
+  become_method: sudo
+
+- name: Install linux linux-headers
+  shell: "apt-get install -y linux-headers-$(uname -r)"
+  become: true
+  become_method: sudo
+  ignore_errors: True
+
+- name: Installation of mysqlserver
+  apt: name=mysql-server state=present dpkg_options='force-confdef'
+  become: true
+  become_method: sudo
+
+- name: Installation of VoIP dependencies
+  apt: {{ item }} state=present
+  with_items:
+    - build-essential
+    - debhelper
+    - iptables-dev
+    - libcurl4-openssl-dev
+    - libpcre3-dev
+    - libxmlrpc-core-c3-dev
+    - markdown
+    - libglib2.0-dev
+    - libhiredis-dev
+    - dkms
+    - git
+    - libevent-dev
+    - libbencode-perl
+    - libcrypt-rijndael-perl
+    - libdigest-hmac-perl
+    - libio-socket-inet6-perl
+    - libsocket6-perl
+    - libb-hooks-op-check-perl
+    - libexporter-tidy-perl
+    - libpcap0.8-dev
+    - libpcap-dev
+    - libio-socket-ip-perl
+    - libavcodec-dev
+    - libavfilter-dev
+    - libavformat-dev
+    - libavresample-dev
+    - libavutil-dev
+    - gcc
+    - flex
+    - bison
+    - libmysqlclient-dev
+    - make
+    - libxml2-dev
+    - libpcre3-dev
+    - libpq-dev
+    - libpq5
+    - redis-server
+    - uuid
+    - uuid-dev
+    - libunistring-dev
+    - libjson-glib-dev
+    - postgresql-client
+    - vim
+    - apt-transport-https
+    - curl
+    - mysql-client
+    - sox
+    - libncurses5-dev
+    - libssl-dev
+    - mpg123
+    - libnewt-dev
+    - sqlite3
+    - libsqlite3-dev
+    - pkg-config
+    - automake
+    - libtool
+    - autoconf
+    - unixodbc-dev
+    - libasound2-dev
+    - libogg-dev
+    - libvorbis-dev
+    - libical-dev
+    - libneon27-dev
+    - libsrtp0-dev
+    - libspandsp-dev
+    - sudo
+    - libmyodbc
+    - subversion
+    - odbc-postgresql
+    - wget
+  become: true
+  become_method: sudo
+
+- name: Installation of app dependencies
+  apt: {{ item }} state=present
+  with_items:
+    - apt-transport-https
+    - virtualenv
+    - libcairo2-dev
+    - openssl
+    - nginx
+    - python-dev
+    - libxslt1-dev
+    - libldap2-dev
+    - libsasl2-dev
+    - libffi-dev
+    - python-virtualenv
+    - postgresql-9.6
+    - postgresql-contrib
+    - postgresql-server-dev-9.6
+    #- python-mysqldb
+    - libjpeg-dev
+  become: true
+  become_method: sudo
+
+- name: Import php5.6 key
+  apt_key: url=http://packages.irontec.com/public.key state=present
+  become: true
+  become_method: sudo
+
+- name: Install the imported key
+  shell: 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php5.list'
+  become: true
+  become_method: sudo
+
+- name: Update of system
+  apt: "update_cache=yes cache_valid_time=12 upgrade=no dpkg_options='force-confdef'"
+
+- name: Intall php5.6
+  apt: name=php5.6 state=present

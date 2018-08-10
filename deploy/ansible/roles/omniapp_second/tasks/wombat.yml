@@ -2,18 +2,18 @@
 
 - name: Get the wombat dialer repository
   shell: "wget -P /etc/yum.repos.d http://yum.loway.ch/loway.repo"
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 - name: Install wombat dialer
   yum: name=wombat state=present
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
   become: true
   become_method: sudo
 - meta: clear_host_errors
 
 - name: Add parameters in server.xml of Catalina
   template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
   become: true
   become_method: sudo
 
@@ -28,8 +28,6 @@
           - deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main
           - deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main
   when: ansible_os_family == "Debian"
-            #- name: Update for repositories
-            #apt: update_cache=yes cache_valid_time=12
 
 - name: Accept Java8 license
   debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
@@ -86,5 +84,3 @@
 - name: Install Mysql
   apt: name=mysql-server state=present
   when: ansible_os_family == "Debian"
-
-

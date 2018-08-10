@@ -11,12 +11,6 @@
     - django-migrations
     - postinstall
 
-- include: queuelog_trigger.yml
-  tags:
-    - omniapp
-    - queuelog-trigger
-    - postinstall
-
 - include: omniapp_second.yml
   tags:
     - omniapp

@@ -1,6 +1,8 @@
 ---
 - set_fact: rtpengine_name=rtpengine-mr5.5.3.1
 - set_fact: kernel="/usr/src/kernels/$(shell uname -r)"
+  when: ansible_os_family == "RedHat"
+
 - name: Download of RTPengine-mr5.5.3.1
   get_url: url={{ rtpengine_repo }} dest=/usr/src/
   register: destino
@@ -20,7 +22,9 @@
   become_method: sudo
   when: rtpengine_installed|failed
 
-- name: Install of ffmpeg repository
+###### Begin install in centos #####
+
+- name: Install of ffmpeg repository (centos)
   shell: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
 - shell: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
   register: command_result
@@ -31,34 +35,34 @@
   become_method: sudo
   when: rtpengine_installed|failed
 
-- name: Install of ffmpeg
+- name: Install of ffmpeg (centos)
   yum: name={{ item }} state=present
   with_items:
       - ffmpeg
       - ffmpeg-devel
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
+  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
 
-- name: Installation of RTPengine
+- name: Installation of RTPengine (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/daemon"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
+  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
 
-- name: Modify of the RTPengine kernel module to let it know where is our kernel
+- name: Modify of the RTPengine kernel module to let it know where is our kernel (centos)
   lineinfile: "path=/usr/src/{{ rtpengine_name }}/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= {{ kernel }}\""
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
+  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
 
-- name: Installation of RTPengine kernel module
+- name: Installation of RTPengine kernel module (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
+  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
 
-- name: Insert the kernel module created for RTPengine
+- name: Insert the kernel module created for RTPengine (centos)
   shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
   register: command_result
   failed_when:
@@ -66,31 +70,59 @@
     - "command_result.rc != 0"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
+  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
 
-- name: Installation of IPtables extensions
+- name: Installation of IPtables extensions (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/iptables-extension"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
+  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
 
-- name: Copy of iptables library to lib64/xtables
+- name: Copy of iptables library to lib64/xtables (centos)
   copy: src=/usr/src/{{ rtpengine_name }}/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
   become: true
   become_method: sudo
+  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
 
-- name: Copy of rptengine init script in sysconfig
-  copy: src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/rtpengine_sysconfig dest=/etc/sysconfig/rtpengine remote_src=yes
+####### End of install in centos #########
+
+####### Begin of install in debian #######
+
+- name: Install of ffmpeg (debian)
+  apt: name=ffmpeg state=present
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+- name: Build of rtpengine with dpkg
+  shell: "dpkg-buildpackage chdir=/usr/src/{{ rtpengine_name }}"
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+- name: Install rtpengine debs
+  apt: deb=/usr/src/{{ rtpengine_name }}/{{ item }}
+  with_items:
+    - ngcp-rtpengine-daemon_
+    - ngcp-rtpengine-iptables_
+    - ngcp-rtpengine-dbg_
+    - ngcp-rtpengine-utils_
+    - ngcp-rtpengine-kernel-dkms_
+    - ngcp-rtpengine-recording-daemon_
+    - ngcp-rtpengine_
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+####### End of install in debian #######
+
+- name: Creation of RTPengine config file
+  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/rtpengine
   become: true
   become_method: sudo
 
 - name: Copty of rtpengine service file to systemd
   copy: src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/rtpengine.service dest=/etc/systemd/system remote_src=yes
-  become: true
-  become_method: sudo
-
-- name: Modify of RTPengine sysconfig file
-  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/sysconfig/rtpengine
   become: true
   become_method: sudo
 
@@ -121,4 +153,3 @@
   service: name=rtpengine state=started enabled=yes
   become: true
   become_method: sudo
-

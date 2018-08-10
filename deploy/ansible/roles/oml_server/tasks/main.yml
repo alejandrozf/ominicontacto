@@ -15,8 +15,3 @@
     - postinstall
     - deploy
     - omniapp
-
-- include: postgres_users.yml
-  tags:
-    - postgresusers
-
