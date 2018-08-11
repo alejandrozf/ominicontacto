@@ -39,7 +39,7 @@ function mostrarEstadoAgentes($camp) {
 
                     $jsonString .= '{"agente": "' . $arrAgtNoms[$i] . '", ';
                     $jsonString .= '"tiempo": "' . $tiempo . '",';
-                        
+
                     if ($status[0] !== "PAUSE") {
                         $jsonString .= '"estado": "' . $value->getStatus() . '", ';
                         $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
@@ -66,44 +66,11 @@ function mostrarEstadoAgentes($camp) {
      return $jsonString;
 }
 
-function mostrarEstadoCampana($nomcamp,$idcamp) {
+function mostrarEstadoCampana($idcamp) {
     $Controller_Campana = new Campana();
-    $jsonString = '';
-    $resul = $Controller_Campana->traerInfoReporteRealTimeCamp($nomcamp, $idcamp);
     $objresul = $Controller_Campana->traerObjetivoCampana($idcamp);
     $objresulg = $Controller_Campana->traerGestionCampana($idcamp);
-    $jsonString .= '{';
-    foreach($resul as $clave => $valor) {
-        if($clave == "received") {
-            $jsonString .= '"recibidas": "' . $valor . '",';
-        }
-        if($clave == "attended") {
-            $jsonString .= '"atendidas": "' . $valor . '",';
-        }
-        if($clave == "abandoned") {
-            $jsonString .= '"abandonadas": "' . $valor . '",';
-        }
-        if($clave == "expired") {
-            $jsonString .= '"expiradas": "' . $valor . '",';
-        }
-        if($clave == "manuals") {
-            $jsonString .= '"manuales": "' . $valor . '",';
-        }
-        if($clave == "manualsa") {
-            $jsonString .= '"manualesatendidas": "' . $valor . '",';
-        }
-        if($clave == "manualsna") {
-            $jsonString .= '"manualesnoatendidas": "' . $valor . '",';
-        }
-        if($clave == "answererdetected") {
-            $jsonString .= '"contestador_detectado": "' . $valor . '",';
-        }
-    }
-
-    $jsonString .= '"objetivo_campana": "' . $objresul . '",';
-    $jsonString .= '"gestion_campana": "' . $objresulg . '",';
-    $jsonString = substr($jsonString, 0, -1);
-    $jsonString .= "}";
+    $jsonString .= '{"objetivo_campana": "' . $objresul . '","gestion_campana": "' . $objresulg . '"}';
     return $jsonString;
 }
 
@@ -180,16 +147,22 @@ function mostrarUserPassSip($userID) {
 
 if ($_GET['nomcamp']) {
 
-    if($_GET['op'] == 'agstatus') {
+    if ($_GET['op'] == 'agstatus') {
 
         echo mostrarEstadoAgentes($_GET['nomcamp']);
     } else if ($_GET['op'] == 'queuedcalls') {
 
         echo mostrarLlamadasEnCola($_GET['nomcamp']);
-    } else if($_GET['op'] == 'wdstatus') {
+    } else if ($_GET['op'] == 'wdstatus') {
 
         echo mostrarEstadoCanalesWombat($_GET['nomcamp']);
     }
+} else if ($_GET['idcamp']) {
+
+  if ($_GET['op'] == 'objcamp') {
+
+    echo mostrarEstadoCampana($_GET['idcamp']);
+  }
 }
 
 if($_GET['supId']) {

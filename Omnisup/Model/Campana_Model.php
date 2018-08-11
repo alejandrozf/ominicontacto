@@ -101,8 +101,8 @@ class Campana_Model {
 
      function getSpecialScore($CampId) {
        $sql = "select count(*) FROM ominicontacto_app_campana cd JOIN ominicontacto_app_opcioncalificacion oc ON cd.id=oc.campana_id JOIN
-                ominicontacto_app_calificacioncliente cc ON oc.id = cc.opcion_calificacion_id AND EXTRACT(MONTH from fecha) = :mes AND
-                EXTRACT(YEAR from fecha) = :ano AND cd.id= :cpmid AND es_venta = 't'";
+                ominicontacto_app_calificacioncliente cc ON oc.id = cc.opcion_calificacion_id AND EXTRACT(DAY from fecha) = :dia
+                AND EXTRACT(MONTH from fecha) = :mes AND EXTRACT(YEAR from fecha) = :ano AND cd.id= :cpmid AND es_venta = 't'";
        $day = date("d");
        $month = date("m");
        $year = date("Y");
