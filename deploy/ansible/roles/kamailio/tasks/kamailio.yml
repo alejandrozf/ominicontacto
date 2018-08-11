@@ -44,7 +44,7 @@
   when: kamailio_installed|failed
 
 - name: Copy of kamailio Makefile
-  copy: src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/Makefile dest=/usr/src/kamailio/modules/db_postgres/ remote_src=yes
+  template: src=templates/Makefile dest=/usr/src/kamailio/modules/db_postgres/ remote_src=yes owner=root group=root mode=755
   become: true
   become_method: sudo
   when: kamailio_installed|failed

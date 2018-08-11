@@ -80,18 +80,6 @@ OML_BACKLIST_REMOTEPATH  = "/var/lib/docker/volumes/bin_grabaciones/_data"
 
 OML_KAMAILIO_LOCATION = "{{ kamailio_location }}/etc/kamailio/"
 
-# parametros de conexion con base de datos mysql de asterisk
-DATABASE_MYSQL_ASTERISK = {
-    'BASE': 'asterisk',
-    'HOST': '{{ localhost }}',
-{% if asterisk_location != "" %}
-    'USER': '{{ usuario }}',
-{% else %}
-    'USER': 'asterisk',
-{% endif %}
-    'PASSWORD': 'admin123',
-}
-
 ASTERISK = {
     'USERNAME': "wombat",  # Usuario para AMI
     'PASSWORD': "fop222",  # Password para usuario para AMI

@@ -1,8 +1,0 @@
-RUN_KAMAILIO=yes 
-USER=kamailio 
-GROUP=kamailio 
-SHM_MEMORY=64 
-PKG_MEMORY=8 
-PIDFILE=/var/run/kamailio/kamailio.pid 
-CFGFILE=/opt/kamailio/etc/kamailio/kamailio.cfg 
-DUMP_CORE=yes 

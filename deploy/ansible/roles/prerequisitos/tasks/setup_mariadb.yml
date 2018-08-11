@@ -1,6 +1,6 @@
 ---
 
-- name: Enable MariaDB and apache
+- name: Enable MariaDB
   shell: "{{ item }}"
   with_items:
       - systemctl enable mariadb.service

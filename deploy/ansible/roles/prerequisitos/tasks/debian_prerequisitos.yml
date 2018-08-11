@@ -73,6 +73,7 @@
     - flex
     - bison
     #- libmariadbclient-dev
+    - default-libmysqlclient-dev 
     - make
     - libxml2-dev
     - libpcre3-dev

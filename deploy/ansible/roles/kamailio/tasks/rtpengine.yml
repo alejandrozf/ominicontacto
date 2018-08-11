@@ -26,6 +26,9 @@
 
 - name: Install of ffmpeg repository (centos)
   shell: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 - shell: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
   register: command_result
   failed_when:
@@ -33,7 +36,7 @@
     - "'failed' in command_result.stderr"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 
 - name: Install of ffmpeg (centos)
   yum: name={{ item }} state=present
@@ -42,25 +45,25 @@
       - ffmpeg-devel
   become: true
   become_method: sudo
-  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 
 - name: Installation of RTPengine (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/daemon"
   become: true
   become_method: sudo
-  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 
 - name: Modify of the RTPengine kernel module to let it know where is our kernel (centos)
   lineinfile: "path=/usr/src/{{ rtpengine_name }}/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= {{ kernel }}\""
   become: true
   become_method: sudo
-  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 
 - name: Installation of RTPengine kernel module (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
   become: true
   become_method: sudo
-  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 
 - name: Insert the kernel module created for RTPengine (centos)
   shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
@@ -70,19 +73,19 @@
     - "command_result.rc != 0"
   become: true
   become_method: sudo
-  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 
 - name: Installation of IPtables extensions (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/iptables-extension"
   become: true
   become_method: sudo
-  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 
 - name: Copy of iptables library to lib64/xtables (centos)
   copy: src=/usr/src/{{ rtpengine_name }}/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
   become: true
   become_method: sudo
-  when: ['rtpengine_installed|failed','ansible_os_family == "RedHat"']
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
 
 ####### End of install in centos #########
 
@@ -101,15 +104,15 @@
   when: ansible_os_family == "Debian"
 
 - name: Install rtpengine debs
-  apt: deb=/usr/src/{{ rtpengine_name }}/{{ item }}
+  apt: deb=/usr/src/{{ item }}
   with_items:
-    - ngcp-rtpengine-daemon_
-    - ngcp-rtpengine-iptables_
-    - ngcp-rtpengine-dbg_
-    - ngcp-rtpengine-utils_
-    - ngcp-rtpengine-kernel-dkms_
-    - ngcp-rtpengine-recording-daemon_
-    - ngcp-rtpengine_
+    - ngcp-rtpengine-daemon_5.5.3.1+0~mr5.5.3.1_amd64.deb
+    - ngcp-rtpengine-iptables_5.5.3.1+0~mr5.5.3.1_amd64.deb
+    - ngcp-rtpengine-dbg_5.5.3.1+0~mr5.5.3.1_amd64.deb
+    - ngcp-rtpengine-utils_5.5.3.1+0~mr5.5.3.1_all.deb
+    - ngcp-rtpengine-kernel-dkms_5.5.3.1+0~mr5.5.3.1_all.deb
+    - ngcp-rtpengine-recording-daemon_5.5.3.1+0~mr5.5.3.1_amd64.deb
+    - ngcp-rtpengine_5.5.3.1+0~mr5.5.3.1_all.deb
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
@@ -117,7 +120,7 @@
 ####### End of install in debian #######
 
 - name: Creation of RTPengine config file
-  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/rtpengine
+  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
   become: true
   become_method: sudo
 

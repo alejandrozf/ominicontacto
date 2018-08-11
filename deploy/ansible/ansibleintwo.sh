@@ -145,7 +145,7 @@ while true; do
         tag=$tag
         break
     else
-        if [ $nva_tag == "virtualenv" ] || [ $nva_tag == "all" ] || [ $nva_tag == "docker" ] || [ $nva_tag == "kamailio" ]; then
+        if [ $nva_tag == "kamailio,omniapp" ] || [ $nva_tag == "all" ] || [ $nva_tag == "docker" ] || [ $nva_tag == "kamailio" ]; then
             tag=$nva_tag
             break
         else

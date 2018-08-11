@@ -4,11 +4,25 @@
   template: src=roles/kamailio/templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
   become: true
   become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Modify of pg_hba.conf file
+  template: src=roles/kamailio/templates/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
 
 - name: Restart postgres service
   service: name=postgresql-9.6 state=restarted enabled=yes
   become: true
   become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Restart postgres service
+  service: name=postgresql state=restarted enabled=yes
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
 
 - name: Create kamailio postgres user
   become: yes

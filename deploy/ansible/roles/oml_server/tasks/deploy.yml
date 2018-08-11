@@ -89,4 +89,3 @@
 
 - name: Creation of simbolic link of oml_settings_local.py
   file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/oml_settings_local.py owner={{ usuario }} force=true
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
