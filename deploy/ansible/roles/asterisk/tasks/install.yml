@@ -4,14 +4,14 @@
 - set_fact: libpri_tar=libpri-1.6.0.tar.gz
 - set_fact: jansson_tar=jansson-2.7.tar.gz
 - set_fact: dahdi_tar=dahdi-linux-complete-2.11.1+2.11.1.tar.gz
-- set_fact: iksemel_tar=iksemel-master.zip
+- set_fact: iksemel_tar=iksemel-1.5.1.3.zip
 
 - name: Descarga de paquetes de asterisk
   get_url: "url={{ item }} dest=/usr/src/"
   with_items:
         - "{{ dahdi_linux }}"
         - "{{ libpri }}"
-        - "{{ asterisk_centos }}"
+        - "{{ iksemel }}"
         - "{{ asterisk_v13 }}"
         - "{{ jansson }}"
   become: yes
@@ -45,15 +45,21 @@
   become_method: sudo
 
 - name: Create iksemel directory
-  file: path={{ install_prefix }}iksemel-master state=directory owner={{ usuario }} group={{ usuario }}
+  file: path={{ install_prefix }}iksemel-1.5.1.2 state=directory owner={{ usuario }} group={{ usuario }}
   become: yes
   become_method: sudo
 
+- name: Link libtool simbolic link (debian)
+  file: state=link src=/usr/bin/libtoolize dest=/usr/bin/libtool owner=root group=root force=true
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
 - name: Instalacion de Iksemel-Master
-  shell: "{{ item }} chdir=/usr/src/iksemel-master"
+  shell: "{{ item }} chdir=/usr/src/iksemel-1.5.1.3"
   with_items:
         - ./autogen.sh
-        - ./configure --prefix={{ install_prefix }}iksemel-master
+        - ./configure --prefix={{ install_prefix }}iksemel-1.5.1.2
         - make
         - make install
   become: yes
@@ -106,13 +112,23 @@
 #  become: yes
 #  become_method: sudo
 
-- name: Instalacion de asterisk
+- name: Instalacion de asterisk (centos)
   shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - contrib/scripts/install_prereq install
           - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
- # become: yes
- # become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Seteo del countrycode para asterisk
+  debconf: name='libvpb0' question='libvpb0/countrycode' value={{ country_code }} vtype='string'
+  when: ansible_os_family == "Debian"
+
+- name: Instalacion de asterisk (debian)
+  shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
+  with_items:
+          - echo 'y' | contrib/scripts/install_prereq install
+          - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
+  when: ansible_os_family == "Debian"
 
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-13.22.0"
   register: command_result
@@ -128,7 +144,6 @@
           - make install
           - make config
           - ldconfig
-          - chkconfig asterisk off
  # become: yes
  # become_method: sudo
 

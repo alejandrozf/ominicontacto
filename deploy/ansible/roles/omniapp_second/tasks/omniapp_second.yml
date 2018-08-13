@@ -2,13 +2,11 @@
 
 - name: Upload nginx.conf configuration
   template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   become: true
   become_method: sudo
 
 - name: Enable nginx
   shell: systemctl enable nginx
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
   become: true
   become_method: sudo
 
@@ -31,39 +29,21 @@
 - name: Create of oml_uwgsi.ini script
   template: src=templates/oml_uwsgi.ini.j2 dest={{ install_prefix }}bin/oml_uwsgi.ini mode=755 owner={{ usuario }} group={{ usuario }}
 
-- name: Create omnileads-daemon service
-  template: src=templates/ominicontacto-daemon.j2 dest=/etc/init.d/omnileads mode=755 owner=root group=root
+- name: Create of omnileads service
+  template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
   become: true
   become_method: sudo
-
-- name: Instal lsb-initfunctions (centos)
-  command: yum install '/lib/lsb/init-functions' -y
-  become: true
-  become_method: sudo
-  ignore_errors: yes
-  when: ansible_os_family == "RedHat"
-
-- name: Update-rc of omnileads service (debian)
-  command: "{{ item }}"
-  with_items:
-    - update-rc.d ominicontacto-daemon defaults
-    - update-rc.d ominicontacto-daemon enable 2
-    - update-rc.d ominicontacto-daemon enable 3
-    - update-rc.d ominicontacto-daemon enable 4
-    - update-rc.d ominicontacto-daemon enable 5
-  when: ansible_os_family == "Debian"
 
 - name: Start the omnileads-daemon service
   command: "{{ item }}"
   with_items:
-          - "service omnileads start"
+          - "systemctl daemon-reload"
+          - "systemctl enable omnileads"
           - "service omnileads stop"
-          - "chkconfig omnileads on"
           - "service omnileads start"
   become: true
   become_method: sudo
   ignore_errors: yes
-  when: ansible_os_family == "Sangoma" or ansible_os_family == "RedHat"
 
 - name: Copy of the Kamailio cert in voip.cert
   template: src=templates/concatenate.sh dest={{ install_prefix }}bin/concatenate.sh mode=755

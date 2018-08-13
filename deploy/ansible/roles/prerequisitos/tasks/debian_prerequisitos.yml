@@ -1,5 +1,8 @@
 ---
 
+- name: Uninstall of apache2
+  apt: name=apache2 state=absent
+
 - name: Install apt-transport-https
   apt: name=apt-transport-https state=present
 
@@ -73,7 +76,7 @@
     - flex
     - bison
     #- libmariadbclient-dev
-    - default-libmysqlclient-dev 
+    - default-libmysqlclient-dev
     - make
     - libxml2-dev
     - libpcre3-dev
@@ -112,6 +115,7 @@
     - subversion
     - odbc-postgresql
     - wget
+    - unzip
   become: true
   become_method: sudo
 
@@ -131,17 +135,21 @@
     - postgresql-9.6
     - postgresql-contrib
     - postgresql-server-dev-9.6
+    - postgresql-plpython-9.6
     - python-mysqldb
     - libjpeg-dev
+    - python-psycopg2
+    - expect
+    - php-fpm
   become: true
   become_method: sudo
 
-- name: Install the imported php5.6 key
-  shell: 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php5.list'
-  become: true
-  become_method: sudo
+#- name: Install the imported php5.6 key
+#  shell: 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php5.list'
+#  become: true
+#  become_method: sudo
 
-- name: Intall php5.6
-  apt: name=php5.6 state=present
-  become: true
-  become_method: sudo
+#- name: Intall php5.6
+#  apt: name=php5.6 state=present
+#  become: true
+#  become_method: sudo

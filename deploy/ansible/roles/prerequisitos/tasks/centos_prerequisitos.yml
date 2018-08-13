@@ -136,6 +136,7 @@
       - php56w-ldap
       - php56w-intl
       - php56w-soap
+      - php56w-fpm 
   become: true
   become_method: sudo
   when: asterisk_location != ""

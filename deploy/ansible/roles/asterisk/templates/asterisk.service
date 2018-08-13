@@ -1,0 +1,18 @@
+[Unit]
+Description=Asterisk
+After=syslog.target network-online.target
+
+[Service]
+Type=forking
+User=omnileads
+ExecStart=/bin/bash -c '/etc/init.d/asterisk start'
+ExecReload=/bin/bash -c '/etc/init.d/asterisk reload'
+ExecStopPost=/bin/bash -c '/etc/init.d/asterisk stop'
+PIDFile={{ asterisk_location }}/var/run/asterisk/asterisk.pid
+RuntimeDirectory=asterisk
+RuntimeDirectoryMode=755
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

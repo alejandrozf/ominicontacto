@@ -8,19 +8,6 @@
   become: true
   become_method: sudo
 
-#- name: Creation of kamailio user and group
-#  shell: "{{ item }}"
-#  with_items:
-      #- mkdir -p {{ kamailio_location }}/run/kamailio
-#      - groupadd -g 5000 kamailio
-#      - useradd -u 5000 -g 5000 -d /var/run/kamailio -M -s /bin/false kamailio
-#  ignore_errors: yes
-#  register: command_result
-#  failed_when:
-#    - "'ya existe' not in command_result.stderr"
-#    - "'already exists' not in command_result.stderr"
-#    - "command_result.rc != 0"
-
 - name: Create kamailio.log file and directory
   file: path=/var/log/kamailio/ state=directory mode=0755
   become: true
@@ -39,7 +26,7 @@
   template: src=templates/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
 
 - name: Creation of kamailio.service file in systemd
-  template: src=templates/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=655
+  template: src=templates/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
 
 - name: Run kamailio as a service
   shell: "{{ item }}"
