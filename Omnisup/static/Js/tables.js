@@ -31,6 +31,7 @@ $(function () {
   var url = window.location.href;
   if(url.indexOf('Detalle_Campana') !== -1) {
     setInterval("actualiza_contenido_agt()", 4000);
+    setInterval("actualiza_contenido_objcamp()", 4000);
     setInterval("actualiza_contenido_camp()", 4000);
     setInterval("actualiza_contenido_colas()", 4000);
     setInterval("actualiza_contenido_wombat()", 4000);
@@ -59,6 +60,27 @@ function actualiza_contenido_agt() {
   });
 }
 
+function actualiza_contenido_objcamp() {
+  var campid = $("#campId").val();
+  $.ajax({
+    url: 'Controller/Detalle_Campana_Contenido.php',
+    type: 'GET',
+    dataType: 'html',
+    data: 'idcamp='+campid+'&op=objcamp',
+    success: function (msg) {
+      if(msg!=="]") {
+        var mje = JSON.parse(msg);
+        $("#gestioncampana").html(mje.gestion_campana);
+        $("#objcampana").html(mje.objetivo_campana);
+        var pje = (mje.gestion_campana * 100) / mje.objetivo_campana;
+        $("#percent").html(pje +"%");
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+    }
+  });
+}
 
 function actualiza_contenido_camp() {
   var nomcamp = $("#nombreCamp").html();
