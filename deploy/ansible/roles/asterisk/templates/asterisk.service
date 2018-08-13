@@ -5,9 +5,11 @@ After=syslog.target network-online.target
 [Service]
 Type=forking
 User=omnileads
-ExecStart=/bin/bash -c '/etc/init.d/asterisk start'
-ExecReload=/bin/bash -c '/etc/init.d/asterisk reload'
-ExecStopPost=/bin/bash -c '/etc/init.d/asterisk stop'
+Environment=USER={{ usuario }}
+Environment=GROUP={{ usuario }}
+ExecStart=/usr/sbin/asterisk -U $USER -G $GROUP -g
+ExecReload=/usr/sbin/asterisk -x 'core restart gracefully'
+ExecStop=/usr/sbin/asterisk -x 'core stop now'
 PIDFile={{ asterisk_location }}/var/run/asterisk/asterisk.pid
 RuntimeDirectory=asterisk
 RuntimeDirectoryMode=755

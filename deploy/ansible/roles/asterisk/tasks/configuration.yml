@@ -10,12 +10,6 @@
   become: yes
   become_method: sudo
 
-- name: Load init.d script to raise up asterisk
-  template: src=templates/asterisk-omnileads dest=/etc/init.d/asterisk mode=755
-  when: asterisk_location != ""
-  become: yes
-  become_method: sudo
-
 - name: Creation of asterisk.service
   template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
 
@@ -47,7 +41,7 @@
   when: asterisk_location == "" or ansible_os_family == "Sangoma"
 
 - name: Config of asterisk for OML
-  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
+  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755|"
   with_items:
       - amd.conf
       - chan_dahdi.conf

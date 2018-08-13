@@ -97,21 +97,6 @@
   become: yes
   become_method: sudo
 
-#- name: Creacion de carpeta /tmp/downloads
-#  file: path=/tmp/downloads state=directory mode=755
-#  become: yes
-#  become_method: sudo
-
-#- name: Descarga de pjsip-project
-#  shell: "wget -O /tmp/downloads/pjproject-2.7.2.tar.bz2 http://www.pjsip.org/release/2.7.2/pjproject-2.7.2.tar.bz2 chdir=/tmp/downloads"
-#  - shell: "wget -O /tmp/downloads/pjproject-2.7.2.md5 http://www.pjsip.org/release/2.7.2/MD5SUM.TXT chdir=/tmp/downloads"
-#  register: command_result
-#  failed_when:
-#    - "'ERROR 404: Not Found' not in command_result.stderr"
-#    - "command_result.rc != 0"
-#  become: yes
-#  become_method: sudo
-
 - name: Instalacion de asterisk (centos)
   shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
@@ -151,12 +136,12 @@
   shell: "{{ item }} chdir={{ install_prefix }}"
   with_items:
       - mv jansson-2.7 asterisk/
-      - mv iksemel-master asterisk/
+      - mv iksemel-1.5.1.2 asterisk/
 
 - name: Erase the downloaded directories of asterisk
   file: path=/usr/src/{{ item }} state=absent
   with_items:
-    - iksemel-master
+    - iksemel-1.5.1.2
     - asterisk-13.22.0
     - jansson-2.7
     - libpri-1.6.0
