@@ -540,7 +540,8 @@ def blanco_view(request):
 
 def nuevo_evento_agenda_view(request):
     """Vista get para insertar un nuevo evento en la agenda
-    REVISAR si se usa esta vista si no es obsoleta"""
+        REVISAR si se usa esta vista si no es obsoleta. Referenciada en Calendar.js
+    """
     agente = request.GET['agente']
     es_personal = request.GET['personal']
     fecha = request.GET['fechaEvento']
@@ -606,25 +607,26 @@ class AgenteEventosFormView(FormView):
             listado_de_eventos=listado_de_eventos))
 
 
-def regenerar_asterisk_view(request):
-    """Vista para regenerar los archivos de asterisk"""
-    activacion_queue_service = RegeneracionAsteriskService()
-    try:
-        activacion_queue_service.regenerar()
-    except RestablecerDialplanError, e:
-        message = ("Operación Errónea! "
-                   "No se realizo de manera correcta la regeneracion de los "
-                   "archivos de asterisk al siguiente error: {0}".format(e))
-        messages.add_message(
-            request,
-            messages.ERROR,
-            message,
-        )
-    messages.success(request,
-                     'La regeneracion de los archivos de configuracion de'
-                     ' asterisk y el reload se hizo de manera correcta')
-    return render_to_response('regenerar_asterisk.html',
-                              context_instance=RequestContext(request))
+# TODO: Se puede Eliminar esta vista?
+# def regenerar_asterisk_view(request):
+#     """Vista para regenerar los archivos de asterisk"""
+#     activacion_queue_service = RegeneracionAsteriskService()
+#     try:
+#         activacion_queue_service.regenerar()
+#     except RestablecerDialplanError, e:
+#         message = ("Operación Errónea! "
+#                    "No se realizo de manera correcta la regeneracion de los "
+#                    "archivos de asterisk al siguiente error: {0}".format(e))
+#         messages.add_message(
+#             request,
+#             messages.ERROR,
+#             message,
+#         )
+#     messages.success(request,
+#                      'La regeneracion de los archivos de configuracion de'
+#                      ' asterisk y el reload se hizo de manera correcta')
+#     return render_to_response('regenerar_asterisk.html',
+#                               context_instance=RequestContext(request))
 
 
 def nuevo_duracion_llamada_view(request):
@@ -679,18 +681,19 @@ def crear_chat_view(request):
 
 def supervision_url_externa(request):
     """Vista que redirect a la supervision externa de marce"""
-    if request.user.is_authenticated() and \
-            request.user.get_supervisor_profile():
-        sip_extension = request.user.get_supervisor_profile().sip_extension
-        timestamp = request.user.generar_usuario(sip_extension).split(':')[0]
+    user = request.user
+    if user.get_is_supervisor_normal() or user.get_is_supervisor_customer():
+        supervisor = user.get_supervisor_profile()
+        sip_extension = supervisor.sip_extension
+        timestamp = user.generar_usuario(sip_extension).split(':')[0]
         sip_usuario = timestamp + ":" + str(sip_extension)
-        supervisor_profile = request.user.get_supervisor_profile()
-        supervisor_profile.timestamp = timestamp
-        supervisor_profile.sip_password = request.user.generar_contrasena(sip_usuario)
-        supervisor_profile.save()
-        supervisor = supervisor_profile
+        supervisor.timestamp = timestamp
+        supervisor.sip_password = request.user.generar_contrasena(sip_usuario)
+        supervisor.save()
         url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
         if supervisor.is_administrador:
+            # TODO: Con los nuevos permisos nunca se puede dar este caso
+            # Discutir si este caso de uso queda descartado
             url += "&es_admin=t"
         else:
             url += "&es_admin=f"

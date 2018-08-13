@@ -81,7 +81,7 @@
     $.ajax(
     {
         type:"POST",
-        url: "/reportes/agente_por_fecha/",
+        url: "{% url 'reportes_agente_por_fecha' %}",
         data:{
                  'id_agente': id_agente,
                  'fecha_desde': fecha_desde,
@@ -117,7 +117,7 @@
     $.ajax(
     {
         type:"POST",
-        url: "/reportes/pausa_por_fecha/",
+        url: "{% url 'reportes_pausa_por_fecha' %}",
         data:{
                  'id_agente': id_agente,
                  'fecha_desde': fecha_desde,

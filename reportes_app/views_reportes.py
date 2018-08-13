@@ -9,6 +9,8 @@ import datetime
 from django.shortcuts import redirect
 from django.views.generic import FormView, ListView, View
 from django.utils import timezone
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.forms import ReporteForm
 from ominicontacto_app.models import Campana, AgenteProfile
@@ -29,16 +31,31 @@ class CampanaReporteCalificacionListView(ListView):
     context_object_name = 'campana'
     model = Campana
 
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        asignadas = Campana.objects.all()
+
+        if not user.get_is_administrador():
+            asignadas = Campana.objects.obtener_campanas_vista_by_user(asignadas, user)
+
+        try:
+            self.campana = asignadas.get(pk=self.kwargs['pk_campana'])
+        except Campana.DoesNotExist:
+            messages.warning(self.request, _(u"Usted no puede acceder a esta campaña."))
+            return redirect('index')
+
+        return super(CampanaReporteCalificacionListView, self).get(self, request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(CampanaReporteCalificacionListView, self).get_context_data(
             **kwargs)
 
         service = ReporteCampanaService()
         service_formulario = ReporteMetadataClienteService()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        service.crea_reporte_csv(campana)
-        service_formulario.crea_reporte_csv(campana)
-        context['campana'] = campana
+
+        service.crea_reporte_csv(self.campana)
+        service_formulario.crea_reporte_csv(self.campana)
+        context['campana'] = self.campana
         return context
 
 
@@ -91,20 +108,34 @@ class CampanaReporteGraficoView(FormView):
     template_name = 'reporte_grafico_campana.html'
 
     def get_object(self, queryset=None):
-        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+        user = self.request.user
+
+        asignadas = Campana.objects.all()
+
+        if not user.get_is_administrador():
+            asignadas = Campana.objects.obtener_campanas_vista_by_user(asignadas, user)
+
+        try:
+            return asignadas.get(pk=self.kwargs['pk_campana'])
+        except Campana.DoesNotExist:
+            return None
 
     def get(self, request, *args, **kwargs):
+        campana = self.get_object()
+        if not campana:
+            messages.warning(self.request, _(u"Usted no puede acceder a esta campaña."))
+            return redirect('index')
         service = EstadisticasService()
         hoy_ahora = timezone.now()
         hoy = hoy_ahora.date()
         # genera reporte de llamadas contactados
         calificados_csv = ReporteCampanaContactadosCSV()
-        calificados_csv.crea_reporte_csv(self.get_object(), hoy, hoy_ahora)
+        calificados_csv.crea_reporte_csv(campana, hoy, hoy_ahora)
         # genera los reportes grafico de la campana
-        graficos_estadisticas = service.general_campana(self.get_object(), hoy, hoy_ahora)
+        graficos_estadisticas = service.general_campana(campana, hoy, hoy_ahora)
         # generar el reporte pdf
         service_pdf = ReporteCampanaPDFService()
-        service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
+        service_pdf.crea_reporte_pdf(campana, graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas,
             pk_campana=self.kwargs['pk_campana']))

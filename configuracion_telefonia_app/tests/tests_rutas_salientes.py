@@ -46,10 +46,10 @@ class TestsRutasSalientes(OMLBaseTest):
         self.client.login(username=usr_sup, password=self.PWD)
         url = reverse('eliminar_ruta_saliente', args=[self.ruta_1.id])
         response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, 'registration/login.html')
+        self.assertEqual(response.status_code, 403)
         self.client.login(username=usr_sup, password=self.PWD)
         self.client.post(url, follow=True)
-        self.assertTemplateUsed(response, 'registration/login.html')
+        response = self.client.get(url, follow=True)
 
     @patch('configuracion_telefonia_app.views.eliminar_ruta_saliente_config')
     def test_administrador_puede_eliminar(self, mock_sincronizacion):
@@ -107,7 +107,7 @@ class TestsRutasSalientes(OMLBaseTest):
         self.client.login(username=usr_sup.username, password=self.PWD)
         url = reverse('crear_ruta_saliente')
         response = self.client.post(url, follow=True)
-        self.assertTemplateUsed(response, 'registration/login.html')
+        self.assertEqual(response.status_code, 403)
 
     def test_supervisor_normal_no_puede_modificar_ruta_saliente(self):
         usr_sup = self.crear_user_supervisor()
@@ -117,7 +117,7 @@ class TestsRutasSalientes(OMLBaseTest):
         url = reverse('editar_ruta_saliente', args=[self.ruta_1.id])
         post_data = {}
         response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'registration/login.html')
+        self.assertEqual(response.status_code, 403)
 
     @patch('configuracion_telefonia_app.views.escribir_ruta_saliente_config')
     def test_administrador_puede_crear_ruta_saliente(self, mock_sincronizacion):

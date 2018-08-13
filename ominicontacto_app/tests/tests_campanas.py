@@ -150,9 +150,13 @@ class CampanasTests(OMLBaseTest):
     def setUp(self):
         self.tiempo_desconexion = 3
 
-        self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
+        self.usuario_admin_supervisor = self.crear_administrador()
         self.usuario_admin_supervisor.set_password(self.PWD)
-        self.usuario_admin_supervisor.save()
+        self.supervisor_profile = self.usuario_admin_supervisor.get_supervisor_profile()
+
+        self.agente = self.crear_user_agente()
+        self.agente.set_password(self.PWD)
+        self.agente_profile = self.crear_agente_profile(self.agente)
 
         calificacion_nombre = "calificacion_nombre"
 
@@ -188,17 +192,99 @@ class CampanasTests(OMLBaseTest):
             campana=self.campana_borrada, nombre=calificacion_nombre,
             tipo=OpcionCalificacion.GESTION)
 
-        self.agente_profile = AgenteProfileFactory.create(user=self.usuario_admin_supervisor)
-
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
         self.queue = QueueFactory.create(campana=self.campana_activa)
 
-        self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
-
     def tearDown(self):
         for camp_prev in Campana.objects.obtener_campanas_preview():
             camp_prev.eliminar_tarea_actualizacion()
+
+
+class AgenteCampanaTests(CampanasTests):
+
+    def setUp(self, *args, **kwargs):
+        super(AgenteCampanaTests, self).setUp(*args, **kwargs)
+        self.client.login(username=self.agente.username, password=self.PWD)
+
+    def test_usuario_no_logueado_no_accede_a_vista_campanas_preview_agente(self):
+        self.client.logout()
+        url = reverse('campana_preview_activas_miembro')
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_usuario_logueado_accede_a_vista_campanas_preview_agente(self):
+        url = reverse('campana_preview_activas_miembro')
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, 'agente/campanas_preview.html')
+
+    def test_campanas_preview_activas_muestra_las_asociadas_a_agente(self):
+        url = reverse('campana_preview_activas_miembro')
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
+        response = self.client.get(url, follow=True)
+        self.assertContains(response, self.campana_activa.nombre)
+
+    def test_campanas_preview_activas_no_muestra_las_no_asociadas_a_agente(self):
+        url = reverse('campana_preview_activas_miembro')
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
+        response = self.client.get(url, follow=True)
+        self.assertNotContains(response, self.campana_borrada.nombre)
+
+    def _inicializar_valores_formulario_cliente(self):
+        values = {
+            'contacto_id': self.contacto.pk,
+            'telefono_contacto': self.contacto.telefono,
+            'datos_contacto': self.contacto.datos,
+            'agente_id': self.agente_profile.pk,
+            'estado': AgenteEnContacto.ESTADO_ENTREGADO,
+            'campana_id': self.campana_activa.pk,
+        }
+        AgenteEnContactoFactory.create(**values)
+        kwargs = {'pk_contacto': self.contacto.pk,
+                  'pk_campana': self.campana_activa.pk,
+                  'id_agente': self.agente_profile.pk,
+                  'wombat_id': 0}
+        url = reverse('calificacion_formulario_update_or_create', kwargs=kwargs)
+        post_data = {'opcion_calificacion': [self.opcion_calificacion_noaccion.pk],
+                     'agente': [self.agente_profile.pk],
+                     'observaciones': [''],
+                     'agendado': ['False'],
+                     'campana': [self.campana_activa.pk],
+                     'contacto': [self.contacto.pk],
+                     'id': ['']}
+        return values, url, post_data
+
+    @patch('requests.post')
+    def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
+        AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
+        values, url, post_data = self._inicializar_valores_formulario_cliente()
+        base_datos = self.contacto.bd_contacto
+        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+        datos = json.loads(self.contacto.datos)
+        for nombre, dato in zip(nombres, datos):
+            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
+        self.client.post(url, post_data, follow=True)
+        values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
+        self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
+
+    @patch('requests.post')
+    def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(self, post):
+        values, url, post_data = self._inicializar_valores_formulario_cliente()
+        base_datos = self.contacto.bd_contacto
+        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+        datos = json.loads(self.contacto.datos)
+        for nombre, dato in zip(nombres, datos):
+            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
+        self.client.post(url, post_data, follow=True)
+        self.campana_activa.refresh_from_db()
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_FINALIZADA)
+
+
+class SupervisorCampanaTests(CampanasTests):
+
+    def setUp(self, *args, **kwargs):
+        super(SupervisorCampanaTests, self).setUp(*args, **kwargs)
+        self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
     def test_campana_contiene_atributo_entero_positivo_llamado_objetivo(self):
         self.assertTrue(self.campana.objetivo >= 0)
@@ -391,78 +477,6 @@ class CampanasTests(OMLBaseTest):
         self.assertEqual(data['agente_id'], agente.pk)
         self.assertEqual(data['telefono_contacto'], unicode(agente_en_contacto.telefono_contacto))
         self.assertEqual(data['estado'], AgenteEnContacto.ESTADO_ENTREGADO)
-
-    def test_usuario_no_logueado_no_accede_a_vista_campanas_preview_agente(self):
-        self.client.logout()
-        url = reverse('campana_preview_activas_miembro')
-        response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, u'registration/login.html')
-
-    def test_usuario_logueado_accede_a_vista_campanas_preview_agente(self):
-        url = reverse('campana_preview_activas_miembro')
-        response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, 'agente/campanas_preview.html')
-
-    def test_campanas_preview_activas_muestra_las_asociadas_a_agente(self):
-        url = reverse('campana_preview_activas_miembro')
-        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
-        response = self.client.get(url, follow=True)
-        self.assertContains(response, self.campana_activa.nombre)
-
-    def test_campanas_preview_activas_no_muestra_las_no_asociadas_a_agente(self):
-        url = reverse('campana_preview_activas_miembro')
-        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
-        response = self.client.get(url, follow=True)
-        self.assertNotContains(response, self.campana_borrada.nombre)
-
-    def _inicializar_valores_formulario_cliente(self):
-        values = {
-            'contacto_id': self.contacto.pk,
-            'telefono_contacto': self.contacto.telefono,
-            'datos_contacto': self.contacto.datos,
-            'agente_id': self.agente_profile.pk,
-            'estado': AgenteEnContacto.ESTADO_ENTREGADO,
-            'campana_id': self.campana_activa.pk,
-        }
-        AgenteEnContactoFactory.create(**values)
-        kwargs = {'pk_contacto': self.contacto.pk,
-                  'pk_campana': self.campana_activa.pk,
-                  'id_agente': self.agente_profile.pk,
-                  'wombat_id': 0}
-        url = reverse('calificacion_formulario_update_or_create', kwargs=kwargs)
-        post_data = {'opcion_calificacion': [self.opcion_calificacion_noaccion.pk],
-                     'agente': [self.agente_profile.pk],
-                     'observaciones': [''],
-                     'agendado': ['False'],
-                     'campana': [self.campana_activa.pk],
-                     'contacto': [self.contacto.pk],
-                     'id': ['']}
-        return values, url, post_data
-
-    @patch('requests.post')
-    def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
-        AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
-        values, url, post_data = self._inicializar_valores_formulario_cliente()
-        base_datos = self.contacto.bd_contacto
-        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(self.contacto.datos)
-        for nombre, dato in zip(nombres, datos):
-            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
-        self.client.post(url, post_data, follow=True)
-        values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
-        self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
-
-    @patch('requests.post')
-    def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(self, post):
-        values, url, post_data = self._inicializar_valores_formulario_cliente()
-        base_datos = self.contacto.bd_contacto
-        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(self.contacto.datos)
-        for nombre, dato in zip(nombres, datos):
-            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
-        self.client.post(url, post_data, follow=True)
-        self.campana_activa.refresh_from_db()
-        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_FINALIZADA)
 
     def test_solo_un_contacto_se_mantiene_asignado_a_un_agente(self):
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)

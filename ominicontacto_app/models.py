@@ -97,6 +97,14 @@ class User(AbstractUser):
             return True
         return False
 
+    def get_es_administrador_o_supervisor_normal(self):
+        """Funcion devuelve true si el usuario es Administrador o Supervisor Normal"""
+        if self.get_is_administrador():
+            return True
+        elif self.get_is_supervisor_normal():
+            return True
+        return False
+
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
             try:

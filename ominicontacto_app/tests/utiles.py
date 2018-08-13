@@ -118,12 +118,15 @@ class OMLTestUtilsMixin(object):
             reported_by=user
         )
 
-    def crear_supervisor_profile(self, user, is_administrador=False):
+    def crear_supervisor_profile(self, user, is_administrador=False, is_customer=False):
+        assert not(is_administrador and is_customer), "No puede ser customer "
+        "y administrador a la vez"
         return SupervisorProfile.objects.create(
             user=user,
             sip_extension=1000 + user.id,
             sip_password="sdsfhdfhfdhfd",
             is_administrador=is_administrador,
+            is_customer=is_customer,
         )
 
     def crear_administrador(self, username='admin_', first_name='', last_name=''):

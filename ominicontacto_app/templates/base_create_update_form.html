@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
@@ -8,7 +9,7 @@
         {% include "base_form_fields.html" with form=form %}
         <hr>
         <button type="submit" id="id_registrar" class="btn btn-primary">
-            Guardar
+            {% trans 'Guardar' %}
         </button>
     </form>
 
