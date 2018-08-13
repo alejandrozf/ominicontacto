@@ -1,5 +1,5 @@
 [omnileads]
-172.16.20.22 ansible_ssh_port=22 ansible_user=omnileads
+localhost ansible_connection=local ansible_user=omnileads
 
 [omnileads:vars]
 LOCALHOST=false
