@@ -27,7 +27,7 @@ $(document).ready(function(){
     $modificar_contacto.append($span_modificar_contacto);
     nodos_acciones.push($modificar_contacto);
 
-    // se crean los nodos que permiten llamar al contacto
+    // se crean los nodos que permiten llamar al contacto solo si no son Preview
     if (tipo_campana != 'Preview') {
       var $llamar_contacto = create_node('button', {
         'class': 'contacto-lista btn btn-light btn-sm',
@@ -43,13 +43,14 @@ $(document).ready(function(){
           $inputContacto.attr('value', pk_contacto);
           $('#lista_llamar_contacto').trigger('click');
         });
+      nodos_acciones.push($llamar_contacto);
     }
+    /*
     else {
       var $llamar_contacto = create_node('button', {
         'class': 'contacto-lista btn btn-light btn-sm',
       });
-    }
-    nodos_acciones.push($llamar_contacto);
+    }/**/
 
     // se crean los nodos que permiten mandar un mail al contacto
     // (actualmente esta funcionalidad está sin implementar)
