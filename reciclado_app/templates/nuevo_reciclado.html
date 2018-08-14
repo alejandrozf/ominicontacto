@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-
+<div clas="row">
     <form action = "" method = "post" enctype="multipart/form-data" role="form">
         {% csrf_token %}
         {{ form.non_field_errors }}
@@ -22,11 +23,18 @@
             </div>
          {% endfor %}
         </div>
+        <h3>{% trans 'Como desea reciclar esta campana' %}</h3>
+        <div class="form-row">
+                    {{ form.reciclado_radio.0 }}
+        </div>
+        <div class="form-row">
+                    {{ form.reciclado_radio.1 }}
+        </div>
         <hr>
         <button type="submit" id="id_registrar" class="btn btn-primary">
             Reciclar
         </button>
     </form>
-
+</div>
 
 {% endblock %}

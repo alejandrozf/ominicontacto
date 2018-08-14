@@ -47,6 +47,8 @@ class ReciclarCampanaDialerFormView(FormView):
     def form_valid(self, form):
         reciclado_calificacion = form.cleaned_data.get('reciclado_calificacion')
         reciclado_no_contactacion = form.cleaned_data.get('reciclado_no_contactacion')
+        reciclado_radio = form.cleaned_data.get('reciclado_radio')
+
         if not (reciclado_calificacion or reciclado_no_contactacion):
             message = '<strong>Operación Errónea!</strong> \
                         Debe seleccionar al menos una opcion para reciclar '
@@ -79,7 +81,8 @@ class ReciclarCampanaDialerFormView(FormView):
             )
             return self.form_invalid(form)
 
-        return HttpResponseRedirect(
-            reverse("crea_campana_dialer_template",
-                    kwargs={"pk_campana_template": campana_reciclada.pk,
-                            "borrar_template": 1}))
+        if reciclado_radio == 'nueva_campaña':
+            return HttpResponseRedirect(
+                reverse("crea_campana_dialer_template",
+                        kwargs={"pk_campana_template": campana_reciclada.pk,
+                                "borrar_template": 1}))
