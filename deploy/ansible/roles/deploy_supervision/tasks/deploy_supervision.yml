@@ -9,6 +9,7 @@
   when: ansible_os_family == "Debian"
 
 - set_fact: php_version={{ command_result.stdout }}
+  when: ansible_os_family == "Debian"
 - set_fact: phpfpm_path=/etc/php/{{ php_version }}/fpm/
   when: ansible_os_family == "Debian"
 
