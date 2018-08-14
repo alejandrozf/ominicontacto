@@ -1,7 +1,15 @@
 ---
 - set_fact: omnisup_dir={{ install_prefix }}
 
-- set_fact: phpfpm_path=/etc/php/7.2/fpm/
+- name: Get php-fpm version
+  shell: php --version |head -1 | awk -F  "." '{print $1 "." $2}' | awk -F " " '{print $2}'
+  register: command_result
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+- set_fact: php_version={{ command_result.stdout }}
+- set_fact: phpfpm_path=/etc/php/{{ php_version }}/fpm/
   when: ansible_os_family == "Debian"
 
 - file: path={{ install_prefix }}Omnisup state=absent
@@ -43,7 +51,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Enable and start of php-fpm service
-  service: name=php7.2-fpm state=started enabled=yes
+  service: name=php{{ php_version }}-fpm state=started enabled=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
@@ -53,7 +61,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Change permission of the php-fpm.sock (debian)
-  file: path=/var/run/php/php7.2-fpm.sock owner={{ usuario }} group={{ usuario }}
+  file: path=/var/run/php/php{{ php_version }}-fpm.sock owner={{ usuario }} group={{ usuario }}
   when: ansible_os_family == "Debian"
 
 - name: Set permissions of required to {{ usuario }}'s user

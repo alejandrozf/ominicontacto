@@ -1,6 +1,6 @@
 ---
 
-- name: Installation of docker-engine required packages
+- name: Installation of docker-engine required packages (centos)
   yum: name={{ item }} state=present
   with_items:
     - yum-utils
@@ -10,13 +10,39 @@
   become: true
   become_method: sudo
 
-- name: Add of docker repository
-  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-  when: ansible_os_family == "RedHat"
+- name: Installation of docker-engine required packages (debian)
+  apt: name={{ item }} state=present
+  with_items:
+    - ca-certificates
+    - gnupg2
+    - software-properties-common
+  when: ansible_os_family == "Debian"
   become: true
   become_method: sudo
 
-- name: Docker Installation
+- name: Add of docker repository key (debian)
+  apt_key: url=https://download.docker.com/linux/debian/gpg state=present
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+- name: Add of docker repository (debian)
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+    state: present
+    validate_certs: no
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+- name: Docker Installation (debian)
+  apt: update_cache=yes allow_unauthenticated=yes cache_valid_time=12 name=docker-ce state=present force=yes
+  when: ansible_os_family == "Debian"
+  register: command_result
+  become: true
+  become_method: sudo
+
+- name: Docker Installation (centos)
   yum: name=docker-ce state=present
   when: ansible_os_family == "RedHat"
   become: true

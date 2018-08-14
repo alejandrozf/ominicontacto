@@ -98,7 +98,7 @@
   when: ansible_os_family == "Debian"
 
 - name: Build of rtpengine with dpkg
-  shell: "dpkg-buildpackage chdir=/usr/src/{{ rtpengine_name }}"
+  shell: "dpkg-buildpackage -uc -us chdir=/usr/src/{{ rtpengine_name }}"
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"

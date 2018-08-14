@@ -1,7 +1,7 @@
 ---
 
 - name: Uninstall of apache2
-  apt: name=apache2 state=absent
+  apt: name=apache2 state=absent purge=yes
 
 - name: Install apt-transport-https
   apt: name=apt-transport-https state=present
@@ -24,6 +24,7 @@
 
 - name: Update/upgrade of system
   apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
+  when: LOCALHOST == "true"
 
 - name: Install of sngrep
   apt: name=sngrep state=present
