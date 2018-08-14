@@ -17,20 +17,12 @@
   tags: asterisk
 
 - include: install.yml
-  when: ansible_os_family == "RedHat" and asterisk_installed|failed
+  when: asterisk_installed|failed
   tags: asterisk
 
 - include: configuration.yml
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
   tags: asterisk
 
 #- include: freepbx.yml
 #  when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
 #  tags: freepbx
-
-
-
-
-
-
-

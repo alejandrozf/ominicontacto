@@ -1,0 +1,20 @@
+[Unit]
+Description=Asterisk
+After=syslog.target network-online.target
+
+[Service]
+Type=forking
+User=omnileads
+Environment=USER={{ usuario }}
+Environment=GROUP={{ usuario }}
+ExecStart=/usr/sbin/asterisk -U $USER -G $GROUP -g
+ExecReload=/usr/sbin/asterisk -x 'core restart gracefully'
+ExecStop=/usr/sbin/asterisk -x 'core stop now'
+PIDFile={{ asterisk_location }}/var/run/asterisk/asterisk.pid
+RuntimeDirectory=asterisk
+RuntimeDirectoryMode=755
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

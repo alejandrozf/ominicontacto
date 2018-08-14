@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=forking
 PIDFile=/var/run/rtpengine.pid
-EnvironmentFile=-/etc/sysconfig/rtpengine
+EnvironmentFile=-/etc/rtpengine-config.conf
 ExecStart=/usr/local/bin/rtpengine -p /var/run/rtpengine.pid $OPTIONS
 
 Restart=always

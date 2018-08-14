@@ -11,14 +11,18 @@ NAME=db_postgres.so
 
 ifeq ($(CROSS_COMPILE),)
 #PGCFG=$(shell which pg_config)
+{% if ansible_os_family == "RedHat" %}
 PGCFG=/usr/pgsql-9.6/bin/pg_config
+{% else %}
+PGCFG=/usr/bin/pg_config
+{% endif %}
 endif
 
 ifneq ($(PGCFG),)
 	# use autodetection
 	DEFS += -I$(shell $(PGCFG) --includedir)
 	LIBS += -L$(shell $(PGCFG) --libdir) -lpq
-#	LIBS += /usr/pgsql-9.6/include/libpq-fe.h 
+#	LIBS += /usr/pgsql-9.6/include/libpq-fe.h
 else
 	# use standard know paths
 	# libpq-fe.h locations

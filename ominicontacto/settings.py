@@ -193,14 +193,6 @@ Ejemplo:
 # DEPLOY -> Asterisk
 # ==============================================================================
 
-# parametros de conexion con base de datos mysql de asterisk
-DATABASE_MYSQL_ASTERISK = {
-    'BASE': None,
-    'HOST': None,
-    'USER': None,
-    'PASSWORD': None,
-}
-
 OML_ASTERISK_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
@@ -384,14 +376,6 @@ assert OML_QUEUES_FILENAME is not None, \
     "Falta definir setting para OML_QUEUES_FILENAME"
 
 # ~~~~~ Check ASTERISK
-
-for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
-    assert key in DATABASE_MYSQL_ASTERISK, \
-        "Falta key '{0}' en configuracion de la base de datos de ASTERISK".\
-        format(key)
-    assert DATABASE_MYSQL_ASTERISK[key] is not None, \
-        "Falta key '{0}' en configuracion de la base de datos ASTERISK".\
-        format(key)
 
 for key in ('USERNAME', 'PASSWORD', 'HTTP_AMI_URL'):
     assert key in ASTERISK, \

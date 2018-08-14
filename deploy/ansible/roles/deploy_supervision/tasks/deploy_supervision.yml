@@ -1,41 +1,42 @@
 ---
 - set_fact: omnisup_dir={{ install_prefix }}
 
+- name: Get php-fpm version
+  shell: php --version |head -1 | awk -F  "." '{print $1 "." $2}' | awk -F " " '{print $2}'
+  register: command_result
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+- set_fact: php_version={{ command_result.stdout }}
+- set_fact: phpfpm_path=/etc/php/{{ php_version }}/fpm/
+  when: ansible_os_family == "Debian"
 
 - file: path={{ install_prefix }}Omnisup state=absent
 
-- name: Install of php56-fpm
-  yum: name=php56w-fpm.x86_64 state=present
-  become: yes
-  become_method: sudo
-  when: asterisk_location != ""
-
-- name: Install of php-fpm
-  yum: name=php-fpm.x86_64 state=present
-  become: yes
-  become_method: sudo
-  when: asterisk_location == ""
-
-- name: Modify of php.ini
+- name: Modify of php.ini (centos)
   lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
-  become: yes
+  become: true
   become_method: sudo
+  when: ansible_os_family == "RedHat"
 
-#- name: Edit sudoers to permit apache users to run asterisk commands
-#  lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL = NOPASSWD: {{ install_prefix }}asterisk/sbin/asterisk\""
-#  become: yes
-#  become_method: sudo
+- name: Modify of php.ini (debian)
+  lineinfile: dest="{{ phpfpm_path }}php.ini"  regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
 
-- name: Modify of /php-fpm.d/php-fpm.sock
+- name: Add php-fpm configuration for supervision
   template: src=templates/www.conf.j2 dest=/etc/php-fpm.d/www.conf
-  become: yes
+  become: true
   become_method: sudo
+  when: ansible_os_family == "RedHat"
 
-- name: Enable and start of php-fpm service
-  shell: "{{ item }}"
-  with_items:
-      - systemctl start php-fpm
-      - systemctl enable php-fpm
+- name: Add php-fpm configuration for supervision
+  template: "src=templates/www.conf.j2 dest={{ phpfpm_path }}pool.d/www.conf"
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
 
 - name: Modify of config.js in /static/Js
   template: "src=templates/config.js.j2 dest={{ omnisup_dir }}ominicontacto/Omnisup/static/Js/config.js"
@@ -43,30 +44,37 @@
 - name: Create simbolic link of Omnisup directory
   file: src={{ omnisup_dir }}/ominicontacto/Omnisup dest={{ omnisup_dir }}Omnisup state=link owner={{ usuario }} group={{ usuario }} mode=755
 
-- name: Restart php-fpm service
-  service: name=php-fpm state=restarted enabled=yes
-  become: yes
+- name: Enable and start of php-fpm service
+  service: name=php-fpm state=started enabled=yes
+  become: true
   become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Enable and start of php-fpm service
+  service: name=php{{ php_version }}-fpm state=started enabled=yes
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+- name: Change permission of the php-fpm.sock (centos)
+  file: path=/var/run/php-fpm/php-fpm.sock owner={{ usuario }} group={{ usuario }}
+  when: ansible_os_family == "RedHat"
+
+- name: Change permission of the php-fpm.sock (debian)
+  file: path=/var/run/php/php{{ php_version }}-fpm.sock owner={{ usuario }} group={{ usuario }}
+  when: ansible_os_family == "Debian"
 
 - name: Set permissions of required to {{ usuario }}'s user
-  shell: "{{ item }}"
-  with_items:
-      - "chown {{ usuario }}:{{ usuario }} -R /var/run/php-fpm/php-fpm.sock"
-      - "chown {{ usuario }}:{{ usuario }} -R {{ omnisup_dir }}Omnisup"
-      - "chown {{ usuario }}:{{ usuario }} -R /var/lib/nginx/"
-  become: yes
+  file: path=/var/lib/nginx/ owner={{ usuario }} group={{ usuario }} state=directory
+  become: true
   become_method: sudo
 
 - name: Creation of /etc/nginx/conf.d/supervision.conf
   template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
-  become: yes
+  become: true
   become_method: sudo
 
 - name: Restart of nginx
   service: name=nginx state=restarted enabled=yes
-  become: yes
+  become: true
   become_method: sudo
-
-
-
-

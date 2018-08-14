@@ -1,5 +1,5 @@
 ---
-- name: Instalacion de Omnileads en CentOS con Asterisk en container
+- name: Instalacion de Omnileads con Asterisk en container
   hosts: omnileads
   # Siempre 'gather_facts' ya q' lo usaoms en varios 'when'
   # gather_facts: '{{ lookup("env","DO_CHECKS") }}'

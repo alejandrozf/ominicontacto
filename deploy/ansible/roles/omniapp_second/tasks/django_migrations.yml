@@ -38,6 +38,12 @@
   become_user: "{{ usuario }}"
   ignore_errors: yes
 
+- name: Add queuelog trigger to database
+  command: psql -U kamailio -w -h 127.0.0.1 -d kamailio -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plpython/replace_insert_queue_log_ominicontacto_queue_log.sql'
+  become: yes
+  become_user: postgres
+  become_method: sudo
+
 - name: Change password of superuser
   template: "src=templates/changepassword.sh.j2 dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
 
@@ -49,7 +55,3 @@
 
 - name: Erase the script for changing superuser password
   file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent
-
-#- name: Change permissions on id_rsa
-#  shell: "chmod 700 {{ install_prefix }}.ssh/id_rsa"
-#  when: ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"

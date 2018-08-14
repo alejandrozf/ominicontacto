@@ -45,7 +45,7 @@
       - lame
   become: true
   become_method: sudo
-  when: DOCKER == "false"
+  when: ['DOCKER == "false"','ansible_os_family == "RedHat"']
 
 - name: Installation of kamailio packages
   yum: name={{ item }} state=present
@@ -76,6 +76,7 @@
     - libunistring-devel.x86_64
   become: true
   become_method: sudo
+  when: ansible_os_family == "RedHat"
 
 - meta: clear_host_errors
 
@@ -83,10 +84,12 @@
   yum: "name={{ postgresql_url }} state=present validate_certs=no "
   become: yes
   become_method: sudo
+  when: ansible_os_family == "RedHat"
 
 - yum: name=postgresql96* state=present
   become: yes
   become_method: sudo
+  when: ansible_os_family == "RedHat"
 
 - name: Install the app and services packages
   yum: "name={{ item }} state=present"
@@ -125,34 +128,19 @@
       - python2-pip.noarch
   become: yes
   become_method: sudo
+  when: ansible_os_family == "RedHat"
 - meta: clear_host_errors
 
 - name: install php56wpgsql
   yum: name=php56w-pgsql state=present
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
 - meta: clear_host_errors
-  become: yes
-  become_method: sudo
-
-#- name: install phppgsql
-#  yum: name=php-pgsql state=present
-#- meta: clear_host_errors
-#  become: yes
-#  become_method: sudo
-
-- name: Change /etc/hostname
-  template: src=templates/hostname.j2 dest=/etc/hostname
-  become: true
-  become_method: sudo
-
-- name: Edit sudoers to execute binaries withouth password
-  lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/rsync, {{ install_prefix }}asterisk/sbin/asterisk\""
-  when: asterisk_location != ""
-  become: yes
-  become_method: sudo
 
 - name: Edit sudoers to execute binaries withouth password
   lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/rsync, /usr/sbin/asterisk\""
-  when: asterisk_location == ""
   become: yes
   become_method: sudo
 

@@ -10,49 +10,14 @@
   become: yes
   become_method: sudo
 
-- name: Load init.d script to raise up asterisk
-  template: src=templates/asterisk-omnileads dest=/etc/init.d/asterisk mode=755
-  when: ansible_os_family == "RedHat" and asterisk_location != ""
-  become: yes
-  become_method: sudo
+- name: Creation of asterisk.service
+  template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
 
 - name: Create simbolic link of asterisk binarie
   file: state=link src={{ asterisk_location }}/sbin/asterisk dest=/usr/sbin/asterisk force=true
-  when: ansible_os_family == "RedHat" and asterisk_location != ""
+  when: asterisk_location != ""
   become: yes
   become_method: sudo
-
-#- name: Delete of asterisk files managed by omnileads
-#  shell: "rm -rf {{ item }} chdir={{ asterisk_location }}/etc/asterisk/"
-#  with_items:
-#      - extensions_custom.conf
-#      - extensions_fts.conf
-#      - sip_custom.conf
-#      - extconfig.conf
-#      - amd.conf
-#      - func_odbc.conf
-#      - http_custom.conf
-#      - func_odbc.conf
-#      - cdr_adaptive_odbc.conf
-#      - manager_custom.conf
-#      - queues_custom.conf
-#      - globals_custom.conf
-#      - pjsip.transports_custom.conf
-#      - res_odbc_custom.conf
-#  tags:
-#    - issabel
-#    - postinstall
-
-#- shell: "rm -rf {{ item}} chdir={{ asterisk_location }}/var/lib/asterisk/agi-bin/"
-#  with_items:
-#      - omni-asterisk-logout.php
-#      - omni-blacklist.php
-#      - omni-grabaciones.php
-#      - omni-dialednum.php
-#      - generate_outbound_route_context.php
-#  tags:
-#    - issabel
-#    - postinstall
 
 - name: Config of asterisk-freepbx for OML
   file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
@@ -76,7 +41,7 @@
   when: asterisk_location == "" or ansible_os_family == "Sangoma"
 
 - name: Config of asterisk for OML
-  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
+  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755|"
   with_items:
       - amd.conf
       - chan_dahdi.conf
@@ -201,16 +166,14 @@
   become: yes
   become_method: sudo
 
-- name: Add start of asterisk to rc.local
-  shell: "chkconfig asterisk on"
-  when: asterisk_location != ""
-  become: yes
-  become_method: sudo
-
-- name: Start asterisk
-  shell: "service asterisk start"
-  when: asterisk_location != ""
-  become: yes
+- name: Start and enable asterisk
+  command: "{{ item }}"
+  with_items:
+          - "systemctl daemon-reload"
+          #- "systemctl enable asterisk"
+          - "service asterisk stop"
+          - "service asterisk start"
+  become: true
   become_method: sudo
   ignore_errors: yes
 

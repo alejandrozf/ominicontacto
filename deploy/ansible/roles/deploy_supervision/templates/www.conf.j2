@@ -9,7 +9,11 @@
 ;                            specific port;
 ;   '/path/to/unix/socket' - to listen on a unix socket.
 ; Note: This value is mandatory.
+{% if ansible_os_family == "RedHat" %}
 listen = /var/run/php-fpm/php-fpm.sock
+{% else%}
+listen = /var/run/php/php7.2-fpm.sock
+{% endif %}
 listen.owner = {{ usuario }}
 listen.group = {{ usuario }}
 user = {{ usuario }}
@@ -55,4 +59,3 @@ php_admin_flag[log_errors] = off
 php_value[session.save_handler] = files
 php_value[session.save_path]    = /var/lib/php/session
 php_value[soap.wsdl_cache_dir]  = /var/lib/php/wsdlcache
-
