@@ -1,7 +1,10 @@
 /*///// General
 */
-
+html {
+    height: 100%;
+}
 body {
+    height: 100%;
     font-family: 'Asap', sans-serif;
     color: #2F342F;
 }
@@ -718,6 +721,44 @@ table.campana-reglas .td-remove .btn {
     background-color: black !important;
 }
 
+
+/* ///// Error pages
+*/
+body.wrapper-page-error {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 0 6%;
+}
+.page-error-bg {
+    background: url(../Img/ic_logo_symbol.svg) no-repeat center center / 100%;
+    opacity: 0.07;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}
+.wrapper-page-error h1 {
+    font-size: 1.8em;
+    text-transform: uppercase;
+    margin-top: 50px;
+}
+.wrapper-page-error h1 span {
+    color: rgba(0,0,0,0.5);
+    margin-left: 20px;
+}
+.wrapper-page-error h2 {
+    font-size: 1.3em;
+    line-height: 1.6em;
+    margin-bottom: 30px;
+}
+.wrapper-page-error p {
+    font-size: 1.2em;
+}
 
 /* ///// Media queries
 /////////////////////////////

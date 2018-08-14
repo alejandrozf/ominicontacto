@@ -1,22 +1,27 @@
+{% load staticfiles %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Omnileads - Bad Request</title>
-<!-- <link href="/static/lumina/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"> -->
-<style type="text/css">
-/* reset5 © 2011 opensource.736cs.com MIT */
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,audio,canvas,details,figcaption,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,summary,time,video{border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;margin:0;padding:0;}body{line-height:1;}article,aside,dialog,figure,footer,header,hgroup,nav,section,blockquote{display:block;}nav ul{list-style:none;}ol{list-style:decimal;}ul{list-style:disc;}ul ul{list-style:circle;}blockquote,q{quotes:none;}blockquote:before,blockquote:after,q:before,q:after{content:none;}ins{text-decoration:underline;}del{text-decoration:line-through;}mark{background:none;}abbr[title],dfn[title]{border-bottom:1px dotted #000;cursor:help;}table{border-collapse:collapse;border-spacing:0;}hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0;}input[type=submit],input[type=button],button{margin:0!important;padding:0!important;}input,select,a img{vertical-align:middle;}
-</style>
-<style type="text/css">
-    BODY { padding: 2em;  }
-    H1 { font-size: x-large; margin: 1em;}
-    P { margin: 1em;}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Bootstrap -->
+<link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
 </head>
-<body>
-    <h1>Solicitud incorrecta</h1>
-    <p>La solicitud recibida es incorrecta.</p>
-    <p>Ud. puede <a href="javascript:history.go(0);">reintentar</a> o <a href="/">volver a inicio</a>.</p>
+<body class="wrapper-page-error">
+    <div class="page-error-bg"></div>
+    <div>
+        <h1>Solicitud incorrecta<span>400</span></h1>
+        <hr>
+        <h2>La solicitud recibida es incorrecta.</h2>
+        <p>Puede <a href="javascript:history.go(0);">reintentar</a> o <a href="/">volver a inicio</a>.</p>
+    </div>
 </body>
 </html>
