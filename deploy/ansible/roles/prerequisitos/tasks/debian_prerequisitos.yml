@@ -10,7 +10,7 @@
   apt_repository:
     repo: deb http://packages.irontec.com/debian stretch main
     state: present
-    validate_certs: no
+    validate_certs: yes
   become: true
   become_method: sudo
 

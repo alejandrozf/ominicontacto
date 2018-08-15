@@ -22,10 +22,10 @@ server {
 
     location /grabaciones {
 
-    {% if asterisk_location != "" %}
+    {% if DOCKER == "false" %}
     alias {{ install_prefix }}asterisk/var/spool/asterisk/monitor;
     {% else %}
-    alias /var/spool/asterisk/monitor;
+    alias /var/lib/docker/volumes/bin_grabaciones/_data;
     {% endif %}
     autoindex on;
     allow all;
