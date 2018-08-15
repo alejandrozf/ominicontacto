@@ -69,7 +69,7 @@
   when: asterisk_location != ""
 
 - name: Copy of all asterisk config files
-  shell: "mv *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/archivos-no-enlaces/"
+  shell: "cp *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/archivos-no-enlaces/"
   when: asterisk_location != ""
 
 - name: Copy of the php agis
@@ -121,10 +121,20 @@
   template: src=templates/cron-omnileads dest=/etc/cron.d/cron-omnileads owner=root group=root
   when: asterisk_location != ""
 
-- name: Copy of odbc files and omnileads sounds
+- name: Link odbc librarie to postgresql libs
+  file: state=link src=/usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so dest=/usr/lib/postgresql/9.6/lib/psqlodbcw.so owner=root group=root mode=700
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+- name: Creation of odbcinst.ini file
+  template: src=templates/etc/odbcinst.ini dest=/etc/odbcinst.ini owner=root group=root mode=700
+  become: true
+  become_method: sudo
+
+- name: Copy of odbc.ini file and omnileads sounds
   shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files"
   with_items:
-      - cp {{ install_prefix }}ominicontacto/ominicontacto_voip/extra-files/odbcinst.ini /etc/
       - cp {{ install_prefix }}ominicontacto/ominicontacto_voip/extra-files/odbc.ini /etc/
       - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/es
       - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/en
@@ -138,17 +148,6 @@
 
 - name: Add web nocolor=yes in /etc/asterisk/asterisk.conf
   ini_file: "path={{ asterisk_location }}/etc/asterisk/asterisk.conf section=options option=nocolor no_extra_spaces=yes value=yes state=present"
-
-- name: Install Mysql-python DB module
-  pip: name=MySQL-python
-  when: ansible_os_family == "Sangoma" or asterisk_location == ""
-
-- name: Add user of MySQL {{ usuario }}
-  mysql_user: "name={{ usuario }} host={{ item }} login_user=root login_password={{ mysql_root_password }} password=admin123 priv=\"asterisk.*:ALL,GRANT\""
-  with_items:
-      - "localhost"
-      - "127.0.0.1"
-  when: ansible_os_family == "Sangoma" or asterisk_location == ""
 
 - name: Change permissions to asterisk user
   file: path={{ item }} owner=asterisk group=asterisk state=directory recurse=yes
