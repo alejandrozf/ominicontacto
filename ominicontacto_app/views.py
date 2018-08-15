@@ -18,14 +18,16 @@ from django.shortcuts import render_to_response, redirect
 from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView
+    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 )
 from defender import utils
 from defender import config
+
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
     Chat, MensajeChat, QueueMember
@@ -34,15 +36,15 @@ from ominicontacto_app.forms import (
     CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
     AgendaBusquedaForm, PausaForm, GrupoForm
 )
-from django.contrib.auth.forms import AuthenticationForm
 from services.asterisk_service import ActivacionAgenteService,\
     RestablecerConfigSipError
 from services.regeneracion_asterisk import RegeneracionAsteriskService,\
     RestablecerDialplanError
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
-from django.views.generic import TemplateView
 from ominicontacto_app import version
+from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
+    RestablecerConfiguracionTelefonicaError, SincronizadorDeConfiguracionPausaAsterisk)
 
 logger = logging.getLogger(__name__)
 
@@ -409,43 +411,9 @@ class GrupoDeleteView(DeleteView):
         return reverse('grupo_list')
 
 
-class RegenerarAsteriskOnSuccessMixin(object):
-
-    def get_success_url(self):
-        activacion_queue_service = RegeneracionAsteriskService()
-        try:
-            activacion_queue_service.regenerar()
-        except RestablecerDialplanError, e:
-            message = ("Operación Errónea! "
-                       "No se realizo de manera correcta la regeneracion de los "
-                       "archivos de asterisk al siguiente error: {0}".format(e))
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-        messages.success(self.request,
-                         'La regeneracion de los archivos de configuracion de'
-                         ' asterisk y el reload se hizo de manera correcta')
-
-        return reverse('pausa_list')
-
-
-# TODO: No hace falta regenerar asterisk. Solamente sincronizar la info en AstDB con su family
-class PausaCreateView(RegenerarAsteriskOnSuccessMixin, CreateView):
-    """Vista para crear pausa"""
-    model = Pausa
-    template_name = 'base_create_update_form.html'
-    form_class = PausaForm
-
-
-class PausaUpdateView(RegenerarAsteriskOnSuccessMixin, UpdateView):
-    """Vista para modificar pausa"""
-    model = Pausa
-    template_name = 'base_create_update_form.html'
-    form_class = PausaForm
-
-
+####################
+# PAUSAS
+####################
 class PausaListView(TemplateView):
     """Vista para listar pausa"""
     model = Pausa
@@ -457,8 +425,49 @@ class PausaListView(TemplateView):
         context['pausas_eliminadas'] = Pausa.objects.eliminadas()
         return context
 
-# TODO: Sincronizar en AstDB!
-class PausaToggleDeleteView(TemplateView):
+
+class SincronizarPausaMixin(object):
+
+    def get_success_url(self):
+        return reverse('pausa_list')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.sincronizar(self.object, self.request)
+        return super(SincronizarPausaMixin, self).form_valid(form)
+
+    def sincronizar(self, pausa, request, eliminar=False):
+        sincronizador = SincronizadorDeConfiguracionPausaAsterisk()
+        try:
+            if eliminar:
+                sincronizador.eliminar_y_regenerar_asterisk(pausa)
+                message = (_(u"La pausa se ha elimiado exitosamente."))
+            else:
+                sincronizador.regenerar_asterisk(pausa)
+                message = (_(u"La pausa se ha guardado exitosamente."))
+            messages.add_message(self.request, messages.SUCCESS, message)
+        except RestablecerConfiguracionTelefonicaError, e:
+            message = ("Operación Errónea! "
+                       "No se realizo de manera correcta la sincronización de los  "
+                       "datos en asterisk según el siguiente error: {0}".format(e))
+            messages.add_message(self.request, messages.WARNING, message)
+
+
+class PausaCreateView(SincronizarPausaMixin, CreateView):
+    """Vista para crear pausa"""
+    model = Pausa
+    template_name = 'base_create_update_form.html'
+    form_class = PausaForm
+
+
+class PausaUpdateView(SincronizarPausaMixin, UpdateView):
+    """Vista para modificar pausa"""
+    model = Pausa
+    template_name = 'base_create_update_form.html'
+    form_class = PausaForm
+
+
+class PausaToggleDeleteView(SincronizarPausaMixin, TemplateView):
     """
     Esta vista se encarga de la eliminación/activación del
     objeto pausa
@@ -479,6 +488,10 @@ class PausaToggleDeleteView(TemplateView):
             return redirect('pausa_list')
         pausa.eliminada = not pausa.eliminada
         pausa.save()
+        if pausa.eliminada:
+            self.sincronizar(pausa, request, True)
+        else:
+            self.sincronizar(pausa, request)
         return redirect('pausa_list')
 
 

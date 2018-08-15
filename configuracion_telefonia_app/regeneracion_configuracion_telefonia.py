@@ -16,7 +16,7 @@ from ominicontacto_app.asterisk_config import (
 )
 from ominicontacto_app.services.asterisk_database import (
     RutaSalienteFamily, TrunkFamily, RutaEntranteFamily, IVRFamily, ValidacionFechaHoraFamily,
-    GrupoHorarioFamily
+    GrupoHorarioFamily, PausaFamily
 )
 
 logger = logging.getLogger(__name__)
@@ -47,6 +47,7 @@ class RestablecerConfiguracionTelefonicaError(OmlError):
     pass
 
 
+# TODO: Refactorizar para que extienda de AbstractConfiguracionAsterisk
 class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
 
     def __init__(self):
@@ -130,6 +131,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         self._regenerar_troncales_ruta_en_astdb(ruta)
 
 
+# TODO: Refactorizar para que extienda de AbstractConfiguracionAsterisk
 class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
 
     def __init__(self):
@@ -227,7 +229,7 @@ class AbstractConfiguracionAsterisk(object):
         except:
             logger.exception("Error en la families {0} "
                              "intentar regenerar_family()".format(nombre_families))
-            mensaje_error += ("Hubo un inconveniente al insertar los registros de la familie {0} "
+            mensaje_error += ("Hubo un inconveniente al insertar los registros de la family {0} "
                               "la base de datos de Asterisk. ".format(nombre_families))
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
@@ -278,3 +280,9 @@ class SincronizadorDeConfiguracionGrupoHorarioAsterisk(AbstractConfiguracionAste
     def _obtener_generador_family(self):
         generador = GrupoHorarioFamily()
         return generador
+
+
+class SincronizadorDeConfiguracionPausaAsterisk(AbstractConfiguracionAsterisk):
+
+    def _obtener_generador_family(self):
+        return PausaFamily()
