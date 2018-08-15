@@ -41,7 +41,7 @@
   when: asterisk_location == "" or ansible_os_family == "Sangoma"
 
 - name: Config of asterisk for OML
-  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755|"
+  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
       - amd.conf
       - chan_dahdi.conf
