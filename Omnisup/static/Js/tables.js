@@ -44,11 +44,7 @@ function actualiza_contenido_agt() {
   });
 }
 
-<<<<<<< HEAD
 function actualiza_contenido_objcamp() {
-=======
-function actualiza_objetivo_camp() {
->>>>>>> comienzo de creacion de peticion de datos para objetivo de campana y porcentaje
   var campid = $("#campId").val();
   $.ajax({
     url: 'Controller/Detalle_Campana_Contenido.php',
@@ -58,14 +54,10 @@ function actualiza_objetivo_camp() {
     success: function (msg) {
       if(msg!=="]") {
         var mje = JSON.parse(msg);
-<<<<<<< HEAD
         $("#gestioncampana").html(mje.gestion_campana);
         $("#objcampana").html(mje.objetivo_campana);
         var pje = (mje.gestion_campana * 100) / mje.objetivo_campana;
         $("#percent").html(pje +"%");
-=======
-
->>>>>>> comienzo de creacion de peticion de datos para objetivo de campana y porcentaje
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
