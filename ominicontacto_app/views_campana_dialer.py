@@ -272,6 +272,8 @@ class UpdateBaseDatosDialerView(FormView):
         # realiza el cambio de la base de datos en wombat
         campana_service.cambiar_base(self.get_object(), columnas, evitar_duplicados,
                                      evitar_sin_telefono, prefijo_discador)
+        campana_service.start_campana_wombat(self.get_object())
+        self.get_object().play()
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito el cambio de base de datos.'
 

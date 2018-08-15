@@ -330,9 +330,6 @@
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
                                 <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
                             </a>
-                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
-                                <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
-                            </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                             </a>
