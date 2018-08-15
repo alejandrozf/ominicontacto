@@ -12,7 +12,7 @@
 {% if ansible_os_family == "RedHat" %}
 listen = /var/run/php-fpm/php-fpm.sock
 {% else%}
-listen = /var/run/php/php7.2-fpm.sock
+listen = /var/run/php/php{{ php_version }}-fpm.sock
 {% endif %}
 listen.owner = {{ usuario }}
 listen.group = {{ usuario }}
