@@ -89,7 +89,7 @@ ASTERISK = {
 # 'OML_RELOAD_CMD': comando a ejecutar para realizar el reload de la configuracion de Asterisk
 # **** RECORDAR: revisar permisos, usuario, etc.
 {% if DOCKER == "false" %}
-OML_RELOAD_CMD = '["ssh root@{{ localhost }}",  "{{ asterisk_location }}/usr/sbin/asterisk", "-rx", "core reload"]'
+OML_RELOAD_CMD = 'ssh root@127.0.0.1 \'/usr/sbin/asterisk -rx "core reload"\''
 {% else %}
 OML_RELOAD_CMD = 'sudo docker exec -i asterisk /bin/bash -c "/usr/sbin/asterisk -rx \'core reload\'"'
 {% endif %}

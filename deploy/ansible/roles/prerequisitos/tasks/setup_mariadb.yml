@@ -26,9 +26,10 @@
   become_method: sudo
 
 - name: Add .my.cnf
-  template: src=my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
+  template: src=my.cnf.j2 dest=/etc/mysql/conf.d/my.cnf owner=root group=root mode=0600
   become: true
   become_method: sudo
+  when: ansible_os_family == "Debian"
 
 - name: Remove anonymous users
   command: 'mysql -ne "{{ item }}"'
@@ -51,5 +52,15 @@
   with_items:
     - FLUSH PRIVILEGES
   changed_when: False
+  become: true
+  become_method: sudo
+
+- name: Grant privileges to root mysql user
+  mysql_user: name=root host=localhost login_user=root password="{{ mysql_root_password}}" priv="*.*:ALL,GRANT"
+  become: true
+  become_method: sudo
+
+- name: Restart mariadb
+  service: name=mariadb state=restarted enabled=yes
   become: true
   become_method: sudo

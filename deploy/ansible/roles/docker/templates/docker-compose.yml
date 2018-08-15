@@ -56,10 +56,14 @@ services:
         source: {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis
         target: {{ asterisk_location }}/var/lib/asterisk/agi-bin/
       - type: bind
-        source: /usr/pgsql-9.6/lib/
-        target: /usr/pgsql-9.6/lib/
+        source: /usr/pgsql-9.6/
+        target: /usr/pgsql-9.6/
       - type: volume
         source: grabaciones
         target: {{ asterisk_location }}/var/spool/asterisk/monitor
+      - type: bind
+        source: {{ install_prefix }}media_root/audio_asterisk_predefinido/
+        target: {{ asterisk_location }}/var/lib/asterisk/sounds/oml/
+      - type: bind
 volumes:
   grabaciones:

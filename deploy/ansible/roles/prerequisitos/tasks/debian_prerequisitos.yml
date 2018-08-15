@@ -10,7 +10,7 @@
   apt_repository:
     repo: deb http://packages.irontec.com/debian stretch main
     state: present
-    validate_certs: no
+    validate_certs: yes
   become: true
   become_method: sudo
 
@@ -37,10 +37,10 @@
   become_method: sudo
   ignore_errors: True
 
-- name: Installation of mysqlserver
-  apt: name=mysql-server state=present dpkg_options='force-confdef'
-  become: true
-  become_method: sudo
+#- name: Installation of mysqlserver
+#  apt: name=mysql-server state=present dpkg_options='force-confdef'
+#  become: true
+#  become_method: sudo
 
 - name: Installation of VoIP dependencies
   apt: "name={{ item }} state=present"
@@ -76,6 +76,7 @@
     - gcc
     - flex
     - bison
+    - mariadb-server
     #- libmariadbclient-dev
     - default-libmysqlclient-dev
     - make

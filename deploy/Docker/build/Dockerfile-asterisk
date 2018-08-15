@@ -1,4 +1,4 @@
-FROM centos:centos7.4.1708
+FROM centos:latest
 MAINTAINER Felipe Macias <felipe.macias@freetechsolutions.com.ar>
 
 ENV build-date 2018
@@ -28,7 +28,7 @@ RUN systemctl stop firewalld && systemctl disable firewalld
 #Install PHP 5.6
 #RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 #RUN rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-#RUN yum install -y php56w php56w-pdo php56w-mysql php56w-mbstring php56w-pear php56w-process php56w-xml php56w-gd php56w-opcache php56w-ldap php56w-intl php56w-soap
+#RUN yum install -y php56w php56w-pdo php56w-mysql php56w-mbstring php56w-pgsql php56w-pear php56w-process php56w-xml php56w-gd php56w-opcache php56w-ldap php56w-intl php56w-soap
 
 #Install nodeJS
 RUN curl -sL https://rpm.nodesource.com/setup_8.x | bash - && sudo yum install -y nodejs
@@ -38,15 +38,15 @@ RUN mkdir -p $asterisk_location
 
 # Download and install of Iksemel master
 WORKDIR /usr/src
-RUN wget -O iksemel-master.zip https://github.com/meduketto/iksemel/archive/master.zip
-RUN unzip iksemel-master.zip
-RUN mkdir -p $asterisk_location/iksemel-master
-WORKDIR /usr/src/iksemel-master
+RUN wget -O iksemel-1.5.1.3.zip https://github.com/holme-r/iksemel/archive/1.5.1.3.zip
+RUN unzip iksemel-1.5.1.3.zip
+RUN mkdir -p $asterisk_location/iksemel-1.5.1.2
+WORKDIR /usr/src/iksemel-1.5.1.3
 RUN ./autogen.sh
-RUN ./configure --prefix=$asterisk_location/iksemel-master
+RUN ./configure --prefix=$asterisk_location/iksemel-1.5.1.2
 RUN make
 RUN make install
-RUN rm -rf /usr/src/iksemel-master
+RUN rm -rf /usr/src/iksemel-*
 
 #Download and install Dahdi linux
 #WORKDIR /usr/src
@@ -82,21 +82,16 @@ RUN make
 RUN make install
 RUN rm -rf /usr/src/jansson
 
-#Download of pjsip project
-WORKDIR /tmp/downloads
-RUN wget -O pjproject-2.6.tar.bz2 http://www.pjsip.org/release/2.6/pjproject-2.6.tar.bz2
-#RUN wget -O pjproject-2.6.md5 http://www.pjsip.org/release/2.6/MD5SUM.txt
-
 #Download and compile asterisk
 WORKDIR /usr/src
-RUN wget -O asterisk.tar.gz http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-13.18.3.tar.gz
+RUN wget -O asterisk.tar.gz http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-13.22.0.tar.gz
 RUN tar xvfz asterisk.tar.gz
 RUN rm -rf *.tar.gz
 RUN mv asterisk-* asterisk/
 WORKDIR /usr/src/asterisk
 RUN contrib/scripts/install_prereq install
 RUN contrib/scripts/get_mp3_source.sh
-RUN ./configure --libdir=$asterisk_location/usr/lib64 --prefix=$asterisk_location --with-externals-cache=/tmp/downloads
+RUN ./configure --libdir=$asterisk_location/usr/lib64 --prefix=$asterisk_location --with-pjproject-bundled
 RUN make menuselect.makeopts
 RUN menuselect/menuselect --enable format_mp3
 RUN make
@@ -110,11 +105,13 @@ RUN rm -rf /usr/src/asterisk
 COPY asterisk-files/*.tgz /tmp/
 WORKDIR /tmp/
 RUN mkdir $asterisk_location/var/lib/asterisk/sounds/es/
+RUN mkdir $asterisk_location/var/lib/asterisk/sounds/oml/
 RUN tar xzvf es-oml.tgz -C $asterisk_location/var/lib/asterisk/sounds/es/
 RUN tar xzvf en-oml.tgz -C $asterisk_location/var/lib/asterisk/sounds/en/
 
 #Copy of init script and simbolic link to binarie
-COPY asterisk-files/asterisk-omnileads /etc/init.d/asterisk
+#COPY asterisk-files/asterisk-omnileads /etc/init.d/asterisk
+COPY asterisk-files/asterisk.service /etc/systemd/system/
 RUN ln -s $asterisk_location/sbin/asterisk /usr/sbin/asterisk
 
 #Disable SELINUX
@@ -126,7 +123,6 @@ RUN useradd omnileads
 RUN usermod -a -G omnileads omnileads
 RUN chown -R omnileads. /opt/omnileads/asterisk
 RUN service asterisk restart
-
 # Make ports available to the world outside this container
 EXPOSE 4569/udp 5038/tcp 5060/udp 7088/tcp 10000-20000/udp 5160/udp
 

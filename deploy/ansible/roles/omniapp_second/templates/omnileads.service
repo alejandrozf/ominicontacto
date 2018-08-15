@@ -9,7 +9,7 @@ User=omnileads
 Environment=PYTHONPATH={{ install_prefix }}
 ExecStartPre=/bin/bash -c 'source {{ install_prefix }}virtualenv/bin/activate'
 ExecStart={{ install_prefix }}virtualenv/bin/uwsgi --ini {{ install_prefix }}bin/oml_uwsgi.ini
-ExecReload={{ install_prefix }}virtualenv/bin/uwgi --reload {{ install_prefix }}ominicontacto/oml-uwsgi.pid
+ExecReload={{ install_prefix }}virtualenv/bin/uwsgi --reload {{ install_prefix }}ominicontacto/oml-uwsgi.pid
 ExecStop=/opt/omnileads/virtualenv/bin/uwsgi --stop /opt/omnileads/ominicontacto/oml-uwsgi.pid
 PIDFile={{ install_prefix }}ominicontacto/oml-uwsgi.pid
 RuntimeDirectory=ominicontacto
