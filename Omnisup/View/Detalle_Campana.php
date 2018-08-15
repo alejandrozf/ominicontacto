@@ -236,7 +236,11 @@
           <div class="col-md-6">
               <div class="row">
                   <div class="col-sm-6">
-                      <h1 class="display-3"><span id="objcampana"></span><span id="gestioncampana"></span></h1>
+                      <h1 class="display-3">
+                        <span id="objcampana"></span>
+                        <span>/</span>
+                        <span id="gestioncampana"></span>
+                      </h1>
                       <span class="label">Avance de objetivo</span>
                   </div>
                   <div class="col-sm-6">

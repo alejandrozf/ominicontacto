@@ -57,71 +57,36 @@ function mostrarEstadoAgentes($camp) {
                           break;
                       }
                         $jsonString .= '"estado": "<label class=\'badge align-top agent-' . $cssStatus . '\'>' . $value->getStatus() . '</label>", ';
-                        $jsonString .= '"acciones": "<div class=\'dropdown\'>' .
-                            '<button type=\'button\' class=\'btn btn-light dropdown-toggle\' data-toggle=\'dropdown\' aria-haspopup=\'true\' aria-expanded=\'false\'>' .
-                                '<span class=\'icon icon-cog\'></span>' .
-                            '</button>' .
-                            '<div class=\'dropdown-menu dropdown-menu-right\'>' .
-                                '<a class=\'dropdown-item \' href=\'#\'>' .
-                                    '<span class=\'icon icon-eye chanspy\' id=\' ' . $value->getId()  . ' \'></span>Monitorear' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-pencil chanspywhisper\' id=\' ' . $value->getId()  . ' \'></span>Hablar con agente' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-control-pause pause\' id=\' ' . $value->getId()  . ' \'></span>Pausar agente' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-pencil agentlogoff\' id=\' ' . $value->getId()  . ' \'></span>Log off agente' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-pencil takecall\' id=\' ' . $value->getId()  . ' \'></span>Tomar llamada' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-pencil conference\' id=\' ' . $value->getId()  . ' \'></span>Conferencia' .
-                                '</a>' .
-                            '</div>' .
-                        '</div>"},';
-                        // $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs pause\' title=\'pausar agente\'><span class=\'glyphicon glyphicon-pause\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs agentlogoff\' title=\'logoff agente\'><span class=\'glyphicon glyphicon-off\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs takecall\' title=\'tomar llamada\'><span class=\'glyphicon glyphicon-share-alt\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
+                        $jsonString .= '"acciones": "' .
+                                '<i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'>' .
+                                '</i>&nbsp;' .
+                                '<img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' />' .
+                                '&nbsp;' .
+                                '<i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'>' .
+                                '</i>&nbsp;' .
+                                '<i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'>' .
+                                '</i>&nbsp;' .
+                                '<img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' />' .
+                                '&nbsp;' .
+                                '<i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'>' .
+                                '</i>' .
+                        '"},';
                     } else {
-                        //$jsonString .= '"estado": "' . $status[1] . '", ';
                         $jsonString .= '"estado": "<label class=\'badge align-top agent-pause\'>' . $status[1] . '</label>", ';
-                        $jsonString .= '"acciones": "<div class=\'dropdown\'>' .
-                            '<button type=\'button\' class=\'btn btn-light dropdown-toggle\' data-toggle=\'dropdown\' aria-haspopup=\'true\' aria-expanded=\'false\'>' .
-                                '<span class=\'icon icon-cog\'></span>' .
-                            '</button>' .
-                            '<div class=\'dropdown-menu dropdown-menu-right\'>' .
-                                '<a class=\'dropdown-item \' href=\'#\'>' .
-                                    '<span class=\'icon icon-eye chanspy\' id=\' ' . $value->getId()  . ' \'></span>Monitorear' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-pencil chanspywhisper\' id=\' ' . $value->getId()  . ' \'></span>Hablar con agente' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-control-pause pause\' id=\' ' . $value->getId()  . ' \'></span>Pausar agente' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-pencil agentlogoff\' id=\' ' . $value->getId()  . ' \'></span>Log off agente' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-pencil takecall\' id=\' ' . $value->getId()  . ' \'></span>Tomar llamada' .
-                                '</a>' .
-                                '<a class=\'dropdown-item\' href=\'#\'>' .
-                                    '<span class=\'icon icon-pencil conference\' id=\' ' . $value->getId()  . ' \'></span>Conferencia' .
-                                '</a>' .
-                            '</div>' .
-                        '</div>"},';
-                        // $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs unpause\' title=\'despausar agente\'><span class=\'glyphicon glyphicon-play\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs agentlogoff\' title=\'logoff agente\'><span class=\'glyphicon glyphicon-off\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs takecall\' title=\'tomar llamada\'><span class=\'glyphicon glyphicon-share-alt\'></span></button>&nbsp;'
-                        //             . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
+                        $jsonString .= '"acciones": "' .
+                        '<i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'>' .
+                        '</i>&nbsp;' .
+                        '<img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' />' .
+                        '&nbsp;' .
+                        '<i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'>' .
+                        '</i>&nbsp;' .
+                        '<i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'>' .
+                        '</i>&nbsp;' .
+                        '<img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' />' .
+                        '&nbsp;' .
+                        '<i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'>' .
+                        '</i>' .
+                      '"},';
                      }
                      $i++;
                  }

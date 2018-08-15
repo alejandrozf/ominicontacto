@@ -57,6 +57,7 @@ function actualiza_contenido_objcamp() {
         $("#gestioncampana").html(mje.gestion_campana);
         $("#objcampana").html(mje.objetivo_campana);
         var pje = (mje.gestion_campana * 100) / mje.objetivo_campana;
+        pje = pje.toFixed(2);
         $("#percent").html(pje +"%");
       }
     },
