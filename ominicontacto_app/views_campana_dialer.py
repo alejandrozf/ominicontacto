@@ -267,6 +267,17 @@ class UpdateBaseDatosDialerView(FormView):
             self.get_object(), bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
+        if self.object.bd_contacto == bd_contacto:
+            message = 'Atención!\
+                            Ud ha escogido la misma base de datos, corre riesgo de calificar los' \
+                      ' mismos contactos pisando la calificación previa.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+
         self.object.bd_contacto = bd_contacto
         self.object.save()
         # realiza el cambio de la base de datos en wombat
