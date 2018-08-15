@@ -18,8 +18,8 @@
                 <input type="hidden" value="<?= $_GET['campId'] ?>" id="campId"/>
                 <!-- -->
                 <div class="text-center">
-                    <span id="CallStatus" class="px-2 border-right"><span class="icon icon-check"></span> Idle</span>
-                    <span id="SipStatus" class="px-2"><span class="icon icon-cancel"></span> Registered</span>
+                    <div id="CallStatus"></div>
+                    <div id="SipStatus"></div>
                 </div>
                 <hr>
                 <div>
