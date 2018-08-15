@@ -138,20 +138,6 @@ class GeneradorDePedazoDeAgenteFactory(object):
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailed(parametros)
 
-    def crear_generador_para_agente_global(self, parametros):
-        return GeneradorParaAgenteGlobal(parametros)
-
-
-# Factory para las Pausas
-
-class GeneradorDePedazoDePausaFactory(object):
-
-    def crear_generador_para_pausa_global(self, parametros):
-        return GeneradorParaPausaGlobal(parametros)
-
-    def crear_generador_para_failed(self, parametros):
-        return GeneradorParaFailed(parametros)
-
 
 # Factory para las Rutas Salientes
 
@@ -354,35 +340,6 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         deny=0.0.0.0/0.0.0.0
         permit={oml_kamailio_ip}
         rtcp_mux=yes
-        """
-
-    def get_parametros(self):
-        return self._parametros
-
-
-class GeneradorParaAgenteGlobal(GeneradorDePedazoDeAgenteSip):
-
-    def get_template(self):
-        return """
-        SIP/{oml_agente_sip} = {oml_agente_pk}
-        """
-
-    def get_parametros(self):
-        return self._parametros
-
-# ==============================================================================
-# Pausa
-# ==============================================================================
-
-
-class GeneradorParaPausaGlobal(GeneradorDePedazo):
-
-    def __init__(self, parametros):
-        self._parametros = parametros
-
-    def get_template(self):
-        return """
-        PAUSA{oml_pausa_pk} = {oml_pausa_nombre}
         """
 
     def get_parametros(self):

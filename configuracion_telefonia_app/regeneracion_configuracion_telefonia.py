@@ -22,6 +22,25 @@ from ominicontacto_app.services.asterisk_database import (
 logger = logging.getLogger(__name__)
 
 
+class SincronizadorDeConfiguracionTelefonicaEnAsterisk(object):
+
+    def __init__(self):
+        self.sincronizador_troncales = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
+        self.sincronizador_ruta_saliente = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
+        self.sincronizador_ruta_entrante = SincronizadorDeConfiguracionRutaEntranteAsterisk()
+        self.sincronizador_grupo_horario = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
+        self.sincronizador_validacion_fh = SincronizadorDeConfiguracionValidacionFechaHoraAsterisk()
+        self.sincronizador_ivr = SincronizadorDeConfiguracionIVRAsterisk()
+
+    def sincronizar_en_asterisk(self):
+        self.sincronizador_troncales.regenerar_troncales()
+        self.sincronizador_ruta_saliente.regenerar_rutas_salientes()
+        self.sincronizador_ruta_entrante.regenerar_asterisk()
+        self.sincronizador_grupo_horario.regenerar_asterisk()
+        self.sincronizador_validacion_fh.regenerar_asterisk()
+        self.sincronizador_ivr.regenerar_asterisk()
+
+
 class RestablecerConfiguracionTelefonicaError(OmlError):
     """Indica que se produjo un error al crear regenerar archivos de asterisk ó insetar en
     asterisk."""
@@ -43,7 +62,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         try:
             self.generador_rutas_en_asterisk_conf.create_config_asterisk(ruta_exclude=ruta_exclude)
         except:
-            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
+            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error al "
                              "intentar create_config_asterisk()")
 
             proceso_ok = False
@@ -59,9 +78,12 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_rutas_en_astdb.regenerar_family(ruta)
+            if ruta is None:
+                self.generador_rutas_en_astdb.regenerar_families()
+            else:
+                self.generador_rutas_en_astdb.regenerar_family(ruta)
         except:
-            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
+            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error al "
                              "intentar regenerar_familys_rutas()")
 
             mensaje_error += ("Hubo un inconveniente al insertar los registros de las rutas en "
@@ -74,7 +96,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         try:
             self.generador_rutas_en_astdb.delete_family(ruta)
         except:
-            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
+            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error al "
                              "intentar delete_family_ruta()")
 
             mensaje_error += ("Hubo un inconveniente al eliminar los registros de las rutas en "
@@ -87,7 +109,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         try:
             self.generador_rutas_en_astdb.regenerar_family_trunk_ruta(ruta)
         except:
-            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAstDB: error al "
+            logger.exception("SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error al "
                              "intentar delete_family_ruta()")
 
             mensaje_error += ("Hubo un inconveniente al eliminar los registros de las rutas en "
@@ -155,7 +177,10 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         mensaje_error = ""
 
         try:
-            self.generador_trunk_en_astdb.regenerar_family(trunk)
+            if trunk is None:
+                self.generador_trunk_en_astdb.regenerar_families()
+            else:
+                self.generador_trunk_en_astdb.regenerar_family(trunk)
         except:
             logger.exception("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error al "
                              "intentar regenerar_familys_rutas()")
@@ -190,12 +215,15 @@ class AbstractConfiguracionAsterisk(object):
     def _obtener_generador_family(self):
         raise (NotImplementedError())
 
-    def _generar_e_insertar_en_astdb(self, family_member):
+    def _generar_e_insertar_en_astdb(self, family_member=None):
         mensaje_error = ""
         generador_family = self._obtener_generador_family()
         nombre_families = generador_family.get_nombre_families()
         try:
-            generador_family.regenerar_family(family_member)
+            if family_member is None:
+                generador_family.regenerar_families()
+            else:
+                generador_family.regenerar_family(family_member)
         except:
             logger.exception("Error en la families {0} "
                              "intentar regenerar_family()".format(nombre_families))

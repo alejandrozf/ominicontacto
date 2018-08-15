@@ -431,6 +431,7 @@ class RegenerarAsteriskOnSuccessMixin(object):
         return reverse('pausa_list')
 
 
+# TODO: No hace falta regenerar asterisk. Solamente sincronizar la info en AstDB con su family
 class PausaCreateView(RegenerarAsteriskOnSuccessMixin, CreateView):
     """Vista para crear pausa"""
     model = Pausa
@@ -456,7 +457,7 @@ class PausaListView(TemplateView):
         context['pausas_eliminadas'] = Pausa.objects.eliminadas()
         return context
 
-
+# TODO: Sincronizar en AstDB!
 class PausaToggleDeleteView(TemplateView):
     """
     Esta vista se encarga de la eliminación/activación del
