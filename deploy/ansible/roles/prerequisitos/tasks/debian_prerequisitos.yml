@@ -37,10 +37,10 @@
   become_method: sudo
   ignore_errors: True
 
-#- name: Installation of mysqlserver
-#  apt: name=mysql-server state=present dpkg_options='force-confdef'
-#  become: true
-#  become_method: sudo
+- name: Installation of mysqlserver
+  apt: name=mysql-server state=present dpkg_options='force-confdef'
+  become: true
+  become_method: sudo
 
 - name: Installation of VoIP dependencies
   apt: "name={{ item }} state=present"
@@ -76,7 +76,6 @@
     - gcc
     - flex
     - bison
-    - mariadb-server
     #- libmariadbclient-dev
     - default-libmysqlclient-dev
     - make
