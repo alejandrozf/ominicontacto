@@ -91,8 +91,6 @@ class ReciclarCampanaDialerFormView(FormView):
             campana.update_basedatoscontactos(bd_contacto_reciclada)
             campana_service = CampanaService()
             campana_service.cambiar_base(campana, [], False, False, "")
-            campana.estado = Campana.ESTADO_INACTIVA
-            campana.save()
             return HttpResponseRedirect(
                 reverse("campana_dialer_update",
                         kwargs={"pk_campana": campana.pk}))
