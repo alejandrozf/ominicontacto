@@ -145,13 +145,8 @@ while true; do
         tag=$tag
         break
     else
-        if [ $nva_tag == "wombat" ] || [ $nva_tag == "all" ] || [ $nva_tag == "docker" ] || [ $nva_tag == "asterisk" ]; then
-            tag=$nva_tag
-            break
-        else
-            echo "Opción inválida, vuelve a intentarlo"
-            IngresaTag
-        fi
+        tag=$nva_tag
+        break        
     fi
 done
 

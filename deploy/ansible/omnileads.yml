@@ -38,7 +38,7 @@
   gather_facts: True
 
   roles:
-          - prerequisitos
+          - {role: prerequisitos, tags: ['yum']}
           - {role: oml_server, tags: ['virtualenv']}
           - kamailio
           - {role: omniapp_second, tags: ['omniapp']}

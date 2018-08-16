@@ -4,6 +4,7 @@
 # nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos.
 # si no es asi, esta task generara un error
   debug: msg="omni_distribution es {{ ansible_os_family }}"
+  tags: always
 
 - name: Check omni_distribution
   fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
@@ -12,38 +13,39 @@
       ansible_os_family != "Sangoma" and
       ansible_os_family != "Debian"
       )
+  tags: always
 
 - name: Check if Asterisk is installed in /etc
   command: test -d /etc/asterisk
   ignore_errors: true
   register: asterisk_etc_installed
-  tags: ['postinstall','asterisk']
+  tags: always
   become: true
   become_method: sudo
 
 - set_fact: asterisk_location={{ install_prefix }}asterisk
   when: asterisk_etc_installed|failed
-  tags: ['postinstall','asterisk']
+  tags: always
 
 - set_fact: asterisk_location=
   when: asterisk_etc_installed|succeeded
-  tags: ['postinstall','asterisk']
+  tags: always
 
 - name: Check if Kamailio is installed in /opt
   command: test -d /opt/kamailio
   ignore_errors: true
   register: kamailio_opt_installed
-  tags: ['postinstall','kamailio']
+  tags: always
   become: true
   become_method: sudo
 
 - set_fact: kamailio_location={{ install_prefix }}kamailio
   when: kamailio_opt_installed|failed
-  tags: ['postinstall','kamailio']
+  tags: always
 
 - set_fact: kamailio_location=/opt/kamailio
   when: kamailio_opt_installed|succeeded
-  tags: ['postinstall','kamailio']
+  tags: always
 
 - name: Creation of {{ usuario }} group
   group: name={{ usuario }} state=present

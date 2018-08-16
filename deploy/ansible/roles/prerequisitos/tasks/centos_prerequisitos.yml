@@ -9,6 +9,11 @@
   become: true
   become_method: sudo
 
+- name: Do not verify ssl on repositories
+  ini_file: path=/etc/yum.conf section=main option=sslverify no_extra_spaces=yes value=0 state=present
+  become: true
+  become_method: sudo
+  
 - name: Exclude librabbitmq in list of repositories
   ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=librabbitmq* state=present"
   with_items:
@@ -136,7 +141,7 @@
       - php56w-ldap
       - php56w-intl
       - php56w-soap
-      - php56w-fpm 
+      - php56w-fpm
   become: true
   become_method: sudo
   when: asterisk_location != ""
