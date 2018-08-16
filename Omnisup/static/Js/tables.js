@@ -121,11 +121,12 @@ function actualiza_contenido_camp() {
 
 function actualiza_contenido_colas() {
   var nomcamp = $("#nombreCamp").html();
+  var idcamp = $("#campId").val();
   $.ajax({
     url: 'Controller/Detalle_Campana_Contenido.php',
     type: 'GET',
     dataType: 'html',
-    data: 'nomcamp='+nomcamp+'&op=queuedcalls',
+    data: 'nomcamp='+nomcamp+'&idcamp='+idcamp+'&op=queuedcalls',
     success: function (msg) {
       if(msg!=="]") {
         var mje = JSON.parse(msg);
@@ -140,11 +141,15 @@ function actualiza_contenido_colas() {
           var tdTimeLabel = document.createElement('td');
           var rowTime = document.createElement('tr');
 
+          var spanTime = document.createElement('span');
+
+          spanTime.className = 'icon far fa-clock';
           var textTimeContainer = document.createTextNode(mje[i].nroLlam);
           var textTimeLabel = document.createTextNode(mje[i].tiempo);
 
-          tdTimeContainer.appendChild(textTimeContainer);
-          tdTimeLabel.appendChild(textTimeLabel);
+          tdTimeContainer.appendChild(spanTime);
+          tdTimeContainer.appendChild(textTimeLabel);
+          tdTimeLabel.appendChild(textTimeContainer);
           rowTime.appendChild(tdTimeLabel);
           rowTime.appendChild(tdTimeContainer);
           tabla.appendChild(rowTime);

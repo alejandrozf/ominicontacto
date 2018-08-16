@@ -58,34 +58,22 @@ function mostrarEstadoAgentes($camp) {
                       }
                         $jsonString .= '"estado": "<label class=\'badge align-top agent-' . $cssStatus . '\'>' . $value->getStatus() . '</label>", ';
                         $jsonString .= '"acciones": "' .
-                                '<i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'>' .
-                                '</i>&nbsp;' .
-                                '<img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' />' .
-                                '&nbsp;' .
-                                '<i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'>' .
-                                '</i>&nbsp;' .
-                                '<i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'>' .
-                                '</i>&nbsp;' .
-                                '<img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' />' .
-                                '&nbsp;' .
-                                '<i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'>' .
-                                '</i>' .
+                                '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'></i></a>' .
+                                '<a class=\'not-link\' href=\'#\'><img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' /></a>' .
+                                '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                                '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                                '<a class=\'not-link\' href=\'#\'><img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' /></a>&nbsp;' .
+                                '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
                         '"},';
                     } else {
                         $jsonString .= '"estado": "<label class=\'badge align-top agent-pause\'>' . $status[1] . '</label>", ';
                         $jsonString .= '"acciones": "' .
-                        '<i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'>' .
-                        '</i>&nbsp;' .
-                        '<img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' />' .
-                        '&nbsp;' .
-                        '<i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'>' .
-                        '</i>&nbsp;' .
-                        '<i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'>' .
-                        '</i>&nbsp;' .
-                        '<img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' />' .
-                        '&nbsp;' .
-                        '<i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'>' .
-                        '</i>' .
+                        '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'></i></a>' .
+                        '<a class=\'not-link\' href=\'#\'><img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' /></a>' .
+                        '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                        '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                        '<a class=\'not-link\' href=\'#\'><img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' /></a>&nbsp;' .
+                        '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
                       '"},';
                      }
                      $i++;
@@ -117,14 +105,15 @@ function mostrarCalificaciones($camp) {
     $jsonString .= "]";
     return $jsonString;
 }
-function mostrarLlamadasEnCola($camp) {
+function mostrarLlamadasEnCola($camp, $idcamp) {
     $Controller_Campana = new Campana();
     $jsonString = '';
+    $camp = $idcamp.'_'.$camp;
     $resul = $Controller_Campana->traerLlamadasEnCola($camp);
     $jsonString .= '[';
     $i = 1;
     foreach($resul as $clave => $valor) {
-        $jsonString .= '{"nroLlam": ' . $i . ', "tiempo": "<span class=\'icon far fa-clock\'></span>' . $valor . '"},';
+        $jsonString .= '{"nroLlam": ' . $i . ', "tiempo": "' . $valor . '"},';
         $i++;
     }
     $jsonString = substr($jsonString, 0, -1);
@@ -183,7 +172,7 @@ if ($_GET['nomcamp']) {
         echo mostrarEstadoAgentes($_GET['nomcamp']);
     } else if ($_GET['op'] == 'queuedcalls') {
 
-        echo mostrarLlamadasEnCola($_GET['nomcamp']);
+        echo mostrarLlamadasEnCola($_GET['nomcamp'], $_GET['idcamp']);
     } else if ($_GET['op'] == 'wdstatus') {
 
         echo mostrarEstadoCanalesWombat($_GET['nomcamp']);
