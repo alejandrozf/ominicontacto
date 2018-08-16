@@ -8,21 +8,22 @@
         {% csrf_token %}
         {{ form.non_field_errors }}
         {% for pk, choice in form.reciclado_calificacion.field.widget.choices %}
-        <div class="form-row">
-            <div class="col-md-6">
+            <div class="form-row">
                 <label  for="id_{{ forloop.counter0 }}"><input id="id_{{ forloop.counter0 }}" name="reciclado_calificacion" type="checkbox" value="{{pk}}" />
                 {{ choice }}
                 </label>
             </div>
-            {% endfor %}
-            {% for pk, choice in form.reciclado_no_contactacion.field.widget.choices %}
-            <div class="col-md-6">
-                <label  for="id_no_{{ forloop.counter0 }}"><input id="id_no_{{ forloop.counter0 }}" name="reciclado_no_contactacion" type="checkbox" value="{{pk}}" />
+        {% endfor %}
+        {% for pk, choice in form.reciclado_no_contactacion.field.widget.choices %}
+        <div class="form-row">
+
+            <label  for="id_no_{{ forloop.counter0 }}"><input id="id_no_{{ forloop.counter0 }}" name="reciclado_no_contactacion" type="checkbox" value="{{pk}}" />
                 {{ choice }}
-                </label>
-            </div>
-         {% endfor %}
+            </label>
         </div>
+
+         {% endfor %}
+
         <h3>{% trans 'Como desea reciclar esta campana' %}</h3>
         <div class="form-row">
                     {{ form.reciclado_radio.0 }}
