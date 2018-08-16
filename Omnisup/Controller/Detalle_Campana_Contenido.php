@@ -58,22 +58,22 @@ function mostrarEstadoAgentes($camp) {
                       }
                         $jsonString .= '"estado": "<label class=\'badge align-top agent-' . $cssStatus . '\'>' . $value->getStatus() . '</label>", ';
                         $jsonString .= '"acciones": "' .
-                                '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'></i></a>' .
-                                '<a class=\'not-link\' href=\'#\'><img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' /></a>' .
-                                '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
-                                '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
-                                '<a class=\'not-link\' href=\'#\'><img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' /></a>&nbsp;' .
-                                '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
+                                '<a class=\'not-link\' title=\'escuchar\' href=\'#\'><i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'></i></a>' .
+                                '<a class=\'not-link\' title=\'escuchar y susurrar\' href=\'#\'><img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' /></a>' .
+                                '<a class=\'not-link\' title=\'pausar\' href=\'#\'><i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                                '<a class=\'not-link\' title=\'desregistrar\' href=\'#\'><i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                                '<a class=\'not-link\' title=\'tomar llamada\' href=\'#\'><img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' /></a>&nbsp;' .
+                                '<a class=\'not-link\' title=\'conferencia\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
                         '"},';
                     } else {
                         $jsonString .= '"estado": "<label class=\'badge align-top agent-pause\'>' . $status[1] . '</label>", ';
                         $jsonString .= '"acciones": "' .
-                        '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'></i></a>' .
-                        '<a class=\'not-link\' href=\'#\'><img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' /></a>' .
-                        '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
-                        '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
-                        '<a class=\'not-link\' href=\'#\'><img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' /></a>&nbsp;' .
-                        '<a class=\'not-link\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
+                        '<a class=\'not-link\' title=\'escuchar\' href=\'#\'><i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'></i></a>' .
+                        '<a class=\'not-link\' title=\'escuchar y susurrar\' href=\'#\'><img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' /></a>' .
+                        '<a class=\'not-link\' title=\'pausar\' href=\'#\'><i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                        '<a class=\'not-link\' title=\'desregistrar\' href=\'#\'><i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                        '<a class=\'not-link\' title=\'tomar llamada\' href=\'#\'><img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' /></a>&nbsp;' .
+                        '<a class=\'not-link\' title=\'conferencia\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
                       '"},';
                      }
                      $i++;
