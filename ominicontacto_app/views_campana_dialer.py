@@ -267,11 +267,24 @@ class UpdateBaseDatosDialerView(FormView):
             self.get_object(), bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
+        if self.object.bd_contacto == bd_contacto:
+            message = 'Atención!\
+                            Ud ha escogido la misma base de datos, corre riesgo de calificar los' \
+                      ' mismos contactos pisando la calificación previa.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+
         self.object.bd_contacto = bd_contacto
         self.object.save()
         # realiza el cambio de la base de datos en wombat
         campana_service.cambiar_base(self.get_object(), columnas, evitar_duplicados,
                                      evitar_sin_telefono, prefijo_discador)
+        campana_service.start_campana_wombat(self.get_object())
+        self.get_object().play()
         message = 'Operación Exitosa!\
                 Se llevó a cabo con éxito el cambio de base de datos.'
 
