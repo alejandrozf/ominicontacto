@@ -44,11 +44,15 @@ class EstadisticasService():
     def _obtener_cantidad_no_calificados(
             self, campana, fecha_desde, fecha_hasta):
         """
-        Devuelve la cantidad de llamadas recibidas por agentes pero no calificadas por estos
+        Devuelve la cantidad de llamadas recibidas por agentes pero no calificadas por estos.
+        Manual y Preview contar logs con ANSWER
+        Dialer y Entrante contar logs con CONNECT
         """
+
         total_llamadas_campanas_qs = LlamadaLog.objects.filter(
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk).filter(
-                Q(event='DIAL') | Q(event='ENTERQUEUE', tipo_campana=Campana.TYPE_ENTRANTE))
+                Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]) |
+                Q(event='CONNECT'))
         total_llamadas_campanas = total_llamadas_campanas_qs.count()
         total_calificados = CalificacionCliente.history.filter(
             fecha__range=(fecha_desde, fecha_hasta),
