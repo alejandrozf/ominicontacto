@@ -21,7 +21,7 @@ from ominicontacto_app.views_utils import (
 
 from ominicontacto_app.auth.decorators import (
     administrador_requerido, administrador_o_supervisor_requerido, agente_requerido,
-    permiso_administracion_requerido, supervisor_o_customer_requerido)
+    permiso_administracion_requerido, supervisor_requerido)
 
 handler400 = handler400
 handler403 = handler403
@@ -189,7 +189,7 @@ urlpatterns = [
         name='chat_create',
         ),
     url(r'^supervision_externa/$',
-        supervisor_o_customer_requerido(views.supervision_url_externa),
+        supervisor_requerido(views.supervision_url_externa),
         name='supervision_externa_url',
         ),
     url(r'^acerca/$',
