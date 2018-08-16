@@ -18,7 +18,7 @@ $(function () {
     setInterval("actualiza_contenido_objcamp()", 4000);
     setInterval("actualiza_contenido_camp()", 4000);
     setInterval("actualiza_contenido_colas()", 4000);
-    setInterval("actualiza_contenido_wombat()", 4000);
+    setInterval("actualiza_contenido_wombat()", 1000);
   }
 });
 
@@ -185,11 +185,28 @@ function actualiza_contenido_wombat() {
           var tdTelContainer = document.createElement('td');
           var row = document.createElement('tr');
 
+          var spanStatus = document.createElement('span');
+
+          var statusTag;
+          switch(mje[i].estado) {
+            case "CONNECTED":
+            statusTag = 'connected';
+            break;
+            case "DIALING":
+            statusTag = 'calling';
+            break;
+            default:
+            statusTag = 'shortcall';
+            break;
+          }
+          spanStatus.className = 'badge badge-outline line-' + statusTag;
+
           var textStatContainer = document.createTextNode(mje[i].estado);
           var textTelContainer = document.createTextNode(mje[i].numero);
 
+          spanStatus.appendChild(textStatContainer);
           tdTelContainer.appendChild(textTelContainer);
-          tdStatContainer.appendChild(textStatContainer);
+          tdStatContainer.appendChild(spanStatus);
           row.appendChild(tdStatContainer);
           row.appendChild(tdTelContainer);
           tabla.appendChild(row);

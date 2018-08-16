@@ -139,9 +139,9 @@ function mostrarEstadoCanalesWombat($camp) {
   foreach ($resul as $value) {
       $ns = $value;
       if ($ns->getState() == "DIALLING") {
-          $jsonString .= '{"estado": "<span class=\'badge badge-outline\'>DIALING</span>", "numero": "' . $ns->getNumber() . '"},';
+          $jsonString .= '{"estado": "DIALING", "numero": "' . $ns->getNumber() . '"},';
       } else {
-          $jsonString .= '{"estado": "<span class=\'badge badge-outline\'>' . $ns->getState() . '</span>", "numero": "' . $ns->getNumber() . '"},';
+          $jsonString .= '{"estado": "' . $ns->getState() . '", "numero": "' . $ns->getNumber() . '"},';
       }
   }
   $jsonString = substr($jsonString, 0, -1);
