@@ -169,7 +169,7 @@
   command: "{{ item }}"
   with_items:
           - "systemctl daemon-reload"
-          #- "systemctl enable asterisk"
+          - "systemctl enable asterisk"
           - "service asterisk stop"
           - "service asterisk start"
   become: true

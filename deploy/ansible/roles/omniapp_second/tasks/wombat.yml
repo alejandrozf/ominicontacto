@@ -73,14 +73,14 @@
   notify: restart tomcat8
   when: ansible_os_family == "Debian"
 
-- name: Set MySQL root password before installing
-  debconf: name='mysql-server' question='mysql-server/root_password' value='{{mysql_root_pass | quote}}' vtype='password'
-  when: ansible_os_family == "Debian"
+#- name: Set MySQL root password before installing
+#  debconf: name='mysql-server' question='mysql-server/root_password' value='{{mysql_root_pass | quote}}' vtype='password'
+#  when: ansible_os_family == "Debian"
 
-- name: Confirm MySQL root password before installing
-  debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{mysql_root_pass | quote}}' vtype='password'
-  when: ansible_os_family == "Debian"
+#- name: Confirm MySQL root password before installing
+#  debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{mysql_root_pass | quote}}' vtype='password'
+#  when: ansible_os_family == "Debian"
 
-- name: Install Mysql
-  apt: name=mysql-server state=present
-  when: ansible_os_family == "Debian"
+#- name: Install Mysql
+#  apt: name=mysql-server state=present
+#  when: ansible_os_family == "Debian"

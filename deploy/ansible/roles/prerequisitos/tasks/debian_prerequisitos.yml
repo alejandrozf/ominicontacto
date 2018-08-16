@@ -6,41 +6,15 @@
 - name: Install apt-transport-https
   apt: name=apt-transport-https state=present
 
-- name: Creation of sngrep repo
-  apt_repository:
-    repo: deb http://packages.irontec.com/debian stretch main
-    state: present
-    validate_certs: yes
-  become: true
-  become_method: sudo
-
-- name: Import of irontec and php5.6 public key
-  apt_key: "url={{ item }} state=present"
-  with_items:
-    - http://packages.irontec.com/public.key
-    - https://packages.sury.org/php/apt.gpg
-  become: true
-  become_method: sudo
-
 - name: Update/upgrade of system
   apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
   when: LOCALHOST == "true"
-
-- name: Install of sngrep
-  apt: name=sngrep state=present
-  become: true
-  become_method: sudo
 
 - name: Install linux linux-headers
   shell: "apt-get install -y linux-headers-$(uname -r)"
   become: true
   become_method: sudo
   ignore_errors: True
-
-- name: Installation of mysqlserver
-  apt: name=mysql-server state=present dpkg_options='force-confdef'
-  become: true
-  become_method: sudo
 
 - name: Installation of VoIP dependencies
   apt: "name={{ item }} state=present"
@@ -76,7 +50,7 @@
     - gcc
     - flex
     - bison
-    #- libmariadbclient-dev
+    - mariadb-server
     - default-libmysqlclient-dev
     - make
     - libxml2-dev
@@ -142,15 +116,7 @@
     - python-psycopg2
     - expect
     - php-fpm
+    - php-pgsql
+    - php-xml
   become: true
   become_method: sudo
-
-#- name: Install the imported php5.6 key
-#  shell: 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php5.list'
-#  become: true
-#  become_method: sudo
-
-#- name: Intall php5.6
-#  apt: name=php5.6 state=present
-#  become: true
-#  become_method: sudo
