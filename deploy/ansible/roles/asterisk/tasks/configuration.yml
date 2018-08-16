@@ -128,7 +128,7 @@
   become_method: sudo
 
 - name: Creation of odbcinst.ini file
-  template: src=templates/etc/odbcinst.ini dest=/etc/odbcinst.ini owner=root group=root mode=700
+  template: src=templates/etc/odbcinst.ini dest=/etc/odbcinst.ini owner=root group=root mode=644
   become: true
   become_method: sudo
 
