@@ -2,7 +2,7 @@
 
 <?php
 
-$BASE_PATH="/var/lib/asterisk/agi-bin/";
+$BASE_PATH="/opt/omnileads/asterisk/var/lib/asterisk/agi-bin/";
 
 require $BASE_PATH."phpagi.php";
 require_once $BASE_PATH."phpagi-asmanager.php";
@@ -35,22 +35,24 @@ foreach($listado as $valor)
 		$salida = explode ("    ", $valor);
 		$nombre = trim($salida[1]," ");
 		$numero = trim($salida[2]," ");
-		echo "nobre: $nombre \n";
+		echo "nombre: $nombre \n";
 		echo "numero-sip: $numero \n";
 		
 		$aResponse = $astman->Originate(
-							    'Local/066LOGOUT@oml-agent-actions/n',
+				'Local/066LOGOUT@oml-agent-actions/n',
                                 NULL,
                                 NULL,
                                 NULL,
-                                NULL,
+                                'hangup',
+				NULL,
+				'5000',
                                 'auto logout',
                                 "AUTOLOGOUT=$numero-$nombre",
                                 NULL,
-                                'Hangup',
+                                NULL,
                                 NULL
                                 );
-      echo "pepe \n"; 
+      printf ($aResponse) ; 
     	}
 }
 
