@@ -1,5 +1,5 @@
 ---
-
+# En estas tasks se hacen tareas de segurizacion de mariadb, es como hacer un mariadb-secure no voy a explicar una por una, nunca fallan
 - name: Enable MariaDB
   shell: "{{ item }}"
   with_items:

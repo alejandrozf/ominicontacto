@@ -1,5 +1,5 @@
 ---
-
+# se deshabilita selinux https://docs.ansible.com/ansible/2.5/modules/command_module.html
 - name: Disable Selinux
   command: "{{ item }}"
   with_items:
@@ -9,11 +9,14 @@
   become: true
   become_method: sudo
 
+# se agrega sslverify=0 en el yum.conf, esto es para que no joda por si hay repos con certificados expirados
+# https://docs.ansible.com/ansible/2.5/modules/ini_file_module.html?highlight=ini_file
 - name: Do not verify ssl on repositories
   ini_file: path=/etc/yum.conf section=main option=sslverify no_extra_spaces=yes value=0 state=present
   become: true
   become_method: sudo
-  
+
+# Exluimos paquete librrabitmq para que no haga un upgrade este paquete
 - name: Exclude librabbitmq in list of repositories
   ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=librabbitmq* state=present"
   with_items:
@@ -23,36 +26,46 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
+# Se para y deshabilita firewalld
+# https://docs.ansible.com/ansible/2.5/modules/shell_module.html#shell-module
 - name: Stop firewalld
   shell: "{{ item }}"
   with_items:
       - systemctl stop firewalld
       - systemctl disable firewalld
 
+# Update/upgrade del sistema, solo cuando LOCALHOST=true, osea si se ejecuta como deployed - deployer
+# https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
 - name: Update/upgrade of centos
   yum: name='*' state=latest update_cache=yes
   become: true
   become_method: sudo
   when: LOCALHOST == "true"
 
+# Se instala las Development Tools
 - name: Install Development tools
   command: "yum -y groupinstall core base \"Development Tools\""
   become: true
   become_method: sudo
 
+# Se crea el repo de sngrep desde el template https://docs.ansible.com/ansible/2.5/modules/template_module.html#template-module
+#  https://docs.ansible.com/ansible-container/container_yml/template.html
 - name: Creation of sngrep repo
   template: src=templates/irontec.repo dest=/etc/yum.repos.d/irontec.repo
   become: true
   become_method: sudo
 
+# Se importa la rpm key -- FIX ME -- usar modulo rpm_key
 - name: Import of irontec public key
   shell: "rpm --import http://packages.irontec.com/public.key"
   become: true
   become_method: sudo
 
+# Se instala sngrep
 - name: Install of sngrep
   yum: name=sngrep state=present
 
+# Se descarga e instala el repositorio epel-release -- FIX ME -- usar modulos get_url y yum en vez de esta task
 - name: Download of epel-release repo
   command: "{{ item }}"
   with_items:
@@ -65,6 +78,7 @@
   become_method: sudo
 - meta: clear_host_errors
 
+# Se instalan paquetes basicos que se necesitan
 - name: Install of dependencies
   yum: name={{ item }} state=present
   with_items:
@@ -105,6 +119,7 @@
   become: true
   become_method: sudo
 
+# Se instala por aparte librrabitmq para que no hinche las bolas ese paquete
 - name: Install of librabbitmq
   yum: "name={{ item }} state=present"
   with_items:
@@ -112,11 +127,13 @@
   become: true
   become_method: sudo
 
+# Se descarga webtatic repo para instalar php56
 - name: Download of webtatic repo
   get_url: url=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm dest=/root/ validate_certs=no
   become: true
   become_method: sudo
 
+# Se instala webtatic repo para instalar php56
 - name: Installation of webtatic repo
   shell: "rpm -Uvh webtatic-release.rpm chdir=/root"
   register: command_result
@@ -127,6 +144,7 @@
     - "'already installed' not in command_result.stderr"
     - "command_result.rc != 0"
 
+#Se instalan todos los paquetes de php56 -- FIX ME -- se necesitan todos los paquetes? verificar con desarrollo
 - name: Install of php56
   yum: name={{ item }} state=present
   with_items:
@@ -147,6 +165,7 @@
   when: asterisk_location != ""
 - meta: clear_host_errors
 
+# Se instala NodeJS. -- FIX Me -- marce va a usar nodejs?
 - name: Download NodeJS setup script
   shell: "curl -sL https://rpm.nodesource.com/setup_8.x | bash -"
   become: true

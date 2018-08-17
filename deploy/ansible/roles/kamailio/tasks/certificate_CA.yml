@@ -1,5 +1,9 @@
 ---
 
+# En este grupo de tasks se encarga de crear los certificados de autoridad certificante de y de nodo que van a usar kamailio y nginx
+# No se va a explicar cada tarea porque esto ya funciona y no ha habido que modificarlo.
+# https://www.kamailio.org/dokuwiki/doku.php/tls:create-certificates
+
 - name: Modificacion del /etc/pki/tls/openssl.cnf
   template: src=templates/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
   become: true

@@ -1,20 +1,18 @@
 ---
 
+# Se sube el archivo de config de nginx
 - name: Upload nginx.conf configuration
   template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
   become: true
   become_method: sudo
 
-- name: Enable nginx
-  shell: systemctl enable nginx
-  become: true
-  become_method: sudo
-
+# Se sube el archivo de configuracion de omnileads para nginx
 - name: Create of ominicontacto.conf
   template: src=templates/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf
   become: true
   become_method: sudo
 
+# Se pasan los certificados creados en kamailio a la carpeta nginx_certs
 - name: Copy of the certificates in nginx
   copy: "src={{ kamailio_location }}/etc/certs/{{ item }} dest={{ install_prefix }}nginx_certs/ remote_src=yes"
   with_items:
@@ -26,14 +24,17 @@
   tags: kamailio-cert
   notify: restart nginx
 
+# Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
 - name: Create of oml_uwgsi.ini script
   template: src=templates/oml_uwsgi.ini.j2 dest={{ install_prefix }}bin/oml_uwsgi.ini mode=755 owner={{ usuario }} group={{ usuario }}
 
+# Se crea el arhivo de systemd para omnileads daemon
 - name: Create of omnileads service
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
   become: true
   become_method: sudo
 
+# Se inicia y habilita el servicio
 - name: Start the omnileads-daemon service
   command: "{{ item }}"
   with_items:
@@ -45,6 +46,8 @@
   become_method: sudo
   ignore_errors: yes
 
+# El concatenate.sh es un script chamullero que sirve para poner en un solo archivo (voip.cert) el certificado de CA concatenado con el cert de nodo
+# Así evitamos la advertencia de seguridad de los browsers.
 - name: Copy of the Kamailio cert in voip.cert
   template: src=templates/concatenate.sh dest={{ install_prefix }}bin/concatenate.sh mode=755
   ignore_errors: yes
@@ -52,17 +55,21 @@
   become: true
   become_method: sudo
 
+# Se ejecuta el script
 - shell: "bash concatenate.sh chdir={{ install_prefix }}bin"
   tags: kamailio-cert
   ignore_errors: yes
   become: true
   become_method: sudo
 
+# Se genera el script de cambio de IP
 - name: Generate changeip.sh script
   template: src=templates/changeip.sh.j2 dest={{ install_prefix }}bin/changeip.sh owner={{ usuario }} group={{ usuario }} mode=755
 
+# Este script sirve para hacer comandos de manage.py sin necesidad de activar virualenv primero
 - name: Generate manage.sh script
   template: src=templates/manage.sh.j2 dest={{ install_prefix }}bin/manage.sh owner={{ usuario }} group={{ usuario }} mode=755
 
+# Se sube el script de backup-restore
 - name: Generate backup-restore.sh script
   template: src=templates/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
