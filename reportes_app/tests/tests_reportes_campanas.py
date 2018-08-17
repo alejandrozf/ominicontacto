@@ -150,12 +150,12 @@ class ReportesCampanasTests(TestCase):
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         calificaciones_list = [self.calif_gestion.opcion_calificacion.nombre,
                                self.calif_no_accion.opcion_calificacion.nombre]
-        atendidas_sin_calificacion = len([self.contacto_no_atendido, self.contacto_no_calificado])
+        atendidas_sin_calificacion = len([self.contacto_no_calificado])
         total_asignados = len(calificaciones_list) + atendidas_sin_calificacion
         calificaciones_list.append('Llamadas Atendidas sin calificacion')
         self.assertEqual(estadisticas['total_asignados'], total_asignados)
         self.assertEqual(set(estadisticas['calificaciones_nombre']), set(calificaciones_list))
-        self.assertEqual(estadisticas['calificaciones_cantidad'], [1, 1, 2])
+        self.assertEqual(estadisticas['calificaciones_cantidad'], [1, 1, 1])
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
@@ -169,7 +169,7 @@ class ReportesCampanasTests(TestCase):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
-        atendidas_sin_calificacion = len([self.contacto_no_atendido, self.contacto_no_calificado])
+        atendidas_sin_calificacion = len([self.contacto_no_calificado])
         self.assertEqual(estadisticas['calificaciones_cantidad'][-1], atendidas_sin_calificacion)
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
