@@ -4,27 +4,37 @@
 # Directorios básicos
 #----------------------------------------------------------------------
 
-#- name: Change key permission
-#  file: path={{ install_prefix }}.ssh/ state=directory owner=omnileads group=omnileads mode=600 recurse=yes
-
+# Se crea la llave publica y privada del usuario omnileads #https://docs.ansible.com/ansible/2.5/modules/user_module.html
 - name: Create {{ usuario }} user and public key
   user: name={{ usuario }} generate_ssh_key=yes group={{ usuario }} ssh_key_bits=2048 state=present shell=/bin/bash
   become: true
   become_method: sudo
 
+# Se crean los directorios basicos
 - name: Create the required directories
   file: "dest={{ item }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
   with_items:
+      # Directorio padre, home del usuario omnileads
           - "{{ install_prefix }}"
+      # Directorio que contiene configuracion de pip
           - "{{ install_prefix }}.pip"
+      # Directorio donde está almacenado el codigo python
           - "{{ install_prefix }}ominicontacto"
+      # Directorio donde se guarda el archivo de settings de django
           - "{{ install_prefix }}local"
+      # Directorio donde se crean los json para hablar con la api de wombat
           - "{{ install_prefix }}wombat-json"
+      # Directorio que guarda scripts de bash y de inicio del sericio omnileads
           - "{{ install_prefix }}bin"
+      # Directorio donde se guardan los backsup que se hacen
           - "{{ install_prefix }}backup"
+      # Donde se guardn los certificados de nginx
           - "{{ install_prefix }}nginx_certs"
+      # Donde se guardan los csv de los reportes
           - "{{ install_prefix }}media_root/reporte_campana"
+      # Donde se guarda el codigo JS y CSS luego de hace un python manage.py collectstatic
           - "{{ install_prefix }}static"
+      # DOnde se guardan los logs uwsgi.log y django.log
           - "{{ install_prefix }}log"
   when: desarrollo == 0
 
@@ -33,6 +43,7 @@
 # pip / virtualenv
 #----------------------------------------------------------------------
 
+# Opcion para agregar al pip
 - name: Setup pip
   ini_file: >
     dest={{ install_prefix }}.pip/pip.conf
@@ -40,11 +51,13 @@
     option='download-cache'
     value='{{ install_prefix }}.pip/cache'
 
+# El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload built (rsync to /ominicontacto)
-  # Copies xxx/app to {{ install_prefix }}ominicontacto (/ominicontacto on dest is implicit)
   synchronize: "src={{ build_dir }} dest={{ install_prefix }} delete=yes checksum=yes times=no"
   when: desarrollo == 0
 
+# Esta tarea no está funcionando bien lo que quería hacer es para las maquinas de desarrollo, en vez de copiar el codigo clonar el repo
+# -- FIX ME --
 - name: Clone of OML repository
   git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes
   when: desarrollo == 1
@@ -54,9 +67,12 @@
   git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git clone=no version={{ rama }} dest={{ install_prefix }}ominicontacto
   when: desarrollo == 1
 
+# Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
   file: "path={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }} recurse=yes"
 
+# Se hace el upgrade de python setuptools usando pip. https://docs.ansible.com/ansible/2.5/modules/pip_module.html#pip-module
+# El environment sirve para setear variables de entorno necesarias
 - name: Upgrade of python setuptools
   pip:
     name=setuptools
@@ -70,6 +86,7 @@
   become_method: su
   become_user: "{{ usuario }}"
 
+# Se instalan los paquetes que hay en el requirements.txt usando pip
 - name: Setup virtualenv
   pip:
     requirements={{ install_prefix }}ominicontacto/requirements.txt
@@ -84,8 +101,10 @@
   become_user: "{{ usuario }}"
 - meta: clear_host_errors
 
+# Se sube el archivo oml_settings_local.py
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local.py.j2 dest={{ install_prefix }}local/oml_settings_local.py
 
+# Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py
   file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/oml_settings_local.py owner={{ usuario }} force=true

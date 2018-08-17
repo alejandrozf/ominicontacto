@@ -1,21 +1,26 @@
 ---
 
+# Se desinstala apache2 para que no hinche los huevos
 - name: Uninstall of apache2
   apt: name=apache2 state=absent purge=yes
 
+# Se instala este paquete necesario antes de hacer update
 - name: Install apt-transport-https
   apt: name=apt-transport-https state=present
 
+# Update/upgrade, https://docs.ansible.com/ansible/latest/modules/apt_module.html
 - name: Update/upgrade of system
   apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
   when: LOCALHOST == "true"
 
+# Instalo linux-headers del kernel  en cuestion
 - name: Install linux linux-headers
   shell: "apt-get install -y linux-headers-$(uname -r)"
   become: true
   become_method: sudo
   ignore_errors: True
 
+  # Intalo los paquetes necesarios para la parte VoIP -- FIX ME -- separar paquetes de asterisk y paquetes de kamailio
 - name: Installation of VoIP dependencies
   apt: "name={{ item }} state=present"
   with_items:
@@ -94,6 +99,7 @@
   become: true
   become_method: sudo
 
+# Intalo los paquetes necesarios para la parte App
 - name: Installation of app dependencies
   apt: "name={{ item }} state=present"
   with_items:

@@ -1,4 +1,7 @@
 ---
+# Aca estan todos loss pasos para instalar wombat dialer tanto en centos como en debian
+# Para centos es sencillisimo porque es solo descargarse el repo y yum install wombat
+# Para debian si toca desde la fuente instalarlo, no voy a explicar todas las tasks.
 
 - name: Get the wombat dialer repository
   shell: "wget -P /etc/yum.repos.d http://yum.loway.ch/loway.repo"

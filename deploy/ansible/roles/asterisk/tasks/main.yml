@@ -1,5 +1,6 @@
 ---
 
+# Lo mismo que se hizo con rtpengine y kamailio, se detecta si asterisk esta instalado o no para hacer o no la instalacion
 - name: Check if Asterisk is installed
   shell: "test -f {{ install_prefix }}asterisk/sbin/asterisk || test -f /usr/sbin/asterisk"
   register: asterisk_installed

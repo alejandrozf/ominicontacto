@@ -1,5 +1,6 @@
 ---
 
+# Es necesario crear el directorio donde va a estar el pid de kamailio
 - name: Creation of kamamailio run directories
   file: "path={{ item }} state=directory mode=0755"
   with_items:
@@ -8,6 +9,7 @@
   become: true
   become_method: sudo
 
+# Se crea el directorio y el archivo para el log
 - name: Create kamailio.log file and directory
   file: path=/var/log/kamailio/ state=directory mode=0755
   become: true
@@ -17,17 +19,22 @@
   become: true
   become_method: sudo
 
+# Se copia el archivo kamctlrc a /opt/omnileads/kamailio/etc/kamailio -- FIX ME -- usar modulo copy
+# Ver archivo kamctlrc para mas info
 - name: Copy of oml/kamailio-files to the desired destinations
   shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip"
   with_items:
       - cp kamailio-files/kamctlrc {{ kamailio_location }}/etc/kamailio/
 
+# Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
 - name: Creation of kamailio file in /etc/default
   template: src=templates/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
 
+# Se crea el archivo de systemd para el servicio kamailio
 - name: Creation of kamailio.service file in systemd
   template: src=templates/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
 
+# Se restartea rsyslog se habilita kamailio y se hace el daemon-reload. -- FIX ME -- usar modulos service y file para setear los permisos
 - name: Run kamailio as a service
   shell: "{{ item }}"
   with_items:
@@ -38,6 +45,8 @@
   become: true
   become_method: sudo
 
+# Bueno este paso es importante. El comando kamdbctl es para interactuar con la base de datos. http://manpages.ubuntu.com/manpages/trusty/man8/kamdbctl.8.html
+# Aca lo que se esta haciendo es creando la base de datos y las tablas que necesitan los modulos de kamailio. Se usa la  configuracion que hay en el kamctlrc
 - name: Execution of kamdbctl script
   shell: "echo 'y' | {{ kamailio_location }}/sbin/kamdbctl create"
   when: kamailio_installed|failed
@@ -49,27 +58,32 @@
     - "'ya existe' not in command_result.stderr"
     - "command_result.rc != 0"
 
+# Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
   tags: postinstall
   become: true
   become_method: sudo
 
+# Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
 - name: Erase of default kamailio.cfg file
   shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
   tags: postinstall
 
+# Se linkea el kamailio.cfg de omnileads a su ubicacion /etc/kamailio
 - name: Link kamailio.cfg repo file to {{ kamailio_location }}
   file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }} mode=644
   tags: postinstall
   become: true
   become_method: sudo
 
+# Linkeamos dos binarios de kamailio que son necesarios para el buen funcionamiento del proceso de autenticacion
 - name: Link kamcmd binarie to /usr/sbin
   file: state=link src={{ kamailio_location }}/sbin/kamcmd dest=/usr/sbin/kamcmd mode=755 force=true
 
 - name: Link kamctl binarie to /usr/sbin
   file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/kamctl mode=755 force=true
 
+# Se carga un tamplate de reglas de iptables para omnileads, No se ha testeado -- FIX ME -- revisarlo y testearlo 
 - name: Template of omnileads-iptables
   template: src=templates/omnileads-iptables dest={{ install_prefix }}bin/omnileads-iptables mode=755

@@ -1,4 +1,6 @@
 ---
+# Estas task contienen una serie de multiples tareas de os que se ejecutan luego de creada la base de datos
+# y copiado el codigo al servidor
 
 - include: sshkey_transfer.yml
   tags:

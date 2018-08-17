@@ -1,8 +1,6 @@
 ---
 - name: Instalacion de Omnileads con Asterisk en container
   hosts: omnileads
-  # Siempre 'gather_facts' ya q' lo usaoms en varios 'when'
-  # gather_facts: '{{ lookup("env","DO_CHECKS") }}'
   vars:
           build_dir: "{{ BUILD_DIR }}"
           rama: "{{ RAMA }}"

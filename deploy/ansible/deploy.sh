@@ -6,6 +6,12 @@
 # Autor: Andres Felipe Macias
 # Colaborador:  Federico Peker
 #
+# Que hace este shell script?
+# 1. Instala ansible
+# 2. Copia toda la carpeta ansible del repo a /var/tmp/ansible y todo el codigo a /var/tmp/ominicontacto-build
+# 3. Pregunta si se quiere dockerizar asterisk o no, para pasarle la variable a ansible.
+# 4. Ejecuta ansible segun la opcion de Dockerizar o no
+
 PIP=`which pip`
 current_directory=`pwd`
 TMP_ANSIBLE='/var/tmp/ansible'
@@ -90,15 +96,6 @@ Rama() {
     git checkout deploy/ansible/hosts
     git checkout $1 1> /dev/null
 
-    ################### Build.sh #####################
-
-    #if [ "$VIRTUAL_ENV" = "" ] ; then
-    #        echo "ERROR: virtualenv (o alguno de la flia.) no encontrado"
-    #        exit 1
-    #fi
-
-    #set -e
-    #cd $(dirname $0)
     TMP=/var/tmp/ominicontacto-build
     if [ -e $TMP ] ; then
         rm -rf $TMP
@@ -193,7 +190,7 @@ Tag() {
     echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
     if [ $DOCKER == "true" ]; then
-      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K 
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
     else
       ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
 

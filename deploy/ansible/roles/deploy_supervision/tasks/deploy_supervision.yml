@@ -1,6 +1,10 @@
 ---
+# En este grupo de tasks se deploya la supervision
+
 - set_fact: omnisup_dir={{ install_prefix }}
 
+# Esto tengo que hacerlo para debian porque viene por defecto con php7.0 y a veces en el update no se porque me lo sube a 7.2
+# Obtengo la version de php
 - name: Get php-fpm version
   shell: php --version |head -1 | awk -F  "." '{print $1 "." $2}' | awk -F " " '{print $2}'
   register: command_result
@@ -8,13 +12,17 @@
   become_method: sudo
   when: ansible_os_family == "Debian"
 
+# Seteo un par de variables segun el resultado de la tarea anterior
 - set_fact: php_version={{ command_result.stdout }}
   when: ansible_os_family == "Debian"
+# En debian el php-fpm se ubica en un path totalmente diferente al de centos
 - set_fact: phpfpm_path=/etc/php/{{ php_version }}/fpm/
   when: ansible_os_family == "Debian"
 
+# Me cercioro que no haya un Omnisup antes
 - file: path={{ install_prefix }}Omnisup state=absent
 
+# Modifico el php.ini para que acepte un CGI (php-fpm)
 - name: Modify of php.ini (centos)
   lineinfile: dest=/etc/php.ini regexp="^;cgi.fix_pathinfo" line="cgi.fix_pathinfo=0"
   become: true
@@ -27,6 +35,7 @@
   become_method: sudo
   when: ansible_os_family == "Debian"
 
+# Añado el archivo de configuracion de php-fpm
 - name: Add php-fpm configuration for supervision
   template: src=templates/www.conf.j2 dest=/etc/php-fpm.d/www.conf
   become: true
@@ -39,12 +48,15 @@
   become_method: sudo
   when: ansible_os_family == "Debian"
 
+# Añado el archivo config.js que tiene una serie de variables con IP's y puertos
 - name: Modify of config.js in /static/Js
   template: "src=templates/config.js.j2 dest={{ omnisup_dir }}ominicontacto/Omnisup/static/Js/config.js"
 
+# Linkeo el codigo de la carpeta Omnisup a /opt/omnileads/
 - name: Create simbolic link of Omnisup directory
   file: src={{ omnisup_dir }}/ominicontacto/Omnisup dest={{ omnisup_dir }}Omnisup state=link owner={{ usuario }} group={{ usuario }} mode=755
 
+# Habilito e inicio php-fpm
 - name: Enable and start of php-fpm service
   service: name=php-fpm state=started enabled=yes
   become: true
@@ -57,6 +69,7 @@
   become_method: sudo
   when: ansible_os_family == "Debian"
 
+# Cambio permiso al  archivo .sock creado
 - name: Change permission of the php-fpm.sock (centos)
   file: path=/var/run/php-fpm/php-fpm.sock owner={{ usuario }} group={{ usuario }}
   when: ansible_os_family == "RedHat"
@@ -65,17 +78,20 @@
   file: path=/var/run/php/php{{ php_version }}-fpm.sock owner={{ usuario }} group={{ usuario }}
   when: ansible_os_family == "Debian"
 
+# Esta carpeta tambien necesita ser cambiada de dueño
 - name: Set permissions of required to {{ usuario }}'s user
   file: path=/var/lib/nginx/ owner={{ usuario }} group={{ usuario }} state=directory
   become: true
   become_method: sudo
 
+# Añado la configuracion de nginx para supervision
 - name: Creation of /etc/nginx/conf.d/supervision.conf
   template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
   become: true
   become_method: sudo
 
-- name: Restart of nginx
-  service: name=nginx state=restarted enabled=yes
+# Starteo y habilito nginx
+- name: Start of nginx
+  service: name=nginx state=started enabled=yes
   become: true
   become_method: sudo

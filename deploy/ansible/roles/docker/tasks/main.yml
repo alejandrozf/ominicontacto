@@ -69,9 +69,9 @@
   tags: docker
 
 - name: Change permission of docker volumes folder
-  file: path=/var/lib/docker/volumes/ owner={{ usuario }} group= {{ usuario }} state=directory
+  file: path=/var/lib/docker/volumes/ owner={{ usuario }} group={{ usuario }} state=directory
   become: true
-  become_method: sudo 
+  become_method: sudo
 
 - name: Creation of openssl.cnf
   template: src=roles/kamailio/templates/openssl.cnf.j2 dest=/tmp/openssl.cnf mode=755

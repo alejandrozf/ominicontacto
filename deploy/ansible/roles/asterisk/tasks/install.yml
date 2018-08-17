@@ -1,11 +1,13 @@
 ---
 
+# Se sestean variables de nombre de los targz que se descargan
 - set_fact: asterisk_tar=asterisk-13.22.0.tar.gz
 - set_fact: libpri_tar=libpri-1.6.0.tar.gz
 - set_fact: jansson_tar=jansson-2.7.tar.gz
 - set_fact: dahdi_tar=dahdi-linux-complete-2.11.1+2.11.1.tar.gz
 - set_fact: iksemel_tar=iksemel-1.5.1.3.zip
 
+# Se descargan los paquetes
 - name: Descarga de paquetes de asterisk
   get_url: "url={{ item }} dest=/usr/src/"
   with_items:
@@ -17,6 +19,7 @@
   become: yes
   become_method: sudo
 
+# Se descomprimen
 - name: Descompresion de todos los paquetes
   unarchive: "src=/usr/src/{{ item }} dest=/usr/src/ remote_src=yes"
   with_items:
@@ -28,6 +31,7 @@
   become: yes
   become_method: sudo
 
+# Se borran
 - name: Borrado de los tar
   file: "dest=/usr/src/{{ item }} state=absent"
   with_items:
@@ -39,23 +43,27 @@
   become: yes
   become_method: sudo
 
+# Se crea el directorio /opt/omnileads/asterisk
 - name: Create asterisk directory
   file: path={{ install_prefix }}asterisk state=directory owner={{ usuario }} group={{ usuario }}
   become: yes
   become_method: sudo
 
+# Se crea directorio para esto que no se que hace (iksemel)
 - name: Create iksemel directory
   file: path={{ install_prefix }}iksemel-1.5.1.2 state=directory owner={{ usuario }} group={{ usuario }}
   become: yes
   become_method: sudo
 
+# Esta task es necesaria en debian para que compile el iksemel
 - name: Link libtool simbolic link (debian)
   file: state=link src=/usr/bin/libtoolize dest=/usr/bin/libtool owner=root group=root force=true
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
 
-- name: Instalacion de Iksemel-Master
+# Pasos para instalar iksemel
+- name: Instalacion de Iksemel
   shell: "{{ item }} chdir=/usr/src/iksemel-1.5.1.3"
   with_items:
         - ./autogen.sh
@@ -65,6 +73,7 @@
   become: yes
   become_method: sudo
 
+# Pasos para instalar dahdi linux
 - name: Instalacion de Dahdi Linux
   shell: "{{ item }} chdir=/usr/src/dahdi-linux-complete-2.11.1+2.11.1"
   with_items:
@@ -74,6 +83,7 @@
   become: yes
   become_method: sudo
 
+# Pasos para instalar libpri
 - name: Instalacion de libpri
   shell: "{{ item }} chdir=/usr/src/libpri-1.6.0"
   with_items:
@@ -82,11 +92,13 @@
   become: yes
   become_method: sudo
 
+# Se crea un directorio para jansson
 - name: Create jansson directory
   file: path={{ install_prefix }}jansson-2.7 state=directory owner={{ usuario }} group={{ usuario }}
   become: yes
   become_method: sudo
 
+# Pasos para instalar jansson
 - name: Instalacion de jansson
   shell: "{{ item }} chdir=/usr/src/jansson-2.7"
   with_items:
@@ -97,6 +109,7 @@
   become: yes
   become_method: sudo
 
+# Pasos para instalar asterisk  se comienza con el install de prerequisitos y luego con el configure
 - name: Instalacion de asterisk (centos)
   shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
@@ -104,6 +117,8 @@
           - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
   when: ansible_os_family == "RedHat"
 
+# Esta task es necesaria porque en debian hay un paquete que pregunta cual es el countrycode telefonico del pais donde va a estar asterisk instalado
+# El debconf sirve para confirugarle predeterminadamente la opcion de 59 (country code argentino) y asi no pida el input
 - name: Seteo del countrycode para asterisk
   debconf: name='libvpb0' question='libvpb0/countrycode' value={{ country_code }} vtype='string'
   when: ansible_os_family == "Debian"
@@ -115,12 +130,14 @@
           - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
   when: ansible_os_family == "Debian"
 
+# Se sigue con el la ejecucion de este script para que permita mp3
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-13.22.0"
   register: command_result
   become: yes
   become_method: sudo
   ignore_errors: yes
 
+# Se hace la instalacion de asterisk
 - shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - make menuselect.makeopts
@@ -132,12 +149,14 @@
  # become: yes
  # become_method: sudo
 
+# Se mueven los directorios de jansson e iksemel a /opt/omnileads/asterisk -- FIX ME -- hay mejor forma de hacer mv?
 - name: Organizing the asterisk directories
   shell: "{{ item }} chdir={{ install_prefix }}"
   with_items:
       - mv jansson-2.7 asterisk/
       - mv iksemel-1.5.1.2 asterisk/
 
+# Se borran los paquetes descargados
 - name: Erase the downloaded directories of asterisk
   file: path=/usr/src/{{ item }} state=absent
   with_items:
