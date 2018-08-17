@@ -226,7 +226,7 @@ $(function () {
       dataType: 'html',
       data: 'sip=' + id + '&sipext=' + sipExt + "&action=takecall",
       success: function (msg) {
-        
+
       },
       error: function (jqXHR, textStatus, errorThrown) {
         debugger;
@@ -333,7 +333,6 @@ $(function () {
     textSipStatus = document.createTextNode(state);
     iconStatus.id = "imgStatus";
     textSipStatus.id = "textSipStatus";
-    elem.style.color="white";
     iconStatus.src = "/Omnisup/static/Img/"+img;
     elem.appendChild(iconStatus);
     elem.appendChild(textSipStatus);
