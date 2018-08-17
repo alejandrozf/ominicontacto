@@ -60,42 +60,42 @@ if [ $Convertir == 1 ]; then
     done
 fi
 
-if [ $Mover_interno == 1 ] || [ $Mover_interno == 0 ]; then
-    cd ${Path_origen}
-    Files="`ls -ltr|awk '{print $9}'`"
-    for File in ${Files};do
-        if [ $Mover_externo == 1 ] && [ -z "$4" ] && [ -z "$5" ]; then
-            ssh-copy-id -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$IP
-            scp ${Path_origen}/${File} root@${IP}:${Path_remoto}
-            ResultadoCopia=`echo $?`
-                if [ ${ResultadoCopia} -ne 0 ];then
-                    echo "Falló al copiar el audio, favor verificar conexion o si la carpeta destino existe"
-                    break
-                else
-                    rm -rf $File
-                fi
-        else
-            if [ $Mover_interno == 0 ] && [ $Mover_externo == 1 ]; then
-                echo  "no se especificó IP o path remoto, se sale del script"
-                exit 1
-            fi
-            cd ${Path_destino}
-            Fecha="${Ano}-${Mes}-${Dia}"
-            if [ ! -d ${Fecha} ]; then
-                mkdir ${Fecha}
-            fi
-            cp ${Path_origen}/${File} ${Path_destino}/${Ano}-${Mes}-${Dia}
-            ResultadoCopia=`echo $?`
-            if [ ${ResultadoCopia} -ne 0 ];then
-                echo "Falló al copiar el audio"
-                exit 1
-            else
-                cd ${Path_origen}
-                rm -rf $File
-            fi
-        fi
-    done
-fi
+#if [ $Mover_interno == 1 ] || [ $Mover_interno == 0 ]; then
+#    cd ${Path_origen}
+#    Files="`ls -ltr|awk '{print $9}'`"
+#    for File in ${Files};do
+#        if [ $Mover_externo == 1 ] && [ -z "$4" ] && [ -z "$5" ]; then
+#            ssh-copy-id -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$IP
+#            scp ${Path_origen}/${File} root@${IP}:${Path_remoto}
+#            ResultadoCopia=`echo $?`
+#                if [ ${ResultadoCopia} -ne 0 ];then
+#                    echo "Falló al copiar el audio, favor verificar conexion o si la carpeta destino existe"
+#                    break
+#                else
+#                    rm -rf $File
+#                fi
+#        else
+#            if [ $Mover_interno == 0 ] && [ $Mover_externo == 1 ]; then
+#                echo  "no se especificó IP o path remoto, se sale del script"
+#                exit 1
+#            fi
+#            cd ${Path_destino}
+#            Fecha="${Ano}-${Mes}-${Dia}"
+#            if [ ! -d ${Fecha} ]; then
+#                mkdir ${Fecha}
+#            fi
+#            cp ${Path_origen}/${File} ${Path_destino}/${Ano}-${Mes}-${Dia}
+#            ResultadoCopia=`echo $?`
+#            if [ ${ResultadoCopia} -ne 0 ];then
+#                echo "Falló al copiar el audio"
+#                exit 1
+#            else
+#                cd ${Path_origen}
+#                rm -rf $File
+#            fi
+#        fi
+#    done
+#fi
 
 echo "Se realizó el procedimiento con éxito"
 echo "Fin: "`${Date} +%A\ %d\ "de"\ %B\ "de"\ %Y\ %T\ %Z"."`
