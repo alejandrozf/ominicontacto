@@ -53,6 +53,10 @@ class CustomUserCreationForm(UserCreationForm):
         fields = (
             'username', 'first_name', 'last_name', 'email', 'is_agente',
             'is_supervisor')
+        labels = {
+            'is_agente': 'Es un agente',
+            'is_supervisor': 'Es un supervisor',
+        }
 
     def clean(self):
         is_agente = self.cleaned_data.get('is_agente', None)
@@ -60,6 +64,9 @@ class CustomUserCreationForm(UserCreationForm):
         if is_agente and is_supervisor:
             raise forms.ValidationError(
                 _('Un usuario no puede ser Agente y Supervisor al mismo tiempo'))
+        if not is_agente and not is_supervisor:
+            raise forms.ValidationError(
+                _('Al menos debe seleeccionar una opción de usuario es agente o es supervisor'))
         return self.cleaned_data
 
     def clean_username(self):
