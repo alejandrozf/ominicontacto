@@ -383,8 +383,9 @@ class CampanaService():
             if detalle:
                 restantes = int(detalle['n_est_remaining_calls'])
                 if restantes == 0 and not campana.es_manual:
-                    self.remove_campana_wombat(campana)
-                    campana.finalizar()
+                    pass
+                    #self.remove_campana_wombat(campana)
+                    #campana.finalizar()
             else:
                 error = _(u"No se pudo consultar el estado actual de la campaña. "
                           "Consulte con su administrador.")
