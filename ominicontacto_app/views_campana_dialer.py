@@ -291,6 +291,8 @@ class UpdateBaseDatosDialerView(FormView):
             messages.SUCCESS,
             message,
         )
+        self.object.estado = Campana.ESTADO_INACTIVA
+        self.object.save()
 
         return redirect(self.get_success_url())
 
