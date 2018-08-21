@@ -21,7 +21,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 )
@@ -500,7 +500,7 @@ def node_view(request):
     registro = []
     campanas_preview_activas = []
     agente_profile = request.user.get_agente_profile()
-    if request.user.is_authenticated() and agente_profile:
+    if request.user.is_authenticated() and agente_profile and not agente_profile.is_inactive:
         sip_usuario = request.user.generar_usuario(agente_profile.sip_extension)
         sip_password = request.user.generar_contrasena(sip_usuario)
         registro = DuracionDeLlamada.objects.filter(
@@ -523,6 +523,11 @@ def node_view(request):
             context,
             context_instance=RequestContext(request)
         )
+    if agente_profile.is_inactive:
+        message = ("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
+                   " su supervisor")
+        messages.warning(request, message)
+        logout(request)
     return HttpResponseRedirect(reverse('login'))
 
 
