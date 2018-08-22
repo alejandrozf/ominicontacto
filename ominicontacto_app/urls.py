@@ -279,7 +279,7 @@ urlpatterns = [
         name='desoculta_base_datos', ),
     url(r'^base_datos_contacto/bases_ocultas/$',
         administrador_o_supervisor_requerido(views_base_de_datos_contacto.
-                       mostrar_bases_datos_borradas_ocultas_view),
+                                             mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
 
     # ==========================================================================
@@ -548,6 +548,10 @@ urlpatterns = [
         permiso_administracion_requerido(
             views_campana_dialer.CampanaDialerBorradasListView.as_view()),
         name="campana_dialer_mostrar_ocultas"),
+    url(r'^campana_dialer/finaliza_actovas/$',
+        permiso_administracion_requerido(
+            views_campana_dialer.FinalizarCampanasActivasView.as_view()),
+        name="campana_dialer_finaliza_activas"),
     # ==========================================================================
     # Campana Manual
     # ==========================================================================

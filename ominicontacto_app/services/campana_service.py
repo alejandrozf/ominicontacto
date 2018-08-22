@@ -382,8 +382,7 @@ class CampanaService():
             detalle = self.obtener_dato_campana_run(campana)
             if detalle:
                 restantes = int(detalle['n_est_remaining_calls'])
-                completadas = int(detalle['n_calls_completed'])
-                if restantes == 0 and completadas > 0 and not campana.es_manual:
+                if restantes == 0 and not campana.es_manual:
                     self.remove_campana_wombat(campana)
                     campana.finalizar()
             else:

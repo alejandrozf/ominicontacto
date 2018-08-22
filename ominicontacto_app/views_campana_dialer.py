@@ -45,11 +45,11 @@ class CampanaDialerListView(ListView):
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
-        campana_service = CampanaService()
-        error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
-            campanas.filter(estado=Campana.ESTADO_ACTIVA))
-        if error_finalizadas:
-            messages.add_message(self.request, messages.WARNING, error_finalizadas)
+        # campana_service = CampanaService()
+        # error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
+        #     campanas.filter(estado=Campana.ESTADO_ACTIVA))
+        # if error_finalizadas:
+        #     messages.add_message(self.request, messages.WARNING, error_finalizadas)
 
         context['campanas'] = campanas
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
@@ -339,3 +339,20 @@ class CampanaDialerBorradasListView(CampanaDialerListView):
             return super(CampanaDialerBorradasListView, self).get(request, *args, **kwargs)
         else:
             return JsonResponse({'result': 'desconectado'})
+
+
+class FinalizarCampanasActivasView(RedirectView):
+    """
+    Esta vista finaliza las campanas activas de acuerdo si tienen contactos pendientes en wombat
+    """
+
+    pattern_name = 'campana_dialer_list'
+
+    def get(self, request, *args, **kwargs):
+        campanas = Campana.objects.obtener_campanas_dialer()
+        campana_service = CampanaService()
+        error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
+            campanas.filter(estado=Campana.ESTADO_ACTIVA))
+        if error_finalizadas:
+            messages.add_message(self.request, messages.WARNING, error_finalizadas)
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
