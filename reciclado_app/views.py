@@ -88,8 +88,10 @@ class ReciclarCampanaDialerFormView(FormView):
                         kwargs={"pk_campana_template": campana_reciclada.pk,
                                 "borrar_template": 1}))
         elif reciclado_radio == 'misma_campana':
-            nombre_base = 'reciclada_camp_{0}'.format(campana.id)
-            nombre_base_datos = bd_contacto_reciclada.nombre.replace('reciclada', nombre_base, 1)
-            bd_contacto_reciclada.nombre = nombre_base_datos
-            bd_contacto_reciclada.save()
-            return HttpResponseRedirect(reverse("campana_dialer_list"))
+            campana.update_basedatoscontactos(bd_contacto_reciclada)
+            campana_service = CampanaService()
+            campana_service.cambiar_base(campana, [], False, False, "")
+            campana.estado = Campana.ESTADO_INACTIVA
+            campana.save()
+            return HttpResponseRedirect(
+                reverse("campana_dialer_update", kwargs={"pk_campana": campana.pk}))
