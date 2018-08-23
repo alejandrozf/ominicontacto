@@ -201,7 +201,7 @@ class ArchivoDeReporteCsv(object):
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
 
-    def escribir_archivo_calificado_csv(self, campana, calificados, no_calificados):
+    def escribir_archivo_calificado_csv(self, campana, calificados):
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []
