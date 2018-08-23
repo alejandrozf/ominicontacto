@@ -67,8 +67,8 @@ class CustomUserCreationForm(UserCreationForm):
         existe_user = User.objects.filter(username=username).exists()
         if existe_user:
             raise forms.ValidationError(
-                _('Ya existe un usuario con este nombre de usuario, por favor seleccione un'
-                  ' nombre de usuario diferente'))
+                _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
+                  ' por favor seleccione un nombre de usuario diferente'))
 
 
 class UserChangeForm(forms.ModelForm):
@@ -108,8 +108,8 @@ class UserChangeForm(forms.ModelForm):
         existe_user = User.objects.filter(username=username).exists()
         if existe_user:
             raise forms.ValidationError(
-                _('Ya existe un usuario con este nombre de usuario, por favor seleccione un'
-                  ' nombre de usuario diferente'))
+                _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
+                  ' por favor seleccione un nombre de usuario diferente'))
 
     class Meta:
         model = User
