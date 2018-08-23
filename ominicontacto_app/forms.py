@@ -64,9 +64,6 @@ class CustomUserCreationForm(UserCreationForm):
         if is_agente and is_supervisor:
             raise forms.ValidationError(
                 _('Un usuario no puede ser Agente y Supervisor al mismo tiempo'))
-        if not is_agente and not is_supervisor:
-            raise forms.ValidationError(
-                _('Al menos debe seleeccionar una opción de usuario es agente o es supervisor'))
         return self.cleaned_data
 
     def clean_username(self):
@@ -1082,6 +1079,9 @@ class SupervisorProfileForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('Un Supervisor no puede ser Administrador de sistema '
                   'y Cliente al mismo tiempo'))
+        if not is_administrador and not is_customer:
+            raise forms.ValidationError(
+                _('Al menos debe seleeccionar una opción administrador o cliente'))
         return self.cleaned_data
 
 
