@@ -84,7 +84,7 @@ class ArchivoDeReporteCsv(object):
             return json.loads(contacto.datos)
         return [""] * len(campos_contacto)
 
-    def escribir_archivo_csv(self, campana, calificados, no_contactados):
+    def escribir_archivo_csv(self, campana, calificados, no_contactados, no_calificados):
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []
@@ -146,6 +146,25 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append("")
                 lista_opciones.append("")
                 lista_opciones.append(self.agentes_dict.get(log_no_contactado.agente_id, -1))
+                lista_opciones.append(campana.bd_contacto)
+
+                # --- Finalmente, escribimos la linea
+                self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
+
+            for log_no_calificado in no_calificados:
+                lista_opciones = []
+                # --- Buscamos datos
+                log_no_contactado_fecha_local = localtime(log_no_calificado.time)
+                lista_opciones.append(log_no_calificado.numero_marcado)
+                contacto_id = log_no_calificado.contacto_id
+                datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
+                lista_opciones.extend(datos_contacto)
+                lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
+                lista_opciones.append("Contactado")
+                lista_opciones.append(log_no_calificado.numero_marcado)
+                lista_opciones.append("Llamada Atendida sin calificacion")
+                lista_opciones.append("")
+                lista_opciones.append(self.agentes_dict.get(log_no_calificado.agente_id, -1))
                 lista_opciones.append(campana.bd_contacto)
 
                 # --- Finalmente, escribimos la linea
@@ -232,25 +251,6 @@ class ArchivoDeReporteCsv(object):
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
 
-            for log_no_calificado in no_calificados:
-                lista_opciones = []
-                # --- Buscamos datos
-                log_no_contactado_fecha_local = localtime(log_no_calificado.time)
-                lista_opciones.append(log_no_calificado.numero_marcado)
-                contacto_id = log_no_calificado.contacto_id
-                datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
-                lista_opciones.extend(datos_contacto)
-                lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-                lista_opciones.append("Contactado")
-                lista_opciones.append(log_no_calificado.numero_marcado)
-                lista_opciones.append("Llamada Atendida sin calificacion")
-                lista_opciones.append("")
-                lista_opciones.append(self.agentes_dict.get(log_no_calificado.agente_id, -1))
-                lista_opciones.append(campana.bd_contacto)
-
-                # --- Finalmente, escribimos la linea
-                self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
-
     def ya_existe(self):
         return os.path.exists(self.ruta)
 
@@ -292,12 +292,12 @@ class ReporteCampanaContactadosCSV(object):
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "contactados", agentes_dict, contactos_dict)
         archivo_de_reporte.crear_archivo_en_directorio()
-        archivo_de_reporte.escribir_archivo_csv(campana, calificados, no_contactados)
+        archivo_de_reporte.escribir_archivo_csv(campana, calificados, no_contactados, no_califico)
         # Reporte calificados
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "calificados", agentes_dict, contactos_dict)
         archivo_de_reporte.crear_archivo_en_directorio()
-        archivo_de_reporte.escribir_archivo_calificado_csv(campana, calificados, no_califico)
+        archivo_de_reporte.escribir_archivo_calificado_csv(campana, calificados)
         # Reporte no atendidos
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "no_atendidos", agentes_dict, contactos_dict)
