@@ -60,9 +60,11 @@
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
     <h2>{% trans 'Campañas Activas' %} <span style="color:red;">- {% trans 'Canales en uso' %}: {{ canales_en_uso }}</span></h2>
-            <a href="{% url 'campana_dialer_finaliza_activas' %}" class="btn btn-light btn-sm">
+            <a href="{% url 'campana_dialer_finaliza_activas' %}" class="btn btn-light btn-sm float-right">
         {% trans 'Finalizar Campañas sin registros' %}
     </a>
+        </br>
+        </br>
     <table class="table">
         <thead>
             <tr>
