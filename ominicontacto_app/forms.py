@@ -62,6 +62,14 @@ class CustomUserCreationForm(UserCreationForm):
                 _('Un usuario no puede ser Agente y Supervisor al mismo tiempo'))
         return self.cleaned_data
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        existe_user = User.objects.filter(username=username).exists()
+        if existe_user:
+            raise forms.ValidationError(
+                _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
+                  ' por favor seleccione un nombre de usuario diferente'))
+
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
@@ -94,6 +102,14 @@ class UserChangeForm(forms.ModelForm):
             raise forms.ValidationError(_('Los passwords no concuerdan'))
 
         return self.cleaned_data
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        existe_user = User.objects.filter(username=username).exists()
+        if existe_user:
+            raise forms.ValidationError(
+                _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
+                  ' por favor seleccione un nombre de usuario diferente'))
 
     class Meta:
         model = User
