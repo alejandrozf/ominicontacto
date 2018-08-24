@@ -701,7 +701,10 @@ def crear_chat_view(request):
 def supervision_url_externa(request):
     """Vista que redirect a la supervision externa de marce"""
     user = request.user
-    if user.get_is_supervisor_normal() or user.get_is_supervisor_customer():
+    # TODO: Simon abarque el supervisor administrador del sistema pueda ver la supervision
+    # hasta que este resuelto el tema de perfiles de supervisor por la tarjeta 652
+    # que no permitia que un usuario administrador del sistema vea la sueprvision
+    if user.get_es_administrador_o_supervisor_normal() or user.get_is_supervisor_customer():
         supervisor = user.get_supervisor_profile()
         sip_extension = supervisor.sip_extension
         timestamp = user.generar_usuario(sip_extension).split(':')[0]
