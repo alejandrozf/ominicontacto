@@ -1,0 +1,80 @@
+---
+
+# En este grupo de tasks se encarga de crear los certificados de autoridad certificante de y de nodo que van a usar kamailio y nginx
+# No se va a explicar cada tarea porque esto ya funciona y no ha habido que modificarlo.
+# https://www.kamailio.org/dokuwiki/doku.php/tls:create-certificates
+
+- name: Modificacion del /etc/pki/tls/openssl.cnf
+  template: src=templates/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Modificacion del /etc/pki/tls/openssl.cnf
+  template: src=templates/openssl.cnf.j2 dest=/etc/ssl/openssl.cnf
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+- name: Creacion de {{ kamailio_location }}/etc/certs
+  file: path={{ kamailio_location }}/etc/certs state=directory mode=0700
+  become: true
+  become_method: sudo
+
+- name: Creacion de {{ kamailio_location }}/etc/certs/demoCA y /newcerts
+  file: "path={{ item }} state=directory mode=0700"
+  with_items:
+      - "{{ kamailio_location }}/etc/certs/demoCA"
+      - "{{ kamailio_location }}/etc/certs/demoCA/newcerts"
+- file: path={{ kamailio_location }}/etc/certs/demoCA/index.txt state=touch mode=0755
+  become: true
+  become_method: sudo
+
+#crear path de serial
+- set_fact: serial_file_path={{ kamailio_location }}/etc/certs/demoCA/serial
+#crear el archivo serial
+- file: path={{ serial_file_path }} state=touch
+  become: true
+  become_method: sudo
+#crear el contenido de serial
+- set_fact: serial_content="01"
+#poner el contenido dentro del archivo
+- copy: content={{ serial_content }} dest={{ serial_file_path }}
+  become: true
+  become_method: sudo
+
+- name: Seteo de parametros del certificado de la CA
+  set_fact:
+          ca_subject_ca: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omnicentos_fqdn }}"
+          ca_subject_node: "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizationalunit }}/CN={{ omni_ip }}"
+
+- name: Generar la clave privada y crear los archivos del CA
+  shell: "openssl req -new -x509 -extensions v3_ca -keyout key.pem -out cert.pem -days 3650 -passout pass:toor123 -subj \"{{ ca_subject_ca }}\""
+  args:
+          chdir: "{{ kamailio_location }}/etc/certs/demoCA/"
+  become: true
+  become_method: sudo
+
+- name: Generar certificado de los nodos
+  shell: "openssl req -new -nodes -keyout key.pem -out req.pem -subj \"{{ ca_subject_node }}\""
+  args:
+          chdir: "{{ kamailio_location }}/etc/certs/"
+  become: true
+  become_method: sudo
+
+- name: Firmar el certificado de los nodos con el del CA
+  shell: "openssl ca -extensions v3_req  -batch -days 1460 -out cert.pem -keyfile demoCA/key.pem -cert demoCA/cert.pem -passin pass:toor123 -infiles req.pem"
+  args:
+          chdir: "{{ kamailio_location }}/etc/certs"
+  register: command_result
+  failed_when:
+    - "'already been issued' not in command_result.stderr"
+    - "command_result.rc != 0"
+  become: true
+  become_method: sudo
+#- set_fact: static_route=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto
+
+- name: Set permission to {{ kamailio_location }}/etc/certs
+  shell: "chown {{ usuario }}:{{ usuario }} -R {{ kamailio_location }}/etc/certs/"
+  become: true
+  become_method: sudo

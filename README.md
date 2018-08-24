@@ -100,7 +100,7 @@ SESSION_COOKIE_AGE = 600
 # 'OML_ASTERISK_REMOTEPATH': path del server donde se guardara. Asterisk debe estar configurado
 # 'OML_SIP_FILENAME': donde se genera la config de los sip de los agentes. Asterisk debe estar configurado
 # 'OML_QUEUES_FILENAME': donde se genera la config de queues. Asterisk debe estar configurado
-# 'OML_GLOBALS_VARIABLES_FILENAME': donde se genera las variables para usar en asterik como por ejemplo sip agente con pk agente
+# 'OML_RUTAS_SALIENTES_FILENAME': donde se genera la config de Rutas Salientes
 #  para hacer un include de este archivo
 # **** RECORDAR: revisar permisos y que existan los directorios ****
 OML_ASTERISK_HOSTNAME = "freetech@172.16.20.222"
@@ -108,7 +108,7 @@ OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
 OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
 OML_QUEUES_FILENAME = "/home/freetech/queues_fts.conf"
 OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
-OML_GLOBALS_VARIABLES_FILENAME = "/home/freetech/extensions_fts_globals.conf"
+OML_RUTAS_SALIENTES_FILENAME = "/home/freetech/oml_extensions_outr.conf"
 
 # Ubuntu (wav -> wav)
 TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",

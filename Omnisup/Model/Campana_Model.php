@@ -50,31 +50,8 @@ class Campana_Model {
       return $result;
     }
 
-    function getSells($CampName) {
-        $sql = "select count(*) FROM ominicontacto_app_campana cd JOIN ominicontacto_app_calificacioncliente cc
-                ON cd.id = cc.campana_id JOIN ominicontacto_app_calificacion c ON cc.calificacion_id = c.id AND EXTRACT(DAY from fecha) = :dia
-                AND EXTRACT(MONTH from fecha) = :mes AND EXTRACT(YEAR from fecha) = :ano AND cd.nombre = :nombre AND es_venta = 't'";
-        $day = date("d");
-        $month = date("m");
-        $year = date("Y");
-        try {
-            $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
-            $query = $cnn->prepare($sql);
-            $query->bindParam(':dia', $day);
-            $query->bindParam(':mes', $month);
-            $query->bindParam(':ano', $year);
-            $query->bindParam(':nombre', $CampName);
-            $query->execute();
-            $result = $query->fetchAll(PDO::FETCH_ASSOC);
-            $cnn = NULL;
-        } catch (PDOException $e) {
-            $result= "Database Error: " . $e;
-        }
-        return $result;
-    }
-
     function getQueuedCalls($CampName) {
-        $cmd = "sudo asterisk  -rx 'queue show " . $CampName . "' |grep wait |awk '{print $2}' FS='\(' |awk '{print $1}' FS=','";
+        $cmd = "sudo asterisk  -rx 'queue show " . $CampName . "' |grep wait |awk '{print $2}' FS='(' |awk '{print $1}' FS=','";
         $data = shell_exec($cmd);
         return $data;
     }
@@ -123,10 +100,9 @@ class Campana_Model {
      }
 
      function getSpecialScore($CampId) {
-       $sql = "select count(*) FROM ominicontacto_app_campana cd JOIN
-       ominicontacto_app_calificacioncliente cc
-       ON cd.id = cc.campana_id AND EXTRACT(DAY from cc.fecha) = :dia AND EXTRACT(MONTH from cc.fecha) = :mes
-       AND EXTRACT(YEAR from cc.fecha) = :ano AND cc.es_venta = 't' and cd.id= :cpmid GROUP BY cd.gestion";
+       $sql = "select count(*) FROM ominicontacto_app_campana cd JOIN ominicontacto_app_opcioncalificacion oc ON cd.id=oc.campana_id JOIN
+                ominicontacto_app_calificacioncliente cc ON oc.id = cc.opcion_calificacion_id AND EXTRACT(DAY from fecha) = :dia
+                AND EXTRACT(MONTH from fecha) = :mes AND EXTRACT(YEAR from fecha) = :ano AND cd.id= :cpmid AND es_venta = 't'";
        $day = date("d");
        $month = date("m");
        $year = date("Y");

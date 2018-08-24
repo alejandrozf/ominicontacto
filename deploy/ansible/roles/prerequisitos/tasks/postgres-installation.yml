@@ -1,0 +1,32 @@
+---
+
+# El initdb de postgres toca ejecutarlo solo para centos
+- name: Setup of postgresql
+  command: "/usr/pgsql-9.6/bin/postgresql96-setup initdb"
+  register: command_result
+  failed_when:
+    - "'is not empty' not in command_result.stdout"
+    - "command_result.rc != 0"
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Con service starteas stopeas restarteas y habilitas servicios. Aca lo hacemos con postgres en centos
+- name: Start and enable postgres service
+  service: name=postgresql-9.6.service state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# En debian el servicio se llama diferente #quehijosdefrula
+- name: Start and enable postgres service
+  service: name=postgresql state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender 
+- name: Start and enable redis service
+  service: name=redis state=restarted enabled=yes
+  become: yes
+  become_method: sudo

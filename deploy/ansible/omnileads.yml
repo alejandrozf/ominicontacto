@@ -1,0 +1,60 @@
+# Playbook de instalacion de Omnileads sin Docker osea si DOCKER=false en el archivo hosts
+# Utilza como variables de entorno el archivo group_vars/all y el archivo de inventario hosts
+# Utiliza como archivo de configuracion /var/tmp/ansible/ansible.cfg
+# Cositas a tener en cuenta:
+# https://docs.ansible.com/ansible/2.5/user_guide/playbooks_conditionals.html
+# https://docs.ansible.com/ansible/2.5/user_guide/playbooks_loops.html
+# https://docs.ansible.com/ansible/2.4/intro_configuration.html
+---
+# hosts: le decimos que seccion del hosts se va  usar: [omnileads]
+- name: Instalacion de Omnileads
+  hosts: omnileads
+# variables que vienen exportadas desde el deploy.sh
+  vars:
+          build_dir: "{{ BUILD_DIR }}"
+          rama: "{{ RAMA }}"
+
+# se piden las variables de superuser y el formato de conversion
+# https://docs.ansible.com/ansible/2.6/user_guide/playbooks_prompts.html
+  vars_prompt:
+      - name: "admin_pass"
+        prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales): "
+        private: yes
+        default: toor123
+
+      - name: "admin_pass2"
+        prompt: "Ingrese nuevamente contraseña del admin de Omnileads: "
+        private: yes
+
+      - name: "formato_conversion"
+        prompt: "Ingrese el formato de conversión de grabaciones (wav o mp3, default wav): "
+        default: mp3
+        private: no
+
+# los pre_tasks son para validaciones de los inputs de los usuarios
+  pre_tasks:
+      - assert:
+          that:
+            - "'{{ admin_pass }}' != 'bad_value' "
+            - "'{{ admin_pass }}' | length > 8"
+          msg: "La contraseña ingresada es demasiado corta. La contraseña no puede ir vacia"
+      - assert:
+          that: "'{{ admin_pass }}' == '{{ admin_pass2 }}'"
+          msg: "Las contraseñas no son iguales"
+      - assert:
+          that: "'{{ formato_conversion }}' == 'wav' or '{{ formato_conversion }}' == 'mp3' "
+          msg: "Formato inválido"
+# el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
+# Esta variable te dice que familia de OS es el servidor a deployar (Debian o RedHat)
+
+  gather_facts: True
+
+# Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
+# https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
+  roles:
+          - {role: prerequisitos, tags: ['yum']}
+          - {role: oml_server, tags: ['virtualenv']}
+          - kamailio
+          - {role: omniapp_second, tags: ['omniapp']}
+          - asterisk
+          - deploy_supervision

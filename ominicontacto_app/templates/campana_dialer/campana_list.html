@@ -60,6 +60,11 @@
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
     <h2>{% trans 'Campañas Activas' %} <span style="color:red;">- {% trans 'Canales en uso' %}: {{ canales_en_uso }}</span></h2>
+            <a href="{% url 'campana_dialer_finaliza_activas' %}" class="btn btn-light btn-sm float-right">
+        {% trans 'Finalizar Campañas sin registros' %}
+    </a>
+        </br>
+        </br>
     <table class="table">
         <thead>
             <tr>
@@ -111,9 +116,6 @@
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                             </a>
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
-                            </a>
                             <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'pausar_campana_dialer' %}">
                                 <span class="icon icon-control-pause"></span>{% trans 'Pausar' %}
                             </a>
@@ -159,9 +161,6 @@
                 <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
                 <td>
                     {{ campana.bd_contacto }}
-                    <a href="{% url 'campana_dialer_update_base' campana.pk %}">
-                        {% trans 'Cambiar' %}
-                    </a>
                 </td>
                 <td> {{campana.get_estado_display}}  </td>
                 <td width="14%">
@@ -184,9 +183,6 @@
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
                             </a>
                             <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'activar_campana_dialer' %}">
                                 <span class="icon icon-control-play"></span>{% trans 'Activar' %}
@@ -259,9 +255,6 @@
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                             </a>
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
-                            </a>
                             <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
                                 <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
                             </a>
@@ -329,6 +322,9 @@
                             </a>
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
                                 <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
+                            </a>
+                                                        <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
+                                <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}

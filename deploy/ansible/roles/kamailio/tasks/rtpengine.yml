@@ -1,0 +1,185 @@
+---
+# Set_fact es para setear variables, aqui seteo el nombre de la carpeta que se crea al descargar rtpengine
+- set_fact: rtpengine_name=rtpengine-mr5.5.3.1
+# Seteo esta variable que va en un Makefile para instalar en centos
+- set_fact: kernel="/usr/src/kernels/$(shell uname -r)"
+  when: ansible_os_family == "RedHat"
+
+# Descargo rtpengine desde la fuente, me descarga un .tar.gz
+- name: Download of RTPengine-mr5.5.3.1
+  get_url: url={{ rtpengine_repo }} dest=/usr/src/
+  register: destino
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+# Untareo el archivo recien descargado
+- name: Untar the file
+  unarchive: "src=/usr/src/{{ rtpengine_name }}.tar.gz dest=/usr/src/ remote_src=yes"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+# Borro el tar
+- name: Delete tar file
+  file: "dest=/usr/src/{{ rtpengine_name }}.tar.gz state=absent"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed
+
+###### Begin install in centos #####
+# Comienzo a instalar para  centos, toca asi porque los procesos son diferentes
+# algo asi es para centos https://voipmagazine.wordpress.com/2015/02/17/rtpengine-compilation-and-installation-in-fedora-redhat/
+
+# Importacion de la llave para instalar ffmpeg (lo pide la version que usamos de rtpengine) -- FIX ME -- usar modulo rpm_key
+- name: Install of ffmpeg repository (centos)
+  shell: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+# Instalo el repositorio -- FIX ME -- usar yum
+- shell: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+  register: command_result
+  failed_when:
+    - "'transferencia fallida' in command_result.stderr"
+    - "'failed' in command_result.stderr"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+
+# Instalo los paquetes que se necesitan
+- name: Install of ffmpeg (centos)
+  yum: name={{ item }} state=present
+  with_items:
+      - ffmpeg
+      - ffmpeg-devel
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+
+# Make de rtpengine en /usr/src/rtpengine/daemon
+- name: Installation of RTPengine (centos)
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/daemon"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+
+# Aca hago la modificacion del makefile del modulo de kernel, uso la variable que setee en el set_fact
+- name: Modify of the RTPengine kernel module to let it know where is our kernel (centos)
+  lineinfile: "path=/usr/src/{{ rtpengine_name }}/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= {{ kernel }}\""
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+
+# Se hace el make del modulo de kernel
+- name: Installation of RTPengine kernel module (centos)
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+
+# Se inserta el modulo creado
+- name: Insert the kernel module created for RTPengine (centos)
+  shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
+  register: command_result
+  failed_when:
+    - "'File exists' not in command_result.stderr"
+    - "command_result.rc != 0"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+
+# Se hace make de una cosa llamada iptables-extension
+- name: Installation of IPtables extensions (centos)
+  shell: "make chdir=/usr/src/{{ rtpengine_name }}/iptables-extension"
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+
+# El so creado se mete a xtables no se bien para que pero supongo que para cargar las reglas de iptables para rtpengine
+- name: Copy of iptables library to lib64/xtables (centos)
+  copy: src=/usr/src/{{ rtpengine_name }}/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
+  become: true
+  become_method: sudo
+  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+
+####### End of install in centos #########
+
+####### Begin of install in debian #######
+# Ahora para debien, es mas facil porque ya hay debs de rtpengine
+
+# Instalacion de ffmpeg
+- name: Install of ffmpeg (debian)
+  apt: name=ffmpeg state=present
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+# Se hace el buildpackage para generar los debs
+- name: Build of rtpengine with dpkg
+  shell: "dpkg-buildpackage -uc -us chdir=/usr/src/{{ rtpengine_name }}"
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+# Se instalan los debs como tenemos congelada la version de rtpengine no van a cambiar los nombres de loss deb
+- name: Install rtpengine debs
+  apt: deb=/usr/src/{{ item }}
+  with_items:
+    - ngcp-rtpengine-daemon_5.5.3.1+0~mr5.5.3.1_amd64.deb
+    - ngcp-rtpengine-iptables_5.5.3.1+0~mr5.5.3.1_amd64.deb
+    - ngcp-rtpengine-dbg_5.5.3.1+0~mr5.5.3.1_amd64.deb
+    - ngcp-rtpengine-utils_5.5.3.1+0~mr5.5.3.1_all.deb
+    - ngcp-rtpengine-kernel-dkms_5.5.3.1+0~mr5.5.3.1_all.deb
+    - ngcp-rtpengine-recording-daemon_5.5.3.1+0~mr5.5.3.1_amd64.deb
+    - ngcp-rtpengine_5.5.3.1+0~mr5.5.3.1_all.deb
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+####### End of install in debian #######
+
+# Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
+- name: Creation of RTPengine config file
+  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
+  become: true
+  become_method: sudo
+
+# Se copia el archivo para el systemd, (revisarlo y revisar systemd para mas informacion)
+- name: Copy of rtpengine service file to systemd
+  copy: src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/rtpengine.service dest=/etc/systemd/system remote_src=yes
+  become: true
+  become_method: sudo
+
+# Tengo un template de rsyslog modificado para tener logs de rtpengine y kamailio en sus propios archivos (ver template para mas info)
+- name: Modify of /etc/rsyslog.conf
+  template: src=templates/rsyslog.conf.j2 dest=/etc/rsyslog.conf
+  become: true
+  become_method: sudo
+
+# Creo la carpeta y el archivo donde va a ir el log de rtpengine
+- name: Create rtpengine.log file and directory
+  file: path=/var/log/rtpengine/ state=directory mode=0755
+  become: true
+  become_method: sudo
+- file: path=/var/log/rtpengine/rtpengine.log state=touch mode=0755
+  become: true
+  become_method: sudo
+
+# No se para que se crea esta carpeta pero estaba en los pasos de fabi
+- name: Create /var/spool/rtpengine directory
+  file: path=/var/spool/rtpengine state=directory recurse=yes owner=root
+  become: true
+  become_method: sudo
+
+# Hago copia del binario creado a /usr/local/bin
+- name: Copy the rtpengine binary to /usr/local/bin
+  copy: src=/usr/src/{{ rtpengine_name }}/daemon/rtpengine dest=/usr/local/bin remote_src=yes mode=755
+  become: true
+  become_method: sudo
+
+# Inicio y habilito el servicio
+- name: Start and enable rtpengine service
+  service: name=rtpengine state=started enabled=yes
+  become: true
+  become_method: sudo

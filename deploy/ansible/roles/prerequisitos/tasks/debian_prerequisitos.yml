@@ -1,0 +1,128 @@
+---
+
+# Se desinstala apache2 para que no hinche los huevos
+- name: Uninstall of apache2
+  apt: name=apache2 state=absent purge=yes
+
+# Se instala este paquete necesario antes de hacer update
+- name: Install apt-transport-https
+  apt: name=apt-transport-https state=present
+
+# Update/upgrade, https://docs.ansible.com/ansible/latest/modules/apt_module.html
+- name: Update/upgrade of system
+  apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
+  when: LOCALHOST == "true"
+
+# Instalo linux-headers del kernel  en cuestion
+- name: Install linux linux-headers
+  shell: "apt-get install -y linux-headers-$(uname -r)"
+  become: true
+  become_method: sudo
+  ignore_errors: True
+
+  # Intalo los paquetes necesarios para la parte VoIP -- FIX ME -- separar paquetes de asterisk y paquetes de kamailio
+- name: Installation of VoIP dependencies
+  apt: "name={{ item }} state=present"
+  with_items:
+    - build-essential
+    - net-tools
+    - debhelper
+    - iptables-dev
+    - libcurl4-openssl-dev
+    - libpcre3-dev
+    - libxmlrpc-core-c3-dev
+    - markdown
+    - libglib2.0-dev
+    - libhiredis-dev
+    - dkms
+    - git
+    - libevent-dev
+    - libbencode-perl
+    - libcrypt-rijndael-perl
+    - libdigest-hmac-perl
+    - libio-socket-inet6-perl
+    - libsocket6-perl
+    - libb-hooks-op-check-perl
+    - libexporter-tidy-perl
+    - libpcap0.8-dev
+    - libpcap-dev
+    - libio-socket-ip-perl
+    - libavcodec-dev
+    - libavfilter-dev
+    - libavformat-dev
+    - libavresample-dev
+    - libavutil-dev
+    - gcc
+    - flex
+    - bison
+    - mariadb-server
+    - default-libmysqlclient-dev
+    - make
+    - libxml2-dev
+    - libpcre3-dev
+    - libpq-dev
+    - libpq5
+    - redis-server
+    - uuid
+    - uuid-dev
+    - libunistring-dev
+    - libjson-glib-dev
+    - postgresql-client
+    - vim
+    - curl
+    - mysql-client
+    - sox
+    - libncurses5-dev
+    - libssl-dev
+    - mpg123
+    - libnewt-dev
+    - sqlite3
+    - libsqlite3-dev
+    - pkg-config
+    - automake
+    - libtool
+    - autoconf
+    - unixodbc-dev
+    - libasound2-dev
+    - libogg-dev
+    - libvorbis-dev
+    - libical-dev
+    - libneon27-dev
+    - libsrtp0-dev
+    - libspandsp-dev
+    - sudo
+    #- libmyodbc
+    - subversion
+    - odbc-postgresql
+    - wget
+    - unzip
+  become: true
+  become_method: sudo
+
+# Intalo los paquetes necesarios para la parte App
+- name: Installation of app dependencies
+  apt: "name={{ item }} state=present"
+  with_items:
+    - virtualenv
+    - libcairo2-dev
+    - openssl
+    - nginx
+    - python-dev
+    - libxslt1-dev
+    - libldap2-dev
+    - libsasl2-dev
+    - libffi-dev
+    - python-virtualenv
+    - postgresql-9.6
+    - postgresql-contrib
+    - postgresql-server-dev-9.6
+    - postgresql-plpython-9.6
+    - python-mysqldb
+    - libjpeg-dev
+    - python-psycopg2
+    - expect
+    - php-fpm
+    - php-pgsql
+    - php-xml
+  become: true
+  become_method: sudo

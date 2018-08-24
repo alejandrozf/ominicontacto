@@ -1,0 +1,22 @@
+---
+# Esto se hace para la transferencia de la ssh key de usuario omnileads al usuario root. Esto es necesario para poder hacer el reload de asterisk
+
+# Se hace un cat de la llave publica de omnileads para guardarlo en la variagle ssh_key
+- name: Transfer ssh key from {{ usuario }}'s user to root's user
+  shell: cat {{ install_prefix }}.ssh/id_rsa.pub
+  register: ssh_key
+
+# Se hace la transferencia de la llave al usuario root https://docs.ansible.com/ansible/2.5/modules/authorized_key_module.html#authorized-key-module
+- authorized_key: "user=root key={{ ssh_key.stdout }} state=present manage_dir=yes"
+
+# Se cambian los permisos de la llave privada -- FIX ME -- usar modulo file
+- name: Change permissions on id_rsa
+  shell: "chmod 700 {{ install_prefix }}/.ssh/id_rsa"
+  tags: postinstall
+
+# Se realiza el primer ssh login con el argoumento -o para que no haga el chequeo de host
+- name: Try first ssh login
+  shell: "ssh -oStrictHostKeyChecking=no root@127.0.0.1"
+  become: yes
+  become_user: "{{ usuario }}"
+  become_method: su

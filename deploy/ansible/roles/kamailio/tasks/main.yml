@@ -1,0 +1,65 @@
+---
+
+# Detecto si existe el binario de rtpengine y registro el resultado en rtpengine_installed
+- name: Check if Rtpengine is installed
+  command: test -f /usr/local/bin/rtpengine
+  ignore_errors: True
+  register: rtpengine_installed
+  tags: rtpengine
+  become: true
+  become_method: sudo
+
+# mensaje para mostrar si rtpengine no está instalado
+- debug: msg="RTPengine no está instalado, se procede a la instalación"
+  when: rtpengine_installed|failed
+  tags: rtpengine
+
+# mensaje si rtpengine está instalado
+- debug: msg="RTPengine ya se encuentra instalado se omite instalación"
+  when: rtpengine_installed|succeeded
+  tags: rtpengine
+
+#  Si rtpengine_installed es failed incluyo la tarea de instalacion. Osea el sistema detecta cuando rtpengine
+#  está instalado o no y en caso de que no lo  esté lo instala sino omite
+- include: rtpengine.yml
+  tags: rtpengine
+  when: rtpengine_installed|failed
+
+# Lo mismo se hace con kamailio
+- name: Check if Kamailio is installed
+  shell: test -f {{ kamailio_location }}/sbin/kamailio
+  ignore_errors: True
+  register: kamailio_installed
+  tags: kamailio
+  become: true
+  become_method: sudo
+
+- debug: msg="Kamailio no está instalado, se procede a la instalación"
+  tags: kamailio
+  when: kamailio_installed|failed
+
+- debug: msg="Kamailio ya se encuentra instalado se omite instalación"
+  tags: kamailio
+  when: kamailio_installed|succeeded
+
+- name: Check if Kamailio certificates exists
+  shell: test -d {{ kamailio_location }}/etc/certs || test -d /opt/kamailio/etc/certs
+  ignore_errors: True
+  register: certs_exists
+  tags: kamailio
+  become: true
+  become_method: sudo
+
+- include: kamailio.yml
+  tags: kamailio
+  when: kamailio_installed|failed
+
+- include: postgresusers.yml
+  tags: ['postgresusers','kamailio']
+
+- include: kamailio-as-service.yml
+  tags: kamailio
+
+- include: certificate_CA.yml
+  tags: kamailio-cert
+  when: certs_exists|failed

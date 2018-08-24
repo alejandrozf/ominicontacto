@@ -6,6 +6,10 @@ from django import forms
 
 
 class RecicladoForm(forms.Form):
+    CHOICES = [('nueva_campaña', 'Reciclar y crear una nueva campaña'),
+               ('misma_campana', 'Reciclar y utilizar la campaña actual')]
+
+    reciclado_radio = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect())
 
     def __init__(self, *args, **kwargs):
         reciclado_choice = kwargs.pop('reciclado_choice', None)

@@ -1,0 +1,70 @@
+---
+
+- set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
+
+# Se cambia la IP en el acrhivo de config del webphone
+- name: Change the ip address in config.js
+  template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner={{ usuario }} group={{ usuario }}"
+
+# Se crea el lenguaje plpythonu a las bases de datos mencionadas.
+- name: Createlang of the database
+  shell: "createlang plpythonu {{ item }}"
+  with_items:
+    - kamailio
+    - template1
+  become: yes
+  become_user: postgres
+  register: command_result
+  failed_when:
+    - "'ya está instalado' not in command_result.stderr"
+    - "'already installed' not in command_result.stderr"
+    - "command_result.rc != 0"
+
+# Se corre un compendio de comandos de django con manage.py  https://docs.ansible.com/ansible/2.5/modules/django_manage_module.html#django-manage-module
+- name: Run Django migrations
+  django_manage: >
+          command={{ item }}
+          app_path={{ install_prefix }}ominicontacto
+          settings=ominicontacto.settings
+          virtualenv={{ install_prefix }}virtualenv
+  with_items:
+    # Se realizan las migraciones, https://docs.djangoproject.com/en/1.9/topics/migrations/
+          - migrate
+    # Se crea el superusuario admin
+          - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
+    # https://docs.djangoproject.com/en/1.9/ref/contrib/staticfiles/
+          - collectstatic
+    # https://django-compressor.readthedocs.io/en/stable/
+          - compress
+    # Este comando fue creado por desarrollo. Es para recargar los archivos .conf que escribe django y para insertar en astdb lo que se tenga configurado
+          - regenerar_asterisk
+    # Este no se que hace, me lo pidieron los chicos
+          - populate_history --auto
+  environment:
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+  become: yes
+  become_method: su
+  become_user: "{{ usuario }}"
+  ignore_errors: yes
+
+# Se ejecuta una funcion de sql que hizo ale, esto es para los reportes
+- name: Add queuelog trigger to database
+  command: psql -U kamailio -w -h 127.0.0.1 -d kamailio -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plpython/replace_insert_queue_log_ominicontacto_queue_log.sql'
+  become: yes
+  become_user: postgres
+  become_method: sudo
+
+# Se crea un pequeño script que utiliza expect para setear automaticamente la password del superusuario
+- name: Change password of superuser
+  template: "src=templates/changepassword.sh.j2 dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
+
+# Se ejecuta el script (verlo en templates para mas info)
+- name: Change password
+  shell: "./changepassword.sh chdir={{ install_prefix }}ominicontacto"
+  environment:
+          DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
+          PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+
+# Se borra ese script del sistema
+- name: Erase the script for changing superuser password
+  file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent

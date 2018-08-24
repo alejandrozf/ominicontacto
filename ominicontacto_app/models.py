@@ -97,6 +97,14 @@ class User(AbstractUser):
             return True
         return False
 
+    def get_es_administrador_o_supervisor_normal(self):
+        """Funcion devuelve true si el usuario es Administrador o Supervisor Normal"""
+        if self.get_is_administrador():
+            return True
+        elif self.get_is_supervisor_normal():
+            return True
+        return False
+
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
             try:
@@ -1077,6 +1085,11 @@ class Campana(models.Model):
 
     def obtener_calificaciones(self):
         return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
+
+    def update_basedatoscontactos(self, bd_nueva):
+        """ Actualizar con nueva base datos de contacto"""
+        self.bd_contacto = bd_nueva
+        self.save()
 
 
 class OpcionCalificacion(models.Model):

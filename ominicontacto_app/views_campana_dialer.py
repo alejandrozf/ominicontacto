@@ -45,11 +45,11 @@ class CampanaDialerListView(ListView):
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
 
-        campana_service = CampanaService()
-        error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
-            campanas.filter(estado=Campana.ESTADO_ACTIVA))
-        if error_finalizadas:
-            messages.add_message(self.request, messages.WARNING, error_finalizadas)
+        # campana_service = CampanaService()
+        # error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
+        #     campanas.filter(estado=Campana.ESTADO_ACTIVA))
+        # if error_finalizadas:
+        #     messages.add_message(self.request, messages.WARNING, error_finalizadas)
 
         context['campanas'] = campanas
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
@@ -267,6 +267,17 @@ class UpdateBaseDatosDialerView(FormView):
             self.get_object(), bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
+        if self.object.bd_contacto == bd_contacto:
+            message = 'Atención!\
+                            Ud ha escogido la misma base de datos, corre riesgo de calificar los' \
+                      ' mismos contactos pisando la calificación previa.'
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+
         self.object.bd_contacto = bd_contacto
         self.object.save()
         # realiza el cambio de la base de datos en wombat
@@ -280,6 +291,8 @@ class UpdateBaseDatosDialerView(FormView):
             messages.SUCCESS,
             message,
         )
+        self.object.estado = Campana.ESTADO_INACTIVA
+        self.object.save()
 
         return redirect(self.get_success_url())
 
@@ -326,3 +339,20 @@ class CampanaDialerBorradasListView(CampanaDialerListView):
             return super(CampanaDialerBorradasListView, self).get(request, *args, **kwargs)
         else:
             return JsonResponse({'result': 'desconectado'})
+
+
+class FinalizarCampanasActivasView(RedirectView):
+    """
+    Esta vista finaliza las campanas activas de acuerdo si tienen contactos pendientes en wombat
+    """
+
+    pattern_name = 'campana_dialer_list'
+
+    def get(self, request, *args, **kwargs):
+        campanas = Campana.objects.obtener_campanas_dialer()
+        campana_service = CampanaService()
+        error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
+            campanas.filter(estado=Campana.ESTADO_ACTIVA))
+        if error_finalizadas:
+            messages.add_message(self.request, messages.WARNING, error_finalizadas)
+        return HttpResponseRedirect(reverse('campana_dialer_list'))

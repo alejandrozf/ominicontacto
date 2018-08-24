@@ -468,12 +468,7 @@ class TiemposAgente(object):
 
     def _generar_grafico_agentes_llamadas(self, dict_agentes_llamadas):
         # Barra: Cantidad de llamadas de los agentes por tipo de llamadas.
-        barra_agente_total = pygal.Bar(  # @UndefinedVariable
-            show_legend=False,
-            style=ESTILO_AZUL_ROJO_AMARILLO)
-        barra_agente_total.title = 'Cantidad de llamadas de los agentes por ' \
-                                   'tipo de llamadas'
-
+        barra_agente_total = pygal.Bar(show_legend=True, style=ESTILO_AZUL_ROJO_AMARILLO)
         barra_agente_total.x_labels = dict_agentes_llamadas['nombres_agentes']
         barra_agente_total.add('PREVIEW', dict_agentes_llamadas['total_agente_preview'])
         barra_agente_total.add('DIALER', dict_agentes_llamadas['total_agente_dialer'])

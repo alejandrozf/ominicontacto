@@ -10,6 +10,7 @@ from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
@@ -52,6 +53,10 @@ class CustomUserCreationForm(UserCreationForm):
         fields = (
             'username', 'first_name', 'last_name', 'email', 'is_agente',
             'is_supervisor')
+        labels = {
+            'is_agente': 'Es un agente',
+            'is_supervisor': 'Es un supervisor',
+        }
 
     def clean(self):
         is_agente = self.cleaned_data.get('is_agente', None)
@@ -60,6 +65,15 @@ class CustomUserCreationForm(UserCreationForm):
             raise forms.ValidationError(
                 _('Un usuario no puede ser Agente y Supervisor al mismo tiempo'))
         return self.cleaned_data
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        existe_user = User.objects.filter(username=username).exists()
+        if existe_user:
+            raise forms.ValidationError(
+                _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
+                  ' por favor seleccione un nombre de usuario diferente'))
+        return username
 
 
 class UserChangeForm(forms.ModelForm):
@@ -88,10 +102,19 @@ class UserChangeForm(forms.ModelForm):
     def clean(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
+        validate_password(password1)
         if password1 != password2:
             raise forms.ValidationError(_('Los passwords no concuerdan'))
 
         return self.cleaned_data
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        existe_user = User.objects.filter(username=username).exists()
+        if existe_user:
+            raise forms.ValidationError(
+                _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
+                  ' por favor seleccione un nombre de usuario diferente'))
 
     class Meta:
         model = User
@@ -316,9 +339,12 @@ class CampanaMixinForm(object):
         if self.fields.get('bd_contacto', False):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
+    def requiere_bd_contacto(self):
+        raise NotImplemented
+
     def clean(self):
         bd_contacto_field = self.fields.get('bd_contacto', False)
-        if bd_contacto_field and not bd_contacto_field.queryset:
+        if bd_contacto_field and not bd_contacto_field.queryset.filter and self.requiere_bd_contacto():
             message = _("Debe cargar una base de datos antes de comenzar a "
                         "configurar una campana")
             self.add_error('bd_contacto', message)
@@ -350,6 +376,9 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
             self.fields['bd_contacto'].required = False
         else:
             self.fields['bd_contacto'].required = True
+
+    def requiere_bd_contacto(self):
+        return False
 
     def clean_bd_contacto(self):
         bd_contacto = self.cleaned_data.get('bd_contacto')
@@ -829,6 +858,9 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             self.fields['formulario'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
+    def requiere_bd_contacto(self):
+        return True
+
     def clean_bd_contacto(self):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
@@ -1047,6 +1079,9 @@ class SupervisorProfileForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('Un Supervisor no puede ser Administrador de sistema '
                   'y Cliente al mismo tiempo'))
+        if not is_administrador and not is_customer:
+            raise forms.ValidationError(
+                _('Al menos debe seleeccionar una opción administrador o cliente'))
         return self.cleaned_data
 
 
@@ -1086,6 +1121,9 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def requiere_bd_contacto(self):
+        return False
+
 
 class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
@@ -1111,6 +1149,9 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+    def requiere_bd_contacto(self):
+        return True
 
     def clean_tiempo_desconexion(self):
         tiempo_desconexion = self.cleaned_data['tiempo_desconexion']

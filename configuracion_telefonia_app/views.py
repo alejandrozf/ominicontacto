@@ -313,7 +313,6 @@ class EliminarRutaSaliente(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            # TODO: usar el sincronizador correspondiente
             eliminar_ruta_saliente_config(self, self.get_object())
         except Exception:
             messages.error(request, _(u'No se ha podido eliminar la Ruta Saliente.'))

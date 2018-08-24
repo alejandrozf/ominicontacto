@@ -40,7 +40,7 @@ $(function () {
 	 $("#facebookChat").click(function() {
      $("#modalFacebook").modal('show');
    });
-	 $("#newLead").click(function () {
+	/* $("#newLead").click(function () {
 	   $.ajax({
 	   	 type: "get",
 	   	 url: "/contacto/nuevo",
@@ -53,7 +53,7 @@ $(function () {
 	                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	     }
 	   });
-	 });
+	 });/**/
 	 $("#webChat").click(function () {
 	     $("#modalwebChat").modal('show');
 	 });

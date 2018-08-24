@@ -1,0 +1,182 @@
+---
+# Esta tarea está medio al pedo porque ya no instalamos sobre sangomaOS pero por si las dudas la dejo
+- name: Apache adjustments
+  shell: "{{ item }}"
+  with_items:
+      - sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php.ini
+      - sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/httpd/conf/httpd.conf
+      - sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
+  when: asterisk_location == "" and ansible_os_family == "Sangoma"
+  become: yes
+  become_method: sudo
+
+# Se crea el servicico de asterisk  para systemctl
+- name: Creation of asterisk.service
+  template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
+
+# Linkeo el binario a /usr/sbin
+- name: Create simbolic link of asterisk binarie
+  file: state=link src={{ asterisk_location }}/sbin/asterisk dest=/usr/sbin/asterisk force=true
+  when: asterisk_location != ""
+  become: yes
+  become_method: sudo
+
+# Esto tambien está al pedo es para sangomaOS
+- name: Config of asterisk-freepbx for OML
+  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
+  with_items:
+      - extensions_custom.conf
+      - extensions_fts.conf
+      - sip_custom.conf
+      - extconfig.conf
+      - amd.conf
+      - func_odbc.conf
+      - cdr_adaptive_odbc.conf
+      - http_custom.conf
+      - manager_custom.conf
+      - queues_custom.conf
+      - globals_custom.conf
+      - http_custom.conf
+      - pjsip.transports_custom.conf
+      - res_odbc_custom.conf
+  become: yes
+  become_method: sudo
+  when: asterisk_location == "" or ansible_os_family == "Sangoma"
+
+# Se linkean los .conf de asterisk (los que estan afuera de archivos-no-enlaces) a /opt/omnileads/asterisk/etc/asterisk
+- name: Config of asterisk for OML
+  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
+  with_items:
+      - amd.conf
+      - chan_dahdi.conf
+      - extconfig.conf
+      - extensions.conf
+      - features.conf
+      - func_odbc.conf
+      - http.conf
+      - indications.conf
+      - logger.conf
+      - manager.conf
+      - modules.conf
+      - musiconhold.conf
+      - oml_extensions.conf
+      - oml_extensions_sub.conf
+      - oml_func_odbc.conf
+      - oml_manager.conf
+      - oml_res_odbc.conf
+      - queues.conf
+      - res_odbc.conf
+      - sip.conf
+      - udptl.conf
+  become: yes
+  become_method: sudo
+  when: asterisk_location != ""
+
+# Los archivos-no-enlaces se copian a la a /etc/asterisk
+- name: Copy of all asterisk config files
+  shell: "cp *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/archivos-no-enlaces/"
+  when: asterisk_location != ""
+
+# Se copian los agis a /var/lib/asterisk/agi-bin
+- name: Copy of the php agis
+  copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 remote_src=yes owner={{ usuario }} group={{ usuario }}"
+  with_items:
+      - omni-asterisk-logout.php
+#      - omni-blacklist.php
+#      - omni-dialednum.php
+      - omni-grabaciones.php
+      - phpagi-asmanager.php
+      - phpagi.php
+  become: yes
+  become_method: sudo
+
+# Estos dos agis los creo desde ansible
+- name: Creation of the agis omni-blackist and omni-dialednum
+  template: "src=templates/agi-bin/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 owner={{ usuario }} group={{ usuario }}"
+  with_items:
+      - omni-blacklist.php
+      - omni-dialednum.php
+  become: yes
+  become_method: sudo
+
+# Aca creo la carpeta parselog
+- name: Create /usr/local/parselog
+  file: dest=/usr/local/parselog state=directory mode=0755 owner={{ usuario }} group={{ usuario }}
+  become: yes
+  become_method: sudo
+
+# Creo el script de conversion lo deje en parselog por convencion heredada de asternic -- FIX ME -- mejorar el script de conversion se puede hacer mejor
+- name: Link the conversor.sh file
+  template: src=templates/conversor.sh dest=/usr/local/parselog/conversor.sh owner={{ usuario }} group={{ usuario }} mode=755
+  when: asterisk_location != ""
+
+# Se añade el cron de omnileads
+- name: Copy the cron-omnileads file
+  template: src=templates/cron-omnileads dest=/etc/cron.d/cron-omnileads owner=root group=root
+  when: asterisk_location != ""
+
+# Para debian toca linkear esta libreria a a /usr/lib/postgresql/9.6 es una libreria de unixODBC
+- name: Link odbc librarie to postgresql libs
+  file: state=link src=/usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so dest=/usr/lib/postgresql/9.6/lib/psqlodbcw.so owner=root group=root mode=700
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+# Creo el archivo odbcinst.ini desde ansible
+- name: Creation of odbcinst.ini file
+  template: src=templates/etc/odbcinst.ini dest=/etc/odbcinst.ini owner=root group=root mode=644
+  become: true
+  become_method: sudo
+
+# El odbc.ini si lo copio desde el repo, creo los directorios de sonidos y descomprimo -- FIX ME -- usar los modulos file y unarchive
+- name: Copy of odbc.ini file and omnileads sounds
+  shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files"
+  with_items:
+      - cp {{ install_prefix }}ominicontacto/ominicontacto_voip/extra-files/odbc.ini /etc/
+      - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/es
+      - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/en
+      - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/oml
+      - tar xzvf sounds/es-oml.tgz -C {{ asterisk_location }}/var/lib/asterisk/sounds/es/
+      - tar xzvf sounds/en-oml.tgz -C {{ asterisk_location }}/var/lib/asterisk/sounds/en/
+  ignore_errors: yes
+
+# Añado la entrada webenabled=yes al manager.conf
+- name: Add web enabled in /etc/asterisk/manager.conf
+  ini_file: "path={{ asterisk_location }}/etc/asterisk/manager.conf section=general option=webenabled no_extra_spaces=yes value=yes state=present"
+
+# Añado el webcolor=yes al asterisk.conf
+- name: Add web nocolor=yes in /etc/asterisk/asterisk.conf
+  ini_file: "path={{ asterisk_location }}/etc/asterisk/asterisk.conf section=options option=nocolor no_extra_spaces=yes value=yes state=present"
+
+# Permiso de usuario a la carpeta de asterisk -- FIX ME -- usar file
+- name: Set up permissions of asterisk
+  shell: "{{ item }}"
+  with_items:
+          - "chown -R {{ usuario }}.{{ usuario }} {{ asterisk_location }}"
+  when: asterisk_location != ""
+  become: yes
+  become_method: sudo
+
+# Habilito e inicio asterisk
+- name: Start and enable asterisk
+  command: "{{ item }}"
+  with_items:
+          - "systemctl daemon-reload"
+          - "systemctl enable asterisk"
+          - "service asterisk stop"
+          - "service asterisk start"
+  become: true
+  become_method: sudo
+  ignore_errors: yes
+
+# Un reload de config no viene mal, no alarmarse si falla
+- name: Reload of asterisk config
+  shell: "asterisk -rx 'module reload'"
+  tags: postinstall
+  become: yes
+  become_method: sudo
+  ignore_errors: yes
+
+# Añado un archivo para el logrotate -- FIX ME -- no se si está funcionando, hay que revisarlo
+- name: Configuration of logrotate
+  template: src=templates/omnileads dest=/etc/logrotate.d/omnileads owner=root group=root mode=644

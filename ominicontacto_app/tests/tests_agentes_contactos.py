@@ -9,8 +9,7 @@ import json
 
 from django.core.urlresolvers import reverse
 
-from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
-                                               QueueFactory, AgenteProfileFactory,
+from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
                                                QueueMemberFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import AgenteEnContacto, Campana
@@ -44,10 +43,10 @@ class AgentesContactosTests(OMLBaseTest):
         return campana, contacto
 
     def _crear_agente(self):
-        usuario_agente = UserFactory(is_staff=False, is_supervisor=False)
+        usuario_agente = self.crear_user_agente()
         usuario_agente.set_password(self.PWD)
         usuario_agente.save()
-        AgenteProfileFactory.create(user=usuario_agente)
+        self.crear_agente_profile(usuario_agente)
         return usuario_agente
 
     def _hacer_miembro(self, usuario_agente, campana):

@@ -812,6 +812,7 @@ $(function() {
           headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
           $("#redial").prop('disabled', false);
           makeCall();
+          getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
         }
       } else {
         displayNumber.style.borderColor = "red";

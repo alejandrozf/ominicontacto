@@ -39,23 +39,42 @@ function mostrarEstadoAgentes($camp) {
 
                     $jsonString .= '{"agente": "' . $arrAgtNoms[$i] . '", ';
                     $jsonString .= '"tiempo": "' . $tiempo . '",';
-                        
+
                     if ($status[0] !== "PAUSE") {
-                        $jsonString .= '"estado": "' . $value->getStatus() . '", ';
-                        $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs pause\' title=\'pausar agente\'><span class=\'glyphicon glyphicon-pause\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs agentlogoff\' title=\'logoff agente\'><span class=\'glyphicon glyphicon-off\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs takecall\' title=\'tomar llamada\'><span class=\'glyphicon glyphicon-share-alt\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
+                      $cssStatus = "";
+                      switch ($status[0]) {
+                        case 'READY':
+                          $cssStatus = 'ready';
+                          break;
+                        case 'DIALING':
+                          $cssStatus = 'dialing';
+                          break;
+                        case 'OFFLINE':
+                          $cssStatus = 'offline';
+                          break;
+                        case 'ONCALL':
+                          $cssStatus = 'oncall';
+                          break;
+                      }
+                        $jsonString .= '"estado": "<label class=\'badge align-top agent-' . $cssStatus . '\'>' . $value->getStatus() . '</label>", ';
+                        $jsonString .= '"acciones": "' .
+                                '<a class=\'not-link\' title=\'escuchar\' href=\'#\'><i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'></i></a>' .
+                                '<a class=\'not-link\' title=\'escuchar y susurrar\' href=\'#\'><img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' /></a>' .
+                                '<a class=\'not-link\' title=\'pausar\' href=\'#\'><i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                                '<a class=\'not-link\' title=\'desregistrar\' href=\'#\'><i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                                '<a class=\'not-link\' title=\'tomar llamada\' href=\'#\'><img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' /></a>&nbsp;' .
+                                '<a class=\'not-link\' title=\'conferencia\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
+                        '"},';
                     } else {
-                        $jsonString .= '"estado": "' . $status[1] . '", ';
-                        $jsonString .= '"acciones": "<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspy\' title=\'monitorear\'><span class=\'glyphicon glyphicon-eye-open\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs chanspywhisper\' title=\'hablar con agente\'><span class=\'glyphicon glyphicon-sunglasses\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs unpause\' title=\'despausar agente\'><span class=\'glyphicon glyphicon-play\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs agentlogoff\' title=\'logoff agente\'><span class=\'glyphicon glyphicon-off\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs takecall\' title=\'tomar llamada\'><span class=\'glyphicon glyphicon-share-alt\'></span></button>&nbsp;'
-                                    . '<button type=\'button\' id=\'' . $value->getId() . '\' class=\'btn btn-primary btn-xs conference\' title=\'conferencia\'><span class=\'glyphicon glyphicon-user\'></span></button>"},';
+                        $jsonString .= '"estado": "<label class=\'badge align-top agent-pause\'>' . $status[1] . '</label>", ';
+                        $jsonString .= '"acciones": "' .
+                        '<a class=\'not-link\' title=\'escuchar\' href=\'#\'><i class=\'fas fa-user-secret chanspy\' id=\'' . $value->getId()  . '\'></i></a>' .
+                        '<a class=\'not-link\' title=\'escuchar y susurrar\' href=\'#\'><img src=\'static/Img/spywhisper2.png\' width=\'26\' height=\'26\' class=\'chanspywhisper\' id=\'' . $value->getId()  . '\' /></a>' .
+                        '<a class=\'not-link\' title=\'pausar\' href=\'#\'><i class=\'fas fa-pause pause\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                        '<a class=\'not-link\' title=\'desregistrar\' href=\'#\'><i class=\'fas fa-sign-out-alt agentlogoff\' id=\'' . $value->getId()  . '\'></i></a>&nbsp;' .
+                        '<a class=\'not-link\' title=\'tomar llamada\' href=\'#\'><img src=\'static/Img/takecall.png\' width=\'18\' height=\'12\' class=\'takecall\' id=\'' . $value->getId()  . '\' /></a>&nbsp;' .
+                        '<a class=\'not-link\' title=\'conferencia\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
+                      '"},';
                      }
                      $i++;
                  }
@@ -66,44 +85,11 @@ function mostrarEstadoAgentes($camp) {
      return $jsonString;
 }
 
-function mostrarEstadoCampana($nomcamp,$idcamp) {
+function mostrarEstadoCampana($idcamp) {
     $Controller_Campana = new Campana();
-    $jsonString = '';
-    $resul = $Controller_Campana->traerInfoReporteRealTimeCamp($nomcamp, $idcamp);
     $objresul = $Controller_Campana->traerObjetivoCampana($idcamp);
     $objresulg = $Controller_Campana->traerGestionCampana($idcamp);
-    $jsonString .= '{';
-    foreach($resul as $clave => $valor) {
-        if($clave == "received") {
-            $jsonString .= '"recibidas": "' . $valor . '",';
-        }
-        if($clave == "attended") {
-            $jsonString .= '"atendidas": "' . $valor . '",';
-        }
-        if($clave == "abandoned") {
-            $jsonString .= '"abandonadas": "' . $valor . '",';
-        }
-        if($clave == "expired") {
-            $jsonString .= '"expiradas": "' . $valor . '",';
-        }
-        if($clave == "manuals") {
-            $jsonString .= '"manuales": "' . $valor . '",';
-        }
-        if($clave == "manualsa") {
-            $jsonString .= '"manualesatendidas": "' . $valor . '",';
-        }
-        if($clave == "manualsna") {
-            $jsonString .= '"manualesnoatendidas": "' . $valor . '",';
-        }
-        if($clave == "answererdetected") {
-            $jsonString .= '"contestador_detectado": "' . $valor . '",';
-        }
-    }
-
-    $jsonString .= '"objetivo_campana": "' . $objresul . '",';
-    $jsonString .= '"gestion_campana": "' . $objresulg . '",';
-    $jsonString = substr($jsonString, 0, -1);
-    $jsonString .= "}";
+    $jsonString .= '{"objetivo_campana": "' . $objresul . '","gestion_campana": "' . $objresulg . '"}';
     return $jsonString;
 }
 
@@ -119,9 +105,10 @@ function mostrarCalificaciones($camp) {
     $jsonString .= "]";
     return $jsonString;
 }
-function mostrarLlamadasEnCola($camp) {
+function mostrarLlamadasEnCola($camp, $idcamp) {
     $Controller_Campana = new Campana();
     $jsonString = '';
+    $camp = $idcamp.'_'.$camp;
     $resul = $Controller_Campana->traerLlamadasEnCola($camp);
     $jsonString .= '[';
     $i = 1;
@@ -180,16 +167,22 @@ function mostrarUserPassSip($userID) {
 
 if ($_GET['nomcamp']) {
 
-    if($_GET['op'] == 'agstatus') {
+    if ($_GET['op'] == 'agstatus') {
 
         echo mostrarEstadoAgentes($_GET['nomcamp']);
     } else if ($_GET['op'] == 'queuedcalls') {
 
-        echo mostrarLlamadasEnCola($_GET['nomcamp']);
-    } else if($_GET['op'] == 'wdstatus') {
+        echo mostrarLlamadasEnCola($_GET['nomcamp'], $_GET['idcamp']);
+    } else if ($_GET['op'] == 'wdstatus') {
 
         echo mostrarEstadoCanalesWombat($_GET['nomcamp']);
     }
+} else if ($_GET['idcamp']) {
+
+  if ($_GET['op'] == 'objcamp') {
+
+    echo mostrarEstadoCampana($_GET['idcamp']);
+  }
 }
 
 if($_GET['supId']) {

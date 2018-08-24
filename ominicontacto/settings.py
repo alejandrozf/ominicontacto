@@ -193,20 +193,11 @@ Ejemplo:
 # DEPLOY -> Asterisk
 # ==============================================================================
 
-# parametros de conexion con base de datos mysql de asterisk
-DATABASE_MYSQL_ASTERISK = {
-    'BASE': None,
-    'HOST': None,
-    'USER': None,
-    'PASSWORD': None,
-}
-
 OML_ASTERISK_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
 OML_BACKLIST_REMOTEPATH = None
-OML_GLOBALS_VARIABLES_FILENAME = None
 OML_RUTAS_SALIENTES_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
@@ -219,7 +210,6 @@ Ejemplos:
     OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
     OML_QUEUES_FILENAME = "/etc/asterisk/queues_fts.conf"
     OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
-    OML_GLOBALS_VARIABLES_FILENAME = "/etc/asterisk/extensions_fts_globals.conf"
     OML_RUTAS_SALIENTES_FILENAME = "/etc/asterisk/oml_extensions_outr.conf"
 """
 
@@ -385,14 +375,6 @@ assert OML_QUEUES_FILENAME is not None, \
 
 # ~~~~~ Check ASTERISK
 
-for key in ('BASE', 'PASSWORD', 'HOST', 'USER'):
-    assert key in DATABASE_MYSQL_ASTERISK, \
-        "Falta key '{0}' en configuracion de la base de datos de ASTERISK".\
-        format(key)
-    assert DATABASE_MYSQL_ASTERISK[key] is not None, \
-        "Falta key '{0}' en configuracion de la base de datos ASTERISK".\
-        format(key)
-
 for key in ('USERNAME', 'PASSWORD', 'HTTP_AMI_URL'):
     assert key in ASTERISK, \
         "Falta key '{0}' en configuracion de ASTERISK".\
@@ -459,11 +441,6 @@ assert OML_OMNILEADS_IP is not None, \
 assert OML_BACKLIST_REMOTEPATH is not None, \
     "Falta definir setting para OML_BACKLIST_REMOTEPATH"
 
-
-# ~~~~~ Check OML_GLOBALS_VARIABLES_FILENAME
-
-assert OML_GLOBALS_VARIABLES_FILENAME is not None, \
-    "Falta definir setting para OML_GLOBALS_VARIABLES_FILENAME"
 
 # ~~~~~ Check TMPL_OML_AUDIO_CONVERSOR
 

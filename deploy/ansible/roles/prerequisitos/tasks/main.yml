@@ -1,0 +1,75 @@
+---
+
+# nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos.
+# si no es asi, esta task generara un error
+- name: Print omni_distribution
+  debug: msg="omni_distribution es {{ ansible_os_family }}"
+  tags: always
+
+- name: Check omni_distribution
+  fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
+  when: (
+      ansible_os_family != "RedHat" and
+      ansible_os_family != "Sangoma" and
+      ansible_os_family != "Debian"
+      )
+  tags: always
+
+# chequea si asterisk si existe /etc/asterisk y guarda el resultado (true/false) en asterisk_etc_installed
+- name: Check if Asterisk is installed in /etc
+  command: test -d /etc/asterisk
+  ignore_errors: true
+  register: asterisk_etc_installed
+  tags: always
+  become: true
+  become_method: sudo
+
+# si asterisk_etc_installed es false setea la variable asterisk_location con /opt/omnileads/asterisk
+- set_fact: asterisk_location={{ install_prefix }}asterisk
+  when: asterisk_etc_installed|failed
+  tags: always
+
+# si asterisk_etc_installed es true setea la variable asterisk_location vacia
+- set_fact: asterisk_location=
+  when: asterisk_etc_installed|succeeded
+  tags: always
+
+# se hace el mismo proceso para detectar si kamailio está instalado en /opt/
+- name: Check if Kamailio is installed in /opt
+  command: test -d /opt/kamailio
+  ignore_errors: true
+  register: kamailio_opt_installed
+  tags: always
+  become: true
+  become_method: sudo
+
+# si si kamailio_opt_installd es false setea la variable asterisk_location con /opt/omnileads/kamailio
+- set_fact: kamailio_location={{ install_prefix }}kamailio
+  when: kamailio_opt_installed|failed
+  tags: always
+
+- set_fact: kamailio_location=/opt/kamailio
+  when: kamailio_opt_installed|succeeded
+  tags: always
+
+# se crea el grupo de usuario omnileads
+- name: Creation of {{ usuario }} group
+  group: name={{ usuario }} state=present
+  become: true
+  become_method: sudo
+
+# se hace include de la tarea solo si ansible_os_family = Redhat
+- name: Installation of Centos prerequisites
+  include: centos_prerequisitos.yml
+  when: ansible_os_family == "RedHat"
+
+# se hace include de la tarea solo si ansible_os_family = Debian
+- name: Installation of Debian prerequisites
+  include: debian_prerequisitos.yml
+  when: ansible_os_family == "Debian"
+
+- include: installations.yml
+
+- include: setup_mariadb.yml
+
+- include: postgres-installation.yml
