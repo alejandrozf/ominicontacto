@@ -138,6 +138,7 @@ class ArchivoDeReporteCsv(object):
                 log_no_contactado_fecha_local = localtime(log_no_contactado.time)
                 lista_opciones.append(log_no_contactado.numero_marcado)
                 contacto_id = log_no_contactado.contacto_id
+                contacto = self.contactos_dict.get(contacto_id, None)
                 datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
