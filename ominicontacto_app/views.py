@@ -21,7 +21,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 )
@@ -500,7 +500,7 @@ def node_view(request):
     registro = []
     campanas_preview_activas = []
     agente_profile = request.user.get_agente_profile()
-    if request.user.is_authenticated() and agente_profile:
+    if request.user.is_authenticated() and agente_profile and not agente_profile.is_inactive:
         sip_usuario = request.user.generar_usuario(agente_profile.sip_extension)
         sip_password = request.user.generar_contrasena(sip_usuario)
         registro = DuracionDeLlamada.objects.filter(
@@ -523,6 +523,11 @@ def node_view(request):
             context,
             context_instance=RequestContext(request)
         )
+    if agente_profile.is_inactive:
+        message = ("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
+                   " su supervisor")
+        messages.warning(request, message)
+        logout(request)
     return HttpResponseRedirect(reverse('login'))
 
 
@@ -696,7 +701,10 @@ def crear_chat_view(request):
 def supervision_url_externa(request):
     """Vista que redirect a la supervision externa de marce"""
     user = request.user
-    if user.get_is_supervisor_normal() or user.get_is_supervisor_customer():
+    # TODO: Simon abarque el supervisor administrador del sistema pueda ver la supervision
+    # hasta que este resuelto el tema de perfiles de supervisor por la tarjeta 652
+    # que no permitia que un usuario administrador del sistema vea la sueprvision
+    if user.get_es_administrador_o_supervisor_normal() or user.get_is_supervisor_customer():
         supervisor = user.get_supervisor_profile()
         sip_extension = supervisor.sip_extension
         timestamp = user.generar_usuario(sip_extension).split(':')[0]

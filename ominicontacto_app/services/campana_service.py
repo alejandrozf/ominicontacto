@@ -355,11 +355,6 @@ class CampanaService():
         self.crear_lista_contactos_wombat(campana)
         # asocio la lista de contactos a la campana en wombat
         self.crear_lista_asociacion_campana_wombat(campana)
-        # doy inicio a la campana en wombat
-        resultado_2 = self.start_campana_wombat(campana)
-        # cambio el estado de la campana activa
-        if resultado_2:
-            campana.play()
 
     def obtener_calls_live(self):
         """ retorna las llamada e en vivo en este momento"""

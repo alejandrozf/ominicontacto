@@ -13,6 +13,7 @@ from ominicontacto_app.models import Campana
 from reciclado_app.forms import RecicladoForm
 from reciclado_app.resultado_contactacion import (
     EstadisticasContactacion, RecicladorContactosCampanaDIALER)
+from ominicontacto_app.services.campana_service import CampanaService
 
 import logging as logging_
 
@@ -47,6 +48,8 @@ class ReciclarCampanaDialerFormView(FormView):
     def form_valid(self, form):
         reciclado_calificacion = form.cleaned_data.get('reciclado_calificacion')
         reciclado_no_contactacion = form.cleaned_data.get('reciclado_no_contactacion')
+        reciclado_radio = form.cleaned_data.get('reciclado_radio')
+
         if not (reciclado_calificacion or reciclado_no_contactacion):
             message = '<strong>Operación Errónea!</strong> \
                         Debe seleccionar al menos una opcion para reciclar '
@@ -62,24 +65,33 @@ class ReciclarCampanaDialerFormView(FormView):
         reciclador = RecicladorContactosCampanaDIALER()
         bd_contacto_reciclada = reciclador.reciclar(
             campana, reciclado_calificacion, reciclado_no_contactacion)
-        try:
-            # Intenta reciclar la campana con el tipo de reciclado
-            # seleccionado.
-            campana_reciclada = Campana.objects.reciclar_campana(
-                campana, bd_contacto_reciclada)
-        except OmlRecicladoCampanaError:
+        if reciclado_radio == 'nueva_campaña':
+            try:
+                # Intenta reciclar la campana con el tipo de reciclado
+                # seleccionado.
+                campana_reciclada = Campana.objects.reciclar_campana(
+                    campana, bd_contacto_reciclada)
+            except OmlRecicladoCampanaError:
 
-            message = '<strong>Operación Errónea!</strong>\
-            No se pudo reciclar la Campana.'
+                message = '<strong>Operación Errónea!</strong>\
+                No se pudo reciclar la Campana.'
 
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-            return self.form_invalid(form)
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    message,
+                )
+                return self.form_invalid(form)
 
-        return HttpResponseRedirect(
-            reverse("crea_campana_dialer_template",
-                    kwargs={"pk_campana_template": campana_reciclada.pk,
-                            "borrar_template": 1}))
+            return HttpResponseRedirect(
+                reverse("crea_campana_dialer_template",
+                        kwargs={"pk_campana_template": campana_reciclada.pk,
+                                "borrar_template": 1}))
+        elif reciclado_radio == 'misma_campana':
+            campana.update_basedatoscontactos(bd_contacto_reciclada)
+            campana_service = CampanaService()
+            campana_service.cambiar_base(campana, [], False, False, "")
+            campana.estado = Campana.ESTADO_INACTIVA
+            campana.save()
+            return HttpResponseRedirect(
+                reverse("campana_dialer_update", kwargs={"pk_campana": campana.pk}))
