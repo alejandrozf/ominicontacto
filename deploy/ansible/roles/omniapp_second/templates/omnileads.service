@@ -5,8 +5,9 @@ After=syslog.target network-online.target postgresql.service
 
 [Service]
 Type=forking
-User=omnileads
+User={{ usuario }}
 Environment=PYTHONPATH={{ install_prefix }}
+ExecStartPre=/bin/bash {{ install_prefix }}bin/changeip.sh -o
 ExecStartPre=/bin/bash -c 'source {{ install_prefix }}virtualenv/bin/activate'
 ExecStart={{ install_prefix }}virtualenv/bin/uwsgi --ini {{ install_prefix }}bin/oml_uwsgi.ini
 ExecReload={{ install_prefix }}virtualenv/bin/uwsgi --reload {{ install_prefix }}ominicontacto/oml-uwsgi.pid
