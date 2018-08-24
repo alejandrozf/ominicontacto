@@ -69,6 +69,7 @@ class CustomUserCreationForm(UserCreationForm):
             raise forms.ValidationError(
                 _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
                   ' por favor seleccione un nombre de usuario diferente'))
+        return username
 
 
 class UserChangeForm(forms.ModelForm):
