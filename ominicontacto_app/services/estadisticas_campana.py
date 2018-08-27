@@ -57,7 +57,11 @@ class EstadisticasService():
         total_calificados = CalificacionCliente.history.filter(
             fecha__range=(fecha_desde, fecha_hasta),
             opcion_calificacion__campana=campana, history_change_reason='calificacion').count()
-        return total_llamadas_campanas - total_calificados
+        total_atendidas_sin_calificacion = total_llamadas_campanas - total_calificados
+        if total_atendidas_sin_calificacion < 0:
+            # significa que el agente calificó llamadas que no conectaron con el usuario
+            total_atendidas_sin_calificacion = 0
+        return total_atendidas_sin_calificacion
 
     def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta):
         """
