@@ -299,8 +299,8 @@ class FormularioSeleccionCampanaFormView(FormView):
         if self.request.user.is_authenticated()\
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
-        if not agente.campana_member.all():
-            message = ("Este agente no esta asignado a ninguna campaña ")
+        if not agente.get_campanas_activas_miembro():
+            message = ("Este agente no esta asignado a ninguna campaña activa")
             messages.warning(self.request, message)
         return super(FormularioSeleccionCampanaFormView,
                      self).dispatch(request, *args, **kwargs)
@@ -313,8 +313,7 @@ class FormularioSeleccionCampanaFormView(FormView):
             campanas = [queue.queue_name.campana
                         for queue in agente.get_campanas_activas_miembro()]
 
-        campana_choice = [(campana.id, campana.nombre) for campana in
-                          campanas if campana.type is not Campana.TYPE_DIALER]
+        campana_choice = [(campana.id, campana.nombre) for campana in campanas]
         return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
 
     def form_valid(self, form):
@@ -331,13 +330,6 @@ class FormularioNuevoContactoFormView(FormView):
     """
     form_class = FormularioNuevoContacto
     template_name = 'contactos/nuevo_contacto_campana.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        if campana.type == Campana.TYPE_DIALER:
-            # no se permite por el momento adicionar contactos a campañas dialer
-            return HttpResponseForbidden()
-        return super(FormularioNuevoContactoFormView, self).dispatch(request, *args, **kwargs)
 
     def get_form(self):
         self.form_class = self.get_form_class()
