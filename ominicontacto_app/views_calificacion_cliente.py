@@ -65,8 +65,7 @@ class CalificacionClienteFormView(FormView):
         self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         self.contacto = self.get_contacto()
         if self.contacto is None and self.campana.type == Campana.TYPE_DIALER:
-            return HttpResponseRedirect(reverse('campana_busqueda_contacto',
-                                                kwargs={"pk_campana": self.campana.id}))
+            return HttpResponseRedirect(reverse('seleccion_campana_adicion_contacto'))
 
         self.object = self.get_object()
         return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
@@ -226,11 +225,10 @@ def calificacion_cliente_externa_view(request):
                 return JsonResponse({'status': 'Error en falta {0}'.format(data)})
 
         try:
-            #import ipdb;ipdb.set_trace()
             usuario = UserApiCrm.objects.get(
                 usuario=received_json_data['user_api'])
             received_password = received_json_data['password_api']
-            if check_password(received_password,usuario.password):
+            if check_password(received_password, usuario.password):
                 campana = Campana.objects.get(pk=received_json_data['pk_campana'])
                 contacto = Contacto.objects.get(pk=received_json_data['id_cliente'])
                 opcion_calificacion = OpcionCalificacion.objects.get(
@@ -248,9 +246,6 @@ def calificacion_cliente_externa_view(request):
                         campana=campana, contacto=contacto, opcion_calificacion=opcion_calificacion,
                         agente=agente)
                     id_opcion_vieja = None
-
-                gestor_de_calificaciones = GestorDeCalificaciones()
-                gestor_de_calificaciones.agente_califica_contacto(calificacion, id_opcion_vieja)
 
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})

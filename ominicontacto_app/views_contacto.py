@@ -299,8 +299,8 @@ class FormularioSeleccionCampanaFormView(FormView):
         if self.request.user.is_authenticated()\
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
-        if not agente.campana_member.all():
-            message = ("Este agente no esta asignado a ninguna campaña ")
+        if not agente.get_campanas_activas_miembro():
+            message = ("Este agente no esta asignado a ninguna campaña activa")
             messages.warning(self.request, message)
         return super(FormularioSeleccionCampanaFormView,
                      self).dispatch(request, *args, **kwargs)
