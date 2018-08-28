@@ -331,13 +331,6 @@ class FormularioNuevoContactoFormView(FormView):
     form_class = FormularioNuevoContacto
     template_name = 'contactos/nuevo_contacto_campana.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        if campana.type == Campana.TYPE_DIALER:
-            # no se permite por el momento adicionar contactos a campañas dialer
-            return HttpResponseForbidden()
-        return super(FormularioNuevoContactoFormView, self).dispatch(request, *args, **kwargs)
-
     def get_form(self):
         self.form_class = self.get_form_class()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
