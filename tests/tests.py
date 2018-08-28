@@ -12,12 +12,4 @@ class ManagedModelTestRunner(DiscoverRunner):
     """
     def __init__(self, *args, **kwargs):
         settings.OML_TESTING_MODE = True
-
         super(ManagedModelTestRunner, self).__init__(*args, **kwargs)
-
-
-
-
-
-
-

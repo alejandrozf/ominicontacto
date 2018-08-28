@@ -8,9 +8,12 @@ from __future__ import unicode_literals
 
 import random
 
+from mock import patch
+
 from django.db.models import Count
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import CalificacionCliente
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from reciclado_app.resultado_contactacion import (
     EstadisticasContactacion, RecicladorContactosCampanaDIALER
 )
@@ -20,7 +23,8 @@ from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 class RecicladoTest(OMLBaseTest):
 
-    def setUp(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def setUp(self, _convertir_audio):
         base_datos = self.crear_base_datos_contacto(cant_contactos=100)
         self.campana = self.crear_campana_dialer(bd_contactos=base_datos)
         user_agente = self.crear_user_agente()
@@ -133,7 +137,6 @@ class RecicladoTest(OMLBaseTest):
 
             calificaciones_query = self.campana.obtener_calificaciones().filter(
                 opcion_calificacion=calificacion).values_list('contacto_id', flat=True)
-            calificados = set(calificaciones_query)
             self.assertEquals(calificaciones_query.count(), len(contactos_reciclados))
 
     def test_obtiene_contactos_reciclados_contactados_no_calificados(self):

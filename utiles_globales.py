@@ -2,9 +2,8 @@
 
 from __future__ import unicode_literals
 
-from django.utils.translation import ugettext as _
-
 from django.forms import ValidationError
+from django.utils.translation import ugettext as _
 
 
 def validar_extension_archivo_audio(valor):

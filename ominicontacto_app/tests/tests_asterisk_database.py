@@ -6,6 +6,8 @@ Tests del metodo 'ominicontacto_app.services.asterisk_database'
 
 from __future__ import unicode_literals
 
+from mock import patch
+
 from django.conf import settings
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.services.asterisk_database import (
@@ -14,11 +16,13 @@ from ominicontacto_app.services.asterisk_database import (
 from ominicontacto_app.utiles import elimina_espacios
 from configuracion_telefonia_app.tests.factories import (
     TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory)
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
 
 class AsteriskDatabaseTest(OMLBaseTest):
 
-    def setUp(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def setUp(self, _convertir_audio):
         self.campana_dialer = self.crear_campana_dialer()
         self.campana_entrante = self.crear_campana_entrante()
         user = self.crear_user_agente()
