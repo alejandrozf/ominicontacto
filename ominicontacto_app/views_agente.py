@@ -141,7 +141,7 @@ def logout_view(request):
         try:
             client = AsteriskHttpClient()
             client.login()
-            client.originate("Local/066LOGOUT@fts-pausas/n", "oml-agent-actions", True,
+            client.originate("Local/066LOGOUT@oml-agent-actions/n", "oml-agent-actions", True,
                              variables, True, aplication='Hangup')
 
         except AsteriskHttpOriginateError:
