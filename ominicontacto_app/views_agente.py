@@ -14,9 +14,11 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.contrib.auth import logout
+from django.contrib.sessions.models import Session
 from django.conf import settings
 from django.db.models import F, Value
 from django.db.models.functions import Concat
+from django.utils import timezone
 
 from ominicontacto_app.models import (
     AgenteProfile, Contacto, CalificacionCliente, Grupo, Campana
@@ -253,6 +255,32 @@ class CampanasActivasView(View):
     def get(self, request):
         campanas_activas = Campana.objects.obtener_activas().values('id', 'nombre', 'type')
         return JsonResponse(data={'campanas': list(campanas_activas)})
+
+
+class AgentesLogueadosCampana(View):
+    """
+    Devuelve un JSON con la información de los agentes logueados por campaña
+    """
+    # TODO: pasar este servicio a DRF si es posible
+    def _get_all_logged_in_users(self, nombre_campana):
+        # Query all non-expired sessions
+        sessions = Session.objects.filter(expire_date__gte=timezone.now())
+        uid_list = []
+        # Build a list of user ids from that query
+        for session in sessions:
+            data = session.get_decoded()
+            user_id = data.get('_auth_user_id', False)
+            if user_id and user_id not in uid_list:
+                uid_list.append()
+
+        # Query all logged in users based on id list
+        return AgenteProfile.objects.filter(user__id__in=uid_list)
+
+    def get(request, *args, **kwargs):
+        campana_id = kwargs.get('campana_id', False)
+        agentes_profiles = self._get_all_logged_in_users().values(
+            'id', 'user__username', 'sip_extension', 'user__id')
+        return JsonResponse(data={'agentes': list(agentes_profiles)})
 
 
 class AgentesDeGrupoPropioView(View):

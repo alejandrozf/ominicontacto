@@ -477,6 +477,10 @@ urlpatterns = [
         login_required(views_campana_reportes.LlamadasActivasView.as_view()),
         name='llamadas_activas',
         ),
+    url(r'^agentes/campana/(?P<campana_id>\d+)$',
+        administrador_o_supervisor_requerido(views_agente.AgentesLogueadosCampana.as_view()),
+        name='supervision_agentes_logueados',
+        ),
     # ==========================================================================
     # Reportes PDF
     # ==========================================================================
