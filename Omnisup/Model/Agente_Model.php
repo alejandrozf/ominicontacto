@@ -15,10 +15,12 @@ class Agente_Model {
     }
 
     function getAgents($campName) {
-        $sql = "SELECT AP.id, AU.username, AP.sip_extension, AP.grupo_id, AP.user_id
-                FROM ominicontacto_app_agenteprofile AP JOIN queue_member_table AC
-                ON AP.id = AC.member_id JOIN ominicontacto_app_user AU ON AP.user_id = AU.id AND AP.is_inactive = 'f'
-                AND AP.borrado = 'f' AND AC.id_campana LIKE :cpname";
+      $sql = "SELECT AP.id, AU.username, AP.sip_extension, AP.grupo_id, AP.user_id
+              FROM ominicontacto_app_agenteprofile AP
+              JOIN location LO ON LO.username like cast(AP.sip_extension as text)
+              JOIN queue_member_table AC ON AP.id = AC.member_id JOIN ominicontacto_app_user AU
+              ON AP.user_id = AU.id AND AP.is_inactive = 'f' AND AP.borrado = 'f' AND AC.id_campana LIKE :cpname;";
+
         try {
           $cpname = "%$campName";
           $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
