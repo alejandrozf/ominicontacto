@@ -276,7 +276,7 @@ class AgentesLogueadosCampana(View):
         # Query all logged in users based on id list
         return AgenteProfile.objects.filter(user__id__in=uid_list)
 
-    def get(request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         campana_id = kwargs.get('campana_id', False)
         agentes_profiles = self._get_all_logged_in_users().values(
             'id', 'user__username', 'sip_extension', 'user__id')
