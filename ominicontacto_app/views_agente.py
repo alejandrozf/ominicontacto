@@ -278,7 +278,7 @@ class AgentesLogueadosCampana(View):
 
     def get(self, request, *args, **kwargs):
         campana_id = kwargs.get('campana_id', False)
-        agentes_profiles = self._get_all_logged_in_users().values(
+        agentes_profiles = self._get_all_logged_in_users(campana_id).values(
             'id', 'user__username', 'sip_extension', 'user__id')
         return JsonResponse(data={'agentes': list(agentes_profiles)})
 
