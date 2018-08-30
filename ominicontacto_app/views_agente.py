@@ -262,7 +262,7 @@ class AgentesLogueadosCampana(View):
     Devuelve un JSON con la información de los agentes logueados por campaña
     """
     # TODO: pasar este servicio a DRF si es posible
-    def _get_all_logged_in_users(self, nombre_campana):
+    def _get_all_logged_in_users(self, campana_id):
         # Query all non-expired sessions
         sessions = Session.objects.filter(expire_date__gte=timezone.now())
         uid_list = []
@@ -274,7 +274,8 @@ class AgentesLogueadosCampana(View):
                 uid_list.append()
 
         # Query all logged in users based on id list
-        return AgenteProfile.objects.filter(user__id__in=uid_list)
+        return AgenteProfile.objects.filter(
+            user__id__in=uid_list, campana_member__queue_name__campana__pk=campana_id).distinct()
 
     def get(self, request, *args, **kwargs):
         campana_id = kwargs.get('campana_id', False)
