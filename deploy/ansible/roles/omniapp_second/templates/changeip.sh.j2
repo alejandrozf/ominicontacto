@@ -78,6 +78,11 @@ Asterisk(){
     sed -i "4s/.*/permit = $ASTERISK_IP\/255.255.255.0/" oml_manager.conf
     sed -i "11s/.*/permit = $ASTERISK_IP\/255.255.255.0/" oml_manager.conf
   {% else %}
+    cd /etc/
+      sed -i "4s/.*/Database            = $POSTGRES_DATABASE/" odbc.ini
+      sed -i "5s/.*/Servername          = $POSTGRES_IP/" odbc.ini
+      sed -i "6s/.*/UserName            = $POSTGRES_USER/" odbc.ini
+      sed -i "7s/.*/Password            = $POSTGRES_PASSWORD/" odbc.ini
     cd {{ asterisk_location }}/etc/asterisk/
   {% endif %}
     sed -i "1s/.*/[$AMI_USER]/" oml_manager.conf
