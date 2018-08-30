@@ -21,7 +21,7 @@ from django.db.models.functions import Concat
 from django.utils import timezone
 
 from ominicontacto_app.models import (
-    AgenteProfile, Contacto, CalificacionCliente, Grupo, Campana
+    AgenteProfile, Contacto, CalificacionCliente, Campana
 )
 from ominicontacto_app.forms import ReporteForm
 from ominicontacto_app.services.reporte_agente_calificacion import ReporteAgenteService
@@ -263,25 +263,32 @@ class AgentesLogueadosCampana(View):
     """
     # TODO: pasar este servicio a DRF si es posible
     def _get_all_logged_in_users(self, campana_id):
-        # Query all non-expired sessions
+        # devuelve las sesiones que aún no han expirado
         sessions = Session.objects.filter(expire_date__gte=timezone.now())
         uid_list = []
-        # Build a list of user ids from that query
         for session in sessions:
             data = session.get_decoded()
             user_id = data.get('_auth_user_id', False)
             if user_id and user_id not in uid_list:
                 uid_list.append(user_id)
 
-        # Query all logged in users based on id list
+        # encuentra todos los agentes a partir los uids encontrados y la campaña
         return AgenteProfile.objects.filter(
             user__id__in=uid_list, campana_member__queue_name__campana__pk=campana_id).distinct()
+
+    def _parsear_agentes_profiles(self, agentes_profiles):
+        for agente_profile in agentes_profiles:
+            agente_profile['username'] = agente_profile.pop('user__username')
+            agente_profile['user_id'] = agente_profile.pop('user__id')
+            agente_profile['grupo_id'] = agente_profile.pop('grupo__id')
+        return agentes_profiles
 
     def get(self, request, *args, **kwargs):
         campana_id = kwargs.get('campana_id', False)
         agentes_profiles = self._get_all_logged_in_users(campana_id).values(
-            'id', 'user__username', 'sip_extension', 'user__id')
-        return JsonResponse(data={'agentes': list(agentes_profiles)})
+            'id', 'user__username', 'sip_extension', 'user__id', 'grupo__id')
+        agentes_profiles_result = self._parsear_agentes_profiles(agentes_profiles)
+        return JsonResponse(data={'agentes': list(agentes_profiles_result)})
 
 
 class AgentesDeGrupoPropioView(View):
