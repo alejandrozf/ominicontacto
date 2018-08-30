@@ -2,7 +2,6 @@
 # Autor: Andres Felipe Macias
 #!/bin/bash
 source /etc/omnileads.conf
-DOCKER=1
 Kamailio() {
   echo "Cambiando parametros de configuracion para Kamailio"
   cd {{ install_prefix }}kamailio/etc/kamailio/
@@ -73,9 +72,20 @@ Rtpengine(){
 }
 
 Asterisk(){
-  if [ $DOCKER == 1 ]; then
-    echo "A definir bien la arquitectura, por ello no cambio nada"
-  fi
+  {% if DOCKER == "true" %}
+    cd {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/
+    sed -i "s/\(^bindaddr\).*/$ASTERISK_IP\";/" oml_http.conf
+    sed -i "4s/.*/permit = $ASTERISK_IP\/255.255.255.0/" oml_manager.conf
+    sed -i "11s/.*/permit = $ASTERISK_IP\/255.255.255.0/" oml_manager.conf
+  {% else %}
+    cd {{ asterisk_location }}/etc/asterisk/
+  {% endif %}
+    sed -i "1s/.*/[$AMI_USER]/" oml_manager.conf
+    sed -i "2s/.*/secret = $AMI_PASS/" oml_manager.conf
+    sed -i "8s/.*/[$SUP_AMI_USER]/" oml_manager.conf
+    sed -i "9s/.*/secret = $SUP_AMI_PASS/" oml_manager.conf
+    sed -i "s/\(^username\).*/username => $POSTGRES_USER/" oml_res_odbc.conf
+    sed -i "s/\(^password\).*/password => $POSTGRES_PASSWORD/" oml_res_odbc.conf
 }
 
 Help(){
