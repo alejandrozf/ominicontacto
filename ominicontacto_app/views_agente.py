@@ -271,7 +271,7 @@ class AgentesLogueadosCampana(View):
             data = session.get_decoded()
             user_id = data.get('_auth_user_id', False)
             if user_id and user_id not in uid_list:
-                uid_list.append()
+                uid_list.append(user_id)
 
         # Query all logged in users based on id list
         return AgenteProfile.objects.filter(
