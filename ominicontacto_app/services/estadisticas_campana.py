@@ -52,6 +52,8 @@ class EstadisticasService():
         total_llamadas_campanas_qs = LlamadaLog.objects.filter(
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk).filter(
                 Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]) |
+                Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_DIALER, Campana.TYPE_ENTRANTE],
+                  tipo_llamada=LlamadaLog.LLAMADA_MANUAL) |
                 Q(event='CONNECT'))
         total_llamadas_campanas = total_llamadas_campanas_qs.count()
         total_calificados = CalificacionCliente.history.filter(
