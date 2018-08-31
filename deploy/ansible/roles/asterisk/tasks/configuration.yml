@@ -78,7 +78,6 @@
 - name: Copy of all asterisk config files
   shell: "cp *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/archivos-no-enlaces/"
   when: asterisk_location != ""
-  tags: postinstall
 
 # Se copian los agis a /var/lib/asterisk/agi-bin
 - name: Copy of the php agis
