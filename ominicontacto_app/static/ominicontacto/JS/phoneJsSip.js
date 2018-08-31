@@ -505,7 +505,6 @@ $(function() {
       }
     } else {
       calltypeId = originToId(null);
-      Sounds("Out", "play");
       var session_outgoing = e.session;
     }
 
@@ -838,7 +837,6 @@ $(function() {
       $("#modalSelectCmp").modal("show");
     } else {
       makeCall();
-      Sounds("Out", "play");
       setTimeout(function() { //luego de 60 segundos, stop al ringback y cuelga discado
 
         if (flagAttended == false) {
