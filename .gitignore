@@ -9,3 +9,4 @@ virtualenv/
 *~
 /.coverage
 atom-sftp-sync.json
+deployment-config.json

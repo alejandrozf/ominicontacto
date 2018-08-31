@@ -52,12 +52,18 @@ class EstadisticasService():
         total_llamadas_campanas_qs = LlamadaLog.objects.filter(
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk).filter(
                 Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]) |
+                Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_DIALER, Campana.TYPE_ENTRANTE],
+                  tipo_llamada=LlamadaLog.LLAMADA_MANUAL) |
                 Q(event='CONNECT'))
         total_llamadas_campanas = total_llamadas_campanas_qs.count()
         total_calificados = CalificacionCliente.history.filter(
             fecha__range=(fecha_desde, fecha_hasta),
             opcion_calificacion__campana=campana, history_change_reason='calificacion').count()
-        return total_llamadas_campanas - total_calificados
+        total_atendidas_sin_calificacion = total_llamadas_campanas - total_calificados
+        if total_atendidas_sin_calificacion < 0:
+            # significa que el agente calificó llamadas que no conectaron con el usuario
+            total_atendidas_sin_calificacion = 0
+        return total_atendidas_sin_calificacion
 
     def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta):
         """
