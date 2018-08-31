@@ -57,19 +57,25 @@
   group: name={{ usuario }} state=present
   become: true
   become_method: sudo
+  tags: yum
 
 # se hace include de la tarea solo si ansible_os_family = Redhat
 - name: Installation of Centos prerequisites
   include: centos_prerequisitos.yml
+  tags: yum
   when: ansible_os_family == "RedHat"
 
 # se hace include de la tarea solo si ansible_os_family = Debian
 - name: Installation of Debian prerequisites
   include: debian_prerequisitos.yml
+  tags: apt
   when: ansible_os_family == "Debian"
 
 - include: installations.yml
+  tags: ['apt', 'yum']
 
 - include: setup_mariadb.yml
+  tags: mariadb
 
 - include: postgres-installation.yml
+  tags: ['apt', 'yum']

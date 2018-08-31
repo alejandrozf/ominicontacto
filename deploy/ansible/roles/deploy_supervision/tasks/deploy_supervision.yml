@@ -90,6 +90,10 @@
   become: true
   become_method: sudo
 
+- shell: "service nginx reload"
+  become: true
+  become_method: sudo
+  
 # Starteo y habilito nginx
 - name: Start of nginx
   service: name=nginx state=started enabled=yes

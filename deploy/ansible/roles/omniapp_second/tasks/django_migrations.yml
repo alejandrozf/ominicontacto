@@ -20,6 +20,14 @@
     - "'already installed' not in command_result.stderr"
     - "command_result.rc != 0"
 
+# Se borra el cache de javascript, esto solo se hace cuando es postinstall
+- name: Erase the javascript cache files (if exists)
+  file: path="{{ install_prefix }}static/CACHE/{{ item }}" state=absent
+  with_items:
+    - js
+    - manifest.json
+  tags: ['never','postinstall']
+
 # Se corre un compendio de comandos de django con manage.py  https://docs.ansible.com/ansible/2.5/modules/django_manage_module.html#django-manage-module
 - name: Run Django migrations
   django_manage: >

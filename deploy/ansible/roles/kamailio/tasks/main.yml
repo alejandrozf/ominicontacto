@@ -55,11 +55,11 @@
   when: kamailio_installed|failed
 
 - include: postgresusers.yml
-  tags: ['postgresusers','kamailio']
+  tags: kamailio
 
 - include: kamailio-as-service.yml
   tags: kamailio
 
 - include: certificate_CA.yml
-  tags: kamailio-cert
+  tags: kamailio
   when: certs_exists|failed

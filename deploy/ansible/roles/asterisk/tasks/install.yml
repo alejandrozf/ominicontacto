@@ -9,7 +9,7 @@
 
 # Se descargan los paquetes
 - name: Descarga de paquetes de asterisk
-  get_url: "url={{ item }} dest=/usr/src/"
+  get_url: "url={{ item }} dest=/usr/src/ timeout=120"
   with_items:
         - "{{ dahdi_linux }}"
         - "{{ libpri }}"

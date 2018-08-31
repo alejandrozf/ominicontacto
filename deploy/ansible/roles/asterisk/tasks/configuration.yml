@@ -13,6 +13,7 @@
 # Se crea el servicico de asterisk  para systemctl
 - name: Creation of asterisk.service
   template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
+  tags: postinstall
 
 # Linkeo el binario a /usr/sbin
 - name: Create simbolic link of asterisk binarie
@@ -71,11 +72,13 @@
   become: yes
   become_method: sudo
   when: asterisk_location != ""
+  tags: postinstall
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
   shell: "cp *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/archivos-no-enlaces/"
   when: asterisk_location != ""
+  tags: postinstall
 
 # Se copian los agis a /var/lib/asterisk/agi-bin
 - name: Copy of the php agis
@@ -89,6 +92,7 @@
       - phpagi.php
   become: yes
   become_method: sudo
+  tags: postinstall
 
 # Estos dos agis los creo desde ansible
 - name: Creation of the agis omni-blackist and omni-dialednum
@@ -98,22 +102,26 @@
       - omni-dialednum.php
   become: yes
   become_method: sudo
+  tags: postinstall
 
 # Aca creo la carpeta parselog
 - name: Create /usr/local/parselog
   file: dest=/usr/local/parselog state=directory mode=0755 owner={{ usuario }} group={{ usuario }}
   become: yes
   become_method: sudo
+  tags: postinstall
 
 # Creo el script de conversion lo deje en parselog por convencion heredada de asternic -- FIX ME -- mejorar el script de conversion se puede hacer mejor
 - name: Link the conversor.sh file
   template: src=templates/conversor.sh dest=/usr/local/parselog/conversor.sh owner={{ usuario }} group={{ usuario }} mode=755
   when: asterisk_location != ""
+  tags: postinstall
 
 # Se añade el cron de omnileads
 - name: Copy the cron-omnileads file
   template: src=templates/cron-omnileads dest=/etc/cron.d/cron-omnileads owner=root group=root
   when: asterisk_location != ""
+  tags: postinstall
 
 # Para debian toca linkear esta libreria a a /usr/lib/postgresql/9.6 es una libreria de unixODBC
 - name: Link odbc librarie to postgresql libs
@@ -121,24 +129,38 @@
   when: ansible_os_family == "Debian"
   become: true
   become_method: sudo
+  tags: postinstall
 
 # Creo el archivo odbcinst.ini desde ansible
 - name: Creation of odbcinst.ini file
   template: src=templates/etc/odbcinst.ini dest=/etc/odbcinst.ini owner=root group=root mode=644
   become: true
   become_method: sudo
+  tags: postinstall
 
 # El odbc.ini si lo copio desde el repo, creo los directorios de sonidos y descomprimo -- FIX ME -- usar los modulos file y unarchive
-- name: Copy of odbc.ini file and omnileads sounds
-  shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files"
+- name: Copy of odbc.ini file
+  copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/odbc.ini dest=/etc/ mode=755 remote_src=yes owner=root group=root"
+  become: true
+  become_method: sudo
+  tags: postinstall
+
+# Creo los directorios que tendran los sonidos de agentes
+- name: Make of the sounds dirs
+  file: state=directory path={{ asterisk_location }}/var/lib/asterisk/sounds/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755
   with_items:
-      - cp {{ install_prefix }}ominicontacto/ominicontacto_voip/extra-files/odbc.ini /etc/
-      - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/es
-      - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/en
-      - mkdir {{ asterisk_location }}/var/lib/asterisk/sounds/oml
-      - tar xzvf sounds/es-oml.tgz -C {{ asterisk_location }}/var/lib/asterisk/sounds/es/
-      - tar xzvf sounds/en-oml.tgz -C {{ asterisk_location }}/var/lib/asterisk/sounds/en/
-  ignore_errors: yes
+    - es
+    - en
+    - oml
+  tags: postinstall
+
+# Untareo los sonidos de agentes, que vienen desde el repo
+- name: Untar the sounds for agents
+  unarchive: "src={{ install_prefix }}/ominicontacto/ominicontacto_voip/asterisk-files/sounds/{{ item.source }} dest={{ asterisk_location }}/var/lib/asterisk/sounds/{{ item.dest }} remote_src=yes"
+  with_items:
+    - { source: "es-oml.tgz", dest: "es" }
+    - { source: "en-oml.tgz", dest: "en" }
+  tags: postinstall
 
 # Añado la entrada webenabled=yes al manager.conf
 - name: Add web enabled in /etc/asterisk/manager.conf
@@ -154,6 +176,7 @@
   with_items:
           - "chown -R {{ usuario }}.{{ usuario }} {{ asterisk_location }}"
   when: asterisk_location != ""
+  tags: postinstall
   become: yes
   become_method: sudo
 
@@ -172,8 +195,8 @@
 # Un reload de config no viene mal, no alarmarse si falla
 - name: Reload of asterisk config
   shell: "asterisk -rx 'module reload'"
-  tags: postinstall
   become: yes
+  tags: postinstall
   become_method: sudo
   ignore_errors: yes
 

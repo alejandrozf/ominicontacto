@@ -1,10 +1,6 @@
 ---
 
 - include: deploy_supervision.yml
-  tags:
-    - supervision
-    - omniapp
-    - postinstall
+  tags: ['supervision','postinstall']
 
 - include: reboot.yml
-  tags: reboot

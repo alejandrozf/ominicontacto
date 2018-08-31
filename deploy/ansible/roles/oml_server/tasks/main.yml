@@ -11,7 +11,5 @@
 #----------------------------------------------------------------------
 
 - include: deploy.yml
-  tags:
-    - postinstall
-    - deploy
-    - omniapp
+  tags: postinstall
+    
