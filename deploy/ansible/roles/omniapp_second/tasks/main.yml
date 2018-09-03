@@ -3,23 +3,14 @@
 # y copiado el codigo al servidor
 
 - include: sshkey_transfer.yml
-  tags:
-    - omniapp
-    - postinstall
+  tags: postinstall
 
 - include: django_migrations.yml
-  tags:
-    - omniapp
-    - django-migrations
-    - postinstall
+  tags: ['postinstall','django']
 
 - include: omniapp_second.yml
-  tags:
-    - omniapp
-    - nginx
+  tags: ['nginx','postinstall']
 
 
 - include: wombat.yml
-  tags:
-    - omniapp
-    - wombat
+  tags: wombat

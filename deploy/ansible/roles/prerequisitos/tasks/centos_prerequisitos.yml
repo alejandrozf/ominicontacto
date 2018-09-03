@@ -11,8 +11,18 @@
 
 # se agrega sslverify=0 en el yum.conf, esto es para que no joda por si hay repos con certificados expirados
 # https://docs.ansible.com/ansible/2.5/modules/ini_file_module.html?highlight=ini_file
-- name: Do not verify ssl on repositories
-  ini_file: path=/etc/yum.conf section=main option=sslverify no_extra_spaces=yes value=0 state=present
+
+#- name: Do not verify ssl on repositories
+#  ini_file: path=/etc/yum.conf section=main option=sslverify no_extra_spaces=yes value=0 state=present
+#  become: true
+#  become_method: sudo
+
+- name: Configure yum for ansible
+  ini_file: path=/etc/yum.conf section=main option="{{ item.option }}" no_extra_spaces=yes value="{{ item.value }}" state=present
+  with_items:
+    - { option: "sslverify", value: "0" }
+    - { option: "timeout", value: "300" }
+    - { option: "minrate", value: "100" }
   become: true
   become_method: sudo
 

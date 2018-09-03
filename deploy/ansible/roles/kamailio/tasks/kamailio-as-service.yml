@@ -39,7 +39,6 @@
   shell: "{{ item }}"
   with_items:
       - systemctl restart rsyslog
-      - systemctl enable kamailio
       - systemctl daemon-reload
       - "chown {{ usuario }}:{{ usuario }} -R {{ kamailio_location }}"
   become: true
@@ -68,7 +67,6 @@
 # Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
 - name: Erase of default kamailio.cfg file
   shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
-  tags: postinstall
 
 # Se linkea el kamailio.cfg de omnileads a su ubicacion /etc/kamailio
 - name: Link kamailio.cfg repo file to {{ kamailio_location }}
@@ -84,6 +82,10 @@
 - name: Link kamctl binarie to /usr/sbin
   file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/kamctl mode=755 force=true
 
-# Se carga un tamplate de reglas de iptables para omnileads, No se ha testeado -- FIX ME -- revisarlo y testearlo 
+# Se carga un tamplate de reglas de iptables para omnileads, No se ha testeado -- FIX ME -- revisarlo y testearlo
 - name: Template of omnileads-iptables
   template: src=templates/omnileads-iptables dest={{ install_prefix }}bin/omnileads-iptables mode=755
+
+- name: Restart kamailio service
+  service: name=kamailio state=restarted enabled=yes
+  tags: postinstall
