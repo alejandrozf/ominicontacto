@@ -57,9 +57,9 @@
 - include: postgresusers.yml
   tags: kamailio
 
-- include: kamailio-as-service.yml
-  tags: kamailio
-
 - include: certificate_CA.yml
   tags: kamailio
   when: certs_exists|failed
+
+- include: kamailio-as-service.yml
+  tags: kamailio
