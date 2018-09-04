@@ -64,7 +64,7 @@
 
 # Se genera el archivo omnileads.conf en etc.
 - name: Generate omnileads.conf
-  template: src=templates/omnileads.conf dest=/etc/omnileads.conf owner=root group=root mode=700
+  template: src=templates/omnileads.conf dest=/etc/omnileads.conf owner=root group=root mode=644
   become: true
   become_method: sudo
 

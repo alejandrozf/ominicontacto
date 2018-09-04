@@ -6,7 +6,7 @@ Kamailio() {
   echo "Cambiando parametros de configuracion para Kamailio"
   cd {{ install_prefix }}kamailio/etc/kamailio/
   sed -i "0,/\(MY_IP_ADDR\).*/s/\(MY_IP_ADDR\).*/MY_IP_ADDR!$KAMAILIO_IP!g\"/" kamailio-local.cfg
-  sed -i "0,/\(MY_ASTERISK\).*/s/\(MY_ASTERISK\).*/MY_ASTERISK!$KAMAILIO_IP!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_ASTERISK\).*/s/\(MY_ASTERISK\).*/MY_ASTERISK!$ASTERISK_IP!g\"/" kamailio-local.cfg
   sed -i "0,/\(MY_DOMAIN\).*/s/\(MY_DOMAIN\).*/MY_DOMAIN!$KAMAILIO_DOMAIN!g\"/" kamailio-local.cfg
   sed -i "0,/\(MY_UDP_PORT\).*/s/\(MY_UDP_PORT\).*/MY_UDP_PORT!$KAMAILIO_SIP_PORT!g\"/" kamailio-local.cfg
   sed -i "0,/\(MY_TCP_PORT\).*/s/\(MY_TCP_PORT\).*/MY_TCP_PORT!$KAMAILIO_SIP_PORT!g\"/" kamailio-local.cfg
@@ -31,8 +31,8 @@ Omnileads(){
       sed -i "s/\('NAME'\).*/\'NAME\': \'$POSTGRES_DATABASE\',/" oml_settings_local.py
       sed -i "s/\('USER'\).*/\'USER\': \'$POSTGRES_USER\',/" oml_settings_local.py
       sed -i "47s/.*/        'PASSWORD': '$POSTGRES_PASSWORD',/" oml_settings_local.py
-      sed -i "s/\('USERNAME'\).*/\'USERNAME\': \"$AMI_USER\",/" oml_settings_local.py
-      sed -i "76s/.*/    'PASSWORD': '$AMI_PASS',/" oml_settings_local.py
+      sed -i "s/\('AMI_USERNAME'\).*/\'AMI_USERNAME\': \"$AMI_USER\",/" oml_settings_local.py
+      sed -i "s/\('AMI_PASSWORD'\).*/\'AMI_PASSWORD\': \"$AMI_PASS\",/" oml_settings_local.py
       sed -i "s/\('HTTP_AMI_URL'\).*/\'HTTP_AMI_URL\': \"http:\/\/$ASTERISK_IP:7088\",/" oml_settings_local.py
       sed -i "s/\(^OML_WOMBAT_USER\).*/OML_WOMBAT_USER = \"$WOMBAT_USER\"/" oml_settings_local.py
       sed -i "s/\(^OML_WOMBAT_PASSWORD\).*/OML_WOMBAT_PASSWORD = \"$WOMBAT_PASS\"/" oml_settings_local.py
@@ -56,7 +56,7 @@ Omnileads(){
       sed -i "s/\('PG_PASSWORD'\).*/'PG_PASSWORD','$POSTGRES_PASSWORD');/" config.php
       sed -i "s/\('PG_HOST'\).*/'PG_HOST','$POSTGRES_IP');/" config.php
       sed -i "s/\('PG_PASSWORD'\).*/'PG_PASSWORD','$POSTGRES_PASSWORD');/" config.php
-      sed -i "s/\('OMNI_HOST'\).*/'OMNI_HOST', $_SERVER['SERVER_ADDR'].':$OML_PORT');/" config.php
+      sed -i "s/\('OMNI_HOST'\).*/'OMNI_HOST', $_SERVER['SERVER_ADDR']);/" config.php
       sed -i "s/\('WD_API_USER'\).*/'WD_API_USER','$WOMBAT_USER');/" config.php
       sed -i "s/\('WD_API_PASS'\).*/'WD_API_PASS','$WOMBAT_PASS');/" config.php
 }
@@ -74,7 +74,7 @@ Rtpengine(){
 Asterisk(){
   {% if DOCKER == "true" %}
     cd {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/
-    sed -i "s/\(^bindaddr\).*/$ASTERISK_IP\";/" oml_http.conf
+    sed -i "s/\(^bindaddr\).*/bindaddr = $ASTERISK_IP\";/" oml_http.conf
     sed -i "4s/.*/permit = $ASTERISK_IP\/255.255.255.0/" oml_manager.conf
     sed -i "11s/.*/permit = $ASTERISK_IP\/255.255.255.0/" oml_manager.conf
   {% else %}
