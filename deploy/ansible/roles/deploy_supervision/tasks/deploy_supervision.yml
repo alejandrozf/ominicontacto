@@ -80,7 +80,7 @@
 
 # Esta carpeta tambien necesita ser cambiada de dueño
 - name: Set permissions of required to {{ usuario }}'s user
-  file: path=/var/lib/nginx/ owner={{ usuario }} group={{ usuario }} state=directory
+  file: path=/var/lib/nginx/ owner={{ usuario }} group={{ usuario }} state=directory recurse=yes
   become: true
   become_method: sudo
 
@@ -90,12 +90,8 @@
   become: true
   become_method: sudo
 
-- shell: "service nginx reload"
-  become: true
-  become_method: sudo
-  
 # Starteo y habilito nginx
 - name: Start of nginx
-  service: name=nginx state=started enabled=yes
+  service: name=nginx state=restarted enabled=yes
   become: true
   become_method: sudo
