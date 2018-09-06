@@ -1,74 +1,127 @@
 # Script para hacer los cambios de IP en todos los archivos para que omnileads funcione bien con una IP distinta
 # Autor: Andres Felipe Macias
 #!/bin/bash
+source /etc/omnileads.conf
+Kamailio() {
+  echo "Cambiando parametros de configuracion para Kamailio"
+  cd {{ install_prefix }}kamailio/etc/kamailio/
+  sed -i "0,/\(MY_IP_ADDR\).*/s/\(MY_IP_ADDR\).*/MY_IP_ADDR!$KAMAILIO_IP!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_ASTERISK\).*/s/\(MY_ASTERISK\).*/MY_ASTERISK!$ASTERISK_IP!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_DOMAIN\).*/s/\(MY_DOMAIN\).*/MY_DOMAIN!$KAMAILIO_DOMAIN!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_UDP_PORT\).*/s/\(MY_UDP_PORT\).*/MY_UDP_PORT!$KAMAILIO_SIP_PORT!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_TCP_PORT\).*/s/\(MY_TCP_PORT\).*/MY_TCP_PORT!$KAMAILIO_SIP_PORT!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_DB\).*/s/\(MY_DB\).*/MY_DB!$POSTGRES_IP!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_WSS_PORT\).*/s/\(MY_WSS_PORT\).*/MY_WSS_PORT!$KAMAILIO_WSS_PORT!g\"/" kamailio-local.cfg
+  sed -i "s/\(DBHOST\).*/DBHOST=$POSTGRES_IP/" kamctlrc
+  sed -i "s/\(DBNAME\).*/DBNAME=$POSTGRES_DATABASE/" kamctlrc
+  sed -i "s/\(DBRWUSER\).*/DBRWUSER=$POSTGRES_USER/" kamctlrc
+  sed -i "s/\(DBROOTUSER\).*/DBROOTUSER=$POSTGRES_USER/" kamctlrc
+  sed -i "s/\(DBRWPW\).*/DBRWPW=$POSTGRES_PASSWORD/" kamctlrc
+}
 
-VIRTUAL_ENV=`which virtualenv`
+Omnileads(){
+  cd {{ install_prefix }}local/
+  echo "Cambiando settings en oml_settings_local.py "
+      sed -i "s/\(^OML_OMNILEADS_IP\).*/OML_OMNILEADS_IP = \"$OML_IP\"/" oml_settings_local.py
+      sed -i "s/\(^OML_WOMBAT_URL\).*/OML_WOMBAT_URL = \"http:\/\/$OML_IP:8080\/wombat\"/" oml_settings_local.py
+      sed -i "s/\(^OML_KAMAILIO_IP\).*/OML_KAMAILIO_IP = \"$OML_IP\/255.255.255.255\"/" oml_settings_local.py
+      sed -i "s/\(^OML_SUPERVISION_URL\).*/OML_SUPERVISION_URL = \"https:\/\/$OML_IP:10443\/Omnisup\/index.php?page=Lista_Campanas\&supervId=\"/" oml_settings_local.py
+      sed -i "s/\(^OML_GRABACIONES_URL\).*/OML_GRABACIONES_URL = \"http:\/\/$OML_IP\/grabaciones\"/" oml_settings_local.py
+      sed -i "s/\('HOST'\).*/\'HOST\': \'$POSTGRES_IP\',/" oml_settings_local.py
+      sed -i "s/\('NAME'\).*/\'NAME\': \'$POSTGRES_DATABASE\',/" oml_settings_local.py
+      sed -i "s/\('USER'\).*/\'USER\': \'$POSTGRES_USER\',/" oml_settings_local.py
+      sed -i "47s/.*/        'PASSWORD': '$POSTGRES_PASSWORD',/" oml_settings_local.py
+      sed -i "s/\('AMI_USERNAME'\).*/\'AMI_USERNAME\': \"$AMI_USER\",/" oml_settings_local.py
+      sed -i "s/\('AMI_PASSWORD'\).*/\'AMI_PASSWORD\': \"$AMI_PASS\",/" oml_settings_local.py
+#      sed -i "s/\('HTTP_AMI_URL'\).*/\'HTTP_AMI_URL\': \"http:\/\/$ASTERISK_IP:7088\",/" oml_settings_local.py
+      sed -i "s/\(^OML_WOMBAT_USER\).*/OML_WOMBAT_USER = \"$WOMBAT_USER\"/" oml_settings_local.py
+      sed -i "s/\(^OML_WOMBAT_PASSWORD\).*/OML_WOMBAT_PASSWORD = \"$WOMBAT_PASS\"/" oml_settings_local.py
+      sed -i "s/\(^OML_KAMAILIO_IP\).*/OML_KAMAILIO_IP = \"$KAMAILIO_IP\/255.255.255.255\"/" oml_settings_local.py
 
-echo "Ingrese la IP actual"
-echo -en "IP: "; read ip_actual
+  cd {{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto/JS/
+  echo "Cambiando settings config.js"
+      sed -i "s/\(^var KamailioIp\).*/var KamailioIp = \"$KAMAILIO_IP\";/" config.js
+      sed -i "s/\(^var KamailioPort\).*/var KamailioPort = \"$KAMAILIO_WSS_PORT\";/" config.js
+  cd {{ install_prefix }}Omnisup/static/Js
+  echo "Cambiando settings en supervision"
+      sed -i "s/\(^var KamailioIp\).*/var KamailioIp = \"$KAMAILIO_IP\";/" config.js
+      sed -i "s/\(^var KamailioPort\).*/var KamailioPort = \"$KAMAILIO_WSS_PORT\";/" config.js
+      sed -i "s/\(^var OmlIp\).*/var OmlIp = \"$OML_IP\";/" config.js
+      sed -i "s/\(^var OmlPort\).*/var KamailioIp = \"$OML_PORT\";/" config.js
+  cd {{ install_prefix }}Omnisup
+      sed -i "s/\('AMI_USERNAME'\).*/'AMI_USERNAME','$SUP_AMI_USER');/" config.php
+      sed -i "s/\('AMI_PASSWORD'\).*/'AMI_PASSWORD','$SUP_AMI_PASS');/" config.php
+      sed -i "s/\('AMI_HOST'\).*/'AMI_HOST','$ASTERISK_IP');/" config.php
+      sed -i "s/\('PG_USER'\).*/'PG_USER','$POSTGRES_USER');/" config.php
+      sed -i "s/\('PG_PASSWORD'\).*/'PG_PASSWORD','$POSTGRES_PASSWORD');/" config.php
+      sed -i "s/\('PG_HOST'\).*/'PG_HOST','$POSTGRES_IP');/" config.php
+      sed -i "s/\('PG_PASSWORD'\).*/'PG_PASSWORD','$POSTGRES_PASSWORD');/" config.php
+      sed -i "s/\('OMNI_HOST'\).*/'OMNI_HOST', $_SERVER['SERVER_ADDR']);/" config.php
+      sed -i "s/\('WD_API_USER'\).*/'WD_API_USER','$WOMBAT_USER');/" config.php
+      sed -i "s/\('WD_API_PASS'\).*/'WD_API_PASS','$WOMBAT_PASS');/" config.php
+}
 
-echo "Ingrese la nueva IP"
-echo -en "IP: "; read nueva_ip
-echo "Cambiando IP en /etc/sysconfig/rtpengine"
-sudo bash -c "cat > /etc/sysconfig/rtpengine <<EOF
+Rtpengine(){
+  echo "Cambiando IP en /etc/rtpengine"
+  sudo bash -c "cat > /etc/rtpengine-config.conf <<EOF
+  #
+  # Archivo autogenerado
+  #
+  OPTIONS=\"-i $KAMAILIO_IP -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=local1\""
+  EOF
+}
 
-#
-# Archivo autogenerado
-#
+Asterisk(){
+  {% if DOCKER == "true" %}
+    cd {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/
+    sed -i "s/\(^bindaddr\).*/bindaddr = $ASTERISK_IP\";/" oml_http.conf
+    sed -i "4s/.*/permit = $ASTERISK_IP\/255.255.255.0/" oml_manager.conf
+    sed -i "11s/.*/permit = $ASTERISK_IP\/255.255.255.0/" oml_manager.conf
+  {% else %}
+    cd /etc/
+      sed -i "4s/.*/Database            = $POSTGRES_DATABASE/" odbc.ini
+      sed -i "5s/.*/Servername          = $POSTGRES_IP/" odbc.ini
+      sed -i "6s/.*/UserName            = $POSTGRES_USER/" odbc.ini
+      sed -i "7s/.*/Password            = $POSTGRES_PASSWORD/" odbc.ini
+    cd {{ asterisk_location }}/etc/asterisk/
+  {% endif %}
+    sed -i "1s/.*/[$AMI_USER]/" oml_manager.conf
+    sed -i "2s/.*/secret = $AMI_PASS/" oml_manager.conf
+    sed -i "8s/.*/[$SUP_AMI_USER]/" oml_manager.conf
+    sed -i "9s/.*/secret = $SUP_AMI_PASS/" oml_manager.conf
+    sed -i "s/\(^username\).*/username => $POSTGRES_USER/" oml_res_odbc.conf
+    sed -i "s/\(^password\).*/password => $POSTGRES_PASSWORD/" oml_res_odbc.conf
+}
 
-OPTIONS=\"-i $nueva_ip -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=local1\"
-EOF"
+Help(){
+  echo "Deje asi"
+}
 
-echo "Cambiando IP en kamailio-local.cfg"
-cd {{ kamailio_location }}/etc/kamailio/
-sudo sed -i "s/$ip_actual.*/$nueva_ip!g\"/" kamailio-local.cfg
-
-cd {{ install_prefix }}local
-echo "Cambiando IP en oml_settings_local.py de {{ install_prefix }}local"
-    sed -i "s/\(^OML_OMNILEADS_IP\).*/OML_OMNILEADS_IP = \"$nueva_ip\"/" oml_settings_local.py
-    sed -i "s/\(^OML_WOMBAT_URL\).*/OML_WOMBAT_URL = \"http:\/\/$nueva_ip:8080\/wombat\"/" oml_settings_local.py
-    sed -i "s/\(^OML_KAMAILIO_IP\).*/OML_KAMAILIO_IP = \"$nueva_ip\/255.255.255.255\"/" oml_settings_local.py
-    sed -i "s/\(^OML_SUPERVISION_URL\).*/OML_SUPERVISION_URL = \"https:\/\/$nueva_ip:10443\/Omnisup\/index.php?page=Lista_Campanas\&supervId=\"/" oml_settings_local.py
-    sed -i "s/\(^OML_GRABACIONES_URL\).*/OML_GRABACIONES_URL = \"http:\/\/$nueva_ip\/grabaciones\"/" oml_settings_local.py
-
-cd {{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto/JS/
-echo "Cambiando IP en /static/JS/config.js"
-    sed -i "s/\(^var KamailioIp\).*/var KamailioIp = \"$nueva_ip\";/" config.js
-
-cd {{ install_prefix }}Omnisup/static/Js
-echo "Cambiando IP en supervision"
-    sed -i "s/\(^var KamailioIp\).*/var KamailioIp = \"$nueva_ip\";/" config.js
-
-if [ "$VIRTUAL_ENV" = "" ] ; then
-  echo "ERROR: virtualenv (o alguno de la flia.) no encontrado"
-  exit 1
-fi
-
-echo "Restarteando servicios"
-echo "Parando kamailio"
-sudo service kamailio stop
-sleep 5
-echo "Comenzando kamailio"
-sudo service kamailio start
-echo "Parando rtpengine"
-sudo service rtpengine stop
-sleep 5
-echo "Comenzando rtpengine"
-sudo service rtpengine start
-echo "Parando ominicontacto-daemon"
-sudo service ominicontacto-daemon stop
-sleep 7
-echo "Comenzando ominicontacto-daemon"
-sudo service ominicontacto-daemon start
-sleep 5
-echo "Parando asterisk"
-sudo service asterisk stop
-sleep 5
-echo "Empezando asterisk"
-sudo service asterisk start
-
-source {{ install_prefix }}virtualenv/bin/activate
-cd {{ install_prefix }}ominicontacto
-python manage.py collectstatic
-python manage.py compress
-python manage.py regenerar_asterisk
+while getopts "kaor" OPTION;do
+	case "${OPTION}" in
+		k) # Me cercioro que las Ip's estén bien en archivos de kamailio
+        Kamailio
+		;;
+		o) # Me cercioro que las Ip's estén bien en archivos de Omnileads
+		    Omnileads
+		;;
+    r) #Archivo de rtpengine
+        Rtpengine
+    ;;
+		a) #Archivos de asterisk
+        Asterisk
+    ;;
+		 #   set -f # disable glob
+    #       IFS=',' # split on space characters
+    #        array=($OPTARG) # use the split+glob operator
+   	#	    Tag $array
+		#;;
+		#h) # Print the help option
+		#	Help
+		#;;
+		#d) #Cliente de desarrollo?
+		#    Desarrollo
+		 #;;
+	esac
+done
+if [ $# -eq 0  ]; then Help; fi

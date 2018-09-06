@@ -64,4 +64,4 @@ country_code: 54
 ########## Contraseñas MySQL ###############
 
 #Contraseña de mysql en debian
-mysql_root_pass: 098098ZZZ
+mysql_root_pass: admin123

@@ -375,7 +375,7 @@ assert OML_QUEUES_FILENAME is not None, \
 
 # ~~~~~ Check ASTERISK
 
-for key in ('USERNAME', 'PASSWORD', 'HTTP_AMI_URL'):
+for key in ('AMI_USERNAME', 'AMI_PASSWORD', 'HTTP_AMI_URL'):
     assert key in ASTERISK, \
         "Falta key '{0}' en configuracion de ASTERISK".\
         format(key)

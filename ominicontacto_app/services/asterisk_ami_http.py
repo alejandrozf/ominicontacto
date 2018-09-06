@@ -435,8 +435,8 @@ class AsteriskHttpClient(object):
     def login(self):
         response_body, _ = self._request("/mxml", {
             'action': 'login',
-            'username': settings.ASTERISK['USERNAME'],
-            'secret': settings.ASTERISK['PASSWORD'],
+            'username': settings.ASTERISK['AMI_USERNAME'],
+            'secret': settings.ASTERISK['AMI_PASSWORD'],
         })
         parser = AsteriskXmlParserForLogin()
         parser.parse(response_body)

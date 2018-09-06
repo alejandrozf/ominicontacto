@@ -62,6 +62,12 @@
   become: true
   become_method: sudo
 
+# Se genera el archivo omnileads.conf en etc.
+- name: Generate omnileads.conf
+  template: src=templates/omnileads.conf dest=/etc/omnileads.conf owner=root group=root mode=644
+  become: true
+  become_method: sudo
+
 # Se genera el script de cambio de IP
 - name: Generate changeip.sh script
   template: src=templates/changeip.sh.j2 dest={{ install_prefix }}bin/changeip.sh owner={{ usuario }} group={{ usuario }} mode=755

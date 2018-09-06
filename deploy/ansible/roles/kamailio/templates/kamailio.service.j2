@@ -8,9 +8,10 @@ Type=forking
 User={{ usuario }}
 Environment=SHM_SIZE=64
 Environment=PKG_SIZE=8
+ExecStartPre=/bin/bash {{ install_prefix }}bin/changeip.sh -k
 ExecStartPre={{ kamailio_location }}/sbin/kamailio -c
 ExecStart={{ kamailio_location }}/sbin/kamailio -m $SHM_SIZE -M $PKG_SIZE -P {{ kamailio_location }}/run/kamailio/kamailio.pid
-ExecStopPost=/usr/bin/rm -f {{ kamailio_location }}/run/kamailio/kamailio.pid
+ExecStop=/usr/bin/rm -f {{ kamailio_location }}/run/kamailio/kamailio.pid
 PIDFile={{ kamailio_location }}/run/kamailio/kamailio.pid
 RuntimeDirectory=kamailio
 RuntimeDirectoryMode=755
