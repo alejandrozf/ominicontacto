@@ -33,7 +33,7 @@ Omnileads(){
       sed -i "47s/.*/        'PASSWORD': '$POSTGRES_PASSWORD',/" oml_settings_local.py
       sed -i "s/\('AMI_USERNAME'\).*/\'AMI_USERNAME\': \"$AMI_USER\",/" oml_settings_local.py
       sed -i "s/\('AMI_PASSWORD'\).*/\'AMI_PASSWORD\': \"$AMI_PASS\",/" oml_settings_local.py
-      sed -i "s/\('HTTP_AMI_URL'\).*/\'HTTP_AMI_URL\': \"http:\/\/$ASTERISK_IP:7088\",/" oml_settings_local.py
+#      sed -i "s/\('HTTP_AMI_URL'\).*/\'HTTP_AMI_URL\': \"http:\/\/$ASTERISK_IP:7088\",/" oml_settings_local.py
       sed -i "s/\(^OML_WOMBAT_USER\).*/OML_WOMBAT_USER = \"$WOMBAT_USER\"/" oml_settings_local.py
       sed -i "s/\(^OML_WOMBAT_PASSWORD\).*/OML_WOMBAT_PASSWORD = \"$WOMBAT_PASS\"/" oml_settings_local.py
       sed -i "s/\(^OML_KAMAILIO_IP\).*/OML_KAMAILIO_IP = \"$KAMAILIO_IP\/255.255.255.255\"/" oml_settings_local.py
