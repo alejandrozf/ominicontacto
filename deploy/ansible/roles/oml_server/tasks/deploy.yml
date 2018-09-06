@@ -10,12 +10,15 @@
   become: true
   become_method: sudo
 
+# Creo directorio padre, home del usuario omnileads
+- name: Create the ominicontacto directorie
+  file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
+  when: desarrollo == 0
+
 # Se crean los directorios basicos
-- name: Create the required directories
+- name: Create other directories
   file: "dest={{ item }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
   with_items:
-      # Directorio padre, home del usuario omnileads
-          - "{{ install_prefix }}"
       # Directorio que contiene configuracion de pip
           - "{{ install_prefix }}.pip"
       # Directorio donde está almacenado el codigo python
@@ -38,7 +41,6 @@
           - "{{ install_prefix }}log"
   when: desarrollo == 0
 
-
 #----------------------------------------------------------------------
 # pip / virtualenv
 #----------------------------------------------------------------------
@@ -58,14 +60,16 @@
 
 # Esta tarea no está funcionando bien lo que quería hacer es para las maquinas de desarrollo, en vez de copiar el codigo clonar el repo
 # -- FIX ME --
-- name: Clone of OML repository
-  git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes
-  when: desarrollo == 1
-  ignore_errors: yes
+#- name: Clone of OML repository
+#  git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes
+#  when: desarrollo == 1
+#  ignore_errors: yes
 
 - name: Checkout of desired branch
-  git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git clone=no version={{ rama }} dest={{ install_prefix }}ominicontacto
+  git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git clone=no version={{ rama }} dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes 
   when: desarrollo == 1
+  become: true
+  become_method: sudo
 
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto

@@ -190,9 +190,9 @@ Tag() {
     echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
     if [ $DOCKER == "true" ]; then
-      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K -vvvvvvvvvvvvvvv
     else
-      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K -vvvvvvvvvvvv
 
     fi
     ResultadoAnsible=`echo $?`
@@ -210,7 +210,7 @@ rm -rf /var/tmp/ominicontacto-build
 
 }
 
-while getopts "r::t:ihd:" OPTION;do
+while getopts "r::t:ihd" OPTION;do
 	case "${OPTION}" in
 		r) # Rama a deployar
             Rama $OPTARG
@@ -218,18 +218,18 @@ while getopts "r::t:ihd:" OPTION;do
 		i) #Realizar pasos y agregar opciones preliminares
 		    Preliminar
 		;;
+    d) #Cliente de desarrollo?
+		    Desarrollo
+		;;
 		t) #Tag
 		    set -f # disable glob
-           IFS=',' # split on space characters
-            array=($OPTARG) # use the split+glob operator
-   		    Tag $array
+        IFS=',' # split on space characters
+        array=($OPTARG) # use the split+glob operator
+   		  Tag $array
 		;;
 		h) # Print the help option
 			Help
 		;;
-		d) #Cliente de desarrollo?
-		    Desarrollo
-		 ;;
 	esac
 done
 if [ $# -eq 0  ]; then Help; fi

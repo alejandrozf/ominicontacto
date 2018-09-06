@@ -6,9 +6,6 @@
 #                                                                                                          #
 ############################################################################################################
 
-#### Para setear si el postinstall es para FTS o para cliente #####
-desarrollo: 0
-
 ############ Componentes del certificado del CA ###########
 serial: 01
 ca_country: AR
