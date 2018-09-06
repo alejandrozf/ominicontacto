@@ -65,6 +65,11 @@
       - oml_func_odbc.conf
       - oml_manager.conf
       - oml_res_odbc.conf
+      - oml_amd.conf 
+      - oml_dahdi.conf
+      - oml_http.conf
+      - oml_sip_general.conf
+      - oml_sip_nat.conf
       - queues.conf
       - res_odbc.conf
       - sip.conf
