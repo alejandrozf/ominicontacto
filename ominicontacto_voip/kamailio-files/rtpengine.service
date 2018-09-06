@@ -7,7 +7,7 @@ After=network.target
 Type=forking
 PIDFile=/var/run/rtpengine.pid
 EnvironmentFile=-/etc/rtpengine-config.conf
-ExecStartPre=/bin/bash {{ install_prefix }}bin/changeip.sh -r
+ExecStartPre=/bin/bash /opt/omnileads/bin/changeip.sh -r
 ExecStart=/usr/local/bin/rtpengine -p /var/run/rtpengine.pid $OPTIONS
 
 Restart=always
