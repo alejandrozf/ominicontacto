@@ -20,6 +20,8 @@ from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Cam
 from ominicontacto_app.services.campana_service import CampanaService
 from reportes_app.models import LlamadaLog
 
+from utiles_globales import obtener_cantidad_no_calificados
+
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -48,22 +50,14 @@ class EstadisticasService():
         Manual y Preview contar logs con ANSWER
         Dialer y Entrante contar logs con CONNECT
         """
-
         total_llamadas_campanas_qs = LlamadaLog.objects.filter(
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk).filter(
                 Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]) |
                 Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_DIALER, Campana.TYPE_ENTRANTE],
                   tipo_llamada=LlamadaLog.LLAMADA_MANUAL) |
                 Q(event='CONNECT'))
-        total_llamadas_campanas = total_llamadas_campanas_qs.count()
-        total_calificados = CalificacionCliente.history.filter(
-            fecha__range=(fecha_desde, fecha_hasta),
-            opcion_calificacion__campana=campana, history_change_reason='calificacion').count()
-        total_atendidas_sin_calificacion = total_llamadas_campanas - total_calificados
-        if total_atendidas_sin_calificacion < 0:
-            # significa que el agente calificó llamadas que no conectaron con el usuario
-            total_atendidas_sin_calificacion = 0
-        return total_atendidas_sin_calificacion
+        return obtener_cantidad_no_calificados(
+            total_llamadas_campanas_qs, fecha_desde, fecha_hasta, campana)
 
     def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta):
         """
