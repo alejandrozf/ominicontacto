@@ -2,7 +2,7 @@
 
 import logging
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from ominicontacto_app.services.regeneracion_asterisk import RegeneracionAsteriskService
 
@@ -25,3 +25,4 @@ class Command(BaseCommand):
             self._regenerar_asterisk()
         except Exception as e:
             logging.error('Fallo del comando: {0}'.format(e.message))
+            raise CommandError('Fallo del comando: {0}'.format(e.message))
