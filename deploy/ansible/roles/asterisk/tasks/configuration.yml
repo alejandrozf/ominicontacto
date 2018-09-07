@@ -63,9 +63,8 @@
       - oml_extensions.conf
       - oml_extensions_sub.conf
       - oml_func_odbc.conf
-      - oml_manager.conf
       - oml_res_odbc.conf
-      - oml_amd.conf 
+      - oml_amd.conf
       - oml_dahdi.conf
       - oml_http.conf
       - oml_sip_general.conf
@@ -77,6 +76,10 @@
   become: yes
   become_method: sudo
   when: asterisk_location != ""
+  tags: postinstall
+
+- name: Create of oml_manager.conf
+  template: src=templates/conf/oml_manager.conf dest={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/oml_manager.conf owner={{ usuario }} group={{ usuario }} mode=755
   tags: postinstall
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk

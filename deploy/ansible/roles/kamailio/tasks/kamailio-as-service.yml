@@ -89,3 +89,5 @@
 - name: Restart kamailio service
   service: name=kamailio state=restarted enabled=yes
   tags: postinstall
+  become: true
+  become_method: sudo

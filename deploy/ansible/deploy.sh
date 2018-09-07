@@ -49,7 +49,7 @@ Rama() {
         echo "No tienes instalado ansible"
         echo "Instalando ansible 2.5.0"
 	    echo ""
-	    $PIP install 'ansible==2.5.0.0' --user > /dev/null 2>&1
+	    $PIP install 'ansible==2.5.0.0' --user
         IS_ANSIBLE="`find /usr/bin /usr/sbin /usr/local /root ~ -name ansible |grep \"/bin/ansible\" |head -1 2> /dev/null`"
 	fi
     ANS_VERSION=`"$IS_ANSIBLE" --version |grep ansible |head -1`
@@ -58,7 +58,7 @@ Rama() {
     else
         echo "Tienes una versión de ansible distinta a la 2.5.0"
         echo "Instalando versión 2.5.0"
-        $PIP install 'ansible==2.5.0.0' --user > /dev/null 2>&1
+        $PIP install 'ansible==2.5.0.0' --user 
     fi
 
     cd $current_directory
@@ -190,9 +190,9 @@ Tag() {
     echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
     if [ $DOCKER == "true" ]; then
-      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K -vvvvvvvvvvvvvvv
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
     else
-      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K -vvvvvvvvvvvv
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
 
     fi
     ResultadoAnsible=`echo $?`

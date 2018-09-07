@@ -60,16 +60,14 @@
 
 # Esta tarea no está funcionando bien lo que quería hacer es para las maquinas de desarrollo, en vez de copiar el codigo clonar el repo
 # -- FIX ME --
-#- name: Clone of OML repository
-#  git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes
-#  when: desarrollo == 1
-#  ignore_errors: yes
+- name: Clone of OML repository
+  git: repo=git@bitbucket.org:freetechdesarrollo/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes key_file={{ install_prefix }}.ssh/id_rsa
+  when: desarrollo == 1
+  ignore_errors: yes
 
 - name: Checkout of desired branch
-  git: repo=git@bitbucket.org:omnileadsdesarrollo/ominicontacto.git clone=no version={{ rama }} dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes 
+  git: repo=git@bitbucket.org:freetechdesarrollo/ominicontacto.git clone=no version={{ rama }} dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes key_file={{ install_prefix }}.ssh/id_rsa
   when: desarrollo == 1
-  become: true
-  become_method: sudo
 
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
