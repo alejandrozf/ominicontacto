@@ -99,3 +99,4 @@
   service: name=nginx state=restarted enabled=yes
   become: true
   become_method: sudo
+  tags: ['never','postinstall']
