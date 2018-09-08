@@ -325,7 +325,7 @@ class ConfigFile(object):
         finally:
             try:
                 os.remove(tmp_filename)
-            except:
+            except Exception:
                 logger.exception("Error al intentar borrar temporal %s",
                                  tmp_filename)
 

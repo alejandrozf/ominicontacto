@@ -32,7 +32,7 @@ class SmsManager():
         for mensaje in MensajeRecibido.objects.mensaje_recibido_por_remitente():
             mensajes_recibidos.append(MensajeRecibido.objects.
                                       mensaje_remitente_fecha(mensaje['remitente'],
-                                        mensaje['timestamp__max']))
+                                                              mensaje['timestamp__max']))
         return mensajes_recibidos
 
     def obtener_mensaje_enviado_recibido(self, remitente):
@@ -58,7 +58,7 @@ class SmsManager():
         for mensaje in mensajes:
             mensaje_dict = {
                 'timestamp': mensaje[0],
-                'remitente':  mensaje[1],
+                'remitente': mensaje[1],
                 'destinatario': mensaje[2],
                 'content': mensaje[3]
             }
@@ -73,7 +73,7 @@ class SmsManager():
         for mensaje in mensajes:
             mensaje_dict = {
                 'id': mensaje.id,
-                'remitente':  mensaje.remitente,
+                'remitente': mensaje.remitente,
                 'content': mensaje.content
             }
             lista_mensajes.append(mensaje_dict)

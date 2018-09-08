@@ -59,7 +59,7 @@ class OmlError(Exception):
                     type(self.cause),
                     str(self.cause),
                 )
-        except:
+        except Exception:
             return super(OmlError, self).__str__()
 
 
@@ -178,9 +178,4 @@ class OmlArchivoImportacionInvalidoError(OmlError):
 
 class OMLOptimisticLockingError(OmlError):
     """Se intentó actualizar un objeto modificado por otro thread/proceso"""
-    pass
-
-
-class OmlAudioConversionError(OmlError):
-    """Error al intentar convertir audio"""
     pass

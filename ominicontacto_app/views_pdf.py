@@ -140,8 +140,6 @@ class ReporteCampanaPDF(View):
         # Canvas nos permite hacer el reporte con coordenadas X y Y
         pdf = canvas.Canvas(buffer)
         self.cabecera(pdf, campana)
-        y = 600
-
         self.tabla_calificacion(pdf, estadisticas['dict_campana_counter'],
                                 estadisticas['total_asignados']
                                 )

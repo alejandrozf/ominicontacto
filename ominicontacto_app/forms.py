@@ -361,7 +361,8 @@ class CampanaMixinForm(object):
 
     def clean(self):
         bd_contacto_field = self.fields.get('bd_contacto', False)
-        if bd_contacto_field and not bd_contacto_field.queryset.filter and self.requiere_bd_contacto():
+        if (bd_contacto_field and not bd_contacto_field.queryset.filter and
+                self.requiere_bd_contacto()):
             message = _("Debe cargar una base de datos antes de comenzar a "
                         "configurar una campana")
             self.add_error('bd_contacto', message)

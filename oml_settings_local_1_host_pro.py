@@ -148,7 +148,7 @@ LOGGING = {
     'formatters': {
         'verbose': {
             'format': ('%(asctime)-15s [%(levelname)7s] '
-                '%(name)20s - %(message)s')
+                       '%(name)20s - %(message)s')
         },
     },
     'filters': {
@@ -176,7 +176,7 @@ LOGGING = {
             'level': 'INFO',
         },
     },
-   'django.security.DisallowedHost': {
+    'django.security.DisallowedHost': {
         'handlers': ['mail_admins'],
         'level': 'CRITICAL',
         'propagate': False,

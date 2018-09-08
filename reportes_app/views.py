@@ -24,7 +24,6 @@ from StringIO import StringIO
 from zipfile import ZipFile
 
 from django.utils.timezone import now
-from django.utils.translation import ugettext as _
 from django.views.generic import FormView
 from django.http import HttpResponse
 

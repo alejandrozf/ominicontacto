@@ -24,17 +24,13 @@ OJO: servicio copiado del modulo base_de_datos_contactos
 
 from __future__ import unicode_literals
 
-from __builtin__ import callable, enumerate
-import json
 import logging
-import pprint
 import os
-import re
 from django.utils.encoding import smart_text
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
-from ominicontacto_app.models import Backlist, ContactoBacklist
+from ominicontacto_app.models import ContactoBacklist
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.asterisk_config import BackListConfigFile
 
@@ -89,7 +85,7 @@ class CreacionBacklistService(object):
                     back_list=backlist,
                 )
         except OmlParserMaxRowError:
-            base_datos_contacto.elimina_contactos()
+            backlist.elimina_contactos()
             raise
 
         except OmlParserCsvImportacionError:
@@ -165,4 +161,4 @@ class ValidaDataService(object):
 
         if primer_linea[0] != 'telefono':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
-                                                 "columna debe ser telefono"))
+                                                           "columna debe ser telefono"))

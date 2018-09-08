@@ -21,10 +21,6 @@
 
 from __future__ import unicode_literals
 
-import json
-import datetime
-from django.contrib import messages
-
 from django.views.generic import (
     ListView
 )
@@ -51,7 +47,7 @@ class LlamadasActivasView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(LlamadasActivasView, self).get_context_data(
-           **kwargs)
+            **kwargs)
         service = CampanaService()
         context['llamadas'] = service.obtener_calls_live()
         return context

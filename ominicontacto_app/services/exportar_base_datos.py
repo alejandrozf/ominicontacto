@@ -154,7 +154,7 @@ class SincronizarBaseDatosContactosService(object):
                     campana.nombre)
 
         self._campana_list_contacto_config_file.write(lista_contacto)
-        #return lista_contacto
+        # return lista_contacto
 
     def escribir_lista(self, contactos, metadata, campana, columnas, prefijo_discador):
 
@@ -192,4 +192,3 @@ class SincronizarBaseDatosContactosService(object):
             lista_contactos += dato_contacto
 
         return lista_contactos
-

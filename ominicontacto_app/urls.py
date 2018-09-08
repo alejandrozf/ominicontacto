@@ -288,7 +288,8 @@ urlpatterns = [
         name='eliminar_contacto',
         ),
     url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/ocultar/$',
-        administrador_o_supervisor_requerido(views_base_de_datos_contacto.OcultarBaseView.as_view()),
+        administrador_o_supervisor_requerido(
+            views_base_de_datos_contacto.OcultarBaseView.as_view()),
         name='oculta_base_dato', ),
     url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/desocultar/$',
         administrador_o_supervisor_requerido(

@@ -29,7 +29,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView
+    ListView, CreateView, DeleteView, FormView
 )
 from django.views.generic.edit import BaseUpdateView
 from ominicontacto_app.models import (

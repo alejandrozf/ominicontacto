@@ -80,8 +80,6 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Observaciones")
             encabezado.append("datos del cliente")
 
-
-
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
 
@@ -120,7 +118,7 @@ class ArchivoDeReporteCsv(object):
 class ReporteAgenteService(object):
 
     def crea_reporte_csv(self, agente, fecha_desde, fecha_hasta):
-        #assert campana.estado == Campana.ESTADO_ACTIVA
+        # assert campana.estado == Campana.ESTADO_ACTIVA
 
         archivo_de_reporte = ArchivoDeReporteCsv(agente)
 
@@ -133,7 +131,7 @@ class ReporteAgenteService(object):
         archivo_de_reporte.escribir_archivo_csv(calificaciones)
 
     def obtener_url_reporte_csv_descargar(self, agente):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
+        # assert campana.estado == Campana.ESTADO_DEPURADA
 
         archivo_de_reporte = ArchivoDeReporteCsv(agente)
         if archivo_de_reporte.ya_existe():

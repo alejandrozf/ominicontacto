@@ -113,7 +113,7 @@ class ArchivoDeReporteCsv(object):
 class ReporteFormularioVentaService(object):
 
     def crea_reporte_csv(self, agente, fecha_desde, fecha_hasta):
-        #assert campana.estado == Campana.ESTADO_ACTIVA
+        # assert campana.estado == Campana.ESTADO_ACTIVA
 
         archivo_de_reporte = ArchivoDeReporteCsv(agente)
 
@@ -126,7 +126,7 @@ class ReporteFormularioVentaService(object):
         archivo_de_reporte.escribir_archivo_csv(formularios)
 
     def obtener_url_reporte_csv_descargar(self, agente):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
+        # assert campana.estado == Campana.ESTADO_DEPURADA
 
         archivo_de_reporte = ArchivoDeReporteCsv(agente)
         if archivo_de_reporte.ya_existe():

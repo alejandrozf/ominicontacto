@@ -19,7 +19,6 @@
 from __future__ import unicode_literals
 
 import pygal
-from pygal.style import Style
 
 from django.utils.translation import ugettext as _
 from django.utils.encoding import force_text
@@ -416,16 +415,18 @@ class GraficosReporteDeLlamadas(object):
         grafico.x_labels = [_('Manuales'), _(u'Dialer'), _(u'Entrantes'), _(u'Preview')]
         por_tipo = estadisticas['llamadas_por_tipo']
         grafico.add(
-            _(u'Intentos'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['total'],
-                             por_tipo[Campana.TYPE_DIALER_DISPLAY]['total'],
-                             por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['total'],
-                             por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['total']])
+            _(u'Intentos'),
+            [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['total'],
+             por_tipo[Campana.TYPE_DIALER_DISPLAY]['total'],
+             por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['total'],
+             por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['total']])
 
         grafico.add(
-            _('Conexión'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['conectadas'],
-                            por_tipo[Campana.TYPE_DIALER_DISPLAY]['atendidas'],
-                            por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['atendidas'],
-                            por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['conectadas']])
+            _('Conexión'),
+            [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['conectadas'],
+             por_tipo[Campana.TYPE_DIALER_DISPLAY]['atendidas'],
+             por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['atendidas'],
+             por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['conectadas']])
 
         perdidas_dialer = por_tipo[Campana.TYPE_DIALER_DISPLAY]['no_atendidas'] + \
             por_tipo[Campana.TYPE_DIALER_DISPLAY]['perdidas']

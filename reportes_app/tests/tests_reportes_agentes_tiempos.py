@@ -32,9 +32,7 @@ from ominicontacto_app.tests.factories import (
     LlamadaLogFactory
 )
 from reportes_app.reporte_agente_tiempos import TiemposAgente
-from ominicontacto_app.utiles import (
-    cast_datetime_part_date, datetime_hora_maxima_dia, datetime_hora_minima_dia
-)
+from ominicontacto_app.utiles import cast_datetime_part_date
 
 
 class ReportesAgenteTiemposTest(OMLBaseTest):
@@ -61,15 +59,19 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
 
         self.user_supervisor = self.crear_user_supervisor()
         self.manual = CampanaFactory.create(
-            type=Campana.TYPE_MANUAL, reported_by=self.user_supervisor, estado=Campana.ESTADO_ACTIVA)
+            type=Campana.TYPE_MANUAL, reported_by=self.user_supervisor,
+            estado=Campana.ESTADO_ACTIVA)
         self.dialer = CampanaFactory.create(
-            type=Campana.TYPE_DIALER, reported_by=self.user_supervisor, estado=Campana.ESTADO_ACTIVA)
+            type=Campana.TYPE_DIALER, reported_by=self.user_supervisor,
+            estado=Campana.ESTADO_ACTIVA)
         self.contacto_d = ContactoFactory(bd_contacto=self.dialer.bd_contacto)
         self.entrante = CampanaFactory.create(
-            type=Campana.TYPE_ENTRANTE, reported_by=self.user_supervisor, estado=Campana.ESTADO_ACTIVA)
+            type=Campana.TYPE_ENTRANTE, reported_by=self.user_supervisor,
+            estado=Campana.ESTADO_ACTIVA)
         self.contacto_e = ContactoFactory(bd_contacto=self.entrante.bd_contacto)
         self.preview = CampanaFactory.create(
-            type=Campana.TYPE_PREVIEW, reported_by=self.user_supervisor, estado=Campana.ESTADO_ACTIVA)
+            type=Campana.TYPE_PREVIEW, reported_by=self.user_supervisor,
+            estado=Campana.ESTADO_ACTIVA)
         self.contacto_p = ContactoFactory(bd_contacto=self.preview.bd_contacto)
 
     def test_genera_correctamente_tiempo_inicio_sesion(self):

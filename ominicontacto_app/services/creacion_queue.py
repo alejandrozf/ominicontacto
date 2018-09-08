@@ -54,7 +54,7 @@ class ActivacionQueueService(object):
 
         try:
             self.queues_config_creator.create_dialplan()
-        except:
+        except Exception:
             logger.exception("ActivacionQueueService: error al "
                              "intentar queues_config_creator()")
 

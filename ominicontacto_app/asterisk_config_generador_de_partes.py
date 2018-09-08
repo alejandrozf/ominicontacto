@@ -47,13 +47,10 @@ class GeneradorDePedazo(object):
         raise(NotImplementedError())
 
     def _reportar_key_error(self):
-        try:
-            logger.exception("Clase: %s.\nTemplate:\n%s\n Params: %s",
-                             str(self.__class__),
-                             self.get_template(),
-                             pprint.pformat(self.get_parametros()))
-        except:
-            pass
+        logger.exception("Clase: %s.\nTemplate:\n%s\n Params: %s",
+                         str(self.__class__),
+                         self.get_template(),
+                         pprint.pformat(self.get_parametros()))
 
     def generar_pedazo(self):
         template = self.get_template()

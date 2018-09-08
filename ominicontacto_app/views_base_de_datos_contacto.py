@@ -38,9 +38,7 @@ from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
     OmlParserMaxRowError, OmlDepuraBaseDatoContactoError,
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
-from ominicontacto_app.forms import (
-    BaseDatosContactoForm, DefineNombreColumnaForm, DefineColumnaTelefonoForm,
-    DefineDatosExtrasForm, PrimerLineaEncabezadoForm)
+from ominicontacto_app.forms import BaseDatosContactoForm, PrimerLineaEncabezadoForm
 from ominicontacto_app.models import BaseDatosContacto, UserApiCrm
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
@@ -236,7 +234,6 @@ class DefineBaseDatosContactoView(UpdateView):
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
 
         if estructura_archivo:
-            cantidad_de_columnas = len(estructura_archivo[0])
             parser = ParserCsv()
             encoding = parser.detectar_encoding_csv(estructura_archivo)
             estructura_archivo_transformada = parser.visualizar_estructura_template(
@@ -250,24 +247,15 @@ class DefineBaseDatosContactoView(UpdateView):
                 metadata = predictor_metadata.inferir_metadata_desde_lineas(
                     estructura_archivo, encoding)
             except NoSePuedeInferirMetadataError:
-                initial_predecido_columna_telefono = {}
                 initial_predecido_datos_extras = {}
-                initial_predecido_nombre_columnas = {}
                 initial_predecido_encabezado = {}
-
                 error_predictor = True
             except NoSePuedeInferirMetadataErrorEncabezado:
-                initial_predecido_columna_telefono = {}
                 initial_predecido_datos_extras = {}
-                initial_predecido_nombre_columnas = {}
                 initial_predecido_encabezado = {}
 
                 error_predictor_encabezado = True
             else:
-
-                initial_predecido_columna_telefono = \
-                    {'telefono': metadata.columna_con_telefono}
-
                 initial_predecido_datos_extras = dict(
                     [('datos-extras-{0}'.format(col),
                         BaseDatosContacto.DATO_EXTRA_FECHA)
@@ -278,25 +266,8 @@ class DefineBaseDatosContactoView(UpdateView):
                         BaseDatosContacto.DATO_EXTRA_HORA)
                         for col in metadata.columnas_con_hora]))
 
-                initial_predecido_nombre_columnas = dict(
-                    [('nombre-columna-{0}'.format(i), nombre)
-                        for i, nombre in enumerate(
-                            metadata.nombres_de_columnas)])
-
                 initial_predecido_encabezado = {
                     'es_encabezado': metadata.primer_fila_es_encabezado}
-
-            form_columna_telefono = DefineColumnaTelefonoForm(
-                cantidad_columnas=cantidad_de_columnas,
-                initial=initial_predecido_columna_telefono)
-
-            form_datos_extras = DefineDatosExtrasForm(
-                cantidad_columnas=cantidad_de_columnas,
-                initial=initial_predecido_datos_extras)
-
-            form_nombre_columnas = DefineNombreColumnaForm(
-                cantidad_columnas=cantidad_de_columnas,
-                initial=initial_predecido_nombre_columnas)
 
             form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
                 initial=initial_predecido_encabezado)
@@ -305,9 +276,6 @@ class DefineBaseDatosContactoView(UpdateView):
                 error_predictor_encabezado=error_predictor_encabezado,
                 error_predictor=error_predictor,
                 estructura_archivo=estructura_archivo_transformada,
-                #form_columna_telefono=form_columna_telefono,
-                #form_datos_extras=form_datos_extras,
-                #form_nombre_columnas=form_nombre_columnas,
                 form_primer_linea_encabezado=form_primer_linea_encabezado
             ))
 
@@ -327,20 +295,13 @@ class DefineBaseDatosContactoView(UpdateView):
 
         return self.render_to_response(self.get_context_data(
             estructura_archivo=estructura_archivo,
-            #form_columna_telefono=form_columna_telefono,
-            #form_datos_extras=form_datos_extras,
-            #form_nombre_columnas=form_nombre_columnas,
             form_primer_linea_encabezado=form_primer_linea_encabezado))
 
     def form_valid(self, estructura_archivo,
                    form_primer_linea_encabezado):
         # columna_con_telefono = int(form_columna_telefono.cleaned_data.get(
         #                            'telefono', None))
-        lista_columnas_fechas = []
-        lista_columnas_horas = []
-        lista_nombre_columnas = []
-
-        #cantidad_columnas = len(form_nombre_columnas.fields)
+        # cantidad_columnas = len(form_nombre_columnas.fields)
         cantidad_columnas = len(estructura_archivo[0])
 
         # for numero_columna in range(cantidad_columnas):
@@ -389,8 +350,6 @@ class DefineBaseDatosContactoView(UpdateView):
         columnas_con_telefonos = predictor_metadata.inferir_columnas_telefono(
             estructura_archivo[1:], encoding)
         metadata.columnas_con_telefono = columnas_con_telefonos
-        #metadata.columnas_con_fecha = lista_columnas_fechas
-        #metadata.columnas_con_hora = lista_columnas_horas
         metadata.nombres_de_columnas = [value.decode(encoding)
                                         for value in estructura_archivo[0]]
 
@@ -403,7 +362,7 @@ class DefineBaseDatosContactoView(UpdateView):
         creacion_base_datos = CreacionBaseDatosService()
 
         try:
-            #creacion_base_datos.valida_contactos(self.object)
+            # creacion_base_datos.valida_contactos(self.object)
             creacion_base_datos.importa_contactos(self.object)
         except OmlParserCsvImportacionError as e:
 
@@ -433,12 +392,8 @@ class DefineBaseDatosContactoView(UpdateView):
                 message,
             )
 
-
             return self.render_to_response(self.get_context_data(
                 estructura_archivo=estructura_archivo,
-                #form_columna_telefono=form_columna_telefono,
-                #form_datos_extras=form_datos_extras,
-                #form_nombre_columnas=form_nombre_columnas,
                 form_primer_linea_encabezado=form_primer_linea_encabezado))
 
         except OmlParserMaxRowError:
@@ -472,30 +427,14 @@ class DefineBaseDatosContactoView(UpdateView):
 
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
         if estructura_archivo:
-            cantidad_columnas = len(estructura_archivo[0])
-
-            #form_columna_telefono = DefineColumnaTelefonoForm(
-            #    cantidad_columnas, request.POST)
-            #form_datos_extras = DefineDatosExtrasForm(
-            #    cantidad_columnas, request.POST)
-            #form_nombre_columnas = DefineNombreColumnaForm(
-            #    cantidad_columnas, request.POST)
             form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
                 request.POST)
 
             if form_primer_linea_encabezado.is_valid():
 
-                return self.form_valid(estructura_archivo,
-                                       #form_columna_telefono,
-                                       #form_datos_extras,
-                                       #form_nombre_columnas,
-                                       form_primer_linea_encabezado)
+                return self.form_valid(estructura_archivo, form_primer_linea_encabezado)
             else:
-                return self.form_invalid(estructura_archivo,
-                                         #form_columna_telefono,
-                                         #form_datos_extras,
-                                         #form_nombre_columnas,
-                                         form_primer_linea_encabezado)
+                return self.form_invalid(estructura_archivo, form_primer_linea_encabezado)
         return redirect(reverse('nueva_base_datos_contacto'))
 
     def get_success_url(self):
@@ -586,8 +525,8 @@ class ActualizaBaseDatosContactoView(UpdateView):
             BaseDatosContacto.objects.obtener_en_actualizada_para_editar(
                 self.kwargs['pk'])
         return super(ActualizaBaseDatosContactoView, self).dispatch(request,
-                                                                 *args,
-                                                                 **kwargs)
+                                                                    *args,
+                                                                    **kwargs)
 
     def obtiene_previsualizacion_archivo(self, base_datos_contacto):
         """
@@ -639,16 +578,14 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
         if estructura_archivo:
-            cantidad_de_columnas = len(estructura_archivo[0])
-
             try:
                 error_predictor = False
                 error_predictor_encabezado = False
 
                 predictor_metadata = PredictorMetadataService()
                 metadata = predictor_metadata.\
-                    inferir_metadata_desde_lineas_base_existente(self.object,
-                    estructura_archivo)
+                    inferir_metadata_desde_lineas_base_existente(
+                        self.object, estructura_archivo)
             except NoSePuedeInferirMetadataError:
                 initial_predecido_encabezado = {}
 
@@ -711,7 +648,8 @@ class ActualizaBaseDatosContactoView(UpdateView):
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
 
-        for columna_base, columna_csv in zip(metadata.nombres_de_columnas, lista_columnas_encabezado):
+        for columna_base, columna_csv in zip(metadata.nombres_de_columnas,
+                                             lista_columnas_encabezado):
             if columna_base != columna_csv:
                 error = "El nombre de la columna debe ser {0} en vez de {1}".\
                     format(columna_base, columna_csv)
@@ -729,7 +667,7 @@ class ActualizaBaseDatosContactoView(UpdateView):
         creacion_base_datos = CreacionBaseDatosService()
 
         try:
-            #creacion_base_datos.valida_contactos(self.object)
+            # creacion_base_datos.valida_contactos(self.object)
             creacion_base_datos.importa_contactos(self.object)
         except OmlParserCsvImportacionError as e:
 
@@ -861,41 +799,40 @@ def cargar_base_datos_view(request):
             usuario = UserApiCrm.objects.get(
                 usuario=received_json_data['user_api'])
             received_password = received_json_data['password_api']
-            if check_password(received_password,usuario.password):
-               service = CreacionBaseDatosApiService()
-               base_datos = service.crear_base_datos_api(
-                   received_json_data['nombre'])
+            if check_password(received_password, usuario.password):
+                service = CreacionBaseDatosApiService()
+                base_datos = service.crear_base_datos_api(
+                    received_json_data['nombre'])
 
-               predictor = service.inferir_metadata_desde_lineas(
-                   received_json_data['columnas'], received_json_data['datos'])
+                predictor = service.inferir_metadata_desde_lineas(
+                    received_json_data['columnas'], received_json_data['datos'])
 
-               metadata = base_datos.get_metadata()
-               metadata.cantidad_de_columnas = predictor.cantidad_de_columnas
+                metadata = base_datos.get_metadata()
+                metadata.cantidad_de_columnas = predictor.cantidad_de_columnas
 
-               columnas_con_telefonos = service.inferir_columnas_telefono(
-                   received_json_data['datos'])
-               metadata.columnas_con_telefono = columnas_con_telefonos
-               metadata.nombres_de_columnas = received_json_data['columnas']
+                columnas_con_telefonos = service.inferir_columnas_telefono(
+                    received_json_data['datos'])
+                metadata.columnas_con_telefono = columnas_con_telefonos
+                metadata.nombres_de_columnas = received_json_data['columnas']
 
-               es_encabezado = False
+                es_encabezado = False
 
-               metadata.primer_fila_es_encabezado = es_encabezado
-               metadata.save()
-               base_datos.save()
+                metadata.primer_fila_es_encabezado = es_encabezado
+                metadata.save()
+                base_datos.save()
 
-               try:
-                   service.importa_contactos(base_datos,
-                                             received_json_data['datos'])
-                   base_datos.define()
-               except OmlParserCsvImportacionError as e:
+                try:
+                    service.importa_contactos(base_datos,
+                                              received_json_data['datos'])
+                    base_datos.define()
+                except OmlParserCsvImportacionError as e:
+                    message = '<strong>Operación Errónea!</strong>\
+                               El archivo que seleccionó posee registros inválidos.<br>\
+                               <u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>\
+                               {1}<br><u>Contenido Inválido:</u> {2}'.format(
+                        e.numero_fila, e.fila, e.valor_celda)
 
-                   message = '<strong>Operación Errónea!</strong>\
-                             El archivo que seleccionó posee registros inválidos.<br>\
-                             <u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>\
-                             {1}<br><u>Contenido Inválido:</u> {2}'.format(
-                       e.numero_fila, e.fila, e.valor_celda)
-
-                   logger.error(message)
+                logger.error(message)
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:

@@ -136,8 +136,7 @@ def reporte_por_fecha_pausa_modal_agente_view(request):
             data = {
                 'nombre_agente': agente.user.get_full_name(),
                 'tbody': html,
-                'pausa': pausa['nombre']
-                  }
+                'pausa': pausa['nombre']}
             return JsonResponse(data, safe=True)
 
     return render(request)
