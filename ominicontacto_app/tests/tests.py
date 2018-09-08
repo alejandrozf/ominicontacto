@@ -18,7 +18,7 @@ import time
 #
 
 from django.test import TestCase
-from selenium import webdriver
+# from selenium import webdriver
 from unittest import skip
 
 
@@ -26,12 +26,13 @@ from unittest import skip
 class SimpleSeleniumTest(TestCase):
 
     def setUp(self):
-        self.driver = webdriver.Chrome()
-        self.driver.set_window_size(1366, 760)
-        self.driver.get("https://172.16.20.90/accounts/login")
-        self.driver.find_element_by_name("username").send_keys("fulano")
-        self.driver.find_element_by_name("password").send_keys("098098ZZZ")
-        self.driver.find_element_by_css_selector("button.btn.btn-success").click()
+        # self.driver = webdriver.Chrome()
+        # self.driver.set_window_size(1366, 760)
+        # self.driver.get("https://172.16.20.90/accounts/login")
+        # self.driver.find_element_by_name("username").send_keys("fulano")
+        # self.driver.find_element_by_name("password").send_keys("098098ZZZ")
+        # self.driver.find_element_by_css_selector("button.btn.btn-success").click()
+        pass
 
     # def test_pagina_principal_carga_ok(self):
     #     driver = webdriver.Chrome()
