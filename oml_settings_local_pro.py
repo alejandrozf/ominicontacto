@@ -94,8 +94,8 @@ DATABASE_MYSQL_ASTERISK = {
 }
 
 ASTERISK = {
-    'USERNAME': "wombat",  # Usuario para AMI
-    'PASSWORD': "fop222",  # Password para usuario para AMI
+    'AMI_USERNAME': "wombat",  # Usuario para AMI
+    'AMI_PASSWORD': "fop222",  # Password para usuario para AMI
     'HTTP_AMI_URL': "http://172.16.20.88:7088",
 }
 
