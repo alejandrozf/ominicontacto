@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """Servicio para el manejo de los sms enviados y recibidos a traves de dinstar"""
 
@@ -15,7 +32,7 @@ class SmsManager():
         for mensaje in MensajeRecibido.objects.mensaje_recibido_por_remitente():
             mensajes_recibidos.append(MensajeRecibido.objects.
                                       mensaje_remitente_fecha(mensaje['remitente'],
-                                        mensaje['timestamp__max']))
+                                                              mensaje['timestamp__max']))
         return mensajes_recibidos
 
     def obtener_mensaje_enviado_recibido(self, remitente):
@@ -41,7 +58,7 @@ class SmsManager():
         for mensaje in mensajes:
             mensaje_dict = {
                 'timestamp': mensaje[0],
-                'remitente':  mensaje[1],
+                'remitente': mensaje[1],
                 'destinatario': mensaje[2],
                 'content': mensaje[3]
             }
@@ -56,7 +73,7 @@ class SmsManager():
         for mensaje in mensajes:
             mensaje_dict = {
                 'id': mensaje.id,
-                'remitente':  mensaje.remitente,
+                'remitente': mensaje.remitente,
                 'content': mensaje.content
             }
             lista_mensajes.append(mensaje_dict)
