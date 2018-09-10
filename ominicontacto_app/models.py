@@ -272,6 +272,12 @@ class SupervisorProfileManager(models.Manager):
 
 
 class SupervisorProfile(models.Model):
+
+    ROL_ADMINISTRADOR = '1'
+    ROL_GERENTE = '2'
+    ROL_SUPERVISOR = '3'
+    ROL_CLIENTE = '4'
+
     objects = SupervisorProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
