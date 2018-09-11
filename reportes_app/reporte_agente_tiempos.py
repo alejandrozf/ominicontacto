@@ -494,14 +494,8 @@ class TiemposAgente(object):
 
         return barra_agente_total
 
-    def _obtener_agentes(self):
-        return AgenteProfile.objects.obtener_activos()
-
     def generar_reportes(self, agentes, fecha_inferior, fecha_superior, user):
         """Genera las estadisticas para generar todos los reportes de los agentes"""
-
-        if not agentes:
-            agentes = self._obtener_agentes()
 
         # calculamos los tiempos de los agentes por cada agente
         self.calcular_tiempo_session(agentes, fecha_inferior, fecha_superior)

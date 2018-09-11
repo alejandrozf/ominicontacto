@@ -24,9 +24,6 @@ from django.utils.translation import ugettext as _
 from django import forms
 
 from ominicontacto_app.utiles import convert_fecha_datetime
-from ominicontacto_app.models import (
-    AgenteProfile, Grupo
-)
 
 
 EMPTY_CHOICE = ('', '---------')
@@ -43,14 +40,14 @@ class ReporteAgentesForm(forms.Form):
         attrs={'class': 'form-control'}))
     todos_agentes = forms.BooleanField(required=False)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, agentes_asociados, grupos_asociados, *args, **kwargs):
         super(ReporteAgentesForm, self).__init__(*args, **kwargs)
 
         agente_choice = [(agente.pk, agente.user.get_full_name())
-                         for agente in AgenteProfile.objects.filter(is_inactive=False)]
+                         for agente in agentes_asociados]
         self.fields['agente'].choices = agente_choice
         grupo_choice = [(grupo.id, grupo.nombre)
-                        for grupo in Grupo.objects.all()]
+                        for grupo in grupos_asociados]
         grupo_choice.insert(0, EMPTY_CHOICE)
         self.fields['grupo_agente'].choices = grupo_choice
 
