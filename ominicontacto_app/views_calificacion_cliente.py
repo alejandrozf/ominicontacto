@@ -254,7 +254,6 @@ def calificacion_cliente_externa_view(request):
                 try:
                     calificacion = CalificacionCliente.objects.get(
                         contacto=contacto, opcion_calificacion__campana=campana)
-                    id_opcion_vieja = calificacion.opcion_calificacion.id
                     calificacion.opcion_calificacion = opcion_calificacion
                     calificacion.agente = agente
                     calificacion.save()
@@ -262,8 +261,6 @@ def calificacion_cliente_externa_view(request):
                     calificacion = CalificacionCliente.objects.create(
                         campana=campana, contacto=contacto, opcion_calificacion=opcion_calificacion,
                         agente=agente)
-                    id_opcion_vieja = None
-
             else:
                 return JsonResponse({'status': 'no coinciden usuario y/o password'})
         except UserApiCrm.DoesNotExist:

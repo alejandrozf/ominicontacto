@@ -50,9 +50,10 @@ class ActivacionAgenteService(object):
 
         try:
             self.sip_config_creator.create_config_sip()
-        except:
-            logger.exception("ActivacionAgenteService: error al "
-                             "intentar create_config_sip()")
+        except Exception as e:
+            msg = "Error {0}: ActivacionAgenteService: error al ".format(e.message) + \
+                "intentar create_config_sip()"
+            logger.exception(msg)
 
             proceso_ok = False
             mensaje_error += ("Hubo un inconveniente al crear el archivo de "

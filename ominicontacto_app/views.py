@@ -55,8 +55,6 @@ from ominicontacto_app.forms import (
 )
 from services.asterisk_service import ActivacionAgenteService,\
     RestablecerConfigSipError
-from services.regeneracion_asterisk import RegeneracionAsteriskService,\
-    RestablecerDialplanError
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
 from ominicontacto_app import version

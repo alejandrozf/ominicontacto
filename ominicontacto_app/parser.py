@@ -280,7 +280,7 @@ class ParserCsv(object):
             logger.warn("El archivo CSV seleccionado posee menos de 3 "
                         "filas.")
             raise OmlParserMinRowError("El archivo CSV posee menos de "
-                                           "3 filas")
+                                       "3 filas")
         return structure_dic
 
     def detectar_encoding_csv(self, estructura_archivo):
@@ -329,6 +329,7 @@ class ParserCsv(object):
 # =============================================================================
 # Funciones utilitarias
 # =============================================================================
+
 
 def validate_fechas(fechas):
     """
