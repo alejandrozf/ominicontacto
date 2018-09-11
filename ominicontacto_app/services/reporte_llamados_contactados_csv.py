@@ -327,7 +327,7 @@ class ReporteCampanaContactadosCSV(object):
         no_contactados = self._obtener_listado_no_contactados_fecha(
             campana, fecha_desde, fecha_hasta)
         no_califico = self._obtener_listado_no_calificados_fecha(
-            campana, calificados, fecha_desde, fecha_hasta)
+            campana, calificados, no_contactados, fecha_desde, fecha_hasta)
         # Reporte contactados
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "contactados", agentes_dict, contactos_dict)
@@ -371,8 +371,11 @@ class ReporteCampanaContactadosCSV(object):
             event__in=LlamadaLog.EVENTOS_NO_CONEXION,
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk)
 
-    def _obtener_listado_no_calificados_fecha(self, campana, calificados, fecha_desde, fecha_hasta):
-        numeros_calificados = calificados.values_list('contacto__telefono', flat=True)
+    def _obtener_listado_no_calificados_fecha(self, campana, calificados, no_contactados,
+                                              fecha_desde, fecha_hasta):
+        numeros_calificados = list(calificados.values_list('contacto__telefono', flat=True))
+        numeros_no_contactados = list(no_contactados.values_list('numero_marcado', flat=True))
+        numeros_calificados.extend(numeros_no_contactados)
         no_calificados = LlamadaLog.objects.exclude(numero_marcado__in=numeros_calificados).filter(
             event='DIAL', time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk)
         return no_calificados
