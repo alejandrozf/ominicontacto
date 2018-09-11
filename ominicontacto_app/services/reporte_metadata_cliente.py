@@ -32,6 +32,7 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 
+from ominicontacto_app.models import MetadataCliente
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 
@@ -81,6 +82,7 @@ class ArchivoDeReporteCsv(object):
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append("base_datos")
+            encabezado.append("Calificación")
             campos = campana.formulario.campos.all()
 
             for campo in campos:
@@ -95,7 +97,9 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for metadata in campana.metadatacliente.all():
+            metadata_qs, calificaciones_dict = MetadataCliente.obtener_metadata_nombre_calificacion(
+                campana.id)
+            for metadata in metadata_qs:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -108,6 +112,7 @@ class ArchivoDeReporteCsv(object):
                 for dato in datos:
                     lista_opciones.append(dato)
                 lista_opciones.append(metadata.contacto.bd_contacto)
+                lista_opciones.append(calificaciones_dict[metadata.contacto.id])
                 datos = json.loads(metadata.metadata)
                 for campo in campos:
                     lista_opciones.append(datos[campo.nombre_campo])
