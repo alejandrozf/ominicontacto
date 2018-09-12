@@ -185,6 +185,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.extend(campos_contacto)
             encabezado.append("Fecha-Hora Contacto")
             encabezado.append("Tel status")
+            encabezado.append("Agente")
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -204,6 +205,14 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append(estado)
+                tipo_llamada = log_no_contactado.tipo_llamada
+                if tipo_llamada == Campana.TYPE_DIALER:
+                    agente_info = "DIALER"
+                elif tipo_llamada == Campana.TYPE_ENTRANTE:
+                    agente_info = "IN"
+                else:
+                    agente_info = self.agentes_dict.get(log_no_contactado.agente_id, -1)
+                lista_opciones.append(agente_info)
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
 
