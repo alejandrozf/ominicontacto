@@ -32,8 +32,6 @@ from django.core.files.storage import default_storage
 from ominicontacto_app.errors import OmlAudioConversionError
 from ominicontacto_app.models import ArchivoDeAudio
 import logging as _logging
-import re
-
 
 logger = _logging.getLogger(__name__)
 

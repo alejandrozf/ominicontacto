@@ -444,8 +444,9 @@ class AsteriskHttpClient(object):
                 tmp_file_obj = os.fdopen(tmp_fd, 'w')
                 tmp_file_obj.write(response.content)
                 logger.info("AsteriskHttpClient - Dump: %s", tmp_filename)
-            except:
-                logger.exception("No se pudo hacer dump de respuesta a archivo")
+            except Exception as e:
+                logger.exception("Error {0}: no se pudo hacer dump de respuesta a archivo".format(
+                    e.message))
 
         return response.content, response
 

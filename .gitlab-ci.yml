@@ -17,7 +17,7 @@
 #
 # Official framework image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/python
-image: python:2.7.15
+image: alejandrozf/docker-stuff:python-flake8
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -54,4 +54,5 @@ test:
     POSTGRES_PASSWORD: kamailiorw
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
   script:
-  - python manage.py test
+    - flake8
+    - python manage.py test

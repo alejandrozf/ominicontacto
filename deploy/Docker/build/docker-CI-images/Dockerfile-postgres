@@ -1,3 +1,4 @@
+# para usarlo individualmente, 'docker pull alejandrozf/docker-stuff:postgres-plpython-template1'
 FROM postgres:9.6
 
 RUN apt-get update
@@ -5,6 +6,8 @@ RUN apt-get -y install python postgresql-plpython-9.6
 
 RUN  apt-get clean && \
      rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+
+RUN python -m pip install flake8
 
 COPY install_language.sh /docker-entrypoint-initdb.d
 

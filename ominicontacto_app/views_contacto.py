@@ -27,7 +27,7 @@ import json
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponseForbidden
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import DeleteView
 from django.views.generic import View, ListView, CreateView, UpdateView, FormView
 
