@@ -9,7 +9,11 @@ server {
     root {{ install_prefix }};
     index index.php index.html;
     location / {
-
+    {% if desarrollo == 1 %}
+      if ($request_method ~* "(GET)") {
+        add_header "Access-Control-Allow-Origin"  *;
+      }
+    {% endif %}
     }
     error_page 404 /404.html;
     location = /404.html {
@@ -25,4 +29,3 @@ server {
         include fastcgi_params;
     }
 }
-

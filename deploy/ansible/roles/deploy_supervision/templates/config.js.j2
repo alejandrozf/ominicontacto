@@ -1,4 +1,8 @@
 var KamailioIp = "{{ omni_ip }}";
 var KamailioPort = "14443";
 var OmlIp = "{{ omni_ip }}";
+{% if desarrollo == 1 %}
+var OmlPort = "1210";
+{% else %}
 var OmlPort = "443";
+{% endif %}

@@ -39,7 +39,6 @@
   ignore_errors: yes
   become_method: sudo
   tags: kamailio-cert
-  notify: restart nginx
 
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
 - name: Create of oml_uwgsi.ini script
