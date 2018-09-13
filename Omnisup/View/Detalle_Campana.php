@@ -1,5 +1,5 @@
 <h1>Campaña: <b id="nombreCamp"><?= $_GET['nomcamp'] ?></b></h1>
-/* Copyright (C) 2018 Freetech Solutions
+<!-- Copyright (C) 2018 Freetech Solutions
 
  This file is part of OMniLeads
 
@@ -16,7 +16,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
-*/
+-->
 
 <!-- Web phone -->
 <input type="hidden" id="sipUser" name="sipUser" value="" />
