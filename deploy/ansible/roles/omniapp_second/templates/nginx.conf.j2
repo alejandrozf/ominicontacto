@@ -34,8 +34,11 @@ http {
     # Load modular configuration files from the /etc/nginx/conf.d directory.
     # See http://nginx.org/en/docs/ngx_core_module.html#include
     # for more information.
+    {% if desarrollo == 0 %}
     include /etc/nginx/conf.d/*.conf;
-
+    {% else %}
+    include /etc/nginx/conf.d/supervision.conf;
+    {% endif %}
     server {
         listen       80 default_server;
         listen       [::]:80 default_server;

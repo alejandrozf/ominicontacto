@@ -11,7 +11,7 @@
 # 2. Copia toda la carpeta ansible del repo a /var/tmp/ansible y todo el codigo a /var/tmp/ominicontacto-build
 # 3. Pregunta si se quiere dockerizar asterisk o no, para pasarle la variable a ansible.
 # 4. Ejecuta ansible segun la opcion de Dockerizar o no
-
+DOCKER="false"
 PIP=`which pip`
 current_directory=`pwd`
 TMP_ANSIBLE='/var/tmp/ansible'
@@ -58,7 +58,7 @@ Rama() {
     else
         echo "Tienes una versión de ansible distinta a la 2.5.0"
         echo "Instalando versión 2.5.0"
-        $PIP install 'ansible==2.5.0.0' --user 
+        $PIP install 'ansible==2.5.0.0' --user
     fi
 
     cd $current_directory
@@ -152,20 +152,21 @@ EOF
 }
 
 Docker(){
-    while true; do
-      echo -en "Desea correr asterisk en container (no recomendado para producción)? [si/no]: "; read pregunta
-      if [ $pregunta == "si" ] || [ $pregunta == "Si" ]; then
-        DOCKER="true"
-        sed -i "s/\(^DOCKER\).*/DOCKER=true/" $TMP_ANSIBLE/hosts
-        break
-      elif [ $pregunta == "no" ] || [ $pregunta == "No" ]; then
-        sed -i "s/\(^DOCKER\).*/DOCKER=false/" $TMP_ANSIBLE/hosts
-        DOCKER="false"
-        break
-      else
-        echo "Opción inválida ingrese si o no"
-      fi
-    done
+#    while true; do
+#      echo -en "Desea correr asterisk en container (no recomendado para producción)? [si/no]: "; read pregunta
+#      if [ $pregunta == "si" ] || [ $pregunta == "Si" ]; then
+#        DOCKER="true"
+#        sed -i "s/\(^DOCKER\).*/DOCKER=true/" $TMP_ANSIBLE/hosts
+#        break
+#      elif [ $pregunta == "no" ] || [ $pregunta == "No" ]; then
+#        sed -i "s/\(^DOCKER\).*/DOCKER=false/" $TMP_ANSIBLE/hosts
+#        DOCKER="false"
+#        break
+#      else
+#        echo "Opción inválida ingrese si o no"
+#      fi
+#    done
+echo ""
 }
 
 Preliminar() {

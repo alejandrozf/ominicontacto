@@ -167,7 +167,7 @@
 
 # Se copia el archivo para el systemd, (revisarlo y revisar systemd para mas informacion)
 - name: Copy of rtpengine service file to systemd
-  copy: src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/rtpengine.service dest=/etc/systemd/system remote_src=yes
+  template: src=templates/rtpengine.service dest=/etc/systemd/system owner=root group=root mode=650
   become: true
   become_method: sudo
 

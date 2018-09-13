@@ -64,7 +64,7 @@
 # Update/upgrade del sistema, solo cuando LOCALHOST=true, osea si se ejecuta como deployed - deployer
 # https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
 - name: Update/upgrade of centos
-  yum: name='*' state=latest update_cache=yes
+  yum: name='*' state=latest update_cache=yes skip_broken=yes
   become: true
   become_method: sudo
   when: LOCALHOST == "true"

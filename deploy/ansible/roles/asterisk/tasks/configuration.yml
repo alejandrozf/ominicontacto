@@ -65,6 +65,16 @@
 - name: Config of asterisk for OML
   file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
+      - oml_extensions.conf
+      - oml_extensions_sub.conf
+  become: true
+  become_method: sudo
+  when: asterisk_location != ""
+  tags: postinstall
+
+- name: Config of asterisk for OML
+  template: "src=templates/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755"
+  with_items:
       - amd.conf
       - chan_dahdi.conf
       - extconfig.conf
@@ -77,11 +87,10 @@
       - manager.conf
       - modules.conf
       - musiconhold.conf
-      - oml_extensions.conf
-      - oml_extensions_sub.conf
       - oml_func_odbc.conf
       - oml_res_odbc.conf
       - oml_amd.conf
+      - oml_manager.conf
       - oml_dahdi.conf
       - oml_http.conf
       - oml_sip_general.conf
@@ -90,19 +99,16 @@
       - res_odbc.conf
       - sip.conf
       - udptl.conf
-  become: yes
+  become: true
   become_method: sudo
   when: asterisk_location != ""
   tags: postinstall
 
-- name: Create of oml_manager.conf
-  template: src=templates/conf/oml_manager.conf dest={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/oml_manager.conf owner={{ usuario }} group={{ usuario }} mode=755
-  tags: postinstall
-
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
-  shell: "cp *.conf {{ asterisk_location }}/etc/asterisk/ chdir={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/archivos-no-enlaces/"
+  copy: "src=templates/conf/archivos-no-enlaces/ dest={{ asterisk_location }}/etc/asterisk/ owner={{ usuario }} group={{ usuario }} mode=755"
   when: asterisk_location != ""
+  tags: test
 
 # Se copian los agis a /var/lib/asterisk/agi-bin
 - name: Copy of the php agis
@@ -157,14 +163,10 @@
 
 # Creo el archivo odbcinst.ini desde ansible
 - name: Creation of odbcinst.ini file
-  template: src=templates/etc/odbcinst.ini dest=/etc/odbcinst.ini owner=root group=root mode=644
-  become: true
-  become_method: sudo
-  tags: postinstall
-
-# El odbc.ini si lo copio desde el repo, creo los directorios de sonidos y descomprimo -- FIX ME -- usar los modulos file y unarchive
-- name: Copy of odbc.ini file
-  copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/odbc.ini dest=/etc/ mode=755 remote_src=yes owner=root group=root"
+  template: src=templates/etc/{{ item }} dest=/etc/ owner=root group=root mode=644
+  with_items:
+    - odbcinst.ini
+    - odbc.ini
   become: true
   become_method: sudo
   tags: postinstall
@@ -185,14 +187,6 @@
     - { source: "es-oml.tgz", dest: "es" }
     - { source: "en-oml.tgz", dest: "en" }
   tags: postinstall
-
-# Añado la entrada webenabled=yes al manager.conf
-- name: Add web enabled in /etc/asterisk/manager.conf
-  ini_file: "path={{ asterisk_location }}/etc/asterisk/manager.conf section=general option=webenabled no_extra_spaces=yes value=yes state=present"
-
-# Añado el webcolor=yes al asterisk.conf
-- name: Add web nocolor=yes in /etc/asterisk/asterisk.conf
-  ini_file: "path={{ asterisk_location }}/etc/asterisk/asterisk.conf section=options option=nocolor no_extra_spaces=yes value=yes state=present"
 
 # Permiso de usuario a la carpeta de asterisk -- FIX ME -- usar file
 - name: Set up permissions of asterisk

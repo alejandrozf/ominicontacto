@@ -26,13 +26,6 @@
   become_method: sudo
   when: ansible_os_family == "Sangoma"
 
-# Update / upgrade de centos7
-- name: Update/upgrade of centos
-  yum: name='*' state=latest update_cache=yes
-  become: true
-  become_method: sudo
-  when: LOCALHOST == "true" and ansible_os_family == "Sangoma"
-
 # Se excluye postgres de la lista de repositorios base y updates
 - name: Exclude postgres in list of repositories
   ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
