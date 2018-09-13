@@ -111,6 +111,12 @@
   become: true
   become_method: sudo
 
+# Toca hacer esta tarea aparte para que no salga el error de nginx que se soluciona al rebotear el server
+- name: Enable of nginx
+  command: systemctl enable nginx
+  become: true
+  become_method: sudo
+
 # Starteo y habilito nginx
 - name: Start of nginx
   service: name=nginx state=restarted enabled=yes
