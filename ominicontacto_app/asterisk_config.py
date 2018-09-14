@@ -426,6 +426,7 @@ class RutasSalientesConfigCreator(object):
         # Agrega parametros
         rutas_file.append("exten => i,1,Verbose(2, no existe patron)\n")
         rutas_file.append("same => n,Set(__DIALSTATUS=NONDIALPLAN)\n")
+        rutas_file.append("same => n,Set(SHARED(OMLCALLSTATUS,${OMLMOTHERCHAN})=${DIALSTATUS})\n")
         gosub = "same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${OMLOUTNUM})\n"
         rutas_file.append(gosub)
 
