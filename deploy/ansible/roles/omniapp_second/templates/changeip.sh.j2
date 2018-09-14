@@ -51,7 +51,9 @@ Omnileads(){
   cd {{ install_prefix }}Omnisup
       sed -i "s/\('AMI_USERNAME'\).*/'AMI_USERNAME','$SUP_AMI_USER');/" config.php
       sed -i "s/\('AMI_PASSWORD'\).*/'AMI_PASSWORD','$SUP_AMI_PASS');/" config.php
+      {% if DOCKER == "true" %}
       sed -i "s/\('AMI_HOST'\).*/'AMI_HOST','$ASTERISK_IP');/" config.php
+      {% endif %}
       sed -i "s/\('PG_USER'\).*/'PG_USER','$POSTGRES_USER');/" config.php
       sed -i "s/\('PG_PASSWORD'\).*/'PG_PASSWORD','$POSTGRES_PASSWORD');/" config.php
       sed -i "s/\('PG_HOST'\).*/'PG_HOST','$POSTGRES_IP');/" config.php
