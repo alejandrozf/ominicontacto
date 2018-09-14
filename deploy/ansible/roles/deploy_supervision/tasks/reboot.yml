@@ -22,11 +22,12 @@
   poll: 0
   become: true
   ignore_errors: true
+  tags: reboot
   when: LOCALHOST == "true"
 
 
 - name: Wait for the server to finish rebooting
-  become: yes
-  become_user: root
+  become: no
   local_action: wait_for host="{{ omni_ip }}" delay=15 state=started port={{ ssh_port }} timeout=600
+  tags: reboot
   when: LOCALHOST == "true"

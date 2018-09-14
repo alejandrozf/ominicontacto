@@ -169,12 +169,10 @@
   async: 1
   poll: 0
   become: true
-  tags: reboot
   ignore_errors: true
   when: LOCALHOST == "true"
 
 - name: Wait for the server to finish rebooting
   become: no
   local_action: wait_for host="{{ omni_ip }}" delay=15 state=started port={{ ssh_port }} timeout=600
-  tags: reboot
   when: LOCALHOST == "true"
