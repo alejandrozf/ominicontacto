@@ -74,23 +74,19 @@ class CustomUserCreationForm(UserCreationForm):
             'is_agente': 'Es un agente',
             'is_supervisor': 'Es un supervisor',
         }
+        error_messages = {
+            'username': {'unique':
+                         _('No se puede volver a utilizar dos veces el mismo nombre de usuario')}
+        }
 
     def clean(self):
+        super(CustomUserCreationForm, self).clean()
         is_agente = self.cleaned_data.get('is_agente', None)
         is_supervisor = self.cleaned_data.get('is_supervisor', None)
         if is_agente and is_supervisor:
             raise forms.ValidationError(
                 _('Un usuario no puede ser Agente y Supervisor al mismo tiempo'))
         return self.cleaned_data
-
-    def clean_username(self):
-        username = self.cleaned_data.get('username', None)
-        existe_user = User.objects.filter(username=username).exists()
-        if existe_user:
-            raise forms.ValidationError(
-                _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
-                  ' por favor seleccione un nombre de usuario diferente'))
-        return username
 
 
 class UserChangeForm(forms.ModelForm):
@@ -106,7 +102,7 @@ class UserChangeForm(forms.ModelForm):
                                             '(sólo si desea cambiarla)'),
                                 # will be overwritten by __init__()
                                 widget=forms.PasswordInput(),
-                                label=_('Contrasena'))
+                                label=_('Contraseña'))
 
     password2 = forms.CharField(
         max_length=20,
@@ -114,28 +110,25 @@ class UserChangeForm(forms.ModelForm):
         # will be overwritten by __init__()
         help_text=_('Ingrese la nueva contraseña (sólo si desea cambiarla)'),
         widget=forms.PasswordInput(),
-        label=_('Contrasena (otra vez)'))
+        label=_('Contraseña (otra vez)'))
 
     def clean(self):
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
-        validate_password(password1)
+        cleaned_data = super(UserChangeForm, self).clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        if password1 != '':
+            validate_password(password1)
         if password1 != password2:
-            raise forms.ValidationError(_('Los passwords no concuerdan'))
-
+            raise forms.ValidationError(_('Las contraseñas no coinciden'))
         return self.cleaned_data
-
-    def clean_username(self):
-        username = self.cleaned_data.get('username', None)
-        existe_user = User.objects.filter(username=username).exists()
-        if existe_user:
-            raise forms.ValidationError(
-                _('No se puede volver a utilizar dos veces el mismo nombre de usuario,'
-                  ' por favor seleccione un nombre de usuario diferente'))
 
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
+        error_messages = {
+            'username': {'unique':
+                         _('No se puede volver a utilizar dos veces el mismo nombre de usuario')}
+        }
 
 
 class AgenteProfileForm(forms.ModelForm):
