@@ -198,7 +198,7 @@ CALIFICACION_REAGENDA = 'Agendado'
 LOCAL_APPS = ['sslserver', 'django_extensions']
 DJANGO_DEBUG_TOOLBAR = True
 if DJANGO_DEBUG_TOOLBAR:
-    INTERNAL_IPS = ['127.0.0.1','0.0.0.0']
+    INTERNAL_IPS = ['127.0.0.1', OML_OMNILEADS_IP]
 {% else %}
 LOCAL_APPS = []
 DJANGO_DEBUG_TOOLBAR = False
