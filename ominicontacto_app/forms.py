@@ -1079,28 +1079,23 @@ class UserApiCrmForm(forms.ModelForm):
         return usuario
 
 
+ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _(u'Supervisor Gerente')),
+               (SupervisorProfile.ROL_ADMINISTRADOR, _(u'Administrador')),
+               (SupervisorProfile.ROL_CLIENTE, _(u'Cliente')))
+
+
 class SupervisorProfileForm(forms.ModelForm):
+    rol = forms.ChoiceField(choices=ROL_CHOICES, label=_(u'Rol del usuario'),
+                            initial=SupervisorProfile.ROL_GERENTE,
+                            widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = SupervisorProfile
-        fields = ('is_administrador', 'is_customer')
+        fields = ('rol', )
 
-        labels = {
-            'is_administrador': _('Es administrador de sistema'),
-            'is_customer': _('Es usuario cliente'),
-        }
-
-    def clean(self):
-        is_administrador = self.cleaned_data.get('is_administrador', None)
-        is_customer = self.cleaned_data.get('is_customer', None)
-        if is_administrador and is_customer:
-            raise forms.ValidationError(
-                _('Un Supervisor no puede ser Administrador de sistema '
-                  'y Cliente al mismo tiempo'))
-        if not is_administrador and not is_customer:
-            raise forms.ValidationError(
-                _('Al menos debe seleeccionar una opción administrador o cliente'))
-        return self.cleaned_data
+    def __init__(self, rol, *args, **kwargs):
+        super(SupervisorProfileForm, self).__init__(*args, **kwargs)
+        self.fields['rol'].initial = rol
 
 
 class CampanaSupervisorUpdateForm(forms.ModelForm):

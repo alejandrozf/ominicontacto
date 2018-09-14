@@ -131,7 +131,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </li>
                 {% endif %}
 
-                {% if user.get_tiene_permiso_administracion %}
+                {% if user.get_es_administrador_o_supervisor_normal %}
                 <li class="main-menu-li">
                     <span class="icon icon-audio-file"></span>
                     <a class="menu-header" href="#menuAudio" role="button" data-toggle="collapse" aria-expanded="false">Audios</a>

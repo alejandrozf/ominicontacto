@@ -41,6 +41,20 @@ class ReportesTiemposAgente(FormView):
     model = AgenteProfile
     form_class = ReporteAgentesForm
 
+    def get_form_kwargs(self):
+        kwargs = super(ReportesTiemposAgente, self).get_form_kwargs()
+        supervisor = self.request.user.get_supervisor_profile()
+        if supervisor:
+            agentes_asociados = AgenteProfile.objects.obtener_agentes_supervisor(supervisor)
+            kwargs['agentes_asociados'] = agentes_asociados
+            id_grupos = agentes_asociados.values_list('grupo_id', flat=True)
+            kwargs['grupos_asociados'] = Grupo.objects.filter(id__in=id_grupos)
+        else:
+            kwargs['agentes_asociados'] = AgenteProfile.objects.filter(is_inactive=False)
+            kwargs['grupos_asociados'] = Grupo.objects.all()
+
+        return kwargs
+
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')
@@ -59,8 +73,13 @@ class ReportesTiemposAgente(FormView):
             grupo = Grupo.objects.get(pk=int(grupo_id))
             agentes = grupo.agentes.filter(is_inactive=False)
 
-        if todos_agentes:
-            agentes = []
+        if todos_agentes or (agentes == [] and not grupo_id):
+            supervisor = self.request.user.get_supervisor_profile()
+            if supervisor:
+                agentes = AgenteProfile.objects.obtener_agentes_supervisor(supervisor)
+            else:
+                # Asumo es Administrador
+                agentes = AgenteProfile.objects.obtener_activos()
 
         # generamos los reportes graficos
         tiempos_agentes = TiemposAgente()

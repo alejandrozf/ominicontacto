@@ -194,6 +194,24 @@ class AgenteProfileManager(models.Manager):
         """
         return self.filter(queue__campana=campana)
 
+    def obtener_agentes_supervisor(self, supervisor):
+        """
+        Obtiene todos los agentes que estan asignados a las campanas propias de un supervisor
+        """
+        if supervisor.is_administrador:
+            return self.obtener_activos()
+        elif supervisor.is_customer:
+            campanas = supervisor.user.campanasupervisors.all()
+        # TODO: Definir cuando se diferencie el rol de Gerente del de Supervisor Normal.
+        # elif supervisor.is_gerente:
+        # Agentes en: Campañas propias + Campañas asignadas + Campañas de sus supervisores
+        else:
+            # Supervisor Normal / Comun: Agentes en campañas propias y asignadas.
+            campanas = Campana.objects.filter(Q(reported_by=supervisor.user) |
+                                              Q(supervisors__in=[supervisor.user, ]))
+
+        return self.obtener_activos().filter(queue__campana__in=campanas).distinct()
+
 
 class AgenteProfile(models.Model):
     ESTADO_OFFLINE = 1
@@ -272,6 +290,12 @@ class SupervisorProfileManager(models.Manager):
 
 
 class SupervisorProfile(models.Model):
+
+    ROL_ADMINISTRADOR = '1'
+    ROL_GERENTE = '2'
+    ROL_SUPERVISOR = '3'
+    ROL_CLIENTE = '4'
+
     objects = SupervisorProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
@@ -886,6 +910,8 @@ class Campana(models.Model):
         default=FORMULARIO,
     )
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # TODO: 'supervisors' debería referenciar a SupervisorProfile no a User
     supervisors = models.ManyToManyField(User, related_name="campanasupervisors")
     es_template = models.BooleanField(default=False)
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
