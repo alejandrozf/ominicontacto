@@ -207,3 +207,5 @@ OML_RUTAS_SALIENTES_FILENAME = "/opt/omnileads/asterisk/etc/asterisk/oml_extensi
 ASTERISK_AUDIO_PATH = "/var/lib/asterisk/sounds/"
 
 OML_AUDIO_FOLDER = "oml/"
+
+DJANGO_CORS_HEADERS = False

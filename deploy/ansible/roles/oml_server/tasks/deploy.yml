@@ -130,6 +130,7 @@
     - django-sslserver==0.20
     - django-debug-toolbar==1.9.1
     - django-extensions==1.9.8
+    - django-cors-headers==2.4.0
   environment:
       PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin"
       PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
