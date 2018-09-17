@@ -153,10 +153,13 @@ class ArchivoDeReporteCsv(object):
                 # --- Buscamos datos
                 estado = NO_CONECTADO_DESCRIPCION.get(log_no_contactado.event, "")
                 log_no_contactado_fecha_local = localtime(log_no_contactado.time)
-                lista_opciones.append(log_no_contactado.numero_marcado)
                 contacto_id = log_no_contactado.contacto_id
                 contacto = self.contactos_dict.get(contacto_id, None)
                 datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
+                if contacto:
+                    lista_opciones.append(contacto.telefono)
+                else:
+                    lista_opciones.append("No se encuentra el telefono")
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append(estado)
@@ -177,10 +180,14 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones = []
                 # --- Buscamos datos
                 log_no_contactado_fecha_local = localtime(log_no_calificado.time)
-                lista_opciones.append(log_no_calificado.numero_marcado)
                 contacto_id = log_no_calificado.contacto_id
                 contacto = self.contactos_dict.get(contacto_id, None)
                 datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
+                datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
+                if contacto:
+                    lista_opciones.append(contacto.telefono)
+                else:
+                    lista_opciones.append("No se encuentra el telefono")
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append("Contactado")
