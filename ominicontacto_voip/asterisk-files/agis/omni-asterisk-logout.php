@@ -28,14 +28,14 @@ require_once $BASE_PATH."phpagi-asmanager.php";
 //$agiWrapper = new AGI($BASE_PATH."include/phpagi/phpagi.conf");
 $astman = new AGI_AsteriskManager();
 
-$ampmgruser  = "wombat";
-$ampmgrpass  = "fop222";
+$ampmgruser  = "omnileadsami";
+$ampmgrpass  = "5_MeO_DMT";
 
 $oResultado = $astman->connect("localhost", $ampmgruser, $ampmgrpass);
         if($oResultado == FALSE)
                 echo "Connection failed.\n";
 
-$listado = shell_exec("asterisk  -rx 'queue show' |grep Unava |awk '{print $1, $2}' FS='(' |awk '{print $1, $2}' FS='SIP' |awk '{print $1, $2}' FS='/' |awk '{print $1, $2}' FS=')'");
+$listado = shell_exec("sudo asterisk  -rx 'queue show' |grep Unava |awk '{print $1, $2}' FS='(' |awk '{print $1, $2}' FS='SIP' |awk '{print $1, $2}' FS='/' |awk '{print $1, $2}' FS=')'");
 
 if (empty($listado)) {
     echo '$var es o bien 0, vacía, o no se encuentra definida en absoluto';
