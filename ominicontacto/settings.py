@@ -361,6 +361,8 @@ try:
         MIDDLEWARE_CLASSES += [
             'debug_toolbar.middleware.DebugToolbarMiddleware',
         ]
+    if DJANGO_CORS_HEADERS:
+        MIDDLEWARE_CLASSES = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE_CLASSES
 except ImportError as e:
     print "# "
     print "# ERROR"
