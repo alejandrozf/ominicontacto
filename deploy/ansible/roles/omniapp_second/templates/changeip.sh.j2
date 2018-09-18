@@ -58,7 +58,6 @@ Omnileads(){
       sed -i "s/\('PG_PASSWORD'\).*/'PG_PASSWORD','$POSTGRES_PASSWORD');/" config.php
       sed -i "s/\('PG_HOST'\).*/'PG_HOST','$POSTGRES_IP');/" config.php
       sed -i "s/\('PG_PASSWORD'\).*/'PG_PASSWORD','$POSTGRES_PASSWORD');/" config.php
-      sed -i "s/\('OMNI_HOST'\).*/'OMNI_HOST', $_SERVER['SERVER_ADDR']);/" config.php
       sed -i "s/\('WD_API_USER'\).*/'WD_API_USER','$WOMBAT_USER');/" config.php
       sed -i "s/\('WD_API_PASS'\).*/'WD_API_PASS','$WOMBAT_PASS');/" config.php
 }
@@ -94,8 +93,8 @@ Asterisk(){
     sed -i "s/\(^username\).*/username => $POSTGRES_USER/" oml_res_odbc.conf
     sed -i "s/\(^password\).*/password => $POSTGRES_PASSWORD/" oml_res_odbc.conf
     cd {{ asterisk_location }}/var/lib/asterisk/agi-bin/
-    sed -i "s/\(^\$ampmgruser\).*/\$ampmgruser  = "$AMI_USER";/" oml_res_odbc.conf
-    sed -i "s/\(^\$ampmgrpass\).*/\$ampmgrpass  = "$AMI_PASS";/" oml_res_odbc.conf
+    sed -i "s/\(^\$ampmgruser\).*/\$ampmgruser  = "$AMI_USER";/" omni-asterisk-logout.php
+    sed -i "s/\(^\$ampmgrpass\).*/\$ampmgrpass  = "$AMI_PASS";/" omni-asterisk-logout.php
 }
 
 Help(){
