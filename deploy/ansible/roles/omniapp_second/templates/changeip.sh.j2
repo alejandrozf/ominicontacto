@@ -93,8 +93,8 @@ Asterisk(){
     sed -i "s/\(^username\).*/username => $POSTGRES_USER/" oml_res_odbc.conf
     sed -i "s/\(^password\).*/password => $POSTGRES_PASSWORD/" oml_res_odbc.conf
     cd {{ asterisk_location }}/var/lib/asterisk/agi-bin/
-    sed -i "s/\(^\$ampmgruser\).*/\$ampmgruser  = "$AMI_USER";/" omni-asterisk-logout.php
-    sed -i "s/\(^\$ampmgrpass\).*/\$ampmgrpass  = "$AMI_PASS";/" omni-asterisk-logout.php
+    sed -i "s/\(^\$ampmgruser\).*/\$ampmgruser  = \"$AMI_USER\";/" omni-asterisk-logout.php
+    sed -i "s/\(^\$ampmgrpass\).*/\$ampmgrpass  = \"$AMI_PASS\";/" omni-asterisk-logout.php
 }
 
 Help(){
