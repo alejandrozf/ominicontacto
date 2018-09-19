@@ -27,9 +27,9 @@ from ominicontacto_app import (
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_cliente, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
-    views_back_list, views_sitio_externo, views_queue_member, views_user_api_crm, views_supervisor,
+    views_back_list, views_sitio_externo, views_queue_member, views_user_api_crm,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_campana_preview, views_archivo_de_audio
+    views_campana_preview, views_archivo_de_audio, views_user_profiles,
 )
 
 from ominicontacto_app.views_utils import (
@@ -58,44 +58,37 @@ urlpatterns = [
     # ==========================================================================
     url(r'^accounts/login/$', views.login_view, name='login'),
     url(r'^user/nuevo/$',
-        administrador_o_supervisor_requerido(views.CustomerUserCreateView.as_view()),
+        administrador_o_supervisor_requerido(views_user_profiles.CustomUserWizard.as_view()),
         name='user_nuevo',
         ),
     url(r'^user/list/page(?P<page>[0-9]+)/$',
-        administrador_o_supervisor_requerido(views.UserListView.as_view()),
+        administrador_o_supervisor_requerido(views_user_profiles.UserListView.as_view()),
         name='user_list'
         ),
     url(r'^user/delete/(?P<pk>\d+)/$',
-        administrador_o_supervisor_requerido(views.UserDeleteView.as_view()),
+        administrador_o_supervisor_requerido(views_user_profiles.UserDeleteView.as_view()),
         name='user_delete',
         ),
     url(r'^user/update/(?P<pk>\d+)/$',
-        administrador_o_supervisor_requerido(views.CustomerUserUpdateView.as_view()),
+        administrador_o_supervisor_requerido(views_user_profiles.CustomerUserUpdateView.as_view()),
         name='user_update',
         ),
     # Perfil Agente  ==========================================================
     url(r'^agente/list/$',
-        administrador_o_supervisor_requerido(views.AgenteListView.as_view()), name='agente_list',
-        ),
-    url(r'^user/agenteprofile/nuevo/(?P<pk_user>\d+)/$',
-        administrador_requerido(views.AgenteProfileCreateView.as_view()),
-        name='agenteprofile_nuevo',
+        administrador_o_supervisor_requerido(views_user_profiles.AgenteListView.as_view()),
+        name='agente_list',
         ),
     url(r'^user/agenteprofile/update/(?P<pk_agenteprofile>\d+)/$',
-        administrador_requerido(views.AgenteProfileUpdateView.as_view()),
+        administrador_requerido(views_user_profiles.AgenteProfileUpdateView.as_view()),
         name='agenteprofile_update',
         ),
     # Perfil Supervisor  =======================================================
     url(r'^supervisor/list/$',
-        administrador_requerido(views_supervisor.SupervisorListView.as_view()),
+        administrador_requerido(views_user_profiles.SupervisorListView.as_view()),
         name='supervisor_list',
         ),
-    url(r'^supervisor/(?P<pk_user>\d+)/create/$',
-        administrador_requerido(views_supervisor.SupervisorProfileCreateView.as_view()),
-        name='supervisor_create',
-        ),
     url(r'^supervisor/(?P<pk>\d+)/update/$',
-        administrador_requerido(views_supervisor.SupervisorProfileUpdateView.as_view()),
+        administrador_requerido(views_user_profiles.SupervisorProfileUpdateView.as_view()),
         name='supervisor_update',
         ),
     # ==========================================================================
@@ -188,11 +181,6 @@ urlpatterns = [
         agente_requerido(views.AgenteEventosFormView.as_view()),
         name='agenda_agente_list',
         ),
-
-    # TODO: Se puede Eliminar esta vista?
-    # url(r'^regenerar_asterisk/$', views.regenerar_asterisk_view,
-    #    name='regenerar_asterisk'),
-
     url(r'^duracion/llamada/$',
         login_required(views.nuevo_duracion_llamada_view),
         name='nueva_duracion_llamada',
@@ -481,12 +469,10 @@ urlpatterns = [
         name='agente_cambiar_estado',
         ),
     url(r'^agente/(?P<pk_agente>\d+)/activar/$',
-        login_required(
-            views_agente.ActivarAgenteView.as_view()),
+        administrador_o_supervisor_requerido(views_user_profiles.ActivarAgenteView.as_view()),
         name="agente_activar"),
     url(r'^agente/(?P<pk_agente>\d+)/desactivar/$',
-        login_required(
-            views_agente.DesactivarAgenteView.as_view()),
+        administrador_o_supervisor_requerido(views_user_profiles.DesactivarAgenteView.as_view()),
         name="agente_desactivar"),
     # ==========================================================================
     # Supervision

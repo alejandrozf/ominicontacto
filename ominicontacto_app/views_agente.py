@@ -27,8 +27,6 @@ import datetime
 from django.views.generic import FormView, UpdateView, TemplateView, View
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
@@ -222,32 +220,6 @@ class LlamarContactoView(RedirectView):
         self._call_originate(
             request, campana_id, campana_nombre, agente, contacto, click2call_type, tipo_campana)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
-
-
-class DesactivarAgenteView(RedirectView):
-    """
-    Esta vista actualiza el agente desactivandolo
-    """
-
-    pattern_name = 'agente_list'
-
-    def get(self, request, *args, **kwargs):
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        agente.desactivar()
-        return HttpResponseRedirect(reverse('agente_list'))
-
-
-class ActivarAgenteView(RedirectView):
-    """
-    Esta vista actualiza el agente activandolo
-    """
-
-    pattern_name = 'agente_list'
-
-    def get(self, request, *args, **kwargs):
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        agente.activar()
-        return HttpResponseRedirect(reverse('agente_list'))
 
 
 class AgenteCampanasPreviewActivasView(TemplateView):
