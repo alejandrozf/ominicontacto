@@ -47,14 +47,9 @@ from defender import config
 
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
-    Chat, MensajeChat, QueueMember
+    Chat, MensajeChat
 )
-from ominicontacto_app.forms import (
-    CustomUserCreationForm, UserChangeForm, AgenteProfileForm,
-    AgendaBusquedaForm, PausaForm, GrupoForm
-)
-from services.asterisk_service import ActivacionAgenteService,\
-    RestablecerConfigSipError
+from ominicontacto_app.forms import AgendaBusquedaForm, PausaForm, GrupoForm
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
 from ominicontacto_app import version
@@ -122,177 +117,9 @@ def login_view(request):
     return TemplateResponse(request, template_name, context)
 
 
-class CustomerUserCreateView(CreateView):
-    """Vista para crear un usuario"""
-    model = User
-    form_class = CustomUserCreationForm
-    template_name = 'user/user_create_update_form.html'
-
-    def get_success_url(self):
-        return reverse('user_list', kwargs={"page": 1})
-
-
-class CustomerUserUpdateView(UpdateView):
-    """Vista para modificar un usuario"""
-    model = User
-    form_class = UserChangeForm
-    template_name = 'user/user_create_update_form.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(CustomerUserUpdateView, self).get_context_data(**kwargs)
-        context['user'] = self.request.user
-        return context
-
-    def form_valid(self, form):
-        ret = super(CustomerUserUpdateView, self).form_valid(form)
-
-        # Set the password
-        if form['password1'].value():
-            updated_user = User.objects.get(pk=form.instance.id)
-            updated_user.set_password(form['password1'].value())
-            updated_user.save()
-
-        messages.success(self.request,
-                         'El usuario fue actualizado correctamente')
-
-        return ret
-
-    def get_success_url(self):
-        return reverse('user_list', kwargs={"page": 1})
-
-
-class UserDeleteView(DeleteView):
-    """
-    Esta vista se encarga de la eliminación del
-    objeto user
-    """
-    model = User
-    template_name = 'user/delete_user.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        usuario = User.objects.get(pk=self.kwargs['pk'])
-        if usuario.id is 1:
-            return HttpResponseRedirect(
-                reverse('user_list', kwargs={"page": 1}))
-        return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(UserDeleteView, self).get_context_data(**kwargs)
-        context['user'] = self.request.user
-        return context
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.is_agente and self.object.get_agente_profile():
-            self.object.get_agente_profile().borrar()
-            QueueMember.objects.borrar_member_queue(
-                self.object.get_agente_profile())
-        if self.object.is_supervisor and self.object.get_supervisor_profile():
-            self.object.get_supervisor_profile().borrar()
-        self.object.borrar()
-        return HttpResponseRedirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse('user_list', kwargs={"page": 1})
-
-
-class UserListView(ListView):
-    """Vista que que muestra el listao de usuario paginado 40 por pagina y
-    ordenado por id"""
-    model = User
-    template_name = 'user/user_list.html'
-    paginate_by = 40
-
-    def get_queryset(self):
-        """Returns user ordernado por id"""
-        return User.objects.exclude(borrado=True).order_by('id')
-
-
-class AgenteProfileCreateView(CreateView):
-    """Vista para crear un agente"""
-    model = AgenteProfile
-    form_class = AgenteProfileForm
-    template_name = 'base_create_update_form.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        modulo = Modulo.objects.all()
-        grupo = Grupo.objects.all()
-        if not modulo:
-            message = ("Debe cargar un modulo antes de crear un perfil de "
-                       "agente")
-            messages.warning(self.request, message)
-        if not grupo:
-            message = (
-                "Debe cargar un grupo antes de crear un perfil de agente"
-            )
-            messages.warning(self.request, message)
-
-        usuario = User.objects.get(pk=self.kwargs['pk_user'])
-        if usuario.get_supervisor_profile():
-            message = (
-                "No puede crear un perfil de agente a un supervisor"
-            )
-
-            messages.warning(self.request, message)
-            return HttpResponseRedirect(
-                reverse('user_list', kwargs={"page": 1}))
-        return super(AgenteProfileCreateView, self).dispatch(request, *args,
-                                                             **kwargs)
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        usuario = User.objects.get(pk=self.kwargs['pk_user'])
-        self.object.user = usuario
-        self.object.sip_extension = 1000 + usuario.id
-        self.object.reported_by = self.request.user
-        self.object.save()
-        # generar archivos sip en asterisk
-        asterisk_sip_service = ActivacionAgenteService()
-        try:
-            asterisk_sip_service.activar()
-        except RestablecerConfigSipError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error{0} .".format(e))
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-        return super(AgenteProfileCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse('user_list', kwargs={"page": 1})
-
-
-class AgenteProfileUpdateView(UpdateView):
-    """Vista para modificar un agente"""
-    model = AgenteProfile
-    form_class = AgenteProfileForm
-    template_name = 'base_create_update_form.html'
-
-    def get_object(self, queryset=None):
-        return AgenteProfile.objects.get(pk=self.kwargs['pk_agenteprofile'])
-
-    def form_valid(self, form):
-        self.object = form.save()
-
-        asterisk_sip_service = ActivacionAgenteService()
-        try:
-            asterisk_sip_service.activar()
-        except RestablecerConfigSipError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error{0} .".format(e))
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-        return super(AgenteProfileUpdateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse('user_list', kwargs={"page": 1})
-
-
+####################
+# MODULOS
+####################
 class ModuloCreateView(CreateView):
     """Vista para crear un modulo"""
     model = Modulo
@@ -341,24 +168,9 @@ class ModuloListView(ListView):
     template_name = 'modulo_list.html'
 
 
-class AgenteListView(ListView):
-    """Vista para listar los agentes"""
-    model = AgenteProfile
-    template_name = 'agente_profile_list.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(AgenteListView, self).get_context_data(
-            **kwargs)
-        agentes = AgenteProfile.objects.exclude(borrado=True)
-
-        # if self.request.user.is_authenticated() and self.request.user:
-        #     user = self.request.user
-        #     agentes = agentes.filter(reported_by=user)
-
-        context['agentes'] = agentes
-        return context
-
-
+####################
+# GRUPOS
+####################
 class GrupoCreateView(CreateView):
     """Vista para crear un grupo
     DT: eliminar fields de la vista crear un form para ello
@@ -510,6 +322,9 @@ class PausaToggleDeleteView(SincronizarPausaMixin, TemplateView):
         return redirect('pausa_list')
 
 
+##################
+# Vista de Agente
+##################
 def node_view(request):
     """Esta vista renderiza la pantalla del agente"""
     registro = []
@@ -641,28 +456,6 @@ class AgenteEventosFormView(FormView):
             listado_de_eventos=listado_de_eventos))
 
 
-# TODO: Se puede Eliminar esta vista?
-# def regenerar_asterisk_view(request):
-#     """Vista para regenerar los archivos de asterisk"""
-#     activacion_queue_service = RegeneracionAsteriskService()
-#     try:
-#         activacion_queue_service.regenerar()
-#     except RestablecerDialplanError, e:
-#         message = ("Operación Errónea! "
-#                    "No se realizo de manera correcta la regeneracion de los "
-#                    "archivos de asterisk al siguiente error: {0}".format(e))
-#         messages.add_message(
-#             request,
-#             messages.ERROR,
-#             message,
-#         )
-#     messages.success(request,
-#                      'La regeneracion de los archivos de configuracion de'
-#                      ' asterisk y el reload se hizo de manera correcta')
-#     return render_to_response('regenerar_asterisk.html',
-#                               context_instance=RequestContext(request))
-
-
 def nuevo_duracion_llamada_view(request):
     """Vista para crear una nueva duracion de llamada"""
     agente = request.GET['agente']
@@ -713,6 +506,9 @@ def crear_chat_view(request):
     return response
 
 
+######################
+# Supervision Externa
+######################
 def supervision_url_externa(request):
     """Vista que redirect a la supervision externa de marce"""
     user = request.user

@@ -29,7 +29,7 @@ from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
                                       NombreCalificacion, Formulario, Grabacion, GrabacionMarca,
-                                      SitioExterno, User, Contacto, SupervisorProfile,
+                                      SitioExterno, User, Contacto, SupervisorProfile, Modulo,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametroExtraParaWebform,
                                       ActuacionVigente, Pausa)
@@ -86,6 +86,12 @@ class GrupoFactory(DjangoModelFactory):
         model = Grupo
     nombre = Sequence(lambda n: "grupo_{0}.dat".format(n))
     auto_unpause = lazy_attribute(lambda a: faker.random_number(2))
+
+
+class ModuloFactory(DjangoModelFactory):
+    class Meta:
+        model = Modulo
+    nombre = Sequence(lambda n: "grupo_{0}.dat".format(n))
 
 
 class AgenteProfileFactory(DjangoModelFactory):

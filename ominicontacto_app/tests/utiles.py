@@ -45,6 +45,9 @@ from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from mock import Mock
 
 
+PASSWORD = 'admin123'
+
+
 def ru():
     """Devuelve random UUID"""
     return str(uuid.uuid4())
@@ -104,7 +107,7 @@ class OMLTestUtilsMixin(object):
         user = User.objects.create_user(
             username='user_test_agente',
             email='user_agente@gmail.com',
-            password='admin123',
+            password=PASSWORD,
             is_agente=True,
             first_name=first_name,
             last_name=last_name,
@@ -118,7 +121,7 @@ class OMLTestUtilsMixin(object):
         user = User.objects.create_user(
             username='user_test_supervisor',
             email='user_supervisor@gmail.com',
-            password='admin123',
+            password=PASSWORD,
             is_supervisor=True
         )
         user.username = "user_test_supervisor_" + str(user.id)
@@ -151,7 +154,7 @@ class OMLTestUtilsMixin(object):
         user = User.objects.create_user(
             username=username,
             email='user_admin@gmail.com',
-            password='admin123',
+            password=PASSWORD,
             is_agente=False,
             is_supervisor=True,
             first_name=first_name,
