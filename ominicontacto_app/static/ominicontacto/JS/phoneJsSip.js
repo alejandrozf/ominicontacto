@@ -20,17 +20,23 @@ var lastDialedNumber, entrante, config, textSipStatus, callSipStatus, iconStatus
 var flagTransf = false,
   flagAttended = false,
   flagInit = true,
-  num = null,
+  phoneNumber = null,
+  prefixForKamailio = '0077',
+  unpause = 'UNPAUSE',
+  login = 'LOGIN',
+  afterCallWorkTypePause = '0',
+  timeDurationShowingWarning = 9000,
+  timeDurationShowingError = 30000,
   headerIdCamp, headerNomCamp, calltypeId, flagPausa = 0,
-  fromUser, wId, lastPause, uid = "";
+  fromUser, wId, lastPause, uid = '';
 var agentIdHeaderVal, campaignIdHeaderVal;
 var sipStatus = document.getElementById('SipStatus');
 var callStatus = document.getElementById('CallStatus');
-var local = document.getElementById('localAudio');
-var remoto = document.getElementById('remoteAudio');
-var displayNumber = document.getElementById("numberToCall");
-var pauseButton = document.getElementById("Pause");
-var var1, var2;
+var localAudioStreaming = document.getElementById('localAudio');
+var remoteAudioStreaming = document.getElementById('remoteAudio');
+var displayNumber = document.getElementById('numberToCall');
+var pauseButton = document.getElementById('Pause');
+var valueSipExt, valueSipSecret;
 
 function updateButton(btn, clsnm, inht) {
   btn.className = clsnm;
@@ -40,8 +46,8 @@ function updateButton(btn, clsnm, inht) {
 }
 
 $(function() {
-  var1 = $("#sipExt").val();
-  var2 = $("#sipSec").val();
+  valueSipExt = $("#sipExt").val();
+  valueSipSecret = $("#sipSec").val();
 
   var idTipoCamp = $("#cmpList option:selected").attr('campana_type');
   $("#modalWebCall").modal('show');
@@ -134,7 +140,7 @@ $(function() {
   });
 
   $("#Resume").click(function() {
-    num = "0077UNPAUSE";
+    phoneNumber =+ prefixForKamailio + unpause;
     makeCall();
   });
 
@@ -143,15 +149,15 @@ $(function() {
     if (pausa.indexOf(' ')) {
       pausa = pausa.replace(' ', '');
     }
-    num = "0077" + pausa;
+    phoneNumber =+ prefixForKamailio + pausa;
     makeCall();
   });
 
-  if (var1 && var2) {
+  if (valueSipExt && valueSipSecret) {
     config = {
-      uri: "sip:" + var1 + "@" + KamailioIp,
+      uri: "sip:" + valueSipExt + "@" + KamailioIp,
       ws_servers: "wss://" + KamailioIp + ":" + KamailioPort,
-      password: var2,
+      password: valueSipSecret,
       realm: KamailioIp,
       hack_ip_in_contact: true,
       session_timers: false,
@@ -178,13 +184,12 @@ $(function() {
     displayNumber.value = numPress;
   });
 
-  //Connects to the WebSocket server
   userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
     getAgentes();
     getCampActivas();
     setSipStatus("greydot.png", "  No account", sipStatus);
     updateButton(modifyUserStat, "label label-success", "Online");
-    num = "0077LOGIN";
+    phoneNumber =+ prefixForKamailio + login;
     makeCall();
     $("#sendMessage").prop('disabled', false);
     $("#chatMessage").prop('disabled', false);
@@ -456,7 +461,7 @@ $(function() {
         lastPause = $("#UserStatus").html();
         updateButton(modifyUserStat, "label label-primary", "OnCall");
         remote_stream = e.stream;
-        remoto = JsSIP.rtcninja.attachMediaStream(remoto, remote_stream);
+        remoteAudioStreaming = JsSIP.rtcninja.attachMediaStream(remoteAudioStreaming, remote_stream);
       });
 
       var options = {
@@ -531,7 +536,7 @@ $(function() {
       $("#Transfer").prop('disabled', false);
       $("#onHold").prop('disabled', false);
 
-      if (num && num.substring(4, 0) != "0077") {
+      if (phoneNumber && phoneNumber.substring(4, 0) !== prefixForKamailio) {
         //if ($("#auto_pause").val() !== "True") {
         flagAttended = true;
         inicio3();
@@ -757,11 +762,11 @@ $(function() {
 
     e.session.on("ended", function() { // Cuando Finaliza la llamada
       parar3();
-      if (num && num.substring(4, 0) != "0077") { // es saliente
+      if (phoneNumber && phoneNumber.substring(4, 0) !== prefixForKamailio) { // es saliente
         reinicio($("#horaC"), $("#minsC"), $("#segsC"));
-        saveCall(num);
+        saveCall(phoneNumber);
         if (lastPause != "Online") {
-          num = '';
+          phoneNumber = '';
           $("#Pause").prop('disabled', true);
           $("#Resume").prop('disabled', false);
           $("#sipLogout").prop('disabled', false);
@@ -772,14 +777,14 @@ $(function() {
           $("#sipLogout").prop('disabled', false);
           updateButton(modifyUserStat, "label label-success", lastPause);
         }
-      } else if (fromUser && fromUser.substring(4, 0) != "0077") { // es entrante
+      } else if (fromUser && fromUser.substring(4, 0) != prefixForKamailio) { // es entrante
         if ($("#auto_pause").val() == "True" && entrante !== false) { //Si es un agente predictivo
           //if (entrante == false) { funcionalidad oml-52
           parar1();
           reinicio($("#horaC"), $("#minsC"), $("#segsC"));
           inicio2();
           changeStatus(3, $("#idagt").val());
-          num = "00770";
+          phoneNumber =+ prefixForKamailio + afterCallWorkTypePause;
           makeCall();
           entrante = false;
           $("#Pause").prop('disabled', true);
@@ -790,7 +795,7 @@ $(function() {
             var timeoutACW = $("#auto_unpause").val();
             timeoutACW = timeoutACW * 1000;
             var toOnline = function() {
-              num = "0077UNPAUSE";
+              phoneNumber =+ prefixForKamailio + unpause;
               if ($("#UserStatus").html() === "ACW") {
                 if ($("#dial_status").html().substring(9, 0) !== "Connected" && $("#dial_status").html().substring(7, 0) !== "Calling") {
                   makeCall();
@@ -802,7 +807,7 @@ $(function() {
           }
           //} funcionalidad oml-52
           fromUser = '';
-        } else if ((num && num.substring(0, 4) !== "0077") && (fromUser && fromUser.substring(4, 0) != "0077")) {
+        } else if ((phoneNumber && phoneNumber.substring(0, 4) !== prefixForKamailio) && (fromUser && fromUser.substring(4, 0) != prefixForKamailio)) {
           reinicio($("#horaC"), $("#minsC"), $("#segsC"));
           if (lastPause == "Online" || lastPause == "OnCall") {
             saveCall(fromUser);
@@ -810,7 +815,7 @@ $(function() {
           } else {
             updateButton(modifyUserStat, "label label-danger", lastPause);
           }
-          num = fromUser = "";
+          phoneNumber = fromUser = "";
           $("#Pause").prop('disabled', false);
           $("#Resume").prop('disabled', true);
           $("#sipLogout").prop('disabled', false);
@@ -828,8 +833,8 @@ $(function() {
       entrante = false;
       if (displayNumber.value != "") {
         displayNumber.style.borderColor = "black";
-        num = displayNumber.value;
-        lastDialedNumber = num;
+        phoneNumber = displayNumber.value;
+        lastDialedNumber = phoneNumber;
         if ($("#campAssocManualCall").html() == "") {
           $("#modalSelectCmp").modal("show");
         } else {
@@ -840,7 +845,7 @@ $(function() {
           headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
           $("#redial").prop('disabled', false);
           makeCall();
-          getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
+          getFormManualCalls($("#idCamp").val(), $("#idagt").val(), phoneNumber);
         }
       } else {
         displayNumber.style.borderColor = "red";
@@ -850,7 +855,7 @@ $(function() {
 
   $("#redial").click(function() { // esto es para enviar un Invite/llamada
     entrante = false;
-    num = lastDialedNumber;
+    phoneNumber = lastDialedNumber;
     if ($("#campAssocManualCall").html() == "") {
       $("#modalSelectCmp").modal("show");
     } else {
@@ -878,8 +883,8 @@ $(function() {
     entrante = false;
     if (displayNumber.value != "") {
       displayNumber.style.borderColor = "black";
-      num = displayNumber.value;
-      lastDialedNumber = num;
+      phoneNumber = displayNumber.value;
+      lastDialedNumber = phoneNumber;
       if ($("#campAssocManualCall").html() == "") {
         $("#modalSelectCmp").modal("show");
       } else {
@@ -890,7 +895,7 @@ $(function() {
         headerNomCamp = $("#idCamp").val() + '_' + nombrecamp;
         $("#redial").prop('disabled', false);
         makeCall();
-        getFormManualCalls($("#idCamp").val(), $("#idagt").val(), num);
+        getFormManualCalls($("#idCamp").val(), $("#idagt").val(), phoneNumber);
         setTimeout(function() { //luego de 60 segundos, stop al ringback y cuelga discado
 
           if (flagAttended == false) {
@@ -950,59 +955,63 @@ $(function() {
     eventHandlers = {
       'confirmed': function(e) {
         // Attach local stream to selfView
-        local.src = window.URL.createObjectURL(sesion.connection.getLocalStreams()[0]);
+        localAudioStreaming.srcObject = sesion.connection.getLocalStreams()[0];
       },
       'addstream': function(e) {
-        if (num.substring(4, 0) != "0077") {
-          setCallState("Connected to " + num, "orange");
-        } else {
+        if (phoneNumber.substring(4, 0) != prefixForKamailio) {
+          setCallState("Connected to " + phoneNumber, "orange");
+        } else if (phoneNumber ==  prefixForKamailio + unpause) {
+          setCallState("Agent unpaused", "orange");
+        } else if (phoneNumber == prefixForKamailio + login) {
           setCallState("Agent logged in", "orange");
+        } else {
+          setCallState("Agent paused", "orange");
         }
-        var stream = e.stream;
+
         // Attach remote stream to remoteView
-        remoto.src = window.URL.createObjectURL(stream);
+        remoteAudioStreaming.srcObject = e.stream;
       },
       'failed': function(data) {
-        if(num.substring(4,0) != "0077"){
+        if(phoneNumber.substring(4,0) != prefixForKamailio){
           if (data.cause === JsSIP.C.causes.BUSY) {
             Sounds("", "stop");
             Sounds("", "play");
             setCallState("Number busy, try later", "orange");
-            setTimeout(defaultCallState, 9000);
+            setTimeout(defaultCallState, timeDurationShowingWarning);
           } else if (data.cause === JsSIP.C.causes.REJECTED) {
               setCallState("Rejected, try later", "orange");
-              setTimeout(defaultCallState, 9000);
+              setTimeout(defaultCallState, timeDurationShowingWarning);
           } else if (data.cause === JsSIP.C.causes.UNAVAILABLE) {
               setCallState("Unavailable, contact your administrator", "red");
-              setTimeout(defaultCallState, 9000);
+              setTimeout(defaultCallState, timeDurationShowingWarning);
           } else if (data.cause === JsSIP.C.causes.NOT_FOUND) {
               setCallState("Error, check the number dialed", "red");
-              setTimeout(defaultCallState, 9000);
+              setTimeout(defaultCallState, timeDurationShowingWarning);
           } else if (data.cause === JsSIP.C.causes.AUTHENTICATION_ERROR) {
               setCallState("Authentication error, contact your administrator", "red");
-              setTimeout(defaultCallState, 9000);
+              setTimeout(defaultCallState, timeDurationShowingWarning);
           } else if (data.cause === JsSIP.C.causes.MISSING_SDP) {
               setCallState("Error, Missing sdp", "red");
-              setTimeout(defaultCallState, 9000);
+              setTimeout(defaultCallState, timeDurationShowingWarning);
           } else if (data.cause === JsSIP.C.causes.ADDRESS_INCOMPLETE) {
               setCallState("Address incomplete", "red");
-              setTimeout(defaultCallState, 9000);
+              setTimeout(defaultCallState, timeDurationShowingWarning);
           } else if (data.cause === JsSIP.C.causes.JsSIP.C.causes.SIP_FAILURE_CODE) {
               setCallState("Service Unavailable, contact your administrator", "red");
-              setTimeout(defaultCallState, 9000);
+              setTimeout(defaultCallState, timeDurationShowingWarning);
           } else if (data.cause === JsSIP.C.causes.USER_DENIED_MEDIA_ACCESS) {
               setCallState("WebRTC Error: User denied media access", "red");
-              setTimeout(defaultCallState, 9000);
+              setTimeout(defaultCallState, timeDurationShowingWarning);
           }
-        } else if (num.substring(4, 9) == "LOGIN") {
+        } else if (phoneNumber.substring(4, 9) == login) {
               setCallState("Agent not logged in, contact your administrator", "red");
-              setTimeout(defaultCallState, 30000);
-          } else if (num.substring(4, 11) == "UNPAUSE") {
+              setTimeout(defaultCallState, timeDurationShowingError);
+          } else if (phoneNumber.substring(4, 11) == unpause) {
               setCallState("Cannot unpause agent, contact your administrator", "red");
-              setTimeout(defaultCallState, 30000);
+              setTimeout(defaultCallState, timeDurationShowingError);
           } else {
               setCallState("Cannot pause agent, contact your administrator", "red");
-              setTimeout(defaultCallState, 30000);
+              setTimeout(defaultCallState, timeDurationShowingError);
             }
       }
     };
@@ -1021,10 +1030,10 @@ $(function() {
     //Mando el invite/llamada
     if (flagInit === true) {
       flagInit = false;
-      sesion = userAgent.call("sip:" + num + "@" + KamailioIp, opciones);
+      sesion = userAgent.call("sip:" + phoneNumber + "@" + KamailioIp, opciones);
     } else {
-      sesion = userAgent.call("sip:" + num + "@" + KamailioIp, opciones);
-      setCallState("Calling.... " + num, "yellowgreen");
+      sesion = userAgent.call("sip:" + phoneNumber + "@" + KamailioIp, opciones);
+      setCallState("Calling.... " + phoneNumber, "yellowgreen");
       displayNumber.value = "";
     }
     idTipoCamp = null;

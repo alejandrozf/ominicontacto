@@ -763,16 +763,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 </div>
 
-<!-- Main Index -->
+<!-- JSSIP compressed-minified -->
+<script type="text/javascript" src="{% static 'ominicontacto/JS/jssip-2.0.6.min.js' %}"></script>
 {% compress js %}
 <script type="text/javascript" src="{% static 'ominicontacto/JS/Timers.js' %}" ></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/main.js' %}"></script>
-<!-- JsSIP -->
-<script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
 <!-- mi propio js para phone en jssip -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/phoneJsSip.js' %}"></script>
 <!-- JsSip Debug -->
-<!--<script>JsSIP.debug.enable('JsSIP:*');</script>-->
+<!-- <script>JsSIP.debug.enable('JsSIP:*');</script> -->
 <!-- webChat -->
 <!--script type="text/javascript" src="{% static 'ominicontacto/JS/JQueryWebChat.js' %}"></script-->
 <!-- autobahn -->
@@ -780,7 +779,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <!-- smschat -->
 <!--script type="text/javascript" src="{% static 'ominicontacto/JS/textMessages.js' %}"></script-->
 <!-- Socket.IO -->
-<script type="text/javascript" src="{% static 'ominicontacto/JS/socket.io.js' %}"></script>
+<!-- <script type="text/javascript" src="{% static 'ominicontacto/JS/socket.io.js' %}"></script> -->
 <!-- FacebookMessenger -->
 <!--script type="text/javascript" src="{% static 'ominicontacto/JS/facebookMessenger.js' %}"></script-->
 <!-- Calendar -->

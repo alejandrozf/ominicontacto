@@ -40,12 +40,10 @@
     <link rel="stylesheet" href="/static/ominicontacto/CSS/oml-icons.css">
     <!-- jquery -->
     <script src="/static/jquery-2.2.4.min.js"></script>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
-    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
     <!-- Scripts -->
     <script type="text/javascript" src="static/Js/config.js"></script>
     <script type="text/javascript" src="static/Js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="static/Js/jssip.js"></script>
+    <script type="text/javascript" src="static/Js/jssip-2.0.6.min.js"></script>
     <script type="text/javascript" src="static/Js/phone.js"></script>
     <script type="text/javascript" src="static/Js/tables.js"></script>
     <!-- Bootstrap -->
