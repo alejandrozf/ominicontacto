@@ -55,7 +55,7 @@ class Agente_Model {
 
     function getAgentStatus($agentId) {
         try {
-            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASWORD);
+            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASSWORD);
         } catch (Exception $ex) {
             return "problemas de Conexion AMI: " . $ex;
         }
@@ -67,7 +67,7 @@ class Agente_Model {
 
     function getPauseAgents($agt) {
         try {
-            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASWORD);
+            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASSWORD);
         } catch (Exception $ex) {
             return "problemas de Conexion AMI: " . $ex;
         }
@@ -80,7 +80,7 @@ class Agente_Model {
 
     function ExecAction($agt, $exten, $action) {
         try {
-            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASWORD);
+            $this->agi->connect(AMI_HOST, AMI_USERNAME, AMI_PASSWORD);
         } catch (Exception $ex) {
             return "problemas de Conexion AMI: " . $ex;
         }

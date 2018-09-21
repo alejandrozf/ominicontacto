@@ -25,6 +25,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
+from django.utils.translation import ugettext_lazy as _
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from ominicontacto_app.errors import OmlAudioConversionError
 from ominicontacto_app.forms import ArchivoDeAudioForm
@@ -137,6 +138,16 @@ class ArchivoAudioDeleteView(DeleteView):
 
     model = ArchivoDeAudio
     template_name = 'archivo_audio/elimina_archivo_audio.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        archivo = self.get_object()
+
+        if archivo.usado_en_ivr():
+            message = _("No está permitido eliminar un audio en uso por un IVR")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(
+                reverse('lista_archivo_audio'))
+        return super(ArchivoAudioDeleteView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()

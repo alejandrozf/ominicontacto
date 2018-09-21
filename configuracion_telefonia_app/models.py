@@ -119,10 +119,12 @@ class IVR(models.Model):
     time_out_retries = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(99)])
     time_out_audio = models.ForeignKey(
-        ArchivoDeAudio, blank=True, null=True, related_name="audio_time_out_ivrs")
+        ArchivoDeAudio, on_delete=models.PROTECT, blank=True, null=True,
+        related_name="audio_time_out_ivrs")
     invalid_retries = models.PositiveIntegerField()
     invalid_audio = models.ForeignKey(
-        ArchivoDeAudio, blank=True, null=True, related_name="audio_invalid_ivrs")
+        ArchivoDeAudio, on_delete=models.PROTECT, blank=True, null=True,
+        related_name="audio_invalid_ivrs")
 
     def __unicode__(self):
         return "IVR {0}".format(self.nombre)

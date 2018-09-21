@@ -106,6 +106,20 @@ def escribir_ruta_entrante_config(self, ruta_entrante):
         )
 
 
+def eliminar_ruta_entrante_config(self, ruta_entrante):
+    try:
+        sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
+        sincronizador.eliminar_y_regenerar_asterisk(ruta_entrante)
+    except RestablecerConfiguracionTelefonicaError, e:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "con el siguiente error: {0} .".format(e))
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
+        )
+
+
 def escribir_nodo_entrante_config(self, nodo_destino_entrante, sincronizador):
     try:
         sincronizador.regenerar_asterisk(nodo_destino_entrante)
@@ -371,6 +385,11 @@ class RutaEntranteUpdateView(RutaEntranteMixin, UpdateView):
     template_name = "editar_ruta_entrante.html"
     model = RutaEntrante
     form_class = RutaEntranteForm
+
+    def form_valid(self, form):
+        # Antes de escribir los nuevos datos de la ruta entrante, borro los viejos.
+        eliminar_ruta_entrante_config(self, self.get_object())
+        return super(RutaEntranteUpdateView, self).form_valid(form)
 
 
 class RutaEntranteDeleteView(DeleteView):

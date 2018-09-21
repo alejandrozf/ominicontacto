@@ -103,6 +103,12 @@
 - name: Template of omnileads-iptables
   template: src=templates/omnileads-iptables dest={{ install_prefix }}bin/omnileads-iptables mode=755
 
+# Habilito kamailio
+- name: Enable of kamailio
+  command: systemctl enable kamailio
+  become: true
+  become_method: sudo
+
 - name: Restart kamailio service
   service: name=kamailio state=restarted enabled=yes
   tags: ['never','postinstall']

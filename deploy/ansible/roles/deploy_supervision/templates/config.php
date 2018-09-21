@@ -2,7 +2,7 @@
 date_default_timezone_set("America/Argentina/Cordoba");
 
 define('AMI_USERNAME','omnisup');
-define('AMI_PASWORD','Sup3rst1c10n');
+define('AMI_PASSWORD','Sup3rst1c10n');
 define('AMI_HOST','127.0.0.1');
 define('PG_USER', 'kamailio');
 define('PG_PASSWORD', 'kamailiorw');

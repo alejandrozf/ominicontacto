@@ -468,14 +468,17 @@ class ArchivoDeAudio(models.Model):
 
     def __unicode__(self):
         if self.borrado:
-            return '(ELiminado) {0}'.format(self.descripcion)
+            return _(u'(Eliminado) {0}').format(self.descripcion)
         return self.descripcion
 
     def borrar(self):
         """
         Setea la ArchivoDeAudio como BORRADO.
         """
-        logger.info("Seteando ArchivoDeAudio %s como BORRADO", self.id)
+        if self.usado_en_ivr():
+            raise ValidationError(_(u'No se puede borrar un Archivo de Audio en uso por IVR'))
+
+        logger.info(_("Seteando ArchivoDeAudio %s como BORRADO"), self.id)
 
         self.borrado = True
         self.save()
@@ -510,6 +513,12 @@ class ArchivoDeAudio(models.Model):
             descripcion = descripcion + '_' + str(ultimo + 1)
 
         return descripcion
+
+    def usado_en_ivr(self):
+        # Si esta usado en IVR no se puede borrar (si solo es usado en campañas si)
+        return self.audio_principal_ivrs.exists() or \
+            self.audio_time_out_ivrs.exists() or \
+            self.audio_invalid_ivrs.exists()
 
 
 class CampanaManager(models.Manager):
