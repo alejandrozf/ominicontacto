@@ -1011,6 +1011,14 @@ class ReglasIncidenciaForm(forms.ModelForm):
             "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+    def save(self, commit=True):
+        regla = super(ReglasIncidenciaForm, self).save(commit=False)
+        if regla.estado == ReglasIncidencia.TERMINATED:
+            regla.estado_personalizado = ReglasIncidencia.ESTADO_PERSONALIZADO_CONTESTADOR
+        if commit:
+            regla.save()
+        return regla
+
 
 class ReglasIncidenciaBaseFomset(BaseInlineFormSet):
 

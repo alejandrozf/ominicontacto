@@ -2865,6 +2865,8 @@ class ReglasIncidencia(models.Model):
         (RS_TIMEOUT, "Timeout")
     )
 
+    ESTADO_PERSONALIZADO_CONTESTADOR = 'CONTESTADOR'
+
     FIXED = 1
 
     MULT = 2
