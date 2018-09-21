@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Genera archivos de configuración para Asterisk: dialplan y queues.
@@ -94,18 +111,18 @@ class SipConfigCreator(object):
                 config_chunk = self._generar_config_sip(agente)
                 logger.info("Config sip generado OK para agente %s",
                             agente.user.get_full_name())
-            except:
+            except Exception as e:
                 logger.exception(
-                    "No se pudo generar configuracion de "
-                    "Asterisk para la quene {0}".format(agente.user.get_full_name()))
+                    "Error {0}: No se pudo generar configuracion de "
+                    "Asterisk para la quene {1}".format(e.message, agente.user.get_full_name()))
 
                 try:
                     traceback_lines = [
                         "; {0}".format(line)
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
-                except:
-                    traceback_lines = "Error al intentar generar traceback"
+                except Exception as e:
+                    traceback_lines = "Error {0} al intentar generar traceback".format(e.message)
                     logger.exception("Error al intentar generar traceback")
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -128,19 +145,19 @@ class SipConfigCreator(object):
                 config_chunk = self._generar_config_sip(supervisor)
                 logger.info("Config sip generado OK para supervisor %s",
                             supervisor.user.get_full_name())
-            except:
+            except Exception as e:
                 logger.exception(
-                    "No se pudo generar configuracion de "
-                    "Asterisk para la quene {0}".format(supervisor.user.get_full_name()))
+                    "Error {0}: no se pudo generar configuracion de "
+                    "Asterisk para la queue {0}".format(e.message, supervisor.user.get_full_name()))
 
                 try:
                     traceback_lines = [
                         "; {0}".format(line)
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
-                except:
-                    traceback_lines = "Error al intentar generar traceback"
-                    logger.exception("Error al intentar generar traceback")
+                except Exception as e:
+                    traceback_lines = "Error {0} al intentar generar traceback".format(e.message)
+                    logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
                 param_failed = {'oml_queue_name': supervisor.user.get_full_name(),
@@ -277,19 +294,19 @@ class QueuesCreator(object):
                 config_chunk = self._generar_dialplan(campana)
                 logger.info("Dialplan generado OK para queue %s",
                             campana.nombre)
-            except:
+            except Exception as e:
                 logger.exception(
-                    "No se pudo generar configuracion de "
-                    "Asterisk para la quene {0}".format(campana.nombre))
+                    "Error {0}: No se pudo generar configuracion de "
+                    "Asterisk para la queue {1}".format(e.message, campana.nombre))
 
                 try:
                     traceback_lines = [
                         "; {0}".format(line)
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
-                except:
-                    traceback_lines = "Error al intentar generar traceback"
-                    logger.exception("Error al intentar generar traceback")
+                except Exception as e:
+                    traceback_lines = "Error {0}: al intentar generar traceback".format(e.message)
+                    logger.exception(traceback)
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
                 param_failed = {'oml_queue_name': campana.nombre,
@@ -308,19 +325,19 @@ class QueuesCreator(object):
                 config_chunk = self._generar_dialplan_entrantes(campana)
                 logger.info("Dialplan generado OK para queue %s",
                             campana.nombre)
-            except:
+            except Exception as e:
                 logger.exception(
-                    "No se pudo generar configuracion de "
-                    "Asterisk para la quene {0}".format(campana.nombre))
+                    "Error {0}: no se pudo generar configuracion de "
+                    "Asterisk para la queue {1}".format(e.message, campana.nombre))
 
                 try:
                     traceback_lines = [
                         "; {0}".format(line)
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
-                except:
-                    traceback_lines = "Error al intentar generar traceback"
-                    logger.exception("Error al intentar generar traceback")
+                except Exception as e:
+                    traceback_lines = "Error {0} al intentar generar traceback".format(e.message)
+                    logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
                 param_failed = {'oml_queue_name': campana.nombre,
@@ -409,7 +426,9 @@ class RutasSalientesConfigCreator(object):
         # Agrega parametros
         rutas_file.append("exten => i,1,Verbose(2, no existe patron)\n")
         rutas_file.append("same => n,Set(__DIALSTATUS=NONDIALPLAN)\n")
-        rutas_file.append("same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${OMLOUTNUM})\n")
+        rutas_file.append("same => n,Set(SHARED(OMLCALLSTATUS,${OMLMOTHERCHAN})=${DIALSTATUS})\n")
+        gosub = "same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${OMLOUTNUM})\n"
+        rutas_file.append(gosub)
 
         # agrego las rutas con los patrones de discado
         for ruta in rutas:
@@ -419,19 +438,19 @@ class RutasSalientesConfigCreator(object):
             try:
                 config_chunk = self._generar_config(ruta)
                 logger.info("Config generado OK para ruta saliente %s", ruta.id)
-            except:
+            except Exception as e:
                 logger.exception(
-                    "No se pudo generar configuracion de "
-                    "Asterisk para la ruta {0}".format(ruta.id))
+                    "Error {0}: No se pudo generar configuracion de "
+                    "Asterisk para la ruta {1}".format(e.message, ruta.id))
 
                 try:
                     traceback_lines = [
                         "; {0}".format(line)
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
-                except:
-                    traceback_lines = "Error al intentar generar traceback"
-                    logger.exception("Error al intentar generar traceback")
+                except Exception as e:
+                    traceback_lines = "Error {0}: al intentar generar traceback".format(e.message)
+                    logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
                 param_failed = {'oml_ruta_name': ruta.nombre,
@@ -556,8 +575,8 @@ class AsteriskConfigReloader(object):
                 for line in stderr:
                     if line:
                         logger.warn(" STDERR> %s", line)
-            except:
-                logger.exception("Error al intentar reporter STDERR y STDOUT")
+            except Exception as e:
+                logger.exception("Error {0} al intentar reporter STDERR y STDOUT".format(e.message))
 
             return e.returncode
 
@@ -566,7 +585,8 @@ class AsteriskConfigReloader(object):
             stderr_file.close()
 
     def reload_asterisk(self):
-        #subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx', '\'core reload\''])
+        # subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx',
+        # '\'core reload\''])
         subprocess.call(settings.OML_RELOAD_CMD, shell=True)
 
 
@@ -594,9 +614,9 @@ class ConfigFile(object):
         finally:
             try:
                 os.remove(tmp_filename)
-            except:
-                logger.exception("Error al intentar borrar temporal %s",
-                                 tmp_filename)
+            except Exception as e:
+                logger.exception("Error {0} al intentar borrar temporal {1}".format(
+                    e.message, tmp_filename))
 
     def copy_asterisk(self):
         subprocess.call(['scp', self._filename, ':'.join([self._hostname,

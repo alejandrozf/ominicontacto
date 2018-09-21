@@ -1,0 +1,102 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+- name: Installation of docker-engine required packages (centos)
+  yum: name={{ item }} state=present
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+  when: ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
+
+- name: Installation of docker-engine required packages (debian)
+  apt: name={{ item }} state=present
+  with_items:
+    - ca-certificates
+    - gnupg2
+    - software-properties-common
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+- name: Add of docker repository key (debian)
+  apt_key: url=https://download.docker.com/linux/debian/gpg state=present
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+- name: Add of docker repository (debian)
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+    state: present
+    validate_certs: no
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+- name: Docker Installation (debian)
+  apt: update_cache=yes allow_unauthenticated=yes cache_valid_time=12 name=docker-ce state=present force=yes
+  when: ansible_os_family == "Debian"
+  register: command_result
+  become: true
+  become_method: sudo
+
+- name: Docker Installation (centos)
+  yum: name=docker-ce state=present
+  when: ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
+
+- name: Start docker
+  service: name=docker state=started enabled=yes
+  become: true
+  become_method: sudo
+
+- name: Installation of Docker-Compose
+  shell: "{{ item }}"
+  with_items:
+    - curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+    - chmod +x /usr/local/bin/docker-compose
+
+- name: Creation of init scripts of containers
+  template: src=templates/{{ item }} dest={{ install_prefix }}bin mode=755
+  with_items:
+    - run-docker.sh
+    - exec-containers.sh
+    - docker-compose.yml
+    - certificate-create.sh
+
+- name: Change permission of docker volumes folder
+  file: path=/var/lib/docker/volumes/ owner={{ usuario }} group={{ usuario }} state=directory
+  become: true
+  become_method: sudo
+
+- name: Creation of openssl.cnf
+  template: src=roles/kamailio/templates/openssl.cnf.j2 dest=/tmp/openssl.cnf mode=755
+
+- name: Creation of script conversor.sh
+  template: src=roles/asterisk/templates/conversor.sh dest=/tmp/conversor.sh mode=700
+
+- name: Creation of logs folders in /var/log/
+  file: dest=/var/log/asterisk state=directory owner={{ usuario }} group={{ usuario }} mode=755
+
+- name: Execution of run-docker.sh init script
+  shell: "./run-docker.sh chdir={{ install_prefix }}bin"

@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """Tests para los reportes que se realizan desde una campaña"""
 
@@ -6,6 +23,8 @@ from __future__ import unicode_literals
 
 from datetime import timedelta
 
+
+from pygal import Bar
 from mock import patch
 
 from django.core.urlresolvers import reverse
@@ -143,8 +162,9 @@ class ReportesCampanasTests(TestCase):
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
+    @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_calificaciones_coinciden_estadisticas_sistema(
-            self, crea_reporte_pdf, crea_reporte_csv):
+            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
@@ -159,8 +179,9 @@ class ReportesCampanasTests(TestCase):
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
+    @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_llamadas_analizan_no_atendidas_que_modifican_calificaciones(
-            self, crea_reporte_pdf, crea_reporte_csv):
+            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
         # simulamos otra llamada a un contacto ya calificado y una modificación en la calificación
         # existente
         self.calif_gestion.observaciones = "Nueva observacion"
@@ -174,8 +195,9 @@ class ReportesCampanasTests(TestCase):
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
+    @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_no_contactados_coinciden_estadisticas_sistema(
-            self, crea_reporte_pdf, crea_reporte_csv):
+            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
@@ -184,8 +206,9 @@ class ReportesCampanasTests(TestCase):
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
+    @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_calificaciones_por_agente_coinciden_estadisticas_sistema(
-            self, crea_reporte_pdf, crea_reporte_csv):
+            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
         agente_profile1, agente_profile2, agente_profile3 = AgenteProfileFactory.create_batch(3)
         CalificacionClienteFactory(
             opcion_calificacion=self.opcion_calificacion_gestion, agente=agente_profile1)

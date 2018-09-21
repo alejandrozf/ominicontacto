@@ -1,3 +1,20 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 ---
 
 # Detecto si existe el binario de rtpengine y registro el resultado en rtpengine_installed
@@ -55,11 +72,11 @@
   when: kamailio_installed|failed
 
 - include: postgresusers.yml
-  tags: ['postgresusers','kamailio']
-
-- include: kamailio-as-service.yml
   tags: kamailio
 
 - include: certificate_CA.yml
-  tags: kamailio-cert
+  tags: kamailio
   when: certs_exists|failed
+
+- include: kamailio-as-service.yml
+  tags: kamailio

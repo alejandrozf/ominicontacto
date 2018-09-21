@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Servicio encargado de validar y crear las listas negras
@@ -7,17 +24,13 @@ OJO: servicio copiado del modulo base_de_datos_contactos
 
 from __future__ import unicode_literals
 
-from __builtin__ import callable, enumerate
-import json
 import logging
-import pprint
 import os
-import re
 from django.utils.encoding import smart_text
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
-from ominicontacto_app.models import Backlist, ContactoBacklist
+from ominicontacto_app.models import ContactoBacklist
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.asterisk_config import BackListConfigFile
 
@@ -72,7 +85,7 @@ class CreacionBacklistService(object):
                     back_list=backlist,
                 )
         except OmlParserMaxRowError:
-            base_datos_contacto.elimina_contactos()
+            backlist.elimina_contactos()
             raise
 
         except OmlParserCsvImportacionError:
@@ -148,4 +161,4 @@ class ValidaDataService(object):
 
         if primer_linea[0] != 'telefono':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
-                                                 "columna debe ser telefono"))
+                                                           "columna debe ser telefono"))

@@ -1,0 +1,6 @@
+# para usarlo individualmente, 'docker pull alejandrozf/docker-stuff:python-flake8
+FROM python:2.7.15
+
+RUN python -m pip install flake8
+
+CMD ["python"]

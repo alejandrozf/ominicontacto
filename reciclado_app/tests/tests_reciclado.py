@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Tests del metodo 'ominicontacto_app.models'
@@ -8,9 +25,12 @@ from __future__ import unicode_literals
 
 import random
 
+from mock import patch
+
 from django.db.models import Count
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import CalificacionCliente
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from reciclado_app.resultado_contactacion import (
     EstadisticasContactacion, RecicladorContactosCampanaDIALER
 )
@@ -20,7 +40,8 @@ from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 class RecicladoTest(OMLBaseTest):
 
-    def setUp(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def setUp(self, _convertir_audio):
         base_datos = self.crear_base_datos_contacto(cant_contactos=100)
         self.campana = self.crear_campana_dialer(bd_contactos=base_datos)
         user_agente = self.crear_user_agente()
@@ -133,7 +154,6 @@ class RecicladoTest(OMLBaseTest):
 
             calificaciones_query = self.campana.obtener_calificaciones().filter(
                 opcion_calificacion=calificacion).values_list('contacto_id', flat=True)
-            calificados = set(calificaciones_query)
             self.assertEquals(calificaciones_query.count(), len(contactos_reciclados))
 
     def test_obtiene_contactos_reciclados_contactados_no_calificados(self):

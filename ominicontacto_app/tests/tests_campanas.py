@@ -1,15 +1,30 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Tests relacionados con las campañas
 """
 from __future__ import unicode_literals
 
-import os
 import json
 import threading
 
-from crontab import CronTab
 from mock import patch
 
 from django.core.urlresolvers import reverse
@@ -98,10 +113,6 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
         self.queue = QueueFactory.create(campana=self.campana_activa)
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
-
-    def tearDown(self):
-        self.campana_activa.eliminar_tarea_actualizacion()
-        self.campana_borrada.eliminar_tarea_actualizacion()
 
     def test_no_se_devuelve_un_mismo_contacto_a_mas_de_un_agente_en_campanas_preview(self):
         user1 = UserFactory(username='user1', is_agente=True)
@@ -196,10 +207,6 @@ class CampanasTests(OMLBaseTest):
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
         self.queue = QueueFactory.create(campana=self.campana_activa)
 
-    def tearDown(self):
-        for camp_prev in Campana.objects.obtener_campanas_preview():
-            camp_prev.eliminar_tarea_actualizacion()
-
 
 class AgenteCampanaTests(CampanasTests):
 
@@ -268,7 +275,9 @@ class AgenteCampanaTests(CampanasTests):
         self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
 
     @patch('requests.post')
-    def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(self, post):
+    @patch.object(Campana, 'eliminar_tarea_actualizacion')
+    def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(
+            self, eliminar_tarea_actualizacion, post):
         values, url, post_data = self._inicializar_valores_formulario_cliente()
         base_datos = self.contacto.bd_contacto
         nombres = base_datos.get_metadata().nombres_de_columnas[1:]
@@ -297,9 +306,6 @@ class SupervisorCampanaTests(CampanasTests):
     def test_validacion_nombres_de_campana_no_permite_espacios(self):
         with self.assertRaisesMessage(ValidationError, "el nombre no puede contener espacios"):
             validar_nombres_campanas("nombre con espacios")
-
-    def test_validacion_campana_debe_tener_alguna_opcion_calificacion_de_gestion(self):
-        pass
 
     def test_tipo_campanas_preview(self):
         self.assertEqual(Campana.TYPE_PREVIEW, 4)
@@ -342,8 +348,9 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertContains(response, self.campana_borrada.nombre)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(Campana, "crear_tarea_actualizacion")
     def test_usuario_logueado_puede_crear_campana_preview(
-            self, _generar_y_recargar_configuracion_asterisk):
+            self, crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
@@ -373,8 +380,9 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(Campana.objects.get(pk=self.campana_activa.pk).objetivo, nuevo_objetivo)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(Campana, "eliminar_tarea_actualizacion")
     def test_usuario_logueado_puede_eliminar_campana_preview(
-            self, _generar_y_recargar_configuracion_asterisk):
+            self, eliminar_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
         self.assertEqual(Campana.objects.get(
             pk=self.campana_activa.pk).estado, Campana.ESTADO_ACTIVA)
@@ -422,8 +430,9 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(isinstance(agente_en_contacto, AgenteEnContacto))
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(Campana, "crear_tarea_actualizacion")
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto(
-            self, _generar_y_recargar_configuracion_asterisk):
+            self, crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
@@ -519,45 +528,33 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(dict_response['contacto_asignado'])
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(Campana, "crear_tarea_actualizacion")
     def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(
-            self, _generar_y_recargar_configuracion_asterisk):
+            self, crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data,
          post_step2_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
-        self.assertFalse(AgenteEnContacto.objects.all().exists())
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        crontab = CronTab(user=os.getlogin())
-        campana = Campana.objects.get(nombre=nombre_campana)
-        jobs_generator = crontab.find_comment(str(campana.pk))
-        job = list(jobs_generator)[0]
-        self.assertTrue(job.is_enabled())
-        self.assertTrue(job.is_valid())
-        # eliminamos la tarea generada
-        crontab.remove(job)
+        self.assertTrue(crear_tarea_actualizacion.called)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(Campana, 'eliminar_tarea_actualizacion')
     def test_borrar_campana_preview_elimina_tarea_programada_actualizacion_contactos(
-            self, _generar_y_recargar_configuracion_asterisk):
-        self.campana_activa.crear_tarea_actualizacion()
+            self, eliminar_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
         self.client.post(url, follow=True)
-        crontab = CronTab(user=os.getlogin())
-        jobs_generator = crontab.find_comment(str(self.campana_activa.pk))
-        jobs = list(jobs_generator)
-        self.assertEqual(jobs, [])
+        self.assertTrue(eliminar_tarea_actualizacion.called)
 
-    def test_finalizar_campana_preview_elimina_tarea_programada_actualizacion_contactos(self):
-        self.campana_activa.crear_tarea_actualizacion()
+    @patch.object(Campana, 'eliminar_tarea_actualizacion')
+    def test_finalizar_campana_preview_elimina_tarea_programada_actualizacion_contactos(
+            self, eliminar_tarea_actualizacion):
         self.campana_activa.finalizar()
-        crontab = CronTab(user=os.getlogin())
-        jobs_generator = crontab.find_comment(str(self.campana_activa.pk))
-        jobs = list(jobs_generator)
-        self.assertEqual(jobs, [])
+        self.assertTrue(eliminar_tarea_actualizacion.called)
 
     def test_campanas_preview_formularios_validan_minimo_tiempo_de_desconexion(self):
         nombre_campana = 'campana_preview_test'
@@ -1363,8 +1360,9 @@ class SupervisorCampanaTests(CampanasTests):
         return post_step0_data, post_step1_data, post_step2_data
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(Campana, "crear_tarea_actualizacion")
     def test_usuario_logueado_puede_crear_campana_preview_desde_template(
-            self, _generar_y_recargar_configuracion_asterisk):
+            self, crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
         queue = QueueFactory.create(
             campana=campana, pk=campana.nombre)

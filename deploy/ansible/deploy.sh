@@ -11,7 +11,7 @@
 # 2. Copia toda la carpeta ansible del repo a /var/tmp/ansible y todo el codigo a /var/tmp/ominicontacto-build
 # 3. Pregunta si se quiere dockerizar asterisk o no, para pasarle la variable a ansible.
 # 4. Ejecuta ansible segun la opcion de Dockerizar o no
-
+DOCKER="false"
 PIP=`which pip`
 current_directory=`pwd`
 TMP_ANSIBLE='/var/tmp/ansible'
@@ -49,7 +49,7 @@ Rama() {
         echo "No tienes instalado ansible"
         echo "Instalando ansible 2.5.0"
 	    echo ""
-	    $PIP install 'ansible==2.5.0.0' --user > /dev/null 2>&1
+	    $PIP install 'ansible==2.5.0.0' --user
         IS_ANSIBLE="`find /usr/bin /usr/sbin /usr/local /root ~ -name ansible |grep \"/bin/ansible\" |head -1 2> /dev/null`"
 	fi
     ANS_VERSION=`"$IS_ANSIBLE" --version |grep ansible |head -1`
@@ -58,7 +58,7 @@ Rama() {
     else
         echo "Tienes una versión de ansible distinta a la 2.5.0"
         echo "Instalando versión 2.5.0"
-        $PIP install 'ansible==2.5.0.0' --user > /dev/null 2>&1
+        $PIP install 'ansible==2.5.0.0' --user
     fi
 
     cd $current_directory
@@ -152,20 +152,21 @@ EOF
 }
 
 Docker(){
-    while true; do
-      echo -en "Desea correr asterisk en container (no recomendado para producción)? [si/no]: "; read pregunta
-      if [ $pregunta == "si" ] || [ $pregunta == "Si" ]; then
-        DOCKER="true"
-        sed -i "s/\(^DOCKER\).*/DOCKER=true/" $TMP_ANSIBLE/hosts
-        break
-      elif [ $pregunta == "no" ] || [ $pregunta == "No" ]; then
-        sed -i "s/\(^DOCKER\).*/DOCKER=false/" $TMP_ANSIBLE/hosts
-        DOCKER="false"
-        break
-      else
-        echo "Opción inválida ingrese si o no"
-      fi
-    done
+#    while true; do
+#      echo -en "Desea correr asterisk en container (no recomendado para producción)? [si/no]: "; read pregunta
+#      if [ $pregunta == "si" ] || [ $pregunta == "Si" ]; then
+#        DOCKER="true"
+#        sed -i "s/\(^DOCKER\).*/DOCKER=true/" $TMP_ANSIBLE/hosts
+#        break
+#      elif [ $pregunta == "no" ] || [ $pregunta == "No" ]; then
+#        sed -i "s/\(^DOCKER\).*/DOCKER=false/" $TMP_ANSIBLE/hosts
+#        DOCKER="false"
+#        break
+#      else
+#        echo "Opción inválida ingrese si o no"
+#      fi
+#    done
+echo ""
 }
 
 Preliminar() {
@@ -210,7 +211,7 @@ rm -rf /var/tmp/ominicontacto-build
 
 }
 
-while getopts "r::t:ihd:" OPTION;do
+while getopts "r::t:ihd" OPTION;do
 	case "${OPTION}" in
 		r) # Rama a deployar
             Rama $OPTARG
@@ -218,18 +219,18 @@ while getopts "r::t:ihd:" OPTION;do
 		i) #Realizar pasos y agregar opciones preliminares
 		    Preliminar
 		;;
+    d) #Cliente de desarrollo?
+		    Desarrollo
+		;;
 		t) #Tag
 		    set -f # disable glob
-           IFS=',' # split on space characters
-            array=($OPTARG) # use the split+glob operator
-   		    Tag $array
+        IFS=',' # split on space characters
+        array=($OPTARG) # use the split+glob operator
+   		  Tag $array
 		;;
 		h) # Print the help option
 			Help
 		;;
-		d) #Cliente de desarrollo?
-		    Desarrollo
-		 ;;
 	esac
 done
 if [ $# -eq 0  ]; then Help; fi

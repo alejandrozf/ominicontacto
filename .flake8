@@ -1,0 +1,11 @@
+[flake8]
+ignore = []
+max-line-length = 100
+exclude =
+    .git,
+    ominicontacto/settings.py
+    ominicontacto_app/asterisk_config_generador_de_partes.py
+    ominicontacto_app/version.py
+    configuracion_telefonia_app/migrations
+    ominicontacto_app/migrations
+    reportes_app/migrations

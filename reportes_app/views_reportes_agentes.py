@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 from __future__ import unicode_literals
 
@@ -24,6 +41,20 @@ class ReportesTiemposAgente(FormView):
     model = AgenteProfile
     form_class = ReporteAgentesForm
 
+    def get_form_kwargs(self):
+        kwargs = super(ReportesTiemposAgente, self).get_form_kwargs()
+        supervisor = self.request.user.get_supervisor_profile()
+        if supervisor:
+            agentes_asociados = AgenteProfile.objects.obtener_agentes_supervisor(supervisor)
+            kwargs['agentes_asociados'] = agentes_asociados
+            id_grupos = agentes_asociados.values_list('grupo_id', flat=True)
+            kwargs['grupos_asociados'] = Grupo.objects.filter(id__in=id_grupos)
+        else:
+            kwargs['agentes_asociados'] = AgenteProfile.objects.filter(is_inactive=False)
+            kwargs['grupos_asociados'] = Grupo.objects.all()
+
+        return kwargs
+
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')
@@ -42,8 +73,13 @@ class ReportesTiemposAgente(FormView):
             grupo = Grupo.objects.get(pk=int(grupo_id))
             agentes = grupo.agentes.filter(is_inactive=False)
 
-        if todos_agentes:
-            agentes = []
+        if todos_agentes or (agentes == [] and not grupo_id):
+            supervisor = self.request.user.get_supervisor_profile()
+            if supervisor:
+                agentes = AgenteProfile.objects.obtener_agentes_supervisor(supervisor)
+            else:
+                # Asumo es Administrador
+                agentes = AgenteProfile.objects.obtener_activos()
 
         # generamos los reportes graficos
         tiempos_agentes = TiemposAgente()
@@ -119,8 +155,7 @@ def reporte_por_fecha_pausa_modal_agente_view(request):
             data = {
                 'nombre_agente': agente.user.get_full_name(),
                 'tbody': html,
-                'pausa': pausa['nombre']
-                  }
+                'pausa': pausa['nombre']}
             return JsonResponse(data, safe=True)
 
     return render(request)

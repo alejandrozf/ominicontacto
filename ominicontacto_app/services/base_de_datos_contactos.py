@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Servicio encargado de validar y crear las bases de datos.
@@ -9,7 +26,6 @@ from __future__ import unicode_literals
 from __builtin__ import callable, enumerate
 import json
 import logging
-import pprint
 import os
 import re
 from django.utils.encoding import smart_text
@@ -67,16 +83,16 @@ class CreacionBaseDatosService(object):
                 (BaseDatosContacto.ESTADO_EN_DEFINICION,
                  BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA))
 
-        metadata = base_datos_contacto.get_metadata()
+        base_datos_contacto.get_metadata()
 
         # FIXME: este metodo valida la consistencia de los metadatos, y
-        #  lanza una excepcion ante cualquier problema. OJO! Esto no implica
-        #  que los metadatos sean correctos y consistentes con los datos,
-        #  pero al menos validan la consistencia "interna" de los metadatos
-    #     metadata.validar_metadatos()
+        # lanza una excepcion ante cualquier problema. OJO! Esto no implica
+        # que los metadatos sean correctos y consistentes con los datos,
+        # pero al menos validan la consistencia "interna" de los metadatos
+        # metadata.validar_metadatos()
 
         # Antes que nada, borramos los contactos preexistentes
-        #base_datos_contacto.elimina_contactos()
+        # base_datos_contacto.elimina_contactos()
 
         parser = ParserCsv()
 
@@ -152,21 +168,16 @@ class CreacionBaseDatosService(object):
                 base_datos_contacto)
             cantidad_contactos = 0
             for lista_dato in estructura_archivo[1:]:
-                if len(lista_dato) > 5:
-                    datos = json.dumps(lista_dato[5:])
-                else:
-                    datos = ""
                 cantidad_contactos += 1
                 contacto = Contacto.objects.filter(
-                   # id_cliente=int(lista_dato[1]),
+                    # id_cliente=int(lista_dato[1]),
                     bd_contacto=base_datos_contacto
                 )
                 if len(contacto) > 0:
                     raise (ContactoExistenteError("ya existe el contacto con el"
                                                   "  de id de cliente: {0}"
                                                   " la base de datos ".format(
-                        int(lista_dato[1])))
-                           )
+                                                      int(lista_dato[1]))))
 
         except OmlParserMaxRowError:
             base_datos_contacto.elimina_contactos()
@@ -207,10 +218,8 @@ class PredictorMetadataService(object):
 
         matriz = []
         for linea in lineas:
-            matriz.append([
-                           func_validadora(celda)
-                           for celda in linea
-                           ])
+            matriz.append([func_validadora(celda)
+                           for celda in linea])
 
         # https://stackoverflow.com/questions/4937491/\
         #    matrix-transpose-in-python
@@ -285,9 +294,7 @@ class PredictorMetadataService(object):
         # chequeamos que el nombre de la primera columna sea telefono
         if primer_linea[0] != 'telefono':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
-                                                 "columna debe ser telefono"))
-
-
+                                                           "columna debe ser telefono"))
 
         # ======================================================================
         # Primero detectamos columnas de datos
@@ -345,10 +352,10 @@ class PredictorMetadataService(object):
             raise(NoSePuedeInferirMetadataError("No se pudo inferir ningun "
                                                 "tipo de dato"))
 
-        #======================================================================
+        # ======================================================================
         # Si detectamos telefono, fecha u hora podemos verificar si la
         #  primer linea es encabezado o dato
-        #======================================================================
+        # ======================================================================
 
         validaciones_primer_linea = []
 
@@ -358,15 +365,11 @@ class PredictorMetadataService(object):
 
         for col_fecha in metadata.columnas_con_fecha:
             validaciones_primer_linea.append(
-                validate_fechas([
-                                 primer_linea[col_fecha]
-                                 ]))
+                validate_fechas([primer_linea[col_fecha]]))
 
         for col_hora in metadata.columnas_con_hora:
             validaciones_primer_linea.append(
-                validate_horas([
-                                primer_linea[col_hora]
-                                ]))
+                validate_horas([primer_linea[col_hora]]))
 
         assert validaciones_primer_linea
         logger.debug("validaciones_primer_linea: %s",
@@ -462,7 +465,6 @@ class PredictorMetadataService(object):
                        " columna {0} no coincide con el guardado en la base ".
                                                                format(columna_base)))
 
-
         # ======================================================================
         # Primero detectamos columnas de datos
         # ======================================================================
@@ -519,10 +521,10 @@ class PredictorMetadataService(object):
             raise(NoSePuedeInferirMetadataError("No se pudo inferir ningun "
                                                 "tipo de dato"))
 
-        #======================================================================
+        # ======================================================================
         # Si detectamos telefono, fecha u hora podemos verificar si la
         #  primer linea es encabezado o dato
-        #======================================================================
+        # ======================================================================
 
         validaciones_primer_linea = []
 
@@ -532,15 +534,11 @@ class PredictorMetadataService(object):
 
         for col_fecha in metadata.columnas_con_fecha:
             validaciones_primer_linea.append(
-                validate_fechas([
-                                 primer_linea[col_fecha]
-                                 ]))
+                validate_fechas([primer_linea[col_fecha]]))
 
         for col_hora in metadata.columnas_con_hora:
             validaciones_primer_linea.append(
-                validate_horas([
-                                primer_linea[col_hora]
-                                ]))
+                validate_horas([primer_linea[col_hora]]))
 
         assert validaciones_primer_linea
         logger.debug("validaciones_primer_linea: %s",
@@ -615,10 +613,8 @@ class CreacionBaseDatosApiService(object):
 
         matriz = []
         for linea in lineas:
-            matriz.append([
-                           func_validadora(celda)
-                           for celda in linea
-                           ])
+            matriz.append([func_validadora(celda)
+                           for celda in linea])
 
         # https://stackoverflow.com/questions/4937491/\
         #    matrix-transpose-in-python
@@ -655,9 +651,7 @@ class CreacionBaseDatosApiService(object):
 
         Devuelve instancias de MetadataBaseDatosContactoDTO.
         """
-        #assert isinstance(lineas_unsafe, (list, tuple))
-
-
+        # assert isinstance(lineas_unsafe, (list, tuple))
 
         # Primero chequeamos q' haya igual cant. de columnas
         cantidad_columnas = len(primer_linea)
@@ -669,8 +663,6 @@ class CreacionBaseDatosApiService(object):
             raise(NoSePuedeInferirMetadataError("Las lineas recibidas "
                                                 "poseen distintas cantidades "
                                                 "de columnas"))
-
-
         metadata = MetadataBaseDatosContactoDTO()
 
         # Ahora chequeamos que haya al menos 1 columna
@@ -685,9 +677,7 @@ class CreacionBaseDatosApiService(object):
         # chequeamos que el nombre de la primera columna sea telefono
         if primer_linea[0] != 'telefono':
             raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
-                                                 "columna debe ser telefono"))
-
-
+                                                           "columna debe ser telefono"))
 
         # ======================================================================
         # Primero detectamos columnas de datos
@@ -745,10 +735,10 @@ class CreacionBaseDatosApiService(object):
             raise(NoSePuedeInferirMetadataError("No se pudo inferir ningun "
                                                 "tipo de dato"))
 
-        #======================================================================
+        # ======================================================================
         # Si detectamos telefono, fecha u hora podemos verificar si la
         #  primer linea es encabezado o dato
-        #======================================================================
+        # ======================================================================
 
         validaciones_primer_linea = []
 
@@ -758,15 +748,11 @@ class CreacionBaseDatosApiService(object):
 
         for col_fecha in metadata.columnas_con_fecha:
             validaciones_primer_linea.append(
-                validate_fechas([
-                                 primer_linea[col_fecha]
-                                 ]))
+                validate_fechas([primer_linea[col_fecha]]))
 
         for col_hora in metadata.columnas_con_hora:
             validaciones_primer_linea.append(
-                validate_horas([
-                                primer_linea[col_hora]
-                                ]))
+                validate_horas([primer_linea[col_hora]]))
 
         assert validaciones_primer_linea
         logger.debug("validaciones_primer_linea: %s",

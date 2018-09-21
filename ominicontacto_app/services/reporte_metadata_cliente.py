@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Servicio para generar reporte csv de las gestiones realizada por una campana
@@ -15,6 +32,7 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 
+from ominicontacto_app.models import MetadataCliente
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 
@@ -64,6 +82,7 @@ class ArchivoDeReporteCsv(object):
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append("base_datos")
+            encabezado.append("Calificación")
             campos = campana.formulario.campos.all()
 
             for campo in campos:
@@ -78,7 +97,9 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for metadata in campana.metadatacliente.all():
+            metadata_qs, calificaciones_dict = MetadataCliente.obtener_metadata_nombre_calificacion(
+                campana.id)
+            for metadata in metadata_qs:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -91,6 +112,7 @@ class ArchivoDeReporteCsv(object):
                 for dato in datos:
                     lista_opciones.append(dato)
                 lista_opciones.append(metadata.contacto.bd_contacto)
+                lista_opciones.append(calificaciones_dict[metadata.contacto.id])
                 datos = json.loads(metadata.metadata)
                 for campo in campos:
                     lista_opciones.append(datos[campo.nombre_campo])

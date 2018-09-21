@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Servicio para generar reporte grafico de una campana
@@ -19,6 +36,8 @@ from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Cam
                                       OpcionCalificacion)
 from ominicontacto_app.services.campana_service import CampanaService
 from reportes_app.models import LlamadaLog
+
+from utiles_globales import obtener_cantidad_no_calificados
 
 import logging as _logging
 
@@ -48,22 +67,14 @@ class EstadisticasService():
         Manual y Preview contar logs con ANSWER
         Dialer y Entrante contar logs con CONNECT
         """
-
         total_llamadas_campanas_qs = LlamadaLog.objects.filter(
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk).filter(
                 Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]) |
                 Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_DIALER, Campana.TYPE_ENTRANTE],
                   tipo_llamada=LlamadaLog.LLAMADA_MANUAL) |
                 Q(event='CONNECT'))
-        total_llamadas_campanas = total_llamadas_campanas_qs.count()
-        total_calificados = CalificacionCliente.history.filter(
-            fecha__range=(fecha_desde, fecha_hasta),
-            opcion_calificacion__campana=campana, history_change_reason='calificacion').count()
-        total_atendidas_sin_calificacion = total_llamadas_campanas - total_calificados
-        if total_atendidas_sin_calificacion < 0:
-            # significa que el agente calificó llamadas que no conectaron con el usuario
-            total_atendidas_sin_calificacion = 0
-        return total_atendidas_sin_calificacion
+        return obtener_cantidad_no_calificados(
+            total_llamadas_campanas_qs, fecha_desde, fecha_hasta, campana)
 
     def obtener_cantidad_calificacion(self, campana, fecha_desde, fecha_hasta):
         """

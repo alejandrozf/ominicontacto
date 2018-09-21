@@ -1,0 +1,58 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+# Official framework image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python
+image: alejandrozf/docker-stuff:python-flake8
+
+# Pick zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
+services:
+  - name: alejandrozf/docker-stuff:postgres-plpython-template1
+    alias: plpython
+
+# This folder is cached between builds
+# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+cache:
+  paths:
+  - /root/.cache/pip/
+
+before_script:
+  - mkdir -p ~/local/
+  - cp oml_settings_local_pro.py ~/local/oml_settings_local.py
+  - ln -s ~/local/oml_settings_local.py
+  - mkdir -p /opt/omnileads/ominicontacto/
+  - touch /opt/omnileads/ominicontacto/django.log
+  - mkdir -p /opt/omnileads/static
+  - mkdir -p /opt/omnileads/media_root
+  # FIXME: what follows hack to simulate we have the 'sox' program, we should have the real program
+  # as a docker image or installed by this script
+  - touch sox
+  - chmod +x sox
+  - mv sox /usr/bin/
+  - pip install -r requirements.txt
+
+test:
+  variables:
+    POSTGRES_DB: kamailio
+    POSTGRES_USER: kamailio
+    POSTGRES_PASSWORD: kamailiorw
+    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+  script:
+    - flake8
+    - python manage.py test

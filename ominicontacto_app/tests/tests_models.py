@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Tests del metodo 'ominicontacto_app.models'
@@ -6,11 +23,14 @@ Tests del metodo 'ominicontacto_app.models'
 
 from __future__ import unicode_literals
 
+from mock import patch
+
 import datetime
 import logging as _logging
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import Campana, ReglasIncidencia
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
 logger = _logging.getLogger(__name__)
 
@@ -44,7 +64,8 @@ class UtilesTest(OMLBaseTest):
 
 class CampanaTest(OMLBaseTest):
 
-    def test_campanas_dialer_creadas(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def test_campanas_dialer_creadas(self, _convertir_audio):
         """
         - Campana creadas.
         """
@@ -58,14 +79,16 @@ class CampanaTest(OMLBaseTest):
         [self.crear_campana_manual() for _ in range(0, 10)]
         self.assertEqual(Campana.objects.all().count(), 10)
 
-    def test_campanas_entrante_creadas(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def test_campanas_entrante_creadas(self, _convertir_audio):
         """
         - Campana creadas.
         """
         [self.crear_campana_entrante() for _ in range(0, 10)]
         self.assertEqual(Campana.objects.all().count(), 10)
 
-    def test_crea_actuacion_vigente(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def test_crea_actuacion_vigente(self, _convertir_audio):
         """
         test crea actuacion vigente a campana dialer
         :return:
@@ -80,7 +103,8 @@ class CampanaTest(OMLBaseTest):
         self.assertEqual(campana.actuacionvigente.hora_desde, hora_desde)
         self.assertEqual(campana.actuacionvigente.hora_hasta, hora_hasta)
 
-    def test_crea_regla_incidencia(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def test_crea_regla_incidencia(self, _convertir_audio):
         """
         test crea regla de incidencia para campana dialer
         :return:
@@ -94,7 +118,8 @@ class CampanaTest(OMLBaseTest):
 
         self.assertEqual(campana.reglas_incidencia.all().count(), 5)
 
-    def test_campana_activar(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def test_campana_activar(self, _convertir_audio):
         """
         - Campana.activar()
         - Campana.objects.obtener_activas()
@@ -123,7 +148,8 @@ class CampanaTest(OMLBaseTest):
         for c in campanas[2:3]:
             self.assertIn(c, campanas_activas)
 
-    def test_campana_pausar(self):
+    @patch.object(ConversorDeAudioService, '_convertir_audio')
+    def test_campana_pausar(self, _convertir_audio):
         """
         - Campana.pausar()
         - Campana.objects.obtener_pausadas()

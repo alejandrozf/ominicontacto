@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Servicio para generar reporte csv de las reportes de los agentes
@@ -17,7 +34,7 @@ from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import AgenteProfile, Campana
+from ominicontacto_app.models import AgenteProfile, Campana, Contacto
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 from reportes_app.models import LlamadaLog
@@ -138,6 +155,7 @@ class ArchivoDeReporteCsv(object):
                 log_no_contactado_fecha_local = localtime(log_no_contactado.time)
                 lista_opciones.append(log_no_contactado.numero_marcado)
                 contacto_id = log_no_contactado.contacto_id
+                contacto = self.contactos_dict.get(contacto_id, None)
                 datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
@@ -146,7 +164,11 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append("")
                 lista_opciones.append("")
                 lista_opciones.append(self.agentes_dict.get(log_no_contactado.agente_id, -1))
-                lista_opciones.append(campana.bd_contacto)
+                # TODO: Esto no deberia pasar. Verificar
+                if contacto is None:
+                    lista_opciones.append(campana.bd_contacto)
+                else:
+                    lista_opciones.append(contacto.bd_contacto)
 
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
@@ -157,6 +179,7 @@ class ArchivoDeReporteCsv(object):
                 log_no_contactado_fecha_local = localtime(log_no_calificado.time)
                 lista_opciones.append(log_no_calificado.numero_marcado)
                 contacto_id = log_no_calificado.contacto_id
+                contacto = self.contactos_dict.get(contacto_id, None)
                 datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
@@ -165,7 +188,11 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append("Llamada Atendida sin calificacion")
                 lista_opciones.append("")
                 lista_opciones.append(self.agentes_dict.get(log_no_calificado.agente_id, -1))
-                lista_opciones.append(campana.bd_contacto)
+                # TODO: Esto no deberia pasar. Verificar
+                if contacto is None:
+                    lista_opciones.append(campana.bd_contacto)
+                else:
+                    lista_opciones.append(contacto.bd_contacto)
 
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
@@ -269,9 +296,22 @@ class ReporteCampanaContactadosCSV(object):
     def _obtener_contactos_dict(self, campana):
         # se crean un diccionario de los contactos de la campaña
         # para evitar accesos a la BD para recuperarlos desde los logs
+
+        # Si la campaña tuviera referencia a todas las bases de datos que tuvo
+        # la busqueda seria mas facil
+        logs_campana = LlamadaLog.objects.filter(campana_id=campana.id)
+        contactos_ids = logs_campana.values_list('contacto_id', flat=True)
+        contactos_campana_en_logs = Contacto.objects.filter(id__in=contactos_ids)
+        # Traigo con su base de datos asociada.
+        contactos_campana_en_logs = contactos_campana_en_logs.select_related('bd_contacto')
+
         contactos_dict = {}
         contactos_campana = campana.bd_contacto.contactos.all()
         for contacto in contactos_campana:
+            contactos_dict[contacto.pk] = contacto
+        # TODO: Analizar si es necesario el loop anterior o si estos datos solo se buscaran para
+        # contactos que esten en los logs.
+        for contacto in contactos_campana_en_logs:
             contactos_dict[contacto.pk] = contacto
         return contactos_dict
 
@@ -287,7 +327,7 @@ class ReporteCampanaContactadosCSV(object):
         no_contactados = self._obtener_listado_no_contactados_fecha(
             campana, fecha_desde, fecha_hasta)
         no_califico = self._obtener_listado_no_calificados_fecha(
-            campana, calificados, fecha_desde, fecha_hasta)
+            campana, calificados, no_contactados, fecha_desde, fecha_hasta)
         # Reporte contactados
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "contactados", agentes_dict, contactos_dict)
@@ -331,8 +371,11 @@ class ReporteCampanaContactadosCSV(object):
             event__in=LlamadaLog.EVENTOS_NO_CONEXION,
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk)
 
-    def _obtener_listado_no_calificados_fecha(self, campana, calificados, fecha_desde, fecha_hasta):
-        numeros_calificados = calificados.values_list('contacto__telefono', flat=True)
+    def _obtener_listado_no_calificados_fecha(self, campana, calificados, no_contactados,
+                                              fecha_desde, fecha_hasta):
+        numeros_calificados = list(calificados.values_list('contacto__telefono', flat=True))
+        numeros_no_contactados = list(no_contactados.values_list('numero_marcado', flat=True))
+        numeros_calificados.extend(numeros_no_contactados)
         no_calificados = LlamadaLog.objects.exclude(numero_marcado__in=numeros_calificados).filter(
             event='DIAL', time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk)
         return no_calificados

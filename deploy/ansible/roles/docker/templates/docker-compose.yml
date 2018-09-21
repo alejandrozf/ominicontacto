@@ -1,77 +1,31 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 version: '3.2'
 services:
- asterisk_felo:
+  asterisk:
     #build:
     #  context: ./build
     #  dockerfile: Dockerfile-asterisk
     #config:
-    container_name: asterisk_felo
+    container_name: asterisk
     #depends_on:
-    dns: 8.8.8.8
-    #env_file
-    #environment
-    #expose
-    #extra_hosts
-    healthcheck:
-      test: ["CMD", "asterisk", "-rx", "'core show version'"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      #start_period: 40s
-    image: lionite/asterisk-omnileads:v1
-    #isolation:
-    #labels: asterisk
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "20M"
-        max-file: "10"
-    network_mode: bridge
-    #pid:
-    ports:
-     - "5060:5060/udp"
-     - "4569:4569/udp"
-     - "5038:5038/tcp"
-     - "7088:7088/tcp"
-     - "10000-20000:10000-20000/udp"
-     - "5160:5160/udp"
-    restart: on-failure
-    #secrets
-    #security_opt:
-    stop_grace_period: 1m30s
-    #stop:
-    #sysctls:
-    #tmpfs:
-     #- /run
-     #- /tmp
-    #userns_mode: "host"
-    volumes:
-      - type: bind
-        source: {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf
-        target: {{ asterisk_location }}/etc/asterisk/
-      - type: bind
-        source: {{ asterisk_location }}/var/log/
-        target: /var/log/asterisk
-      - type: bind
-        source: {{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/agis
-        target: {{ asterisk_location }}/var/lib/asterisk/agi-bin/
-      - type: bind
-        source: /usr/pgsql-9.6/
-        target: /usr/pgsql-9.6/
-      - type: volume
-        source: grabaciones_felo
-        target: {{ asterisk_location }}/var/spool/asterisk/monitor
-      - type: bind
-        source: {{ install_prefix }}media_root/audio_asterisk_predefinido/
-        target: {{ asterisk_location }}/var/lib/asterisk/sounds/oml/
-      - type: bind
- asterisk_anita:
-    #build:
-    #  context: ./build
-    #  dockerfile: Dockerfile-asterisk
-    #config:
-    container_name: asterisk_anita
-    #depends_on:
+    hostname: asterisk
+    domainname: example.com
     dns: 8.8.8.8
     #env_file
     #environment
@@ -94,11 +48,9 @@ services:
     network_mode: host
     #pid:
     ports:
-     - "5060:5060/udp"
-     - "4569:4569/udp"
      - "5038:5038/tcp"
      - "7088:7088/tcp"
-     - "10000-20000:10000-20000/udp"
+     - "10001-10500:10001-10500/udp"
      - "5160:5160/udp"
     restart: on-failure
     #secrets
@@ -124,12 +76,10 @@ services:
         source: /usr/pgsql-9.6/
         target: /usr/pgsql-9.6/
       - type: volume
-        source: grabaciones_anita
+        source: grabaciones
         target: {{ asterisk_location }}/var/spool/asterisk/monitor
       - type: bind
         source: {{ install_prefix }}media_root/audio_asterisk_predefinido/
         target: {{ asterisk_location }}/var/lib/asterisk/sounds/oml/
-      - type: bind
 volumes:
-  grabaciones_felo:
-  grabaciones_anita:
+  grabaciones:

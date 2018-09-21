@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 from __future__ import unicode_literals
 
@@ -177,6 +194,24 @@ class AgenteProfileManager(models.Manager):
         """
         return self.filter(queue__campana=campana)
 
+    def obtener_agentes_supervisor(self, supervisor):
+        """
+        Obtiene todos los agentes que estan asignados a las campanas propias de un supervisor
+        """
+        if supervisor.is_administrador:
+            return self.obtener_activos()
+        elif supervisor.is_customer:
+            campanas = supervisor.user.campanasupervisors.all()
+        # TODO: Definir cuando se diferencie el rol de Gerente del de Supervisor Normal.
+        # elif supervisor.is_gerente:
+        # Agentes en: Campañas propias + Campañas asignadas + Campañas de sus supervisores
+        else:
+            # Supervisor Normal / Comun: Agentes en campañas propias y asignadas.
+            campanas = Campana.objects.filter(Q(reported_by=supervisor.user) |
+                                              Q(supervisors__in=[supervisor.user, ]))
+
+        return self.obtener_activos().filter(queue__campana__in=campanas).distinct()
+
 
 class AgenteProfile(models.Model):
     ESTADO_OFFLINE = 1
@@ -255,6 +290,12 @@ class SupervisorProfileManager(models.Manager):
 
 
 class SupervisorProfile(models.Model):
+
+    ROL_ADMINISTRADOR = '1'
+    ROL_GERENTE = '2'
+    ROL_SUPERVISOR = '3'
+    ROL_CLIENTE = '4'
+
     objects = SupervisorProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
@@ -427,14 +468,17 @@ class ArchivoDeAudio(models.Model):
 
     def __unicode__(self):
         if self.borrado:
-            return '(ELiminado) {0}'.format(self.descripcion)
+            return _(u'(Eliminado) {0}').format(self.descripcion)
         return self.descripcion
 
     def borrar(self):
         """
         Setea la ArchivoDeAudio como BORRADO.
         """
-        logger.info("Seteando ArchivoDeAudio %s como BORRADO", self.id)
+        if self.usado_en_ivr():
+            raise ValidationError(_(u'No se puede borrar un Archivo de Audio en uso por IVR'))
+
+        logger.info(_("Seteando ArchivoDeAudio %s como BORRADO"), self.id)
 
         self.borrado = True
         self.save()
@@ -469,6 +513,12 @@ class ArchivoDeAudio(models.Model):
             descripcion = descripcion + '_' + str(ultimo + 1)
 
         return descripcion
+
+    def usado_en_ivr(self):
+        # Si esta usado en IVR no se puede borrar (si solo es usado en campañas si)
+        return self.audio_principal_ivrs.exists() or \
+            self.audio_time_out_ivrs.exists() or \
+            self.audio_invalid_ivrs.exists()
 
 
 class CampanaManager(models.Manager):
@@ -869,6 +919,8 @@ class Campana(models.Model):
         default=FORMULARIO,
     )
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # TODO: 'supervisors' debería referenciar a SupervisorProfile no a User
     supervisors = models.ManyToManyField(User, related_name="campanasupervisors")
     es_template = models.BooleanField(default=False)
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
@@ -2430,13 +2482,32 @@ class DuracionDeLlamada(models.Model):
 
 
 class MetadataCliente(models.Model):
-    # Información del formulario de gestión completado en una Calificacion.
-    # FIXME: este modelo debería tener una relación directa con CalificacionCliente (ver OML-434)
+    """Representa información del formulario de gestión completado en una Calificacion"""
+    # FIXME: este modelo debería tener una relación directa con CalificacionCliente (ver OML-434),
+    # lo cual generaría un refactor de la exportación a csv de las calificaciones y haría obsoleto
+    # a 'obtener_metadata_con_nombre_calificacion' que es en un hack para poder acceder al nombre
+    # de la calificacion por el momento
+
     agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
     campana = models.ForeignKey(Campana, related_name="metadatacliente")
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def obtener_metadata_nombre_calificacion(cls, campana_id):
+        metadata_qs = cls.objects.filter(
+            campana_id=campana_id,
+            campana__opciones_calificacion__tipo=OpcionCalificacion.GESTION).distinct()
+        calificaciones = CalificacionCliente.objects.obtener_calificaciones_gestion().filter(
+            opcion_calificacion__campana_id=campana_id).values(
+                'opcion_calificacion__nombre', 'contacto_id')
+        calificaciones_dict = {}
+        for calificacion in calificaciones:
+            contacto_id = calificacion['contacto_id']
+            nombre_calificacion = calificacion['opcion_calificacion__nombre']
+            calificaciones_dict[contacto_id] = nombre_calificacion
+        return metadata_qs, calificaciones_dict
 
     def __unicode__(self):
         return "Metadata para el contacto {0} de la campana{1} " \

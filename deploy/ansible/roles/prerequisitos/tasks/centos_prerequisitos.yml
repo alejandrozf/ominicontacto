@@ -1,3 +1,20 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 ---
 # se deshabilita selinux https://docs.ansible.com/ansible/2.5/modules/command_module.html
 - name: Disable Selinux
@@ -11,8 +28,18 @@
 
 # se agrega sslverify=0 en el yum.conf, esto es para que no joda por si hay repos con certificados expirados
 # https://docs.ansible.com/ansible/2.5/modules/ini_file_module.html?highlight=ini_file
-- name: Do not verify ssl on repositories
-  ini_file: path=/etc/yum.conf section=main option=sslverify no_extra_spaces=yes value=0 state=present
+
+#- name: Do not verify ssl on repositories
+#  ini_file: path=/etc/yum.conf section=main option=sslverify no_extra_spaces=yes value=0 state=present
+#  become: true
+#  become_method: sudo
+
+- name: Configure yum for ansible
+  ini_file: path=/etc/yum.conf section=main option="{{ item.option }}" no_extra_spaces=yes value="{{ item.value }}" state=present
+  with_items:
+    - { option: "sslverify", value: "0" }
+    - { option: "timeout", value: "300" }
+    - { option: "minrate", value: "100" }
   become: true
   become_method: sudo
 
@@ -37,7 +64,7 @@
 # Update/upgrade del sistema, solo cuando LOCALHOST=true, osea si se ejecuta como deployed - deployer
 # https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
 - name: Update/upgrade of centos
-  yum: name='*' state=latest update_cache=yes
+  yum: name='*' state=latest update_cache=yes skip_broken=yes
   become: true
   become_method: sudo
   when: LOCALHOST == "true"

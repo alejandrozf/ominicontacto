@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """Parser de XML que devuelve Asterisk"""
 
@@ -427,16 +444,17 @@ class AsteriskHttpClient(object):
                 tmp_file_obj = os.fdopen(tmp_fd, 'w')
                 tmp_file_obj.write(response.content)
                 logger.info("AsteriskHttpClient - Dump: %s", tmp_filename)
-            except:
-                logger.exception("No se pudo hacer dump de respuesta a archivo")
+            except Exception as e:
+                logger.exception("Error {0}: no se pudo hacer dump de respuesta a archivo".format(
+                    e.message))
 
         return response.content, response
 
     def login(self):
         response_body, _ = self._request("/mxml", {
             'action': 'login',
-            'username': settings.ASTERISK['USERNAME'],
-            'secret': settings.ASTERISK['PASSWORD'],
+            'username': settings.ASTERISK['AMI_USERNAME'],
+            'secret': settings.ASTERISK['AMI_PASSWORD'],
         })
         parser = AsteriskXmlParserForLogin()
         parser.parse(response_body)

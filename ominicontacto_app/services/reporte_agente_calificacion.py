@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """
 Servicio para generar reporte csv  para una agente el cual muestra todas las
@@ -63,8 +80,6 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("Observaciones")
             encabezado.append("datos del cliente")
 
-
-
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
 
@@ -103,7 +118,7 @@ class ArchivoDeReporteCsv(object):
 class ReporteAgenteService(object):
 
     def crea_reporte_csv(self, agente, fecha_desde, fecha_hasta):
-        #assert campana.estado == Campana.ESTADO_ACTIVA
+        # assert campana.estado == Campana.ESTADO_ACTIVA
 
         archivo_de_reporte = ArchivoDeReporteCsv(agente)
 
@@ -116,7 +131,7 @@ class ReporteAgenteService(object):
         archivo_de_reporte.escribir_archivo_csv(calificaciones)
 
     def obtener_url_reporte_csv_descargar(self, agente):
-        #assert campana.estado == Campana.ESTADO_DEPURADA
+        # assert campana.estado == Campana.ESTADO_DEPURADA
 
         archivo_de_reporte = ArchivoDeReporteCsv(agente)
         if archivo_de_reporte.ya_existe():

@@ -1,3 +1,20 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 ---
 # En este grupo de tasks se deploya la supervision
 
@@ -56,6 +73,10 @@
 - name: Create simbolic link of Omnisup directory
   file: src={{ omnisup_dir }}/ominicontacto/Omnisup dest={{ omnisup_dir }}Omnisup state=link owner={{ usuario }} group={{ usuario }} mode=755
 
+# Genero archivo config.php
+- name: Creation of config.php file
+  template: src=templates/config.php dest={{ omnisup_dir }}/ominicontacto/Omnisup/config.php owner={{ usuario }} group={{ usuario }} mode=755
+
 # Habilito e inicio php-fpm
 - name: Enable and start of php-fpm service
   service: name=php-fpm state=started enabled=yes
@@ -80,7 +101,7 @@
 
 # Esta carpeta tambien necesita ser cambiada de dueño
 - name: Set permissions of required to {{ usuario }}'s user
-  file: path=/var/lib/nginx/ owner={{ usuario }} group={{ usuario }} state=directory
+  file: path=/var/lib/nginx/ owner={{ usuario }} group={{ usuario }} state=directory recurse=yes
   become: true
   become_method: sudo
 
@@ -90,8 +111,15 @@
   become: true
   become_method: sudo
 
-# Starteo y habilito nginx
-- name: Start of nginx
-  service: name=nginx state=started enabled=yes
+# Toca hacer esta tarea aparte para que no salga el error de nginx que se soluciona al rebotear el server
+- name: Enable of nginx
+  command: systemctl enable nginx
   become: true
   become_method: sudo
+
+# Starteo y habilito nginx
+- name: Start of nginx
+  service: name=nginx state=restarted enabled=yes
+  become: true
+  become_method: sudo
+  tags: ['never','postinstall']
