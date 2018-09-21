@@ -72,10 +72,10 @@ class Migration(migrations.Migration):
                     on_delete=django.db.models.deletion.PROTECT,
                     related_name='audio_principal_ivrs', to='ominicontacto_app.ArchivoDeAudio')),
                 ('invalid_audio', models.ForeignKey(
-                    blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                    blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
                     related_name='audio_invalid_ivrs', to='ominicontacto_app.ArchivoDeAudio')),
                 ('time_out_audio', models.ForeignKey(
-                    blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                    blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
                     related_name='audio_time_out_ivrs', to='ominicontacto_app.ArchivoDeAudio')),
             ],
         ),
