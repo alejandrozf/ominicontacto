@@ -1,18 +1,17 @@
 #!/bin/bash
 # Script para convertir grabaciones a mp3 pensado para correr diariamente en horas de la noche
-# Modo de uso: tiene 3 argumentos que son obligatorias poner. Los argumentos pueden ser 1 o 0
-# Ejemplo: ./convertir.sh 1 1 0
+# Modo de uso: tiene 2 argumentos que son obligatorias poner.
+# Ejemplo: ./convertir.sh 1 1
 
 Date="`which date`"
 Lame="`which lame`"
 Ano="`${Date} +%Y -d today`"
 Mes="`${Date} +%m -d today`"
 Dia="`${Date} +%d -d yesterday`"
-Convertir=$1 # primer argumento, poner 1 si se quiere convertir a mp3 los audios, 0 si se quieren en wav
-Mover_interno=$2 # segundo argumento, 1 si se quiere mover a la carpeta /var/spool/oml, 0 si se quiere mantener en /var/spool/monitor
-Mover_externo=$3 # tercer argumento, 1 si se quiere mover a una carpeta fuera del server, 0 para dejarla dentro del server
-IP=$4 # cuarto argumento, IP del server al que se quiere pasar los audios
-Path_remoto=$5 #quinto argumento carpeta remota a la que se quieren pasar los audios
+Convertir=$1 # 1 si se quiere convertir a mp3 los audios, 0 si se quieren en wav
+Mover_audios=$2 # 2 para mover a server remoto, 1 si se quiere mover path destino, 0 si se quiere mantener en path origen
+IP=$3 # server remoto para enviar audios
+Path_remoto=$4 # carpeta remota a la que se quieren pasar los audios
 
 #Path donde estan las grabaciones en .wav, verlo en el nginx.conf, alias grabaciones
 Path_origen={{ asterisk_location }}/var/spool/asterisk/monitor/${Ano}-${Mes}-${Dia}
@@ -24,20 +23,34 @@ fi
 
 echo "Inicio: "`${Date} +%A\ %d\ "de"\ %B\ "de"\ %Y\ %T\ %Z"."`
 
-if [ $Convertir == 0 ] && [ $Mover_interno == 0 ] && [ $Mover_externo == 0 ]; then
-    echo "Cambiar el valor de las variables"
+if [ $Convertir == 0 ] && [ $Mover_audios == 0 ]; then
+    echo "No se hace nada"
     echo "Fin: "`${Date} +%A\ %d\ "de"\ %B\ "de"\ %Y\ %T\ %Z"."`
     exit 1
 fi
 
-if [ $Mover_interno == 1 ] && [ $Mover_externo == 1 ]; then
-    echo "No puedes mover las grabaciones a una carpeta interna y a un servidor externo al mismo tiempo "
+if [ $# -lt 2 ]; then
+  echo "Falta uno o mas argumentos"
+  echo "Usage: ./conversor.sh 1 0: convierte audios a mp3 y no cambia de ubicacion los audios"
+  echo "       ./conversor.sh 0 1: no convierte audios a mp3 y cambia de ubicacion los audios a path destino"
+  echo "       ./conversor.sh 1 1: convierte audios a mp3 y cambia de ubicacion los audios a path destino"
+  echo "       ./conversor.sh 1 2 usuario@IP \$PATH_REMOTO: convierte audios a mp3 y cambia de ubicacion los audios a \$PATH_REMOTO en server de \$IP"
+  echo "       ./conversor.sh 0 2 usuario@IP \$PATH_REMOTO: no convierte audios a mp3 y cambia de ubicacion los audios a \$PATH_REMOTO en server de \$IP"
+  echo "Ingresar tercer argumento con el formato usuario@IP "
+  exit 1
+fi
+
+#re1='^[0-1]+$'
+#re2='^[0-2]+$'
+re1="`echo "$1" | grep -E ^\-?[0-1]*\.?[0-1]+$`"
+re2="`echo "$2" | grep -E ^\-?[0-2]*\.?[0-2]+$`"
+if [ "$re1" == "" ] || [ "$re2" == "" ]; then
+    echo "Hay alguna opción invalida, volver a correr script "
     echo "Fin: "`${Date} +%A\ %d\ "de"\ %B\ "de"\ %Y\ %T\ %Z"."`
     exit 1
 fi
 
 if [ $Convertir == 1 ]; then
-
     cd ${Path_origen}
     Files="`ls -ltr|awk '{print $9}'`"
 
@@ -60,42 +73,44 @@ if [ $Convertir == 1 ]; then
     done
 fi
 
-if [ $Mover_interno == 1 ] || [ $Mover_interno == 0 ]; then
+if [ $Mover_audios != 0 ]; then
     cd ${Path_origen}
-    Files="`ls -ltr|awk '{print $9}'`"
-    for File in ${Files};do
-        if [ $Mover_externo == 1 ] && [ -z "$4" ] && [ -z "$5" ]; then
-            ssh-copy-id -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$IP
-            scp ${Path_origen}/${File} root@${IP}:${Path_remoto}
+#    Files="`ls -ltr|awk '{print $9}'`"
+#    for File in ${Files};do
+      if [ $Mover_audios == 1 ]; then
+        cd ${Path_destino}
+#        Fecha="${Ano}-${Mes}-${Dia}"
+#        if [ ! -d ${Fecha} ]; then
+#            mkdir ${Fecha}
+#        fi
+        cp -r ${Path_origen} ${Path_destino}/${Ano}-${Mes}-${Dia}
+        ResultadoCopia=`echo $?`
+        if [ ${ResultadoCopia} -ne 0 ];then
+            echo "Falló al copiar el audio"
+            exit 1
+        else
+            cd ${Path_origen}
+            rm -rf $File
+        fi
+      elif [ $Mover_audios == 2 ]; then
+        if [ ! -z "$IP" ] && [ ! -z "$Path_remoto" ]; then
+            ssh-copy-id -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 $IP
+            scp -r ${Path_origen} ${IP}:${Path_remoto} > /dev/null
             ResultadoCopia=`echo $?`
                 if [ ${ResultadoCopia} -ne 0 ];then
                     echo "Falló al copiar el audio, favor verificar conexion o si la carpeta destino existe"
                     break
                 else
-                    rm -rf $File
+                    rm -rf ${Path_origen}
                 fi
         else
-            if [ $Mover_interno == 0 ] && [ $Mover_externo == 1 ]; then
-                echo  "no se especificó IP o path remoto, se sale del script"
-                exit 1
-            fi
-            cd ${Path_destino}
-            Fecha="${Ano}-${Mes}-${Dia}"
-            if [ ! -d ${Fecha} ]; then
-                mkdir ${Fecha}
-            fi
-            cp ${Path_origen}/${File} ${Path_destino}/${Ano}-${Mes}-${Dia}
-            ResultadoCopia=`echo $?`
-            if [ ${ResultadoCopia} -ne 0 ];then
-                echo "Falló al copiar el audio"
-                exit 1
-            else
-                cd ${Path_origen}
-                rm -rf $File
-            fi
+            echo  "no se especificó IP o path remoto, se sale del script"
+            exit 1
         fi
-    done
-fi
+      fi
+    #done
+  fi
+
 
 echo "Se realizó el procedimiento con éxito"
 echo "Fin: "`${Date} +%A\ %d\ "de"\ %B\ "de"\ %Y\ %T\ %Z"."`
