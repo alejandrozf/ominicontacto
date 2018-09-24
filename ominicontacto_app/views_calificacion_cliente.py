@@ -63,7 +63,7 @@ class CalificacionClienteFormView(FormView):
         """Devuelve información sobre los contactos que tienen un número de teléfono
         en la BD
         """
-        contactos_info = list(Contacto.objects.filter(telefono=telefono))
+        contactos_info = list(self.campana.bd_contacto.contactos.filter(telefono=telefono))
         return contactos_info
 
     def get_contacto(self):
