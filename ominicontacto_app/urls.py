@@ -433,7 +433,7 @@ urlpatterns = [
         '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/recalificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'recalificacion'},
-        name='calificacion_formulario_update_or_create'
+        name='recalificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
         '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/reporte/$',

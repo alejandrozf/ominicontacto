@@ -59,10 +59,17 @@ class CalificacionClienteFormView(FormView):
     model = CalificacionCliente
     form_class = CalificacionClienteForm
 
+    def get_info_telefonos(self, telefono):
+        """Devuelve información sobre los contactos que tienen un número de teléfono
+        en la BD
+        """
+        contactos_info = list(Contacto.objects.filter(telefono=telefono))
+        return contactos_info
+
     def get_contacto(self):
         if 'pk_contacto' in self.kwargs and self.kwargs['pk_contacto'] is not None:
             try:
-                return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+                return self.campana.bd_contacto.contactos.get(pk=self.kwargs['pk_contacto'])
             except Contacto.DoesNotExist:
                 return None
         return None
@@ -78,19 +85,29 @@ class CalificacionClienteFormView(FormView):
         return None
 
     def dispatch(self, *args, **kwargs):
-        self.agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        self.agente = AgenteProfile.objects.get(pk=kwargs['id_agente'])
+        self.campana = Campana.objects.get(pk=kwargs['pk_campana'])
         self.contacto = self.get_contacto()
-        if self.contacto is None and self.campana.type == Campana.TYPE_DIALER:
-            return HttpResponseRedirect(reverse('seleccion_campana_adicion_contacto'))
-
+        telefono = kwargs.get('telefono', False)
+        if telefono and self.contacto is None:
+            # se dispara desde una llamada desde el webphone
+            contacto_info = self.get_info_telefonos(telefono)
+            len_contacto_info = len(contacto_info)
+            if len_contacto_info == 0:
+                self.contacto = None
+            elif len_contacto_info == 1:
+                self.contacto = contacto_info[0]
+            else:
+                return HttpResponseRedirect(
+                    reverse('campana_contactos_telefono_repetido',
+                            kwargs={'pk_campana': self.campana.pk, 'telefono': telefono}))
         self.object = self.get_object()
         return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
 
     def get_calificacion_form_kwargs(self):
         calificacion_kwargs = {'instance': self.object}
         if self.request.method == 'GET' and self.contacto is not None:
-                calificacion_kwargs['initial'] = {'contacto': self.contacto.id}
+            calificacion_kwargs['initial'] = {'contacto': self.contacto.id}
         elif self.request.method == 'POST':
             calificacion_kwargs['data'] = self.request.POST
         return calificacion_kwargs
@@ -221,11 +238,10 @@ class CalificacionClienteFormView(FormView):
                        kwargs={"pk_agente": self.object_calificacion.agente.pk})
 
     def get_success_url(self):
-        return reverse('calificacion_formulario_update_or_create',
+        return reverse('recalificacion_formulario_update_or_create',
                        kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id,
                                "id_agente": self.agente.id,
-                               "from": "recalificacion",
                                "wombat_id": 0})
 
 
