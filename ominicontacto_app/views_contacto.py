@@ -28,8 +28,9 @@ import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from django.views.generic import DeleteView
-from django.views.generic import View, ListView, CreateView, UpdateView, FormView
+from django.shortcuts import get_object_or_404
+from django.views.generic import (View, ListView, CreateView, UpdateView, FormView, DeleteView,
+                                  TemplateView)
 
 from ominicontacto_app.forms import (BusquedaContactoForm, FormularioCampanaContacto,
                                      ContactoForm, FormularioNuevoContacto, EscogerCampanaForm)
@@ -100,6 +101,22 @@ class ContactoListView(FormView):
         campana = Campana.objects.get(pk=campana_pk)
         return self.render_to_response(self.get_context_data(
             form=form, campana=campana))
+
+
+class ContactosTelefonosRepetidosView(TemplateView):
+    """Vista que muestra todos los contactos que comparten un número de teléfono en una campaña
+    """
+
+    template_name = 'agente/contactos_telefonos_repetidos.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactosTelefonosRepetidosView, self).get_context_data(**kwargs)
+        pk_campana = kwargs.get('pk_campana', False)
+        telefono = kwargs.get('telefono', False)
+        campana = get_object_or_404(Campana, pk=pk_campana)
+        context['campana'] = campana
+        context['contactos'] = campana.bd_contacto.contactos.filter(telefono=telefono)
+        return context
 
 
 class API_ObtenerContactosCampanaView(View):

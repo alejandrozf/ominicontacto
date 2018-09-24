@@ -1,0 +1,81 @@
+<!--
+     Copyright (C) 2018 Freetech Solutions
+
+     This file is part of OMniLeads
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
+
+   -->
+{% load staticfiles %}
+{% load compress %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+        {% compress js %}
+        <!-- Scripts -->
+        <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+        <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+        {% endcompress %}
+    </head>
+    <body>
+        <h1>{% trans 'Contactos con este teléfono:' %}</h1>
+
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{% trans 'Teléfono' %}</th>
+                        <th>{% trans 'Datos' %}</th>
+                        <th>{% trans 'Calificar' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contacto in contactos %}
+                        <tr>
+                            <td>{{ contacto.telefono }}</td>
+                            <td>{{ contacto.datos }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="dropdown-item" href="{% url 'calificacion_formulario_update_or_create' campana.pk contacto.pk user.get_agente_profile.pk 0 %}">
+                                        <span class="icon icon-pencil"></span>
+                                    </a>
+                                </div>
+                            </td>+
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">No existen contactos</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+        </div>
+    </body>
+</html>

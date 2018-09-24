@@ -305,6 +305,10 @@ urlpatterns = [
         login_required(
             views_contacto.CampanaBusquedaContactoFormView.as_view()),
         name="campana_busqueda_contacto"),
+    url(r'^campana/(?P<pk_campana>\d+)/contactos_telefono_repetido/(?P<telefono>\d+)$',
+        agente_requerido(
+            views_contacto.ContactosTelefonosRepetidosView.as_view()),
+        name="campana_contactos_telefono_repetido"),
 
     # ==========================================================================
     #  Templates Campana Entrante
