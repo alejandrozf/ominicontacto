@@ -130,8 +130,9 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertNotEqual(self.ruta_entrante.nombre, nuevo_nombre)
 
     @patch('configuracion_telefonia_app.views.escribir_ruta_entrante_config')
+    @patch('configuracion_telefonia_app.views.eliminar_ruta_entrante_config')
     def test_usuario_administrador_puede_modificar_ruta_entrante(
-            self, escribir_ruta_entrante_config):
+            self, eliminar_ruta_entrante_config, escribir_ruta_entrante_config):
         nuevo_nombre = 'ruta_entrante_modificada'
         url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
