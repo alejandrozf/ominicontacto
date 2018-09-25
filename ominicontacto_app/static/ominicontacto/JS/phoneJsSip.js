@@ -140,7 +140,7 @@ $(function() {
   });
 
   $("#Resume").click(function() {
-    phoneNumber =+ prefixForKamailio + unpause;
+    phoneNumber = prefixForKamailio + unpause;
     makeCall();
   });
 
@@ -149,7 +149,7 @@ $(function() {
     if (pausa.indexOf(' ')) {
       pausa = pausa.replace(' ', '');
     }
-    phoneNumber =+ prefixForKamailio + pausa;
+    phoneNumber = prefixForKamailio + pausa;
     makeCall();
   });
 
@@ -189,7 +189,7 @@ $(function() {
     getCampActivas();
     setSipStatus("greydot.png", "  No account", sipStatus);
     updateButton(modifyUserStat, "label label-success", "Online");
-    phoneNumber =+ prefixForKamailio + login;
+    phoneNumber = prefixForKamailio + login;
     makeCall();
     $("#sendMessage").prop('disabled', false);
     $("#chatMessage").prop('disabled', false);
@@ -784,7 +784,7 @@ $(function() {
           reinicio($("#horaC"), $("#minsC"), $("#segsC"));
           inicio2();
           changeStatus(3, $("#idagt").val());
-          phoneNumber =+ prefixForKamailio + afterCallWorkTypePause;
+          phoneNumber = prefixForKamailio + afterCallWorkTypePause;
           makeCall();
           entrante = false;
           $("#Pause").prop('disabled', true);
@@ -795,7 +795,7 @@ $(function() {
             var timeoutACW = $("#auto_unpause").val();
             timeoutACW = timeoutACW * 1000;
             var toOnline = function() {
-              phoneNumber =+ prefixForKamailio + unpause;
+              phoneNumber = prefixForKamailio + unpause;
               if ($("#UserStatus").html() === "ACW") {
                 if ($("#dial_status").html().substring(9, 0) !== "Connected" && $("#dial_status").html().substring(7, 0) !== "Calling") {
                   makeCall();
