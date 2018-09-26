@@ -408,6 +408,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         if instance.pk is None:
             self.fields['bd_contacto'].required = False
         else:
+            self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
 
     def requiere_bd_contacto(self):
@@ -887,6 +888,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         self.fields['fecha_fin'].required = not es_template
 
         if self.instance.pk:
+            self.fields['nombre'].disabled = not es_template
             self.fields['bd_contacto'].disabled = True
             self.fields['formulario'].disabled = True
             self.fields['tipo_interaccion'].required = False
@@ -1142,6 +1144,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         if instance.pk is None:
             self.fields['bd_contacto'].required = False
         else:
+            self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
 
     class Meta:
@@ -1168,6 +1171,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk and not self.initial.get('es_template', False):
+            self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
             self.fields['tiempo_desconexion'].disabled = True
 
