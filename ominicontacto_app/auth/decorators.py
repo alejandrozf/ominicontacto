@@ -1,4 +1,3 @@
-from django.contrib.auth import REDIRECT_FIELD_NAME
 # Copyright (C) 2018 Freetech Solutions
 
 # This file is part of OMniLeads
@@ -16,6 +15,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 
