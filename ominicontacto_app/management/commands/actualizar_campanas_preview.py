@@ -24,7 +24,7 @@ from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from ominicontacto_app.tests.factories import AgenteEnContacto
+from ominicontacto_app.models import AgenteEnContacto
 
 logger = logging.getLogger(__name__)
 
