@@ -35,16 +35,16 @@
 # https://docs.ansible.com/ansible/2.6/user_guide/playbooks_prompts.html
   vars_prompt:
       - name: "admin_pass"
-        prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales): "
+        prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales) default: OML3.1415 "
         private: yes
-        default: toor123
+        default: OML3.1415
 
       - name: "admin_pass2"
         prompt: "Ingrese nuevamente contraseña del admin de Omnileads: "
         private: yes
 
       - name: "formato_conversion"
-        prompt: "Ingrese el formato de conversión de grabaciones (wav o mp3, default wav): "
+        prompt: "Ingrese el formato de conversión de grabaciones (wav o mp3, default mp3): "
         default: mp3
         private: no
 
@@ -52,15 +52,17 @@
   pre_tasks:
       - assert:
           that:
-            - "'{{ admin_pass }}' != 'bad_value' "
             - "'{{ admin_pass }}' | length > 8"
           msg: "La contraseña ingresada es demasiado corta. La contraseña no puede ir vacia"
+        tags: postinstall
       - assert:
           that: "'{{ admin_pass }}' == '{{ admin_pass2 }}'"
           msg: "Las contraseñas no son iguales"
+        tags: postinstall
       - assert:
           that: "'{{ formato_conversion }}' == 'wav' or '{{ formato_conversion }}' == 'mp3' "
-          msg: "Formato inválido"
+          msg: "Formato inválido, volver a correr el script"
+        tags: postinstall
 # el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
 # Esta variable te dice que familia de OS es el servidor a deployar (Debian o RedHat)
 
