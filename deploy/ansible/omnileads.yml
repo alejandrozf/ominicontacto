@@ -35,9 +35,9 @@
 # https://docs.ansible.com/ansible/2.6/user_guide/playbooks_prompts.html
   vars_prompt:
       - name: "admin_pass"
-        prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales): "
+        prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales) default: OML3.1415 "
         private: yes
-        default: toor123
+        default: OML3.1415
 
       - name: "admin_pass2"
         prompt: "Ingrese nuevamente contraseña del admin de Omnileads: "
@@ -52,7 +52,6 @@
   pre_tasks:
       - assert:
           that:
-            - "'{{ admin_pass }}' != 'bad_value' "
             - "'{{ admin_pass }}' | length > 8"
           msg: "La contraseña ingresada es demasiado corta. La contraseña no puede ir vacia"
         tags: postinstall
