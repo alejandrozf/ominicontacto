@@ -30,6 +30,16 @@ from reportes_app.utiles import (
     ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO, ESTILO_VERDE_ROJO
 )
 
+LLAMADA_MANUAL = Campana.TYPE_MANUAL
+LLAMADA_DIALER = Campana.TYPE_DIALER
+LLAMADA_ENTRANTE = Campana.TYPE_ENTRANTE
+LLAMADA_PREVIEW = Campana.TYPE_PREVIEW
+LLAMADA_CLICK2CALL = 6
+LLAMADA_TRANSF_INTERNA = 8
+LLAMADA_TRANSF_EXTERNA = 9
+
+LLAMADAS_MANUALES = [LLAMADA_MANUAL, LLAMADA_CLICK2CALL]
+LLAMADAS_DE_AGENTE = [LLAMADA_MANUAL, LLAMADA_PREVIEW, LLAMADA_CLICK2CALL]
 
 INICIALES_POR_TIPO = {
     Campana.TYPE_MANUAL_DISPLAY: {
@@ -111,6 +121,8 @@ CAMPANA_TYPES = {
     Campana.TYPE_DIALER: Campana.TYPE_DIALER_DISPLAY,
     Campana.TYPE_MANUAL: Campana.TYPE_MANUAL_DISPLAY,
     Campana.TYPE_PREVIEW: Campana.TYPE_PREVIEW_DISPLAY,
+    # Si es Click2Call se contabiliza como tipo de llamada Manual.
+    LLAMADA_CLICK2CALL: Campana.TYPE_MANUAL_DISPLAY,
 }
 
 
@@ -210,6 +222,7 @@ class ReporteDeLlamadas(object):
             tipo_llamada = self._get_campana_type_display(log.tipo_llamada)
             self._contabilizar_total_llamadas_procesadas(log)
 
+            # Si no se identifica el tipo de llamada no se contabiliza por tipo.
             if tipo_llamada:
                 estadisticas_tipo = self.estadisticas['llamadas_por_tipo'][tipo_llamada]
                 self._contabilizar_llamada_por_tipo(estadisticas_tipo, log)
@@ -241,8 +254,7 @@ class ReporteDeLlamadas(object):
                 if log.tipo_llamada == Campana.TYPE_ENTRANTE:
                     estadisticas_tipo['total'] += 1
             elif log.event == 'ANSWER':
-                if log.tipo_llamada == Campana.TYPE_MANUAL or \
-                        log.tipo_llamada == Campana.TYPE_PREVIEW:
+                if log.tipo_llamada in LLAMADAS_DE_AGENTE:
                     estadisticas_tipo['conectadas'] += 1
                 elif log.tipo_llamada == Campana.TYPE_DIALER:
                     estadisticas_tipo['atendidas'] += 1
@@ -260,8 +272,7 @@ class ReporteDeLlamadas(object):
                 if log.tipo_llamada == Campana.TYPE_ENTRANTE:
                     estadisticas_tipo['abandonadas'] += 1
             elif log.event in LlamadaLog.EVENTOS_NO_CONTACTACION:
-                if log.tipo_llamada == Campana.TYPE_MANUAL or \
-                        log.tipo_llamada == Campana.TYPE_PREVIEW:
+                if log.tipo_llamada in LLAMADAS_DE_AGENTE:
                     estadisticas_tipo['no_conectadas'] += 1
                 elif log.tipo_llamada == Campana.TYPE_DIALER:
                     estadisticas_tipo['no_atendidas'] += 1
@@ -270,9 +281,8 @@ class ReporteDeLlamadas(object):
         estadisticas_campana = self.estadisticas['llamadas_por_campana'][log.campana_id]
         if log.event == 'DIAL':
             estadisticas_campana['total'] += 1
-            if log.tipo_llamada == Campana.TYPE_MANUAL:
+            if log.tipo_llamada in LLAMADAS_MANUALES:
                 estadisticas_campana['manuales'] += 1
-
         elif log.event == 'ENTERQUEUE':
             if log.tipo_campana == Campana.TYPE_ENTRANTE:
                 estadisticas_campana['total'] += 1
@@ -288,7 +298,7 @@ class ReporteDeLlamadas(object):
             self._contabilizar_tipos_de_llamada_por_campana_saliente(estadisticas_campana, log)
 
     def _contabilizar_tipos_de_llamada_por_campana_saliente(self, datos_campana, log):
-        if not log.tipo_campana == log.tipo_llamada:
+        if not log.tipo_campana == Campana.TYPE_MANUAL and log.tipo_llamada in LLAMADAS_MANUALES:
             self._contabilizar_tipos_de_llamada_manual(datos_campana, log)
         if log.event == 'DIAL':
             datos_campana['efectuadas'] += 1
@@ -300,7 +310,7 @@ class ReporteDeLlamadas(object):
             datos_campana['t_espera_conexion'] += log.bridge_wait_time
 
     def _contabilizar_tipos_de_llamada_por_campana_dialer(self, datos_campana, log):
-        if not log.tipo_campana == log.tipo_llamada:
+        if log.tipo_llamada in LLAMADAS_MANUALES:
             self._contabilizar_tipos_de_llamada_manual(datos_campana, log)
         elif log.event == 'DIAL':
             datos_campana['efectuadas'] += 1
@@ -317,7 +327,7 @@ class ReporteDeLlamadas(object):
             datos_campana['t_abandono'] += log.bridge_wait_time
 
     def _contabilizar_tipos_de_llamada_por_campana_entrante(self, datos_campana, log):
-        if not log.tipo_campana == log.tipo_llamada:
+        if log.tipo_llamada in LLAMADAS_MANUALES:
             self._contabilizar_tipos_de_llamada_manual(datos_campana, log)
         elif log.event == 'ENTERQUEUE':
             datos_campana['recibidas'] += 1
