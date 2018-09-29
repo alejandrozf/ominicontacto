@@ -1,0 +1,73 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head_js %}
+    <script type="text/javascript">
+        function liberar_contacto(agente_id){
+            console.log('asd')
+            $("#agente_id").val(agente_id);
+            $("#liberar_contacto_form").submit();
+        };
+    </script>
+{% endblock %}
+
+{% block content %}
+    <form id='liberar_contacto_form' action="{% url 'liberar_contacto_asignado' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="campana_id" value="{{ campana.id }}">
+        <input type="hidden" name="agente_id" id="agente_id" value="0">
+    </form>
+
+    <h1>{% trans "Contactos Asignados de Campaña" %}: {{ campana.nombre }}</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans "Teléfono" %}</th>
+                <th>{% trans "Agente" %}</th>
+                <th>{% trans "Inicio Asignacion" %}</th>
+                <th>{% trans "Acciones" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for agente_en_contacto in agentes_en_contacto %}
+        {% with agente_en_contacto.contacto as contacto %}
+            <tr>
+                <td>{{ contacto.telefono }}</td>
+                <td>{{ agente_en_contacto.agente }}</td>
+                <td>{{ agente_en_contacto.modificado }}</td>
+                <td>
+                    <a class="dropdown-item" href="#" onclick="liberar_contacto('{{ agente_en_contacto.agente.id }}')">
+                    <span class="icon icon-pencil"></span>{% trans "Liberar" %}
+                    </a>
+                </td>
+            </tr>
+       {% endwith %}
+       {% empty %}
+        <tr>
+            <td colspan="3">{% trans "La campaña no tiene contactos asignados." %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

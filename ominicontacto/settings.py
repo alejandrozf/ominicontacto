@@ -516,3 +516,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     )
 }
+
+# ~~~~~ Check DURACION_ASIGNACION_CONTACTO_PREVIEW
+
+assert DURACION_ASIGNACION_CONTACTO_PREVIEW is not None, \
+    "Falta definir setting para DURACION_ASIGNACION_CONTACTO_PREVIEW"

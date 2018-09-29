@@ -638,6 +638,14 @@ urlpatterns = [
         login_required(
             views_campana_preview.campana_validar_contacto_asignado_view),
         name="validar_contacto_asignado"),
+    url(r'^campana_preview/contactos_asignados/(?P<pk_campana>\d+)/$',
+        administrador_requerido(
+            views_campana_preview.CampanaPreviewContactosAsignados.as_view()),
+        name="contactos_preview_asignados"),
+    url(r'^campana_preview/liberar_contacto_asignado/$',
+        administrador_requerido(
+            views_campana_preview.LiberarContactoAsignado.as_view()),
+        name="liberar_contacto_asignado"),
     # ==========================================================================
     # Campana Entrante
     # ==========================================================================

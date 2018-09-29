@@ -19,10 +19,7 @@
 
 import logging
 
-from datetime import timedelta
-
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 from ominicontacto_app.models import AgenteEnContacto
 
@@ -44,20 +41,17 @@ class Command(BaseCommand):
 
     def _actualizar_relacion_agente_contacto(self, campana_id, tiempo_desconexion):
         """
-        Procedimiento que libera un contacto asignado a un agente en una campaña
+        Procedimiento que libera los contactos reservados y asignados a agentes en una campaña
         preview al sobrepasar el tiempo máximo definido para atenderlo.
         El contacto podrá ser asignado a un nuevo agente para la finalización de
         su gestión
         """
-        tiempo_actual = timezone.now()
-        delta_tiempo_desconexion = timedelta(minutes=tiempo_desconexion)
-        qs_agentes_demorados = AgenteEnContacto.objects.filter(
-            campana_id=campana_id, estado=AgenteEnContacto.ESTADO_ENTREGADO,
-            modificado__lte=tiempo_actual - delta_tiempo_desconexion)
+        liberados = AgenteEnContacto.objects.liberar_contactos_por_tiempo(campana_id,
+                                                                          tiempo_desconexion)
+
         logging.info(
             "Actualizando {0} asignaciones de contactos a agentes en campaña {1}".format(
-                qs_agentes_demorados.count(), campana_id))
-        qs_agentes_demorados.update(agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
+                liberados, campana_id))
 
     def handle(self, *args, **options):
         campana_id = args[0]
