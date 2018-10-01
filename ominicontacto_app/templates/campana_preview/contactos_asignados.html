@@ -46,7 +46,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans "Teléfono" %}</th>
                 <th>{% trans "Agente" %}</th>
                 <th>{% trans "Inicio Asignacion" %}</th>
-                <th>{% trans "Acciones" %}</th>
+                {% if user.get_es_administrador_o_supervisor_normal %}
+                  <th>{% trans "Acciones" %}</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -56,11 +58,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{{ contacto.telefono }}</td>
                 <td>{{ agente_en_contacto.agente }}</td>
                 <td>{{ agente_en_contacto.modificado }}</td>
-                <td>
+                {% if user.get_es_administrador_o_supervisor_normal %}
+                  <td>
                     <a class="dropdown-item" href="#" onclick="liberar_contacto('{{ agente_en_contacto.agente.id }}')">
                     <span class="icon icon-pencil"></span>{% trans "Liberar" %}
                     </a>
-                </td>
+                  </td>
+                {% endif %}
             </tr>
        {% endwith %}
        {% empty %}

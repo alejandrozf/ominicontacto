@@ -46,8 +46,7 @@ class Command(BaseCommand):
         El contacto podrá ser asignado a un nuevo agente para la finalización de
         su gestión
         """
-        liberados = AgenteEnContacto.objects.liberar_contactos_por_tiempo(campana_id,
-                                                                          tiempo_desconexion)
+        liberados = AgenteEnContacto.liberar_contactos_por_tiempo(campana_id, tiempo_desconexion)
 
         logging.info(
             "Actualizando {0} asignaciones de contactos a agentes en campaña {1}".format(

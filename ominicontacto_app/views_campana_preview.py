@@ -258,7 +258,7 @@ class LiberarContactoAsignado(View):
         # TODO: Validar que el supervisor tiene permisos sobre la campaña
         campana_id = request.POST.get('campana_id')
         agente_id = request.POST.get('agente_id')
-        if AgenteEnContacto.objects.liberar_contacto(agente_id, campana_id):
+        if AgenteEnContacto.liberar_contacto(agente_id, campana_id):
             message = _(u'El Contacto ha sido liberado.')
             messages.success(self.request, message)
         else:
@@ -300,5 +300,5 @@ class ObtenerContactoView(View):
 
     def post(self, request, *args, **kwargs):
         campana_id = kwargs.get('pk_campana', False)
-        data_entrega = AgenteEnContacto.objects.entregar_contacto(self.agente, campana_id)
+        data_entrega = AgenteEnContacto.entregar_contacto(self.agente, campana_id)
         return JsonResponse(data_entrega)

@@ -340,6 +340,10 @@ urlpatterns = [
         agente_requerido(
             views_agente.AgenteCampanasPreviewActivasView.as_view()),
         name="campana_preview_activas_miembro"),
+    url(r'^agente/campanas_preview/liberar_contacto_asignado/$',
+        agente_requerido(
+            views_agente.LiberarContactoAsignado.as_view()),
+        name="liberar_contacto_asignado_agente"),
     url(r'^agente/(?P<pk_agente>\d+)/reporte/$',
         agente_requerido(
             views_agente.AgenteReporteCalificaciones.as_view()),
@@ -639,11 +643,11 @@ urlpatterns = [
             views_campana_preview.campana_validar_contacto_asignado_view),
         name="validar_contacto_asignado"),
     url(r'^campana_preview/contactos_asignados/(?P<pk_campana>\d+)/$',
-        administrador_requerido(
+        permiso_administracion_requerido(
             views_campana_preview.CampanaPreviewContactosAsignados.as_view()),
         name="contactos_preview_asignados"),
     url(r'^campana_preview/liberar_contacto_asignado/$',
-        administrador_requerido(
+        administrador_o_supervisor_requerido(
             views_campana_preview.LiberarContactoAsignado.as_view()),
         name="liberar_contacto_asignado"),
     # ==========================================================================

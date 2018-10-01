@@ -18,6 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% load static %}
+{% load i18n %}
 {% load compress %}
 
 <!DOCTYPE html>
@@ -34,6 +35,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/campanasPreviewAgente.js' %}"></script>
         {% endcompress %}
+        <script type="text/javascript">
+            var agente_id = {{ user.get_agente_profile.id }}
+            var liberar_contacto_url = "{% url 'liberar_contacto_asignado_agente' %}";
+            var calificar_contacto_url = "{% url 'calificacion_formulario_update_or_create' '0000' '1111' '2222' '0' %}";
+        </script>
     </head>
     <body>
         <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
@@ -42,7 +48,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <table id="campanasPreviewTable" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Campaña</th>
+                            <th>{% trans "Campaña" %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,12 +57,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <td>
                                     <button class="obtener-contacto btn btn-primary" data-campana="{{ campana_pk }}"
                                             data-toggle="tooltip" data-placement="top"
-                                            title="Haga click para obtener un contacto de la campaña">{{ campana_nombre }}</button>
+                                            title="{% trans 'Haga click para obtener un contacto de la campaña' %}">{{ campana_nombre }}</button>
                                 </td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="3">No hay campañas</td>
+                                <td colspan="3">{% trans "No hay campañas" %}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -65,7 +71,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div id="panel-contacto" class="col-md-4 col-md-offset-1 hidden">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Datos contacto</h3>
+                        <h3 class="panel-title">{% trans "Datos contacto" %}</h3>
                     </div>
                     <div class="panel-body">
                         <form id="llamar_preview" action="{% url 'agente_llamar_contacto' %}" method="POST" role="form">
@@ -80,8 +86,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </form>
                         <button id="validar_contacto" class="btn btn-info">
                             <span id="contacto-telefono" class="glyphicon glyphicon-earphone"
-                                  aria-hidden="true" title="Haga click para llamar al contacto"></span>
+                                  aria-hidden="true" title="{% trans 'Haga click para llamar al contacto' %}"></span>
                         </button>
+                        <span>
+                            
+                        <button id="liberar_contacto" class="btn btn-warning" style="display:none">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true" title="{% trans 'Haga click para liberar al contacto' %}"> Liberar </span>
+                        </button>
+                        <a href="#" id="calificar_contacto" class="btn btn-primary" style="display:none">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true" title="{% trans 'Haga click para editar la calificación' %}"> Calificar </span>
+                        </a>
+                        </span>
                         <p class="text-danger" id="errorAsignacionContacto"></p>
                     </div>
                     <div class="panel-footer" id="contacto-datos">

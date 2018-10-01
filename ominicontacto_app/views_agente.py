@@ -224,7 +224,7 @@ class LlamarContactoView(RedirectView):
                 tipo_campana = str(campana.type)
 
         elif click2call_type == 'preview':
-            asignado = AgenteEnContacto.objects.asignar_contacto(contacto.id, campana_id, agente)
+            asignado = AgenteEnContacto.asignar_contacto(contacto.id, campana_id, agente)
             if not asignado:
                 message = _(u'No es posible llamar al contacto.'
                             ' Para poder llamar un contacto debe obtenerlo'
@@ -232,11 +232,25 @@ class LlamarContactoView(RedirectView):
                             ' Asegurese de no haber perdido la reserva')
                 messages.warning(self.request, message)
                 return HttpResponseRedirect(
-                    reverse('modulo_list'))
+                    reverse('agenda_agente_list'))
 
         self._call_originate(
             request, campana_id, campana_nombre, agente, contacto, click2call_type, tipo_campana)
         return super(LlamarContactoView, self).post(request, *args, **kwargs)
+
+
+class LiberarContactoAsignado(View):
+    """
+    Libera un contacto Asignado en AgenteEnContacto
+    """
+    def post(self, request, *args, **kwargs):
+        # TODO: Validar que el supervisor tiene permisos sobre la campaña
+        campana_id = request.POST.get('campana_id')
+        agente = request.user.get_agente_profile()
+        if AgenteEnContacto.liberar_contacto(agente.id, campana_id):
+            return JsonResponse({'status': 'OK'})
+        else:
+            return JsonResponse({'status': 'ERROR'})
 
 
 class AgenteCampanasPreviewActivasView(TemplateView):
