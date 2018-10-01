@@ -5,8 +5,8 @@
 
 Date="`which date`"
 Lame="`which lame`"
-Ano="`${Date} +%Y -d today`"
-Mes="`${Date} +%m -d today`"
+Ano="`${Date} +%Y -d yesterday`"
+Mes="`${Date} +%m -d yesterday`"
 Dia="`${Date} +%d -d yesterday`"
 Convertir=$1 # 1 si se quiere convertir a mp3 los audios, 0 si se quieren en wav
 Mover_audios=$2 # 2 para mover a server remoto, 1 si se quiere mover path destino, 0 si se quiere mantener en path origen
@@ -75,14 +75,8 @@ fi
 
 if [ $Mover_audios != 0 ]; then
     cd ${Path_origen}
-#    Files="`ls -ltr|awk '{print $9}'`"
-#    for File in ${Files};do
       if [ $Mover_audios == 1 ]; then
         cd ${Path_destino}
-#        Fecha="${Ano}-${Mes}-${Dia}"
-#        if [ ! -d ${Fecha} ]; then
-#            mkdir ${Fecha}
-#        fi
         cp -r ${Path_origen} ${Path_destino}/${Ano}-${Mes}-${Dia}
         ResultadoCopia=`echo $?`
         if [ ${ResultadoCopia} -ne 0 ];then
@@ -102,15 +96,14 @@ if [ $Mover_audios != 0 ]; then
                     break
                 else
                     rm -rf ${Path_origen}
+
                 fi
         else
             echo  "no se especificó IP o path remoto, se sale del script"
             exit 1
         fi
       fi
-    #done
   fi
-
 
 echo "Se realizó el procedimiento con éxito"
 echo "Fin: "`${Date} +%A\ %d\ "de"\ %B\ "de"\ %Y\ %T\ %Z"."`
