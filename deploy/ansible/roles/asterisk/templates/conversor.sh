@@ -84,7 +84,7 @@ if [ $Mover_audios != 0 ]; then
             exit 1
         else
             cd ${Path_origen}
-            rm -rf $File
+            rm -rf ./*
         fi
       elif [ $Mover_audios == 2 ]; then
         if [ ! -z "$IP" ] && [ ! -z "$Path_remoto" ]; then
