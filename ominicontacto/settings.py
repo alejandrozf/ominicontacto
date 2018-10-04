@@ -66,6 +66,8 @@ INSTALLED_APPS = [
     'reportes_app',
     'simple_history',
     'widget_tweaks',
+    'rest_framework',
+    'api_app',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -504,3 +506,13 @@ OML_AUDIO_PATH_ASTERISK = ASTERISK_AUDIO_PATH + OML_AUDIO_FOLDER
 
 assert CALIFICACION_REAGENDA is not None, \
     "Falta definir setting para CALIFICACION_REAGENDA"
+
+# configuración de Django Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
