@@ -1,22 +1,19 @@
 [uwsgi]
-
 module = ominicontacto.wsgi:application
 env = DJANGO_SETTINGS_MODULE=ominicontacto.settings
 master = true
 processes = 5
 enable-threads = true
-home = {{ install_prefix }}virtualenv
-http = 0.0.0.0:8000
-http-timeout = 600
-harakiri = 600
-socket-timeout = 600
-uwsgi-socket = 0.0.0.0:8099
-python-path = {{ install_prefix }}ominicontacto
-python-path = {{ install_prefix }}local
-pidfile = {{ install_prefix }}ominicontacto/oml-uwsgi.pid
+home = /opt/omnileads/virtualenv
+socket = /opt/omnileads/bin/oml.sock
+chmod-socket = 664
+socket-timeout = 900
+python-path = /opt/omnileads/ominicontacto
+python-path = /opt/omnileads/local
+pidfile = /opt/omnileads/ominicontacto/oml-uwsgi.pid
 die-on-term = true
-master-fifo = {{ install_prefix }}ominicontacto/.uwsgi-fifo
-uid = {{ usuario }}
-gid = {{ usuario }}
-daemonize={{ install_prefix }}log/uwsgi.log
-static-map = /static={{ install_prefix }}static
+master-fifo = /opt/omnileads/ominicontacto/.uwsgi-fifo
+uid = omnileads
+gid = omnileads
+daemonize=/opt/omnileads/log/uwsgi.log
+static-map = /static=/opt/omnileads/static
