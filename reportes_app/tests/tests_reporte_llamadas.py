@@ -183,7 +183,7 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
 
         self.assertIn(self.entrante.id, tipos[Campana.TYPE_ENTRANTE_DISPLAY])
         datos_campana = tipos[Campana.TYPE_ENTRANTE_DISPLAY][self.entrante.id]
-        self.assertEqual(len(datos_campana), 11)
+        self.assertEqual(len(datos_campana), 12)
         self.assertEqual(datos_campana['nombre'], self.entrante.nombre)
         self.assertEqual(datos_campana['t_espera_conexion'], 0)
         self.assertEqual(datos_campana['atendidas'], 0)
@@ -191,6 +191,7 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
         self.assertEqual(datos_campana['abandonadas'], 0)
         self.assertEqual(datos_campana['t_abandono'], 0)
         self.assertEqual(datos_campana['recibidas'], 0)
+        self.assertEqual(datos_campana['recibidas_transferencias'], 0)
         self.assertEqual(datos_campana['efectuadas_manuales'], 0)
         self.assertEqual(datos_campana['conectadas_manuales'], 0)
         self.assertEqual(datos_campana['no_conectadas_manuales'], 0)
