@@ -25,6 +25,7 @@ from django.utils.translation import ugettext as _
 from django.utils import timezone
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog
+from reportes_app.reporte_llamadas import LLAMADA_TRANSF_INTERNA
 from ominicontacto_app.models import AgenteProfile, Pausa, Campana
 from pygal.style import Style
 from ominicontacto_app.utiles import (
@@ -358,7 +359,7 @@ class TiemposAgente(object):
         fecha_inferior = datetime_hora_minima_dia(fecha_inferior)
         fecha_superior = datetime_hora_maxima_dia(fecha_superior)
         agentes_id = [agente.id for agente in agentes]
-        eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
+        eventos_llamadas = list(LlamadaLog.EVENTOS_INICIO_CONEXION)
         dict_agentes = LlamadaLog.objects.obtener_count_agente().filter(
             time__range=(fecha_inferior, fecha_superior),
             agente_id__in=agentes_id,
@@ -464,6 +465,24 @@ class TiemposAgente(object):
 
         return total_manual
 
+    def _obtener_total_transferidas_agente(self, dict_agentes, agentes):
+        """
+        Obtiene el total de llamadas TRANSFERIDAS por agente en una lista
+        :return: lista con el total de llamadas TRANSFERIDAS recibidas por agente
+        """
+        total_transferidas = []
+
+        for agente in agentes:
+            cantidad = 0
+            result = dict_agentes.filter(tipo_llamada=LLAMADA_TRANSF_INTERNA). \
+                filter(agente_id=agente)
+            if result:
+                cantidad = result[0]['cantidad']
+
+            total_transferidas.append(cantidad)
+
+        return total_transferidas
+
     def _obtener_total_agentes_tipos_llamadas(self, agentes, fecha_inferior,
                                               fecha_superior):
         dict_agentes, nombres_agentes, ids_agentes = self._obtener_llamadas_agente(
@@ -473,12 +492,14 @@ class TiemposAgente(object):
         total_dialer = self._obtener_total_dialer_agente(dict_agentes, ids_agentes)
         total_inbound = self._obtener_total_inbound_agente(dict_agentes, ids_agentes)
         total_manual = self._obtener_total_manual_agente(dict_agentes, ids_agentes)
+        total_transferidas = self._obtener_total_transferidas_agente(dict_agentes, ids_agentes)
         dict_agentes_llamadas = {
             'total_agentes': total_agentes,
             'total_agente_dialer': total_dialer,
             'total_agente_inbound': total_inbound,
             'total_agente_manual': total_manual,
             'total_agente_preview': total_preview,
+            'total_agente_transferidas': total_transferidas,
             'nombres_agentes': nombres_agentes
         }
         return dict_agentes_llamadas
@@ -527,7 +548,8 @@ class TiemposAgente(object):
                                        dict_agentes_llamadas['total_agente_preview'],
                                        dict_agentes_llamadas['total_agente_dialer'],
                                        dict_agentes_llamadas['total_agente_inbound'],
-                                       dict_agentes_llamadas['total_agente_manual']),
+                                       dict_agentes_llamadas['total_agente_manual'],
+                                       dict_agentes_llamadas['total_agente_transferidas']),
             'barra_agente_total': barra_agente_total,
         }
 

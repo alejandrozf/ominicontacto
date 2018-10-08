@@ -162,6 +162,8 @@ class LlamadaLog(models.Model):
                             'BTOUT-TRY',
                             'CTOUT-COMPLETE', ]
 
+    EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER', 'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
+
     # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
     # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']
     # EVENTOS_TRANSFER_TRY = EVENTOS_TRANSFER_TRY_IN + EVENTOS_TRANSFER_TRY_OUT
