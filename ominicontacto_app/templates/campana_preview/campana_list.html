@@ -115,6 +115,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                             <span class="icon icon-graph"></span>Reportes
                         </a>
+                        <a class="dropdown-item" href="{% url 'contactos_preview_asignados' campana.pk %}">
+                            <span class="icon icon-contacts"></span>Ver Contactos Asignados
+                        </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>Eliminar
                         </a>

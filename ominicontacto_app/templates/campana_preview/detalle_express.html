@@ -45,9 +45,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <br>
 <h2>{% trans 'Resultados de las llamadas de la campaña' %}</h2>
 <hr>
-<h3>{% trans 'Contactos atendidos' %}:<strong>{{ terminadas }}</strong></h3>
-<h3>{% trans 'Contactos restantes por atender' %}:<strong>{{ estimadas }}</strong></h3>
+<h3>{% trans 'Contactos calificados' %}: <strong>{{ terminadas }}</strong></h3>
+<h3>{% trans 'Contactos restantes por calificar' %}: <strong>{{ estimadas }}</strong></h3>
 <br>
 {% for categoria, count in categorias.items %}
-    <p>{% trans 'Finalizados por' %} {{ categoria }}:<strong>{{ count }}</strong></p>
+    <p>{% trans 'Finalizados por' %} {{ categoria }}: <strong>{{ count }}</strong></p>
 {% endfor %}

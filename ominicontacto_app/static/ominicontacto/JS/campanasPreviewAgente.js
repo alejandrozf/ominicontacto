@@ -16,6 +16,16 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+
+function set_url_parameters(url, parameters){
+  new_url = url;
+  for (var i = 0; i < parameters.length; i++) {
+    var value = parameters[i];
+    new_url = new_url.replace(String(i).repeat(4), value);
+  }
+  return new_url;
+}
+
 $(document).ready(function(){
 
   var $errorAsignacionContacto = $('#errorAsignacionContacto');
@@ -85,6 +95,7 @@ Por favor intente solicitar uno nuevo";
             informarError(data, $button);
           }
           else {                // se obtienen los datos del contacto
+            $('#validar_contacto').show()
             $panelContacto.attr('class', 'col-md-4 col-md-offset-1');
             // actualizamos el teléfono del contacto
             var contactoTelefono = data['telefono_contacto'];
@@ -93,10 +104,24 @@ Por favor intente solicitar uno nuevo";
             $inputContacto.attr('value', data['contacto_id']);
             $inputCampana.attr('value', idCampana);
             $inputCampanaNombre.attr('value', nombreCampana);
-            $errorAsignacionContacto.html('');
 
             // Limpiamos la información de algún contacto anterior
             $contactoOtrosDatos.html('');
+
+            if (data['code'] == 'contacto-asignado'){
+              $errorAsignacionContacto.html('Contacto asignado por llamado previo.\
+ Califique el contacto o liberelo para poder recibir un nuevo contacto.');
+              $('#liberar_contacto').show()
+              $('#calificar_contacto').show()
+              var url_parameters = [idCampana, data['contacto_id'], data['agente_id']];
+              var calificar_url = set_url_parameters(calificar_contacto_url, url_parameters);
+              $('#calificar_contacto').attr('href', calificar_url);
+            }
+            else{
+              $('#liberar_contacto').hide()
+              $('#calificar_contacto').hide()
+              $errorAsignacionContacto.html('');
+            }
 
             // Actualizamos los datos del contacto obtenido
             for (campo in data['datos_contacto']) {
@@ -105,7 +130,6 @@ Por favor intente solicitar uno nuevo";
                   data['datos_contacto'][campo] + '</p>';
               $contactoOtrosDatos.append(campoData);
             }
-            console.log("Success: ", data);
           }
 
         })
@@ -119,4 +143,29 @@ Por favor intente solicitar uno nuevo";
         });
     });
   });
+
+  $('#liberar_contacto').on('click', function(){
+    var url = liberar_contacto_url;
+    var data = {
+      'campana_id': $inputCampana.val(),
+    };
+    $.post(url, data).success(function(data) {
+      // comprobamos si el contacto todavía sigue asignado al agente
+      // antes de llamar
+      if (data['status'] == 'OK') {
+        $errorAsignacionContacto.html('');
+        $contactoOtrosDatos.html('Contacto Liberado');
+        $('#validar_contacto').hide()
+        $('#liberar_contacto').hide()
+        $('#calificar_contacto').hide()
+      }
+      else {
+        // se muestra modal con mensaje de error
+        var errorMessage = "No se pudo liberar al contacto. Intente pedir otro.";
+        $errorAsignacionContacto.html(errorMessage);
+      }
+    });
+
+  });
+
 });
