@@ -21,7 +21,7 @@ from random import randint, choice
 
 from django.core.management.base import BaseCommand, CommandError
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
-                                               AgenteProfileFactory, )
+                                               AgenteProfileFactory, QueueFactory)
 from ominicontacto_app.models import Campana, User
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
@@ -85,6 +85,7 @@ class Command(BaseCommand):
                 campana = CampanaFactory.create(
                     type=tipo, estado=estado, nombre=nombre,
                     reported_by=self.agentes[0].user)
+                QueueFactory(campana=campana, name=campana.nombre)
             ContactoFactory.create_batch(5, bd_contacto=campana.bd_contacto)
             self.campanas[tipo] = campana
 
