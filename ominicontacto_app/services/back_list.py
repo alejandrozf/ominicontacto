@@ -120,6 +120,11 @@ class CreacionBacklistService(object):
         backlist_config_file.copy_asterisk()
 
 
+class NoSePuedeInferirMetadataErrorFormatoFilas(OmlError):
+    """Indica que las filas no tienen el formato adecuado"""
+    pass
+
+
 class NoSePuedeInferirMetadataError(OmlError):
     """Indica que no se puede inferir los metadatos"""
     pass
@@ -135,7 +140,11 @@ class ValidaDataService(object):
     def valida_datos_desde_lineas(self, lineas_unsafe):
         """Infiere los metadatos desde las lineas pasadas por parametros.
         """
-        assert isinstance(lineas_unsafe, (list, tuple))
+        try:
+            assert isinstance(lineas_unsafe, (list, tuple))
+        except AssertionError:
+            raise NoSePuedeInferirMetadataErrorFormatoFilas(
+                "Archivo .csv con problemas de estructura")
 
         lineas = []
         for linea in lineas_unsafe:
