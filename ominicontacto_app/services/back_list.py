@@ -24,8 +24,10 @@ OJO: servicio copiado del modulo base_de_datos_contactos
 
 from __future__ import unicode_literals
 
+import csv
 import logging
 import os
+
 from django.utils.encoding import smart_text
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
@@ -56,12 +58,21 @@ class CreacionBacklistService(object):
 
         csv_extensions = ['.csv']
 
+        file_invalid_msg = "El archivo para realizar la importación de contactos no es válido"
         filename = back_list.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
             logger.warn("La extensión %s no es CSV. ", extension)
-            raise(OmlArchivoImportacionInvalidoError("El archivo especificado "
-                  "para realizar la importación de contactos no es válido"))
+            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
+        data = csv.reader(back_list.archivo_importacion)
+
+        try:
+            # chequea que el csv tenga un formato estandar de black list, así podemos descartar
+            # archivos csv corruptos
+            all([row[0] < row[1] for row in data])
+        except IndexError:
+            logger.warn("El formato del archivo es inválido")
+            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
 
     def importa_contactos(self, backlist):
         """
