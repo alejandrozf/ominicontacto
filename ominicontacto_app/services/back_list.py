@@ -24,8 +24,10 @@ OJO: servicio copiado del modulo base_de_datos_contactos
 
 from __future__ import unicode_literals
 
+import csv
 import logging
 import os
+
 from django.utils.encoding import smart_text
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
@@ -33,6 +35,8 @@ from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
 from ominicontacto_app.models import ContactoBacklist
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.asterisk_config import BackListConfigFile
+
+from utiles_globales import validar_estructura_csv
 
 
 logger = logging.getLogger(__name__)
@@ -56,12 +60,14 @@ class CreacionBacklistService(object):
 
         csv_extensions = ['.csv']
 
+        file_invalid_msg = "El archivo para realizar la importación de contactos no es válido"
         filename = back_list.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
             logger.warn("La extensión %s no es CSV. ", extension)
-            raise(OmlArchivoImportacionInvalidoError("El archivo especificado "
-                  "para realizar la importación de contactos no es válido"))
+            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
+        data = csv.reader(back_list.archivo_importacion)
+        validar_estructura_csv(data, file_invalid_msg, logger)
 
     def importa_contactos(self, backlist):
         """
@@ -109,6 +115,11 @@ class CreacionBacklistService(object):
         backlist_config_file.copy_asterisk()
 
 
+class NoSePuedeInferirMetadataErrorFormatoFilas(OmlError):
+    """Indica que las filas no tienen el formato adecuado"""
+    pass
+
+
 class NoSePuedeInferirMetadataError(OmlError):
     """Indica que no se puede inferir los metadatos"""
     pass
@@ -124,7 +135,11 @@ class ValidaDataService(object):
     def valida_datos_desde_lineas(self, lineas_unsafe):
         """Infiere los metadatos desde las lineas pasadas por parametros.
         """
-        assert isinstance(lineas_unsafe, (list, tuple))
+        try:
+            assert isinstance(lineas_unsafe, (list, tuple))
+        except AssertionError:
+            raise NoSePuedeInferirMetadataErrorFormatoFilas(
+                "Archivo .csv con problemas de estructura")
 
         lineas = []
         for linea in lineas_unsafe:

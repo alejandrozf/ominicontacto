@@ -36,7 +36,7 @@ from ominicontacto_app.models import Backlist
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.back_list import (
     CreacionBacklistService, ValidaDataService, NoSePuedeInferirMetadataError,
-    NoSePuedeInferirMetadataErrorEncabezado)
+    NoSePuedeInferirMetadataErrorEncabezado, NoSePuedeInferirMetadataErrorFormatoFilas)
 
 import logging as logging_
 
@@ -137,9 +137,19 @@ class BacklistCreateView(CreateView):
         try:
             validata_data = ValidaDataService()
             validata_data.valida_datos_desde_lineas(estructura_archivo)
+        except NoSePuedeInferirMetadataErrorFormatoFilas:
+            message = '<strong>Operación Errónea!</strong> \
+                        Las filas del archivo no tienen el formato adecuado'
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.form_invalid(form)
         except NoSePuedeInferirMetadataError:
             message = '<strong>Operación Errónea!</strong> \
-                        No se puede interferir lo datos de la backlist y \
+                        No se pueden interferir los datos de la blacklist y \
                         no es válido.'
 
             messages.add_message(
