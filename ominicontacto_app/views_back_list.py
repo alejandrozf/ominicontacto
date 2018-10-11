@@ -139,7 +139,7 @@ class BacklistCreateView(CreateView):
             validata_data.valida_datos_desde_lineas(estructura_archivo)
         except NoSePuedeInferirMetadataError:
             message = '<strong>Operación Errónea!</strong> \
-                        No se puede interferir lo datos de la backlist y \
+                        No se pueden interferir los datos de la blacklist y \
                         no es válido.'
 
             messages.add_message(
