@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 
+from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError
 from ominicontacto_app.models import CalificacionCliente
 
 
@@ -40,3 +41,14 @@ def obtener_cantidad_no_calificados(total_llamadas_qs, fecha_desde, fecha_hasta,
         # significa que el agente calificó llamadas que no conectaron con el usuario
         total_atendidas_sin_calificacion = 0
     return total_atendidas_sin_calificacion
+
+
+def validar_estructura_csv(data_csv_memory, err_message, logger):
+    """Analiza si un archivo con extensión .csv tiene una estructura válida"""
+    try:
+        # chequea que el csv tenga un formato estándar de black list, así podemos descartar
+        # archivos csv corruptos
+        all([row[0] < row[1] for row in data_csv_memory])
+    except Exception as e:
+        logger.warn("Error: {0}".format(e.message))
+        raise(OmlArchivoImportacionInvalidoError(err_message))

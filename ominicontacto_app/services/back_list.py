@@ -36,6 +36,8 @@ from ominicontacto_app.models import ContactoBacklist
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.asterisk_config import BackListConfigFile
 
+from utiles_globales import validar_estructura_csv
+
 
 logger = logging.getLogger(__name__)
 
@@ -65,14 +67,7 @@ class CreacionBacklistService(object):
             logger.warn("La extensión %s no es CSV. ", extension)
             raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
         data = csv.reader(back_list.archivo_importacion)
-
-        try:
-            # chequea que el csv tenga un formato estandar de black list, así podemos descartar
-            # archivos csv corruptos
-            all([row[0] < row[1] for row in data])
-        except IndexError:
-            logger.warn("El formato del archivo es inválido")
-            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
+        validar_estructura_csv(data, file_invalid_msg, logger)
 
     def importa_contactos(self, backlist):
         """
