@@ -155,6 +155,7 @@ $(function() {
       realm: KamailioIp,
       hack_ip_in_contact: true,
       session_timers: false,
+      register_expires: 120,
       pcConfig: {
         rtcpMuxPolicy: 'negotiate'
       }
