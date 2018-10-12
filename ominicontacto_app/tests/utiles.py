@@ -113,8 +113,6 @@ class OMLTestUtilsMixin(object):
             first_name=first_name,
             last_name=last_name,
         )
-        user.username = "user_test_agente" + str(user.id)
-        user.save()
         return user
 
     def crear_user_supervisor(self, username=None):
@@ -127,8 +125,6 @@ class OMLTestUtilsMixin(object):
             password=PASSWORD,
             is_supervisor=True
         )
-        user.username = "user_test_supervisor_" + str(user.id)
-        user.save()
         return user
 
     def crear_agente_profile(self, user=None):
