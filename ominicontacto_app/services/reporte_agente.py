@@ -111,29 +111,28 @@ class EstadisticasAgenteService():
         tiempo_sesion, tiempo_pausa = (datetime.timedelta(), datetime.timedelta())
         tiempo_actual_sesion, tiempo_actual_pausa = (None, None)
         evento_anterior = None
-        for log_actividad_agente in logs_actividad_agente:
+        for i, log_actividad_agente in enumerate(logs_actividad_agente):
             # se calculan los tiempos de sesión del agente
             evento = log_actividad_agente.event
             tiempo_log = log_actividad_agente.time
             inicio_dia = tiempo_log.replace(hour=0, minute=0, second=0, microsecond=0)
-            if evento == 'REMOVEMEMBER' and tiempo_actual_sesion is None:
+            if evento == 'REMOVEMEMBER' and evento_anterior == 'UNPAUSEALL' and i == 1:
                 # el agente inicio sesión el día anterior, sumamos el tiempo desde el inicio del día
                 tiempo_sesion += tiempo_log - inicio_dia
             elif evento == 'REMOVEMEMBER' and tiempo_actual_sesion is not None:
                 # se cierra la sesión de un agente que estuvo conectado previamente
                 tiempo_sesion += tiempo_log - tiempo_actual_sesion
                 tiempo_actual_sesion = None
-            elif (evento == 'ADDMEMBER' and tiempo_actual_sesion is None and
-                  evento_anterior != 'UNPAUSEALL'):
-                tiempo_actual_sesion = tiempo_log
-            elif (evento == 'ADDMEMBER' and tiempo_actual_sesion is None and
-                  evento_anterior == 'UNPAUSEALL'):
+            elif (evento == 'ADDMEMBER' and evento_anterior == 'UNPAUSEALL' and i == 1):
                 tiempo_actual_sesion = tiempo_log
                 # reiniciamos el tiempo que se generó de pausa desde el inicio del día pues no es
                 # un evento de día anterior sino que se genera antes de loguearse el agente
                 tiempo_pausa = datetime.timedelta()
+            elif (evento == 'ADDMEMBER' and tiempo_actual_sesion is None and
+                  evento_anterior != 'UNPAUSEALL'):
+                tiempo_actual_sesion = tiempo_log
             # se calculan los tiempos de pausa del agente
-            if evento == 'UNPAUSEALL' and evento_anterior is None:
+            elif evento == 'UNPAUSEALL' and evento_anterior is None:
                 # al parecer el agente estaba en pausa desde el día anterior, sumamos el tiempo
                 # desde el inicio del día
                 tiempo_pausa += tiempo_log - inicio_dia
