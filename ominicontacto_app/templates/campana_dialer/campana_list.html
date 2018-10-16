@@ -342,7 +342,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
                                 <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
                             </a>
-                                                        <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
+                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
                                 <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">

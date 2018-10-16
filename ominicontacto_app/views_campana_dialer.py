@@ -24,6 +24,7 @@ Observacion se copiaron varias vistas del modulo views_campana
 
 from __future__ import unicode_literals
 
+from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
@@ -35,7 +36,7 @@ from ominicontacto_app.models import Campana
 from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
 from ominicontacto_app.forms import UpdateBaseDatosForm
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
-from requests.exceptions import HTTPError
+from requests.exceptions import RequestException
 
 import logging as logging_
 
@@ -94,9 +95,9 @@ class PlayCampanaDialerView(RedirectView):
             campana_service = CampanaService()
             campana_service.start_campana_wombat(campana)
             campana.play()
-            message = '<strong>Operación Exitosa!</strong>\
+            message = _(u'<strong>Operación Exitosa!</strong>\
                         Se llevó a cabo con éxito la pausa de\
-                        la Campaña.'
+                        la Campaña.')
 
             messages.add_message(
                 self.request,
@@ -104,16 +105,16 @@ class PlayCampanaDialerView(RedirectView):
                 message,
             )
         except WombatDialerError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
                 self.request,
                 messages.WARNING,
                 message,
             )
-        except HTTPError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+        except RequestException, e:
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -135,9 +136,9 @@ class PausarCampanaDialerView(RedirectView):
             campana_service = CampanaService()
             campana_service.pausar_campana_wombat(campana)
             campana.pausar()
-            message = '<strong>Operación Exitosa!</strong>\
-                        Se llevó a cabo con éxito la pausa de\
-                        la Campaña.'
+            message = _('<strong>Operación Exitosa!</strong>\
+                         Se llevó a cabo con éxito la pausa de\
+                         la Campaña.')
 
             messages.add_message(
                 self.request,
@@ -145,21 +146,23 @@ class PausarCampanaDialerView(RedirectView):
                 message,
             )
         except WombatDialerError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
                 self.request,
                 messages.WARNING,
                 message,
             )
-        except HTTPError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+        except RequestException, e:
+            e = _(u'Imposible conectarse con el servicio Wombat')
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
                 self.request,
                 messages.WARNING,
                 message,
             )
+
         return super(PausarCampanaDialerView, self).post(request, *args, **kwargs)
 
 
@@ -176,9 +179,8 @@ class ActivarCampanaDialerView(RedirectView):
             campana_service = CampanaService()
             campana_service.despausar_campana_wombat(campana)
             campana.activar()
-            message = '<strong>Operación Exitosa!</strong>\
-                        Se llevó a cabo con éxito la pausa de\
-                        la Campaña.'
+            message = _('<strong>Operación Exitosa!</strong>\
+                         Se llevó a cabo con éxito la activación dela Campaña.')
 
             messages.add_message(
                 self.request,
@@ -186,16 +188,17 @@ class ActivarCampanaDialerView(RedirectView):
                 message,
             )
         except WombatDialerError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
                 self.request,
                 messages.WARNING,
                 message,
             )
-        except HTTPError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+        except RequestException, e:
+            e = _(u'Imposible conectarse con el servicio Wombat')
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -218,16 +221,17 @@ class CampanaDialerDeleteView(CampanasDeleteMixin, DeleteView):
         # remueve campana de wombat
         remover = service.remove_campana_wombat(self.object)
         if not remover:
-            message = ("<strong>Operación Errónea!</strong> "
-                       "No se pudo eliminar la campana {0} del discador".
-                       format(self.object.nombre))
+            message = _("<strong>Operación Errónea!</strong> "
+                        "No se pudo eliminar la campana {0} del discador").format(
+                            self.object.nombre)
             messages.add_message(
                 self.request,
                 messages.ERROR,
                 message,
             )
-        super(CampanaDialerDeleteView, self).delete(request, *args, **kwargs)
-        self.object.remover()
+        else:
+            super(CampanaDialerDeleteView, self).delete(request, *args, **kwargs)
+            self.object.remover()
         return HttpResponseRedirect(success_url)
 
     def get_object(self, queryset=None):
@@ -302,9 +306,9 @@ class UpdateBaseDatosDialerView(FormView):
         if error:
             return self.form_invalid(form, error=error)
         if self.object.bd_contacto == bd_contacto:
-            message = 'Atención!\
-                            Ud ha escogido la misma base de datos, corre riesgo de calificar los' \
-                      ' mismos contactos pisando la calificación previa.'
+            message = _('Atención!\
+                         Ud ha escogido la misma base de datos, corre riesgo de calificar los'
+                        ' mismos contactos pisando la calificación previa.')
 
             messages.add_message(
                 self.request,
@@ -317,8 +321,8 @@ class UpdateBaseDatosDialerView(FormView):
         # realiza el cambio de la base de datos en wombat
         campana_service.cambiar_base(self.get_object(), columnas, evitar_duplicados,
                                      evitar_sin_telefono, prefijo_discador)
-        message = 'Operación Exitosa!\
-                Se llevó a cabo con éxito el cambio de base de datos.'
+        message = _('Operación Exitosa!\
+                     Se llevó a cabo con éxito el cambio de base de datos.')
 
         messages.add_message(
             self.request,
@@ -332,8 +336,8 @@ class UpdateBaseDatosDialerView(FormView):
 
     def form_invalid(self, form, error=None):
 
-        message = '<strong>Operación Errónea!</strong> \
-                  La base de datos es erronea. {0}'.format(error)
+        message = _('<strong>Operación Errónea!</strong> \
+                     La base de datos es erronea. ') + '{0}'.format(error)
 
         messages.add_message(
             self.request,
