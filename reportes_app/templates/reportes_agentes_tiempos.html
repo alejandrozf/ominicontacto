@@ -282,7 +282,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </div>
                         </td>
                         <td>{{agente.cantidad_llamadas_procesadas}}</td>
-                        <td>{{agente.get_promedio_llamadas}}s</td>
+                        <td>{{agente.tiempo_promedio_llamadas|default_if_none:0}}s</td>
                         <td>{{agente.cantidad_intentos_fallidos}}</td>
                     </tr>
                     {% endfor %}
@@ -321,13 +321,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
             </tbody>
         </table>
-</div>        
+</div>
     <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='pausas_agentes' %}">Exportar reporte de pausas(CSV)</a>
 
 </div>
 <hr>
 <div>
-<div class="wrapper-table table-tall table-responsive">    
+<div class="wrapper-table table-tall table-responsive">
         <table class="table">
             <thead>
                 <tr>
@@ -453,7 +453,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </tr>
                     <tbody id="output_pausa">
                     </tbody>
-                </table>                
+                </table>
             </div>
       </div>
       <div class="modal-footer">
