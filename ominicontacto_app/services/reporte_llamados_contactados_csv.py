@@ -158,11 +158,13 @@ class ArchivoDeReporteCsv(object):
                 datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
                 if contacto:
                     lista_opciones.append(contacto.telefono)
+                    contactacion_msg = "Contactado"
                 else:
-                    lista_opciones.append("No se encuentra el telefono")
+                    lista_opciones.append(log_no_calificado.numero_marcado)
+                    contactacion_msg = "Fuera de base"
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-                lista_opciones.append("Contactado")
+                lista_opciones.append(contactacion_msg)
                 lista_opciones.append(log_no_calificado.numero_marcado)
                 lista_opciones.append("Llamada Atendida sin calificacion")
                 lista_opciones.append("")

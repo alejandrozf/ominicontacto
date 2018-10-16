@@ -36,6 +36,12 @@ from ominicontacto_app.services.wombat_config import (
 )
 from ominicontacto_app.services.exportar_base_datos import\
     SincronizarBaseDatosContactosService
+from ominicontacto_app.errors import OmlError
+
+
+class WombatDialerError(OmlError):
+    """Indica que se produjo un error al interactuar con Wombat Dialer."""
+    pass
 
 
 class CampanaService():
@@ -245,50 +251,44 @@ class CampanaService():
         salida = service_wombat.update_config_wombat(
             "newcampaign_list.json", url_edit)
 
+    def _requests_post_wombat(self, url):
+        """Realiza el post a wombat por requests"""
+        r = requests.post(url)
+        if r.status_code == requests.codes.ok:
+            if 'OK' not in r.text:
+                raise WombatDialerError(r.text)
+        else:
+            raise WombatDialerError(r.raise_for_status())
+
     def start_campana_wombat(self, campana):
         """
         Da inicio a una campana en wombat via post
-        :param campana: campana a la cual desea dar start
-        :return: True si accion se ejecuto correctamente, False si tuvo algun
-        inconveniente
+        Lanza error si no se hizo correctamente
         """
         nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
         url_edit = "api/campaigns/?op=start&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
-        r = requests.post(url)
-        if r.status_code == 200:
-            return True
-        return False
+        self._requests_post_wombat(url)
 
     def pausar_campana_wombat(self, campana):
         """
         Pausa a una campana en wombat via post
-        :param campana: campana a la cual desea pausar
-        :return: True si accion se ejecuto correctamente, False si tuvo algun
-        inconveniente
+        Lanza error si no se hizo correctamente
         """
         nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
         url_edit = "api/campaigns/?op=pause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
-        r = requests.post(url)
-        if r.status_code == 200:
-            return True
-        return False
+        self._requests_post_wombat(url)
 
     def despausar_campana_wombat(self, campana):
         """
         DesPausa a una campana en wombat via post
-        :param campana: campana a la cual desea despausar
-        :return: True si accion se ejecuto correctamente, False si tuvo algun
-        inconveniente
+        Lanza error si no se hizo correctamente
         """
         nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
         url_edit = "api/campaigns/?op=unpause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
-        r = requests.post(url)
-        if r.status_code == 200:
-            return True
-        return False
+        self._requests_post_wombat(url)
 
     def desasociacion_campana_wombat(self, campana):
         """
