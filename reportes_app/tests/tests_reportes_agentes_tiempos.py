@@ -21,7 +21,7 @@
 Tests del modoulo 'reportes_app.reporte_agente_tiempos.py'
 """
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, division
 
 from django.utils import timezone
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -336,7 +336,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                 self.assertEqual(porcentaje_wait_agente,
                                  agente.tiempo_porcentaje_wait)
                 self.assertEqual(2, agente.cantidad_llamadas_procesadas)
-                self.assertEqual(promedio_agente, agente.get_promedio_llamadas())
+                self.assertEqual(promedio_agente, agente.tiempo_promedio_llamadas())
             elif agente.agente.id is self.agente1.id:
                 self.assertEqual(58, agente.tiempo_llamada)
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
