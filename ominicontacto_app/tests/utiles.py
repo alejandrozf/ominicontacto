@@ -45,6 +45,9 @@ from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from mock import Mock
 
 
+PASSWORD = 'admin123'
+
+
 def ru():
     """Devuelve random UUID"""
     return str(uuid.uuid4())
@@ -92,40 +95,41 @@ class OMLTestUtilsMixin(object):
             shutil.copy(tmp, settings.MEDIA_ROOT)
         return new_path
 
-    def crear_user_agente(self, first_name=None, last_name=None):
+    def crear_user_agente(self, first_name=None, last_name=None, username=None):
         """Crea un user"""
 
         if first_name is None:
-            first_name = ''
-
+            first_name = 'User_%i' % User.objects.count()
         if last_name is None:
-            last_name = ''
+            last_name = 'Test'
+        if username is None:
+            username = 'user_test_agente_%i' % User.objects.count()
 
         user = User.objects.create_user(
-            username='user_test_agente',
+            username=username,
             email='user_agente@gmail.com',
-            password='admin123',
+            password=PASSWORD,
             is_agente=True,
             first_name=first_name,
             last_name=last_name,
         )
-        user.username = "user_test_agente" + str(user.id)
-        user.save()
         return user
 
-    def crear_user_supervisor(self):
+    def crear_user_supervisor(self, username=None):
         """Crea un user"""
+        if username is None:
+            username = 'user_test_supervisor_%i' % User.objects.count()
         user = User.objects.create_user(
-            username='user_test_supervisor',
+            username=username,
             email='user_supervisor@gmail.com',
-            password='admin123',
+            password=PASSWORD,
             is_supervisor=True
         )
-        user.username = "user_test_supervisor_" + str(user.id)
-        user.save()
         return user
 
-    def crear_agente_profile(self, user):
+    def crear_agente_profile(self, user=None):
+        if user is None:
+            user = self.crear_user_agente()
         grupo = Grupo.objects.create(nombre="grupo_test", auto_unpause=0)
         return AgenteProfile.objects.create(
             user=user,
@@ -135,7 +139,9 @@ class OMLTestUtilsMixin(object):
             reported_by=user
         )
 
-    def crear_supervisor_profile(self, user, is_administrador=False, is_customer=False):
+    def crear_supervisor_profile(self, user=None, is_administrador=False, is_customer=False):
+        if user is None:
+            user = self.crear_user_supervisor()
         assert not(is_administrador and is_customer), "No puede ser customer "
         "y administrador a la vez"
         return SupervisorProfile.objects.create(
@@ -151,7 +157,7 @@ class OMLTestUtilsMixin(object):
         user = User.objects.create_user(
             username=username,
             email='user_admin@gmail.com',
-            password='admin123',
+            password=PASSWORD,
             is_agente=False,
             is_supervisor=True,
             first_name=first_name,
@@ -162,7 +168,7 @@ class OMLTestUtilsMixin(object):
             user.username = "admin_" + str(user.id)
         user.save()
 
-        profile = self.crear_supervisor_profile(user)
+        profile = self.crear_supervisor_profile(user, )
         profile.is_administrador = True
         profile.save()
 

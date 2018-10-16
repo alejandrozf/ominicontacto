@@ -190,6 +190,8 @@ class EstadisticasService():
                 llamadas_pendientes = dato_campana.get('n_est_remaining_calls', 0)
         elif campana.type == Campana.TYPE_ENTRANTE:
             llamadas_recibidas = dict_eventos_campana.get('ENTERQUEUE', 0)
+            llamadas_recibidas_transferidas = dict_eventos_campana.get('ENTERQUEUE-TRANSFER', 0)
+            llamadas_recibidas += llamadas_recibidas_transferidas
         elif campana.type == Campana.TYPE_PREVIEW:
             llamadas_pendientes = AgenteEnContacto.objects.filter(
                 estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana.pk).count()
@@ -260,6 +262,7 @@ class EstadisticasService():
         # se cuentan todos los eventos para cada caso
         reporte = OrderedDict(
             [(_('Recibidas'), 0),
+             (_('Transferencias recibidas'), 0),
              (_('Atendidas'), 0),
              (_('Expiradas'), 0),
              (_('Abandonadas'), 0),
@@ -267,6 +270,7 @@ class EstadisticasService():
              (_('Manuales atendidas'), 0)])
         eventos_headers = {
             'ENTERQUEUE': _('Recibidas'),
+            'ENTERQUEUE-TRANSFER': _('Transferencias recibidas'),
             'CONNECT': _('Atendidas'),
             'EXITWITHTIMEOUT': _('Expiradas'),
             'ABANDON': _('Abandonadas'),

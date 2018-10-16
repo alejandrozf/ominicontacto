@@ -70,13 +70,17 @@ function actualiza_contenido_objcamp() {
     dataType: 'html',
     data: 'idcamp='+campid+'&op=objcamp',
     success: function (msg) {
-      if(msg!=="]") {
+      if (msg!=="]") {
         var mje = JSON.parse(msg);
         $("#gestioncampana").html(mje.gestion_campana);
         $("#objcampana").html(mje.objetivo_campana);
-        var pje = (mje.gestion_campana * 100) / mje.objetivo_campana;
-        pje = pje.toFixed(2);
-        $("#percent").html(pje +"%");
+        if (mje.objetivo_campana !== "0" && mje.objetivo_campana !== 0) {
+          var pje = (mje.gestion_campana * 100) / mje.objetivo_campana;
+          pje = pje.toFixed(2);
+          $("#percent").html(pje +"%");
+        } else {
+          $("#percent").html("0.00%");
+        }
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {

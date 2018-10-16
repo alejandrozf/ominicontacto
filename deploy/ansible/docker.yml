@@ -23,9 +23,9 @@
           rama: "{{ RAMA }}"
   vars_prompt:
         - name: "admin_pass"
-          prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales)"
+          prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales) default: OML3.1415"
           private: yes
-          default: toor123
+          default: OML3.1415
 
         - name: "admin_pass2"
           prompt: "Ingrese nuevamente contraseña del admin de Omnileads"
@@ -39,9 +39,8 @@
   pre_tasks:
       - assert:
           that:
-            - "'{{ admin_pass }}' != 'bad_value' "
             - "'{{ admin_pass }}' | length > 8"
-          msg: "La contraseña ingresada es demasiado corta. La contraseña no puede ir vacia"
+          msg: "La contraseña ingresada es demasiado corta"
       - assert:
           that: "'{{ admin_pass }}' == '{{ admin_pass2 }}'"
           msg: "Las contraseñas no son iguales"

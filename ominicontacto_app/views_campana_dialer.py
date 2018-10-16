@@ -32,9 +32,10 @@ from django.views.generic import ListView, DeleteView, FormView
 from django.views.generic.base import RedirectView
 
 from ominicontacto_app.models import Campana
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
 from ominicontacto_app.forms import UpdateBaseDatosForm
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
+from requests.exceptions import HTTPError
 
 import logging as logging_
 
@@ -89,27 +90,33 @@ class PlayCampanaDialerView(RedirectView):
 
     def post(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=request.POST['campana_id'])
-        campana_service = CampanaService()
-        resultado = campana_service.start_campana_wombat(campana)
-        campana.play()
-        if resultado:
+        try:
+            campana_service = CampanaService()
+            campana_service.start_campana_wombat(campana)
+            campana.play()
             message = '<strong>Operación Exitosa!</strong>\
-            Se llevó a cabo con éxito la activación de\
-            la Campaña.'
+                        Se llevó a cabo con éxito la pausa de\
+                        la Campaña.'
 
             messages.add_message(
                 self.request,
                 messages.SUCCESS,
                 message,
             )
-        else:
-            message = '<strong>ERROR!</strong>\
-                        No se pudo llevar  cabo con éxito la activación de\
-                        la Campaña.'
-
+        except WombatDialerError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
             messages.add_message(
                 self.request,
-                messages.SUCCESS,
+                messages.WARNING,
+                message,
+            )
+        except HTTPError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
                 message,
             )
         return super(PlayCampanaDialerView, self).post(request, *args, **kwargs)
@@ -124,28 +131,33 @@ class PausarCampanaDialerView(RedirectView):
 
     def post(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=request.POST['campana_id'])
-        campana_service = CampanaService()
-        resultado = campana_service.pausar_campana_wombat(campana)
-        campana.pausar()
-
-        if resultado:
+        try:
+            campana_service = CampanaService()
+            campana_service.pausar_campana_wombat(campana)
+            campana.pausar()
             message = '<strong>Operación Exitosa!</strong>\
-            Se llevó a cabo con éxito la pausa de\
-            la Campaña.'
+                        Se llevó a cabo con éxito la pausa de\
+                        la Campaña.'
 
             messages.add_message(
                 self.request,
                 messages.SUCCESS,
                 message,
             )
-        else:
-            message = '<strong>ERROR!</strong>\
-                        No se pudo llevar  cabo con éxito el pausado de\
-                        la Campaña.'
-
+        except WombatDialerError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
             messages.add_message(
                 self.request,
-                messages.SUCCESS,
+                messages.WARNING,
+                message,
+            )
+        except HTTPError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
                 message,
             )
         return super(PausarCampanaDialerView, self).post(request, *args, **kwargs)
@@ -160,28 +172,33 @@ class ActivarCampanaDialerView(RedirectView):
 
     def post(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=request.POST['campana_id'])
-        campana_service = CampanaService()
-        resultado = campana_service.despausar_campana_wombat(campana)
-        campana.activar()
-
-        if resultado:
+        try:
+            campana_service = CampanaService()
+            campana_service.despausar_campana_wombat(campana)
+            campana.activar()
             message = '<strong>Operación Exitosa!</strong>\
-            Se llevó a cabo con éxito la activación de\
-            la Campaña.'
+                        Se llevó a cabo con éxito la pausa de\
+                        la Campaña.'
 
             messages.add_message(
                 self.request,
                 messages.SUCCESS,
                 message,
             )
-        else:
-            message = '<strong>ERROR!</strong>\
-                        No se pudo llevar  cabo con éxito la activación de\
-                        la Campaña.'
-
+        except WombatDialerError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
             messages.add_message(
                 self.request,
-                messages.SUCCESS,
+                messages.WARNING,
+                message,
+            )
+        except HTTPError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
                 message,
             )
         return super(ActivarCampanaDialerView, self).post(request, *args, **kwargs)

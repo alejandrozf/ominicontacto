@@ -20,6 +20,7 @@
 """
 Tests sobre los procesos realicionados con la calificaciones de los contactos de las campañas
 """
+import json
 
 from mock import patch
 
@@ -66,7 +67,7 @@ class CalificacionTests(OMLBaseTest):
         self.campana.bd_contacto.contactos.add(self.contacto)
 
         self.queue = QueueFactory.create(campana=self.campana)
-        self.agente_profile = AgenteProfileFactory.create(user=UserFactory(is_agente=True))
+        self.agente_profile = AgenteProfileFactory.create(user=self.usuario_agente)
 
         self.calificacion_cliente = CalificacionClienteFactory(
             opcion_calificacion=self.opcion_calificacion_camp_manual, agente=self.agente_profile,
@@ -74,7 +75,7 @@ class CalificacionTests(OMLBaseTest):
 
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
 
-        self.client.login(username=self.usuario_agente, password=self.PWD)
+        self.client.login(username=self.usuario_agente.username, password=self.PWD)
 
     def _setUp_campana_dialer(self):
         self.campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
@@ -249,3 +250,39 @@ class CalificacionTests(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         agenda_contacto = AgendaContacto.objects.first()
         self.assertEqual(agenda_contacto.campana.pk, self.campana.pk)
+
+    def test_llamada_manual_telefono_no_contacto_muestra_formulario_calificacion_blanco(self):
+        # garantizamos un número distinto al existente en la campaña
+        telefono = str(self.contacto.telefono) + '11'
+        url = reverse('calificar_por_telefono',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'telefono': telefono})
+        response = self.client.get(url, follow=True)
+        contacto_form = response.context_data['contacto_form']
+        datos_contacto_form = set(contacto_form.initial.values())
+        self.assertEqual(datos_contacto_form, set(['', telefono]))
+
+    def test_llamada_manual_telefono_con_1_contacto_muestra_datos_contacto_formulario(self):
+        contacto = self.contacto
+        telefono = contacto.telefono
+        url = reverse('calificar_por_telefono',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'telefono': telefono})
+        response = self.client.get(url, follow=True)
+        contacto_form = response.context_data['contacto_form']
+        datos_contacto_form = set(contacto_form.initial.values())
+        datos_contacto_model = set(json.loads(contacto.datos) + [str(telefono)])
+        self.assertEqual(datos_contacto_form, datos_contacto_model)
+
+    def test_llamada_manual_telefono_con_n_contactos_redirecciona_vista_escoger_contacto(self):
+        contacto = self.contacto
+        ContactoFactory(bd_contacto=self.campana.bd_contacto, telefono=contacto.telefono)
+        telefono = contacto.telefono
+        url = reverse('calificar_por_telefono',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'telefono': telefono})
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, 'agente/contactos_telefonos_repetidos.html')

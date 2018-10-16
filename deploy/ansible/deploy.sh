@@ -197,7 +197,12 @@ Tag() {
 
     fi
     ResultadoAnsible=`echo $?`
-    echo "Finalizó la instalación Omnileads"
+    echo ""
+    echo "###############################################################"
+    echo "##    Finalizó la instalación Omnileads satisfactoriamente   ##"
+    echo "###############################################################"
+    echo ""
+    echo " Puede ingresar al sistema en el navegador con https://IP_SERVER"
     echo ""
 
 if [ ${ResultadoAnsible} -ne 0 ];then

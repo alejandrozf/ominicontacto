@@ -32,9 +32,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>{% trans 'Nombre' %}</th>
             <th>{% trans 'Apellido' %}</th>
             {% if user.get_is_administrador %}
-            <th>&nbsp;{% trans 'agente' %}</th>
-            <th>{% trans 'supervisor' %}</th>
-            <th>{% trans 'acciones' %}</th>
+            <th>{% trans 'Perfil' %}</th>
+            <th>{% trans 'Acciones' %}</th>
             {% endif %}
         </tr>
     </thead>
@@ -48,32 +47,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% if user.get_is_administrador %}
             <td>
                 {% if usuario.is_agente %}
-                    <span class="icon icon-check" aria-hidden="true"></span>
-                    {%  if not usuario.get_agente_profile %}
-                        {%  if not usuario.get_supervisor_profile %}
-                            <a href="{% url 'agenteprofile_nuevo' usuario.id %}">{% trans 'Crear perfil' %}</a>
-                        {% endif %}
-                    {% else %}
-                        <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">{% trans 'Modificar perfil' %}</a>
-                    {% endif %}
-                    {% else %}
-                       <span class="icon icon-cancel" aria-hidden="true"></span>
-
-                {% endif %}
-            </td>
-            <td>
-                {% if usuario.is_supervisor %}
-                    <span class="icon icon-check" aria-hidden="true"></span>
-                {%  if not usuario.get_supervisor_profile %}
-                        {%  if not usuario.get_agente_profile %}
-                            <a href="{% url 'supervisor_create' usuario.id %}">{% trans 'Crear perfil' %}</a>
-                        {% endif %}
-                    {% else %}
-                        <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">{% trans 'Modificar perfil' %}</a>
-                    {% endif %}
-                    {% else %}
-                       <span class="icon icon-cancel" aria-hidden="true"></span>
-
+                    <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">{% trans 'Modificar perfil Agente' %}</a>
+                {% elif usuario.is_supervisor %}
+                    <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">{% trans 'Modificar perfil Supervisor' %}</a>
+                {% else %}
+                    <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
             </td>
             <td>

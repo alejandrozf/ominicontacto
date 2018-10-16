@@ -27,7 +27,7 @@ import json
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
-                                               QueueMemberFactory)
+                                               QueueMemberFactory, SupervisorProfileFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import AgenteEnContacto, Campana
 
@@ -38,6 +38,7 @@ class AgentesContactosTests(OMLBaseTest):
 
     def setUp(self):
         self.usuario_agente = self._crear_agente()
+        self.usuario_supervisor = self._crear_supervisor()
         self.campana_dialer, self.contacto_camp_dialer = \
             self._agregar_campana_y_contacto(
                 self.usuario_agente, Campana.TYPE_DIALER)
@@ -58,6 +59,12 @@ class AgentesContactosTests(OMLBaseTest):
         self._hacer_miembro(agente_profile, campana)
         contacto = ContactoFactory.create(bd_contacto=campana.bd_contacto)
         return campana, contacto
+
+    def _crear_supervisor(self):
+        usuario_supervisor = SupervisorProfileFactory()
+        usuario_supervisor.user.set_password(self.PWD)
+        usuario_supervisor.save()
+        return usuario_supervisor
 
     def _crear_agente(self):
         usuario_agente = self.crear_user_agente()
@@ -155,3 +162,33 @@ class AgentesContactosTests(OMLBaseTest):
         self.assertFalse(AgenteEnContacto.objects.filter().exists())
         self.client.post(url, post_data, follow=True)
         self.assertTrue(AgenteEnContacto.objects.all().exists())
+
+    def test_usuario_no_agente_no_accede_vista_contactos_telefono_repetidos(self):
+        self.client.logout()
+        self.client.login(username=self.usuario_supervisor.user.username, password=self.PWD)
+        campana_dialer = self.campana_dialer
+        contacto = campana_dialer.bd_contacto.contactos.first()
+        url = reverse(
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, contacto.telefono])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, 'registration/login.html')
+
+    def test_usuario_agente_accede_vista_contactos_telefono_repetidos(self):
+        campana_dialer = self.campana_dialer
+        contacto = campana_dialer.bd_contacto.contactos.first()
+        url = reverse(
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, contacto.telefono])
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, 'agente/contactos_telefonos_repetidos.html')
+
+    def test_vista_contactos_telefono_repetidos_devuelve_informacion_correcta(self):
+        campana_dialer = self.campana_dialer
+        telefono = '3511234567'
+        n_contactos_repetidos = 3
+        ContactoFactory.create_batch(
+            n_contactos_repetidos, bd_contacto=campana_dialer.bd_contacto, telefono=telefono)
+        url = reverse(
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, telefono])
+        response = self.client.get(url, follow=True)
+        self.assertEqual(campana_dialer.bd_contacto.contactos.count(), n_contactos_repetidos + 1)
+        self.assertEqual(response.context_data['contactos'].count(), n_contactos_repetidos)

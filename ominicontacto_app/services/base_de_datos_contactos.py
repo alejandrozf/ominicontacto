@@ -24,10 +24,13 @@ Servicio encargado de validar y crear las bases de datos.
 from __future__ import unicode_literals
 
 from __builtin__ import callable, enumerate
+
+import csv
 import json
 import logging
 import os
 import re
+
 from django.utils.encoding import smart_text
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
@@ -37,6 +40,7 @@ from ominicontacto_app.models import BaseDatosContacto, \
 from ominicontacto_app.parser import ParserCsv, validate_telefono, validate_fechas, \
     validate_horas
 from ominicontacto_app.utiles import elimina_tildes
+from utiles_globales import validar_estructura_csv
 
 
 logger = logging.getLogger(__name__)
@@ -63,12 +67,15 @@ class CreacionBaseDatosService(object):
 
         csv_extensions = ['.csv']
 
+        file_invalid_msg = "El archivo para realizar la importación de contactos no es válido"
         filename = base_datos_contacto.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
             logger.warn("La extensión %s no es CSV. ", extension)
             raise(OmlArchivoImportacionInvalidoError("El archivo especificado "
                   "para realizar la importación de contactos no es válido"))
+        data = csv.reader(base_datos_contacto.archivo_importacion)
+        validar_estructura_csv(data, file_invalid_msg, logger)
 
         base_datos_contacto.save()
 

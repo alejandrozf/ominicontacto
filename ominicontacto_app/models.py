@@ -35,6 +35,7 @@ from ast import literal_eval
 
 from crontab import CronTab
 from StringIO import StringIO
+from random import choice
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
@@ -42,12 +43,14 @@ from django.db import (models,
                        # connection
                        )
 from django.db.models import Max, Q, Count, Sum
+from django.db.utils import DatabaseError
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
 from django.core.management import call_command
 from django.core.validators import RegexValidator
+from django.forms.models import model_to_dict
 from django.utils.translation import ugettext as _
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from simple_history.models import HistoricalRecords
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
@@ -284,11 +287,6 @@ class AgenteProfile(models.Model):
         self.save()
 
 
-class SupervisorProfileManager(models.Manager):
-
-    pass
-
-
 class SupervisorProfile(models.Model):
 
     ROL_ADMINISTRADOR = '1'
@@ -296,7 +294,6 @@ class SupervisorProfile(models.Model):
     ROL_SUPERVISOR = '3'
     ROL_CLIENTE = '4'
 
-    objects = SupervisorProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
@@ -316,6 +313,9 @@ class SupervisorProfile(models.Model):
 
         self.borrado = True
         self.save()
+
+    def obtener_campanas_activas_asignadas(self):
+        return self.user.campanasupervisors.filter(estado=Campana.ESTADO_ACTIVA)
 
 
 class NombreCalificacionManager(models.Manager):
@@ -2865,6 +2865,8 @@ class ReglasIncidencia(models.Model):
         (RS_TIMEOUT, "Timeout")
     )
 
+    ESTADO_PERSONALIZADO_CONTESTADOR = 'CONTESTADOR'
+
     FIXED = 1
 
     MULT = 2
@@ -2916,20 +2918,39 @@ class UserApiCrm(models.Model):
         return self.usuario
 
 
+class AgenteEnContactoManager(models.Manager):
+
+    def contacto_asignado(self, agente_id, campana_id):
+        # Devuelve el contacto asignado a un agente en una campaña
+        return self.filter(
+            estado__in=[AgenteEnContacto.ESTADO_ENTREGADO, AgenteEnContacto.ESTADO_ASIGNADO],
+            agente_id=agente_id,
+            campana_id=campana_id)
+
+    def esta_asignado_o_entregado_a_agente(self, contacto_id, campana_id, agente_id):
+        # Devuelve si el agente tiene ese contacto asignado o entregado
+        return self.contacto_asignado(agente_id, campana_id).filter(
+            contacto_id=contacto_id).exists()
+
+
 class AgenteEnContacto(models.Model):
     """
     Relaciona a agentes que están en comunicación con contactos de la BD de una campaña
     """
+    objects = AgenteEnContactoManager()
 
     ESTADO_INICIAL = 0  # significa que el contacto aún no ha sido entregado a ningún agente
 
     ESTADO_ENTREGADO = 1  # significa que un agente solicitó este contacto y le fue entregado
+
+    ESTADO_ASIGNADO = 3  # El agente esta en proceso de contactación, se lo reserva por X tiempo
 
     ESTADO_FINALIZADO = 2  # significa que el agente culminó de forma satisfactoria la llamada
 
     ESTADO_CHOICES = (
         (ESTADO_INICIAL, 'INICIAL'),
         (ESTADO_ENTREGADO, 'ENTREGADO'),
+        (ESTADO_ASIGNADO, 'ASIGNADO'),
         (ESTADO_FINALIZADO, 'FINALIZADO'),
     )
     agente_id = models.IntegerField()
@@ -2943,3 +2964,93 @@ class AgenteEnContacto(models.Model):
     def __unicode__(self):
         return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(
             self.agente_id, self.contacto_id, self.estado)
+
+    @classmethod
+    def asignar_contacto(cls, contacto_id, campana_id, agente):
+        try:
+            agente_en_contacto = cls.objects.get(agente_id=agente.id, campana_id=campana_id,
+                                                 contacto_id=contacto_id,
+                                                 estado__in=[AgenteEnContacto.ESTADO_ENTREGADO,
+                                                             AgenteEnContacto.ESTADO_ASIGNADO])
+        except AgenteEnContacto.DoesNotExist:
+            return False  # No se pudo asignar
+
+        agente_en_contacto.estado = AgenteEnContacto.ESTADO_ASIGNADO
+        agente_en_contacto.save()
+        return True
+
+    @classmethod
+    def entregar_contacto(cls, agente, campana_id):
+        # Si ya tiene un contacto ASIGNADO solo puede llamar a ese.
+        contacto_asignado = AgenteEnContacto.objects.filter(agente_id=agente.id,
+                                                            estado=AgenteEnContacto.ESTADO_ASIGNADO,
+                                                            campana_id=campana_id)
+        if contacto_asignado.exists():
+            agente_en_contacto = contacto_asignado[0]
+            data = model_to_dict(agente_en_contacto)
+            data['datos_contacto'] = literal_eval(data['datos_contacto'])
+            data['result'] = 'OK'
+            data['code'] = 'contacto-asignado'
+            return data
+
+        # Si no tiene un contacto asignado, asignarle otro
+
+        # Si el agente tiene algún contacto entregado previamente se libera para
+        # que pueda ser entregado a otros agentes de la campaña
+        cls.liberar_contacto(agente.id, campana_id)
+
+        try:
+            qs_agentes_contactos = cls.objects.select_for_update().filter(
+                agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana_id)
+        except DatabaseError:
+            return {'result': 'Error',
+                    'code': 'error-concurrencia',
+                    'data': 'Contacto siendo accedido por más de un agente'}
+
+        if qs_agentes_contactos.exists():
+            # encuentra y devuelve de forma aleatoria los datos de uno de los
+            # contactos disponibles para el agente
+            agente_en_contacto = choice(qs_agentes_contactos)
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
+            agente_en_contacto.agente_id = agente.id
+            agente_en_contacto.save()
+            data = model_to_dict(agente_en_contacto)
+            data['datos_contacto'] = literal_eval(data['datos_contacto'])
+            data['result'] = 'OK'
+            data['code'] = 'contacto-entregado'
+            return data
+        else:
+            return {'result': 'Error',
+                    'code': 'error-no-contactos',
+                    'data': 'No hay contactos para asignar en esta campaña'}
+
+    @classmethod
+    def liberar_contacto(cls, agente_id, campana_id):
+        qs_agente_en_contacto = cls.objects.contacto_asignado(agente_id, campana_id)
+        if qs_agente_en_contacto.exists():
+            agente_en_contacto = qs_agente_en_contacto.first()
+            agente_en_contacto.agente_id = -1
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_INICIAL
+            agente_en_contacto.save()
+            return True
+        return False
+
+    @classmethod
+    def liberar_contactos_por_tiempo(cls, campana_id, tiempo_de_reserva):
+        tiempo_actual = now()
+        delta_tiempo_desconexion = timedelta(minutes=tiempo_de_reserva)
+        hora_limite_reserva = tiempo_actual - delta_tiempo_desconexion
+        reservados = Q(estado=AgenteEnContacto.ESTADO_ENTREGADO,
+                       modificado__lte=hora_limite_reserva)
+
+        delta_tiempo_asignacion = timedelta(minutes=settings.DURACION_ASIGNACION_CONTACTO_PREVIEW)
+        hora_limite_asignacion = tiempo_actual - delta_tiempo_asignacion
+        asignados = Q(estado=AgenteEnContacto.ESTADO_ASIGNADO,
+                      modificado__lte=hora_limite_asignacion)
+
+        qs_agentes_liberados = AgenteEnContacto.objects.filter(campana_id=campana_id,).filter(
+            asignados | reservados)
+        liberados = qs_agentes_liberados.count()
+        qs_agentes_liberados.update(agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
+
+        return liberados

@@ -150,11 +150,12 @@ $(function() {
   if (var1 && var2) {
     config = {
       uri: "sip:" + var1 + "@" + KamailioIp,
-      ws_servers: "wss://" + KamailioIp + ":" + KamailioPort,
+      ws_servers: "wss://" + KamailioIp + ":" + KamailioPort + "/ws",
       password: var2,
       realm: KamailioIp,
       hack_ip_in_contact: true,
       session_timers: false,
+      register_expires: 120,
       pcConfig: {
         rtcpMuxPolicy: 'negotiate'
       }

@@ -69,7 +69,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = (
             'username', 'first_name', 'last_name', 'email', 'is_agente',
-            'is_supervisor')
+            'is_supervisor', 'password1', 'password2')
         labels = {
             'is_agente': 'Es un agente',
             'is_supervisor': 'Es un supervisor',
@@ -79,6 +79,18 @@ class CustomUserCreationForm(UserCreationForm):
                          _('No se puede volver a utilizar dos veces el mismo nombre de usuario')}
         }
 
+    def __init__(self, deshabilitar_agente=False, *args, **kwargs):
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['first_name'].widget.attrs['class'] = 'form-control'
+        self.fields['last_name'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['password1'].widget.attrs['class'] = 'form-control'
+        self.fields['password2'].widget.attrs['class'] = 'form-control'
+
+        if deshabilitar_agente:
+            self.fields['is_agente'].widget.attrs['disabled'] = True
+
     def clean(self):
         super(CustomUserCreationForm, self).clean()
         is_agente = self.cleaned_data.get('is_agente', None)
@@ -86,6 +98,9 @@ class CustomUserCreationForm(UserCreationForm):
         if is_agente and is_supervisor:
             raise forms.ValidationError(
                 _('Un usuario no puede ser Agente y Supervisor al mismo tiempo'))
+        if not is_agente and not is_supervisor:
+            raise forms.ValidationError(
+                _('Un usuario debe ser Agente o Supervisor'))
         return self.cleaned_data
 
 
@@ -160,6 +175,13 @@ class AgenteProfileForm(forms.ModelForm):
     class Meta:
         model = AgenteProfile
         fields = ('modulos', 'grupo')
+
+    def __init__(self, modulos_queryset, grupos_queryset, *args, **kwargs):
+        super(AgenteProfileForm, self).__init__(*args, **kwargs)
+        self.fields['modulos'].widget.attrs['class'] = 'form-control'
+        self.fields['modulos'].queryset = modulos_queryset
+        self.fields['grupo'].widget.attrs['class'] = 'form-control'
+        self.fields['grupo'].queryset = grupos_queryset
 
 
 class QueueEntranteForm(forms.ModelForm):
@@ -386,6 +408,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         if instance.pk is None:
             self.fields['bd_contacto'].required = False
         else:
+            self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
 
     def requiere_bd_contacto(self):
@@ -865,6 +888,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         self.fields['fecha_fin'].required = not es_template
 
         if self.instance.pk:
+            self.fields['nombre'].disabled = not es_template
             self.fields['bd_contacto'].disabled = True
             self.fields['formulario'].disabled = True
             self.fields['tipo_interaccion'].required = False
@@ -989,6 +1013,14 @@ class ReglasIncidenciaForm(forms.ModelForm):
             "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+    def save(self, commit=True):
+        regla = super(ReglasIncidenciaForm, self).save(commit=False)
+        if regla.estado == ReglasIncidencia.TERMINATED:
+            regla.estado_personalizado = ReglasIncidencia.ESTADO_PERSONALIZADO_CONTESTADOR
+        if commit:
+            regla.save()
+        return regla
+
 
 class ReglasIncidenciaBaseFomset(BaseInlineFormSet):
 
@@ -1112,6 +1144,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         if instance.pk is None:
             self.fields['bd_contacto'].required = False
         else:
+            self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
 
     class Meta:
@@ -1138,6 +1171,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk and not self.initial.get('es_template', False):
+            self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
             self.fields['tiempo_desconexion'].disabled = True
 

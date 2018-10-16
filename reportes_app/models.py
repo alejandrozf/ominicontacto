@@ -155,9 +155,27 @@ class LlamadaLog(models.Model):
     EVENTOS_NO_CONEXION = EVENTOS_NO_CONTACTACION + EVENTOS_NO_DIALOGO
 
     # Eventos que marcan el fin de la conexion con un agente. (Puede ser por conectar con otro)
-    EVENTOS_FIN_CONEXION = ['COMPLETEAGENT', 'COMPLETECALLER', 'BT-TRY', 'CAMPT-COMPLETE',
-                            'CT-COMPLETE', 'BTOUT-TRY', 'CTOUT-COMPLETE', 'COMPLETE-BT',
-                            'COMPLETE-CT', 'COMPLETE-CAMPT', 'COMPLETE-BTOUT', 'COMPLETE-CTOUT']
+    EVENTOS_FIN_CONEXION = ['COMPLETEAGENT', 'COMPLETECALLER',
+                            'BT-TRY', 'COMPLETE-BT',
+                            'CAMPT-COMPLETE', 'CAMPT-FAIL', 'COMPLETE-CAMPT',
+                            'CT-COMPLETE', 'COMPLETE-CT',
+                            'BTOUT-TRY',
+                            'CTOUT-COMPLETE', ]
+
+    # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
+    # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']
+    # EVENTOS_TRANSFER_TRY = EVENTOS_TRANSFER_TRY_IN + EVENTOS_TRANSFER_TRY_OUT
+    # EVENTOS_TRANSFER_OK = ['BT-ANSWER', 'CONNECT', 'CT-ACCEPT', 'BTOUT-ANSWER', 'CTOUT-ACCEPT']
+    # EVENTOS_BT_NO_CONNECT = ['BT-BUSY', 'BT-CANCEL', 'BT-CHANUNAVAIL', 'BT-CONGESTION',
+    #                          'BT-ABANDON', 'BT-NOANSWER']
+    # EVENTOS_CT_NO_CONNECT = ['CT-DISCARD', 'CT-BUSY', 'CT-CANCEL', 'CT-CHANUNAVAIL',
+    #                          'CT-CONGESTION']
+    # EVENTOS_BTOUT_NO_CONNECT = ['BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION',
+    #                             'BTOUT-CHANUNAVAIL', 'BTOUT-ABANDON']
+    # EVENTOS_CTOUT_NO_CONNECT = ['CTOUT-DISCARD', 'CTOUT-BUSY', 'CTOUT-CANCEL',
+    #                             'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION']
+    # EVENTOS_TRANSFER_FAIL = EVENTOS_BT_NO_CONNECT + ['CAMPT-FAIL'] + EVENTOS_CT_NO_CONNECT + \
+    #     EVENTOS_BTOUT_NO_CONNECT
 
     objects = LlamadaLogManager()
 

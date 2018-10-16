@@ -179,6 +179,7 @@ LOGGING = {
 DEFENDER_BEHIND_REVERSE_PROXY = True
 DEFENDER_LOGIN_FAILURE_LIMIT = 1
 DEFENDER_DISABLE_IP_LOCKOUT = True
+DURACION_ASIGNACION_CONTACTO_PREVIEW=30
 
 # Ubuntu (wav -> wav)
 TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
@@ -195,13 +196,16 @@ OML_AUDIO_FOLDER = "oml/"
 CALIFICACION_REAGENDA = 'Agendado'
 
 {% if desarrollo == 1 %}
-LOCAL_APPS = ['sslserver', 'django_extensions']
+CORS_ORIGIN_ALLOW_ALL = True
+LOCAL_APPS = ['sslserver', 'django_extensions', 'corsheaders']
+DJANGO_CORS_HEADERS = True
 DJANGO_DEBUG_TOOLBAR = True
 if DJANGO_DEBUG_TOOLBAR:
     INTERNAL_IPS = ['127.0.0.1', OML_OMNILEADS_IP]
 {% else %}
 LOCAL_APPS = []
 DJANGO_DEBUG_TOOLBAR = False
+DJANGO_CORS_HEADERS = False
 if DJANGO_DEBUG_TOOLBAR:
     INTERNAL_IPS = ['127.0.0.1']
 {% endif %}
