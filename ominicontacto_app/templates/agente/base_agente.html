@@ -643,9 +643,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                       <button id="9" class="btn key">9</button>
                                   </div>
                                   <div>
-                                      <button id="#" class="btn key">#</button>
+                                      <button id="hashtag" class="btn key">#</button>
                                       <button id="0" class="btn key">0</button>
-                                      <button id="*" class="btn key astBtn">*</button>
+                                      <button id="asterisk" class="btn key astBtn">*</button>
                                   </div>
                                 </div>
                                 <div id="phoneKeysActions">
@@ -767,12 +767,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <!-- Main Index -->
 {% compress js %}
-<script type="text/javascript" src="{% static 'ominicontacto/JS/Timers.js' %}" ></script>
-<script type="text/javascript" src="{% static 'ominicontacto/JS/main.js' %}"></script>
 <!-- JsSIP -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
-<!-- mi propio js para phone en jssip -->
-<script type="text/javascript" src="{% static 'ominicontacto/JS/phoneJsSip.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/state-machine-min.js' %}" ></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsFSM.js' %}" ></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/omlAPI.js' %}" ></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsView.js' %}" ></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/Timers.js' %}" ></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/main.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsSip.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsController.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/click2Call.js' %}"></script>
 <!-- JsSip Debug -->
 <!--<script>JsSIP.debug.enable('JsSIP:*');</script>-->
 <!-- webChat -->

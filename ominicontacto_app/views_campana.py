@@ -215,8 +215,7 @@ class FormularioNuevoContactoFormView(FormView):
             reverse('calificacion_formulario_update_or_create',
                     kwargs={"pk_campana": self.kwargs['pk_campana'],
                             "pk_contacto": contacto.pk,
-                            "id_agente": agente.pk,
-                            "wombat_id": 0}))
+                            "id_agente": agente.pk}))
 
     def get_success_url(self):
         reverse('view_blanco')

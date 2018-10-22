@@ -428,24 +428,24 @@ urlpatterns = [
     # CalificacionCliente / Formulario
     # ==========================================================================
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/calificacion/$',
+        '/update/(?P<id_agente>\d+)/calificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion'},
         name='calificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/recalificacion/$',
+        '/update/(?P<id_agente>\d+)/recalificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'recalificacion'},
         name='recalificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/reporte/$',
+        '/update/(?P<id_agente>\d+)/reporte/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'reporte'},
         name='calificacion_cliente_actualiza_desde_reporte'
         ),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
         r'(?P<telefono>\d+)/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion', 'pk_contacto': None, 'manual': True},

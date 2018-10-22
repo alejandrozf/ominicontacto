@@ -107,8 +107,7 @@ class CalificacionTests(OMLBaseTest):
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
-                              'pk_contacto': self.contacto.pk,
-                              'wombat_id': 0})
+                              'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         response = self.client.post(url, post_data, follow=True)
         calificacion_form = response.context_data.get('calificacion_form')
@@ -118,8 +117,7 @@ class CalificacionTests(OMLBaseTest):
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
-                              'pk_contacto': self.contacto.pk,
-                              'wombat_id': 0})
+                              'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         response = self.client.post(url, post_data, follow=True)
         calificacion_form = response.context_data.get('calificacion_form')
@@ -130,8 +128,7 @@ class CalificacionTests(OMLBaseTest):
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
-                              'pk_contacto': self.contacto.pk,
-                              'wombat_id': 0})
+                              'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
@@ -142,8 +139,7 @@ class CalificacionTests(OMLBaseTest):
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
-                              'pk_contacto': self.contacto.pk,
-                              'wombat_id': 0})
+                              'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
@@ -169,8 +165,7 @@ class CalificacionTests(OMLBaseTest):
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'id_agente': self.agente_profile.pk,
                               'pk_campana': self.campana.pk,
-                              'pk_contacto': self.contacto.pk,
-                              'wombat_id': 0})
+                              'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)

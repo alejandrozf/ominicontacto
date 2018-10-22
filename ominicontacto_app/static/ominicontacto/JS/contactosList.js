@@ -45,8 +45,8 @@ $(document).ready(function(){
     $modificar_contacto.append($span_modificar_contacto);
     nodos_acciones.push($modificar_contacto);
 
-    // se crean los nodos que permiten llamar al contacto solo si no son Preview
-    if (tipo_campana != 'Preview') {
+    // se crean los nodos que permiten llamar al contacto solo si no son Preview ni Dialer
+    if (tipo_campana != 'Preview' && tipo_campana != 'Dialer') {
       var $llamar_contacto = create_node('button', {
         'class': 'contacto-lista btn btn-light btn-sm',
       });
