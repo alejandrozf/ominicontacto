@@ -62,9 +62,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'plpython',
         'PORT': 5432,
-        'NAME': 'kamailio',
-        'USER': 'kamailio',
-        'PASSWORD': 'kamailiorw',
+        'NAME': 'omnileads',
+        'USER': 'omnileads',
+        'PASSWORD': 'omnileadsrw',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
     }
