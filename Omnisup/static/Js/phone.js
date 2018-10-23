@@ -39,7 +39,7 @@ $(function () {
       var msg = JSON.parse(msg);
       if(msg!=="]") {
         config.uri= 'sip:' + msg.sipuser + '@' + KamailioIp;
-        config.ws_servers= 'wss://' + KamailioIp+":"+ KamailioPort;
+        config.ws_servers= 'wss://' + KamailioIp+":"+ KamailioPort+"/wssup";
         config.password= msg.sippass;
         config.hack_ip_in_contact= true;
         config.session_timers= false;

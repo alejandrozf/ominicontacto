@@ -21,6 +21,9 @@ Kamailio() {
   sed -i "s/\(DBRWUSER\).*/DBRWUSER=$POSTGRES_USER/" kamctlrc
   sed -i "s/\(DBROOTUSER\).*/DBROOTUSER=$POSTGRES_USER/" kamctlrc
   sed -i "s/\(DBRWPW\).*/DBRWPW=$POSTGRES_PASSWORD/" kamctlrc
+  cd /etc/nginx/conf.d/
+  sed -i "s/\(proxy_pass\).*/proxy_pass https:\/\/$KAMAILIO_IP:$KAMAILIO_WSS_PORT;/" ominicontacto.conf
+
 }
 
 Omnileads(){
