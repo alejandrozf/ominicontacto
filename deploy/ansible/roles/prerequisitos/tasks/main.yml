@@ -19,6 +19,15 @@
 
 # nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos.
 # si no es asi, esta task generara un error
+
+- set_fact: omni_ip="{{ ansible_all_ipv4_addresses[1] }}"
+  when: desarrollo == 1
+  tags: postinstall
+
+- set_fact: omni_ip="{{ ansible_default_ipv4.address }}"
+  when: desarrollo == 0
+  tags: postinstall
+
 - name: Print omni_distribution
   debug: msg="omni_distribution es {{ ansible_os_family }}"
   tags: always

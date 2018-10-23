@@ -11,7 +11,6 @@
 # 2. Copia toda la carpeta ansible del repo a /var/tmp/ansible y todo el codigo a /var/tmp/ominicontacto-build
 # 3. Pregunta si se quiere dockerizar asterisk o no, para pasarle la variable a ansible.
 # 4. Ejecuta ansible segun la opcion de Dockerizar o no
-DOCKER="false"
 PIP=`which pip`
 current_directory=`pwd`
 TMP_ANSIBLE='/var/tmp/ansible'
@@ -180,6 +179,7 @@ Desarrollo() {
     echo "#############################################################################"
     echo ""
     sed -i "s/\(^desarrollo\).*/desarrollo=1/" $TMP_ANSIBLE/hosts
+    DESARROLLO=1
 }
 
 Tag() {
@@ -190,8 +190,8 @@ Tag() {
     echo "El servicio sin humildad es egoísmo"
     echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
-    if [ $DOCKER == "true" ]; then
-      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
+    if [ $DESARROLLO == 1 ]; then
+      echo -n | ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/docker.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
     else
       ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
 

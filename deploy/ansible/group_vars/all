@@ -45,8 +45,7 @@ postgresql_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-
 
 ### IP y FQDN de server a deployar
 
-#omni_ip: "{{ ansible_all_ipv4_addresses[0] }}"
-omni_ip: "{{ ansible_default_ipv4.address }}"
+#omni_dev: 
 omnicentos_fqdn: "{{ ansible_nodename }}"
 localhost: 127.0.0.1
 
