@@ -19,6 +19,7 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+include "{{ install_prefix }}Omnisup/config.php";
 require ('phpagi.php') ;
 //creando nueva instancia AGI
 $agi = new AGI() ;
@@ -34,8 +35,8 @@ $campana=$argv[6];
 $fecha=$argv[7];
 $uid=$argv[8];
 $duracion=$argv[9];
-
-$connection=pg_connect("host=127.0.0.1 port=5432 password=kamailiorw user=kamailio")
+$string_connection="host=" . PG_HOST . " port=5432 password=" . PG_PASSWORD ." user=" . PG_USER;
+$connection=pg_connect($string_connection)
 or die('NO HAY CONEXION: ' . pg_last_error());
 
 $query ="INSERT INTO ominicontacto_app_grabacion (fecha,tipo_llamada,id_cliente,tel_cliente,grabacion,agente_id,campana_id,uid,duracion) VALUES ('$fecha','$tipo_llamada','$id_cliente','$tel_cliente','$grabacion','$agente_id','$campana','$uid','$duracion');";

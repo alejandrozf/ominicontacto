@@ -16,7 +16,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: queue_log; Type: TABLE; Schema: public; Owner: kamailio; Tablespace: 
+-- Name: queue_log; Type: TABLE; Schema: public; Owner: kamailio; Tablespace:
 --
 
 CREATE TABLE queue_log (
@@ -34,7 +34,7 @@ CREATE TABLE queue_log (
 );
 
 
-ALTER TABLE queue_log OWNER TO kamailio;
+ALTER TABLE queue_log OWNER TO omnileads;
 
 --
 -- Name: queue_log_id_seq; Type: SEQUENCE; Schema: public; Owner: kamailio
@@ -48,7 +48,7 @@ CREATE SEQUENCE queue_log_id_seq
     CACHE 1;
 
 
-ALTER TABLE queue_log_id_seq OWNER TO kamailio;
+ALTER TABLE queue_log_id_seq OWNER TO omnileads;
 
 --
 -- Name: queue_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kamailio
@@ -65,7 +65,7 @@ ALTER TABLE ONLY queue_log ALTER COLUMN id SET DEFAULT nextval('queue_log_id_seq
 
 
 --
--- Name: queue_log_pkey; Type: CONSTRAINT; Schema: public; Owner: kamailio; Tablespace: 
+-- Name: queue_log_pkey; Type: CONSTRAINT; Schema: public; Owner: kamailio; Tablespace:
 --
 
 ALTER TABLE ONLY queue_log
@@ -74,4 +74,3 @@ ALTER TABLE ONLY queue_log
 --
 -- PostgreSQL database dump complete
 --
-

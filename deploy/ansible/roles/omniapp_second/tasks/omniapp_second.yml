@@ -83,6 +83,17 @@
   template: src=templates/omnileads.conf dest=/etc/omnileads.conf owner=root group=root mode=644
   become: true
   become_method: sudo
+  tags: ['never','all']
+
+# Se ejecuta una funcion de sql que hizo ale, esto es para los reportes
+- name: Add queuelog trigger to database
+  shell: source /etc/omnileads.conf; psql -U $POSTGRES_USER -h $POSTGRES_IP -d $POSTGRES_DATABASE -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plpython/replace_insert_queue_log_ominicontacto_queue_log.sql'
+  become: true
+  environment:
+    PGPASSWORD: "{{ postgres_password }}"
+  tags: ['never','postinstall']
+  become_user: postgres
+  become_method: sudo
 
 # Se genera el script de cambio de IP
 - name: Generate changeip.sh script
