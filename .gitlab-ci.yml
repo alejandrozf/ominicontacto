@@ -34,7 +34,7 @@ cache:
 
 before_script:
   - mkdir -p ~/local/
-  - cp oml_settings_local_pro.py ~/local/oml_settings_local.py
+  - cp settings-gitlab-ci.py ~/local/oml_settings_local.py
   - ln -s ~/local/oml_settings_local.py
   - mkdir -p /opt/omnileads/ominicontacto/
   - touch /opt/omnileads/ominicontacto/django.log
