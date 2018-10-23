@@ -36,12 +36,10 @@
   become: true
   become_method: sudo
 
-# Se copia el archivo kamctlrc a /opt/omnileads/kamailio/etc/kamailio -- FIX ME -- usar modulo copy
+# Se hace el template kamctlrc a /opt/omnileads/kamailio/etc/kamailio
 # Ver archivo kamctlrc para mas info
 - name: Copy of oml/kamailio-files to the desired destinations
-  shell: "{{ item }} chdir={{ install_prefix }}ominicontacto/ominicontacto_voip"
-  with_items:
-      - cp kamailio-files/kamctlrc {{ kamailio_location }}/etc/kamailio/
+  template: src=templates/kamctlrc dest={{ kamailio_location }}/etc/kamailio/kamctlrc mode=755 owner={{ usuario }} group={{ usuario }}
 
 # Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
 - name: Creation of kamailio file in /etc/default
@@ -68,11 +66,11 @@
   when: kamailio_installed|failed
   become: true
   become_method: sudo
-  register: command_result
+  register: database_creation
   failed_when:
-    - "'already exists' not in command_result.stderr"
-    - "'ya existe' not in command_result.stderr"
-    - "command_result.rc != 0"
+    - "'already exists' not in database_creation.stderr"
+    - "'ya existe' not in database_creation.stderr"
+    - "database_creation.rc != 0"
 
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
@@ -107,7 +105,22 @@
 - name: Enable of kamailio
   command: systemctl enable kamailio
   become: true
+  register: kamailio_ok
   become_method: sudo
+
+- set_fact: kamailio_result={{ kamailio_ok.rc }}
+- debug: var=kamailio_result
+- name: Modify of pg_hba.conf file (centos)
+  template: src=roles/kamailio/templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
+  become: true
+  become_method: sudo
+  when: ['ansible_os_family == "RedHat"','kamailio_ok.rc == 0']
+
+- name: Modify of pg_hba.conf file (debian)
+  template: src=roles/kamailio/templates/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
+  become: true
+  become_method: sudo
+  when: ['ansible_os_family == "Debian"','kamailio_ok.rc == 0']
 
 - name: Restart kamailio service
   service: name=kamailio state=restarted enabled=yes

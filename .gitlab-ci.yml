@@ -49,9 +49,9 @@ before_script:
 
 test:
   variables:
-    POSTGRES_DB: kamailio
-    POSTGRES_USER: kamailio
-    POSTGRES_PASSWORD: kamailiorw
+    POSTGRES_DB: omnileads
+    POSTGRES_USER: omnileads
+    POSTGRES_PASSWORD: omnileadsrw
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
   script:
     - flake8

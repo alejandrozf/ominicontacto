@@ -29,7 +29,7 @@ class Campana_Model {
     private $argPdo;
 
     function __construct() {
-        $this->argPdo = 'pgsql:host=' . PG_HOST . ';dbname=kamailio;port=5432';
+        $this->argPdo = 'pgsql:host=' . PG_HOST . ';dbname=' . PG_DB . ';port=5432';
         $this->agi = new Phpagi_asmanager();
     }
 

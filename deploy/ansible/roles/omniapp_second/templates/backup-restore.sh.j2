@@ -3,7 +3,8 @@
 
 # Inicialización de variables
 FECHA=`date +%Y%m%d`
-export PGPASSWORD=""
+source /etc/omnileads.conf
+export PGPASSWORD="$POSTGRES_PASSWORD"
 
 Backup() {
 
@@ -28,7 +29,7 @@ Backup() {
 
     #Databases
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database
-    pg_dump -F t -U kamailio -w -h 127.0.0.1 kamailio -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup
+    pg_dump -F t -U $POSTGRES_USER -w -h $POSTGRES_IP $POSTGRES_DATABASE -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/*
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/
 
@@ -66,7 +67,7 @@ Restore() {
 
     #Restore of Database
     cd ../../postgres_database
-    pg_restore -U kamailio -F t -c -C -w -h 127.0.0.1 base_backup
+    pg_restore -U $POSTGRES_USER -F t -d $POSTGRES_DATABASE -w -h $POSTGRES_IP base_backup
 
     rm -rf {{ install_prefix }}backup/tar_directory
 

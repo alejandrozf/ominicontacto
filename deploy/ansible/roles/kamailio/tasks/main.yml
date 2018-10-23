@@ -71,7 +71,7 @@
   tags: kamailio
   when: kamailio_installed|failed
 
-- include: postgresusers.yml
+- include: postgresql.yml
   tags: kamailio
 
 - include: certificate_CA.yml
