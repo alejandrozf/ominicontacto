@@ -42,6 +42,7 @@
       - name: "admin_pass2"
         prompt: "Ingrese nuevamente contrasena del admin de Omnileads: "
         private: yes
+        default: OML3.1415
 
       - name: "postgres_password"
         prompt: "Ingrese contrasena de la base de datos postgresql: "
@@ -67,59 +68,6 @@
           that: "'{{ formato_conversion }}' == 'wav' or '{{ formato_conversion }}' == 'mp3' "
           msg: "Formato inválido"
         tags: postinstall
-
-      # Checkeo si la base kamailio existe
-      - name: Check if kamailio database exists
-        shell: source /etc/omnileads.conf; psql -U $POSTGRES_USER -h $POSTGRES_IP -c '\l' |grep kamailio |awk -F '|' '{print $1}'
-        register: kamailiodb_exists
-        tags: ['never','postinstall']
-        become: true
-        become_method: sudo
-
-      # tasks para cambiar el nombre de la db
-      - name: Stop kamailio service
-        service: name=kamailio state=stopped
-        when: "'kamailio' in kamailiodb_exists.stdout"
-        tags: ['never','postinstall']
-
-      - name: Stop omnileads service
-        service: name=omnileads state=stopped
-        when: "'kamailio' in kamailiodb_exists.stdout"
-        tags: ['never','postinstall']
-
-      - name: Restart postgresql service
-        service: name=postgresql-9.6 state=restarted
-        when: "'kamailio' in kamailiodb_exists.stdout"
-        tags: ['never','postinstall']
-
-      # Se crea el usuario de postgres
-      - name: Create omnileads postgres user
-        become: yes
-        become_method: sudo
-        become_user: postgres
-        postgresql_user: name=omnileads password={{ postgres_password }} role_attr_flags=SUPERUSER
-        when: "'kamailio' in kamailiodb_exists.stdout"
-        tags: ['never','postinstall']
-
-      # Se crea el usuario de postgres
-      - name: Create omnileadsro postgres user
-        postgresql_user: name=omnileadsro password=omnileadsro role_attr_flags=SUPERUSER
-        become: yes
-        become_method: sudo
-        become_user: postgres
-        when: "'kamailio' in kamailiodb_exists.stdout"
-        tags: ['never','postinstall']
-
-      # Se cambia el nombre de la base de datos
-      - name: Change the database name
-        shell: source /etc/omnileads.conf; psql -U postgres -h $POSTGRES_IP -c 'ALTER DATABASE kamailio RENAME TO omnileads;'
-        become: true
-        environment:
-          PGPASSWORD: "{{ postgres_password }}"
-        become_user: postgres
-        become_method: sudo
-        when: "'kamailio' in kamailiodb_exists.stdout"
-        tags: ['never','postinstall']
 
 # el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
 # Esta variable te dice que familia de OS es el servidor a deployar (Debian o RedHat)
