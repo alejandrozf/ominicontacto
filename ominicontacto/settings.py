@@ -32,6 +32,16 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import subprocess
 
+
+def check_middleware_structure(MIDDLEWARE_CLASSES_STRUCTURE):
+    """Valida que la estructura en los middleware esté correcta"""
+    # de momento solo chequeamos que la estructura no contenga middlewares duplicados
+    # la idea es más adelante realizar más chequeos
+    not_duplicated_middleware = len(MIDDLEWARE_CLASSES_STRUCTURE) == len(
+        set(MIDDLEWARE_CLASSES_STRUCTURE))
+    assert not_duplicated_middleware, "Hay middlewares duplicados"
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -366,6 +376,16 @@ try:
         ]
     if DJANGO_CORS_HEADERS:
         MIDDLEWARE_CLASSES = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE_CLASSES
+
+    # para los addons que tienen middleware
+    MIDDLEWARE_CLASSES_STRUCTURE = MIDDLEWARE_PREPPEND + MIDDLEWARE_CLASSES
+    MIDDLEWARE_CLASSES_STRUCTURE.extend(MIDDLEWARE_APPEND)
+
+    check_middleware_structure(MIDDLEWARE_CLASSES_STRUCTURE)
+
+    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES_STRUCTURE
+
+
 except ImportError as e:
     print "# "
     print "# ERROR"
