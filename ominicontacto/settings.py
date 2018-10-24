@@ -244,8 +244,8 @@ Ejemplo:
 """
 
 ASTERISK = {
-    'USERNAME': None,  # Usuario para AMI
-    'PASSWORD': None,  # Password para usuario para AMI
+    'AMI_USERNAME': None,  # Usuario para AMI
+    'AMI_PASSWORD': None,  # Password para usuario para AMI
     'HTTP_AMI_URL': None,
     # URL usado por Daemon p/acceder a Asterisk AMI via HTTP
     # Ej:
