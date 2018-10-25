@@ -43,6 +43,15 @@
   become: true
   become_method: sudo
 
+  # Se excluye postgres de la lista de repositorios base y updates
+- name: Exclude postgres in list of repositories
+  ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
+  with_items:
+    - base
+    - updates
+  become: true
+  become_method: sudo
+
 # Exluimos paquete librrabitmq para que no haga un upgrade este paquete
 - name: Exclude librabbitmq in list of repositories
   ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=librabbitmq* state=present"
@@ -51,7 +60,6 @@
       - updates
   become: true
   become_method: sudo
-  when: ansible_os_family == "RedHat"
 
 # Se para y deshabilita firewalld
 # https://docs.ansible.com/ansible/2.5/modules/shell_module.html#shell-module
@@ -60,6 +68,8 @@
   with_items:
       - systemctl stop firewalld
       - systemctl disable firewalld
+  tags: ['kamailio','asterisk','omniapp']
+
 
 # Update/upgrade del sistema, solo cuando LOCALHOST=true, osea si se ejecuta como deployed - deployer
 # https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
@@ -81,28 +91,27 @@
   template: src=templates/irontec.repo dest=/etc/yum.repos.d/irontec.repo
   become: true
   become_method: sudo
+  tags: ['asterisk']
 
-# Se importa la rpm key -- FIX ME -- usar modulo rpm_key
+# Se importa la rpm key
 - name: Import of irontec public key
-  shell: "rpm --import http://packages.irontec.com/public.key"
+  rpm_key: state=present key=http://packages.irontec.com/public.key validate_certs=no
   become: true
   become_method: sudo
+  tags: ['asterisk']
 
 # Se instala sngrep
 - name: Install of sngrep
   yum: name=sngrep state=present
+  tags: ['asterisk']
 
-# Se descarga e instala el repositorio epel-release -- FIX ME -- usar modulos get_url y yum en vez de esta task
-- name: Download of epel-release repo
-  command: "{{ item }}"
-  with_items:
-      - rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  register: command_result
-  failed_when:
-    - "'transferencia fallida' in command_result.stderr"
-    - "'failed' in command_result.stderr"
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release repo
+  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
   become: true
   become_method: sudo
+  tags: ['omniapp']
+
 - meta: clear_host_errors
 
 # Se instalan paquetes basicos que se necesitan
@@ -145,6 +154,7 @@
       - libpcap-devel
   become: true
   become_method: sudo
+  tags: ['kamailio','asterisk','omniapp']
 
 # Se instala por aparte librrabitmq para que no hinche las bolas ese paquete
 - name: Install of librabbitmq
@@ -153,23 +163,14 @@
     - http://mirror.centos.org/centos/7/os/x86_64/Packages/librabbitmq-0.8.0-2.el7.x86_64.rpm
   become: true
   become_method: sudo
-
-# Se descarga webtatic repo para instalar php56
-- name: Download of webtatic repo
-  get_url: url=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm dest=/root/ validate_certs=no
-  become: true
-  become_method: sudo
+  tags: ['asterisk']
 
 # Se instala webtatic repo para instalar php56
-- name: Installation of webtatic repo
-  shell: "rpm -Uvh webtatic-release.rpm chdir=/root"
-  register: command_result
+- name: Install of webtatic repo
+  yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm state=present validate_certs=no
   become: true
   become_method: sudo
-  failed_when:
-    - "'ya está instalado' not in command_result.stderr"
-    - "'already installed' not in command_result.stderr"
-    - "command_result.rc != 0"
+  tags: ['omniapp']
 
 #Se instalan todos los paquetes de php56 -- FIX ME -- se necesitan todos los paquetes? verificar con desarrollo
 - name: Install of php56
@@ -177,28 +178,148 @@
   with_items:
       - php56w
       - php56w-pdo
-      - php56w-mysql
+      #- php56w-mysql
       - php56w-mbstring
-      - php56w-pear
-      - php56w-process
-      - php56w-xml
+      #- php56w-pear
+      #- php56w-process
+      #- php56w-xml
       - php56w-opcache
-      - php56w-ldap
-      - php56w-intl
-      - php56w-soap
+      #- php56w-ldap
+      #- php56w-intl
+      #- php56w-soap
       - php56w-fpm
+      - php56w-pgsql
   become: true
   become_method: sudo
   when: asterisk_location != ""
+  tags: ['omniapp']
+
 - meta: clear_host_errors
 
-# Se instala NodeJS. -- FIX Me -- marce va a usar nodejs?
-- name: Download NodeJS setup script
-  shell: "curl -sL https://rpm.nodesource.com/setup_8.x | bash -"
+#  Instalo paquetes de asterisk no se instalan con DOCKER=true
+- name: Installation of asterisk packages
+  yum: name={{ item }} state=present
+  with_items:
+      - ncurses-devel
+      - ncurses-libs
+      - libxml2
+      - libxml2-devel
+      - sqlite-devel
+      - newt-devel
+      - net-snmp-devel
+      - unixODBC
+      - unixODBC-devel
+      - libtiff-devel
+      - audiofile-devel
+      - gtk2-devel
+      - subversion
+      - sendmail
+      - sendmail-cf
+      - lame
   become: true
   become_method: sudo
+  when: ['DOCKER == "false"']
+  tags: ['asterisk']
 
-- name: Install NodeJS
-  yum: name=nodejs state=present
+  # Instalo paquetes de kamailio
+- name: Installation of kamailio packages
+  yum: name={{ item }} state=present
+  with_items:
+    - libevent-devel
+    - gcc
+    - gcc-c++
+    - bison
+    - bison-devel
+    - flex
+    - expat
+    - expat-devel
+    - libuuid
+    - libuuid-devel
+    - xmlrpc-c-devel
+    - lynx
+    - pcre
+    - pcre-devel
+    - libtool-ltdl-devel
+    - iptables-devel
+    - iptables-services
+    - libpcap-devel
+    - glib2-devel
+    - json-glib-devel
+    - redis
+    - hiredis
+    - hiredis-devel
+    - libunistring-devel.x86_64
   become: true
+  become_method: sudo
+  tags: ['kamailio']
+
+- meta: clear_host_errors
+
+  # Se instala el repo de postgresql9.6
+- name: Install of postgresql 9.6
+  yum: "name={{ postgresql_url }} state=present validate_certs=no "
+  become: yes
+  become_method: sudo
+
+  #Se instalan todos los paquetes de postgresql96
+- yum: name=postgresql96* state=present
+  become: yes
+  become_method: sudo
+
+# Se instalan paquetes de App (centos)
+- name: Install the app and services packages
+  yum: "name={{ item }} state=present"
+  with_items:
+      - python-psycopg2.x86_64
+      - python2-psycogreen.noarch
+      - python
+      - python-virtualenv
+      - python-devel
+      - mysql-connector-python
+      - mysql-devel
+      - nginx
+      - nginx-all-modules
+      - libjpeg-turbo-devel
+      - libffi-devel
+      - libffi
+      - libpqxx
+      - libpqxx-devel
+      - cairo-devel
+      - pycairo
+      - pycairo-devel
+      - cairo
+      - libpqxx
+      - libpqxx-devel
+      - python-pycha
+      - libxslt-devel
+      - libxslt-python
+      - libxslt
+      - python-lxml
+      - libxslt-python
+      - postgresql-plpython
+      - postgresql-libs
+      - postgresql-devel
+      - libsass-devel
+      - libsass
+      - python2-pip.noarch
+  become: yes
+  become_method: sudo
+  tags: ['omniapp']
+
+- meta: clear_host_errors
+
+# El initdb de postgres toca ejecutarlo solo para centos
+- name: Setup of postgresql
+  command: "/usr/pgsql-9.6/bin/postgresql96-setup initdb"
+  register: command_result
+  failed_when:
+    - "'is not empty' not in command_result.stdout"
+    - "command_result.rc != 0"
+  become: yes
+  become_method: sudo
+
+# Con service starteas stopeas restarteas y habilitas servicios. Aca lo hacemos con postgres en centos
+- name: Start and enable postgres service
+  service: name=postgresql-9.6.service state=restarted enabled=yes
+  become: yes
   become_method: sudo

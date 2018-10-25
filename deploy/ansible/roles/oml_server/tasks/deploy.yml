@@ -26,11 +26,13 @@
   user: name={{ usuario }} generate_ssh_key=yes group={{ usuario }} ssh_key_bits=2048 state=present shell=/bin/bash
   become: true
   become_method: sudo
+  tags: omniapp
 
 # Creo directorio padre, home del usuario omnileads
 - name: Create the ominicontacto directorie
   file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
   when: desarrollo == 0
+  tags: omniapp
 
 # Se crean los directorios basicos
 - name: Create other directories
@@ -54,6 +56,7 @@
           - "{{ install_prefix }}static"
       # DOnde se guardan los logs uwsgi.log y django.log
           - "{{ install_prefix }}log"
+  tags: omniapp
 
 #----------------------------------------------------------------------
 # pip / virtualenv
@@ -150,7 +153,9 @@
 # Se sube el archivo oml_settings_local.py
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local.py.j2 dest={{ install_prefix }}local/oml_settings_local.py
+  tags: omniapp
 
 # Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py
   file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/oml_settings_local.py owner={{ usuario }} force=true
+  tags: omniapp

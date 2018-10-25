@@ -26,9 +26,9 @@
 # Se hace la transferencia de la llave al usuario root https://docs.ansible.com/ansible/2.5/modules/authorized_key_module.html#authorized-key-module
 - authorized_key: "user=root key={{ ssh_key.stdout }} state=present manage_dir=yes"
 
-# Se cambian los permisos de la llave privada -- FIX ME -- usar modulo file
+# Se cambian los permisos de la llave privada
 - name: Change permissions on id_rsa
-  shell: "chmod 700 {{ install_prefix }}/.ssh/id_rsa"
+  file: state=file path={{ install_prefix }}/.ssh/id_rsa owner={{ usuario }} group={{ usuario }} mode=0700
   tags: postinstall
 
 # Se realiza el primer ssh login con el argoumento -o para que no haga el chequeo de host

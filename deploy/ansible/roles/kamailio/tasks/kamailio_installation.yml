@@ -62,7 +62,7 @@
 
 # Se hace la copia del Makefile del modulo db_postgres, es necesario porque se customizó
 - name: Copy of kamailio Makefile
-  template: src=templates/Makefile dest=/usr/src/kamailio/modules/db_postgres/ owner=root group=root mode=755
+  template: src=templates/etc/Makefile dest=/usr/src/kamailio/modules/db_postgres/ owner=root group=root mode=755
   become: true
   become_method: sudo
 

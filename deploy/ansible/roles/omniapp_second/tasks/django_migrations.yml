@@ -18,10 +18,12 @@
 ---
 
 - set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
+  tags: omniapp
 
 # Se cambia la IP en el acrhivo de config del webphone
 - name: Change the ip address in config.js
   template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner={{ usuario }} group={{ usuario }}"
+  tags: omniapp
 
 # Se crea el lenguaje plpythonu a las bases de datos mencionadas.
 - name: Createlang of the database
@@ -55,8 +57,6 @@
   with_items:
     # Se realizan las migraciones, https://docs.djangoproject.com/en/1.9/topics/migrations/
           - migrate
-    # Se crea el superusuario admin
-          - "createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
     # https://docs.djangoproject.com/en/1.9/ref/contrib/staticfiles/
           - collectstatic
     # https://django-compressor.readthedocs.io/en/stable/
@@ -70,11 +70,28 @@
   become: yes
   become_method: su
   become_user: "{{ usuario }}"
-  ignore_errors: yes
+  tags: omniapp
+
+# Se crea el usuario admin
+- name: Create omnileads superuser
+  django_manage: >
+          command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
+          app_path={{ install_prefix }}ominicontacto
+          settings=ominicontacto.settings
+          virtualenv={{ install_prefix }}virtualenv
+  environment:
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+  register: result
+  failed_when: false
+  become: yes
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: omniapp
 
 # Se crea un pequeño script que utiliza expect para setear automaticamente la password del superusuario
 - name: Change password of superuser
-  template: "src=templates/changepassword.sh.j2 dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
+  template: "src=templates/bin/changepassword.sh.j2 dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
+  tags: omniapp
 
 # Se ejecuta el script (verlo en templates para mas info)
 - name: Change password
@@ -82,7 +99,9 @@
   environment:
           DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
           PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+  tags: omniapp
 
 # Se borra ese script del sistema
 - name: Erase the script for changing superuser password
   file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent
+  tags: omniapp

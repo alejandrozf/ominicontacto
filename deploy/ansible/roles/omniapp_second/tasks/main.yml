@@ -20,7 +20,7 @@
 # y copiado el codigo al servidor
 
 - include: sshkey_transfer.yml
-  tags: postinstall
+  tags: ['postinstall','omniapp']
 
 - include: django_migrations.yml
   tags: ['postinstall','django']

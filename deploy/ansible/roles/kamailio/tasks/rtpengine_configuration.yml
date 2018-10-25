@@ -1,0 +1,69 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+# Se crea el archivo change.sh
+- name: Touch of changeip.sh
+  file: path={{ install_prefix }}bin/changeip.sh state=touch owner={{ usuario }}  group={{ usuario }} mode=755
+
+# Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
+- name: Creation of RTPengine config file
+  template: src=templates/systemd/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
+  become: true
+  become_method: sudo
+  tags: ['postinstall']
+
+# Se copia el archivo para el systemd, (revisarlo y revisar systemd para mas informacion)
+- name: Copy of rtpengine service file to systemd
+  template: src=templates/systemd/rtpengine.service dest=/etc/systemd/system owner=root group=root mode=650
+  become: true
+  become_method: sudo
+  tags: ['postinstall']
+
+# Tengo un template de rsyslog modificado para tener logs de rtpengine y kamailio en sus propios archivos (ver template para mas info)
+- name: Modify of /etc/rsyslog.conf
+  template: src=templates/etc/rsyslog.conf.j2 dest=/etc/rsyslog.conf
+  become: true
+  become_method: sudo
+
+# Creo la carpeta y el archivo donde va a ir el log de rtpengine
+- name: Create rtpengine.log file and directory
+  file: path=/var/log/rtpengine/ state=directory mode=0755
+  become: true
+  become_method: sudo
+- file: path=/var/log/rtpengine/rtpengine.log state=touch mode=0755
+  become: true
+  become_method: sudo
+
+# No se para que se crea esta carpeta pero estaba en los pasos de fabi
+- name: Create /var/spool/rtpengine directory
+  file: path=/var/spool/rtpengine state=directory recurse=yes owner=root
+  become: true
+  become_method: sudo
+
+# Hago copia del binario creado a /usr/local/bin
+- name: Copy the rtpengine binary to /usr/local/bin
+  copy: src=/usr/src/{{ rtpengine_name }}/daemon/rtpengine dest=/usr/local/bin remote_src=yes mode=755
+  become: true
+  become_method: sudo
+
+# Inicio y habilito el servicio
+- name: Start and enable rtpengine service
+  service: name=rtpengine state=restarted enabled=yes
+  become: true
+  become_method: sudo
+  tags: ['postinstall']
