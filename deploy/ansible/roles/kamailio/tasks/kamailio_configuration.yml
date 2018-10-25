@@ -39,23 +39,24 @@
 # Se hace el template kamctlrc a /opt/omnileads/kamailio/etc/kamailio
 # Ver archivo kamctlrc para mas info
 - name: Copy of oml/kamailio-files to the desired destinations
-  template: src=templates/kamctlrc dest={{ kamailio_location }}/etc/kamailio/kamctlrc mode=755 owner={{ usuario }} group={{ usuario }}
+  template: src=templates/etc/kamctlrc dest={{ kamailio_location }}/etc/kamailio/kamctlrc mode=755 owner={{ usuario }} group={{ usuario }}
 
 # Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
 - name: Creation of kamailio file in /etc/default
-  template: src=templates/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
+  template: src=templates/systemd/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
 
 # Se crea el archivo de systemd para el servicio kamailio
 - name: Creation of kamailio.service file in systemd
-  template: src=templates/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
+  template: src=templates/systemd/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
 
-# Se restartea rsyslog se habilita kamailio y se hace el daemon-reload. -- FIX ME -- usar modulos service y file para setear los permisos
-- name: Run kamailio as a service
-  shell: "{{ item }}"
-  with_items:
-      - systemctl restart rsyslog
-      - systemctl daemon-reload
-      - "chown {{ usuario }}:{{ usuario }} -R {{ kamailio_location }}"
+# Se restartea rsyslog se habilita kamailio y se hace el daemon-reload.
+- name: Restart de rsyslog
+  service: name=rsyslog.service state=restarted enabled=yes
+  become: true
+  become_method: sudo
+
+- name: Change owner of kamailio directory
+  file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
   become: true
   become_method: sudo
 
@@ -74,7 +75,7 @@
 
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
-  template: src=templates/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
+  template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
   tags: postinstall
   become: true
   become_method: sudo
@@ -99,7 +100,7 @@
 
 # Se carga un tamplate de reglas de iptables para omnileads, No se ha testeado -- FIX ME -- revisarlo y testearlo
 - name: Template of omnileads-iptables
-  template: src=templates/omnileads-iptables dest={{ install_prefix }}bin/omnileads-iptables mode=755
+  template: src=templates/etc/omnileads-iptables dest={{ install_prefix }}bin/omnileads-iptables mode=755
 
 # Habilito kamailio
 - name: Enable of kamailio
@@ -111,19 +112,20 @@
 - set_fact: kamailio_result={{ kamailio_ok.rc }}
 - debug: var=kamailio_result
 - name: Modify of pg_hba.conf file (centos)
-  template: src=roles/kamailio/templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
+  template: src=roles/kamailio/templates/etc/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
   become: true
   become_method: sudo
   when: ['ansible_os_family == "RedHat"','kamailio_ok.rc == 0']
 
 - name: Modify of pg_hba.conf file (debian)
-  template: src=roles/kamailio/templates/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
+  template: src=roles/kamailio/templates/etc/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
   become: true
   become_method: sudo
   when: ['ansible_os_family == "Debian"','kamailio_ok.rc == 0']
 
+# Restarteo kamailio
 - name: Restart kamailio service
-  service: name=kamailio state=restarted enabled=yes
+  systemd: name=kamailio state=restarted enabled=yes daemon_reload=yes
   tags: ['never','postinstall']
   become: true
   become_method: sudo

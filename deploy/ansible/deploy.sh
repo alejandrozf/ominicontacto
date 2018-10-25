@@ -16,6 +16,7 @@ current_directory=`pwd`
 TMP_ANSIBLE='/var/tmp/ansible'
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 IS_ANSIBLE="`find /usr/bin /usr/sbin /usr/local /root ~ -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
+DESARROLLO=0
 
 Help() {
 USAGE="
@@ -108,10 +109,6 @@ Rama() {
     echo "Eliminando archivos innecesarios..."
     rm -rf $TMP/ominicontacto/docs
     rm -rf $TMP/ominicontacto/ansible
-    rm -rf $TMP/ominicontacto/run_coverage_tests.sh
-    rm -rf $TMP/ominicontacto/oml_settings_local_1_host_pro.py
-    rm -rf $TMP/ominicontacto/oml_settings_local_pro.py
-    rm -rf $TMP/ominicontacto/test*
     sleep 2
     echo "Obteniendo datos de version..."
     branch_name=$(git symbolic-ref -q HEAD)
@@ -190,10 +187,10 @@ Tag() {
     echo "El servicio sin humildad es egoísmo"
     echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
-    if [ $DESARROLLO == 1 ]; then
+    if [ $DESARROLLO -eq 1 ]; then
       echo -n | ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
     else
-      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K 
 
     fi
     ResultadoAnsible=`echo $?`

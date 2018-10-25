@@ -81,5 +81,5 @@
           - {role: oml_server, tags: ['virtualenv']}
           - asterisk
           - kamailio
-          - {role: omniapp_second, tags: ['omniapp']}
+          - omniapp_second
           - deploy_supervision

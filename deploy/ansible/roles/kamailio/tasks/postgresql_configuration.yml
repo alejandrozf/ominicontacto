@@ -23,14 +23,14 @@
 # Deuda tecnica -- FIX ME--
 # Hay que ver si se puede modificar el archivo despues de creado porque está dejando loguearse a postges sin necesidad de contraseña
 - name: Modify of pg_hba.conf file (centos)
-  template: src=roles/kamailio/templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
+  template: src=roles/kamailio/templates/etc/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
 # Esto es para debian
 - name: Modify of pg_hba.conf file (debian)
-  template: src=roles/kamailio/templates/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
+  template: src=roles/kamailio/templates/etc/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"

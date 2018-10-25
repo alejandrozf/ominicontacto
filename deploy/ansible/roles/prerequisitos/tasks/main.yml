@@ -44,6 +44,8 @@
 # Checkeo si la base kamailio existe
 - name: Check if kamailio database exists
   shell: source /etc/omnileads.conf; psql -U $POSTGRES_USER -h $POSTGRES_IP -c '\l' |grep kamailio |awk -F '|' '{print $1}'
+  environment:
+    PGPASSWORD: "{{ postgres_password }}"
   register: kamailiodb_exists
   tags: ['never','postinstall']
   become: true
@@ -94,41 +96,18 @@
   when: "'kamailio' in kamailiodb_exists.stdout"
   tags: ['never','postinstall']
 
-# chequea si asterisk si existe /etc/asterisk y guarda el resultado (true/false) en asterisk_etc_installed
-- name: Check if Asterisk is installed in /etc
-  command: test -d /etc/asterisk
-  ignore_errors: true
-  register: asterisk_etc_installed
-  tags: always
-  become: true
+# Se añaden los binarios que no van a necesitar password al hacerlos con sudo
+- name: Edit sudoers to execute binaries withouth password
+  lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/rsync, /usr/sbin/asterisk\""
+  become: yes
   become_method: sudo
 
 # si asterisk_etc_installed es false setea la variable asterisk_location con /opt/omnileads/asterisk
 - set_fact: asterisk_location={{ install_prefix }}asterisk
-  when: asterisk_etc_installed|failed
   tags: always
-
-# si asterisk_etc_installed es true setea la variable asterisk_location vacia
-- set_fact: asterisk_location=
-  when: asterisk_etc_installed|succeeded
-  tags: always
-
-# se hace el mismo proceso para detectar si kamailio está instalado en /opt/
-- name: Check if Kamailio is installed in /opt
-  command: test -d /opt/kamailio
-  ignore_errors: true
-  register: kamailio_opt_installed
-  tags: always
-  become: true
-  become_method: sudo
 
 # si si kamailio_opt_installd es false setea la variable asterisk_location con /opt/omnileads/kamailio
 - set_fact: kamailio_location={{ install_prefix }}kamailio
-  when: kamailio_opt_installed|failed
-  tags: always
-
-- set_fact: kamailio_location=/opt/kamailio
-  when: kamailio_opt_installed|succeeded
   tags: always
 
 # se crea el grupo de usuario omnileads
@@ -139,22 +118,26 @@
   tags: yum
 
 # se hace include de la tarea solo si ansible_os_family = Redhat
-- name: Installation of Centos prerequisites
-  include: centos_prerequisitos.yml
+- name: Installation of Centos packages
+  include: centos_installations.yml
   tags: yum
   when: ansible_os_family == "RedHat"
 
 # se hace include de la tarea solo si ansible_os_family = Debian
-- name: Installation of Debian prerequisites
-  include: debian_prerequisitos.yml
+- name: Installation of Debian packages
+  include: debian_installations.yml
   tags: apt
   when: ansible_os_family == "Debian"
 
-- include: installations.yml
-  tags: ['apt', 'yum']
+- include: roles/deploy_supervision/tasks/reboot.yml
+  tags: ['reboot']
 
 - include: setup_mariadb.yml
   tags: mariadb
 
-- include: postgres-installation.yml
-  tags: ['apt', 'yum']
+# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
+- name: Start and enable redis service
+  service: name=redis state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+  tags: ['apt', 'yum','kamailio']

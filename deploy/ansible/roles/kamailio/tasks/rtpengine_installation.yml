@@ -48,18 +48,16 @@
 # Comienzo a instalar para  centos, toca asi porque los procesos son diferentes
 # algo asi es para centos https://voipmagazine.wordpress.com/2015/02/17/rtpengine-compilation-and-installation-in-fedora-redhat/
 
-# Importacion de la llave para instalar ffmpeg (lo pide la version que usamos de rtpengine) -- FIX ME -- usar modulo rpm_key
-- name: Install of ffmpeg repository (centos)
-  shell: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+# Importacion de la llave para instalar ffmpeg (lo pide la version que usamos de rtpengine)
+- name: Import of ffmpeg repository key (centos)
+  rpm_key: state=present key=http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro validate_certs=no
   become: true
   become_method: sudo
   when: rtpengine_installed|failed and ansible_os_family == "RedHat"
-# Instalo el repositorio -- FIX ME -- usar yum
-- shell: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
-  register: command_result
-  failed_when:
-    - "'transferencia fallida' in command_result.stderr"
-    - "'failed' in command_result.stderr"
+
+# Instalo el repositorio
+- name: Install of ffmpeg repository (centos)
+  yum: name=http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm state=present
   become: true
   become_method: sudo
   when: rtpengine_installed|failed and ansible_os_family == "RedHat"
@@ -155,51 +153,3 @@
   when: ansible_os_family == "Debian"
 
 ####### End of install in debian #######
-
-- name: Touch of changeip.sh
-  file: path={{ install_prefix }}bin/changeip.sh state=touch owner={{ usuario }}  group={{ usuario }} mode=755
-
-# Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
-- name: Creation of RTPengine config file
-  template: src=templates/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
-  become: true
-  become_method: sudo
-
-# Se copia el archivo para el systemd, (revisarlo y revisar systemd para mas informacion)
-- name: Copy of rtpengine service file to systemd
-  template: src=templates/rtpengine.service dest=/etc/systemd/system owner=root group=root mode=650
-  become: true
-  become_method: sudo
-
-# Tengo un template de rsyslog modificado para tener logs de rtpengine y kamailio en sus propios archivos (ver template para mas info)
-- name: Modify of /etc/rsyslog.conf
-  template: src=templates/rsyslog.conf.j2 dest=/etc/rsyslog.conf
-  become: true
-  become_method: sudo
-
-# Creo la carpeta y el archivo donde va a ir el log de rtpengine
-- name: Create rtpengine.log file and directory
-  file: path=/var/log/rtpengine/ state=directory mode=0755
-  become: true
-  become_method: sudo
-- file: path=/var/log/rtpengine/rtpengine.log state=touch mode=0755
-  become: true
-  become_method: sudo
-
-# No se para que se crea esta carpeta pero estaba en los pasos de fabi
-- name: Create /var/spool/rtpengine directory
-  file: path=/var/spool/rtpengine state=directory recurse=yes owner=root
-  become: true
-  become_method: sudo
-
-# Hago copia del binario creado a /usr/local/bin
-- name: Copy the rtpengine binary to /usr/local/bin
-  copy: src=/usr/src/{{ rtpengine_name }}/daemon/rtpengine dest=/usr/local/bin remote_src=yes mode=755
-  become: true
-  become_method: sudo
-
-# Inicio y habilito el servicio
-- name: Start and enable rtpengine service
-  service: name=rtpengine state=started enabled=yes
-  become: true
-  become_method: sudo
