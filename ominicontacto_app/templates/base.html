@@ -389,7 +389,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
                 <li class="main-menu-li">
                     <span class="icon icon-info"></span>
-                    <a class="menu-link" href="{% url 'acerca' %}">{% trans 'Acerca de' %}</a>
+                    <a class="menu-header" href="#menuAyuda" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Ayuda' %}</a>
+                    <ul class="collapse list-unstyled submenu" id="menuAyuda" data-parent="#nav-main-menu">
+                        {% if user.get_is_administrador %}
+                            <li>
+                                <a href="{% url 'registrar_usuario' %}">{% trans 'Registrarse' %}</a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a class="menu-link" href="{% url 'acerca' %}">{% trans 'Acerca de' %}</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

@@ -33,6 +33,8 @@ from django.utils.translation import ugettext_lazy as _
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
 
+from constance import config
+
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
@@ -1438,3 +1440,26 @@ ParametrosCrmFormSet = inlineformset_factory(
 QueueMemberFormset = inlineformset_factory(
     Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=1,
     can_delete=True, min_num=0)
+
+
+class RegistroForm(forms.Form):
+    nombre = forms.CharField(label=_("Inserte su nombre o empresa"),
+                             widget=forms.TextInput(attrs={'class': 'form-control'}),
+                             required=True)
+    password = forms.CharField(label=_("Inserte su contraseña de acceso"),
+                               widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+                               required=True)
+    email = forms.CharField(label=_("Inserte su correo electrónico"),
+                            widget=forms.TextInput(attrs={'class': 'form-control'}),
+                            required=True)
+    telefono = forms.CharField(label=_("Inserte su teléfono"),
+                               widget=forms.TextInput(attrs={'class': 'form-control'}),
+                               required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(RegistroForm, self).__init__(*args, **kwargs)
+        self.initial = {
+            'nombre': config.CLIENT_NAME,
+            'email': config.CLIENT_EMAIL,
+            'telefono': config.CLIENT_PHONE,
+        }

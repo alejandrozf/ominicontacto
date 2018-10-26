@@ -1,0 +1,13 @@
+{% extends 'base_create_update_form.html'  %}
+
+{% load i18n %}
+
+{% block submit_button %}
+    {% if not registered %}
+        <button type="submit" id="id_registrar" class="btn btn-primary">
+            {% trans 'Registrarse' %}
+        </button>
+    {% else  %}
+        <h3>{% trans 'Ya se encuentra registrado' %}</h3>
+    {% endif %}
+{% endblock %}
