@@ -547,8 +547,6 @@ class EstadisticasService():
 
         barra_campana_llamadas.x_labels = \
             estadisticas['cantidad_llamadas'][0]
-        barra_campana_llamadas.add('cantidad',
-                                   estadisticas['cantidad_llamadas'][1])
         barra_campana_llamadas.add('cantidad', self._crear_serie_con_color(
             campana, estadisticas['cantidad_llamadas']))
 
