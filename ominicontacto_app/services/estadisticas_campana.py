@@ -25,7 +25,7 @@ import pygal
 import os
 
 from collections import OrderedDict
-from pygal.style import Style
+from pygal.style import LightGreenStyle, DefaultStyle
 
 from django.conf import settings
 from django.db.models import Count, Q
@@ -42,20 +42,6 @@ from utiles_globales import obtener_cantidad_no_calificados
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
-
-
-ESTILO_AZUL_ROJO_AMARILLO = Style(
-    background='transparent',
-    plot_background='transparent',
-    foreground='#555',
-    foreground_light='#555',
-    foreground_dark='#555',
-    opacity='1',
-    opacity_hover='.6',
-    transition='400ms ease-in',
-    colors=('#428bca', '#5cb85c', '#5bc0de', '#f0ad4e', '#d9534f',
-            '#a95cb8', '#5cb8b5', '#caca43', '#96ac43', '#ca43ca')
-)
 
 
 class EstadisticasService():
@@ -434,6 +420,49 @@ class EstadisticasService():
             reporte = self._obtener_detalle_llamadas_preview(logs_llamadas_campana)
         return reporte
 
+    def _crear_serie_con_color(self, campana, cantidad_llamadas):
+        """ crea la lista del diccionario con los colores de la serie"""
+
+        serie = []
+
+        if campana.type == Campana.TYPE_ENTRANTE:
+            serie = [
+                {'value': cantidad_llamadas[1][0], 'color': 'gree'},
+                {'value': cantidad_llamadas[1][1], 'color': 'green'},
+                {'value': cantidad_llamadas[1][2], 'color': 'green'},
+                {'value': cantidad_llamadas[1][3], 'color': 'red'},
+                {'value': cantidad_llamadas[1][4], 'color': 'red'},
+                {'value': cantidad_llamadas[1][5], 'color': 'yellow'},
+                {'value': cantidad_llamadas[1][6], 'color': 'green'},
+            ]
+        elif campana.type == Campana.TYPE_DIALER:
+            serie = [
+                {'value': cantidad_llamadas[1][0], 'color': 'yellow'},
+                {'value': cantidad_llamadas[1][1], 'color': 'green'},
+                {'value': cantidad_llamadas[1][2], 'color': 'green'},
+                {'value': cantidad_llamadas[1][3], 'color': 'red'},
+                {'value': cantidad_llamadas[1][4], 'color': 'yellow'},
+                {'value': cantidad_llamadas[1][5], 'color': 'green'},
+                {'value': cantidad_llamadas[1][6], 'color': 'red'},
+            ]
+        elif campana.type == Campana.TYPE_MANUAL:
+            serie = [
+                {'value': cantidad_llamadas[1][0], 'color': 'yellow'},
+                {'value': cantidad_llamadas[1][1], 'color': 'green'},
+                {'value': cantidad_llamadas[1][2], 'color': 'red'},
+            ]
+        else:
+            serie = [
+                {'value': cantidad_llamadas[1][0], 'color': 'yellow'},
+                {'value': cantidad_llamadas[1][1], 'color': 'green'},
+                {'value': cantidad_llamadas[1][2], 'color': 'red'},
+                {'value': cantidad_llamadas[1][3], 'color': 'yellow'},
+                {'value': cantidad_llamadas[1][4], 'color': 'green'},
+                {'value': cantidad_llamadas[1][5], 'color': 'red'},
+
+            ]
+        return serie
+
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta):
         fecha_desde = datetime_hora_minima_dia(fecha_desde)
         fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
@@ -487,8 +516,7 @@ class EstadisticasService():
 
         # Barra: Cantidad de calificacion de cliente
         barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
-            show_legend=False,
-            style=ESTILO_AZUL_ROJO_AMARILLO)
+            show_legend=False, style=LightGreenStyle)
         barra_campana_calificacion.title = 'Cantidad de calificacion de cliente '
 
         barra_campana_calificacion.x_labels = \
@@ -502,7 +530,7 @@ class EstadisticasService():
         # Barra: Total de llamados no atendidos en cada intento por campana.
         barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
-            style=ESTILO_AZUL_ROJO_AMARILLO)
+            style=DefaultStyle(colors=('#b93229',)))
         barra_campana_no_atendido.title = 'Cantidad de llamadas no atendidos '
 
         barra_campana_no_atendido.x_labels = \
@@ -514,15 +542,13 @@ class EstadisticasService():
                          "reporte_campana", "barra_campana_no_atendido.png"))
 
         # Barra: Detalles de llamadas por evento de llamada.
-        barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
-            show_legend=False,
-            style=ESTILO_AZUL_ROJO_AMARILLO)
+        barra_campana_llamadas = pygal.Bar(show_legend=False)
         barra_campana_llamadas.title = 'Detalles de llamadas '
 
         barra_campana_llamadas.x_labels = \
             estadisticas['cantidad_llamadas'][0]
-        barra_campana_llamadas.add('cantidad',
-                                   estadisticas['cantidad_llamadas'][1])
+        barra_campana_llamadas.add('cantidad', self._crear_serie_con_color(
+            campana, estadisticas['cantidad_llamadas']))
 
         return {
             'estadisticas': estadisticas,
