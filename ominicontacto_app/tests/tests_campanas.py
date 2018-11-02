@@ -974,7 +974,8 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
-        self.client.post(url, post_step6_data, follow=True)
+        response = self.client.post(url, post_step6_data, follow=True)
+        self.assertNotContains(response, 'El servicio Discador no se encuentra disponible')
 
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
 
@@ -998,7 +999,8 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        self.client.post(url, post_step3_data, follow=True)
+        response = self.client.post(url, post_step3_data, follow=True)
+        self.assertNotContains(response, 'El servicio Discador no se encuentra disponible')
         self.campana_dialer.refresh_from_db()
         self.assertEqual(self.campana_dialer.objetivo, nuevo_objetivo)
 
