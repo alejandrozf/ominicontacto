@@ -33,13 +33,26 @@ import os
 import subprocess
 
 
+def check_not_duplicated_values(list_values, setting_name):
+    not_duplicated_values = len(list_values) == len(
+        set(list_values))
+    assert not_duplicated_values, "Hay valores duplicados para {0}".format(setting_name)
+
+
+def check_template_context_processor_structure(template_context_processors_list):
+    """Valida que la estructura de la lista de procesador de contextos en los templates
+    esté correcta
+    """
+    # de momento solo chequeamos que la estructura no contenga middlewares duplicados
+    # la idea es más adelante realizar más chequeos
+    check_not_duplicated_values(template_context_processors_list, "TEMPLATE_CONTEXT_PROCESSORS")
+
+
 def check_middleware_structure(MIDDLEWARE_CLASSES_STRUCTURE):
     """Valida que la estructura en los middleware esté correcta"""
     # de momento solo chequeamos que la estructura no contenga middlewares duplicados
     # la idea es más adelante realizar más chequeos
-    not_duplicated_middleware = len(MIDDLEWARE_CLASSES_STRUCTURE) == len(
-        set(MIDDLEWARE_CLASSES_STRUCTURE))
-    assert not_duplicated_middleware, "Hay middlewares duplicados"
+    check_not_duplicated_values(MIDDLEWARE_CLASSES_STRUCTURE, "MIDDLEWARE_CLASSES")
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -385,6 +398,9 @@ try:
 
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES_STRUCTURE
 
+    # para los addons que tienen templates_context_processors propios
+    TEMPLATES[0]['OPTIONS']['context_processors'].extend(TEMPLATES_CONTEXT_PROCESORS_APPEND)
+    check_template_context_processor_structure(TEMPLATES[0]['OPTIONS']['context_processors'])
 
 except ImportError as e:
     print "# "
