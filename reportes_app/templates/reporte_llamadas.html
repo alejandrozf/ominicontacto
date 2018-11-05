@@ -41,21 +41,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     });
 
     // Init daterange plugin
+    var ranges = get_ranges();
     $('#id_fecha').daterangepicker(
       {
-
         locale: {
           format: date_format
         },
-
-        ranges: {
-          'Hoy': [moment(), moment()],
-          'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-          'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-          'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-          'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        },
+        ranges: ranges,
       },
       set_daterange_input_values
     );
@@ -100,7 +92,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{form.fecha.errors}}
                 </div>
                 <div class="col-md-6">
-                  {{form.finalizadas.label_tag}} 
+                  {{form.finalizadas.label_tag}}
                   {{form.finalizadas}}
                 </div>
             </div>
@@ -254,7 +246,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <input class="hidden" name="estadisticas" type="text" value="{{ estadisticas_json }}"/>
                 <button class="btn btn-outline-primary">{% trans 'Exportar a CSV todos los reportes' %}</button>
                 <br>
-            </form>          
+            </form>
         </div>
     </div>
 </div>
@@ -271,7 +263,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
               <figure>
                 {{ graficos.barras_llamadas_por_tipo.render|safe }}
               </figure>
-            </div>          
+            </div>
           </div>
           <div class="col-lg-6">
             <h3>{% trans 'Porcentaje de llamadas por tipo de llamada' %}</h3>
@@ -279,9 +271,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
               <figure>
                 {{ graficos.torta_porcentajes_por_tipo.render|safe }}
               </figure>
-            </div>          
-          </div>        
-      </div>      
+            </div>
+          </div>
+      </div>
   </div>
 
 <hr>
@@ -308,7 +300,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </tr>
           {% endfor %}
         </tbody>
-      </table>         
+      </table>
     </div>
     <div class="col-lg-6">
         <h3>{% trans 'Cantidad de llamadas de las campañas' %}</h3>
@@ -330,7 +322,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <br>
     <div class="wrapper-table table-responsive">
         <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-dialer" aria-expanded="false">{% trans 'Información completa' %}</button>
-        <hr class="hr-space"> 
+        <hr class="hr-space">
       <table class="table">
         <thead>
           <tr>
@@ -360,7 +352,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                       {{ campana.conectadas }}<span class="label">conectadas</span>,
                       {{ campana.expiradas }}<span class="label">expiradas</span>,
                       {{ campana.abandonadas }}<span class="label">abandonadas</span>
-                  </div>                  
+                  </div>
               </td>
               <td>
                   {{ campana.t_espera_conexion|format_seconds }}
@@ -376,8 +368,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                       <hr>
                       {{ campana.conectadas_manuales }}<span class="label">conectadas</span>,
                       </span>{{ campana.no_conectadas_manuales }}<span class="label">no conec.</span>,
-                      {{ campana.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span> 
-                  </div>                 
+                      {{ campana.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
+                  </div>
               </td>
             </tr>
             {% if tipos_por_fecha %}

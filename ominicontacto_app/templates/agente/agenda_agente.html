@@ -34,51 +34,45 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
     <!-- Scripts -->
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
     {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
     {% endcompress %}
     <script type="text/javascript">
-   $(function() {
-                var start = moment().subtract(29, 'days');
-                var end = moment();
-                function cb(start, end) {
-                    $('#id_fecha').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
-                }
+     $(function() {
+       var start = moment().subtract(29, 'days');
+       var end = moment();
+       function cb(start, end) {
+         $('#id_fecha').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
+       }
 
 
- $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
+       $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+         $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+       });
 
-  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-});
+       $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+         $(this).val('');
+       });
 
-            // Init daterange plugin
-            $('#id_fecha').daterangepicker(
-                {
-                locale: {
-                    format: 'DD/MM/YYYY'
-                 },
+       var ranges = get_ranges();
+       // Init daterange plugin
+       $('#id_fecha').daterangepicker(
+         {
+           locale: {
+             format: 'DD/MM/YYYY'
+           },
+           autoUpdateInput: false,
+           ranges: ranges,
+         }, cb);
 
-                autoUpdateInput: false,
-                ranges: {
-                    'Hoy': [moment(), moment()],
-                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
+       cb(start, end);
 
-        }, cb);
-
-        cb(start, end);
-
-});
+     });
     </script>
 </head>
 <body>

@@ -40,7 +40,7 @@ $(document).ready(function(){
     var $span_modificar_contacto = create_node('span', {
           'class': 'icon-pencil',
           'aria-hidden': 'true',
-          'title': 'Modificar',
+          'title': gettext('Modificar'),
         });
     $modificar_contacto.append($span_modificar_contacto);
     nodos_acciones.push($modificar_contacto);
@@ -53,7 +53,7 @@ $(document).ready(function(){
       var $span_llamar_contacto = create_node('span', {
         'class': 'icon-phone',
         'aria-hidden': 'true',
-        'title': 'Llamar',
+        'title': gettext('Llamar'),
       });
       $llamar_contacto.append($span_llamar_contacto);
       $llamar_contacto
@@ -80,7 +80,7 @@ $(document).ready(function(){
     var $span_mailto_contacto = create_node('span', {
           'class': 'icon-solid-mail',
           'aria-hidden': 'true',
-          'title': 'Email',
+          'title': gettext('Enviar email'),
         });
     $mailto_contacto.append($span_mailto_contacto);
     nodos_acciones.push($mailto_contacto);
@@ -101,16 +101,16 @@ $(document).ready(function(){
       ordering: false,
       paging: true,
       language: {
-        search: "Buscar: ",
-        infoFiltered:"(filtrando de un total de _MAX_ contactos)",
+        search: gettext("Buscar: "),
+        infoFiltered: gettext("(filtrando de un total de _MAX_ contactos)"),
         paginate: {
-          first: "Primero ",
-          previous: "Anterior ",
-          next: " Siguiente",
-          last: " Último"
+          first: gettext("Primero "),
+          previous: gettext("Anterior "),
+          next: gettext(" Siguiente"),
+          last: gettext(" Último"),
         },
-        lengthMenu: "Mostrar _MENU_ entradas",
-        info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+        lengthMenu: gettext("Mostrar _MENU_ entradas"),
+        info: gettext("Mostrando _START_ a _END_ de _TOTAL_ entradas"),
       }
     });
 });
