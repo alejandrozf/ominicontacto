@@ -21,46 +21,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% block head_js %}
 <script type="text/javascript">
-   $(function() {
-                var start = moment();
-                var end = moment();
-                function cb(start, end) {
-                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                }
+ $(function() {
+   var start = moment();
+   var end = moment();
+   function cb(start, end) {
+     $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+   }
 
- $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
+   $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+     $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+   });
 
-  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-});
+   $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+     $(this).val('');
+   });
 
-            // Init daterange plugin
-            $('#id_fecha').daterangepicker(
-                {
+   // Init daterange plugin
+   var ranges = get_ranges();
+   $('#id_fecha').daterangepicker(
+     {
+       locale: {
+         format: 'DD/MM/YYYY'
+       },
+       startDate: start,
+       endDate: end,
+       ranges: ranges,
+     }, cb);
 
-                locale: {
-                    format: 'DD/MM/YYYY'
-                 },
+   cb(start, end);
 
-                startDate: start,
-                endDate: end,
-                ranges: {
-                    'Hoy': [moment(), moment()],
-                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-
-        }, cb);
-
-        cb(start, end);
-
-});
-    </script>
+ });
+</script>
 {% endblock %}
 {% block content %}
  <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>

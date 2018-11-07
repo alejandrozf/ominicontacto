@@ -22,144 +22,135 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% block head_js %}
 <script type="text/javascript">
-   $(function() {
-                var start = moment();
-                var end = moment();
-                function cb(start, end) {
-                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                }
+ $(function() {
+   var start = moment();
+   var end = moment();
+   function cb(start, end) {
+     $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+   }
 
- $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
+   $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+     $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+   });
 
-  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-});
+   $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+     $(this).val('');
+   });
 
-            // Init daterange plugin
-            $('#id_fecha').daterangepicker(
-                {
+   // Init daterange plugin
+   var ranges = get_ranges();
+   $('#id_fecha').daterangepicker(
+     {
+       locale: {
+         format: 'DD/MM/YYYY'
+       },
+       startDate: start,
+       endDate: end,
+       ranges: ranges,
+     }, cb);
 
-                locale: {
-                    format: 'DD/MM/YYYY'
-                 },
+   cb(start, end);
 
-                startDate: start,
-                endDate: end,
-                ranges: {
-                    'Hoy': [moment(), moment()],
-                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
+   $("#id_agente").change(function() {
+     if( $("#id_agente").val() == null) {
+       $("#id_grupo_agente").removeAttr('disabled');
+       $("#id_todos_agentes").removeAttr('disabled');
+     } else {
+       $("#id_grupo_agente").attr('disabled', true);
+       $("#id_todos_agentes").attr('disabled', true);
+     }
+   });
 
-        }, cb);
+   $("#id_grupo_agente").change(function() {
+     if( $("#id_grupo_agente").val() == "") {
+       $("#id_agente").removeAttr('disabled');
+       $("#id_todos_agentes").removeAttr('disabled');
+     } else {
+       $("#id_agente").attr('disabled', true);
+       $("#id_todos_agentes").attr('disabled', true);
+     }
+   });
 
-        cb(start, end);
+   $("#id_todos_agentes").change(function() {
 
-        $("#id_agente").change(function() {
-                if( $("#id_agente").val() == null) {
-                    $("#id_grupo_agente").removeAttr('disabled');
-                    $("#id_todos_agentes").removeAttr('disabled');
-                } else {
-                    $("#id_grupo_agente").attr('disabled', true);
-                    $("#id_todos_agentes").attr('disabled', true);
-                }
-            });
+     if( $("#id_todos_agentes").prop("checked") ) {
+       $("#id_agente").attr('disabled', true);
+       $("#id_grupo_agente").attr('disabled', true);
+     } else {
 
-            $("#id_grupo_agente").change(function() {
-                if( $("#id_grupo_agente").val() == "") {
-                    $("#id_agente").removeAttr('disabled');
-                    $("#id_todos_agentes").removeAttr('disabled');
-                } else {
-                    $("#id_agente").attr('disabled', true);
-                    $("#id_todos_agentes").attr('disabled', true);
-                }
-            });
+       $("#id_agente").removeAttr('disabled');
+       $("#id_grupo_agente").removeAttr('disabled');
+     }
+   });
+   $('.tiemposAgenteModal').click(function(event){
+     event.preventDefault();
+     var id_agente;
+     id_agente = $(this).attr("id_agente");
+     var fecha_desde = $(this).attr("fecha_desde");
+     var fecha_hasta = $(this).attr("fecha_hasta");
+     $.ajax(
+       {
+         type:"POST",
+         url: "{% url 'reportes_agente_por_fecha' %}",
+         data:{
+           'id_agente': id_agente,
+           'fecha_desde': fecha_desde,
+           'fecha_hasta': fecha_hasta,
+           'csrfmiddlewaretoken': '{{ csrf_token }}'
+         },
+         success: function (data, textStatus) {
+           $('#output').html(data.tbody); // append to inner html
+           $('#nombre_agente').html(data.nombre_agente);
+           if (data.error)
+           {   mensaje = gettext("Advertencia: se detectan cierres de sesión incorrectos para este agente. Por favor instruya al mísmo a efectuar el deslogueo correctamente. Gracias")
+             txt = '<div id="error" class="alert alert-warning" role="alert">'
+             txt +=  $("<div>").text(mensaje).html() + "</div>";
+             $('#error').html(txt);
+           }
+           else
+           {
+             $('#error').html('');
+           }
+         },
+         error: function(xhr, status, e) {
+           alert(status, e);
+         }
+       })
+   });
 
-        $("#id_todos_agentes").change(function() {
+   $('.tiemposPausaModal').click(function(event){
+     event.preventDefault();
+     var id_agente = $(this).attr("id_agente");
+     var fecha_desde = $(this).attr("fecha_desde");
+     var fecha_hasta = $(this).attr("fecha_hasta");
+     var pausa_id = $(this).attr("pausa_id");
+     $.ajax(
+       {
+         type:"POST",
+         url: "{% url 'reportes_pausa_por_fecha' %}",
+         data:{
+           'id_agente': id_agente,
+           'fecha_desde': fecha_desde,
+           'fecha_hasta': fecha_hasta,
+           'pausa_id': pausa_id,
+           'csrfmiddlewaretoken': '{{ csrf_token }}'
+         },
+         success: function (data, textStatus) {
+          //alert(data, textStatus);
+           $('#output_pausa').html(data.tbody); // append to inner html
+           $('#nombre_agente_pausa').html(data.nombre_agente);
+           $('#nombre_pausa').html(data.pausa);
+         },
+         error: function(xhr, status, e) {
+           alert(status, e);
+         }
+       })
+   });
 
-                if( $("#id_todos_agentes").prop("checked") ) {
-                    $("#id_agente").attr('disabled', true);
-                    $("#id_grupo_agente").attr('disabled', true);
-                } else {
-
-                    $("#id_agente").removeAttr('disabled');
-                    $("#id_grupo_agente").removeAttr('disabled');
-                }
-            });
-    $('.tiemposAgenteModal').click(function(event){
-    event.preventDefault();
-    var id_agente;
-    id_agente = $(this).attr("id_agente");
-    var fecha_desde = $(this).attr("fecha_desde");
-    var fecha_hasta = $(this).attr("fecha_hasta");
-    $.ajax(
-    {
-        type:"POST",
-        url: "{% url 'reportes_agente_por_fecha' %}",
-        data:{
-                 'id_agente': id_agente,
-                 'fecha_desde': fecha_desde,
-                 'fecha_hasta': fecha_hasta,
-                  'csrfmiddlewaretoken': '{{ csrf_token }}'
-        },
-                success: function (data, textStatus) {
-            $('#output').html(data.tbody); // append to inner html
-             $('#nombre_agente').html(data.nombre_agente);
-            if (data.error)
-            {   mensaje = "Advertencia: se detectan cierres de sesión incorrectos para este agente. Por favor instruya al mísmo a efectuar el deslogueo correctamente. Gracias"
-                txt = '<div id="error" class="alert alert-warning" role="alert">'
-                txt +=  $("<div>").text(mensaje).html() + "</div>";
-               $('#error').html(txt);
-            }
-            else
-            {
-                $('#error').html('');
-            }
-        },
-        error: function(xhr, status, e) {
-            alert(status, e);
-        }
-     })
-});
-
-    $('.tiemposPausaModal').click(function(event){
-    event.preventDefault();
-    var id_agente = $(this).attr("id_agente");
-    var fecha_desde = $(this).attr("fecha_desde");
-    var fecha_hasta = $(this).attr("fecha_hasta");
-    var pausa_id = $(this).attr("pausa_id");
-    $.ajax(
-    {
-        type:"POST",
-        url: "{% url 'reportes_pausa_por_fecha' %}",
-        data:{
-                 'id_agente': id_agente,
-                 'fecha_desde': fecha_desde,
-                 'fecha_hasta': fecha_hasta,
-                 'pausa_id': pausa_id,
-                  'csrfmiddlewaretoken': '{{ csrf_token }}'
-        },
-        success: function (data, textStatus) {
-            //alert(data, textStatus);
-            $('#output_pausa').html(data.tbody); // append to inner html
-            $('#nombre_agente_pausa').html(data.nombre_agente);
-            $('#nombre_pausa').html(data.pausa);
-        },
-        error: function(xhr, status, e) {
-            alert(status, e);
-        }
-     })
-});
-
-});
+ });
 
 
-    </script>
+</script>
 <style>
 .modal-lg {
     max-width: 80% !important;

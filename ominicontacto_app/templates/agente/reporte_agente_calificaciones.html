@@ -29,19 +29,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}"></link>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
     <!-- Scripts -->
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
     {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/click2call.js' %}"></script>
     {% endcompress %}
 

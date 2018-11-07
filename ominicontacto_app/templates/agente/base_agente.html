@@ -41,12 +41,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
     <!-- Scripts -->
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
     {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/click2call.js' %}"></script>
     {% endcompress %}
     <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>

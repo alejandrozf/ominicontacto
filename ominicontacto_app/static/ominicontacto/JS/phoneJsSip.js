@@ -59,7 +59,6 @@ $(function() {
 
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        debugger;
         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
       }
     });
@@ -230,7 +229,6 @@ $(function() {
           $("#call_list").html(msg);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-          debugger;
           console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
         }
       });
@@ -1146,7 +1144,6 @@ $(function() {
 
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        debugger;
         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
       }
     });

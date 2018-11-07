@@ -22,49 +22,41 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 {% block head_js %}
 <script type="text/javascript">
-   $(function() {
-                var start = moment().subtract(29, 'days');
-                var end = moment();
-                function cb(start, end) {
-                    $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-                }
+ $(function() {
+   var start = moment().subtract(29, 'days');
+   var end = moment();
+   function cb(start, end) {
+     $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+   }
 
-
- $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+   $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
       $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
   });
 
-  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-});
+   $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+     $(this).val('');
+   });
 
-            // Init daterange plugin
-            $('#id_fecha').daterangepicker(
-                {
-                 locale: {
-                    format: 'DD/MM/YYYY'
-                 },
+   var ranges = get_ranges();
 
-                autoUpdateInput: false,
-                ranges: {
-                    'Hoy': [moment(), moment()],
-                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
+   // Init daterange plugin
+   $('#id_fecha').daterangepicker(
+     {
+       locale: {
+         format: 'DD/MM/YYYY'
+       },
+       autoUpdateInput: false,
+       ranges: ranges,
+     }, cb);
 
-        }, cb);
+   cb(start, end);
 
-        cb(start, end);
+ });
 
-});
-
-function filtrar_pagina(pagina) {
-            $("#id_pagina").val(pagina);
-             $("#form-buscar-grabacion").submit();
-        };
+ function filtrar_pagina(pagina) {
+   $("#id_pagina").val(pagina);
+   $("#form-buscar-grabacion").submit();
+ };
 </script>
 
 {% endblock %}
@@ -126,14 +118,14 @@ function filtrar_pagina(pagina) {
     </table>
 
     <nav aria-label="Page navigation">
-        <ul class="pagination">           
+        <ul class="pagination">
         {% if listado_de_grabaciones.has_previous %}
             <li class="page-item">
               <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">{% trans 'Anterior' %}</span>
               </a>
-            </li> 
+            </li>
         {% endif %}
         {% for page in listado_de_grabaciones.paginator.page_range %}
             <li class="page-item {% if listado_de_grabaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>

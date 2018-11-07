@@ -30,6 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <!-- JQuery & Datatables -->
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}" >
+        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
         {% compress js %}
         <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
@@ -89,7 +90,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                   aria-hidden="true" title="{% trans 'Haga click para llamar al contacto' %}"></span>
                         </button>
                         <span>
-                            
+
                         <button id="liberar_contacto" class="btn btn-warning" style="display:none">
                             <span class="glyphicon glyphicon-user" aria-hidden="true" title="{% trans 'Haga click para liberar al contacto' %}"> Liberar </span>
                         </button>
