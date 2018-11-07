@@ -114,12 +114,12 @@
 - name: Creation of the agis omni-blackist and omni-dialednum
   template: "src=templates/agi-bin/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 owner={{ usuario }} group={{ usuario }}"
   with_items:
-      - omni-asterisk-logout.php
-      - omni-blacklist.php
-      - omni-dialednum.php
-      - omni-grabaciones.php
-      - phpagi-asmanager.php
-      - phpagi.php
+      - config.py
+      - utiles.py
+      - omni-asterisk-logout.py
+      - omni-blacklist.py
+      - omni-dialednum.py
+      - omni-grabaciones.py
   become: yes
   become_method: sudo
   tags: postinstall

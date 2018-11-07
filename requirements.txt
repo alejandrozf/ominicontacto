@@ -33,6 +33,7 @@ ptyprocess==0.5.1
 py2-ipaddress==3.4.1
 pycparser==2.17
 pygal==2.3.0
+pyst2==0.5.0
 python-crontab==2.2.7
 Pygments==2.1.3
 reportlab==3.3.0
