@@ -16,9 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ---
-# Se crea el archivo change.sh
-- name: Touch of changeip.sh
-  file: path={{ install_prefix }}bin/changeip.sh state=touch owner={{ usuario }}  group={{ usuario }} mode=755
 
 # Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
 - name: Creation of RTPengine config file

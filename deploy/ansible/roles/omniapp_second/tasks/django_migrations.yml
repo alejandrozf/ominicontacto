@@ -92,6 +92,7 @@
 - name: Change password of superuser
   template: "src=templates/bin/changepassword.sh.j2 dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
   tags: omniapp
+  when: (postinstall == 0) or (postinstall == 1 and admin_input.user_input != "")
 
 # Se ejecuta el script (verlo en templates para mas info)
 - name: Change password
@@ -100,8 +101,10 @@
           DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
           PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   tags: omniapp
+  when: (postinstall == 0) or (postinstall == 1 and admin_input.user_input != "")
 
 # Se borra ese script del sistema
 - name: Erase the script for changing superuser password
   file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent
   tags: omniapp
+  when: (postinstall == 0) or (postinstall == 1 and admin_input.user_input != "")
