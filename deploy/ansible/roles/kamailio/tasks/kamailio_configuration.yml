@@ -48,10 +48,12 @@
 # Se crea el archivo de systemd para el servicio kamailio
 - name: Creation of kamailio.service file in systemd
   template: src=templates/systemd/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
+  tags: postinstall
 
 # Se restartea rsyslog se habilita kamailio y se hace el daemon-reload.
 - name: Restart de rsyslog
   service: name=rsyslog.service state=restarted enabled=yes
+  tags: postinstall
   become: true
   become_method: sudo
 

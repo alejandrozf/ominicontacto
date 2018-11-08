@@ -25,7 +25,7 @@
 
 # Se sube el archivo de configuracion de omnileads para nginx
 - name: Create of ominicontacto.conf
-  template: src=templates/etc/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf
+  template: src=templates/etc/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
   become: true
   become_method: sudo
 
