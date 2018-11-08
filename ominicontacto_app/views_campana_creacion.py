@@ -27,6 +27,7 @@ from django.contrib import messages
 from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.generic import ListView, DetailView, DeleteView
 from django.utils.translation import ugettext as _
 
@@ -264,6 +265,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form.instance.type = Campana.TYPE_ENTRANTE
         campana_form.instance.reported_by = self.request.user
+        campana_form.fecha_inicio = timezone.now()
         campana_form.instance.estado = estado
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()
