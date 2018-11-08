@@ -9,13 +9,14 @@ ssh_port="{{ ansible_ssh_port }}"
 install_prefix=/opt/omnileads/
 usuario="{{ ansible_user }}"
 ##Parametros de la aplicación modificables
-admin_pass=admin123
+admin_pass=OML3.1415
 postgres_password=omnileadsrw
 session_cookie_age=36000
 formato_conversion=mp3
 
-#Contraseña de mysql en centos-sangoma
+#Contraseña de mysql en centos
 mysql_root_password=
 
 #### Para setear si el postinstall es para FTS o para cliente #####
 desarrollo=0
+postinstall=0

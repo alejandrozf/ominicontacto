@@ -124,9 +124,11 @@ Rama() {
        Autor: $author"
     cat > $TMP/ominicontacto/ominicontacto_app/version.py <<EOF
 
-#
-# Archivo autogenerado
-#
+# -*- coding: utf-8 -*-
+
+##############################
+#### Archivo autogenerado ####
+##############################
 
 OML_BRANCH="${branch_name}"
 OML_COMMIT="${commit}"
@@ -135,7 +137,6 @@ OML_AUTHOR="${author}"
 
 if __name__ == '__main__':
     print OML_COMMIT
-
 
 EOF
 
@@ -187,10 +188,13 @@ Tag() {
     echo "El servicio sin humildad es egoísmo"
     echo "Reflexionar serena, muy serenamente, es mejor que tomar decisiones desesperadas - Franz Kafka"
     echo ""
+    if [ ${array[0]} == "postinstall" ]; then
+      sed -i "s/\(^postinstall\).*/postinstall=1/" $TMP_ANSIBLE/hosts
+    fi
     if [ $DESARROLLO -eq 1 ]; then
       echo -n | ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
     else
-      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K 
+      ${IS_ANSIBLE}-playbook -s $TMP_ANSIBLE/omnileads.yml --extra-vars "BUILD_DIR=$TMP/ominicontacto RAMA=$rama" --tags "${array[0]},${array[1]}" --skip-tags "${array[2]}" -K
 
     fi
     ResultadoAnsible=`echo $?`
