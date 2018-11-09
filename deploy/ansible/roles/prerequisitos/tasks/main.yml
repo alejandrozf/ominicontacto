@@ -22,11 +22,11 @@
 
 - set_fact: omni_ip="{{ ansible_all_ipv4_addresses[1] }}"
   when: desarrollo == 1
-  tags: postinstall
+  tags: always
 
 - set_fact: omni_ip="{{ ansible_default_ipv4.address }}"
   when: desarrollo == 0
-  tags: postinstall
+  tags: always
 
 - name: Print omni_distribution
   debug: msg="omni_distribution es {{ ansible_os_family }}"
@@ -40,6 +40,31 @@
       ansible_os_family != "Debian"
       )
   tags: always
+
+# Genero el archivo omnileads.conf por default
+- name: Generate omnileads.conf
+  template: src=templates/omnileads.conf dest=/etc/omnileads.conf owner=root group=root mode=644
+  become: true
+  become_method: sudo
+  tags: ['never','all']
+
+- name: Write the new passswords in omnileads.conf
+  lineinfile: path=/etc/omnileads.conf state=present regexp={{ item.regex}} line={{ item.line }}
+  with_items:
+    - { regex: "^POSTGRES_PASSWORD", line: "POSTGRES_PASSWORD={{ postgres_password }}" }
+  when: postgres_input.user_input != ""
+  register: new_password
+  tags: postinstall
+
+- shell: cat /etc/omnileads.conf |grep POSTGRES_PASSWORD |awk -F '=' '{print $2}'
+  tags: postinstall
+  when: postgres_input.user_input == ""
+  register: pgpassword
+
+- set_fact: postgres_password={{ pgpassword.stdout }}
+#  when: pgpassword is not skipped
+  when: postgres_input.user_input == ""
+  tags: postinstall
 
 # Checkeo si la base kamailio existe
 - name: Check if kamailio database exists
@@ -68,12 +93,13 @@
   tags: ['never','postinstall']
 
 # Se crea el usuario de postgres
-- name: Create omnileads postgres user
+- name: Create/modify omnileads postgres user
   become: yes
   become_method: sudo
   become_user: postgres
   postgresql_user: name=omnileads password={{ postgres_password }} role_attr_flags=SUPERUSER
-  when: "'kamailio' in kamailiodb_exists.stdout"
+  when: postgres_input.user_input != ""
+  #when: "'kamailio' in kamailiodb_exists.stdout"
   tags: ['never','postinstall']
 
 # Se crea el usuario de postgres
@@ -98,7 +124,8 @@
 
 # Se añaden los binarios que no van a necesitar password al hacerlos con sudo
 - name: Edit sudoers to execute binaries withouth password
-  lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/rsync, /usr/sbin/asterisk\""
+  lineinfile: "dest=/etc/sudoers line=\"{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/sed, /usr/bin/rsync, /usr/sbin/asterisk\""
+  tags: postinstall
   become: yes
   become_method: sudo
 

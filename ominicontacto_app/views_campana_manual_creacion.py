@@ -23,6 +23,7 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView, DeleteView
 
@@ -36,7 +37,7 @@ from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateCampanaMixin,
                                                       CampanaTemplateDeleteMixin,
                                                       asignar_bd_contactos_defecto_campo_vacio)
-
+from ominicontacto_app.utiles import cast_datetime_part_date
 
 import logging as logging_
 
@@ -71,6 +72,7 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
         parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form.instance.type = tipo
         campana_form.instance.reported_by = self.request.user
+        campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
         campana_form.instance.estado = estado
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()

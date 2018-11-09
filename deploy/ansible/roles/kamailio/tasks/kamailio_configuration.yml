@@ -108,20 +108,31 @@
   become: true
   register: kamailio_ok
   become_method: sudo
+  tags: postinstall
 
 - set_fact: kamailio_result={{ kamailio_ok.rc }}
-- debug: var=kamailio_result
+  tags: ['kamailio','postinstall']
+
 - name: Modify of pg_hba.conf file (centos)
   template: src=roles/kamailio/templates/etc/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
   become: true
   become_method: sudo
   when: ['ansible_os_family == "RedHat"','kamailio_ok.rc == 0']
+  tags: ['kamailio','postinstall']
 
 - name: Modify of pg_hba.conf file (debian)
   template: src=roles/kamailio/templates/etc/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
   become: true
   become_method: sudo
   when: ['ansible_os_family == "Debian"','kamailio_ok.rc == 0']
+  tags: ['kamailio','postinstall']
+
+# Relodeao de postgresql
+- name: Reload posgresql service
+  systemd: name=postgresql-9.6 state=reloaded enabled=yes
+  tags: ['never','postinstall']
+  become: true
+  become_method: sudo
 
 # Restarteo kamailio
 - name: Restart kamailio service
