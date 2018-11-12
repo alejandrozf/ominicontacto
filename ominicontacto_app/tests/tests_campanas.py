@@ -651,6 +651,7 @@ class SupervisorCampanaTests(CampanasTests):
             '1-initial_boost_factor': 1.0,
             '1-name': nombre_campana,
             '1-audio_para_contestadores': audio_ingreso.pk,
+            '1-dial_timeout': 25,
             'campana_dialer_create_view-current_step': 1,
         }
         post_step2_data = {
@@ -725,6 +726,7 @@ class SupervisorCampanaTests(CampanasTests):
             '1-audio_para_contestadores': audio_ingreso.pk,
             '1-initial_predictive_model': 'on',
             '1-initial_boost_factor': 1.0,
+            '1-dial_timeout': 25,
             'campana_dialer_update_view-current_step': 1,
             '1-campana': self.campana_dialer.pk,
             '1-name': nombre_campana,
