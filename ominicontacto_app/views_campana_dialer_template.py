@@ -93,6 +93,7 @@ class CampanaDialerTemplateCreateCampanaView(CampanaTemplateCreateCampanaMixin,
             initial['detectar_contestadores'] = queue.detectar_contestadores
             initial['initial_predictive_model'] = queue.initial_predictive_model
             initial['initial_boost_factor'] = queue.initial_boost_factor
+            initial['dial_timeout'] = queue.dial_timeout
         else:
             initial = super(CampanaDialerTemplateCreateCampanaView, self).get_form_initial(step)
         return initial

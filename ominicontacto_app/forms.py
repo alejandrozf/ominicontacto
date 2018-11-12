@@ -1053,7 +1053,8 @@ class QueueDialerForm(forms.ModelForm):
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
                   'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
-                  'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor')
+                  'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor',
+                  'dial_timeout')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -1066,6 +1067,12 @@ class QueueDialerForm(forms.ModelForm):
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
             "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
+            "dial_timeout": forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+        help_texts = {
+            'dial_timeout': """ Es recomendable que este valor sea menor al dial timeout
+            definido en la ruta saliente""",
         }
 
     def clean(self):
@@ -1078,6 +1085,11 @@ class QueueDialerForm(forms.ModelForm):
         if initial_predictive_model and not initial_boost_factor:
             raise forms.ValidationError('El factor boost inicial no deber ser'
                                         ' none si la predicitvidad está activa')
+
+        dial_timeout = self.cleaned_data.get('dial_timeout')
+        if dial_timeout < 10 or dial_timeout > 90:
+            raise forms.ValidationError('El valor de dial timeout deberá estar comprendido entre'
+                                        ' 10 y 90 segundos')
 
         return self.cleaned_data
 
