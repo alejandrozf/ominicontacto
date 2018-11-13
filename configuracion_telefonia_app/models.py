@@ -355,9 +355,18 @@ class RutaEntrante(models.Model):
         (EN, _('Inglés')),
         (ES, _('Español')),)
 
+    SIGLAS_IDIOMAS = {
+        EN: 'en',
+        ES: 'es',
+    }
+
     nombre = models.CharField(max_length=30, unique=True)
     telefono = models.CharField(
         max_length=30, unique=True, validators=[RegexValidator(R_MATCH_PATTERN)])
     prefijo_caller_id = models.CharField(max_length=30, blank=True, null=True)
     idioma = models.PositiveIntegerField(choices=TIPOS_IDIOMAS)
     destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes')
+
+    @property
+    def sigla_idioma(self):
+        return RutaEntrante.SIGLAS_IDIOMAS[self.idioma]

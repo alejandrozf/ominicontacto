@@ -465,7 +465,7 @@ class RutaEntranteFamily(AbstractFamily):
             "NAME": ruta.nombre,
             "DST": dst,
             "ID": ruta.id,
-
+            "LANG": ruta.sigla_idioma,
         }
         return dict_ruta
 
