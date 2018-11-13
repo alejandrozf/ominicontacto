@@ -874,13 +874,13 @@ class SupervisorCampanaTests(CampanasTests):
          post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
              nombre_campana, audio_ingreso)
 
-        self.assertFalse(DestinoEntrante.objects.all().exists())
+        self.assertEqual(DestinoEntrante.objects.all().count(), 1)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        self.assertTrue(DestinoEntrante.objects.all().exists())
+        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_creacion_campana_entrante_desde_template_crea_nodo_ruta_entrante(
@@ -902,13 +902,13 @@ class SupervisorCampanaTests(CampanasTests):
              campana_entrante_template, audio_ingreso)
         post_step0_data['0-nombre'] = nombre_campana
         post_step1_data['1-name'] = nombre_campana
-        self.assertFalse(DestinoEntrante.objects.all().exists())
+        self.assertEqual(DestinoEntrante.objects.all().count(), 1)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        self.assertTrue(DestinoEntrante.objects.all().exists())
+        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(
