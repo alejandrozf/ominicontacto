@@ -32,7 +32,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>Auto attend inbound</th>
             <th>Auto attend dialer</th>
             <th>Auto unpause</th>
-            {% if user.get_is_administrador %}
+            {% if user.get_es_administrador_o_supervisor_normal %}
             <th>acciones</th>
             {% endif %}
         </tr>
@@ -64,7 +64,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endif %}
             </td>
             <td>{{grupo.auto_unpause}}</td>
-            {% if user.get_is_administrador %}
+            {% if user.get_es_administrador_o_supervisor_normal %}
             <td>
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

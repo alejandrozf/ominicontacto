@@ -108,11 +108,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a href="{% url 'grupo_list' %}">Grupos de agentes</a>
                         </li>
 
-                        {% if user.get_is_administrador %}
                         <li>
                             <a href="{% url 'grupo_nuevo' %}">Nuevo Grupo de agentes</a>
                         </li>
-                        {% endif %}
 
                     </ul>
                 </li>
