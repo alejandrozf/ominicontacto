@@ -66,7 +66,7 @@ class CampanaCreator(object):
             "timeEndHr": campana.actuacionvigente.get_hora_hasta_wombat(),
             "timeDow": campana.actuacionvigente.get_dias_vigente_wombat(),
 
-            "dial_timeout": 50000,
+            "dial_timeout": campana.queue_campana.dial_timeout * 1000,
             "maxCallLength": 0,
             "dial_clid": elimina_espacios(campana.nombre),
             "agentClid": "",

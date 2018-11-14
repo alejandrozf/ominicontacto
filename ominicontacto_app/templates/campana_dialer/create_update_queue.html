@@ -110,14 +110,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.audio_para_contestadores.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.audio_para_contestadores.id_for_label }}">Activar predictividad:</label>
+                <label for="{{ form.initial_predictive_model.id_for_label }}">Activar predictividad:</label>
                 {{ form.initial_predictive_model }}
                 {{ form.initial_predictive_model.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.audio_para_contestadores.id_for_label }}">Factor de boost inicial:</label>
+                <label for="{{ form.initial_boost_factor.id_for_label }}">Factor de boost inicial:</label>
                 {{ form.initial_boost_factor }}
                 {{ form.initial_boost_factor.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.dial_timeout.id_for_label }}">Dial timeout:</label>
+                {{ form.dial_timeout }}
+                <small class="form-text text-muted">
+                    {{ form.dial_timeout.help_text }}
+                </small>
+                {{ form.dial_timeout.errors }}
             </div>
         </div>
     {% endwith %}
