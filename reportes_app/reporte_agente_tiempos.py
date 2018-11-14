@@ -18,7 +18,7 @@
 #
 
 from __future__ import unicode_literals
-
+from collections import OrderedDict
 import pygal
 
 from django.utils.translation import ugettext as _
@@ -399,89 +399,53 @@ class TiemposAgente(object):
         Obtiene el total grabaciones PREVIEW por agente en una lista
         :return: lista con el total de llamadas PREVIEW por agente
         """
-        total_preview = []
-
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=4).\
-                filter(agente_id=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_preview.append(cantidad)
-
-        return total_preview
+        return self._obtener_cantidad_por_tipo_de_llamada(dict_agentes,
+                                                          agentes,
+                                                          Campana.TYPE_PREVIEW)
 
     def _obtener_total_dialer_agente(self, dict_agentes, agentes):
         """
         Obtiene el total grabaciones DIALER por agente en una lista
         :return: lista con el total de llamadas DIALER por agente
         """
-        total_dialer = []
-
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=2). \
-                filter(agente_id=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_dialer.append(cantidad)
-
-        return total_dialer
+        return self._obtener_cantidad_por_tipo_de_llamada(dict_agentes,
+                                                          agentes,
+                                                          Campana.TYPE_DIALER)
 
     def _obtener_total_inbound_agente(self, dict_agentes, agentes):
         """
         Obtiene el total grabaciones INBOUND por agente en una lista
         :return: lista con el total de llamadas INBOUND por agente
         """
-        total_inbound = []
-
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=3).\
-                filter(agente_id=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_inbound.append(cantidad)
-        return total_inbound
+        return self._obtener_cantidad_por_tipo_de_llamada(dict_agentes,
+                                                          agentes,
+                                                          Campana.TYPE_ENTRANTE)
 
     def _obtener_total_manual_agente(self, dict_agentes, agentes):
         """
         Obtiene el total grabaciones MANUAL por agente en una lista
         :return: lista con el total de llamadas MANUAL por agente
         """
-        total_manual = []
-
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=1). \
-                filter(agente_id=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_manual.append(cantidad)
-
-        return total_manual
+        return self._obtener_cantidad_por_tipo_de_llamada(dict_agentes,
+                                                          agentes,
+                                                          Campana.TYPE_MANUAL)
 
     def _obtener_total_transferidas_agente(self, dict_agentes, agentes):
         """
         Obtiene el total de llamadas TRANSFERIDAS por agente en una lista
         :return: lista con el total de llamadas TRANSFERIDAS recibidas por agente
         """
-        total_transferidas = []
+        return self._obtener_cantidad_por_tipo_de_llamada(dict_agentes,
+                                                          agentes,
+                                                          LLAMADA_TRANSF_INTERNA)
 
-        for agente in agentes:
-            cantidad = 0
-            result = dict_agentes.filter(tipo_llamada=LLAMADA_TRANSF_INTERNA). \
-                filter(agente_id=agente)
-            if result:
-                cantidad = result[0]['cantidad']
-
-            total_transferidas.append(cantidad)
-
-        return total_transferidas
+    def _obtener_cantidad_por_tipo_de_llamada(self, dict_agentes, agentes, tipo_llamada):
+        total = OrderedDict(zip(agentes, [0] * len(agentes)))
+        for log in dict_agentes.filter(tipo_llamada=tipo_llamada):
+            id_agente = log['agente_id']
+            if id_agente in agentes:
+                total[id_agente] = log['cantidad']
+        return total.values()
 
     def _obtener_total_agentes_tipos_llamadas(self, agentes, fecha_inferior,
                                               fecha_superior):
@@ -512,6 +476,7 @@ class TiemposAgente(object):
         barra_agente_total.add('DIALER', dict_agentes_llamadas['total_agente_dialer'])
         barra_agente_total.add('INBOUND', dict_agentes_llamadas['total_agente_inbound'])
         barra_agente_total.add('MANUAL', dict_agentes_llamadas['total_agente_manual'])
+        barra_agente_total.add('TRANSFERIDAS', dict_agentes_llamadas['total_agente_transferidas'])
 
         return barra_agente_total
 
