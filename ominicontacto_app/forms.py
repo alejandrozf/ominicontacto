@@ -1071,8 +1071,8 @@ class QueueDialerForm(forms.ModelForm):
         }
 
         help_texts = {
-            'dial_timeout': """ Es recomendable que este valor sea menor al dial timeout
-            definido en la ruta saliente""",
+            'dial_timeout': _(""" Es recomendable que este valor sea menor al dial timeout
+            definido en la ruta saliente"""),
         }
 
     def clean(self):
@@ -1088,8 +1088,8 @@ class QueueDialerForm(forms.ModelForm):
 
         dial_timeout = self.cleaned_data.get('dial_timeout')
         if dial_timeout < 10 or dial_timeout > 90:
-            raise forms.ValidationError('El valor de dial timeout deberá estar comprendido entre'
-                                        ' 10 y 90 segundos')
+            raise forms.ValidationError(_('El valor de dial timeout deberá estar comprendido entre'
+                                        ' 10 y 90 segundos'))
 
         return self.cleaned_data
 
