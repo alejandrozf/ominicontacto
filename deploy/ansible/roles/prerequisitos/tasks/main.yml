@@ -46,8 +46,8 @@
   template: src=templates/omnileads.conf dest=/etc/omnileads.conf owner=root group=root mode=644
   become: true
   become_method: sudo
-  tags: ['never','all']
-
+  tags: postinstall
+  
 - name: Write the new passswords in omnileads.conf
   lineinfile: path=/etc/omnileads.conf state=present regexp={{ item.regex}} line={{ item.line }}
   with_items:
