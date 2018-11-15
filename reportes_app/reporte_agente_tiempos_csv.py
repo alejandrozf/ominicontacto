@@ -214,6 +214,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append("DIALER")
             encabezado.append("INBOUND")
             encabezado.append("MANUAL")
+            encabezado.append("TRANSFERIDAS")
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -225,7 +226,7 @@ class ArchivoDeReporteCsv(object):
 
             # Iteramos cada uno de las metadata de la gestion del formulario
             for (agente, total_campana, total_ics, total_dialer, total_inbound,
-                 total_manual) in estadisticas["dict_agente_counter"]:
+                 total_manual, total_transferidas) in estadisticas["dict_agente_counter"]:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -236,6 +237,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(total_dialer)
                 lista_opciones.append(total_inbound)
                 lista_opciones.append(total_manual)
+                lista_opciones.append(total_transferidas)
 
                 # --- Finalmente, escribimos la linea
                 lista_opciones_utf8 = [force_text(item).encode('utf-8')
