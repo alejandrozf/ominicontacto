@@ -313,7 +313,6 @@ class IVRForm(forms.ModelForm):
     def _validar_escoger_audio(self, valor_escoger_audio, valor_audio_oml, valor_audio_externo,
                                obligatorio=False):
         # valida que el audio escogido concuerde con el valor del selector del tipo de audio
-        valor_escoger_audio = int(valor_escoger_audio)
         if valor_escoger_audio == self.AUDIO_EXTERNO and valor_audio_externo is None:
             raise forms.ValidationError(
                 _('Debe escoger un audio como archivo externo'), code='invalid')
