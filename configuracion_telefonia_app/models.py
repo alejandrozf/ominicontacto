@@ -249,10 +249,6 @@ class ValidacionFechaHora(models.Model):
 #     pass
 
 
-# class Hangup(models.Model):
-#     pass
-
-
 # class Encuesta(models.Model):
 #     pass
 
@@ -271,6 +267,7 @@ class DestinoEntrante(models.Model):
         (CAMPANA, _('Campaña entrante')),
         (VALIDACION_FECHA_HORA, _('Validación de fecha/hora')),
         (IVR, _('IVR')),
+        (HANGUP, _('HangUp')),
     )
     nombre = models.CharField(max_length=128, unique=True)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -292,6 +289,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.IVR
         elif isinstance(info_nodo_entrante, ValidacionFechaHora):
             tipo = cls.VALIDACION_FECHA_HORA
+        elif isinstance(info_nodo_entrante, HangUp):
+            raise(_('Error: El nodo HangUp es único.'))
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,
@@ -370,3 +369,14 @@ class RutaEntrante(models.Model):
     @property
     def sigla_idioma(self):
         return RutaEntrante.SIGLAS_IDIOMAS[self.idioma]
+
+
+class HangUp(models.Model):
+
+    @classmethod
+    def load(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __unicode__(self):
+        return _("HangUp")
