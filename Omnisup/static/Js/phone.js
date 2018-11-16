@@ -199,6 +199,7 @@ $(function () {
 
   $("#tableAgBody").on('click', '.pause', function () {
     var id = this.id;
+    var self = this;
     var sipExt = $("#sipUser").val();
     $.ajax({
       url: 'Controller/actionListener.php',
@@ -206,8 +207,9 @@ $(function () {
       dataType: 'html',
       data: 'sip=' + id + '&sipext=' + sipExt + "&action=pauseagent",
       success: function (msg) {
-        $(".btn.btn-primary.btn-xs.pause").removeClass("pause").addClass("unpause");
-        $(".glyphicon.glyphicon-pause").removeClass("glyphicon-pause").addClass("glyphicon-play");
+        $(self).parent().attr('title', 'despausar');
+        $(self).removeClass("pause").addClass("unpause");
+        $(self).removeClass("fa-pause").addClass("fa-play");
       },
       error: function (jqXHR, textStatus, errorThrown) {
         debugger;
@@ -218,6 +220,7 @@ $(function () {
 
   $("#tableAgBody").on('click', '.unpause', function () {
     var id = this.id;
+    var self = this;
     var sipExt = $("#sipUser").val();
     $.ajax({
       url: 'Controller/actionListener.php',
@@ -225,8 +228,9 @@ $(function () {
       dataType: 'html',
       data: 'sip=' + id + '&sipext=' + sipExt + "&action=unpauseagent",
       success: function (msg) {
-        $(".btn.btn-primary.btn-xs.unpause").removeClass("unpause").addClass("pause");
-        $(".glyphicon.glyphicon-play").removeClass("glyphicon-play").addClass("glyphicon-pause");
+        $(self).parent().attr('title', 'pausar');
+        $(self).removeClass("unpause").addClass("pause");
+        $(self).removeClass("fa-play").addClass("fa-pause");
       },
       error: function (jqXHR, textStatus, errorThrown) {
         debugger;
