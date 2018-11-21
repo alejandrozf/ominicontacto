@@ -446,6 +446,8 @@ class CampanaService():
         self.crear_endpoint_campana_wombat(campana)
         # asocio endpoint a la campana en wombat
         self.crear_endpoint_asociacion_campana_wombat(campana)
+        # TODO: Deuda tecnica: Controlar posibles errores de las funciones llamadas.
+        return True
 
     def translate_state_wombat(self, status):
         """

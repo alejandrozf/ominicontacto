@@ -293,7 +293,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
             messages.add_message(
                 self.request,
                 messages.SUCCESS,
-                _('Se ha creado la nueva campaña.'))
+                _('Se ha modificado la campaña.'))
         else:
             messages.add_message(
                 self.request,
