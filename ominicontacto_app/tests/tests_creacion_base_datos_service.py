@@ -201,7 +201,7 @@ class TestImportarDesdeCsvNoAscii(OMLBaseTest):
         bd = BaseDatosContacto(id=1)
         bd.archivo_importacion = self.copy_test_resource_to_mediaroot(
             "csv-codificacion/bd-contactos-utf8.csv")
-        bd.nombre_archivo_importacion = ("bd-contactos-utf8.csv")
+        bd.nombre_archivo_importacion = "bd-contactos-utf8.csv"
         bd.save = Mock()
 
         # -----
