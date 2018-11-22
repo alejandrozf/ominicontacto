@@ -14,7 +14,7 @@ from ominicontacto_app.services.base_de_datos_contactos import \
     CreacionBaseDatosService, PredictorMetadataService, \
     NoSePuedeInferirMetadataError
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from fts_web.utiles import ValidadorDeNombreDeCampoExtra
+from ominicontacto_app.utiles import ValidadorDeNombreDeCampoExtra
 
 
 class TestGeneraBaseDatosContacto(OMLBaseTest):
