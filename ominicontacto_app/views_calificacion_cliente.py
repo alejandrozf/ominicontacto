@@ -168,6 +168,9 @@ class CalificacionClienteFormView(FormView):
             return self.form_invalid(contacto_form, calificacion_form)
 
     def form_valid(self, contacto_form, calificacion_form):
+        nuevo_contacto = False
+        if self.contacto is None:
+            nuevo_contacto = True
         self.contacto = contacto_form.save(commit=False)
         # TODO: Pasar esta logica al formulario?
         base_datos = self.campana.bd_contacto
@@ -180,6 +183,8 @@ class CalificacionClienteFormView(FormView):
             datos.append(campo)
         self.contacto.datos = json.dumps(datos)
         self.contacto.bd_contacto = base_datos
+        if nuevo_contacto:
+            self.contacto.es_originario = False
         self.contacto.save()
 
         self.object_calificacion = calificacion_form.save(commit=False)

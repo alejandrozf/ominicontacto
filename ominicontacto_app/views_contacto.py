@@ -388,7 +388,8 @@ class FormularioNuevoContactoFormView(FormView):
             datos.append(campo)
         contacto = Contacto.objects.create(
             telefono=telefono, datos=json.dumps(datos),
-            bd_contacto=base_datos)
+            bd_contacto=base_datos,
+            es_originario=False)
         agente = self.request.user.get_agente_profile()
 
         if campana.type == Campana.TYPE_PREVIEW:

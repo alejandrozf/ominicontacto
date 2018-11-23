@@ -2119,6 +2119,7 @@ class Contacto(models.Model):
         'BaseDatosContacto',
         related_name='contactos', blank=True, null=True
     )
+    es_originario = models.BooleanField(default=True)
 
     def obtener_telefono_y_datos_extras(self, metadata):
         # FIXME: este método no se usa en OML, probablemente debería ser eliminado,

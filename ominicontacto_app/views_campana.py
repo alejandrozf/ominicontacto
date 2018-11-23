@@ -22,7 +22,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import json
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -33,16 +32,15 @@ from django.views.generic.base import RedirectView
 from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.forms import (
-    ReporteForm, FormularioNuevoContacto,
-    FormularioCampanaContacto, CampanaSupervisorUpdateForm
+    ReporteForm, FormularioCampanaContacto, CampanaSupervisorUpdateForm
 )
 from ominicontacto_app.models import (
-    Campana, Queue, Contacto, SupervisorProfile
+    Campana, Queue, SupervisorProfile
 )
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 
-from ominicontacto_app.utiles import convert_fecha_datetime, convertir_ascii_string
+from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_llamadas_campana import \
     EstadisticasCampanaLlamadasService
 from configuracion_telefonia_app.views import DeleteNodoDestinoMixin, SincronizadorDummy
@@ -176,46 +174,6 @@ class FormularioSeleccionCampanaFormView(FormView):
         return HttpResponseRedirect(
             reverse('nuevo_contacto_campana',
                     kwargs={"pk_campana": campana}))
-
-    def get_success_url(self):
-        reverse('view_blanco')
-
-
-class FormularioNuevoContactoFormView(FormView):
-    """Esta vista agrega un nuevo contacto para la campana seleccionada"""
-    form_class = FormularioNuevoContacto
-    template_name = 'agente/nuevo_contacto_campana.html'
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        base_datos = campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return self.form_class(campos=campos, **self.get_form_kwargs())
-
-    def form_valid(self, form):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        base_datos = campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        telefono = form.cleaned_data.get('telefono')
-
-        datos = []
-        nombres.remove('telefono')
-
-        for nombre in nombres:
-            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        contacto = Contacto.objects.create(
-            telefono=telefono, datos=json.dumps(datos),
-            bd_contacto=base_datos)
-        agente = self.request.user.get_agente_profile()
-        return HttpResponseRedirect(
-            reverse('calificacion_formulario_update_or_create',
-                    kwargs={"pk_campana": self.kwargs['pk_campana'],
-                            "pk_contacto": contacto.pk,
-                            "id_agente": agente.pk}))
 
     def get_success_url(self):
         reverse('view_blanco')

@@ -138,23 +138,32 @@ class AgentesContactosTests(OMLBaseTest):
     def test_se_permite_adicionar_contacto_campanas_entrantes(self):
         url = reverse('nuevo_contacto_campana', args=[self.campana_entrante.pk])
         post_data = self._obtener_datos_post_adicionar_contacto(self.campana_entrante)
-        n_contactos = self.campana_entrante.bd_contacto.contactos.count()
+        contactos_ids = self.campana_entrante.bd_contacto.contactos.values_list('id', flat=True)
+        contactos_ids = list(contactos_ids)
         self.client.post(url, post_data, follow=True)
-        self.assertEqual(self.campana_entrante.bd_contacto.contactos.count(), n_contactos + 1)
+        nuevo_contacto = self.campana_entrante.bd_contacto.contactos.exclude(id__in=contactos_ids)
+        self.assertEqual(nuevo_contacto.count(), 1)
+        self.assertFalse(nuevo_contacto[0].es_originario)
 
     def test_se_permite_adicionar_contacto_campanas_manuales(self):
         url = reverse('nuevo_contacto_campana', args=[self.campana_manual.pk])
         post_data = self._obtener_datos_post_adicionar_contacto(self.campana_manual)
-        n_contactos = self.campana_manual.bd_contacto.contactos.count()
+        contactos_ids = self.campana_manual.bd_contacto.contactos.values_list('id', flat=True)
+        contactos_ids = list(contactos_ids)
         self.client.post(url, post_data, follow=True)
-        self.assertEqual(self.campana_manual.bd_contacto.contactos.count(), n_contactos + 1)
+        nuevo_contacto = self.campana_manual.bd_contacto.contactos.exclude(id__in=contactos_ids)
+        self.assertEqual(nuevo_contacto.count(), 1)
+        self.assertFalse(nuevo_contacto[0].es_originario)
 
     def test_se_permite_adicionar_contacto_campanas_preview(self):
         url = reverse('nuevo_contacto_campana', args=[self.campana_preview.pk])
         post_data = self._obtener_datos_post_adicionar_contacto(self.campana_preview)
-        n_contactos = self.campana_preview.bd_contacto.contactos.count()
+        contactos_ids = self.campana_preview.bd_contacto.contactos.values_list('id', flat=True)
+        contactos_ids = list(contactos_ids)
         self.client.post(url, post_data, follow=True)
-        self.assertEqual(self.campana_preview.bd_contacto.contactos.count(), n_contactos + 1)
+        nuevo_contacto = self.campana_preview.bd_contacto.contactos.exclude(id__in=contactos_ids)
+        self.assertEqual(nuevo_contacto.count(), 1)
+        self.assertFalse(nuevo_contacto[0].es_originario)
 
     def test_adicion_contactos_campanas_preview_adiciona_agente_en_contacto(self):
         url = reverse('nuevo_contacto_campana', args=[self.campana_preview.pk])

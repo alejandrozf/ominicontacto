@@ -246,6 +246,30 @@ class CalificacionTests(OMLBaseTest):
         agenda_contacto = AgendaContacto.objects.first()
         self.assertEqual(agenda_contacto.campana.pk, self.campana.pk)
 
+    def test_llamada_manual_telefono_no_contacto_crea_contacto(self):
+        # garantizamos un número distinto al existente en la campaña
+        contactos_ids = self.campana.bd_contacto.contactos.values_list('id', flat=True)
+        contactos_ids = list(contactos_ids)
+        telefono = str(self.contacto.telefono) + '11'
+        post_data = {
+            'opcion_calificacion': self.opcion_calificacion_gestion.pk,
+            'telefono': telefono,
+            'nombre': 'Nuevo Contacto'
+        }
+
+        url = reverse('calificar_por_telefono',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'telefono': telefono})
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        nuevo_contacto = self.campana.bd_contacto.contactos.exclude(id__in=contactos_ids)
+        self.assertEqual(nuevo_contacto.count(), 1)
+        nuevo_contacto = nuevo_contacto[0]
+        self.assertEqual(nuevo_contacto.telefono, telefono)
+        self.assertIn('Nuevo Contacto', nuevo_contacto.datos)
+        self.assertFalse(nuevo_contacto.es_originario)
+
     def test_llamada_manual_telefono_no_contacto_muestra_formulario_calificacion_blanco(self):
         # garantizamos un número distinto al existente en la campaña
         telefono = str(self.contacto.telefono) + '11'
