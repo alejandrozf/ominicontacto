@@ -132,12 +132,15 @@ class ArchivoDeReporteCsv(object):
                 datos_contacto = json.loads(calificacion.contacto.datos)
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-                lista_opciones.append("Contactado")
+                lista_opciones.append(_("Contactado"))
                 lista_opciones.append(calificacion.contacto.telefono)
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 lista_opciones.append(calificacion.agente)
-                lista_opciones.append(calificacion.contacto.bd_contacto)
+                if calificacion.contacto.es_originario:
+                    lista_opciones.append(calificacion.contacto.bd_contacto)
+                else:
+                    lista_opciones.append(_("Fuera de base"))
                 datos_formulario_gestion = calificacion.get_venta()
                 if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
                         datos_formulario_gestion is not None):
@@ -169,11 +172,11 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append("Llamada Atendida sin calificacion")
                 lista_opciones.append("")
                 lista_opciones.append(self.agentes_dict.get(log_no_calificado.agente_id, -1))
-                # TODO: Esto no deberia pasar. Verificar
-                if contacto is None:
+                # TODO: No deberia pasar que no tenga contacto. Verificar
+                if contacto is not None and contacto.es_originario:
                     lista_opciones.append(campana.bd_contacto)
                 else:
-                    lista_opciones.append(contacto.bd_contacto)
+                    lista_opciones.append(_("Fuera de base"))
 
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
@@ -257,7 +260,10 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 lista_opciones.append(calificacion.agente)
-                lista_opciones.append(calificacion.contacto.bd_contacto)
+                if calificacion.contacto.es_originario:
+                    lista_opciones.append(calificacion.contacto.bd_contacto)
+                else:
+                    lista_opciones.append(_("Fuera de base"))
                 datos_formulario_gestion = calificacion.get_venta()
                 if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
                         datos_formulario_gestion is not None):

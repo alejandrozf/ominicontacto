@@ -1111,8 +1111,8 @@ class Campana(models.Model):
             self.finalizar()
 
     def adicionar_agente_en_contacto(self, contacto):
-        """Crea una nueva entrada para relacionar un agentes y un contactos
-        de una campaña preview
+        """Crea una nueva entrada para relacionar un agentes y un contacto
+        nuevo a una campaña preview
         """
         campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
         datos_contacto = literal_eval(contacto.datos)
@@ -1121,7 +1121,8 @@ class Campana(models.Model):
         AgenteEnContacto.objects.create(
             agente_id=-1, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
             telefono_contacto=contacto.telefono, campana_id=self.pk,
-            estado=AgenteEnContacto.ESTADO_INICIAL)
+            estado=AgenteEnContacto.ESTADO_INICIAL,
+            es_originario=False)
 
     def get_string_queue_asterisk(self):
         if self.queue_campana:
@@ -2966,6 +2967,7 @@ class AgenteEnContacto(models.Model):
     campana_id = models.IntegerField()
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
     modificado = models.DateTimeField(auto_now=True, null=True)
+    es_originario = models.BooleanField(default=True)
 
     def __unicode__(self):
         return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(

@@ -31,6 +31,7 @@ import json
 from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.timezone import localtime
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import MetadataCliente
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -111,7 +112,10 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(metadata.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
-                lista_opciones.append(metadata.contacto.bd_contacto)
+                if metadata.contacto.es_originario:
+                    lista_opciones.append(metadata.contacto.bd_contacto)
+                else:
+                    lista_opciones.append(_("Fuera de base"))
                 lista_opciones.append(calificaciones_dict[metadata.contacto.id])
                 datos = json.loads(metadata.metadata)
                 for campo in campos:

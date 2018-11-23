@@ -180,7 +180,8 @@ class EstadisticasService():
             llamadas_recibidas += llamadas_recibidas_transferidas
         elif campana.type == Campana.TYPE_PREVIEW:
             llamadas_pendientes = AgenteEnContacto.objects.filter(
-                estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana.pk).count()
+                estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana.pk,
+                es_originario=True).count()
         return llamadas_pendientes, llamadas_realizadas, llamadas_recibidas
 
     def obtener_total_calificacion_agente(self, campana, fecha_desde, fecha_hasta):

@@ -100,25 +100,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                Filtrar por esa fecha
+                {% trans "Filtrar por esa fecha" %}
             </button>
         </form>
     </div>
 </div>
 
 <div>
-    <h2>Reportes de contactados</h2>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_contactados' campana.pk %}">Exportar Reporte de contactadas(CSV)</a>
+    <h2>{% trans "Reportes de contactados" %}</h2>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_contactados' campana.pk %}">{% trans "Exportar Reporte de contactados (CSV)" %}</a>
     <hr>
-    <h3>Cantidad de calificación por campaña</h3>
+    <h3>{% trans "Cantidad de calificación por campaña" %}</h3>
     <br>
     <div class="form-row">
         <div class="col-md-6">
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th>Calificacion</th>
-                        <th>Cantidad</th>
+                        <th>{% trans "Calificacion" %}</th>
+                        <th>{% trans "Cantidad" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,7 +129,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </tr>
                     {% endfor %}
                         <tr>
-                            <td>Total asignados</td>
+                            <td>{% trans "Total asignados" %}</td>
                             <td>{{graficos_estadisticas.total_asignados}}</td>
                         </tr>
                 </tbody>
@@ -143,21 +143,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
     </div>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_calificados' campana.pk %}">Exportar Reporte llamadas calificadas(CSV)</a>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_calificados' campana.pk %}">{% trans "Exportar Reporte de contactos calificadas (CSV)" %}</a>
 </div>
 <br>
 <hr>
 <br>
 <div>
-    <h2>Cantidad de llamados no atendidos</h2>
+    <h2>{% trans "Cantidad de llamados no atendidos" %}</h2>
     <br>
     <div class="form-row">
         <div class="col-md-6">
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th>Resultado</th>
-                        <th>Cantidad</th>
+                        <th>{% trans "Resultado" %}</th>
+                        <th>{% trans "Cantidad" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -168,7 +168,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </tr>
                     {% endfor %}
                         <tr>
-                            <td>Total no atendidos</td>
+                            <td>{% trans "Total no atendidos" %}</td>
                             <td>{{graficos_estadisticas.total_no_atendidos}}</td>
                         </tr>
                 </tbody>
@@ -183,7 +183,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
     <div>
-        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">Exportar Reporte llamadas no atendidas(CSV)</a>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">{% trans "Exportar Reporte llamadas no atendidas (CSV)" %}</a>
     </div>
     <br>
 </div>
@@ -213,7 +213,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </tr>
             {% endfor %}
             <tr>
-                <td>Totales</td>
+                <td>{% trans "Totales" %}</td>
                 <td>{{graficos_estadisticas.total_ventas}}</td>
                 <td colspan="{{ graficos_estadisticas.calificaciones|length }}"></td>
                 <td>{{graficos_estadisticas.total_calificados}}</td>
@@ -225,15 +225,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <hr>
 <br>
 <div>
-    <h2>Detalle de las llamadas</h2>
+    <h2>{% trans "Detalle de las llamadas" %}</h2>
     <br>
     <div class="form-row">
         <div class="col-md-6">
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th>Llamadas</th>
-                        <th>Cantidad </th>
+                        <th>{% trans "Llamadas" %}</th>
+                        <th>{% trans "Cantidad" %}</th>
                     </tr>
                 </thead>
                 <tbody>

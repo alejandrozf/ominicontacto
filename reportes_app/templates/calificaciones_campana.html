@@ -18,6 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block content %}
@@ -59,7 +60,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         {{calificacion.observaciones}}
                                     {% endif %}
                                 </td>
-                                <td>{{calificacion.contacto.bd_contacto}}</td>
+                                <td>
+                                    {% if calificacion.contacto.es_originario %}
+                                        {{calificacion.contacto.bd_contacto}}
+                                    {% else %}
+                                        {% trans "Fuera de Base" %}
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>

@@ -31,6 +31,7 @@ import json
 from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.timezone import localtime
+from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
@@ -108,7 +109,10 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append(dato)
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
-                lista_opciones.append(calificacion.contacto.bd_contacto)
+                if calificacion.contacto.es_originario:
+                    lista_opciones.append(calificacion.contacto.bd_contacto)
+                else:
+                    lista_opciones.append(_("Fuera de base"))
 
                 # --- Finalmente, escribimos la linea
 

@@ -171,6 +171,8 @@ class AgentesContactosTests(OMLBaseTest):
         self.assertFalse(AgenteEnContacto.objects.filter().exists())
         self.client.post(url, post_data, follow=True)
         self.assertTrue(AgenteEnContacto.objects.all().exists())
+        agente_en_contacto = AgenteEnContacto.objects.first()
+        self.assertFalse(agente_en_contacto.es_originario)
 
     def test_usuario_no_agente_no_accede_vista_contactos_telefono_repetidos(self):
         self.client.logout()
