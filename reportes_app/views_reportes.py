@@ -37,7 +37,7 @@ from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampa
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
 from ominicontacto_app.services.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
 from ominicontacto_app.services.reporte_metadata_cliente import ReporteMetadataClienteService
-from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
 
 
 class CampanaReporteCalificacionListView(ListView):
@@ -143,7 +143,7 @@ class CampanaReporteGraficoView(FormView):
             messages.warning(self.request, _(u"Usted no puede acceder a esta campaña."))
             return redirect('index')
         service = EstadisticasService()
-        hoy_ahora = timezone.now()
+        hoy_ahora = fecha_hora_local(timezone.now())
         hoy = hoy_ahora.date()
         # genera reporte de llamadas contactados
         calificados_csv = ReporteCampanaContactadosCSV()
