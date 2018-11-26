@@ -241,8 +241,7 @@ class CalificacionClienteFormView(FormView):
         return reverse('recalificacion_formulario_update_or_create',
                        kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id,
-                               "id_agente": self.agente.id,
-                               "wombat_id": 0})
+                               "id_agente": self.agente.id})
 
 
 @csrf_exempt

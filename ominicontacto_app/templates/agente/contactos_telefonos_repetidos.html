@@ -62,7 +62,7 @@
                             <td>{{ contacto.datos }}</td>
                             <td>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" href="{% url 'calificacion_formulario_update_or_create' campana.pk contacto.pk user.get_agente_profile.pk 0 %}">
+                                    <a class="dropdown-item" href="{% url 'calificacion_formulario_update_or_create' campana.pk contacto.pk user.get_agente_profile.pk %}">
                                         <span class="icon icon-pencil"></span>
                                     </a>
                                 </div>
