@@ -199,8 +199,9 @@ class TestImportarDesdeCsvNoAscii(OMLBaseTest):
 
     def test_importa_archivo_utf8_correctamente(self):
         bd = BaseDatosContacto(id=1)
-        bd.archivo_importacion = self.copy_test_resource_to_mediaroot(
-            "bd-contactos-utf8.csv")
+        bd.archivo_importacion = File(open(self.get_test_resource(
+            "planilla-ejemplo-6.csv"), 'r'))
+
         bd.nombre_archivo_importacion = "bd-contactos-utf8.csv"
         bd.save = Mock()
 
