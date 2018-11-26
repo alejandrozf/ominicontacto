@@ -34,7 +34,7 @@ cache:
 
 before_script:
   - mkdir -p ~/local/
-  - cp oml_settings_local_pro.py ~/local/oml_settings_local.py
+  - cp settings-gitlab-ci.py ~/local/oml_settings_local.py
   - ln -s ~/local/oml_settings_local.py
   - mkdir -p /opt/omnileads/ominicontacto/
   - touch /opt/omnileads/ominicontacto/django.log
@@ -49,9 +49,9 @@ before_script:
 
 test:
   variables:
-    POSTGRES_DB: kamailio
-    POSTGRES_USER: kamailio
-    POSTGRES_PASSWORD: kamailiorw
+    POSTGRES_DB: omnileads
+    POSTGRES_USER: omnileads
+    POSTGRES_PASSWORD: omnileadsrw
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
   script:
     - flake8

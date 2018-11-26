@@ -107,7 +107,7 @@
 
 # Añado la configuracion de nginx para supervision
 - name: Creation of /etc/nginx/conf.d/supervision.conf
-  template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf
+  template: src=templates/supervision.conf.j2 dest=/etc/nginx/conf.d/supervision.conf owner={{ usuario }} group={{ usuario }}
   become: true
   become_method: sudo
 

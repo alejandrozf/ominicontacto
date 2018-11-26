@@ -37,7 +37,7 @@
   become_method: sudo
   ignore_errors: True
 
-  # Intalo los paquetes necesarios para la parte VoIP -- FIX ME -- separar paquetes de asterisk y paquetes de kamailio
+  # Intalo los paquetes necesarios para la parte VoIP
 - name: Installation of VoIP dependencies
   apt: "name={{ item }} state=present"
   with_items:
@@ -142,4 +142,10 @@
     - php-pgsql
     - php-xml
   become: true
+  become_method: sudo
+
+# En debian el servicio se llama diferente #quehijosdefrula
+- name: Start and enable postgres service
+  service: name=postgresql state=restarted enabled=yes
+  become: yes
   become_method: sudo

@@ -324,7 +324,12 @@ class CampanaService():
         nombre_campana = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
         url_edit = "api/campaigns/?op=remove&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
-        r = requests.post(url)
+
+        try:
+            r = requests.post(url)
+
+        except requests.exceptions.RequestException:
+            return False
 
         if r.status_code == 200:
             return True
@@ -365,6 +370,8 @@ class CampanaService():
         resultado = self.remove_campana_wombat(campana)
         if resultado:
             campana.remover()
+        else:
+            pass  # TODO: Verificar si se debe seguir con estos pasos o no!
         time.sleep(30)
         # elimina la lista de contactos de la campana en wombat
         self.desasociacion_campana_wombat(campana)
@@ -394,17 +401,21 @@ class CampanaService():
         por realizar, si no le quedan las elimino de las campanas corriendo y le cambio
         el estado a eliminadas
         """
+        error_msg = _(u"No se pudo consultar el estado actual de la campaña. "
+                      "Consulte con su administrador.")
         error = False
         for campana in campanas:
             detalle = self.obtener_dato_campana_run(campana)
             if detalle:
                 restantes = int(detalle['n_est_remaining_calls'])
-                if restantes == 0 and not campana.es_manual:
-                    self.remove_campana_wombat(campana)
-                    campana.finalizar()
+                reintentos_pendientes = int(detalle['n_open_retries'])
+                if restantes == 0 and reintentos_pendientes == 0 and not campana.es_manual:
+                    if self.remove_campana_wombat(campana):
+                        campana.finalizar()
+                    else:
+                        error = error_msg
             else:
-                error = _(u"No se pudo consultar el estado actual de la campaña. "
-                          "Consulte con su administrador.")
+                error = error_msg
         return error
 
     def desasociacion_endpoint_campana_wombat(self, campana):
@@ -435,6 +446,8 @@ class CampanaService():
         self.crear_endpoint_campana_wombat(campana)
         # asocio endpoint a la campana en wombat
         self.crear_endpoint_asociacion_campana_wombat(campana)
+        # TODO: Deuda tecnica: Controlar posibles errores de las funciones llamadas.
+        return True
 
     def translate_state_wombat(self, status):
         """

@@ -22,13 +22,13 @@
 # https://www.kamailio.org/dokuwiki/doku.php/tls:create-certificates
 
 - name: Modificacion del /etc/pki/tls/openssl.cnf
-  template: src=templates/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
+  template: src=templates/etc/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
 - name: Modificacion del /etc/pki/tls/openssl.cnf
-  template: src=templates/openssl.cnf.j2 dest=/etc/ssl/openssl.cnf
+  template: src=templates/etc/openssl.cnf.j2 dest=/etc/ssl/openssl.cnf
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"

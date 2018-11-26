@@ -21,28 +21,28 @@ DBENGINE=PGSQL
 DBHOST=127.0.0.1
 
 ## database name (for ORACLE this is TNS name)
-DBNAME=kamailio
+DBNAME=omnileads
 
 # database path used by dbtext, db_berkeley or sqlite
 # DB_PATH="/usr/local/etc/kamailio/dbtext"
 
 ## database read/write user
-DBRWUSER="kamailio"
+DBRWUSER="omnileads"
 
 ## password for database read/write user
-DBRWPW="kamailiorw"
+DBRWPW="{{ postgres_password }}"
 
 ## database read only user
-DBROUSER="kamailioro"
+DBROUSER="omnileadsro"
 
 ## password for database read only user
-DBROPW="kamailioro"
+DBROPW="omnileadsro"
 
 ## database access host (from where is kamctl used)
 # DBACCESSHOST=192.168.0.1
 
 ## database super user (for ORACLE this is 'scheme-creator' user)
-DBROOTUSER="kamailio"
+DBROOTUSER="omnileads"
 
 ## database character set (used by MySQL when creating database)
 #CHARSET="latin1"

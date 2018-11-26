@@ -19,19 +19,23 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
-$BASE_PATH="/opt/omnileads/asterisk/var/lib/asterisk/agi-bin/";
+include "{{ install_prefix }}Omnisup/config.php";
+#$BASE_PATH="/opt/omnileads/asterisk/var/lib/asterisk/agi-bin/";
 
-require $BASE_PATH."phpagi.php";
-require_once $BASE_PATH."phpagi-asmanager.php";
+#require $BASE_PATH."phpagi.php";
+require ('phpagi.php') ;
+#require_once $BASE_PATH."phpagi-asmanager.php";
+require_once ('phpagi-asmanager.php') ;
 
 
 //$agiWrapper = new AGI($BASE_PATH."include/phpagi/phpagi.conf");
 $astman = new AGI_AsteriskManager();
 
-$ampmgruser  = "omnileadsami";
-$ampmgrpass  = "5_MeO_DMT";
+$ampmgruser  = AMI_USERNAME;
+$ampmgrpass  = AMI_PASSWORD;
+$ampmgrhost = AMI_HOST;
 
-$oResultado = $astman->connect("localhost", $ampmgruser, $ampmgrpass);
+$oResultado = $astman->connect($ampmgrhost, $ampmgruser, $ampmgrpass);
         if($oResultado == FALSE)
                 echo "Connection failed.\n";
 

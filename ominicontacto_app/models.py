@@ -1286,6 +1286,7 @@ class Queue(models.Model):
     audios = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
                                on_delete=models.SET_NULL,
                                related_name='queues_anuncio_periodico')
+    dial_timeout = models.PositiveIntegerField(default=25, blank=True, null=True)
 
     # Predictiva
     initial_predictive_model = models.BooleanField(default=False)
@@ -1701,6 +1702,8 @@ class MetadataBaseDatosContactoDTO(object):
         return telefono
 
     def obtener_telefono_y_datos_extras(self, datos_json):
+        # FIXME: este método no se usa en OML, probablemente debería ser eliminado,
+        # y los addons que lo utilicen crear su propia versión de acuerdo a los datos que manejen
         """Devuelve tupla con (1) el numero telefonico del contacto,
         y (2) un dict con los datos extras del contacto
 
@@ -1716,10 +1719,10 @@ class MetadataBaseDatosContactoDTO(object):
                              "".format(e.message, datos_json))
             raise
 
-        assert len(datos) == self.cantidad_de_columnas
+        # assert len(datos) == self.cantidad_de_columnas
 
         # Obtenemos telefono
-        telefono = datos[self.columna_con_telefono]
+        telefono = 0
 
         # Obtenemos datos extra
         datos_extra = dict(zip(self.nombres_de_columnas,
@@ -2118,6 +2121,8 @@ class Contacto(models.Model):
     )
 
     def obtener_telefono_y_datos_extras(self, metadata):
+        # FIXME: este método no se usa en OML, probablemente debería ser eliminado,
+        # y los addons que lo utilicen crear su propia versión de acuerdo a los datos que manejen
         """Devuelve lista con (telefono, datos_extras) utilizando
         la informacion de metadata pasada por parametro.
 

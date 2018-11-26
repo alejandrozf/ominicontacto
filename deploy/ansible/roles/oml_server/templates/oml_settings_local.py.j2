@@ -32,6 +32,7 @@ DEBUG = True
 {% else %}
 DEBUG = False
 {% endif %}
+COMPRESS_ENABLED = True
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = [
@@ -46,9 +47,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': '127.0.0.1',
         'PORT': 5432,
-        'NAME': 'kamailio',
-        'USER': 'kamailio',
-        'PASSWORD': 'kamailiorw',
+        'NAME': 'omnileads',
+        'USER': 'omnileads',
+        'PASSWORD': '{{ postgres_password }}',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
     }
@@ -210,3 +211,7 @@ if DJANGO_DEBUG_TOOLBAR:
     INTERNAL_IPS = ['127.0.0.1']
 {% endif %}
     LOCAL_APPS += ['debug_toolbar']
+
+CONSTANCE_CONFIG = {}
+MIDDLEWARE_PREPPEND = []
+MIDDLEWARE_APPEND = []

@@ -166,7 +166,7 @@
  # become: yes
  # become_method: sudo
 
-# Se mueven los directorios de jansson e iksemel a /opt/omnileads/asterisk -- FIX ME -- hay mejor forma de hacer mv?
+# Se mueven los directorios de jansson e iksemel a /opt/omnileads/asterisk
 - name: Organizing the asterisk directories
   shell: "{{ item }} chdir={{ install_prefix }}"
   with_items:

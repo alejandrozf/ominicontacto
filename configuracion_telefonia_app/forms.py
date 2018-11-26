@@ -313,7 +313,6 @@ class IVRForm(forms.ModelForm):
     def _validar_escoger_audio(self, valor_escoger_audio, valor_audio_oml, valor_audio_externo,
                                obligatorio=False):
         # valida que el audio escogido concuerde con el valor del selector del tipo de audio
-        valor_escoger_audio = int(valor_escoger_audio)
         if valor_escoger_audio == self.AUDIO_EXTERNO and valor_audio_externo is None:
             raise forms.ValidationError(
                 _('Debe escoger un audio como archivo externo'), code='invalid')
@@ -335,13 +334,13 @@ class IVRForm(forms.ModelForm):
         cleaned_data = super(IVRForm, self).clean()
         audio_ppal_escoger = cleaned_data['audio_ppal_escoger']
         audio_principal = cleaned_data.get('audio_principal', None)
-        audio_ppal_ext_audio = cleaned_data['audio_ppal_ext_audio']
+        audio_ppal_ext_audio = cleaned_data.get('audio_ppal_ext_audio', None)
         time_out_audio_escoger = cleaned_data['time_out_audio_escoger']
-        time_out_audio = cleaned_data['time_out_audio']
-        time_out_ext_audio = cleaned_data['time_out_ext_audio']
+        time_out_audio = cleaned_data.get('time_out_audio', None)
+        time_out_ext_audio = cleaned_data.get('time_out_ext_audio', None)
         invalid_destination_audio_escoger = cleaned_data['invalid_destination_audio_escoger']
-        invalid_audio = cleaned_data['invalid_audio']
-        invalid_destination_ext_audio = cleaned_data['invalid_destination_ext_audio']
+        invalid_audio = cleaned_data.get('invalid_audio', None)
+        invalid_destination_ext_audio = cleaned_data.get('invalid_destination_ext_audio', None)
         self._validar_escoger_audio(audio_ppal_escoger, audio_principal, audio_ppal_ext_audio,
                                     obligatorio=True)
         self._validar_escoger_audio(time_out_audio_escoger, time_out_audio, time_out_ext_audio)

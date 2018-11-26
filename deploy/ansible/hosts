@@ -9,7 +9,8 @@ ssh_port="{{ ansible_ssh_port }}"
 install_prefix=/opt/omnileads/
 usuario="{{ ansible_user }}"
 ##Parametros de la aplicación modificables
-admin_pass=toor123
+admin_pass=admin123
+postgres_password=omnileadsrw
 session_cookie_age=36000
 formato_conversion=mp3
 

@@ -16,12 +16,3 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ---
-
-- name: restart apache2
-  service: name=apache2 state=restarted enabled=yes
-
-- name: restart mysql
-  service: name=mysql state=restarted enabled=yes
-
-- name: restart httpd
-  service: name=httpd state=restarted enabled=yes

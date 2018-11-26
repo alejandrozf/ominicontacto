@@ -40,7 +40,12 @@
         default: OML3.1415
 
       - name: "admin_pass2"
-        prompt: "Ingrese nuevamente contraseña del admin de Omnileads: "
+        prompt: "Ingrese nuevamente contrasena del admin de Omnileads: "
+        private: yes
+        default: OML3.1415
+
+      - name: "postgres_password"
+        prompt: "Ingrese contrasena de la base de datos postgresql: "
         private: yes
 
       - name: "formato_conversion"
@@ -53,16 +58,17 @@
       - assert:
           that:
             - "'{{ admin_pass }}' | length > 8"
-          msg: "La contraseña ingresada es demasiado corta. La contraseña no puede ir vacia"
-        tags: postinstall
+            - "'{{ postgres_password }}' | length > 8"
+          msg: "La contraseña ingresada es demasiado corta o La contraseña no puede ir vacia"
       - assert:
           that: "'{{ admin_pass }}' == '{{ admin_pass2 }}'"
           msg: "Las contraseñas no son iguales"
         tags: postinstall
       - assert:
           that: "'{{ formato_conversion }}' == 'wav' or '{{ formato_conversion }}' == 'mp3' "
-          msg: "Formato inválido, volver a correr el script"
+          msg: "Formato inválido"
         tags: postinstall
+
 # el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
 # Esta variable te dice que familia de OS es el servidor a deployar (Debian o RedHat)
 
@@ -75,5 +81,5 @@
           - {role: oml_server, tags: ['virtualenv']}
           - asterisk
           - kamailio
-          - {role: omniapp_second, tags: ['omniapp']}
+          - omniapp_second
           - deploy_supervision

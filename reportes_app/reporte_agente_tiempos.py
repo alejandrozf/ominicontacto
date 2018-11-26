@@ -325,7 +325,7 @@ class TiemposAgente(object):
                                        fecha_superior, user):
         eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
 
-        campanas = Campana.objects.obtener_all_dialplan_asterisk()
+        campanas = Campana.objects.obtener_all_activas_finalizadas()
         if not user.get_is_administrador():
             campanas = Campana.objects.obtener_campanas_vista_by_user(
                 campanas, user)

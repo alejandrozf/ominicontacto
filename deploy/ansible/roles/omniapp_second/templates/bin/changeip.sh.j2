@@ -11,12 +11,19 @@ Kamailio() {
   sed -i "0,/\(MY_UDP_PORT\).*/s/\(MY_UDP_PORT\).*/MY_UDP_PORT!$KAMAILIO_SIP_PORT!g\"/" kamailio-local.cfg
   sed -i "0,/\(MY_TCP_PORT\).*/s/\(MY_TCP_PORT\).*/MY_TCP_PORT!$KAMAILIO_SIP_PORT!g\"/" kamailio-local.cfg
   sed -i "0,/\(MY_DB\).*/s/\(MY_DB\).*/MY_DB!$POSTGRES_IP!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_POSTGRES_USER\).*/s/\(MY_POSTGRES_USER\).*/MY_POSTGRES_USER!$POSTGRES_USER!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_POSTGRES_DB\).*/s/\(MY_POSTGRES_DB\).*/MY_POSTGRES_DB!$POSTGRES_DATABASE!g\"/" kamailio-local.cfg
+  sed -i "0,/\(MY_POSTGRES_PASS\).*/s/\(MY_POSTGRES_PASS\).*/MY_POSTGRES_PASS!$POSTGRES_PASSWORD!g\"/" kamailio-local.cfg
   sed -i "0,/\(MY_WSS_PORT\).*/s/\(MY_WSS_PORT\).*/MY_WSS_PORT!$KAMAILIO_WSS_PORT!g\"/" kamailio-local.cfg
+
   sed -i "s/\(DBHOST\).*/DBHOST=$POSTGRES_IP/" kamctlrc
   sed -i "s/\(DBNAME\).*/DBNAME=$POSTGRES_DATABASE/" kamctlrc
   sed -i "s/\(DBRWUSER\).*/DBRWUSER=$POSTGRES_USER/" kamctlrc
   sed -i "s/\(DBROOTUSER\).*/DBROOTUSER=$POSTGRES_USER/" kamctlrc
   sed -i "s/\(DBRWPW\).*/DBRWPW=$POSTGRES_PASSWORD/" kamctlrc
+  cd /etc/nginx/conf.d/
+  sed -i "s/\(proxy_pass\).*/proxy_pass https:\/\/$KAMAILIO_IP:$KAMAILIO_WSS_PORT;/" ominicontacto.conf
+
 }
 
 Omnileads(){
@@ -92,9 +99,6 @@ Asterisk(){
     sed -i "9s/.*/secret = $SUP_AMI_PASS/" oml_manager.conf
     sed -i "s/\(^username\).*/username => $POSTGRES_USER/" oml_res_odbc.conf
     sed -i "s/\(^password\).*/password => $POSTGRES_PASSWORD/" oml_res_odbc.conf
-    cd {{ asterisk_location }}/var/lib/asterisk/agi-bin/
-    sed -i "s/\(^\$ampmgruser\).*/\$ampmgruser  = \"$AMI_USER\";/" omni-asterisk-logout.php
-    sed -i "s/\(^\$ampmgrpass\).*/\$ampmgrpass  = \"$AMI_PASS\";/" omni-asterisk-logout.php
 }
 
 Help(){

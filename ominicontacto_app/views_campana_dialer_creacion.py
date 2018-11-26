@@ -22,6 +22,9 @@
 from __future__ import unicode_literals
 
 from django import forms
+from django.db import transaction
+from django.utils.translation import ugettext as _
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
@@ -207,9 +210,29 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         return campana
 
     def done(self, form_list, **kwargs):
-        sincronizar_form = form_list[int(self.SINCRONIZAR)]
-        campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
-        self._sincronizar_campana(sincronizar_form, campana)
+        success = False
+        try:
+            with transaction.atomic():
+                sincronizar_form = form_list[int(self.SINCRONIZAR)]
+                campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
+                self._sincronizar_campana(sincronizar_form, campana)
+                success = True
+
+        except Exception:
+            success = False
+
+        if success:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                _('Se ha creado la nueva campaña.'))
+        else:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                _('<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. '
+                  'No se pudo crear la campaña. Por favor contacte un administrador.'))
+
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
@@ -240,19 +263,42 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
         return queue_form.save()
 
     def done(self, form_list, **kwargs):
-        campana_form = form_list[int(self.INICIAL)]
-        queue_form = form_list[int(self.COLA)]
-        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
+        success = False
+        try:
+            with transaction.atomic():
+                campana_form = form_list[int(self.INICIAL)]
+                queue_form = form_list[int(self.COLA)]
+                opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+                parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
 
-        campana = campana_form.save()
-        queue = self._save_queue(queue_form)
-        opciones_calificacion_formset.save()
-        parametros_extra_web_formset.save()
+                campana = campana_form.save()
+                queue = self._save_queue(queue_form)
+                opciones_calificacion_formset.save()
+                parametros_extra_web_formset.save()
 
-        self._insert_queue_asterisk(queue)
-        campana_service = CampanaService()
-        campana_service.crear_campana_wombat(campana)
-        campana_service.update_endpoint(campana)
+                self._insert_queue_asterisk(queue)
+                campana_service = CampanaService()
+                service_ok = campana_service.crear_campana_wombat(campana)
+                if service_ok:
+                    service_ok = campana_service.update_endpoint(campana)
+                if not service_ok:
+                    raise Exception('No se ha podico crear la campaña en Wombat.')
+
+            success = True
+
+        except Exception:
+            success = False
+
+        if success:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                _('Se ha modificado la campaña.'))
+        else:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                _('<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. '
+                  'No se pudo modificar la campaña. Por favor contacte un administrador.'))
 
         return HttpResponseRedirect(reverse('campana_dialer_list'))
