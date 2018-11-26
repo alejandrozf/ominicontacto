@@ -20,7 +20,6 @@
 """Vista para generar un objecto campana de tipo dialer"""
 
 from __future__ import unicode_literals
-from requests.exceptions import ConnectionError
 
 from django import forms
 from django.db import transaction
@@ -217,8 +216,8 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 sincronizar_form = form_list[int(self.SINCRONIZAR)]
                 campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
                 self._sincronizar_campana(sincronizar_form, campana)
-        except ConnectionError:
-            success = False
+                success = True
+
         except Exception:
             success = False
 
@@ -287,8 +286,6 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
 
             success = True
 
-        except ConnectionError:
-            success = False
         except Exception:
             success = False
 
@@ -296,7 +293,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
             messages.add_message(
                 self.request,
                 messages.SUCCESS,
-                _('Se ha creado la nueva campaña.'))
+                _('Se ha modificado la campaña.'))
         else:
             messages.add_message(
                 self.request,

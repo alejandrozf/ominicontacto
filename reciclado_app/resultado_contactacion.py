@@ -63,7 +63,6 @@ class EstadisticasContactacion():
         11: _('Problema de enrutamiento')
     }
     AGENTE_NO_CALIFICO = 20
-    NO_LLAMADO = 21
 
     def _contabilizar_llamados_no_calificados(self, count_estados, campana, contactados):
         # Calculo cantidad de Llamados Contactados No Calificados
@@ -74,20 +73,6 @@ class EstadisticasContactacion():
             estado = _(u"Agente no califico")
             id_estado = EstadisticasContactacion.AGENTE_NO_CALIFICO
             cantidad_contactacion = CantidadContactacion(id_estado, estado, no_calificados)
-            count_estados.update({id_estado: cantidad_contactacion})
-
-    def _contabilizar_no_llamados(self, count_estados, campana):
-        # Calculo la Cantidad de No llamados
-        llamados = LlamadaLog.objects.filter(campana_id=campana.id,
-                                             tipo_campana=Campana.TYPE_DIALER,
-                                             tipo_llamada=Campana.TYPE_DIALER,
-                                             event='DIAL').values_list('contacto_id',
-                                                                       flat=True)
-        no_llamados = campana.bd_contacto.contactos.exclude(id__in=llamados).count()
-        if no_llamados > 0:
-            estado = _(u"No llamados")
-            id_estado = EstadisticasContactacion.NO_LLAMADO
-            cantidad_contactacion = CantidadContactacion(id_estado, estado, no_llamados)
             count_estados.update({id_estado: cantidad_contactacion})
 
     def _contabilizar_llamados_no_contactados(self, count_estados, campana, contactados):
@@ -153,7 +138,6 @@ class EstadisticasContactacion():
                                                                              flat=True)
 
         self._contabilizar_llamados_no_calificados(count_estados, campana, contactados)
-        self._contabilizar_no_llamados(count_estados, campana)
         self._contabilizar_llamados_no_contactados(count_estados, campana, contactados)
 
         return count_estados
@@ -254,14 +238,11 @@ class RecicladorContactosCampanaDIALER():
         """
         id_contactos = []
         filtrar_no_calificados = False
-        filtrar_no_llamados = False
         filtro_eventos = ''
         for evento_id in reciclado_no_contactacion:
             evento_id = int(evento_id)
             if evento_id == EstadisticasContactacion.AGENTE_NO_CALIFICO:
                 filtrar_no_calificados = True
-            elif evento_id == EstadisticasContactacion.NO_LLAMADO:
-                filtrar_no_llamados = True
             else:
                 evento = EstadisticasContactacion.MAP_ID_ESTADO[evento_id]
                 if filtro_eventos:
@@ -280,18 +261,6 @@ class RecicladorContactosCampanaDIALER():
                 opcion_calificacion__campana_id=campana.id).values_list('contacto_id', flat=True)
             no_calificados = contactados.exclude(contacto_id__in=id_calificados)
             id_contactos += no_calificados
-
-        # Filtrar contactos no llamados
-        if filtrar_no_llamados:
-            # Calculo la Cantidad de No llamados
-            llamados = LlamadaLog.objects.filter(campana_id=campana.id,
-                                                 tipo_campana=Campana.TYPE_DIALER,
-                                                 tipo_llamada=Campana.TYPE_DIALER,
-                                                 event='DIAL').values_list('contacto_id',
-                                                                           flat=True)
-            no_llamados = campana.bd_contacto.contactos.exclude(id__in=llamados).values_list(
-                'id', flat=True)
-            id_contactos += no_llamados
 
         # Filtrar los llamados no contactados
         if filtro_eventos:

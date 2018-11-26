@@ -408,7 +408,8 @@ class CampanaService():
             detalle = self.obtener_dato_campana_run(campana)
             if detalle:
                 restantes = int(detalle['n_est_remaining_calls'])
-                if restantes == 0 and not campana.es_manual:
+                reintentos_pendientes = int(detalle['n_open_retries'])
+                if restantes == 0 and reintentos_pendientes == 0 and not campana.es_manual:
                     if self.remove_campana_wombat(campana):
                         campana.finalizar()
                     else:
@@ -445,6 +446,8 @@ class CampanaService():
         self.crear_endpoint_campana_wombat(campana)
         # asocio endpoint a la campana en wombat
         self.crear_endpoint_asociacion_campana_wombat(campana)
+        # TODO: Deuda tecnica: Controlar posibles errores de las funciones llamadas.
+        return True
 
     def translate_state_wombat(self, status):
         """

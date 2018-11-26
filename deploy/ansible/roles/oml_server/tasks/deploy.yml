@@ -160,6 +160,8 @@
   file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/oml_settings_local.py owner={{ usuario }} group={{ usuario }} force=true
   tags: omniapp
 
-# Este script sirve para hacer comandos de manage.py sin necesidad de activar virualenv primero
-- name: Generate changeip.sh script
-  template: src=templates/changeip.sh.j2 dest={{ install_prefix }}bin/changeip.sh owner={{ usuario }} group={{ usuario }} mode=755
+# Hago esto por aca para que en el postinstall no falle levantar kamailio
+- name: Change permissions to conf.d folder
+  file: state=directory path=/etc/nginx/conf.d/ owner={{ usuario }} group={{ usuario }}
+  become: true
+  become_method: sudo
