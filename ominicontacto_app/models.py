@@ -2134,6 +2134,15 @@ class Contacto(models.Model):
         telefono, extras = metadata.obtener_telefono_y_datos_extras(self.datos)
         return (telefono, extras)
 
+    def _sincronizar_agente_en_contacto(self):
+        AgenteEnContacto.objects.filter(
+            contacto_id=self.pk).update(telefono_contacto=self.telefono, datos_contacto=self.datos)
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            self._sincronizar_agente_en_contacto()
+        super(Contacto, self).save()
+
     def __unicode__(self):
         return '{0} >> {1}'.format(
             self.bd_contacto, self.datos)
