@@ -2149,6 +2149,9 @@ class Contacto(models.Model):
             self._sincronizar_agente_en_contacto()
         super(Contacto, self).save()
 
+    def lista_de_datos(self):
+        return json.loads(self.datos)
+
     def __unicode__(self):
         return '{0} >> {1}'.format(
             self.bd_contacto, self.datos)
