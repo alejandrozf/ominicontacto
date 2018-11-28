@@ -562,6 +562,20 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
+    def queue_add(self, queue, interface, penalty, paused, member_name):
+        response_body, _ = self._request("/mxml", {
+            'action': 'QueueAdd',
+            'queue': queue,
+            'interface': interface,
+            'penalty': penalty,
+            'paused': paused,
+            'membername': member_name,
+        })
+        # TODO: ver esto bien, hasta ahora este parser al parecer sirve para esta operación
+        parser = AsteriskXmlParserForQueueRemove()
+        parser.parse(response_body)
+        return parser
+
     def queue_remove(self, queue, interface):
         response_body, _ = self._request("/mxml", {
             'action': 'QueueRemove',
@@ -778,6 +792,10 @@ class AsteriskHttpPingError(AsteriskHttpAmiError):
 
 class AsteriskHttpOriginateError(AsteriskHttpAmiError):
     """The originate command failed"""
+
+
+class AsteriskHttpQueueAddError(AsteriskHttpAmiError):
+    """The queueremove command failed"""
 
 
 class AsteriskHttpQueueRemoveError(AsteriskHttpAmiError):

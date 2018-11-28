@@ -34,12 +34,40 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
-    AsteriskHttpQueueRemoveError
+    AsteriskHttpQueueRemoveError, AsteriskHttpQueueAddError
+from utiles_globales import obtener_sip_agentes_sesiones_activas_kamailio
 
 
 import logging as logging_
 
 logger = logging_.getLogger(__name__)
+
+
+def adicionar_agente_cola(agente, queue_member, campana):
+    """Adiciona agente a la cola de su respectiva campaña"""
+    queue = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
+    interface = "SIP/{0}".format(agente.sip_extension)
+    penalty = queue_member.penalty
+    paused = queue_member.paused
+    member_name = "{0}_{1}_{2}".format(agente.id, agente.user.first_name, agente.user.last_name)
+
+    try:
+        client = AsteriskHttpClient()
+        client.login()
+        client.queue_add(queue, interface, penalty, paused, member_name)
+
+    except AsteriskHttpQueueAddError:
+        logger.exception("QueueAdd failed - agente: %s de la campana: %s ", agente, campana)
+
+
+def adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados):
+    """Si el agente tiene una sesión activa lo adiciona a la cola de su respectiva
+    campaña
+    """
+    # chequear si el agente tiene sesion activa
+    agente = queue_member.member
+    if agente.sip_extension in sip_agentes_logueados:
+        adicionar_agente_cola(agente, queue_member, campana)
 
 
 class QueueMemberCreateView(FormView):
@@ -79,6 +107,9 @@ class QueueMemberCreateView(FormView):
                 self.object.member.sip_extension)
             self.object.paused = 0  # por ahora no lo definimos
             self.object.save()
+            # adicionamos el agente a la cola actual que esta corriendo
+            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+            adicionar_agente_activo_cola(self.object, campana, sip_agentes_logueados)
 
         return super(QueueMemberCreateView, self).form_valid(form)
 
@@ -120,11 +151,13 @@ class GrupoAgenteCreateView(FormView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         grupo_id = form.cleaned_data.get('grupo')
         grupo = Grupo.objects.get(pk=grupo_id)
+        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
         # agentes = grupo.agentes.filter(reported_by=self.request.user)
         agentes = grupo.agentes.filter(is_inactive=False)
+        agentes_logueados_grupo = agentes.filter(sip_extension__in=sip_agentes_logueados)
         # agrega los agentes a la campana siempre cuando no se encuentren agregados
         for agente in agentes:
-            QueueMember.objects.get_or_create(
+            queue_member, created = QueueMember.objects.get_or_create(
                 member=agente,
                 queue_name=campana.queue_campana,
                 defaults={'membername': agente.user.get_full_name(),
@@ -133,8 +166,9 @@ class GrupoAgenteCreateView(FormView):
                           'penalty': 0,
                           'paused': 0,
                           'id_campana': "{0}_{1}".format(
-                              campana.id, elimina_espacios(campana.nombre))},
-            )
+                              campana.id, elimina_espacios(campana.nombre))})
+            if created and (agente in agentes_logueados_grupo):
+                adicionar_agente_cola(agente, queue_member, campana)
         return super(GrupoAgenteCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
