@@ -20,7 +20,6 @@
 """
 Tests relacionados con las grabaciones
 """
-# -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
 
@@ -34,6 +33,8 @@ from ominicontacto_app.models import Grabacion, GrabacionMarca
 
 from ominicontacto_app.tests.factories import GrabacionFactory, GrabacionMarcaFactory, UserFactory
 from ominicontacto_app.tests.utiles import OMLBaseTest
+
+from ominicontacto_app.utiles import fecha_hora_local
 
 
 class BaseGrabacionesTests(OMLBaseTest):
@@ -139,9 +140,9 @@ class FiltrosGrabacionesTests(BaseGrabacionesTests):
         self.assertNotContains(response, '43333333')
 
     def _obtener_fechas(self):
-        hoy = now()
+        hoy = fecha_hora_local(now())
         hace_mucho = hoy - timedelta(days=3)
-        ahora = now()
+        ahora = fecha_hora_local(now())
         return (hoy, hace_mucho, ahora)
 
     def test_buscar_grabaciones_por_fecha(self):

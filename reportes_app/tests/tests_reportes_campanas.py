@@ -43,6 +43,7 @@ from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAg
                                                CalificacionClienteFactory, ContactoFactory,
                                                CampanaFactory, NombreCalificacionFactory,
                                                OpcionCalificacionFactory, UserFactory)
+from ominicontacto_app.utiles import fecha_local
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 
@@ -241,7 +242,7 @@ class ReportesCampanasTests(TestCase):
         self.generador_log_llamadas.generar_log(
             campana_entrante, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
-        hoy = timezone.now().date()
+        hoy = fecha_local(timezone.now())
         reporte = estadisticas_service.calcular_cantidad_llamadas(campana_entrante, hoy, hoy)
         self.assertEqual(reporte['Recibidas'], 4)
         self.assertEqual(reporte['Atendidas'], 2)
@@ -270,7 +271,7 @@ class ReportesCampanasTests(TestCase):
         self.generador_log_llamadas.generar_log(
             campana_dialer, True, 'NOANSWER', self.telefono2, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
-        hoy = timezone.now().date()
+        hoy = fecha_local(timezone.now())
         reporte = estadisticas_service.calcular_cantidad_llamadas(campana_dialer, hoy, hoy)
         self.assertEqual(reporte['Discadas'], 5)
         self.assertEqual(reporte['Conectadas al agente'], 2)
@@ -289,7 +290,7 @@ class ReportesCampanasTests(TestCase):
         self.generador_log_llamadas.generar_log(
             campana_manual, True, 'FAIL', self.telefono3, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
-        hoy = timezone.now().date()
+        hoy = fecha_local(timezone.now())
         reporte = estadisticas_service.calcular_cantidad_llamadas(campana_manual, hoy, hoy)
         self.assertEqual(reporte['Discadas'], 3)
         self.assertEqual(reporte['Discadas atendidas'], 2)
@@ -297,7 +298,7 @@ class ReportesCampanasTests(TestCase):
 
     def test_datos_reporte_grafico_detalle_llamadas_preview_coinciden_estadisticas_sistema(self):
         estadisticas_service = EstadisticasService()
-        hoy = timezone.now().date()
+        hoy = fecha_local(timezone.now())
         reporte = estadisticas_service.calcular_cantidad_llamadas(self.campana_activa, hoy, hoy)
         # se usan los logs de llamadas del setUp pues la campaña usada es preview
         self.assertEqual(reporte['Discadas'], 2)

@@ -24,6 +24,7 @@ from django.utils.translation import ugettext as _
 from django.utils.encoding import force_text
 
 from ominicontacto_app.models import Campana
+from ominicontacto_app.utiles import fecha_hora_local
 from reportes_app.models import LlamadaLog
 from reportes_app.utiles import (
     ESTILO_AMARILLO_VERDE_ROJO, ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, ESTILO_VERDE_AZUL,
@@ -226,7 +227,7 @@ class ReporteDeLlamadas(object):
 
     def _contabilizar_estadisticas(self):
         for log in self.logs:
-            fecha = log.time.strftime('%d-%m-%Y')
+            fecha = fecha_hora_local(log.time).strftime('%d-%m-%Y')
             tipo_campana = self._get_campana_type_display(log.tipo_campana)
             tipo_llamada = self._get_campana_type_display(log.tipo_llamada)
             self._contabilizar_total_llamadas_procesadas(log)

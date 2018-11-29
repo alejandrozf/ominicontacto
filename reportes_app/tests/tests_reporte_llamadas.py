@@ -23,7 +23,7 @@ from django.test import TestCase
 from django.utils.timezone import now, timedelta
 from django.core.urlresolvers import reverse
 
-from ominicontacto_app.utiles import datetime_hora_minima_dia
+from ominicontacto_app.utiles import datetime_hora_minima_dia, fecha_hora_local
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import SupervisorProfileFactory, AgenteProfileFactory,\
     CampanaFactory, ContactoFactory, UserFactory
@@ -36,8 +36,8 @@ class BaseReporteDeLlamadasTests(TestCase):
 
     def setUp(self):
         super(BaseReporteDeLlamadasTests, self).setUp()
-        self.hasta = now()
-        self.durante = now() - timedelta(days=1)
+        self.hasta = fecha_hora_local(now())
+        self.durante = fecha_hora_local(now() - timedelta(days=1))
         self.desde = datetime_hora_minima_dia(self.hasta) - timedelta(days=1)
 
         self.supervisor = SupervisorProfileFactory(is_administrador=True)
@@ -690,7 +690,7 @@ class DatosPorFechaReporteLlamadasTests(BaseReporteDeLlamadasTests):
         str_ayer = self.durante.strftime('%d-%m-%Y')
         str_hoy = self.hasta.strftime('%d-%m-%Y')
 
-        self.hasta = now()
+        self.hasta = fecha_hora_local(now())
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
         self.assertIn(tipo, reporte.estadisticas_por_fecha['llamadas_por_tipo'])
         self.assertIn(str_ayer, reporte.estadisticas_por_fecha['llamadas_por_tipo'][tipo])

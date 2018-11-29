@@ -272,6 +272,10 @@ def fecha_local(fecha_hora):
     return fecha_hora.astimezone(timezone.get_current_timezone()).date()
 
 
+def fecha_hora_local(fecha_hora):
+    return fecha_hora.astimezone(timezone.get_current_timezone())
+
+
 def convertir_ascii_string(cadena):
     """ Devuelve ascii ignorando caracteres extraños"""
     return cadena.encode('ascii', errors='ignore')
