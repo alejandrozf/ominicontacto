@@ -264,13 +264,9 @@ class AgenteCampanaTests(CampanasTests):
     def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
         AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
         values, url, post_data = self._inicializar_valores_formulario_cliente()
-        base_datos = self.contacto.bd_contacto
-        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(self.contacto.datos)
-        for nombre, dato in zip(nombres, datos):
-            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
         self.client.post(url, post_data, follow=True)
         values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
+        del values['datos_contacto']
         self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
 
     @patch('requests.post')

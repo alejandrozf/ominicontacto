@@ -245,11 +245,6 @@ urlpatterns = [
             views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
         ),
-    # TODO: Verificar que esta vista no va mas y borrarla
-    # url(r'^contacto/nuevo/$',
-    #    login_required(views_contacto.ContactoCreateView.as_view()),
-    #    name='contacto_nuevo',
-    #    ),
     url(r'^contacto/list/$',
         agente_requerido(views_contacto.ContactoListView.as_view()),
         name='contacto_list',

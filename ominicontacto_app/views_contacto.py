@@ -31,22 +31,12 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import (View, ListView, CreateView, UpdateView, FormView, DeleteView,
                                   TemplateView)
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.forms import (BusquedaContactoForm, FormularioCampanaContacto,
                                      ContactoForm, FormularioNuevoContacto, EscogerCampanaForm)
 from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
 from ominicontacto_app.utiles import convertir_ascii_string
-
-
-# TODO: Verificar que esta vista no va mas y borrarla
-# class ContactoCreateView(CreateView):
-#    """Vista para crear un contacto"""
-#    model = Contacto
-#    template_name = 'agente/contacto_create_update_form.html'
-#    form_class = ContactoForm
-#
-#    def get_success_url(self):
-#        return reverse('view_blanco')
 
 
 class ContactoUpdateView(UpdateView):
@@ -334,7 +324,7 @@ class FormularioSeleccionCampanaFormView(FormView):
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
         if not agente.get_campanas_activas_miembro():
-            message = ("Este agente no esta asignado a ninguna campaña activa")
+            message = _("Este agente no esta asignado a ninguna campaña activa")
             messages.warning(self.request, message)
         return super(FormularioSeleccionCampanaFormView,
                      self).dispatch(request, *args, **kwargs)
