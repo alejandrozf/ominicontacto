@@ -225,6 +225,7 @@ class QueueEntranteForm(forms.ModelForm):
             'timeout': _('En segundos'),
             'retry': _('En segundos'),
             'announce_frequency': _('En segundos'),
+            'wait': _('En segundos'),
         }
         widgets = {
             'name': forms.HiddenInput(),

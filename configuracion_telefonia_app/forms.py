@@ -269,8 +269,6 @@ class IVRForm(forms.ModelForm):
 
         help_texts = {
             'time_out': _('En segundos'),
-            'time_out_retries': _('En segundos'),
-            'invalid_retries': _('En segundos'),
         }
 
     def _inicializar_ivr_a_modificar(self, *args, **kwargs):
