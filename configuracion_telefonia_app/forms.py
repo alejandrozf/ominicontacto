@@ -66,6 +66,10 @@ class PatronDeDiscadoForm(forms.ModelForm):
 
 class RutaSalienteForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super(RutaSalienteForm, self).__init__(*args, **kwargs)
+        self.fields['ring_time'].help_text = _('En segundos')
+
     class Meta:
         model = RutaSaliente
         exclude = ()
@@ -261,6 +265,10 @@ class IVRForm(forms.ModelForm):
             'time_out_audio': forms.Select(attrs={'class': 'form-control'}),
             'invalid_retries': forms.NumberInput(attrs={'class': 'form-control'}),
             'invalid_audio': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+        help_texts = {
+            'time_out': _('En segundos'),
         }
 
     def _inicializar_ivr_a_modificar(self, *args, **kwargs):

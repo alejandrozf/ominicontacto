@@ -78,6 +78,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <label for="{{ form.wrapuptime.id_for_label }}">Tiempo de descanso entre llamadas:</label>
                 {{ form.wrapuptime }}
                 {{ form.wrapuptime.errors }}
+                <small class="form-text text-muted">
+                    {{ form.wrapuptime.help_text }}
+                </small>
             </div>
             <div class="col-md-6">
                 <label for="{{ form.servicelevel.id_for_label }}">Nivel de Servicio:</label>
@@ -98,6 +101,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <label for="{{ form.wait.id_for_label }}">Tiempo de espera en cola:</label>
                 {{ form.wait }}
                 {{ form.wait.errors }}
+                <small class="form-text text-muted">
+                    {{ form.wait.help_text }}
+                </small>
             </div>
             <div class="col-md-6">
                 <label for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados:</label>
