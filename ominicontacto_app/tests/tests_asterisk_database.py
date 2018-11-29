@@ -98,7 +98,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['IDJSON'], "")
         self.assertEqual(dict_campana['PERMITOCCULT'], "")
         self.assertEqual(dict_campana['MAXCALLS'], "")
-        self.assertEqual(dict_campana['FAILOVER'], "")
+        self.assertEqual(dict_campana['FAILOVER'], str(0))
 
     def test_devuelve_correctamente_values_campana_dialer_asterisk(self):
         """
@@ -129,7 +129,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['IDJSON'], "")
         self.assertEqual(dict_campana['PERMITOCCULT'], "")
         self.assertEqual(dict_campana['MAXCALLS'], "")
-        self.assertEqual(dict_campana['FAILOVER'], "")
+        self.assertEqual(dict_campana['FAILOVER'], str(0))
 
     def test_devuelve_correctamente_dict_agente_asterisk(self):
         """

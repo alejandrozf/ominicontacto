@@ -56,6 +56,7 @@ from ominicontacto_app.utiles import (
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
+from configuracion_telefonia_app.tests.factories import DestinoEntranteFactory, IVRFactory
 
 
 def test_concurrently(args_list):
@@ -613,7 +614,8 @@ class SupervisorCampanaTests(CampanasTests):
 
         return post_step0_data, post_step1_data, post_step2_data, post_step3_data
 
-    def _obtener_post_data_wizard_creacion_campana_dialer(self, nombre_campana, audio_ingreso):
+    def _obtener_post_data_wizard_creacion_campana_dialer(self, nombre_campana, audio_ingreso,
+                                                          destino):
         fecha_inicio = timezone.now()
         fecha_fin = fecha_inicio + timezone.timedelta(days=5)
         post_step0_data = {
@@ -647,6 +649,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-name': nombre_campana,
             '1-audio_para_contestadores': audio_ingreso.pk,
             '1-dial_timeout': 25,
+            '1-tipo_destino': destino.tipo,
+            '1-destino': destino.pk,
             'campana_dialer_create_view-current_step': 1,
         }
         post_step2_data = {
@@ -699,9 +703,11 @@ class SupervisorCampanaTests(CampanasTests):
         return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
                 post_step4_data, post_step5_data, post_step6_data)
 
-    def _obtener_post_data_wizard_modificacion_campana_dialer(self, nombre_campana, audio_ingreso):
+    def _obtener_post_data_wizard_modificacion_campana_dialer(self, nombre_campana, audio_ingreso,
+                                                              destino):
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data, __, __,
-         __) = self._obtener_post_data_wizard_creacion_campana_dialer(nombre_campana, audio_ingreso)
+         __) = self._obtener_post_data_wizard_creacion_campana_dialer(
+            nombre_campana, audio_ingreso, destino)
         post_step0_data.pop('0-tipo_interaccion')
         post_step0_data.pop('0-formulario')
         post_step0_data.pop('campana_dialer_create_view-current_step')
@@ -722,6 +728,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-initial_predictive_model': 'on',
             '1-initial_boost_factor': 1.0,
             '1-dial_timeout': 25,
+            '1-tipo_destino': destino.tipo,
+            '1-destino': destino.pk,
             'campana_dialer_update_view-current_step': 1,
             '1-campana': self.campana_dialer.pk,
             '1-name': nombre_campana,
@@ -960,10 +968,12 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_dialer_create')
         nombre_campana = 'campana_dialer_test'
         audio_ingreso = ArchivoDeAudioFactory.create()
+        ivr = IVRFactory.create()
+        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -987,9 +997,13 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_dialer_update', args=[self.campana_dialer.pk])
         nuevo_objetivo = 3
         audio_ingreso = ArchivoDeAudioFactory.create()
+        ivr = IVRFactory.create()
+        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
+        self.campana_dialer.queue_campana.destino = destino
+        self.campana_dialer.queue_campana.save()
         (post_step0_data, post_step1_data, post_step2_data,
          post_step3_data) = self._obtener_post_data_wizard_modificacion_campana_dialer(
-             self.campana_dialer.nombre, audio_ingreso)
+             self.campana_dialer.nombre, audio_ingreso, destino)
         self.assertNotEqual(self.campana_dialer.objetivo, nuevo_objetivo)
         post_step0_data['0-objetivo'] = nuevo_objetivo
         # realizamos la creación de la campaña mediante el wizard
@@ -1100,14 +1114,14 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
 
     def _obtener_post_data_wizard_creacion_template_campana_dialer(
-            self, nombre_campana, audio_ingreso):
+            self, nombre_campana, audio_ingreso, destino):
         (post_step0_data, post_step1_data,
          post_step2_data,
          post_step3_data,
          post_step4_data,
          post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         post_step0_data['campana_dialer_template_create_view-current_step'] = 0
         post_step1_data['campana_dialer_template_create_view-current_step'] = 1
         post_step2_data['campana_dialer_template_create_view-current_step'] = 2
@@ -1130,10 +1144,12 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_dialer_template_create')
         nombre_campana = 'campana_dialer_template'
         audio_ingreso = ArchivoDeAudioFactory.create()
+        ivr = IVRFactory.create()
+        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_template_campana_dialer(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1148,14 +1164,14 @@ class SupervisorCampanaTests(CampanasTests):
             type=Campana.TYPE_DIALER).exists())
 
     def _obtener_post_data_wizard_creacion_campana_dialer_desde_template(
-            self, nombre_campana, audio_ingreso):
+            self, nombre_campana, audio_ingreso, destino):
         (post_step0_data, post_step1_data,
          post_step2_data,
          post_step3_data,
          post_step4_data,
          post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         post_step0_data['campana_dialer_template_create_campana_view-current_step'] = 0
         post_step1_data['campana_dialer_template_create_campana_view-current_step'] = 1
         post_step2_data['campana_dialer_template_create_campana_view-current_step'] = 2
@@ -1207,13 +1223,15 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('crea_campana_dialer_template', args=[self.campana_dialer.pk, 1])
         nombre_campana = 'campana_dialer_clonada'
         audio_ingreso = ArchivoDeAudioFactory.create()
+        ivr = IVRFactory.create()
+        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
         parametro_web_form = ParametroExtraParaWebformFactory(campana=self.campana_dialer)
         opt_calif = self.campana_dialer.opciones_calificacion.get(tipo=OpcionCalificacion.GESTION)
         actuacion_vigente = ActuacionVigenteFactory.create(campana=self.campana_dialer)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer_desde_template(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)

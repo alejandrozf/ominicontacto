@@ -19,7 +19,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "campana/wizard_base.html" %}
 {% load i18n %}
+{% load static %}
 
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/rutas-entrantes-lib.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/ruta-entrante.js' %}"></script>
+{% endblock %}
 {% block head_js %}
     <script type="text/javascript">
      $(function() {
@@ -126,6 +131,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ form.dial_timeout.help_text }}
                 </small>
                 {{ form.dial_timeout.errors }}
+            </div>
+            <div class="col-md-6">
+                <label >{% trans 'Destino en caso de timeout' %}</label>
+                <div class="col-md-12">
+                    <label for="{{ form.tipo_destino.id_for_label }}">{% trans 'Tipo destino:' %}</label>
+                    {{ form.tipo_destino }}
+                    {{ form.tipo_destino.errors }}
+                </div>
+                <div class="col-md-12">
+                    <label for="{{ form.destino.id_for_label }}">{% trans 'Destino:' %}</label>
+                    {{ form.destino }}
+                    {{ form.destino.errors }}
+                </div>
             </div>
         </div>
     {% endwith %}

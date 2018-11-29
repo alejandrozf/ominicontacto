@@ -43,6 +43,7 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios)
+from configuracion_telefonia_app.models import DestinoEntrante
 
 from utiles_globales import validar_extension_archivo_audio
 
@@ -188,6 +189,9 @@ class QueueEntranteForm(forms.ModelForm):
     """
     El form de cola para las colas
     """
+    tipo_destino = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}), required=False
+    )
 
     def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
@@ -196,12 +200,26 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
+        tipo_destino_choices = [EMPTY_CHOICE]
+        tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
+        self.fields['tipo_destino'].choices = tipo_destino_choices
+        instance = getattr(self, 'instance', None)
+        if instance.pk is not None and instance.pk:
+            tipo = instance.destino.tipo
+            self.initial['tipo_destino'] = tipo
+            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+                                                         for dest_entr in destinos_qs]
+            self.fields['destino'].choices = destino_entrante_choices
+        else:
+            self.fields['destino'].choices = ()
 
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
-                  'audios', 'announce_frequency', 'audio_de_ingreso', 'campana')
+                  'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
+                  'tipo_destino', 'destino')
 
         help_texts = {
             'timeout': """En segundos """,
@@ -219,6 +237,8 @@ class QueueEntranteForm(forms.ModelForm):
             'audios': forms.Select(attrs={'class': 'form-control'}),
             'announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
+            'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
+            'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
         }
 
     def clean_maxlen(self):
@@ -235,6 +255,14 @@ class QueueEntranteForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('Debe definir una frecuencia para el Anuncio Periódico'))
         return frequency
+
+    def clean_destino(self):
+        tipo_destino = self.cleaned_data.get('tipo_destino', None)
+        destino = self.cleaned_data.get('destino', None)
+        if tipo_destino and not destino:
+            raise forms.ValidationError(
+                _('Debe seleccionar un destino'))
+        return destino
 
 
 class QueueMemberForm(forms.ModelForm):
@@ -1048,13 +1076,16 @@ class QueueDialerForm(forms.ModelForm):
     """
     El form de cola para las llamadas
     """
+    tipo_destino = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}), required=False
+    )
 
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
                   'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
                   'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor',
-                  'dial_timeout')
+                  'dial_timeout', 'tipo_destino', 'destino')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -1068,6 +1099,8 @@ class QueueDialerForm(forms.ModelForm):
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
             "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
             "dial_timeout": forms.NumberInput(attrs={'class': 'form-control'}),
+            'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
+            'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
         }
 
         help_texts = {
@@ -1093,9 +1126,30 @@ class QueueDialerForm(forms.ModelForm):
 
         return self.cleaned_data
 
+    def clean_destino(self):
+        tipo_destino = self.cleaned_data.get('tipo_destino', None)
+        destino = self.cleaned_data.get('destino', None)
+        if tipo_destino and not destino:
+            raise forms.ValidationError(
+                _('Debe seleccionar un destino'))
+        return destino
+
     def __init__(self, *args, **kwargs):
         super(QueueDialerForm, self).__init__(*args, **kwargs)
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
+        tipo_destino_choices = [EMPTY_CHOICE]
+        tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
+        self.fields['tipo_destino'].choices = tipo_destino_choices
+        instance = getattr(self, 'instance', None)
+        if instance.pk is not None and instance.pk:
+            tipo = instance.destino.tipo
+            self.initial['tipo_destino'] = tipo
+            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+                                                         for dest_entr in destinos_qs]
+            self.fields['destino'].choices = destino_entrante_choices
+        else:
+            self.fields['destino'].choices = ()
 
 
 class UserApiCrmForm(forms.ModelForm):
