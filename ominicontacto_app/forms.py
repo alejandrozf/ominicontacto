@@ -392,6 +392,7 @@ class GrabacionBusquedaForm(forms.Form):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         campana_choice.insert(0, EMPTY_CHOICE)
         self.fields['campana'].choices = campana_choice
+        self.fields['duracion'].help_text = _('En segundos')
 
 
 class CampanaMixinForm(object):
