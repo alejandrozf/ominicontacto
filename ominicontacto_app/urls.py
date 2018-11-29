@@ -415,11 +415,14 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views_formulario.FormularioPreviewFormView.as_view()),
         name='formulario_vista_previa',
         ),
+
+    # TODO: Verificar si se usa esta vista.
     url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
         r'/(?P<id_agente>\d+)/$',
         administrador_o_supervisor_requerido(views_formulario.FormularioCreateFormView.as_view()),
         name='formulario_create',
         ),
+
     url(r'^formulario/(?P<pk_formulario>\d+)/vista/$',
         administrador_o_supervisor_requerido(views_formulario.FormularioVistaFormView.as_view()),
         name='formulario_vista',
