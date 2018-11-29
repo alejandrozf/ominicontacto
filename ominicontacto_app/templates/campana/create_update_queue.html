@@ -57,6 +57,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <label for="{{ form.retry.id_for_label }}">Tiempo de Reintento:</label>
             {{ form.retry }}
             {{ form.retry.errors }}
+            <small class="form-text text-muted">
+                {{ form.retry.help_text }}
+            </small>
         </div>
         <div class="col-md-6">
             <label for="{{ form.audio_de_ingreso.id_for_label }}">Audio de ingreso:</label>
@@ -102,6 +105,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <label for="{{ form.announce_frequency.id_for_label }}">Frecuencia del anuncio: </label>
             {{ form.announce_frequency }}
             {{ form.announce_frequency.errors }}
+            <small class="form-text text-muted">
+                {{ form.announce_frequency.help_text }}
+            </small>
         </div>
         <div class="col-md-6">
             <label >{% trans 'Destino en caso de timeout' %}</label>

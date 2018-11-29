@@ -36,6 +36,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6">
                 {{ form.auto_unpause.label_tag }} {{ form.auto_unpause }}
                 {{ form.auto_unpause.errors }}
+                <small class="form-text text-muted">
+                    {{ form.auto_unpause.help_text }}
+                </small>
             </div>
             <div class="col-md-3">
                 {{ form.auto_attend_ics.label_tag }} {{ form.auto_attend_ics }}

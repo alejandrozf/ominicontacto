@@ -222,7 +222,9 @@ class QueueEntranteForm(forms.ModelForm):
                   'tipo_destino', 'destino')
 
         help_texts = {
-            'timeout': """En segundos """,
+            'timeout': _('En segundos'),
+            'retry': _('En segundos'),
+            'announce_frequency': _('En segundos'),
         }
         widgets = {
             'name': forms.HiddenInput(),
@@ -1105,7 +1107,9 @@ class QueueDialerForm(forms.ModelForm):
 
         help_texts = {
             'dial_timeout': _(""" Es recomendable que este valor sea menor al dial timeout
-            definido en la ruta saliente"""),
+            definido en la ruta saliente. En segundos"""),
+            'wrapuptime': _('En segundos'),
+            'wait': _('En segundos'),
         }
 
     def clean(self):
@@ -1327,6 +1331,9 @@ class GrupoForm(forms.ModelForm):
                   'auto_attend_dialer')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+        help_texts = {
+            'auto_unpause': _('En segundos'),
         }
 
     def __init__(self, *args, **kwargs):
