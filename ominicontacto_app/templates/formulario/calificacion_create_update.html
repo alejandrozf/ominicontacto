@@ -46,6 +46,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% include 'messages.html' %}
 
+{% if campana.mostrar_nombre %}
+    <h1>{{ campana.nombre }}</h1>
+{% endif %}
+
 <form id="form-calificacion" action = "" method = "post">
     {% csrf_token %}
     <div>
