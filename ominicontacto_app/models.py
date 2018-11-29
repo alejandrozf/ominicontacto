@@ -1294,6 +1294,10 @@ class Queue(models.Model):
     initial_boost_factor = models.DecimalField(
         default=1.0, max_digits=3, decimal_places=1, blank=True, null=True)
 
+    # destino por failover
+    destino = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
+                                related_name='campanas_destino_failover', blank=True, null=True)
+
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
     context = models.CharField(max_length=128, blank=True, null=True)

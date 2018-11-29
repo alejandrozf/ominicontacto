@@ -141,7 +141,6 @@ class CampanaFamily(AbstractFamily):
             'IDJSON': "",
             'PERMITOCCULT': "",
             'MAXCALLS': "",
-            'FAILOVER': "",
         }
 
         if campana.queue_campana.audio_para_contestadores:
@@ -163,6 +162,13 @@ class CampanaFamily(AbstractFamily):
             dict_campana.update({'IDEXTERNALURL': campana.sitio_externo.pk})
         else:
             dict_campana.update({'IDEXTERNALURL': ""})
+
+        if campana.queue_campana.destino:
+            dst = "{0},{1}".format(campana.queue_campana.destino.tipo,
+                                   campana.queue_campana.destino.object_id)
+            dict_campana.update({'FAILOVER': 1, 'FAILOVERDST': dst})
+        else:
+            dict_campana.update({'FAILOVER': str(0)})
 
         return dict_campana
 

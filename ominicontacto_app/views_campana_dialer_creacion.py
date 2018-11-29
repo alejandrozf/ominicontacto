@@ -216,6 +216,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 sincronizar_form = form_list[int(self.SINCRONIZAR)]
                 campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
                 self._sincronizar_campana(sincronizar_form, campana)
+                self._insert_queue_asterisk(campana.queue_campana)
                 success = True
 
         except Exception:
