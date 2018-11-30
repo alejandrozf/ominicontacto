@@ -409,10 +409,13 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTemplateUsed(response, u'registration/login.html')
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch("ominicontacto_app.views_queue_member.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_queue_member.adicionar_agente_activo_cola")
     def test_usuario_logueado_agrega_agentes_a_campana_preview(
-            self, _generar_y_recargar_configuracion_asterisk):
-        # anulamos con mock la parte de regeneracion de asterisk pues no se esta
-        # comprobando en este test y ademas necesita conexión a un servidor externo
+            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            _generar_y_recargar_configuracion_asterisk):
+        # anulamos con mock las partes de regeneracion de asterisk y obtención de sip de agentes
+        # pues no se esta comprobando en este test y ademas necesita conexión a componentes externos
         url = reverse('queue_member_add', args=[self.campana_activa.pk])
         self.assertFalse(QueueMember.objects.all().exists())
         post_data = {'member': self.agente_profile.pk, 'penalty': 1}
