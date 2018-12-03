@@ -229,6 +229,8 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertTrue(dict_globals['OBJ/4'], 'sub-oml-module-ext,s,1')
         self.assertTrue(dict_globals['OBJ/5'], 'sub-oml-hangup,s,1')
         self.assertTrue(dict_globals['OBJ/6'], 'sub-oml-module-survey,s,1')
+        self.assertTrue(dict_globals['OBJ/7'], 'sub-oml-module-custom-dst,s,1')
+        self.assertTrue(dict_globals['OBJ/8'], 'sub-oml-module-voicemail,s,1')
         self.assertTrue(dict_globals['RECFILEPATH'], '/var/spool/asterisk/monitor')
         self.assertTrue(dict_globals['TYPECALL/1'], 'manualCall')
         self.assertTrue(dict_globals['TYPECALL/2'], 'dialerCall')
