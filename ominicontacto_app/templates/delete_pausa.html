@@ -19,24 +19,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h1>Pausa "{{ object.nombre}}" </h1>
+        <h1>{% blocktrans %}Pausa "{{ object.nombre}}" {% endblocktrans %}</h1>
         {% if object.eliminada %}
-          <p>¿Desea reactivar esta Pausa? </p>
+           <p>{% trans '¿Desea reactivar esta Pausa?' %}</p>
         {% else %}
-          <p>¿Está seguro que desea eliminar esta Pausa? </p>
+           <p>{% trans '¿Está seguro que desea eliminar esta Pausa?' %}</p>
         {% endif %}
         <button type="submit" class="btn btn-danger">
         {% if object.eliminada %}
-            Reactivar
+            {% trans 'Reactivar' %}
         {% else %}
-            Eliminar
+            {% trans 'Eliminar' %}
         {% endif %}
         </button>
-        <a class="btn btn-outline-danger" href="{% url 'pausa_list' %}">Cancelar</a>
+        <a class="btn btn-outline-danger" href="{% url 'pausa_list' %}">{% trans 'Cancelar' %}</a>
     </form>
 </div>
 {% endblock %}

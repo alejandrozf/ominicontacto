@@ -19,17 +19,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
-<h1>Calificaciones</h1>
+<h1>{% trans 'Calificaciones' %}</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Acciones</th>
-
+            <th>{% trans 'Nombre' %}</th>
+            <th>{% trans 'Acciones' %}</th>
         </tr>
     </thead>
     <tbody>
@@ -39,18 +39,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td>
                 <div class="dropdown">
                   <button class="btn btn-light dropdown-toggle" type="button" id="dropdownEditMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Opciones
+                      {% trans 'Opciones' %}
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownEditMenu">
-                    <a class="dropdown-item" href="{% url 'calificacion_update' calificacion.id %}"><span class="icon icon-pencil" aria-hidden="true" title="Modificar"></span>Editar</a>
-                    <a class="dropdown-item" href="{% url 'calificacion_delete' calificacion.id %}"><span class="icon icon-trash" aria-hidden="true" title="Eliminar Calificacion"></span>Eliminar</a>
+                      <a class="dropdown-item" href="{% url 'calificacion_update' calificacion.id %}"><span class="icon icon-pencil" aria-hidden="true" title="{% trans 'Modificar' %}"></span>{% trans 'Editar' %}</a>
+                      <a class="dropdown-item" href="{% url 'calificacion_delete' calificacion.id %}"><span class="icon icon-trash" aria-hidden="true" title="{% trans 'Eliminar calificación' %}"></span>{% trans 'Eliminar' %}</a>
                   </div>
-                </div>             
+                </div>
             </td>
         </tr>
    {% empty %}
     <tr>
-        <td colspan="2">No existen calificaciones</td>
+        <td colspan="2">{% trans 'No existen calificaciones' %}</td>
     </tr>
     {% endfor %}
     </tbody>

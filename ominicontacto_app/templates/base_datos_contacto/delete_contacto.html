@@ -19,14 +19,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h1>Contacto "{{object.pk}}"</h1>
-        <p>¿Esta seguro que desea eliminar este contacto?</p>
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-        <a class="btn btn-outline-danger" href="{% url 'contacto_list_bd_contacto' object.bd_contacto.pk %}">Cancelar</a>
+        <h1>{% blocktrans %}Contacto "{{object.pk}}" {% endblocktrans  %}</h1>
+        <p>{% trans '¿Está seguro que desea eliminar este contacto?' %}</p>
+        <button type="submit" class="btn btn-danger">{% trans 'Eliminar' %}</button>
+        <a class="btn btn-outline-danger" href="{% url 'contacto_list_bd_contacto' object.bd_contacto.pk %}">{% trans 'Cancelar' %}</a>
     </form>
 </div>
 {% endblock %}

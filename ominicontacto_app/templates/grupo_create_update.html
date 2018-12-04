@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
@@ -61,7 +62,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <hr>
         <button type="submit" id="id_registrar" class="btn btn-primary">
-            Guardar
+            {% trans 'Guardar' %}
         </button>
     </form>
 

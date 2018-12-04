@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <html lang='es'>
 <head>
     <meta charset="utf-8">
-    <title>OmniLeads</title>
+    <title>{% trans 'OmniLeads' %}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Stylesheets -->
@@ -66,7 +66,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Tomar Pausa</h1>
+                <h1 class="modal-title">{% trans 'Tomar Pausa' %}</h1>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -79,7 +79,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </select>
             </div>
             <div class="modal-footer">
-            		<button type="button" id="setPause" class="btn btn-primary">Iniciar</button>
+                <button type="button" id="setPause" class="btn btn-primary">{% trans 'Iniciar' %}</button>
             </div>
         </div>
     </div>
@@ -90,20 +90,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <em><b class="tituloLlamEntrante">Llamada Entrante</b></em>
+                <em><b class="tituloLlamEntrante">{% trans 'Llamada Entrante' %}</b></em>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <h4 class="cuerpoLlamEntrante">
-                <span class="label label-info">De:</span>
+                <span class="label label-info">{% trans 'De:' %}</span>
                 <label name="callerid" id="callerid"></label><br>
-                <span class="label label-info">Info extra:</span>
+                <span class="label label-info">{% trans 'Info extra:' %}</span>
                 <label name="extraInfo" id="extraInfo">.....</label>
                 </h4>
             </div>
             <div class="modal-footer">
-                <button type="button" id="answer" class="btn btn-success btn-sm">Responder</button>
-                <button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">Rechazar</button>
+                <button type="button" id="answer" class="btn btn-success btn-sm">{% trans 'Responder' %}</button>
+                <button type="button" id="doNotAnswer" class="btn btn-danger btn-sm">{% trans 'Rechazar' %}</button>
             </div>
         </div>
     </div>
@@ -114,7 +114,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Marcacion de Llamada</h2>
+                <h2 class="modal-title">{% trans 'Marcación de Llamada' %}</h2>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -122,7 +122,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <textarea id="SignDescription" placeholder="Motivo de marca" class="form-control"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" id="SaveSignedCall" class="btn btn-primary">Guardar</button>
+                <button type="button" id="SaveSignedCall" class="btn btn-primary">{% trans 'Guardar' %}</button>
             </div>
         </div>
     </div>
@@ -133,7 +133,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Llam. Manual a Campaña</h2>
+                <h2 class="modal-title">{% trans 'Llam.  Manual a Campaña' %}</h2>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -145,7 +145,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" id="SelectCamp" class="btn btn-primary">Ok</button>
+                <button type="button" id="SelectCamp" class="btn btn-primary">{% trans 'Ok' %}</button>
             </div>
         </div>
     </div>
@@ -156,21 +156,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="title-transfer">Transferir</h3>
+                <h3 class="title-transfer">{% trans 'Transferir' %}</h3>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body container form-inline">
                 <div class="form-group row col-xs-6">
-                    <label class="typetransf-firstcolumn">Tipo de transferencia:</label>
+                    <label class="typetransf-firstcolumn">{% trans 'Tipo de transferencia:' %}</label>
                     <div class="radio col-xs-2">
                         <label>
-                            <input type="radio" name="tipotransf" id="blindTransf" class="typetransf-secondcolumn"/>&nbsp;Ciega
+                            <input type="radio" name="tipotransf" id="blindTransf" class="typetransf-secondcolumn"/>&nbsp;{% trans 'Ciega' %}
                         </label>
                     </div>
 
                     <div class="radio col-xs-3">
                         <label>
-                            <input type="radio" name="tipotransf" id="consultTransf" class="typetransf-secondcolumn"/>&nbsp;Asistida
+                            <input type="radio" name="tipotransf" id="consultTransf" class="typetransf-secondcolumn"/>&nbsp;{% trans 'Asistida' %}
                         </label>
                     </div>
                 </div>
@@ -179,7 +179,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="form-group row col-xs-6">
                     <div class="radio col-xs-3 col-xs-offset-4">
                         <label>
-                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToNum"/>&nbsp;a Número
+                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToNum"/>&nbsp;{% trans 'a Número' %}
                         </label>
                     </div>
                     <input type="text" class="form-control typetransf-secondcolumn-number" id="numberToTransfer" disabled/>
@@ -189,7 +189,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="form-group row col-xs-6">
                     <div class="radio col-xs-3 col-xs-offset-4">
                         <label>
-                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToCamp"/>&nbsp;a Campaña
+                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToCamp"/>&nbsp;{% trans 'a Campaña' %}
                         </label>
                     </div>
                     <select class="form-control typetransf-secondcolumn" id="campToTransfer" disabled>
@@ -200,7 +200,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="form-inline form-group row col-xs-6">
                     <div class="radio col-xs-3 col-xs-offset-4">
                         <label>
-                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToAgent"/>&nbsp;a Agente
+                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToAgent"/>&nbsp;{% trans 'a Agente' %}
                         </label>
                     </div>
                     <select class="form-control typetransf-secondcolumn-agent" id="agentToTransfer" disabled>
@@ -208,7 +208,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="makeTransfer" class="btn btn-success btn-sm">Hecho</button>
+                <button type="button" id="makeTransfer" class="btn btn-success btn-sm">{% trans 'Hecho' %}</button>
             </div>
         </div>
     </div>
@@ -265,7 +265,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="modal-content">
         <div class="modal-header">
             <h1 class="modal-title">
-                <span class="icon icon-solid-chat"></span>WebChat
+                <span class="icon icon-solid-chat"></span>{% trans 'WebChat' %}
             </h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -284,13 +284,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </div>
                     <div>
                         <input type="hidden" value="">
-                        <button class="btn btn-primary" disabled="disabled" id="sendMessage">Enviar</button>
+                        <button class="btn btn-primary" disabled="disabled" id="sendMessage">{% trans 'Enviar' %}</button>
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" type="button" id="dropdownWebchatActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               <span class="icon icon-cog"></span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownWebchatActions">
-                                <button class="dropdown-item" type="button">Action</button>
+                                <button class="dropdown-item" type="button">{% trans 'Acción' %}</button>
                             </div>
                         </div>
                     </div>
@@ -299,9 +299,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div id="webchatInfo">
                 <table class="table table-compressed table-hover">
                     <thead>
-                        <th>Estado</th>
-                        <th>Usuario</th>
-                        <th>Chatear</th>
+                        <th>{% trans 'Estado' %}</th>
+                        <th>{% trans 'Usuario' %}</th>
+                        <th>{% trans 'Chatear' %}</th>
                     </thead>
                     <tbody id="tbodyContacts">
                     </tbody>
@@ -318,7 +318,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="modal-content">
       <div class="modal-header">
           <h1 class="modal-title">
-              <span class="icon icon-solid-messages"></span>Mensajes
+              <span class="icon icon-solid-messages"></span>{% trans 'Mensajes' %}
           </h1>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -327,10 +327,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <div class="modal-body">
           <ul class="nav nav-tabs" id="messagesTabBar" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="messagesTab" data-toggle="tab" href="#messagesContent" role="tab" aria-controls="home" aria-selected="true">Mensajes</a>
+                <a class="nav-link active" id="messagesTab" data-toggle="tab" href="#messagesContent" role="tab" aria-controls="home" aria-selected="true">{% trans 'Mensajes' %}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="registryTab" data-toggle="tab" href="#registryContent" role="tab" aria-controls="profile" aria-selected="false">Registro</a>
+                <a class="nav-link" id="registryTab" data-toggle="tab" href="#registryContent" role="tab" aria-controls="profile" aria-selected="false">{% trans 'Registro' %}</a>
             </li>
           </ul>
 
@@ -339,10 +339,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="tab-pane fade show active" id="messagesContent" role="tabpanel" aria-labelledby="messagesTab">
               <table class="table table-compressed" id="threadMsgsTable">
                 <thead>
-                  <th>From</th>
-                  <th>To</th>
-                  <th>Mensaje</th>
-                  <th>Fecha</th>
+                  <th>{% trans 'Desde' %}</th>
+                  <th>{% trans 'A' %}</th>
+                  <th>{% trans 'Mensaje' %}</th>
+                  <th>{% trans 'Fecha' %}</th>
                 </thead>
                 <tbody id="bodyThreadMsgTable">
                 </tbody>
@@ -350,8 +350,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
               <input type="hidden" id="phoneSendThread" value="">
 
-              <textarea cols="12" rows="1" name='textSend' id="textSendThread" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea><br>
-              <button type="button" class="btn btn-primary" id="sendMessageFromThread" data-dismiss="modal">Enviar</button>
+              <textarea cols="12" rows="1" name='textSend' id="textSendThread" placeholder="{% trans 'El contenido de tu mensaje de texto aqui' %} " class="form-control" required></textarea><br>
+              <button type="button" class="btn btn-primary" id="sendMessageFromThread" data-dismiss="modal">{% trans 'Enviar' %}</button>
             </div>
 
             <div class="tab-pane fade" id="registryContent" role="tabpanel" aria-labelledby="registryTab">
@@ -361,9 +361,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                           <div class="form-group">
                             <table class="table table-compressed" id="messagesTable">
                                 <thead>
-                                <th>Tel</th>
-                                <th>Mensaje</th>
-                                <th>Acciones</th>
+                                <th>{% trans 'Tel' %}</th>
+                                <th>{% trans 'Mensaje' %}</th>
+                                <th>{% trans 'Acciones' %}</th>
                               </thead>
                               <tbody id="cuerpoTabla">
 
@@ -375,16 +375,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </div>
                           <div>
                               <div class="form-group col-md-11">
-                                  <label for="phoneSend">Tel</label>
+                                  <label for="phoneSend">{% trans 'Tel' %}</label>
                                   <input type="text" name="phoneSend" id="phoneSend" placeholder="ej: 351 6543422" class="form-control" required>
                               </div>
                               <div class="form-group">
-                                  <label for="textSend">Mensaje</label>
-                                  <textarea cols="19" rows="2" name='textSend' id="textSend" placeholder="El contenido de tu mensaje de texto aqui" class="form-control" required></textarea>
+                                  <label for="textSend">{% trans 'Mensaje' %}</label>
+                                  <textarea cols="19" rows="2" name='textSend' id="textSend" placeholder="{% trans 'El contenido de tu mensaje de texto aquí' %} " class="form-control" required></textarea>
                               </div>
                               <div class="form-group">
-                                  <button id="sendMessage" type="button" name="Enviar" class="btn btn-primary">Enviar</button>
-                                  &nbsp;&nbsp;&nbsp;<label for="newSMS">Nuevos:&nbsp;</label><label id="newSMS">0</label>
+                                  <button id="sendMessage" type="button" name="Enviar" class="btn btn-primary">{% trans 'Enviar' %}</button>
+                                  &nbsp;&nbsp;&nbsp;<label for="newSMS">{% trans 'Nuevos:' %}&nbsp;</label><label id="newSMS">0</label>
                               </div>
                           </div>
                     </div>
@@ -394,7 +394,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
       </div>
     </div>
   </div>
@@ -406,7 +406,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <div class="modal-content">
           <div class="modal-header">
               <h1 class="modal-title">
-                  <span class="icon icon-solid-fb-chat"></span>Facebook chat
+                  <span class="icon icon-solid-fb-chat"></span>{% trans 'Facebook' %} chat
               </h1>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -416,7 +416,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
               <div>
                   <table class="table table-compressed" id="messagesTable">
                       <thead>
-                      <th>Conversaciones</th>
+                          <th>{% trans 'Conversaciones' %}</th>
                     </thead>
                     <tbody id="cuerpoTablaFb">
                     </tbody>
@@ -431,16 +431,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </div>
                         <div class="chatWindowActions">
                           <div>
-                              <textarea cols="42" rows="1" name='textSend' id="textSendFb" placeholder="Escribe un mensaje..." class="form-control" required></textarea>
+                              <textarea cols="42" rows="1" name='textSend' id="textSendFb" placeholder="{% trans 'Escribe un mensaje...' %} " class="form-control" required></textarea>
                           </div>
                           <div>
-                              <button id="sendMessageFb" type="button" name="Enviar" class="btn btn-primary">Enviar</button>
+                              <button id="sendMessageFb" type="button" name="Enviar" class="btn btn-primary">{% trans 'Enviar' %}</button>
                               <div class="dropdown">
                                   <button class="btn btn-light dropdown-toggle" type="button" id="dropdownFbActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="icon icon-cog"></span>
                                   </button>
                                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownFbActions">
-                                      <button id="endDialogFb" class="dropdown-item" type="button">Fin</button>
+                                      <button id="endDialogFb" class="dropdown-item" type="button">{% trans 'Fin' %}</button>
                                   </div>
                               </div>
                           </div>
@@ -476,29 +476,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
             <li class="main-menu-li">
                 <span class="icon icon-notebook"></span>
-                <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">Contactos</a>
+                <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Contactos' %}</a>
                 <ul class="collapse list-unstyled submenu" id="menuContacts" data-parent="#navMainMenu">
                     <li id="wombatId"></li>
                     <li>
-                        <a href="{% url 'seleccion_campana_adicion_contacto' %}" target="crm">Nuevo contacto</a>
+                        <a href="{% url 'seleccion_campana_adicion_contacto' %}" target="crm">{% trans 'Nuevo contacto' %}</a>
                     </li>
                     <li>
-                        <a href="{% url 'contacto_list' %}" target="crm">Lista de contactos</a>
+                        <a href="{% url 'contacto_list' %}" target="crm">{% trans 'Lista de contactos' %}</a>
                     </li>
                 </ul>
             </li>
             <li class="main-menu-li">
                 <span class="icon icon-agenda"></span>
-                <a class="menu-link" href="{% url 'agenda_contacto_listado' %}" target="crm">Agendas</a>
+                <a class="menu-link" href="{% url 'agenda_contacto_listado' %}" target="crm">{% trans 'Agendas' %}</a>
             </li>
             <li class="main-menu-li">
                 <span class="icon icon-ratings"></span>
-                <a class="menu-link" href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
+                <a class="menu-link" href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">{% trans 'Calificaciones' %}</a>
             </li>
             {% if campanas_preview_activas %}
             <li class="main-menu-li">
                 <span class="icon icon-agenda"></span>
-                <a class="menu-link" href="{% url 'campana_preview_activas_miembro' %}" target="crm">Campañas preview</a>
+                <a class="menu-link" href="{% url 'campana_preview_activas_miembro' %}" target="crm">{% trans 'Campañas preview' %}</a>
             </li>
             {% endif %}
 
@@ -553,7 +553,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <span class="user-name">{{ user.get_full_name }}</span>
               </button>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser">
-                <a id="logout" class="dropdown-item" href="{% url 'agente_logout' %}">Salir</a>
+                  <a id="logout" class="dropdown-item" href="{% url 'agente_logout' %}">{% trans 'Salir' %}</a>
               </div>
             </div>
         </div>
@@ -564,11 +564,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div id="timeBar">
                     <div id="timers">
                         <div id="operationTime" class="label label-default">
-                            Operación:
+                            {% trans 'Operación:' %}
                             <span id="horaO"></span><span id="minsO"></span><span id="segsO"></span>
                         </div>
                         <div id="pauseTime" class="label label-default">
-                            Pausa:
+                            {% trans 'Pausa:' %}
                             <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
                         </div>
                         <!-- <div id="sumTime" class="label label-default">
@@ -579,10 +579,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <div id="timersControls">
                         <span id="UserStatus"></span>
                         <button type="button" id="Pause" class="btn btn-warning btn-sm">
-                          <span class="icon icon-control-pause"></span>Pausar
+                            <span class="icon icon-control-pause"></span>{% trans 'Pausar' %}
                         </button>
                         <button type="button" id="Resume" class="btn btn-primary btn-sm">
-                          <span class="icon icon-control-play"></span>Reaundar
+                            <span class="icon icon-control-play"></span>{% trans 'Reaundar' %}
                         </button>
                     </div>
 
@@ -608,10 +608,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </button>
                     <ul class="nav nav-tabs" id="webphoneTabBar" role="tablist">
                       <li class="nav-item">
-                        <a class="nav-link active" id="phoneTab" data-toggle="tab" href="#phoneContent" role="tab" aria-controls="phone" aria-selected="true"><span class="icon icon-solid-phone"></span>Teléfono</a>
+                          <a class="nav-link active" id="phoneTab" data-toggle="tab" href="#phoneContent" role="tab" aria-controls="phone" aria-selected="true"><span class="icon icon-solid-phone"></span>{% trans 'Teléfono' %}</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" id="phoneRegistryTab" data-toggle="tab" href="#phoneRegistryContent" role="tab" aria-controls="registry" aria-selected="false">Registro</a>
+                          <a class="nav-link" id="phoneRegistryTab" data-toggle="tab" href="#phoneRegistryContent" role="tab" aria-controls="registry" aria-selected="false">{% trans 'Registro' %}</a>
                       </li>
                     </ul>
                 </div>
@@ -658,7 +658,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <button type="button" id="redial" class="btn btn-outline-secondary">
                                         <span class="icon icon-solid-phone-redial"></span>
                                     </button>
-                                    <button type="button" id="SignCall" class="btn btn-outline-secondary" title="Marcar Llamada">
+                                    <button type="button" id="SignCall" class="btn btn-outline-secondary" title="{% trans 'Marcar Llamada' %}">
                                         <span class="icon icon-solid-phone-save"></span>
                                     </button>
                                 </div>
@@ -671,12 +671,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <span id="segsC"></span>
                                 </div>
                                 <div class="btn-group" data-toggle="buttons">
-                                    <button id="Transfer" class="btn btn-outline-secondary" disabled="disabled">Transfer</button>
-                                    <button id="EndTransfer" class="btn btn-outline-secondary" disabled="disabled">Cancel Transfer</button>
-                                    <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">Hold</button>
+                                    <button id="Transfer" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Transfer' %}</button>
+                                    <button id="EndTransfer" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Cancel Transfer' %}</button>
+                                    <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Hold' %}</button>
                                 </div>
                                 <button id="changeCampAssocManualCall" class="btn btn-outline-secondary btn-sm">
-                                campaña : <span id="campAssocManualCall"></span>
+                                    {% trans 'campaña: ' %}<span id="campAssocManualCall"></span>
                                 </button>
                             </div>
                         </div>
@@ -684,7 +684,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <div class="tab-pane fade" id="phoneRegistryContent" role="tabpanel" aria-labelledby="phoneRegistryTab">
                             <table class="table table-condensed table-hover table-striped">
                                 <thead>
-                                    <th>tipo</th><th>numero</th><th>fecha</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
+                                    <th>{% trans 'tipo' %}</th><th>{% trans 'número' %}</th><th>{% trans 'fecha' %}</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
                                 </thead>
                                 <tbody id="call_list">
                                     {% for regs in registro %}
@@ -736,32 +736,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <div class="iconApp" id="txtSms">
         <span class="icon icon-solid-messages"></span>
       </div>
-      <div>SMS</div>
+      <div>{% trans 'SMS' %}</div>
     </div>
     <div>
       <div class="iconApp" id="webCall">
         <span class="icon icon-solid-phone"></span>
       </div>
-      <div>Webphone</div>
+      <div>{% trans 'Webphone' %}</div>
     </div>
     <div>
       <div class="iconApp" id="webChat">
         <span class="icon icon-solid-chat"></span>
       </div>
-      <div>Webchat</div>
+      <div>{% trans 'Webchat' %}</div>
     </div>
     <div>
       <div class="iconApp" id="facebookChat">
         <span class="icon icon-solid-fb-chat"></span>
       </div>
-      <div>Social chat</div>
+      <div>{% trans 'Social chat' %}</div>
     </div>
     <div>
       <div class="iconApp" id="facebookChat">
         <i id="fbNotReadMessagesCounter" class="material-icons"></i>
         <span class="icon icon-solid-mail"></span>
       </div>
-      <div>Email</div>
+      <div>{% trans 'Email' %}</div>
     </div>
 </div>
 

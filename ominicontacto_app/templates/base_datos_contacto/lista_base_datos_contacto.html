@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block head_js %}
 <script type="text/javascript">
@@ -37,18 +38,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block content %}
 
-<h1>Base de datos de contactos</h1>
+<h1>{% trans 'Base de datos de contactos' %}</h1>
 <a href="#" class="btn btn-light btn-sm" onclick="mostrar_bases_datos_ocultas()" >
-    Mostrar ocultas
+    {% trans 'Mostrar ocultas' %}
 </a>
 <hr>
 <table class="table">
     <thead>
       <tr class="fts-table-bg">
-        <th>Base Datos Contactos</th>
-        <th>Creada</th>
-        <th>Cantidad Contactos</th>
-        <th>Acciones</th>
+        <th>{% trans 'Base Datos Contactos' %}</th>
+        <th>{% trans 'Creada' %}</th>
+        <th>{% trans 'Cantidad Contactos' %}</th>
+        <th>{% trans 'Acciones' %}</th>
       </tr>
     </thead>
     <tbody id="t_body_ocultas">
@@ -66,26 +67,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Opciones
+                        {% trans 'Opciones' %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                             <a class="dropdown-item" href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
-                                <span class="icon icon-plus"></span>Agregar contacto
+                                <span class="icon icon-plus"></span>{% trans 'Agregar contacto' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
-                                <span class="icon icon-list"></span>Lista de contactos
+                                <span class="icon icon-list"></span>{% trans 'Lista de contactos' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
-                                <span class="icon icon-plus"></span>Agregar contactos
-                            </a>     
+                                <span class="icon icon-plus"></span>{% trans 'Agregar contactos' %}
+                            </a>
                             {% if base_datos_contacto.oculto %}
                             <a class="dropdown-item" href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}">
-                                <span class="icon icon-eye"></span>Hacer visible
+                                <span class="icon icon-eye"></span>{% trans 'Hacer visible' %}
                             </a>
                             {% else %}
                             <a class="dropdown-item" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}">
-                                <span class="icon icon-eye-slash"></span>Ocultar
-                            </a> 
+                                <span class="icon icon-eye-slash"></span>{% trans 'Ocultar' %}
+                            </a>
                             {% endif %}
                         </div>
                     </div>
@@ -94,7 +95,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% empty %}
             <tr>
                 <td colspan="6">
-                    <p>No se encontraron Bases de Datos de Contactos creadas.</p>
+                    <p>{% trans 'No se encontraron Bases de Datos de Contactos creadas.' %}</p>
                 </td>
             </tr>
         {% endfor %}

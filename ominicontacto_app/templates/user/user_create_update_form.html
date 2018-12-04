@@ -19,15 +19,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Nuevo usuario</h1>
+<h1>{% trans 'Nuevo usuario' %}</h1>
 
 <form action = "" method = "post">
 	{% include "base_form_fields.html" with form=form %}
     <hr>
     <button type="submit" id="id_registrar" class="btn btn-primary">
-        Guardar
+        {% trans 'Guardar' %}
     </button>
 </form>
 

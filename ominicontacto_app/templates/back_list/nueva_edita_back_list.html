@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_js %}
 
     <script type="text/javascript">
@@ -31,16 +32,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% endblock %}
 {% block content %}
 
-<h1>Nueva blacklist</h1>
+<h1>{% trans 'Nueva blacklist' %}</h1>
 <form role="form" method="post" enctype="multipart/form-data">
     {% include "base_form_fields.html" with form=form %}
     <hr>
     <button type="submit" id="id_registrar" class="btn btn-primary modal_proceso_grande">
-        Definir Backlist
+        {% trans 'Definir Backlist' %}
     </button>
 </form>
 
 {% endblock %}
-
-
-

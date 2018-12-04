@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block head_js %}
 <script type="text/javascript">
@@ -38,9 +39,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table table-stripped">
     <thead>
         <tr>
-            <th>Campaña</th>
-            <th>Numero</th>
-            <th>Estado</th>
+            <th>{% trans 'Campaña'  %}</th>
+            <th>{% trans 'Número'  %}</th>
+            <th>{% trans 'Estado'  %}</th>
         </tr>
     </thead>
     <tbody>
@@ -52,7 +53,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
        {% empty %}
         <tr>
-            <td colspan="3">No existen llamadas</td>
+            <td colspan="3">{% trans 'No existen llamadas'  %}</td>
         </tr>
         {% endfor %}
     </tbody>

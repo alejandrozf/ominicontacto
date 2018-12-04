@@ -19,17 +19,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
 
             <ul class="nav nav-tabs">
-                <li><a href="{%  url 'campana_update' campana.pk %}">Campaña</a></li>
-                <li class="active"><a>Datos Básicos de la cola</a></li>
+                <li><a href="{%  url 'campana_update' campana.pk %}">{% trans 'Campaña' %}</a></li>
+                <li class="active"><a>{% trans 'Datos Básicos de la cola' %}</a></li>
             </ul>
             <br>
                 {% if object.name %}
-                    <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
+                    <p>{% trans 'Modificar datos de la cola' %} <strong>{{ object.name }}</strong></p>
                 {% endif %}
         <form action = "" method = "post">
             <div class="col-lg-4">
@@ -38,12 +39,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		        {{form.as_table}}
             </table>
             <button type="submit" id="id_registrar" class="btn btn-success btn-lg">
-                Siguiente
+                {% trans 'Siguiente' %}
             </button>
-            <a href="{% url 'campana_list' %}">Cancelar</a>
-                    </div>
+            <a href="{% url 'campana_list' %}">{% trans 'Cancelar' %}</a>
+            </div>
 	    </form>
-
-
-
 {% endblock %}

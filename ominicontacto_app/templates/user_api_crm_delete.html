@@ -25,10 +25,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h1>Usuario "{{ object.usuario}}" </h1>
-        <p>¿Esta seguro que desea eliminar este usuario? </p>
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-        <a class="btn btn-outline-danger" href="{% url 'user_api_crm_list' %}">Cancelar</a>
+        <h1>{% blocktrans %}Usuario "{{ object.usuario}}" {% endblocktrans  %}</h1>
+        <p>{% trans '¿Esta seguro que desea eliminar este usuario?'  %}</p>
+        <button type="submit" class="btn btn-danger">{% trans 'Eliminar' %}</button>
+        <a class="btn btn-outline-danger" href="{% url 'user_api_crm_list' %}">{% trans 'Cancelar' %}</a>
     </form>
 </div>
 {% endblock %}

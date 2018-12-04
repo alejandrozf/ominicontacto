@@ -77,11 +77,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </head>
 <body>
 
-<h1>Agendas</h1>
+<h1>{% trans 'Agendas' %}</h1>
 
 <div id="wrapper-search">
     {% include 'messages.html' %}
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
     <div id="wrapperSearchForm" class="show">
         <form role="form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -91,7 +91,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                Filtrar
+                {% trans 'Filtrar' %}
             </button>
         </form>
     </div>
@@ -100,12 +100,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Es personal</th>
-                <th>Es smart</th>
-                <th>Medio comunicación</th>
-                <th>Descripción</th>
+                <th>{% trans 'Fecha' %}</th>
+                <th>{% trans 'Hora' %}</th>
+                <th>{% trans 'Es personal' %}</th>
+                <th>{% trans 'Es smart' %}</th>
+                <th>{% trans 'Medio de comunicación' %}</th>
+                <th>{% trans 'Descripción' %}</th>
             </tr>
         </thead>
         <tbody>
@@ -136,14 +136,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% elif evento.medio_comunicacion == 3 %}
                         : {{ evento.email }}
                     {% else %}
-                        Hay otro medio de comunicacion no disponible
+                        {% trans 'Hay otro medio de comunicacion no disponible' %}
                     {% endif %}
                 </td>
                 <td>{{ evento.descripcion}}</td>
             </tr>
        {% empty %}
         <tr>
-            <td>No existen eventos para el día de hoy</td>
+            <td>{% trans 'No existen eventos para el día de hoy' %}</td>
         </tr>
         {% endfor %}
         </tbody>

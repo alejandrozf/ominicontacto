@@ -19,38 +19,36 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-
-
-
          {% if campana%}
-            <h1>Campaña {{ campana.nombre }}</h1>
+            <h1>{% blocktrans %}Campaña {{ campana.nombre }}{% endblocktrans %}</h1>
                 {% endif %}
                 <div class="form-row">
                     <div class="col-md-6">
                         <form action="{%  url 'queue_member_add' campana.pk %}" role="form" method="post">
                                 {% csrf_token %}
-                                <h2>Agentes</h2>
+                                <h2>{% trans 'Agentes' %}</h2>
                                 <table class="table">
                                      {{queue_member_form.as_table}}
                                 </table>
                                 <button type="submit" id="id_guardar" class="btn btn-outline-primary">
-                                    Agregar agente
+                                    {% trans 'Agregar agente' %}
                                 </button>
-                        </form>                        
+                        </form>
                     </div>
                     <div class="col-md-6">
                         <form action="{%  url 'queue_member_grupo_agente' campana.pk %}" role="form" method="post">
                                 {% csrf_token %}
-                                <h2>Grupos</h2>
+                                <h2>{% trans 'Grupos' %}</h2>
                                 <table class="table">
                                      {{grupo_agente_form.as_table}}
                                 </table>
                                 <button type="submit" class="btn btn-outline-primary">
-                                    Agregar grupo
+                                    {% trans 'Agregar grupo' %}
                                 </button>
-                        </form>                        
+                        </form>
                     </div>
                 </div>
             <hr>
@@ -58,9 +56,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Agente</th>
-                            <th>interface</th>
-                            <th>Penalty</th>
+                            <th>{% trans 'Agente' %}</th>
+                            <th>{% trans 'interface' %}</th>
+                            <th>{% trans 'Penalty' %}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -70,12 +68,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <td>{{ agente.member}}</td>
                                 <td>{{ agente.interface }}</td>
                                 <td>{{ agente.penalty }}</td>
-                                <td><a class="btn btn-light" href="{% url 'queue_member_elimina' agente.pk campana.pk %}">Remover</a></td>
+                                <td><a class="btn btn-light" href="{% url 'queue_member_elimina' agente.pk campana.pk %}">{% trans 'Remover' %}</a></td>
                             </tr>
                         {% empty %}
                             <tr>
                                 <td colspan="4">
-                                    <p>No hay agentes agreados en está cola.</p>
+                                    <p>{% trans 'No hay agentes agreados en está cola.' %}</p>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -84,7 +82,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% endif %}
             <hr>
             <a href="{% url url_finalizar %}" class="btn btn-primary" role="button">
-                Finalizar
+                {% trans 'Finalizar' %}
             </a>
-
 {% endblock %}

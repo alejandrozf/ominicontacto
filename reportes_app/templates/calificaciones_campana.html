@@ -23,24 +23,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block content %}
 
-                <h1>Campaña {{ campana.nombre }}</h1>
+               <h1>{% trans 'Campaña' %} {{ campana.nombre }}</h1>
 
                 {% if campana.fecha_inicio %}
-                    <h3>Desde: {{ campana.fecha_inicio|date:"d/m/Y" }}</h3>
-                    <h3>Hasta: {{ campana.fecha_fin|date:"d/m/Y" }}</h3>
+                    <h3>{% trans 'Desde:' %} {{ campana.fecha_inicio|date:"d/m/Y" }}</h3>
+                    <h3>{% trans 'Hasta:' %} {{ campana.fecha_fin|date:"d/m/Y" }}</h3>
                 {% endif %}
-                <h3>Base Datos: {{ campana.bd_contacto }}</h3>
+                <h3>{% trans 'Base Datos:' %} {{ campana.bd_contacto }}</h3>
                 <br>
-                <a class="btn btn-outline-primary" href="{% url 'exporta_campana_reporte' campana.pk %}">Exportar Calificacion(CSV)</a>
-                <a class="btn btn-outline-primary" href="{% url 'exporta_formulario_reporte' campana.pk %}">Exportar Gestion: {{campana.gestion}}(CSV)</a>
+                <a class="btn btn-outline-primary" href="{% url 'exporta_campana_reporte' campana.pk %}">{% trans 'Exportar Calificación(CSV)' %}</a>
+                <a class="btn btn-outline-primary" href="{% url 'exporta_formulario_reporte' campana.pk %}">{% trans 'Exportar Gestión:' %} {{campana.gestion}}(CSV)</a>
                 <table class="table">
                     <thead>
                       <tr class="fts-table-bg">
-                        <th>Teléfono</th>
-                        <th>Datos</th>
-                        <th>Calificación</th>
-                        <th>Observaciones</th>
-                        <th>Base de datos</th>
+                          <th>{% trans 'Teléfono' %}</th>
+                          <th>{% trans 'Datos' %}</th>
+                          <th>{% trans 'Calificación' %}</th>
+                          <th>{% trans 'Observaciones' %}</th>
+                          <th>{% trans 'Base de datos' %}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -71,7 +71,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% empty %}
                             <tr>
                                 <td colspan="16">
-                                    <p>No se encontraron Calificaciones para esta campaña.</p>
+                                    <p>{% trans 'No se encontraron Calificaciones para esta campaña.' %}</p>
                                 </td>
                             </tr>
                         {% endfor %}

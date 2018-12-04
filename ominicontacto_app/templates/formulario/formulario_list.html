@@ -19,16 +19,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Formularios</h1>
+<h1>{% trans 'Formularios' %}</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Vista Previa</th>
+            <th>{% trans 'Nombre' %}</th>
+            <th>{% trans 'Descripción' %}</th>
+            <th>{% trans 'Vista Previa' %}</th>
 
         </tr>
     </thead>
@@ -37,11 +38,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tr>
             <td>{{ formulario.nombre }}</td>
             <td>{{ formulario.descripcion }}</td>
-            <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">Ver</a></td>
+            <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">{% trans 'Ver' %}</a></td>
         </tr>
    {% empty %}
     <tr>
-        <td>No existen formularios creados</td>
+        <td>{% trans 'No existen formularios creados' %}</td>
     </tr>
     {% endfor %}
     </tbody>

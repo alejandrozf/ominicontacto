@@ -18,13 +18,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% load static %}
+{% load i18n %}
 
 {% for message in messages %}
     {% if "error" in message.tags %}
 
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
-            <h1>¡Error!</h1>
+            <h1>{% trans '¡Error!' %}</h1>
             <p>{{ message|safe  }}</p>
         </div>
 
@@ -32,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
-            <h1>¡Atención!</h1>
+            <h1>{% trans '¡Atención!' %}</h1>
             <p>{{ message|safe  }}</p>
         </div>
 
@@ -40,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
-            <h1>Finalizado</h1>
+            <h1>{% trans 'Finalizado' %}</h1>
             <p>{{ message|safe }}</p>
         </div>
 
@@ -48,7 +49,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
-            <h1>Información</h1>
+            <h1>{% trans 'Información' %}</h1>
             <p>{{ message|safe  }}</p>
         </div>
 
@@ -62,7 +63,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% else %} {# the same as "INFO" #}
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
-            <h1>Información</h1>
+            <h1>{% trans 'Información' %}</h1>
             <p>{{ message|safe  }}</p>
         </div>
 

@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block head_js %}
     <script type="text/javascript">
@@ -50,19 +51,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block content %}
-<h1>Campañas manuales</h1>
+    <h1>{% trans 'Campañas manuales' %}</h1>
 
     <div>
         <form id="form_estados_campanas" role="form" method="post">
             {% csrf_token %}
             <input type="hidden" id="campana_id" name="campana_id">
-            <h2>Campañas Activas</h2>
+            <h2>{% trans 'Campañas Activas' %}</h2>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Estado</th>
-                        <th>Acciones&nbsp;&nbsp;</th>
+                        <th>{% trans 'Nombre' %}</th>
+                        <th>{% trans 'Estado' %}</th>
+                        <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,17 +74,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
             {% block campanas_finalizadas %}{% endblock %}
 
-            <h2>Campañas Eliminadas</h2>
+            <h2>{% trans 'Campañas eliminadas' %}</h2>
             <a href="#" class="btn btn-light btn-sm" onclick="{{ mostrar_ocultas_tipo|default:"mostrar_campanas_ocultas()" }}" >
-                Mostrar ocultas
-            </a>    
-            <hr>        
+                {% trans 'Mostrar ocultas' %}
+            </a>
+            <hr>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>{% trans 'Nombre' %}</th>
+                        <th>{% trans 'Estado' %}</th>
+                        <th>{% trans 'Acciones' %}</th>
                     </tr>
                 </thead>
                 <tbody id="t_body_borradas">
@@ -97,7 +98,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div class="modal-dialog" id="modal_ventana">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 id="address" class="modal-title"></h1>                    
+                    <h1 id="address" class="modal-title"></h1>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
@@ -108,7 +109,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
                 </div>
             </div>
             <!-- /.modal-content -->

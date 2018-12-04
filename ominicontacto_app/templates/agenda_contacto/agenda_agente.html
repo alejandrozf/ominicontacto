@@ -50,7 +50,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <body>
 
 <div id="wrapper-search">
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
     <div id="wrapperSearchForm" class="show">
         <form role="form" method="post" enctype="multipart/form-data" >
             {% csrf_token %}
@@ -60,7 +60,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                Filtrar por este rango
+                {% trans 'Filtrar por este rango' %}
             </button>
         </form>
     </div>
@@ -77,11 +77,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
-                <th>contacto</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Tipo</th>
-                <th>Observaciones</th>
+                <th>{% trans 'Contacto' %}</th>
+                <th>{% trans 'Fecha' %}</th>
+                <th>{% trans 'Hora' %}</th>
+                <th>{% trans 'Tipo' %}</th>
+                <th>{% trans 'Observaciones' %}</th>
             </tr>
         </thead>
         <tbody>

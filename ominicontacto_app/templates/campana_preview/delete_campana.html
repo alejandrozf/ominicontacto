@@ -19,7 +19,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "campana_manual/delete_campana.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block redireccion_cancelar %}
-    <a class="btn btn-outline-danger" href="{% url 'campana_preview_list' %}">Cancelar</a>
+    <a class="btn btn-outline-danger" href="{% url 'campana_preview_list' %}">{% trans 'Cancelar'  %}</a>
 {% endblock %}

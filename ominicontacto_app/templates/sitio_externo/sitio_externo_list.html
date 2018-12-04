@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_js %}
     <script type="text/javascript">
 
@@ -27,10 +28,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             $.get('{% url  'mostrar_sitios_externo_ocultos' %}',
                     function (data) {
                         $('#t_body_ocultas').html(data);
-
                     });
         }
-
     </script>
 {% endblock %}
 
@@ -38,15 +37,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <h1>Sitios externos</h1>
 <a class="btn btn-light btn-sm" href="#" onclick="mostrar_sitios_ocultos()" >
-    Mostrar ocultos
+    {% trans 'Mostrar ocultos' %}
 </a>
 <hr>
 <table class="table">
     <thead>
       <tr class="fts-table-bg">
-        <th>Sitio externo</th>
-        <th>Url</th>
-        <th>Acciones</th>
+          <th>{% trans 'Sitio externo' %}</th>
+          <th>{% trans 'Url' %}</th>
+          <th>{% trans 'Acciones' %}</th>
       </tr>
     </thead>
     <tbody id="t_body_ocultas">
@@ -61,11 +60,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     {% if sitio.oculto %}
                     <a class="btn btn-light" href="{% url 'desoculta_sitio_externo' sitio.pk %}" >
-                        <span class="icon icon-eye" aria-hidden="true" title="visible"></span>Hacer visible
+                        <span class="icon icon-eye" aria-hidden="true" title="visible"></span>{% trans 'Hacer visible' %}
                     </a>
                     {% else %}
                     <a class="btn btn-light" href="{% url 'oculta_sitio_externo' sitio.pk %}" >
-                        <span class="icon icon-eye-slash" aria-hidden="true" title="ocultar"></span>Ocultar
+                        <span class="icon icon-eye-slash" aria-hidden="true" title="ocultar"></span>{% trans 'Ocultar' %}
                     </a>
                     {% endif %}
 
@@ -74,7 +73,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% empty %}
             <tr>
                 <td>
-                    <p>No se encontraron sitios externos creados.</p>
+                    <p>{% trans 'No se encontraron sitios externos creados.' %}</p>
                 </td>
             </tr>
         {% endfor %}

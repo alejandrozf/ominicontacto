@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_js %}
 <script>
     $(document).ready(function() {
@@ -32,6 +33,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	{% include "base_form_fields.html" with form=form %}
 </form>
 <hr>
-    <a href="{% url 'formulario_list' %}" class="btn btn-outline-primary" role="button">volver a listado de formularios</a>
+<a href="{% url 'formulario_list' %}" class="btn btn-outline-primary" role="button">{% trans 'volver a listado de formularios' %}</a>
 
 {% endblock %}

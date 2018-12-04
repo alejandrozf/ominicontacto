@@ -19,29 +19,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Nuevo sitio externo</h1>
+    <h1>{% trans 'Nuevo sitio externo' %}</h1>
 
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-row">
         <div class="col-md-6">
-            <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+            <label for="{{ form.nombre.id_for_label }}">{% trans 'Nombre:' %}</label>
             {{ form.nombre }}
             {{ form.nombre.errors }}
         </div>
         <div class="col-md-6">
-            <label for="{{ form.url.id_for_label }}">Url:</label>
+            <label for="{{ form.url.id_for_label }}">{% trans 'Url:' %}</label>
             {{ form.url }}
             {{ form.url.errors }}
         </div>
     </div>
     <hr>
     <button type="submit" id="id_guardar" class="btn btn-primary">
-        Guardar
-    </button>    
+        {% trans 'Guardar' %}
+    </button>
 </form>
 
 {% endblock %}

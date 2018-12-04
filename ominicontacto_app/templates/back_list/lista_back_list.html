@@ -19,18 +19,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 
 {% block content %}
 
-<h1>Blacklists</h1>
+<h1>{% trans 'Blacklists' %}</h1>
 
 <table class="table">
     <thead>
       <tr class="fts-table-bg">
-        <th>Backlist</th>
-        <th>Creada</th>
-        <th>Cantidad Contactos</th>
+        <th>{% trans 'Backlist' %}</th>
+        <th>{% trans 'Creada' %}</th>
+        <th>{% trans 'Cantidad Contactos' %}</th>
       </tr>
     </thead>
     <tbody id="t_body_ocultas">
@@ -49,7 +50,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% empty %}
             <tr>
                 <td>
-                    <p>No se encontraron Backlist creadas.</p>
+                    <p>{% trans 'No se encontraron Backlist creadas.' %}</p>
                 </td>
             </tr>
         {% endfor %}
