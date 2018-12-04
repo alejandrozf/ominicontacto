@@ -18,7 +18,7 @@
 #
 
 """
-Tests del modoulo 'reportes_app.reporte_agente_tiempos.py'
+Tests del modoulo 'reportes_app.reportes.reporte_agente_tiempos.py'
 """
 
 from __future__ import unicode_literals, division
@@ -31,7 +31,7 @@ from ominicontacto_app.tests.factories import (
     CampanaFactory, ContactoFactory, ActividadAgenteLogFactory, PausaFactory,
     LlamadaLogFactory
 )
-from reportes_app.reporte_agente_tiempos import TiemposAgente
+from reportes_app.reportes.reporte_agente_tiempos import TiemposAgente
 from ominicontacto_app.utiles import cast_datetime_part_date
 
 

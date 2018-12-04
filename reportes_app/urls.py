@@ -96,8 +96,8 @@ urlpatterns = [
         ),
     url(r'^campana/(?P<pk_campana>\d+)/exporta_contactados/$',
         permiso_administracion_requerido(
-            views_reportes.ExportaReporteContactadosView.as_view()),
-        name='exporta_reporte_contactados',
+            views_reportes.ExportaReporteLlamadosContactadosView.as_view()),
+        name='exporta_reporte_llamados_contactados',
         ),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/exporta_calificados/$',
         permiso_administracion_requerido(

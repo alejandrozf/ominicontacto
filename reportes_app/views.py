@@ -36,8 +36,8 @@ from ominicontacto_app.views_utils import handler400
 
 from reportes_app.forms import (ReporteLlamadasForm, ExportarReporteLlamadasForm,
                                 EstadisticasJSONForm)
-from reportes_app.reporte_llamadas import ReporteDeLlamadas, GeneradorReportesLlamadasCSV
-from reportes_app.reporte_resultados import ReporteDeResultadosDeCampana
+from reportes_app.reportes.reporte_llamadas import ReporteDeLlamadas, GeneradorReportesLlamadasCSV
+from reportes_app.reportes.reporte_resultados import ReporteDeResultadosDeCampana
 from reportes_app.archivos_de_reporte.reporte_de_resultados import ReporteDeResultadosCSV
 
 

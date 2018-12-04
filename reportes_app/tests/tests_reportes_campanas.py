@@ -37,7 +37,7 @@ from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalific
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from ominicontacto_app.services.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
+from reportes_app.reportes.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
 from ominicontacto_app.services.reporte_metadata_cliente import ReporteMetadataClienteService
 from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAgenteLogFactory,
                                                CalificacionClienteFactory, ContactoFactory,

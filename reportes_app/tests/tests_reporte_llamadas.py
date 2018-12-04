@@ -28,7 +28,7 @@ from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import SupervisorProfileFactory, AgenteProfileFactory,\
     CampanaFactory, ContactoFactory, UserFactory
 
-from reportes_app.reporte_llamadas import ReporteDeLlamadas
+from reportes_app.reportes.reporte_llamadas import ReporteDeLlamadas
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 

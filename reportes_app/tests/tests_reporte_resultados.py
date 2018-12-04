@@ -25,9 +25,9 @@ from mock import patch
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from ominicontacto_app.services.reporte_llamados_contactados_csv import NO_CONECTADO_DESCRIPCION
+from reportes_app.reportes.reporte_llamados_contactados_csv import NO_CONECTADO_DESCRIPCION
 from reportes_app.tests.tests_reportes_campanas import BaseTestDeReportes
-from reportes_app.reporte_resultados import ReporteDeResultadosDeCampana
+from reportes_app.reportes.reporte_resultados import ReporteDeResultadosDeCampana
 
 
 class ReporteDeResultadosTests(BaseTestDeReportes):

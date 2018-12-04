@@ -102,6 +102,8 @@ class ArchivoDeReporteCsv(object):
         return [""] * len(campos_contacto)
 
     def escribir_archivo_contactados_csv(self, campana, calificados, no_calificados):
+        # TODO: Debe listar los llamados contactados: EVENTOS_FIN_CONEXION
+        # Agregarle a los llamados los datos del (posible) contacto
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []

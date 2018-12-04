@@ -35,7 +35,7 @@ from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from ominicontacto_app.services.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
+from reportes_app.reportes.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
 from ominicontacto_app.services.reporte_metadata_cliente import ReporteMetadataClienteService
 from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
 
@@ -201,7 +201,7 @@ class ExportaCampanaReportePDFView(View):
         return redirect(url)
 
 
-class ExportaReporteContactadosView(View):
+class ExportaReporteLlamadosContactadosView(View):
     """
     Esta vista invoca a generar un csv de reporte de la campana.
     """
