@@ -19,21 +19,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Grupos de agentes</h1>
+<h1>{% trans 'Grupos de agentes' %}</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>id</th>
-            <th>Nombre</th>
-            <th>Auto attend ics</th>
-            <th>Auto attend inbound</th>
-            <th>Auto attend dialer</th>
-            <th>Auto unpause</th>
+            <th>{% trans 'id' %}</th>
+            <th>{% trans 'Nombre' %}</th>
+            <th>{% trans 'Auto attend ics' %}</th>
+            <th>{% trans 'Auto attend inbound' %}</th>
+            <th>{% trans 'Auto attend dialer' %}</th>
+            <th>{% trans 'Auto unpause' %}</th>
             {% if user.get_es_administrador_o_supervisor_normal %}
-            <th>acciones</th>
+                <th>{% trans 'acciones' %}</th>
             {% endif %}
         </tr>
     </thead>
@@ -68,14 +69,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td>
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Opciones
+                    {% trans 'Opciones' %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                         <a class="dropdown-item" href="{% url 'grupo_update' grupo.id %}">
-                            <span class="icon icon-pencil"></span>Editar
+                            <span class="icon icon-pencil"></span>{% trans 'Editar' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'grupo_delete' grupo.id %}">
-                            <span class="icon icon-trash"></span>Eliminar
+                            <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                         </a>
                     </div>
                 </div>
@@ -84,7 +85,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
    {% empty %}
     <tr>
-        <td>No existen grupos</td>
+        <td>{% trans 'No existen grupos' %}</td>
     </tr>
     {% endfor %}
     </tbody>

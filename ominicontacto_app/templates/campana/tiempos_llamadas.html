@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_js %}
 <script type="text/javascript">
  $(function() {
@@ -72,7 +73,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                </td>
                <td>
                    <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                        Filtrar por esa fecha
+                       {% trans 'Filtrar por esa fecha'  %}
                 </button>
                </td>
            </tr>
@@ -81,44 +82,43 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </form>
 </div>
 <div class="col-md-12">
-
-    <h4>Periodo evaluado {{estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
+    <h4>{% trans 'Período evaluado' %} {{estadisticas.estadisticas.fecha_desde|date:"d/m/Y"}} - {{estadisticas.estadisticas.fecha_hasta|date:"d/m/Y"}}</h4>
 </div>
 {% if user.get_is_administrador %}
 <div class="col-md-9">
 <table class="table table-bordered">
     <tr>
-        <td colspan="2"><strong>Total llamadas</strong></td>
+        <td colspan="2"><strong>{% trans 'Total llamadas' %}</strong></td>
     <tr>
     <tr>
-        <td>Numero de llamadas recibidas</td>
+        <td>{% trans 'Número de llamadas recibidas' %}</td>
         <td>{{estadisticas.estadisticas.total_llamadas.0}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas atendidas</td>
+        <td>{% trans 'Número de de llamadas atendidas' %}</td>
         <td>{{estadisticas.estadisticas.total_llamadas.1}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas expiradas</td>
+        <td>{% trans 'Número de llamadas expiradas' %}</td>
         <td>{{estadisticas.estadisticas.total_llamadas.2}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas abandonadas</td>
+        <td>{% trans 'Número de llamadas abandonadas' %}</td>
         <td>{{estadisticas.estadisticas.total_llamadas.3}}</td>
     <tr>
     <tr>
-    <td colspan="2"><strong>Llamadas salientes</strong></td>
+        <td colspan="2"><strong>{% trans 'Llamadas salientes' %}</strong></td>
     <tr>
     <tr>
-        <td>Numero de llamadas salientes</td>
+        <td>{% trans 'Número de llamadas salientes' %}</td>
         <td>{{estadisticas.estadisticas.total_llamadas.4}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas atendidas</td>
+        <td>{% trans 'Número de llamadas atendidas' %}</td>
         <td>{{estadisticas.estadisticas.total_llamadas.5}}</td>
     <tr>
     <tr>
-        <td>Numero de llamadas abandonas</td>
+        <td>{% trans 'Número de llamadas abandonadas' %}</td>
         <td>{{estadisticas.estadisticas.total_llamadas.6}}</td>
     <tr>
 
@@ -126,20 +126,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </div>
  {% endif %}
 <div class="col-md-12">
-    <h4>Distribucion por campaña</h4>
+    <h4>{% trans 'Distribución por campaña' %}</h4>
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Campana</th>
-            <th>Recibidas</th>
-            <th>Atendidas</th>
-            <th>Expiradas</th>
-            <th>Abandonadas</th>
-            <th>Manuales</th>
-            <th>Manuales atendidas</th>
-            <th>Manuales no atendidas</th>
-
-
+            <th>{% trans 'Campaña' %}</th>
+            <th>{% trans 'Recibidas' %}</th>
+            <th>{% trans 'Atendidas' %}</th>
+            <th>{% trans 'Expiradas' %}</th>
+            <th>{% trans 'Abandonadas' %}</th>
+            <th>{% trans 'Manuales' %}</th>
+            <th>{% trans 'Manuales atendidas' %}</th>
+            <th>{% trans 'Manuales no atendidas' %}</th>
         </tr>
     </thead>
     {% for campana in estadisticas.estadisticas.queues_llamadas %}

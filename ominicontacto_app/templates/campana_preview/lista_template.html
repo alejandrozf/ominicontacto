@@ -23,7 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 {% block content %}
-        <h1>Templates campañas preview</h1>
+    <h1>{% trans 'Templates campañas preview' %}</h1>
 
         <table class="table">
             <thead>
@@ -44,7 +44,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <td width="14%">
                             <div class="dropdown">
                                 <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Opciones
+                                {% trans 'Opciones'  %}
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                                     <a class="dropdown-item" href="{% url 'campana_preview_template_create_campana' campana.pk %}">
@@ -52,9 +52,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     </a>
                                     <a class="dropdown-item" href="{% url 'campana_preview_template_delete' campana.pk %}">
                                         <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                                    </a>                            
+                                    </a>
                                 </div>
-                            </div> 
+                            </div>
                         </td>
                     </tr>
                 {% empty %}

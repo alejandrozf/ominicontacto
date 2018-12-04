@@ -19,16 +19,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
-<h1>Acerca de la Aplicación</h1>
+<h1>{% trans 'Acerca  de la Aplicación' %}</h1>
 
-<h2>Branch</h2>
+<h2>{% trans 'Branch' %}</h2>
 <p>{{ branch }}</p>
-<h2>Commit</h2>
+<h2>{% trans 'Commit' %}</h2>
 <p>{{ commit }}</p>
-<h2>Deploy</h2>
+<h2>{% trans 'Deploy' %}</h2>
 <p>{{ fecha_deploy }}</p>
 
 {% endblock %}

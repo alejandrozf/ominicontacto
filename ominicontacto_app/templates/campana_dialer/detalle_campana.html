@@ -17,37 +17,35 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-
+{% load i18n %}
 
     <div class="modal-content">
       {% if error_consulta %}
         <div class="modal-header">
-            <h1 class="modal-title">Advertencia:</h1>                    
+            <h1 class="modal-title">{% trans 'Advertencia' %}</h1>
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        </div>  
+        </div>
         <div class="modal-body">
             <p><strong>{{ error_consulta }}</strong></p>
-        </div> 
+        </div>
       {% else %}
         <div class="modal-header">
-            <h1 class="modal-title">{{ campana.nombre }}</h1>                    
+            <h1 class="modal-title">{{ campana.nombre }}</h1>
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        </div>  
+        </div>
         <div class="modal-body">
-            <p>Nombre: <strong>{{ campana.nombre }}</strong></p>
-            <p>Estado: <strong>{{ campana.get_estado_display}}</strong></p>
+            <p>{% trans 'Nombre:' %} <strong>{{ campana.nombre }}</strong></p>
+            <p>{% trans 'Estado:' %} <strong>{{ campana.get_estado_display}}</strong></p>
             <hr>
-            <p>Llamadas efectuadas: <strong>{{ efectuadas }}</strong></p>
-            <p>Llamadas Terminadas: <strong>{{ terminadas }}</strong></p>
-            <p>Llamadas restantes estimadas: <strong>{{ estimadas }}</strong></p> 
+            <p>{% trans 'Llamadas efectuadas:' %} <strong>{{ efectuadas }}</strong></p>
+            <p>{% trans 'Llamadas Terminadas' %}<strong>{{ terminadas }}</strong></p>
+            <p>{% trans 'Llamadas restantes estimadas' %}<strong>{{ estimadas }}</strong></p>
             {% for statu in status %}
                 <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
-            {% endfor %}                       
-        </div> 
+            {% endfor %}
+        </div>
       {% endif %}
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
         </div>
     </div> <!-- /.modal-content -->
-
-

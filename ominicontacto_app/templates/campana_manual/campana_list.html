@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "campana_manual/campana_list_base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block campanas_activas %}
     {% for campana in activas %}
@@ -30,23 +31,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td width="14%">
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignActive" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Opciones
+                    {% trans 'Opciones' %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignActive">
                         <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                            <span class="icon icon-plus"></span>Agregar agentes
+                            <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_manual_supervisors' campana.pk %}">
-                            <span class="icon icon-eye"></span>Dar permisos para ver
+                            <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                            <span class="icon icon-list"></span>Calificaciones
+                            <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                            <span class="icon icon-graph"></span>Reportes
+                            <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_manual_delete' campana.pk %}">
-                            <span class="icon icon-trash"></span>Eliminar
+                            <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                         </a>
                     </div>
                 </div>
@@ -54,7 +55,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
     {% empty %}
         <tr>
-            <td colspan="3">No existen campañas</td>
+            <td colspan="3">{% trans 'No existen campañas' %}</td>
         </tr>
     {% endfor %}
 {% endblock %}
@@ -70,28 +71,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td width="14%">
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignDeleted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Opciones
+                    {% trans 'Opciones' %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignDeleted">
                         <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                            <span class="icon icon-plus"></span>Agregar agentes
+                            <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_manual_supervisors' campana.pk %}">
-                            <span class="icon icon-eye"></span>Dar permisos para ver
+                            <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                            <span class="icon icon-list"></span>Calificaciones
+                            <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                            <span class="icon icon-graph"></span>Reportes
+                            <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                         </a>
                         {% if campana.oculto %}
                             <a class="dropdown-item" href="{% url 'campana_manual_desocultar' campana.pk %}">
-                                <span class="icon icon-eye"></span>Hacer visible
+                                <span class="icon icon-eye"></span>{% trans 'Hacer visible' %}
                             </a>
                         {% else %}
                             <a class="dropdown-item" href="{% url 'campana_manual_ocultar' campana.pk %}" >
-                                <span class="icon icon-eye-slash"></span>Ocultar
+                                <span class="icon icon-eye-slash"></span>{% trans 'Ocultar' %}
                             </a>
                         {% endif %}
                     </div>
@@ -100,7 +101,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
     {% empty %}
         <tr>
-            <td colspan="3">No existen campañas</td>
+            <td colspan="3">{% trans 'No existen campañas' %}</td>
         </tr>
     {% endfor %}
 {% endblock %}

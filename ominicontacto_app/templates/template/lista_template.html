@@ -19,17 +19,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 
 {% block content %}
 
-    <h1>Templates de campañas dialer</h1>
+    <h1>{% trans 'Templates de campañas dialer' %}</h1>
     <table class="table table-stripped">
         <thead>
             <tr>
-                <th>Nombre</th>
+                <th>{% trans 'Nombre' %}</th>
 
-                <th>Acciones&nbsp;&nbsp;</th>
+                <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
 
             </tr>
         </thead>
@@ -49,18 +50,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td width="14%">
                     <div class="dropdown">
                       <button class="btn btn-light dropdown-toggle" type="button" id="dropdownEditMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Opciones
+                      {% trans 'Opciones' %}
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownEditMenu">
-                        <a class="dropdown-item" href="{% url 'crea_campana_dialer_template' campana.pk 0 %}"><span class="icon icon-plus" aria-hidden="true"></span>Crear campaña de template</a>
-                        <a class="dropdown-item" href="{% url 'campana_dialer_template_elimina' campana.pk %}"><span class="icon icon-trash" aria-hidden="true"></span>Eliminar</a>
+                          <a class="dropdown-item" href="{% url 'crea_campana_dialer_template' campana.pk 0 %}"><span class="icon icon-plus" aria-hidden="true"></span>{% trans 'Crear campaña de template' %}</a>
+                          <a class="dropdown-item" href="{% url 'campana_dialer_template_elimina' campana.pk %}"><span class="icon icon-trash" aria-hidden="true"></span>{% trans 'Eliminar' %}</a>
                       </div>
                     </div>
                 </td>
             </tr>
        {% empty %}
         <tr>
-            <td colspan="5">No existen templates campañas dialer</td>
+            <td colspan="5">{% trans 'No existen templates campañas dialer' %}</td>
         </tr>
         {% endfor %}
         </tbody>

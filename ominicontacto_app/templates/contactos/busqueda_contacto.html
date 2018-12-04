@@ -41,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <body>
 
 <div id="wrapper-search">
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
     <div id="wrapperSearchForm" class="show">
         <form role="form" method="post" enctype="multipart/form-data" >
             {% csrf_token %}
@@ -51,7 +51,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                Buscar
+                {% trans 'Buscar' %}
             </button>
         </form>
     </div>
@@ -60,8 +60,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table">
     <thead>
         <tr>
-            <th>Teléfono</th>
-            <th>Acciones</th>
+            <th>{% trans 'Teléfono' %}</th>
+            <th>{% trans 'Acciones' %}</th>
         </tr>
     </thead>
     <tbody>
@@ -71,14 +71,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td>
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Opciones
+                        {% trans 'Opciones' %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                         <a class="dropdown-item" href="">
-                            <span class="icon icon-phone"></span>Llamar
+                            <span class="icon icon-phone"></span>{% trans 'Llamar' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'calificacion_formulario_update_or_create' campana.pk contacto.pk user.get_agente_profile.pk %}">
-                            <span class="icon icon-pencil"></span>Actualizar formulario
+                            <span class="icon icon-pencil"></span>{% trans 'Actualizar formulario' %}
                         </a>
                     </div>
                 </div>
@@ -86,7 +86,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
    {% empty %}
     <tr>
-        <td colspan="3">No existen contactos</td>
+        <td colspan="3">{% trans 'No existen contactos' %}</td>
     </tr>
     {% endfor %}
     </tbody>

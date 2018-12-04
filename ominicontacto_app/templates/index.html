@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 {% block content %}
 <div id="crm" class="crm"></div>
 <!--    <p>hola {{ user.first_name }} {{ user.last_name }} {{ user.username }}</p>
@@ -29,14 +30,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 {% block logueo %}
 <div class="wrapper-content welcome">
-	<h1>Bienvenidos a Omnileads</h1>
-	<h3>Debe loguearse para operar con nuestro sistema</h3>
+        <h1>{% trans 'Bienvenidos a Omnileads' %}</h1>
+	<h3>{% trans 'Debe loguearse para operar con nuestro sistema' %}</h3>
 	<br>
 	<div>
-		<a class="btn btn-primary" role="button" href="{% url 'login' %}">Ingresar</a>
+	    <a class="btn btn-primary" role="button" href="{% url 'login' %}">{% trans 'Ingresar' %}</a>
 	</div>
 	<div>
-		<a class="btn btn-outline-primary" role="button" href="/static/ominicontacto/voip.cert" target="_blank">bajar 	certificado digital</span></a>
+	    <a class="btn btn-outline-primary" role="button" href="/static/ominicontacto/voip.cert" target="_blank">{% trans 'bajar certificado digital' %}</span></a>
 	</div>
-	</div>        
+	</div>
 {% endblock %}

@@ -62,7 +62,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% with graficos_estadisticas=graficos_estadisticas %}
 <input id="campana_fecha_inicio" type="hidden" value="{{campana.fecha_inicio|date:"d/m/Y"}}">
-<h1>Campaña: {{campana.nombre}}</h1>
+<h1>{% trans 'Campaña:' %} {{campana.nombre}}</h1>
 <div class="jumbotron">
     <div class="form-row">
         {% if graficos_estadisticas.estadisticas.llamadas_pendientes != None %}

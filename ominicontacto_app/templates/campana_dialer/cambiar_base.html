@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
@@ -28,41 +29,41 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
               {{ form.non_field_errors }}
     <div class="form-group row">
         {{ form.bd_contacto.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">Base de Datos de Contactos:</label>
+        <label class="col-sm-3 control-label" for="{{ form.bd_contacto.id_for_label }}">{% trans 'Base de Datos de Contactos:' %}</label>
         <div class="col-sm-6">
               {{ form.bd_contacto }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.evitar_duplicados.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.evitar_duplicados.id_for_label }}">Evitar duplicados: </label>
+        <label class="col-sm-3 control-label" for="{{ form.evitar_duplicados.id_for_label }}">{% trans 'Evitar duplicados:' %}</label>
         <div class="col-sm-3">
               {{ form.evitar_duplicados }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.evitar_sin_telefono.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.evitar_sin_telefono.id_for_label }}">Evitar sin telefono: </label>
+        <label class="col-sm-3 control-label" for="{{ form.evitar_sin_telefono.id_for_label }}">{% trans 'Evitar sin teléfono:' %}</label>
         <div class="col-sm-3">
               {{ form.evitar_sin_telefono }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.prefijo_discador.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.prefijo_discador.id_for_label }}">Prefijo discador: </label>
+        <label class="col-sm-3 control-label" for="{{ form.prefijo_discador.id_for_label }}">{% trans 'Prefijo discador:' %}</label>
         <div class="col-sm-3">
               {{ form.prefijo_discador }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.telefonos.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.telefonos.id_for_label }}">Telefonos: </label>
+        <label class="col-sm-3 control-label" for="{{ form.telefonos.id_for_label }}">{% trans 'Teléfonos:' %}</label>
         <div class="col-sm-6">
               {{ form.telefonos }}
         </div>
     </div>
             <button type="submit" id="id_registrar" class="btn btn-primary">
-                Guardar
+                {% trans 'Guardar' %}
             </button>
 	    </form>
 

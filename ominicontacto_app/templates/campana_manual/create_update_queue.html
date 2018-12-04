@@ -19,17 +19,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
             <ul class="nav nav-tabs">
-                <li><a href="{% url 'campana_manual_update' campana.pk %}" >Campaña</a></li>
+                <li><a href="{% url 'campana_manual_update' campana.pk %}" >{% trans 'Campaña' %}</a></li>
                 <li class="active"><a>Cola</a></li>
             </ul>
             <br>
     <div class="col-md-4">
                 {% if object.name %}
-                    <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
+                    <p>{% trans 'Modificar datos de la cola' %}<strong>{{ object.name }}</strong></p>
                 {% endif %}
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
@@ -37,67 +38,65 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {{ form.campana }} {{form.name }}
     <div class="form-group row">
         {{ form.maxlen.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
+        <label class="col-sm-3 control-label" for="{{ form.maxlen.id_for_label }}">{% trans 'Cantidad Max de llamadas:' %}</label>
         <div class="col-sm-3">
               {{ form.maxlen }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.wrapuptime.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.wrapuptime.id_for_label }}">Tiempo de descanso entre llamadas:</label>
+        <label class="col-sm-3 control-label" for="{{ form.wrapuptime.id_for_label }}">{% trans 'Tiempo de descanso entre llamadas:' %}</label>
         <div class="col-sm-3">
               {{ form.wrapuptime }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.servicelevel.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.servicelevel.id_for_label }}">Nivel de Servicio:</label>
+        <label class="col-sm-3 control-label" for="{{ form.servicelevel.id_for_label }}">{% trans 'Nivel de Servicio:' %}</label>
         <div class="col-sm-3">
               {{ form.servicelevel }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.strategy.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.strategy.id_for_label }}">Estrategia de distribucion:</label>
+        <label class="col-sm-3 control-label" for="{{ form.strategy.id_for_label }}">{% trans 'Estrategia de distribución:' %}</label>
         <div class="col-sm-6">
               {{ form.strategy }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.weight.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.weight.id_for_label }}">Importancia de campaña:</label>
+        <label class="col-sm-3 control-label" for="{{ form.weight.id_for_label }}">{% trans 'Importancia de campaña:' %}</label>
         <div class="col-sm-3">
               {{ form.weight }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.wait.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.wait.id_for_label }}">Tiempo de espera en cola:</label>
+        <label class="col-sm-3 control-label" for="{{ form.wait.id_for_label }}">{% trans 'Tiempo de espera en cola:' %}</label>
         <div class="col-sm-3">
               {{ form.wait }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.auto_grabacion.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados:</label>
+        <label class="col-sm-3 control-label" for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
         <div class="col-sm-3">
               {{ form.auto_grabacion }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.detectar_contestadores.errors }}
-        <label class="col-sm-4 control-label" for="{{ form.detectar_contestadores.id_for_label }}">Detectar contestadores:</label>
+        <label class="col-sm-4 control-label" for="{{ form.detectar_contestadores.id_for_label }}">{% trans 'Detectar contestadores:' %}</label>
         <div class="col-sm-3">
-              {{ form.detectar_contestadores }}
+            {{ form.detectar_contestadores }}
         </div>
     </div>
     </br>
     <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
-        Finalizar
+        {% trans 'Finalizar' %}
     </button>
-
 </form>
-
 
 
 {% endblock %}

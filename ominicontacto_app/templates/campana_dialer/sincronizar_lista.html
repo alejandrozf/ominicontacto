@@ -39,23 +39,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {{ form.non_field_errors }}
         <div class="form-row">
             <div class="col-md-6">
-                <label for="{{ form.evitar_duplicados.id_for_label }}">Evitar duplicados: </label>
+                <label for="{{ form.evitar_duplicados.id_for_label }}">{% trans 'Evitar duplicados:' %}</label>
                 {{ form.evitar_duplicados }}
                 {{ form.evitar_duplicados.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.evitar_sin_telefono.id_for_label }}">Evitar sin telefono: </label>
+                <label for="{{ form.evitar_sin_telefono.id_for_label }}">{% trans 'Evitar sin telefono:' %}</label>
                 {{ form.evitar_sin_telefono }}
                 {{ form.evitar_sin_telefono.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.prefijo_discador.id_for_label }}">Prefijo discador: </label>
+                <label for="{{ form.prefijo_discador.id_for_label }}">{% trans 'Prefijo discador:' %}</label>
                 {{ form.prefijo_discador }}
                 {{ form.prefijo_discador.errors }}
             </div>
             {% if tipo_interaccion == 2 %}
                 <div class="col-md-6">
-                    <label for="{{ form.columnas.id_for_label }}">Columnas: </label>
+                    <label for="{{ form.columnas.id_for_label }}">{% trans 'Columnas:' %} </label>
                     {{ form.columnas }}
                     {{ form.columnas.errors }}
                 </div>

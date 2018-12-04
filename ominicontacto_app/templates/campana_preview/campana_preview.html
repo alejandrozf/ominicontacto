@@ -37,14 +37,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block tiempo_desconexion %}
     <div class="col-md-6">
         {{ form.tiempo_desconexion.errors }}
-        <label>Tiempo de desconexión: </label>
+        <label>{% trans 'Tiempo de desconexión:' %}</label>
         <!-- <div class="col-sm-3" data-toggle="tooltip" data-placement="top"
              title="A partir de este tiempo en minutos, un agente será desconectado de cualquier contacto que tenga asignado y no haya atendido">
-            
+
         </div> -->
         {{ form.tiempo_desconexion }}
         <small class="form-text text-muted">
-            A partir de este tiempo en minutos, un agente será desconectado de cualquier contacto que tenga asignado y no haya atendido.
-        </small>        
+            {% trans 'A partir de este tiempo en minutos, un agente será desconectado de cualquier contacto que tenga asignado y no haya atendido.' %}
+        </small>
     </div>
 {% endblock %}

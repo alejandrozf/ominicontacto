@@ -18,6 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,7 +48,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Error!</h4>
+            <h4>{% trans 'Error!' %}</h4>
             {{ message }}
         </div>
 
@@ -55,7 +56,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Atencion!</h4>
+            <h4>{% trans 'Atención!' %}</h4>
             {{ message }}
         </div>
 
@@ -63,7 +64,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Finalizado:</h4>
+            <h4>{% trans 'Finalizado:' %}</h4>
             {{ message }}
         </div>
 
@@ -71,21 +72,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-info">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
+            <h4>{% trans 'Información:' %}</h4>
             {{ message }}
         </div>
 
         {% elif "debug" in message.tags %} {# the same as "INFO" #}
         <div class="alert alert-info">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
+            <h4>{% trans 'Información:' %}</h4>
             {{ message }}
         </div>
 
         {% else %} {# the same as "INFO" #}
         <div class="alert alert-info">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
+            <h4>{% trans 'Información:' %}</h4>
             {{ message }}
         </div>
 
@@ -93,37 +94,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
        {% endfor %}
 <div class="row">
     <div class="col-md-9">
-        <p><strong>Agenda para el contacto con el telefono </strong>{{contacto.telefono}} </p>
+        <p><strong>{% trans 'Agenda para el contacto con el teléfono' %}</strong>{{contacto.telefono}} </p>
         <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
-    {{ form.non_field_errors }}
+            {{ form.non_field_errors }}
             {{ form.contacto}}
             {{ form.agente}}
             {{ form.campana}}
     <div class="form-group row">
         {{ form.fecha.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.fecha.id_for_label }}">Fecha: </label>
+        <label class="col-sm-3 control-label" for="{{ form.fecha.id_for_label }}">{% trans 'Fecha:' %}</label>
         <div class="col-sm-2">
             {{ form.fecha }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.hora.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.hora.id_for_label }}">Hora: </label>
+        <label class="col-sm-3 control-label" for="{{ form.hora.id_for_label }}">{% trans 'Hora:' %}</label>
         <div class="col-sm-2">
               {{ form.hora }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.tipo_agenda.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.tipo_agenda.id_for_label }}">Tipo: </label>
+        <label class="col-sm-3 control-label" for="{{ form.tipo_agenda.id_for_label }}">{% trans 'Tipo:' %}</label>
         <div class="col-sm-3">
               {{ form.tipo_agenda }}
         </div>
     </div>
     <div class="form-group row">
         {{ form.observaciones.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.observaciones.id_for_label }}">Observaciones: </label>
+        <label class="col-sm-3 control-label" for="{{ form.observaciones.id_for_label }}">{% trans 'Observaciones:' %}</label>
         <div class="col-sm-6">
               {{ form.observaciones }}
         </div>
@@ -132,7 +133,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </br>
             <input class="btn btn-danger" action="action" type="button" value="Volver a Calificacion" onclick="history.go(-1);" />
     <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
-        Guardar
+        {% trans 'Guardar' %}
     </button>
 
 

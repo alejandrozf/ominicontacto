@@ -16,7 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
--->
+ -->
+{% load i18n  %}
+
 {% for campana in borradas %}
     <tr>
         <td width="25%">
@@ -26,27 +28,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <td width="14%">
             <div class="dropdown">
                 <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Opciones
+                {% trans 'Opciones' %}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                     <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
-                        <span class="icon icon-eye"></span>Dar permiso para ver
+                        <span class="icon icon-eye"></span>{% trans 'Dar permiso para ver'  %}
                     </a>
                     <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                        <span class="icon icon-list"></span>Calificaciones
+                        <span class="icon icon-list"></span>{% trans 'Calificaciones'  %}
                     </a>
                     <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                        <span class="icon icon-graph"></span>Reportes
+                        <span class="icon icon-graph"></span>{% trans 'Reportes'  %}
                     </a>
                     {% if campana.oculto %}
                     <a class="dropdown-item campana-mostrar-esconder" href="" data="visible">
                         <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
-                        <span class="icon icon-eye"></span>Hacer visible
+                        <span class="icon icon-eye"></span>{% trans 'Hacer visible' %}
                     </a>
                     {% else %}
                     <a class="dropdown-item campana-mostrar-esconder" href="" data="ocultar">
                         <input class="hidden" name="campana-{{campana.pk}}" type="text" value={{ campana.pk }}>
-                        <span class="icon icon-eye-slash"></span>Ocultar
+                        <span class="icon icon-eye-slash"></span>{% trans 'Ocultar'  %}
                     </a>
                     {% endif %}
                 </div>
@@ -55,7 +57,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </tr>
 {% empty %}
     <tr>
-        <td colspan="3">No existen campañas</td>
+        <td colspan="3">{% trans 'No existen campañas' %}</td>
     </tr>
 {% endfor %}
 

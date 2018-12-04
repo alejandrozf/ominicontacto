@@ -348,27 +348,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   {{ campana.efectuadas }}
                   <div class="collapse multi-collapse-dialer">
                       <hr>
-                      {{ campana.atendidas }}<span class="label">atendidas</span>,
-                      {{ campana.conectadas }}<span class="label">conectadas</span>,
-                      {{ campana.expiradas }}<span class="label">expiradas</span>,
-                      {{ campana.abandonadas }}<span class="label">abandonadas</span>
+                      {{ campana.atendidas }}<span class="label">{% trans 'atendidas' %}</span>,
+                      {{ campana.conectadas }}<span class="label">{% trans 'conectadas' %}</span>,
+                      {{ campana.expiradas }}<span class="label">{% trans 'expiradas' %}</span>,
+                      {{ campana.abandonadas }}<span class="label">{% trans 'abandonadas' %}</span>
                   </div>
               </td>
               <td>
                   {{ campana.t_espera_conexion|format_seconds }}
                   <div class="collapse multi-collapse-dialer">
                       <hr>
-                      {{ campana.t_espera_atencion|format_seconds }}<span class="label">atención</span>,
-                      {{ campana.t_abandono|format_seconds }}<span class="label">abandono</span>
+                      {{ campana.t_espera_atencion|format_seconds }}<span class="label">{% trans 'atención' %}</span>,
+                      {{ campana.t_abandono|format_seconds }}<span class="label">{% trans 'abandono' %}</span>
                   </div>
               </td>
               <td>
                   {{ campana.efectuadas_manuales }}
                   <div class="collapse multi-collapse-dialer">
                       <hr>
-                      {{ campana.conectadas_manuales }}<span class="label">conectadas</span>,
-                      </span>{{ campana.no_conectadas_manuales }}<span class="label">no conec.</span>,
-                      {{ campana.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
+                      {{ campana.conectadas_manuales }}<span class="label">{% trans 'conectadas' %}</span>,
+                      </span>{{ campana.no_conectadas_manuales }}<span class="label">{% trans 'no conec.' %} </span>,
+                      {{ campana.t_espera_conexion_manuales|format_seconds }}<span class="label">{% trans 'espera' %}</span>
                   </div>
               </td>
             </tr>
@@ -380,27 +380,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                       {{ llamadas.efectuadas }}
                       <div class="collapse multi-collapse-dialer">
                           <hr>
-                          {{ llamadas.atendidas }}<span class="label">atendidas</span>,
-                          {{ llamadas.conectadas }}<span class="label">conectadas</span>,
-                          {{ llamadas.expiradas }}<span class="label">expiradas</span>,
-                          {{ llamadas.abandonadas }}<span class="label">abandonadas</span>
+                          {{ llamadas.atendidas }}<span class="label">{% trans 'atendidas' %}</span>,
+                          {{ llamadas.conectadas }}<span class="label">{% trans 'conectadas' %}</span>,
+                          {{ llamadas.expiradas }}<span class="label">{% trans 'expiradas' %}</span>,
+                          {{ llamadas.abandonadas }}<span class="label">{% trans 'abandonadas' %}</span>
                     </div>
                   </td>
                   <td>
                       {{ llamadas.t_espera_conexion|format_seconds }}
                       <div class="collapse multi-collapse-dialer">
                           <hr>
-                          {{ llamadas.t_espera_atencion|format_seconds }}<span class="label">atención</span>,
-                          {{ llamadas.t_abandono|format_seconds }}<span class="label">abandono</span>
+                          {{ llamadas.t_espera_atencion|format_seconds }}<span class="label">{% trans 'atención' %}</span>,
+                          {{ llamadas.t_abandono|format_seconds }}<span class="label">{% trans 'abandono' %}</span>
                       </div>
                   </td>
                   <td>
                       {{ llamadas.efectuadas_manuales }}
                       <div class="collapse multi-collapse-dialer">
                           <hr>
-                          {{ llamadas.conectadas_manuales }}<span class="label">conectadas</span>,
-                          {{ llamadas.no_conectadas_manuales }}<span class="label">no conectadas</span>,
-                          {{ llamadas.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
+                          {{ llamadas.conectadas_manuales }}<span class="label">{% trans 'conectadas' %}</span>,
+                          {{ llamadas.no_conectadas_manuales }}<span class="label">{% trans 'no conectadas' %}</span>,
+                          {{ llamadas.t_espera_conexion_manuales|format_seconds }}<span class="label">{% trans 'espera' %}</span>
                       </div>
                   </td>
                 </tr>
@@ -430,7 +430,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <h2>{% trans 'Distribucion de tipos de llamadas en campañas entrantes' %}</h2>
   <br>
   <div class="wrapper-table table-responsive">
-    <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-incoming" aria-expanded="false">Información completa</button>
+      <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-incoming" aria-expanded="false">{% trans 'Información completa' %}</button>
     <hr class="hr-space">
     <table class="table">
       <thead>
@@ -457,25 +457,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ campana.recibidas }}
                 <div class="collapse multi-collapse-incoming">
                     <hr>
-                    {{ campana.atendidas }}<span class="label">atendidas</span>,
-                    {{ campana.expiradas }}<span class="label">expiradas</span>,
-                    {{ campana.abandonadas }}<span class="label">abandonadas</span>
+                    {{ campana.atendidas }}<span class="label">{% trans 'atendidas' %}</span>,
+                    {{ campana.expiradas }}<span class="label">{% trans 'expiradas' %}</span>,
+                    {{ campana.abandonadas }}<span class="label">{% trans 'abandonadas' %}</span>
                 </div>
             </td>
             <td>
                 {{ campana.t_espera_conexion|format_seconds }}
                 <div class="collapse multi-collapse-incoming">
                     <hr>
-                    {{ campana.t_abandono|format_seconds }}<span class="label">abandono</span>
+                    {{ campana.t_abandono|format_seconds }}<span class="label">{% trans 'abandono' %}</span>
                 </div>
             </td>
             <td>
                 {{ campana.efectuadas_manuales }}
                 <div class="collapse multi-collapse-incoming">
                     <hr>
-                    {{ campana.conectadas_manuales }}<span class="label">conectadas</span>,
-                    {{ campana.no_conectadas_manuales }}<span class="label">no conec.</span>,
-                    {{ campana.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
+                    {{ campana.conectadas_manuales }}<span class="label">{% trans 'conectadas' %}</span>,
+                    {{ campana.no_conectadas_manuales }}<span class="label">{% trans 'no conec.' %}</span>,
+                    {{ campana.t_espera_conexion_manuales|format_seconds }}<span class="label">{% trans 'espera' %}</span>
                 </div>
             </td>
           </tr>
@@ -487,25 +487,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ llamadas.recibidas }}
                     <div class="collapse multi-collapse-incoming">
                         <hr>
-                        {{ llamadas.atendidas }}<span class="label">atendidas</span>,
-                        {{ llamadas.expiradas }}<span class="label">expiradas</span>,
-                        {{ llamadas.abandonadas }}<span class="label">abandonadas</span>
+                        {{ llamadas.atendidas }}<span class="label">{% trans 'atendidas' %}</span>,
+                        {{ llamadas.expiradas }}<span class="label">{% trans 'expiradas' %}</span>,
+                        {{ llamadas.abandonadas }}<span class="label">{% trans 'abandonadas' %}</span>
                     </div>
                 </td>
                 <td>
                     {{ llamadas.t_espera_conexion|format_seconds }}
                     <div class="collapse multi-collapse-incoming">
                         <hr>
-                        {{ llamadas.t_abandono|format_seconds }}<span class="label">abandono</span>
+                        {{ llamadas.t_abandono|format_seconds }}<span class="label">{% trans 'abandono' %}</span>
                     </div>
                 </td>
                 <td>
                     {{ llamadas.efectuadas_manuales }}
                     <div class="collapse multi-collapse-incoming">
                         <hr>
-                        {{ llamadas.conectadas_manuales }}<span class="label">conectadas</span>,
-                        {{ llamadas.no_conectadas_manuales }}<span class="label">no conec.</span>,
-                        {{ llamadas.t_espera_conexion_manuales|format_seconds }}<span class="label">espera</span>
+                        {{ llamadas.conectadas_manuales }}<span class="label">{% trans 'conectadas' %}</span>,
+                        {{ llamadas.no_conectadas_manuales }}<span class="label">{% trans 'no conec.' %}</span>,
+                        {{ llamadas.t_espera_conexion_manuales|format_seconds }}<span class="label">{% trans 'espera' %}</span>
                     </div>
                 </td>
               </tr>
@@ -560,8 +560,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ campana.efectuadas }}
                 <div class="collapse multi-collapse-manual">
                     <hr>
-                    {{ campana.conectadas }}<span class="label">conectadas</span>,
-                    {{ campana.no_conectadas }}<span class="label">no conec.</span>
+                    {{ campana.conectadas }}<span class="label">{% trans 'conectadas' %}</span>,
+                    {{ campana.no_conectadas }}<span class="label">{% trans 'no conec.' %}</span>
                 </div>
             </td>
             <td>{{ campana.t_espera_conexion|format_seconds }}</td>
@@ -574,8 +574,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ llamadas.efectuadas }}
                     <div class="collapse multi-collapse-manual">
                         <hr>
-                        {{ llamadas.conectadas }}<span class="label">conectadas</span>,
-                        {{ llamadas.no_conectadas }}<span class="label">no conec.</span>
+                        {{ llamadas.conectadas }}<span class="label">{% trans 'conectadas' %}</span>,
+                        {{ llamadas.no_conectadas }}<span class="label">{% trans 'no conec.' %}</span>
                     </div>
                 </td>
                 <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
@@ -633,8 +633,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ campana.efectuadas }}
             <div class="collapse multi-collapse-preview">
                 <hr>
-                {{ campana.conectadas }}<span class="label">conectadas</span>,
-                {{ campana.no_conectadas }}<span class="label">no conec.</span>
+                {{ campana.conectadas }}<span class="label">{% trans 'conectadas' %}</span>,
+                {{ campana.no_conectadas }}<span class="label">{% trans 'no conec.' %}</span>
             </div>
         </td>
         <td>{{ campana.t_espera_conexion|format_seconds }}</td>
@@ -642,8 +642,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ campana.efectuadas_manuales }}
             <div class="collapse multi-collapse-preview">
                 <hr>
-                {{ campana.conectadas_manuales }}<span class="label">conectadas</span>,
-                {{ campana.no_conectadas_manuales }}<span class="label">no conec.</span>
+                {{ campana.conectadas_manuales }}<span class="label">{% trans 'conectadas' %}</span>,
+                {{ campana.no_conectadas_manuales }}<span class="label">{% trans 'no conec.' %}</span>
             </div>
         </td>
         <td>{{ campana.t_espera_conexion_manuales|format_seconds }}</td>
@@ -656,8 +656,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ llamadas.efectuadas }}
                 <div class="collapse multi-collapse-preview">
                     <hr>
-                    {{ llamadas.conectadas }}<span class="label">conectadas</span>,
-                    {{ llamadas.no_conectadas }}<span class="label">no conec.</span>
+                    {{ llamadas.conectadas }}<span class="label">{% trans 'conectadas' %}</span>,
+                    {{ llamadas.no_conectadas }}<span class="label">{% trans 'no conec.' %}</span>
                 </div>
             </td>
             <td>{{ llamadas.t_espera_conexion|format_seconds }}</td>
@@ -665,8 +665,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ llamadas.efectuadas_manuales }}
                 <div class="collapse multi-collapse-preview">
                     <hr>
-                    {{ llamadas.conectadas_manuales }}<span class="label">conectadas</span>,
-                    {{ llamadas.no_conectadas_manuales }}<span class="label">no conec.</span>
+                    {{ llamadas.conectadas_manuales }}<span class="label">{% trans 'conectadas' %}</span>,
+                    {{ llamadas.no_conectadas_manuales }}<span class="label">{% trans 'no conec.' %}</span>
                 </div>
             </td>
             <td>{{ llamadas.t_espera_conexion_manuales|format_seconds }}</td>
@@ -723,7 +723,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -759,7 +759,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -795,7 +795,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -829,7 +829,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -863,7 +863,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

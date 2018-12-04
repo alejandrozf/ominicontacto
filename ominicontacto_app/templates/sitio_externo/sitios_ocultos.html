@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
+{% load i18n  %}
 
                         {% for sitio in sitios_externos %}
                             <tr>
@@ -29,11 +30,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <td>
                                     {% if sitio.oculto %}
                                     <a class="btn btn-light" href="{% url 'desoculta_sitio_externo' sitio.pk %}">
-                                        <span class="icon icon-eye" aria-hidden="true" title="visible"></span>Hacer visible
+                                        <span class="icon icon-eye" aria-hidden="true" title="visible"></span>{% trans 'Hacer visible' %}
                                     </a>
                                     {% else %}
                                     <a class="btn btn-light" href="{% url 'oculta_sitio_externo' sitio.pk %}" >
-                                        <span class="icon icon-eye-slash" aria-hidden="true" title="ocultar"></span>Ocultar
+                                        <span class="icon icon-eye-slash" aria-hidden="true" title="ocultar"></span>{% trans 'Ocultar' %}
                                     </a>
                                     {% endif %}
 
@@ -42,7 +43,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% empty %}
                             <tr>
                                 <td colspan="3">
-                                    <p>No se encontraron sitios externos creados.</p>
+                                    <p>{% trans 'No se encontraron sitios externos creados.' %}</p>
                                 </td>
                             </tr>
                         {% endfor %}

@@ -19,23 +19,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
     <form method="post">{% csrf_token %}
          {% if es_template %}
-                        <h1>Template "{{ object.nombre_template }}"</h1>
-                        <p>¿Esta seguro que desea eliminar este Template? </p>
+                        <h1>{% blocktrans %}Template "{{ object.nombre_template }}"{% endblocktrans %}</h1>
+                        <p>{% trans '¿Está seguro que desea eliminar este Template?' %}</p>
                     {% else %}
-                        <h1>Campaña "{{ object.nombre }}"</h1>
-                        <p>¿Esta seguro que desea eliminar esta Campaña? </p>
+                        <h1>{% blocktrans %}Campaña "{{ object.nombre }}"{% endblocktrans %}</h1>
+                        <p>{% trans '¿Está seguro que desea eliminar esta Campaña?' %}</p>
                     {% endif %}
 
-        <button type="submit" class="btn btn-danger">Eliminar</button>
+         <button type="submit" class="btn btn-danger">{% trans 'Eliminar' %}</button>
         {% if es_template %}
-        <a class="btn btn-outline-danger" href="{% url 'lista_campana_dialer_template' %}">Cancelar</a>
+            <a class="btn btn-outline-danger" href="{% url 'lista_campana_dialer_template' %}">{% trans 'Cancelar' %}</a>
         {% else %}
-        <a class="btn btn-outline-danger" href="{% url 'campana_dialer_list' %}">Cancelar</a>
+            <a class="btn btn-outline-danger" href="{% url 'campana_dialer_list' %}">{% trans 'Cancelar' %}</a>
         {% endif %}
     </form>
 

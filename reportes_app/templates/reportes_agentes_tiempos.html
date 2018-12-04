@@ -160,7 +160,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 {% block content %}
 
-<h1>Agentes</h1>
+<h1>{% trans 'Agentes' %}</h1>
 <div id="wrapper-search">
 
     <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>{% trans "Buscar" %}</button>
@@ -203,7 +203,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% if graficos_estadisticas  %}
 
 <div>
-    <h2>Periodo: {{graficos_estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
+    <h2>{% trans 'Período:' %} {{graficos_estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
     <hr>
     <div class="wrapper-table table-responsive">
         <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-stats" aria-expanded="false">{% trans "Información completa" %}</button>
@@ -232,19 +232,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </td>
                         <td>
                             {% if agente.get_string_tiempo_sesion %}
-                                {{agente.get_string_tiempo_sesion}}hs
+                                {{agente.get_string_tiempo_sesion}}{% trans 'hs' %}
                             {% else %}
-                                0hs
+                                0{% trans 'hs' %}
                             {% endif %}
                             <div class="collapse multi-collapse-stats">
                                 <hr>
                                 {% if agente.get_string_tiempo_pausa %}
-                                    {{agente.get_string_tiempo_pausa}}hs
+                                    {{agente.get_string_tiempo_pausa}}{% trans 'hs' %}
                                 {% else %}
-                                    0hs
+                                    0{% trans 'hs' %}
                                 {% endif %}
                                 <span class="label">{% trans "pausa" %}</span>,
-                                {{agente.get_string_tiempo_llamada}}hs
+                                {{agente.get_string_tiempo_llamada}}{% trans 'hs' %}
                                 <span class="label">{% trans "llamada" %}</span>
                             </div>
                         </td>
@@ -273,7 +273,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </div>
                         </td>
                         <td>{{agente.cantidad_llamadas_procesadas}}</td>
-                        <td>{{agente.tiempo_promedio_llamadas|default_if_none:0}}s</td>
+                        <td>{{agente.tiempo_promedio_llamadas|default_if_none:0}}{% trans 's' %}</td>
                         <td>{{agente.cantidad_intentos_fallidos}}</td>
                     </tr>
                     {% endfor %}
@@ -305,7 +305,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </td>
                     <td>{{agente.pausa}}</td>
                     <td>{{agente.tipo_de_pausa}}</td>
-                    <td>{{agente.tiempo}}hs</td>
+                    <td>{{agente.tiempo}}{% trans 'hs' %}</td>
                 </tr>
             {% endfor %}
             <tbody>
@@ -332,7 +332,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <tr>
                     <td>{{agente.0}}</td>
                     <td>{{agente.1}}</td>
-                    <td>{{agente.2}}hs</td>
+                    <td>{{agente.2}}{% trans 'hs' %}</td>
                     <td>{{agente.3}}</td>
 
                 </tr>

@@ -64,18 +64,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block form_render %}
     {% with form as form %}
         {% if object.name %}
-            <p>Modificar datos de la cola <strong>{{ object.name }}</strong></p>
+            <p>{% trans 'Modificar datos de la cola' %}<strong>{{ object.name }}</strong></p>
         {% endif %}
         {{ form.non_field_errors }}
         {{ form.campana }} {{form.name }}
         <div class="form-row">
             <div class="col-md-6">
-                <label for="{{ form.maxlen.id_for_label }}">Cantidad Max de llamadas: </label>
+                <label for="{{ form.maxlen.id_for_label }}">{% trans 'Cantidad Max de llamadas:' %}</label>
                 {{ form.maxlen }}
                 {{ form.maxlen.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.wrapuptime.id_for_label }}">Tiempo de descanso entre llamadas:</label>
+                <label for="{{ form.wrapuptime.id_for_label }}">{% trans 'Tiempo de descanso entre llamadas:' %}</label>
                 {{ form.wrapuptime }}
                 {{ form.wrapuptime.errors }}
                 <small class="form-text text-muted">
@@ -83,22 +83,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </small>
             </div>
             <div class="col-md-6">
-                <label for="{{ form.servicelevel.id_for_label }}">Nivel de Servicio:</label>
+                <label for="{{ form.servicelevel.id_for_label }}">{% trans 'Nivel de Servicio:' %}</label>
                 {{ form.servicelevel }}
                 {{ form.servicelevel.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.strategy.id_for_label }}">Estrategia de distribucion:</label>
+                <label for="{{ form.strategy.id_for_label }}">{% trans 'Estrategia de distribución:' %}</label>
                 {{ form.strategy }}
                 {{ form.strategy.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.weight.id_for_label }}">Importancia de campaña:</label>
+                <label for="{{ form.weight.id_for_label }}">{% trans 'Importancia de de campaña:' %}</label>
                 {{ form.weight }}
                 {{ form.weight.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.wait.id_for_label }}">Tiempo de espera en cola:</label>
+                <label for="{{ form.wait.id_for_label }}">{% trans 'Tiempo de espera en cola:' %}</label>
                 {{ form.wait }}
                 {{ form.wait.errors }}
                 <small class="form-text text-muted">
@@ -106,32 +106,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </small>
             </div>
             <div class="col-md-6">
-                <label for="{{ form.auto_grabacion.id_for_label }}">Grabar llamados:</label>
+                <label for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
                 {{ form.auto_grabacion }}
                 {{ form.auto_grabacion.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.detectar_contestadores.id_for_label }}">Detectar contestadores:</label>
+                <label for="{{ form.detectar_contestadores.id_for_label }}">{% trans 'Detectar contestadores:' %}</label>
                 {{ form.detectar_contestadores }}
                 {{ form.detectar_contestadores.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.audio_para_contestadores.id_for_label }}">Audio para contestadores:</label>
+                <label for="{{ form.audio_para_contestadores.id_for_label }}">{% trans 'Audio para contestadores:' %}</label>
                 {{ form.audio_para_contestadores }}
                 {{ form.audio_para_contestadores.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.initial_predictive_model.id_for_label }}">Activar predictividad:</label>
+                <label for="{{ form.initial_predictive_model.id_for_label }}">{% trans 'Activar predictividad:' %}</label>
                 {{ form.initial_predictive_model }}
                 {{ form.initial_predictive_model.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.initial_boost_factor.id_for_label }}">Factor de boost inicial:</label>
+                <label for="{{ form.initial_boost_factor.id_for_label }}">{% trans 'Factor de boost inicial:' %}</label>
                 {{ form.initial_boost_factor }}
                 {{ form.initial_boost_factor.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.dial_timeout.id_for_label }}">Dial timeout:</label>
+                <label for="{{ form.dial_timeout.id_for_label }}">{% trans 'Dial timeout:' %}</label>
                 {{ form.dial_timeout }}
                 <small class="form-text text-muted">
                     {{ form.dial_timeout.help_text }}

@@ -23,12 +23,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% trans 'TEXTO TRADUCIBLE' %}
 
 {% block content %}
-<h1>Usuarios Api Crm</h1>
+<h1>{% trans 'Usuarios Api Crm' %}</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>usuario</th>
+            <th>{% trans 'usuario' %}</th>
         </tr>
     </thead>
     <tbody>
@@ -41,15 +41,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </a> -->
               <div class="dropdown">
                   <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Opciones
+                  {% trans 'Opciones' %}
                   </button>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                       <a class="dropdown-item" href="{% url 'user_api_crm_update' user.id %}">
-                         <span class="icon icon-pencil"></span>Editar
+                       <span class="icon icon-pencil"></span>{% trans 'Editar' %}
                       </a>
                       {% if usuario.id != 1 %}
                       <a class="dropdown-item" href="{% url 'user_api_crm_delete' user.id %}">
-                          <span class="icon icon-trash"></span>Eliminar
+                          <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                       </a>
                       {% endif %}
                   </div>
@@ -58,7 +58,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
    {% empty %}
     <tr>
-        <td>No existen usuarios api crm</td>
+        <td>{% trans 'No existen usuarios api crm' %}</td>
     </tr>
     {% endfor %}
     </tbody>

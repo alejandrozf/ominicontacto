@@ -19,8 +19,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %} Logueo Usuario {% endblock %}
+{% block title %} {% trans 'Logueo Usuario' %} {% endblock %}
 
 {% block logueo %}
   {% if user_is_blocked %}
@@ -30,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   {% elif not user.is_authenticated %}
     {% if form.errors and not user_is_blocked%}
         <div class="alert alert-danger">
-          <p> Username/password incorrecto ingrese nuevamente los datos </p>
+            <p> {% trans 'Username/password incorrecto ingrese nuevamente los datos' %}</p>
     {% endif %}
         </div>
         <div class="wrapper-content login">
@@ -41,7 +42,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label">Usuario</label>
+                    <label class="control-label">{% trans 'Usuario' %}</label>
                     <div>
                         {{ form.username }}
                         <span class="help-inline text-danger">
@@ -51,7 +52,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                  </div>
 
                 <div class="form-group">
-                    <label class="control-label">Clave</label>
+                    <label class="control-label">{% trans 'Clave' %}</label>
                     <div>
                         {{ form.password }}
                         <span class="help-inline text-danger">
@@ -59,10 +60,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </span>
                     </div>
                  </div>
-
                 <br>
-
-                <button class="btn btn-outline-primary" type="submit" >Ingresar</button>
+                <button class="btn btn-outline-primary" type="submit" >{% trans 'Ingresar' %}</button>
             </form>
         </div>
   {% endif %}

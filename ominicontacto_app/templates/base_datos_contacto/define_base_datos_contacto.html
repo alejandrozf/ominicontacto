@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% load crispy_forms_tags %}
 
@@ -27,7 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% if estructura_archivo %}
                     <form role="form" method="post" enctype="multipart/form-data" >
                         {% csrf_token %}
-                        
+
                         <div class="bs-callout bs-callout-info">
                            <!-- <h4>Columna Teléfono.</h4>
                             <p>Debe seleccionar la columna en la que se encuntran los número de teléfono que se deben importar.</p>
@@ -35,21 +36,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
                         {% if error_predictor %}
                             <div class="bs-callout bs-callout-danger">
-                                <h4>Falló predictor de CSV.</h4>
-                                <p>No se pudo predecir el formato del archivo csv subido.</p>
+                                <h4>{% trans 'Falló predictor de CSV.' %}</h4>
+                                <p>{% trans 'No se pudo predecir el formato del archivo csv subido.' %}</p>
                             </div>
                         {% endif %}
                         {% if error_predictor_encabezado %}
                             <div class="bs-callout bs-callout-danger">
-                                <h4>Falló predictor de CSV.</h4>
-                                <p>No se pudo predecir el formato del archivo csv subido. El nombre de la primera columna debe llamarse telefono</p>
+                                <h4>{% trans 'Falló predictor de CSV.' %}</h4>
+                                <p>{% trans 'No se pudo predecir el formato del archivo csv subido. El nombre de la primera columna debe llamarse teléfono' %}</p>
                             </div>
                         {% endif %}
-                       
+
                        <div class="col-lg-12 over-x-scroll border-osc mg-bt-10 pd-tp-15">
                             <table class="table table-bordered tb-x-scroll">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         {% for field in form_columna_telefono.telefono %}
                                             <th>
                                                 <div class="radio {% if form_columna_telefono.errors %}has-error{% endif %}">
@@ -60,12 +61,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                             </th>
                                         {% endfor %}
                                     </tr>
-                                    <tr> 
+                                    <tr>
                                         {% for field in form_datos_extras %}
                                             <th>{{ field|as_crispy_field }}</th>
                                         {% endfor %}
                                     </tr>
-                                    <tr> 
+                                    <tr>
                                         {% for field in form_nombre_columnas %}
                                             <th>{{ field|as_crispy_field }}</th>
                                         {% endfor %}
@@ -80,26 +81,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 {% for cols in estructura_archivo %}
                                     <tr>
                                         {% for col in cols %}
-                                            <td>{{ col }}</td>       
-                                        {% endfor %}            
+                                            <td>{{ col }}</td>
+                                        {% endfor %}
                                     </tr>
                                 {% endfor %}
-                                </tbody> 
+                                </tbody>
                             </table>
                             {% if error %}
-                                <p class="text-danger">Es requerido que seleccione la columna que contengan los números de Teléfono.</p>
+                                <p class="text-danger">{% trans 'Es requerido que seleccione la columna que contengan los números de Teléfono.' %}</p>
                             {% endif %}
 
                         </div>
-                        
+
                         <br>
                         <a href="{% url 'nueva_base_datos_contacto' %}">
                                             <button type="button" class="btn btn-danger btn-sm">
-                                               Volver a nueva base de datos
+                                                {% trans 'Volver a nueva base de datos' %}
                                             </button>
                         </a>
                         <button type="submit" id="id_guardar" class="btn btn-success btn-lg modal_proceso_grande">
-                            Guardar Base Datos
+                            {% trans 'Guardar Base Datos' %}
                         </button>
 
 
@@ -109,7 +110,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <thead>
                             <th>
                                 <p class="text-center text-danger">
-                                    <em>No se pudo procesar el archivo.</em>
+                                    <em>{% trans 'No se pudo procesar el archivo.' %}</em>
                                 </p>
                             </th>
                         </thead>

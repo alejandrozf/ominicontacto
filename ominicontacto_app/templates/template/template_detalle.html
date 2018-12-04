@@ -19,23 +19,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block content %}
-<h1>Template {{object.nombre_template}}</h1>
+<h1>{% blocktrans %}Template {{object.nombre_template}}{% endblocktrans %}</h1>
         <table class="table table-striped">
             <tr>
-                <td><strong>Template de campaña dialer </strong></td>
+                <td><strong>{% trans 'Template de campaña dialer' %} </strong></td>
                 <td>{{object.nombre_template}}</td>
             </tr>
             <tr>
-                <td>Nombre de campana</td>
+                <td>{% trans 'Nombre de campana' %}</td>
                 <td>{{object.nombre}}</td>
             </tr>
             <tr>
-                <td>Calificacion campana</td>
+                <td>{% trans 'Calificación campana' %}</td>
                 <td>{{object.calificacion_campana}}</td>
             </tr>
             <tr>
-                <td>Tipo de interacion {{object.get_tipo_interaccion_display}}: </td>
+                <td>{% trans 'Tipo de interacción' %} {{object.get_tipo_interaccion_display}}: </td>
                 <td>
                     {% if object.tipo_interaccion == 1 %}
                     {{ object.formulario }}
@@ -45,34 +47,34 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </td>
             </tr>
             <tr>
-                <td colspan="2"><strong>Cola</strong></td>
+                <td colspan="2"><strong>{% trans 'Cola' %}</strong></td>
             </tr>
             <tr>
-                <td>Cantidad Max de llamadas:</td>
+                <td>{% trans 'Cantidad Max de llamadas:' %}</td>
                 <td>{{object.queue_campana.maxlen}}</td>
             </tr>
             <tr>
-                <td>Tiempo de descanso entre llamadas:</td>
+                <td>{% trans 'Tiempo de descanso entre llamadas:' %}</td>
                 <td>{{object.queue_campana.wrapuptime}}</td>
             </tr>
             <tr>
-                <td>Nivel de Servicio:</td>
+                <td>{% trans 'Nivel de Servicio:' %}</td>
                 <td>{{object.queue_campana.servicelevel}}</td>
             </tr>
             <tr>
-                <td>Estrategia de distribucion:</td>
+                <td>{% trans 'Estrategia de distribución:' %}</td>
                 <td>{{object.queue_campana.get_strategy_display}}</td>
             </tr>
             <tr>
-                <td>Importancia de campaña:</td>
+                <td>{% trans 'Importancia de campaña:' %}</td>
                 <td>{{object.queue_campana.weight}}</td>
             </tr>
             <tr>
-                <td>Tiempo de espera en cola:</td>
+                <td>{% trans 'Tiempo de espera en cola:' %}</td>
                 <td>{{object.queue_campana.wait}}</td>
             </tr>
             <tr>
-                <td>Grabar llamados:</td>
+                <td>{% trans 'Grabar llamados:' %}</td>
                 <td>
                     {% if object.queue_campana.auto_grabacion %}
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -82,7 +84,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </td>
             </tr>
             <tr>
-                <td>Detectar contestadores:</td>
+                <td>{% trans 'Detectar contestadores:' %}</td>
                 <td>
                     {% if object.queue_campana.detectar_contestadores %}
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -92,26 +94,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </td>
             </tr>
             <tr>
-                <td>Dias de actuacion:</td>
+                <td>{% trans 'Días de actuación:' %}</td>
                 <td>{{object.actuacionvigente.get_dias_vigente_display}}</td>
             </tr>
             <tr>
-                <td>Horario de actuacion:</td>
+                <td>{% trans 'Horario de actuación:' %}</td>
                 <td>{{object.actuacionvigente.hora_desde}}hs - {{object.actuacionvigente.hora_hasta}}hs</td>
             </tr>
         </table>
         <br>
     <div>
-        <h2>Reglas de incidencia</h2> 
+        <h2>{% trans 'Reglas de incidencia' %}</h2>
         <br>
         <table class="table table-hover">
             <thead>
             <tr class="fts-table-bg">
-                <th>Estado</th>
-                <th>Con estado personalizado</th>
-                <th>Reintentar más tarde</th>
-                <th>Modo de reintento</th>
-                <th>Intento max.</th>
+                <th>{% trans 'Estado' %}</th>
+                <th>{% trans 'Con estado personalizado' %}</th>
+                <th>{% trans 'Reintentar más tarde' %}</th>
+                <th>{% trans 'Modo de reintento' %}</th>
+                <th>{% trans 'Intento max.' %}</th>
             </tr>
             </thead>
             <tbody>
@@ -131,15 +133,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <tr>
                         <td colspan="5  ">
                             <p class="text-center text-danger">
-                                <em>No se encontraron reglas creadas.</em>
+                                <em>{% trans 'No se encontraron reglas creadas.' %}</em>
                             </p>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
-        </table>           
+        </table>
     </div>
     <hr>
-    <a href="{% url 'lista_campana_dialer_template' %}" class="btn btn-outline-primary">Volver a listado de template</a>
-
+    <a href="{% url 'lista_campana_dialer_template' %}" class="btn btn-outline-primary">{% trans 'Volver a listado de template' %}</a>
 {% endblock %}

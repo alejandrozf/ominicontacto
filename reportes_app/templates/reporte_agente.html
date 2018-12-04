@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_js %}
 <script type="text/javascript">
  $(function() {
@@ -61,7 +62,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% with graficos_estadisticas=graficos_estadisticas %}
 <div class="col-md-12">
-    <h4>Agente {{agente.user.get_full_name}}</h4>
+    <h4>{% trans 'Agente' %} {{agente.user.get_full_name}}</h4>
 </div>
 <div class="col-md-6">
 
@@ -78,12 +79,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                </td>
                <td>
                    <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                        Filtrar por esa fecha
-                </button>
+                       {% trans 'Filtrar por esa fecha' %}
+                   </button>
                </td>
            </tr>
         </table>
-
     </form>
 </div>
 
@@ -94,7 +94,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <thead>
                             <tr class="fts-table-bg">
                                 <td colspan="2">
-                                    <h4>Cantidad de calificacion por el agente</h4>
+                                    <h4>{% trans 'Cantidad de calificaciones por el agente' %}</h4>
                                 </td>
                             </tr>
                         </thead>
@@ -104,8 +104,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <table class="table table-bordered">
                                         <thead>
                                         <tr>
-                                            <th>Calificacion</th>
-                                            <th>cantidad </th>
+                                            <th>{% trans 'Calificación' %}</th>
+                                            <th>{% trans 'cantidad' %} </th>
 
 
                                         </tr>
@@ -118,7 +118,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                                 </tr>
                                             {% endfor %}
                                                 <tr>
-                                                    <td><strong>Total asignados</strong></td>
+                                                    <td><strong>{% trans 'Total asignados' %}</strong></td>
                                                     <td><strong>{{graficos_estadisticas.total_asignados}}</strong></td>
                                                 </tr>
                                         </tbody>
@@ -138,15 +138,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Tiempo en sesión</th>
-            <th>Tiempo en pausa</th>
-            <th>Tiempo en llamada</th>
-            <th>Porcentaje en llamada</th>
-            <th>Porcentaje en pausa</th>
-            <th>Porcentaje en espera</th>
-            <th>Cantidad de llamadas procesadas</th>
-            <th>Tiempo promedio de llamadas</th>
-            <th>Cantidad de intentos fallidos</th>
+            <th>{% trans 'Tiempo en sesión' %}</th>
+            <th>{% trans 'Tiempo en pausa' %}</th>
+            <th>{% trans 'Tiempo en llamada' %}</th>
+            <th>{% trans 'Porcentaje en llamada' %}</th>
+            <th>{% trans 'Porcentaje en pausa' %}</th>
+            <th>{% trans 'Porcentaje en espera' %}</th>
+            <th>{% trans 'Cantidad de llamadas procesadas' %}</th>
+            <th>{% trans 'Tiempo promedio de llamadas' %}</th>
+            <th>{% trans 'Cantidad de intentos fallidos' %}</th>
         </tr>
     </thead>
 
@@ -170,7 +170,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <div class="col-md-12">
-    <a class="btn btn-default"  href="{% url 'campana_reporte_grafico' pk_campana %}">Volver a reporte campana</a>
+    <a class="btn btn-default"  href="{% url 'campana_reporte_grafico' pk_campana %}">{% trans 'Volver a reporte campana' %}</a>
 
 </div>
 

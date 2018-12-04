@@ -18,17 +18,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% extends 'campana_dialer/nueva_edita_campana.html' %}
+{% load i18n %}
 
 {% block tipo_interaccion %}
     {% if form.tipo_interaccion.value == 1 %}
         <div class="col-md-6">
-            <label>Formulario: </label>
+            <label>{% trans 'Formulario:' %} </label>
             {{ form.formulario }}
         </div>
     {% endif %}
     {% if form.tipo_interaccion.value == 2 %}
         <div class="col-md-6">
-            <label>Sitio externo: </label>
+            <label>{% trans 'Sitio externo:' %}</label>
             {{ form.sitio_externo }}
         </div>
     {% endif %}

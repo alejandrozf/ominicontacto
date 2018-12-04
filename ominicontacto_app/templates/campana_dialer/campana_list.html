@@ -116,7 +116,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td width="14%">
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignActive" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Opciones
+                        {% trans 'Opciones' %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignActive">
                             <a class="dropdown-item" href="{% url 'campana_dialer_update' campana.pk %}">
@@ -249,14 +249,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     {{ campana.bd_contacto }}
                     <a href="{% url 'campana_dialer_update_base' campana.pk %}">
-                        Cambiar
+                        {% trans 'Cambiar' %}
                     </a>
                 </td>
                 <td> {{campana.get_estado_display}}  </td>
                 <td width="14%">
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignInactive" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Opciones
+                        {% trans 'Opciones' %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignInactive">
                             <a class="dropdown-item" href="{% url 'campana_dialer_update' campana.pk %}">

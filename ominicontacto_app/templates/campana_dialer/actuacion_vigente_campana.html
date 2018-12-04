@@ -57,49 +57,49 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {{ form.errors }}
         <div class="form-row">
             <div class="col-sm-2">
-                <label for="{{ form.domingo.id_for_label }}">Domingo:</label>
+                <label for="{{ form.domingo.id_for_label }}">{% trans 'Domingo:' %}</label>
                 {{ form.domingo }}
                 {{ form.domingo.errors }}
             </div>
             <div class="col-sm-2">
-                <label for="{{ form.lunes.id_for_label }}">Lunes: </label>
+                <label for="{{ form.lunes.id_for_label }}">{% trans 'Lunes:' %}</label>
                 {{ form.lunes }}
                 {{ form.lunes.errors }}
             </div>
             <div class="col-sm-2">
-                <label for="{{ form.martes.id_for_label }}">Martes: </label>
+                <label for="{{ form.martes.id_for_label }}">{% trans 'Martes:' %}</label>
                 {{ form.martes }}
                 {{ form.martes.errors }}
             </div>
             <div class="col-sm-2">
-                <label for="{{ form.miercoles.id_for_label }}">Miercoles: </label>
+                <label for="{{ form.miercoles.id_for_label }}">{% trans 'Miércoles:' %}</label>
                 {{ form.miercoles }}
                 {{ form.miercoles.errors }}
             </div>
             <div class="col-sm-2">
-                <label for="{{ form.jueves.id_for_label }}">Jueves: </label>
+                <label for="{{ form.jueves.id_for_label }}">{% trans 'Jueves:' %}</label>
                 {{ form.jueves }}
                 {{ form.jueves.errors }}
             </div>
             <div class="col-sm-2">
-                <label for="{{ form.viernes.id_for_label }}">Viernes: </label>
+                <label for="{{ form.viernes.id_for_label }}">{% trans 'Viernes:' %}</label>
                 {{ form.viernes }}
                 {{ form.viernes.errors }}
             </div>
             <div class="col-sm-2">
-                <label for="{{ form.sabado.id_for_label }}">Sabado: </label>
+                <label for="{{ form.sabado.id_for_label }}">{% trans 'Sábado:' %}</label>
                 {{ form.sabado }}
                 {{ form.sabado.errors }}
             </div>
         </div>
         <div class="form-row">
             <div class="col-md-6">
-                <label for="{{ form.hora_desde.id_for_label }}">Hora desde: </label>
+                <label for="{{ form.hora_desde.id_for_label }}">{% trans 'Hora desde:' %}</label>
                 {{ form.hora_desde|attr:"id:id_hora_desde" }}
                 {{ form.hora_desde.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.hora_hasta.id_for_label }}">Hora hasta: </label>
+                <label for="{{ form.hora_hasta.id_for_label }}">{% trans 'Hora hasta:' %}</label>
                 {{ form.hora_hasta|attr:"id:id_hora_hasta" }}
                 {{ form.hora_hasta.errors }}
             </div>

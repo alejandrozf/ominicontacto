@@ -27,9 +27,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table">
     <thead>
         <tr>
-            <th>id</th>
-            <th>Nombre</th>
-            <th>Acciones</th>
+            <th>{% trans 'id' %}</th>
+            <th>{% trans 'Nombre' %}</th>
+            <th>{% trans 'Acciones' %}</th>
         </tr>
     </thead>
     <tbody>
@@ -40,14 +40,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td>
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Opciones
+                        {% trans 'Opciones' %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                         <a class="dropdown-item" href="{% url 'modulo_update' modulo.id %}">
-                            <span class="icon icon-pencil"></span>Editar
+                            <span class="icon icon-pencil"></span>{% trans 'Editar' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'modulo_delete' modulo.id %}">
-                            <span class="icon icon-trash"></span>Eliminar
+                            <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                         </a>
                     </div>
                 </div>
@@ -55,7 +55,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
    {% empty %}
     <tr>
-        <td>No existen modulos</td>
+        <td>{% trans 'No existen modulos' %}</td>
     </tr>
     {% endfor %}
     </tbody>

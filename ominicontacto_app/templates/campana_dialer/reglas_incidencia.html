@@ -102,7 +102,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </td>
                     {% endif %}
                     <td data-toggle="tooltip" data-placement="top"
-                        title="En segundos">{{ form.reintentar_tarde }}</td>
+                        title="{% trans 'En segundos' %}">{{ form.reintentar_tarde }}</td>
                     {% if form.instance.pk %}
                         <td>{{ form.get_en_modo_display}}</td>
                     {% endif %}

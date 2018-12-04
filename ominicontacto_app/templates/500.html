@@ -37,9 +37,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <body class="wrapper-page-error">
     <div class="page-error-bg"></div>
     <div>
-        <h1>Se ha producido un error<span>500</span></h1>
+        <h1>{% trans 'Se ha producido un error' %}<span>500</span></h1>
         <hr>
-        <p>Puede <a href="javascript:history.go(0);">reintentar</a> o <a href="/">volver a inicio</a>.</p>
+        <p>{% trans 'Puede' %} <a href="javascript:history.go(0);">{% trans 'reintentar' %}</a> {% trans 'o' %} <a href="/">{% trans 'volver a inicio.'  %}</a></p>
     </div>
 </body>
 </html>

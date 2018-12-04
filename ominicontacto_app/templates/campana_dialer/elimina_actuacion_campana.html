@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
@@ -26,9 +27,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-lg-8">
                 <form method="post">{% csrf_token %}
 
-                        <h4>Campaña <strong>{{ object.campana.nombre }}</strong></h4>
+                    <h4>{% trans 'Campaña' %} <strong>{{ object.campana.nombre }}</strong></h4>
 
-                    <h4>¿Esta seguro que desea eliminar la Actuación:  
+                    <h4>{% trans '¿Está seguro que desea eliminar la Actuación:' %}
                         <strong>
                             {{ object.get_dia_semanal_display }}:
                             {{ object.hora_desde }} -
@@ -36,12 +37,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </strong>?</h4>
 
                     <button type="submit" class="btn btn-danger btn-sm">
-                        <span class="glyphicon glyphicon-remove"></span> Eliminar
+                        <span class="glyphicon glyphicon-remove"></span> {% trans 'Eliminar' %}
                     </button>
 
-                        <a href="{% url 'actuacion_campana_dialer' object.campana.pk %}">Cancelar</a>
+                    <a href="{% url 'actuacion_campana_dialer' object.campana.pk %}">{% trans 'Cancelar' %}</a>
 
-                    
+
                 </form>
             </div>
         </div>

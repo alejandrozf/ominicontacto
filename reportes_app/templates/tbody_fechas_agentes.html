@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
+{% load i18n %}
 {% for agente in agentes %}
         <tr>
             <td>
@@ -24,19 +25,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </td>
             <td>
                 {% if agente.get_string_tiempo_sesion %}
-                    {{agente.get_string_tiempo_sesion}}hs
+                    {{agente.get_string_tiempo_sesion}}{% trans 'hs' %}
                 {% else %}
-                    0hs
+                    0{% trans 'hs' %}
                 {% endif %}
             </td>
             <td>
                 {% if agente.get_string_tiempo_pausa %}
-                    {{agente.get_string_tiempo_pausa}}hs
+                    {{agente.get_string_tiempo_pausa}}{% trans 'hs' %}
                 {% else %}
-                    0hs
+                    0{% trans 'hs' %}
                 {% endif %}
             </td>
-            <td>{{agente.get_string_tiempo_llamada}}hs</td>
+            <td>{{agente.get_string_tiempo_llamada}}{% trans 'hs' %}</td>
             <td>
                 {% if agente.tiempo_porcentaje_llamada %}
                     {{agente.tiempo_porcentaje_llamada|floatformat:4}}%
@@ -59,7 +60,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endif %}
             </td>
             <td>{{agente.cantidad_llamadas_procesadas}}</td>
-            <td>{{agente.get_promedio_llamadas}}s</td>
+            <td>{{agente.get_promedio_llamadas}}{% trans 's' %}</td>
             <td>{{agente.cantidad_intentos_fallidos}}</td>
         </tr>
 {% endfor %}
