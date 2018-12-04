@@ -101,9 +101,9 @@ class ArchivoDeReporteCsv(object):
             return json.loads(contacto.datos)
         return [""] * len(campos_contacto)
 
-    def escribir_archivo_contactados_csv(self, campana, calificados, no_calificados):
-        # TODO: Debe listar los llamados contactados: EVENTOS_FIN_CONEXION
-        # Agregarle a los llamados los datos del (posible) contacto
+    def escribir_archivo_contactados_csv(self, campana, llamadas, calificaciones_dict):
+        # TODO: Debe listar los llamadas contactados: EVENTOS_FIN_CONEXION
+        # Agregarle a los llamadas los datos del (posible) contacto
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []
@@ -112,7 +112,6 @@ class ArchivoDeReporteCsv(object):
             encabezado.extend(campos_contacto)
             encabezado.append("Fecha-Hora Contacto")
             encabezado.append("Tel status")
-            encabezado.append("Tel contactado")
             encabezado.append("Calificado")
             encabezado.append("Observaciones")
             encabezado.append("Agente")
@@ -125,63 +124,48 @@ class ArchivoDeReporteCsv(object):
             csvwiter = csv.writer(csvfile)
             # guardamos encabezado
             self._escribir_csv_writer_utf_8(csvwiter, encabezado)
-            # Iteramos cada uno de las metadata de la gestion del formulario
-            for calificacion in calificados:
-                lista_opciones = []
-                # --- Buscamos datos
-                calificacion_fecha_local = localtime(calificacion.fecha)
-                lista_opciones.append(calificacion.contacto.telefono)
-                datos_contacto = json.loads(calificacion.contacto.datos)
-                lista_opciones.extend(datos_contacto)
-                lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-                lista_opciones.append(_("Contactado"))
-                lista_opciones.append(calificacion.contacto.telefono)
-                lista_opciones.append(calificacion.opcion_calificacion.nombre)
-                lista_opciones.append(calificacion.observaciones)
-                lista_opciones.append(calificacion.agente)
-                if calificacion.contacto.es_originario:
-                    lista_opciones.append(calificacion.contacto.bd_contacto)
+
+            # Iteramos sobre los llamadas
+            for llamada_log in llamadas:
+                datos_contacto = [''] * len(campos_contacto)
+                contacto = self.contactos_dict.get(llamada_log.contacto_id, None)
+                tel_status = _('Fuera de base')
+                bd_contacto = _('Fuera de base')
+                if contacto is not None:
+                    datos_contacto = json.loads(contacto.datos)
+                    if contacto.es_originario:
+                        tel_status = _('Contactado')
+                        bd_contacto = contacto.bd_contacto
+                calificacion = calificaciones_dict.get(llamada_log.contacto_id, None)
+                # TODO: Si no hay contacto_id, ver de asociar la calificacion con el nro de telefono
+                datos_gestion = []
+                if calificacion is None:
+                    datos_calificacion = [_("Llamada Atendida sin calificacion"),
+                                          '',
+                                          self.agentes_dict.get(llamada_log.agente_id, -1)]
                 else:
-                    lista_opciones.append(_("Fuera de base"))
-                datos_formulario_gestion = calificacion.get_venta()
-                if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
-                        datos_formulario_gestion is not None):
-                    datos = json.loads(datos_formulario_gestion.metadata)
-                    for campo in campos_formulario:
-                        lista_opciones.append(datos[campo])
+                    datos_calificacion = [calificacion.opcion_calificacion.nombre,
+                                          calificacion.observaciones,
+                                          calificacion.agente]
+                    datos_formulario_gestion = calificacion.get_venta()
+                    if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
+                            datos_formulario_gestion is not None):
+                        datos = json.loads(datos_formulario_gestion.metadata)
+                        for campo in campos_formulario:
+                            datos_gestion.append(datos[campo])
+
+                fecha_local_llamada = localtime(llamada_log.time)
+                registro = []
+                registro.append(llamada_log.numero_marcado)
+                registro.extend(datos_contacto)
+                registro.append(fecha_local_llamada.strftime("%Y/%m/%d %H:%M:%S"))
+                registro.append(tel_status)
+                registro.extend(datos_calificacion)
+                registro.append(bd_contacto)
+                registro.extend(datos_gestion)
 
                 # --- Finalmente, escribimos la linea
-                self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
-
-            for log_no_calificado in no_calificados:
-                lista_opciones = []
-                # --- Buscamos datos
-                log_no_contactado_fecha_local = localtime(log_no_calificado.time)
-                contacto_id = log_no_calificado.contacto_id
-                contacto = self.contactos_dict.get(contacto_id, None)
-                datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
-                datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
-                if contacto:
-                    lista_opciones.append(contacto.telefono)
-                    contactacion_msg = "Contactado"
-                else:
-                    lista_opciones.append(log_no_calificado.numero_marcado)
-                    contactacion_msg = "Fuera de base"
-                lista_opciones.extend(datos_contacto)
-                lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-                lista_opciones.append(contactacion_msg)
-                lista_opciones.append(log_no_calificado.numero_marcado)
-                lista_opciones.append("Llamada Atendida sin calificacion")
-                lista_opciones.append("")
-                lista_opciones.append(self.agentes_dict.get(log_no_calificado.agente_id, -1))
-                # TODO: No deberia pasar que no tenga contacto. Verificar
-                if contacto is not None and contacto.es_originario:
-                    lista_opciones.append(campana.bd_contacto)
-                else:
-                    lista_opciones.append(_("Fuera de base"))
-
-                # --- Finalmente, escribimos la linea
-                self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
+                self._escribir_csv_writer_utf_8(csvwiter, registro)
 
     def escribir_archivo_no_atendidos_csv(self, campana, no_contactados):
         with open(self.ruta, 'wb') as csvfile:
@@ -223,7 +207,7 @@ class ArchivoDeReporteCsv(object):
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
 
-    def escribir_archivo_calificado_csv(self, campana, calificados):
+    def escribir_archivo_calificado_csv(self, campana, calificaciones):
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
             encabezado = []
@@ -249,7 +233,7 @@ class ArchivoDeReporteCsv(object):
             self._escribir_csv_writer_utf_8(csvwiter, encabezado)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for calificacion in calificados:
+            for calificacion in calificaciones:
                 lista_opciones = []
                 # --- Buscamos datos
                 calificacion_fecha_local = localtime(calificacion.fecha)
@@ -313,6 +297,11 @@ class ReporteCampanaContactadosCSV(object):
             contactos_dict[contacto.pk] = contacto
         return contactos_dict
 
+    def _obtener_llamadas_conectadas(self, campana, fecha_desde, fecha_hasta):
+        return LlamadaLog.objects.filter(
+            event__in=LlamadaLog.EVENTOS_FIN_CONEXION,
+            time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk)
+
     def crea_reporte_csv(self, campana, fecha_desde, fecha_hasta):
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
@@ -320,22 +309,29 @@ class ReporteCampanaContactadosCSV(object):
         agentes_dict = self._obtener_agentes_dict(campana)
         contactos_dict = self._obtener_contactos_dict(campana)
 
-        calificados = self._obtener_listado_calificados_fecha(
+        calificaciones = self._obtener_listado_calificaciones_fecha(
             campana, fecha_desde, fecha_hasta)
         no_contactados = self._obtener_listado_no_contactados_fecha(
             campana, fecha_desde, fecha_hasta)
-        no_califico = self._obtener_listado_no_calificados_fecha(
-            campana, calificados, no_contactados, fecha_desde, fecha_hasta)
+        # no_califico = self._obtener_listado_no_calificados_fecha(
+        #    campana, calificaciones, no_contactados, fecha_desde, fecha_hasta)
+
+        llamadas = self._obtener_llamadas_conectadas(campana, fecha_desde, fecha_hasta)
+        calificaciones_dict = {}
+        for calificacion in calificaciones:
+            calificaciones_dict[calificacion.contacto_id] = calificacion
         # Reporte contactados
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "contactados", agentes_dict, contactos_dict)
         archivo_de_reporte.crear_archivo_en_directorio()
-        archivo_de_reporte.escribir_archivo_contactados_csv(campana, calificados, no_califico)
+        archivo_de_reporte.escribir_archivo_contactados_csv(campana,
+                                                            llamadas,
+                                                            calificaciones_dict)
         # Reporte calificados
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "calificados", agentes_dict, contactos_dict)
         archivo_de_reporte.crear_archivo_en_directorio()
-        archivo_de_reporte.escribir_archivo_calificado_csv(campana, calificados)
+        archivo_de_reporte.escribir_archivo_calificado_csv(campana, calificaciones)
         # Reporte no atendidos
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "no_atendidos", agentes_dict, contactos_dict)
@@ -352,7 +348,7 @@ class ReporteCampanaContactadosCSV(object):
                      " CSV de descarga para la campana %s", campana.nombre)
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
-    def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):
+    def _obtener_listado_calificaciones_fecha(self, campana, fecha_desde, fecha_hasta):
         """
         Obtiene todos las calificaciones en el rango de fechas definidas para la campaña
         especificada
@@ -369,9 +365,9 @@ class ReporteCampanaContactadosCSV(object):
             event__in=LlamadaLog.EVENTOS_NO_CONEXION,
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk)
 
-    def _obtener_listado_no_calificados_fecha(self, campana, calificados, no_contactados,
+    def _obtener_listado_no_calificados_fecha(self, campana, calificaciones, no_contactados,
                                               fecha_desde, fecha_hasta):
-        numeros_calificados = list(calificados.values_list('contacto__telefono', flat=True))
+        numeros_calificados = list(calificaciones.values_list('contacto__telefono', flat=True))
         numeros_no_contactados = list(no_contactados.values_list('numero_marcado', flat=True))
         numeros_calificados.extend(numeros_no_contactados)
         no_calificados = LlamadaLog.objects.exclude(numero_marcado__in=numeros_calificados).filter(

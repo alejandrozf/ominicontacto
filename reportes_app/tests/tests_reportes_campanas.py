@@ -90,7 +90,7 @@ class BaseTestDeReportes(TestCase):
         self.telefono1 = self.contacto_calificado_gestion.telefono
         self.telefono2 = self.contacto_calificado_no_accion.telefono
         self.telefono3 = self.contacto_no_atendido.telefono
-        self.telefono4 = self.contacto_no_atendido.telefono
+        self.telefono4 = self.contacto_no_calificado.telefono
 
         self.generador_log_llamadas = GeneradorDeLlamadaLogs()
         self.generador_log_llamadas.generar_log(
