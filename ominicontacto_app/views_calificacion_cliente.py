@@ -167,6 +167,12 @@ class CalificacionClienteFormView(FormView):
         else:
             return self.form_invalid(contacto_form, calificacion_form)
 
+    def _check_metadata_no_accion_delete(self, calificacion):
+        """ En caso que sea una calificacion de no gestion elimina metadatacliente"""
+        if calificacion.opcion_calificacion.tipo is OpcionCalificacion.NO_ACCION \
+                and calificacion.get_venta():
+            calificacion.get_venta().delete()
+
     def form_valid(self, contacto_form, calificacion_form):
         nuevo_contacto = False
         if self.contacto is None:
@@ -205,6 +211,9 @@ class CalificacionClienteFormView(FormView):
         # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
         if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
             self.campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
+
+        # check metadata en calificaciones de no accion y eliminar
+        self._check_metadata_no_accion_delete(self.object_calificacion)
 
         if self.object_calificacion.es_venta:
             return redirect(self.get_success_url_venta())
