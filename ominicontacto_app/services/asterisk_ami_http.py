@@ -28,7 +28,9 @@ import tempfile
 from xml.parsers.expat import ExpatError
 
 from django.conf import settings
+
 from ominicontacto_app.errors import OmlError
+from django.utils.translation import ugettext as _
 import logging as _logging
 import requests
 import xml.etree.ElementTree as ET
@@ -150,8 +152,8 @@ class AsteriskXmlParser(object):
         try:
             self.root = ET.fromstring(xml)
         except ExpatError as e:
-            logger.exception("Error al parsear XML. "
-                             "ExpatError.code: {0.code}. XML:\n{1}".format(e, xml))
+            logger.exception(_("Error al parsear XML. "
+                               "ExpatError.code: {0.code}. XML:\n{1}".format(e, xml)))
             raise
         logger.debug("Parseo finalizado")
 
@@ -195,7 +197,7 @@ class AsteriskXmlParserForPing(AsteriskXmlParser):
 
         self._parse_and_check(xml, check_success=True)
         if not self.response_dict.get('timestamp', ''):
-            raise AsteriskHttpPingError("Attribute 'timestamp' not found in XML response")
+            raise AsteriskHttpPingError(_("Atributo 'timestamp' no encontrado en response de XML "))
 
 
 class AsteriskXmlParserForLogin(AsteriskXmlParser):
@@ -445,8 +447,8 @@ class AsteriskHttpClient(object):
                 tmp_file_obj.write(response.content)
                 logger.info("AsteriskHttpClient - Dump: %s", tmp_filename)
             except Exception as e:
-                logger.exception("Error {0}: no se pudo hacer dump de respuesta a archivo".format(
-                    e.message))
+                logger.exception(_("Error {0}: no se pudo hacer dump de respuesta a archivo".format(
+                    e.message)))
 
         return response.content, response
 
@@ -729,7 +731,7 @@ class AmiStatusTracker(object):
         [contacto_id, numero, campana_id, intentos]
         """
 
-        logger.info("get_status_por_campana(): realizando request HTTP")
+        logger.info(_("get_status_por_campana(): realizando request HTTP"))
         # FIXME: crear cliente, loguear y reutilizar!
         client = AsteriskHttpClient()
         client.login()
@@ -737,14 +739,14 @@ class AmiStatusTracker(object):
         calls_dicts = client.get_status().calls_dicts
         parseados, no_parseados = self._parse(calls_dicts)
         if no_parseados:
-            logger.warn("get_status_por_campana(): %s registros de %s "
-                        "no fueron parseados", len(no_parseados),
-                        len(no_parseados) + len(parseados))
+            logger.warn(_("get_status_por_campana(): {0} registros de {1} "
+                          "no fueron parseados".format(
+                              len(no_parseados), len(no_parseados) + len(parseados))))
 
             # info(), porque son potenciales problemas... Y para quedarnos
             # tranquilos, tambien mostramos los que SI se parsearon...
             for item in no_parseados:
-                logger.info("NO parseado: %s", item)
+                logger.info(_("NO parseado: {0}".format(item)))
 
         campanas = collections.defaultdict(lambda: list())
         for key in parseados:
@@ -756,8 +758,8 @@ class AmiStatusTracker(object):
         if no_parseados:
             for campana_id, datos in campanas.iteritems():
                 contactos = [x[0] for x in datos]
-                logger.info("SI parseado - campana: %s - contactos: %s",
-                            campana_id, contactos)
+                logger.info(_("SI parseado - campana: {0} - contactos: {1}".format(
+                    campana_id, contactos)))
 
         return campanas
 

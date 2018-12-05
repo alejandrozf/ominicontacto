@@ -98,6 +98,7 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -402,6 +403,20 @@ try:
     # para los addons que tienen templates_context_processors propios
     TEMPLATES[0]['OPTIONS']['context_processors'].extend(TEMPLATES_CONTEXT_PROCESORS_APPEND)
     check_template_context_processor_structure(TEMPLATES[0]['OPTIONS']['context_processors'])
+
+    LOCALE_PATHS = (
+        os.path.join(BASE_DIR, 'configuracion_telefonia_app/locale'),
+        os.path.join(BASE_DIR, 'ominicontacto_app/locale'),
+        os.path.join(BASE_DIR, 'reportes_app/locale'),
+        os.path.join(BASE_DIR, 'reciclado_app/locale'),
+    )
+
+    LANGUAGES = (
+        ('en', 'English'),
+        ('es', 'Spanish'),
+    )
+
+    LANGUAGE_CODE = 'es'
 
 except ImportError as e:
     print "# "

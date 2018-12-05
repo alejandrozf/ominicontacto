@@ -22,6 +22,8 @@ from __future__ import unicode_literals
 from django.db import models, connection
 from django.db.models import Count
 from django.core.exceptions import SuspiciousOperation
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
 
 
@@ -102,7 +104,7 @@ class LlamadaLogManager(models.Manager):
             return self.values('agente_id').annotate(
                 cantidad=Count('agente_id')).order_by('agente_id')
         except LlamadaLog.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro llamadas "))
+            raise (SuspiciousOperation(_("No se encontraron llamadas ")))
 
     def obtener_tiempo_llamada_agente(self, eventos, fecha_desde, fecha_hasta, agente_id):
         """devuelve la duracion de llamadas y fecha"""
@@ -114,7 +116,7 @@ class LlamadaLogManager(models.Manager):
             return self.filter(agente_id=agente_id, event__in=eventos,
                                time__range=(fecha_desde, fecha_hasta))
         except LlamadaLog.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro llamadas "))
+            raise (SuspiciousOperation(_("No se encontraron llamadas ")))
 
     def obtener_count_evento_agente_agrupado_fecha(self, eventos, fecha_desde,
                                                    fecha_hasta, agente_id):
@@ -247,7 +249,7 @@ class ActividadAgenteLogManager(models.Manager):
                                time__range=(fecha_desde, fecha_hasta),
                                pausa_id=pausa_id).order_by('-time')
         except ActividadAgenteLog.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro pausas "))
+            raise (SuspiciousOperation(_("No se encontraron pausas ")))
 
 
 class ActividadAgenteLog(models.Model):

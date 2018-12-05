@@ -23,6 +23,8 @@ from __future__ import unicode_literals
 
 import logging
 
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.asterisk_config import (
     SipConfigCreator, SipConfigFile, AsteriskConfigReloader)
 from ominicontacto_app.errors import OmlError
@@ -51,13 +53,13 @@ class ActivacionAgenteService(object):
         try:
             self.sip_config_creator.create_config_sip()
         except Exception as e:
-            msg = "Error {0}: ActivacionAgenteService: error al ".format(e.message) + \
-                "intentar create_config_sip()"
+            msg = _("Error {0}: ActivacionAgenteService: error al ".format(e.message) +
+                    "intentar create_config_sip()")
             logger.exception(msg)
 
             proceso_ok = False
-            mensaje_error += ("Hubo un inconveniente al crear el archivo de "
-                              "configuracion del config sip de Asterisk. ")
+            mensaje_error += _("Hubo un inconveniente al crear el archivo de "
+                               "configuracion del config sip de Asterisk. ")
 
         if not proceso_ok:
             raise(RestablecerConfigSipError(mensaje_error))

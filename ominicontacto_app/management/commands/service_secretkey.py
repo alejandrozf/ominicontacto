@@ -26,6 +26,7 @@ import os
 import subprocess
 
 from django.core.management.base import BaseCommand
+from django.utils.translation import ugettext as _
 from django.utils.crypto import get_random_string
 from django.conf import settings
 
@@ -52,11 +53,11 @@ class Command(BaseCommand):
                 cmd = str_sed.format(actual_key, secret_key, settings.OML_KAMAILIO_LOCATION)
                 os.system(cmd)
             else:
-                print("Opción inválida")
+                print(_("Opción inválida"))
             self.stdout.write(secret_key)
             return secret_key
         except Exception as e:
-            logging.error("Falló el proceso de agregado de secret_key por {0}".format(e))
+            logging.error(_("Falló el proceso de agregado de secret_key por {0}".format(e)))
 
     def handle(self, *args, **options):
         flag = args[0]

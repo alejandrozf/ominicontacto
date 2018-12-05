@@ -27,6 +27,7 @@ import os
 import json
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 logger = logging.getLogger(__name__)
 
@@ -52,11 +53,11 @@ class WombatService():
                                            '@'.join(['data', filename]),
                                            '/'.join([settings.OML_WOMBAT_URL,
                                                      url_edit])])
-            logger.info("actualizacion en WOMBAT OK")
+            logger.info(_("actualizacion en WOMBAT OK"))
             return json.loads(out)
         except subprocess.CalledProcessError, e:
-            logger.warn("Exit status erroneo: %s", e.returncode)
-            logger.warn(" - Comando ejecutado: %s", e.cmd)
+            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warn(" - Comando ejecutado: {0}".format(e.cmd))
             print e
 
     def update_lista_wombat(self, nombre_archivo, url_edit):
@@ -79,8 +80,8 @@ class WombatService():
                                                      url_edit])])
             return out
         except subprocess.CalledProcessError, e:
-            logger.warn("Exit status erroneo: %s", e.returncode)
-            logger.warn(" - Comando ejecutado: %s", e.cmd)
+            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
             print e
 
     def list_config_wombat(self, url_edit):
@@ -99,9 +100,9 @@ class WombatService():
                                            '-X', 'POST',
                                            '/'.join([settings.OML_WOMBAT_URL,
                                                      url_edit])])
-            logger.info("list en WOMBAT OK")
+            logger.info(_("list en WOMBAT OK"))
             return json.loads(out)
         except subprocess.CalledProcessError, e:
-            logger.warn("Exit status erroneo: %s", e.returncode)
-            logger.warn(" - Comando ejecutado: %s", e.cmd)
+            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
             print e

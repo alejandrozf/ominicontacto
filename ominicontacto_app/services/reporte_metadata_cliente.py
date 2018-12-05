@@ -61,9 +61,9 @@ class ArchivoDeReporteCsv(object):
             # Esto puede suceder si en un intento previo de depuracion, el
             # proceso es abortado, y por lo tanto, el archivo puede existir.
             logger.warn("ArchivoDeReporteCsv: Ya existe archivo CSV de "
-                        "reporte para la campana %s. Archivo: %s. "
-                        "El archivo sera sobreescrito", self._campana.pk,
-                        self.ruta)
+                        "reporte para la campana {0}. Archivo: {1}. "
+                        "El archivo sera sobreescrito".format(self._campana.pk,
+                                                              self.ruta))
 
         crear_archivo_en_media_root(
             self.nombre_del_directorio,
@@ -76,14 +76,14 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Fecha-Hora Contacto")
-            encabezado.append("Agente")
-            encabezado.append("Telefono")
+            encabezado.append(_("Fecha-Hora Contacto"))
+            encabezado.append(_("Agente"))
+            encabezado.append(_("Telefono"))
             nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
                 encabezado.append(nombre)
-            encabezado.append("base_datos")
-            encabezado.append("Calificación")
+            encabezado.append(_("base_datos"))
+            encabezado.append(_("Calificación"))
             campos = campana.formulario.campos.all()
 
             for campo in campos:
@@ -152,6 +152,6 @@ class ReporteMetadataClienteService(object):
             return archivo_de_reporte.url_descarga
 
         # Esto no debería suceder.
-        logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para la campana %s", campana.pk)
+        logger.error(_("obtener_url_reporte_csv_descargar(): NO existe archivo"
+                       " CSV de descarga para la campana {0}".format(campana.pk)))
         assert os.path.exists(archivo_de_reporte.url_descarga)

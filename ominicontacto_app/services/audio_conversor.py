@@ -29,6 +29,7 @@ import tempfile
 
 from django.conf import settings
 from django.core.files.storage import default_storage
+from django.utils.translation import ugettext as _
 from ominicontacto_app.errors import OmlAudioConversionError
 from ominicontacto_app.models import ArchivoDeAudio
 import logging as _logging
@@ -70,7 +71,7 @@ class ConversorDeAudioService(object):
             "El directorio especificado no es un path absoluto: {0}".format(
                 directorio)
         if not os.path.exists(directorio):
-            logger.info("Se crearan directorios: %s", directorio)
+            logger.info(_("Se crearan directorios: {0}".format(directorio)))
             os.makedirs(directorio, mode)
             return True
 
@@ -109,16 +110,18 @@ class ConversorDeAudioService(object):
 
         # chequeos...
         if not os.path.exists(input_file_abs):
-            logger.error("El archivo de entrada no existe: %s", input_file_abs)
-            raise OmlAudioConversionError("El archivo de entrada no existe")
+            logger.error(_("El archivo de entrada no existe: {0}".format(input_file_abs)))
+            raise OmlAudioConversionError(_("El archivo de entrada no existe"))
 
         if not os.path.abspath(input_file_abs):
-            logger.error("El archivo de entrada no es un path absoluto: %s", input_file_abs)
-            raise OmlAudioConversionError("El archivo de entrada no es un path absoluto")
+            logger.error(_("El archivo de entrada no es un path absoluto: {0}".format(
+                input_file_abs)))
+            raise OmlAudioConversionError(_("El archivo de entrada no es un path absoluto"))
 
         if not os.path.abspath(output_filename_abs):
-            logger.error("El archivo de salida no es un path absoluto: %s", output_filename_abs)
-            raise OmlAudioConversionError("El archivo de salida no es un path absoluto")
+            logger.error(_("El archivo de salida no es un path absoluto: {0}".format(
+                output_filename_abs)))
+            raise OmlAudioConversionError(_("El archivo de salida no es un path absoluto"))
 
         stdout_file = tempfile.TemporaryFile()
         stderr_file = tempfile.TemporaryFile()
@@ -138,13 +141,14 @@ class ConversorDeAudioService(object):
         # ejecutamos comando...
         try:
             logger.info(
-                "Iniciando conversion de audio de %s -> %s", input_file_abs, output_filename_abs)
+                _("Iniciando conversion de audio de {0} -> {1}".format(
+                    input_file_abs, output_filename_abs)))
             subprocess.check_call(FTS_AUDIO_CONVERSOR, stdout=stdout_file, stderr=stderr_file)
-            logger.info("Conversion de audio finalizada exitosamente")
+            logger.info(_("Conversion de audio finalizada exitosamente"))
 
         except subprocess.CalledProcessError as e:
-            logger.warn("Exit status erroneo: %s", e.returncode)
-            logger.warn(" - Comando ejecutado: %s", e.cmd)
+            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
             try:
                 stdout_file.seek(0)
                 stderr_file.seek(0)
@@ -157,10 +161,10 @@ class ConversorDeAudioService(object):
                     if line:
                         logger.warn(" STDERR> %s", line)
             except Exception:
-                logger.exception("Error al intentar reporter STDERR y STDOUT (lo ignoramos)")
+                logger.exception(_("Error al intentar reporter STDERR y STDOUT (lo ignoramos)"))
 
-            raise OmlAudioConversionError("Error detectado al ejecutar "
-                                          "conversor", cause=e)
+            raise OmlAudioConversionError(_("Error detectado al ejecutar "
+                                            "conversor"), cause=e)
 
         finally:
             stdout_file.close()

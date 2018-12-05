@@ -24,6 +24,9 @@ from __future__ import unicode_literals
 import pygal
 
 from pygal.style import Style
+
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.models import Campana
 
 
@@ -74,7 +77,7 @@ class EstadisticasCampanaLlamadasService():
                                                    fecha_superior, user)
 
         if estadisticas:
-            logger.info("Generando grafico calificaciones de campana por cliente ")
+            logger.info(_("Generando grafico calificaciones de campana por cliente "))
 
         # Barra: Cantidad de llamadas por campana
         barra_campana_llamadas = pygal.Bar(  # @UndefinedVariable
