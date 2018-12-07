@@ -204,7 +204,7 @@ class QueueEntranteForm(forms.ModelForm):
         tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
         self.fields['tipo_destino'].choices = tipo_destino_choices
         instance = getattr(self, 'instance', None)
-        if instance.pk is not None and instance.pk:
+        if instance.pk is not None and instance.destino:
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
@@ -1147,7 +1147,7 @@ class QueueDialerForm(forms.ModelForm):
         tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
         self.fields['tipo_destino'].choices = tipo_destino_choices
         instance = getattr(self, 'instance', None)
-        if instance.pk is not None and instance.pk:
+        if instance.pk is not None and instance.destino:
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
