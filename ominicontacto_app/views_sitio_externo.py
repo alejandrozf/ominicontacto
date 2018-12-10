@@ -23,11 +23,13 @@ el sitio externo el cual va abrirse en una pestaña
 """
 
 from __future__ import unicode_literals
+from django.db import transaction
+from django.contrib import messages
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import (
-    CreateView
+    CreateView, UpdateView
 )
 from django.views.generic import (
     ListView
@@ -35,16 +37,51 @@ from django.views.generic import (
 from django.views.generic.base import RedirectView
 from ominicontacto_app.models import SitioExterno
 from ominicontacto_app.forms import SitioExternoForm
+from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
+    SincronizadorDeConfiguracionSitioExternoAsterisk, RestablecerConfiguracionTelefonicaError
+)
 
 
-class SitioExternoCreateView(CreateView):
+class SitioExternoCreateUpdateMixin(object):
+    """
+    Mixin para create y update de sitio externo
+    """
+
+    def get_success_url(self):
+        return reverse('sitio_externo_list')
+
+    def form_valid(self, form):
+        # escribe sitio externo en asterisk
+        try:
+            with transaction.atomic():
+                form.save()
+                sincronizador = SincronizadorDeConfiguracionSitioExternoAsterisk()
+                sincronizador.regenerar_asterisk(form.instance)
+        except RestablecerConfiguracionTelefonicaError, e:
+            message = ("<strong>¡Cuidado!</strong> "
+                       "con el siguiente error: {0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+            return self.form_invalid(form)
+
+        return super(SitioExternoCreateUpdateMixin, self).form_valid(form)
+
+
+class SitioExternoCreateView(SitioExternoCreateUpdateMixin, CreateView):
     """Vista para crear un sitio externo"""
     model = SitioExterno
     template_name = 'sitio_externo/create_update_form.html'
     form_class = SitioExternoForm
 
-    def get_success_url(self):
-        return reverse('sitio_externo_list')
+
+class SitioExternoUpdateView(SitioExternoCreateUpdateMixin, UpdateView):
+    """Vista para modificar un sitio externo"""
+    model = SitioExterno
+    template_name = 'sitio_externo/create_update_form.html'
+    form_class = SitioExternoForm
 
 
 class SitioExternoListView(ListView):

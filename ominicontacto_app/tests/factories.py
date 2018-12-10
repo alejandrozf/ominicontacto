@@ -79,6 +79,8 @@ class SitioExternoFactory(DjangoModelFactory):
 
     nombre = lazy_attribute(lambda a: faker.text(15))
     url = lazy_attribute(lambda a: "http://{0}.com".format(a.nombre.replace(" ", "_")))
+    tipo = lazy_attribute(lambda a: faker.random_int(1, 3))
+    metodo = lazy_attribute(lambda a: faker.random_int(1, 2))
 
 
 class GrupoFactory(DjangoModelFactory):

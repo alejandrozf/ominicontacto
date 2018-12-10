@@ -33,7 +33,7 @@ from ominicontacto_app.asterisk_config import (
 )
 from ominicontacto_app.services.asterisk_database import (
     RutaSalienteFamily, TrunkFamily, RutaEntranteFamily, IVRFamily, ValidacionFechaHoraFamily,
-    GrupoHorarioFamily, PausaFamily
+    GrupoHorarioFamily, PausaFamily, SitioExternoFamily
 )
 
 logger = logging.getLogger(__name__)
@@ -304,3 +304,9 @@ class SincronizadorDeConfiguracionPausaAsterisk(AbstractConfiguracionAsterisk):
 
     def _obtener_generador_family(self):
         return PausaFamily()
+
+
+class SincronizadorDeConfiguracionSitioExternoAsterisk(AbstractConfiguracionAsterisk):
+
+    def _obtener_generador_family(self):
+        return SitioExternoFamily()
