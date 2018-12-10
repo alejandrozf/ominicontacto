@@ -1025,11 +1025,13 @@ class SitioExternoForm(forms.ModelForm):
 
     class Meta:
         model = SitioExterno
-        fields = ('nombre', 'url')
+        fields = ('nombre', 'url', 'tipo', 'metodo')
 
         widgets = {
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "url": forms.TextInput(attrs={'class': 'form-control'}),
+            "tipo": forms.Select(attrs={'class': 'form-control'}),
+            "metodo": forms.Select(attrs={'class': 'form-control'}),
         }
 
 

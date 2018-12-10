@@ -2838,10 +2838,30 @@ class SitioExterno(models.Model):
     """
     sitio externo para embeber en el agente
     """
+    GET = 1
+    POST = 2
+    JSON = 3
+
+    TIPOS = (
+        (GET, _('GET')),
+        (POST, _('POST')),
+        (JSON, _('JSON')),
+    )
+
+    EMBEBIDO = 1
+    NUEVA_PESTANA = 2
+
+    METODOS = (
+        (EMBEBIDO, _('Embebido')),
+        (NUEVA_PESTANA, _('Nueva pestaña')),
+
+    )
 
     nombre = models.CharField(max_length=128)
     url = models.CharField(max_length=256)
     oculto = models.BooleanField(default=False)
+    tipo = models.PositiveIntegerField(choices=TIPOS, default=GET)
+    metodo = models.PositiveIntegerField(choices=METODOS, default=EMBEBIDO)
 
     def __unicode__(self):
         return "Sitio: {0} - url: {1}".format(self.nombre, self.url)

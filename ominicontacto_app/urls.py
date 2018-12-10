@@ -719,6 +719,9 @@ urlpatterns = [
     url(r'^sitio_externo/sitios_ocultos/$',
         administrador_requerido(views_sitio_externo.mostrar_sitio_externos_ocultos_view),
         name='mostrar_sitios_externo_ocultos', ),
+    url(r'^sitio_externo/(?P<pk>\d+)/update/$',
+        administrador_requerido(views_sitio_externo.SitioExternoUpdateView.as_view()),
+        name='modificar_sitio_externo', ),
     # ==========================================================================
     # QueueMember
     # ==========================================================================

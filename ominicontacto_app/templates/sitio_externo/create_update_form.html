@@ -22,8 +22,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block content %}
-    <h1>{% trans 'Nuevo sitio externo' %}</h1>
-
+    {% if form.instance.id %}
+        <h1>{% trans 'Editar sitio externo' %}</h1>
+    {% else %}
+        <h1>{% trans 'Nuevo sitio externo' %}</h1>
+    {% endif %}
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
@@ -38,11 +41,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.url }}
             {{ form.url.errors }}
         </div>
+        <div class="col-md-6">
+            <label for="{{ form.tipo.id_for_label }}">{% trans 'Tipo:' %}</label>
+            {{ form.tipo }}
+            {{ form.tipo.errors }}
+        </div>
+        <div class="col-md-6">
+            <label for="{{ form.metodo.id_for_label }}">{% trans 'Metodo:' %}</label>
+            {{ form.metodo }}
+            {{ form.metodo.errors }}
+        </div>
     </div>
     <hr>
     <button type="submit" id="id_guardar" class="btn btn-primary">
         {% trans 'Guardar' %}
-    </button>
+    </button>    
 </form>
 
 {% endblock %}

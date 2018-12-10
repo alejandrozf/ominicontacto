@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block content %}
 
-<h1>Sitios externos</h1>
+<h1>{% trans 'Sitios externos' %}</h1>
 <a class="btn btn-light btn-sm" href="#" onclick="mostrar_sitios_ocultos()" >
     {% trans 'Mostrar ocultos' %}
 </a>
@@ -43,19 +43,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table">
     <thead>
       <tr class="fts-table-bg">
-          <th>{% trans 'Sitio externo' %}</th>
-          <th>{% trans 'Url' %}</th>
-          <th>{% trans 'Acciones' %}</th>
+        <th>{% trans 'Sitio externo' %}</th>
+        <th>{% trans 'Url' %}</th>
+        <th>{% trans 'Tipo' %}</th>
+        <th>{% trans 'Metodo' %}</th>
+        <th>{% trans 'Acciones' %}</th>
       </tr>
     </thead>
     <tbody id="t_body_ocultas">
         {% for sitio in sitios_externos %}
             <tr>
                 <td>
-                    {{ sitio.nombre }}
+                    <a  href="{% url 'modificar_sitio_externo' sitio.id %}">
+                        {{ sitio.nombre }}
+                    </a>
                 </td>
                 <td>
                     {{ sitio.url }}
+                </td>
+                <td>
+                    {{ sitio.get_tipo_display }}
+                </td>
+                <td>
+                    {{ sitio.get_metodo_display }}
                 </td>
                 <td>
                     {% if sitio.oculto %}
