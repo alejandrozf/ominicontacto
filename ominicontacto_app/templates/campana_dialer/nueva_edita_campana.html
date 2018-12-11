@@ -61,6 +61,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </small>
                 {{ form.nombre.errors }}
             </div>
+            <div class="col-md-6">
+                <label for="{{ form.mostrar_nombre.id_for_label }}">{% trans "Mostrar nombre al recibir llamado" %}: </label>
+                {{ form.mostrar_nombre }}
+            </div>
             {% if not form.initial.es_template %}
                 <div class="col-md-6">
                     <label for="{{ form.fecha_inicio.id_for_label }}">{% trans 'Fecha inicio:' %}</label>

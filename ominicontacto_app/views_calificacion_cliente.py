@@ -154,7 +154,9 @@ class CalificacionClienteFormView(FormView):
         calificacion_form = self.get_form()
 
         return self.render_to_response(self.get_context_data(
-            contacto_form=contacto_form, calificacion_form=calificacion_form))
+            contacto_form=contacto_form,
+            calificacion_form=calificacion_form,
+            campana=self.campana))
 
     def post(self, request, *args, **kwargs):
         """
@@ -233,7 +235,8 @@ class CalificacionClienteFormView(FormView):
         Re-renders the context data with the data-filled forms and errors.
         """
         return self.render_to_response(self.get_context_data(contacto_form=contacto_form,
-                                                             calificacion_form=calificacion_form))
+                                                             calificacion_form=calificacion_form,
+                                                             campana=self.campana))
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',

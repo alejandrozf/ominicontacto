@@ -329,3 +329,21 @@ class CalificacionTests(OMLBaseTest):
                               'telefono': telefono})
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'agente/contactos_telefonos_repetidos.html')
+
+    def test_muestra_nombre_campana(self):
+        url = reverse('calificar_por_telefono',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'telefono': '351111111111'})
+        response = self.client.get(url, follow=True)
+        self.assertContains(response, self.campana.nombre)
+
+    def test_oculta_nombre_campana(self):
+        self.campana.mostrar_nombre = False
+        self.campana.save()
+        url = reverse('calificar_por_telefono',
+                      kwargs={'id_agente': self.agente_profile.pk,
+                              'pk_campana': self.campana.pk,
+                              'telefono': '351111111111'})
+        response = self.client.get(url, follow=True)
+        self.assertNotContains(response, self.campana.nombre)

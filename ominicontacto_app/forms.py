@@ -463,7 +463,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'formulario',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo')
+                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -946,7 +946,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
                   'bd_contacto', 'formulario', 'sitio_externo',
-                  'tipo_interaccion', 'objetivo')
+                  'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }

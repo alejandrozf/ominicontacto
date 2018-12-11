@@ -928,6 +928,8 @@ class Campana(models.Model):
     objetivo = models.PositiveIntegerField(default=0)
     tiempo_desconexion = models.PositiveIntegerField(default=0)  # para uso en campañas preview
 
+    mostrar_nombre = models.BooleanField(default=True)
+
     def __unicode__(self):
         return self.nombre
 
