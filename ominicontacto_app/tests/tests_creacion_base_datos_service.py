@@ -1,10 +1,25 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 """Unittests del servicio base_de_datos_contacto"""
 
 from __future__ import unicode_literals
-
-from mock import Mock
 
 from django.core.files import File
 
@@ -22,21 +37,12 @@ class TestGeneraBaseDatosContacto(OMLBaseTest):
     def test_genera_base_datos_falla_archivo_xls(self):
         bd = BaseDatosContacto(id=1)
         bd.nombre_archivo_importacion = "planilla-ejemplo-0.xls"
-        bd.save = Mock()
+        bd.save()
 
         # -----
         creacion_base_de_datos_service = CreacionBaseDatosService()
         with self.assertRaises(OmlArchivoImportacionInvalidoError):
             creacion_base_de_datos_service.genera_base_dato_contacto(bd)
-
-    def test_genera_base_datos_archivo_valido(self):
-        bd = BaseDatosContacto(id=1)
-        bd.archivo_importacion = self.copy_test_resource_to_mediaroot("planilla-ejemplo-0.csv")
-        bd.nombre_archivo_importacion = "planilla-ejemplo-0.csv"
-        bd.save = Mock()
-
-        creacion_base_de_datos_service = CreacionBaseDatosService()
-        creacion_base_de_datos_service.genera_base_dato_contacto(bd)
 
     def test_importa_contacto(self):
         # 3543009865,lkasdjlfkaf,0351156219387
@@ -48,7 +54,7 @@ class TestGeneraBaseDatosContacto(OMLBaseTest):
         bd.archivo_importacion = File(open(self.get_test_resource(
             "planilla-ejemplo-1.csv"), 'r'))
         bd.nombre_archivo_importacion = "planilla-ejemplo-1.csv"
-        bd.save = Mock()
+        bd.save()
 
         metadata = bd.get_metadata()
         metadata.cantidad_de_columnas = 3
@@ -67,7 +73,7 @@ class TestGeneraBaseDatosContacto(OMLBaseTest):
 
     def test_define_base_dato_contacto(self):
         bd = BaseDatosContacto(id=1)
-        bd.save = Mock()
+        bd.save()
 
         # -----
 
@@ -203,7 +209,7 @@ class TestImportarDesdeCsvNoAscii(OMLBaseTest):
             "planilla-ejemplo-6.csv"), 'r'))
 
         bd.nombre_archivo_importacion = "bd-contactos-utf8.csv"
-        bd.save = Mock()
+        bd.save()
 
         # -----
         service = CreacionBaseDatosService()
