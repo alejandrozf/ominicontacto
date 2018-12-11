@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h1>{% blocktrans %}Módulo "{{ object.nombre}}" {% endblocktrans %}</h1>
+        <h1>{% blocktrans with nombre=object.nombre %}Módulo "{{ nombre }}" {% endblocktrans %}</h1>
         <p>{% trans '¿Está seguro que desea eliminar este modulo?' %}</p>
         <button type="submit" class="btn btn-danger">{% trans 'Eliminar' %}</button>
         <a class="btn btn-outline-danger" href="{% url 'modulo_list' %}">{% trans 'Cancelar' %}</a>

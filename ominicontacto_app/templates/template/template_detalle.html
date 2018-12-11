@@ -22,7 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block content %}
-<h1>{% blocktrans %}Template {{object.nombre_template}}{% endblocktrans %}</h1>
+    <h1>{% blocktrans with nombre_template=object.nombre_template %}Template {{nombre_template}}{% endblocktrans %}</h1>
         <table class="table table-striped">
             <tr>
                 <td><strong>{% trans 'Template de campaña dialer' %} </strong></td>

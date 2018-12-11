@@ -23,7 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block content %}
          {% if campana%}
-            <h1>{% blocktrans %}Campaña {{ campana.nombre }}{% endblocktrans %}</h1>
+            <h1>{% blocktrans with campana_nombre=campana.nombre %}Campaña {{ campana_nombre }}{% endblocktrans %}</h1>
                 {% endif %}
                 <div class="form-row">
                     <div class="col-md-6">
