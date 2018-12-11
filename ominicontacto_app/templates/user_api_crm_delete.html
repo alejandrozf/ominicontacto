@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h1>{% blocktrans %}Usuario "{{ object.usuario}}" {% endblocktrans  %}</h1>
+        <h1>{% blocktrans with usuario=object.usuario %}Usuario "{{ usuario }}" {% endblocktrans %}</h1>
         <p>{% trans '¿Esta seguro que desea eliminar este usuario?'  %}</p>
         <button type="submit" class="btn btn-danger">{% trans 'Eliminar' %}</button>
         <a class="btn btn-outline-danger" href="{% url 'user_api_crm_list' %}">{% trans 'Cancelar' %}</a>

@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h1>{% blocktrans %}Pausa "{{ object.nombre}}" {% endblocktrans %}</h1>
+        <h1>{% blocktrans with nombre=object.nombre %}Pausa "{{ nombre }}" {% endblocktrans %}</h1>
         {% if object.eliminada %}
            <p>{% trans '¿Desea reactivar esta Pausa?' %}</p>
         {% else %}

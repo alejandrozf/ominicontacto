@@ -65,7 +65,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% endif %}
 
             <li class="page-item current">
-                {% blocktrans %}Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.{% endblocktrans %}
+                {% blocktrans with page_number=page_obj.number num_pages=paginator.num_pages %}
+                    Página {{ page_number }} de {{ num_pages }}
+                {% endblocktrans %}
             </li>
 
             {% if page_obj.has_next %}
