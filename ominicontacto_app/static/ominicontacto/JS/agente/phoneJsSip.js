@@ -96,7 +96,7 @@ class PhoneJS {
     }
 
     startSipSession() {
-        var socket = new JsSIP.WebSocketInterface(`wss://${this.KamailioIp}:${this.KamailioPort}/ws`);
+        var socket = new JsSIP.WebSocketInterface('wss://' + this.KamailioIp + ':' + this.KamailioPort + '/ws');
         var config = {
                 sockets: [ socket ],
                 uri: "sip:" + this.sipExtension + "@" + this.KamailioIp,
@@ -238,7 +238,7 @@ class PhoneJS {
 
     makePauseCall(pause_id) {
         phone_logger.log("---------- \nPause Call");
-        this.makeCall(`${SPECIAL_CODE_PREFIX}${pause_id}`);
+        this.makeCall(SPECIAL_CODE_PREFIX + pause_id);
     }
 
     makeUnpauseCall() {
@@ -322,12 +322,12 @@ class PhoneJS {
             },
         };
         if (campaign_id !== null ) {
-            opciones.extraHeaders = [`Idcamp:${campaign_id}`,
-                                     `Tipocamp:${campaign_type}`, ]
+            opciones.extraHeaders = ['Idcamp:' + campaign_id,
+                                     'Tipocamp:' + campaign_type, ]
         }
 
         // Finalmente Mando el invite/llamada
-        this.userAgent.call(`sip:${numberToCall}@${this.KamailioIp}`, opciones);
+        this.userAgent.call('sip:' + numberToCall + '@' + this.KamailioIp, opciones);
         this.subscribeToSessionConnectionEvents();
     }
 

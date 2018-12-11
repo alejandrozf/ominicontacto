@@ -225,21 +225,21 @@ class PhoneJSView {
     setKeypadButtonsEnabled(enabled) {
         for (var i=0; i<this.keypad_buttons_ids.length; i++) {
             var id = this.keypad_buttons_ids[i];
-            $(`#${id}`).prop('disabled', !enabled);
+            $('#' + id).prop('disabled', !enabled);
         }
     }
 
     setInputsEnabled(enabled_ones) {
         for (var i=0; i<this.inputs_ids.length; i++) {
             var id = this.inputs_ids[i];
-            $(`#${id}`).prop('disabled', enabled_ones.indexOf(id) == -1);
+            $('#' + id).prop('disabled', enabled_ones.indexOf(id) == -1);
         }
     }
 
     closeAllModalMenus() {
         for (var i = 0; i < this.modal_menus_ids.length; i++) {
             var id = this.modal_menus_ids[i];
-            $(`#${id}`).modal("hide");
+            $('#' + id).modal("hide");
         }
     }
 
@@ -292,15 +292,15 @@ var PHONE_STATUS_CONFIGS = {
 }
 
 SIP_STATUSES = {
-    'NO_ACCOUNT': {text: 'No Account' , icon: 'greydot.png'},
-    'REGISTERED': {text: 'Registered' , icon: 'greendot.png'},
-    'UNREGISTERED': {text: 'Unregistered' , icon: 'reddot.png'},
+    'NO_ACCOUNT': {text: gettext('Desconectado') , icon: 'greydot.png'},
+    'REGISTERED': {text: gettext('Registrado') , icon: 'greendot.png'},
+    'UNREGISTERED': {text: gettext('No Registrado') , icon: 'reddot.png'},
     'NO_SIP': {
-        text: 'SIP Proxy not responding, contact your administrator' , 
+        text: gettext('El SIP Proxy no responde, contacte a su administrador') , 
         icon: 'redcross.png'
     },
     'REGISTER_FAIL': {
-        text: 'Registration failed, contact your administrator' ,
+        text: gettext('Fallo en la registración, contacte a su administrador') ,
         icon: 'redcross.png'
     },
 }

@@ -146,7 +146,7 @@ class PhoneJSController {
         this.view.makeTransferButton.click(function () {
             var transfer = new OutTransferData();
             if (!transfer.is_valid){
-                alert('Seleccione una opción válida');
+                alert(gettext('Seleccione una opción válida'));
             }
             else {
                 self.phone_fsm.dialTransfer();
@@ -170,7 +170,8 @@ class PhoneJSController {
             self.phone.acceptCall();
             $("#modalReceiveCalls").modal('hide');
             var fromUser = self.phone.session_data.from;
-            self.view.setCallStatus("Connected to " + fromUser, "orange");
+            var message = interpolate(gettext("Conectado a %(fromUser)s"), {fromUser:fromUser}, true);
+            self.view.setCallStatus(message, "orange");
             self.manageContact(self.phone.session_data);
         };
 
@@ -199,21 +200,21 @@ class PhoneJSController {
         this.phone_fsm.observe({
             onInitial: function() {
                 self.view.setSipStatus("NO_ACCOUNT");
-                self.view.setUserStatus("label label-success", "Online");
+                self.view.setUserStatus("label label-success", gettext("Conectado"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('Initial');
                 self.phone.startSipSession();
                 self.click_2_call_dispatcher.disable();
             },
             onEnd: function() {
-                self.view.setUserStatus("label label-success", "Offline");
+                self.view.setUserStatus("label label-success", gettext("Desconectado"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('End');
                 self.click_2_call_dispatcher.disable();
             },
             onReady: function() {
                 phone_logger.log('FSM: onReady')
-                self.view.setUserStatus("label label-success", "Online");
+                self.view.setUserStatus("label label-success", gettext("Conectado"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('Ready');
                 self.click_2_call_dispatcher.enable();
@@ -227,42 +228,42 @@ class PhoneJSController {
             },
             onCalling: function() {
                 phone_logger.log('FSM: onCalling')
-                self.view.setUserStatus("label label-success", "Calling");
+                self.view.setUserStatus("label label-success", gettext("Llamando"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('Calling');
                 self.click_2_call_dispatcher.disable();
             },
             onOncall: function() {
                 phone_logger.log('FSM: onOncall')
-                self.view.setUserStatus("label label-success", "OnCall");
+                self.view.setUserStatus("label label-success", gettext("En llamado"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('OnCall');
                 self.click_2_call_dispatcher.disable();
             },
             onDialingtransfer: function() {
                 phone_logger.log('FSM: onDialingTransfer')
-                self.view.setUserStatus("label label-success", "Transfering");
+                self.view.setUserStatus("label label-success", gettext("Transfiriendo"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('DialingTransfer');
                 self.click_2_call_dispatcher.disable();
             },
             onTransfering: function() {
                 phone_logger.log('FSM: onTransfering')
-                self.view.setUserStatus("label label-success", "Transfering");
+                self.view.setUserStatus("label label-success", gettext("Transfiriendo"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('Transfering');
                 self.click_2_call_dispatcher.disable();
             },
             onReceivingcall: function() {
                 phone_logger.log('FSM: onReceivingCall')
-                self.view.setUserStatus("label label-success", "ReceivingCall");
+                self.view.setUserStatus("label label-success", gettext("Recibiendo llamado"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('ReceivingCall');
                 self.click_2_call_dispatcher.disable();
             },
             onOnhold: function() {
                 phone_logger.log('FSM: onOnHold')
-                self.view.setUserStatus("label label-success", "OnHold");
+                self.view.setUserStatus("label label-success", gettext("En espera"));
                 self.view.closeAllModalMenus();
                 self.view.setInputDisabledStatus('OnHold');
                 self.click_2_call_dispatcher.disable();
@@ -276,7 +277,7 @@ class PhoneJSController {
         /** User Agent **/
         this.phone.eventsCallbacks.onUserAgentRegistered.add(function () {
             self.view.setSipStatus("REGISTERED");
-            self.view.setCallStatus("Login Attempt..", "yellowgreen");
+            self.view.setCallStatus(gettext("Registrando.."), "yellowgreen");
             self.phone.makeLoginCall();
         });
 
@@ -292,19 +293,21 @@ class PhoneJSController {
 
         this.phone.eventsCallbacks.onAgentLogged.add(function() {
             self.phone_fsm.registered();
-            self.view.setCallStatus("Agent logged in", "orange");
+            self.view.setCallStatus(gettext("Agente registrado"), "orange");
         });
         this.phone.eventsCallbacks.onAgentLoginFail.add(function() {
-            self.view.setCallStatus("Agent not logged in, contact your administrator", "red");
+            self.view.setCallStatus(gettext("Agente no registrado, contacte a su administrador"),
+                                    "red");
             self.phone_fsm.failedRegistration();
         });
 
         /** Pauses **/
         this.phone.eventsCallbacks.onAgentPaused.add(function() {
-            self.view.setCallStatus("Agent paused", "orange");
+            self.view.setCallStatus(gettext("Agente en pausa"), "orange");
         });
         this.phone.eventsCallbacks.onAgentPauseFail.add(function() {
-            self.view.setCallStatus("Cannot pause agent, contact your administrator", "red");
+            var message = gettext("No se puede obtener la pausa, contacte a su administrador");
+            self.view.setCallStatus(message, "red");
             self.phone_fsm.unpause();
             // Arrancar de nuevo timer de operacion
             self.timers.pause.stop();
@@ -312,10 +315,11 @@ class PhoneJSController {
             self.pause_manager.leavePause();
         });
         this.phone.eventsCallbacks.onAgentUnpaused.add(function() {
-            self.view.setCallStatus("Idle", "black");
+            self.view.setCallStatus(gettext("Disponible"), "black");
         });
         this.phone.eventsCallbacks.onAgentUnPauseFail.add(function() {
-            self.view.setCallStatus("Cannot unpause agent, contact your administrator", "red");
+            var message = gettext("No se puede liberar la pausa, contacte a su administrador");
+            self.view.setCallStatus(message, "red");
             self.phone_fsm.startPause();
             // Arrancar de nuevo timer de pausa
             self.timers.operacion.stop();
@@ -362,7 +366,7 @@ class PhoneJSController {
                 self.phone_fsm.endCall();
                 self.phone.cleanLastCallData();
             }
-            else { phone_logger.log(`No se sabe volver desde: ${self.phone_fsm.state}`)}
+            else { phone_logger.log('No se sabe volver desde: ' + self.phone_fsm.state)}
 
             self.timers.llamada.stop();
 
@@ -377,7 +381,8 @@ class PhoneJSController {
         // Outbound Call
         this.phone.eventsCallbacks.onCallConnected.add(function(numberToCall) {
             phone_logger.log('onCallConnected from: ' + self.phone_fsm.state);
-            self.view.setCallStatus("Connected to " + numberToCall, "orange");
+            var message = interpolate(gettext("Conectado a %(fromUser)s"), {fromUser:numberToCall}, true);
+            self.view.setCallStatus(message, "orange");
             if (self.phone_fsm.state == 'Calling') {
                 self.phone_fsm.connectCall();
             }
@@ -398,7 +403,7 @@ class PhoneJSController {
             if (self.phone_fsm.state == 'DialingTransfer') {
                 self.phone.cancelDialTransfer();
             }
-            self.view.setCallStatus("Idle", "black");
+            self.view.setCallStatus(gettext("Disponible"), "black");
             self.phone_fsm.endCall();
             self.saveCall();
             self.timers.llamada.stop();
@@ -448,7 +453,9 @@ class PhoneJSController {
         }
         this.pause_manager.setPause(pause_id, pause_name)
         this.view.setUserStatus("label label-danger", pause_name);
-        this.view.setCallStatus("Pausing.... " + pause_name, "yellowgreen");
+        var message = interpolate(gettext("Obteniendo pausa: %(pause_name)s"),
+                                  {pause_name: pause_name}, true);
+        this.view.setCallStatus(message, "yellowgreen");
 
         this.oml_api.changeStatus(USER_STATUS_PAUSE, this.agent_id);
         this.timers.pausa.start();
@@ -465,7 +472,7 @@ class PhoneJSController {
         this.timers.pausa.stop();
         this.timers.operacion.start();
         this.phone_fsm.unpause();
-        this.view.setCallStatus("Unpausing....", "yellowgreen");
+        this.view.setCallStatus(gettext("Liberando pausa..."), "yellowgreen");
     }
 
     callDialedNumber() {
@@ -500,18 +507,19 @@ class PhoneJSController {
                                       this.agent_id,
                                       dialedNumber);
         this.view.numberDisplay.val("");
-        this.view.setCallStatus("Calling.... " + dialedNumber, "yellowgreen");
+        var message = interpolate(gettext("Llamando: %(dialedNumber)s"),
+                                  {dialedNumber: dialedNumber}, true);
+        this.view.setCallStatus(message, "yellowgreen");
         this.phone_fsm.startCall();
     }
 
     redial() {
-        // TODO: Ver por que falla!!!
         if (this.lastDialedNumber !== undefined) {
             this.view.numberDisplay.val(this.lastDialedNumber);
             this.makeDialedNumberCall();
         }
         else {
-            phone_logger.log('Redial button should be disabled.')
+            phone_logger.log('Redial button should be disabled!!')
         }
     }
 
@@ -530,34 +538,44 @@ class PhoneJSController {
     setCallFailedStatus(cause) {
         switch(cause){
             case JsSIP.C.causes.BUSY:
-                this.view.setCallStatus("Number busy, try later", "orange");
+                this.view.setCallStatus(gettext("Ocupado, intente maás tarde"), "orange");
                 break;
             case JsSIP.C.causes.REJECTED:
-                this.view.setCallStatus("Rejected, try later", "orange");
+                this.view.setCallStatus(gettext("Rechazado, intente maás tarde"), "orange");
                 break;
             case JsSIP.C.causes.UNAVAILABLE:
-                this.view.setCallStatus("Unavailable, contact your administrator", "red");
+                this.view.setCallStatus(gettext("No disponible, contacte a su administrador"),
+                                        "red");
                 break;
             case JsSIP.C.causes.NOT_FOUND:
-                this.view.setCallStatus("Error, check the number dialed", "red");
+                this.view.setCallStatus(gettext("Error, verifique el número marcado"), "red");
                 break;
             case JsSIP.C.causes.AUTHENTICATION_ERROR:
-                this.view.setCallStatus("Authentication error, contact your administrator", "red");
+                this.view.setCallStatus(
+                    gettext("Error de autenticación, contacte a su administrador"),
+                    "red"
+                );
                 break;
             case JsSIP.C.causes.MISSING_SDP:
-                this.view.setCallStatus("Error, Missing sdp", "red");
+                this.view.setCallStatus(gettext("Error, Falta SDP"), "red");
                 break;
             case JsSIP.C.causes.ADDRESS_INCOMPLETE:
-                this.view.setCallStatus("Address incomplete", "red");
+                this.view.setCallStatus(gettext("Dirección incompleta"), "red");
                 break;
             case JsSIP.C.causes.SIP_FAILURE_CODE:
-                this.view.setCallStatus("Service Unavailable, contact your administrator", "red");
+                this.view.setCallStatus(
+                    gettext("Servicio no disponible, contacte a su administrador"),
+                    "red"
+                );
                 break;
             case JsSIP.C.causes.USER_DENIED_MEDIA_ACCESS:
-                this.view.setCallStatus("WebRTC Error: User denied media access", "red");
+                this.view.setCallStatus(
+                    gettext("Error WebRTC: El usuario no permite acceso al medio"),
+                    "red"
+                );
                 break;
             default:
-                this.view.setCallStatus("Error: Call failed", "red");
+                this.view.setCallStatus(gettext("Error: Llamado fallido"), "red");
         }
     }
 
@@ -617,7 +635,7 @@ class PhoneJSController {
             numero_telefono = this.phone.session_data.from;
         }
         var tipo_llamada = this.phone.session_data.call_type_id;
-        phone_logger.log(`saveCall: tipo:${tipo_llamada}, numero: ${numero_telefono}`);
+        phone_logger.log('saveCall: tipo:' + tipo_llamada + ', numero: ' + numero_telefono);
         this.oml_api.guardarDuracionLlamada(duracion,
                                             this.agent_id,
                                             numero_telefono,
@@ -626,8 +644,7 @@ class PhoneJSController {
     }
 
     getContactForm(campid, contactid, agentid) {
-        // var url = "/formulario/" + campid + "/calificacion/" + contactid + "/update/" + agentid + "/calificacion/";
-        var url = `/formulario/${campid}/calificacion/${contactid}/update/${agentid}/calificacion/`;
+        var url = "/formulario/" + campid + "/calificacion/" + contactid + "/update/" + agentid + "/calificacion/";
         $("#dataView").attr('src', url);
     }
 
@@ -635,8 +652,7 @@ class PhoneJSController {
         // Elimino los caracteres no numericos
         var telephone = tel.replace(/\D+/g, '');
         telephone = telephone == '' ? 0 : telephone;
-        var url = `/formulario/${idcamp}/calificacion/${idagt}/create/${telephone}/`;
-        // var url = "/formulario/" + idcamp + "/calificacion/" + idagt + "/create/" + telephone + "/";
+        var url = "/formulario/" + idcamp + "/calificacion/" + idagt + "/create/" + telephone + "/";
         $("#dataView").attr('src', url);
     }
 
