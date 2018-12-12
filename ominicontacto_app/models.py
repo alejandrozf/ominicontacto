@@ -3100,3 +3100,27 @@ class AgenteEnContacto(models.Model):
         qs_agentes_liberados.update(agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
 
         return liberados
+
+
+class ParametrosCrm(models.Model):
+    """
+    Variables a enviar en la url del crm de sitio externo
+    """
+    DATOS_OML = 1
+    DB = 2
+    CUSTOM = 3
+
+    TIPOS = (
+        (DATOS_OML, _('DATOS_OML')),
+        (DB, _('Base de datos')),
+        (CUSTOM, _('Customizable')),
+    )
+
+    campana = models.ForeignKey(Campana, related_name='variablescrm')
+    nombre = models.CharField(max_length=128)
+    valor = models.CharField(max_length=256)
+    tipo = models.PositiveIntegerField(choices=TIPOS)
+
+    def __unicode__(self):
+        return "Variable {0} con valor: {1} para la campana {2}".format(
+            self.nombre, self.valor, self.campana)
