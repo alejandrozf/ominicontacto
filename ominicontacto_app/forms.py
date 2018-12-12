@@ -38,7 +38,7 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
-    NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
+    NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform, ParametrosCrm
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -1343,3 +1343,16 @@ class GrupoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(GrupoForm, self).__init__(*args, **kwargs)
         self.fields['auto_unpause'].required = False
+
+
+class ParametrosCrmForm(forms.ModelForm):
+
+    class Meta:
+        model = ParametrosCrm
+        fields = ('nombre', 'valor', 'tipo')
+
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'valor': forms.TextInput(attrs={'class': 'form-control'}),
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
+        }

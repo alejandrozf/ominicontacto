@@ -29,7 +29,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
                                      ReglasIncidenciaFormSet, CampanaDialerForm,
-                                     OpcionCalificacionFormSet, ParametroExtraParaWebformFormSet)
+                                     OpcionCalificacionFormSet, ParametroExtraParaWebformFormSet,
+                                     ParametrosCrmForm)
 from ominicontacto_app.models import Campana
 
 from ominicontacto_app.services.campana_service import CampanaService
@@ -56,7 +57,7 @@ class CampanaDialerMixin(CampanaWizardMixin):
     FORMS = [(INICIAL, CampanaDialerForm),
              (COLA, QueueDialerForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
-             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet),
+             (PARAMETROS_EXTRA_WEB_FORM, ParametrosCrmForm),
              (ACTUACION_VIGENTE, ActuacionVigenteForm),
              (REGLAS_INCIDENCIA, ReglasIncidenciaFormSet),
              (SINCRONIZAR, SincronizaDialerForm)]
@@ -64,7 +65,7 @@ class CampanaDialerMixin(CampanaWizardMixin):
     TEMPLATES = {INICIAL: 'campana_dialer/nueva_edita_campana.html',
                  COLA: 'campana_dialer/create_update_queue.html',
                  OPCIONES_CALIFICACION: 'campana_dialer/opcion_calificacion.html',
-                 PARAMETROS_EXTRA_WEB_FORM: 'campana_dialer/parametros_extra_web_form.html',
+                 PARAMETROS_EXTRA_WEB_FORM: 'campana_dialer/parametros_crm_sitio_externo.html',
                  ACTUACION_VIGENTE: 'campana_dialer/actuacion_vigente_campana.html',
                  REGLAS_INCIDENCIA: 'campana_dialer/reglas_incidencia.html',
                  SINCRONIZAR: 'campana_dialer/sincronizar_lista.html'}
