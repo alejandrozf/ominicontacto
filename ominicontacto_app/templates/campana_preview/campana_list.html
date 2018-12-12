@@ -113,6 +113,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                             <span class="icon icon-list"></span>{% trans 'Calificaciones'  %}
                         </a>
+                        <a class="dropdown-item" href="{% url 'reporte_de_resultados' campana.pk %}">
+                            <span class="icon icon-graph"></span>{% trans 'Resultados de Base' %}
+                        </a>
                         <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                             <span class="icon icon-graph"></span>{% trans 'Reportes'  %}
                         </a>
@@ -165,6 +168,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                                     <span class="icon icon-list"></span>{% trans 'Calificaciones'  %}
                                 </a>
+                                <a class="dropdown-item" href="{% url 'reporte_de_resultados' campana.pk %}">
+                                    <span class="icon icon-graph"></span>{% trans 'Resultados de Base' %}
+                                </a>
                                 <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                     <span class="icon icon-graph"></span>{% trans 'Reportes'  %}
                                 </a>
@@ -206,6 +212,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
                             <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
+                        </a>
+                        <a class="dropdown-item" href="{% url 'reporte_de_resultados' campana.pk %}">
+                            <span class="icon icon-graph"></span>{% trans 'Resultados de Base' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                             <span class="icon icon-graph"></span>{% trans 'Reportes' %}
