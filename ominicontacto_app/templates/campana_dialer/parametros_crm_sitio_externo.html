@@ -1,0 +1,77 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "campana/parametros_extra_web_form.html" %}
+{% load i18n %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+     $('.linkFormset').formset({
+       addText: 'Agregar parámetro',
+       deleteText: 'Remover',
+       prefix: '{{ wizard.form.prefix }}',
+       addCssClass: 'addFormset btn btn-outline-primary',
+       deleteCssClass: 'deleteFormset btn btn-outline-danger',
+     });
+    </script>
+{% endblock %}
+
+{% block nav %}
+    <h1>{% trans 'Campaña Dialer: Parámetros CRM' %}</h1>
+
+    <ul class="nav nav-indicators">
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        <li class="active"><a>{% trans 'Parámetros CRM' %}</a></li>
+        {% if not form.instance.pk %}
+            <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
+            <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
+            {% if not es_template %}
+                <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
+{% endblock %}
+{% block form_render %}
+    {% with form as form %}
+        {{ form.non_field_errors }}
+        {{ form.campana }}
+        <div class="form-row">
+            <div class="col-md-6">
+                <label for="{{ form.tipo.id_for_label }}">{% trans 'Tipo:' %}</label>
+                {{ form.tipo }}
+                {{ form.tipo.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.nombre.id_for_label }}">{% trans 'Nombre:' %}</label>
+                {{ form.nombre }}
+                {{ form.nombre.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.valor.id_for_label }}">{% trans 'Valor:' %}</label>
+                {{ form.valor }}
+                {{ form.valor.errors }}
+            </div>
+        </div>
+    {% endwith %}
+{% endblock %}
