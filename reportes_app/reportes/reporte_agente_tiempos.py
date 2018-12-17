@@ -25,7 +25,7 @@ from django.utils.translation import ugettext as _
 from django.utils import timezone
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog
-from reportes_app.reporte_llamadas import LLAMADA_TRANSF_INTERNA
+from reportes_app.reportes.reporte_llamadas import LLAMADA_TRANSF_INTERNA
 from ominicontacto_app.models import AgenteProfile, Pausa, Campana
 from pygal.style import Style
 from ominicontacto_app.utiles import (

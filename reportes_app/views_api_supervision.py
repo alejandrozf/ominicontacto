@@ -31,7 +31,7 @@ from django.http import JsonResponse
 
 from ominicontacto_app.utiles import datetime_hora_minima_dia
 from ominicontacto_app.models import Campana, CalificacionCliente
-from reportes_app.reporte_llamadas import ReporteTipoDeLlamadasDeCampana
+from reportes_app.reportes.reporte_llamadas import ReporteTipoDeLlamadasDeCampana
 
 
 @method_decorator(csrf_exempt, name='dispatch')

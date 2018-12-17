@@ -23,7 +23,7 @@ from collections import OrderedDict
 from django.utils.translation import ugettext_lazy as _
 from django.db import connection
 from ominicontacto_app.models import CalificacionCliente
-from ominicontacto_app.services.reporte_llamados_contactados_csv import NO_CONECTADO_DESCRIPCION
+from reportes_app.reportes.reporte_llamados_contactados_csv import NO_CONECTADO_DESCRIPCION
 from reportes_app.models import LlamadaLog
 
 
