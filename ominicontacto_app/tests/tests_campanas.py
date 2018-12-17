@@ -396,9 +396,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_supervisors', args=[self.campana_activa.pk])
         self.assertFalse(self.campana_activa.supervisors.all().exists())
         supervisor = UserFactory.create()
-        self.campana_activa.supervisors.add(supervisor)
-        self.campana_activa.save()
         post_data = {'supervisors': [supervisor.pk]}
+        self.assertFalse(self.campana_activa.supervisors.all().exists())
         self.client.post(url, post_data, follow=True)
         self.assertTrue(self.campana_activa.supervisors.all().exists())
 
