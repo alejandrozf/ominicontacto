@@ -154,7 +154,9 @@ class CalificacionClienteFormView(FormView):
         calificacion_form = self.get_form()
 
         return self.render_to_response(self.get_context_data(
-            contacto_form=contacto_form, calificacion_form=calificacion_form))
+            contacto_form=contacto_form,
+            calificacion_form=calificacion_form,
+            campana=self.campana))
 
     def post(self, request, *args, **kwargs):
         """
@@ -166,6 +168,12 @@ class CalificacionClienteFormView(FormView):
             return self.form_valid(contacto_form, calificacion_form)
         else:
             return self.form_invalid(contacto_form, calificacion_form)
+
+    def _check_metadata_no_accion_delete(self, calificacion):
+        """ En caso que sea una calificacion de no gestion elimina metadatacliente"""
+        if calificacion.opcion_calificacion.tipo is OpcionCalificacion.NO_ACCION \
+                and calificacion.get_venta():
+            calificacion.get_venta().delete()
 
     def form_valid(self, contacto_form, calificacion_form):
         nuevo_contacto = False
@@ -206,6 +214,9 @@ class CalificacionClienteFormView(FormView):
         if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
             self.campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
 
+        # check metadata en calificaciones de no accion y eliminar
+        self._check_metadata_no_accion_delete(self.object_calificacion)
+
         if self.object_calificacion.es_venta:
             return redirect(self.get_success_url_venta())
         else:
@@ -224,7 +235,8 @@ class CalificacionClienteFormView(FormView):
         Re-renders the context data with the data-filled forms and errors.
         """
         return self.render_to_response(self.get_context_data(contacto_form=contacto_form,
-                                                             calificacion_form=calificacion_form))
+                                                             calificacion_form=calificacion_form,
+                                                             campana=self.campana))
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',

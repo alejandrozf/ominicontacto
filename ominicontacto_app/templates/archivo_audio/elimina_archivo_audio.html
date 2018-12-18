@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div>
             <form method="post">{% csrf_token %}
-                <h1>{% blocktrans %}Archivo de Audio "{{ object.descripcion }}"{% endblocktrans %}</h1>
+                <h1>{% blocktrans with object_description=object.descripcion %}Archivo de Audio "{{ object_description }}"{% endblocktrans %}</h1>
                 <p>{% trans '¿Está seguro que desea eliminar este Audio?' %}</p>
                 <button type="submit" class="btn btn-danger">
                     {% trans 'Eliminar' %}

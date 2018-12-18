@@ -1,0 +1,58 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+	<h1>{% trans 'Estado de contactaciones de la Campaña: ' %}{{ campana.nombre }}</h1>
+    <a class="btn btn-outline-primary" href="{% url 'reporte_de_resultados_csv' campana.pk %}">{% trans "Exportar Contactaciones" %} (CSV)</a>
+    <table class="table">
+        <thead>
+          <tr class="fts-table-bg">
+            <th>{% trans "Teléfono" %}</th>
+            {% for columna in columnas_datos %}
+                <th>{{ columna }}</th>
+            {% endfor %}
+            <th>{% trans "Calificación" %}</th>
+            <th>{% trans "Contactación" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for contactacion in reporte.contactaciones.values %}
+                <tr>
+                    <td>{{ contactacion.contacto.telefono }}</td>
+                    {% for dato in contactacion.contacto.lista_de_datos %}
+                        <td>{{ dato }}</td>
+                    {% endfor %}
+                    <td>{{ contactacion.calificacion|default_if_none:'' }}</td>
+                    <td>{{ contactacion.contactacion|default_if_none:'' }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="16">
+                        <p>{% trans "No se encontraron Contactaciones para esta campaña." %}</p>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+

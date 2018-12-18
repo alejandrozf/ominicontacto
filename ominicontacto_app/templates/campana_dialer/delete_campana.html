@@ -24,13 +24,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 
     <form method="post">{% csrf_token %}
-         {% if es_template %}
-                        <h1>{% blocktrans %}Template "{{ object.nombre_template }}"{% endblocktrans %}</h1>
-                        <p>{% trans '¿Está seguro que desea eliminar este Template?' %}</p>
-                    {% else %}
-                        <h1>{% blocktrans %}Campaña "{{ object.nombre }}"{% endblocktrans %}</h1>
-                        <p>{% trans '¿Está seguro que desea eliminar esta Campaña?' %}</p>
-                    {% endif %}
+        {% if es_template %}
+            <h1>{% blocktrans with nombre_template=object.nombre_template %}Template "{{ nombre_template }}"{% endblocktrans %}</h1>
+            <p>{% trans '¿Está seguro que desea eliminar este Template?' %}</p>
+        {% else %}
+            <h1>{% blocktrans with object_nombre=object.nombre %}Campaña "{{ object_nombre }}"{% endblocktrans %}</h1>
+            <p>{% trans '¿Está seguro que desea eliminar esta Campaña?' %}</p>
+        {% endif %}
 
          <button type="submit" class="btn btn-danger">{% trans 'Eliminar' %}</button>
         {% if es_template %}

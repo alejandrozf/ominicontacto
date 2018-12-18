@@ -37,7 +37,7 @@ from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalific
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from ominicontacto_app.services.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
+from reportes_app.reportes.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
 from ominicontacto_app.services.reporte_metadata_cliente import ReporteMetadataClienteService
 from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAgenteLogFactory,
                                                CalificacionClienteFactory, ContactoFactory,
@@ -47,7 +47,7 @@ from ominicontacto_app.utiles import fecha_local
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 
-class ReportesCampanasTests(TestCase):
+class BaseTestDeReportes(TestCase):
 
     PWD = 'admin123'
 
@@ -67,25 +67,30 @@ class ReportesCampanasTests(TestCase):
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW)
 
+        self.contacto_calificado_gestion = ContactoFactory(
+            bd_contacto=self.campana_activa.bd_contacto)
+        self.contacto_calificado_no_accion = ContactoFactory(
+            bd_contacto=self.campana_activa.bd_contacto)
+        self.contacto_no_atendido = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
+        self.contacto_no_calificado = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
+
         self.opcion_calificacion_gestion = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=self.nombre_calificacion_gestion.nombre,
             tipo=OpcionCalificacion.GESTION)
         self.opcion_calificacion_noaccion = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=self.nombre_calificacion.nombre)
         self.calif_gestion = CalificacionClienteFactory.create(
-            opcion_calificacion=self.opcion_calificacion_gestion, agente=self.agente_profile)
+            opcion_calificacion=self.opcion_calificacion_gestion, agente=self.agente_profile,
+            contacto=self.contacto_calificado_gestion)
         self.calif_no_accion = CalificacionClienteFactory.create(
-            opcion_calificacion=self.opcion_calificacion_noaccion, agente=self.agente_profile)
+            opcion_calificacion=self.opcion_calificacion_noaccion, agente=self.agente_profile,
+            contacto=self.contacto_calificado_no_accion)
         CalificacionCliente.history.all().update(history_change_reason='calificacion')
-        self.contacto_calificado_gestion = self.calif_gestion.contacto
-        self.contacto_calificado_no_accion = self.calif_no_accion.contacto
-        self.contacto_no_atendido = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
-        self.contacto_no_calificado = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
 
         self.telefono1 = self.contacto_calificado_gestion.telefono
         self.telefono2 = self.contacto_calificado_no_accion.telefono
         self.telefono3 = self.contacto_no_atendido.telefono
-        self.telefono4 = self.contacto_no_atendido.telefono
+        self.telefono4 = self.contacto_no_calificado.telefono
 
         self.generador_log_llamadas = GeneradorDeLlamadaLogs()
         self.generador_log_llamadas.generar_log(
@@ -102,6 +107,9 @@ class ReportesCampanasTests(TestCase):
             contacto=self.contacto_no_calificado, duracion_llamada=0)
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
+
+
+class ReportesCampanasTests(BaseTestDeReportes):
 
     def test_usuario_no_logueado_no_accede_reporte_calificaciones(self):
         self.client.logout()

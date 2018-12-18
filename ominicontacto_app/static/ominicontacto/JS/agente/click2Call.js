@@ -21,6 +21,11 @@
 // url(r'^agente/llamar/$',
 
 class Click2CallDispatcher {
+	/*
+	 *  Esta clase será la encargada de despachar los pedidos de click to call que ejecute el
+	 *  usuario. Se deshabilita mientras el UserAgent no este registrado, cuando haya una llamada
+	 *  en curso, etc...
+	 */
 	constructor (oml_api) {
 		this.enabled = false;
 		this.oml_api = oml_api;

@@ -374,6 +374,8 @@ class GlobalsFamily(AbstractFamily):
             'OBJ/4': 'sub-oml-module-ext,s,1',
             'OBJ/5': 'sub-oml-hangup,s,1',
             'OBJ/6': 'sub-oml-module-survey,s,1',
+            'OBJ/7': 'sub-oml-module-custom-dst,s,1',
+            'OBJ/8': 'sub-oml-module-voicemail,s,1',
             'RECFILEPATH': '/var/spool/asterisk/monitor',
             'TYPECALL/1': 'manualCall',
             'TYPECALL/2': 'dialerCall',

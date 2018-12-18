@@ -32,7 +32,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       SitioExterno, User, Contacto, SupervisorProfile, Modulo,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametroExtraParaWebform,
-                                      ActuacionVigente, Pausa)
+                                      ActuacionVigente, Pausa, MetadataCliente)
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
 faker = faker.Factory.create()
@@ -301,3 +301,15 @@ class PausaFactory(DjangoModelFactory):
 
     nombre = Sequence(lambda n: "Pausa_{0}".format(n))
     tipo = lazy_attribute(lambda a: random.choice(('P', 'R')))
+
+
+class MetadataClienteFactory(DjangoModelFactory):
+    class Meta:
+        model = MetadataCliente
+
+    contacto = SubFactory(ContactoFactory)
+    agente = SubFactory(AgenteProfileFactory)
+    campana = SubFactory(CampanaFactory)
+    metadata = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
+        faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
+        faker.phone_number()))

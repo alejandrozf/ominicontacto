@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
-        <h1>{% blocktrans %}Grupo "{{ object.nombre}}" {% endblocktrans %}</h1>
+        <h1>{% blocktrans with nombre=object.nombre %}Grupo "{{ nombre }}"{% endblocktrans %}</h1>
         <p>{% trans '¿Está seguro que desea eliminar este grupo?' %}</p>
         <button type="submit" class="btn btn-danger">{% trans 'Eliminar' %}</button>
         <a class="btn btn-outline-danger" href="{% url 'grupo_list' %}">{% trans 'Cancelar' %}</a>

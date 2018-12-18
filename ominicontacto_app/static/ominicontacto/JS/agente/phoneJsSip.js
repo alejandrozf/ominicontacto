@@ -96,9 +96,10 @@ class PhoneJS {
     }
 
     startSipSession() {
+        var socket = new JsSIP.WebSocketInterface('wss://' + this.KamailioIp + ':' + this.KamailioPort + '/ws');
         var config = {
+                sockets: [ socket ],
                 uri: "sip:" + this.sipExtension + "@" + this.KamailioIp,
-                ws_servers: "wss://" + this.KamailioIp + ":" + this.KamailioPort + "/ws",
                 password: this.sipSecret,
                 realm: this.KamailioIp,
                 hack_ip_in_contact: true,
@@ -131,29 +132,29 @@ class PhoneJS {
         this.userAgent.terminateSessions();
     }
 
-    /********** TODO REFACTOR ********************/
-    /********** TODO REFACTOR ********************/
-
     /******  Eventos User Agent  *******/
     subscribeToUserAgentEvents() {
         var self = this;
+        /* -- SIP registration events -- */
         //Connects to the WebSocket server
         this.userAgent.on("registered", function(e) { // cuando se registra la entidad SIP
             phone_logger.log('User Agent: registered');
             self.eventsCallbacks.onUserAgentRegistered.fire();
         });
-
-        this.userAgent.on("disconnected", function(e) {
-            phone_logger.log('User Agent: disconnected');
-            self.eventsCallbacks.onUserAgentDisconnect.fire();
-        });
-
         this.userAgent.on("registrationFailed", function(e) { // cuando falla la registracion
             phone_logger.log('User Agent: registrationFailed');
             self.eventsCallbacks.onUserAgentRegisterFail.fire();
         });
+        this.userAgent.on("unregistered", function(e) {phone_logger.log('User Agent: unregistered');});
 
-        /*
+        /* -- WebSocket connection events -- */
+        this.userAgent.on("disconnected", function(e) {
+            phone_logger.log('User Agent: disconnected');
+            self.eventsCallbacks.onUserAgentDisconnect.fire();
+        });
+        this.userAgent.on("connected", function(e) {phone_logger.log('User Agent: connected');});
+
+        /*      --  New incoming or outgoing call event  --
            La sesion se crea al: Llamar, recibir llamada, des/Pausar, Hacer Login
            Si el originator es 'local': Llamar, des/pausar, login
            Si es 'remote': Puede ser recibir llamada, click2Call, Recibir transferencia
@@ -180,13 +181,7 @@ class PhoneJS {
                 }
             }
 
-            //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             // Session Events
-            self.currentSession.on("addstream", function(e) {
-                phone_logger.log('currentSession: addstream');
-                self.remote_audio.srcObject = e.stream;
-            });
-
             self.currentSession.on("failed", function(e) {
                 phone_logger.log('session: failed');
                 self.Sounds("", "stop");
@@ -220,8 +215,19 @@ class PhoneJS {
                     self.eventsCallbacks.onCallEnded.fire();
                 }
             });
+            // TODO: SACAR ESTO, SOLO ESTA PARA DEBUG
+            self.currentSession.on("addstream", function() {phone_logger.log('session: addstream')});
+            self.currentSession.on("succeeded", function() {phone_logger.log('session: succeeded')});
         });
     };
+
+    subscribeToSessionConnectionEvents() {
+        var self = this;
+        this.currentSession.connection.addEventListener('addstream', function (event) {
+            phone_logger.log('currentSession.connection: addstream');
+            self.remote_audio.srcObject = event.stream;
+        });                
+    }
 
     /* FUNCTIONS */
 
@@ -232,7 +238,7 @@ class PhoneJS {
 
     makePauseCall(pause_id) {
         phone_logger.log("---------- \nPause Call");
-        this.makeCall(`${SPECIAL_CODE_PREFIX}${pause_id}`);
+        this.makeCall(SPECIAL_CODE_PREFIX + pause_id);
     }
 
     makeUnpauseCall() {
@@ -262,13 +268,9 @@ class PhoneJS {
         var eventHandlers = {
             // TODO: Verificar si no hay otros posibles eventos.
             // Asegurarse de que cualquier finalizacion termina llamando al clearTimeout(...)
-            /**/
             'confirmed': function(e) {
                 phone_logger.log('makeCall: confirmed');
                 clearTimeout(self.callTimeoutHandler);
-                if (self.current_call.is_call) {
-                    self.local_audio.srcObject = self.currentSession.connection.getLocalStreams()[0];
-                }
                 if (self.current_call.is_unpause) {
                     self.eventsCallbacks.onAgentUnpaused.fire();
                 }
@@ -278,9 +280,13 @@ class PhoneJS {
                 else if (self.current_call.is_pause) {
                     self.eventsCallbacks.onAgentPaused.fire();
                 } 
-            },/**/
+            },
             'addstream': function(e) {
                 phone_logger.log('makeCall: addstream');
+                clearTimeout(self.callTimeoutHandler);
+            },
+            'succeeded': function(e) {
+                phone_logger.log('makeCall: succeeded');
                 clearTimeout(self.callTimeoutHandler);
             },
             'failed': function(data) {
@@ -301,6 +307,9 @@ class PhoneJS {
                     }
                 }
             },
+            // TODO: SACAR ESTO, SOLO ESTA PARA DEBUG
+            'accepted': function(asd) { phone_logger.log('makeCall: accepted'); },
+            'ended': function(asd) { phone_logger.log('makeCall: ended'); },
         };
         var opciones = {
             'eventHandlers': eventHandlers,
@@ -310,15 +319,16 @@ class PhoneJS {
             },
             pcConfig: {
                 rtcpMuxPolicy: 'negotiate'
-            }
+            },
         };
         if (campaign_id !== null ) {
-            opciones.extraHeaders = [`Idcamp:${campaign_id}`,
-                                     `Tipocamp:${campaign_type}`, ]
+            opciones.extraHeaders = ['Idcamp:' + campaign_id,
+                                     'Tipocamp:' + campaign_type, ]
         }
 
         // Finalmente Mando el invite/llamada
-        this.userAgent.call("sip:" + numberToCall + "@" + this.KamailioIp, opciones);
+        this.userAgent.call('sip:' + numberToCall + '@' + this.KamailioIp, opciones);
+        this.subscribeToSessionConnectionEvents();
     }
 
     dialTransfer(transfer) {
@@ -406,6 +416,7 @@ class PhoneJS {
             }
         };
         this.currentSession.answer(options);
+        this.subscribeToSessionConnectionEvents();
         this.Sounds("", "stop");
     }
 

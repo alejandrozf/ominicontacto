@@ -204,7 +204,7 @@ class QueueEntranteForm(forms.ModelForm):
         tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
         self.fields['tipo_destino'].choices = tipo_destino_choices
         instance = getattr(self, 'instance', None)
-        if instance.pk is not None and instance.pk:
+        if instance.pk is not None and instance.destino:
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
@@ -463,7 +463,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'formulario',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo')
+                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -946,7 +946,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
                   'bd_contacto', 'formulario', 'sitio_externo',
-                  'tipo_interaccion', 'objetivo')
+                  'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1149,7 +1149,7 @@ class QueueDialerForm(forms.ModelForm):
         tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
         self.fields['tipo_destino'].choices = tipo_destino_choices
         instance = getattr(self, 'instance', None)
-        if instance.pk is not None and instance.pk:
+        if instance.pk is not None and instance.destino:
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)

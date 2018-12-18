@@ -35,7 +35,7 @@ class OMLAPI {
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 debugger;
-                console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
             }
         });
     };
@@ -49,7 +49,7 @@ class OMLAPI {
             	callback(msg.campanas);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
             }
         });
     };
@@ -63,7 +63,7 @@ class OMLAPI {
             	callback(msg.agentes);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
             }
         });
     };
@@ -83,7 +83,7 @@ class OMLAPI {
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
             }
         });
     };
@@ -99,7 +99,7 @@ class OMLAPI {
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 debugger;
-                console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
+                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
             }
         });
     };

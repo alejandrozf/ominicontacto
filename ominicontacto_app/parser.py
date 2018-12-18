@@ -205,10 +205,10 @@ class ParserCsv(object):
             if row:
                 structure_dic.append(row)
 
-            if i == 3:
+            if i == 2:
                 break
 
-        if i < 3:
+        if i < 2:
             logger.warn("El archivo CSV seleccionado posee menos de 3 "
                         "filas.")
             raise OmlParserMinRowError("El archivo CSV posee menos de "
@@ -243,10 +243,10 @@ class ParserCsv(object):
 
                 single_column.append(value_valid)
 
-                if i == 3:
+                if i == 2:
                     break
 
-            if i < 3:
+            if i < 2:
                 logger.warn("El archivo CSV seleccionado posee menos de 3 "
                             "filas.")
                 raise OmlParserMinRowError("El archivo CSV posee menos de "
@@ -276,7 +276,7 @@ class ParserCsv(object):
             if row:
                 structure_dic.append(row)
 
-        if i < 3:
+        if i < 2:
             logger.warn("El archivo CSV seleccionado posee menos de 3 "
                         "filas.")
             raise OmlParserMinRowError("El archivo CSV posee menos de "

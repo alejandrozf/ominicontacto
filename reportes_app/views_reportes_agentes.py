@@ -26,8 +26,8 @@ from django.shortcuts import redirect, render
 from ominicontacto_app.models import AgenteProfile, Grupo
 from reportes_app.forms import ReporteAgentesForm
 from ominicontacto_app.utiles import convert_fecha_datetime
-from reportes_app.reporte_agente_tiempos import TiemposAgente
-from reportes_app.reporte_agente_tiempos_csv import ReporteAgenteCSVService
+from reportes_app.reportes.reporte_agente_tiempos import TiemposAgente
+from reportes_app.reportes.reporte_agente_tiempos_csv import ReporteAgenteCSVService
 
 
 class ReportesTiemposAgente(FormView):

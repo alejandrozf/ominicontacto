@@ -51,7 +51,7 @@ var PhoneFSM = new StateMachine.factory({
         // Transfered
       { name: 'endCall',                from: 'Transfered',         to: 'Ready' },
         // Transfering
-      { name: 'transferAccepted',       from: 'Transfering',        to: 'Ready' },  // Cuando sucede?
+      { name: 'transferAccepted',       from: 'Transfering',        to: 'Ready' },
       { name: 'endCall',                from: 'Transfering',        to: 'Ready' },
       { name: 'transferNotAccepted',    from: 'Transfering',        to: 'OnCall' }, // Cuando sucede?
       { name: 'endTransfer',            from: 'Transfering',        to: 'OnCall' },

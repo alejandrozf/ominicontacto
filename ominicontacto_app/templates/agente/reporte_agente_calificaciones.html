@@ -58,7 +58,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <body>
 {% include 'messages.html' %}
-<h1>{% blocktrans %} Agente {{ agente.user.get_full_name }}{% endblocktrans %}</h1>
+    <h1>{% blocktrans with agente_full_name=agente.user.get_full_name %} Agente {{ agente_full_name }}{% endblocktrans %}</h1>
 <div class="wrapper-dropdown">
     <div class="dropdown">
         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownExportActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
