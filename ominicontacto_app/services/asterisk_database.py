@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from ominicontacto_app.utiles import elimina_espacios, convert_audio_asterisk_path_astdb
-from ominicontacto_app.models import Campana, AgenteProfile, Pausa, SitioExterno
+from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 from configuracion_telefonia_app.models import (
@@ -564,29 +564,3 @@ class GrupoHorarioFamily(AbstractFamily):
 
     def get_nombre_families(self):
         return "OML/TG"
-
-
-class SitioExternoFamily(AbstractFamily):
-
-    def _create_dict(self, sitio):
-
-        dict_sitio = {
-            "NAME": elimina_espacios(sitio.nombre),
-            "TYPE": sitio.tipo,
-            "METHOD": sitio.metodo,
-            "URL": sitio.url,
-        }
-        return dict_sitio
-
-    def _obtener_todos(self):
-        """Obtengo todos los sitios externos para generar family"""
-        return SitioExterno.objects.all()
-
-    def _get_nombre_family(self, sitio):
-        return "OML/EXTCRM/{0}".format(sitio.id)
-
-    def _obtener_una_key(self):
-        return "NAME"
-
-    def get_nombre_families(self):
-        return "OML/EXTCRM"
