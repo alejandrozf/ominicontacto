@@ -62,8 +62,12 @@
                             <td>{{ contacto.datos }}</td>
                             <td>
                                 <div class="dropdown">
-                                    <a class="dropdown-item" href="{% url 'calificacion_formulario_update_or_create' campana.pk contacto.pk user.get_agente_profile.pk %}">
-                                        <span class="icon icon-pencil"></span>
+                                    {% if call_data_json %}
+                                        <a class="dropdown-item" href="{% url 'calificar_llamada_con_contacto' contacto.pk call_data_json %}">
+                                    {% else %}
+                                        <a class="dropdown-item" href="{% url 'calificacion_formulario_update_or_create' campana.pk contacto.pk %}">
+                                    {% endif %}
+                                    <span class="icon icon-pencil"></span>
                                     </a>
                                 </div>
                             </td>

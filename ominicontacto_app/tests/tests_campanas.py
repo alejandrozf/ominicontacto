@@ -249,8 +249,7 @@ class AgenteCampanaTests(CampanasTests):
         }
         AgenteEnContactoFactory.create(**values)
         kwargs = {'pk_contacto': self.contacto.pk,
-                  'pk_campana': self.campana_activa.pk,
-                  'id_agente': self.agente_profile.pk}
+                  'pk_campana': self.campana_activa.pk}
         url = reverse('calificacion_formulario_update_or_create', kwargs=kwargs)
         post_data = {'opcion_calificacion': [self.opcion_calificacion_noaccion.pk],
                      'agente': [self.agente_profile.pk],

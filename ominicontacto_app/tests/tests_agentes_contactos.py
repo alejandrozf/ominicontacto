@@ -180,7 +180,9 @@ class AgentesContactosTests(OMLBaseTest):
         campana_dialer = self.campana_dialer
         contacto = campana_dialer.bd_contacto.contactos.first()
         url = reverse(
-            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, contacto.telefono])
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk,
+                                                         contacto.telefono,
+                                                         None])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
@@ -188,7 +190,9 @@ class AgentesContactosTests(OMLBaseTest):
         campana_dialer = self.campana_dialer
         contacto = campana_dialer.bd_contacto.contactos.first()
         url = reverse(
-            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, contacto.telefono])
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk,
+                                                         contacto.telefono,
+                                                         None])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'agente/contactos_telefonos_repetidos.html')
 
@@ -199,7 +203,7 @@ class AgentesContactosTests(OMLBaseTest):
         ContactoFactory.create_batch(
             n_contactos_repetidos, bd_contacto=campana_dialer.bd_contacto, telefono=telefono)
         url = reverse(
-            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, telefono])
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, telefono, None])
         response = self.client.get(url, follow=True)
         self.assertEqual(campana_dialer.bd_contacto.contactos.count(), n_contactos_repetidos + 1)
         self.assertEqual(response.context_data['contactos'].count(), n_contactos_repetidos)

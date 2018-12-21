@@ -126,12 +126,14 @@ class PhoneJSController {
         });
 
         $("#SaveSignedCall").click(function() {
-            // TODO: Verificar si solo se pueden marcar Entrantes, ya que para las salientes
-            //       no se esta guardando un call_uuid
-            var descripcion = $("#SignDescription").val(); // sign subject
-            self.oml_api.marcarLlamada(descripcion, self.phone.call_uuid);
-            $("#SignDescription").val(null);
-            self.view.tagCallMenu.modal('hide');
+            // TODO: Las manuales no tienen call_id hasta que sean click2call
+            if (self.phone.session_data.remote_call) {
+                var descripcion = $("#SignDescription").val(); // sign subject
+                var call_id = self.phone.session_data.remote_call;
+                self.oml_api.marcarLlamada(descripcion, call_id);
+                $("#SignDescription").val(null);
+                self.view.tagCallMenu.modal('hide');
+            }
         });
 
         $("#CallList").click(function() {
@@ -503,9 +505,7 @@ class PhoneJSController {
         this.phone.makeCall(dialedNumber,
                             this.manual_campaign_id,
                             this.manual_campaign_type);
-        this.getNewContactForm(this.manual_campaign_id,
-                                      this.agent_id,
-                                      dialedNumber);
+        this.getNewContactForm(this.manual_campaign_id, dialedNumber);
         this.view.numberDisplay.val("");
         var message = interpolate(gettext("Llamando: %(dialedNumber)s"),
                                   {dialedNumber: dialedNumber}, true);
@@ -606,24 +606,18 @@ class PhoneJSController {
     }
 
     manageContact(session_data) {
+        var call_data = session_data.remote_call
+        this.getQualificationForm(call_data);
+        /*
         var from = session_data.from;
-        if (session_data.requires_crm_treatment){
-            // Definir pasos a seguir con CRM
-            // var linkaddress = e.request.headers.Sitioexterno[0].raw;
-            // self.getIframe(linkaddress);
-        } else {
-            var campaign_id = session_data.campaign_id;
-            var contact_id = session_data.contact_id;
-            if (campaign_id !== undefined && campaign_id != '') {
-                if (contact_id !== undefined && contact_id != '') {
-                    this.getContactForm(campaign_id, contact_id, this.agent_id);
-                } else {
-                    this.getNewContactForm(campaign_id, this.agent_id, from);
-                }
+        var campaign_id = session_data.campaign_id;
+        var contact_id = session_data.contact_id;
+        if (campaign_id !== undefined && campaign_id != '') {
+            if (contact_id !== undefined && contact_id != '') {
+            } else {
+                this.getNewContactForm(campaign_id, from);
             }
-        }
-        // Muestra el formulario correspondiente, o abre el link del CRM
-
+        }/**/
     }
 
     saveCall() {
@@ -643,16 +637,19 @@ class PhoneJSController {
                                             function(msg){$("#call_list").html(msg);});
     }
 
-    getContactForm(campid, contactid, agentid) {
-        var url = "/formulario/" + campid + "/calificacion/" + contactid + "/update/" + agentid + "/calificacion/";
+    getQualificationForm(call_data) {
+        // 'calificar_llamada'
+        var call_data_json = JSON.stringify(call_data);
+        var url = '/agente/calificar_llamada/' + encodeURIComponent(call_data_json);
         $("#dataView").attr('src', url);
     }
 
-    getNewContactForm(idcamp, idagt, tel) {
+    getNewContactForm(idcamp, tel) {
         // Elimino los caracteres no numericos
         var telephone = tel.replace(/\D+/g, '');
         telephone = telephone == '' ? 0 : telephone;
-        var url = "/formulario/" + idcamp + "/calificacion/" + idagt + "/create/" + telephone + "/";
+        // 'calificar_por_telefono'
+        var url = "/formulario/" + idcamp + "/calificacion_create/" + telephone + "/";
         $("#dataView").attr('src', url);
     }
 

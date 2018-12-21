@@ -103,7 +103,10 @@ class ContactosTelefonosRepetidosView(TemplateView):
         context = super(ContactosTelefonosRepetidosView, self).get_context_data(**kwargs)
         pk_campana = kwargs.get('pk_campana', False)
         telefono = kwargs.get('telefono', False)
+        call_data_json = kwargs.get('call_data_json', False)
         campana = get_object_or_404(Campana, pk=pk_campana)
+        if call_data_json:
+            context['call_data_json'] = call_data_json
         context['campana'] = campana
         context['contactos'] = campana.bd_contacto.contactos.filter(telefono=telefono)
         return context
@@ -380,7 +383,6 @@ class FormularioNuevoContactoFormView(FormView):
             telefono=telefono, datos=json.dumps(datos),
             bd_contacto=base_datos,
             es_originario=False)
-        agente = self.request.user.get_agente_profile()
 
         if campana.type == Campana.TYPE_PREVIEW:
             campana.adicionar_agente_en_contacto(contacto)
@@ -388,8 +390,7 @@ class FormularioNuevoContactoFormView(FormView):
         return HttpResponseRedirect(
             reverse('calificacion_formulario_update_or_create',
                     kwargs={"pk_campana": self.kwargs['pk_campana'],
-                            "pk_contacto": contacto.pk,
-                            "id_agente": agente.pk}))
+                            "pk_contacto": contacto.pk}))
 
     def get_success_url(self):
         reverse('view_blanco')
