@@ -23,8 +23,9 @@ Servicio para generar reporte grafico de una campana
 
 from __future__ import unicode_literals
 
-import pygal
 import os
+
+import pygal
 
 from collections import OrderedDict
 from pygal.style import LightGreenStyle, DefaultStyle
@@ -32,8 +33,10 @@ from pygal.style import LightGreenStyle, DefaultStyle
 from django.conf import settings
 from django.db.models import Count, Q
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 
-from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
+from ominicontacto_app.utiles import (datetime_hora_maxima_dia, datetime_hora_minima_dia,
+                                      fecha_hora_local)
 from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Campana,
                                       OpcionCalificacion)
 from ominicontacto_app.services.campana_service import CampanaService
@@ -163,6 +166,15 @@ class EstadisticasService():
         """
         logs_llamadas_campana = LlamadaLog.objects.filter(campana_id=campana.pk).values(
             'event').annotate(cantidad=Count('event'))
+        if campana.type == Campana.TYPE_ENTRANTE:
+            # en las campañas entrantes solo queremos mostrar las llamadas ocurridas en el día
+            # actual
+            hoy_ahora = fecha_hora_local(timezone.now())
+            hoy = hoy_ahora.date()
+            fecha_desde = datetime.datetime.combine(hoy, datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
+            logs_llamadas_campana = logs_llamadas_campana.filter(
+                time__range=(fecha_desde, fecha_hasta))
         dict_eventos_campana = {}
         for evento_cantidad in logs_llamadas_campana:
             evento = evento_cantidad['event']

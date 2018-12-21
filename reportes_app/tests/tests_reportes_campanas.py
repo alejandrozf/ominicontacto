@@ -43,7 +43,7 @@ from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAg
                                                CalificacionClienteFactory, ContactoFactory,
                                                CampanaFactory, NombreCalificacionFactory,
                                                OpcionCalificacionFactory, UserFactory)
-from ominicontacto_app.utiles import fecha_local
+from ominicontacto_app.utiles import fecha_hora_local, fecha_local
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 
@@ -259,6 +259,38 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.assertEqual(reporte['Manuales'], 2)
         self.assertEqual(reporte['Manuales atendidas'], 2)
         self.assertEqual(reporte['Manuales no atendidas'], 0)
+
+    def test_datos_reporte_grafico_llamadas_entrantes_recibidas_muestran_solo_dia_actual(
+            self):
+        campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
+        hoy = fecha_hora_local(timezone.now())
+        ayer = hoy - timedelta(days=1)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile,
+            time=ayer)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile,
+            time=hoy)
+        estadisticas_service = EstadisticasService()
+        hoy = fecha_local(timezone.now())
+        _, _, llamadas_recibidas = estadisticas_service.obtener_total_llamadas(campana_entrante)
+        self.assertEqual(llamadas_recibidas, 1)
+
+    def test_datos_reporte_grafico_llamadas_entrantes_realizadas_muestran_solo_dia_actual(
+            self):
+        campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
+        hoy = fecha_hora_local(timezone.now())
+        ayer = hoy - timedelta(days=1)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile,
+            time=ayer)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile,
+            time=hoy)
+        estadisticas_service = EstadisticasService()
+        hoy = fecha_local(timezone.now())
+        _, llamadas_realizadas, _ = estadisticas_service.obtener_total_llamadas(campana_entrante)
+        self.assertEqual(llamadas_realizadas, 1)
 
     def test_datos_reporte_grafico_detalle_llamadas_dialer_coinciden_estadisticas_sistema(self):
         campana_dialer = CampanaFactory(type=Campana.TYPE_DIALER, estado=Campana.ESTADO_ACTIVA)
