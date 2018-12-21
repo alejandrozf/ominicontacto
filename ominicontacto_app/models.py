@@ -342,6 +342,9 @@ class Formulario(models.Model):
     nombre = models.CharField(max_length=64)
     descripcion = models.TextField()
 
+    def tiene_campana_asignada(self):
+        return self.campana_set.all().exists()
+
     def __unicode__(self):
         return self.nombre
 

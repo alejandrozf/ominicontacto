@@ -39,6 +39,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td>{{ formulario.nombre }}</td>
             <td>{{ formulario.descripcion }}</td>
             <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">{% trans 'Ver' %}</a></td>
+            {% if not formulario.tiene_campana_asignada %}
+                <td>
+                    <a href="{% url 'formulario_eliminar' formulario.pk %}">
+                        <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                    </a>
+                </td>
+            {% endif %}
         </tr>
    {% empty %}
     <tr>

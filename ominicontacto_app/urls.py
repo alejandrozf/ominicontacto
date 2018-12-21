@@ -411,6 +411,11 @@ urlpatterns = [
         name='formulario_vista_previa',
         ),
 
+    url(r'^formulario/(?P<pk_formulario>\d+)/eliminar/$',
+        administrador_o_supervisor_requerido(views_formulario.FormularioDeleteView.as_view()),
+        name='formulario_eliminar',
+        ),
+
     # TODO: Verificar si se usa esta vista.
     url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
         r'/(?P<id_agente>\d+)/$',

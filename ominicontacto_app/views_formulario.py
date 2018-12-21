@@ -32,6 +32,8 @@ from django.views.generic import (
     ListView, CreateView, DeleteView, FormView
 )
 from django.views.generic.edit import BaseUpdateView
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.models import (
     Formulario, FieldFormulario, MetadataCliente, Campana, AgenteProfile,
     Contacto
@@ -282,10 +284,28 @@ class FormularioCreateFormView(FormView):
         return HttpResponseRedirect('/blanco/')
 
     def get_success_url(self):
-        # reverse('calificacion_cliente_update',
-        #         kwargs={"pk_campana": self.kwargs['pk_campana'],
-        #                 "pk_contacto": self.kwargs['pk_contacto'],
-        #                 "id_agente": self.kwargs['id_agente']
-        #                 }
-        #         )
         reverse('view_blanco')
+
+
+class FormularioDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación de un contacto
+    """
+    model = Formulario
+    template_name = 'formulario/formulario_eliminar.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        formulario = self.get_object()
+
+        if formulario.campana_set.all().exists():
+            message = _("No está permitido eliminar un formulario asignado a alguna campaña")
+            messages.error(self.request, message)
+            return HttpResponseRedirect(
+                reverse('formulario_list'))
+        return super(FormularioDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return Formulario.objects.get(pk=self.kwargs['pk_formulario'])
+
+    def get_success_url(self):
+        return reverse('formulario_list')
