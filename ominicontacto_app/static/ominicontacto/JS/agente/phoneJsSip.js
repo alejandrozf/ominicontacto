@@ -47,14 +47,15 @@ ORIGIN_IDS[ORIGIN_CLICK2CALL_PREVIEW] = 4;
 ORIGIN_IDS[ORIGIN_MANUAL] = 1;
 
 class PhoneJS {
-    constructor(agent_id, sipExtension, sipSecret, KamailioIp, KamailioPort, 
+    constructor(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost,
                 local_audio, remote_audio) {
         /* Config */
         this.agent_id = agent_id
         this.sipExtension = sipExtension;
         this.sipSecret = sipSecret;
-        this.KamailioIp = KamailioIp;
-        this.KamailioPort = KamailioPort;
+        this.KamailioHost = KamailioHost;
+        this.WebSocketPort = WebSocketPort;
+        this.WebSocketHost = WebSocketHost;
 
         /* Components / Colaborators */
         this.oml_api = new OMLAPI();
@@ -96,12 +97,12 @@ class PhoneJS {
     }
 
     startSipSession() {
-        var socket = new JsSIP.WebSocketInterface('wss://' + this.KamailioIp + ':' + this.KamailioPort + '/ws');
+        var socket = new JsSIP.WebSocketInterface('wss://' + this.WebSocketHost + ':' + this.WebSocketPort + '/ws');
         var config = {
                 sockets: [ socket ],
-                uri: "sip:" + this.sipExtension + "@" + this.KamailioIp,
+                uri: "sip:" + this.sipExtension + "@" + this.KamailioHost,
                 password: this.sipSecret,
-                realm: this.KamailioIp,
+                realm: this.KamailioHost,
                 hack_ip_in_contact: true,
                 session_timers: false,
                 register_expires: 120,
@@ -194,7 +195,7 @@ class PhoneJS {
                 // Aca si puedo decir que esta establecida
                 phone_logger.log('session: confirmed');
                 if (self.session_data.is_call) {
-                    var phone_number = self.session_data.is_inbound? 
+                    var phone_number = self.session_data.is_inbound?
                                             self.session_data.from :
                                             self.current_call.numberToCall;
                     self.eventsCallbacks.onCallConnected.fire(phone_number);
@@ -206,7 +207,7 @@ class PhoneJS {
                 self.Sounds("", "stop");
             });
 
-            // Llamada puede ser por: REGISTER - LOGIN, (UN)PAUSA, Manual 
+            // Llamada puede ser por: REGISTER - LOGIN, (UN)PAUSA, Manual
             //                        IN, Dialer, Preview, Click2Call, Transfer.
             self.currentSession.on("ended", function() { // Cuando Finaliza la llamada
                 phone_logger.log('session: ended');
@@ -226,7 +227,7 @@ class PhoneJS {
         this.currentSession.connection.addEventListener('addstream', function (event) {
             phone_logger.log('currentSession.connection: addstream');
             self.remote_audio.srcObject = event.stream;
-        });                
+        });
     }
 
     /* FUNCTIONS */
@@ -279,8 +280,8 @@ class PhoneJS {
                 }
                 else if (self.current_call.is_pause) {
                     self.eventsCallbacks.onAgentPaused.fire();
-                } 
-            },
+                }
+            },/**/
             'addstream': function(e) {
                 phone_logger.log('makeCall: addstream');
                 clearTimeout(self.callTimeoutHandler);
@@ -327,7 +328,7 @@ class PhoneJS {
         }
 
         // Finalmente Mando el invite/llamada
-        this.userAgent.call('sip:' + numberToCall + '@' + this.KamailioIp, opciones);
+        this.userAgent.call('sip:' + numberToCall + '@' + this.KamailioHost, opciones);
         this.subscribeToSessionConnectionEvents();
     }
 
@@ -469,7 +470,7 @@ class LocalCall {
         this.numberToCall = numberToCall;
         this.is_unpause = numberToCall == UNPAUSE_CODE;
         this.is_login = numberToCall == LOGIN_CODE;
-        this.is_pause = !this.is_unpause && !this.is_login && 
+        this.is_pause = !this.is_unpause && !this.is_login &&
                         numberToCall.startsWith(SPECIAL_CODE_PREFIX);
         this.is_call = !numberToCall.startsWith(SPECIAL_CODE_PREFIX);
     }

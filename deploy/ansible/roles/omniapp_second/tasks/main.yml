@@ -16,18 +16,35 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ---
-# Estas task contienen una serie de multiples tareas de os que se ejecutan luego de creada la base de datos
-# y copiado el codigo al servidor
 
-- include: sshkey_transfer.yml
-  tags: ['postinstall','omniapp']
+#----------------------------------------------------------------------
+# Deploy de la app
+#
+# Tags mas utiles:
+#  - virtualenv: setup de virtualenv & requirements
+#  - deploy: deploy de la APP (EXCEPTUANDO cambios en otros
+#       compoenentes)
+
+#----------------------------------------------------------------------
 
 - include: django_migrations.yml
-  tags: ['postinstall','django']
+  tags: ['postinstall','omniapp']
 
 - include: omniapp_second.yml
-  tags: ['nginx','postinstall']
+  tags: ['postinstall','omniapp']
 
+- include: gluster-client.yml
+  tags: ['postinstall','omniapp']
+  when: cluster != 0
 
-- include: wombat.yml
-  tags: wombat
+- include: supervision.yml
+  tags: ['postinstall','omniapp']
+
+- include: roles/prerequisitos/tasks/reboot.yml
+  when: cluster != 0 and ansible_os_family == "RedHat"
+
+- name: Wait for the server to finish rebooting
+  become: no
+  local_action: wait_for host="{{ omniapp_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
+  tags: reboot
+  when: ansible_os_family == "RedHat" and cluster !=0

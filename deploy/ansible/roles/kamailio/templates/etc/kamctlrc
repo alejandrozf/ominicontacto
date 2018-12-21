@@ -18,25 +18,25 @@
 DBENGINE=PGSQL
 
 ## database host
-DBHOST=127.0.0.1
+DBHOST={{ database_fqdn }}
 
 ## database name (for ORACLE this is TNS name)
-DBNAME=omnileads
+DBNAME={{ postgres_database }}
 
 # database path used by dbtext, db_berkeley or sqlite
 # DB_PATH="/usr/local/etc/kamailio/dbtext"
 
 ## database read/write user
-DBRWUSER="omnileads"
+DBRWUSER="{{ postgres_user }}"
 
 ## password for database read/write user
 DBRWPW="{{ postgres_password }}"
 
 ## database read only user
-DBROUSER="omnileadsro"
+DBROUSER="{{ postgres_user }}ro"
 
 ## password for database read only user
-DBROPW="omnileadsro"
+DBROPW="{{ postgres_password }}ro"
 
 ## database access host (from where is kamctl used)
 # DBACCESSHOST=192.168.0.1
@@ -94,13 +94,13 @@ DBROOTUSER="omnileads"
 #
 
 # If to install tables for the modules in the EXTRA_MODULES variable.
-# INSTALL_EXTRA_TABLES=ask
+INSTALL_EXTRA_TABLES=yes
 
 # If to install presence related tables.
-# INSTALL_PRESENCE_TABLES=ask
+INSTALL_PRESENCE_TABLES=yes
 
 # If to install uid modules related tables.
-# INSTALL_DBUID_TABLES=ask
+INSTALL_DBUID_TABLES=yes
 
 # Define what module tables should be installed.
 # If you use the postgres database and want to change the installed tables, then you
