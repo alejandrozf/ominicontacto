@@ -38,8 +38,8 @@ $(function () {
     success: function (msg) {
       var msg = JSON.parse(msg);
       if(msg!=="]") {
-        config.uri= 'sip:' + msg.sipuser + '@' + KamailioIp;
-        config.ws_servers= 'wss://' + KamailioIp+":"+ KamailioPort+"/wssup";
+        config.uri= 'sip:' + msg.sipuser + '@' + KamailioHost;
+        config.ws_servers= 'wss://' + OmlIp + ":" + WebSocketPort+"/wssup";
         config.password= msg.sippass;
         config.hack_ip_in_contact= true;
         config.session_timers= false;

@@ -1,0 +1,101 @@
+---
+
+# Bueno este paso es importante. El comando kamdbctl es para interactuar con la base de datos. http://manpages.ubuntu.com/manpages/trusty/man8/kamdbctl.8.html
+# Aca lo que se esta haciendo es creando la base de datos y las tablas que necesitan los modulos de kamailio. Se usa la  configuracion que hay en el kamctlrc
+
+# El initdb de postgres toca ejecutarlo solo para centos
+- name: Setup of postgresql
+  command: "/usr/pgsql-9.6/bin/postgresql96-setup initdb"
+  register: commandresult
+  failed_when:
+    - "'is not empty' not in commandresult.stdout"
+    - "commandresult.rc != 0"
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Se modifica el pg_hba.conf
+- name: Modify of pg_hba.conf file (centos)
+  template: src=templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Esto es para debian
+- name: Modify of pg_hba.conf file (debian)
+  template: src=templates/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+#Se modifica la ip en la que escucha postgres
+- name: Modify postgresql listen address
+  lineinfile: path=/etc/postgresql/9.6/main/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
+  when: ansible_os_family == "Debian"
+
+#Se modifica la ip en la que escucha postgres
+- name: Modify postgresql listen address
+  lineinfile: path=/var/lib/pgsql/9.6/data/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
+  when: ansible_os_family == "RedHat"
+
+# Restarteamos servicio
+- name: Restart postgres service (centos)
+  service: name=postgresql-9.6 state=restarted enabled=yes
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Restart postgres service (debian)
+  service: name=postgresql state=restarted enabled=yes
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+# Se crea el usuario de postgres
+- name: Create rw postgres user
+  postgresql_user: name={{ postgres_user }} password={{ postgres_password }} role_attr_flags=SUPERUSER
+  become: yes
+  become_method: sudo
+  become_user: postgres
+  tags: postinstall
+
+# Se crea el usuario de postgres
+- name: Create ro postgres user
+  postgresql_user: name={{ postgres_user}}ro password={{ postgres_password }}ro role_attr_flags=SUPERUSER
+  become: yes
+  become_method: sudo
+  become_user: postgres
+  tags: postinstall
+
+# Se crea base de datos omnileads
+- name: Create of the database
+  postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ database_fqdn }}
+  environment:
+    PGPASSWORD: "{{ postgres_password }}"
+  register: command_result
+  become: true
+  become_method: sudo
+
+- name: Copy of kamailio-tables restore file
+  copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/kamailio-files/kamailio-tables.sql dest=/tmp/kamailio-tables.sql
+
+- name: Restore of kamailio tables in database
+  postgresql_db: name={{ postgres_database }} state=restore target=/tmp/kamailio-tables.sql login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ database_fqdn }}
+  environment:
+    PGPASSWORD: "{{ postgres_password }}"
+  become: true
+  become_method: sudo
+
+# Se crea el lenguaje plpythonu a las bases de datos mencionadas.
+- name: Createlang of the database
+  shell: "createlang plpythonu {{ item }}"
+  with_items:
+    - omnileads
+    - template1
+  become: yes
+  become_user: postgres
+  register: command_result
+  failed_when:
+    - "'ya está instalado' not in command_result.stderr"
+    - "'already installed' not in command_result.stderr"
+    - "command_result.rc != 0"

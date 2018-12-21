@@ -1,0 +1,50 @@
+---
+
+# Se instala el repo de postgresql9.6
+- name: Download of postgresql 9.6 repository (redhat and cluster)
+  yum: "name={{ postgresql_url }} state=present validate_certs=no"
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "RedHat" and cluster != 0
+
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release repo (centos and cluster)
+  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat" and cluster == 1
+
+# Instalo paquetes de kamailio
+- name: Installation of kamailio packages (redhat)
+  yum: name={{ item }} state=present
+  with_items:
+    - libevent-devel
+    - gcc
+    - gcc-c++
+    - bison
+    - bison-devel
+    - flex
+    - expat
+    - expat-devel
+    - libuuid
+    - libuuid-devel
+    - xmlrpc-c-devel
+    - lynx
+    - pcre
+    - postgresql96-devel
+    - pcre-devel
+    - libtool-ltdl-devel
+    - iptables-devel
+    - iptables-services
+    - libpcap-devel
+    - glib2-devel
+    - json-glib-devel
+    - redis
+    - hiredis
+    - git
+    - hiredis-devel
+    - libunistring-devel.x86_64
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+  tags: ['kamailio']

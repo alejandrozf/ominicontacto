@@ -1,0 +1,105 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+- name: Installation of mariadb (centos)
+  yum: name={{ item }} state=present
+  with_items:
+    - MySQL-python.x86_64
+    - mariadb-server
+  when: ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
+
+- name: Installation of mariadb (debian)
+  apt: name={{ item }} state=present
+  with_items:
+    - mariadb-server
+    - python-mysqldb
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+# En estas tasks se hacen tareas de segurizacion de mariadb, es como hacer un mariadb-secure no voy a explicar una por una, nunca fallan
+- name: Enable and start MariaDB
+  systemd: name=mariadb enabled=yes state=started
+  become: true
+  become_method: sudo
+
+- name: Add .my.cnf
+  template: src=templates/my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
+  become: true
+  become_method: sudo
+  tags: postinstall
+
+- name: Set root Password
+  mysql_user: name=root host={{ item }} host_all=yes password={{ mysql_root_password }} check_implicit_admin=true state=present
+  with_items:
+    - 127.0.0.1
+    - localhost
+  environment:
+    MYSQL_PWD: "{{ mysql_root_password }}"
+  become: true
+  become_method: sudo
+
+- name: Reload privilege tables
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - FLUSH PRIVILEGES
+  changed_when: False
+  become: true
+  become_method: sudo
+
+- name: Remove anonymous users
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User=''
+  changed_when: False
+  become: true
+  become_method: sudo
+
+- name: Disallow root login remotely
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1')
+  changed_when: False
+  become: true
+  become_method: sudo
+
+- name: Reload privilege tables
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - FLUSH PRIVILEGES
+  changed_when: False
+  become: true
+  become_method: sudo
+
+- name: Grant privileges to root mysql user
+  command: mysql -ne "GRANT ALL PRIVILEGES ON *.* TO 'root'@'{{ item }}' IDENTIFIED BY '{{ mysql_root_password }}' WITH GRANT OPTION;"
+  with_items:
+    - localhost
+    - 127.0.0.1
+  environment:
+    MYSQL_PWD: "{{ mysql_root_password }}"
+  become: true
+  become_method: sudo
+
+- name: Restart mariadb
+  service: name=mariadb state=restarted enabled=yes
+  become: true
+  become_method: sudo

@@ -1,0 +1,97 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+# Aca estan todos loss pasos para instalar wombat dialer tanto en centos como en debian
+# Para centos es sencillisimo porque es solo descargarse el repo y yum install wombat
+# Para debian si toca desde la fuente instalarlo, no voy a explicar todas las tasks.
+
+- name: Get the wombat dialer repository (centos)
+  shell: "wget -P /etc/yum.repos.d http://yum.loway.ch/loway.repo"
+  when: ansible_os_family == "RedHat"
+
+- name: Install wombat dialer (centos)
+  yum: name=wombat state=present
+  when: ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
+- meta: clear_host_errors
+
+- name: Add parameters in server.xml of Catalina (centos)
+  template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml
+  when: ansible_os_family == "RedHat"
+  become: true
+  become_method: sudo
+
+- name: Add the repository key (debian)
+#  apt_key: url=hkp://keyserver.ubuntu.com:80 state=present state=present id=EEA14886
+  shell: apt-key adv --no-tty --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
+  when: ansible_os_family == "Debian"
+  #apt_key: keyserver=keyserver.ubuntu.com state=present id=0xC2518248EEA14886
+
+- name: Add wombat dialer repositories (debian)
+  apt_repository: "repo={{ item }} state=present filename=webupd8team-java update_cache=yes codename=xenial"
+  with_items:
+          - deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main
+          - deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main
+  when: ansible_os_family == "Debian"
+
+- name: Accept Java8 license (debian)
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+  when: ansible_os_family == "Debian"
+
+- name: Install oracle8 and tomcat8 (debian)
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+          - oracle-java8-installer
+          - tomcat8
+          - libmysql-java
+  when: ansible_os_family == "Debian"
+
+- name: Get wombat dialer (debian)
+  get_url: url={{ wombat }} dest=/var/lib/tomcat8/webapps/
+  register: destino
+  when: ansible_os_family == "Debian"
+
+- name: Unarchive downloaded package (debian)
+  unarchive: src={{ destino.dest }} dest=/var/lib/tomcat8/webapps remote_src=yes
+  register: nombres_tar
+  when: ansible_os_family == "Debian"
+
+- name: Erase of the tar (debian)
+  file: dest={{ nombres_tar.src }} state=absent
+  when: ansible_os_family == "Debian"
+
+- action: shell ls /var/lib/tomcat8/webapps/
+  register: dirwebapps
+  when: ansible_os_family == "Debian"
+
+- command: mv /var/lib/tomcat8/webapps/{{ dirwebapps.stdout_lines[1] }} /var/lib/tomcat8/webapps/wombat
+  ignore_errors: yes
+  when: ansible_os_family == "Debian"
+
+- name: Copy of mariadb-java-client.jar (debian)
+  copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/mariadb-java-client-2.3.0.jar dest=/var/lib/tomcat8/webapps/wombat/WEB-INF/lib/
+  when: ansible_os_family == "Debian"
+
+- name: Change JAVA_HOME (debian)
+  lineinfile: "dest=/etc/default/tomcat8 regexp=\"^#JAVA_HOME=\" line=\"JAVA_HOME=/usr/lib/jvm/java-8-oracle\""
+  when: ansible_os_family == "Debian"
+
+- name: Restart tomcat8
+  service: name=tomcat8 state=restarted enabled=yes
+  when: ansible_os_family == "Debian"

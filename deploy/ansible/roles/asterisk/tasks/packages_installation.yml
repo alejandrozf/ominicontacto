@@ -1,0 +1,144 @@
+---
+
+# Se instala las Development Tools
+- name: Install Development tools
+  command: "yum -y groupinstall core base \"Development Tools\""
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Se crea el repo de sngrep desde el template https://docs.ansible.com/ansible/2.5/modules/template_module.html#template-module
+#  https://docs.ansible.com/ansible-container/container_yml/template.html
+- name: Creation of sngrep repo
+  template: src=templates/etc/irontec.repo dest=/etc/yum.repos.d/irontec.repo
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+  tags: ['asterisk']
+
+# Se importa la rpm key
+- name: Import of irontec public key
+  rpm_key: state=present key=http://packages.irontec.com/public.key validate_certs=no
+  become: true
+  become_method: sudo
+  tags: ['asterisk']
+  when: ansible_os_family == "RedHat"
+
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release repo
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    - centos-release-gluster
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+#  Instalo paquetes de asterisk no se instalan
+- name: Installation of asterisk packages (centos)
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+      - ncurses-devel
+      - ncurses-libs
+      - libxml2
+      - libxml2-devel
+      - sqlite-devel
+      - newt-devel
+      - glusterfs-server
+      - net-snmp-devel
+      - unixODBC
+      - unixODBC-devel
+      - libtiff-devel
+      - audiofile-devel
+      - gtk2-devel
+      - subversion
+      - lame
+      - unixODBC
+      - http://mirror.centos.org/centos/7/os/x86_64/Packages/postgresql-odbc-09.03.0100-2.el7.x86_64.rpm
+      - sngrep
+      - python-pip
+      - python-psycopg2.x86_64
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+  # Intalo los paquetes necesarios para la parte VoIP
+- name: Installation of asterisk packages (debian)
+  apt: "name={{ item }} state=present"
+  with_items:
+    - build-essential
+    - net-tools
+    - debhelper
+    - iptables-dev
+    - libcurl4-openssl-dev
+    - libpcre3-dev
+    - libxmlrpc-core-c3-dev
+    - markdown
+    - libglib2.0-dev
+    - libhiredis-dev
+    - dkms
+    - git
+    - libevent-dev
+    - libbencode-perl
+    - libcrypt-rijndael-perl
+    - libdigest-hmac-perl
+    - libio-socket-inet6-perl
+    - libsocket6-perl
+    - libb-hooks-op-check-perl
+    - libexporter-tidy-perl
+    - libpcap0.8-dev
+    - libpcap-dev
+    - libio-socket-ip-perl
+    - libavcodec-dev
+    - libavfilter-dev
+    - libavformat-dev
+    - libavresample-dev
+    - libavutil-dev
+    - gcc
+    - flex
+    - bison
+    - mariadb-server
+    - default-libmysqlclient-dev
+    - make
+    - libxml2-dev
+    - libpcre3-dev
+    - libpq-dev
+    - libpq5
+    - redis-server
+    - uuid
+    - uuid-dev
+    - libunistring-dev
+    - libjson-glib-dev
+    - postgresql-client
+    - vim
+    - curl
+    - mysql-client
+    - sox
+    - libncurses5-dev
+    - libssl-dev
+    - mpg123
+    - libnewt-dev
+    - sqlite3
+    - libsqlite3-dev
+    - pkg-config
+    - automake
+    - libtool
+    - autoconf
+    - unixodbc-dev
+    - libasound2-dev
+    - libogg-dev
+    - libvorbis-dev
+    - libical-dev
+    - libneon27-dev
+    - libsrtp0-dev
+    - libspandsp-dev
+    - sudo
+    - glusterfs-server
+    #- libmyodbc
+    - subversion
+    - odbc-postgresql
+    - wget
+    - unzip
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"

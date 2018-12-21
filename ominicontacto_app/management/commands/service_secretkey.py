@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
     def generar_secret_key(self, flag):
         try:
-            cmd = "kamctl mi autheph.dump_secrets |awk -F ' ' '{print $3}' |head -1"
+            cmd = settings.OML_KAMAILIO_CMD
             actual_key = subprocess.check_output(cmd, shell=True)
             actual_key = actual_key[:-1]
             if flag == "consultar":
@@ -48,7 +48,7 @@ class Command(BaseCommand):
                 # Genero una secret_key nueva y elimino la anterior para manejar solo una, la secret
                 # key es un string aleatorio de 20 caracteres
                 secret_key = get_random_string(length=20)
-                str_sed = "sed -i \"s/\({0}\).*/{1}!g\\\"/\" {2}kamailio-local.cfg"
+                str_sed = settings.OML_GENERARSK_CMD
                 cmd = str_sed.format(actual_key, secret_key, settings.OML_KAMAILIO_LOCATION)
                 os.system(cmd)
             else:
