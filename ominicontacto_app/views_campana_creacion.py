@@ -104,6 +104,7 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'timeout': queue.timeout,
                 'retry': queue.retry,
                 'maxlen': queue.maxlen,
+                'wrapuptime': queue.wrapuptime,
                 'servicelevel': queue.servicelevel,
                 'strategy': queue.strategy,
                 'weight': queue.weight,
@@ -252,7 +253,6 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.eventwhencalled = True
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
-        queue_form.instance.wrapuptime = 0
         audio_anuncio_periodico = queue_form.cleaned_data['audios']
         if audio_anuncio_periodico:
             queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk

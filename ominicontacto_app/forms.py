@@ -213,10 +213,12 @@ class QueueEntranteForm(forms.ModelForm):
             self.fields['destino'].choices = destino_entrante_choices
         else:
             self.fields['destino'].choices = ()
+        if not instance.pk:
+            self.initial['wrapuptime'] = 2
 
     class Meta:
         model = Queue
-        fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
+        fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
                   'tipo_destino', 'destino')
@@ -226,6 +228,7 @@ class QueueEntranteForm(forms.ModelForm):
             'retry': _('En segundos'),
             'announce_frequency': _('En segundos'),
             'wait': _('En segundos'),
+            'wrapuptime': _('En segundos'),
         }
         widgets = {
             'name': forms.HiddenInput(),
@@ -233,6 +236,7 @@ class QueueEntranteForm(forms.ModelForm):
             'timeout': forms.TextInput(attrs={'class': 'form-control'}),
             'retry': forms.TextInput(attrs={'class': 'form-control'}),
             'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
             'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             'weight': forms.TextInput(attrs={'class': 'form-control'}),
@@ -1156,6 +1160,9 @@ class QueueDialerForm(forms.ModelForm):
             self.fields['destino'].choices = destino_entrante_choices
         else:
             self.fields['destino'].choices = ()
+
+        if not instance.pk:
+            self.initial['wrapuptime'] = 2
 
 
 class UserApiCrmForm(forms.ModelForm):
