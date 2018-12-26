@@ -25,11 +25,11 @@ from __future__ import unicode_literals
 import json
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import (
-    ListView, CreateView, DeleteView, FormView
+    ListView, CreateView, DeleteView, FormView, View
 )
 from django.views.generic.edit import BaseUpdateView
 from django.utils.translation import ugettext as _
@@ -66,6 +66,16 @@ class FormularioListView(ListView):
     """Vista para listar los formularios"""
     template_name = 'formulario/formulario_list.html'
     model = Formulario
+
+
+class FormularioMostrarOcultosView(FormularioListView):
+    """Muestra también los formularios ocultos
+    """
+
+    def get_context_data(self, **kwargs):
+        context = super(FormularioMostrarOcultosView, self).get_context_data(**kwargs)
+        context['mostrar_ocultos'] = True
+        return context
 
 
 class FieldFormularioCreateView(CreateView):
@@ -268,7 +278,6 @@ class FormularioCreateFormView(FormView):
         mas_datos = []
         for nombre, dato in zip(nombres, datos):
             mas_datos.append((nombre, dato))
-        print mas_datos
         context['contacto'] = contacto
         context['mas_datos'] = mas_datos
 
@@ -309,3 +318,15 @@ class FormularioDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('formulario_list')
+
+
+class FormularioMostrarOcultarView(View):
+    """Vista que se encarga de cambiar el atributo 'oculto' de un formulario
+    negando su valor actual
+    """
+
+    def post(self, request, *args, **kwargs):
+        pk = kwargs.get('formulario_pk')
+        formulario = get_object_or_404(Formulario, pk=pk)
+        formulario.oculto = not formulario.oculto
+        return JsonResponse({'status': 'OK'})

@@ -210,8 +210,8 @@ class AgenteProfileManager(models.Manager):
         # Agentes en: Campañas propias + Campañas asignadas + Campañas de sus supervisores
         else:
             # Supervisor Normal / Comun: Agentes en campañas propias y asignadas.
-            campanas = Campana.objects.filter(Q(reported_by=supervisor.user) |
-                                              Q(supervisors__in=[supervisor.user, ]))
+            campanas = Campana.objects.filter(
+                Q(reported_by=supervisor.user) | Q(supervisors__in=[supervisor.user, ]))
 
         return self.obtener_activos().filter(queue__campana__in=campanas).distinct()
 
@@ -341,6 +341,7 @@ class NombreCalificacion(models.Model):
 class Formulario(models.Model):
     nombre = models.CharField(max_length=64)
     descripcion = models.TextField()
+    oculto = models.BooleanField(default=False)
 
     def tiene_campana_asignada(self):
         return self.campana_set.all().exists()
@@ -1830,10 +1831,10 @@ class MetadataBaseDatosContactoDTO(object):
         :raises ValueError: si la columna no existe
         """
         index = self.nombres_de_columnas.index(nombre_de_columna)
-        return not (
-            index in self.columnas_con_hora or
-            index in self.columnas_con_fecha or
-            index == self.columna_con_telefono)
+        index_in_columnas_hora = (index in self.columnas_con_hora)
+        index_in_columnas_fecha = (index in self.columnas_con_fecha)
+        index_columna_telefono = (index == self.columna_con_telefono)
+        return not (index_in_columnas_hora or index_in_columnas_fecha or index_columna_telefono)
 
 
 class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
@@ -2066,8 +2067,7 @@ class ContactoManager(models.Manager):
 
     def contactos_by_filtro(self, filtro):
         try:
-            return self.filter(Q(telefono__contains=filtro) |
-                               Q(pk__contains=filtro))
+            return self.filter(Q(telefono__contains=filtro) | Q(pk__contains=filtro))
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "filtro"))

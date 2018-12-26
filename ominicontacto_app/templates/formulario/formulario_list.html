@@ -24,34 +24,46 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <h1>{% trans 'Formularios' %}</h1>
 
+<a href="{% url 'formulario_list_mostrar_ocultos' %}">{% trans 'Mostrar ocultos' %}</a>
+
 <table class="table">
     <thead>
         <tr>
             <th>{% trans 'Nombre' %}</th>
             <th>{% trans 'Descripción' %}</th>
             <th>{% trans 'Vista Previa' %}</th>
-
         </tr>
     </thead>
     <tbody>
-    {% for formulario in object_list %}
-        <tr>
-            <td>{{ formulario.nombre }}</td>
-            <td>{{ formulario.descripcion }}</td>
-            <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">{% trans 'Ver' %}</a></td>
-            {% if not formulario.tiene_campana_asignada %}
-                <td>
-                    <a href="{% url 'formulario_eliminar' formulario.pk %}">
-                        <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                    </a>
-                </td>
+        {% for formulario in object_list %}
+            {% if not formulario.oculto or mostrar_ocultos %}
+                <tr>
+                    <td>{{ formulario.nombre }}</td>
+                    <td>{{ formulario.descripcion }}</td>
+                    <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">{% trans 'Ver' %}</a></td>
+                    {% if not formulario.tiene_campana_asignada %}
+                        <td>
+                            <a href="{% url 'formulario_eliminar' formulario.pk %}">
+                                <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                            </a>
+                        </td>
+                    {% endif %}
+                    {% if formulario.oculto %}
+                        <td>
+                            <a href="#"><span class="icon icon-eye-slash"></span>{% trans 'Mostrar' %}</a>
+                        </td>
+                    {% else %}
+                        <td>
+                            <a href="#"><span class="icon icon-eye"></span>{% trans 'Ocultar' %}</a>
+                        </td>
+                    {% endif %}
+                </tr>
             {% endif %}
-        </tr>
-   {% empty %}
-    <tr>
-        <td>{% trans 'No existen formularios creados' %}</td>
-    </tr>
-    {% endfor %}
+        {% empty %}
+            <tr>
+                <td>{% trans 'No existen formularios creados' %}</td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 
