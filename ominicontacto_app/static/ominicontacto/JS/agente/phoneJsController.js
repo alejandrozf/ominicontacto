@@ -138,7 +138,7 @@ class PhoneJSController {
             $("#modalCallList").modal('show');
         });
 
-        $("logout").click(function() {
+        $("#logout").click(function() {
             self.phone.logout();
         });
 

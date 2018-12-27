@@ -53,7 +53,7 @@ $(function () {
     oml_api.changeStatus(USER_STATUS_ONLINE, agent_id);
 });
 
-function subscribirEventosBotonesGenerales() {
+function subscribirEventosBotonesGenerales(oml_api, agent_id) {
 
 	 $("#logout").click(function () {
 	   oml_api.changeStatus(3, agent_id);
