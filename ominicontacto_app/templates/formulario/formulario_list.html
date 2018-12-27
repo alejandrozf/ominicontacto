@@ -24,7 +24,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <h1>{% trans 'Formularios' %}</h1>
 
-<a href="{% url 'formulario_list_mostrar_ocultos' %}">{% trans 'Mostrar ocultos' %}</a>
+{% if mostrar_ocultos %}
+    <a href="{% url 'formulario_list' %}">{% trans 'Mostrar solo visibles' %}</a>
+{% else %}
+    <a href="{% url 'formulario_list_mostrar_ocultos' %}">{% trans 'Mostrar ocultos' %}</a>
+{% endif %}
 
 <table class="table">
     <thead>
@@ -49,12 +53,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </td>
                     {% endif %}
                     {% if formulario.oculto %}
-                        <td>
-                            <a href="#"><span class="icon icon-eye-slash"></span>{% trans 'Mostrar' %}</a>
+                        <td class="mostrarOcultar" id="{{ formulario.pk }}" data-mostrar-ocultos="{{ mostrar_ocultos }}">
+                            <a href="#"><span class="icon icon-eye-slash">{% trans 'Mostrar' %}</span></a>
                         </td>
                     {% else %}
-                        <td>
-                            <a href="#"><span class="icon icon-eye"></span>{% trans 'Ocultar' %}</a>
+                        <td class="mostrarOcultar" id="{{ formulario.pk }}" data-mostrar-ocultos="{{ mostrar_ocultos }}">
+                            <a href="#"><span class="icon icon-eye">{% trans 'Ocultar' %}</span></a>
                         </td>
                     {% endif %}
                 </tr>
@@ -67,4 +71,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </tbody>
 </table>
 
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+    <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/formularios.js' %}"></script>
 {% endblock %}

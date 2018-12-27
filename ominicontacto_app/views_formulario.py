@@ -326,7 +326,8 @@ class FormularioMostrarOcultarView(View):
     """
 
     def post(self, request, *args, **kwargs):
-        pk = kwargs.get('formulario_pk')
+        pk = kwargs.get('pk_formulario')
         formulario = get_object_or_404(Formulario, pk=pk)
         formulario.oculto = not formulario.oculto
-        return JsonResponse({'status': 'OK'})
+        formulario.save()
+        return JsonResponse({'status': 'OK', 'oculto': formulario.oculto})
