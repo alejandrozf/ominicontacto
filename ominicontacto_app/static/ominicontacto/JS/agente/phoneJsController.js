@@ -35,7 +35,7 @@ class PhoneJSController {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
-        this.phone = new PhoneJS(agent_id, sipExtension, sipSecret, KamailioIp, KamailioPort,
+        this.phone = new PhoneJS(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost,
                                  this.view.local_audio, this.view.remote_audio);
         this.phone_fsm = new PhoneFSM();
         this.agent_config = new AgentConfig();
@@ -123,7 +123,7 @@ class PhoneJSController {
             } else {
                 phone_logger.log('Error');
             }
-        }); 
+        });
 
         $("#SaveSignedCall").click(function() {
             // TODO: Verificar si solo se pueden marcar Entrantes, ya que para las salientes
@@ -138,7 +138,7 @@ class PhoneJSController {
             $("#modalCallList").modal('show');
         });
 
-        $("logout").click(function() {
+        $("#logout").click(function() {
             self.phone.logout();
         });
 
@@ -191,7 +191,7 @@ class PhoneJSController {
             var pressed_key = e.currentTarget.childNodes[0].data;
             if (self.phone_fsm.state == 'OnCall'){
                 self.phone.currentSession.sendDTMF(pressed_key);
-            }            
+            }
         });
     }
 
@@ -390,7 +390,7 @@ class PhoneJSController {
                 // Analizar si hace falta atender el evento si es inbound.
             }
             self.timers.llamada.start();
-            self.timers.pausa.stop();           // Ver antes si estaba en pausa 
+            self.timers.pausa.stop();           // Ver antes si estaba en pausa
             self.timers.operacion.start();
         });
 
@@ -529,7 +529,7 @@ class PhoneJSController {
         this.manual_campaign_type = $("#cmpList option:selected").attr('campana_type');
         var nombrecamp = $("#cmpList option:selected").html().trim();
         $("#campAssocManualCall").html(nombrecamp);
-        
+
         if (this.call_after_campaign_selection) {
             this.makeDialedNumberCall();
         }

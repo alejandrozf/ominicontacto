@@ -51,7 +51,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block content %}
-    <h1>{% trans 'Campañas manuales' %}</h1>
+    {% block titulo_lista_campanas %}
+        <h1>{% trans 'Campañas manuales' %}</h1>
+    {% endblock %}
 
     <div>
         <form id="form_estados_campanas" role="form" method="post">

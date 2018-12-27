@@ -18,26 +18,10 @@
 ---
 
 - set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
-  tags: omniapp
 
 # Se cambia la IP en el acrhivo de config del webphone
 - name: Change the ip address in config.js
   template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner={{ usuario }} group={{ usuario }}"
-  tags: omniapp
-
-# Se crea el lenguaje plpythonu a las bases de datos mencionadas.
-- name: Createlang of the database
-  shell: "createlang plpythonu {{ item }}"
-  with_items:
-    - omnileads
-    - template1
-  become: yes
-  become_user: postgres
-  register: command_result
-  failed_when:
-    - "'ya está instalado' not in command_result.stderr"
-    - "'already installed' not in command_result.stderr"
-    - "command_result.rc != 0"
 
 # Se borra el cache de javascript, esto solo se hace cuando es postinstall
 - name: Erase the javascript cache files (if exists)
@@ -55,25 +39,19 @@
           settings=ominicontacto.settings
           virtualenv={{ install_prefix }}virtualenv
   with_items:
-    # Se realizan las migraciones, https://docs.djangoproject.com/en/1.9/topics/migrations/
           - migrate
-    # https://docs.djangoproject.com/en/1.9/ref/contrib/staticfiles/
           - collectstatic
-    # https://django-compressor.readthedocs.io/en/stable/
           - compress
-    # Este comando fue creado por desarrollo. Es para recargar los archivos .conf que escribe django y para insertar en astdb lo que se tenga configurado
           - regenerar_asterisk
-    # Este no se que hace, me lo pidieron los chicos
           - populate_history --auto
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: yes
   become_method: su
   become_user: "{{ usuario }}"
-  tags: omniapp
 
 # Se crea el usuario admin
-- name: Create omnileads superuser
+- name: Create admin superuser
   django_manage: >
           command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
           app_path={{ install_prefix }}ominicontacto
@@ -86,13 +64,10 @@
   become: yes
   become_method: su
   become_user: "{{ usuario }}"
-  tags: omniapp
 
 # Se crea un pequeño script que utiliza expect para setear automaticamente la password del superusuario
 - name: Change password of superuser
   template: "src=templates/bin/changepassword.sh.j2 dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
-  tags: omniapp
-  when: (postinstall == 0) or (postinstall == 1 and admin_input.user_input != "")
 
 # Se ejecuta el script (verlo en templates para mas info)
 - name: Change password
@@ -100,11 +75,7 @@
   environment:
           DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
           PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
-  tags: omniapp
-  when: (postinstall == 0) or (postinstall == 1 and admin_input.user_input != "")
 
 # Se borra ese script del sistema
 - name: Erase the script for changing superuser password
   file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent
-  tags: omniapp
-  when: (postinstall == 0) or (postinstall == 1 and admin_input.user_input != "")

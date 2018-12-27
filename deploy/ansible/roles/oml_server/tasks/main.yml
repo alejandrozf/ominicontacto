@@ -27,6 +27,11 @@
 
 #----------------------------------------------------------------------
 
+- include: packages_installation.yml
+  tags: ['omniapp']
+
 - include: deploy.yml
-  tags: postinstall
-    
+  tags: ['postinstall','omniapp']
+
+- include: sshkey_transfer.yml
+  tags: ['postinstall','omniapp']

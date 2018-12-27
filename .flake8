@@ -9,3 +9,5 @@ exclude =
     configuracion_telefonia_app/migrations
     ominicontacto_app/migrations
     reportes_app/migrations
+    oml_settings_local.py
+

@@ -84,6 +84,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </script>
 {% endblock %}
 
+{% block titulo_lista_campanas %}
+    <h1>{% trans 'Campañas preview' %}</h1>
+{% endblock %}
+
 {% block campanas_activas %}
     {% for campana in activas %}
         <tr>

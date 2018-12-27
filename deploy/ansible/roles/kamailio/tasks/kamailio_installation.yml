@@ -17,6 +17,11 @@
 #
 ---
 # Tasks para instalacion de kamailio, https://www.kamailio.org/wiki/install/4.4.x/git
+
+# Se crea /opt/omnileads/kamailio directory
+- name: Create prefix directory
+  file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
+
 # Se clona el repositorio de kamailio
 - name: Clone kamailio repository
   shell: >
