@@ -396,9 +396,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_supervisors', args=[self.campana_activa.pk])
         self.assertFalse(self.campana_activa.supervisors.all().exists())
         supervisor = UserFactory.create()
-        self.campana_activa.supervisors.add(supervisor)
-        self.campana_activa.save()
         post_data = {'supervisors': [supervisor.pk]}
+        self.assertFalse(self.campana_activa.supervisors.all().exists())
         self.client.post(url, post_data, follow=True)
         self.assertTrue(self.campana_activa.supervisors.all().exists())
 
@@ -421,6 +420,19 @@ class SupervisorCampanaTests(CampanasTests):
         post_data = {'member': self.agente_profile.pk, 'penalty': 1}
         self.client.post(url, post_data, follow=True)
         self.assertTrue(QueueMember.objects.all().exists())
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch("ominicontacto_app.views_queue_member.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_queue_member.adicionar_agente_activo_cola")
+    def test_si_se_genera_error_en_activacion_cola_no_se_agrega_agente_a_campana(
+            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            _generar_y_recargar_configuracion_asterisk):
+        _generar_y_recargar_configuracion_asterisk.side_effect = Exception()
+        url = reverse('queue_member_add', args=[self.campana_activa.pk])
+        self.assertFalse(QueueMember.objects.all().exists())
+        post_data = {'member': self.agente_profile.pk, 'penalty': 1}
+        self.client.post(url, post_data, follow=True)
+        self.assertFalse(QueueMember.objects.all().exists())
 
     def test_relacion_agente_contacto_campanas_preview(self):
         # test que documenta la existencia del modelo que relaciona a agentes

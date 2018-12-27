@@ -26,12 +26,14 @@ from __future__ import unicode_literals
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm
 from ominicontacto_app.models import Campana, QueueMember, Grupo, AgenteProfile
-from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
-                                                       RestablecerDialplanError)
+from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpQueueRemoveError, AsteriskHttpQueueAddError
@@ -55,7 +57,6 @@ def adicionar_agente_cola(agente, queue_member, campana):
         client = AsteriskHttpClient()
         client.login()
         client.queue_add(queue, interface, penalty, paused, member_name)
-
     except AsteriskHttpQueueAddError:
         logger.exception("QueueAdd failed - agente: %s de la campana: %s ", agente, campana)
 
@@ -68,6 +69,11 @@ def adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados):
     agente = queue_member.member
     if agente.sip_extension in sip_agentes_logueados:
         adicionar_agente_cola(agente, queue_member, campana)
+
+
+def activar_cola(request):
+    activacion_queue_service = ActivacionQueueService()
+    activacion_queue_service.activar()
 
 
 class QueueMemberCreateView(FormView):
@@ -90,8 +96,8 @@ class QueueMemberCreateView(FormView):
             existe_member_queue(self.object.member, campana.queue_campana)
 
         if existe_member:
-            message = 'Operación Errónea! \
-                Este miembro ya se encuentra en esta cola'
+            message = _('Operación Errónea! \
+            Este miembro ya se encuentra en esta cola')
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -99,17 +105,29 @@ class QueueMemberCreateView(FormView):
             )
             return self.form_invalid(form)
         else:
-            self.object.queue_name = campana.queue_campana
-            self.object.id_campana = "{0}_{1}".format(campana.id,
-                                                      elimina_espacios(campana.nombre))
-            self.object.membername = self.object.member.user.get_full_name()
-            self.object.interface = """Local/{0}@from-queue/n""".format(
-                self.object.member.sip_extension)
-            self.object.paused = 0  # por ahora no lo definimos
-            self.object.save()
-            # adicionamos el agente a la cola actual que esta corriendo
-            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
-            adicionar_agente_activo_cola(self.object, campana, sip_agentes_logueados)
+            try:
+                with transaction.atomic():
+                    self.object.queue_name = campana.queue_campana
+                    self.object.id_campana = "{0}_{1}".format(campana.id,
+                                                              elimina_espacios(campana.nombre))
+                    self.object.membername = self.object.member.user.get_full_name()
+                    self.object.interface = """Local/{0}@from-queue/n""".format(
+                        self.object.member.sip_extension)
+                    self.object.paused = 0  # por ahora no lo definimos
+                    self.object.save()
+                    # adicionamos el agente a la cola actual que esta corriendo
+                    sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+                    adicionar_agente_activo_cola(self.object, campana, sip_agentes_logueados)
+                    activar_cola(self.request)
+            except Exception as e:
+                message = _("<strong>Operación Errónea!</strong> "
+                            "No se pudo confirmar la creación del dialplan debido "
+                            "al siguiente error: {0}".format(e))
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    message,
+                )
 
         return super(QueueMemberCreateView, self).form_valid(form)
 
@@ -156,19 +174,31 @@ class GrupoAgenteCreateView(FormView):
         agentes = grupo.agentes.filter(is_inactive=False)
         agentes_logueados_grupo = agentes.filter(sip_extension__in=sip_agentes_logueados)
         # agrega los agentes a la campana siempre cuando no se encuentren agregados
-        for agente in agentes:
-            queue_member, created = QueueMember.objects.get_or_create(
-                member=agente,
-                queue_name=campana.queue_campana,
-                defaults={'membername': agente.user.get_full_name(),
-                          'interface': """Local/{0}@from-queue/n""".format(
-                              agente.sip_extension),
-                          'penalty': 0,
-                          'paused': 0,
-                          'id_campana': "{0}_{1}".format(
-                              campana.id, elimina_espacios(campana.nombre))})
-            if created and (agente in agentes_logueados_grupo):
-                adicionar_agente_cola(agente, queue_member, campana)
+        try:
+            with transaction.atomic():
+                for agente in agentes:
+                    queue_member, created = QueueMember.objects.get_or_create(
+                        member=agente,
+                        queue_name=campana.queue_campana,
+                        defaults={'membername': agente.user.get_full_name(),
+                                  'interface': """Local/{0}@from-queue/n""".format(
+                                      agente.sip_extension),
+                                  'penalty': 0,
+                                  'paused': 0,
+                                  'id_campana': "{0}_{1}".format(
+                                      campana.id, elimina_espacios(campana.nombre))})
+                    if created and (agente in agentes_logueados_grupo):
+                        adicionar_agente_cola(agente, queue_member, campana)
+                activar_cola(self.request)
+        except Exception as e:
+                message = _("<strong>Operación Errónea!</strong> "
+                            "No se pudo confirmar la creación del dialplan debido "
+                            "al siguiente error: {0}".format(e))
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    message,
+                )
         return super(GrupoAgenteCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -201,36 +231,16 @@ class QueueMemberCampanaView(TemplateView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         return campana.queue_campana
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        activacion_queue_service = ActivacionQueueService()
-        try:
-            activacion_queue_service.activar()
-        except RestablecerDialplanError, e:
-            message = ("<strong>Operación Errónea!</strong> "
-                       "No se pudo confirmar la creación del dialplan  "
-                       "al siguiente error: {0}".format(e))
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-
-        # agentes = AgenteProfile.objects.filter(reported_by=request.user)
+    def get_context_data(self, **kwargs):
+        context = super(QueueMemberCampanaView, self).get_context_data(**kwargs)
+        campana = self.get_object().campana
         agentes = AgenteProfile.objects.filter(is_inactive=False)
         queue_member_form = QueueMemberForm(data=self.request.GET or None,
                                             members=agentes)
         grupo_agente_form = GrupoAgenteForm(self.request.GET or None)
-        context = self.get_context_data(**kwargs)
+        context['campana'] = campana
         context['queue_member_form'] = queue_member_form
         context['grupo_agente_form'] = grupo_agente_form
-        return self.render_to_response(context)
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            QueueMemberCampanaView, self).get_context_data(**kwargs)
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        context['campana'] = campana
         if campana.type is Campana.TYPE_ENTRANTE:
             context['url_finalizar'] = 'campana_list'
         elif campana.type is Campana.TYPE_DIALER:
@@ -248,19 +258,21 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     agente = queue_member.member
     queue_member.delete()
     campana = Campana.objects.get(pk=pk_campana)
-    # ahora vamos a remover el agente de la cola de asterisk
 
+    # ahora vamos a remover el agente de la cola de asterisk
     queue = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
     interface = "SIP/{0}".format(agente.sip_extension)
+    sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+    if agente.sip_extension in sip_agentes_logueados:
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.queue_remove(queue, interface)
 
-    try:
-        client = AsteriskHttpClient()
-        client.login()
-        client.queue_remove(queue, interface)
-
-    except AsteriskHttpQueueRemoveError:
-        logger.exception("QueueRemove failed - agente: %s de la campana: %s ", agente,
-                         campana)
+        except AsteriskHttpQueueRemoveError:
+            logger.exception("QueueRemove failed - agente: %s de la campana: %s ", agente,
+                             campana)
+    activar_cola(request)
 
     return HttpResponseRedirect(
         reverse('queue_member_campana',
