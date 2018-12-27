@@ -164,7 +164,16 @@
 - shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - make menuselect.makeopts
-          - menuselect/menuselect --enable format_mp3
+          - menuselect/menuselect --enable format_mp3 menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-EN-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-ES-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-FR-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-IT-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-RU-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-JA-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-SV-WAV menuselect.makeopts
+          - menuselect/menuselect --enable EXTRA-SOUNDS-EN-WAV menuselect.makeopts
+          - menuselect/menuselect --enable EXTRA-SOUNDS-FR-WAV menuselect.makeopts
           - make
           - make install
           - make config
