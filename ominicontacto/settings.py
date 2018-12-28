@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api_app',
     'constance',
+    'django_js_reverse',
 ]
 
 MIDDLEWARE_CLASSES = [

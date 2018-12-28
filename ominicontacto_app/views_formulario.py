@@ -25,13 +25,15 @@ from __future__ import unicode_literals
 import json
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import (
-    ListView, CreateView, DeleteView, FormView
+    ListView, CreateView, DeleteView, FormView, View
 )
 from django.views.generic.edit import BaseUpdateView
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.models import (
     Formulario, FieldFormulario, MetadataCliente, Campana, AgenteProfile,
     Contacto
@@ -64,6 +66,16 @@ class FormularioListView(ListView):
     """Vista para listar los formularios"""
     template_name = 'formulario/formulario_list.html'
     model = Formulario
+
+
+class FormularioMostrarOcultosView(FormularioListView):
+    """Muestra también los formularios ocultos
+    """
+
+    def get_context_data(self, **kwargs):
+        context = super(FormularioMostrarOcultosView, self).get_context_data(**kwargs)
+        context['mostrar_ocultos'] = True
+        return context
 
 
 class FieldFormularioCreateView(CreateView):
@@ -266,7 +278,6 @@ class FormularioCreateFormView(FormView):
         mas_datos = []
         for nombre, dato in zip(nombres, datos):
             mas_datos.append((nombre, dato))
-        print mas_datos
         context['contacto'] = contacto
         context['mas_datos'] = mas_datos
 
@@ -282,10 +293,41 @@ class FormularioCreateFormView(FormView):
         return HttpResponseRedirect('/blanco/')
 
     def get_success_url(self):
-        # reverse('calificacion_cliente_update',
-        #         kwargs={"pk_campana": self.kwargs['pk_campana'],
-        #                 "pk_contacto": self.kwargs['pk_contacto'],
-        #                 "id_agente": self.kwargs['id_agente']
-        #                 }
-        #         )
         reverse('view_blanco')
+
+
+class FormularioDeleteView(DeleteView):
+    """
+    Esta vista se encarga de la eliminación de un contacto
+    """
+    model = Formulario
+    template_name = 'formulario/formulario_eliminar.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        formulario = self.get_object()
+
+        if formulario.campana_set.all().exists():
+            message = _("No está permitido eliminar un formulario asignado a alguna campaña")
+            messages.error(self.request, message)
+            return HttpResponseRedirect(
+                reverse('formulario_list'))
+        return super(FormularioDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return Formulario.objects.get(pk=self.kwargs['pk_formulario'])
+
+    def get_success_url(self):
+        return reverse('formulario_list')
+
+
+class FormularioMostrarOcultarView(View):
+    """Vista que se encarga de cambiar el atributo 'oculto' de un formulario
+    negando su valor actual
+    """
+
+    def post(self, request, *args, **kwargs):
+        pk = kwargs.get('pk_formulario')
+        formulario = get_object_or_404(Formulario, pk=pk)
+        formulario.oculto = not formulario.oculto
+        formulario.save()
+        return JsonResponse({'status': 'OK', 'oculto': formulario.oculto})
