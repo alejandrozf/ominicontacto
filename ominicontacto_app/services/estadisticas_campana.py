@@ -297,6 +297,8 @@ class EstadisticasService():
              (_('Atendidas'), 0),
              # se cuentan todos los eventos EXITWITHTIMEOUT y ABANDON con 'tipo_llamada' no manual
              (_('Perdidas'), 0),
+             # se cuentan todos los eventos AMD
+             (_('Contestador detectado'), 0),
              # se cuentan todos los eventos DIAL con 'tipo_llamada' manual
              (_('Manuales'), 0),
              # se cuentan todos los eventos ANSWER con 'tipo_llamada' manual
@@ -320,6 +322,8 @@ class EstadisticasService():
                 reporte[_('Atendidas')] += cantidad
             elif evento == 'ANSWER' and tipo_llamada == LlamadaLog.LLAMADA_MANUAL:
                 reporte[_('Manuales atendidas')] = cantidad
+            elif evento == 'AMD':
+                reporte[_('Contestador detectado')] += cantidad
             elif (evento in ['ABANDON', 'EXITWITHTIMEOUT'] and
                   tipo_llamada != LlamadaLog.LLAMADA_MANUAL):
                 reporte[_('Perdidas')] += cantidad
