@@ -598,6 +598,7 @@ class SupervisorCampanaTests(CampanasTests):
             '1-servicelevel': 1,
             '1-strategy': 'ringall',
             '1-weight': 1,
+            '1-wrapuptime': 2,
             '1-wait': 1,
             '1-auto_grabacion': 'on',
             '1-audios': audio_ingreso.pk,
