@@ -27,7 +27,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
-        <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        {% if interaccion_crm %}
+            <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        {% endif %}
         <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
         <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
         <li class="active"><a>{% trans 'Sincronizar' %}</a></li>
@@ -53,13 +55,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.prefijo_discador }}
                 {{ form.prefijo_discador.errors }}
             </div>
-            {% if tipo_interaccion == 2 %}
-                <div class="col-md-6">
-                    <label for="{{ form.columnas.id_for_label }}">{% trans 'Columnas:' %} </label>
-                    {{ form.columnas }}
-                    {{ form.columnas.errors }}
-                </div>
-            {% endif %}
         </div>
     {% endwith %}
 {% endblock %}

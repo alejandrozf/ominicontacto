@@ -732,15 +732,6 @@ class SincronizaDialerForm(forms.Form):
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'class-fecha form-control'}))
-    columnas = forms.MultipleChoiceField(
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-        choices=(),
-    )
-
-    def __init__(self, tts_choices, *args, **kwargs):
-        super(SincronizaDialerForm, self).__init__(*args, **kwargs)
-        self.fields['columnas'].choices = tts_choices
 
 
 class FormularioNuevoContacto(forms.ModelForm):
@@ -1347,12 +1338,34 @@ class GrupoForm(forms.ModelForm):
 
 class ParametrosCrmForm(forms.ModelForm):
 
+    def __init__(self, columnas_bd, *args, **kwargs):
+        super(ParametrosCrmForm, self).__init__(*args, **kwargs)
+        self.columnas_bd = columnas_bd
+
     class Meta:
         model = ParametrosCrm
-        fields = ('nombre', 'valor', 'tipo')
+        fields = ('tipo', 'nombre', 'valor')
 
         widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'valor': forms.TextInput(attrs={'class': 'form-control'}),
-            'tipo': forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def clean_valor(self):
+        tipo = self.cleaned_data.get('tipo')
+        valor = self.cleaned_data.get('valor')
+        if tipo == ParametrosCrm.DATO_CONTACTO and valor not in self.columnas_bd:
+            raise forms.ValidationError(
+                _('El valor debe corresponder a un campo de la base de datos de contactos'))
+        if tipo == ParametrosCrm.DATO_CAMPANA and valor not in ParametrosCrm.OPCIONES_CAMPANA_KEYS:
+            raise forms.ValidationError(
+                _('El valor debe corresponder a un campo válido de la campaña'))
+        if tipo == ParametrosCrm.DATO_LLAMADA and valor not in ParametrosCrm.OPCIONES_LLAMADA_KEYS:
+            raise forms.ValidationError(
+                _('El valor debe corresponder a un dato válido de la llamada'))
+        return valor
+
+
+ParametrosCrmFormSet = inlineformset_factory(
+    Campana, ParametrosCrm, form=ParametrosCrmForm, extra=0, min_num=1)
