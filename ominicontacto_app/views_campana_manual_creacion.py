@@ -30,13 +30,14 @@ from django.views.generic import DetailView, ListView, DeleteView
 from formtools.wizard.views import SessionWizardView
 
 from ominicontacto_app.forms import (CampanaManualForm, OpcionCalificacionFormSet,
-                                     ParametroExtraParaWebformFormSet)
+                                     ParametrosCrmFormSet)
 from ominicontacto_app.models import Campana, Queue
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
                                                       CampanaTemplateCreateCampanaMixin,
                                                       CampanaTemplateDeleteMixin,
-                                                      asignar_bd_contactos_defecto_campo_vacio)
+                                                      asignar_bd_contactos_defecto_campo_vacio,
+                                                      mostrar_form_parametros_crm_form)
 from ominicontacto_app.utiles import cast_datetime_part_date
 
 import logging as logging_
@@ -48,17 +49,21 @@ class CampanaManualMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = None
     OPCIONES_CALIFICACION = '1'
-    PARAMETROS_EXTRA_WEB_FORM = '2'
+    PARAMETROS_CRM = '2'
 
     FORMS = [(INICIAL, CampanaManualForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
-             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet)]
+             (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
                  OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html",
-                 PARAMETROS_EXTRA_WEB_FORM: "campana_manual/parametros_extra_web_form.html"}
+                 PARAMETROS_CRM: "campana_manual/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS
+
+    condition_dict = {
+        PARAMETROS_CRM: mostrar_form_parametros_crm_form
+    }
 
 
 class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
@@ -68,8 +73,8 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
 
     def _save_forms(self, form_list, estado, tipo):
         campana_form = form_list[int(self.INICIAL)]
+        interaccion_crm = campana_form.instance.tipo_interaccion == Campana.SITIO_EXTERNO
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form.instance.type = tipo
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
@@ -94,8 +99,10 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
             auto_grabacion=auto_grabacion)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
-        parametros_extra_web_formset.instance = campana
-        parametros_extra_web_formset.save()
+        if interaccion_crm:
+            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset.instance = campana
+            parametros_crm_formset.save()
         return queue
 
     def done(self, form_list, **kwargs):
@@ -119,7 +126,6 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
     def _save_forms(self, form_list, **kwargs):
         campana_form = form_list[int(self.INICIAL)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
@@ -129,8 +135,10 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         queue.save()
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
-        parametros_extra_web_formset.instance = campana
-        parametros_extra_web_formset.save()
+        if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
+            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset.instance = campana
+            parametros_crm_formset.save()
         return queue
 
     def done(self, form_list, **kwargs):

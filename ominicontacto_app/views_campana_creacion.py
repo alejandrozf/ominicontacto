@@ -24,7 +24,6 @@ from __future__ import unicode_literals
 from django import forms
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -36,11 +35,11 @@ from formtools.wizard.views import SessionWizardView
 
 from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.forms import (CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet,
-                                     ParametroExtraParaWebformFormSet)
+                                     ParametrosCrmFormSet)
 from ominicontacto_app.models import Campana, ArchivoDeAudio
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
-from ominicontacto_app.tests.factories import BaseDatosContactoFactory
+from ominicontacto_app.tests.factories import BaseDatosContactoFactory, COLUMNAS_DB_DEFAULT
 from ominicontacto_app.utiles import cast_datetime_part_date
 
 import logging as logging_
@@ -130,14 +129,6 @@ class CampanaTemplateCreateCampanaMixin(object):
             calif_init_formset.extra = len(initial_data) - 1
             calif_init_formset.prefix = opts_calif_init_formset.prefix
             context['wizard']['form'] = calif_init_formset
-        if current_step == self.PARAMETROS_EXTRA_WEB_FORM:
-            initial_data = campana_template.parametros_extra_para_webform.values(
-                'parametro', 'columna')
-            param_extra_init_formset = context['wizard']['form']
-            param_extra_formset = ParametroExtraParaWebformFormSet(initial=initial_data)
-            param_extra_formset.extra = len(initial_data) + 1
-            param_extra_formset.prefix = param_extra_init_formset.prefix
-            context['wizard']['form'] = param_extra_formset
         return context
 
 
@@ -156,33 +147,80 @@ class CampanaTemplateDeleteMixin(object):
         return HttpResponseRedirect(self.get_success_url())
 
 
+def mostrar_form_parametros_crm_form(wizard):
+    campana = wizard.get_form_instance(wizard.INICIAL)
+    if campana:
+        interaccion = campana.tipo_interaccion
+    else:
+        cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
+        interaccion = cleaned_data.get('tipo_interaccion', '')
+    return interaccion == Campana.SITIO_EXTERNO
+
+
 class CampanaWizardMixin(object):
     INICIAL = '0'
     COLA = '1'
     OPCIONES_CALIFICACION = '2'
-    PARAMETROS_EXTRA_WEB_FORM = '3'
+    PARAMETROS_CRM = '3'
 
     FORMS = [(INICIAL, CampanaForm),
              (COLA, QueueEntranteForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
-             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet)]
+             (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
                  COLA: "campana/create_update_queue.html",
                  OPCIONES_CALIFICACION: "campana/opcion_calificacion.html",
-                 PARAMETROS_EXTRA_WEB_FORM: "campana/parametros_extra_web_form.html"}
+                 PARAMETROS_CRM: "campana/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS
+    condition_dict = {
+        PARAMETROS_CRM: mostrar_form_parametros_crm_form
+    }
 
     def get_template_names(self):
         return [self.TEMPLATES[self.steps.current]]
 
     def _get_instance_from_campana(self, pk, step):
         campana = get_object_or_404(Campana, pk=pk)
-        if step in [self.INICIAL, self.OPCIONES_CALIFICACION, self.PARAMETROS_EXTRA_WEB_FORM]:
+        if step in [self.INICIAL, self.OPCIONES_CALIFICACION, self.PARAMETROS_CRM]:
             return campana
         if step == self.COLA:
             return campana.queue_campana
+
+    def get_form(self, step=None, data=None, files=None):
+        if step is None:
+            step = self.steps.current
+        if step == self.PARAMETROS_CRM:
+            # se mantiene la mayor parte del código existente en el plug-in 'formtools
+            # con la excepción de que se le pasa el argumento 'columnas_bd' para instanciar
+            # con éxito el formulario correspondiente pues formtools no es lo suficientemente
+            # flexible y sólo usa kwargs para instanciar
+            campana = self.get_cleaned_data_for_step(self.INICIAL)
+            bd_contacto = campana['bd_contacto']
+            if bd_contacto is None:
+                nombres_de_columnas = COLUMNAS_DB_DEFAULT
+                nombres_de_columnas = nombres_de_columnas[:]
+            else:
+                metadata = bd_contacto.get_metadata()
+                nombres_de_columnas = metadata.nombres_de_columnas
+            nombres_de_columnas.remove('telefono')
+            columnas_bd = [(columna, columna) for columna in nombres_de_columnas]
+            form_class = self.form_list[step]
+            kwargs = self.get_form_kwargs(step)
+            kwargs.update({
+                'data': data,
+                'files': files,
+                'prefix': self.get_form_prefix(step, form_class),
+                'initial': self.get_form_initial(step),
+                'form_kwargs': {'columnas_bd': columnas_bd},
+            })
+            if issubclass(form_class, (forms.ModelForm, forms.models.BaseInlineFormSet)):
+                kwargs.setdefault('instance', self.get_form_instance(step))
+            elif issubclass(form_class, forms.models.BaseModelFormSet):
+                kwargs.setdefault('queryset', self.get_form_instance(step))
+            return form_class(**kwargs)
+        return super(CampanaWizardMixin, self).get_form(step, data, files)
 
     def get_form_instance(self, step):
         pk = self.kwargs.get('pk_campana', False)
@@ -203,15 +241,19 @@ class CampanaWizardMixin(object):
 
     def get_context_data(self, form, *args, **kwargs):
         context = super(CampanaWizardMixin, self).get_context_data(form, *args, **kwargs)
-        is_formset_step = issubclass(form.__class__, BaseInlineFormSet)
-        context['is_formset_step'] = is_formset_step
-        if (is_formset_step and form.forms == [] and
-                self.steps.current == self.PARAMETROS_EXTRA_WEB_FORM):
-            # reiniciamos el formset para que el usuario si no tiene formularios
-            # para que el usuario tenga posibilidad de agregar nuevos formularios
-            new_formset = ParametroExtraParaWebformFormSet()
-            new_formset.prefix = form.prefix
-            context['wizard']['form'] = new_formset
+
+        context['interaccion_crm'] = False
+        pk = self.kwargs.get('pk_campana', False)
+        if pk:
+            campana = get_object_or_404(Campana, pk=pk)
+            context['interaccion_crm'] = campana.tipo_interaccion == Campana.SITIO_EXTERNO
+        else:
+            current_step = self.steps.current
+            if current_step != self.INICIAL:
+                cleaned_data_step_initial = self.get_cleaned_data_for_step(self.INICIAL)
+                tipo_interaccion = cleaned_data_step_initial['tipo_interaccion']
+                context['interaccion_crm'] = tipo_interaccion == Campana.SITIO_EXTERNO
+
         return context
 
 
@@ -220,7 +262,7 @@ class CampanaEntranteMixin(CampanaWizardMixin):
         if step is None:
             step = self.steps.current
         if step != self.COLA:
-            return super(CampanaWizardMixin, self).get_form(step, data, files)
+            return super(CampanaEntranteMixin, self).get_form(step, data, files)
         else:
             # se mantiene la mayor parte del código existente en el plug-in 'formtools
             # con la excepción de que se le pasa el argumento 'audio_choices' para instanciar
@@ -261,9 +303,9 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
 
     def _save_forms(self, form_list, estado):
         campana_form = form_list[int(self.INICIAL)]
+        interaccion_crm = campana_form.instance.tipo_interaccion == Campana.SITIO_EXTERNO
         queue_form = form_list[int(self.COLA)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form.instance.type = Campana.TYPE_ENTRANTE
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
@@ -275,8 +317,10 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue = self._save_queue(queue_form)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
-        parametros_extra_web_formset.instance = campana
-        parametros_extra_web_formset.save()
+        if interaccion_crm:
+            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset.instance = campana
+            parametros_crm_formset.save()
         return queue
 
     def done(self, form_list, **kwargs):
@@ -317,9 +361,10 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         opts_calif_init_formset = form_list[int(self.OPCIONES_CALIFICACION)]
         opts_calif_init_formset.instance = campana
         opts_calif_init_formset.save()
-        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
-        parametros_extra_web_formset.instance = campana
-        parametros_extra_web_formset.save()
+        if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
+            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset.instance = campana
+            parametros_crm_formset.save()
         self._insert_queue_asterisk(queue_form.instance)
         return HttpResponseRedirect(reverse('campana_list'))
 

@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                                                               (4, 'Fijo')])),
                 ('campana', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
-                    related_name='variablescrm', to='ominicontacto_app.Campana')),
+                    related_name='parametros_crm', to='ominicontacto_app.Campana')),
             ],
         ),
     ]

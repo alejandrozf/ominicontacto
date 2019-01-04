@@ -3135,7 +3135,7 @@ class ParametrosCrm(models.Model):
     )
     OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]
 
-    campana = models.ForeignKey(Campana, related_name='variablescrm')
+    campana = models.ForeignKey(Campana, related_name='parametros_crm')
     nombre = models.CharField(max_length=128)
     valor = models.CharField(max_length=256)
     tipo = models.PositiveIntegerField(choices=TIPOS)
