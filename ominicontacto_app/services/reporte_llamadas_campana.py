@@ -19,6 +19,8 @@
 
 """Servicio para generar reportes de las llamadas por campañas"""
 
+from __future__ import unicode_literals
+
 import pygal
 
 from pygal.style import Style
