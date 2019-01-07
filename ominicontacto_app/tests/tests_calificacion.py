@@ -107,8 +107,7 @@ class CalificacionTests(OMLBaseTest):
 
     def test_no_se_admite_tipo_calificacion_cliente_vacia_en_creacion_calificacion(self):
         url = reverse('calificacion_formulario_update_or_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         response = self.client.post(url, post_data, follow=True)
@@ -117,8 +116,7 @@ class CalificacionTests(OMLBaseTest):
 
     def test_no_se_admite_tipo_calificacion_cliente_vacia_en_modificacion_calificacion(self):
         url = reverse('calificacion_formulario_update_or_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         response = self.client.post(url, post_data, follow=True)
@@ -128,8 +126,7 @@ class CalificacionTests(OMLBaseTest):
     @patch('requests.post')
     def test_calificacion_cliente_creacion_redirecciona_formulario_gestion(self, post):
         url = reverse('calificacion_formulario_update_or_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
@@ -139,8 +136,7 @@ class CalificacionTests(OMLBaseTest):
     @patch('requests.post')
     def test_calificacion_cliente_modificacion_redirecciona_formulario_gestion(self, post):
         url = reverse('calificacion_formulario_update_or_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
@@ -158,8 +154,7 @@ class CalificacionTests(OMLBaseTest):
             agente=self.agente_profile, contacto=contacto_califica, campana=self.campana)
         # Se modifica la calificacion por una de no accion
         url_calificacion = reverse('calificacion_formulario_update_or_create',
-                                   kwargs={'id_agente': self.agente_profile.pk,
-                                           'pk_campana': self.campana.pk,
+                                   kwargs={'pk_campana': self.campana.pk,
                                            'pk_contacto': contacto_califica.pk})
         post_data_calificacion = self._obtener_post_data_calificacion_cliente(
             contacto=contacto_califica)
@@ -187,8 +182,7 @@ class CalificacionTests(OMLBaseTest):
     @patch('requests.post')
     def test_escoger_calificacion_agenda_redirecciona_formulario_agenda(self, post):
         url = reverse('calificacion_formulario_update_or_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_agenda.pk
@@ -282,8 +276,7 @@ class CalificacionTests(OMLBaseTest):
         }
 
         url = reverse('calificar_por_telefono',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'telefono': telefono})
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -298,8 +291,7 @@ class CalificacionTests(OMLBaseTest):
         # garantizamos un número distinto al existente en la campaña
         telefono = str(self.contacto.telefono) + '11'
         url = reverse('calificar_por_telefono',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'telefono': telefono})
         response = self.client.get(url, follow=True)
         contacto_form = response.context_data['contacto_form']
@@ -310,8 +302,7 @@ class CalificacionTests(OMLBaseTest):
         contacto = self.contacto
         telefono = contacto.telefono
         url = reverse('calificar_por_telefono',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'telefono': telefono})
         response = self.client.get(url, follow=True)
         contacto_form = response.context_data['contacto_form']
@@ -324,16 +315,14 @@ class CalificacionTests(OMLBaseTest):
         ContactoFactory(bd_contacto=self.campana.bd_contacto, telefono=contacto.telefono)
         telefono = contacto.telefono
         url = reverse('calificar_por_telefono',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'telefono': telefono})
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'agente/contactos_telefonos_repetidos.html')
 
     def test_muestra_nombre_campana(self):
         url = reverse('calificar_por_telefono',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'telefono': '351111111111'})
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana.nombre)
@@ -342,8 +331,7 @@ class CalificacionTests(OMLBaseTest):
         self.campana.mostrar_nombre = False
         self.campana.save()
         url = reverse('calificar_por_telefono',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'telefono': '351111111111'})
         response = self.client.get(url, follow=True)
         self.assertNotContains(response, self.campana.nombre)

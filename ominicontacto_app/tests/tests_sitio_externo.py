@@ -19,8 +19,6 @@
 
 from __future__ import unicode_literals
 
-from mock import patch
-
 from django.core.urlresolvers import reverse
 from ominicontacto_app.models import SitioExterno
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -46,24 +44,24 @@ class TestsSitioExterno(OMLBaseTest):
             'metodo': SitioExterno.EMBEBIDO,
         }
 
-    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
-           'SincronizadorDeConfiguracionSitioExternoAsterisk.regenerar_asterisk')
-    def test_crear_sitio_externo(self, regenerar_asterisk):
+    def test_crear_sitio_externo(self):
         url = reverse('sitio_externo_create')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_sitio_externo()
         n_sitio_externo = SitioExterno.objects.count()
-        self.client.post(url, post_data, follow=True)
+        response = self.client.post(url, post_data, follow=True)
         self.assertEqual(SitioExterno.objects.count(), n_sitio_externo + 1)
+        list_url = reverse('sitio_externo_list')
+        self.assertRedirects(response, list_url)
 
-    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
-           'SincronizadorDeConfiguracionSitioExternoAsterisk.regenerar_asterisk')
-    def test_update_sitio_externo(self, regenerar_asterisk):
+    def test_update_sitio_externo(self):
         url = reverse('modificar_sitio_externo', args=[self.sito_externo.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
         nombre_modificado = 'sitio_crm_ventas'
         post_data = self._obtener_post_sitio_externo()
         post_data['nombre'] = nombre_modificado
-        self.client.post(url, post_data, follow=True)
+        response = self.client.post(url, post_data, follow=True)
         self.sito_externo.refresh_from_db()
         self.assertEqual(self.sito_externo.nombre, nombre_modificado)
+        list_url = reverse('sitio_externo_list')
+        self.assertRedirects(response, list_url)

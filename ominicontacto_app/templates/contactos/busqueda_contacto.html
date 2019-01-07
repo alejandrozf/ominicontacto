@@ -77,7 +77,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a class="dropdown-item" href="">
                             <span class="icon icon-phone"></span>{% trans 'Llamar' %}
                         </a>
-                        <a class="dropdown-item" href="{% url 'calificacion_formulario_update_or_create' campana.pk contacto.pk user.get_agente_profile.pk %}">
+                        <a class="dropdown-item" href="{% url 'calificacion_formulario_update_or_create' campana.pk contacto.pk %}">
                             <span class="icon icon-pencil"></span>{% trans 'Actualizar formulario' %}
                         </a>
                     </div>
