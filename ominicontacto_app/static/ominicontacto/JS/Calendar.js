@@ -70,7 +70,6 @@ $(function () {
 				ocultarModal("#modalMensaje");		
 	   	 },
 	   	 error: function (jqXHR, textStatus, errorThrown) {
-	       debugger;
 	       console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	     }
 		}); 

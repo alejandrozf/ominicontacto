@@ -34,7 +34,6 @@ class OMLAPI {
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
             }
         });
@@ -98,7 +97,6 @@ class OMLAPI {
             	callback(msg);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
             }
         });
