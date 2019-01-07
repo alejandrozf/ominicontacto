@@ -155,7 +155,6 @@ $(function() {
             data: 'sip=' + id + '&sipext=' + sipExt + "&action=spy",
             success: function(msg) {},
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
             }
         });
@@ -171,7 +170,6 @@ $(function() {
             data: 'sip=' + id + '&sipext=' + sipExt + "&action=spywhisper",
             success: function(msg) {},
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
             }
         });
@@ -187,7 +185,6 @@ $(function() {
             data: 'sip=' + id + '&sipext=' + sipExt + "&action=confer",
             success: function(msg) {},
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
             }
         });
@@ -203,7 +200,6 @@ $(function() {
             data: 'sip=' + id + '&sipext=' + sipExt + "&action=logoutagent",
             success: function(msg) {},
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
             }
         });
@@ -224,7 +220,6 @@ $(function() {
                 $(self).removeClass("fa-pause").addClass("fa-play");
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
             }
         });
@@ -245,7 +240,6 @@ $(function() {
                 $(self).removeClass("fa-play").addClass("fa-pause");
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
             }
         });
@@ -263,7 +257,6 @@ $(function() {
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                debugger;
                 console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
             }
         });
