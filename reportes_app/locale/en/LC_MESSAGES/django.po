@@ -791,7 +791,7 @@ msgstr "abandon"
 #: reportes_app/templates/reporte_llamadas.html:371
 #: reportes_app/templates/reporte_llamadas.html:403
 #: reportes_app/templates/reporte_llamadas.html:478
-w#: reportes_app/templates/reporte_llamadas.html:508
+#: reportes_app/templates/reporte_llamadas.html:508
 #: reportes_app/templates/reportes_agentes_tiempos.html:271
 msgid "espera"
 msgstr "wait"

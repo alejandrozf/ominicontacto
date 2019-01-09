@@ -29,7 +29,7 @@ msgstr "Prefix"
 #: configuracion_telefonia_app/forms.py:71
 #: configuracion_telefonia_app/forms.py:271
 msgid "En segundos"
-msgstr In seconds""
+msgstr "In seconds"
 
 #: configuracion_telefonia_app/forms.py:96
 msgid "Debe ingresar al menos un patrón de discado"
