@@ -29,6 +29,7 @@ import logging
 import os
 
 from django.utils.encoding import smart_text
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
@@ -60,11 +61,11 @@ class CreacionBacklistService(object):
 
         csv_extensions = ['.csv']
 
-        file_invalid_msg = "El archivo para realizar la importación de contactos no es válido"
+        file_invalid_msg = _("El archivo para realizar la importación de contactos no es válido")
         filename = back_list.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
-            logger.warn("La extensión %s no es CSV. ", extension)
+            logger.warn(_("La extensión {0} no es CSV. ".format(extension)))
             raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
         data = csv.reader(back_list.archivo_importacion)
         validar_estructura_csv(data, file_invalid_msg, logger)
@@ -139,7 +140,7 @@ class ValidaDataService(object):
             assert isinstance(lineas_unsafe, (list, tuple))
         except AssertionError:
             raise NoSePuedeInferirMetadataErrorFormatoFilas(
-                "Archivo .csv con problemas de estructura")
+                _("Archivo .csv con problemas de estructura"))
 
         lineas = []
         for linea in lineas_unsafe:
@@ -152,18 +153,18 @@ class ValidaDataService(object):
 
         if len(lineas) < 2:
             logger.debug("Se deben proveer al menos 2 lineas: %s", lineas)
-            raise(NoSePuedeInferirMetadataError("Se deben proveer al menos 2 "
-                                                "lineas para poder inferir "
-                                                "los metadatos"))
+            raise(NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
+                                                  "lineas para poder inferir "
+                                                  "los metadatos")))
 
         # Primero chequeamos q' haya igual cant. de columnas
         set_cant_columnas = set([len(linea) for linea in lineas])
         if len(set_cant_columnas) != 1:
             logger.debug("Distintas cantidades "
                          "de columnas: %s", set_cant_columnas)
-            raise(NoSePuedeInferirMetadataError("Las lineas recibidas "
-                                                "poseen distintas cantidades "
-                                                "de columnas"))
+            raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+                                                  "poseen distintas cantidades "
+                                                  "de columnas")))
 
         primer_linea = lineas[0]
 
@@ -171,9 +172,9 @@ class ValidaDataService(object):
         if len(primer_linea) == 0:
             logger.debug("Las lineas no poseen ninguna "
                          "columna: %s", primer_linea)
-            raise(NoSePuedeInferirMetadataError("Las lineas no poseen ninguna "
-                                                "columna"))
+            raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
+                                                  "columna")))
 
         if primer_linea[0] != 'telefono':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
-                                                           "columna debe ser telefono"))
+            raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "
+                                                             "columna debe ser telefono")))

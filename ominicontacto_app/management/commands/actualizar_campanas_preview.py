@@ -20,6 +20,7 @@
 import logging
 
 from django.core.management.base import BaseCommand
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import AgenteEnContacto
 
@@ -49,8 +50,8 @@ class Command(BaseCommand):
         liberados = AgenteEnContacto.liberar_contactos_por_tiempo(campana_id, tiempo_desconexion)
 
         logging.info(
-            "Actualizando {0} asignaciones de contactos a agentes en campaña {1}".format(
-                liberados, campana_id))
+            _("Actualizando {0} asignaciones de contactos a agentes en campaña {1}".format(
+                liberados, campana_id)))
 
     def handle(self, *args, **options):
         campana_id = args[0]

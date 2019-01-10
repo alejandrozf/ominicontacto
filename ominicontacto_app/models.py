@@ -130,9 +130,8 @@ class User(AbstractUser):
             try:
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:
-                logger.exception("Excepcion detectada al obtener session "
-                                 "con el key {0} no existe ".format(self.last_session_key))
-
+                logger.exception(_("Excepcion detectada al obtener session "
+                                   "con el key {0} no existe ".format(self.last_session_key)))
         self.last_session_key = key
         self.save()
 
@@ -140,7 +139,7 @@ class User(AbstractUser):
         """
         Setea Usuario como BORRADO y is_active como False.
         """
-        logger.info("Seteando Usuario %s como BORRADO", self.id)
+        logger.info(_("Seteando Usuario {0} como BORRADO".format(self.id)))
 
         self.borrado = True
         self.is_active = False
@@ -280,7 +279,7 @@ class AgenteProfile(models.Model):
         """
         Setea Agente como BORRADO y is_inactive True .
         """
-        logger.info("Seteando Agente %s como BORRADO", self.id)
+        logger.info(_("Seteando Agente {0} como BORRADO".format(self.id)))
 
         self.borrado = True
         self.is_inactive = True
@@ -309,7 +308,7 @@ class SupervisorProfile(models.Model):
         """
         Setea Supervisor como BORRADO .
         """
-        logger.info("Seteando Supervisor %s como BORRADO", self.id)
+        logger.info(_("Seteando Supervisor {0} como BORRADO".format(self.id)))
 
         self.borrado = True
         self.save()
@@ -399,8 +398,8 @@ class FieldFormulario(models.Model):
         unique_together = ("orden", "formulario")
 
     def __unicode__(self):
-        return "campo {0} del formulario {1}".format(self.nombre_campo,
-                                                     self.formulario)
+        return _("campo {0} del formulario {1}".format(self.nombre_campo,
+                                                       self.formulario))
 
     def obtener_campo_anterior(self):
         """
@@ -970,28 +969,28 @@ class Campana(models.Model):
 
     def play(self):
         """Setea la campaña como ESTADO_ACTIVA"""
-        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        logger.info(_("Seteando campana {0} como ESTADO_ACTIVA".format(self.id)))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_ACTIVA
         self.save()
 
     def pausar(self):
         """Setea la campaña como ESTADO_PAUSADA"""
-        logger.info("Seteando campana %s como ESTADO_PAUSADA", self.id)
+        logger.info("Seteando campana {0} como ESTADO_PAUSADA".format(self.id))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_PAUSADA
         self.save()
 
     def activar(self):
         """Setea la campaña como ESTADO_ACTIVA"""
-        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        logger.info(_("Seteando campana {0} como ESTADO_ACTIVA".format(self.id)))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_ACTIVA
         self.save()
 
     def remover(self):
         """Setea la campaña como ESTADO_BORRADA"""
-        logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
+        logger.info(_("Seteando campana {0} como ESTADO_BORRADA".format(self.id)))
         if self.type == Campana.TYPE_PREVIEW:
             # eliminamos el proceso que actualiza las conexiones de agentes a contactos
             # en la campaña
@@ -1004,7 +1003,7 @@ class Campana(models.Model):
 
     def finalizar(self):
         """Setea la campaña como ESTADO_FINALIZADA"""
-        logger.info("Seteando campana %s como ESTADO_FINALIZADA", self.id)
+        logger.info(_("Seteando campana {0} como ESTADO_FINALIZADA".format(self.id)))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_FINALIZADA
         if self.type == Campana.TYPE_PREVIEW:
@@ -1042,7 +1041,7 @@ class Campana(models.Model):
         """
         Setea la campaña como BORRADA
         """
-        logger.info("Seteando campana-->template %s como BORRADA", self.id)
+        logger.info(_("Seteando campana-->template {0} como BORRADA".format(self.id)))
         assert self.estado == Campana.ESTADO_TEMPLATE_ACTIVO
 
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
@@ -1055,7 +1054,7 @@ class Campana(models.Model):
         try:
             campos_contacto.remove('telefono')
         except ValueError:
-            logger.warning("La BD no tiene campo 'telefono'")
+            logger.warning(_("La BD no tiene campo 'telefono'"))
         return campos_contacto
 
     def establecer_valores_iniciales_agente_contacto(self):
@@ -1399,8 +1398,8 @@ class QueueMember(models.Model):
     id_campana = models.CharField(max_length=128)
 
     def __unicode__(self):
-        return "agente: {0} para la campana {1} ".format(
-            self.member.user.get_full_name(), self.queue_name)
+        return _("agente: {0} para la campana {1} ".format(
+            self.member.user.get_full_name(), self.queue_name))
 
     class Meta:
         db_table = 'queue_member_table'
@@ -1480,8 +1479,8 @@ class BaseDatosContactoManager(models.Manager):
                 estado=BaseDatosContacto.ESTADO_EN_DEFINICION).get(
                 pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro base datos en "
-                                      "estado ESTADO_EN_DEFINICION"))
+            raise(SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION")))
 
     def obtener_en_actualizada_para_editar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser editada.
@@ -1493,9 +1492,8 @@ class BaseDatosContactoManager(models.Manager):
             return self.filter(
                 estado__in=definicion).get(pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro base datos en "
-                                      "estado ESTADO_EN_DEFINICION o ACTULIZADA"
-                                      ))
+            raise(SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION o ACTULIZADA")))
 
     def obtener_definida_para_depurar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser
@@ -1507,8 +1505,8 @@ class BaseDatosContactoManager(models.Manager):
                 estado=BaseDatosContacto.ESTADO_DEFINIDA).get(
                 pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro base datos en "
-                                      "estado ESTADO_EN_DEFINICION"))
+            raise(SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION")))
 
 
 def upload_to(instance, filename):
@@ -1533,7 +1531,7 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['cant_col']
         except KeyError:
-            raise(ValueError("La cantidad de columnas no ha sido seteada"))
+            raise(ValueError(_("La cantidad de columnas no ha sido seteada")))
 
     @cantidad_de_columnas.setter
     def cantidad_de_columnas(self, cant):
@@ -1552,7 +1550,7 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['col_telefono']
         except KeyError:
-            raise(ValueError("No se ha seteado 'columna_con_telefono'"))
+            raise(ValueError(_("No se ha seteado 'columna_con_telefono'")))
 
     @columna_con_telefono.setter
     def columna_con_telefono(self, columna):
@@ -1683,8 +1681,8 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['prim_fila_enc']
         except KeyError:
-            raise(ValueError("No se ha seteado si primer "
-                             "fila es encabezado"))
+            raise(ValueError(_("No se ha seteado si primer "
+                               "fila es encabezado")))
 
     @primer_fila_es_encabezado.setter
     def primer_fila_es_encabezado(self, es_encabezado):
@@ -1702,9 +1700,9 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             datos = json.loads(datos_json)
         except Exception as e:
-            logger.exception("Error: {0} detectada al desserializar "
-                             "datos extras. Datos extras: '{1}'"
-                             "".format(e.message, datos_json))
+            logger.exception(_("Error: {0} detectada al desserializar "
+                               "datos extras. Datos extras: '{1}'"
+                               "".format(e.message, datos_json)))
             raise
 
         assert len(datos) == self.cantidad_de_columnas
@@ -1725,9 +1723,9 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             datos = json.loads(datos_json)
         except Exception as e:
-            logger.exception("Error: {0} detectada al desserializar "
-                             "datos extras. Datos extras: '{1}'"
-                             "".format(e.message, datos_json))
+            logger.exception(_("Error: {0} detectada al desserializar "
+                               "datos extras. Datos extras: '{1}'"
+                               "".format(e.message, datos_json)))
             raise
 
         # assert len(datos) == self.cantidad_de_columnas
@@ -1847,8 +1845,8 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
             try:
                 self._metadata = json.loads(bd.metadata)
             except Exception as e:
-                logger.exception("Error: {0} detectada al desserializar "
-                                 "metadata de la bd {1}".format(e.message, bd.id))
+                logger.exception(_("Error: {0} detectada al desserializar "
+                                   "metadata de la bd {1}".format(e.message, bd.id)))
                 raise
 
     # -----
@@ -1863,8 +1861,8 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
         try:
             self.bd.metadata = json.dumps(self._metadata)
         except Exception as e:
-            logger.exception("Error: {0} detectada al serializar "
-                             "metadata de la bd {1}".format(e.message, self.bd.id))
+            logger.exception(_("Error: {0} detectada al serializar "
+                               "metadata de la bd {1}".format(e.message, self.bd.id)))
             raise
 
 
@@ -1935,7 +1933,7 @@ class BaseDatosContacto(models.Model):
         """
         assert self.estado in (BaseDatosContacto.ESTADO_EN_DEFINICION,
                                BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA)
-        logger.info("Seteando base datos contacto %s como definida", self.id)
+        logger.info(_("Seteando base datos contacto {0} como definida".format(self.id)))
         self.sin_definir = False
 
         self.estado = self.ESTADO_DEFINIDA
@@ -2096,15 +2094,15 @@ class ContactoManager(models.Manager):
         try:
             return self.filter(bd_contacto=bd_contacto)
         except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con este "
-                                       "base de datos de contactos"))
+            raise (SuspiciousOperation(_("No se encontro contactos con este "
+                                         "base de datos de contactos")))
 
     def contactos_by_bds_contacto(self, bds_contacto):
         try:
             return self.filter(bd_contacto__in=bds_contacto)
         except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontraron contactos con esas "
-                                       "bases de datos de contactos"))
+            raise (SuspiciousOperation(_("No se encontraron contactos con esas "
+                                         "bases de datos de contactos")))
 
     # def contactos_by_bd_contacto_sin_duplicar(self, bd_contacto):
     #     try:
@@ -2169,8 +2167,8 @@ class MensajeRecibidoManager(models.Manager):
         try:
             return self.get(remitente=remitente, timestamp=timestamp)
         except MensajeRecibido.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro mensaje recibido con esa"
-                                       " fecha y remitente"))
+            raise (SuspiciousOperation(_("No se encontro mensaje recibido con esa"
+                                         " fecha y remitente")))
 
 
 class MensajeRecibido(models.Model):
@@ -2216,8 +2214,8 @@ class GrabacionManager(models.Manager):
         try:
             return self.filter(fecha=fecha)
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "fecha"))
+            raise (SuspiciousOperation(_("No se encontro contactos con esa "
+                                         "fecha")))
 
     def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
         fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
@@ -2225,8 +2223,8 @@ class GrabacionManager(models.Manager):
         try:
             return self.filter(fecha__range=(fecha_inicio, fecha_fin))
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con ese rango "
-                                       "de fechas"))
+            raise (SuspiciousOperation(_("No se encontro contactos con ese rango "
+                                         "de fechas")))
 
     def grabacion_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
         fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
@@ -2235,29 +2233,29 @@ class GrabacionManager(models.Manager):
             return self.filter(fecha__range=(fecha_inicio, fecha_fin),
                                campana__in=campanas).order_by('-fecha')
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con ese rango "
-                                       "de fechas"))
+            raise (SuspiciousOperation(_("No se encontro contactos con ese rango "
+                                         "de fechas")))
 
     def grabacion_by_tipo_llamada(self, tipo_llamada):
         try:
             return self.filter(tipo_llamada=tipo_llamada)
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "tipo llamada"))
+            raise (SuspiciousOperation(_("No se encontro contactos con esa "
+                                         "tipo llamada")))
 
     def grabacion_by_id_cliente(self, id_cliente):
         try:
             return self.filter(id_cliente__contains=id_cliente)
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "id cliente"))
+            raise (SuspiciousOperation(_("No se encontro contactos con esa "
+                                         "id cliente")))
 
     def grabacion_by_tel_cliente(self, tel_cliente):
         try:
             return self.filter(tel_cliente__contains=tel_cliente)
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "tel de cliente"))
+            raise (SuspiciousOperation(_("No se encontro contactos con esa "
+                                         "tel de cliente")))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
                             tel_cliente, agente, campana, campanas, marcadas, duracion):
@@ -2289,14 +2287,14 @@ class GrabacionManager(models.Manager):
             return self.values('campana', 'campana__nombre').annotate(
                 cantidad=Count('campana')).order_by('campana')
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro grabaciones "))
+            raise (SuspiciousOperation(_("No se encontro grabaciones ")))
 
     def obtener_count_agente(self):
         try:
             return self.values('agente_id').annotate(
                 cantidad=Count('agente_id')).order_by('agente_id')
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro grabaciones "))
+            raise (SuspiciousOperation(_("No se encontro grabaciones ")))
 
     def marcadas(self):
         marcaciones = GrabacionMarca.objects.values_list('uid', flat=True)
@@ -2375,8 +2373,8 @@ class AgendaManager(models.Manager):
         try:
             return self.filter(fecha=fecha_local(now()))
         except Agenda.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
-                                       "fecha"))
+            raise (SuspiciousOperation(_("No se encontro evenos en el dia de la "
+                                         "fecha")))
 
     def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
         eventos = self.filter()
@@ -2428,7 +2426,7 @@ class CalificacionClienteManager(models.Manager):
             return self.values('calificacion').annotate(
                 cantidad=Count('calificacion')).filter(opcion_calificacion__campana=campana)
         except CalificacionCliente.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro califacaciones "))
+            raise (SuspiciousOperation(_("No se encontro calificaciones ")))
 
     def obtener_calificaciones_gestion(self):
         """
@@ -2566,8 +2564,8 @@ class AgendaContactoManager(models.Manager):
         try:
             return self.filter(fecha=fecha_local(now()))
         except AgendaContacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
-                                       "fecha"))
+            raise SuspiciousOperation(_("No se encontraron eventos en el dia de la "
+                                        "fecha"))
 
     def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
         eventos = self.filter(tipo_agenda=AgendaContacto.TYPE_PERSONAL)
@@ -2715,10 +2713,8 @@ class AbstractActuacion(models.Model):
         if self.hora_desde and self.hora_hasta:
             if self.hora_desde >= self.hora_hasta:
                 raise ValidationError({
-                    'hora_desde': ["La hora desde debe ser\
-                        menor o igual a la hora hasta."],
-                    'hora_hasta': ["La hora hasta debe ser\
-                        mayor a la hora desde."],
+                    'hora_desde': [_("La hora 'desde' debe ser menor o igual a la hora 'hasta'.")],
+                    'hora_hasta': [_("La hora 'hasta' debe ser mayor a la hora 'desde'.")],
                 })
 
             conflicto = self.get_campana().actuacionesdialer.filter(
@@ -2728,10 +2724,8 @@ class AbstractActuacion(models.Model):
             )
             if any(conflicto):
                 raise ValidationError({
-                    'hora_desde': ["Ya esta cubierto el rango horario\
-                        en ese día semanal."],
-                    'hora_hasta': ["Ya esta cubierto el rango horario\
-                        en ese día semanal."],
+                    'hora_desde': [_("Ya esta cubierto el rango horario en ese día semanal.")],
+                    'hora_hasta': [_("Ya esta cubierto el rango horario ese día semanal.")],
                 })
 
 

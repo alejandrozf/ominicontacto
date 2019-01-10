@@ -274,9 +274,9 @@ class SincronizarPausaMixin(object):
                 message = (_(u"La pausa se ha guardado exitosamente."))
             messages.add_message(self.request, messages.SUCCESS, message)
         except RestablecerConfiguracionTelefonicaError, e:
-            message = ("Operación Errónea! "
-                       "No se realizo de manera correcta la sincronización de los  "
-                       "datos en asterisk según el siguiente error: {0}".format(e))
+            message = _("Operación Errónea! "
+                        "No se realizo de manera correcta la sincronización de los  "
+                        "datos en asterisk según el siguiente error: {0}".format(e))
             messages.add_message(self.request, messages.WARNING, message)
 
 
@@ -354,8 +354,8 @@ def node_view(request):
             context_instance=RequestContext(request)
         )
     if agente_profile.is_inactive:
-        message = ("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
-                   " su supervisor")
+        message = _("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
+                    " su supervisor")
         messages.warning(request, message)
         logout(request)
     return HttpResponseRedirect(reverse('login'))
@@ -531,7 +531,7 @@ def supervision_url_externa(request):
         else:
             url += "&es_admin=f"
         return redirect(url)
-    message = "Supervision: Funcion valida para usuario tipo supervisor!!!"
+    message = _("Supervision: Funcion valida para usuario tipo supervisor!!!")
     messages.warning(request, message)
     return HttpResponseRedirect(reverse('index'))
 

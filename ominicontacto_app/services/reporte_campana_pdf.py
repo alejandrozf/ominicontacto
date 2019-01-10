@@ -28,11 +28,14 @@ import os
 
 
 from django.conf import settings
-from ominicontacto_app.utiles import crear_archivo_en_media_root
+from django.utils.translation import ugettext as _
+
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
+
+from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 
 logger = logging.getLogger(__name__)
@@ -57,10 +60,10 @@ class ArchivoDeReportePDF(object):
         if self.ya_existe():
             # Esto puede suceder si en un intento previo de depuracion, el
             # proceso es abortado, y por lo tanto, el archivo puede existir.
-            logger.warn("ArchivoDeReportePDF: Ya existe archivo CSV de "
-                        "reporte para la campana %s. Archivo: %s. "
-                        "El archivo sera sobreescrito", self._campana.pk,
-                        self.ruta)
+            logger.warn(_("ArchivoDeReportePDF: Ya existe archivo CSV de "
+                          "reporte para la campana {0}. Archivo: {1}. "
+                          "El archivo sera sobreescrito".format(self._campana.pk,
+                                                                self.ruta)))
 
         crear_archivo_en_media_root(
             self.nombre_del_directorio,
@@ -122,7 +125,7 @@ class ArchivoDeReportePDF(object):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75 * inch, 740, u"Cantidad por calificacion")
+        pdf.drawString(0.75 * inch, 740, _("Cantidad por calificacion"))
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
@@ -157,7 +160,7 @@ class ArchivoDeReportePDF(object):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75 * inch, 740, u"Cantidad de llamados no atendidos")
+        pdf.drawString(0.75 * inch, 740, _("Cantidad de llamados no atendidos"))
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
@@ -222,6 +225,6 @@ class ReporteCampanaPDFService(object):
             return archivo_de_reporte.url_descarga
 
         # Esto no debería suceder.
-        logger.error("obtener_url_reporte_pdf_descargar(): NO existe archivo"
-                     " PDF de descarga para la campana %s", campana.pk)
+        logger.error(_("obtener_url_reporte_pdf_descargar(): NO existe archivo"
+                       " PDF de descarga para la campana {0}".format(campana.pk)))
         assert os.path.exists(archivo_de_reporte.url_descarga)

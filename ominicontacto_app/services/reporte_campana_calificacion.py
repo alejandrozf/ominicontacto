@@ -59,10 +59,9 @@ class ArchivoDeReporteCsv(object):
         if self.ya_existe():
             # Esto puede suceder si en un intento previo de depuracion, el
             # proceso es abortado, y por lo tanto, el archivo puede existir.
-            logger.warn("ArchivoDeReporteCsv: Ya existe archivo CSV de "
-                        "reporte para la campana %s. Archivo: %s. "
-                        "El archivo sera sobreescrito", self._campana.pk,
-                        self.ruta)
+            logger.warn(_("ArchivoDeReporteCsv: Ya existe archivo CSV de "
+                          "reporte para la campana {0}. Archivo: {1}. "
+                          "El archivo sera sobreescrito".format(self._campana.pk, self.ruta)))
 
         crear_archivo_en_media_root(
             self.nombre_del_directorio,
@@ -75,16 +74,16 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Fecha-Hora Contacto")
-            encabezado.append("Agente")
-            encabezado.append("Tel status")
-            encabezado.append("Tel contactado")
+            encabezado.append(_("Fecha-Hora Contacto"))
+            encabezado.append(_("Agente"))
+            encabezado.append(_("Tel status"))
+            encabezado.append(_("Tel contactado"))
             nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
                 encabezado.append(nombre)
-            encabezado.append("Calificado")
-            encabezado.append("Observaciones")
-            encabezado.append("base de datos")
+            encabezado.append(_("Calificado"))
+            encabezado.append(_("Observaciones"))
+            encabezado.append(_("base de datos"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -102,7 +101,7 @@ class ArchivoDeReporteCsv(object):
                 calificacion_fecha_local = localtime(calificacion.fecha)
                 lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append(calificacion.agente)
-                lista_opciones.append("Contactado")
+                lista_opciones.append(_("Contactado"))
                 lista_opciones.append(calificacion.contacto.telefono)
                 datos = json.loads(calificacion.contacto.datos)
                 for dato in datos:
@@ -139,6 +138,6 @@ class ReporteCampanaService(object):
             return archivo_de_reporte.url_descarga
 
         # Esto no debería suceder.
-        logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para la campana %s", campana.pk)
+        logger.error(_("obtener_url_reporte_csv_descargar(): NO existe archivo"
+                       " CSV de descarga para la campana {0}".format(campana.pk)))
         assert os.path.exists(archivo_de_reporte.url_descarga)

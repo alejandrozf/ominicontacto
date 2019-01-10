@@ -1303,9 +1303,9 @@ class ArchivoDeAudioForm(forms.ModelForm):
             "audio_original": forms.FileInput(attrs={'class': 'form-control'}),
         }
         help_texts = {
-            'audio_original': """Seleccione el archivo de audio que desea para
+            'audio_original': _("""Seleccione el archivo de audio que desea para
             la Campaña. Si ya existe uno y guarda otro, el audio será
-            reemplazado.""",
+            reemplazado."""),
         }
 
     def __init__(self, *args, **kwargs):

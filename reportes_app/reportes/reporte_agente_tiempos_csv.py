@@ -29,6 +29,8 @@ import os
 import datetime
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
 
@@ -57,10 +59,10 @@ class ArchivoDeReporteCsv(object):
         if self.ya_existe():
             # Esto puede suceder si en un intento previo de depuracion, el
             # proceso es abortado, y por lo tanto, el archivo puede existir.
-            logger.warn("ArchivoDeReporteCsv: Ya existe archivo CSV de "
-                        "reporte para la campana %s. Archivo: %s. "
-                        "El archivo sera sobreescrito", self._nombre_reporte,
-                        self.ruta)
+            logger.warn(_("ArchivoDeReporteCsv: Ya existe archivo CSV de "
+                          "reporte para la campana {0}. Archivo: {1}. "
+                          "El archivo sera sobreescrito".format(self._nombre_reporte,
+                                                                self.ruta)))
 
         crear_archivo_en_media_root(
             self.nombre_del_directorio,
@@ -73,16 +75,16 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Agente")
-            encabezado.append("Tiempo de session")
-            encabezado.append("Tiempo de pausa")
-            encabezado.append("Tiempos en llamada")
-            encabezado.append("Porcentaje en llamada")
-            encabezado.append("Porcentaje en pausa")
-            encabezado.append("Porcentaje en espera")
-            encabezado.append("Cantidad de llamadas procesadas")
-            encabezado.append("Tiempo promedio de llamadas")
-            encabezado.append("Cantidad de intentos fallidos")
+            encabezado.append(_("Agente"))
+            encabezado.append(_("Tiempo de sesion"))
+            encabezado.append(_("Tiempo de pausa"))
+            encabezado.append(_("Tiempos en llamada"))
+            encabezado.append(_("Porcentaje en llamada"))
+            encabezado.append(_("Porcentaje en pausa"))
+            encabezado.append(_("Porcentaje en espera"))
+            encabezado.append(_("Cantidad de llamadas procesadas"))
+            encabezado.append(_("Tiempo promedio de llamadas"))
+            encabezado.append(_("Cantidad de intentos fallidos"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -138,10 +140,10 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Agente")
-            encabezado.append("Pausa")
-            encabezado.append("Tipo de pausa")
-            encabezado.append("Tiempo de pausa")
+            encabezado.append(_("Agente"))
+            encabezado.append(_("Pausa"))
+            encabezado.append(_("Tipo de pausa"))
+            encabezado.append(_("Tiempo de pausa"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -173,10 +175,10 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Agente")
-            encabezado.append("Cola")
-            encabezado.append("Tiempo de llamadas")
-            encabezado.append("Cantidad de llamadas procesadas")
+            encabezado.append(_("Agente"))
+            encabezado.append(_("Cola"))
+            encabezado.append(_("Tiempo de llamadas"))
+            encabezado.append(_("Cantidad de llamadas procesadas"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -208,13 +210,13 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Agente")
-            encabezado.append("Total")
-            encabezado.append("ICS")
-            encabezado.append("DIALER")
-            encabezado.append("INBOUND")
-            encabezado.append("MANUAL")
-            encabezado.append("TRANSFERIDAS")
+            encabezado.append(_("Agente"))
+            encabezado.append(_("Total"))
+            encabezado.append(_("ICS"))
+            encabezado.append(_("DIALER"))
+            encabezado.append(_("INBOUND"))
+            encabezado.append(_("MANUAL"))
+            encabezado.append(_("TRANSFERIDAS"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -279,6 +281,6 @@ class ReporteAgenteCSVService(object):
             return archivo_de_reporte.url_descarga
 
         # Esto no debería suceder.
-        logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para la campana %s", nombre_reporte)
+        logger.error(_("obtener_url_reporte_csv_descargar(): NO existe archivo"
+                       " CSV de descarga para la campana {0}".format(nombre_reporte)))
         assert os.path.exists(archivo_de_reporte.url_descarga)

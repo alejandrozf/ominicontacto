@@ -1,0 +1,825 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-08 16:17-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: configuracion_telefonia_app/forms.py:62
+msgid "Patrón de discado"
+msgstr "Dial pattern"
+
+#: configuracion_telefonia_app/forms.py:63
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:33
+msgid "Prefijo"
+msgstr "Prefix"
+
+#: configuracion_telefonia_app/forms.py:71
+#: configuracion_telefonia_app/forms.py:271
+msgid "En segundos"
+msgstr "In seconds"
+
+#: configuracion_telefonia_app/forms.py:96
+msgid "Debe ingresar al menos un patrón de discado"
+msgstr "At least a dial pattern is required"
+
+#: configuracion_telefonia_app/forms.py:104
+msgid "Los patrones de discado deben ser diferentes"
+msgstr "Dial patterns must be different"
+
+#: configuracion_telefonia_app/forms.py:143
+msgid "Debe ingresar al menos un troncal"
+msgstr "At least a trunk is required"
+
+#: configuracion_telefonia_app/forms.py:149
+msgid "Los troncales deben ser distintos"
+msgstr "Trunks must be different"
+
+#: configuracion_telefonia_app/forms.py:194
+#: configuracion_telefonia_app/forms.py:421
+#: configuracion_telefonia_app/forms.py:462
+msgid "Tipo de destino"
+msgstr "Destination type"
+
+#: configuracion_telefonia_app/forms.py:195
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:32
+msgid "Número DID"
+msgstr "DID number"
+
+#: configuracion_telefonia_app/forms.py:219
+msgid "Archivo de OML"
+msgstr "OML file"
+
+#: configuracion_telefonia_app/forms.py:219
+msgid "Archivo externo"
+msgstr "External file"
+
+#: configuracion_telefonia_app/forms.py:229
+msgid "Destino time out:"
+msgstr "Time out destination"
+
+#: configuracion_telefonia_app/forms.py:232
+msgid "Tipo de destino para time out:"
+msgstr "Time out destination type"
+
+#: configuracion_telefonia_app/forms.py:239
+msgid "Destino inválido:"
+msgstr "Invalid destination:"
+
+#: configuracion_telefonia_app/forms.py:242
+msgid "Tipo de destino para destino inválido:"
+msgstr "Invalid destination type:"
+
+#: configuracion_telefonia_app/forms.py:326
+msgid "Debe escoger un audio como archivo externo"
+msgstr "You must choose an audio file from an external source"
+
+#: configuracion_telefonia_app/forms.py:329
+#: configuracion_telefonia_app/forms.py:337
+msgid "Debe escoger un archivo de OML"
+msgstr "You must choose an OML file"
+
+#: configuracion_telefonia_app/forms.py:412
+msgid "Los valores de DTMF deben ser distintos"
+msgstr "DTMF values must be different"
+
+#: configuracion_telefonia_app/forms.py:428
+msgid "DTMF"
+msgstr "DTMF"
+
+#: configuracion_telefonia_app/forms.py:429
+#: configuracion_telefonia_app/forms.py:469
+msgid "Destino"
+msgstr "Destination"
+
+#: configuracion_telefonia_app/forms.py:448
+msgid "El valor del DTMF debe ser un dígito o alguno de: #, -, *"
+msgstr "DTMF value must be a digit number or a character like: #, -, *"
+
+#: configuracion_telefonia_app/forms.py:504
+msgid "Los destinos deben ser distintos"
+msgstr "Destinations must be different"
+
+#: configuracion_telefonia_app/models.py:150
+msgid "Lunes"
+msgstr "Monday"
+
+#: configuracion_telefonia_app/models.py:151
+msgid "Martes"
+msgstr "Tuesday"
+
+#: configuracion_telefonia_app/models.py:152
+msgid "Miércoles"
+msgstr "Wednesday"
+
+#: configuracion_telefonia_app/models.py:153
+msgid "Jueves"
+msgstr "Thursday"
+
+#: configuracion_telefonia_app/models.py:154
+msgid "Viernes"
+msgstr "Friday"
+
+#: configuracion_telefonia_app/models.py:155
+msgid "Sábado"
+msgstr "Saturday"
+
+#: configuracion_telefonia_app/models.py:156
+msgid "Domingo"
+msgstr "Sunday"
+
+#: configuracion_telefonia_app/models.py:162
+msgid "Enero"
+msgstr "January"
+
+#: configuracion_telefonia_app/models.py:163
+msgid "Febrero"
+msgstr "February"
+
+#: configuracion_telefonia_app/models.py:164
+msgid "Marzo"
+msgstr "March"
+
+#: configuracion_telefonia_app/models.py:165
+msgid "Abril"
+msgstr "April"
+
+#: configuracion_telefonia_app/models.py:166
+msgid "Mayo"
+msgstr "May"
+
+#: configuracion_telefonia_app/models.py:167
+msgid "Junio"
+msgstr "June"
+
+#: configuracion_telefonia_app/models.py:168
+msgid "Julio"
+msgstr "July"
+
+#: configuracion_telefonia_app/models.py:169
+msgid "Agosto"
+msgstr "August"
+
+#: configuracion_telefonia_app/models.py:170
+msgid "Septiembre"
+msgstr "September"
+
+#: configuracion_telefonia_app/models.py:171
+msgid "Octubre"
+msgstr "October"
+
+#: configuracion_telefonia_app/models.py:172
+msgid "Noviembre"
+msgstr "November"
+
+#: configuracion_telefonia_app/models.py:173
+msgid "Diciembre"
+msgstr "December"
+
+#: configuracion_telefonia_app/models.py:177
+msgid "Tiempo inicio"
+msgstr "Initial time"
+
+#: configuracion_telefonia_app/models.py:178
+msgid "Tiempo final"
+msgstr "End time"
+
+#: configuracion_telefonia_app/models.py:180
+msgid "Día de la semana inicio"
+msgstr "Initial week day"
+
+#: configuracion_telefonia_app/models.py:182
+msgid "Día de la semana final"
+msgstr "End week day"
+
+#: configuracion_telefonia_app/models.py:184
+msgid "Día del mes inicio"
+msgstr "Initial month day"
+
+#: configuracion_telefonia_app/models.py:186
+msgid "Día del mes final"
+msgstr "End month day"
+
+#: configuracion_telefonia_app/models.py:188
+msgid "Mes inicio"
+msgstr "Initial month"
+
+#: configuracion_telefonia_app/models.py:190
+msgid "Mes final"
+msgstr "End month"
+
+#: configuracion_telefonia_app/models.py:267
+msgid "Campaña entrante"
+msgstr "Inbound campaign"
+
+#: configuracion_telefonia_app/models.py:268
+msgid "Validación de fecha/hora"
+msgstr "Time Conditions"
+
+#: configuracion_telefonia_app/models.py:269
+msgid "IVR"
+msgstr "IVR"
+
+#: configuracion_telefonia_app/models.py:270
+#: configuracion_telefonia_app/models.py:382
+msgid "HangUp"
+msgstr "HangUp"
+
+#: configuracion_telefonia_app/models.py:280
+#, python-brace-format
+msgid "{0}: {1}"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:293
+msgid "Error: El nodo HangUp es único."
+msgstr "Error: HangUp node is unique."
+
+#: configuracion_telefonia_app/models.py:334
+#, python-brace-format
+msgid "Desde nodo {0} a nodo {1}"
+msgstr "From node {0} to node {1}"
+
+#: configuracion_telefonia_app/models.py:354
+msgid "Inglés"
+msgstr "English"
+
+#: configuracion_telefonia_app/models.py:355
+msgid "Español"
+msgstr "Spanish"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:85
+#, python-brace-format
+msgid "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al"
+msgstr "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0}"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:86
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:174
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:185
+msgid "intentar create_config_asterisk()"
+msgstr "trying to call create_config_asterisk()"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:90
+msgid ""
+"Hubo un inconveniente al crear el archivo de configuracion de rutas de "
+"Asterisk. "
+msgstr ""
+"An error ocurred when trying to create routing configuration file"
+
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:107
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:120
+#, python-brace-format
+msgid "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al "
+msgstr "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0}"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:108
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:208
+msgid "intentar regenerar_familys_rutas()"
+msgstr "trying to call regenerar_familys_rutas()"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:110
+msgid ""
+"Hubo un inconveniente al insertar los registros de las rutas en la base de "
+"datos de Asterisk. "
+msgstr ""
+"An error ocurred when trying to insert registers in the routing database"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:121
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:134
+msgid "intentar delete_family_ruta()"
+msgstr "trying to call delete_family_ruta()"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:123
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:136
+msgid ""
+"Hubo un inconveniente al eliminar los registros de las rutas en la base de "
+"datos de Asterisk. "
+msgstr ""
+"An error ocurred when trying to remove registers from routing database"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:173
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:184
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:207
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:220
+#, python-brace-format
+msgid "SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al "
+msgstr "SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0}"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:177
+msgid ""
+"Hubo un inconveniente al crear el archivo de configuracion de trunks de "
+"Asterisk. "
+msgstr ""
+"An error ocurred when trying to create trunk configuration file"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:188
+msgid ""
+"Hubo un inconveniente al crear el archivo de configuracion de trunks "
+"registration de Asterisk. "
+msgstr ""
+"An error ocurred when trying to create trunk configuration file"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:210
+msgid ""
+"Hubo un inconveniente al insertar los registros del troncal en la base de "
+"datos de Asterisk. "
+msgstr ""
+"An error ocurred when trying to insert trunk registers on database"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:221
+msgid "intentar delete_family_trunk()"
+msgstr "trying to call delete_family_trunk()"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:223
+msgid ""
+"Hubo un inconveniente al eliminar los registros de los troncales en la base "
+"de datos de Asterisk. "
+msgstr ""
+"An error ocurred when trying to remove trunk registers on database"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:251
+#, python-brace-format
+msgid "Error {0} en la families {1} intentar regenerar_family()"
+msgstr "Error {0} on families {1} trying to call regenerar_family()"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:253
+#, python-brace-format
+msgid ""
+"Hubo un inconveniente al insertar los registros de la family {0} la base de "
+"datos de Asterisk. "
+msgstr ""
+"An error ocurred when trying to insert family {0} registers on database"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:264
+#, python-brace-format
+msgid "Error {0} en la families {1} alintentar delete_family()"
+msgstr "Error {0} in families {1} when trying to call delete_family()"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:266
+#, python-brace-format
+msgid ""
+"Hubo un inconveniente al eliminar los registros de la families {0} la base de "
+"datos de Asterisk. "
+msgstr ""
+"An error ocurred when trying to delete the family {0} registers from database"
+
+#: configuracion_telefonia_app/templates/content_ivr.html:47
+#: configuracion_telefonia_app/templates/ivr.html:67
+msgid "Opciones de destinos"
+msgstr "Destination options"
+
+#: configuracion_telefonia_app/templates/content_ivr.html:83
+#: configuracion_telefonia_app/templates/grupo_horario.html:96
+#: configuracion_telefonia_app/templates/ivr.html:113
+#: configuracion_telefonia_app/templates/ruta_entrante.html:36
+#: configuracion_telefonia_app/templates/ruta_saliente.html:137
+#: configuracion_telefonia_app/templates/validacion_fecha_hora.html:111
+msgid "Guardar"
+msgstr "Save"
+
+#: configuracion_telefonia_app/templates/crear_grupo_horario.html:25
+msgid "Crear grupo horario"
+msgstr "Create Group of Hours"
+
+#: configuracion_telefonia_app/templates/crear_ivr.html:25
+msgid "Crear IVR"
+msgstr "Create IVR"
+
+#: configuracion_telefonia_app/templates/crear_ruta_entrante.html:25
+msgid "Creación ruta entrante"
+msgstr "Inbound route creation"
+
+#: configuracion_telefonia_app/templates/crear_ruta_saliente.html:24
+msgid "Creación ruta saliente"
+msgstr "Outbound route creation"
+
+#: configuracion_telefonia_app/templates/crear_validacion_fecha_hora.html:25
+msgid "Crear Validación Horaria"
+msgstr "Time Condition creation"
+
+#: configuracion_telefonia_app/templates/delete_troncal_sip.html:26
+msgid "Troncal "
+msgstr "Trunk "
+
+#: configuracion_telefonia_app/templates/delete_troncal_sip.html:27
+msgid "¿Esta seguro que desea eliminar este troncal?"
+msgstr "Are you sure you want to delete this trunk?"
+
+#: configuracion_telefonia_app/templates/delete_troncal_sip.html:29
+#: configuracion_telefonia_app/templates/eliminar_grupo_horario.html:29
+#: configuracion_telefonia_app/templates/eliminar_ivr.html:29
+#: configuracion_telefonia_app/templates/eliminar_ruta_entrante.html:29
+#: configuracion_telefonia_app/templates/eliminar_validacion_fecha_hora.html:29
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:42
+#: configuracion_telefonia_app/templates/lista_ivrs.html:43
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:47
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:45
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:42
+msgid "Eliminar"
+msgstr "Delete"
+
+#: configuracion_telefonia_app/templates/delete_troncal_sip.html:31
+#: configuracion_telefonia_app/templates/eliminar_grupo_horario.html:31
+#: configuracion_telefonia_app/templates/eliminar_ivr.html:31
+#: configuracion_telefonia_app/templates/eliminar_ruta_entrante.html:31
+#: configuracion_telefonia_app/templates/eliminar_validacion_fecha_hora.html:31
+msgid "Cancelar"
+msgstr "Cancel"
+
+#: configuracion_telefonia_app/templates/editar_grupo_horario.html:25
+msgid "Editar grupo horario"
+msgstr "Edit Group of Hours"
+
+#: configuracion_telefonia_app/templates/editar_ivr.html:25
+msgid "Editar IVR"
+msgstr "Edit IVR"
+
+#: configuracion_telefonia_app/templates/editar_ruta_entrante.html:25
+msgid "Editar ruta entrante"
+msgstr "Edit inbound route"
+
+#: configuracion_telefonia_app/templates/editar_ruta_saliente.html:24
+msgid "Modificación ruta saliente"
+msgstr "Edit outbound route"
+
+#: configuracion_telefonia_app/templates/editar_validacion_fecha_hora.html:25
+msgid "Editar Validación Horaria"
+msgstr "Edit Time Condition"
+
+#: configuracion_telefonia_app/templates/eliminar_grupo_horario.html:26
+msgid "Grupo horario: "
+msgstr "Group of Hours:"
+
+#: configuracion_telefonia_app/templates/eliminar_grupo_horario.html:27
+msgid "¿Esta seguro que desea eliminar este grupo horario?"
+msgstr "Are you sure you want to delete this Group of Hours?"
+
+#: configuracion_telefonia_app/templates/eliminar_ivr.html:26
+msgid "IVR "
+msgstr "IVR "
+
+#: configuracion_telefonia_app/templates/eliminar_ivr.html:27
+msgid "¿Esta seguro que desea eliminar este IVR?"
+msgstr "Are you sure you want to delete this IVR?"
+
+#: configuracion_telefonia_app/templates/eliminar_ruta_entrante.html:26
+msgid "Ruta entrante "
+msgstr "Inbound route "
+
+#: configuracion_telefonia_app/templates/eliminar_ruta_entrante.html:27
+msgid "¿Esta seguro que desea eliminar esta ruta entrante?"
+msgstr "Are you sure you want to delete this Inbound Route"
+
+#: configuracion_telefonia_app/templates/eliminar_ruta_saliente.html:25
+msgid "Eliminar Ruta Saliente"
+msgstr "Delete Outbound route"
+
+#: configuracion_telefonia_app/templates/eliminar_ruta_saliente.html:29
+msgid ""
+"Al eliminar la ruta saliente los siguientes Troncales Sip quedarán sin ser "
+"usados por rutas Salientes"
+msgstr ""
+"If you remove this outbound route the following SIP trunks will be orphans"
+
+#: configuracion_telefonia_app/templates/eliminar_ruta_saliente.html:36
+msgid "¿Está seguro que quiere eliminar la ruta saliente:"
+msgstr "Are you sure you want to delete this Outbound Route?"
+
+#: configuracion_telefonia_app/templates/eliminar_ruta_saliente.html:37
+msgid "Confirmar"
+msgstr "Confirm"
+
+#: configuracion_telefonia_app/templates/eliminar_validacion_fecha_hora.html:26
+msgid "Validación Fecha Hora "
+msgstr "Time Condition"
+
+#: configuracion_telefonia_app/templates/eliminar_validacion_fecha_hora.html:27
+msgid "¿Esta seguro que desea eliminar esta Validación Fecha Hora?"
+msgstr "Are you sure you want to delete this Time Condition?"
+
+#: configuracion_telefonia_app/templates/grupo_horario.html:63
+msgid "Condiciones de tiempo"
+msgstr "Time conditions"
+
+#: configuracion_telefonia_app/templates/ivr_fields.html:30
+msgid "Sección general"
+msgstr "General section"
+
+#: configuracion_telefonia_app/templates/ivr_fields.html:73
+msgid "Configuración time out"
+msgstr "Time out configuration"
+
+#: configuracion_telefonia_app/templates/ivr_fields.html:135
+msgid "Configuración destino inválido"
+msgstr "Invalid destination configuration"
+
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:25
+msgid "Grupos horarios"
+msgstr "Group of Hours"
+
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:31
+#: configuracion_telefonia_app/templates/lista_ivrs.html:32
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:30
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:30
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:30
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:31
+msgid "ID"
+msgstr "ID"
+
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:32
+#: configuracion_telefonia_app/templates/lista_ivrs.html:33
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:31
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:31
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:31
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:32
+msgid "Nombre"
+msgstr "Name"
+
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:48
+msgid "No hay grupos horarios configurados"
+msgstr "There are no groups of hours configured"
+
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:55
+msgid "Agregar grupo horario"
+msgstr "Add Group of Hours"
+
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:62
+#: configuracion_telefonia_app/templates/lista_ivrs.html:63
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:65
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:63
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:63
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:62
+msgid "Anterior"
+msgstr "Previous"
+
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:68
+#: configuracion_telefonia_app/templates/lista_ivrs.html:69
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:71
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:68
+#, python-format
+msgid ""
+"\n"
+"                    Página %(page_number)s de %(num_pages)s\n"
+"                "
+msgstr ""
+"\n"
+"                    Page %(page_number)s of %(num_pages)s\n"
+"                "
+
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:77
+#: configuracion_telefonia_app/templates/lista_ivrs.html:78
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:80
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:78
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:76
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:77
+msgid "Siguiente"
+msgstr "Next"
+
+#: configuracion_telefonia_app/templates/lista_ivrs.html:25
+msgid "IVRs"
+msgstr "IVRs"
+
+#: configuracion_telefonia_app/templates/lista_ivrs.html:49
+msgid "No hay IVRs configurados"
+msgstr "There are no IVRs configured"
+
+#: configuracion_telefonia_app/templates/lista_ivrs.html:56
+msgid "Agregar ivr"
+msgstr "Add IVR"
+
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:25
+msgid "Rutas Entrantes"
+msgstr "Inbound Routes"
+
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:34
+msgid "Idioma"
+msgstr "Language"
+
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:53
+msgid "No hay rutas entrantes configuradas"
+msgstr "There are no inbound routes configured"
+
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:58
+msgid "Agregar ruta entrante"
+msgstr "Add inbound route"
+
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:25
+msgid "Rutas Salientes"
+msgstr "Outbound Routes"
+
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:32
+msgid "Tiempo ring"
+msgstr "Ringing time"
+
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:33
+msgid "Opciones de discado"
+msgstr "Dial options"
+
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:51
+msgid "No hay rutas salientes configuradas"
+msgstr "There are no outbound routes configured"
+
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:56
+msgid "Agregar ruta saliente"
+msgstr "Add outbound route"
+
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:69
+#, python-format
+msgid ""
+"\n"
+"                Página %(page_number)s de %(num_pages)s\n"
+"            "
+msgstr ""
+"\n"
+"                Page %(page_number)s of %(num_pages)s\n"
+"            "
+
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:25
+msgid "Troncales SIP"
+msgstr "SIP trunks"
+
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:32
+msgid "Caller ID"
+msgstr ""
+
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:33
+msgid "Canales Máximos"
+msgstr "Maximum number of channels"
+
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:51
+msgid "No hay Troncales SIP configuradas"
+msgstr "There are no SIP trunks configured"
+
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:56
+msgid "Agregar"
+msgstr "Add"
+
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:69
+msgid "Pagina"
+msgstr "Page"
+
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:69
+msgid "de"
+msgstr "of"
+
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:25
+msgid "Validaciones Horarias"
+msgstr "Time Conditions"
+
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:48
+msgid "No hay validaciones horarias configurados"
+msgstr "There are no time conditions configured"
+
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:55
+msgid "Agregar validación horaria"
+msgstr "Add Time Condition"
+
+#: configuracion_telefonia_app/templates/ruta_entrante.html:44
+msgid "Adicionar nuevo"
+msgstr "Add new"
+
+#: configuracion_telefonia_app/templates/ruta_saliente.html:65
+msgid "Patrones de discado"
+msgstr "Dial patterns"
+
+#: configuracion_telefonia_app/templates/ruta_saliente.html:107
+msgid "Secuencia de troncales"
+msgstr "Trunks sequence"
+
+#: configuracion_telefonia_app/templates/validacion_fecha_hora.html:71
+msgid "Destino si cumple la condición de tiempo"
+msgstr "Destination if time condition matches"
+
+#: configuracion_telefonia_app/templates/validacion_fecha_hora.html:88
+msgid "Destino si NO cumple la condición de tiempo"
+msgstr "Destination if time condition does not match"
+
+#: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:65
+#: configuracion_telefonia_app/views.py:655
+msgid "Se ha eliminado el Grupo Horario."
+msgstr "Group of Hours removed."
+
+#: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:80
+#: configuracion_telefonia_app/views.py:647
+msgid ""
+"No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora"
+msgstr ""
+"Cannot remove a Group of Hours being in use by a Time Condition"
+
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:462
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:474
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:487
+#: utiles_globales.py:32
+msgid "Archivos permitidos: .wav"
+msgstr "Allowed files: .wav"
+
+#: configuracion_telefonia_app/tests/tests_rutas_salientes.py:98
+#: configuracion_telefonia_app/views.py:352
+msgid "Se ha eliminado la Ruta Saliente."
+msgstr "Outbound route removed"
+
+#: configuracion_telefonia_app/tests/tests_rutas_salientes.py:113
+#: configuracion_telefonia_app/views.py:349
+msgid "No se ha podido eliminar la Ruta Saliente."
+msgstr "Unable to remove Outbound route"
+
+#: configuracion_telefonia_app/views.py:71
+#: configuracion_telefonia_app/views.py:86
+#: configuracion_telefonia_app/views.py:100
+#: configuracion_telefonia_app/views.py:114
+#: configuracion_telefonia_app/views.py:127
+#: configuracion_telefonia_app/views.py:142
+#: configuracion_telefonia_app/views.py:160
+#: configuracion_telefonia_app/views.py:179
+#: configuracion_telefonia_app/views.py:410
+#: configuracion_telefonia_app/views.py:589
+#: configuracion_telefonia_app/views.py:643
+#: configuracion_telefonia_app/views.py:798
+#, python-brace-format
+msgid "<strong>¡Cuidado!</strong> con el siguiente error: {0} ."
+msgstr "<strong>Warning!</strong> with the following error: {0} ."
+
+#: configuracion_telefonia_app/views.py:230
+msgid ""
+"No se puede eliminar un troncal que está siendo usado en una rutasaliente"
+msgstr ""
+"You cannot delete a trunk being in use by an Outbound route"
+
+#: configuracion_telefonia_app/views.py:243
+msgid "Troncal Sip eliminado con éxito"
+msgstr "SIP trunk deleted successfully"
+
+#: configuracion_telefonia_app/views.py:290
+msgid "Ruta saliente creada con éxito"
+msgstr "Outbound route created successfully"
+
+#: configuracion_telefonia_app/views.py:303
+msgid "Ruta saliente modificada con éxito"
+msgstr "Outbound route updated successfully"
+
+#: configuracion_telefonia_app/views.py:418
+msgid "Se ha eliminado la Ruta Entrante."
+msgstr "Inbound route was removed"
+
+#: configuracion_telefonia_app/views.py:457
+msgid "Se ha creado el IVR con éxito"
+msgstr "IVR created successfully"
+
+#: configuracion_telefonia_app/views.py:504
+msgid "Se ha modificado el IVR con éxito"
+msgstr "IVR updated successfully"
+
+#: configuracion_telefonia_app/views.py:605
+msgid "Se ha creado el grupo horario con éxito"
+msgstr "Group of Hours created successfully"
+
+#: configuracion_telefonia_app/views.py:619
+msgid "Se ha modificado el grupo horario con éxito"
+msgstr "Group of Hours updated successfully"
+
+#: configuracion_telefonia_app/views.py:684
+msgid "Se ha creado la validacion horaria con éxito"
+msgstr "Time Condition created successfully"
+
+#: configuracion_telefonia_app/views.py:720
+msgid "Se ha modificado la validacion horaria con éxito"
+msgstr "Time Condition updated successfully"
+
+#: configuracion_telefonia_app/views.py:756
+msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
+msgstr "You cannot delete an object that is current destination in a call flow"
+
+#: configuracion_telefonia_app/views.py:757
+msgid "Se ha eliminado el Nodo."
+msgstr "Node deleted"
+
+#: configuracion_telefonia_app/views.py:818
+msgid "No se puede eliminar un IVR que es destino en un flujo de llamada."
+msgstr "You cannot delete an IVR that is current destination in a call flow"
+
+#: configuracion_telefonia_app/views.py:819
+msgid "Se ha eliminado el IVR."
+msgstr "IVR deleted"
+
+#: configuracion_telefonia_app/views.py:827
+msgid ""
+"No se puede eliminar una Validación Fecha Hora mientras sea destino en un "
+"flujo de llamada."
+msgstr ""
+"You cannot delete a Time Condition that is current destination in a call flow"
+
+#: configuracion_telefonia_app/views.py:829
+msgid "Se ha eliminado la Validación Fecha Hora."
+msgstr "Time Condition deleted"

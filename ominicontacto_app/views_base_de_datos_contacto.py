@@ -34,6 +34,8 @@ from django.views.generic.edit import (
 )
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
     OmlParserMaxRowError, OmlDepuraBaseDatoContactoError,
@@ -335,7 +337,7 @@ class DefineBaseDatosContactoView(UpdateView):
         error = None
 
         if lista_columnas_encabezado[0] != 'telefono':
-            error = "El nombre de la primera columna debe ser telefono"
+            error = _("El nombre de la primera columna debe ser telefono")
 
         if error:
             return self.form_invalid(estructura_archivo,
@@ -463,10 +465,10 @@ class DepuraBaseDatosContactoView(DeleteView):
         success_url = self.get_success_url()
 
         if self.object.verifica_en_uso():
-            message = """<strong>¡Cuidado!</strong>
+            message = _("""<strong>¡Cuidado!</strong>
             La Base Datos Contacto que intenta depurar esta siendo utilizada
             por alguna campaña. No se llevará a cabo la depuración la misma
-            mientras esté siendo utilizada."""
+            mientras esté siendo utilizada.""")
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -651,8 +653,8 @@ class ActualizaBaseDatosContactoView(UpdateView):
         for columna_base, columna_csv in zip(metadata.nombres_de_columnas,
                                              lista_columnas_encabezado):
             if columna_base != columna_csv:
-                error = "El nombre de la columna debe ser {0} en vez de {1}".\
-                    format(columna_base, columna_csv)
+                error = _("El nombre de la columna debe ser {0} en vez de {1}".
+                          format(columna_base, columna_csv))
 
         if error:
             return self.form_invalid(estructura_archivo,

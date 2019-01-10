@@ -533,12 +533,12 @@ class EstadisticasService():
         estadisticas = self._calcular_estadisticas(campana, fecha_inferior, fecha_superior)
 
         if estadisticas:
-            logger.info("Generando grafico calificaciones de campana por cliente ")
+            logger.info(_("Generando grafico calificaciones de campana por cliente "))
 
         # Barra: Cantidad de calificacion de cliente
         barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
             show_legend=False, style=LightGreenStyle)
-        barra_campana_calificacion.title = 'Cantidad de calificacion de cliente '
+        barra_campana_calificacion.title = _('Cantidad de calificacion de cliente ')
 
         barra_campana_calificacion.x_labels = \
             estadisticas['calificaciones_nombre']
@@ -552,7 +552,7 @@ class EstadisticasService():
         barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=DefaultStyle(colors=('#b93229',)))
-        barra_campana_no_atendido.title = 'Cantidad de llamadas no atendidos '
+        barra_campana_no_atendido.title = _('Cantidad de llamadas no atendidos ')
 
         barra_campana_no_atendido.x_labels = \
             estadisticas['resultado_nombre']
@@ -564,7 +564,7 @@ class EstadisticasService():
 
         # Barra: Detalles de llamadas por evento de llamada.
         barra_campana_llamadas = pygal.Bar(show_legend=False)
-        barra_campana_llamadas.title = 'Detalles de llamadas '
+        barra_campana_llamadas.title = _('Detalles de llamadas ')
 
         barra_campana_llamadas.x_labels = \
             estadisticas['cantidad_llamadas'][0]

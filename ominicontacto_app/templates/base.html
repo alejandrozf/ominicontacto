@@ -383,17 +383,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="wrapper-content">
             {% if user.is_authenticated %}
-            <div id="topbar">
-                <div class="nav">
-                    <button type="button" id="sidebarCollapse" class="btn">
-                        <span class="fas fa-bars"></span>
-                    </button>
-                    <div id="nav-user">
-                        <a>{{ user.get_full_name }}</a>
-                        <a class="btn" href="{% url 'logout' %}" title="{% trans 'Deslogueo' %}">{% trans 'Salir' %}</a>
+                <div id="topbar">
+                    <div class="nav">
+                        <button type="button" id="sidebarCollapse" class="btn">
+                            <span class="fas fa-bars"></span>
+                        </button>
+                        {% include 'cambiar_idioma.html' %}
+                        <div id="nav-user">
+                            <a>{{ user.get_full_name }}</a>
+                            <a class="btn" href="{% url 'logout' %}" title="{% trans 'Deslogueo' %}">{% trans 'Salir' %}</a>
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endif %}
 
             <div class="wrapper-info">
@@ -417,8 +418,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 {% block extra_js %}{% endblock %}
 
-<script type="text/javascript">
+<!-- Cambiar idioma -->
+<script type="text/javascript" src="{% static 'ominicontacto/JS/idioma.js' %}"></script>
 
+<script type="text/javascript">
 $(document).ready(function () {
 
     /* Toggle */
@@ -462,8 +465,6 @@ $(document).ready(function () {
 
 
 });
-
-
 </script>
 
 </body>

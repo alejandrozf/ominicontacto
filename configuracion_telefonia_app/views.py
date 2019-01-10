@@ -68,8 +68,8 @@ def escribir_ruta_saliente_config(self, ruta_saliente):
         sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         sincronizador.regenerar_rutas_salientes(ruta_saliente)
     except RestablecerConfiguracionTelefonicaError, e:
-        message = ("<strong>¡Cuidado!</strong> "
-                   "con el siguiente error: {0} .".format(e))
+        message = _("<strong>¡Cuidado!</strong> "
+                    "con el siguiente error: {0} .".format(e))
         messages.add_message(
             self.request,
             messages.WARNING,
@@ -83,8 +83,8 @@ def eliminar_ruta_saliente_config(self, ruta_saliente):
         sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         sincronizador.eliminar_ruta_y_regenerar_asterisk(ruta_saliente)
     except RestablecerConfiguracionTelefonicaError, e:
-        message = ("<strong>¡Cuidado!</strong> "
-                   "con el siguiente error: {0} .".format(e))
+        message = _("<strong>¡Cuidado!</strong> "
+                    "con el siguiente error: {0} .".format(e))
         messages.add_message(
             self.request,
             messages.WARNING,
@@ -97,8 +97,8 @@ def escribir_ruta_entrante_config(self, ruta_entrante):
         sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
         sincronizador.regenerar_asterisk(ruta_entrante)
     except RestablecerConfiguracionTelefonicaError, e:
-        message = ("<strong>¡Cuidado!</strong> "
-                   "con el siguiente error: {0} .".format(e))
+        message = _("<strong>¡Cuidado!</strong> "
+                    "con el siguiente error: {0} .".format(e))
         messages.add_message(
             self.request,
             messages.WARNING,
@@ -111,8 +111,8 @@ def eliminar_ruta_entrante_config(self, ruta_entrante):
         sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
         sincronizador.eliminar_y_regenerar_asterisk(ruta_entrante)
     except RestablecerConfiguracionTelefonicaError, e:
-        message = ("<strong>¡Cuidado!</strong> "
-                   "con el siguiente error: {0} .".format(e))
+        message = _("<strong>¡Cuidado!</strong> "
+                    "con el siguiente error: {0} .".format(e))
         messages.add_message(
             self.request,
             messages.WARNING,
@@ -124,8 +124,8 @@ def escribir_nodo_entrante_config(self, nodo_destino_entrante, sincronizador):
     try:
         sincronizador.regenerar_asterisk(nodo_destino_entrante)
     except RestablecerConfiguracionTelefonicaError, e:
-        message = ("<strong>¡Cuidado!</strong> "
-                   "con el siguiente error: {0} .".format(e))
+        message = _("<strong>¡Cuidado!</strong> "
+                    "con el siguiente error: {0} .".format(e))
         messages.add_message(
             self.request,
             messages.WARNING,
@@ -139,8 +139,8 @@ def eliminar_troncal_config(self, trunk):
         sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         sincronizador.eliminar_troncal_y_regenerar_asterisk(trunk)
     except RestablecerConfiguracionTelefonicaError, e:
-        message = ("<strong>¡Cuidado!</strong> "
-                   "con el siguiente error: {0} .".format(e))
+        message = _("<strong>¡Cuidado!</strong> "
+                    "con el siguiente error: {0} .".format(e))
         messages.add_message(
             self.request,
             messages.WARNING,
@@ -157,8 +157,8 @@ class TroncalSIPMixin(object):
             sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
             sincronizador.regenerar_troncales(self.object)
         except RestablecerConfiguracionTelefonicaError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: {0} .".format(e))
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -176,8 +176,8 @@ class TroncalSIPMixin(object):
                         sincronizador_ruta = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
                         sincronizador_ruta.regenerar_troncales_en_ruta_asterisk(ruta)
                     except RestablecerConfiguracionTelefonicaError, e:
-                        message = ("<strong>¡Cuidado!</strong> "
-                                   "con el siguiente error: {0} .".format(e))
+                        message = _("<strong>¡Cuidado!</strong> "
+                                    "con el siguiente error: {0} .".format(e))
                         messages.add_message(
                             self.request,
                             messages.WARNING,
@@ -407,8 +407,8 @@ class RutaEntranteDeleteView(DeleteView):
             sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
             sincronizador.eliminar_y_regenerar_asterisk(self.get_object())
         except RestablecerConfiguracionTelefonicaError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: {0} .".format(e))
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -586,7 +586,7 @@ class GrupoHorarioMixin(object):
                 sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
                 sincronizador.regenerar_asterisk(grupo_horario)
             except RestablecerConfiguracionTelefonicaError, e:
-                message = ("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
+                message = _("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
                 messages.add_message(self.request, messages.WARNING, message)
 
             messages.add_message(self.request, messages.SUCCESS, self.message)
@@ -640,11 +640,11 @@ class GrupoHorarioDeleteView(DeleteView):
             sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
             sincronizador.eliminar_y_regenerar_asterisk(self.object)
         except RestablecerConfiguracionTelefonicaError, e:
-            message = ("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
             messages.add_message(self.request, messages.WARNING, message)
         if self.object.validaciones_fecha_hora.count() > 0:
-            message = (
-                _('No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora'))
+            message = _(
+                'No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora')
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -795,8 +795,8 @@ class DeleteNodoDestinoMixin(object):
 
             sincronizador.eliminar_y_regenerar_asterisk(self.get_object())
         except RestablecerConfiguracionTelefonicaError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: {0} .".format(e))
             messages.add_message(
                 self.request,
                 messages.WARNING,
