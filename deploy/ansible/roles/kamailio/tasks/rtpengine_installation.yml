@@ -16,7 +16,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ---
-# Set_fact es para setear variables, aqui seteo el nombre de la carpeta que se crea al descargar rtpengine
+
 # Seteo esta variable que va en un Makefile para instalar en centos
 - set_fact: kernel="/usr/src/kernels/$(shell uname -r)"
   when: ansible_os_family == "RedHat"

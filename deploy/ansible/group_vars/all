@@ -18,7 +18,7 @@ ca_organizationalunit: Freetech Solutions
 #rtpengine
 rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr5.5.3.1.tar.gz
 #kamailio
-kamailio_repo: git://git.kamailio.org/kamailio
+kamailio_repo: https://github.com/kamailio/kamailio/archive/4.4.7.tar.gz
 
 ################ URL's ############################
 
@@ -42,6 +42,10 @@ kamailio_location: "{{ install_prefix }}kamailio"
 
 ##Parametros de la aplicación
 usuario: omnileads
+
+################## Variables para la aplicacion OML ###################
+#Variable para oml_settings_local.py
+#Credenciales Superuser OML
 admin_user: admin
 
 ########## Country Code Asterisk ################
