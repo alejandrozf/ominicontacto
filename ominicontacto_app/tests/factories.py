@@ -117,6 +117,9 @@ class SupervisorProfileFactory(DjangoModelFactory):
     #  TODO: hacer atributo 'sip_password'
 
 
+COLUMNAS_DB_DEFAULT = ['telefono', 'nombre', 'apellido', 'dni', 'telefono2', 'telefono3']
+
+
 class BaseDatosContactoFactory(DjangoModelFactory):
     class Meta:
         model = BaseDatosContacto
@@ -124,8 +127,8 @@ class BaseDatosContactoFactory(DjangoModelFactory):
     nombre = lazy_attribute(lambda a: "BD_contacto_{0}".format(uuid4()))
 
     nombre_archivo_importacion = Sequence(lambda n: "file_{0}.dat".format(n))
-    metadata = '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": ["telefono",' + \
-               ' "nombre", "apellido", "dni", "telefono2", "telefono3"],' + \
+    metadata = '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": '\
+               '["' + '", "'.join(COLUMNAS_DB_DEFAULT) + '"],' + \
                ' "cols_telefono": [0, 4, 5]}'
     estado = BaseDatosContacto.ESTADO_DEFINIDA
 
@@ -154,10 +157,11 @@ class CampanaFactory(DjangoModelFactory):
     fecha_inicio = lazy_attribute(lambda a: timezone.now())
     fecha_fin = lazy_attribute(lambda a: a.fecha_inicio)
     bd_contacto = SubFactory(BaseDatosContactoFactory)
+    tipo_interaccion = Campana.FORMULARIO
     formulario = SubFactory(FormularioFactory)
     campaign_id_wombat = lazy_attribute(lambda a: faker.random_number(7))
     type = lazy_attribute(lambda a: faker.random_int(1, 3))
-    sitio_externo = SubFactory(SitioExternoFactory)
+    sitio_externo = None
     reported_by = SubFactory(UserFactory)
     nombre_template = lazy_attribute(lambda a: faker.text(max_nb_chars=6))
 

@@ -3100,3 +3100,68 @@ class AgenteEnContacto(models.Model):
         qs_agentes_liberados.update(agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
 
         return liberados
+
+
+class ParametrosCrm(models.Model):
+    """
+    Variables a enviar en la url del crm de sitio externo
+    """
+    DATO_CAMPANA = 1
+    DATO_CONTACTO = 2
+    DATO_LLAMADA = 3
+    CUSTOM = 4
+
+    TIPOS = (
+        (DATO_CAMPANA, _('Dato de Campaña')),
+        (DATO_CONTACTO, _('Dato de Contacto')),
+        (DATO_LLAMADA, _('Dato de Llamada')),
+        (CUSTOM, _('Fijo')),
+    )
+
+    OPCIONES_CAMPANA = (
+        ('id', _('ID de Campaña')),
+        ('nombre', _('Nombre')),
+        ('tipo', _('Tipo de Campaña')),
+    )
+    OPCIONES_CAMPANA_KEYS = [key for key, value in OPCIONES_CAMPANA]
+
+    OPCIONES_LLAMADA = (
+        ('callid', _('ID de Llamada')),
+        ('agent_id', _('ID de Agente')),
+        ('telefono', _('Teléfono')),
+        ('contacto_id', _('ID de Cliente')),
+        ('grabacion', _('Archivo de Grabacion')),
+        ('call_wait_time', _('Tiempo de espera')),
+    )
+    OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]
+
+    campana = models.ForeignKey(Campana, related_name='parametros_crm')
+    nombre = models.CharField(max_length=128)
+    valor = models.CharField(max_length=256)
+    tipo = models.PositiveIntegerField(choices=TIPOS)
+
+    def __unicode__(self):
+        return "Variable {0} con valor: {1} para la campana {2}".format(
+            self.nombre, self.valor, self.campana)
+
+    def obtener_valor(self, campana, contacto, datos_de_llamada):
+        if self.tipo == ParametrosCrm.DATO_CAMPANA:
+            return self.obtener_valor_de_campana(campana)
+        if self.tipo == ParametrosCrm.DATO_CONTACTO:
+            return self.obtener_valor_de_contacto(contacto)
+        if self.tipo == ParametrosCrm.DATO_LLAMADA:
+            return self.obtener_valor_de_llamada(datos_de_llamada)
+        if self.tipo == ParametrosCrm.CUSTOM:
+            return self.valor
+
+    def obtener_valor_de_campana(self, campana):
+        # TODO: Obtener bien el valor
+        return campana.get_valor(self.valor)
+
+    def obtener_valor_de_contacto(self, contacto):
+        # TODO: Obtener bien el valor
+        return contacto.get_valor(self.valor)
+
+    def obtener_valor_de_llamada(self, datos_de_llamada):
+        # TODO: Obtener bien el valor
+        return datos_de_llamada.get_valor(self.valor)

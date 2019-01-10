@@ -30,8 +30,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <ul class="nav nav-indicators">
         <li class="active"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
-        <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
-    </ul>
+    {% comment %}
+        {% if interaccion_crm %}
+            <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+        {% endif %}
+    {% endcomment %}
+     </ul>
 {% endblock %}
 
 {% block form_render %}
@@ -51,19 +55,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.bd_contacto }}
                 {{ form.bd_contacto.errors }}
             </div>
-            {{ form.tipo_interaccion.errors }}
-            <div class="col-md-6">
-                <label><div class="myradio hidden">{{ form.tipo_interaccion.0 }}</div> {% trans 'Formulario:' %}</label>
-                {{ form.formulario }}
-                {{ form.formulario.errors }}
-            </div>
-            {% comment %}
-            <div class="col-md-6">
-                <label><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
-                {{ form.sitio_externo }}
-                {{ form.sitio_externo.errors }}
-            </div>
-            {% endcomment %}
+            {% block interaccion %}
+                {{ form.tipo_interaccion.errors }}
+                <div class="col-md-6">
+                    <label><div class="myradio hidden">{{ form.tipo_interaccion.0 }}</div> {% trans 'Formulario:' %}</label>
+                    {{ form.formulario }}
+                    {{ form.formulario.errors }}
+                </div>
+                {% comment %}
+                <div class="col-md-6">
+                    <label><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
+                    {{ form.sitio_externo }}
+                    {{ form.sitio_externo.errors }}
+                </div>
+                {% endcomment %}
+            {% endblock interaccion %}
             <div class="col-md-6">
                 <label for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
                 {{ form.auto_grabacion }}

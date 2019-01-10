@@ -17,32 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "campana/parametros_extra_web_form.html" %}
+{% extends "campana/parametros_crm_sitio_externo.html" %}
 {% load i18n %}
 {% load static %}
 {% load widget_tweaks %}
 
-{% block extra_js %}
-    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-    <script type="text/javascript">
-     $('.linkFormset').formset({
-       addText: 'Agregar parámetro',
-       deleteText: 'Remover',
-       prefix: '{{ wizard.form.prefix }}',
-       addCssClass: 'addFormset btn btn-outline-primary',
-       deleteCssClass: 'deleteFormset btn btn-outline-danger',
-     });
-    </script>
-{% endblock %}
-
 {% block nav %}
-    <h1>{% trans 'Campaña Dialer: Parámetros extra para web form' %}</h1>
+    <h1>{% trans 'Campaña Dialer: Interacción con Sitio Externo' %}</h1>
 
     <ul class="nav nav-indicators">
         <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
-        <li class="active"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        <li class="active"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
         {% if not form.instance.pk %}
             <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
             <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
