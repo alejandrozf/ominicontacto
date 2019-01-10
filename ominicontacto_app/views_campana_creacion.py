@@ -90,7 +90,9 @@ class CampanaTemplateCreateCampanaMixin(object):
             initial_data = {
                 'nombre': campana_nombre,
                 'bd_contacto': campana_template.bd_contacto,
+                'tipo_interaccion': campana_template.tipo_interaccion,
                 'formulario': campana_template.formulario,
+                'sitio_externo': campana_template.sitio_externo,
                 'gestion': campana_template.gestion,
                 'objetivo': campana_template.objetivo,
                 'es_template': False}

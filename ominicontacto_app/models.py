@@ -1146,6 +1146,10 @@ class Campana(models.Model):
         self.bd_contacto = bd_nueva
         self.save()
 
+    @property
+    def tiene_interaccion_con_sitio_externo(self):
+        return self.tipo_interaccion == self.SITIO_EXTERNO
+
 
 class OpcionCalificacion(models.Model):
     """
@@ -2140,6 +2144,14 @@ class Contacto(models.Model):
         telefono, extras = metadata.obtener_telefono_y_datos_extras(self.datos)
         return (telefono, extras)
 
+    def obtener_datos(self):
+        if not hasattr(self, 'datos_contacto'):
+            columnas = self.bd_contacto.get_metadata().nombres_de_columnas
+            datos = self.lista_de_datos()
+            datos.insert(0, self.telefono)
+            self.datos_contacto = dict(zip(columnas, datos))
+        return self.datos_contacto
+
     def _sincronizar_agente_en_contacto(self):
         AgenteEnContacto.objects.filter(
             contacto_id=self.pk).update(telefono_contacto=self.telefono, datos_contacto=self.datos)
@@ -2881,6 +2893,13 @@ class SitioExterno(models.Model):
         self.oculto = False
         self.save()
 
+    def get_url_interaccion(self, agente, campana, contacto, datos_de_llamada):
+        parametros = {}
+        for parametro in campana.parametros_crm.all():
+            valor = parametro.obtener_valor(agente, contacto, datos_de_llamada)
+            parametros[parametro.nombre] = str(valor)
+        return self.url + '?' + '&'.join([key + '=' + val for (key, val) in parametros.items()])
+
 
 class ReglasIncidencia(models.Model):
     """
@@ -3126,12 +3145,12 @@ class ParametrosCrm(models.Model):
     OPCIONES_CAMPANA_KEYS = [key for key, value in OPCIONES_CAMPANA]
 
     OPCIONES_LLAMADA = (
-        ('callid', _('ID de Llamada')),
+        ('call_id', _('ID de Llamada')),
         ('agent_id', _('ID de Agente')),
         ('telefono', _('Teléfono')),
-        ('contacto_id', _('ID de Cliente')),
-        ('grabacion', _('Archivo de Grabacion')),
-        ('call_wait_time', _('Tiempo de espera')),
+        ('id_contacto', _('ID de Cliente')),
+        ('rec_filename', _('Archivo de Grabacion')),
+        ('call_wait_duration', _('Tiempo de espera')),
     )
     OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]
 
@@ -3144,24 +3163,28 @@ class ParametrosCrm(models.Model):
         return "Variable {0} con valor: {1} para la campana {2}".format(
             self.nombre, self.valor, self.campana)
 
-    def obtener_valor(self, campana, contacto, datos_de_llamada):
+    def obtener_valor(self, agente, contacto, datos_de_llamada):
         if self.tipo == ParametrosCrm.DATO_CAMPANA:
-            return self.obtener_valor_de_campana(campana)
+            return self.obtener_valor_de_campana()
         if self.tipo == ParametrosCrm.DATO_CONTACTO:
             return self.obtener_valor_de_contacto(contacto)
         if self.tipo == ParametrosCrm.DATO_LLAMADA:
-            return self.obtener_valor_de_llamada(datos_de_llamada)
+            return self.obtener_valor_de_llamada(agente, datos_de_llamada)
         if self.tipo == ParametrosCrm.CUSTOM:
             return self.valor
 
-    def obtener_valor_de_campana(self, campana):
-        # TODO: Obtener bien el valor
-        return campana.get_valor(self.valor)
+    def obtener_valor_de_campana(self):
+        if self.valor == 'tipo':
+            return dict(Campana.TYPES_CAMPANA)[self.campana.type]
+        return getattr(self.campana, self.valor)
 
     def obtener_valor_de_contacto(self, contacto):
-        # TODO: Obtener bien el valor
-        return contacto.get_valor(self.valor)
+        if contacto is None:
+            return ''
+        datos_contacto = contacto.obtener_datos()
+        return datos_contacto[self.valor]
 
-    def obtener_valor_de_llamada(self, datos_de_llamada):
-        # TODO: Obtener bien el valor
-        return datos_de_llamada.get_valor(self.valor)
+    def obtener_valor_de_llamada(self, agente, datos_de_llamada):
+        if self.valor == 'agent_id':
+            return agente.id
+        return datos_de_llamada[self.valor]

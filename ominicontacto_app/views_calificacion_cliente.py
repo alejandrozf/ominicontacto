@@ -119,6 +119,14 @@ class CalificacionClienteFormView(FormView):
                                     'telefono': telefono,
                                     'call_data_json': call_data_json}))
         self.object = self.get_object()
+
+        self.url_sitio_externo = ''
+        if self.campana.tiene_interaccion_con_sitio_externo:
+            self.url_sitio_externo = self.campana.sitio_externo.get_url_interaccion(self.agente,
+                                                                                    self.campana,
+                                                                                    self.contacto,
+                                                                                    self.call_data)
+
         return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
 
     def get_calificacion_form_kwargs(self):
@@ -139,7 +147,11 @@ class CalificacionClienteFormView(FormView):
         if self.contacto is not None:
             kwargs['instance'] = self.contacto
         else:
-            initial['telefono'] = self.kwargs['telefono']
+            if 'call_data_json' in self.kwargs:
+                initial['telefono'] = self.call_data['telefono']
+            else:
+                # TODO: Cuando las manuales vengan con call_data sacar esto
+                initial['telefono'] = self.kwargs['telefono']
 
         if self.request.method == 'GET':
             # TODO: Pasar esta logica al formulario?
@@ -174,7 +186,7 @@ class CalificacionClienteFormView(FormView):
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
             campana=self.campana,
-            call_data=self.call_data))
+            url_sitio_externo=self.url_sitio_externo))
 
     def post(self, request, *args, **kwargs):
         """
@@ -235,7 +247,8 @@ class CalificacionClienteFormView(FormView):
         # check metadata en calificaciones de no accion y eliminar
         self._check_metadata_no_accion_delete(self.object_calificacion)
 
-        if self.object_calificacion.es_venta:
+        if self.object_calificacion.es_venta and \
+                not self.campana.tiene_interaccion_con_sitio_externo:
             return redirect(self.get_success_url_venta())
         else:
             message = 'Operación Exitosa!\
@@ -252,10 +265,12 @@ class CalificacionClienteFormView(FormView):
         """
         Re-renders the context data with the data-filled forms and errors.
         """
-        return self.render_to_response(self.get_context_data(contacto_form=contacto_form,
-                                                             calificacion_form=calificacion_form,
-                                                             campana=self.campana,
-                                                             call_data=self.call_data))
+        return self.render_to_response(self.get_context_data(
+            contacto_form=contacto_form,
+            calificacion_form=calificacion_form,
+            campana=self.campana,
+            url_sitio_externo=self.url_sitio_externo)
+        )
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',

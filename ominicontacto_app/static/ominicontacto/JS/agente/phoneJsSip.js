@@ -493,6 +493,7 @@ class SessionData {
     }
 
     setRemoteCallInfo(invite_request) {
+        console.log(invite_request);
         var call_data = {}
         call_data.id_campana = invite_request.headers.Idcamp[0].raw;
         call_data.campana_type = invite_request.headers.Omlcamptype[0].raw;
