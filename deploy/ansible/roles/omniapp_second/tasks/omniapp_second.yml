@@ -51,7 +51,11 @@
 
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
 - name: Create of oml_uwgsi.ini script
-  template: src=templates/bin/oml_uwsgi.ini.j2 dest={{ install_prefix }}bin/oml_uwsgi.ini mode=755 owner={{ usuario }} group={{ usuario }}
+  template: src=templates/run/oml_uwsgi.ini dest={{ install_prefix }}run/oml_uwsgi.ini mode=755 owner={{ usuario }} group={{ usuario }}
+
+# Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
+- name: Create of ominicontacto_app.ini script
+  template: src=templates/run/ominicontacto_app.ini dest={{ install_prefix }}run/ominicontacto_app.ini mode=755 owner={{ usuario }} group={{ usuario }}
 
 # Se crea el arhivo de systemd para omnileads daemon
 - name: Create of omnileads service
