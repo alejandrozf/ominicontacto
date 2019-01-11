@@ -53,7 +53,7 @@ OML_ASTERISK_REMOTEPATH = "{{ asterisk_location }}/etc/asterisk/"
 OML_BACKLIST_REMOTEPATH  = "{{ asterisk_location }}/var/spool/asterisk/"
 
 OML_KAMAILIO_LOCATION = "{{ kamailio_location }}/etc/kamailio/"
-OML_KAMAILIO_CMD = "ssh root@{{ kamailio_fqdn }} 'kamctl mi autheph.dump_secrets' |awk -F ' ' '{print $3}' |head -1"
+OML_KAMAILIO_CMD = "ssh root@{{ kamailio_fqdn }} 'kamcmd -s {{ kamailio_location }}/run/kamailio/kamailio_ctl autheph.dump_secrets' |awk -F ' ' '{print $3}' |head -1"
 OML_GENERARSK_CMD = "ssh root@{{ kamailio_fqdn }} 'sed -i \"s/\({0}\).*/{1}!g\\\"/\" {2}kamailio-local.cfg'"
 
 ASTERISK = {

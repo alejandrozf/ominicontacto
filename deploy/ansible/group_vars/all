@@ -18,7 +18,7 @@ ca_organizationalunit: Freetech Solutions
 #rtpengine
 rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr5.5.3.1.tar.gz
 #kamailio
-kamailio_repo: https://github.com/kamailio/kamailio/archive/4.4.7.tar.gz
+kamailio_repo: https://github.com/kamailio/kamailio/archive/5.1.4.tar.gz
 
 ################ URL's ############################
 
