@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import json
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from ominicontacto_app.utiles import convert_fecha_datetime
@@ -57,7 +57,7 @@ class ReporteLlamadasForm(forms.Form):
     El form para reporte de llamadas
     """
     fecha = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    finalizadas = forms.BooleanField(required=False, label=_(u'Incluir campañas finalizadas'))
+    finalizadas = forms.BooleanField(required=False, label=_('Incluir campañas finalizadas'))
 
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')

@@ -28,7 +28,7 @@ from django.contrib.auth.forms import (
     UserCreationForm
 )
 from django.contrib.auth.password_validation import validate_password
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
@@ -72,8 +72,8 @@ class CustomUserCreationForm(UserCreationForm):
             'username', 'first_name', 'last_name', 'email', 'is_agente',
             'is_supervisor', 'password1', 'password2')
         labels = {
-            'is_agente': 'Es un agente',
-            'is_supervisor': 'Es un supervisor',
+            'is_agente': _('Es un agente'),
+            'is_supervisor': _('Es un supervisor'),
         }
         error_messages = {
             'username': {'unique':
@@ -152,26 +152,6 @@ class AgenteProfileForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-    # def __init__(self, *args, **kwargs):
-    #     super(AgenteProfileForm, self).__init__(*args, **kwargs)
-    #
-    #     self.fields['user'].widget.attrs['disabled'] = True
-    #
-    # def clean_user(self):
-    #     if self.instance.is_disabled:
-    #         return self.instance.user
-    #     else:
-    #         return self.cleaned_data.get('user')
-
-    # def clean_sip_extension(self):
-    #     sip_extension = self.cleaned_data['sip_extension']
-    #     if settings.OL_SIP_LIMITE_INFERIOR > sip_extension or\
-    #             sip_extension > settings.OL_SIP_LIMITE_SUPERIOR:
-    #         raise forms.ValidationError("El sip_extension es incorrecto debe "
-    #                                     "ingresar un numero entre {0} y {1}".
-    #                                     format(settings.OL_SIP_LIMITE_INFERIOR,
-    #                                            settings.OL_SIP_LIMITE_SUPERIOR))
-    #     return sip_extension
 
     class Meta:
         model = AgenteProfile
@@ -378,19 +358,20 @@ class GrabacionBusquedaForm(forms.Form):
     El form para la busqueda de grabaciones
     """
     fecha = forms.CharField(required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
+                            widget=forms.TextInput(attrs={'class': 'form-control'}),
+                            label=_('Fecha'))
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, EMPTY_CHOICE)
     tipo_llamada = forms.ChoiceField(required=False,
-                                     choices=tipo_llamada_choice)
+                                     choices=tipo_llamada_choice, label=_('Tipo de llamada'))
     tel_cliente = forms.CharField(required=False)
     agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
-                                    required=False, label='Agente')
-    campana = forms.ChoiceField(required=False, choices=())
-    pagina = forms.CharField(required=False, widget=forms.HiddenInput())
-    marcadas = forms.BooleanField(required=False)
+                                    required=False, label=_('Agente'))
+    campana = forms.ChoiceField(required=False, choices=(), label=_('Campaña'))
+    pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
+    marcadas = forms.BooleanField(required=False, label=_('Marcadas'))
     duracion = forms.IntegerField(required=False, min_value=0, initial=0,
-                                  label=_(u'Duración mínima'),
+                                  label=_('Duración mínima'),
                                   widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     def __init__(self, campana_choice, *args, **kwargs):
@@ -619,7 +600,7 @@ class CalificacionClienteForm(forms.ModelForm):
     """
 
     opcion_calificacion = OpcionCalificacionModelChoiceField(
-        OpcionCalificacion.objects.all(), empty_label='---------')
+        OpcionCalificacion.objects.all(), empty_label='---------', label=_('Calificación'))
 
     def __init__(self, campana, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
@@ -631,6 +612,9 @@ class CalificacionClienteForm(forms.ModelForm):
         fields = ('opcion_calificacion', 'observaciones')
         widgets = {
             'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'observaciones': _('Observaciones'),
         }
 
 
@@ -1183,13 +1167,13 @@ class UserApiCrmForm(forms.ModelForm):
         return usuario
 
 
-ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _(u'Supervisor Gerente')),
-               (SupervisorProfile.ROL_ADMINISTRADOR, _(u'Administrador')),
-               (SupervisorProfile.ROL_CLIENTE, _(u'Cliente')))
+ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _('Supervisor Gerente')),
+               (SupervisorProfile.ROL_ADMINISTRADOR, _('Administrador')),
+               (SupervisorProfile.ROL_CLIENTE, _('Cliente')))
 
 
 class SupervisorProfileForm(forms.ModelForm):
-    rol = forms.ChoiceField(choices=ROL_CHOICES, label=_(u'Rol del usuario'),
+    rol = forms.ChoiceField(choices=ROL_CHOICES, label=_('Rol del usuario'),
                             initial=SupervisorProfile.ROL_GERENTE,
                             widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -1303,9 +1287,9 @@ class ArchivoDeAudioForm(forms.ModelForm):
             "audio_original": forms.FileInput(attrs={'class': 'form-control'}),
         }
         help_texts = {
-            'audio_original': _("""Seleccione el archivo de audio que desea para
-            la Campaña. Si ya existe uno y guarda otro, el audio será
-            reemplazado."""),
+            'audio_original': _("Seleccione el archivo de audio que desea para"
+                                "la Campaña. Si ya existe uno y guarda otro, el audio será "
+                                "reemplazado."),
         }
 
     def __init__(self, *args, **kwargs):

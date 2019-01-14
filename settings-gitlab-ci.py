@@ -198,7 +198,7 @@ MONITORFORMAT = 'mp3'
 
 OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
 
-CALIFICACION_REAGENDA = 'Agendado'
+CALIFICACION_REAGENDA = 'Agenda'
 
 LOCAL_APPS = []
 

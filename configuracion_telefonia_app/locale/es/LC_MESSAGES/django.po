@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-08 16:16-0300\n"
+"POT-Creation-Date: 2019-01-17 11:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,235 +28,292 @@ msgid "Prefijo"
 msgstr ""
 
 #: configuracion_telefonia_app/forms.py:71
-#: configuracion_telefonia_app/forms.py:271
+#: configuracion_telefonia_app/forms.py:280
 msgid "En segundos"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:96
+#: configuracion_telefonia_app/forms.py:82
+#: configuracion_telefonia_app/forms.py:201
+#: configuracion_telefonia_app/forms.py:284
+#: configuracion_telefonia_app/models.py:42
+#: configuracion_telefonia_app/models.py:141
+#: configuracion_telefonia_app/models.py:246
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:32
+#: configuracion_telefonia_app/templates/lista_ivrs.html:33
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:31
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:31
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:31
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:32
+msgid "Nombre"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:83
+msgid "Ring time"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:84
+msgid "Dial options"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:101
 msgid "Debe ingresar al menos un patrón de discado"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:104
+#: configuracion_telefonia_app/forms.py:109
 msgid "Los patrones de discado deben ser diferentes"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:143
+#: configuracion_telefonia_app/forms.py:148
 msgid "Debe ingresar al menos un troncal"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:149
+#: configuracion_telefonia_app/forms.py:154
 msgid "Los troncales deben ser distintos"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:194
-#: configuracion_telefonia_app/forms.py:421
-#: configuracion_telefonia_app/forms.py:462
+#: configuracion_telefonia_app/forms.py:183
+#: configuracion_telefonia_app/forms.py:435
+#: configuracion_telefonia_app/forms.py:476
 msgid "Tipo de destino"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:195
+#: configuracion_telefonia_app/forms.py:200
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:32
 msgid "Número DID"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:219
-msgid "Archivo de OML"
+#: configuracion_telefonia_app/forms.py:202
+msgid "Prefijo caller id"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:219
-msgid "Archivo externo"
+#: configuracion_telefonia_app/forms.py:203
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:34
+msgid "Idioma"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:229
-msgid "Destino time out:"
-msgstr ""
-
-#: configuracion_telefonia_app/forms.py:232
-msgid "Tipo de destino para time out:"
-msgstr ""
-
-#: configuracion_telefonia_app/forms.py:239
-msgid "Destino inválido:"
-msgstr ""
-
-#: configuracion_telefonia_app/forms.py:242
-msgid "Tipo de destino para destino inválido:"
-msgstr ""
-
-#: configuracion_telefonia_app/forms.py:326
-msgid "Debe escoger un audio como archivo externo"
-msgstr ""
-
-#: configuracion_telefonia_app/forms.py:329
-#: configuracion_telefonia_app/forms.py:337
-msgid "Debe escoger un archivo de OML"
-msgstr ""
-
-#: configuracion_telefonia_app/forms.py:412
-msgid "Los valores de DTMF deben ser distintos"
-msgstr ""
-
-#: configuracion_telefonia_app/forms.py:428
-msgid "DTMF"
-msgstr ""
-
-#: configuracion_telefonia_app/forms.py:429
-#: configuracion_telefonia_app/forms.py:469
+#: configuracion_telefonia_app/forms.py:204
+#: configuracion_telefonia_app/forms.py:443
+#: configuracion_telefonia_app/forms.py:483
 msgid "Destino"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:448
+#: configuracion_telefonia_app/forms.py:228
+msgid "Archivo de OML"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:228
+msgid "Archivo externo"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:238
+msgid "Destino time out:"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:241
+msgid "Tipo de destino para time out:"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:248
+msgid "Destino inválido:"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:251
+msgid "Tipo de destino para destino inválido:"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:285
+msgid "Descripción"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:340
+msgid "Debe escoger un audio como archivo externo"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:343
+#: configuracion_telefonia_app/forms.py:351
+msgid "Debe escoger un archivo de OML"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:426
+msgid "Los valores de DTMF deben ser distintos"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:442
+msgid "DTMF"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:462
 msgid "El valor del DTMF debe ser un dígito o alguno de: #, -, *"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:504
+#: configuracion_telefonia_app/forms.py:518
 msgid "Los destinos deben ser distintos"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:150
-msgid "Lunes"
+#: configuracion_telefonia_app/models.py:45
+msgid "Canales máximos"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:151
-msgid "Martes"
+#: configuracion_telefonia_app/models.py:48
+msgid "Caller id"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:152
-msgid "Miércoles"
+#: configuracion_telefonia_app/models.py:50
+msgid "Register string"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:153
-msgid "Jueves"
+#: configuracion_telefonia_app/models.py:51
+msgid "Text config"
 msgstr ""
 
 #: configuracion_telefonia_app/models.py:154
-msgid "Viernes"
+msgid "Lunes"
 msgstr ""
 
 #: configuracion_telefonia_app/models.py:155
-msgid "Sábado"
+msgid "Martes"
 msgstr ""
 
 #: configuracion_telefonia_app/models.py:156
+msgid "Miércoles"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:157
+msgid "Jueves"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:158
+msgid "Viernes"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:159
+msgid "Sábado"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:160
 msgid "Domingo"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:162
+#: configuracion_telefonia_app/models.py:166
 msgid "Enero"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:163
+#: configuracion_telefonia_app/models.py:167
 msgid "Febrero"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:164
+#: configuracion_telefonia_app/models.py:168
 msgid "Marzo"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:165
+#: configuracion_telefonia_app/models.py:169
 msgid "Abril"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:166
+#: configuracion_telefonia_app/models.py:170
 msgid "Mayo"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:167
+#: configuracion_telefonia_app/models.py:171
 msgid "Junio"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:168
+#: configuracion_telefonia_app/models.py:172
 msgid "Julio"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:169
+#: configuracion_telefonia_app/models.py:173
 msgid "Agosto"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:170
+#: configuracion_telefonia_app/models.py:174
 msgid "Septiembre"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:171
+#: configuracion_telefonia_app/models.py:175
 msgid "Octubre"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:172
+#: configuracion_telefonia_app/models.py:176
 msgid "Noviembre"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:173
+#: configuracion_telefonia_app/models.py:177
 msgid "Diciembre"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:177
+#: configuracion_telefonia_app/models.py:181
 msgid "Tiempo inicio"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:178
+#: configuracion_telefonia_app/models.py:182
 msgid "Tiempo final"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:180
+#: configuracion_telefonia_app/models.py:184
 msgid "Día de la semana inicio"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:182
+#: configuracion_telefonia_app/models.py:186
 msgid "Día de la semana final"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:184
+#: configuracion_telefonia_app/models.py:188
 msgid "Día del mes inicio"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:186
+#: configuracion_telefonia_app/models.py:190
 msgid "Día del mes final"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:188
+#: configuracion_telefonia_app/models.py:192
 msgid "Mes inicio"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:190
+#: configuracion_telefonia_app/models.py:194
 msgid "Mes final"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:267
+#: configuracion_telefonia_app/models.py:249
+msgid "Grupo horario"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:272
 msgid "Campaña entrante"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:268
+#: configuracion_telefonia_app/models.py:273
 msgid "Validación de fecha/hora"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:269
+#: configuracion_telefonia_app/models.py:274
 msgid "IVR"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:270
-#: configuracion_telefonia_app/models.py:382
+#: configuracion_telefonia_app/models.py:275
+#: configuracion_telefonia_app/models.py:387
 msgid "HangUp"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:280
+#: configuracion_telefonia_app/models.py:285
 #, python-brace-format
 msgid "{0}: {1}"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:293
+#: configuracion_telefonia_app/models.py:298
 msgid "Error: El nodo HangUp es único."
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:334
+#: configuracion_telefonia_app/models.py:339
 #, python-brace-format
 msgid "Desde nodo {0} a nodo {1}"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:354
+#: configuracion_telefonia_app/models.py:359
 msgid "Inglés"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:355
+#: configuracion_telefonia_app/models.py:360
 msgid "Español"
 msgstr ""
 
@@ -528,15 +585,6 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:32
-#: configuracion_telefonia_app/templates/lista_ivrs.html:33
-#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:31
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:31
-#: configuracion_telefonia_app/templates/lista_troncal_sip.html:31
-#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:32
-msgid "Nombre"
-msgstr ""
-
 #: configuracion_telefonia_app/templates/lista_grupos_horarios.html:48
 msgid "No hay grupos horarios configurados"
 msgstr ""
@@ -588,10 +636,6 @@ msgstr ""
 
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:25
 msgid "Rutas Entrantes"
-msgstr ""
-
-#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:34
-msgid "Idioma"
 msgstr ""
 
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:53
