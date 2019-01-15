@@ -79,16 +79,8 @@
 
 # Se clona el repo si es un entorno de desarrollo
 - name: Clone of OML repository (develop server)
-  git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes
-  when: desarrollo == 1
-  ignore_errors: yes
-
-- name: Checkout of desired branch (develop server)
-  git: repo=https://gitlab.com/omnileads/ominicontacto.git clone=no version={{ rama }} dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes
-  when: desarrollo == 1
-  become: true
-  become_method: sudo
-  ignore_errors: yes
+  git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes accept_hostkey=yes version={{ rama }}
+  when: desarrollo == 1 and ominicontacto_exists|failed
 
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
