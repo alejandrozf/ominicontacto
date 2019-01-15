@@ -43,11 +43,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 </head>
 <body>
-<!-- Call Data: {{ call_data | safe}} -->
 {% include 'messages.html' %}
 
 {% if campana.mostrar_nombre %}
     <h1>{{ campana.nombre }}</h1>
+{% endif %}
+
+{% if campana.tiene_interaccion_con_sitio_externo %}
+    <div>
+        <a href="{{ url_sitio_externo }}" target="_blank">{% trans "Interacción CRM" %}</a>
+    </div>
 {% endif %}
 
 <form id="form-calificacion" action = "" method = "post">

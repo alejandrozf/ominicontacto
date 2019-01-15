@@ -616,8 +616,9 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step3_data = {
             'campana_entrante_create_view-current_step': 3,
-            '3-0-parametro': '',
-            '3-0-columna': '',
+            '3-0-tipo': '4',
+            '3-0-nombre': 'fijo_1',
+            '3-0-valor': 'valor_1',
             '3-0-id': '',
             '3-TOTAL_FORMS': 1,
             '3-INITIAL_FORMS': 0,
@@ -678,8 +679,9 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step3_data = {
             'campana_dialer_create_view-current_step': 3,
-            '3-0-parametro': '',
-            '3-0-columna': '',
+            '3-0-tipo': '4',
+            '3-0-nombre': 'fijo_1',
+            '3-0-valor': 'valor_1',
             '3-0-id': '',
             '3-TOTAL_FORMS': 1,
             '3-INITIAL_FORMS': 0,
@@ -785,8 +787,9 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step2_data = {
             'campana_manual_create_view-current_step': 2,
-            '2-0-parametro': '',
-            '2-0-columna': '',
+            '2-0-tipo': '4',
+            '2-0-nombre': 'fijo_1',
+            '2-0-valor': 'valor_1',
             '2-0-id': '',
             '2-TOTAL_FORMS': 1,
             '2-INITIAL_FORMS': 0,
