@@ -4,15 +4,16 @@
 - include: mariadb.yml
 
 - include: roles/prerequisitos/tasks/reboot.yml
-  when: localhost == 1 and ansible_os_family == "RedHat"
+  when:  ansible_os_family == "RedHat" and ansible_connection != "local"
+  tags: reboot
 
-- name: Wait for the server to finish rebooting (cluster)
+- name: Wait for the server to finish rebooting
   become: no
   local_action: wait_for host="{{ omni_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
   tags: reboot
-  when: ansible_os_family == "RedHat" and localhost == 1
+  when: ansible_os_family == "RedHat" and ansible_connection == "local"
 
-- name: Wait for the server to finish rebooting
+- name: Wait for the server to finish rebooting (cluster)
   become: no
   local_action: wait_for host="{{ dialer_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
   tags: reboot
