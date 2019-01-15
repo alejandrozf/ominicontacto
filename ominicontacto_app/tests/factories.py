@@ -31,7 +31,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       NombreCalificacion, Formulario, Grabacion, GrabacionMarca,
                                       SitioExterno, User, Contacto, SupervisorProfile, Modulo,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
-                                      OpcionCalificacion, ArchivoDeAudio, ParametroExtraParaWebform,
+                                      OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
                                       ActuacionVigente, Pausa, MetadataCliente)
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
@@ -274,13 +274,14 @@ class ArchivoDeAudioFactory(DjangoModelFactory):
     descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(uuid4()))
 
 
-class ParametroExtraParaWebformFactory(DjangoModelFactory):
+class ParametrosCrmFactory(DjangoModelFactory):
     class Meta:
-        model = ParametroExtraParaWebform
+        model = ParametrosCrm
 
     campana = SubFactory(CampanaFactory)
-    parametro = Sequence(lambda n: "parametro_{0}".format(n))
-    columna = Sequence(lambda n: "columna_{0}".format(n))
+    tipo = ParametrosCrm.CUSTOM
+    nombre = Sequence(lambda n: "nombre_{0}".format(n))
+    valor = Sequence(lambda n: "valor_{0}".format(n))
 
 
 class ActuacionVigenteFactory(DjangoModelFactory):

@@ -33,12 +33,13 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
                                                ContactoFactory, AgenteProfileFactory,
                                                QueueMemberFactory,
+                                               SitioExternoFactory, ParametrosCrmFactory,
                                                CalificacionClienteFactory,
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory, MetadataClienteFactory)
 
 from ominicontacto_app.models import (AgendaContacto, NombreCalificacion, Campana,
-                                      OpcionCalificacion, CalificacionCliente)
+                                      OpcionCalificacion, CalificacionCliente, ParametrosCrm)
 
 
 class CalificacionTests(OMLBaseTest):
@@ -335,3 +336,28 @@ class CalificacionTests(OMLBaseTest):
                               'telefono': '351111111111'})
         response = self.client.get(url, follow=True)
         self.assertNotContains(response, self.campana.nombre)
+
+    def test_muestra_link_sitio_externo(self):
+        self.campana.type = Campana.TYPE_PREVIEW
+        self.campana.tipo_interaccion = Campana.SITIO_EXTERNO
+        sitio_externo = SitioExternoFactory()
+        self.campana.sitio_externo = sitio_externo
+        self.campana.save()
+        parametro1 = ParametrosCrmFactory(campana=self.campana)
+        parametro2 = ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_LLAMADA,
+                                          nombre='call_id', valor='call_id')
+        call_id = '123456789'
+        call_data = {"id_campana": self.campana.id,
+                     "campana_type": self.campana.type,
+                     "telefono": "3512349992",
+                     "call_id": call_id,
+                     "call_type": "4",
+                     "id_contacto": self.contacto.id,
+                     "rec_filename": "",
+                     "call_wait_duration": ""}
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+
+        response = self.client.get(url)
+        self.assertContains(response, sitio_externo.url)
+        self.assertContains(response, parametro1.nombre + '=' + parametro1.valor)
+        self.assertContains(response, parametro2.nombre + '=' + call_id)

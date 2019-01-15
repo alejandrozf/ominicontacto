@@ -689,15 +689,16 @@ class CampanaManager(models.Manager):
                 opciones_calificacion.append(opcion_calificacion_replicada)
         OpcionCalificacion.objects.bulk_create(opciones_calificacion)
 
-        # se replican los parámetros para web form
-        parametros_web_form = []
-        for parametro_web_form in campana.parametros_extra_para_webform.all():
-            parametro = parametro_web_form.parametro
-            columna = parametro_web_form.columna
-            parametro_web_form_replicado = ParametroExtraParaWebform(
-                campana=campana_replicada, parametro=parametro, columna=columna)
-            parametros_web_form.append(parametro_web_form_replicado)
-        ParametroExtraParaWebform.objects.bulk_create(parametros_web_form)
+        # se replican los parámetros para crm
+        parametros_crm = []
+        for parametro_crm in campana.parametros_crm.all():
+            tipo = parametro_crm.tipo
+            nombre = parametro_crm.nombre
+            valor = parametro_crm.valor
+            parametro_replicado = ParametrosCrm(
+                campana=campana_replicada, tipo=tipo, nombre=nombre, valor=valor)
+            parametros_crm.append(parametro_replicado)
+        ParametrosCrm.objects.bulk_create(parametros_crm)
 
         # Replica Cola
         Queue.objects.create(
@@ -1437,12 +1438,6 @@ class Pausa(models.Model):
         if self.es_productiva():
             return self.CHOICE_PRODUCTIVA
         return self.CHOICE_RECREATIVA
-
-
-class ParametroExtraParaWebform(models.Model):
-    campana = models.ForeignKey(Campana, related_name='parametros_extra_para_webform')
-    parametro = models.CharField(max_length=32)
-    columna = models.CharField(max_length=32)
 
 # ==============================================================================
 # Base Datos Contactos
