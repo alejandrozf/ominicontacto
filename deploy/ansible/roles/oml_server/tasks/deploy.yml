@@ -30,7 +30,7 @@
 
 # Creo directorio padre, home del usuario omnileads
 - name: Create the ominicontacto directorie
-  file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
+  file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} recurse=yes"
   when: desarrollo == 0
   tags: omniapp
 

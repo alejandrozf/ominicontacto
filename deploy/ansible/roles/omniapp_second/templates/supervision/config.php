@@ -6,7 +6,6 @@ define('AMI_PASSWORD','{{ sup_ami_password }}');
 define('AMI_HOST','{{ asterisk_fqdn }}');
 define('PG_DB', '{{ postgres_database }}');
 define('PG_USER', '{{ postgres_user }}');
-define('PG_PASSWORD', '{{ postgres_password }}');
 define('PG_HOST', '{{ database_fqdn }}');
 define('OMNI_HOST', $_SERVER['SERVER_NAME']);
 define('OMNI_HOST_LOGOUT', OMNI_HOST .'/accounts/logout/');

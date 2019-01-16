@@ -37,7 +37,7 @@ class Campana_Model {
       $sql = "select distinct nombre, ac.id from ominicontacto_app_campana ac
       where estado = 2";
       try {
-        $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
+        $cnn = new PDO($this->argPdo, PG_USER);
         $query = $cnn->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
