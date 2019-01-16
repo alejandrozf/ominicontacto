@@ -41,7 +41,7 @@ class Agente_Model {
 
         try {
           $cpname = "%$campName";
-          $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
+          $cnn = new PDO($this->argPdo, PG_USER);
           $query = $cnn->prepare($sql);
           $query->bindParam(':cpname', $cpname );
           $query->execute();
