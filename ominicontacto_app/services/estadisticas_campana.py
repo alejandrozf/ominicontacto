@@ -305,10 +305,10 @@ class EstadisticasService():
         reporte = OrderedDict(
             # se cuentan todos los eventos DIAL con 'tipo_llamada' no manual
             [(_('Discadas'), 0),
-             # se cuentan todos los eventos CONNECT con 'tipo_llamada' no manual
-             (_('Conectadas al agente'), 0),
              # se cuentan todos los eventos ANSWER con 'tipo_llamada' no manual
              (_('Atendidas'), 0),
+             # se cuentan todos los eventos CONNECT con 'tipo_llamada' no manual
+             (_('Conectadas al agente'), 0),
              # se cuentan todos los eventos EXITWITHTIMEOUT y ABANDON con 'tipo_llamada' no manual
              (_('Perdidas'), 0),
              # se cuentan todos los eventos AMD
