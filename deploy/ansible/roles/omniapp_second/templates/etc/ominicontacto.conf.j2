@@ -46,7 +46,7 @@ server {
       		add_header "Access-Control-Allow-Origin"  *;
     	}
         include         uwsgi_params;
-        uwsgi_pass      unix:/opt/omnileads/bin/oml.sock;
+        uwsgi_pass      unix:{{ install_prefix }}run/ominicontacto_app.socket;
         uwsgi_send_timeout 600s;
 	      uwsgi_read_timeout 600s;
 	      uwsgi_connect_timeout 600s;
