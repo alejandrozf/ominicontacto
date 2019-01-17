@@ -9,6 +9,7 @@ define('PG_USER', '{{ postgres_user }}');
 define('PG_HOST', '{{ database_fqdn }}');
 define('OMNI_HOST', $_SERVER['SERVER_NAME']);
 define('OMNI_HOST_LOGOUT', OMNI_HOST .'/accounts/logout/');
+define('WD_API_HOST', '{{ dialer_fqdn }}');
 define('WD_API_USER', 'demoadmin');
 define('WD_API_PASS', 'demo');
 define("entities", $_SERVER['DOCUMENT_ROOT'].'/Omnisup/entities');
