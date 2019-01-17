@@ -20,6 +20,7 @@
 # Comando para generar la secret_key que se usa para generar las contraseñas SIP, recibe como
 # argumento true si se quiere generar una nueva secret_key o false si se quiere consultar secret_key
 # existente
+from __future__ import unicode_literals
 
 import logging
 import os
