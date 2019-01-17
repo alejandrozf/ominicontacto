@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-08 16:17-0300\n"
+"POT-Creation-Date: 2019-01-17 11:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,8 +70,8 @@ msgid ""
 "ArchivoDeReporteCsv: Ya existe archivo CSV de reporte para la campana {0}. "
 "Archivo: {1}. El archivo sera sobreescrito"
 msgstr ""
-"ArchivoDeReporteCsv: CSV file report exists for campaign {0}. "
-"File: {1}. The file will be overwritten"
+"ArchivoDeReporteCsv: CSV file report exists for campaign {0}. File: {1}. The "
+"file will be overwritten"
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:78
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:143
@@ -200,8 +200,8 @@ msgid ""
 "obtener_url_reporte_csv_descargar(): NO existe archivo CSV de descarga para "
 "la campana {0}"
 msgstr ""
-"obtener_url_reporte_csv_descargar(): CSV file does not exist for downloading for "
-"campaign {0}"
+"obtener_url_reporte_csv_descargar(): CSV file does not exist for downloading "
+"for campaign {0}"
 
 #: reportes_app/reportes/reporte_llamadas.py:452
 #: reportes_app/reportes/reporte_llamadas.py:525

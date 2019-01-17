@@ -49,7 +49,7 @@ from django.core.exceptions import ValidationError, SuspiciousOperation
 from django.core.management import call_command
 from django.core.validators import RegexValidator
 from django.forms.models import model_to_dict
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now, timedelta
 from simple_history.models import HistoricalRecords
 from ominicontacto_app.utiles import (
@@ -167,19 +167,19 @@ class User(AbstractUser):
 
 
 class Modulo(models.Model):
-    nombre = models.CharField(max_length=20)
+    nombre = models.CharField(max_length=20, verbose_name=_('Nombre'))
 
     def __unicode__(self):
         return self.nombre
 
 
 class Grupo(models.Model):
-    nombre = models.CharField(max_length=20)
-    auto_attend_ics = models.BooleanField(default=False)
-    auto_attend_inbound = models.BooleanField(default=False)
-    auto_attend_dialer = models.BooleanField(default=False)
-    auto_pause = models.BooleanField(default=True)
-    auto_unpause = models.PositiveIntegerField()
+    nombre = models.CharField(max_length=20, verbose_name=_('Nombre'))
+    auto_attend_ics = models.BooleanField(default=False, verbose_name=_('auto_attend_ics'))
+    auto_attend_inbound = models.BooleanField(default=False, verbose_name=_('auto_attend_inbound'))
+    auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('auto_attend_dialer'))
+    auto_pause = models.BooleanField(default=True, verbose_name=_('auto_pause'))
+    auto_unpause = models.PositiveIntegerField(verbose_name=_('auto_unpause'))
 
     def __unicode__(self):
         return self.nombre
@@ -235,8 +235,8 @@ class AgenteProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
-    modulos = models.ManyToManyField(Modulo)
-    grupo = models.ForeignKey(Grupo, related_name='agentes')
+    modulos = models.ManyToManyField(Modulo, verbose_name=_("Módulos"))
+    grupo = models.ForeignKey(Grupo, related_name='agentes', verbose_name=_("Grupo"))
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
     reported_by = models.ForeignKey(User, related_name="reportedby")
     is_inactive = models.BooleanField(default=False)
@@ -327,7 +327,7 @@ class NombreCalificacionManager(models.Manager):
 
 
 class NombreCalificacion(models.Model):
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50, verbose_name=_('Nombre'))
     objects = NombreCalificacionManager()
 
     def es_reservada(self):
@@ -380,10 +380,10 @@ class FieldFormulario(models.Model):
     """Tipo de campo text area"""
 
     TIPO_CHOICES = (
-        (TIPO_TEXTO, 'Texto'),
-        (TIPO_FECHA, 'Fecha'),
-        (TIPO_LISTA, 'Lista'),
-        (TIPO_TEXTO_AREA, 'Caja de Texto de Area'),
+        (TIPO_TEXTO, _('Texto')),
+        (TIPO_FECHA, _('Fecha')),
+        (TIPO_LISTA, _('Lista')),
+        (TIPO_TEXTO_AREA, _('Caja de Texto de Area')),
     )
 
     formulario = models.ForeignKey(Formulario, related_name="campos")
@@ -860,14 +860,14 @@ class Campana(models.Model):
     como tal."""
 
     ESTADOS = (
-        (ESTADO_ACTIVA, 'Activa'),
-        (ESTADO_FINALIZADA, 'Finalizada'),
-        (ESTADO_BORRADA, 'Borrada'),
-        (ESTADO_PAUSADA, 'Pausada'),
-        (ESTADO_INACTIVA, 'Inactiva'),
+        (ESTADO_ACTIVA, _('Activa')),
+        (ESTADO_FINALIZADA, _('Finalizada')),
+        (ESTADO_BORRADA, _('Borrada')),
+        (ESTADO_PAUSADA, _('Pausada')),
+        (ESTADO_INACTIVA, _('Inactiva')),
 
-        (ESTADO_TEMPLATE_ACTIVO, 'Template Activo'),
-        (ESTADO_TEMPLATE_BORRADO, 'Template Borrado'),
+        (ESTADO_TEMPLATE_ACTIVO, _('Template Activo')),
+        (ESTADO_TEMPLATE_BORRADO, _('Template Borrado')),
     )
 
     TYPE_MANUAL = 1
@@ -892,9 +892,12 @@ class Campana(models.Model):
     SITIO_EXTERNO = 2
     "El tipo de interaccion es por sitio externo"
 
+    TIPO_FORMULARIO_DISPLAY = _('Formulario')
+    TIPO_SITIO_EXTERNO_DISPLAY = _('Url externa')
+
     TIPO_INTERACCION = (
-        (FORMULARIO, "Formulario"),
-        (SITIO_EXTERNO, "Url externa")
+        (FORMULARIO, TIPO_FORMULARIO_DISPLAY),
+        (SITIO_EXTERNO, TIPO_SITIO_EXTERNO_DISPLAY)
     )
 
     TIEMPO_ACTUALIZACION_CONTACTOS = 1
@@ -1181,8 +1184,8 @@ class OpcionCalificacion(models.Model):
     nombre = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
-            self.nombre, self.campana.nombre, self.get_tipo_display()))
+        return unicode(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
+            self.nombre, self.campana.nombre, self.get_tipo_display())))
 
     def es_agenda(self):
         return self.tipo == self.AGENDA
@@ -1418,12 +1421,13 @@ class Pausa(models.Model):
     objects = PausaManager()
 
     TIPO_PRODUCTIVA = 'P'
-    CHOICE_PRODUCTIVA = 'Productiva'
+    CHOICE_PRODUCTIVA = _('Productiva')
     TIPO_RECREATIVA = 'R'
-    CHOICE_RECREATIVA = 'Recreativa'
+    CHOICE_RECREATIVA = _('Recreativa')
     TIPO_CHOICES = ((TIPO_PRODUCTIVA, CHOICE_PRODUCTIVA), (TIPO_RECREATIVA, CHOICE_RECREATIVA))
-    nombre = models.CharField(max_length=20, unique=True)
-    tipo = models.CharField(max_length=1, choices=TIPO_CHOICES, default=TIPO_PRODUCTIVA)
+    nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
+    tipo = models.CharField(max_length=1, choices=TIPO_CHOICES, default=TIPO_PRODUCTIVA,
+                            verbose_name=_('Tipo'))
     eliminada = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -1869,14 +1873,14 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
 class BaseDatosContacto(models.Model):
     objects = BaseDatosContactoManager()
 
-    DATO_EXTRA_GENERICO = 'GENERICO'
-    DATO_EXTRA_FECHA = 'FECHA'
-    DATO_EXTRA_HORA = 'HORA'
+    DATO_EXTRA_GENERICO = _('GENERICO')
+    DATO_EXTRA_FECHA = _('FECHA')
+    DATO_EXTRA_HORA = _('HORA')
 
     DATOS_EXTRAS = (
-        (DATO_EXTRA_GENERICO, 'Dato Genérico'),
-        (DATO_EXTRA_FECHA, 'Fecha'),
-        (DATO_EXTRA_HORA, 'Hora'),
+        (DATO_EXTRA_GENERICO, _('Dato Genérico')),
+        (DATO_EXTRA_FECHA, _('Fecha')),
+        (DATO_EXTRA_HORA, _('Hora')),
     )
 
     ESTADO_EN_DEFINICION = 0
@@ -1885,25 +1889,26 @@ class BaseDatosContacto(models.Model):
     ESTADO_DEPURADA = 3
     ESTADO_DEFINIDA_ACTUALIZADA = 4
     ESTADOS = (
-        (ESTADO_EN_DEFINICION, 'En Definición'),
-        (ESTADO_DEFINIDA, 'Definida'),
-        (ESTADO_EN_DEPURACION, 'En Depuracion'),
-        (ESTADO_DEPURADA, 'Depurada'),
-        (ESTADO_DEFINIDA_ACTUALIZADA, 'Definida en actualizacion')
+        (ESTADO_EN_DEFINICION, _('En Definición')),
+        (ESTADO_DEFINIDA, _('Definida')),
+        (ESTADO_EN_DEPURACION, _('En Depuracion')),
+        (ESTADO_DEPURADA, _('Depurada')),
+        (ESTADO_DEFINIDA_ACTUALIZADA, _('Definida en actualizacion'))
     )
 
     nombre = models.CharField(
-        max_length=128,
+        max_length=128, verbose_name=_('Nombre')
     )
     fecha_alta = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True, verbose_name=_('Fecha alta')
     )
     archivo_importacion = models.FileField(
         upload_to=upload_to,
         max_length=256,
+        verbose_name=_('Archivo de importación')
     )
     nombre_archivo_importacion = models.CharField(
-        max_length=256,
+        max_length=256, verbose_name=_('Nombre Archivo de importación')
     )
     metadata = models.TextField(null=True, blank=True)
     sin_definir = models.BooleanField(
@@ -2799,17 +2804,18 @@ class ActuacionVigente(models.Model):
 class Backlist(models.Model):
 
     nombre = models.CharField(
-        max_length=128,
+        max_length=128, verbose_name=_('Nombre')
     )
     fecha_alta = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True, verbose_name=_('Fecha alta')
     )
     archivo_importacion = models.FileField(
         upload_to=upload_to,
         max_length=256,
+        verbose_name=_('Archivo de importación')
     )
     nombre_archivo_importacion = models.CharField(
-        max_length=256,
+        max_length=256, verbose_name=_('Nombre Archivo de importación')
     )
 
     sin_definir = models.BooleanField(
@@ -2880,14 +2886,14 @@ class ReglasIncidencia(models.Model):
     "Regla para timeout"
 
     ESTADOS_CHOICES = (
-        (RS_BUSY, "Ocupado"),
-        (TERMINATED, "Contestador"),
-        (RS_NOANSWER, "No atendido"),
-        (RS_REJECTED, "Rechazado"),
-        (RS_TIMEOUT, "Timeout")
+        (RS_BUSY, _("Ocupado")),
+        (TERMINATED, _("Contestador")),
+        (RS_NOANSWER, _("No atendido")),
+        (RS_REJECTED, _("Rechazado")),
+        (RS_TIMEOUT, _("Timeout"))
     )
 
-    ESTADO_PERSONALIZADO_CONTESTADOR = 'CONTESTADOR'
+    ESTADO_PERSONALIZADO_CONTESTADOR = _('CONTESTADOR')
 
     FIXED = 1
 
@@ -2933,8 +2939,8 @@ class ReglasIncidencia(models.Model):
 
 
 class UserApiCrm(models.Model):
-    usuario = models.CharField(max_length=64, unique=True)
-    password = models.CharField(max_length=128)
+    usuario = models.CharField(max_length=64, unique=True, verbose_name=_('Usuario'))
+    password = models.CharField(max_length=128, verbose_name=_('Contraseña'))
 
     def __unicode__(self):
         return self.usuario

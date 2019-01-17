@@ -33,16 +33,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
         en un formset  */
      $('.patronesDiscado').formset({
-       addText: 'Agregar patron de discado',
-       deleteText: 'Remover',
+       addText: AGREGAR_PATRON_DISCADO,
+       deleteText: REMOVER_CAMPO,
        prefix: '{{ patrondiscado_formset.prefix }}',
        addCssClass: 'btn btn-outline-primary patronesDiscado',
        deleteCssClass: 'btn btn-outline-danger patronesDiscado',
        formCssClass: 'dynamic-formset1',
      });
      $('.troncalesOrdenados').formset({
-       addText: 'Agregar troncal',
-       deleteText: 'Remover',
+       addText: AGREGAR_TRONCAL,
+       deleteText: REMOVER_CAMPO,
        prefix: '{{ ordentroncal_formset.prefix }}',
        addCssClass: 'btn btn-outline-primary troncalesOrdenados',
        deleteCssClass: 'btn btn-outline-danger troncalesOrdenados',

@@ -26,8 +26,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script type="text/javascript">
      $('.linkFormset').formset({
-       addText: 'Agregar parámetro',
-       deleteText: 'Remover',
+       addText: AGREGAR_PARAMETRO,
+       deleteText: REMOVER_CAMPO,
        prefix: '{{ wizard.form.prefix }}',
        addCssClass: 'addFormset btn btn-outline-primary',
        deleteCssClass: 'deleteFormset btn btn-outline-danger',

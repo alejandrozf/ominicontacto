@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-08 16:17-0300\n"
+"POT-Creation-Date: 2019-01-17 11:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -196,14 +196,15 @@ msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
 msgid ""
 "OPS, se venció el tiempo de asignación de este contacto.Por favor intente "
 "solicitar uno nuevo"
-msgstr ""
-"Oops, contact assignement timer expired. Please select a new one."
+msgstr "Oops, contact assignement timer expired. Please select a new one."
 
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:112
 msgid ""
 "Contacto asignado por llamado previo. Califique el contacto o liberelo para "
 "poder recibir un nuevo contacto."
-msgstr "Last assigned contact. You need to disposition this call, or release the contact to proceed with a new one."
+msgstr ""
+"Last assigned contact. You need to disposition this call, or release the "
+"contact to proceed with a new one."
 
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:157
 msgid "Contacto Liberado"
@@ -256,6 +257,46 @@ msgstr "Hide"
 #: ominicontacto_app/static/ominicontacto/JS/formularios.js:47
 msgid "Mostrar"
 msgstr "Show"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:1
+msgid "Agregar campo"
+msgstr "Add field"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:2
+msgid "Remover"
+msgstr "Remove"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:3
+msgid "Sin Acción"
+msgstr "Normal"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:4
+msgid "Gestión"
+msgstr "Engaged"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:5
+msgid "Agregar parámetro"
+msgstr "Add parameter"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:6
+msgid "Agregar regla"
+msgstr "Add rule"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:7
+msgid "Agregar patron de discado"
+msgstr "Add dial pattern"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:8
+msgid "Agregar troncal"
+msgstr "Add trunk"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:9
+msgid "Agregar destino"
+msgstr "Add destination"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:10
+msgid "Agregar validación"
+msgstr "Add validation"
 
 #: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:3
 msgid "Hoy"

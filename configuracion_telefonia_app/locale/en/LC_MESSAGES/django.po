@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-08 16:17-0300\n"
+"POT-Creation-Date: 2019-01-17 11:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,235 +27,292 @@ msgid "Prefijo"
 msgstr "Prefix"
 
 #: configuracion_telefonia_app/forms.py:71
-#: configuracion_telefonia_app/forms.py:271
+#: configuracion_telefonia_app/forms.py:280
 msgid "En segundos"
 msgstr "In seconds"
 
-#: configuracion_telefonia_app/forms.py:96
+#: configuracion_telefonia_app/forms.py:82
+#: configuracion_telefonia_app/forms.py:201
+#: configuracion_telefonia_app/forms.py:284
+#: configuracion_telefonia_app/models.py:42
+#: configuracion_telefonia_app/models.py:141
+#: configuracion_telefonia_app/models.py:246
+#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:32
+#: configuracion_telefonia_app/templates/lista_ivrs.html:33
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:31
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:31
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:31
+#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:32
+msgid "Nombre"
+msgstr "Name"
+
+#: configuracion_telefonia_app/forms.py:83
+msgid "Ring time"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:84
+msgid "Dial options"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:101
 msgid "Debe ingresar al menos un patrón de discado"
 msgstr "At least a dial pattern is required"
 
-#: configuracion_telefonia_app/forms.py:104
+#: configuracion_telefonia_app/forms.py:109
 msgid "Los patrones de discado deben ser diferentes"
 msgstr "Dial patterns must be different"
 
-#: configuracion_telefonia_app/forms.py:143
+#: configuracion_telefonia_app/forms.py:148
 msgid "Debe ingresar al menos un troncal"
 msgstr "At least a trunk is required"
 
-#: configuracion_telefonia_app/forms.py:149
+#: configuracion_telefonia_app/forms.py:154
 msgid "Los troncales deben ser distintos"
 msgstr "Trunks must be different"
 
-#: configuracion_telefonia_app/forms.py:194
-#: configuracion_telefonia_app/forms.py:421
-#: configuracion_telefonia_app/forms.py:462
+#: configuracion_telefonia_app/forms.py:183
+#: configuracion_telefonia_app/forms.py:435
+#: configuracion_telefonia_app/forms.py:476
 msgid "Tipo de destino"
 msgstr "Destination type"
 
-#: configuracion_telefonia_app/forms.py:195
+#: configuracion_telefonia_app/forms.py:200
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:32
 msgid "Número DID"
 msgstr "DID number"
 
-#: configuracion_telefonia_app/forms.py:219
-msgid "Archivo de OML"
-msgstr "OML file"
+#: configuracion_telefonia_app/forms.py:202
+msgid "Prefijo caller id"
+msgstr "Caller id prefix"
 
-#: configuracion_telefonia_app/forms.py:219
-msgid "Archivo externo"
-msgstr "External file"
+#: configuracion_telefonia_app/forms.py:203
+#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:34
+msgid "Idioma"
+msgstr "Language"
 
-#: configuracion_telefonia_app/forms.py:229
-msgid "Destino time out:"
-msgstr "Time out destination"
-
-#: configuracion_telefonia_app/forms.py:232
-msgid "Tipo de destino para time out:"
-msgstr "Time out destination type"
-
-#: configuracion_telefonia_app/forms.py:239
-msgid "Destino inválido:"
-msgstr "Invalid destination:"
-
-#: configuracion_telefonia_app/forms.py:242
-msgid "Tipo de destino para destino inválido:"
-msgstr "Invalid destination type:"
-
-#: configuracion_telefonia_app/forms.py:326
-msgid "Debe escoger un audio como archivo externo"
-msgstr "You must choose an audio file from an external source"
-
-#: configuracion_telefonia_app/forms.py:329
-#: configuracion_telefonia_app/forms.py:337
-msgid "Debe escoger un archivo de OML"
-msgstr "You must choose an OML file"
-
-#: configuracion_telefonia_app/forms.py:412
-msgid "Los valores de DTMF deben ser distintos"
-msgstr "DTMF values must be different"
-
-#: configuracion_telefonia_app/forms.py:428
-msgid "DTMF"
-msgstr "DTMF"
-
-#: configuracion_telefonia_app/forms.py:429
-#: configuracion_telefonia_app/forms.py:469
+#: configuracion_telefonia_app/forms.py:204
+#: configuracion_telefonia_app/forms.py:443
+#: configuracion_telefonia_app/forms.py:483
 msgid "Destino"
 msgstr "Destination"
 
-#: configuracion_telefonia_app/forms.py:448
+#: configuracion_telefonia_app/forms.py:228
+msgid "Archivo de OML"
+msgstr "OML file"
+
+#: configuracion_telefonia_app/forms.py:228
+msgid "Archivo externo"
+msgstr "External file"
+
+#: configuracion_telefonia_app/forms.py:238
+msgid "Destino time out:"
+msgstr "Time out destination"
+
+#: configuracion_telefonia_app/forms.py:241
+msgid "Tipo de destino para time out:"
+msgstr "Time out destination type"
+
+#: configuracion_telefonia_app/forms.py:248
+msgid "Destino inválido:"
+msgstr "Invalid destination:"
+
+#: configuracion_telefonia_app/forms.py:251
+msgid "Tipo de destino para destino inválido:"
+msgstr "Invalid destination type:"
+
+#: configuracion_telefonia_app/forms.py:285
+msgid "Descripción"
+msgstr "Description"
+
+#: configuracion_telefonia_app/forms.py:340
+msgid "Debe escoger un audio como archivo externo"
+msgstr "You must choose an audio file from an external source"
+
+#: configuracion_telefonia_app/forms.py:343
+#: configuracion_telefonia_app/forms.py:351
+msgid "Debe escoger un archivo de OML"
+msgstr "You must choose an OML file"
+
+#: configuracion_telefonia_app/forms.py:426
+msgid "Los valores de DTMF deben ser distintos"
+msgstr "DTMF values must be different"
+
+#: configuracion_telefonia_app/forms.py:442
+msgid "DTMF"
+msgstr "DTMF"
+
+#: configuracion_telefonia_app/forms.py:462
 msgid "El valor del DTMF debe ser un dígito o alguno de: #, -, *"
 msgstr "DTMF value must be a digit number or a character like: #, -, *"
 
-#: configuracion_telefonia_app/forms.py:504
+#: configuracion_telefonia_app/forms.py:518
 msgid "Los destinos deben ser distintos"
 msgstr "Destinations must be different"
 
-#: configuracion_telefonia_app/models.py:150
+#: configuracion_telefonia_app/models.py:45
+msgid "Canales máximos"
+msgstr "Maximum number of channels"
+
+#: configuracion_telefonia_app/models.py:48
+msgid "Caller id"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:50
+msgid "Register string"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:51
+msgid "Text config"
+msgstr ""
+
+#: configuracion_telefonia_app/models.py:154
 msgid "Lunes"
 msgstr "Monday"
 
-#: configuracion_telefonia_app/models.py:151
+#: configuracion_telefonia_app/models.py:155
 msgid "Martes"
 msgstr "Tuesday"
 
-#: configuracion_telefonia_app/models.py:152
+#: configuracion_telefonia_app/models.py:156
 msgid "Miércoles"
 msgstr "Wednesday"
 
-#: configuracion_telefonia_app/models.py:153
+#: configuracion_telefonia_app/models.py:157
 msgid "Jueves"
 msgstr "Thursday"
 
-#: configuracion_telefonia_app/models.py:154
+#: configuracion_telefonia_app/models.py:158
 msgid "Viernes"
 msgstr "Friday"
 
-#: configuracion_telefonia_app/models.py:155
+#: configuracion_telefonia_app/models.py:159
 msgid "Sábado"
 msgstr "Saturday"
 
-#: configuracion_telefonia_app/models.py:156
+#: configuracion_telefonia_app/models.py:160
 msgid "Domingo"
 msgstr "Sunday"
 
-#: configuracion_telefonia_app/models.py:162
+#: configuracion_telefonia_app/models.py:166
 msgid "Enero"
 msgstr "January"
 
-#: configuracion_telefonia_app/models.py:163
+#: configuracion_telefonia_app/models.py:167
 msgid "Febrero"
 msgstr "February"
 
-#: configuracion_telefonia_app/models.py:164
+#: configuracion_telefonia_app/models.py:168
 msgid "Marzo"
 msgstr "March"
 
-#: configuracion_telefonia_app/models.py:165
+#: configuracion_telefonia_app/models.py:169
 msgid "Abril"
 msgstr "April"
 
-#: configuracion_telefonia_app/models.py:166
+#: configuracion_telefonia_app/models.py:170
 msgid "Mayo"
 msgstr "May"
 
-#: configuracion_telefonia_app/models.py:167
+#: configuracion_telefonia_app/models.py:171
 msgid "Junio"
 msgstr "June"
 
-#: configuracion_telefonia_app/models.py:168
+#: configuracion_telefonia_app/models.py:172
 msgid "Julio"
 msgstr "July"
 
-#: configuracion_telefonia_app/models.py:169
+#: configuracion_telefonia_app/models.py:173
 msgid "Agosto"
 msgstr "August"
 
-#: configuracion_telefonia_app/models.py:170
+#: configuracion_telefonia_app/models.py:174
 msgid "Septiembre"
 msgstr "September"
 
-#: configuracion_telefonia_app/models.py:171
+#: configuracion_telefonia_app/models.py:175
 msgid "Octubre"
 msgstr "October"
 
-#: configuracion_telefonia_app/models.py:172
+#: configuracion_telefonia_app/models.py:176
 msgid "Noviembre"
 msgstr "November"
 
-#: configuracion_telefonia_app/models.py:173
+#: configuracion_telefonia_app/models.py:177
 msgid "Diciembre"
 msgstr "December"
 
-#: configuracion_telefonia_app/models.py:177
+#: configuracion_telefonia_app/models.py:181
 msgid "Tiempo inicio"
 msgstr "Initial time"
 
-#: configuracion_telefonia_app/models.py:178
+#: configuracion_telefonia_app/models.py:182
 msgid "Tiempo final"
 msgstr "End time"
 
-#: configuracion_telefonia_app/models.py:180
+#: configuracion_telefonia_app/models.py:184
 msgid "Día de la semana inicio"
 msgstr "Initial week day"
 
-#: configuracion_telefonia_app/models.py:182
+#: configuracion_telefonia_app/models.py:186
 msgid "Día de la semana final"
 msgstr "End week day"
 
-#: configuracion_telefonia_app/models.py:184
+#: configuracion_telefonia_app/models.py:188
 msgid "Día del mes inicio"
 msgstr "Initial month day"
 
-#: configuracion_telefonia_app/models.py:186
+#: configuracion_telefonia_app/models.py:190
 msgid "Día del mes final"
 msgstr "End month day"
 
-#: configuracion_telefonia_app/models.py:188
+#: configuracion_telefonia_app/models.py:192
 msgid "Mes inicio"
 msgstr "Initial month"
 
-#: configuracion_telefonia_app/models.py:190
+#: configuracion_telefonia_app/models.py:194
 msgid "Mes final"
 msgstr "End month"
 
-#: configuracion_telefonia_app/models.py:267
+#: configuracion_telefonia_app/models.py:249
+msgid "Grupo horario"
+msgstr "Group of Hours:"
+
+#: configuracion_telefonia_app/models.py:272
 msgid "Campaña entrante"
 msgstr "Inbound campaign"
 
-#: configuracion_telefonia_app/models.py:268
+#: configuracion_telefonia_app/models.py:273
 msgid "Validación de fecha/hora"
 msgstr "Time Conditions"
 
-#: configuracion_telefonia_app/models.py:269
+#: configuracion_telefonia_app/models.py:274
 msgid "IVR"
 msgstr "IVR"
 
-#: configuracion_telefonia_app/models.py:270
-#: configuracion_telefonia_app/models.py:382
+#: configuracion_telefonia_app/models.py:275
+#: configuracion_telefonia_app/models.py:387
 msgid "HangUp"
 msgstr "HangUp"
 
-#: configuracion_telefonia_app/models.py:280
+#: configuracion_telefonia_app/models.py:285
 #, python-brace-format
 msgid "{0}: {1}"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:293
+#: configuracion_telefonia_app/models.py:298
 msgid "Error: El nodo HangUp es único."
 msgstr "Error: HangUp node is unique."
 
-#: configuracion_telefonia_app/models.py:334
+#: configuracion_telefonia_app/models.py:339
 #, python-brace-format
 msgid "Desde nodo {0} a nodo {1}"
 msgstr "From node {0} to node {1}"
 
-#: configuracion_telefonia_app/models.py:354
+#: configuracion_telefonia_app/models.py:359
 msgid "Inglés"
 msgstr "English"
 
-#: configuracion_telefonia_app/models.py:355
+#: configuracion_telefonia_app/models.py:360
 msgid "Español"
 msgstr "Spanish"
 
@@ -274,9 +331,7 @@ msgstr "trying to call create_config_asterisk()"
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de rutas de "
 "Asterisk. "
-msgstr ""
-"An error ocurred when trying to create routing configuration file"
-
+msgstr "An error ocurred when trying to create routing configuration file"
 
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:107
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:120
@@ -306,8 +361,7 @@ msgstr "trying to call delete_family_ruta()"
 msgid ""
 "Hubo un inconveniente al eliminar los registros de las rutas en la base de "
 "datos de Asterisk. "
-msgstr ""
-"An error ocurred when trying to remove registers from routing database"
+msgstr "An error ocurred when trying to remove registers from routing database"
 
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:173
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:184
@@ -321,22 +375,19 @@ msgstr "SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0}"
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de trunks de "
 "Asterisk. "
-msgstr ""
-"An error ocurred when trying to create trunk configuration file"
+msgstr "An error ocurred when trying to create trunk configuration file"
 
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:188
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de trunks "
 "registration de Asterisk. "
-msgstr ""
-"An error ocurred when trying to create trunk configuration file"
+msgstr "An error ocurred when trying to create trunk configuration file"
 
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:210
 msgid ""
 "Hubo un inconveniente al insertar los registros del troncal en la base de "
 "datos de Asterisk. "
-msgstr ""
-"An error ocurred when trying to insert trunk registers on database"
+msgstr "An error ocurred when trying to insert trunk registers on database"
 
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:221
 msgid "intentar delete_family_trunk()"
@@ -346,8 +397,7 @@ msgstr "trying to call delete_family_trunk()"
 msgid ""
 "Hubo un inconveniente al eliminar los registros de los troncales en la base "
 "de datos de Asterisk. "
-msgstr ""
-"An error ocurred when trying to remove trunk registers on database"
+msgstr "An error ocurred when trying to remove trunk registers on database"
 
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:251
 #, python-brace-format
@@ -368,9 +418,12 @@ msgid "Error {0} en la families {1} alintentar delete_family()"
 msgstr "Error {0} in families {1} when trying to call delete_family()"
 
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:266
-#, python-brace-format
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Hubo un inconveniente al eliminar los registros de la families {0} la "
+#| "base de datos de Asterisk. "
 msgid ""
-"Hubo un inconveniente al eliminar los registros de la families {0} la base de "
+"Hubo un inconveniente al eliminar los registros de la families {0}la base de "
 "datos de Asterisk. "
 msgstr ""
 "An error ocurred when trying to delete the family {0} registers from database"
@@ -538,15 +591,6 @@ msgstr "Group of Hours"
 msgid "ID"
 msgstr "ID"
 
-#: configuracion_telefonia_app/templates/lista_grupos_horarios.html:32
-#: configuracion_telefonia_app/templates/lista_ivrs.html:33
-#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:31
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:31
-#: configuracion_telefonia_app/templates/lista_troncal_sip.html:31
-#: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:32
-msgid "Nombre"
-msgstr "Name"
-
 #: configuracion_telefonia_app/templates/lista_grupos_horarios.html:48
 msgid "No hay grupos horarios configurados"
 msgstr "There are no groups of hours configured"
@@ -602,10 +646,6 @@ msgstr "Add IVR"
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:25
 msgid "Rutas Entrantes"
 msgstr "Inbound Routes"
-
-#: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:34
-msgid "Idioma"
-msgstr "Language"
 
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:53
 msgid "No hay rutas entrantes configuradas"
@@ -715,8 +755,7 @@ msgstr "Group of Hours removed."
 #: configuracion_telefonia_app/views.py:647
 msgid ""
 "No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora"
-msgstr ""
-"Cannot remove a Group of Hours being in use by a Time Condition"
+msgstr "Cannot remove a Group of Hours being in use by a Time Condition"
 
 #: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:462
 #: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:474
@@ -754,8 +793,7 @@ msgstr "<strong>Warning!</strong> with the following error: {0} ."
 #: configuracion_telefonia_app/views.py:230
 msgid ""
 "No se puede eliminar un troncal que está siendo usado en una rutasaliente"
-msgstr ""
-"You cannot delete a trunk being in use by an Outbound route"
+msgstr "You cannot delete a trunk being in use by an Outbound route"
 
 #: configuracion_telefonia_app/views.py:243
 msgid "Troncal Sip eliminado con éxito"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-08 16:17-0300\n"
+"POT-Creation-Date: 2019-01-17 11:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -255,6 +255,46 @@ msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/formularios.js:47
 msgid "Mostrar"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:1
+msgid "Agregar campo"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:2
+msgid "Remover"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:3
+msgid "Sin Acción"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:4
+msgid "Gestión"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:5
+msgid "Agregar parámetro"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:6
+msgid "Agregar regla"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:7
+msgid "Agregar patron de discado"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:8
+msgid "Agregar troncal"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:9
+msgid "Agregar destino"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:10
+msgid "Agregar validación"
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:3
