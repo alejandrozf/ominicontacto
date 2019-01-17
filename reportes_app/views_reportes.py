@@ -160,8 +160,9 @@ class CampanaReporteGraficoView(FormView):
     def get_context_data(self, **kwargs):
         context = super(CampanaReporteGraficoView, self).get_context_data(
             **kwargs)
-
-        context['campana'] = self.get_object()
+        campana = self.get_object()
+        context['campana'] = campana
+        context['campana_entrante'] = (campana.type == Campana.TYPE_ENTRANTE)
         return context
 
     def form_valid(self, form):

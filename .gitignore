@@ -9,6 +9,7 @@ oml-uwsgi.pid
 .idea/
 virtualenv/
 *.pyc
+*.mo
 *~
 /.coverage
 atom-sftp-sync.json

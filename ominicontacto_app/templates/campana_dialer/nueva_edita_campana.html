@@ -22,11 +22,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load widget_tweaks %}
 
 {% block head_js %}
+    {% get_current_language as LANGUAGE_CODE %}
     <script>
      $(document).ready(function() {
-       $('#id_fecha_inicio').datetimepicker({format: 'DD/MM/YYYY'});
-       $('#id_fecha_fin').datetimepicker({format: 'DD/MM/YYYY'});
-
+       $('#id_fecha_inicio').datetimepicker({format: 'L', locale: '{{ LANGUAGE_CODE }}'});
+       $('#id_fecha_fin').datetimepicker({format: 'L', locale: '{{ LANGUAGE_CODE }}'});
      });
     </script>
 {% endblock %}
@@ -87,7 +87,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% block tipo_interaccion %}
             {{ form.tipo_interaccion.errors }}
             <div class="col-md-6">
-                <label><div class="myradio">{{ form.tipo_interaccion.0 }}</div> </label>
+              <label><div class="myradio">{{ form.tipo_interaccion.0 }}</div> </label>
                 {{ form.formulario }}
                 {{ form.formulario.errors }}
             </div>

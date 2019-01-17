@@ -74,7 +74,6 @@ function subscribirEventosBotonesOtrosMedios() {
             $("#crm").html(msg);
          },
          error: function (jqXHR, textStatus, errorThrown) {
-                     debugger;
                      console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
          }
        });
@@ -101,7 +100,6 @@ function subscribirEventosBotonesOtrosMedios() {
 	             $("#cuerpoTabla").html(row);
 	         },
 	         error: function (jqXHR, textStatus, errorThrown) {
-	             debugger;
 	             console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	         }
 	     });
@@ -159,7 +157,6 @@ function subscribirEventosBotonesOtrosMedios() {
 	         $("#modalConvers").modal('show');
 	       },
 	       error: function (jqXHR, textStatus, errorThrown) {
-	         debugger;
 	         console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
 	       }
 	     });

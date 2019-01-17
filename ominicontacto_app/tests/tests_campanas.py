@@ -36,7 +36,8 @@ from django.utils.translation import ugettext as _
 
 from configuracion_telefonia_app.models import DestinoEntrante
 
-from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember, OpcionCalificacion
+from ominicontacto_app.models import (AgenteEnContacto, Campana, QueueMember, OpcionCalificacion,
+                                      Formulario)
 from ominicontacto_app.forms import CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
@@ -44,7 +45,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                AgenteEnContactoFactory, QueueMemberFactory,
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
-                                               ActuacionVigenteFactory)
+                                               ActuacionVigenteFactory, FormularioFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -596,6 +597,7 @@ class SupervisorCampanaTests(CampanasTests):
             '1-servicelevel': 1,
             '1-strategy': 'ringall',
             '1-weight': 1,
+            '1-wrapuptime': 2,
             '1-wait': 1,
             '1-auto_grabacion': 'on',
             '1-audios': audio_ingreso.pk,
@@ -1429,3 +1431,16 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
         # self.assertEqual(param_extra_web_form_clonado.parametro, param_extra_web_form.parametro)
         # self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
+
+    def test_no_es_posible_eliminar_formulario_asignado_a_campana(self):
+        url = reverse('formulario_eliminar', args=[self.campana.formulario.pk])
+        n_formularios = Formulario.objects.count()
+        self.client.post(url, follow=True)
+        self.assertEqual(Formulario.objects.count(), n_formularios)
+
+    def test_se_puede_eliminar_formulario_no_asignado_a_campana(self):
+        formulario = FormularioFactory()
+        url = reverse('formulario_eliminar', args=[formulario.pk])
+        n_formularios = Formulario.objects.count()
+        self.client.post(url, follow=True)
+        self.assertEqual(Formulario.objects.count(), n_formularios - 1)

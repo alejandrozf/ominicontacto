@@ -134,8 +134,8 @@ class CustomUserWizard(SessionWizardView):
         try:
             asterisk_sip_service.activar()
         except RestablecerConfigSipError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error{0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error{0} .".format(e))
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -154,8 +154,8 @@ class CustomUserWizard(SessionWizardView):
         try:
             asterisk_sip_service.activar()
         except RestablecerConfigSipError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error{0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error{0} .".format(e))
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -341,8 +341,8 @@ class AgenteProfileUpdateView(UpdateView):
         try:
             asterisk_sip_service.activar()
         except RestablecerConfigSipError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error{0} .".format(e))
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error{0} .".format(e))
             messages.add_message(
                 self.request,
                 messages.WARNING,

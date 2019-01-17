@@ -39,6 +39,7 @@ js_info_dict = {
     'packages': ('ominicontacto_app',),
 }
 
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('ominicontacto_app.urls')),
@@ -53,4 +54,5 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^jsi18n/$', javascript_catalog, js_info_dict, name='javascript-catalog'),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 ]

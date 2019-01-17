@@ -80,11 +80,11 @@ class ArchivoDeAudioMixin(object):
             form.instance.audio_original = None
             form.instance.save()
 
-            logger.warn("convertir_audio_de_archivo_de_audio_globales(): "
-                        "produjo un error inesperado. Detalle: %s", e)
+            logger.warn(_("convertir_audio_de_archivo_de_audio_globales(): "
+                          "produjo un error inesperado. Detalle: {0}".format(e)))
 
-            message = '<strong>Operación Errónea!</strong> \
-            Se produjo un error inesperado en la conversión del audio.'
+            message = _('<strong>Operación Errónea!</strong> \
+            Se produjo un error inesperado en la conversión del audio.')
             messages.add_message(
                 self.request,
                 messages.ERROR,

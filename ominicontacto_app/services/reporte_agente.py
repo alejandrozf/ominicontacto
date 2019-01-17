@@ -21,6 +21,8 @@
 Servicio para generar reporte grafico de un agente en particular para una campana
 """
 
+from __future__ import unicode_literals
+
 import datetime
 import logging as _logging
 

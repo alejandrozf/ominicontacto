@@ -74,13 +74,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% if graficos_estadisticas.estadisticas.llamadas_realizadas != None %}
             <div class="col-md-6">
                 <h1 class="display-2">{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</h1>
-                <h3>{% trans 'Llamadas Realizadas' %}</h3>
+                <h3>{% trans 'Llamadas Realizadas' %} </h3>
+                {% if campana_entrante %}
+                    <h3>{% trans '(Se muestran las llamadas del día actual)' %} </h3>
+                {% endif %}
             </div>
         {% endif %}
         {% if graficos_estadisticas.estadisticas.llamadas_recibidas != None %}
             <div class="col-md-6">
                 <h1 class="display-2">{{graficos_estadisticas.estadisticas.llamadas_recibidas}}</h1>
                 <h3>{% trans 'Llamadas Recibidas' %}</h3>
+                {% if campana_entrante %}
+                    <h3>{% trans '(Se muestran las llamadas del día actual)' %} </h3>
+                {% endif %}
             </div>
         {% endif %}
     </div>
@@ -110,7 +116,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <h2>{% trans "Reportes de contactados" %}</h2>
     <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_llamados_contactados' campana.pk %}">{% trans "Exportar Reporte de contactados (CSV)" %}</a>
     <hr>
-    <h3>{% trans "Cantidad de calificación por campaña" %}</h3>
+    <h3>{% trans "Llamadas conectadas al agente" %}</h3>
     <br>
     <div class="form-row">
         <div class="col-md-6">

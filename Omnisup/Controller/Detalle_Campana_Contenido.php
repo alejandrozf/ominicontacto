@@ -94,9 +94,9 @@ function mostrarEstadoAgentes($camp) {
                         '<a class=\'not-link\' title=\'conferencia\' href=\'#\'><i class=\'fas fa-users conference\' id=\'' . $value->getId()  . '\'></i></a>' .
                       '"},';
                      }
-                     $i++;
                  }
          }
+         $i++;
      }
      $jsonString = substr($jsonString, 0, -1);
      $jsonString .=  ']';

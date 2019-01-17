@@ -37,7 +37,7 @@ class Campana_Model {
       $sql = "select distinct nombre, ac.id from ominicontacto_app_campana ac
       where estado = 2";
       try {
-        $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
+        $cnn = new PDO($this->argPdo, PG_USER);
         $query = $cnn->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -56,7 +56,7 @@ class Campana_Model {
               join ominicontacto_app_supervisorprofile sp on sp.user_id = cs.user_id
               where ac.estado = 2 and sp.id = :id";
       try {
-        $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
+        $cnn = new PDO($this->argPdo, PG_USER);
         $query = $cnn->prepare($sql);
         $query->bindParam(':id', $userId);
         $query->execute();
@@ -75,7 +75,7 @@ class Campana_Model {
     }
 
     function getChannelsStatus($CampName) {
-         $process = curl_init("http://" . PG_HOST . ":8080/wombat/api/live/calls/");
+         $process = curl_init("http://" . WD_API_HOST . ":8080/wombat/api/live/calls/");
          curl_setopt($process, CURLOPT_HEADER, 0);
          curl_setopt($process, CURLOPT_USERPWD, WD_API_USER . ":" . WD_API_PASS);
          curl_setopt($process, CURLOPT_POST, 1);
@@ -90,7 +90,7 @@ class Campana_Model {
     function getSIPcredentialsByUserId($userId) {
         $sql = "select sip_extension, sip_password, timestamp FROM ominicontacto_app_supervisorprofile where id = :id";
         try {
-            $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
+            $cnn = new PDO($this->argPdo, PG_USER);
             $query = $cnn->prepare($sql);
             $query->bindParam(':id', $userId);
             $query->execute();
@@ -105,7 +105,7 @@ class Campana_Model {
     function getGoalCampaign($CampId) {
          $sql = "select objetivo from ominicontacto_app_campana where id = :cmpid";
          try {
-           $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
+           $cnn = new PDO($this->argPdo, PG_USER);
            $query = $cnn->prepare($sql);
            $query->bindParam(':cmpid', $CampId);
            $query->execute();
@@ -125,7 +125,7 @@ class Campana_Model {
        $month = date("m");
        $year = date("Y");
        try {
-           $cnn = new PDO($this->argPdo, PG_USER, PG_PASSWORD);
+           $cnn = new PDO($this->argPdo, PG_USER);
            $query = $cnn->prepare($sql);
            $query->bindParam(':dia', $day);
            $query->bindParam(':mes', $month);

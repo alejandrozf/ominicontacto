@@ -68,9 +68,9 @@ class CampanasDeleteMixin(object):
         try:
             activacion_queue_service.activar()
         except RestablecerDialplanError, e:
-            message = ("<strong>Operación Errónea!</strong> "
-                       "No se pudo confirmar la creación del dialplan  "
-                       "al siguiente error: {0}".format(e))
+            message = _("<strong>Operación Errónea!</strong> "
+                        "No se pudo confirmar la creación del dialplan  "
+                        "al siguiente error: {0}".format(e))
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -152,7 +152,7 @@ class FormularioSeleccionCampanaFormView(FormView):
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
         if not agente.campana_member.all():
-            message = ("Este agente no esta asignado a ninguna campaña ")
+            message = _("Este agente no esta asignado a ninguna campaña ")
             messages.warning(self.request, message)
         return super(FormularioSeleccionCampanaFormView,
                      self).dispatch(request, *args, **kwargs)

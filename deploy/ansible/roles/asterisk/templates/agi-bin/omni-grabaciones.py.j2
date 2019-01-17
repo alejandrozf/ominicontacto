@@ -42,7 +42,6 @@ setdefaulttimeout(30)
 OML_DB_HOST = configParser.get('OML', 'POSTGRES_HOST')
 OML_DB_NAME = configParser.get('OML', 'POSTGRES_DATABASE')
 OML_DB_USER = configParser.get('OML', 'POSTGRES_USER')
-OML_DB_PASS = configParser.get('OML', 'POSTGRES_PASSWORD')
 
 tipo_llamada = sys.argv[1]
 id_cliente = sys.argv[2]
@@ -57,7 +56,7 @@ duracion = sys.argv[9]
 # conectando con BD
 try:
     conn = psycopg2.connect(
-        host=OML_DB_HOST, dbname=OML_DB_NAME, user=OML_DB_USER, password=OML_DB_PASS)
+        host=OML_DB_HOST, dbname=OML_DB_NAME, user=OML_DB_USER)
 except Exception as e:
     write_time_stderr("Unable to connect to the database due to {0}".format(e.message))
     raise e

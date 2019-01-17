@@ -69,7 +69,7 @@ class CampanaService():
                 metadata_actual.nombres_de_columnas,
                 metadata_modificar.nombres_de_columnas):
             if columna_base != columna_modificar:
-                error = "Los nombres de las columnas no coinciden"
+                error = _("Los nombres de las columnas no coinciden")
 
         return error
 
@@ -404,7 +404,7 @@ class CampanaService():
         por realizar, si no le quedan las elimino de las campanas corriendo y le cambio
         el estado a eliminadas
         """
-        error_msg = _(u"No se pudo consultar el estado actual de la campaña. "
+        error_msg = _("No se pudo consultar el estado actual de la campaña. "
                       "Consulte con su administrador.")
         error = False
         for campana in campanas:

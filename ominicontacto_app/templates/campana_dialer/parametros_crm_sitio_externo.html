@@ -22,6 +22,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load widget_tweaks %}
 
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+     $('.linkFormset').formset({
+       addText: AGREGAR_PARAMETRO,
+       deleteText: REMOVER_CAMPO,
+       prefix: '{{ wizard.form.prefix }}',
+       addCssClass: 'addFormset btn btn-outline-primary',
+       deleteCssClass: 'deleteFormset btn btn-outline-danger',
+     });
+    </script>
+{% endblock %}
+
 {% block nav %}
     <h1>{% trans 'Campaña Dialer: Interacción con Sitio Externo' %}</h1>
 

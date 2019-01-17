@@ -32,6 +32,7 @@ import os
 import re
 
 from django.utils.encoding import smart_text
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
@@ -67,13 +68,13 @@ class CreacionBaseDatosService(object):
 
         csv_extensions = ['.csv']
 
-        file_invalid_msg = "El archivo para realizar la importación de contactos no es válido"
+        file_invalid_msg = _("El archivo para realizar la importación de contactos no es válido")
         filename = base_datos_contacto.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
-            logger.warn("La extensión %s no es CSV. ", extension)
-            raise(OmlArchivoImportacionInvalidoError("El archivo especificado "
-                  "para realizar la importación de contactos no es válido"))
+            logger.warn(_("La extensión {0} no es CSV. ".format(extension)))
+            raise(OmlArchivoImportacionInvalidoError(_("El archivo especificado "
+                  "para realizar la importación de contactos no es válido")))
         data = csv.reader(base_datos_contacto.archivo_importacion)
         validar_estructura_csv(data, file_invalid_msg, logger)
 
@@ -181,10 +182,10 @@ class CreacionBaseDatosService(object):
                     bd_contacto=base_datos_contacto
                 )
                 if len(contacto) > 0:
-                    raise (ContactoExistenteError("ya existe el contacto con el"
-                                                  "  de id de cliente: {0}"
-                                                  " la base de datos ".format(
-                                                      int(lista_dato[1]))))
+                    raise (ContactoExistenteError(_("ya existe el contacto con el"
+                                                    "  de id de cliente: {0}"
+                                                    " la base de datos ".format(
+                                                        int(lista_dato[1])))))
 
         except OmlParserMaxRowError:
             base_datos_contacto.elimina_contactos()
@@ -271,19 +272,19 @@ class PredictorMetadataService(object):
         logger.debug("inferir_metadata_desde_lineas(): %s", lineas)
 
         if len(lineas) < 2:
-            logger.debug("Se deben proveer al menos 2 lineas: %s", lineas)
-            raise(NoSePuedeInferirMetadataError("Se deben proveer al menos 2 "
-                                                "lineas para poder inferir "
-                                                "los metadatos"))
+            logger.debug(_("Se deben proveer al menos 2 lineas: {0}".format(lineas)))
+            raise(NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
+                                                  "lineas para poder inferir "
+                                                  "los metadatos")))
 
         # Primero chequeamos q' haya igual cant. de columnas
         set_cant_columnas = set([len(linea) for linea in lineas])
         if len(set_cant_columnas) != 1:
-            logger.debug("Distintas cantidades "
-                         "de columnas: %s", set_cant_columnas)
-            raise(NoSePuedeInferirMetadataError("Las lineas recibidas "
-                                                "poseen distintas cantidades "
-                                                "de columnas"))
+            logger.debug(_("Distintas cantidades "
+                           "de columnas: {0}".fomat(set_cant_columnas)))
+            raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+                                                  "poseen distintas cantidades "
+                                                  "de columnas")))
 
         primer_linea = lineas[0]
         otras_lineas = lineas[1:]
@@ -291,17 +292,17 @@ class PredictorMetadataService(object):
 
         # Ahora chequeamos que haya al menos 1 columna
         if len(primer_linea) == 0:
-            logger.debug("Las lineas no poseen ninguna "
-                         "columna: %s", primer_linea)
-            raise(NoSePuedeInferirMetadataError("Las lineas no poseen ninguna "
-                                                "columna"))
+            logger.debug(_("Las lineas no poseen ninguna "
+                           "columna: {0}".format(primer_linea)))
+            raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
+                                                  "columna")))
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
         # chequeamos que el nombre de la primera columna sea telefono
         if primer_linea[0] != 'telefono':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
-                                                           "columna debe ser telefono"))
+            raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "
+                                                             "columna debe ser telefono")))
 
         # ======================================================================
         # Primero detectamos columnas de datos
@@ -310,34 +311,34 @@ class PredictorMetadataService(object):
         columnas_con_telefonos = self._inferir_columnas(
             otras_lineas, validate_telefono)
 
-        logger.debug("columnas_con_telefonos: %s", columnas_con_telefonos)
+        logger.debug(_("columnas_con_telefonos: {0}".format(columnas_con_telefonos)))
 
         columnas_con_fechas = self._inferir_columnas(
             otras_lineas, lambda x: validate_fechas([x]))
 
-        logger.debug("columnas_con_fechas: %s", columnas_con_fechas)
+        logger.debug("columnas_con_fechas: {0}".format(columnas_con_fechas))
 
         columnas_con_horas = self._inferir_columnas(
             otras_lineas, lambda x: validate_horas([x]))
 
-        logger.debug("columnas_con_horas: %s", columnas_con_horas)
+        logger.debug("columnas_con_horas: {0}".format(columnas_con_horas))
 
         columna_con_telefono = None
         if len(columnas_con_telefonos) == 0:
-            logger.debug("No se encontro columna con telefono")
+            logger.debug(_("No se encontro columna con telefono"))
 
         else:
             # Se detecto 1 o mas columnas con telefono. Usamos la 1ra.
-            logger.debug("Se detecto: columnas_con_telefonos: %s",
-                         columnas_con_telefonos)
+            logger.debug(_("Se detecto: columnas_con_telefonos: {0}".format(
+                columnas_con_telefonos)))
 
             if columnas_con_telefonos[0] in columnas_con_fechas:
-                logger.warn("La columna con telefono tambien esta entre "
-                            "las columnas detectadas como fecha")
+                logger.warn(_("La columna con telefono tambien esta entre "
+                              "las columnas detectadas como fecha"))
 
             elif columnas_con_telefonos[0] in columnas_con_horas:
-                logger.warn("La columna con telefono tambien esta entre "
-                            "las columnas detectadas como hora")
+                logger.warn(_("La columna con telefono tambien esta entre "
+                              "las columnas detectadas como hora"))
             else:
                 columna_con_telefono = columnas_con_telefonos[0]
 
@@ -356,8 +357,8 @@ class PredictorMetadataService(object):
             # no creo q' valga la pena devolver la instancia de mentadata,
             # me parece mas significativo reportar el hecho de que
             # no se pudo inferir el metadato.
-            raise(NoSePuedeInferirMetadataError("No se pudo inferir ningun "
-                                                "tipo de dato"))
+            raise(NoSePuedeInferirMetadataError(_("No se pudo inferir ningun "
+                                                  "tipo de dato")))
 
         # ======================================================================
         # Si detectamos telefono, fecha u hora podemos verificar si la
@@ -432,19 +433,19 @@ class PredictorMetadataService(object):
         logger.debug("inferir_metadata_desde_lineas(): %s", lineas)
 
         if len(lineas) < 2:
-            logger.debug("Se deben proveer al menos 2 lineas: %s", lineas)
-            raise(NoSePuedeInferirMetadataError("Se deben proveer al menos 2 "
-                                                "lineas para poder inferir "
-                                                "los metadatos"))
+            logger.debug(_("Se deben proveer al menos 2 lineas: {0}".format(lineas)))
+            raise(NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
+                                                  "lineas para poder inferir "
+                                                  "los metadatos")))
 
         # Primero chequeamos q' haya igual cant. de columnas
         set_cant_columnas = set([len(linea) for linea in lineas])
         if len(set_cant_columnas) != 1:
             logger.debug("Distintas cantidades "
                          "de columnas: %s", set_cant_columnas)
-            raise(NoSePuedeInferirMetadataError("Las lineas recibidas "
-                                                "poseen distintas cantidades "
-                                                "de columnas"))
+            raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+                                                  "poseen distintas cantidades "
+                                                  "de columnas")))
 
         primer_linea = lineas[0]
         otras_lineas = lineas[1:]
@@ -454,23 +455,23 @@ class PredictorMetadataService(object):
         if len(primer_linea) == 0:
             logger.debug("Las lineas no poseen ninguna "
                          "columna: %s", primer_linea)
-            raise(NoSePuedeInferirMetadataError("Las lineas no poseen ninguna "
-                                                "columna"))
+            raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
+                                                  "columna")))
 
         if metadata.cantidad_de_columnas != len(primer_linea):
             logger.debug("Distintas cantidades "
                          "de columnas: %s", set_cant_columnas)
-            raise (NoSePuedeInferirMetadataError("Las lineas recibidas "
-                                                 "poseen distintas cantidades "
-                                                 "de columnas"))
+            raise (NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+                                                   "poseen distintas cantidades "
+                                                   "de columnas")))
         metadata.cantidad_de_columnas = len(primer_linea)
 
         # chequeamos que el nombre de las columnas sean los mismo cargado previamente
         for columna_base, columna_csv in zip(metadata.nombres_de_columnas, primer_linea):
             if columna_base != columna_csv:
-                raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la"
-                       " columna {0} no coincide con el guardado en la base ".
-                                                               format(columna_base)))
+                raise (NoSePuedeInferirMetadataErrorEncabezado(
+                    _("El nombre de la  columna {0} no coincide con el "
+                      "guardado en la base ".format(columna_base))))
 
         # ======================================================================
         # Primero detectamos columnas de datos
@@ -501,12 +502,12 @@ class PredictorMetadataService(object):
                          columnas_con_telefonos)
 
             if columnas_con_telefonos[0] in columnas_con_fechas:
-                logger.warn("La columna con telefono tambien esta entre "
-                            "las columnas detectadas como fecha")
+                logger.warn(_("La columna con telefono tambien esta entre "
+                              "las columnas detectadas como fecha"))
 
             elif columnas_con_telefonos[0] in columnas_con_horas:
-                logger.warn("La columna con telefono tambien esta entre "
-                            "las columnas detectadas como hora")
+                logger.warn(_("La columna con telefono tambien esta entre "
+                              "las columnas detectadas como hora"))
             else:
                 columna_con_telefono = columnas_con_telefonos[0]
 
@@ -525,8 +526,8 @@ class PredictorMetadataService(object):
             # no creo q' valga la pena devolver la instancia de mentadata,
             # me parece mas significativo reportar el hecho de que
             # no se pudo inferir el metadato.
-            raise(NoSePuedeInferirMetadataError("No se pudo inferir ningun "
-                                                "tipo de dato"))
+            raise(NoSePuedeInferirMetadataError(_("No se pudo inferir ningun "
+                                                  "tipo de dato")))
 
         # ======================================================================
         # Si detectamos telefono, fecha u hora podemos verificar si la
@@ -667,24 +668,24 @@ class CreacionBaseDatosApiService(object):
         if cantidad_columnas != cantidad_contacto:
             logger.debug("Distintas cantidades "
                          "de columnas: %s", cantidad_columnas)
-            raise(NoSePuedeInferirMetadataError("Las lineas recibidas "
-                                                "poseen distintas cantidades "
-                                                "de columnas"))
+            raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+                                                  "poseen distintas cantidades "
+                                                  "de columnas")))
         metadata = MetadataBaseDatosContactoDTO()
 
         # Ahora chequeamos que haya al menos 1 columna
         if len(primer_linea) == 0:
             logger.debug("Las lineas no poseen ninguna "
                          "columna: %s", primer_linea)
-            raise(NoSePuedeInferirMetadataError("Las lineas no poseen ninguna "
-                                                "columna"))
+            raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
+                                                  "columna")))
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
         # chequeamos que el nombre de la primera columna sea telefono
         if primer_linea[0] != 'telefono':
-            raise (NoSePuedeInferirMetadataErrorEncabezado("El nombre de la primera "
-                                                           "columna debe ser telefono"))
+            raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "
+                                                             "columna debe ser telefono")))
 
         # ======================================================================
         # Primero detectamos columnas de datos
@@ -739,8 +740,8 @@ class CreacionBaseDatosApiService(object):
             # no creo q' valga la pena devolver la instancia de mentadata,
             # me parece mas significativo reportar el hecho de que
             # no se pudo inferir el metadato.
-            raise(NoSePuedeInferirMetadataError("No se pudo inferir ningun "
-                                                "tipo de dato"))
+            raise(NoSePuedeInferirMetadataError(_("No se pudo inferir ningun "
+                                                  "tipo de dato")))
 
         # ======================================================================
         # Si detectamos telefono, fecha u hora podemos verificar si la

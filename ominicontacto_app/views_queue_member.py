@@ -58,7 +58,8 @@ def adicionar_agente_cola(agente, queue_member, campana):
         client.login()
         client.queue_add(queue, interface, penalty, paused, member_name)
     except AsteriskHttpQueueAddError:
-        logger.exception("QueueAdd failed - agente: %s de la campana: %s ", agente, campana)
+        logger.exception(_("QueueAdd failed - agente: {0} de la campana: {1} ".format(
+            agente, campana)))
 
 
 def adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados):
@@ -270,8 +271,8 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
             client.queue_remove(queue, interface)
 
         except AsteriskHttpQueueRemoveError:
-            logger.exception("QueueRemove failed - agente: %s de la campana: %s ", agente,
-                             campana)
+            logger.exception(_("QueueRemove failed - agente: {0} de la campana: {1} ".format(
+                agente, campana)))
     activar_cola(request)
 
     return HttpResponseRedirect(

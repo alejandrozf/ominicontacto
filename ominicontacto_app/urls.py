@@ -391,6 +391,11 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views_formulario.FormularioListView.as_view()),
         name='formulario_list',
         ),
+    url(r'^formulario/list/mostrar_ocultos/$',
+        administrador_o_supervisor_requerido(
+            views_formulario.FormularioMostrarOcultosView.as_view()),
+        name='formulario_list_mostrar_ocultos',
+        ),
     url(r'^formulario/nuevo/$',
         administrador_o_supervisor_requerido(views_formulario.FormularioCreateView.as_view()),
         name='formulario_nuevo',
@@ -410,6 +415,17 @@ urlpatterns = [
     url(r'^formulario/(?P<pk_formulario>\d+)/vista_previa/$',
         administrador_o_supervisor_requerido(views_formulario.FormularioPreviewFormView.as_view()),
         name='formulario_vista_previa',
+        ),
+
+    url(r'^formulario/(?P<pk_formulario>\d+)/eliminar/$',
+        administrador_o_supervisor_requerido(views_formulario.FormularioDeleteView.as_view()),
+        name='formulario_eliminar',
+        ),
+
+    url(r'^formulario/(?P<pk_formulario>\d+)/mostrar_ocultar/$',
+        administrador_o_supervisor_requerido(
+            views_formulario.FormularioMostrarOcultarView.as_view()),
+        name='formulario_mostrar_ocultar',
         ),
 
     # TODO: Verificar si se usa esta vista.

@@ -107,7 +107,7 @@ class OmlParserCsvImportacionError(OmlError):
         return self._valor_celda
 
     def __str__(self):
-        return (u"Fila con problema: '{0}'. "
+        return ("Fila con problema: '{0}'. "
                 "Celda: '{1}'").format(self._fila,
                                        self._valor_celda)
 

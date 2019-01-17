@@ -41,9 +41,13 @@
   with_items:
           - migrate
           - collectstatic
+    # https://github.com/ierror/django-js-reverse
+          - collectstatic_js_reverse
+    # https://django-compressor.readthedocs.io/en/stable/
           - compress
           - regenerar_asterisk
           - populate_history --auto
+          - compilemessages
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: yes

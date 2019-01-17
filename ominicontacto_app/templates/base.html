@@ -42,12 +42,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
     <!-- jquery UI -->
     <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    <script src="{% static 'ominicontacto/JS/l18n_constantes.js' %}"></script>
     {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <!-- Bootstrap -->
     <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
 
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/moment-with-locales.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
@@ -119,7 +121,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% if user.get_is_administrador %}
                 <li class="main-menu-li">
                     <span class="icon icon-module"></span>
-                    <a class="menu-header" href="#menuModules" role="button" data-toggle="collapse" aria-expanded="false">Módulos</a>
+                    <a class="menu-header" href="#menuModules" role="button" data-toggle="collapse" aria-expanded="false">
+                      {% trans 'Módulos' %}</a>
                     <ul class="collapse list-unstyled submenu" id="menuModules" data-parent="#nav-main-menu">
                         <li>
                             <a href="{% url 'modulo_list' %}">{% trans 'Módulos disponibles' %}</a>
@@ -190,7 +193,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </li>
 
                         <li>
-                            <a href="#menuCampaignIn" role="button" data-toggle="collapse" aria-expanded="false">Campañas entrantes</a>
+                            <a href="#menuCampaignIn" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Campañas entrantes' %}</a>
                             <ul class="collapse list-unstyled submenu-two" id="menuCampaignIn" data-parent=".nav-submenu">
                                 <li>
                                     <a href="{% url 'campana_list' %}">{% trans 'Listado  de campañas' %}</a>
@@ -383,17 +386,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="wrapper-content">
             {% if user.is_authenticated %}
-            <div id="topbar">
-                <div class="nav">
-                    <button type="button" id="sidebarCollapse" class="btn">
-                        <span class="fas fa-bars"></span>
-                    </button>
-                    <div id="nav-user">
-                        <a>{{ user.get_full_name }}</a>
-                        <a class="btn" href="{% url 'logout' %}" title="{% trans 'Deslogueo' %}">{% trans 'Salir' %}</a>
+                <div id="topbar">
+                    <div class="nav">
+                        <button type="button" id="sidebarCollapse" class="btn">
+                            <span class="fas fa-bars"></span>
+                        </button>
+                        {% include 'cambiar_idioma.html' %}
+                        <div id="nav-user">
+                            <a>{{ user.get_full_name }}</a>
+                            <a class="btn" href="{% url 'logout' %}" title="{% trans 'Deslogueo' %}">{% trans 'Salir' %}</a>
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endif %}
 
             <div class="wrapper-info">
@@ -417,8 +421,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 {% block extra_js %}{% endblock %}
 
-<script type="text/javascript">
+<!-- Cambiar idioma -->
+<script type="text/javascript" src="{% static 'ominicontacto/JS/idioma.js' %}"></script>
 
+<script type="text/javascript">
 $(document).ready(function () {
 
     /* Toggle */
@@ -462,8 +468,6 @@ $(document).ready(function () {
 
 
 });
-
-
 </script>
 
 </body>

@@ -29,10 +29,11 @@ import logging
 import os
 import json
 
-
 from django.conf import settings
-from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
+from django.utils.translation import ugettext as _
+
+from ominicontacto_app.utiles import crear_archivo_en_media_root
 from ominicontacto_app.models import Contacto
 from ominicontacto_app.services.base_de_datos_contactos import BaseDatosService
 from ominicontacto_app.services.wombat_config import CampanaListContactoConfigFile
@@ -60,10 +61,9 @@ class ArchivoDeReporteCsv(object):
         if self.ya_existe():
             # Esto puede suceder si en un intento previo de depuracion, el
             # proceso es abortado, y por lo tanto, el archivo puede existir.
-            logger.warn("ArchivoDeReporteCsv: Ya existe archivo CSV de "
-                        "reporte para la campana %s. Archivo: %s. "
-                        "El archivo sera sobreescrito", self._base_datos.pk,
-                        self.ruta)
+            logger.warn(_("ArchivoDeReporteCsv: Ya existe archivo CSV de "
+                          "reporte para la campana {0}. Archivo: {1}. "
+                          "El archivo sera sobreescrito".format(self._base_datos.pk, self.ruta)))
 
         crear_archivo_en_media_root(
             self.nombre_del_directorio,
@@ -78,13 +78,13 @@ class ArchivoDeReporteCsv(object):
 
             # Creamos encabezado
             encabezado = []
-            encabezado.append("telefono")
-            encabezado.append("pk_contacto")
-            encabezado.append("campana")
-            encabezado.append("timeout")
-            encabezado.append("id_campana")
-            encabezado.append("usa_contestador")
-            encabezado.append("id_contacto")
+            encabezado.append(_("telefono"))
+            encabezado.append(_("pk_contacto"))
+            encabezado.append(_("campana"))
+            encabezado.append(_("timeout"))
+            encabezado.append(_("id_campana"))
+            encabezado.append(_("usa_contestador"))
+            encabezado.append(_("id_contacto"))
             for columna in telefonos:
                 encabezado.append(nombres_de_columnas[int(columna)])
 
@@ -147,9 +147,7 @@ class SincronizarBaseDatosContactosService(object):
         metadata = base_datos.get_metadata()
 
         lista_contacto = self.escribir_lista(contactos, metadata, campana, prefijo_discador)
-
-        logger.info("Creando archivo para asociacion lista %s campana",
-                    campana.nombre)
+        logger.info(_("Creando archivo para asociacion lista {0} campana".format(campana.nombre)))
 
         self._campana_list_contacto_config_file.write(lista_contacto)
         # return lista_contacto

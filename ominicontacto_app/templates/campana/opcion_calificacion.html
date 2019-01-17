@@ -32,8 +32,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
         en un formset  */
      $('.linkFormset').formset({
-       addText: 'Agregar campo',
-       deleteText: 'Remover',
+       addText: AGREGAR_CAMPO,
+       deleteText: REMOVER_CAMPO,
        prefix: '{{ wizard.form.prefix }}',
        addCssClass: 'addFormset btn btn-outline-primary',
        deleteCssClass: 'deleteFormset btn btn-outline-danger',
@@ -42,8 +42,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
          $(row.find('.nombre > select')).prop( "disabled", false );
          var $tipo = $(row.find('.tipo > select'));
          $tipo.prop( "disabled", false );
-         var tipoOpciones = {"Sin Acción": "0",
-                            "Gestión": "1"};
+         var tipoOpciones = {};
+         tipoOpciones[SIN_ACCION] = "0";
+         tipoOpciones[GESTION] = "1";
          $tipo.empty();
          $.each(tipoOpciones, function(key,value) {
            $tipo.append($("<option></option>")

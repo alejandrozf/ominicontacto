@@ -20,6 +20,8 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.utiles import elimina_espacios, convert_audio_asterisk_path_astdb
 from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
@@ -45,15 +47,15 @@ class AbstractFamily(object):
         client = AsteriskHttpClient()
         client.login()
         family = self._get_nombre_family(family_member)
-        logger.info("Creando familys para la family  %s", family)
+        logger.info(_("Creando familys para la family  {0}".format(family)))
         variables = self._create_dict(family_member)
         for key, val in variables.items():
             try:
                 client.asterisk_db("DBPut", family, key, val=val)
             except AsteriskHttpAsteriskDBError:
-                logger.exception("Error al intentar DBPut al insertar"
-                                 " en la family {0} la siguiente key={1}"
-                                 " y val={2}".format(family, key, val))
+                logger.exception(_("Error al intentar DBPut al insertar"
+                                   " en la family {0} la siguiente key={1}"
+                                   " y val={2}".format(family, key, val)))
 
     def _obtener_todos(self):
         raise (NotImplementedError())
@@ -82,7 +84,7 @@ class AbstractFamily(object):
             client.login()
             client.asterisk_db_deltree(family)
         except AsteriskHttpAsteriskDBError:
-            logger.exception("Error al intentar DBDelTree de {0}".format(family))
+            logger.exception(_("Error al intentar DBDelTree de {0}".format(family)))
 
     def _obtener_una_key(self):
         """ Método sólo necesario para testear que existe el Family """
@@ -292,7 +294,7 @@ class RutaSalienteFamily(AbstractFamily):
         # regenero lo datos de los troncales
         troncales = self._obtener_troncales_ordenados(ruta)
         for orden, troncal in troncales:
-            logger.info("Creando familys para troncales %s", troncal.troncal.id)
+            logger.info(_("Creando familys para troncales {0}".format(troncal.troncal.id)))
 
             try:
                 client = AsteriskHttpClient()
@@ -302,9 +304,9 @@ class RutaSalienteFamily(AbstractFamily):
                 val = troncal.troncal.nombre
                 client.asterisk_db("DBPut", family, key=key, val=val)
             except AsteriskHttpAsteriskDBError:
-                logger.exception("Error al intentar DBPut al insertar"
-                                 " en la family {0} la siguiente key={1}"
-                                 " y val={2}".format(family, key, val))
+                logger.exception(_("Error al intentar DBPut al insertar"
+                                   " en la family {0} la siguiente key={1}"
+                                   " y val={2}".format(family, key, val)))
 
     def regenerar_family_trunk_ruta(self, ruta):
         """regeneros lso troncales de la ruta"""

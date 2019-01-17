@@ -73,6 +73,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.maxlen }}
             {{ form.maxlen.errors }}
         </div>
+        <div class="col-md-6" title="{% trans 'Se recomienda un valor mayor o igual a 2' %}">
+            <label for="{{ form.wrapuptime.id_for_label }}">{% trans 'Tiempo de descanso entre llamadas:' %}</label>
+            {{ form.wrapuptime }}
+            {{ form.wrapuptime.errors }}
+            <small class="form-text text-muted">
+                {{ form.wrapuptime.help_text }}
+            </small>
+        </div>
         <div class="col-md-6">
             <label for="{{ form.servicelevel.id_for_label }}">{% trans 'Nivel de Servicio:' %}</label>
             {{ form.servicelevel }}

@@ -30,7 +30,7 @@
 
 # Creo directorio padre, home del usuario omnileads
 - name: Create the ominicontacto directorie
-  file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
+  file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} recurse=yes"
   when: desarrollo == 0
   tags: omniapp
 
@@ -56,6 +56,7 @@
           - "{{ install_prefix }}static"
       # DOnde se guardan los logs uwsgi.log y django.log
           - "{{ install_prefix }}log"
+          - "{{ install_prefix }}run"
           - "{{ install_prefix }}asterisk/etc/asterisk"
   tags: omniapp
 
@@ -80,12 +81,14 @@
 - name: Clone of OML repository (develop server)
   git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes
   when: desarrollo == 1
+  ignore_errors: yes
 
 - name: Checkout of desired branch (develop server)
   git: repo=https://gitlab.com/omnileads/ominicontacto.git clone=no version={{ rama }} dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes
   when: desarrollo == 1
   become: true
   become_method: sudo
+  ignore_errors: yes
 
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
