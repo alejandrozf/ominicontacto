@@ -37,36 +37,37 @@ LLAMADA_ENTRANTE = Campana.TYPE_ENTRANTE
 LLAMADA_PREVIEW = Campana.TYPE_PREVIEW
 LLAMADA_TRANSF_INTERNA = 8
 LLAMADA_TRANSF_EXTERNA = 9
-TYPE_TRANSFERENCIA_DISPLAY = 'Transferencia'
+TYPE_TRANSFERENCIA_DISPLAY = _('Transferencias')
 
 LLAMADAS_MANUALES = [LLAMADA_MANUAL]
 LLAMADAS_DE_AGENTE = [LLAMADA_MANUAL, LLAMADA_PREVIEW]
+LLAMADAS_TRANSFERENCIA = [LLAMADA_TRANSF_INTERNA, LLAMADA_TRANSF_EXTERNA]
 
 INICIALES_POR_TIPO = {
-    Campana.TYPE_MANUAL_DISPLAY: {
+    str(Campana.TYPE_MANUAL): {
         'total': 0,  # DIAL(tipo_llamada = Manual:1)
         'conectadas': 0,  # ANSWER(tipo_llamada = Manual:1)
         'no_conectadas': 0,  # NO CONNECT(tipo_llamada = Manual:1)
     },
-    Campana.TYPE_DIALER_DISPLAY: {
+    str(Campana.TYPE_DIALER): {
         'total': 0,  # DIAL(tipo_llamada = Dialer:2),
         'atendidas': 0,  # ANSWER(tipo_llamada = Dialer:2)  (puede ser ENTERQUEUE),
         'no_atendidas': 0,  # EXITWITHTIMEOUT(tipo_llamada = Dialer:2) +
                             # ABANDON(tipo_llamada = Dialer:2),
         'perdidas': 0,  # NO CONNECT(tipo_llamada = Dialer:2),
     },
-    Campana.TYPE_ENTRANTE_DISPLAY: {
+    str(Campana.TYPE_ENTRANTE): {
         'total': 0,  # ENTERQUEUE(tipo_llamada = Entrante:3)
         'atendidas': 0,  # CONNECT(tipo_llamada = Entrante:3)
         'expiradas': 0,  # EXITWITHTIMEOUT(tipo_llamada = Entrante:3)
         'abandonadas': 0,  # ABANDON(tipo_llamada = Entrante:3)
     },
-    Campana.TYPE_PREVIEW_DISPLAY: {
+    str(Campana.TYPE_PREVIEW): {
         'total': 0,  # DIAL(tipo_llamada = Preview:4)
         'conectadas': 0,  # ANSWER(tipo_llamada = Preview:4)
         'no_conectadas': 0,  # NO CONNECT(tipo_llamada = Preview:4)
     },
-    TYPE_TRANSFERENCIA_DISPLAY: {
+    'transferencia': {
         'total': 0,  # ENTERQUEUE-TRANSFER (tipo_llamada = Transf_interna:8)
         'conectadas': 0,  # CONNECT (tipo_llamada = Transf_interna:8)
         'no_conectadas': 0,  # CAMPT-FAIL (tipo_llamada = Transf_interna:8)
@@ -74,14 +75,14 @@ INICIALES_POR_TIPO = {
 }
 
 INICIALES_POR_CAMPANA = {
-    Campana.TYPE_MANUAL_DISPLAY: {
+    str(Campana.TYPE_MANUAL): {
         'nombre': '',
         'efectuadas': 0,
         'conectadas': 0,
         'no_conectadas': 0,
         't_espera_conexion': 0,
     },
-    Campana.TYPE_DIALER_DISPLAY: {
+    str(Campana.TYPE_DIALER): {
         'nombre': '',
         'efectuadas': 0,
         'conectadas': 0,
@@ -96,7 +97,7 @@ INICIALES_POR_CAMPANA = {
         'no_conectadas_manuales': 0,
         't_espera_conexion_manuales': 0,
     },
-    Campana.TYPE_ENTRANTE_DISPLAY: {
+    str(Campana.TYPE_ENTRANTE): {
         'nombre': '',
         'recibidas': 0,
         'recibidas_transferencias': 0,
@@ -110,7 +111,7 @@ INICIALES_POR_CAMPANA = {
         'no_conectadas_manuales': 0,
         't_espera_conexion_manuales': 0,
     },
-    Campana.TYPE_PREVIEW_DISPLAY: {
+    str(Campana.TYPE_PREVIEW): {
         'nombre': '',
         'efectuadas': 0,
         'conectadas': 0,
@@ -166,42 +167,42 @@ class ReporteDeLlamadas(object):
             'total_llamadas_procesadas': 0,  # DIAL + ENTERQUEUE(data3 = Entrante:3),
 
             'llamadas_por_tipo': {
-                Campana.TYPE_MANUAL_DISPLAY:
-                    INICIALES_POR_TIPO[Campana.TYPE_MANUAL_DISPLAY].copy(),
-                Campana.TYPE_DIALER_DISPLAY:
-                    INICIALES_POR_TIPO[Campana.TYPE_DIALER_DISPLAY].copy(),
-                Campana.TYPE_ENTRANTE_DISPLAY:
-                    INICIALES_POR_TIPO[Campana.TYPE_ENTRANTE_DISPLAY].copy(),
-                Campana.TYPE_PREVIEW_DISPLAY:
-                    INICIALES_POR_TIPO[Campana.TYPE_PREVIEW_DISPLAY].copy(),
-                TYPE_TRANSFERENCIA_DISPLAY:
-                    INICIALES_POR_TIPO[TYPE_TRANSFERENCIA_DISPLAY].copy(),
+                str(Campana.TYPE_MANUAL):
+                    INICIALES_POR_TIPO[str(Campana.TYPE_MANUAL)].copy(),
+                str(Campana.TYPE_DIALER):
+                    INICIALES_POR_TIPO[str(Campana.TYPE_DIALER)].copy(),
+                str(Campana.TYPE_ENTRANTE):
+                    INICIALES_POR_TIPO[str(Campana.TYPE_ENTRANTE)].copy(),
+                str(Campana.TYPE_PREVIEW):
+                    INICIALES_POR_TIPO[str(Campana.TYPE_PREVIEW)].copy(),
+                'transferencia':
+                    INICIALES_POR_TIPO['transferencia'].copy(),
             },
 
             'llamadas_por_campana': {},
 
             'tipos_de_llamada_por_campana':
             {
-                Campana.TYPE_MANUAL_DISPLAY: {},
-                Campana.TYPE_DIALER_DISPLAY: {},
-                Campana.TYPE_ENTRANTE_DISPLAY: {},
-                Campana.TYPE_PREVIEW_DISPLAY: {},
+                str(Campana.TYPE_MANUAL): {},
+                str(Campana.TYPE_DIALER): {},
+                str(Campana.TYPE_ENTRANTE): {},
+                str(Campana.TYPE_PREVIEW): {},
             }
         }
 
         self.estadisticas_por_fecha = {
             'llamadas_por_tipo': {
-                Campana.TYPE_MANUAL_DISPLAY: {},
-                Campana.TYPE_DIALER_DISPLAY: {},
-                Campana.TYPE_ENTRANTE_DISPLAY: {},
-                Campana.TYPE_PREVIEW_DISPLAY: {},
-                TYPE_TRANSFERENCIA_DISPLAY: {},
+                str(Campana.TYPE_MANUAL): {},
+                str(Campana.TYPE_DIALER): {},
+                str(Campana.TYPE_ENTRANTE): {},
+                str(Campana.TYPE_PREVIEW): {},
+                'transferencia': {},
             },
             'tipos_de_llamada_por_campana': {
-                Campana.TYPE_MANUAL_DISPLAY: {},
-                Campana.TYPE_DIALER_DISPLAY: {},
-                Campana.TYPE_ENTRANTE_DISPLAY: {},
-                Campana.TYPE_PREVIEW_DISPLAY: {},
+                str(Campana.TYPE_MANUAL): {},
+                str(Campana.TYPE_DIALER): {},
+                str(Campana.TYPE_ENTRANTE): {},
+                str(Campana.TYPE_PREVIEW): {},
             },
         }
 
@@ -209,12 +210,13 @@ class ReporteDeLlamadas(object):
             self._inicializar_conteo_de_estadisticas_de_campana(campana)
 
     def _inicializar_conteo_de_estadisticas_de_campana(self, campana):
-        tipo = self._get_campana_type_display(campana.type)
+        tipo_display = self._get_campana_type_display(campana.type)
+        tipo = str(campana.type)
 
         # Inicializar Llamadas por campaña
         self.estadisticas['llamadas_por_campana'][campana.id] = {
             'nombre': campana.nombre,
-            'tipo': tipo,
+            'tipo': unicode(tipo_display),
             'total': 0,
             'manuales': 0,
         }
@@ -228,8 +230,10 @@ class ReporteDeLlamadas(object):
     def _contabilizar_estadisticas(self):
         for log in self.logs:
             fecha = fecha_hora_local(log.time).strftime('%d-%m-%Y')
-            tipo_campana = self._get_campana_type_display(log.tipo_campana)
-            tipo_llamada = self._get_campana_type_display(log.tipo_llamada)
+            tipo_campana = str(log.tipo_campana)
+            tipo_llamada = str(log.tipo_llamada)
+            if int(tipo_llamada) in LLAMADAS_TRANSFERENCIA:
+                tipo_llamada = 'transferencia'
             self._contabilizar_total_llamadas_procesadas(log)
 
             # Si no se identifica el tipo de llamada no se contabiliza por tipo.
@@ -387,12 +391,12 @@ class ReporteDeLlamadas(object):
                     self._aplicar_promedios_a_tiempos_de_campana(tipo, datos_fecha)
 
     def _aplicar_promedios_a_tiempos_de_campana(self, tipo, datos_campana):
-        if tipo in [Campana.TYPE_MANUAL_DISPLAY, Campana.TYPE_PREVIEW_DISPLAY]:
+        if tipo in [str(Campana.TYPE_MANUAL), str(Campana.TYPE_PREVIEW)]:
             efectuadas = datos_campana['efectuadas']
             if efectuadas > 0:
                 suma_esperas = datos_campana['t_espera_conexion']
                 datos_campana['t_espera_conexion'] = suma_esperas / efectuadas
-        elif tipo == Campana.TYPE_DIALER_DISPLAY:
+        elif tipo == str(Campana.TYPE_DIALER):
             abandonadas = datos_campana['abandonadas']
             if abandonadas > 0:
                 datos_campana['t_abandono'] = datos_campana['t_abandono'] / abandonadas
@@ -403,14 +407,14 @@ class ReporteDeLlamadas(object):
             if abandonadas > 0:
                 datos_campana['t_espera_atencion'] = datos_campana['t_espera_atencion'] / atendidas
 
-        elif tipo == Campana.TYPE_ENTRANTE_DISPLAY:
+        elif tipo == str(Campana.TYPE_ENTRANTE):
             atendidas = datos_campana['atendidas']
             if atendidas > 0:
                 datos_campana['t_espera_conexion'] = datos_campana['t_espera_conexion'] / atendidas
             abandonadas = datos_campana['abandonadas']
             if abandonadas > 0:
                 datos_campana['t_abandono'] = datos_campana['t_abandono'] / abandonadas
-        if not tipo == Campana.TYPE_MANUAL_DISPLAY:
+        if not tipo == str(Campana.TYPE_MANUAL):
             efectuadas = datos_campana['efectuadas_manuales']
             if efectuadas > 0:
                 suma_esperas = datos_campana['t_espera_conexion_manuales']
@@ -454,30 +458,30 @@ class GraficosReporteDeLlamadas(object):
         por_tipo = estadisticas['llamadas_por_tipo']
         grafico.add(
             _(u'Intentos'),
-            [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['total'],
-             por_tipo[Campana.TYPE_DIALER_DISPLAY]['total'],
-             por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['total'],
-             por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['total'],
-             por_tipo[TYPE_TRANSFERENCIA_DISPLAY]['total']])
+            [por_tipo[str(Campana.TYPE_MANUAL)]['total'],
+             por_tipo[str(Campana.TYPE_DIALER)]['total'],
+             por_tipo[str(Campana.TYPE_ENTRANTE)]['total'],
+             por_tipo[str(Campana.TYPE_PREVIEW)]['total'],
+             por_tipo['transferencia']['total']])
 
         grafico.add(
             _('Conexión'),
-            [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['conectadas'],
-             por_tipo[Campana.TYPE_DIALER_DISPLAY]['atendidas'],
-             por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['atendidas'],
-             por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['conectadas'],
-             por_tipo[TYPE_TRANSFERENCIA_DISPLAY]['conectadas']])
+            [por_tipo[str(Campana.TYPE_MANUAL)]['conectadas'],
+             por_tipo[str(Campana.TYPE_DIALER)]['atendidas'],
+             por_tipo[str(Campana.TYPE_ENTRANTE)]['atendidas'],
+             por_tipo[str(Campana.TYPE_PREVIEW)]['conectadas'],
+             por_tipo['transferencia']['conectadas']])
 
-        perdidas_dialer = por_tipo[Campana.TYPE_DIALER_DISPLAY]['no_atendidas'] + \
-            por_tipo[Campana.TYPE_DIALER_DISPLAY]['perdidas']
-        perdidas_entrantes = por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['expiradas'] + \
-            por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['abandonadas']
+        perdidas_dialer = por_tipo[str(Campana.TYPE_DIALER)]['no_atendidas'] + \
+            por_tipo[str(Campana.TYPE_DIALER)]['perdidas']
+        perdidas_entrantes = por_tipo[str(Campana.TYPE_ENTRANTE)]['expiradas'] + \
+            por_tipo[str(Campana.TYPE_ENTRANTE)]['abandonadas']
         grafico.add(
-            _('Fallo'), [por_tipo[Campana.TYPE_MANUAL_DISPLAY]['no_conectadas'],
+            _('Fallo'), [por_tipo[str(Campana.TYPE_MANUAL)]['no_conectadas'],
                          perdidas_dialer,
                          perdidas_entrantes,
-                         por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['no_conectadas'],
-                         por_tipo[TYPE_TRANSFERENCIA_DISPLAY]['no_conectadas']])
+                         por_tipo[str(Campana.TYPE_PREVIEW)]['no_conectadas'],
+                         por_tipo['transferencia']['no_conectadas']])
 
         self.graficos['barras_llamadas_por_tipo'] = grafico
 
@@ -488,11 +492,11 @@ class GraficosReporteDeLlamadas(object):
                             no_data_font_size=32, legend_font_size=25, truncate_legend=10,
                             tooltip_font_size=50)
         total = float(estadisticas['total_llamadas_procesadas'])
-        total_manual = estadisticas['llamadas_por_tipo'][Campana.TYPE_MANUAL_DISPLAY]['total']
-        total_dialer = estadisticas['llamadas_por_tipo'][Campana.TYPE_DIALER_DISPLAY]['total']
-        total_entrante = estadisticas['llamadas_por_tipo'][Campana.TYPE_ENTRANTE_DISPLAY]['total']
-        total_preview = estadisticas['llamadas_por_tipo'][Campana.TYPE_PREVIEW_DISPLAY]['total']
-        total_transferidas = estadisticas['llamadas_por_tipo'][TYPE_TRANSFERENCIA_DISPLAY]['total']
+        total_manual = estadisticas['llamadas_por_tipo'][str(Campana.TYPE_MANUAL)]['total']
+        total_dialer = estadisticas['llamadas_por_tipo'][str(Campana.TYPE_DIALER)]['total']
+        total_entrante = estadisticas['llamadas_por_tipo'][str(Campana.TYPE_ENTRANTE)]['total']
+        total_preview = estadisticas['llamadas_por_tipo'][str(Campana.TYPE_PREVIEW)]['total']
+        total_transferidas = estadisticas['llamadas_por_tipo']['transferencia']['total']
 
         porcentaje_dialer = (100.0 * float(total_dialer) / float(total)) if total > 0 else 0
         porcentaje_entrante = (100.0 * float(total_entrante) / float(total)) if total > 0 else 0
@@ -533,7 +537,7 @@ class GraficosReporteDeLlamadas(object):
         conectadas = []
         expiradas = []
         abandonadas = []
-        por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_DIALER_DISPLAY]
+        por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_DIALER)]
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
             no_atendidas.append(datos_campana['efectuadas'] - datos_campana['atendidas'])
@@ -555,7 +559,7 @@ class GraficosReporteDeLlamadas(object):
         atendidas = []
         expiradas = []
         abandonadas = []
-        por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_ENTRANTE_DISPLAY]
+        por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_ENTRANTE)]
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
             atendidas.append(datos_campana['atendidas'])
@@ -574,7 +578,7 @@ class GraficosReporteDeLlamadas(object):
         nombres_campanas = []
         conectadas = []
         no_conectadas = []
-        por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_MANUAL_DISPLAY]
+        por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_MANUAL)]
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
             conectadas.append(datos_campana['conectadas'])
@@ -592,7 +596,7 @@ class GraficosReporteDeLlamadas(object):
         nombres_campanas = []
         conectadas = []
         no_conectadas = []
-        por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_PREVIEW_DISPLAY]
+        por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_PREVIEW)]
         for datos_campana in por_campana.itervalues():
             nombres_campanas.append(datos_campana['nombre'])
             conectadas.append(datos_campana['conectadas'])
@@ -636,52 +640,53 @@ class GeneradorReportesLlamadasCSV(object):
 
     def _obtener_filas_llamadas_por_tipo(self, estadisticas):
         por_tipo = estadisticas['llamadas_por_tipo']
-        filas = [['Tipo', 'Total', 'Conectadas', 'No conectadas',
-                 'Atendidas', 'No Atendidas', 'Perdidas', 'Expiradas', 'Abandonadas'], ]
+        filas = [[_('Tipo'), _('Total'), _('Conectadas'), _('No conectadas'),
+                 _('Atendidas'), _('No atendidas'), _('Perdidas'), _('Expiradas'),
+                 _('Abandonadas')], ]
         filas.append([
-            Campana.TYPE_MANUAL_DISPLAY,
-            force_text(por_tipo[Campana.TYPE_MANUAL_DISPLAY]['total']),
-            force_text(por_tipo[Campana.TYPE_MANUAL_DISPLAY]['conectadas']),
-            force_text(por_tipo[Campana.TYPE_MANUAL_DISPLAY]['no_conectadas']),
+            unicode(Campana.TYPE_MANUAL_DISPLAY),
+            force_text(por_tipo[str(Campana.TYPE_MANUAL)]['total']),
+            force_text(por_tipo[str(Campana.TYPE_MANUAL)]['conectadas']),
+            force_text(por_tipo[str(Campana.TYPE_MANUAL)]['no_conectadas']),
             '', '', '', '', '',
         ])
         filas.append([
-            Campana.TYPE_DIALER_DISPLAY,
-            force_text(por_tipo[Campana.TYPE_DIALER_DISPLAY]['total']),
+            unicode(Campana.TYPE_DIALER_DISPLAY),
+            force_text(por_tipo[str(Campana.TYPE_DIALER)]['total']),
             '', '',
-            force_text(por_tipo[Campana.TYPE_DIALER_DISPLAY]['atendidas']),
-            force_text(por_tipo[Campana.TYPE_DIALER_DISPLAY]['no_atendidas']),
-            force_text(por_tipo[Campana.TYPE_DIALER_DISPLAY]['perdidas']),
+            force_text(por_tipo[str(Campana.TYPE_DIALER)]['atendidas']),
+            force_text(por_tipo[str(Campana.TYPE_DIALER)]['no_atendidas']),
+            force_text(por_tipo[str(Campana.TYPE_DIALER)]['perdidas']),
             '', '',
         ])
         filas.append([
-            Campana.TYPE_ENTRANTE_DISPLAY,
-            force_text(por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['total']),
+            unicode(Campana.TYPE_ENTRANTE_DISPLAY),
+            force_text(por_tipo[str(Campana.TYPE_ENTRANTE)]['total']),
             '', '',
-            force_text(por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['atendidas']),
+            force_text(por_tipo[str(Campana.TYPE_ENTRANTE)]['atendidas']),
             '', '',
-            force_text(por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['expiradas']),
-            force_text(por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]['abandonadas']),
+            force_text(por_tipo[str(Campana.TYPE_ENTRANTE)]['expiradas']),
+            force_text(por_tipo[str(Campana.TYPE_ENTRANTE)]['abandonadas']),
         ])
         filas.append([
-            Campana.TYPE_PREVIEW_DISPLAY,
-            force_text(por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['total']),
-            force_text(por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['conectadas']),
-            force_text(por_tipo[Campana.TYPE_PREVIEW_DISPLAY]['no_conectadas']),
+            unicode(Campana.TYPE_PREVIEW_DISPLAY),
+            force_text(por_tipo[str(Campana.TYPE_PREVIEW)]['total']),
+            force_text(por_tipo[str(Campana.TYPE_PREVIEW)]['conectadas']),
+            force_text(por_tipo[str(Campana.TYPE_PREVIEW)]['no_conectadas']),
             '', '', '', '', '',
         ])
         filas.append([
             TYPE_TRANSFERENCIA_DISPLAY,
-            force_text(por_tipo[TYPE_TRANSFERENCIA_DISPLAY]['total']),
-            force_text(por_tipo[TYPE_TRANSFERENCIA_DISPLAY]['conectadas']),
-            force_text(por_tipo[TYPE_TRANSFERENCIA_DISPLAY]['no_conectadas']),
+            force_text(por_tipo['transferencia']['total']),
+            force_text(por_tipo['transferencia']['conectadas']),
+            force_text(por_tipo['transferencia']['no_conectadas']),
             '', '', '', '', '',
         ])
         return filas
 
     def _obtener_filas_llamadas_por_campana(self, estadisticas):
         por_campana = estadisticas['llamadas_por_campana']
-        filas = [['Nombre', 'Tipo', 'Total', 'Manuales'], ]
+        filas = [[_('Nombre'), _('Tipo'), _('Total'), _('Manuales')], ]
         for id, estadisticas_campana in por_campana.items():
             filas.append([estadisticas_campana['nombre'],
                           estadisticas_campana['tipo'],
@@ -691,8 +696,9 @@ class GeneradorReportesLlamadasCSV(object):
         return filas
 
     def _obtener_filas_manual(self, estadisticas):
-        por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_MANUAL_DISPLAY]
-        filas = [['Nombre', 'Efectuadas', 'Conectadas', 'No conectadas', 'T. Espera Conexion'], ]
+        por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_MANUAL)]
+        filas = [[_('Nombre'), _('Efectuadas'), _('Conectadas'), _('No conectadas'),
+                  _('T. Espera Conexion')], ]
         for id, estadisticas_campana in por_campana.items():
             filas.append([estadisticas_campana['nombre'],
                           force_text(estadisticas_campana['efectuadas']),
@@ -703,11 +709,11 @@ class GeneradorReportesLlamadasCSV(object):
         return filas
 
     def _obtener_filas_dialer(self, estadisticas):
-        por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_DIALER_DISPLAY]
-        filas = [['Nombre', 'Efectuadas', 'Conectadas', 'Atendidas', 'Expiradas', 'Abandonadas',
-                  'T. Abandono', 'T. Espera Atención', 'T. Espera Conexion', 'Manuales Efectuadas',
-                  'Manuales Conectadas', 'Manuales No Conectadas',
-                  'T. Espera Conexión Manuales'], ]
+        por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_DIALER)]
+        filas = [[_('Nombre'), _('Efectuadas'), _('Conectadas'), _('Atendidas'), _('Expiradas'),
+                  _('Abandonadas'), _('T. Abandono'), _('T. Espera Atención'),
+                  _('T. Espera Conexion'), _('Manuales Efectuadas'), _('Manuales Conectadas'),
+                  _('Manuales No Conectadas'), _('T. Espera Conexión Manuales')], ]
         for id, estadisticas_campana in por_campana.items():
             filas.append([estadisticas_campana['nombre'],
                           force_text(estadisticas_campana['efectuadas']),
@@ -726,10 +732,11 @@ class GeneradorReportesLlamadasCSV(object):
         return filas
 
     def _obtener_filas_entrante(self, estadisticas):
-        por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_ENTRANTE_DISPLAY]
-        filas = [['Nombre', 'Recibidas', 'Atendidas', 'Expiradas', 'Abandonadas',
-                  'T. Abandono', 'T. Espera Conexion', 'Manuales Efectuadas',
-                  'Manuales Conectadas', 'Manuales No Conectadas', 'T. Espera Conexión Manuales'], ]
+        por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_ENTRANTE)]
+        filas = [[_('Nombre'), _('Recibidas'), _('Atendidas'), _('Expiradas'), _('Abandonadas'),
+                  _('T. Abandono'), _('T. Espera Conexion'), _('Manuales Efectuadas'),
+                  _('Manuales Conectadas'), _('Manuales No Conectadas'),
+                  _('T. Espera Conexión Manuales')], ]
         for id, estadisticas_campana in por_campana.items():
             filas.append([estadisticas_campana['nombre'],
                           force_text(estadisticas_campana['recibidas']),
@@ -746,10 +753,10 @@ class GeneradorReportesLlamadasCSV(object):
         return filas
 
     def _obtener_filas_preview(self, estadisticas):
-        por_campana = estadisticas['tipos_de_llamada_por_campana'][Campana.TYPE_PREVIEW_DISPLAY]
-        filas = [['Nombre', 'Efectuadas', 'Conectadas', 'No conectadas', 'T. Espera Conexion',
-                  'Manuales Efectuadas', 'Manuales Conectadas', 'Manuales No Conectadas',
-                  'T. Espera Conexión Manuales'], ]
+        por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_PREVIEW)]
+        filas = [[_('Nombre'), _('Efectuadas'), _('Conectadas'), _('No conectadas'),
+                  _('T. Espera Conexion'), _('Manuales Efectuadas'), _('Manuales Conectadas'),
+                  _('Manuales No Conectadas'), _('T. Espera Conexión Manuales')], ]
         for id, estadisticas_campana in por_campana.items():
             filas.append([estadisticas_campana['nombre'],
                           force_text(estadisticas_campana['efectuadas']),
@@ -772,13 +779,13 @@ class ReporteTipoDeLlamadasDeCampana(ReporteDeLlamadas):
                                               campana_id=id_campana)
 
         self.campana = Campana.objects.get(id=id_campana)
-        tipo = self._get_campana_type_display(self.campana.type)
+        tipo = str(self.campana.type)
         self.estadisticas = INICIALES_POR_CAMPANA[tipo].copy()
 
         self._contabilizar_estadisticas()
 
     def _contabilizar_estadisticas(self):
-        tipo = self._get_campana_type_display(self.campana.type)
+        tipo = str(self.campana.type)
         for log in self.logs:
             self._contabilizar_tipos_de_llamada_por_campana(self.estadisticas, log)
         self._aplicar_promedios_a_tiempos_de_campana(tipo, self.estadisticas)

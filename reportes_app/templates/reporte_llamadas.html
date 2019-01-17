@@ -118,22 +118,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <table class="table table-bordered table-sm">
               <tr>
                 <td><strong>{% trans 'Llamadas salientes por Discador' %}</strong></td>
-                <td width="10%">{{llamadas_por_tipo.Dialer.total}}</td>
+                <td width="10%">{{llamadas_por_tipo.2.total}}</td>
               </tr>
               <tr>
                 <td>{% trans 'Atendidas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Dialer.atendidas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.2.atendidas }}</td>
               </tr>
               <tr>
                 <td>{% trans 'No atendidas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Dialer.no_atendidas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.2.no_atendidas }}</td>
               </tr>
               <tr>
                 <td>{% trans 'Perdidas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Dialer.perdidas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.2.perdidas }}</td>
               </tr>
             </table>
-            {% if estadisticas_por_fecha.llamadas_por_tipo.Dialer %}
+            {% if estadisticas_por_fecha.llamadas_por_tipo.2 %}
               <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Dialer');">
                 {% trans 'Desglosar por fecha' %}
               </button>
@@ -144,22 +144,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <table class="table table-bordered table-sm">
               <tr>
                 <td><strong>{% trans 'Llamadas Entrantes' %}</strong></td>
-                <td width="10%">{{ llamadas_por_tipo.Entrante.total }}</td>
+                <td width="10%">{{ llamadas_por_tipo.3.total }}</td>
               </tr>
               <tr>
                 <td>{% trans 'Atendidas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Entrante.atendidas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.3.atendidas }}</td>
               </tr>
               <tr>
                 <td>{% trans 'Expiradas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Entrante.expiradas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.3.expiradas }}</td>
               </tr>
               <tr>
                 <td>{% trans 'Abandonadas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Entrante.abandonadas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.3.abandonadas }}</td>
               </tr>
             </table>
-            {% if estadisticas_por_fecha.llamadas_por_tipo.Entrante %}
+            {% if estadisticas_por_fecha.llamadas_por_tipo.3 %}
               <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Entrante');">
                 {% trans 'Desglosar por fecha' %}
               </button>
@@ -170,18 +170,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <table class="table table-bordered table-sm">
               <tr>
                 <td><strong>{% trans 'Llamadas salientes Manuales' %}</strong></td>
-                <td width="10%">{{ llamadas_por_tipo.Manual.total }}</td>
+                <td width="10%">{{ llamadas_por_tipo.1.total }}</td>
               </tr>
               <tr>
                 <td>{% trans 'Conectadas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Manual.conectadas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.1.conectadas }}</td>
               </tr>
               <tr>
                 <td>{% trans 'no conec.' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Manual.no_conectadas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.1.no_conectadas }}</td>
               </tr>
             </table>
-            {% if estadisticas_por_fecha.llamadas_por_tipo.Manual %}
+            {% if estadisticas_por_fecha.llamadas_por_tipo.1 %}
               <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Manual');">
                 {% trans 'Desglosar por fecha' %}
               </button>
@@ -192,18 +192,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <table class="table table-bordered table-sm">
               <tr>
                 <td><strong>{% trans 'Llamadas salientes Preview' %}</strong></td>
-                <td width="10%">{{ llamadas_por_tipo.Preview.total }}</td>
+                <td width="10%">{{ llamadas_por_tipo.4.total }}</td>
               </tr>
               <tr>
                 <td>{% trans 'Conectadas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Preview.conectadas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.4.conectadas }}</td>
               </tr>
               <tr>
                 <td>{% trans 'no conec.' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Preview.no_conectadas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.4.no_conectadas }}</td>
               </tr>
             </table>
-            {% if estadisticas_por_fecha.llamadas_por_tipo.Preview %}
+            {% if estadisticas_por_fecha.llamadas_por_tipo.4 %}
               <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Preview');">
                 {% trans 'Desglosar por fecha' %}
               </button>
@@ -214,18 +214,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <table class="table table-bordered table-sm">
               <tr>
                 <td><strong>{% trans 'Llamadas Transferidas a Campañas' %}</strong></td>
-                <td width="10%">{{ llamadas_por_tipo.Transferencia.total }}</td>
+                <td width="10%">{{ llamadas_por_tipo.transferencia.total }}</td>
               </tr>
               <tr>
                 <td>{% trans 'Conectadas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Transferencia.conectadas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.transferencia.conectadas }}</td>
               </tr>
               <tr>
                 <td>{% trans 'no conec.' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.Transferencia.no_conectadas }}</td>
+                <td width="10%">{{ llamadas_por_tipo.transferencia.no_conectadas }}</td>
               </tr>
             </table>
-            {% if estadisticas_por_fecha.llamadas_por_tipo.Transferencia %}
+            {% if estadisticas_por_fecha.llamadas_por_tipo.transferencia %}
               <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Transferencia');">
                 {% trans 'Desglosar por fecha' %}
               </button>
@@ -332,8 +332,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>{% trans 'Manuales' %}</th>
           </tr>
         </thead>
-        {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Dialer.items %}
-          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Dialer|get_item:id %}
+        {% for id, campana in estadisticas.tipos_de_llamada_por_campana.2.items %}
+          {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.2|get_item:id %}
             <tr>
               <td>
                 {% if tipos_por_fecha %}
@@ -441,8 +441,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           <th>{% trans 'Manuales' %}</th>
         </tr>
       </thead>
-      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Entrante.items %}
-        {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Entrante|get_item:id %}
+      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.3.items %}
+        {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.3|get_item:id %}
           <tr>
             <td>
               {% if tipos_por_fecha %}
@@ -544,8 +544,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           <th>{% trans 'Conexión' %}</th>
         </tr>
       </thead>
-      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Manual.items %}
-        {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Manual|get_item:id %}
+      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.1.items %}
+        {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.1|get_item:id %}
           <tr>
             <td>
               {% if tipos_por_fecha %}
@@ -617,8 +617,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           <th>{% trans 'Conexión' %}</th>
         </tr>
       </thead>
-      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.Preview.items %}
-      {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.Preview|get_item:id %}
+      {% for id, campana in estadisticas.tipos_de_llamada_por_campana.4.items %}
+      {% with tipos_por_fecha=estadisticas_por_fecha.tipos_de_llamada_por_campana.4|get_item:id %}
       <tr>
         <td>
           {% if tipos_por_fecha %}
@@ -710,7 +710,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td>{% trans 'Perdidas' %}</td>
                     <td><strong>{% trans 'Total' %}</strong></td>
                   </tr>
-                  {% for fecha, llamadas in llamadas_por_tipo.Dialer.items %}
+                  {% for fecha, llamadas in llamadas_por_tipo.2.items %}
                     <tr>
                       <td>{{ fecha }}</td>
                       <td>{{ llamadas.atendidas }}</td>
@@ -745,7 +745,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td>{% trans 'no conec.' %}</td>
                     <td><strong>{% trans 'Total' %}</strong></td>
                   </tr>
-                  {% for fecha, llamadas in llamadas_por_tipo.Manual.items %}
+                  {% for fecha, llamadas in llamadas_por_tipo.1.items %}
                     <tr>
                       <td>{{ fecha }}</td>
                       <td>{{ llamadas.conectadas }}</td>
@@ -782,7 +782,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td>{% trans 'Abandonadas' %}</td>
                     <td><strong>{% trans 'Total' %}</strong></td>
                   </tr>
-                  {% for fecha, llamadas in llamadas_por_tipo.Entrante.items %}
+                  {% for fecha, llamadas in llamadas_por_tipo.3.items %}
                     <tr>
                       <td>{{ fecha }}</td>
                       <td>{{ llamadas.atendidas }}</td>
@@ -817,7 +817,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   <td>{% trans 'no conec.' %}</td>
                   <td><strong>{% trans 'Total' %}</strong></td>
                 </tr>
-                {% for fecha, llamadas in llamadas_por_tipo.Preview.items %}
+                {% for fecha, llamadas in llamadas_por_tipo.4.items %}
                   <tr>
                     <td>{{ fecha }}</td>
                     <td>{{ llamadas.conectadas }}</td>
@@ -851,7 +851,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   <td>{% trans 'no conec.' %}</td>
                   <td><strong>{% trans 'Total' %}</strong></td>
                 </tr>
-                {% for fecha, llamadas in llamadas_por_tipo.Transferencia.items %}
+                {% for fecha, llamadas in llamadas_por_tipo.transferencia.items %}
                   <tr>
                     <td>{{ fecha }}</td>
                     <td>{{ llamadas.conectadas }}</td>
