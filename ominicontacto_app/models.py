@@ -1184,8 +1184,8 @@ class OpcionCalificacion(models.Model):
     nombre = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
-            self.nombre, self.campana.nombre, self.get_tipo_display()))
+        return unicode(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
+            self.nombre, self.campana.nombre, self.get_tipo_display())))
 
     def es_agenda(self):
         return self.tipo == self.AGENDA
