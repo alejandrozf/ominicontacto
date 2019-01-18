@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0007_campana_mostrar_nombre'),
+        ('ominicontacto_app', '0010_actualizar_calificacion_agenda'),
     ]
 
     operations = [
