@@ -130,8 +130,8 @@ class User(AbstractUser):
             try:
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:
-                logger.exception(_("Excepcion detectada al obtener session "
-                                   "con el key {0} no existe ".format(self.last_session_key)))
+                logger.exception(_("Excepción detectada al obtener session "
+                                   "con el key {0} no existe".format(self.last_session_key)))
         self.last_session_key = key
         self.save()
 

@@ -68,13 +68,14 @@ class CreacionBaseDatosService(object):
 
         csv_extensions = ['.csv']
 
-        file_invalid_msg = _("El archivo para realizar la importación de contactos no es válido")
+        file_invalid_msg = _("El archivo especificado para realizar la importación de contactos "
+                             "no es válido.")
         filename = base_datos_contacto.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
             logger.warn(_("La extensión {0} no es CSV. ".format(extension)))
             raise(OmlArchivoImportacionInvalidoError(_("El archivo especificado "
-                  "para realizar la importación de contactos no es válido")))
+                  "para realizar la importación de contactos no es válido.")))
         data = csv.reader(base_datos_contacto.archivo_importacion)
         validar_estructura_csv(data, file_invalid_msg, logger)
 

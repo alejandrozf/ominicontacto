@@ -159,8 +159,8 @@ class FieldFormularioOrdenView(BaseUpdateView):
         else:
             return self.form_invalid(form_orden_campos)
 
-        message = '<strong>Operación Exitosa!</strong> \
-                   Se llevó a cabo con éxito el reordenamiento de los campos.'
+        message = _('<strong>Operación Exitosa!</strong> '
+                    'Se llevó a cabo con éxito el reordenamiento de los campos.')
         messages.add_message(
             self.request,
             messages.SUCCESS,
@@ -169,8 +169,8 @@ class FieldFormularioOrdenView(BaseUpdateView):
         return self.redirecciona_a_campos_formulario()
 
     def form_invalid(self, form_orden_campos):
-        message = '<strong>Operación Errónea!</strong> \
-                   No se pudo llevar a cabo el reordenamiento de los campos.'
+        message = _('<strong>Operación Errónea!</strong> '
+                    'No se pudo llevar a cabo el reordenamiento de los campos.')
         messages.add_message(
             self.request,
             messages.ERROR,

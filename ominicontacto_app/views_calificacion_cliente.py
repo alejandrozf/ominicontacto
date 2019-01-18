@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 import json
 import logging as logging_
 
+from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
@@ -220,8 +221,8 @@ class CalificacionClienteFormView(FormView):
         if self.object_calificacion.es_venta:
             return redirect(self.get_success_url_venta())
         else:
-            message = 'Operación Exitosa!\
-                        Se llevó a cabo con éxito la calificacion del cliente'
+            message = _('Operación Exitosa! '
+                        'Se llevó a cabo con éxito la calificación del cliente')
             messages.success(self.request, message)
         if self.object_calificacion.es_agenda():
             return redirect(self.get_success_url_agenda())
@@ -410,9 +411,9 @@ class FormularioCreateFormView(CreateView):
         metadata = json.dumps(cleaned_data_venta)
         self.object_venta[0].metadata = metadata
         self.object_venta[0].save()
-        message = 'Operación Exitosa!' \
-                  'Se llevó a cabo con éxito el llenado del formulario del' \
-                  ' cliente'
+        message = _('Operación Exitosa!'
+                    'Se llevó a cabo con éxito el llenado del formulario del'
+                    ' cliente')
         messages.success(self.request, message)
         return HttpResponseRedirect(reverse('formulario_detalle',
                                             kwargs={"pk": self.object_venta[0].pk}))
@@ -577,9 +578,9 @@ class FormularioUpdateFormView(UpdateView):
         metadata = json.dumps(cleaned_data_venta)
         metadata_cliente.metadata = metadata
         metadata_cliente.save()
-        message = 'Operación Exitosa!' \
-                  'Se llevó a cabo con éxito el llenado del formulario del' \
-                  ' cliente'
+        message = _('Operación Exitosa!'
+                    'Se llevó a cabo con éxito el llenado del formulario del'
+                    ' cliente')
         messages.success(self.request, message)
         return HttpResponseRedirect(reverse('formulario_detalle',
                                             kwargs={"pk": metadata_cliente.pk}))
