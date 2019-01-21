@@ -26,7 +26,6 @@ omnileads-aio
 omnileads-cluster
 
 [everyone:vars]
-localhost=0
 install_prefix=/opt/omnileads/
 
 # Change this variables values as you want
