@@ -27,6 +27,7 @@ from datetime import timedelta
 from pygal import Bar
 from mock import patch
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import timezone
@@ -484,3 +485,14 @@ class ReportesCampanasTests(BaseTestDeReportes):
             response.context_data['categorias'][self.calif_gestion.opcion_calificacion.nombre], 1)
         self.assertEqual(
             response.context['categorias'][self.calif_no_accion.opcion_calificacion.nombre], 1)
+
+    def test_calificaciones_agenda_se_adicionan_a_llamadas_pendientes(self):
+        campana_manual = CampanaFactory(type=Campana.TYPE_MANUAL, estado=Campana.ESTADO_ACTIVA)
+        opcion_calificacion_agenda = OpcionCalificacionFactory(
+            nombre=settings.CALIFICACION_REAGENDA, campana=campana_manual,
+            tipo=OpcionCalificacion.AGENDA)
+        CalificacionClienteFactory(
+            opcion_calificacion=opcion_calificacion_agenda, agente=self.agente_profile)
+        estadisticas_service = EstadisticasService()
+        llamadas_pendientes, _, _ = estadisticas_service.obtener_total_llamadas(campana_manual)
+        self.assertEqual(llamadas_pendientes, 1)

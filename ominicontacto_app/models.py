@@ -1147,6 +1147,11 @@ class Campana(models.Model):
     def obtener_calificaciones(self):
         return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
 
+    def obtener_calificaciones_agenda(self):
+        return CalificacionCliente.objects.filter(
+            opcion_calificacion__campana_id=self.id,
+            opcion_calificacion__tipo=OpcionCalificacion.AGENDA)
+
     def update_basedatoscontactos(self, bd_nueva):
         """ Actualizar con nueva base datos de contacto"""
         self.bd_contacto = bd_nueva
