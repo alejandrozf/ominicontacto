@@ -129,7 +129,7 @@ class PhoneJSController {
             // TODO: Las manuales no tienen call_id hasta que sean click2call
             if (self.phone.session_data.remote_call) {
                 var descripcion = $("#SignDescription").val(); // sign subject
-                var call_id = self.phone.session_data.remote_call;
+                var call_id = self.phone.session_data.remote_call.call_id;
                 self.oml_api.marcarLlamada(descripcion, call_id);
                 $("#SignDescription").val(null);
                 self.view.tagCallMenu.modal('hide');
