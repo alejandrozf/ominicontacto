@@ -50,7 +50,7 @@
           - compilemessages
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
-  become: yes
+  become: true
   become_method: su
   become_user: "{{ usuario }}"
 
