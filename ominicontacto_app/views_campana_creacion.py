@@ -40,7 +40,7 @@ from ominicontacto_app.models import Campana, ArchivoDeAudio
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.tests.factories import BaseDatosContactoFactory, COLUMNAS_DB_DEFAULT
-from ominicontacto_app.utiles import cast_datetime_part_date
+from ominicontacto_app.utiles import cast_datetime_part_date, obtener_columnas_bd
 
 import logging as logging_
 
@@ -132,6 +132,17 @@ class CampanaTemplateCreateCampanaMixin(object):
             calif_init_formset.extra = len(initial_data) - 1
             calif_init_formset.prefix = opts_calif_init_formset.prefix
             context['wizard']['form'] = calif_init_formset
+        if current_step == self.PARAMETROS_CRM:
+            initial_data = campana_template.parametros_crm.values(
+                'tipo', 'valor', 'nombre')
+            bd_contacto = campana_template.bd_contacto
+            columnas_bd = obtener_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
+            params_crm_init_formset = context['wizard']['form']
+            param_crms_formset = ParametrosCrmFormSet(
+                initial=initial_data, form_kwargs={'columnas_bd': columnas_bd})
+            param_crms_formset.extra = len(initial_data) + 1
+            param_crms_formset.prefix = params_crm_init_formset.prefix
+            context['wizard']['form'] = param_crms_formset
         return context
 
 
@@ -201,14 +212,7 @@ class CampanaWizardMixin(object):
             # flexible y sólo usa kwargs para instanciar
             campana = self.get_cleaned_data_for_step(self.INICIAL)
             bd_contacto = campana['bd_contacto']
-            if bd_contacto is None:
-                nombres_de_columnas = COLUMNAS_DB_DEFAULT
-                nombres_de_columnas = nombres_de_columnas[:]
-            else:
-                metadata = bd_contacto.get_metadata()
-                nombres_de_columnas = metadata.nombres_de_columnas
-            nombres_de_columnas.remove('telefono')
-            columnas_bd = [(columna, columna) for columna in nombres_de_columnas]
+            columnas_bd = obtener_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
             form_class = self.form_list[step]
             kwargs = self.get_form_kwargs(step)
             kwargs.update({

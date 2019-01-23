@@ -1361,4 +1361,4 @@ class ParametrosCrmForm(forms.ModelForm):
 
 
 ParametrosCrmFormSet = inlineformset_factory(
-    Campana, ParametrosCrm, form=ParametrosCrmForm, extra=0, min_num=1)
+    Campana, ParametrosCrm, form=ParametrosCrmForm, extra=1, can_delete=True)
