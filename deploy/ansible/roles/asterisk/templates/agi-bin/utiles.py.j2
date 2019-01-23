@@ -28,5 +28,5 @@ from datetime import datetime
 
 
 def write_time_stderr(str_value):
-    fecha = datetime.strptime(datetime.now(), '%Y-%m-%d %H:%M:%S.%f')
+    fecha = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S.%f')
     sys.stderr.write("{0}: {1}".format(fecha, str_value))
