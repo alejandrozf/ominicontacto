@@ -48,7 +48,8 @@ class CreacionUsuariosTest(OMLBaseTest):
         # self.supervisor1
 
     @patch.object(ActivacionAgenteService, 'activar')
-    def test_crear_supervisor(self, activar):
+    @patch('ominicontacto_app.management.commands.service_secretkey.Command.generar_secret_key')
+    def test_crear_supervisor(self, generar_secret_key, activar):
         self.client.login(username=self.admin.username, password=PASSWORD)
         url = reverse('user_nuevo')
         response = self.client.get(url, follow=True)
