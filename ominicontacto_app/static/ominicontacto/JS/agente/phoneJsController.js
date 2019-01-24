@@ -129,7 +129,7 @@ class PhoneJSController {
             // TODO: Verificar si solo se pueden marcar Entrantes, ya que para las salientes
             //       no se esta guardando un call_uuid
             var descripcion = $("#SignDescription").val(); // sign subject
-            self.oml_api.marcarLlamada(descripcion, self.phone.call_uuid);
+            self.oml_api.marcarLlamada(descripcion, self.phone.session_data.call_uuid);
             $("#SignDescription").val(null);
             self.view.tagCallMenu.modal('hide');
         });

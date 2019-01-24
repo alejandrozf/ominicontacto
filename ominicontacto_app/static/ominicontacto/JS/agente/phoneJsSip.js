@@ -550,8 +550,8 @@ class SessionData {
     }
 
     get call_uuid() {
-        if (this.invite_request.headers.Uidgrabacion) {
-            return this.invite_request.headers.Uidgrabacion[0].raw;
+        if (this.invite_request.headers.Omlcallid) {
+            return this.invite_request.headers.Omlcallid[0].raw;
         }
     }
 
