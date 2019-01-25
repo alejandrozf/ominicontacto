@@ -63,9 +63,7 @@ OML supervision
 
 Asterisk
 ------------------------
-oml-965-hotfix-espacio-en-gotoif-statusagente-transfer-consultativa' into 'pre-release-1.1.0'
-oml-882-dev-agent-status-and-asterisk-promps' into 'develop'
-oml-546-dev-internacionalizacion-asterisk-dialplan' into 'develop'
-oml-545-dev-evaluar-prescencia-antes-de-enviar-transfer' into develop
-oml-907-fix-default-timeout-ivr' into 'develop'
-oml-927-dev-hangup-cause-and-who-hung-up' into 'develop'
+- Fix on consultative transfer call
+- Asterisk audio prompts used now are chosen using channel variables according to the language specified
+- Transfer and calls code validates that agente state be READY before to call it
+- Events logged now can distinguish about who stop the call, the agent or receiver
