@@ -61,7 +61,8 @@ class CreacionBacklistService(object):
 
         csv_extensions = ['.csv']
 
-        file_invalid_msg = _("El archivo para realizar la importación de contactos no es válido")
+        file_invalid_msg = _("El archivo especificado para realizar la importación de contactos "
+                             "no es válido.")
         filename = back_list.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:

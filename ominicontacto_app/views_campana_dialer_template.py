@@ -21,6 +21,7 @@
 
 from __future__ import unicode_literals
 
+from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
@@ -155,8 +156,8 @@ class TemplateDeleteView(DeleteView):
 
         self.object.borrar_template()
 
-        message = '<strong>Operación Exitosa!</strong>\
-        Se llevó a cabo con éxito la eliminación del Template.'
+        message = _('<strong>Operación Exitosa!</strong>'
+                    'Se llevó a cabo con éxito la eliminación del Template.')
 
         messages.add_message(
             self.request,
