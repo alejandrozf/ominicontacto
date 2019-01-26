@@ -2,6 +2,5 @@
 - Pause times are not separated by date
 - Supervision calls capture is broken
 - Recycle over recycled campaign duplicates records to call
-- Inbound campaigns does not have MOH by default
 - The system does not reproduce some temporary voice messages produced by some carriers on the webphone
 - The system gots a lot of overhead when has to unqueue many agents
